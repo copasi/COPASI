@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:09:48 $
+   $Date: 2005/03/02 09:50:13 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -48,6 +48,8 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
   public:
     CPlotSpec2Vector(const std::string & name = "PlotSpecifications",
                      const CCopasiContainer* pParent = &RootContainer);
+
+    //CPlotSpec2Vector();
 
     ~CPlotSpec2Vector();
 

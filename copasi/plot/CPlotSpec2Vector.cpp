@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:09:48 $
+   $Date: 2005/03/02 09:50:13 $
    End CVS Header */
 
 #include <limits>
@@ -21,6 +21,13 @@ CPlotSpec2Vector::CPlotSpec2Vector(const std::string & name,
     mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
     inputFlag(NO_INPUT)
 {}
+
+/*CPlotSpec2Vector::CPlotSpec2Vector():
+    CCopasiVectorN<CPlotSpecification>("PlotSpecifications", &RootContainer),
+    mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
+    inputFlag(NO_INPUT)
+{
+}*/
 
 CPlotSpec2Vector::~CPlotSpec2Vector()
 {
@@ -75,7 +82,7 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
       return false;
     }
 
-  mObjectNames.resize(0);
+  mObjectNames.clear();
 
   if (!initAllPlots()) //create mObjectNames;
     {
@@ -121,7 +128,7 @@ bool CPlotSpec2Vector::updateAllPlots()
 
 bool CPlotSpec2Vector::initAllPlots()
 {
-  windows.resize(0);
+  windows.clear();
 
   //step through the vector of specifications and create the plot windows
   std::string key;
@@ -208,10 +215,15 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
   for (it = mObjectNames.begin(); it != mObjectNames.end(); ++it)
     if (*it == name) break;
 
-  if (it != mObjectNames.end()) return (it - mObjectNames.begin());
+  if (it != mObjectNames.end())
+    {
+      std::cout << "CPlotSpec2Vector::getIndexFromCN; existing object: " << name << std::endl;
+      return (it - mObjectNames.begin());
+    }
 
   //the name is not yet in the list
   mObjectNames.push_back(name);
+  std::cout << "CPlotSpec2Vector::getIndexFromCN; new object: " << name << std::endl;
   return mObjectNames.size() - 1;
 }
 
@@ -224,17 +236,20 @@ bool CPlotSpec2Vector::compile()
   std::vector<CCopasiObjectName>::const_iterator it;
   for (it = mObjectNames.begin(); it != mObjectNames.end(); ++it)
     {
-      //std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
+      std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
       pSelected = CCopasiContainer::ObjectFromName(*it);
       if (!pSelected)
         {
-          //std::cout << "Object not found!" << std::endl;
+          std::cout << "Object not found!" << std::endl;
           mObjects.push_back(NULL);
           //return false;
         }
-      //TODO check hasValue()
-      //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
-      mObjects.push_back(pSelected);
+      else
+        {
+          //TODO check hasValue()
+          //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
+          mObjects.push_back(pSelected);
+        }
     }
   return true; //success;
 }
