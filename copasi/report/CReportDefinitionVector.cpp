@@ -3,7 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "CReportDefinitionVector.h"
-#include "CKeyFactory.cpp" 
+#include "CKeyFactory.h"
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -34,3 +35,9 @@ std::string CReportDefinitionVector::getKey()
 {
   return mKey;
 }
+
+void CReportDefinitionVector::load(CReadConfig & configBuffer)
+{}
+
+void CReportDefinitionVector::save(CWriteConfig & configBuffer)
+{}
