@@ -528,6 +528,7 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
   mTrajectoryTask = dataModel->getTrajectoryTask();
   this->loadSteadyStateTaskNodes(mSteadyStateTask);
   this->loadTrajectoryTaskNodes(mTrajectoryTask);
+  scanWidget->loadScan(mSteadyStateTask);
 }
 
 /***********ListViews::update(Subject* theChangedSubject,int status)----------->
@@ -805,6 +806,8 @@ void ListViews::loadModelNodes(CModel *model)
       constantSymbols->loadConstantSymbols(mpMathModel);
       compartmentSymbols->loadCompartmentSymbols(mpMathModel);
       differentialEquations->loadDifferentialEquations(mpMathModel);
+
+      scanWidget->loadScan(mSteadyStateTask);
 
       loadMetabolitesNodes(model);
       // UPDATE THE REACTIONS STUFF..
