@@ -1,5 +1,5 @@
 0:1:Model
-1:11:Biochemecal
+1:11:Biochemical
 11:111:Compartments
 11:112:Metabolites
 11:113:Moiety
@@ -10,6 +10,7 @@
 12:123:Constant Symbols
 12:124:Fixed Metabolite Symbols
 12:125:Metabolite Symbols
+12:126:Differential Equations
 0:2:Tasks
 2:21:Steady-State
 21:211:Bifurcation
