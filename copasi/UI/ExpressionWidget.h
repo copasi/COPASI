@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.2 2003/09/19 19:48:34 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.3 2003/09/19 19:50:07 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +23,7 @@ class QTable;
 class QLineEdit;
 class QTextEdit;
 
-class ExpressionWidget : : public CopasiWidget
+class ExpressionWidget : public CopasiWidget
   {
     Q_OBJECT
 
