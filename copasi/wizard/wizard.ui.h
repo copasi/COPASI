@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/08 19:56:28 $
+   $Author: gauges $ 
+   $Date: 2004/12/09 11:47:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -105,17 +105,14 @@ void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString 
   if (name == "Model Settings")
     {
       ListViews::switchAllListViewsToWidget(1, "");
-      //QMessageBox::information(this, "Info", "I am the model settings dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Reaction Overview")
     {
       ListViews::switchAllListViewsToWidget(114, "");
-      //QMessageBox::information(this, "Info", "I am the reaction overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Report Definition")
     {
       ListViews::switchAllListViewsToWidget(43, "");
-      //QMessageBox::information(this, "Info", "I am the report definition dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Step 1")
     {
@@ -125,12 +122,10 @@ void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString 
   else if (name == "Time Course")
     {
       ListViews::switchAllListViewsToWidget(23, "");
-      //QMessageBox::information(this, "Info", "I am the time course dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Plot Definition Overview")
     {
       ListViews::switchAllListViewsToWidget(42, "");
-      //QMessageBox::information(this, "Info", "I am the plot definition overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else
     {
