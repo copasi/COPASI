@@ -189,7 +189,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
-  mRi.initFromReaction(reaction->getKey());
+  mRi.initFromReaction(*(dataModel->getModel()), reaction->getKey());
 
   // update the widget.
   FillWidgetFromRI();

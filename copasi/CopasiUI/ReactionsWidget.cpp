@@ -20,6 +20,7 @@
 //#include "model/CMetab.h"
 //#include "model/CCompartment.h"
 #include "model/CReaction.h"
+#include "model/CChemEqInterface.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 
@@ -93,7 +94,7 @@ void ReactionsWidget::fillTable()
     {
       obj = objects[j];
       table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, obj->getChemEq().getChemicalEquation().c_str());
+      table->setText(j, 1, CChemEqInterface::getChemEqString(dataModel->getModel(), *obj, false).c_str());
 
       mKeys[j] = obj->getKey();
     }
