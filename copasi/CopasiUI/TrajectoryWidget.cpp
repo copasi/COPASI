@@ -33,9 +33,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("TrajectoryWidget");
   resize(695, 581);
-  QFont f(font());
-  f.setFamily("Times New Roman");
-  setFont(f);
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
