@@ -288,3 +288,18 @@ void * CMetab::getTTAddr()
 {
   return &mTT;
 }
+
+// non-member
+bool operator<(const CMetab &lhs, const CMetab &rhs)
+{
+    // Do the comparison based on the name
+    if (lhs.getName() <  rhs.getName())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+

@@ -287,4 +287,10 @@ class CMetabOld
   string getName() const;
 };
 
+/**
+ * Non member less than operator. This is needed, for example, when searching for an 
+ * instance CMetab in a set of CMetab.
+ */
+bool operator< (const CMetab &lhs, const CMetab &rhs);
+
 #endif // COPASI_CMetab
