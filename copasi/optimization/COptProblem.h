@@ -17,6 +17,12 @@
 #include "steadystate/CSS_Solution.h"
 #include "trajectory/CTrajectory.h"
 
+enum ProblemType
+{
+  SteadyState,
+  Trajectory
+};
+
 class COptProblem
   {
     //data member
@@ -38,6 +44,12 @@ class COptProblem
      * trajectory and steady state method
      */
     CTrajectory * trajectory;
+
+    /**
+     * This is not permanant !  this will change when CSS_Solution.process(&ofstream) 
+     * changes to CSS_Solution.process().  delete this parameter when this change is comitted.
+     */
+    ofstream out;
 
     // Implementation
 
@@ -180,6 +192,12 @@ class COptProblem
      * get maximum value from array
      */
     double getParameterMax(int);
+
+    /*
+     * set problem type : Steady State or Trajectory
+     * @param: ProblemType
+     */
+    void setProblemType(ProblemType);
   };
 
 #endif  // the end
