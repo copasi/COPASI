@@ -8,7 +8,8 @@ copasi_LDADD = \
 	./model/libmodel.a \
 	./steadystate/libsteadystate.a \
 	./trajectory/libtrajectory.a \
-	./utilities/libutilities.a 
+	./utilities/libutilities.a \
+        ./scan/libscan.a
 
 SUBDIRS = \
 	commandline\
@@ -23,7 +24,7 @@ SUBDIRS = \
 	utilities \
 	CopasiUI \
 	test \
-	pvmtest
+        scan
 
 EXTRA_DIST = \
 	main.cpp \
