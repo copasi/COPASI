@@ -187,9 +187,14 @@ void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
   mEndTime = aDouble;
 }
 
-C_FLOAT64 CTrajectory::getEndTime() const
+const C_FLOAT64 & CTrajectory::getEndTime() const
 {
   return mEndTime;
+}
+
+const C_FLOAT64 & CTrajectory::getTime() const
+{
+  return mTime;
 }
 
 	

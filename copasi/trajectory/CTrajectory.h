@@ -177,9 +177,15 @@ class CTrajectory
 
   /*
    * Get the end of time points
-   * @return mEndTime
+   * @return "const C_FLOAT64 &" mEndTime
    */
-  C_FLOAT64 getEndTime() const;
+  const C_FLOAT64 & getEndTime() const;
+
+  /*
+   * Get the end of time points
+   * @return "const C_FLOAT64 &" mTime
+   */
+  const C_FLOAT64 & getTime() const;
 
   /*
    * Set the point to the array with the left hand side value
