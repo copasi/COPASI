@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
+   $Date: 2004/10/08 12:51:10 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -113,6 +113,9 @@ class CReactionInterface
 
     const std::string & getFunctionName() const
       {if (mpFunction) return mpFunction->getObjectName(); else return emptyString;};
+
+    const std::string & getFunctionDescription() const
+    {if (mpFunction) return mpFunction->getDescription(); else return emptyString;};
 
     std::vector< std::string > getListOfPossibleFunctions() const;
 
