@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.14 2003/09/23 20:24:20 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.15 2003/09/28 20:18:19 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -109,8 +109,8 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   layout14->addWidget(upButton, 1, 0);
   layout15->addLayout(layout14);
 
-  listBoxItems = new QListBox(this, "listBoxItems");
-  layout15->addWidget(listBoxItems);
+  itemnamesTable = new QListBox(this, "itemnamesTable");
+  layout15->addWidget(itemnamesTable);
   layout16->addLayout(layout15);
 
   itemsTable = new QListBox(this, "itemsTable");
@@ -142,8 +142,8 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
   setTabOrder(upButton, downButton);
-  setTabOrder(downButton, listBoxItems);
-  setTabOrder(listBoxItems, itemsTable);
+  setTabOrder(downButton, itemnamesTable);
+  setTabOrder(itemnamesTable, itemsTable);
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
@@ -158,8 +158,8 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
-  connect(listBoxItems, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
-  connect(listBoxItems, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
+  connect(itemnamesTable, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
+  connect(itemnamesTable, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
 }
 
 /*

@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.12 2003/09/23 20:24:21 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.13 2003/09/28 20:18:19 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -49,7 +49,7 @@ class ExpressionWidget : public CopasiWidget
     QPushButton* deleteButton;
     QPushButton* addButton;
     QPushButton* upButton;
-    QListBox* listBoxItems;
+    QListBox* itemnamesTable;
     QFrame* bodyField;
     QPushButton* confirmButton;
     QPushButton* cancelButton;
