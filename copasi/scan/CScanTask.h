@@ -19,6 +19,10 @@ class CScanTask
   {
     //Attributes
   private:
+    /**
+     * Flag indicating whether the task shall be executed by CopasiSE
+     */
+    bool mRequested;
 
     /**
      * A pointer to the problem to be integrated.
@@ -77,6 +81,18 @@ class CScanTask
      * @param configbuffer reference to a CWriteConfig object.
      */
     void save(CWriteConfig & configBuffer);
+
+    /**
+     * Set wheter the execution of the task is requested.
+     * @param const bool & execute
+     */
+    void setRequested(const bool & requested);
+
+    /**
+     * Retrieve whether the execution of the task is requested
+     * @return bool isRequested
+     */
+    bool isRequested() const;
 
     /**
      * Retrieve the probel to be integrated.

@@ -13,12 +13,14 @@
 #include "utilities/readwrite.h"
 
 CScanTask::CScanTask():
+    mRequested(true),
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
     mpOut(NULL)
 {}
 
 CScanTask::CScanTask(const CScanTask & src):
+    mRequested(src.mRequested),
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
     mpOut(src.mpOut)
@@ -42,6 +44,11 @@ void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
 
 void CScanTask::save(CWriteConfig & C_UNUSED(configBuffer))
 {}
+
+void CScanTask::setRequested(const bool & requested)
+{mRequested = requested;}
+
+bool CScanTask::isRequested() const {return mRequested;}
 
 CScanProblem * CScanTask::getProblem()
 {return mpProblem;}
