@@ -83,7 +83,7 @@ public:
     /**
      *  Init
      */
-    Init();
+    void Init();
     
     /**
      *  Destructor
