@@ -87,8 +87,6 @@ echo "Set the icon in the Info.plist file."
     ;;
 
   xLinux|xSunOS)
-    (cd ../copasi/CopasiUI; make CopasiUI-dynamic)
-
     mkdir $build-$1
     cd $build-$1
  
