@@ -112,6 +112,8 @@ MoietyWidget1::MoietyWidget1( QWidget *parent, const char * name, WFlags f )
 }
 
 
+/*This function is used to connect this class to the listviews 
+    class to basically choose the right widget to display   */
 int MoietyWidget1::isName(QString setValue)
 {
 
@@ -137,6 +139,9 @@ int MoietyWidget1::isName(QString setValue)
 		return 0;
 }
 
+
+
+/*This function is to load the model for the Moieties*/
 void MoietyWidget1::loadMoieties(CModel *model)
 {
 	if (model != NULL)
@@ -149,7 +154,8 @@ void MoietyWidget1::loadMoieties(CModel *model)
 
 
 
-
+/* This function loads the moiety widget when its name is 
+   clicked in the tree   */
 
 void MoietyWidget1::loadName(QString setValue)
 {
@@ -159,7 +165,7 @@ void MoietyWidget1::loadName(QString setValue)
 	}
 		
 		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
-		C_INT32 noOfMoietyRows = moieties.size();
+		//C_INT32 noOfMoietyRows = moieties.size();
 		CMoiety *moiety;
 		moiety= moieties[(string)setValue];
 	
@@ -170,7 +176,7 @@ void MoietyWidget1::loadName(QString setValue)
 		  	
 }
 
-
+///end of all the functions
 
 
 

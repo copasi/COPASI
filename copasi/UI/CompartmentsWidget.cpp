@@ -31,8 +31,9 @@
  */
 CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
 						: QWidget(parent, name, f)
+
 {
-	 mModel=NULL;		
+    mModel=NULL;		
 	table = new MyTable(0, 2, this, "tblCompartments");
 	QVBoxLayout *vBoxLayout = new QVBoxLayout( this, 0 );
 	vBoxLayout->addWidget(table);
@@ -114,7 +115,7 @@ void CompartmentsWidget::mousePressEvent ( QMouseEvent * e )
 void CompartmentsWidget::slotTableClicked( int row, int col, int button, const QPoint & mousePos )
 {
 	//QMessageBox::information( this, "Application name",
-		//"Clicked (Inside CompartmentsWidget::slotTableClicked) On Compartments table." );	
+	//"Clicked (Inside CompartmentsWidget::slotTableClicked) On Compartments table." );	
 
 }
 

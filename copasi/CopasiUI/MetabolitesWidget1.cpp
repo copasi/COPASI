@@ -339,7 +339,8 @@ void MetabolitesWidget1::loadName(QString setValue)
 				RadioButton5->setChecked(true);
 			}
 
-			ComboBox1->insertStringList((metab->getCompartment())->getName().c_str(),-1);
+		/*previous code...changes being made
+		ComboBox1->insertStringList((metab->getCompartment())->getName().c_str(),-1);
 				
 		if((metab->getCompartment())->getName()=="Glycosome")
 			{
@@ -357,8 +358,19 @@ void MetabolitesWidget1::loadName(QString setValue)
 				ComboBox1->insertItem("Cytosol",2);
 
 			}
-		
-	}
 
+  */
+
+CModel *model1 =  new CModel;
+CCopasiVectorNS< CCompartment > & allcompartments= model1->getCompartments(); 
+int j=-1;
+for(int m=0;m<=allcompartments.size();m++)
+{
+//	ComboBox1->insertStringList(allcompartments[m]->getName().c_str(),j);
+	j++;
+}
+
+
+}
 
 }

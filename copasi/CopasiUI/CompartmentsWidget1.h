@@ -21,6 +21,7 @@ class QPopupMenu;
 class QLabel;
 class QLineEdit;
 class QComboBox;
+class QListBox;
 class QListBoxItem;
 class QPushButton;
 class QFrame;
@@ -46,7 +47,9 @@ public:
     QLabel* TextLabel2;
 	QLabel* TextLabel3;
 	QLabel* TextLabel4;
-    QComboBox* ComboBox1;
+    //QComboBox* ComboBox1;
+
+	QListBox* ListBox1;
 	QFrame* Frame1;
 	QFrame* Frame2;
 	QFrame* Frame3;

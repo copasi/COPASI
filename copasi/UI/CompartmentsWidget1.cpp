@@ -16,7 +16,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "listviews.h"
-
+#include <qlistbox.h>
 /* 
  *  Constructs a CompartmentsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -74,11 +74,18 @@ CompartmentsWidget1::CompartmentsWidget1( QWidget *parent, const char * name, WF
     hBoxLayout4b->addWidget( TextLabel2);
     hBoxLayout4b->addSpacing(-40);
 	
-	ComboBox1 = new QComboBox( Frame4b, "ComboBox1" );
+	/*ComboBox1 = new QComboBox( Frame4b, "ComboBox1" );
     hBoxLayout4b->addWidget(ComboBox1);
+	hBoxLayout4b->addSpacing(20);*/
+
+	ListBox1 = new QListBox( Frame4b, "ListBox1" );
+ListBox1->setGeometry( QRect( 120, 40, 31, 41 ) );
+    hBoxLayout4b->addWidget(ListBox1);
+	
 	hBoxLayout4b->addSpacing(20);
 
-	
+
+
 	//Frame for 3rd Row
 	Frame4c = new QFrame( Frame2, "Frame4c" );
     gridLayout1->addWidget(Frame4c,2,0,0);
@@ -119,6 +126,8 @@ CompartmentsWidget1::CompartmentsWidget1( QWidget *parent, const char * name, WF
    
 }
 
+/*This function is used to connect this class to the listviews 
+    class to basically choose the right widget to display   */
 int CompartmentsWidget1::isName(QString setValue)
 {
 
@@ -139,6 +148,7 @@ int CompartmentsWidget1::isName(QString setValue)
 		return 0;
 }
 
+/*This function is to load the model for the compartments*/
 void CompartmentsWidget1::loadCompartments(CModel *model)
 {
 	if (model != NULL)
@@ -148,6 +158,8 @@ void CompartmentsWidget1::loadCompartments(CModel *model)
 }
 
 
+/* This function loads the compartments widget when its name is 
+   clicked in the tree   */
 void CompartmentsWidget1::loadName(QString setValue)
 {
 	
@@ -166,7 +178,9 @@ void CompartmentsWidget1::loadName(QString setValue)
 			LineEdit1->setText(compartn->getName().c_str());
 			
 			
-			CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
+		/* PREVIOUS CODE.....CHANGES BEING MADE...
+		
+		  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
 			C_INT32 noOfMetabolitesRows = Metabs.size();
 			CMetab *mtb;
 			for (C_INT32  j = 0; j < noOfMetabolitesRows; j++)
@@ -175,17 +189,27 @@ void CompartmentsWidget1::loadName(QString setValue)
 			mtb = Metabs[j];
 			ComboBox1->insertItem(mtb->getName().c_str(),c);
 			c++;
+			}*/
+
+ 
+			CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
+			C_INT32 noOfMetabolitesRows = Metabs.size();
+			CMetab *mtb;
+			for (C_INT32  j = 0; j < noOfMetabolitesRows; j++)
+			{
+			C_INT32  c=-1;
+			mtb = Metabs[j];
+			ListBox1->insertItem(mtb->getName().c_str(),c);
+			c++;
 			}
+
+
 
 		    LineEdit3->setText(QString::number(compartn->getVolume()));
 			
 		
 			LineEdit4->setText( QString::number(compartn->getVolume()));
 			LineEdit4->setReadOnly(true);
+}
 
-
-			
-		
-	}
-
-
+//last function ends

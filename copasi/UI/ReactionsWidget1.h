@@ -26,6 +26,8 @@ class QRect;
 #include "MyTable.h"
 class CModel;
 class QPushButton;
+
+
 class ReactionsWidget1 : public QWidget
 { 
     Q_OBJECT

@@ -36,24 +36,24 @@ protected:
 
 public:
 	   
-	  //DataModel();
-	  DataModel(char* fileName="Sample.txt");
+	   //DataModel();
+	   DataModel(char* fileName="Sample.txt");
 		  
-      void populateData(char* fileName);
+       void populateData(char* fileName);
 	  
-	 // void setData(int );
-	//  void addData(T*);
-	  void addData(T* parent,T* child);
-	  void removeData(T*);
+	   // void setData(int );
+	   //  void addData(T*);
+	   void addData(T* parent,T* child);
+	   void removeData(T*);
 	  
-	  void loadModel(const char* fileName);
-	  inline CModel* getModel(){return model;}
-      inline void setModelUpdate(bool value){modelUpdate=value;}
-	  inline bool getModelUpdate(){return modelUpdate;}
+	   void loadModel(const char* fileName);
+	   inline CModel* getModel(){return model;}
+       inline void setModelUpdate(bool value){modelUpdate=value;}
+	   inline bool getModelUpdate(){return modelUpdate;}
 
-//	  inline int getStatus(){return STATUS;}
-	  inline Node<T>* getRoot(){return myTree.getRoot();}
-	  inline Node<T>* getData(){return last;}
+       // inline int getStatus(){return STATUS;}
+	   inline Node<T>* getRoot(){return myTree.getRoot();}
+	   inline Node<T>* getData(){return last;}
 
 
 };
