@@ -82,7 +82,7 @@ class CCopasiNode
 
     /**
      * Add a sibbling to a node.
-     * If pAfter == this the sibbling will be insertet at the fornt of the list
+     * If pAfter == this the sibbling will be inserted at the fornt of the list
      * of sibblings.
      * @param CCopasiNode * pSibbling
      * @param CCopasiNode * pAfter 
