@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:01:39 $
+   $Author: shoops $ 
+   $Date: 2005/01/06 17:01:49 $
    End CVS Header */
 
 /****************************************************************************
@@ -77,7 +77,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   else if (obj->isValueInt())
     value = QString::number(*(C_INT32*)obj->getReference());
   else if (obj->isValueString())
-    value = QString(*(std::string*)obj->getReference());
+    value = FROM_UTF8(*(std::string*)obj->getReference());
   else if (obj->isValueBool())
     {
       if (*(bool*)obj->getReference()) value = "true"; else value = "false";
