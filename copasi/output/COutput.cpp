@@ -568,6 +568,88 @@ void COutput::repSS(ofstream &fout)
  */
 void COutput::repStability(ofstream &fout)
 {
+	CModel *model = Copasi->pModel;
+
+	if (mSolution->getSolution() != SS_FOUND)
+	{
+		fout << "The linear stability analysis based on the eigenvalues" << endl;
+		fout << "of the Jacobian matrix is only valid for steady states." << endl;
+	}
+	else 
+	{
+		fout << endl << "KINETIC STABILITY ANALYSIS" << endl << endl;
+		fout << "Summary:" << endl;
+		fout << "This steady state ";
+
+		// Output statistics
+		if (mSolution->getEigen()->getEigen_maxrealpart() > mSolution->getSSRes())
+			fout << "is unstable";
+		else {
+			if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
+				fout << "is asymptotically stable";
+			else fout << "stability is undetermined";
+		}
+
+		if (mSolution->getEigen()->getEigen_maximagpart() > mSolution->getSSRes())
+		{
+			fout << "," << endl;
+			fout << "transient states in its vicinity have oscillatory components" << endl;
+		}
+			
+		fout << endl;
+		fout << "Eigenvalue statistics:" << endl;
+		// Output Max Real Part
+		fout << "Largest real part: "; 
+		fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
+		// Output Max imaginary Part
+		fout << "Largest absolute imaginary part: ";
+		fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart();
+		// Output Eigen-nreal
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_nreal();
+		fout << " are purely real" << endl;
+		// Output Eigen-nimage
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_nimag();
+		fout << " are purely imaginary" << endl;
+		// Output Eigen-ncplxconj
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_ncplxconj();
+		fout << " are complex" << endl;
+		// Output Eigen-nzero
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_nzero();
+		fout << " are equal to zero" << endl;
+		// Output Eigen-nposreal
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_nposreal();
+		fout << " have positive real part" << endl;
+		// Output Eigen-nnegreal
+		fout << setprecision(1) << mSolution->getEigen()->getEigen_nnegreal();
+		fout << " have negative real part" << endl;
+		// Output Eigne-stiffness
+		fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
+		fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
+
+		// Output Jacobian Matrix
+		fout << endl << "Jacobian matrix" << endl;
+		for (int i = 0; i < model->getMetabolitesInd().size(); i++)
+		{
+			for (int j = 0; j < model->getMetabolitesInd().size(); j++)
+				fout << setprecision(6) << mSolution->getJacob()->getJacob()[i][j];
+			fout << endl;
+		}
+
+		// Output Eigenvalus of the Jacibian Matrix
+		fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
+		for (i = 0; i < model->getMetabolitesInd().size(); i++)
+		{
+			if (mSolution->getEigen()->getEigen_i()[i] == 0.0)
+				fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
+			else 
+			{
+				fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
+				fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
+			}	
+		}
+		fout << endl;
+	}
+
 }
 
 /**
