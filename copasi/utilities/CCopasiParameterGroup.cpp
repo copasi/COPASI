@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:10:57 $
+   $Author: shoops $ 
+   $Date: 2004/09/30 15:28:29 $
    End CVS Header */
 
 /**
@@ -75,6 +75,23 @@ void CCopasiParameterGroup::deleteGroup()
       delete (parameterGroup *) mpValue;
       mpValue = NULL;
     }
+}
+
+bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
+{
+  if (parameter.getType() == CCopasiParameter::GROUP)
+    {
+      CCopasiParameterGroup * pGroup =
+        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter));
+      addParameter(pGroup);
+    }
+  else
+    {
+      CCopasiParameter * pParameter = new CCopasiParameter(parameter);
+      addParameter(pParameter);
+    }
+
+  return true;
 }
 
 void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)

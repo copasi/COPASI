@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/31 22:01:12 $
+   $Date: 2004/09/30 15:28:29 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -84,6 +84,13 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @return name_iterator end
      */
     index_iterator endIndex() const;
+
+    /**
+     * Add a parameter
+     * @param const CCopasiParameter & parameter
+     * @return bool success
+     */
+    bool addParameter(const CCopasiParameter & parameter);
 
     /**
      * Add a parameter to the group
