@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.156 $
+   $Revision: 1.157 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/22 12:55:43 $
+   $Date: 2004/10/25 13:28:42 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,6 +54,7 @@
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
+#include "CMCAWidget.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -341,6 +342,9 @@ void ListViews::ConstructNodeWidgets()
 
   modesWidget = new ModesWidget(this);
   modesWidget->hide();
+
+  mpCMCAWidget = new CMCAWidget(this);
+  mpCMCAWidget->hide();
 }
 
 /**
@@ -409,13 +413,19 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 231:
         return timeSeriesWidget;
         break;
+      case 24:
+        return mpCMCAWidget;
+        break;
+        //      case 241:
+        //        return mpCMCAResultsWidget;
+        //        break;
       case 31:
         return optimizationWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:               //Report
+      case 43:                //Report
         return tableDefinition;
         break;
       case 42:

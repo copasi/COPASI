@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 15:23:45 $
+   $Author: gauges $ 
+   $Date: 2004/10/25 13:28:42 $
    End CVS Header */
 
 #include "DataModelGUI.h"
@@ -16,6 +16,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "scan/CScanTask.h"
+#include "steadystate/CMCATask.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/CPlotSpec2Vector.h"
 #include "optimization/COptFunction.h"
@@ -58,6 +59,7 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(1).setObjectKey(model->getKey());
   mTree.findNodeFromId(21).setObjectKey(steadystatetask->getKey());
   mTree.findNodeFromId(23).setObjectKey(trajectorytask->getKey());
+  mTree.findNodeFromId(24).setObjectKey(mpCMCATask->getKey());
   //mTree.findNodeFromId(32).setObjectKey(scantask->getKey());
   mTree.findNodeFromId(43).setObjectKey(reportdefinitions->getKey());
   mTree.findNodeFromId(42).setObjectKey(plotspecs->getKey());
