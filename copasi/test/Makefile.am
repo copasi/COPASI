@@ -23,7 +23,8 @@ LIBS = \
         -lutilities \
 	-llapack \
 	-lblas \
-	-lF77
+	-lF77 \
+	-lfl
 
 # the library search path.
 LDFLAGS = -all-static \

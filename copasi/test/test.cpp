@@ -8,6 +8,8 @@
 #include <string>
 #include <strstream>
 #include <vector>
+#include <iomanip>
+#include <algorithm>
 
 #define COPASI_MAIN
 
@@ -62,6 +64,11 @@ InitMetabolites(CCopasiVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
 C_INT32 TestOutputEvent(void);
 
+C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins);
+C_INT32 TestDependencyGraph();
+C_INT32 TestIndexedPriorityQueue(C_INT32);
+C_INT32 TestSpec2Model();
+
 C_INT main(C_INT argc, char *argv[])
 {
   cout << "Starting main program." << endl;
@@ -77,32 +84,37 @@ C_INT main(C_INT argc, char *argv[])
       cout << "sizeof(float) = " << sizeof(float) << endl;
 
         
-      // TestException();
-      // TestMessage();
-
-      // TestWriteConfig();
-      // TestReadConfig();
+//      TestException();
+//      TestMessage();
+       
+//       TestWriteConfig();
+//       TestReadConfig();
         
-      // TestCompartment();
-      // TestDatum();
-      // TestMetab();
-      // TestReadSample();
-      //TestNewton();
-      TestSSSolution();
+//      TestCompartment();
+//      TestDatum();
+//      TestMetab();
+//      TestReadSample();
+//      TestNewton();
+//      TestSSSolution();
 
-      //TestTrajectory();
-      // TestMoiety();
-      // TestKinFunction();
-      // TestMassAction();
-      // TestFunctionDB();
-      // TestBaseFunction();
-      // TestModel();
-      // TestLU();
-      // TestMCA();
-      // TestOutputEvent();        
+//       TestTrajectory();
+//       TestMoiety();
+       TestKinFunction();
+//       TestMassAction();
+//       TestFunctionDB();
+//       TestBaseFunction();
+//       TestModel();
+//       TestLU();
+//       TestMCA();
+//       TestOutputEvent();        
 
-      // MakeFunctionDB();
-      // CovertFunctionDB();
+//       MakeFunctionDB();
+//       CovertFunctionDB();
+      
+//      TestRandom(10000, 100);
+//      TestDependencyGraph();
+//      TestIndexedPriorityQueue(7);
+//      TestSpec2Model();
     }
 
   catch (CCopasiException Exception)
@@ -125,7 +137,7 @@ C_INT32  TestMessage(void)
 
   catch (CCopasiException Exception)
     {
-      cout << Exception.getMessage().getText() << endl;
+        std::cout << Exception.getMessage().getText() << std::endl;
     }
   return 0;
 }
@@ -193,6 +205,7 @@ C_INT32  TestWriteConfig(void)
   Specific.setVariable((string) "Compartment", 
                        (string) "string", 
                        (void *) &outstring);
+  Specific.flush();
   C_FLOAT64 outdouble = 1.03e3;
   Specific.setVariable((string) "Volume", 
                        (string) "C_FLOAT64", 
@@ -354,7 +367,7 @@ C_INT32 TestReadSample(void)
 
 C_INT32 TestOutputEvent(void)
 {
-  C_INT32 size = 0;
+//  C_INT32 size = 0;
 
   cout << "Entering TestOutputEvent." << endl;
 
@@ -463,8 +476,8 @@ C_INT32 TestMCA(void)
 // by YH
 C_INT32  TestNewton(void)
 {
-    C_INT32 size = 0;
-    C_INT32 i;
+//    C_INT32 size = 0;
+//    C_INT32 i;
  
     CReadConfig inbuf("gps/NewtonTest.gps");
     //   CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
@@ -507,8 +520,8 @@ C_INT32  TestNewton(void)
 // by YH
 C_INT32  TestSSSolution(void)
 {
-    C_INT32 size = 0;
-    C_INT32 i;
+//    C_INT32 size = 0;
+//    C_INT32 i;
  
     //CReadConfig inbuf("gps/BakkerComp.gps");
     CReadConfig inbuf("gps/NewtonTest.gps");
@@ -656,6 +669,7 @@ C_INT32 TestMoiety()
 
 C_INT32 TestKinFunction()
 {
+  cout << "Testing CKinFunction\n";
   CKinFunction f;
     
   f.setName("test");
@@ -679,6 +693,7 @@ C_INT32 TestKinFunction()
   CallParameters[1] = &b;
     
   C_FLOAT64 r = f.calcValue(CallParameters);
+  cout << "Value obtained = " << r << " Should be = " << (a-b)*(a+b)/5 << endl;
     
   CWriteConfig out("TestKinFunction.gps");
   f.save(out);
@@ -1501,4 +1516,163 @@ C_INT32 CovertFunctionDB(void)
   return 0;
 }
 
-  
+C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
+{
+    C_INT32 npoints = num_points;
+    C_INT32 nbins = num_bins;
+    cout << "Testing random number generator\n\n";
+    cout << "Dropping " << npoints << " points into " << nbins << " bins.\n";
+
+    // initialize the rng
+    CRandom generator;
+    vector <C_INT32> store;
+    for (C_INT32 i = 0; i < nbins; i++)
+    {
+        store.push_back(0);
+    }
+    vector <C_FLOAT64> random_nums;
+    C_INT32 j = 0;
+    for (j = 0; j < npoints; j++)
+    {
+        C_FLOAT64 rnd = generator.getUniformRandom();
+        C_INT32 k = static_cast<C_INT32> (rnd * nbins);
+        if (k >= nbins) {cout << " k too big \n"; exit(2);}
+        else if (k < 0.0) {cout << " k too small \n"; exit(2);}
+        store[k] += 1;
+        random_nums.push_back(rnd);
+    }
+    ofstream fout("test_random.dat");
+    cout << "Generated " << j << " points\n";
+    fout << "# Generated " << j << " points\n";
+    C_FLOAT64 min = pow(2.0,63), max = 0, mean = 0;
+    for (C_INT32 l = 0; l < nbins; l++)
+    {
+        fout << l << "  " << store[l] << endl;
+        if (store[l] > max) max = store[l];
+        if (store[l] < min) min = store[l];
+        mean += store[l];
+    }
+    cout << "Total points = " << setprecision (12) << mean << endl,
+    mean = mean / nbins;
+    C_FLOAT64 deviation = ((max - mean) > (mean - min))?(max-mean):(mean-min);
+    deviation = deviation / mean;
+    cout << "Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+    fout << "#Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+
+    // Check for repeats
+    cout << "Searching for repeats...\n";
+    vector<C_FLOAT64>::iterator it = random_nums.begin();
+    C_FLOAT64 tmp;
+    C_INT32 repeats = 0;
+    C_INT32 cnt = 0;
+    while (it != random_nums.end())
+    {
+        tmp = *it;
+        if (find(random_nums.begin(), random_nums.end(), tmp) != it)
+        {
+            repeats++;
+            CCopasiMessage(CCopasiMessage::WARNING, " Testing random generator: found %d'th repeat value = %g at  pos %d", repeats, *it, cnt);
+        }
+        cnt++;
+        it++;
+    }
+    if (repeats)
+    {
+        CCopasiMessage(CCopasiMessage::ERROR, "Testing random number generator: found %d repeats in %d numbers\n", repeats, npoints);
+    }
+    else
+    {
+        cout << "Random number generator test: Success - No repeats found" << endl;
+    }
+    return 0;
+}
+
+C_INT32 TestDependencyGraph()
+{
+    cout << "Testing dependency graph\n";
+    const unsigned C_INT32 NNODES = 4;
+    const unsigned C_INT32 NDEPS = 4;
+    C_INT32 inarr[NNODES][NDEPS] = {{0,1,2,0},
+                                     {1,1,3,0},
+                                     {2,3,0,1},
+                                     {3,0,1,2}};
+    CDependencyGraph dg;
+    unsigned C_INT32 i=0, j=0;
+    for (i = 0; i < NNODES; i++)
+    {
+        cout << "Adding node " << i << " with dependents ";
+        dg.addNode(i);
+        for(j = 0; j < NDEPS; j++)
+        {
+            cout << inarr[i][j] << " ";
+            dg.addDependent(i, inarr[i][j]);
+        }
+        cout << endl;
+    }
+    // Display the vector of dependents for each node
+    for (i = 0; i < NNODES; i++)
+    {
+        j = 0;
+        cout << "Node: " << i << " Dependents: ";
+        vector<C_INT32> depvec = dg.getDependents(i);
+        while (j < depvec.size())
+        {
+            cout << depvec[j] << " ";
+            j++;
+        }
+        cout << endl;
+    }
+    cout <<  "Done testing dependency graph\n\n";
+    return 0;
+}
+
+C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
+{
+    cout << "Testing CIndexedPriorityQueue\n";
+    int size = in_size;
+    cout << "Creating priority queue of size " << size << endl;
+    CIndexedPriorityQueue pq;
+    CRandom *rand = new CRandom(1);
+    C_FLOAT64 rndval;
+    cout << "Unordered input:\n";
+    for (int i = 0; i < size ; i++)
+    {
+        rndval = rand->getUniformRandom();
+        cout << "element " << i << ":" << rndval << endl;
+        pq.pushPair(i, rndval);
+    }
+    cout << "Building heap\n";
+    pq.buildHeap();
+    // Display the priority queue
+    cout << "\nPriority Queue:\n";
+    for (int j = 0; j < size; j++) 
+    {
+        cout << " " << j << "-" << setprecision (5) << pq[j];
+    }
+    cout << endl;
+    cout << "Testing update node\n";
+    for (int i = 0; i < size; i++)
+    {
+        cout << "Reset node at top index: ";
+        pq.updateNode(pq.topIndex(), 10000);
+        cout << "New queue = ";
+        for (int j = 0; j < size; j++) cout << " " << j << "-" << setprecision(5) << pq[j] << setprecision(6);
+        cout << endl;
+    }
+    cout << "Done testing CIndexedPriorityQueue\n\n";    
+    return 0;
+}
+
+C_INT32 TestSpec2Model()
+{
+    cout << "Testing CSpec2Model\n";
+    string filename = "exampleinput";
+    CSpec2Model specreader(filename);
+    CModel *model;
+    // create a model
+    model = specreader.createModel();
+    // Test that we read the input file correctly
+    specreader.printInput();
+    cout << "Done testing CSpec2Model\n";
+    return 0;
+}
