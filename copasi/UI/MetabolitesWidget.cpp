@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/12/17 15:19:44 $
+   $Author: shoops $ 
+   $Date: 2003/12/17 21:09:39 $
    End CVS Header */
 
 /***********************************************************************
@@ -291,25 +291,21 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
     {
       obj = objects[row];
       //if fixed checkbox is selected, then make sure to update status
-      fixedCB = (QCheckTableItem *) table->item(row, col);
-      if (fixedCB->isChecked())
+      fCheck = table->item(row, col);
+      fixedCB = dynamic_cast< QCheckTableItem * >(fCheck);
+      if (fixedCB && fixedCB->isChecked())
         {
           obj->setStatus(CMetab::METAB_FIXED);
-          table->setText(row, 4, "fixed");
+          table->setText(row, 4,
+                         CMetab::StatusName[CMetab::METAB_FIXED].c_str());
         }
       else
         {
           //handle fixed CBs that have just been unchecked
           obj->setStatus(CMetab::METAB_DEPENDENT);
-          table->setText(row, 4, "dependent");
+          table->setText(row, 4,
+                         CMetab::StatusName[CMetab::METAB_DEPENDENT].c_str());
         }
-      /*fCheck = table->item(row,col);
-      dynamic_cast <QCheckTableItem *> (fCheck);
-      if (fCheck)
-            {
-       obj->setStatus(CMetab::METAB_FIXED);
-       table->setText(row, 4, "fixed");
-      }*/
 
       // may have to keep previous checkbox status to make unchecked independent
     }
@@ -516,7 +512,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                // Yes or Enter
+        case 0:                 // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -529,7 +525,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:                // No or Escape
+        case 1:                 // No or Escape
           break;
         }
     }
