@@ -91,54 +91,27 @@ void TableDefinition::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
-      obj =;
       table->setText(j, 0, (*objects)[j]->getName().c_str());
       table->setText(j, 1, (*objects)[j]->getComment().c_str());
-      mKeys[j] = obj->getKey();
+      mKeys[j] = (*objects)[j]->getKey();
     }
   table->setText(jmax, 1, "");
-
-  /*
-    const CCompartment *obj;
-    const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
-    C_INT32 j, jmax = objects.size();
-    table->setNumRows(jmax);
-    mKeys.resize(jmax);
-   
-    for (j = 0; j < jmax; ++j)
-      {
-        obj = objects[j];
-        table->setText(j, 0, obj->getName().c_str());
-        table->setText(j, 1, QString::number(obj->getVolume()));
-        mKeys[j] = obj->getKey();
-      }
-    table->setText(jmax, 1, "");
-  */
 }
 
 void TableDefinition::createNewObject()
 {
-  /*
-  #ifdef XXXX
+  std::string name = "compartment";
+  int i = 0;
+  while (!dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, ""))
     {
-      std::string name = "compartment";
-      int i = 0;
-      while (dataModel->getModel()->addCompartment(name, 1) == -1)
-        {
-          i++;
-          name = "compartment";
-          name += "_";
-          name += QString::number(i).latin1();
-        }
-      table->setNumRows(table->numRows());
-      table->setText(row, 0, name.c_str());
-      x = name.c_str();
-      //emit updated();
-      //emit leaf(mModel);
-      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
+      i++;
+      name = "compartment";
+      name += "_";
+      name += QString::number(i).latin1();
     }
-  #endif
-  */
+  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setNumRows(table->numRows());
+  ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
 }
 
 void TableDefinition::slotTableCurrentChanged(int row,
@@ -151,6 +124,7 @@ void TableDefinition::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       //TODO: create a new Object
+      createNewObject();
     }
 
   pListView->switchToOtherWidget(mKeys[row]);
