@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:32:41 $
+   $Author: ssahle $ 
+   $Date: 2003/10/29 15:25:38 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.3 2003/10/16 16:32:41 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.4 2003/10/29 15:25:38 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,12 +18,14 @@
 #ifndef PLOTWIDGET1_H
 #define PLOTWIDGET1_H
 
+#include "CopasiUI/copasiWidget.h"
+
 //#include <qapplication.h>
 #include <vector>
 #include <string>
 #include <fstream>
-#include <qvariant.h>
-#include <qwidget.h>
+#include <qvariant.h> 
+//#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -38,7 +40,7 @@ class CurveGroupBox;
 class PlotTaskSpec;
 class PlotWindow;
 
-class PlotWidget1 : public QWidget
+class PlotWidget1 : public CopasiWidget
   {
     Q_OBJECT
 
@@ -47,9 +49,9 @@ class PlotWidget1 : public QWidget
     ~PlotWidget1();
 
     // some methods according to the general guideline, mostly only stubs for now...
-    virtual bool enter();
-    virtual bool update();
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
     QLabel* titleLabel;
     QLineEdit* titleLineEdit;

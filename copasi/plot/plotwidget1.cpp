@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:32:39 $
+   $Author: ssahle $ 
+   $Date: 2003/10/29 15:25:38 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.4 2003/10/16 16:32:39 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.5 2003/10/29 15:25:38 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,7 +50,8 @@ CurveSpecScrollView::CurveSpecScrollView(QWidget * parent, const char * name, WF
 //TODO: this widget should inherit CopasiWidget, but omitting inheritance for now with
 //all the copasi code elsewhere
 PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl), filename("plotdata"), nextPlotKey(0), currentPlotKey(-1)
+    : CopasiWidget(parent, name, fl),
+    filename("plotdata"), nextPlotKey(0), currentPlotKey(-1)
 {
   if (!name)
     setName("PlotWidget1");
@@ -138,7 +139,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   PlotWidget1Layout->addLayout(layout20, 0, 0);
   languageChange();
-  resize(QSize(508, 505).expandedTo(minimumSizeHint()));
+  //resize(QSize(508, 505).expandedTo(minimumSizeHint()));
 
   //TODO: adjust tab order? - mostly fine
 
@@ -490,7 +491,7 @@ void PlotWidget1::plotFinished()
 
 //-----------------------------------------------------------------------------
 
-bool PlotWidget1::enter()
+bool PlotWidget1::enter(const std::string & key)
 {
   // this method should have an object key as an argument
   // load the plot specification according to the key or a blank form
@@ -508,7 +509,7 @@ bool PlotWidget1::enter()
 
 //-----------------------------------------------------------------------------
 
-bool PlotWidget1::update()
+bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   //dummy
   return true;
