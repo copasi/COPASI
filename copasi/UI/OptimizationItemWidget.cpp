@@ -120,8 +120,8 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   checkUpperInf->setChecked(true);
   checkLowerInf->setChecked(true);
 
-  buttonUpperEdit->setEnabled(false);
-  buttonLowerEdit->setEnabled(false);
+  //  buttonUpperEdit->setEnabled(false);
+  //  buttonLowerEdit->setEnabled(false);
 
   lineUpper->setEnabled(false);
   lineLower->setEnabled(false);
@@ -162,12 +162,14 @@ void OptimizationItemWidget::languageChange()
 void OptimizationItemWidget::slotPosInfClicked()
 {
   lineUpper->setEnabled(!checkUpperInf->isChecked());
-  buttonUpperEdit->setEnabled(!checkUpperInf->isChecked());
+  //buttonUpperEdit->setEnabled(!checkUpperInf->isChecked());
 }
 
 void OptimizationItemWidget::slotLowerEdit()
 {
   //qWarning("OptimizationItemWidget::slotLowerEdit(): Not implemented yet");
+  checkLowerInf->setChecked(false);
+  lineLower->setEnabled(true);
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
   strFunction = lineLower->text().latin1();
@@ -181,12 +183,14 @@ void OptimizationItemWidget::slotLowerEdit()
 void OptimizationItemWidget::slotNegInfClicked()
 {
   lineLower->setEnabled(!checkLowerInf->isChecked());
-  buttonLowerEdit->setEnabled(!checkLowerInf->isChecked());
+  //buttonLowerEdit->setEnabled(!checkLowerInf->isChecked());
 }
 
 void OptimizationItemWidget::slotUpperEdit()
 {
   //qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
+  checkUpperInf->setChecked(false);
+  lineUpper->setEnabled(true);
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
   strFunction = lineUpper->text().latin1();
@@ -231,14 +235,14 @@ void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
   if (strUpperLimit == "+inf")
     {
       checkUpperInf->setChecked(true);
-      buttonUpperEdit->setEnabled(false);
+      //buttonUpperEdit->setEnabled(false);
       lineUpper->setEnabled(false);
       lineUpper->setText("");
     }
   else
     {
       checkUpperInf->setChecked(false);
-      buttonUpperEdit->setEnabled(true);
+      //buttonUpperEdit->setEnabled(true);
       lineUpper->setEnabled(true);
       lineUpper->setText(strUpperLimit.c_str());
     }
@@ -249,14 +253,14 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
   if (strLowerLimit == "-inf")
     {
       checkLowerInf->setChecked(true);
-      buttonLowerEdit->setEnabled(false);
+      //buttonLowerEdit->setEnabled(false);
       lineLower->setEnabled(false);
       lineLower->setText("");
     }
   else
     {
       checkLowerInf->setChecked(false);
-      buttonLowerEdit->setEnabled(true);
+      //buttonLowerEdit->setEnabled(true);
       lineLower->setEnabled(true);
       lineLower->setText(strLowerLimit.c_str());
     }
