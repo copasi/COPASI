@@ -61,15 +61,15 @@ class CCopasiContainer: public CCopasiObject
 
     template <class CType> void addObjectReference(const std::string & name,
         CType & reference)
-    {CCopasiObject::createReference(name, this, reference);}
+    {createReference(name, this, reference);}
 
     template <class CType> void addVectorReference(const std::string & name,
         CType & reference)
-    {CCopasiObject::createVectorReference(name, this, reference);}
+    {createVectorReference(name, this, reference);}
 
     template <class CType> void addMatrixReference(const std::string & name,
         CType & reference)
-    {CCopasiObject::createMatrixReference(name, this, reference);}
+    {createMatrixReference(name, this, reference);}
   };
 
 /** @dia:pos 33.0468,37.5833 */

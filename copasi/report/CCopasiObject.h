@@ -90,24 +90,6 @@ class CCopasiObject
     template <class CType> CType * getReference(CType * reference)
     {return reference = (CType *) getReference();}
 
-    template <class CType> CCopasiObjectReference< CType > *
-    createReference(const std::string & name,
-                    const CCopasiContainer * pParent,
-                    CType & reference)
-    {return new CCopasiObjectReference< CType >(name, pParent, reference);}
-
-    template <class CType> CCopasiVectorReference< CType > *
-    createVectorReference(const std::string & name,
-                          const CCopasiContainer * pParent,
-                          CType & reference)
-    {return new CCopasiVectorReference< CType >(name, pParent, reference);}
-
-    template <class CType> CCopasiMatrixReference< CType > *
-    createMatrixReference(const std::string & name,
-                          const CCopasiContainer * pParent,
-                          CType & reference)
-    {return new CCopasiMatrixReference< CType >(name, pParent, reference);}
-
     bool isContainer() const;
 
     bool isVector() const;
@@ -123,4 +105,23 @@ class CCopasiObject
 
     virtual void * getReference();
   };
+
+template <class CType> CCopasiObjectReference< CType > *
+createReference(const std::string & name,
+                const CCopasiContainer * pParent,
+                CType & reference)
+{return new CCopasiObjectReference< CType >(name, pParent, reference);}
+
+template <class CType> CCopasiVectorReference< CType > *
+createVectorReference(const std::string & name,
+                      const CCopasiContainer * pParent,
+                      CType & reference)
+{return new CCopasiVectorReference< CType >(name, pParent, reference);}
+
+template <class CType> CCopasiMatrixReference< CType > *
+createMatrixReference(const std::string & name,
+                      const CCopasiContainer * pParent,
+                      CType & reference)
+{return new CCopasiMatrixReference< CType >(name, pParent, reference);}
+
 #endif // COPASI_CCopasiObject
