@@ -78,14 +78,22 @@ class COptions
           }
         };
 
+  public:
+    typedef std::map< std::string, COptionValue * > optionType;
+    typedef std::vector< std::string > nonOptionType;
+    typedef std::map< std::string, std::string > defaultType;
+
     //Attributes
   private:
-    static std::map< std::string, COptionValue * > mOptions;
+    static optionType mOptions;
+    static defaultType mDefaults;
+    static nonOptionType mNonOptions;
 
     //Operations
-  public:
+  private:
     COptions();
 
+  public:
     ~COptions();
 
     template< class CType > static void getValue(const std::string & name,
@@ -97,6 +105,12 @@ class COptions
       {return mOptions[name]->compareValue(value);}
 
     static void init(C_INT argc, char *argv[]);
+
+    static void cleanup();
+
+    static std::string getDefault(const std::string & name);
+
+    static const nonOptionType & getNonOptions();
 
     static std::string getEnvironmentVariable(const std::string & name);
 
@@ -112,7 +126,6 @@ class COptions
         return;
       }
 
-  private:
     static std::string getCopasiDir(void);
 
     static std::string getPWD(void);

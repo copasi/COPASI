@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 #include <sstream>
+#include <string>
+#include <iostream>
 
 #define COPASI_MAIN
 #define COPASI_TRACE_CONSTRUCTION
@@ -40,9 +42,17 @@ C_INT main(C_INT argc, char *argv[])
   std::cout << "Starting main program: " << PrgName << std::endl;
   Copasi = new CGlobals;
 
+  std::string line;
+  std::ifstream in(".copasirc");
+  getline(in, line);
+
   try
     {
       COptions::init(argc, argv);
+      std::cout << "Default: key1 = '" << COptions::getDefault("key1")
+      << "'" << std::endl;
+      std::cout << "Default: key2 = '" << COptions::getDefault("key2")
+      << "'" << std::endl;
     }
 
   catch (copasi::autoexcept &e)

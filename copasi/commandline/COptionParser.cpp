@@ -33,11 +33,9 @@ namespace
     "                             functions.\n"
     "  --userFunctionDB string    The user extensible database of kinetic\n"
     "                             functions.\n"
-    "  -b, --bool bool            A bool test.\n"
     "  -c, --copasidir string     The location of suplementary files for copasi.\n"
     "  -d, --default string       The SBML file to export.\n"
     "  -e, --exportSBML string    The SBML file to export.\n"
-    "  -f, --flag                 A flag test.\n"
     "  -i, --importSBML string    A SBML file to import.\n"
     "  -s, --save string          The file the model is saved in after work.\n";
 
@@ -63,7 +61,6 @@ void copasi::COptionParser::parse(int argc, char *argv[], bool call_finalize)
 void copasi::COptionParser::parse(const char * fileName)
 {
   int LineCounter = 0;
-  char LineBuffer[1024];
   std::string Line;
   std::string Option;
   std::string Value;
@@ -83,7 +80,7 @@ void copasi::COptionParser::parse(const char * fileName)
     {
       try
         {
-          File.getline(LineBuffer, 1024);
+          getline(File, Line);
           LineCounter++;
 
           if (File.eof()) break;
@@ -96,20 +93,15 @@ void copasi::COptionParser::parse(const char * fileName)
             }
 
 #ifndef WIN32
-          /* Take care of dos and unix style line ending under UNIX */
+          /* Take care of dos style line ending under UNIX */
           /* A case where MS has the better implementation */
-          if (LineBuffer[max(strlen(LineBuffer) - 1, 0)] == 0xd)
-            LineBuffer[strlen(LineBuffer) - 1] = '\0';
+          pos = Line.length();
+          (pos < 1) ? 0 : pos--;
+          if (Line[pos] == 0xd) Line.erase(pos);
 #endif  // not WIN32
 
-          Line = LineBuffer;
-
           // eat leading spaces
-          pos = Line.find_first_not_of(' ');
-          if (pos == std::string::npos)
-            Line.erase();
-          else
-            Line = Line.substr(pos);
+          Line.erase(0, Line.find_first_not_of(' '));
 
           // skip comments and empty lines
           if (Line.length() == 0 || Line[0] == '#') continue;
@@ -117,16 +109,16 @@ void copasi::COptionParser::parse(const char * fileName)
           // find first position of '=' or ':'
           pos = Line.find_first_of(":=");
 
-          Option = "--" + Line.substr(0, Line.find_last_not_of(' ', pos - 1) + 1);
+          Option = "--" + Line.substr(0, pos);
+          Option.erase(Option.find_last_not_of(' ') + 1);
+
           parse_element(Option.c_str(), 0, source_cf);
 
           if (pos != std::string::npos) // We have a '='
             {
-              pos = Line.find_first_not_of(' ', pos + 1);
-              if (pos == std::string::npos)
-                Value.erase();
-              else
-                Value = Line.substr(pos, Line.find_last_not_of(' ') - pos + 1);
+              Value = Line.substr(pos + 1);
+              Value.erase(0, Value.find_first_not_of(' '));
+              Value.erase(Value.find_last_not_of(' ') + 1);
 
               if (Value.length()) parse_element(Value.c_str(), 0, source_cf);
             }
@@ -154,8 +146,6 @@ void copasi::COptionParser::finalize (void)
     {
       switch (openum_)
         {
-        case option_Bool:
-          throw option_error("missing value for 'bool' option");
         case option_ConfigFile:
           throw option_error("missing value for 'rc' option");
         case option_CopasiDir:
@@ -164,18 +154,16 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'default' option");
         case option_ExportSBML:
           throw option_error("missing value for 'exportSBML' option");
-        case option_Flag:
-          throw option_error("missing value for 'flag' option");
         case option_Home:
           throw option_error("missing value for 'home' option");
         case option_ImportSBML:
           throw option_error("missing value for 'importSBML' option");
+        case option_Save:
+          throw option_error("missing value for 'save' option");
         case option_SystemFunctionDB:
           throw option_error("missing value for 'systemFunctionDB' option");
         case option_UserFunctionDB:
           throw option_error("missing value for 'userFunctionDB' option");
-        case option_save:
-          throw option_error("missing value for 'save' option");
         }
     }
 }
@@ -256,20 +244,6 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
 {
   switch (option)
     {
-    case 'b':
-      if (locations_.Bool)
-        {
-          throw option_error("the 'bool' option is only allowed once");
-        }
-      if (locations_.Flag)
-        {
-          throw option_error("the flag and bool options are mutually exclusive");
-        }
-
-      openum_ = option_Bool;
-      state_ = state_value;
-      locations_.Bool = position;
-      return;
     case 'c':
       if (source != source_cl) break;
       if (locations_.CopasiDir)
@@ -295,17 +269,6 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.ExportSBML = position;
       return;
-    case 'f':
-      if (source != source_cl) break;
-      if (locations_.Bool)
-        {
-          throw option_error("the bool and flag options are mutually exclusive");
-        }
-
-      openum_ = option_Flag;
-      options_.Flag = !options_.Flag;
-      locations_.Flag = position;
-      return;
     case 'i':
       if (source != source_cl) break;
       if (locations_.ImportSBML)
@@ -317,13 +280,13 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       locations_.ImportSBML = position;
       return;
     case 's':
-      if (locations_.save)
+      if (locations_.Save)
         {
           throw option_error("the 'save' option is only allowed once");
         }
-      openum_ = option_save;
+      openum_ = option_Save;
       state_ = state_value;
-      locations_.save = position;
+      locations_.Save = position;
       return;
     case 'h':
       if (source != source_cl) break;
@@ -341,23 +304,7 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 {
   option = expand_long_name(option);
 
-  if (strcmp(option, "bool") == 0)
-    {
-      if (locations_.Bool)
-        {
-          throw option_error("the 'bool' option is only allowed once");
-        }
-      if (locations_.Flag)
-        {
-          throw option_error("the flag and bool options are mutually exclusive");
-        }
-
-      openum_ = option_Bool;
-      locations_.Bool = position;
-      state_ = state_value;
-      return;
-    }
-  else if (source == source_cl && strcmp(option, "copasidir") == 0)
+  if (source == source_cl && strcmp(option, "copasidir") == 0)
     {
       if (locations_.CopasiDir)
         {
@@ -384,18 +331,6 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       openum_ = option_ExportSBML;
       locations_.ExportSBML = position;
       state_ = state_value;
-      return;
-    }
-  else if (source == source_cl && strcmp(option, "flag") == 0)
-    {
-      if (locations_.Bool)
-        {
-          throw option_error("the bool and flag options are mutually exclusive");
-        }
-
-      openum_ = option_Flag;
-      locations_.Flag = position;
-      options_.Flag = !options_.Flag;
       return;
     }
   else if (source == source_cl && strcmp(option, "home") == 0)
@@ -433,12 +368,12 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
     }
   else if (strcmp(option, "save") == 0)
     {
-      if (locations_.save)
+      if (locations_.Save)
         {
           throw option_error("the 'save' option is only allowed once");
         }
-      openum_ = option_save;
-      locations_.save = position;
+      openum_ = option_Save;
+      locations_.Save = position;
       state_ = state_value;
       return;
     }
@@ -477,35 +412,6 @@ void copasi::COptionParser::parse_value (const char *value)
 {
   switch (openum_)
     {
-    case option_Bool:
-      {
-        bool bvalue;
-
-        if (strcasecmp(value, "true") == 0)
-          {
-            bvalue = true;
-          }
-        else if (strcasecmp(value, "yes") == 0)
-          {
-            bvalue = true;
-          }
-        else if (strcasecmp(value, "false") == 0)
-          {
-            bvalue = false;
-          }
-        else if (strcasecmp(value, "no") == 0)
-          {
-            bvalue = false;
-          }
-        else
-          {
-            std::string error("invalid boolean value '"); error += value; error += "'";
-            throw option_error(error);
-          }
-
-        options_.Bool = bvalue;
-      }
-      break;
     case option_ConfigFile:
       {
         options_.ConfigFile = value;
@@ -519,15 +425,23 @@ void copasi::COptionParser::parse_value (const char *value)
     case option_Default:
       {
         std::string svalue(value);
-        std::string::size_type eqpos = svalue.find('=');
-        if (eqpos == std::string::npos)
+        std::string::size_type pos = svalue.find('=');
+        if (pos == std::string::npos)
           {
             throw option_error("invalid key=value pair for the 'default' option");
           }
 
-        std::string k(svalue.substr(0, svalue.find_last_not_of(' ', eqpos - 1) + 1));
-        std::string v(svalue.substr(svalue.find_first_not_of(' ', eqpos + 1)));
-        v = v.substr(0, v.find_last_not_of(' ') + 1);
+        std::string k(svalue.substr(0, svalue.find_last_not_of(' ', pos - 1) + 1));
+
+        std::string v;
+        pos = svalue.find_first_not_of(' ', pos + 1);
+        if (pos == std::string::npos)
+          v = "";
+        else
+          {
+            v = svalue.substr(svalue.find_first_not_of(' ', pos + 1));
+            v = v.substr(0, v.find_last_not_of(' ') + 1);
+          }
         value = v.c_str();
 
         options_.Default[k] = v;
@@ -537,8 +451,6 @@ void copasi::COptionParser::parse_value (const char *value)
       {
         options_.ExportSBML = value;
       }
-      break;
-    case option_Flag:
       break;
     case option_Home:
       {
@@ -550,6 +462,11 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.ImportSBML = value;
       }
       break;
+    case option_Save:
+      {
+        options_.Save = value;
+      }
+      break;
     case option_SystemFunctionDB:
       {
         options_.SystemFunctionDB = value;
@@ -558,11 +475,6 @@ void copasi::COptionParser::parse_value (const char *value)
     case option_UserFunctionDB:
       {
         options_.UserFunctionDB = value;
-      }
-      break;
-    case option_save:
-      {
-        options_.save = value;
       }
       break;
     }
@@ -579,9 +491,6 @@ namespace
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
 
-    if (name_size <= 4 && name.compare("bool") == 0)
-      matches.push_back("bool");
-
     if (name_size <= 9 && name.compare("copasidir") == 0)
       matches.push_back("copasidir");
 
@@ -590,9 +499,6 @@ namespace
 
     if (name_size <= 10 && name.compare("exportSBML") == 0)
       matches.push_back("exportSBML");
-
-    if (name_size <= 4 && name.compare("flag") == 0)
-      matches.push_back("flag");
 
     if (name_size <= 4 && name.compare("home") == 0)
       matches.push_back("home");

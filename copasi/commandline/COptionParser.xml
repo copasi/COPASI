@@ -15,117 +15,93 @@
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
  <options>
-   <option id="ConfigFile" 
-           type="string" 
+   <option id="ConfigFile"
+           type="string"
            mandatory="no"
            strict="yes"
-           location="commandline" 
+           location="commandline"
            hidden="no">
-    <name>rc</name> 
+    <name>rc</name>
     <comment>The configuration file for copasi.</comment>
    </option>
-   <option id="CopasiDir" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="commandline" 
+   <option id="CopasiDir"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
            hidden="no">
     <name>copasidir</name>
     <name>c</name>
     <comment>The location of suplementary files for copasi.</comment>
    </option>
-   <option id="Home" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="commandline" 
+   <option id="Home"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
            hidden="no">
     <name>home</name>
     <comment>Your home directory.</comment>
    </option>
-   <option id="SystemFunctionDB" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
+   <option id="SystemFunctionDB"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
            default="FunctionDB.cps"
            hidden="no">
     <name>systemFunctionDB</name>
     <comment>A write protected database of kinetic functions.</comment>
    </option>
-   <option id="UserFunctionDB" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
+   <option id="UserFunctionDB"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
            default="~/FunctionDB.cps"
            hidden="no">
     <name>userFunctionDB</name>
     <comment>The user extensible database of kinetic functions.</comment>
    </option>
-   <option id="save" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
+   <option id="Save"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
            hidden="no">
     <name>save</name>
-    <name>s</name> 
+    <name>s</name>
     <comment>The file the model is saved in after work.</comment>
    </option>
-   <option id="ImportSBML" 
-           type="string" 
-           mandatory="no" 
+   <option id="ImportSBML"
+           type="string"
+           mandatory="no"
            strict="yes"
-           location="commandline" 
+           location="commandline"
            hidden="no">
-    <name>importSBML</name> 
-    <name>i</name> 
+    <name>importSBML</name>
+    <name>i</name>
     <comment>A SBML file to import.</comment>
    </option>
-   <option id="ExportSBML" 
-           type="string" 
-           mandatory="no" 
+   <option id="ExportSBML"
+           type="string"
+           mandatory="no"
            strict="yes"
-           location="commandline" 
+           location="commandline"
            hidden="no">
-    <name>exportSBML</name> 
+    <name>exportSBML</name>
     <name>e</name>
     <comment>The SBML file to export.</comment>
    </option>
-   <option id="Default" 
-           type="string" 
-           mandatory="no" 
-           location="both" 
+   <option id="Default"
+           type="string"
+           mandatory="no"
+           location="both"
            modifier="map"
            hidden="no">
-    <name>default</name> 
+    <name>default</name>
     <name>d</name>
     <comment>The SBML file to export.</comment>
    </option>
  </options>
- <group id="1" type="xor" strict="yes">
-   <option id="Flag"
-           type="flag" 
-           mandatory="no" 
-           strict="no" 
-           location="commandline" 
-           hidden="no"
-           default="true">
-    <name>flag</name>
-    <name>f</name> 
-    <comment>A flag test.</comment>
-   </option>
-   <option id="Bool" 
-           type="bool" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
-           hidden="no"
-           default="true">
-    <name>bool</name>
-    <name>b</name> 
-    <comment>A bool test.</comment>
-   </option>
-  </group>
 </cloxx>

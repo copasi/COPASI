@@ -20,22 +20,15 @@
 #include "COptionParser.h"
 #include "COptions.h"
 
-std::map< std::string, COptions::COptionValue * > COptions::mOptions;
+COptions::optionType COptions::mOptions;
+COptions::defaultType COptions::mDefaults;
+COptions::nonOptionType COptions::mNonOptions;
 
 COptions::COptions()
 {CONSTRUCTOR_TRACE;}
 
 COptions::~COptions()
-{
-  std::map< std::string, COptionValue * >::iterator begin;
-  std::map< std::string, COptionValue * >::iterator end;
-
-  for (begin = mOptions.begin(), end = mOptions.end();
-       begin != end; begin++)
-    pdelete(begin->second);
-
-  DESTRUCTOR_TRACE;
-}
+{DESTRUCTOR_TRACE;}
 
 void COptions::init(C_INT argc, char *argv[])
 {
@@ -78,6 +71,15 @@ void COptions::init(C_INT argc, char *argv[])
   catch (copasi::option_error &e)
     {
       if (errno != ENOENT) throw(e);
+
+      std::ostringstream error;
+      error << std::endl
+      << "file '" << ConfigFile << "' does not exist." << std::endl
+      << "  use -c COPASIDIR or --copasidir COPASIDIR" << std::endl
+      << "  or set the environment variable COPASIDIR" << std::endl
+      << "  to point to the Copasi installation directory" << std::endl;
+
+      throw copasi::option_error(error.str());
     }
 
   /* Parse the user's configuration file */
@@ -90,6 +92,10 @@ void COptions::init(C_INT argc, char *argv[])
   catch (copasi::option_error &e)
     {
       if (errno != ENOENT) throw(e);
+
+      /* Make sure that the user's configuration file exists in the future */
+      /* :TODO: we should create a template that will be copied */
+      std::ofstream f(ConfigFile.c_str());
     }
 
   /* Parse the commandline specified file */
@@ -102,11 +108,40 @@ void COptions::init(C_INT argc, char *argv[])
   /* Parse the commandline arguments */
   Parser->parse(argc, argv);
 
-  const copasi::options &Options = Parser->get_options();
+  mNonOptions = Parser->get_non_options();
 
-  /* Create manually for each option except CopasiDir, ConfigFile and Home:
+  const copasi::options &Options = Parser->get_options();
+  mDefaults = Options.Default;
+
+  /* Create manually for each option except for:
+     CopasiDir, ConfigFile, Home, and Default
      setValue("OptionId", Options.OptionID); */
+  setValue("ExportSBML", Options.ExportSBML);
+  setValue("ImportSBML", Options.ImportSBML);
+  setValue("SystemFunctionDB", Options.SystemFunctionDB);
+  setValue("UserFunctionDB", Options.UserFunctionDB);
+  setValue("Save", Options.Save);
+
+  delete Parser;
 }
+
+void COptions::cleanup()
+{
+  optionType::iterator begin = mOptions.begin();
+  optionType::iterator end = mOptions.end();
+
+  for (; begin != end; begin++) pdelete(begin->second);
+}
+
+std::string COptions::getDefault(const std::string & name)
+{
+  defaultType::iterator found = mDefaults.find(name);
+
+  if (found == mDefaults.end()) return "<unset>";
+  else return found->second;
+}
+
+const COptions::nonOptionType & COptions::getNonOptions() {return mNonOptions;}
 
 std::string COptions::getEnvironmentVariable(const std::string & name)
 {

@@ -42,23 +42,19 @@ namespace copasi
   struct options
     {
       options(void) :
-          Bool(true),
-          Flag(true),
           SystemFunctionDB("FunctionDB.cps"),
           UserFunctionDB("~/FunctionDB.cps")
       {}
 
-      bool Bool;
       std::string ConfigFile;
       std::string CopasiDir;
       std::map<std::string, std::string> Default;
       std::string ExportSBML;
-      bool Flag;
       std::string Home;
       std::string ImportSBML;
+      std::string Save;
       std::string SystemFunctionDB;
       std::string UserFunctionDB;
-      std::string save;
     }; // end options struct
 
   /**
@@ -68,17 +64,15 @@ namespace copasi
   struct option_locations
     {
       typedef int size_type;
-      size_type Bool;
       size_type ConfigFile;
       size_type CopasiDir;
       size_type Default;
       size_type ExportSBML;
-      size_type Flag;
       size_type Home;
       size_type ImportSBML;
+      size_type Save;
       size_type SystemFunctionDB;
       size_type UserFunctionDB;
-      size_type save;
     }; // end option location struct
 
   /**
@@ -158,12 +152,10 @@ namespace copasi
         option_Home,
         option_SystemFunctionDB,
         option_UserFunctionDB,
-        option_save,
+        option_Save,
         option_ImportSBML,
         option_ExportSBML,
-        option_Default,
-        option_Flag,
-        option_Bool
+        option_Default
       } openum_;
 
       enum parser_state {state_option, state_value, state_consume} state_;
