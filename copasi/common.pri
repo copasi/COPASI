@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.33 $ $Author: shoops $ $Date: 2004/12/08 18:36:35 $  
+# $Revision: 1.34 $ $Author: shoops $ $Date: 2005/02/08 15:15:55 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -43,6 +43,10 @@ debug {
 }
 
 contains(BUILD_OS, Darwin) {
+  release {
+    QMAKE_POST_LINK = strip $(TARGET)
+  }
+ 
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
   LIBS += -framework vecLib
@@ -99,6 +103,11 @@ contains(BUILD_OS, SunOS) {
 # :TODO: This should be set through configure.
   LIBS += -L/export/home/shoops/copasi/gcc/lib
 
+  release { 
+# Note: This must be the SunOS strip command.
+    QMAKE_POST_LINK = /usr/ccs/bin/strip $(TARGET)
+  }
+ 
   !isEmpty(CLAPACK_PATH) {
     DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
@@ -128,6 +137,10 @@ contains(BUILD_OS, SunOS) {
 }
  
 contains(BUILD_OS, Linux) {
+  release {
+    QMAKE_POST_LINK = strip $(TARGET)
+  }
+ 
   QMAKE_LFLAGS += -static
 
   LIBS += -lsbml -lexpat
