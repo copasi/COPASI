@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/28 21:02:11 $
+   $Date: 2004/11/30 19:21:07 $
    End CVS Header */
 
 #include <cmath>
@@ -51,10 +51,10 @@ CMCAMethod::CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer*
 
   mpModel = &model;
 
-  //mDxv.resize(mpModel->getTotSteps(), mpModel->getIndMetab());
+  //mDxv.resize(mpModel->getTotSteps(), mpModel->getNumIndependentMetabs());
   //mFcc.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
-  //mGamma.resize(mpModel->getIndMetab(), mpModel->getTotSteps());
-  //mSsx.resize(mpModel->getIndMetab() + 1);
+  //mGamma.resize(mpModel->getNumIndependentMetabs(), mpModel->getTotSteps());
+  //mSsx.resize(mpModel->getNumIndependentMetabs() + 1);
 
   mFactor = factor;
   mIsSteadyState = false;
@@ -76,8 +76,8 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 {
   if (!mpModel) return;
 
-  CCopasiVector<CMetab> & metabs = mpModel->getMetabolites();
-  CCopasiVector<CReaction> & reacs = mpModel->getReactions();
+  CCopasiVector<CMetab> & metabs = mpModel->getMetabolitesX();
+  CCopasiVector<CReaction> & reacs = mpModel->getReactionsX();
 
   mUnscaledElasticities.setup(reacs, metabs);
   unsigned C_INT32 numReacs = reacs.size();
@@ -155,16 +155,14 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   C_FLOAT64 **aux1, **aux2;
 
   // Create auxiliary matrices as big as needed
-
-  if (mpModel->getIndMetab() > mpModel->getTotSteps())
-    dim = mpModel->getIndMetab() + 1;
+  if (mpModel->getNumVariableMetabs() > mpModel->getTotSteps())
+    dim = mpModel->getNumVariableMetabs() + 1;
   else
     dim = mpModel->getTotSteps() + 1;
 
   // Create aux1 and aux2
   aux1 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux1));
   aux2 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux2));
-
   for (i = 0; i < dim; i++)
     {
       aux1[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
@@ -172,9 +170,9 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     }
 
   // aux1 = rstoi * mDxv
-  //CMatrix<C_FLOAT64> aux1; aux1.resize(mpModel->getIndMetab(), mpModel->getIntMetab());
-  for (i = 0; i < mpModel->getIndMetab(); i++)
-    for (j = 0; j < mpModel->getIntMetab(); j++)
+  //CMatrix<C_FLOAT64> aux1; aux1.resize(mpModel->getNumIndependentMetabs(), mpModel->getIntMetab());
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
+    for (j = 0; j < mpModel->getNumVariableMetabs(); j++)
       {
         aux1[i][j] = 0.0;
 
@@ -184,29 +182,29 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   //debug
   std::cout << "aux1 = redStoi * unscaledElasticities" << std::endl;
-  for (i = 0; i < mpModel->getIndMetab(); i++)
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
-      for (j = 0; j < mpModel->getIntMetab(); j++)
+      for (j = 0; j < mpModel->getNumVariableMetabs(); j++)
         std::cout << "  " << aux1[i][j];
       std::cout << std::endl;
     }
   std::cout << std::endl;
 
   // aux2 = aux1 * m1 (shifting indices for dgefa)
-  //CMatrix<C_FLOAT64> aux2; aux2.resize(mpModel->getIndMetab()+1, mpModel->getIndMetab()+1);
-  for (i = 0; i < mpModel->getIndMetab(); i++)
-    for (j = 0; j < mpModel->getIndMetab(); j++)
+  //CMatrix<C_FLOAT64> aux2; aux2.resize(mpModel->getNumIndependentMetabs()+1, mpModel->getNumIndependentMetabs()+1);
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
+    for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
       {
         aux2[i + 1][j + 1] = 0.0;
-        for (k = 0; k < mpModel->getIntMetab(); k++)
+        for (k = 0; k < mpModel->getNumVariableMetabs(); k++)
           aux2[i + 1][j + 1] += aux1[i][k] * mpModel->getL()(k, j); //???
       }
 
   //debug
   std::cout << "aux2 = aux1 * L,  equals reduced Jacobian?" << std::endl;
-  for (i = 0; i < mpModel->getIndMetab(); i++)
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
-      for (j = 0; j < mpModel->getIndMetab(); j++)
+      for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux2[i + 1][j + 1];
       std::cout << std::endl;
     }
@@ -215,8 +213,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // LU decomposition of aux2 (for inversion)
   // dgefa -> luX??
   C_INT32 * ssipvt;
-  ssipvt = (C_INT32 *) malloc((mpModel->getIndMetab() + 1) * sizeof(C_INT32));
-  dgefa(aux2, mpModel->getIndMetab(), ssipvt, &info);
+  ssipvt = (C_INT32 *) malloc((mpModel->getNumIndependentMetabs() + 1) * sizeof(C_INT32));
+  dgefa(aux2, mpModel->getNumIndependentMetabs(), ssipvt, &info);
 
   if (info != 0)
     {
@@ -236,50 +234,50 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     }
 
   // set aux1 to the identity matrix (for inversion with dgesl)
-  for (i = 0; i < mpModel->getIndMetab(); i++)
-    for (j = 0; j < mpModel->getIndMetab(); j++)
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
+    for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
       aux1[i + 1][j + 1] = (i == j) ? 1.0 : 0.0;
 
   // now invert aux2 (result in aux1)
-  for (i = 0; i < mpModel->getIndMetab(); i++)
-    dgesl(aux2, mpModel->getIndMetab(), ssipvt, aux1[i + 1], 1);
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
+    dgesl(aux2, mpModel->getNumIndependentMetabs(), ssipvt, aux1[i + 1], 1);
 
   //debug
   std::cout << "aux1 = inv(aux2)" << std::endl;
-  for (i = 0; i < mpModel->getIndMetab(); i++)
+  for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
-      for (j = 0; j < mpModel->getIndMetab(); j++)
+      for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux1[i + 1][j + 1];
       std::cout << std::endl;
     }
   std::cout << std::endl;
 
   // aux2 = - ml * aux1 (shifting indeces back to 0 again)
-  for (i = 0; i < mpModel->getIntMetab(); i++)
-    for (j = 0; j < mpModel->getIndMetab(); j++)
+  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
+    for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
       {
         aux2[i][j] = 0.0;
-        for (k = 0; k < mpModel->getIndMetab(); k++)
+        for (k = 0; k < mpModel->getNumIndependentMetabs(); k++)
           aux2[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
       }
 
   //debug
   std::cout << "aux2 = -L*aux1" << std::endl;
-  for (i = 0; i < mpModel->getIntMetab(); i++)
+  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     {
-      for (j = 0; j < mpModel->getIndMetab(); j++)
+      for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux2[i][j];
       std::cout << std::endl;
     }
   std::cout << std::endl;
 
   // mGamma = aux2 *RedStoi
-  mUnscaledConcCC.resize(mpModel->getIntMetab(), mpModel->getTotSteps());
-  for (i = 0; i < mpModel->getIntMetab(); i++)
+  mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), mpModel->getTotSteps());
+  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
         mUnscaledConcCC[i][j] = 0;
-        for (k = 0; k < mpModel->getIndMetab(); k++)
+        for (k = 0; k < mpModel->getNumIndependentMetabs(); k++)
           mUnscaledConcCC[i][j] += aux2[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
       }
 
@@ -336,16 +334,16 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   // Scale Elasticities
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
   for (i = 0; i < mpModel->getTotSteps(); i++)
-    for (j = 0; j < mpModel->getTotMetab(); j++)
+    for (j = 0; j < mpModel->getNumMetabs(); j++)
       {
         // change the use of Col[] and Row[] to mSteps and mMetabolites
         // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
 
-        if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
+        if (fabs(mpModel->getReactionsX()[i]->getFlux()) >= res)
           {
             mScaledElasticities[i][j] = mUnscaledElasticities[i][j]
-                                        * mpModel->getMetabolites()[j]->getNumber()
-                                        / mpModel->getReactions()[i]->getParticleFlux();
+                                        * mpModel->getMetabolitesX()[j]->getNumber()
+                                        / mpModel->getReactionsX()[i]->getParticleFlux();
             //                                        * mpModel->getMetabolites()[j]->getConcentration()
             //                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
             //                                        / mpModel->getReactions()[i]->getFlux();
@@ -358,13 +356,13 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   // Scale ConcCC
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
-  for (i = 0; i < mpModel->getIntMetab(); i++)
+  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        if (fabs(mpModel->getMetabolites()[i]->getConcentration()) >= res)
+        if (fabs(mpModel->getMetabolitesX()[i]->getConcentration()) >= res)
           mScaledConcCC[i][j] = mUnscaledConcCC[i][j]
-                                * mpModel->getReactions()[j]->getParticleFlux()
-                                / mpModel->getMetabolites()[i]->getNumber();
+                                * mpModel->getReactionsX()[j]->getParticleFlux()
+                                / mpModel->getMetabolitesX()[i]->getNumber();
         //                                * mpModel->getReactions()[j]->getFlux()
         //                                / (mpModel->getMetabolites()[i]->getConcentration()
         //                                   *mpModel->getMetabolites()[j]->getCompartment()->getVolume());
@@ -379,10 +377,10 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (i = 0; i < mpModel->getTotSteps(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
+        if (fabs(mpModel->getReactionsX()[i]->getFlux()) >= res)
           mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]
-                                * mpModel->getReactions()[j]->getFlux()
-                                / mpModel->getReactions()[i]->getFlux();
+                                * mpModel->getReactionsX()[j]->getFlux()
+                                / mpModel->getReactionsX()[i]->getFlux();
         else
           mScaledFluxCC[i][j] = DBL_MAX;
       }
