@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/03 09:56:11 $
+   $Date: 2004/09/09 12:10:36 $
    End CVS Header */
 
 // CSate.cpp
@@ -255,14 +255,16 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     unsigned C_INT32 j, jmax = mpModel->getIntMetab();
 
     C_FLOAT64 * x;
+    C_FLOAT64 invVolume;
 
     for (j = 0; j < jmax; j++)
       {
         x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
 
         for (i = 0; i < imax; i++)
-          elasticityMatrix(i, j) =
-            Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+          elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
+                                   Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
       }
 
     return;
@@ -488,7 +490,7 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                         const C_FLOAT64 & factor,
                                         const C_FLOAT64 & resolution) const
   {
-    const_cast<CModel *>(mpModel)->setState(this);
+    const_cast<CModel *>(mpModel)->setStateX(this);
     const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
     unsigned C_INT32 i, imax = Reactions.size();
 
@@ -496,15 +498,17 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     unsigned C_INT32 j, jmax = mpModel->getIntMetab();
 
     C_FLOAT64 * x;
+    C_FLOAT64 invVolume;
 
     for (j = 0; j < jmax; j++)
       {
         x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
 
         for (i = 0; i < imax; i++)
           {
-            elasticityMatrix(i, j) =
-              Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+            elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
+                                     Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
           }
       }
 
