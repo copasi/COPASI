@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.31 $ $Author: shoops $ $Date: 2004/11/17 16:33:51 $  
+# $Revision: 1.32 $ $Author: shoops $ $Date: 2004/11/18 15:25:04 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -95,6 +95,9 @@ contains(BUILD_OS, WIN32) {
 } 
 
 contains(BUILD_OS, SunOS) {
+# :TODO: This should be set through configure.
+  LIBS += -L/export/home/shoops/copasi/gcc/lib
+
   !isEmpty(CLAPACK_PATH) {
     DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
