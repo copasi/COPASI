@@ -1,0 +1,85 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>TimeSeriesSubWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>TimeSeriesSubWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>465</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layoutButtonRow</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>141</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ButtonSaveData</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save data to file</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QTable">
+            <property name="name">
+                <cstring>dataTable</cstring>
+            </property>
+            <property name="numRows">
+                <number>3</number>
+            </property>
+            <property name="numCols">
+                <number>3</number>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>ButtonSaveData</sender>
+        <signal>clicked()</signal>
+        <receiver>TimeSeriesSubWidget</receiver>
+        <slot>saveDataToFile()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">TimeSeriesSubwidget.ui.h</include>
+</includes>
+<slots>
+    <slot access="protected" specifier="non virtual">saveDataToFile()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
