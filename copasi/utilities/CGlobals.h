@@ -24,6 +24,11 @@ class CGlobals
   CFunctionDB FunctionDB;
 
   /**
+   *
+   */
+  CUDFunctionDB UDFunctionDB;
+
+  /**
    *  This is a hack at the moment to be able to read old configuration files
    */
   CCopasiVectorS < CMetabOld > OldMetabolites;
