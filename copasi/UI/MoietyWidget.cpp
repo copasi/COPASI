@@ -98,8 +98,6 @@ void MoietyWidget::repaint_table()
       table->setText(j, 1, QString::number(moiety->getNumber()));
       table->setText(j, 2, moiety->getDescription().c_str());
     }
-  table->setText(noOfMoietyRows, 1, "");
-  table->setText(noOfMoietyRows, 2, "");
 }
 
 void MoietyWidget::slotTableSelectionChanged()
