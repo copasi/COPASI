@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/07 15:13:51 $
+   $Author: gauges $ 
+   $Date: 2004/11/02 17:06:46 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -21,6 +21,10 @@
 #include "report/CCopasiObject.h"
 #include "model/CCompartment.h"
 #include "report/CCopasiObjectName.h"
+#include "copasiui3window.h"
+#include "TrajectoryWidget.h"
+#include "slidersettingsdialog.h"
+#include "DataModelGUI.h"
 #include <iostream>
 #include <sstream>
 
@@ -33,14 +37,19 @@ C_INT32 SliderDialog::folderMappings[][2] = {
       {23, 23}, {231, 23}
     };
 
-SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
+C_INT32 SliderDialog::numKnownTasks = 1;
+C_INT32 SliderDialog::knownTaskIDs[] = {23};
+char* SliderDialog::knownTaskNames[] = {"Time Course"};
+
+SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(parent),
     runTaskButton(NULL),
     autoRunCheckBox(NULL),
     scrollView(NULL),
     sliderBox(NULL),
     contextMenu(NULL),
     currSlider(NULL),
-    currentFolderId(0)
+    currentFolderId(0),
+    mpDataModel(dataModel)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
@@ -78,9 +87,16 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
 
   connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
+  connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
+  this->taskMap[23] = &SliderDialog::runTimeCourse;
   this->setCurrentFolderId(-1);
   this->init();
+}
+
+void SliderDialog::setDataModel(DataModelGUI* dataModel)
+{
+  this->mpDataModel = dataModel;
 }
 
 void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
@@ -102,7 +118,26 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 
 void SliderDialog::createNewSlider()
 {
-  this->currSlider = NULL;
+  SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
+  int i;
+  std::map<C_INT32, std::string> taskList;
+  for (i = 0; i < SliderDialog::numKnownTasks;++i)
+    {
+      taskList[SliderDialog::knownTaskIDs[i]] = SliderDialog::knownTaskNames[i];
+    }
+  pSettingsDialog->setTaskList(taskList);
+  pSettingsDialog->setSliderMap(this->sliderMap);
+  pSettingsDialog->setSlider(this->currentFolderId, NULL);
+  pSettingsDialog->setModel(this->mpDataModel->getModel());
+  if (pSettingsDialog->exec() == QDialog::Accepted)
+    {
+      this->currSlider = NULL;
+    }
+  else
+    {
+      this->currSlider = NULL;
+    }
+  delete pSettingsDialog;
 }
 
 void SliderDialog::removeSlider()
@@ -159,10 +194,12 @@ SliderDialog::~SliderDialog()
 
 void SliderDialog::init()
 {
+  /*
   CCompartment* comp = new CCompartment();
   comp->setVolume(1.0);
   CCopasiObject* o = (CCopasiObject*)comp->getObject(CCopasiObjectName("Reference=Volume"));
   this->addSlider(o, 23);
+  */
 }
 
 void SliderDialog::addSlider(CCopasiObject* object, C_INT32 folderId)
@@ -188,6 +225,7 @@ void SliderDialog::addSlider(CCopasiObject* object, C_INT32 folderId)
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, cslider);
       cslider->setHidden(false);
     }
+  connect(cslider, SIGNAL(valueChanged(double)), SLOT(this->sliderValueChanged()));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
@@ -196,6 +234,7 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
   if (id == this->currentFolderId) return;
   if (id == -1)
     {
+      this->currentFolderId = -1;
       this->setEnabled(false);
     }
   else
@@ -242,6 +281,41 @@ C_INT32 SliderDialog::mapFolderId2EntryId(C_INT32 folderId) const
       }
     return id;
   }
+
+void SliderDialog::runTask()
+{
+  if (this->taskMap.find(this->currentFolderId) != this->taskMap.end())
+    {
+      ((this)->*(this->taskMap[this->currentFolderId]))();
+    }
+}
+
+void SliderDialog::sliderValueChanged()
+{
+  if (this->autoRunCheckBox->isChecked())
+    {
+      this->runTask();
+    }
+}
+
+void SliderDialog::runTimeCourse()
+{
+  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
+  if (p)
+    {
+      p->getTrajectoryWidget()->runTrajectoryTask();
+    }
+}
+
+void SliderDialog::closeEvent(QCloseEvent* e)
+{
+  QDialog::closeEvent(e);
+  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
+  if (p)
+    {
+      p->slotToggleSliders();
+    }
+}
 
 /* ----------------- CopasiSlider ----------------*/
 
@@ -445,6 +519,8 @@ void CopasiSlider::sliderValueChanged(int value)
       *reference = v;
     }
   this->updateLabel();
+
+  emit valueChanged(v);
 }
 
 CopasiSlider::NumberType CopasiSlider::type() const

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/19 07:14:50 $
+   $Date: 2004/11/02 17:06:46 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -15,6 +15,7 @@ class ListViews;
 class DataModelGUI;
 class SliderDialog;
 class QListViewItem;
+class TrajectoryWidget;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -26,11 +27,15 @@ class CopasiUI3Window : public QMainWindow
     void disable_object_browser_menu();
     DataModelGUI* getDataModel();
     void saveFile();
+    TrajectoryWidget* getTrajectoryWidget();
 
   protected:
     DataModelGUI* dataModel; // to keep track of the data model..
     //QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
+
+  public slots:
+    void slotToggleSliders();
 
   protected slots:
     void slotFileOpen(QString file = QString::null);
@@ -47,7 +52,6 @@ class CopasiUI3Window : public QMainWindow
     void slotQuit();
     void slotConvertToIrreversible();
     void closeEvent(QCloseEvent* ce);
-    void slotToggleSliders(const QVariant& variant);
     void slotSimpleSelection();
     void listViewsFolderChanged(QListViewItem* item);
 
@@ -65,4 +69,5 @@ class CopasiUI3Window : public QMainWindow
     void createToolBar();
     void createMenuBar();
     SliderDialog* sliders;
+    int mShowSlidersMenuEntry;
   };

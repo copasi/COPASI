@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/06 19:33:39 $
+   $Date: 2004/11/02 17:06:46 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -27,13 +27,14 @@ class CCopasiObject;
 class QLabel;
 class CopasiSlider;
 class QPopupMenu;
+class DataModelGUI;
 
 class SliderDialog: public QDialog
   {
     Q_OBJECT
 
   public:
-    SliderDialog(QWidget* parent);
+    SliderDialog(QWidget* parent, DataModelGUI* dataModel);
     virtual ~SliderDialog();
     void addSlider(CCopasiObject* object, C_INT32 folderId);
     void setCurrentFolderId(C_INT32 id);
@@ -46,16 +47,27 @@ class SliderDialog: public QDialog
     QPopupMenu* contextMenu;
     CopasiSlider* currSlider;
     std::map<C_INT32 , std::vector< CopasiSlider* > > sliderMap;
+    std::map < C_INT32 , void(SliderDialog::*)() > taskMap;
     C_INT32 currentFolderId;
 
     C_INT32 mapFolderId2EntryId(C_INT32 folderId) const;
+
+    DataModelGUI* mpDataModel;
 
     void init();
 
     static C_INT32 numMappings;
     static C_INT32 folderMappings[][2];
+    static C_INT32 knownTaskIDs[];
+    static char* knownTaskNames[];
+    static C_INT32 numKnownTasks;
 
     virtual void contextMenuEvent(QContextMenuEvent* e);
+
+    virtual void runTimeCourse();
+    virtual void closeEvent(QCloseEvent* e);
+
+    virtual void setDataModel(DataModelGUI* dataModel);
 
   public slots:
     void toggleRunButtonState(bool);
@@ -64,6 +76,8 @@ class SliderDialog: public QDialog
     void removeSlider();
     void editSlider();
     void createNewSlider();
+    void runTask();
+    void sliderValueChanged();
   };
 
 class CopasiSlider: public QVBox
@@ -92,6 +106,9 @@ class CopasiSlider: public QVBox
 
   public slots:
     void sliderValueChanged(int value);
+
+  signals:
+    void valueChanged(double);
 
   protected:
     CCopasiObject* cobject;

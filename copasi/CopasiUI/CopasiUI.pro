@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.58 $ $Author: shoops $ $Date: 2004/10/27 16:31:01 $  
+# $Revision: 1.59 $ $Author: gauges $ $Date: 2004/11/02 17:06:46 $  
 ######################################################################
 
 include(../common.pri)
@@ -159,6 +159,7 @@ HEADERS += \
            SliderDialog.h \
            SimpleSelectionDialog.h \
            simpleselectionwidget.h \
+           slidersettingsdialog.h \
            StateWidget.h \
            StateSubwidget.h \
            SteadyStateWidget.h \
@@ -231,7 +232,8 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-     	   simpleselectionwidget.cpp \	
+     	   simpleselectionwidget.cpp \
+           slidersettingsdialog.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -246,7 +248,9 @@ SOURCES += \
 #FORMS +=  TimeSeriesSubwidget.ui \
 #          StateSubwidget.ui \
 #          simpleselectionwidget.ui        
-#FORMS += CMCAResultSubwidget.ui
+#          CMCAResultSubwidget.ui \
+#          simpleselectionwidget.ui        
+#          slidersettingsdialog.ui           
 
 release {
   distribution.path = .
