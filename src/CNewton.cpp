@@ -37,6 +37,17 @@ CNewton::CNewton(C_INT32 anInt)
   initialize();
 }
 
+//Y.H.
+//set up mSs_x and mSs_x's default values
+//they should come from steady state class, though
+void CNewton::init_Ss_x_new(void)
+{
+  // we start with initial concentrations as the guess (modify from Gepasi)
+  for( int i=0; i<mModel->getTotMetab(); i++ )
+     mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
+                              mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
+}
+
 
 // copy constructor
 CNewton::CNewton(const CNewton& source)
@@ -156,7 +167,17 @@ C_FLOAT64 CNewton::getDerivFactor() const
   return mDerivFactor;
 }
 
+// set mSs_nfunction
+void CNewton::setSs_nfunction(C_INT32 aInt)
+{
+  mSs_nfunction = aInt;
+}
 
+// get mDerivFactor
+C_INT32 CNewton::getSs_nfunction() const
+{
+  return mSs_nfunction;
+}
 
 // inilialize pointers
 void CNewton::initialize()
@@ -184,9 +205,15 @@ void CNewton::process(void)
   C_INT32 info;
   mSs_solution = SS_NOT_FOUND;
 
+  //by Yongqun He
+  //get the dimensions of the matrix
+  int dim = mModel->getIndMetab();
+
   //  try
   // {
-    mModel->lSODAEval(0, 0, mSs_x, mSs_dxdt );
+  //  mModel->lSODAEval(0, 0, mSs_x, mSs_dxdt );
+  //changed by Yongqun He
+    mModel->lSODAEval(dim, 0, mSs_x, mSs_dxdt );
 
     mSs_nfunction++;
     maxrate =xNorm(mModel->getIntMetab(), mSs_dxdt,1);

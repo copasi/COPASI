@@ -93,6 +93,7 @@ private:
 
 
    /*
+     // the following functions are from gepasi and have not been used:
 
  //copy from  void CGepasiDoc::ResetVariables( void )
  NewtonLimit = DefaultNewtonLimit;
@@ -148,9 +149,15 @@ public:
 
 
     /**
-     *  iniliatize()
+     *  initialize()
      */
      void initialize();
+
+     /**
+      * initialize mSs_x and mSs_xnew
+      * it may be changed later and got directly from steady state class
+      */
+     void init_Ss_x_new(void);
 
 
     /**
@@ -177,6 +184,18 @@ public:
      */
      C_FLOAT64 getSSRes() const;
 
+    /**
+     *  get mSs_nfunction
+     *  @param aInt an int set as the private mSs_nfunction
+     */
+     void CNewton::setSs_nfunction(C_INT32 aInt);
+ 
+    /**
+     *  get mSs_nfunction
+     *  @return mSs_nfunction, the private mSs_nfunction int
+     */
+     C_INT32 CNewton::getSs_nfunction() const;
+    
 
     /**
      *  get mSs_xnew
