@@ -121,6 +121,10 @@ SOURCE=.\CReportBody.h
 
 SOURCE=.\CReportDefinition.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinitionVector.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
