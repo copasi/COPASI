@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: shoops $ $Date: 2004/01/30 19:24:48 $  
+# $Revision: 1.21 $ $Author: mendes $ $Date: 2004/01/30 19:40:15 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -116,10 +116,10 @@ contains(BUILD_OS, Linux) {
         message("Using lapack.")
         DEFINES += USE_CLAPACK
         INCLUDEPATH += $${LAPACK_PATH}/include
-        LIBS += -llapack -lblas  -lg2c
+        LIBS += -llapack -lblas  -lfl
         LIBS += -L$${LAPACK_PATH}/lib
       } else {
-        error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
+        error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )
       }
     }
   }
