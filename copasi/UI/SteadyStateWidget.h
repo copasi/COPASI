@@ -8,21 +8,12 @@
  ****************************************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
-
-<<< <<< < SteadyStateWidget.h
-== == == =
-#include <qvariant.h>
-#include <qwidget.h> 
-  >>> >>> > 1.3
-#include "copasi.h" 
-  <<< <<< < SteadyStateWidget.h
+#include "copasi.h"
 #include "Structures.h"
 #include <qvariant.h>
-#include <qwidget.h> 
-  == == == =
-    >>> >>> > 1.3
+#include <qwidget.h>
 
-    class QVBoxLayout;
+class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QCheckBox;
