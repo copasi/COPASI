@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 09:43:27 $
+   $Date: 2004/11/03 14:58:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -105,22 +105,96 @@ void SliderSettingsDialog::cancelButtonPressed()
 }
 
 void SliderSettingsDialog::minorTickSizeChanged()
-{}
+{
+  // adjust numMinorTicks
+  double value = this->mpMinorTickSizeEdit->text().toDouble();
+  this->mpSlider->setMinorTickInterval(value);
+  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
+  if (value < 1.0)
+    {
+      value = this->mpSlider->maxValue() - this->mpSlider->minValue();
+      this->mpSlider->setMinorTickInterval(value);
+      this->mpMinorTickSizeEdit->setText(QString::number(value));
+      value = 1.0;
+    }
+  this->mpNumMinorTicksEdit->setText(QString::number(value));
+}
 
 void SliderSettingsDialog::numMinorTicksChanged()
-{}
+{
+  // adjust minorTickSize
+  double value = this->mpNumMinorTicksEdit->text().toDouble();
+  if (value < 1.0)
+    {
+      value = 1.0;
+      this->mpNumMinorTicksEdit->setText(QString::number(value));
+    }
+  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
+  this->mpSlider->setMinorTickInterval(value);
+  this->mpMinorTickSizeEdit->setText(QString::number(value));
+}
 
 void SliderSettingsDialog::minValueChanged()
-{}
+{
+  // check if it is smaller than the current value
+  // if not, set it to the current value
+  double value = mpMinValueEdit->text().toDouble();
+  if (value > this->mpSlider->value())
+    {
+      value = this->mpSlider->value();
+      this->mpMinValueEdit->setText(QString::number(value));
+    }
+  this->mpSlider->setMinValue(value);
+  // adjust tickIntervalSize
+  value = this->mpNumMinorTicksEdit->text().toDouble();
+  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
+  this->mpSlider->setMinorTickInterval(value);
+  this->mpMinorTickSizeEdit->setText(QString::number(value));
+}
 
 void SliderSettingsDialog::maxValueChanged()
-{}
+{
+  // check if it is larget then the current value
+  // else set it to the current value
+  double value = mpMaxValueEdit->text().toDouble();
+  if (value < this->mpSlider->value())
+    {
+      value = this->mpSlider->value();
+      this->mpMaxValueEdit->setText(QString::number(value));
+    }
+  this->mpSlider->setMaxValue(value);
+  // adjust tickIntervalSize
+  value = this->mpNumMinorTicksEdit->text().toDouble();
+  value = (this->mpSlider->maxValue() - this->mpSlider->minValue()) / value;
+  this->mpSlider->setMinorTickInterval(value);
+  this->mpMinorTickSizeEdit->setText(QString::number(value));
+}
 
 void SliderSettingsDialog::objectValueChanged()
-{}
+{
+  // check if the value is within range, else set it to
+  // the closest border of the range
+  // get the value and set it in the current slider
+  double value = mpObjectValueEdit->text().toDouble();
+  if (value > this->mpSlider->maxValue())
+    {
+      value = this->mpSlider->maxValue();
+      this->mpObjectValueEdit->setText(QString::number(value));
+    }
+  if (value < this->mpSlider->minValue())
+    {
+      value = this->mpSlider->minValue();
+      this->mpObjectValueEdit->setText(QString::number(value));
+    }
+  this->mpSlider->setValue(value);
+}
 
 void SliderSettingsDialog::minorMajorFactorChanged()
-{}
+{
+  // get the value and set it in the current slider
+  int value = this->mpMinorMajorFactorEdit->text().toInt();
+  this->mpSlider->setMinorMajorFactor(value);
+}
 
 void SliderSettingsDialog::init()
 {
@@ -132,6 +206,7 @@ void SliderSettingsDialog::init()
   QIntValidator* v = new QIntValidator(this);
   v->setBottom(0);
   mpMinorMajorFactorEdit->setValidator(v);
+  this->updateInputFields();
 }
 
 void SliderSettingsDialog::browseButtonPressed()
@@ -187,7 +262,7 @@ void SliderSettingsDialog::browseButtonPressed()
           this->updateInputFieldsValues();
         }
     }
-  delete browseDialog;
+  this->mpObjectNameLineEdit->setText(FROM_UTF8(this->mpSlider->object()->getCN()));
 }
 
 void SliderSettingsDialog::setModel(CModel * model)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 09:43:27 $
+   $Date: 2004/11/03 14:58:08 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -36,7 +36,7 @@ class SliderDialog: public QDialog
   public:
     SliderDialog(QWidget* parent, DataModelGUI* dataModel);
     virtual ~SliderDialog();
-    void addSlider(CCopasiObject* object, C_INT32 folderId);
+    void addSlider(CopasiSlider* slider, C_INT32 folderId);
     void setCurrentFolderId(C_INT32 id);
 
   protected:

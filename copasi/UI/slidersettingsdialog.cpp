@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/slidersettingsdialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 09:43:27 $
+   $Date: 2004/11/03 14:58:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'slidersettingsdialog.ui'
  **
- ** Created: Wed Nov 3 10:37:42 2004
- **      by: The User Interface Compiler ($Id: slidersettingsdialog.cpp,v 1.3 2004/11/03 09:43:27 gauges Exp $)
+ ** Created: Wed Nov 3 15:39:26 2004
+ **      by: The User Interface Compiler ($Id: slidersettingsdialog.cpp,v 1.4 2004/11/03 14:58:08 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -158,10 +158,10 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   setTabOrder(mpOkButton, mpCancelButton);
   setTabOrder(mpCancelButton, mpObjectBrowseButton);
   setTabOrder(mpObjectBrowseButton, mpObjectValueEdit);
-  setTabOrder(mpObjectValueEdit, mpMinValueEdit);
+  setTabOrder(mpObjectValueEdit, mpMinorMajorFactorEdit);
+  setTabOrder(mpMinorMajorFactorEdit, mpMinValueEdit);
   setTabOrder(mpMinValueEdit, mpMaxValueEdit);
-  setTabOrder(mpMaxValueEdit, mpMinorMajorFactorEdit);
-  setTabOrder(mpMinorMajorFactorEdit, mpMinorTickSizeEdit);
+  setTabOrder(mpMaxValueEdit, mpMinorTickSizeEdit);
   setTabOrder(mpMinorTickSizeEdit, mpNumMinorTicksEdit);
   init();
 }

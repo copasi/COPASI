@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/03 09:43:27 $
+   $Date: 2004/11/03 14:58:08 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -119,16 +119,35 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 void SliderDialog::createNewSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  int i;
-  std::map<C_INT32, std::string> taskList;
-  for (i = 0; i < SliderDialog::numKnownTasks;++i)
-    {
-      taskList[SliderDialog::knownTaskIDs[i]] = SliderDialog::knownTaskNames[i];
-    }
   pSettingsDialog->setModel(this->mpDataModel->getModel());
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
-      this->currSlider = NULL;
+      this->currSlider = pSettingsDialog->getSlider();
+      if (this->currSlider)
+        {
+          std::vector<CopasiSlider*>::iterator it = this->sliderMap[this->currentFolderId].begin();
+          std::vector<CopasiSlider*>::iterator endPos = this->sliderMap[this->currentFolderId].end();
+          bool found = false;
+          while (it != endPos)
+            {
+              if ((*it) == this->currSlider)
+                {
+                  found = true;
+                  break;
+                }
+              ++it;
+            }
+          if (!found)
+            {
+              // add the new slider
+              this->addSlider(this->currSlider, this->currentFolderId);
+            }
+          else
+            {
+              // update the slider
+              this->currSlider->update();
+            }
+        }
     }
   else
     {
@@ -199,12 +218,13 @@ void SliderDialog::init()
   */
 }
 
-void SliderDialog::addSlider(CCopasiObject* object, C_INT32 folderId)
+void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
 {
   // check if there already is a slider for this  object
   unsigned int counter;
   unsigned int maxCount = this->sliderMap[this->currentFolderId].size();
   bool found = false;
+  CCopasiObject* object = slider->object();
   for (counter = 0; counter < maxCount;++counter)
     {
       if (object == this->sliderMap[this->currentFolderId][counter]->object())
@@ -214,15 +234,16 @@ void SliderDialog::addSlider(CCopasiObject* object, C_INT32 folderId)
         }
     }
   if (folderId == -1 || found) return;
-  CopasiSlider* cslider = new CopasiSlider(object, this->sliderBox);
-  cslider->setHidden(true);
-  this->sliderMap[folderId].push_back(cslider);
+  //CopasiSlider* cslider = new CopasiSlider(object, this->sliderBox);
+  slider->reparent(this->sliderBox, 0, QPoint(0, 0));
+  slider->setHidden(true);
+  this->sliderMap[folderId].push_back(slider);
   if (folderId == this->currentFolderId)
     {
-      ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, cslider);
-      cslider->setHidden(false);
+      ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, slider);
+      slider->setHidden(false);
     }
-  connect(cslider, SIGNAL(valueChanged(double)), SLOT(this->sliderValueChanged()));
+  connect(slider, SIGNAL(valueChanged(double)), this , SLOT(this->sliderValueChanged()));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)

@@ -341,9 +341,9 @@
     <tabstop>mpCancelButton</tabstop>
     <tabstop>mpObjectBrowseButton</tabstop>
     <tabstop>mpObjectValueEdit</tabstop>
+    <tabstop>mpMinorMajorFactorEdit</tabstop>
     <tabstop>mpMinValueEdit</tabstop>
     <tabstop>mpMaxValueEdit</tabstop>
-    <tabstop>mpMinorMajorFactorEdit</tabstop>
     <tabstop>mpMinorTickSizeEdit</tabstop>
     <tabstop>mpNumMinorTicksEdit</tabstop>
 </tabstops>
