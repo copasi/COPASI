@@ -1,15 +1,16 @@
-#include "QlistView.h"
 #include "ObjectBrowserItem.h"
 
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after)
+    : QListViewItem(parent, after)
 {
-  pListViewItem = new QListViewItem(parent, after->listviewitem());
+  setParent(NULL);
+  setBrother(NULL);
+  setChild(NULL);
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after)
-{
-  pListViewItem = new QListViewItem(parent->listviewitem(), after->listviewitem());
-}
+    : QListViewItem(parent, after)
+{}
 
 ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
 {
@@ -39,9 +40,4 @@ ObjectBrowserItem* ObjectBrowserItem::child() const
 ObjectBrowserItem* ObjectBrowserItem::brother() const
   {
     return pBrother;
-  }
-
-QListViewItem* ObjectBrowserItem::listviewitem() const
-  {
-    return pListViewItem;
   }
