@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:33 $
+   $Date: 2004/09/09 13:51:10 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -80,7 +80,6 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
   CFunction* pFunc = (CFunction*)obj;
-  //pComp->setInitialVolume(table->text(row, 2).toDouble());
 }
 
 void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -171,7 +170,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                  // Yes or Enter
+    case 0:                   // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -191,7 +190,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                  // No or Escape
+    case 1:                   // No or Escape
       break;
     }
 }

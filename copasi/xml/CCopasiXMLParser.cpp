@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/13 09:24:06 $
+   $Date: 2004/09/09 13:54:10 $
    End CVS Header */
 
 /**
@@ -1309,7 +1309,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
       pMetabolite = new CMetab();
       mCommon.KeyMap.addFix(Key, pMetabolite);
-      pMetabolite->setName(Name);
+      pMetabolite->setObjectName(Name);
       pMetabolite->setStatus(Status);
 
       pCompartment =
@@ -2624,7 +2624,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           pCompartment = dynamic_cast< CCompartment* >(GlobalKeys.get(*it));
           if (pCompartment)
             {
-              pCompartment->setInitialVolume(Value);
+              pCompartment->setInitialVolume(Value, false);
               pCompartment->setVolume(Value);
               continue;
             }

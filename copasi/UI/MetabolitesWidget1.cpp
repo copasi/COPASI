@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:38 $
+   $Date: 2004/09/09 13:51:11 $
    End CVS Header */
 
 /*******************************************************************
@@ -256,7 +256,7 @@ bool MetabolitesWidget1::saveToMetabolite()
   QString name(mEditName->text());
   if ((const char *)name.utf8() != metab->getObjectName())
     {
-      metab->setName((const char *)name.utf8());
+      metab->setObjectName((const char *)name.utf8());
       //TODO: update the reactions (the real thing, not the gui)
       //      propably not necessary anymore when reaction uses keys instead of names
       ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, objKey);
@@ -412,7 +412,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                        // Yes or Enter
+    case 0:                         // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -428,7 +428,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                        // No or Escape
+    case 1:                         // No or Escape
       break;
     }
 }
