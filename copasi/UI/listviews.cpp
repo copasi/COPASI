@@ -526,7 +526,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                //Time course
+      case 23:                 //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -535,7 +535,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:               //Report
+      case 43:                //Report
         return tableDefinition;
         break;
       case 5:
@@ -791,7 +791,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
 {
   bool success = true;
 
-  if (dataModel->getModel() == NULL) return false;
+  //  if (dataModel->getModel() == NULL) return false;
 
   //just do everything. TODO: Later we can decide from parameters what really needs to be done
 
@@ -832,6 +832,8 @@ void ListViews::loadReportDefinition()
   const CCopasiVector< CReportDefinition > * objects =
     dataModel->getReportDefinitionVectorAddr();
 
+  if (!objects) return;
+
   C_INT32 j, jmax = objects->size();
 
   CReportDefinition *obj;
@@ -853,6 +855,7 @@ void ListViews::loadCompartmentsToDataModel()
   Folder * f;
 
   dataModel->removeAllChildren(parent);
+  if (dataModel->getModel() == NULL) return;
 
   const CCopasiVectorN< CCompartment > & objects = dataModel->getModel()->getCompartments();
   C_INT32 j, jmax = objects.size();
@@ -874,6 +877,7 @@ void ListViews::loadMetabolitesToDataModel()
   Folder * f;
 
   dataModel->removeAllChildren(parent);
+  if (dataModel->getModel() == NULL) return;
 
   const CCopasiVector< CMetab > & metabolites = dataModel->getModel()->getMetabolites();
   C_INT32 noOfMetabolites = metabolites.size();
@@ -897,6 +901,7 @@ void ListViews::loadReactionsToDataModel()
   Folder * f;
 
   dataModel->removeAllChildren(parent);
+  if (dataModel->getModel() == NULL) return;
 
   const CCopasiVectorN< CReaction > & objects = dataModel->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
@@ -918,6 +923,7 @@ void ListViews::loadMoietiesToDataModel()
   Folder * f;
 
   dataModel->removeAllChildren(parent);
+  if (dataModel->getModel() == NULL) return;
 
   const CCopasiVectorN< CMoiety > & objects = dataModel->getModel()->getMoieties();
   C_INT32 j, jmax = objects.size();

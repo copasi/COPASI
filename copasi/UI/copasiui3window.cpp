@@ -77,6 +77,8 @@ CopasiUI3Window::CopasiUI3Window():
       listViews = new ListViews(splitter);
       listViews->setDataModel(dataModel);
       listViews->show();
+
+      ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
     }
 }
 
