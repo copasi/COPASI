@@ -9,7 +9,7 @@
 #include "copasi.h"
 #include "CFunctionParameter.h"
 
-static const string CFunctionParameter::enumname[12] =
+const string CFunctionParameter::enumname[12] =
   {
     "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
     "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"
