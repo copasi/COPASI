@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:45 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:59:33 $
    End CVS Header */
 
 #include "CPlotItem.h"
 
 const std::string CPlotItem::TypeName[] =
   {
-    "Not set",
+    "Unset",
     "2D Curve",
     "2D Plot",
     "SimWiz",
@@ -19,7 +19,7 @@ const std::string CPlotItem::TypeName[] =
 
 const char* CPlotItem::XMLType[] =
   {
-    "NotSet",
+    "Unset",
     "Curve2D",
     "Plot2D",
     "SimWiz",

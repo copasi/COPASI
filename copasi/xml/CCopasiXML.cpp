@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/28 15:27:55 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:59:33 $
    End CVS Header */
 
 /**
@@ -14,7 +14,7 @@
  * Created for Copasi by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
-
+#include <iostream>
 #include "copasi.h"
 #include <map>
 
@@ -29,6 +29,8 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
+#include "plot/CPlotSpecification.h"
+#include "plot/CPlotItem.h"
 
 // class CCopasiTask;
 // class CCopasiReport;
@@ -67,6 +69,7 @@ bool CCopasiXML::save(std::ostream & os)
   if (!saveModel()) success = false;
   if (!saveTaskList()) success = false;
   if (!saveReportList()) success = false;
+  if (!savePlotList()) success = false;
 
   endSaveElement("COPASI");
 
@@ -85,6 +88,7 @@ bool CCopasiXML::load(std::istream & is)
   Parser.setModel(mpModel);
   Parser.setReportList(mpReportList);
   Parser.setTaskList(mpTaskList);
+  Parser.setPlotList(mpPlotList);
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
@@ -105,6 +109,7 @@ bool CCopasiXML::load(std::istream & is)
   mpModel = Parser.getModel();
   mpReportList = Parser.getReportList();
   mpTaskList = Parser.getTaskList();
+  mpPlotList = Parser.getPlotList();
 
   return success;
 }
@@ -487,6 +492,71 @@ bool CCopasiXML::saveFunctionList()
 
   endSaveElement("ListOfFunctions");
 
+  return success;
+}
+
+bool CCopasiXML::savePlotList()
+{
+  std::cerr << "Saving plot list. " << std::endl;
+  bool success = true;
+  if (!havePlotList())
+    {
+      std::cerr << "No plot list defined." << std::endl;
+      return success;
+    }
+
+  unsigned C_INT32 i, imax = mpPlotList->size();
+  std::cerr << "Saving " << imax << " plots." << std::endl;
+  if (!imax) return success;
+
+  CXMLAttributeList Attributes;
+
+  startSaveElement("ListOfPlots");
+
+  for (i = 0; i < imax; i++)
+    {
+      const CPlotSpecification* pPlot = (*mpPlotList)[i];
+
+      Attributes.erase();
+      Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
+      //Attributes.add("active", CPlotSpecification::XMLType[pPlot->getActive()]);
+      startSaveElement("PlotSpecification", Attributes);
+      saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlot->CCopasiParameter::getValue());
+      startSaveElement("ListOfPlotItems");
+      unsigned C_INT32 j, jmax = pPlot->getItems().size();
+      std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
+      for (j = 0; j < jmax; j++)
+        {
+          const CPlotItem* pPlotItem = pPlot->getItems()[j];
+          Attributes.erase();
+          Attributes.add("type", CPlotItem::XMLType[pPlotItem->getType()]);
+          startSaveElement("PlotItem", Attributes);
+          saveParameterGroup(* (CCopasiParameterGroup::parameterGroup *)pPlotItem->CCopasiParameter::getValue());
+          startSaveElement("ListOfChannels");
+          unsigned C_INT32 k, kmax = pPlotItem->getNumChannels();
+          std::cerr << "Saving " << kmax << " Channels." << std::endl;
+          for (k = 0; k < kmax; k++)
+            {
+              const CPlotDataChannelSpec pDataChannelSpec = pPlotItem->getChannels()[k];
+              Attributes.erase();
+              Attributes.add("cn", pDataChannelSpec);
+              if (!pDataChannelSpec.minAutoscale)
+                {
+                  Attributes.add("min", pDataChannelSpec.min);
+                }
+              if (!pDataChannelSpec.maxAutoscale)
+                {
+                  Attributes.add("max", pDataChannelSpec.max);
+                }
+              saveElement("ChannelSpec", Attributes);
+            }
+          endSaveElement("ListOfChannels");
+          endSaveElement("PlotItem");
+        }
+      endSaveElement("ListOfPlotItems");
+      endSaveElement("PlotSpecification");
+    }
+  endSaveElement("ListOfPlots");
   return success;
 }
 

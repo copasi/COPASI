@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/07/05 14:44:41 $
+   $Date: 2004/08/06 14:59:34 $
    End CVS Header */
 
 /**
@@ -32,7 +32,7 @@ class CFunction;
 class CFunctionParameter;
 class CCopasiXMLParser;
 class CReportDefinition;
-
+class CPlotSpecification;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 
@@ -102,6 +102,12 @@ struct SCopasiXMLParserCommon
     CCopasiVectorN< CReportDefinition > * pReportList;
 
     /**
+     * Pointer to a vector of plots which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CCopasiVectorN< CPlotSpecification > * pPlotList;
+
+    /**
      * Pointer to the currently processed report
      */
     CReportDefinition * pReport;
@@ -120,6 +126,11 @@ struct SCopasiXMLParserCommon
      * Pointer to the currently processed parameter group
      */
     CCopasiParameterGroup* pCurrentParameterGroup;
+
+    /**
+     * Pointer to the currently processed plot
+     */
+    CPlotSpecification* pCurrentPlot;
 
     /**
      * Nesting level of the currently processed parameter group
@@ -1200,6 +1211,47 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class ListOfPlotsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * 
+         */
+        enum Element
+        {
+          ListOfPlots = 0,
+          PlotSpecification
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ListOfPlotsElement(CCopasiXMLParser & parser,
+                           SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ListOfPlotsElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
   class ListOfTasksElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
@@ -1919,7 +1971,8 @@ class CCopasiXMLParser : public CExpat
           ListOfFunctions,
           Model,
           ListOfTasks,
-          ListOfReports
+          ListOfReports,
+          ListOfPlots
         };
 
         // Operations
@@ -2336,6 +2389,18 @@ class CCopasiXMLParser : public CExpat
      * @return CCopasiVectorN< CTask > * pTaskList
      */
     CCopasiVectorN< CCopasiTask > * getTaskList() const;
+
+    /**
+        * Set the list of loaded plots
+        * @param CCopasiVectorN< CPlotSpecification > * pPlotList
+        */
+    void setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotList);
+
+    /**
+     * Retrieve the list of loaded functions
+     * @return CCopasiVectorN< CTask > * pTaskList
+     */
+    CCopasiVectorN< CPlotSpecification > * getPlotList() const;
   };
 
 #endif // COPASI_CCopasiXMLParser

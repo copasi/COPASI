@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/07/05 14:44:41 $
+   $Date: 2004/08/06 14:59:34 $
    End CVS Header */
 
 /**
@@ -31,6 +31,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "scan/CScanTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "plot/CPlotSpecification.h"
 
 #ifdef COPASI_TEMPLATE
 CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
@@ -222,6 +223,12 @@ void CCopasiXMLParser::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
 CCopasiVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
   {return mCommon.pTaskList;}
 
+void CCopasiXMLParser::setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotList)
+{mCommon.pPlotList = pPlotList;}
+
+CCopasiVectorN< CPlotSpecification > * CCopasiXMLParser::getPlotList() const
+  {return mCommon.pPlotList;}
+
 CCopasiXMLParser::COPASIElement::COPASIElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
@@ -258,6 +265,11 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     case ListOfReports:
       if (!strcmp(pszName, "ListOfReports"))
         mpCurrentHandler = new ListOfReportsElement(mParser, mCommon);
+      break;
+
+    case ListOfPlots:
+      if (!strcmp(pszName, "ListOfPlots"))
+        mpCurrentHandler = new ListOfPlotsElement(mParser, mCommon);
       break;
 
     default:
@@ -2640,6 +2652,76 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
       break;
     }
 
+  return;
+}
+
+CCopasiXMLParser::ListOfPlotsElement::ListOfPlotsElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ListOfPlotsElement::~ListOfPlotsElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case ListOfPlots:
+      if (strcmp(pszName, "ListOfPlots")) fatalError();
+      if (!mCommon.pTaskList)
+        {
+          mCommon.pPlotList = new CCopasiVectorN<CPlotSpecification>;
+        }
+      break;
+    case PlotSpecification:
+      /*
+      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      // If we do not have a plot specification element handler, we create one 
+      if (!mpCurrentHandler)
+        {
+          mpCurrentHandler = new PlotSpecificationElement(mParser, mCommon);
+        }
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      */
+      break;
+    default:
+      //fatalError();
+      break;
+    }
+  return;
+}
+
+void CCopasiXMLParser::ListOfPlotsElement::end(const XML_Char * pszName)
+{
+  switch (mCurrentElement)
+    {
+    case ListOfPlots:
+      if (strcmp(pszName, "ListOfPlots")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      mParser.onEndElement(pszName);
+      break;
+    case PlotSpecification:
+      /*
+      if (strcmp(pszName, "PlotSpecification")) fatalError();
+      // add mCommon.pCurrentTask to the listOfTasks and set
+      // mCommon.pCurrentTask to NULL
+      mCommon.pPlotList->add(mCommon.pCurrentPlot);
+      mCommon.pCurrentPlot = NULL;
+      mCurrentElement = ListOfPlots;
+      */
+      break;
+    default:
+      //fatalError();
+      break;
+    }
   return;
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:19:32 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:59:33 $
    End CVS Header */
 
 /**
@@ -20,6 +20,7 @@
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
 #include "report/CReportDefinition.h"
+#include "plot/CPlotSpecification.h"
 
 std::string CCopasiXMLInterface::encode(const std::string & str)
 {
@@ -89,6 +90,7 @@ CCopasiXMLInterface::CCopasiXMLInterface():
     mpFunctionList(NULL),
     mpTaskList(NULL),
     mpReportList(NULL),
+    mpPlotList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
@@ -161,6 +163,24 @@ bool CCopasiXMLInterface::haveTaskList() const
 bool CCopasiXMLInterface::freeTaskList()
 {
   pdelete(mpTaskList);
+  return true;
+}
+
+bool CCopasiXMLInterface::setPlotList(const CCopasiVectorN< CPlotSpecification > & plotList)
+{
+  mpPlotList = const_cast<CCopasiVectorN< CPlotSpecification > *>(&plotList);
+  return true;
+}
+
+CCopasiVectorN< CPlotSpecification > * CCopasiXMLInterface::getPlotList() const
+  {return mpPlotList;}
+
+bool CCopasiXMLInterface::havePlotList() const
+  {return mpPlotList != NULL;}
+
+bool CCopasiXMLInterface::freePlotList()
+{
+  pdelete(mpPlotList);
   return true;
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 20:58:47 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:59:33 $
    End CVS Header */
 
 /**
@@ -29,7 +29,7 @@ class CFunction;
 class CCopasiTask;
 class CReportDefinition;
 class CXMLAttributeList;
-
+class CPlotSpecification;
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
  * related to COPASI relevant information.
@@ -67,6 +67,12 @@ class CCopasiXMLInterface
      * The ownership is handed to the user.
      */
     CCopasiVectorN< CReportDefinition > * mpReportList;
+
+    /**
+     * Pointer to a vector of plots which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CCopasiVectorN< CPlotSpecification > * mpPlotList;
 
     /**
      * A pointer to the input stream
@@ -197,6 +203,31 @@ class CCopasiXMLInterface
      * @return bool success
      */
     bool freeTaskList();
+
+    /**
+     * Set the plot list.
+     * @param const CCopasiVectorN< CPlotSpecification > & plotList
+     * @return bool success
+     */
+    bool setPlotList(const CCopasiVectorN< CPlotSpecification > & plotList);
+
+    /**
+     * Retreive the plot list.
+     * @return CCopasiVectorN< CPlotSpecification > * plotList
+     */
+    CCopasiVectorN< CPlotSpecification > * getPlotList() const;
+
+    /**
+     * Retreive whether the XML contains a plot list.
+     * @return bool havePlotList
+     */
+    bool havePlotList() const;
+
+    /**
+     * Free the plot list.
+     * @return bool success
+     */
+    bool freePlotList();
 
     /**
      * Set the report list.
