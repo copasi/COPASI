@@ -52,6 +52,7 @@ class ScanWidget;
 class TrajectoryWidget;
 class TableDefinition;
 class TableDefinition1;
+class ExpressionWidget;
 class CopasiWidget;
 class Folder;
 
@@ -188,6 +189,7 @@ class ListViews : public QSplitter
     ModelWidget *modelWidget;
     TableDefinition *tableDefinition;
     TableDefinition1 *tableDefinition1;
+    ExpressionWidget *expressionWidget;
   };
 
 #endif
