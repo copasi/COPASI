@@ -542,6 +542,13 @@ void CModel::setTransitionTimes()
         }
 
       if (TotalFlux == 0.0)
+        for (j=0; j<jmax; j++)
+          {
+            PartialFlux = - mRedStoi[i][j] * *mFluxesX[j];
+            if (PartialFlux > 0.0) TotalFlux += PartialFlux;
+          }
+        
+      if (TotalFlux == 0.0)
         TransitionTime = DBL_MAX;
       else
         TransitionTime = mMetabolitesInd[i]->getNumber() / TotalFlux;

@@ -383,6 +383,7 @@ void CSS_Solution::process(ofstream &fout)
         }
     }
   mSSOutput->print(*this, Copasi->OutputList, fout);
+  Copasi->OutputList.copasiRep(fout);
 }
 
 C_INT32 CSS_Solution::isSteadyState()
