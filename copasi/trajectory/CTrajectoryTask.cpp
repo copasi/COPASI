@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:50:56 $
+   $Date: 2004/10/06 15:56:05 $
    End CVS Header */
 
 /**
@@ -217,7 +217,7 @@ bool CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  pProblem->setEndState(new CState(*mpState));
+  //pProblem->setEndState(new CState(*mpState));
 
   if (mpProgressHandler) mpProgressHandler->finish();
   pProblem->getModel()->setState(mpState);
@@ -225,6 +225,51 @@ bool CTrajectoryTask::process()
   mReport.printFooter();
   if (mpOutputHandler) mpOutputHandler->finish();
   if (mTimeSeriesRequested) mTimeSeries.finish();
+
+  return true;
+}
+
+bool CTrajectoryTask::processSimple(bool singleStep) //without output
+{
+  assert(mpProblem && mpMethod);
+
+  CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
+  CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
+
+  //give the method a state to work on
+  pdelete(mpState);
+  mpState = new CState(pProblem->getInitialState());
+  pMethod->setCurrentState(mpState);
+
+  pMethod->setProblem(pProblem);
+
+  bool flagStopped = false;
+  C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
+  if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
+
+  //first step
+  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getInitialState().getTime();
+  pMethod->step(StepSize, &pProblem->getInitialState());
+
+  if (mpProgressHandler) flagStopped =
+      mpProgressHandler->progress((mpState->getTime() - pProblem->getStartTime()) * handlerFactor);
+
+  if (mpState->getTime() == pProblem->getEndTime()) return true; //end reached in one step
+  if (singleStep) return false; //end not reached but only one step requested
+
+  //more Steps if necessary
+  while ((mpState->getTime() < pProblem->getEndTime()) && (!flagStopped))
+    {
+      StepSize = pProblem->getEndTime() - mpState->getTime();
+      pMethod->step(StepSize);
+
+      if (mpProgressHandler) flagStopped =
+          mpProgressHandler->progress((mpState->getTime() - pProblem->getStartTime()) * handlerFactor);
+    }
+
+  //pProblem->setEndState(new CState(*mpState));
+
+  //if (mpProgressHandler) mpProgressHandler->finish();
 
   return true;
 }
