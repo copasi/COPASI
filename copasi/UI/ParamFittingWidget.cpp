@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/11/15 00:02:45 $
+   $Date: 2004/11/16 03:14:01 $
    End CVS Header */
 
 /********************************************************
@@ -104,9 +104,14 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
   dataFileText->setFrameShadow(QLineEdit::Sunken);
   ParamFittingWidgetLayout->addMultiCellWidget(dataFileText, 0, 0, 1, 3);
 
+  dataButtonsLayout = new QHBoxLayout(this, 0, 6, "dataButtonsLayout");
+  browseButton = new QPushButton("Browse", this, "browseButton");
+  dataButtonsLayout->addWidget(browseButton);
   dataFormatButton = new QPushButton(this, "dataFormatButton");
   dataFormatButton->setText(trUtf8("Data File Format"));
-  ParamFittingWidgetLayout->addWidget(dataFormatButton, 0, 4);
+  dataButtonsLayout->addWidget(dataFormatButton);
+  ParamFittingWidgetLayout->addMultiCellLayout(dataButtonsLayout, 0, 0, 4, 4);
+  //ParamFittingWidgetLayout->addWidget(dataFormatButton, 0,4);
 
   // division line between data and method
   divisionLine = new QFrame(this, "divisionLine");

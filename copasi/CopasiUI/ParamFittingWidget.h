@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParamFittingWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/11/04 15:53:28 $
+   $Date: 2004/11/16 03:14:01 $
    End CVS Header */
 
 /********************************************************
@@ -62,6 +62,7 @@ class ParamFittingWidget : public CopasiParametersWidget
 
     QLabel* dataFileLabel;
     QLineEdit* dataFileText;
+    QPushButton* browseButton;
     QPushButton* dataFormatButton;
 
     QLabel* optimizationMethodLabel;
@@ -147,6 +148,7 @@ class ParamFittingWidget : public CopasiParametersWidget
     QGridLayout* ParamFittingWidgetLayout;
     QGridLayout* resultLayout;
     QHBoxLayout* buttonLayout;
+    QHBoxLayout* dataButtonsLayout;
     QHBoxLayout* methodParamLabelsLayout;
     QHBoxLayout* methodParamTextboxLayout;
     QHBoxLayout* resultFieldLayout;
