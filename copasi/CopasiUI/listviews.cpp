@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.149 $
+   $Revision: 1.150 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 11:05:55 $
+   $Date: 2004/09/23 15:00:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -49,6 +49,7 @@
 #include "PlotWidget.h"
 #include "CopasiDefaultWidget.h"
 #include "TrajectoryWidget.h"
+#include "TimeSeriesWidget.h"
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
@@ -324,8 +325,12 @@ void ListViews::ConstructNodeWidgets()
   scanWidget = new ScanWidget(this);
   scanWidget->hide();
 
+  //**********
   trajectoryWidget = new TrajectoryWidget(this);
   trajectoryWidget->hide();
+
+  timeSeriesWidget = new TimeSeriesWidget(this);
+  timeSeriesWidget->hide();
 
   optimizationWidget = new OptimizationWidget(this);
   optimizationWidget->hide();
@@ -391,13 +396,16 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 23:
         return trajectoryWidget;
         break;
+      case 231:
+        return timeSeriesWidget;
+        break;
       case 31:
         return optimizationWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:        //Report
+      case 43:         //Report
         return tableDefinition;
         break;
       case 42:
@@ -509,22 +517,9 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   // leave old widget
   if (currentWidget)
     {
-      //save the id and object key of the current ListViewItem
-      /*std::string saveObjectKey = item->folder()->getObjectKey();
-      C_INT32 saveFolderID = item->folder()->getId();
-      while (saveFolderID == -1)
-        {
-          item = (FolderListItem*)item->parent();
-          saveFolderID = item->folder()->getId();
-        }*/
-
       currentWidget->leave();
       //item may point to an invalid ListViewItem now
       item = (FolderListItem*)folders->currentItem();
-
-      //reset the item from the saved values
-      /*item = (FolderListItem*)findListViewItem(saveFolderID, saveObjectKey);
-      folders->setCurrentItem(item);*/
     }
 
   // find the widget again (it may have changed)
@@ -542,7 +537,11 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   if (currentWidget != newWidget)
     {
       if (currentWidget) currentWidget->hide();
-      if (newWidget) newWidget->show();
+      if (newWidget)
+        {
+          newWidget->show();
+          newWidget->setFocus();
+        }
     }
 
   currentWidget = newWidget;
