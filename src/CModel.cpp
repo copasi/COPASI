@@ -343,9 +343,9 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
     return;
 }
 
-CCopasiVector<CStep> *CModel::getSteps()
+CCopasiVector<CStep> & CModel::getSteps()
 {
-    return mSteps;
+    return *mSteps;
 }
 
 void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)

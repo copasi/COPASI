@@ -321,7 +321,7 @@ public:
      * Return the vector of steps
      * @return "CCopasiVector<CStep> *"
      */
-    CCopasiVector<CStep> *getSteps() const;
+    CCopasiVector<CStep> & getSteps();
 
     // Added by Yongqun He
     /**
