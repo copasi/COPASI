@@ -38,6 +38,7 @@ class CopasiUI3Window : public QMainWindow
     int nsave_menu_id;
     int nsaveas_menu_id;
     int nexport_menu_SBML;
+    int nobject_browser;
     void createToolBar();
     void createMenuBar();
   };

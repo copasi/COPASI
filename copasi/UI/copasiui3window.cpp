@@ -47,7 +47,8 @@ CopasiUI3Window::CopasiUI3Window():
   setCaption("Copasi ");
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
-  file = new QPopupMenu;
+  //  file = new QPopupMenu;
+  file->setItemEnabled(nobject_browser, false);
   file->setItemEnabled(nexport_menu_SBML, false);
   file->setItemEnabled(nsave_menu_id, false);
   file->setItemEnabled(nsaveas_menu_id, false);
@@ -149,6 +150,7 @@ void CopasiUI3Window::newDoc()
 
   gpsFile = "temp.gps";
   dataModel->createModel((const char *)gpsFile.utf8());
+  file->setItemEnabled(nobject_browser, true);
   file->setItemEnabled(nexport_menu_SBML, true);
   file->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
@@ -173,6 +175,7 @@ void CopasiUI3Window::slotFileOpen()
   if (dataModel && gpsFile)
     {
       dataModel->loadModel((const char *)gpsFile.utf8());
+      file->setItemEnabled(nobject_browser, true);
       file->setItemEnabled(nexport_menu_SBML, true);
       file->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
@@ -332,13 +335,12 @@ void CopasiUI3Window::createMenuBar()
                "command from the File menu.";
 
   toolTip[7] = "Click this button to select the output objects "
-               ".\n You can also select the only numeric value "
-               "command from the File menu.";
+               ".\n You can also select the only numeric value ";
 
-  const char* iconName[8] = {"&New", "&Open", "&Save", "&SaveAs", "&Import SBML", "&Export SBML", "&Print", "&Object Browser"};
+  const char* iconName[8] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Print", "Object &Browser"};
   const char* slotFileName[8] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotFilePrint()), SLOT(slotObjectBrowser())};
   QKeySequence hotKey[8] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P, CTRL + Key_B};
-  int fileSeperator[8] = {0, 0, 0, 0, 0, 0, 1};
+  int fileSeperator[8] = {0, 0, 0, 0, 0, 0, 1, 0};
 
   file = new QPopupMenu(this);
   menuBar()->insertItem("&File", file);
@@ -360,6 +362,8 @@ void CopasiUI3Window::createMenuBar()
         nsaveas_menu_id = id;
       if (j == 5)
         nexport_menu_SBML = id;
+      if (j == 7)
+        nobject_browser = id;
     }
 
   file->insertSeparator();
