@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/18 17:59:24 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:06:19 $
    End CVS Header */
 
 /**
@@ -112,9 +112,9 @@ CMathConstantParameter::CMathConstantParameter(const CCopasiParameter & paramete
     CMathConstant(& parameter),
     mReaction(reaction)
 {
-  if (parameter.getName() != getName())
+  if (parameter.getObjectName() != getName())
     {
-      std::string Name(parameter.getName() + "{" + mReaction + "}");
+      std::string Name(parameter.getObjectName() + "{" + mReaction + "}");
       setName(Name);
     }
 }
@@ -156,7 +156,7 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
   for (i = 0; i < imax; i++)
     {
       pReaction = Reactions[i];
-      Name = pReaction->getName();
+      Name = pReaction->getObjectName();
       pParameters = & pReaction->getParameters();
 
       jmax = pParameters->size();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/26 08:35:37 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:06:19 $
    End CVS Header */
 
 /**
@@ -203,7 +203,7 @@ bool CMathModel::buildVolumeList()
   for (i = 0; i < imax; i++)
     {
       p = new CMathVariableVolume(*List[i]);
-      mVolumeList[p->getName()] = p;
+      mVolumeList[p->getObjectName()] = p;
     }
 #endif // XXXX
   return Success;
@@ -265,7 +265,7 @@ bool CMathModel::buildConstantsList()
       for (j = 0; j < jmax; j++)
         {
           p = new CMathConstantParameter(* const_cast< CCopasiParameterGroup * >(ParamList)->getParameter(j),
-                                         List[i]->getName());
+                                         List[i]->getObjectName());
           mConstantsList[p->getName()] = p;
         }
     }
