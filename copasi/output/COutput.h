@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include "COutputLine.h"
-#include "trajectory/trajectory.h"
 
 class COutputLine;
 class CSteadyStateTask;
