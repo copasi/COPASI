@@ -18,6 +18,8 @@
 class CSteadyStateTask;
 class CTrajectoryTask;
 
+using std::ofstream;
+
 enum ProblemType
 {
   SteadyState,

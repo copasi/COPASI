@@ -21,7 +21,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CEigen.h"
 
-using namespace std;
+using std::setw;
 
 /**
  *  Default constructor. 

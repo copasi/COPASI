@@ -17,6 +17,7 @@
 
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "model/CCompartment.h"
 
 const string CSteadyStateMethod::TypeName[] =
   {

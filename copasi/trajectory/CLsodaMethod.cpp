@@ -1,23 +1,23 @@
 /*
- From tam@dragonfly.wri.com Wed Apr 24 01:35:52 1991
- Return-Path: <tam>
- Date: Wed, 24 Apr 91 03:35:24 CDT
- From: tam@dragonfly.wri.com
- To: whitbeck@wheeler.wrc.unr.edu
- Subject: lsoda.c
- Cc: augenbau@sparc0.brc.uconn.edu
+From tam@dragonfly.wri.com Wed Apr 24 01:35:52 1991
+Return-Path: <tam>
+Date: Wed, 24 Apr 91 03:35:24 CDT
+From: tam@dragonfly.wri.com
+To: whitbeck@wheeler.wrc.unr.edu
+Subject: lsoda.c
+Cc: augenbau@sparc0.brc.uconn.edu
 
- I'm told by Steve Nichols at Georgia Tech that you are interested in
- a stiff integrator.  Here's a translation of the fortran code LSODA.
+I'm told by Steve Nichols at Georgia Tech that you are interested in
+a stiff integrator.  Here's a translation of the fortran code LSODA.
 
- Please note
- that there is no comment.  The interface is the same as the FORTRAN
- code and I believe the documentation in LSODA will suffice.
- As usual, a free software comes with no guarantee.
+Please note
+that there is no comment.  The interface is the same as the FORTRAN
+code and I believe the documentation in LSODA will suffice.
+As usual, a free software comes with no guarantee.
 
- Hon Wah Tam
- Wolfram Research, Inc.
- tam@wri.com
+Hon Wah Tam
+Wolfram Research, Inc.
+tam@wri.com
  */
 
 /*
@@ -94,8 +94,11 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
-#define max(a , b)  ((a) > (b) ? (a) : (b))
-#define min(a , b)  ((a) < (b) ? (a) : (b))
+#ifdef WIN32
+# define max(a , b)  ((a) > (b) ? (a) : (b))
+# define min(a , b)  ((a) < (b) ? (a) : (b))
+#endif // WIN32
+
 static const C_INT32 mord[3] = {0, 12, 5};
 
 static const C_FLOAT64 sm1[13] =
@@ -165,25 +168,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                   // number of variables
-        mY - 1,                 // the array of current concentrations
+  lsoda(mDim,                    // number of variables
+        mY - 1,                  // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                 // the current time
-        mTime + deltaT,         // the final time
-        1,                      // scalar error control
-        (&mRtol) - 1,           // relative tolerance array
+        &mTime,                  // the current time
+        mTime + deltaT,          // the final time
+        1,                       // scalar error control
+        (&mRtol) - 1,            // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,           // absolute tolerance array
+        (&mAtol) - 1,            // absolute tolerance array
         // fortran style vector !!!
-        1,                      // output by overshoot & interpolatation
-        &mLsodaStatus,          // the state control variable
-        1,                      // optional inputs are being used
-        2,                      // jacobian calculated internally
-        0, 0, 0,                // options left at default values
-        10000,                  // max iterations for each lsoda call
-        0,                      // another value left at the default
-        mAdams,                 // max order for Adams method
-        mBDF,                   // max order for BDF method
+        1,                       // output by overshoot & interpolatation
+        &mLsodaStatus,           // the state control variable
+        1,                       // optional inputs are being used
+        2,                       // jacobian calculated internally
+        0, 0, 0,                 // options left at default values
+        10000,                   // max iterations for each lsoda call
+        0,                       // another value left at the default
+        mAdams,                  // max order for Adams method
+        mBDF,                    // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -358,7 +361,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
 /*
   If the user does not supply any of these values, the calling program
   should initialize those untouched working variables to zero.
-
+ 
   _ml = iwork1
   mu = iwork2
   ixpr = iwork5
@@ -366,7 +369,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
   mxhnil = iwork7
   mxordn = iwork8
   mxords = iwork9
-
+ 
   tcrit = rwork1
   h0 = rwork5
   hmax = rwork6
@@ -1709,16 +1712,16 @@ void CLsodaMethod::intdy(C_FLOAT64 t,
   is called within the package with k = 0 and *t = tout, but may
   also be called by the user for any k up to the current order.
   (See detailed instructions in the usage documentation.)
-
+ 
   The computed values in dky are gotten by interpolation using the
   Nordsieck history array yh.  This array corresponds uniquely to a
   vector-valued polynomial of degree nqcur or less, and dky is set to the k-th derivative of this polynomial at t.
   The formula for dky is
-
+ 
   q
   dky[i] = sum c[k][j] * (t - tn)^(j-k) * h^(-j) * yh[j+1][i]
   j=k
-
+ 
   where c[k][j] = j*(j-1)*...*(j-k+1), q = nqcur, tn = tcur, h = hcur.
   The quantities nq = nqcur, l = nq+1, n = neq, tn, and h are declared
   static globally.  The above sum is done in reverse order.
@@ -2031,7 +2034,7 @@ C_FLOAT64 CLsodaMethod::vmnorm(C_INT32 n,
   This function routine computes the weighted max-norm
   of the vector of length n contained in the array v, with weights
   contained in the array w of length n.
-
+ 
   vmnorm = max(i = 1, ..., n) fabs(v[i]) * w[i].
  */
 {
@@ -2052,7 +2055,7 @@ C_FLOAT64 CLsodaMethod::fnorm(C_INT32 n,
   This subroutine computes the norm of a full n by n matrix,
   stored in the array a, that is consistent with the weighted max-norm
   on vectors, with weights stored in the array w.
-
+ 
   fnorm = max(i=1,...,n) (w[i] * sum(j=1,...,n) fabs(a[i][j]) / w[j])
  */
 
@@ -2282,7 +2285,7 @@ void CLsodaMethod::solsy(C_FLOAT64 * y)
   a chord iteration.  It is called if miter != 0.
   If miter is 2, it calls dgesl to accomplish this.
   If miter is 5, it calls dgbsl.
-
+ 
   y = the right-hand side vector on input, and the solution vector
   on output.
  */
@@ -2460,7 +2463,7 @@ void CLsodaMethod::orderswitch(C_FLOAT64 * rhup,
   The largest of these is determined and the new order chosen
   accordingly.  If the order is to be increased, we compute one
   additional scaled derivative.
-
+ 
   orderflag = 0  : no change in h or nq,
   1  : change in h but not nq,
   2  : change in both h and nq.
@@ -2596,7 +2599,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,        /* Fortran style vector */
+                        C_FLOAT64 * y,         /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

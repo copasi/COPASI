@@ -10,6 +10,7 @@
 
 #include "model/CState.h"
 #include "model/CModel.h"
+#include "model/CCompartment.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -19,6 +20,11 @@ extern "C"
   {
 #include "clapack.h"        //use CLAPACK
   }
+
+#ifdef WIN32
+# define max(a , b)  ((a) > (b) ? (a) : (b))
+# define min(a , b)  ((a) < (b) ? (a) : (b))
+#endif // WIN32
 
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),

@@ -22,6 +22,8 @@
 
 using std::ostream;
 using std::endl;
+using std::setprecision;
+using std::ios;
 
 //include clapack.h for eigenvalue calculations
 extern "C"
