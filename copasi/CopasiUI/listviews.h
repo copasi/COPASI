@@ -46,6 +46,7 @@ class MoietyWidget;
 class ReactionsWidget1;
 class ReactionsWidget;
 class SteadyStateWidget;
+class ScanWidget;
 class TrajectoryWidget;
 
 class Folder : public QObject
@@ -156,6 +157,7 @@ class ListViews : public QSplitter, public Observer
     QListView *folders;
     QMultiLineEdit *bigWidget;
 
+    ScanWidget *scanWidget;
     SteadyStateWidget *steadystateWidget;
     TrajectoryWidget *trajectoryWidget;
     MetabolitesWidget *metabolitesWidget;

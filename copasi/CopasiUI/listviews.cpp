@@ -29,6 +29,7 @@
 #include "ReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
+#include "ScanWidget.h"
 #include "TrajectoryWidget.h"
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
@@ -428,6 +429,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     }
   else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
     currentWidget = steadystateWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Scan")))
+    currentWidget = scanWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Time Course")))
     currentWidget = trajectoryWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Mass Conservation")))
@@ -890,6 +893,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the SteadyStateTask Widget
     steadystateWidget = new SteadyStateWidget(this);
     steadystateWidget->hide();
+
+    //Constructing the SteadyStateTask Widget
+    scanWidget = new ScanWidget(this);
+    scanWidget->hide();
 
     trajectoryWidget = new TrajectoryWidget(this);
     trajectoryWidget->hide();

@@ -215,6 +215,10 @@ SOURCE=.\moc_ReactionsWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\moc_ScanWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\moc_SteadyStateWidget.cpp
 # End Source File
 # Begin Source File
@@ -276,6 +280,10 @@ SOURCE=.\ReactionsWidget1.cpp
 # Begin Source File
 
 SOURCE=.\ReactionsWidget1.moc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -981,6 +989,39 @@ InputName=ReactionsWidget1
 # End Source File
 # Begin Source File
 
+SOURCE=.\ScanWidget.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanWidget.h...
+InputDir=.
+InputPath=.\ScanWidget.h
+InputName=ScanWidget
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanWidget.h...
+InputDir=.
+InputPath=.\ScanWidget.h
+InputName=ScanWidget
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\SteadyStateWidget.h
 
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
@@ -1064,5 +1105,38 @@ SOURCE=.\Tree.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget.moc
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing CompartmentsWidget.cpp...
+InputDir=.
+InputPath=.\CompartmentsWidget.moc
+InputName=CompartmentsWidget
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing CompartmentsWidget.cpp...
+InputDir=.
+InputPath=.\CompartmentsWidget.moc
+InputName=CompartmentsWidget
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
