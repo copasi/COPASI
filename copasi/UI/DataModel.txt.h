@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/11 19:34:15 $
+   $Author: ssahle $ 
+   $Date: 2005/01/25 12:26:49 $
    End CVS Header */
 
 static char DataModeltxt[] =
@@ -13,6 +13,9 @@ static char DataModeltxt[] =
   "11:112:Metabolites\n"
   "11:113:Moiety\n"
   "11:114:Reactions\n"
+#ifdef COPASI_DEBUG
+  "11:115:Parameters\n"
+#endif // COPASI_DEBUG
   "1:12:Mathematical\n"
   "12:121:Compartment Symbols\n"
   "12:122:Function Symbols\n"
