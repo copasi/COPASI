@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.162 $
+   $Revision: 1.163 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/11 19:34:16 $
+   $Date: 2004/11/16 21:11:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -244,8 +244,15 @@ ListViews::~ListViews()
 void ListViews::setDataModel(DataModelGUI* dm)
 {
   dataModel = dm;
-  setupFolders();
-  ConstructNodeWidgets();
+
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  for (; it != ende; ++it)
+    {
+      (*it)->setupFolders();
+      (*it)->ConstructNodeWidgets();
+    }
 }
 
 /**
@@ -446,7 +453,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                     //Report
+      case 43:                      //Report
         return tableDefinition;
         break;
       case 42:
@@ -799,6 +806,8 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           if (dataModel) dataModel->changed();
           break;
         case ADD:
+          if (dataModel) setDataModel(dataModel);
+          break;
         case DELETE:
         default:
           break;
