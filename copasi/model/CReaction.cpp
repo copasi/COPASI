@@ -1225,30 +1225,30 @@ const CMetab * CReaction::findModifier(std::string ident_name)
   return 0;
 }
 
-unsigned C_INT32 CReaction::getCompartmentNumber()
-{
-  const CCopasiVector < CChemEqElement > & Balances
-  = mChemEq.getBalances();
-  unsigned C_INT32 i, imax = Balances.size();
-  unsigned C_INT32 j, jmax;
-  unsigned C_INT32 Number;
-  std::vector<const CCompartment *> Compartments;
+unsigned C_INT32 CReaction::getCompartmentNumber() const
+  {
+    const CCopasiVector < CChemEqElement > & Balances
+    = mChemEq.getBalances();
+    unsigned C_INT32 i, imax = Balances.size();
+    unsigned C_INT32 j, jmax;
+    unsigned C_INT32 Number;
+    std::vector<const CCompartment *> Compartments;
 
-  for (i = 0, Number = 0; i < imax; i++)
-    {
-      for (j = 0, jmax = Compartments.size(); j < jmax; j++)
-        if (Compartments[j] == Balances[i]->getMetabolite().getCompartment())
-          break;
+    for (i = 0, Number = 0; i < imax; i++)
+      {
+        for (j = 0, jmax = Compartments.size(); j < jmax; j++)
+          if (Compartments[j] == Balances[i]->getMetabolite().getCompartment())
+            break;
 
-      if (j == jmax)
-        {
-          Number ++;
-          Compartments.push_back(Balances[i]->getMetabolite().getCompartment());
-        }
-    }
+        if (j == jmax)
+          {
+            Number ++;
+            Compartments.push_back(Balances[i]->getMetabolite().getCompartment());
+          }
+      }
 
-  return Number;
-}
+    return Number;
+  }
 
 void CReaction::setScalingFactor()
 {
