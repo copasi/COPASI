@@ -26,190 +26,111 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("ScanItemWidget");
-
-  setCaption(trUtf8("ScanItemWidget"));
   ScanItemWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanItemWidgetLayout");
 
-  Layout13 = new QVBoxLayout(0, 0, 6, "Layout13");
+  layout18 = new QVBoxLayout(0, 0, 6, "layout18");
 
-  bMaster = new ScanCheckBox(this, "bMaster");
-  bMaster->setText(trUtf8("          Master"));
-  Layout13->addWidget(bMaster);
-
-  bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
-  bLogarithmic->setText(trUtf8("          Logarithmic"));
-  Layout13->addWidget(bLogarithmic);
-
-  ScanItemWidgetLayout->addLayout(Layout13, 2, 0);
-
-  Layout34 = new QGridLayout(0, 1, 1, 0, 6, "Layout34");
-
-  Layout7 = new QGridLayout(0, 1, 1, 0, 6, "Layout7");
-
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Density"));
-
-  Layout7->addWidget(TextLabel3, 2, 0);
-
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Max"));
-
-  Layout7->addWidget(TextLabel2, 1, 0);
+  layout15 = new QHBoxLayout(0, 0, 6, "layout15");
 
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Min"));
+  layout15->addWidget(TextLabel1);
+  QSpacerItem* spacer = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout15->addItem(spacer);
 
-  Layout7->addWidget(TextLabel1, 0, 0);
+  mMin = new ScanLineEdit(this, "mMin");
+  mMin->setFrameShape(ScanLineEdit::LineEditPanel);
+  mMin->setFrameShadow(ScanLineEdit::Sunken);
+  layout15->addWidget(mMin);
+  layout18->addLayout(layout15);
 
-  Layout34->addLayout(Layout7, 0, 0);
+  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
 
-  Layout33 = new QVBoxLayout(0, 0, 6, "Layout33");
-  QSpacerItem* spacer = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  Layout33->addItem(spacer);
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  layout16->addWidget(TextLabel2);
+  QSpacerItem* spacer_2 = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout16->addItem(spacer_2);
 
-  nMin = new ScanLineEdit(this, "nMin");
-  Layout33->addWidget(nMin);
-  QSpacerItem* spacer_2 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  Layout33->addItem(spacer_2);
+  mMax = new ScanLineEdit(this, "mMax");
+  layout16->addWidget(mMax);
+  layout18->addLayout(layout16);
 
-  nMax = new ScanLineEdit(this, "nMax");
-  Layout33->addWidget(nMax);
-  QSpacerItem* spacer_3 = new QSpacerItem(150, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  Layout33->addItem(spacer_3);
+  layout17 = new QHBoxLayout(0, 0, 6, "layout17");
 
-  nDensity = new ScanLineEdit(this, "nDensity");
-  nDensity->setText(trUtf8(""));
-  Layout33->addWidget(nDensity);
-  QSpacerItem* spacer_4 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  Layout33->addItem(spacer_4);
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  layout17->addWidget(TextLabel3);
+  QSpacerItem* spacer_3 = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout17->addItem(spacer_3);
 
-  Layout34->addLayout(Layout33, 0, 1);
+  mDensity = new ScanLineEdit(this, "mDensity");
+  mDensity->setFrameShape(ScanLineEdit::LineEditPanel);
+  mDensity->setFrameShadow(ScanLineEdit::Sunken);
+  layout17->addWidget(mDensity);
+  layout18->addLayout(layout17);
 
-  ScanItemWidgetLayout->addMultiCellLayout(Layout34, 0, 1, 0, 0);
+  ScanItemWidgetLayout->addLayout(layout18, 0, 0);
 
-  bRegularGrid = new ScanRadioButton(this, "bRegularGrid");
-  bRegularGrid->setText(trUtf8("Regular Grid"));
+  layout21 = new QVBoxLayout(0, 0, 6, "layout21");
 
-  ScanItemWidgetLayout->addWidget(bRegularGrid, 0, 1);
+  bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
+  layout21->addWidget(bLogarithmic);
 
-  RandomGroup = new QButtonGroup(this, "RandomGroup");
-  RandomGroup->setFrameShape(QButtonGroup::Panel);
-  RandomGroup->setTitle(trUtf8("   Random"));
-  RandomGroup->setExclusive(TRUE);
-  RandomGroup->setColumnLayout(0, Qt::Vertical);
-  RandomGroup->layout()->setSpacing(6);
-  RandomGroup->layout()->setMargin(11);
-  RandomGroupLayout = new QGridLayout(RandomGroup->layout());
-  RandomGroupLayout->setAlignment(Qt::AlignTop);
+  bMaster = new ScanCheckBox(this, "bMaster");
+  layout21->addWidget(bMaster);
 
-  mNormalRadio = new ScanRadioButton(RandomGroup, "mNormalRadio");
-  mNormalRadio->setText(trUtf8("Normal"));
+  ScanItemWidgetLayout->addLayout(layout21, 1, 0);
 
-  RandomGroupLayout->addWidget(mNormalRadio, 1, 0);
+  buttonGroup = new QButtonGroup(this, "buttonGroup");
+  buttonGroup->setFrameShape(QButtonGroup::GroupBoxPanel);
+  buttonGroup->setFrameShadow(QButtonGroup::Sunken);
+  buttonGroup->setLineWidth(2);
+  buttonGroup->setExclusive(TRUE);
+  buttonGroup->setColumnLayout(0, Qt::Vertical);
+  buttonGroup->layout()->setSpacing(6);
+  buttonGroup->layout()->setMargin(11);
+  buttonGroupLayout = new QGridLayout(buttonGroup->layout());
+  buttonGroupLayout->setAlignment(Qt::AlignTop);
 
-  mPosNormalRadio = new ScanRadioButton(RandomGroup, "mPosNormalRadio");
-  mPosNormalRadio->setText(trUtf8("Pos. Normal"));
+  layout19 = new QVBoxLayout(0, 0, 6, "layout19");
 
-  RandomGroupLayout->addWidget(mPosNormalRadio, 2, 0);
+  mRegularGrid = new ScanRadioButton(buttonGroup, "mRegularGrid");
+  layout19->addWidget(mRegularGrid);
 
-  mUniformRadio = new ScanRadioButton(RandomGroup, "mUniformRadio");
-  mUniformRadio->setText(trUtf8("Uniform"));
+  randomeLabel = new QLabel(buttonGroup, "randomeLabel");
+  randomeLabel->setFrameShadow(QLabel::Sunken);
+  layout19->addWidget(randomeLabel);
 
-  RandomGroupLayout->addWidget(mUniformRadio, 0, 0);
+  buttonGroupLayout->addMultiCellLayout(layout19, 0, 0, 0, 1);
 
-  ScanItemWidgetLayout->addMultiCellWidget(RandomGroup, 1, 2, 1, 1);
+  layout20 = new QVBoxLayout(0, 0, 6, "layout20");
 
-  /*
-    setCaption(trUtf8("ScanItemWidget"));
-    ScanItemWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanItemWidgetLayout");
-   
-    Layout13 = new QVBoxLayout(0, 0, 6, "Layout13");
-   
-    bMaster = new ScanCheckBox(this, "bMaster");
-    bMaster->setText(trUtf8("      Master"));
-    Layout13->addWidget(bMaster);
-   
-    bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
-    bLogarithmic->setText(trUtf8("      Logarithmic"));
-    Layout13->addWidget(bLogarithmic);
-   
-    ScanItemWidgetLayout->addLayout(Layout13, 2, 0);
-   
-    RandomGroup = new QButtonGroup(this, "RandomGroup");
-    RandomGroup->setFrameShape(QButtonGroup::Panel);
-    RandomGroup->setTitle(trUtf8("   Random"));
-   
-    QWidget* privateLayoutWidget = new QWidget(RandomGroup, "Layout4");
-    privateLayoutWidget->setGeometry(QRect(9, 25, 110, 68));
-    Layout4 = new QGridLayout(privateLayoutWidget, 1, 1, 0, 6, "Layout4");
-   
-    mUniformRadio = new ScanRadioButton(privateLayoutWidget, "mUniformRadio");
-    mUniformRadio->setText(trUtf8("Uniform"));
-   
-    Layout4->addWidget(mUniformRadio, 0, 0);
-   
-    mPosNormalRadio = new ScanRadioButton(privateLayoutWidget, "mPosNormalRadio");
-    mPosNormalRadio->setText(trUtf8("Pos. Normal"));
-   
-    Layout4->addWidget(mPosNormalRadio, 2, 0);
-   
-    mNormalRadio = new ScanRadioButton(privateLayoutWidget, "mNormalRadio");
-    mNormalRadio->setText(trUtf8("Normal"));
-   
-    Layout4->addWidget(mNormalRadio, 1, 0);
-   
-    ScanItemWidgetLayout->addMultiCellWidget(RandomGroup, 1, 2, 1, 1);
-   
-    bRegularGrid = new ScanRadioButton(this, "bRegularGrid");
-    bRegularGrid->setText(trUtf8("Regular Grid"));
-   
-    ScanItemWidgetLayout->addWidget(bRegularGrid, 0, 1);
-   
-    Layout34 = new QGridLayout(0, 1, 1, 0, 6, "Layout34");
-   
-    Layout7 = new QGridLayout(0, 1, 1, 0, 6, "Layout7");
-   
-    TextLabel3 = new QLabel(this, "TextLabel3");
-    TextLabel3->setText(trUtf8("Density"));
-   
-    Layout7->addWidget(TextLabel3, 2, 0);
-   
-    TextLabel2 = new QLabel(this, "TextLabel2");
-    TextLabel2->setText(trUtf8("Max"));
-   
-    Layout7->addWidget(TextLabel2, 1, 0);
-   
-    TextLabel1 = new QLabel(this, "TextLabel1");
-    TextLabel1->setText(trUtf8("Min"));
-   
-    Layout7->addWidget(TextLabel1, 0, 0);
-   
-    Layout34->addLayout(Layout7, 0, 0);
-   
-    Layout33 = new QVBoxLayout(0, 0, 6, "Layout33");
-    QSpacerItem* spacer = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    Layout33->addItem(spacer);
-   
-    nMin = new ScanLineEdit(this, "nMin");
-    Layout33->addWidget(nMin);
-    QSpacerItem* spacer_2 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    Layout33->addItem(spacer_2);
-   
-    nMax = new ScanLineEdit(this, "nMax");
-    Layout33->addWidget(nMax);
-    QSpacerItem* spacer_3 = new QSpacerItem(150, 26, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    Layout33->addItem(spacer_3);
-   
-    nDensity = new ScanLineEdit(this, "nDensity");
-    nDensity->setText(trUtf8(""));
-    Layout33->addWidget(nDensity);
-    QSpacerItem* spacer_4 = new QSpacerItem(170, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    Layout33->addItem(spacer_4);
-   
-    Layout34->addLayout(Layout33, 0, 1);
-   
-    ScanItemWidgetLayout->addMultiCellLayout(Layout34, 0, 1, 0, 0);
-  */
+  mUniformRadio = new ScanRadioButton(buttonGroup, "mUniformRadio");
+  layout20->addWidget(mUniformRadio);
+
+  mNormalRadio = new ScanRadioButton(buttonGroup, "mNormalRadio");
+  layout20->addWidget(mNormalRadio);
+
+  mPosNormalRadio = new ScanRadioButton(buttonGroup, "mPosNormalRadio");
+  layout20->addWidget(mPosNormalRadio);
+
+  buttonGroupLayout->addLayout(layout20, 1, 1);
+  QSpacerItem* spacer_4 = new QSpacerItem(20, 50, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  buttonGroupLayout->addItem(spacer_4, 1, 0);
+
+  ScanItemWidgetLayout->addMultiCellWidget(buttonGroup, 0, 1, 1, 1);
+  languageChange();
+  resize(QSize(320, 162).expandedTo(minimumSizeHint()));
+  clearWState(WState_Polished);
+
+  // tab order
+  setTabOrder(mMin, mMax);
+  setTabOrder(mMax, mDensity);
+  setTabOrder(mDensity, bMaster);
+  setTabOrder(bMaster, bLogarithmic);
+  setTabOrder(bLogarithmic, mRegularGrid);
+  setTabOrder(mRegularGrid, mUniformRadio);
+  setTabOrder(mUniformRadio, mNormalRadio);
+  setTabOrder(mNormalRadio, mPosNormalRadio);
+
   pParameter = NULL;
 }
 
@@ -226,4 +147,25 @@ void ScanItemWidget::loadObject()
   if (!pParameter)
     return;
   int i = 0;
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void ScanItemWidget::languageChange()
+{
+  setCaption(tr("ScanItemWidget"));
+  TextLabel3->setText(tr("Density"));
+  TextLabel2->setText(tr("Max"));
+  TextLabel1->setText(tr("Min"));
+  mDensity->setText(QString::null);
+  bMaster->setText(tr("          Master"));
+  bLogarithmic->setText(tr("          Logarithmic"));
+  buttonGroup->setTitle(QString::null);
+  mNormalRadio->setText(tr("Normal"));
+  mUniformRadio->setText(tr("Uniform"));
+  mPosNormalRadio->setText(tr("Pos. Normal"));
+  mRegularGrid->setText(tr("Regular Grid"));
+  randomeLabel->setText(tr("Random"));
 }

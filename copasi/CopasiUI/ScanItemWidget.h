@@ -38,29 +38,36 @@ class ScanItemWidget : public QWidget
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanItemWidget();
 
-    ScanCheckBox* bMaster;
+    ScanLineEdit* mMin;
+    ScanLineEdit* mMax;
+    ScanLineEdit* mDensity;
     ScanCheckBox* bLogarithmic;
-    QButtonGroup* RandomGroup;
+    ScanCheckBox* bMaster;
+    ScanRadioButton* mRegularGrid;
     ScanRadioButton* mUniformRadio;
-    ScanRadioButton* mPosNormalRadio;
     ScanRadioButton* mNormalRadio;
-    ScanRadioButton* bRegularGrid;
-    QLabel* TextLabel3;
-    QLabel* TextLabel2;
+    ScanRadioButton* mPosNormalRadio;
+
     QLabel* TextLabel1;
-    ScanLineEdit* nMin;
-    ScanLineEdit* nMax;
-    ScanLineEdit* nDensity;
+    QLabel* TextLabel2;
+    QLabel* TextLabel3;
+    QLabel* randomeLabel;
+    QButtonGroup* buttonGroup;
 
   protected:
     QGridLayout* ScanItemWidgetLayout;
-    QVBoxLayout* Layout13;
-    QGridLayout* Layout34;
-    QGridLayout* Layout7;
-    QVBoxLayout* Layout33;
-    QGridLayout* RandomGroupLayout;
+    QVBoxLayout* layout18;
+    QHBoxLayout* layout15;
+    QHBoxLayout* layout16;
+    QHBoxLayout* layout17;
+    QVBoxLayout* layout21;
+    QGridLayout* buttonGroupLayout;
+    QVBoxLayout* layout19;
+    QVBoxLayout* layout20;
 
-  public:
+  public slots:
+    virtual void languageChange();
+
     virtual void mousePressEvent (QMouseEvent * e)
     {
       QWidget::mousePressEvent(e);
