@@ -235,7 +235,10 @@ void ScanWidget::addButtonClicked()
   ObjectList* pSelectedList = pSelectedObjects->outputList();
 
   if (pSelectedList == NULL)
-    return;
+    {
+      delete pSelectedObjects;
+      return;
+    }
 
   ObjectListItem* pListItem = pSelectedList->getRoot();
   for (; pListItem; pListItem = pListItem->pNext)
