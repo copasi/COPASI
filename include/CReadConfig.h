@@ -13,13 +13,13 @@ class CReadConfig
 {
 public:
     /**
-     *  Default consructor. 
+     *  Default constructor. 
      *  This opens the configuration file using a the default filename 
      *  "test.txt".
      */
     CReadConfig();
     /**
-     *  Specified consructor. 
+     *  Specified constructor. 
      *  This opens the configuration file using the filename specified 
      *  as the argument.
      *  @param name name of the confguration file. 

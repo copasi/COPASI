@@ -4,6 +4,10 @@
 // (C) Pedro Mendes 1995-2000
 //
 // Converted for Copasi by Pedro Mendes
+//
+// CDatum is not yet finished: because all data are now private, we will need 
+// to add a few more methods (perhaps not in this class, though - thus it is
+// best to wait until we hit the problem in CGepasiDoc.   PEDRO 1/11/01
 
 #include <iostream>
 #include <string>

@@ -36,7 +36,7 @@ CCompartment::~CCompartment(void)
 }
 
 // overload assignment operator
-CCompartment &CCompartment::operator=(CCompartment &RHS)
+CCompartment& CCompartment::operator=(CCompartment &RHS)
 {
     mVolume = RHS.mVolume;
     mName   = "";          // do we need this
@@ -44,6 +44,28 @@ CCompartment &CCompartment::operator=(CCompartment &RHS)
     mFail   = RHS.mFail;
     
     return *this;
+}
+
+string CCompartment::GetName(void)
+{
+    return mName;
+}
+
+void CCompartment::SetName(string& name)
+{
+    mName = name;
+}
+
+double CCompartment::GetVolume(void)
+{
+    return mVolume;
+}
+
+void CCompartment::SetVolume(double volume)
+{
+    // we should check for negative volumes and generate an exception
+    // or set a failure code
+    mVolume = volume;
 }
 
 int CCompartment::Fail()

@@ -4,6 +4,10 @@
 // (C) Pedro Mendes 1995-2000
 //
 // Converted for Copasi by Pedro Mendes
+//
+// CDatum is not yet finished: because all data are now private, we will need 
+// to add a few more methods (perhaps not in this class, though - thus it is
+// best to wait until we hit the problem in CGepasiDoc.   PEDRO 1/11/01
 
 #ifndef COPASI_CDatum
 #define COPASI_CDatum
@@ -49,35 +53,168 @@
 #define D_EIGVR 37	// real part of eigenvalues
 #define D_EIGVI 38	// imaginary part of eigenvalues
 
-// CDatum objects reference a variable of type double
+// CDatum objects reference model objects of type double
 class CDatum
 {
 // Implementation
 public:
+
+    /**
+     *  Default constructor. 
+     *  Creates an empty object with type D_UNDEF
+     */
     CDatum();
+
+    /**
+     *  Specified constructor. 
+     *  Creates an object with contents passed as arguments
+     *  @param title title of the object.
+     *  @param type type of the object (e.g. D_ICONC).
+     *  @param i first string describing the object.
+     *  @param j second string describing the object.
+     *  @param pval pointer to double containing the value of the object.
+     */
     CDatum(const string& title, int type, const string& i, const string& j,
            double *pval);
+
+    /**
+     *  Assignement operator. 
+     *  Copies the contents from one CDatum object to another.
+     *  @param ptRHS reference to the recipient object.
+     */
     CDatum& operator=(CDatum &ptRHS);
+
+    /**
+     *  Saves the contents of the object to an output stream.
+     *  (output stream is usually a file but can also be a socket)
+     *  @param pfout pointer to the output stream (ostream).
+     *  @return mFail
+     *  @see mFail
+     */
     int Save(ostream* pfout);
+
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer pointer to a CReadConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
     int Load(CReadConfig* pconfigbuffer);
+
+    /**
+     *  Sets the value of mpValue with a pointer to a double that has 
+     *  the value of this object.
+     *  @param pvalue pointer to a double.
+     */
     void CDatum::SetValue(double* pvalue);
+
+    /**
+     *  Returns a double with the value of this object.
+     *  @return *mpValue
+     *  @see mpValue
+     */
     double CDatum::GetValue();
+
+    /**
+     *  Sets the value of mI with a string
+     *  @param str constant reference to a string.
+     *  @see mI
+     */
     void CDatum::SetI(const string& str);
+
+    /**
+     *  Returns the first string describing this object.
+     *  @return mI
+     *  @see mI
+     */
     string CDatum::GetI();
+
+    /**
+     *  Sets the value of mJ with a string
+     *  @param str constant reference to a string.
+     *  @see mJ
+     */
     void CDatum::SetJ(const string& str);
+
+    /**
+     *  Returns the second string describing this object.
+     *  @return mJ
+     *  @see mJ
+     */
     string CDatum::GetJ();
+
+    /**
+     *  Sets the type of this object
+     *  @param type integer code of the type
+     *  @see mType
+     */
     void CDatum::SetType(int type);
+
+    /**
+     *  Returns the type code of this object.
+     *  @return mType
+     *  @see mType
+     */
     int CDatum::GetType();
+
+    /**
+     *  Sets the title of this object
+     *  @param str constant reference to a string.
+     *  @see mTitle
+     */
     void CDatum::SetTitle(const string& str);
+
+    /**
+     *  Returns a string with the title of this object.
+     *  @return mTitle
+     *  @see mTitle
+     */
     string CDatum::GetTitle();
 
 private:
-    string mTitle;  // string to be written as column title
-    int mType;      // type of object
-    string mI;      // (name of) first object
-    string mJ;      // (name of) second object
-    double *mpValue; // pointer to the variable with the value
-    int    mFail;   // failure status
+    /**
+     *  Title of the object.
+     */
+    string mTitle;
+
+    /**
+     *  Type code of the object.
+     *  Codes are currently integer constants referenced with
+     *  pre-compiler defined symbols of the form D_????? (e.g. D_ICONC).
+     *  This could possibly be changed to a enum set (need to think about
+     *  portability issues, related with data alignment
+     */
+    int mType;
+
+    /**
+     *  First descriptor of the object.
+     *  For example: if the object is "control of Hexokinase by Glucose",
+     *  mI is set to the string "Hexokinase"
+     */
+    string mI;
+
+
+    /**
+     *  Second descriptor of the object.
+     *  For example: if the object is "control of Hexokinase by Glucose",
+     *  mJ is set to the string "Glucose"
+     */
+    string mJ;
+
+
+    /**
+     *  Pointer to the memory location that contains the value of this
+     *  object (a double)
+     */
+    double *mpValue;
+
+    /**
+     *  Failure status:
+     *  0 = no error
+     *  !0 = error
+     */
+    int    mFail;
 };
 
 #endif // COPASI_CDatum

@@ -11,15 +11,18 @@ using namespace std ;
 
 #include "CReadConfig.h"
 #include "CCompartment.h"
+#include "CDatum.h"
 
 int  TestReadConfig(void);
 int  TestCompartment(void);
+int  TestDatum(void);
 
 int main(void)
 {
     // TestReadConfig();
 
     TestCompartment();
+    TestDatum();
 
     return 0;
 }
@@ -79,3 +82,28 @@ int TestCompartment(void)
     return 0;
 }
 
+
+int TestDatum(void)
+{
+    double doublevariable;
+    cout << "creating a CDatum object..." << endl;
+    CDatum d((string)"[medicarpin]t", D_TCONC, (string)"medicarpin", (string)"", &doublevariable);
+    cout << "Opening an output stream" << endl;
+    ofstream of("test2.txt");
+    d.Save(&of);
+    of.close();
+
+    CReadConfig Specific((string) "test2.txt");
+    CDatum* e;
+    e = new CDatum[2];
+    e[0].Load(&Specific);
+    Specific.Free();
+    e[1] = e[0];
+    cout << "Opening another output stream" << endl;
+    ofstream of2("test3.txt");
+    e[1].Save(&of2);
+    of2.close();
+    delete [] e;
+
+    return 0;
+}

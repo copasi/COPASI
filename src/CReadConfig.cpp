@@ -98,6 +98,11 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
         // may be we should check if Value is really a double
         *(double *) pout = atof(szValue);
     }
+    else if ( type == "int" )
+    {
+        // may be we should check if Value is really a double
+        *(int *) pout = atoi(szValue);
+    }
     else
     {
         mFail = 1; //Error
