@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\MetabolitesWidget1.ui'
  **
- ** Created: Mon Mar 3 22:02:20 2003
+ ** Created: Tue Mar 4 00:54:02 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -14,9 +14,9 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QButtonGroup;
 class QComboBox;
 class QFrame;
-class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -40,7 +40,6 @@ class MetabolitesWidget1 : public QWidget
     QLabel* TextLabel5;
     QLineEdit* LineEdit1;
     QComboBox* ComboBox1;
-    QFrame* Line1_3;
     QLineEdit* LineEdit4;
     QLabel* TextLabel10;
     QPushButton* commitChanges;
@@ -55,20 +54,14 @@ class MetabolitesWidget1 : public QWidget
     QLabel* TextLabel12;
     QLabel* TextLabel7;
     QLineEdit* LineEdit5;
-    QGroupBox* GroupBox3;
+    QFrame* Line1_3;
+    QButtonGroup* ButtonGroup2;
+    QRadioButton* RadioButton1;
+    QRadioButton* RadioButton2;
+    QButtonGroup* ButtonGroup3;
     QRadioButton* RadioButton3;
     QRadioButton* RadioButton4;
     QRadioButton* RadioButton5;
-    QGroupBox* GroupBox2;
-    QRadioButton* RadioButton1;
-    QRadioButton* RadioButton2;
-
-  protected:
-    QGridLayout* MetabolitesWidget1Layout;
-    QHBoxLayout* Layout7;
-    QHBoxLayout* Layout12;
-    QHBoxLayout* Layout13;
-
     int myValue;
     QString name;
 
@@ -81,6 +74,11 @@ class MetabolitesWidget1 : public QWidget
 
   private:
     void showMessage(QString caption, QString text);
+
+  protected:
+    QGridLayout* MetabolitesWidget1Layout;
+    QHBoxLayout* Layout7;
+    QHBoxLayout* Layout12;
   };
 
 #endif // METABOLITESWIDGET1_H

@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\MetabolitesWidget1.ui'
  **
- ** Created: Mon Mar 3 22:02:20 2003
+ ** Created: Tue Mar 4 00:54:02 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -61,13 +61,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   MetabolitesWidget1Layout->addMultiCellWidget(ComboBox1, 1, 1, 1, 2);
 
-  Line1_3 = new QFrame(this, "Line1_3");
-  Line1_3->setFrameShape(QFrame::HLine);
-  Line1_3->setFrameShadow(QFrame::Sunken);
-  Line1_3->setFrameShape(QFrame::HLine);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1_3, 2, 2, 0, 1);
-
   LineEdit4 = new QLineEdit(this, "LineEdit4");
 
   MetabolitesWidget1Layout->addWidget(LineEdit4, 6, 1);
@@ -100,6 +93,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(TextLabel11, 7, 2);
 
   LineEdit7 = new QLineEdit(this, "LineEdit7");
+  LineEdit7->setEnabled(FALSE);
 
   MetabolitesWidget1Layout->addWidget(LineEdit7, 6, 3);
 
@@ -116,6 +110,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addMultiCellWidget(Line1_2, 5, 5, 0, 3);
 
   LineEdit8 = new QLineEdit(this, "LineEdit8");
+  LineEdit8->setEnabled(FALSE);
 
   MetabolitesWidget1Layout->addWidget(LineEdit8, 7, 3);
 
@@ -140,45 +135,54 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   MetabolitesWidget1Layout->addWidget(LineEdit5, 7, 1);
 
-  GroupBox3 = new QGroupBox(this, "GroupBox3");
-  GroupBox3->setLineWidth(1);
-  GroupBox3->setTitle(trUtf8("&Metabolite Status"));
+  Line1_3 = new QFrame(this, "Line1_3");
+  Line1_3->setFrameShape(QFrame::HLine);
+  Line1_3->setFrameShadow(QFrame::Sunken);
+  Line1_3->setFrameShape(QFrame::HLine);
 
-  QWidget* privateLayoutWidget = new QWidget(GroupBox3, "Layout12");
-  privateLayoutWidget->setGeometry(QRect(70, 30, 290, 22));
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1_3, 2, 2, 0, 3);
+
+  ButtonGroup2 = new QButtonGroup(this, "ButtonGroup2");
+  ButtonGroup2->setFrameShape(QButtonGroup::WinPanel);
+  ButtonGroup2->setTitle(trUtf8("&Metabolite Status Selection"));
+  ButtonGroup2->setExclusive(TRUE);
+
+  RadioButton1 = new QRadioButton(ButtonGroup2, "RadioButton1");
+  RadioButton1->setGeometry(QRect(30, 20, 91, 20));
+  RadioButton1->setText(trUtf8("Fixed"));
+
+  RadioButton2 = new QRadioButton(ButtonGroup2, "RadioButton2");
+  RadioButton2->setGeometry(QRect(110, 20, 91, 20));
+  RadioButton2->setText(trUtf8("Variable"));
+
+  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup2, 3, 3, 0, 3);
+
+  ButtonGroup3 = new QButtonGroup(this, "ButtonGroup3");
+  ButtonGroup3->setFrameShape(QButtonGroup::WinPanel);
+  ButtonGroup3->setFrameShadow(QButtonGroup::Sunken);
+  ButtonGroup3->setTitle(trUtf8("&Metabolite Status"));
+  ButtonGroup3->setExclusive(TRUE);
+
+  QWidget* privateLayoutWidget = new QWidget(ButtonGroup3, "Layout12");
+  privateLayoutWidget->setGeometry(QRect(21, 29, 219, 22));
   Layout12 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout12");
 
-  RadioButton3 = new QRadioButton(privateLayoutWidget, "RadioButton3");
+  RadioButton3 = new QRadioButton(privateLayoutWidget, "RadioButton3_2");
+  RadioButton3->setEnabled(FALSE);
   RadioButton3->setText(trUtf8("Fixed"));
   Layout12->addWidget(RadioButton3);
 
-  RadioButton4 = new QRadioButton(privateLayoutWidget, "RadioButton4");
+  RadioButton4 = new QRadioButton(privateLayoutWidget, "RadioButton4_2");
+  RadioButton4->setEnabled(FALSE);
   RadioButton4->setText(trUtf8("Independent"));
   Layout12->addWidget(RadioButton4);
 
-  RadioButton5 = new QRadioButton(privateLayoutWidget, "RadioButton5");
+  RadioButton5 = new QRadioButton(privateLayoutWidget, "RadioButton5_2");
+  RadioButton5->setEnabled(FALSE);
   RadioButton5->setText(trUtf8("Dependent"));
   Layout12->addWidget(RadioButton5);
 
-  MetabolitesWidget1Layout->addMultiCellWidget(GroupBox3, 4, 4, 0, 2);
-
-  GroupBox2 = new QGroupBox(this, "GroupBox2");
-  GroupBox2->setLineWidth(1);
-  GroupBox2->setTitle(trUtf8("&Metabolite Status Selection"));
-
-  QWidget* privateLayoutWidget_2 = new QWidget(GroupBox2, "Layout13");
-  privateLayoutWidget_2->setGeometry(QRect(72, 31, 190, 22));
-  Layout13 = new QHBoxLayout(privateLayoutWidget_2, 0, 6, "Layout13");
-
-  RadioButton1 = new QRadioButton(privateLayoutWidget_2, "RadioButton1");
-  RadioButton1->setText(trUtf8("Fixed"));
-  Layout13->addWidget(RadioButton1);
-
-  RadioButton2 = new QRadioButton(privateLayoutWidget_2, "RadioButton2");
-  RadioButton2->setText(trUtf8("Variable"));
-  Layout13->addWidget(RadioButton2);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(GroupBox2, 3, 3, 0, 2);
+  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup3, 4, 4, 0, 3);
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
@@ -193,9 +197,6 @@ MetabolitesWidget1::~MetabolitesWidget1()
 {
   // no need to delete child widgets, Qt does it all for us
 }
-
-/*This function is used to connect this class to the listviews
-    class to basically choose the correct widget to display   */
 
 int MetabolitesWidget1::isName(QString setValue)
 {
