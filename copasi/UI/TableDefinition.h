@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.3 2003/08/07 03:12:05 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.4 2003/08/07 03:41:18 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +23,8 @@ class QCheckBox;
 class QLineEdit;
 class QFrame;
 class QPushButton;
-class QTable;
+//class QTable;
+class ScanScrollView;
 
 class TableDefinition : public CopasiWidget
   {
@@ -47,14 +48,19 @@ class TableDefinition : public CopasiWidget
     QPushButton* downButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
-    QTable* itemsTable;
+    ScanScrollView* itemsTable;
+    QFrame* bodyField;
+    QPushButton* confirmButton;
+    QPushButton* cancelButton;
 
   protected:
     QGridLayout* TableDefinitionLayout;
     QHBoxLayout* layout7;
     QVBoxLayout* layout6;
     QGridLayout* layout5;
+    QHBoxLayout* layout14;
     QWidget* pParent;
+    std::vector<QWidget*> selectedList;
 
   protected slots:
     virtual void languageChange();

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.5 2003/08/07 03:12:05 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.6 2003/08/07 03:41:18 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,6 +21,9 @@
 #include "TableDefinition.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "scanwidget.h"
+
+#include "./icons/scanwidgetbuttonicon.xpm"
 
 /*
  *  Constructs a TableDefinition as a child of 'parent', with the 
@@ -32,6 +35,12 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("TableDefinition");
+
+  QPixmap image0((const char**) image0_data);
+  QPixmap image1((const char**) image1_data);
+  QPixmap image2((const char**) image2_data);
+  QPixmap image3((const char**) image3_data);
+
   TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
   targetLabel = new QLabel(this, "targetLabel");
@@ -43,6 +52,8 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   TableDefinitionLayout->addWidget(appendChecked, 0, 2);
 
   targetEdit = new QLineEdit(this, "targetEdit");
+  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
+  targetEdit->setFrameShadow(QLineEdit::Sunken);
 
   TableDefinitionLayout->addWidget(targetEdit, 0, 1);
 
@@ -86,42 +97,76 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   layout5 = new QGridLayout(0, 1, 1, 0, 6, "layout5");
 
   upButton = new QPushButton(this, "upButton");
-
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
   layout5->addWidget(upButton, 1, 0);
 
-  downButton = new QPushButton(this, "downButton");
-
-  layout5->addWidget(downButton, 1, 1);
-
   deleteButton = new QPushButton(this, "deleteButton");
-
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
   layout5->addWidget(deleteButton, 0, 1);
 
-  addButton = new QPushButton(this, "addButton");
+  downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
+  layout5->addWidget(downButton, 1, 1);
 
+  addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
   layout5->addWidget(addButton, 0, 0);
+
   layout6->addLayout(layout5);
   QSpacerItem* spacer = new QSpacerItem(90, 262, QSizePolicy::Minimum, QSizePolicy::Expanding);
   layout6->addItem(spacer);
   layout7->addLayout(layout6);
 
-  itemsTable = new QTable(this, "itemsTable");
-  itemsTable->setNumRows(0);
-  itemsTable->setNumCols(0);
+  itemsTable = new ScanScrollView(this, 0, 0);
+  //  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  //  scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
+  //  pdelete(parameterTable);
+  itemsTable->setVScrollBarMode(QScrollView::Auto);
+  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+  itemsTable->setSelectedList(&selectedList);
+  selectedList.clear();
+
+  //    itemsTable = new QTable(this, "itemsTable");
+  //    itemsTable->setNumRows(0);
+  //    itemsTable->setNumCols(0);
   layout7->addWidget(itemsTable);
 
   TableDefinitionLayout->addMultiCellLayout(layout7, 5, 5, 0, 2);
+
+  bodyField = new QFrame(this, "bodyField");
+  bodyField->setFrameShape(QFrame::HLine);
+  bodyField->setFrameShadow(QFrame::Sunken);
+  bodyField->setFrameShape(QFrame::HLine);
+
+  TableDefinitionLayout->addMultiCellWidget(bodyField, 6, 6, 0, 2);
+
+  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
+
+  confirmButton = new QPushButton(this, "confirmButton");
+  layout14->addWidget(confirmButton);
+
+  cancelButton = new QPushButton(this, "cancelButton");
+  layout14->addWidget(cancelButton);
+
+  TableDefinitionLayout->addMultiCellLayout(layout14, 7, 7, 0, 2);
   languageChange();
+  clearWState(WState_Polished);
 
   // tab order
   setTabOrder(targetEdit, appendChecked);
   setTabOrder(appendChecked, titleEdit);
   setTabOrder(titleEdit, seperatorEdit);
   setTabOrder(seperatorEdit, addButton);
-  setTabOrder(addButton, upButton);
-  setTabOrder(upButton, deleteButton);
-  setTabOrder(deleteButton, downButton);
+  setTabOrder(addButton, deleteButton);
+  setTabOrder(deleteButton, upButton);
+  setTabOrder(upButton, downButton);
   setTabOrder(downButton, itemsTable);
+  setTabOrder(itemsTable, confirmButton);
+  setTabOrder(confirmButton, cancelButton);
 }
 
 /*
@@ -148,4 +193,6 @@ void TableDefinition::languageChange()
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
+  confirmButton->setText(tr("confirm"));
+  cancelButton->setText(tr("cancel"));
 }
