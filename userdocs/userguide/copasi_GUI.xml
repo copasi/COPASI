@@ -1,0 +1,1218 @@
+<chapter id="graphicalUserInterface" xreflabel="graphical user interface">
+<title>Graphical User Interface</title>
+<sect1 id="introduction" xreflabel="introduction"><title>Introduction</title>
+    <para>The Copasi graphical user interface has been written using the <ulink url="http://www.trolltech.com">Qt toolkit</ulink>. This allows us to release Copasi on all platforms that Qt supports.</para>
+    <para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on 12/02/2004</screeninfo>
+<mediaobject>
+  <imageobject>
+    <imagedata fileref="images/Platforms_01.png" format="PNG" scale="30" align="center" />
+  </imageobject>  
+  <imageobject>
+    <imagedata fileref="images/Platforms_01.ps" format="EPS" scale="30" align="center" />
+  </imageobject>  
+  <!-- <imageobject>
+    <imagedata fileref="images/Platforms_01.gif" format="GIF">
+  </imageobject>  -->
+  <textobject>
+    <phrase>Screenshot of Copasi on Mac OS X, Linux and Windows</phrase>
+  </textobject>
+  <caption>
+  <para>Copasi running on Mac, Linux and Windows</para>
+  </caption>
+</mediaobject>
+</screenshot>
+</para>
+<para>
+It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behavior. E.g. on a Mac OS X computer, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
+<para>In the following sections, we will explain how to use the graphical user interface of Copasi. Everything should be applicable to all supported platforms. If there is a difference for some platforms we will try to point that out explicitely.    
+</para>
+</sect1>
+<sect1 id="generalGUILayout" xreflabel="Copasi GUI Elements">
+<title>Copasi GUI Elements</title>
+<para>
+    The Copasi graphical user interface essentially consists of four elements.</para>
+  <para>  
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Layout_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Layout_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Layout_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>Copasi GUI elements.</phrase>
+ </textobject>
+ <caption>
+  <para>Elements of the Copasi user interface</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+On the top of the main window, you have the menubar (on the Mac, the menubar is on the top of the screen), below that, you have a toolbar with some common tasks like opening a file or saving a file. The rest of the window is vertically divided into two parts by a slider. The size of the two elements can be adjusted by moving the bar that seperates them. The left element is called the object tree and it shows your current model and the tasks that you can perform on this model. Depending on the element that is selected in the object tree, the view on the right will change in order to enable you to edit the model or run and modify the task you selected in the object tree.</para>
+<para>If you start Copasi without any command line argument, Copasi will start with a new model. The root of the object tree will be selected and on the right side of the main window, you will see the Copasi logo.</para> 
+<para>The object tree has four branches below the root element. The first one contains all objects that belong to the current model. The second one contains all tasks that Copasi can execute, the third one contains the different output objects Copasi can handle and the last branch contains all the (kinetic) functions that are defined. These include the build in functions as well as functions defined by the user.</para>
+<para>If you now click on the <guibutton>Model</guibutton> branch, the view to the right of the object tree will change and you will see a screen that allows you to make <xref linkend="generalSettings" />. In the following sections, we will escribe the individual dialogs that you can open by selecting different branches in the object tree. During this explanation, you will learn how to create a model in Copasi and run different tasks on this model like calculating a trajectory.
+</para>
+</sect1>
+<sect1 id="generalSettings" xreflabel="model settings">
+<title>General Model Settings</title>
+<para>
+    If you click on the <guibutton>Model</guibutton> branch of the object tree which was explained in the <xref linkend="generalGUILayout" /> section, you activate the dialog that lets you specify certain parameters for your model like its name and the units that are to be used for time, volume and concentration quantities througout the current model. Here you can also give a textual description of you model that is more expressive then reactions and equations. You could for example state which part of the metabolism the model describes (e.g. glycolysis) and add some references to articles related to the model. This will help others (and yourself) to understand and identify your models.
+</para>
+<para>   
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/General_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/General_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/General_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>Dialog for general model settings</phrase>
+ </textobject>
+ <caption>
+  <para>Dialog for general model settings</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="addingCompartments" xreflabel="Adding and Editing Compartments">
+<title>Adding and Editing Compartments</title>
+<para>
+    In Copasi, most of the time there are several ways to do something and you just choose the way you prefer. This is especially true for defining the elements of the model.</para>
+<para>Actually if you are just defining a model that has a single compartment, you will most likely not even bother to add the compartment explicitely, but I will come back to this in the <xref linkend="addingSpecies" /> and <xref linkend="addingReactions" /> sections.</para>
+<para>Although you will probably not add compartments to often, it is good to know how it is done, especially since adding other components of the model, e.g. species or reactions, works essentially the same.</para>
+<para>There are three methods to add a new compartment to a model, but for all three, we have to navigate to the <guibutton>Compartments</guibutton> branch of the object tree which is located under the <guibutton>Model-&gt;Biochemical</guibutton> branch. So first open the <guibutton>Model</guibutton> branch and there open the <guibutton>Biochemical</guibutton> branch by clicking on the expansion sign in front of the branch name, or by double clicking on the branch name. </para>
+<para>  
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Compartments_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Compartments_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>compartment table without entries</phrase>
+ </textobject>
+ <caption>
+  <para>empty compartment table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+If you start with a new model and you select the <guibutton>Compartments</guibutton> branch, you will get an empty table with three columns. The columns are named <guilabel>Status</guilabel>, <guilabel>Name</guilabel> and <guilabel>Volume</guilabel>. <guilabel>Name</guilabel> is the actual name of the compartment and <guilabel>Volume</guilabel> is its volume given in the volume units defined in the <xref linkend="generalSettings" /> dialog. The meaning of the <guilabel>Status</guilabel> column will be explained shortly.</para>
+<para>The most obvious way to add a new compartment is to click the <guibutton>New</guibutton> button on the bottom of the window. This will create a new compartment that is added to the table with a status of <emphasis>new</emphasis>.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Compartments_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Compartments_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>compartment table with newly added compartment</phrase>
+ </textobject>
+ <caption>
+  <para>compartment table with new compartment</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+A status of new means that the compartment has been created, but is has not been added to the model yet. It will get added to the model if you either click on the <guibutton>commit</guibutton> button on the bottom of the screen, if you selected another element in the object tree on the left, or if you double click on the table. Lets assume you clicked on the <guibutton>commit</guibutton> button, you will notice that the status of the new compartment is no longer defined as new since it has been added to the model.</para> 
+<para>While the status of a compartment is shown as <emphasis>new</emphasis>, you can remove the compartment from the table by clicking the <guibutton>revert</guibutton> button which will cancel all modifications you made to the compartments that have not been commited yet.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Compartments_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Compartments_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>compartment table with deleted compartment entry</phrase>
+ </textobject>
+ <caption>
+  <para>compartment table with deleted compartment</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+If you have already commited the compartment, you can delete it by selecting the table row (or one cell of the table row) that contains the compartment you want to delete and clicking the <guibutton>delete</guibutton> button. You will notice that the compartment does not get deleted at once, but rather the status changes to <emphasis>deleted</emphasis>. You can still undo the delete by clicking the <guibutton>revert</guibutton> button or the <guibutton>delete/undelete</guibutton> button, or you can finalize the delete action by clicking on the <guibutton>commit</guibutton> button. Again leaving this dialog by selecting another object in the object tree or double clicking on the table has the same effect as clicking on the <guibutton>commit</guibutton> button.</para>
+<para>The <guibutton>clear</guibutton> button is just a convenience function to delete all compartments. If you click on it, the status of all compartments in the table will be changed to <emphasis>deleted</emphasis> and a subsequent <guibutton>commit</guibutton> will remove the compartments from the model.</para>
+<para>The most convenient way to add a compartment is to just click on an empty name cell in the table and type the name of the compartment. Once you leave the cell by either hitting the return or the tab key or by clicking somewhere else, the compartment appears in the table with a status of <emphasis>new</emphasis>. Actually hitting the return key after typing the name brings you directly into the next row and you can continue adding compartments until all compartments are defined. You now only have to commit your changes in one of the ways mentioned above and all the compartments get added to the model.</para>
+<para>The third way to add a new compartment is to double click on an empty row in the table. This is essentially the same as clicking the <guibutton>new</guibutton> button and double clicking on the newly added compartment entry.</para>
+<para>    
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Compartments_04.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Compartments_04.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for changing compartment parameters</phrase>
+ </textobject>
+ <caption>
+  <para>compartment definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Double clicking on any compartment entry in the table will bring you to another input dialog that lets you specify the parameters of the compartment. For a compartment, there are only two parameters that the user can change. One is the name of the compartment and the other is the volume.</para>
+<para>If there are already species defined that are part of the compartment being edited, they are listed in the text widget at the bottom of the dialog called "Metabolite Name".</para>
+<para>As you might already have noticed, this dialog for changing compartment parameters is associated with the individual compartment leaves in the object tree. So if you want to change the parameters of a compartment, you can also navigate to the leave in the object tree that represents the compartment you want to change instead of double clicking on an entry in the compartment table.
+</para>
+</sect1>
+<sect1 id="addingSpecies" xreflabel="Adding and Editing Species">
+<title>Adding and Editing Species</title>
+<para>
+    Adding new species works exactly the same as adding new compartment, so I suggest reading the <xref linkend="addingCompartments" /> section if you haven't already done so. Here we will just cover the differences between adding a compartment and adding a species.</para>
+<para>    
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Metabolites_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>empty metabolites table</phrase>
+ </textobject>
+ <caption>
+  <para>metabolites table without entries</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+First of all in order to add a new species or metabolite, as it is called in Copasi, you have to navigate to the <guibutton>Metabolites</guibutton> branch of the object tree which is located in the <guibutton>Model-&gt;Biochemical</guibutton> branch directly below the <guibutton>Compartments</guibutton> branch. Here again you see a table, but this table consists of eight columns. This is due to the fact that a metabolite has more parameters than a compartment. The <guilabel>Status</guilabel> and <guilabel>Name</guilabel> columns should already be familiar from the compartments table. The other six columns specify the initial concentration of the metabolite, the transient concentration and if the metabolite is fixed (i.e. its concentration does not change during the course of a simulation). The second <guilabel>Status</guilabel> column might be a litle confusing, but it indicates wether the metabolite is an independent or a dependent metabolite as opposed to the first <guilabel>Status</guilabel> column that indicates wether a metabolite has been added to the model yet or is about to be deleted from the model as described in the <xref linkend="addingCompartments" /> section. The column named <guilabel>Compartment</guilabel> shows the name of the compartment the metabolite belongs to and the <guilabel>Rate</guilabel> column shows the reaction rate of the metabolite. For newly created metabolites the rate will be empty since it needs to be calculated first, e.g. during a <link linkend="calculatingTrajectory">time course simulation</link>.</para>
+<para>When a metabolite is added and the model does not contain a compartment yet, Copasi will automatically add a new compartment to the model and the metabolite will be added to this compartment. If there already is one or more compartments, the metabolite will be added to the first compartment in the list. This can be changed later.</para>
+<para>To add a new metabolite you have the same three ways as for adding compartments and if you are not familiar with those, I recommend reading the <xref linkend="addingCompartments" /> section.</para> 
+<para>    
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Metabolites_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for changing metabolite parameters</phrase>
+ </textobject>
+ <caption>
+  <para>metabolite definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+  Editing the parameters of a metabolite also works exactly the way it does for compartments. Either you double click on a metabolite entry in the table, or you use the object tree to navigate to the metabolite leave you intend to edit. Some of the parameters of a metabolite like the <guilabel>Model Status</guilabel> are calculated automatically and can not be changed by the user. The parameters that you can change are the <guilabel>Name</guilabel> of the metabolite, the <guilabel>Compartment</guilabel> it belongs to, wether it is a fixed metabolite and its <guilabel>initial concentration</guilabel>. Instead of changing the <guilabel>initial concentration</guilabel>, you can also change the <guilabel>initial particle number</guilabel>. If you change one of those two, the other will be updated automatically. The volume to calculate particle numbers from concentration and vice versa comes from the compartment associated with the metabolite.
+</para>
+</sect1>
+<sect1 id="addingReactions" xreflabel="Adding and Editing Reactions">
+<title>Adding and Editing Reactions</title>
+<para>
+    Again adding reactions essentially works the same way as adding compartments or metabolites. When you navigate to the <guibutton>Reactions</guibutton> branch of the object tree which is located under the <guibutton>Model-&gt;Biochemical</guibutton> branch, you will see a table with five columns. The first two are again <guilabel>Status</guilabel> and <guilabel>Name</guilabel> of the reaction. The third column called <guilabel>Equation</guilabel> describes the chemical formula and maybe additional modifiers of the reaction. The fourth column states the name of the kinetics for the reaction which depends on the equation. We will come to this in a second. The last column shows the <guilabel>flux</guilabel> through this reaction. The flux can not be set by  the user but is calculated automatically when you <link linkend="calculatingTrajectory">do a time course simulation</link>.
+   </para>
+<para>    
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reactions_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>reaction table without entries</phrase>
+ </textobject>
+ <caption>
+  <para>emtpy reaction table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    The easiest way to add a reaction is to type the chemical equation into an empty equation cell in the table. After you typed the equation, you hit the return key and automatically land in the next row where you can type the next reaction equation. This way you can enter all the reactions that make up your model. When you are finished with typing the reaction equations, you commit all the reactions. If any of the reactions contain metabolites that are not already present in the model, they are added automatically. If there was no compartment before, a compartment is also added and all new metabolites get added to this compartment. If there is already one or more compartment, all new metabolites get added to the first compartment that is listed in the object tree.
+    Each new reaction gets a default kinetic which is irreversible mass action for reactions that contain a substrate. For reaction that only have a product (e.g. influx into a system) a constant flux kinetic is chosen.</para>  
+<para>    
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reactions_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reactions_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for changing reaction parameters</phrase>
+ </textobject>
+ <caption>
+  <para>reaction definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    Double clicking on an entry in the table will bring you to another dialog that lets you change certain parameters of the reaction. You can change the name of the reaction, the chemical equation and wether the reaction is reversible or not. Changing the chemical equation and the reversibility of a reaction influences the type of kinetics you can choose for the reaction. Each kinetic function defines how many substrates, products and modifiers it expects. Additionally it defines wether it can be used for reversible or irreversible reactions only or if it can be used on either. So depending on how many substrates, products and modifiers your kinetic equation has and wether it is reversible or not, only a subset of the defined kinetic functions will be available in the <guilabel>Kinetics</guilabel> combobox.
+    If the kinetic function you want to assign to the reaction is not available yet, you can add it by clicking on the <guibutton>New Kinetics</guibutton> button (see also <xref linkend="addingFunctions" />). 
+    Depending on the kinetic function you chose, you get a selection of parameters in the table named <guilabel>Symbol Definition</guilabel>, all functions parameters get a default value of 0.1 which can be changed by clicking into the corresponging cell and typing a new value.</para>
+<para>So far we did not go into the details of how chemical equations are to be specified. Chemical equations have a simple schema. First you state all the substrates seperated by  "+" characters. Please make sure that you seperate the name of the substrate and the "+" character by at least one space character, otherwise Copasi will interpret the "+" sign as belonging to the metabolites name. (Having the "+" character as part of a metabolites name is allowed in Copasi!) after the list of substrates, you specify either an equals ("=") character if the reaction is reversible or the character combination "-&gt;" if the reaction is irreversible. This is followed by the list of products which must also be seperated by the "+" character. Again make sure you have spaces around the seperating "+" characters. Optionally this term can be followed by a semicolon and a list of modifiers which are comma seperated. Either the list of substrates or the list of products may also be empty, but at least one of them must be present. Lets look at two examples:
+<orderedlist numeration="loweralpha" >
+<listitem><para>Metabolite A is irreversibly converted into Metabolite B. The chemical equation you would type is "A -&gt; B".</para></listitem>
+<listitem><para>Metabolite A and B are reversibly converted to Metabolite C, the reaction has to modifiers C and D. The chemical equation for this in Copasi would be: "A + B = C; C,D"</para><para>Note that one of the modifiers is the product!</para></listitem>  
+</orderedlist>   
+</para>
+</sect1>
+<sect1 id="outputDefinitions" xreflabel="Defining Output">
+<title>Definining Output</title>
+<para>After you have <link linkend="addingReactions">defined all reactions</link> that make up your model, you could go ahead and do some calculations with your model. For some of the task this is fine since they show you the results in a seperate results dialog and it might not be necessary to store those into a file. For other tasks like e.g. a time course, it is very likely that you would like to store the resulting trajectory in some file or plot the result for visual inspection. So if you want Copasi to store the results or do a plot of them, you have to define either a report and associate it with a file or define a plot. (In the <xref linkend="calculatingTrajectory" /> section we will also offer an alternative, albeit less flexible, way for storing the results of a time course simulation.)
+</para>
+<sect2 id="reportDefinitions" xreflabel="Defining Reports">
+<title>Defining Reports</title>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reports_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>report table without entries</phrase>
+ </textobject>
+ <caption>
+  <para>empty report table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, can can specify a name for the report in the <guilabel>ReportDefinition</guilabel> field. In the <guilabel>task</guilabel> combobox, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Trajectory Task</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to change this, you have to uncheck the Tab checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
+<!-- What is the comment field and the title checkbox used for -->
+Next you have to define the objects that you want to appear in the report. To add a new object to the report definition, you have to click on the button with the <guibutton>+</guibutton> symbol. This will open the object browser dialog.</para>  
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reports_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>object browser dialog with no selection</phrase>
+ </textobject>
+ <caption>
+  <para>object browser dialog without selection</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The object browser dialog shows a tree of all the objects that are known to Copasi. The objects that belong to your model are located in the branch that corresponds to the name of your model. The position of that branch varies since the branches are sorted alphabetically. Each branch and leave in the object browser has a check box in front of its name. This checkbox can have three states. The unchecked state means that no object in this subtree are selected. A checkmark on a black background means that the whole subtree is selected, i.e. all objects in this subtree are selected. A checkmark on a gray background means that part of the subtree is selected.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reports_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>object browser dialog with some selection</phrase>
+ </textobject>
+ <caption>
+  <para>object browser dialog with selection</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Due to the model structure, most objects appear more than once in the tree. So if you select some object, you should not be surprised, if more than the selected object suddenly change their selection state. E.g. if you select the whole <guibutton>Compartments</guibutton> subtree of your model, all the metabolites which are part of the compartments get selected as well which means that on selecting the <guibutton>Compartments</guibutton> branch, the whole <guibutton>Metabolites</guibutton> branch changes its state to selected.</para>
+<para>
+Lets assume you want to define the report for a trajectory task. In this case, you will probably want the time and some or all of the transient concentration of the metabolites in your report. The time for the time course is the last item in the model branch, you select it by clicking on the check box in front of the name. If you want to add the concentrations of all metabolites, you open the <guibutton>Metabolites</guibutton> subbranch in the <guibutton>Model</guibutton> branch and open the <guibutton>Select by attribute</guibutton> branch. There you can select the <guibutton>Concentration</guibutton> attribute. Selecting the <guibutton>Concentration</guibutton> attribute will select the concentrations for all metabolites. If you only want to have some of the metabolites in your report, you open the subbranches of the metabolites you want in the <guibutton>Metabolites</guibutton> branch and select the <guibutton>Concentration</guibutton> attribute only for those metabolites. If your model contains many metabolites and you want to have all but one or in your report, it is often easier to first select all concentrations via the <guibutton>Select by attribute</guibutton> branch and then deselect the ones you don't want, rather then selecting the individiual concentration you want. Once you are finished with selecting the objects for your report, you confirm the selection by clicking the <guibutton>OK</guibutton> button in the object browser. The objects you selected will now appear in the listbox of the report definition dialog. </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_04.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Reports_04.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>report definition dialog with some selected objects</phrase>
+ </textobject>
+ <caption>
+  <para>report definition dialog with selected output objects</para>
+ </caption> 
+</mediaobject>
+</screenshot></para>
+<para>
+They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the arrow buttons that are located to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. 
+The only thing that is now left is to connect this report to a file. This has to be done in the dialog for the specific task and we will cover this when we explain how to run the individual tasks.
+</para>
+</sect2>
+<sect2 id="plotDefinitions" xreflabel="Defining Plots">
+<title>Defining Plots</title>
+<para>Plotting is another form of output that Copasi can do. So far plotting is limited to the results of a <link linkend="calculatingTrajectory">time course analysis</link> but plotting of other results will eventually be available where it makes sense. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation. </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Plots_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>plot table with no entries</phrase>
+ </textobject>
+ <caption>
+  <para>empty plot table</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+To define a plot, you open the plot definition dialog which you reach by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object tree. If you intend to plot all or most of the metabolites concentrations agains the time, the easiest way to define this plot is to click on the <guibutton>Add default plot</guibutton> button on the bottom of the dialog. This creates a plot with all concentrations against the time. If this is OK, you are done. If you want to remove some of the concentrations, you edit the plot by double clicking on the plot entry in the table, or by selecting the new plot definition in the object tree. A plot in Copasi is made up of a number of curve objects. For each curve, there is a tab in the plot definition dialog. To remove one of the curves, you have to select the tab that corresponds to the curve you want to remove and then click on the <guibutton>Delete Curve</guibutton> button. The next time you do a <link linkend="calculatingTrajectory">time course simulation</link>, each plot that is marked as active will be plotted automatically. How you define a plot as being active will be explained in the next paragraph.
+If you want to plot something other then the concentrations of the metabolites, e.g. the particle numbers against the time, you have to define your own plot. To do this, double click on an empty row in the plot table. (You get to the plot table by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object browser.) </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Plots_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>simple selection dialog for curves</phrase>
+ </textobject>
+ <caption>
+  <para>simple curve object selection dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+This opens a plot definition dialog that contains no curves. If you want to add a curve, you click on the <guibutton>New Curve</guibutton> button. A selection dialog opens that lets you choose an object for the x axis and one or more objects for the y axis. The tree on the left is a single selection tree which lets you choose the object that defines the x axis of the plot. Most often this will be the time. So if you want the time to be drawn on the x axis, select the time leave in the <guibutton>Time</guibutton> branch. The right tree is a multi selection tree where you can choose one or more elements to be drawn on the y axis. There you could e.g. choose all transient particle numbers.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Plots_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>selection dialog with some items selected</phrase>
+ </textobject>
+ <caption>
+  <para>simple selection dialog with selected items</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_04.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Plots_04.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>selection dialog after clicking the add button</phrase>
+ </textobject>
+ <caption>
+  <para>selection dialog with entries in selection list</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+In order to select objects in the multi selection tree, you select them in the tree and push the add button on the right of the selection dialog. The selected objects will show up in the listbox beside the tree. If you want to select more objects, select them in the tree and push the <guibutton>Add</guibutton> button again. You can do this as often as you like, but each object can only be selected once. All objects that are already marked as selected, i.e. that appear in the listbox, are disabled in the tree and can not be added a second time. On the other hand, if you want to remove some of the objects that you have selected, select them in the list and push the <guibutton>Delete</guibutton> button. You can also reorder the items in the list with the <guibutton>Move Up</guibutton> and <guibutton>Move Down</guibutton> buttons. (This is not needed for plots!) The trees in this dialog only have a limited set of the total objects that you e.g. see in the <link linkend="reportDefinitions">object browser</link>. If the object you want to plot is not in this simplified tree, you can check the <guilabel>Expert Mode</guilabel> checkbox on the bottom of the dialog. This will give you two full <link linkend="reportDefinitions">object browser</link> trees from which you can select objects.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_05.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_05.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Plots_05.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>expert selection dialog for curve objects</phrase>
+ </textobject>
+ <caption>
+  <para>selection dialog in expert mode</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+ Once you are finished with your selection, you confirm your selection with the <guibutton>OK</guibutton> button.
+Copasi now creates a curve object for each object you selected for the y axis and adds it to the plot. Each curve is represented as a tab in the plot definition dialog. <caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
+<para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify wether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
+<para>Another way to specify wether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
+</para>
+</sect2>
+</sect1>
+<sect1 id="addingFunctions" xreflabel="Adding and Editing User Defined Functions">
+<title>Adding and Editing User Defined Functions</title>
+<para>Copasi already defines a rather large set of common kinetic functions to choose from. Nevertheless sometimes you will have to define your own kinetic function to solve a specific problem. The list of defined functions is located as the last branch in the object tree.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Functions_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Functions_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Functions_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>function table with predefined functions</phrase>
+ </textobject>
+ <caption>
+  <para>function table with many functions</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Functions_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Functions_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Functions_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for the definiton of functions</phrase>
+ </textobject>
+ <caption>
+  <para>function definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+You can add a new function either by double clicking on an empty table row or by clicking on the <guibutton>new</guibutton> button on the bottom of the screen.
+In the function definition dialog, you give your function a name in the <guilabel>Function Name</guilabel> field. This name has to be unique within the list of defined functions. Next, you have to specify a formula that defines the reaction rate of your kinetic function in the <guilabel>Formula</guilabel> field. The function string only covers the right side of the rate function. So for Michaelis-Menten which is defined as <!-- <phrase role="math">v=V*(S/(Km+S))</phrase> --> 
+<!-- <inlineequation> -->
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>v</mml:mi>
+      <mml:mo>=</mml:mo>
+      <mml:mrow>
+        <mml:mi>V</mml:mi>
+        <mml:mo>*</mml:mo>
+        <mml:mrow>
+          <mml:mo>(</mml:mo>
+            <mml:mrow>
+             <mml:mi>S</mml:mi>
+             <mml:mmo>/</mml:mmo> 
+              <mml:mrow>
+                <mml:mo>(</mml:mo>
+                  <mml:mrow>
+                    <mml:msub>
+                      <mml:mi>K</mml:mi>
+                      <mml:mi>m</mml:mi>
+                    </mml:msub>
+                    <mml:mo>+</mml:mo>
+                    <mml:mi>S</mml:mi>
+                  </mml:mrow>    
+                <mml:mo>)</mml:mo>    
+              </mml:mrow>
+            </mml:mrow>      
+          <mml:mo>)</mml:mo>
+        </mml:mrow>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math>
+<!-- </inlineequation> -->
+ you would enter <!-- <phrase role="math">V*(S/Km+S))</phrase> -->
+<!-- <inlineequation> -->
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>V</mml:mi>
+      <mml:mo>*</mml:mo>
+      <mml:mrow>
+        <mml:mo>(</mml:mo>
+          <mml:mrow>
+            <mml:mi>S</mml:mi>
+	    <mml:mo>/</mml:mo>
+            <mml:mrow>
+              <mml:mo>(</mml:mo>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>K</mml:mi>
+                    <mml:mi>m</mml:mi>
+                  </mml:msub>
+                  <mml:mo>+</mml:mo>
+                  <mml:mi>S</mml:mi>
+                </mml:mrow>    
+              <mml:mo>)</mml:mo>    
+            </mml:mrow>
+          </mml:mrow>      
+        <mml:mo>)</mml:mo>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math>
+<!-- </inlineequation>  -->
+into the <guilabel>Formula</guilabel> field. While you are typing the formula, Copasi already tries to parse the equation and extract the parameters. All parameters Copasi finds are listed in the <guilabel>Parameters</guilabel> table below the <guilabel>Formula</guilabel> field. Per default, all variables found are defined as being <emphasis>Parameters</emphasis>. You have to specify which of them really are parameters and which are substrates, products or modifiers. This mapping of variable names to a specific function within the equation also defines the type of reactions this function can be used for. E.g. if you define your function to contain two substrates and a modifier, you can later only use it for functions that really do have two substrates. <note><para>The reaction doesn't have to have an explicit modifier since one of the substrates could be a modifier as well!</para></note> You can also see this in the <guilabel>Application</guilabel> table below the <guilabel>Parameters</guilabel> table. Lets say you define the function <!-- <phrase role="math">A*B</phrase> -->
+<!-- <inlineequation> -->
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>A</mml:mi>
+      <mml:mo>*</mml:mo>
+      <mml:mi>B</mml:mi>
+    </mml:mrow>
+  </mml:math>  
+<!-- </inlineequation> -->
+ and define <emphasis>A</emphasis> and <emphasis>B</emphasis> to be substrates, you will see the number 2 in the <guilabel>Min</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row in the <guilabel>Application</guilabel> table. After defining this function, you will be able to use it for all chemical reaction that have at least two substrates. If you would like to limit the maximum number of substrates to lets say four, you would have to set the <guilabel>Max</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row to 4. Last but not least you have to define wether this function can be applied to reversible, irreversible or both reaction types by selecting the <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or <guilabel>General</guilabel> radio button respectively. After you commit the function, you can use it for the definition of reactions.</para>
+<para>
+<!-- list allowed operators and functions -->
+The operators and functions that Copasi knows and therefore can be used to create user defined functions are the following:
+<table frame="all"><title>Mathematical Operators and Functions</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+ <row>
+   <entry>Operator/Function</entry>
+   <entry>Description</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>log / LOG</entry>
+   <entry>natural logarithm</entry>
+ </row>
+ <row>
+   <entry>log10 / LOG10</entry>
+   <entry>logarithm for base 10</entry>
+ </row>
+ <row>
+   <entry>exp / EXP</entry>
+   <entry>exponent function</entry>
+ </row>
+ <row>
+   <entry>sin / SIN</entry>
+   <entry>sine function</entry>
+ </row>
+ <row>
+   <entry>cos / COS</entry>
+   <entry>cosine function</entry>
+ </row>
+ <row>
+   <entry>+</entry>
+   <entry>plus operator</entry>
+ </row>
+ <row>
+   <entry>-</entry>
+   <entry>minus operator</entry>
+ </row>
+ <row>
+   <entry>/</entry>
+   <entry>division operator</entry>
+ </row>
+ <row>
+   <entry>*</entry>
+   <entry>multiplication operator</entry>
+ </row>
+ <row>
+   <entry>^</entry>
+   <entry>power function</entry>
+ </row>
+ <row>
+   <entry>()</entry>
+   <entry>paranthesis for grouping of elements</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<note>
+<para>Basic function names can be written with either all lowercase letters or all letters uppercase. Mixing of upper and lowercase letters is not allowed and will lead to errors.
+</para>
+</note>
+</para>
+<para>
+<caution><para>Nesting of function definitions is not possible. A function definition may not contain any other defined functions, only the basic operators and functions listed in the table above.</para></caution>
+</para>
+</sect1>
+<sect1 id="steadyStateAnalysis" xreflabel="Doing a Steady State Analysis">
+<title>Doing a Steady State Analysis</title>
+<para>In order to run a steady state analysis, you have to navigate to the <guibutton>Task-&gt;Steady-State</guibutton> branch in the object tree.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/SteadyStateTask_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for doing calculating a stability analysis</phrase>
+ </textobject>
+ <caption>
+  <para>steady state task dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot></para>
+<para>
+In the dialog that appears there, you can make several settings that influence the way the steady state analysis is calculated. First of all, you can decide wether Copasi should calculate the Jacobian matrix and/or do a stability analysis as well by checking the corresponding checkbox. The <guilabel>task executable</guilabel> checkbox in non functional and can be ignored. In the <guilabel>Parameter value</guilabel> table you can also make several settings that influence the method for calculating the steady state itself. For a detailed description of those parameters will eventually by available in the corresponding <!-- <xref linkend=" -->methods<!-- " /> --> part of this documentation. 
+To finally run the steady state calculation, click on the <guibutton>run</guibutton> button at the bottom of the screen. After the calculation, Copasi will jump to the results widget.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/SteadyStateTask_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog that displays the results of the stability analysis</phrase>
+ </textobject>
+ <caption>
+  <para>results of the stability analysis</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The results widget for the steady state calculation contains several tabs for the individual results. The first and the second tab contain the concentrations and the particle number at the steady state respectively. The third tab contains the fluxes for the reactions at the steady state. It contains concentration fluxes as well as particle fluxes. The fourth and fifth tab only contain results if you told Copasi to calculate the Jacobian matrix. The fourth tab then shows the Jacobian for the full system and the fifth tab contains the Jacobian matrix for the reduced system. The sixth and last tab contains the results for the stability analysis if a stability analysis was requested.  
+</para>
+</sect1>
+<sect1 id="stoichiometryStateAnalysis" xreflabel="Elementary Modes and Mass Conservation">
+<title>Elementary Modes and Mass Conservation</title>
+<sect2 id="elementaryModes" xreflabel="Calculating Elementary Modes">
+<title>Calculating Elementary Modes</title>
+<para>Letting Copasi calculate the elementary modes for the system is very easy. Select the <guibutton>Tasks-&gt;Stoichiometry-&gt;Elementary Modes</guibutton> in the object tree and click on the <guibutton>run</guibutton> button in the dialog that appears.  
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ElementaryModesTask_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing the calculated elementary modes for a model</phrase>
+ </textobject>
+ <caption>
+  <para>elementary analysis dialog with results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The elementary modes found will be displayed directly in this dialog. Each elementary mode lists the reactions it consists of together with their chemical equations. 
+</para>
+</sect2>
+<sect2 id="massConservation" xreflabel="Calculating Mass Conservations">
+<title>Calculating Mass Conservations</title>
+<para>Calculating mass conservations in Copasi is also very easy. Navigate to the <guibutton>Tasks-&gt;Stoichiometry-&gt;Mass Conservation</guibutton> branch in the object tree and click on the <guibutton>recalculate</guibutton> button.</para>  
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/MassConservationTask_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing the results of a mass conservation calculation</phrase>
+ </textobject>
+ <caption>
+  <para>mass conservation task dialog with results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+If the model contains any mass conservation relations they will be listed in a table directly in this dialog. </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MassConservationTask_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/MassConservationTask_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog that shows one single mass conservation relation</phrase>
+ </textobject>
+ <caption>
+  <para>single mass conservation dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Every mass conservation relation also has a separate leave in the object tree below the current dialog. To see those, either navigate there in the object tree or double click on the entry in the table.
+</para>
+</sect2>
+</sect1>
+<sect1 id="calculatingTrajectory" xreflabel="Running a Time Course Simulation">
+<title>Running a Time Course Simulation</title>
+<para>To do a time course simulation, you have to navigate to the corresponding task branch in the object tree which is located at <guibutton>Tasks-&gt;Time Course</guibutton>.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/TimeCourseTask_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for calculating a trajectory</phrase>
+ </textobject>
+ <caption>
+  <para>trajectory task dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The dialog should be more or less self explaining. You can change several parameters for the time course, e.g. the start time, the end time and the number of intervals that is being calculated in the time range. Alternatively to setting the number of intervals, you can also set the size of the interval. If you set either one, the other will be updated accordingly. Also if you change the time range, number number of intervals will stay the same which means that the interval size will be adjusted. The checkbox labeled <guilabel>store time series in memory</guilabel> tells Copasi to keep the result of the time series calculation in memory in order to display it in a result dialog. Since this can be a large amount of data depending on the size of your model and/or the number of intervals you want Copasi to calculate, you should disable this if you think the result might not fit into memory. The consequence of disabling this checkbox is that you need to <link linkend="reportDefinitions">define a report</link> in order to store the results of the time course simulation.</para>
+<para>Copasi supports two different methods for calculating time course simulations. Copasi can use the LSODA solver to calculate the time course deterministicaly or it can use a stochastic solver which uses the <emphasis>Direct Method</emphasis> by Gillespi to calculate the time course stochastically. Depending on the solver you have chosen, you can set several parameters in the <guilabel>Parameter value</guilabel> table that influence the way the method works. A detailed explanation of those parameters will follow in the <!-- <xref linkend=" -->methods<!-- " /> --> part of this document.</para>
+<para>In case you <link linkend="reportDefinitions">defined a report definition</link>, you have to associate this report definition with a file for Copasi to be able to write the results to that file. To do that, you click on the <guibutton>Report Definition</guibutton> button. If no report definition had been defined, Copasi informs you that it created a new one and asks you if you want to edit it. If you don't know how to define a report definition, please go back to the <xref linkend="reportDefinitions" /> section. Since the report definition Copasi created automatically will be empty, it is recommended that you edit it in order to get some output. Once you are finished creating the report definition go back to the time course dialog and click on the <guibutton>Report Definition</guibutton> button again.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/TimeCourseTask_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog to associate a report with a file</phrase>
+ </textobject>
+ <caption>
+  <para>file association dialog for a time course report</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The dialog that pops up will let you choose the report you want to use (in case you created more then one) and lets you browse for a file to store the report to. Additionally, you can choose wether you want to append the report to an already existing file. The default is to create a new file, or to overwrite an existing file. If you want to append to the selected file, you have to check the <guilabel>Append</guilabel> checkbox.</para>
+<para>Once you made all the desired changes to the parameters, you can start the time course simulation by clicking on the run button. Copasi will show a progressbar while running the simulation which might take some time depending on several factors like the hardware you are using, the simulation method you chose and/or the size of your model. Once Copasi finishes the calculation, you will find the results in the report file you defined and/or in a seperate result dialog if you told Copasi to keep the results in memory.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/TimeCourseTask_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog that shows the results of the trajectory task</phrase>
+ </textobject>
+ <caption>
+  <para>trajectory results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The results dialog is located directly below the time course branch in the object tree. In this widget you can choose wether you want the results to be displayed as concentrations or as particle numbers and you have the possibility to store the results to file. The advantage a report has over writing a file in the results widget is that you can choose exactly which metabolite concentrations you want to store whereas the results dialog always stores all metabolites concentrations.  
+</para>
+<sect2 id="workingWithPlots" xreflabel="Working with Plots">
+<title>Working with Plots</title>
+<para>If you have an active plot defined while calculating a trajectory Copasi will draw the plot. The plot window has three elements. A toolbar at the top, that lets you zoom into the plot or print the plot. The actual plot and a legend at the bottom. The legend at the bottom is interactive and drawing of certain curves can be toggled by clicking on the corresponding legend entry.</para>
+<para>In order to zoom further into a plot, you have to activate the zoom function by clicking on the <guibutton>zoom</guibutton> button in the toolbar at the top of the screen. Once this function is active, you can select a rectangluar area on the plot by clicking somewhere in the plot and dragging the pointer. The plot will now zoom into the area you just selected. To go back to the original plot, right click on the plot area. <note><para>Macintosh users with single button mice use CTRL-click.</para></note></para>
+<caution><para>The qwt plot widget has some problems under Mac OS X. Especially zooming often leads to strange artifacts.</para></caution>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/PlotWindow_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog window showing a plot</phrase>
+ </textobject>
+ <caption>
+  <para>copasi plot window</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+</sect2>
+</sect1>
+<sect1 id="calculatingMCA" xreflabel="Doing a Metabolic Control Analysis">
+<title>Doing a Metabolic Control Analysis (MCA)</title>
+<para>Starting with Build 11, Copasi can calculate the Metabolic Control Analysis (MCA) for your model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic Control Analysis</guibutton>.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MCATask_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/MCATask_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for running a metabolic control analysis</phrase>
+ </textobject>
+ <caption>
+  <para>MCA task dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>In order to do a full MCA (elasticities and control coefficients), Copasi needs to look for a steady state first, otherwise Copasi can only calculate the elasticities. If you did not already <link linkend="steadyStateAnalysis">do a steady state calculation</link> right before so that the system already is in the steady state if one was found, you should enable the checkbox that tells Copasi to do a steady state calculation before calculating the MCA. Depending on wether Copasi needs to do a steady state analysis or not, you can change one or more parameters that influence the way the MCA and the steady state are calculated. The parameters for the steady state calculation or the same as for the steady state widget explained in the <xref linkend="steadyStateAnalysis" /> section. <!-- For a detailed description of the parameters, I have to refer to the corresponding sections in the methods chapter of this document. (<xref linkend="methodSteadyState" />, <xref linkend="methodMCA" />) -->
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MCATask_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/MCATask_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing the results of the metabolic control analysis</phrase>
+ </textobject>
+ <caption>
+  <para>MCA results</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+To start the calculation, you click the <guibutton>run</guibutton> button. After the calculation is finished, Copasi will automatically switch to the results dialog. The results dialog shows three tabs that contain the results for the elasticities, flux control coefficients and concentration control coefficients.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/MCATask_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/MCATask_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing the results of the MCA after no steady state was found</phrase>
+ </textobject>
+ <caption>
+  <para>MCA results at none steady state</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Depending on wether a steady state was found or not, only the elasticities tab might be enabled. Copasi will state that it could not find a steady state in a label right above the tabs. For all of the results, you can choose if you want Copasi to display them scaled or unscaled.
+</para>
+</sect1>
+<sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
+<title>Defining and Using Sliders</title>
+<para>Starting with Copasi Build 11 sliders to change parameter values interactively are available, but so far they are only available for the time course task.</para>
+<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu. Depending on what element is selected in the object tree, the dialog will be disabled. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and display the sliders that are defined for this task.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Sliders_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>linux screenshot that shows copasi with a plot window and the slider dialog</phrase>
+ </textobject>
+ <caption>
+  <para>copasi with plot window and sliders</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+If the sliders dialog is active, you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possility to define a new slider.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Sliders_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog for the definition of a slider</phrase>
+ </textobject>
+ <caption>
+  <para>slider definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a plot</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
+<para>Once you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider wheras minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maxium Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
+<!-- <inlineequation> -->
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>minor tick size</mml:mi>
+      <mml:mo>=</mml:mo>
+      <mml:mrow>
+        <mml:mo>(</mml:mo>
+          <mml:mrow>
+            <mml:mi>Maximum Value</mml:mi>
+            <mml:mo>-</mml:mo>
+            <mml:mi>Minimum Value</mml:mi>
+          </mml:mrow>      
+        <mml:mo>)</mml:mo>
+        <mml:mo>/</mml:mo>
+        <mml:mi>number of minor ticks</mml:mi>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math>
+<!-- </inlineequation> -->
+.
+Once you have made all the settings, you confirm the slider definfinition with the <guibutton>OK</guibutton> button. A new slider should appear in the slider dialog.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Sliders_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>slider dialog with one slider</phrase>
+ </textobject>
+ <caption>
+  <para>slider dialog with one slider</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Each slider shows the name of the object, the current value and the range in its label.
+The slider dialog has a checkbox called <guilabel>update automaticaly</guilabel> if this box is checked, Copasi will run the corresponding task each time you release a slider handle after moving it. If you don't want Copasi to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
+<para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connceted to. In order to do that, you have to delete the slider and define a new slider for the new object.
+</para>
+</sect1>
+<sect1 id="tutorialWizard" xreflabel="Using the Tutorial Wizard">
+<title>Using the Tutorial Wizard</title>
+<para>Copasi also includes a short tutorial on how you create a model and run a time course simulation with plotting. You can start the wizard from the <guimenu>help</guimenu> menu. The corresponding menu entry is called <guimenuitem>Simple Wizard</guimenuitem>.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Wizard_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>tutorial wizard dialog screenshot</phrase>
+ </textobject>
+ <caption>
+  <para>tutorial wizard</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The wizard leads you in six steps from creating a model to doing a time course simulation of the model and plotting the results of the time course.</para>
+<para>On the left side of the wizard there are six buttons that correspond to the six steps. When you first open the wizard, step one is selected and the widget on the right shows some documentation that you should read and possibly repeat the steps explained. Once you are finished with step 1, you can either click directly on the button that corresponds to step 2, or you can click the <guibutton>forward</guibutton> button which will always bring you to the next step. If you would like to reread something from an earlier step, you can move to the specific step with the buttons or use the <guibutton>forward</guibutton> and <guibutton>backward</guibutton> buttons to navigate.
+</para>
+</sect1>
+<sect1 id="importExport" xreflabel="Importing and Exporting SBML Files">
+<title>Importing and Exporting SBML Files</title>
+<para>Copasi is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> is converted to the Copasi model structure and vice versa.</para>
+<para>On exporting, Copasi converts its native model structure to an sbml model that is again written out using libsbml. Since the SBML model structure is converted into the Copasi model structure upon import, some of the information in the SBML file gets lots because Copasi does not support the corresponding model elements. Examples of data that gets lost are rules and events. Also all annotations get lost.</para>
+<para>Likewise, SBML does not support all of the elements of a Copasi model so some information from the Copasi model also gets lost when exporting an SBML file. For example task, reports and plot definitions are not exported to SBML.</para>
+<para>This is normaly not a big problem since the essential parts of a model normaly get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into Copasi and later export it again, it might have lost some of the original information. So if your SBML model depends on rules and events, it is not suitable for import into Copasi, although this might change in the future.</para>
+<para>Copasi sometimes will also refuse to import "incomplete" SBML files, e.g. if one or more reaction do not contain a kinetic law. This is being worked on, but you should still be aware of the fact that Copasi sometimes refuses to load a perfectly valid SBML file.
+</para>
+</sect1>
+</chapter>  
+
