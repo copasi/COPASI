@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:01:07 $
+   $Date: 2004/08/10 16:15:42 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -120,14 +120,14 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * Set name of the parameter
      * @param const string & name
-     */
-    bool setName(const std::string & name);
+     */ 
+    //bool setName(const std::string & name);
 
     /**
      * Retrieve the name of the parameter
      * @return const string & mName
-     */
-    const std::string & getName() const;
+     */ 
+    //const std::string & getName() const;
 
     /**
      * Set the value of the parameter
@@ -202,7 +202,7 @@ class CCopasiParameter: public CCopasiContainer
      */
     bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
 
-    virtual void * getReference() const;
+    //virtual void * getReference() const;
 
   private:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/08 20:59:55 $
+   $Author: ssahle $ 
+   $Date: 2004/08/10 16:15:42 $
    End CVS Header */
 
 /**
@@ -85,9 +85,9 @@ CCopasiParameter::~CCopasiParameter()
 
 const std::string & CCopasiParameter::getKey() const {return mKey;}
 
-bool CCopasiParameter::setName(const std::string & name) {return setObjectName(name);}
+//bool CCopasiParameter::setName(const std::string & name) {return setObjectName(name);}
 
-const std::string & CCopasiParameter::getName() const {return getObjectName();}
+//const std::string & CCopasiParameter::getName() const {return getObjectName();}
 
 const void * CCopasiParameter::getValue() const {return mpValue;}
 
@@ -136,8 +136,8 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup 
     return true;
   }
 
-void * CCopasiParameter::getReference() const
-{return const_cast<void *>(mpValue);}
+//void * CCopasiParameter::getReference() const
+//{return const_cast<void *>(mpValue);}
 
 void * CCopasiParameter::createValue(const void * pValue)
 {
