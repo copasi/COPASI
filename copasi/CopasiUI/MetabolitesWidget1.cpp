@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:46:27 $
+   $Date: 2004/06/30 16:04:39 $
    End CVS Header */
 
 /*******************************************************************
@@ -312,7 +312,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     }
   else
     {
-      if (metab->getStatus() != CMetab::METAB_VARIABLE)
+      if (metab->getStatus() != CMetab::METAB_VARIABLE) //TODO: should be ...==METAB_FIXED ?
         {
           metab->setStatus(CMetab::METAB_VARIABLE);
           ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
@@ -411,7 +411,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                    // Yes or Enter
+    case 0:                     // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -427,7 +427,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                    // No or Escape
+    case 1:                     // No or Escape
       break;
     }
 }

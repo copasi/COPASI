@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:46:27 $
+   $Date: 2004/06/30 16:04:39 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -86,7 +86,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   //4: Fixed
   QCheckTableItem * fixedCB;
   fixedCB = new QCheckTableItem(table, "");
-  if (CMetab::StatusName[pMetab->getStatus()] == "fixed") // not working?
+  if (pMetab->getStatus() == CMetab::METAB_FIXED)
     fixedCB->setChecked(true);
   table->setItem(row, 4, fixedCB);
 
@@ -115,16 +115,19 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
     pMetab->setInitialNumber(table->text(row, 2).toDouble());
 
   //fixed? //TODO
-  /*QString status(table->text(row, 5));
-  if ((const char *)status.utf8() != CMetab::StatusName[obj->getStatus()])
+  bool fixed = ((QCheckTableItem*)(table->item(row, 4)))->isChecked();
+  if (fixed)
     {
-      if (obj->getStatus() != CMetab::METAB_FIXED)
-        obj->setStatus(CMetab::METAB_FIXED);
-      else
-        obj->setStatus(CMetab::METAB_VARIABLE);
-
-      changed[j] = 1;
-    }*/
+      if (pMetab->getStatus() != CMetab::METAB_FIXED)
+        pMetab->setStatus(CMetab::METAB_FIXED);
+      dataModel->getModel()->setCompileFlag();
+    }
+  else
+    {
+      if (pMetab->getStatus() == CMetab::METAB_FIXED)
+        pMetab->setStatus(CMetab::METAB_VARIABLE);
+      dataModel->getModel()->setCompileFlag();
+    }
 
   //6: compartment
   QString Compartment(table->text(row, 6));
@@ -273,7 +276,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                  // Yes or Enter
+    case 0:                   // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -285,7 +288,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                  // No or Escape
+    case 1:                   // No or Escape
       break;
     }
 }
