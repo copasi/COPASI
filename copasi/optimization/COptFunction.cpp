@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 02:05:26 $
+   $Date: 2003/10/18 14:55:46 $
    End CVS Header */
 
 #include <sstream>
@@ -69,8 +69,6 @@ void COptFunction::cleanup()
 int COptFunction::Index(const std::string & name)
 {
   int i;
-  if (mParaList.size() == 0) // nothing inside the list
-    return 1;
   for (i = 0; i < mParaList.size(); i++)
     if (mParaList[i]->getCN() == name)
       return i;
@@ -80,8 +78,9 @@ int COptFunction::Index(const std::string & name)
 // add a new item inside
 int COptFunction::addItem(CCopasiObject* pObject)
 {
-  if (Index(pObject->getCN()) == C_INVALID_INDEX)
-    return C_INVALID_INDEX; //
+  //shall not exist in the list
+  if (Index(pObject->getCN()) != C_INVALID_INDEX)
+    return C_INVALID_INDEX; //cannot insert in
   mParaList.push_back(pObject);
   mMinList.push_back("-inf");
   mMaxList.push_back("+inf");
