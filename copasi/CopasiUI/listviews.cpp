@@ -40,6 +40,7 @@
 #include "mathmodel/CMathModel.h"
 #include "utilities/CMethodParameter.h"
 #include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
 #include "listviews.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
@@ -521,13 +522,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:            //Time course
+      case 23:             //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:           //Report
+      case 43:            //Report
         return tableDefinition;
         break;
       case 5:
@@ -874,7 +875,8 @@ void ListViews::loadMetabolitesToDataModel()
   for (j = 0; j < noOfMetabolites; j++)
     {
       metab = metabolites[j];
-      f = new Folder(parent, metab->getName().c_str());
+      //f = new Folder(parent, metab->getName().c_str());
+      f = new Folder(parent, CMetabNameInterface::getDisplayName(dataModel->getModel(), *metab).c_str());
       f->setID(parent->getID());
       f->setObjectKey(metab->getKey());
       dataModel->addData(parent, f);
