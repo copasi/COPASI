@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/25 15:04:42 $
+   $Author: shoops $ 
+   $Date: 2005/02/19 02:01:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -11,8 +11,6 @@
 //#include "CReportBody.h"
 #include "CReport.h"
 #include "CCopasiContainer.h"
-
-const std::vector< CCopasiContainer * > CReport::EmptyList;
 
 //////////////////////////////////////////////////
 //

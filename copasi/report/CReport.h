@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/25 15:04:42 $
+   $Author: shoops $ 
+   $Date: 2005/02/19 02:01:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -28,9 +28,6 @@ class CReportTable;
 
 class CReport : public CCopasiContainer
   {
-  public:
-    static const std::vector< CCopasiContainer * > EmptyList;
-
   private:
     std::ostream * mpOstream;
     bool mStreamOwner;
@@ -78,7 +75,7 @@ class CReport : public CCopasiContainer
      * @return bool success
      */
     bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                   EmptyList);
+                   CCopasiContainer::EmptyList);
 
     /**
      * Open the defined target stream or use the given argument
