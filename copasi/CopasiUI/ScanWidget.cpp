@@ -98,18 +98,19 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   scrollview = new QScrollView(this, 0, 0);
   vBox = new QVBox(this, 0);
-  /*for (int temp = 1; temp <= 7; temp++)
-     {
-       parameterTable = new QTable(this, "parameterTable");
-       parameterTable->setNumRows(5);
-       parameterTable->setNumCols(5);
-     parameterTable->setFocusPolicy(QWidget::WheelFocus);
-       QHeader *colHeader = parameterTable->horizontalHeader();
-       colHeader->setLabel(0, tr("Value"));
-       vBox->insertChild(parameterTable);
-       vBox->setSpacing(25);
-   }
-  */
+
+  //Just for test
+  for (int temp = 1; temp <= 7; temp++)
+    {
+      parameterTable = new QTable(this, "parameterTable");
+      parameterTable->setNumRows(5);
+      parameterTable->setNumCols(5);
+      parameterTable->setFocusPolicy(QWidget::WheelFocus);
+      QHeader *colHeader = parameterTable->horizontalHeader();
+      colHeader->setLabel(0, tr("Value"));
+      vBox->insertChild(parameterTable);
+      vBox->setSpacing(25);
+    }
 
   scrollview->addChild(vBox);
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);

@@ -135,6 +135,10 @@ SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\scan\CScanMethod.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
