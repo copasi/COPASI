@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/03 09:56:46 $
+   $Date: 2004/09/09 12:15:49 $
    End CVS Header */
 
 #include <algorithm>
@@ -133,8 +133,7 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
 }
 
 CSteadyStateMethod::ReturnCode
-CNewtonMethod::process(CState & steadyState,
-                       const CState & initialState)
+CNewtonMethod::processInternal()
 {
   //  std::ostream output;
   CTrajectoryTask * pTrajectory = NULL;
@@ -157,7 +156,8 @@ CNewtonMethod::process(CState & steadyState,
   mFactor = * (C_FLOAT64 *) getValue("Newton.DerivationFactor");
   mResolution = * (C_FLOAT64 *) getValue("Newton.Resolution");
   mScaledResolution =
-    mResolution * initialState.getModel()->getQuantity2NumberFactor();
+    mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
+  //TODO discuss scaling
 
   if (mUseIntegration || mUseBackIntegration)
     {
@@ -187,24 +187,24 @@ CNewtonMethod::process(CState & steadyState,
       pTrajectory->initialize();
     }
 
-  // make sure the steady state has the correct allocation
-  CStateX InitialState = initialState;
-  mSteadyState = InitialState;
+  // convert CState to CStateX
+  mInitialStateX = mpProblem->getInitialState();
+  mStateX = mInitialStateX;
 
-  mDimension = mSteadyState.getVariableNumberSize();
+  mDimension = mStateX.getVariableNumberSize();
+  mX = const_cast< C_FLOAT64 * >(mStateX.getVariableNumberVector().array());
 
-  mX = const_cast< C_FLOAT64 * >(mSteadyState.getVariableNumberVector().array());
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
-  mJacobian.resize(mDimension, mDimension);
+  mJacobianX.resize(mDimension, mDimension);
   mIpiv = new C_INT [mDimension];
 
   CNewtonMethod::NewtonReturnCode returnCode;
 
   if (mUseNewton && !foundSteadyState)
     {
-      returnCode = processNewton(mSteadyState, InitialState);
+      returnCode = processNewton();
       if (returnCode == CNewtonMethod::found)
         foundSteadyState = true;
     }
@@ -215,26 +215,24 @@ CNewtonMethod::process(CState & steadyState,
     {
       for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(InitialState);
+          pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
           pTrajectory->process();
-          mSteadyState = *pTrajectory->getState();
 
-          const_cast<CModel *>(mSteadyState.getModel())->
-          getDerivatives(&mSteadyState, mdxdt);
-
+          mStateX = *pTrajectory->getState();
+          const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           if (isSteadyState())
             {
               foundSteadyState = true;
               break;
             }
 
-          InitialState = mSteadyState;
-
+          //try Newton
+          mInitialStateX = mStateX;
           if (mUseNewton)
             {
-              returnCode = processNewton(mSteadyState, InitialState);
+              returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
                 {
                   foundSteadyState = true;
@@ -248,26 +246,24 @@ CNewtonMethod::process(CState & steadyState,
     {
       for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(InitialState);
+          pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
           pTrajectory->process();
-          mSteadyState = *pTrajectory->getState();
 
-          const_cast<CModel *>(mSteadyState.getModel())->
-          getDerivatives(&mSteadyState, mdxdt);
-
+          mStateX = *pTrajectory->getState();
+          const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           if (isSteadyState())
             {
               foundSteadyState = true;
               break;
             }
 
-          InitialState = mSteadyState;
-
+          //try Newton
+          mInitialStateX = mStateX;
           if (mUseNewton)
             {
-              returnCode = processNewton(mSteadyState, InitialState);
+              returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
                 {
                   foundSteadyState = true;
@@ -280,24 +276,20 @@ CNewtonMethod::process(CState & steadyState,
   pdelete(pTrajectory);
   cleanup();
 
-  steadyState = mSteadyState;
+  //steadyState = mSteadyState;
 
   return returnProcess(foundSteadyState, mFactor, mResolution);
 }
 
-CNewtonMethod::NewtonReturnCode
-CNewtonMethod::processNewton (CStateX & steadyState,
-                              CStateX & initialState)
+CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 {
   CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
   C_INT32 i, j, k;
   C_FLOAT64 nmaxrate;
 
-  const_cast<CModel *>(steadyState.getModel())->getDerivatives(&steadyState,
-      mdxdt);
-
+  const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
   if (isSteadyState())
-    returnNewton(CNewtonMethod::found, steadyState, initialState);
+    return returnNewton(CNewtonMethod::found);
 
   // Start the iterations
   C_INT info = 0;
@@ -306,12 +298,14 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
   for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
+      std::cout << "newton: " << k << std::endl << mStateX;
+
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       //      DebugFile << "Iteration: " << k << std::endl;
-      steadyState.calculateJacobian(mJacobian, std::min(mFactor, mMaxrate),
-                                    mResolution); //X
-      //      DebugFile << "Jacobien: " << mJacobian << std::endl;
+      mStateX.calculateJacobian(mJacobianX, std::min(mFactor, mMaxrate),
+                                mResolution); //X
+      std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -351,14 +345,15 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *               singular, and division by zero will occur if it is used
        *               to solve a system of equations.
        */
-      dgetrf_(&mDimension, &mDimension, mJacobian.array(),
+      dgetrf_(&mDimension, &mDimension, mJacobianX.array(),
               &mDimension, mIpiv, &info);
+
+      std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       if (info)
         {
           if (info > 0)
-            return returnNewton(CNewtonMethod::singularJacobian,
-                                steadyState, initialState);
+            return returnNewton(CNewtonMethod::singularJacobian);
           fatalError();
         }
 
@@ -408,11 +403,11 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *  info    (output) INTEGER
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
-       */ 
-      //      DebugFile << "b: " << mdxdt << std::endl;
-      dgetrs_(&T, &mDimension, &one, mJacobian.array(),
+       */
+      std::cout << "b: " << mdxdt << std::endl;
+      dgetrs_(&T, &mDimension, &one, mJacobianX.array(),
               &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
-      //      DebugFile << "a: " << mdxdt << std::endl << std::endl;
+      std::cout << "a: " << mdxdt << std::endl << std::endl;
 
       if (info)
         fatalError();
@@ -431,18 +426,16 @@ CNewtonMethod::processNewton (CStateX & steadyState,
               mH[j] /= 2;
             }
 
-          const_cast<CModel *>(steadyState.getModel())->
-          getDerivatives(&steadyState, mdxdt);
+          const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                      /* fortran style vector */
+                           mdxdt.array() - 1,                       /* fortran style vector */
                            1);
         }
 
       if (i == 32)
         {
           memcpy(mX, mXold.array(), mDimension * sizeof(C_FLOAT64));
-          const_cast<CModel *>(steadyState.getModel())->
-          getDerivatives(&steadyState, mdxdt);
+          const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
 
           if (isSteadyState())
             ReturnCode = CNewtonMethod::found;
@@ -451,7 +444,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
 
-          return returnNewton(ReturnCode, steadyState, initialState);
+          return returnNewton(ReturnCode);
         }
 
       //      for (i = 0; i < mDimension; i++)
@@ -467,21 +460,24 @@ CNewtonMethod::processNewton (CStateX & steadyState,
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
 
-  return returnNewton(ReturnCode, steadyState, initialState);
+  return returnNewton(ReturnCode);
 }
 
 CNewtonMethod::NewtonReturnCode
-CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode,
-                            CStateX & steadyState,
-                            CStateX & initialState)
+CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
   /* Make sure the model reflects the current state */
   if (returnCode == CNewtonMethod::found)
-    const_cast<CModel *>(steadyState.getModel())->
-    getDerivatives(&steadyState, mdxdt);
+    {
+      const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
+      *mpSteadyState = mStateX; //convert back to CState
+    }
   else
-    const_cast<CModel *>(initialState.getModel())->
-    getDerivatives(&initialState, mdxdt);
+    {
+      const_cast<CModel *>(mpProblem->getInitialState().getModel())
+      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
+      *mpSteadyState = mpProblem->getInitialState();
+    }
 
   return returnCode;
 }
@@ -491,7 +487,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                      /* fortran style vector */
+                   mdxdt.array() - 1,                       /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

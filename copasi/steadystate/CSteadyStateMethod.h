@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:59:04 $
+   $Author: ssahle $ 
+   $Date: 2004/09/09 12:15:49 $
    End CVS Header */
 
 /**
@@ -41,14 +41,14 @@ class CSteadyStateMethod : public CCopasiMethod
     /**
      *  A pointer to the trajectory problem.
      */
-    CSteadyStateProblem * mpProblem;
+    const CSteadyStateProblem * mpProblem;
 
-  private:
     /**
      * A pointer to the steady state
      */
     CState * mpSteadyState;
 
+  private:
     /**
      * The jacobian of the steadystate
      */
@@ -101,8 +101,8 @@ class CSteadyStateMethod : public CCopasiMethod
      *  Set a pointer to the problem.
      *  This method is used by CSteadyState 
      *  @param "CSteadyStateProblem *" problem
-     */
-    void setProblem(CSteadyStateProblem * problem);
+     */ 
+    //void setProblem(CSteadyStateProblem * problem);
 
     /**
      * This instructs the method to calculate a the steady state
@@ -114,8 +114,8 @@ class CSteadyStateMethod : public CCopasiMethod
      * @param CEigen * pEigenValues
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
-    CSteadyStateMethod::ReturnCode process(CState & steadyState,
-                                           const CState & initialState,
+    CSteadyStateMethod::ReturnCode process(CState * pState,
+                                           const CSteadyStateProblem * pProblem,
                                            CMatrix< C_FLOAT64 > & jacobian,
                                            CEigen * pEigenValues);
 
@@ -125,12 +125,10 @@ class CSteadyStateMethod : public CCopasiMethod
      * This instructs the method to calculate a the steady state
      * starting with the initialState given.
      * The steady state is returned in the object pointed to by steadyState.
-     * @param CState * steadyState
-     * @param const CState * initialState
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    process(CState & steadyState, const CState & initialState);
+    processInternal();
 
     /**
      * This function has to be called at the return of any implementation

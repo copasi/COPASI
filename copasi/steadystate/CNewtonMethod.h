@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
+   $Author: ssahle $ 
+   $Date: 2004/09/09 12:15:49 $
    End CVS Header */
 
 /**
@@ -51,10 +51,11 @@ class CNewtonMethod : public CSteadyStateMethod
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;
-    CMatrix< C_FLOAT64 > mJacobian;
+    CMatrix< C_FLOAT64 > mJacobianX;
     C_INT * mIpiv;
 
-    CStateX mSteadyState;
+    CStateX mStateX;
+    CStateX mInitialStateX;
 
     // Operations
   private:
@@ -95,8 +96,7 @@ class CNewtonMethod : public CSteadyStateMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    process(CState & steadyState,
-            const CState & initialState);
+    processInternal();
 
   private:
     /**
@@ -107,13 +107,10 @@ class CNewtonMethod : public CSteadyStateMethod
      * @param const CState * initialState
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
-    CNewtonMethod::NewtonReturnCode processNewton(CStateX & steadyState,
-        CStateX & initialState);
+    CNewtonMethod::NewtonReturnCode processNewton();
 
     CNewtonMethod::NewtonReturnCode
-    returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode,
-                 CStateX & steadyState,
-                 CStateX & initialState);
+    returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);
 
     bool isSteadyState();
 

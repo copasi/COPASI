@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:48:38 $
+   $Date: 2004/09/09 12:15:50 $
    End CVS Header */
 
 /**
@@ -42,8 +42,7 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
   mpMethod =
     CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::Newton);
   mpMethod->setObjectParent(this);
-  ((CSteadyStateMethod *) mpMethod)->
-  setProblem((CSteadyStateProblem *) mpProblem);
+  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
@@ -58,8 +57,7 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
   mpMethod =
     CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
   mpMethod->setObjectParent(this);
-  ((CSteadyStateMethod *) mpMethod)->
-  setProblem((CSteadyStateProblem *) mpProblem);
+  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 
 CSteadyStateTask::~CSteadyStateTask()
@@ -115,7 +113,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
 
-  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
 
   return success;
 }
@@ -134,8 +132,8 @@ bool CSteadyStateTask::process()
 
   mReport.printHeader();
 
-  mResult = pMethod->process(*mpSteadyState,
-                             pProblem->getInitialState(),
+  mResult = pMethod->process(mpSteadyState,
+                             pProblem,
                              mJacobian,
                              mpEigenValues);
 
