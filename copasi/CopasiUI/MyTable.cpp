@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Author: gasingh $ 
+   $Date: 2003/10/22 22:14:34 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -44,14 +44,14 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 
       switch (choice)
         {
-        case 0:         // Yes or Enter
+        case 0:          // Yes or Enter
           {
             removeSelectedRows(true);
             //True for Completely selected rows.
             break;
           }
 
-        case 1:         // No or Escape
+        case 1:          // No or Escape
           {
             // No
             break;
@@ -94,8 +94,9 @@ void MyTable::removeSelectedRows(bool full)
           noOfRowsDeleted++;
         }
     }
-
+  setProtected(true);
   setNumRows(numRows() - noOfRowsDeleted);
+  setProtected(false);
 }
 
 void MyTable::setSorting (bool b, bool wholeRows)
