@@ -123,6 +123,7 @@ public:
 
     /**
      *  get CModel
+     *  @return mModel, the private CModel pointer
      */
      CModel * GetModel() const;
 

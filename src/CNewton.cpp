@@ -6,6 +6,7 @@
 #include "CNewton.h"
 
  // BLAS
+//these 3 functions can be found from "Clsoda.h" but are private. How????
 extern "C" int idamax( int n, double *dx, int incx );
 extern "C" int dgefa( double **a, int n, int *ipvt, int *info );
 extern "C" int dgesl( double **a, int n, int *ipvt, double *b, int job );
