@@ -111,7 +111,7 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
     case CFunction::PreDefined:
 
     case CFunction::UserDefined:
-      pFunction = new CKinFunction(Function);
+      pFunction = new CKinFunction(Function, &inbuf);
       break;
 
     case CFunction::Output:
