@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:48 $
+   $Date: 2004/08/06 12:57:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.10 2004/08/05 15:31:48 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.11 2004/08/06 12:57:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -34,6 +34,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTabWidget;
+class QCheckBox;
 class PlotWindow;
 class Curve2DWidget;
 
@@ -72,6 +73,8 @@ class PlotWidget1 : public CopasiWidget
 
     QLabel* titleLabel;
     QLineEdit* titleLineEdit;
+    //QLabel* activeLabel;
+    QCheckBox* activeCheckBox;
     QFrame* line2;
     QLabel* curveSpecLabel;
     QPushButton* addCurveButton;

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:48 $
+   $Date: 2004/08/06 12:57:12 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.15 2004/08/05 15:31:48 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.16 2004/08/06 12:57:12 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,6 +25,7 @@
 #include <qradiobutton.h>
 #include <qlayout.h>
 #include <qtabwidget.h>
+#include <qcheckbox.h>
 
 #include "curve2dwidget.h"
 #include "plotwindow.h"
@@ -57,6 +58,12 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   titleLineEdit = new QLineEdit(this, "titleLineEdit");
   layout5->addWidget(titleLineEdit);
+
+  //activeLabel = new QLabel(this, "active?");
+  //layout5->addWidget(activeLabel);
+
+  activeCheckBox = new QCheckBox("active?", this, "activeCheckBox");
+  layout5->addWidget(activeCheckBox);
   layout20->addLayout(layout5);
 
   layout19 = new QVBoxLayout(0, 0, 6, "layout19");
@@ -338,6 +345,9 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
   //title
   titleLineEdit->setText(pspec->getTitle().c_str());
 
+  //active?
+  activeCheckBox->setChecked(pspec->isActive());
+
   C_INT32 oldIndex = tabs->currentPageIndex();
 
   //clear tabWidget
@@ -368,6 +378,9 @@ bool PlotWidget1::saveToPlotSpec()
 
   //title
   pspec->setTitle((const char*)titleLineEdit->text().utf8());
+
+  //active?
+  pspec->setActive(activeCheckBox->isChecked());
 
   //curves
   CPlotItem* item;

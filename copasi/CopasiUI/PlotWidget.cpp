@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:56:30 $
+   $Date: 2004/08/06 12:56:44 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -42,7 +42,7 @@ std::vector<const CCopasiObject*> PlotWidget::getObjects() const
 void PlotWidget::init()
 {
   mOT = ListViews::PLOT;
-  numCols = 3;
+  numCols = 4;
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -50,6 +50,7 @@ void PlotWidget::init()
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Curves");
+  tableHeader->setLabel(3, "active");
 
   //this restricts users from editing the number of curves
   table->setColumnReadOnly (2, true);
@@ -60,21 +61,43 @@ void PlotWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 
   if (!obj) return;
   //const CPlotSpecification* pPl = (const CPlotSpecification*)obj;
   const CPlotSpecification* pPl = dynamic_cast<const CPlotSpecification*>(obj);
+
+  // 1: name
   table->setText(row, 1, FROM_UTF8(pPl->getObjectName()));
+
+  // 2: NCurves
   table->setText(row, 2, QString::number(pPl->getItems().size()));
+
+  // 3: active?
+  QCheckTableItem * activeCB;
+  activeCB = new QCheckTableItem(table, "");
+  activeCB->setChecked(pPl->isActive());
+  table->setItem(row, 3, activeCB);
 }
 
 void PlotWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
   CPlotSpecification* pPl = (CPlotSpecification*)obj;
-  //pPl->setComment((const char *)table->text(row, 2).utf8());
+
+  // 3: active?
+  bool active = ((QCheckTableItem*)(table->item(row, 3)))->isChecked();
+  pPl->setActive(active);
 }
 
 void PlotWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != 2)
     table->setText(row, 2, "");
+
+  // 3: active?
+  if (exc != 3)
+    {
+      QCheckTableItem * activeCB;
+      activeCB = new QCheckTableItem(table, "");
+      activeCB->setChecked(true);
+      table->setItem(row, 3, activeCB);
+    }
 }
 
 QString PlotWidget::defaultObjectName() const
