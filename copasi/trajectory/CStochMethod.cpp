@@ -3,6 +3,7 @@
 #include <math.h>
 #include <vector>
 #include <numeric>
+#include <limits.h>
 #include <set>
 
 #include "utilities/utilities.h"
@@ -16,6 +17,12 @@
 #define min _cpp_min
 #define max _cpp_max
 #endif // WIN32
+
+C_INT32 CStochMethod::checkModel(CModel model)
+{
+  // Here several checks will be performed to validate the model
+  return 2; // suggest next reaction method
+}
 
 CStochMethod::CStochMethod():
     CTrajectoryMethod()
@@ -38,12 +45,20 @@ CStochMethod::~CStochMethod()
 
 const double CStochMethod::step(const double & deltaT)
 {
-  // write the current state to the model
+  // write the current state to the model:
   mpProblem->getModel()->setState(mpCurrentState);
 
-  // do several steps
-
+  // check for possible overflows:
   unsigned C_INT32 i;
+  unsigned C_INT32 imax;
+
+  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
+    if (mpProblem->getModel()->getMetabolites()[i]->getNumberInt() >= mMaxIntBeforeStep)
+      {
+        // throw exception or something like that
+      }
+
+  // do several steps:
   float time = mpCurrentState->getTime();
   float endtime = time + deltaT;
 
@@ -53,9 +68,8 @@ const double CStochMethod::step(const double & deltaT)
     }
   mpCurrentState->setTime(time);
 
-  // get back the particle numbers
+  // get back the particle numbers:
 
-  unsigned C_INT32 imax;
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVectorDbl().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
@@ -88,6 +102,9 @@ const double CStochMethod::step(const double & deltaT,
   setupDependencyGraphAndBalances();
   std::cout << mDG;
   updatePropensities();
+
+  // call init of the specific simulation method
+  initMethod(mpCurrentState->getTime());
 
   return step(deltaT);
 }
@@ -313,6 +330,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   // Create local copy of balances
   CStochBalance bb;
+  C_INT32 maxBalance = 0;
 
   mLocalBalances.resize(num_reactions);
 
@@ -329,11 +347,15 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
           if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
             {
+              if (bb.mBalance > maxBalance) maxBalance = bb.mBalance;
               mLocalBalances[i].push_back(bb);
               //std::cout << bb.mMetabAddr->getName() << "  ";
             }
         }
     }
+  mMaxBalance = maxBalance; cout << "maxbalance" << mMaxBalance << endl;
+  //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
+  mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.

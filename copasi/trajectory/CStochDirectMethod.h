@@ -22,6 +22,11 @@ class CStochDirectMethod : public CStochMethod
     CStochDirectMethod();
 
     /**
+     * Initialization.
+     */
+    void initMethod(C_FLOAT64 start_time) {};
+
+    /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */

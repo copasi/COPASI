@@ -13,6 +13,7 @@
 #include "CTrajectoryMethod.h"
 #include "CStochMethod.h"
 #include "CStochDirectMethod.h"
+#include "CStochNextReactionMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 
@@ -36,7 +37,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
       break;
 
     case stochastic:
-      Method = new CStochDirectMethod();
+      Method = new CStochNextReactionMethod();
       break;
 
     case hybrid:

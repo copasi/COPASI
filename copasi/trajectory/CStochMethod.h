@@ -46,6 +46,11 @@ class CStochMethod : private CTrajectoryMethod
     C_FLOAT64 mA0Old;
 
     /**
+     * Initialization.
+     */
+    virtual void initMethod(C_FLOAT64 start_time) = 0;
+
+    /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
@@ -116,7 +121,17 @@ class CStochMethod : private CTrajectoryMethod
     */
     C_INT32 mMaxSteps;
 
+    /**
+    * maximal increase of a particle number in one step.
+    */
+    C_INT32 mMaxBalance;
+    /**
+    * This is set to maxint - mMaxSteps*mMaxBalance
+    */
+    C_INT32 mMaxIntBeforeStep;
+
   public:
+
     /**
      *  Default constructor.
      */
@@ -133,6 +148,14 @@ class CStochMethod : private CTrajectoryMethod
     ~CStochMethod();
 
     /**
+     *  This checks if a model is suitable for stochastic simulation.
+     *  It returns a suggestion which method to use
+     *  @param model The model to check
+     *  @return 1: direct method, 2: next reaction method, -1: no stochastic simulation possible
+     */
+    static C_INT32 checkModel(CModel model);
+
+    /**
      *  This instructs the method to calculate a time step of deltaT
      *  starting with the current state, i.e., the result of the previous
      *  step.
@@ -146,6 +169,7 @@ class CStochMethod : private CTrajectoryMethod
     /**
      *  This instructs the method to calculate a time step of deltaT
      *  starting with the initialState given.
+     *  Also initialization of the method is done.
      *  The new state (after deltaT) is expected in the current state.
      *  The return value is the actual timestep taken.
      *  @param "double &" deltaT
@@ -153,8 +177,6 @@ class CStochMethod : private CTrajectoryMethod
      *  @return "const double" actualDeltaT
      */
     const double step(const double & deltaT, const CState * initialState);
-
-    // the following operations were public in Clsoda.
 
   protected:
 
