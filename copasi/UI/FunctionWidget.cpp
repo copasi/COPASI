@@ -20,7 +20,9 @@
 #include <qimage.h>
 #include <qpixmap.h>
 #include "utilities/CGlobals.h"
-#include "function/function.h"
+#include "function/CFunction.h"
+#include "function/CFunctionDB.h"
+#include "function/CKinFunction.h"
 #include "listviews.h" 
 /**
  *  Constructs a Widget for the Functions subsection of the tree for 
