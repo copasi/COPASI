@@ -20,9 +20,10 @@
 #include "CChemEqElement.h"
 #include "CCompartment.h"
 
-template < class CType > class CVector;
+//template < class CType > class CVector;
 class CWriteConfig;
 class CReadConfig;
+class CParameter;
 
 /** @dia:pos 135.488,75.5337 */
 class CReaction : public CCopasiContainer
@@ -233,6 +234,8 @@ class CReaction : public CCopasiContainer
         }
       };
 
+    //**************************************************************************
+
   private:
     /**
      *  The default scaling factor of a reaction which is 1.
@@ -304,8 +307,8 @@ class CReaction : public CCopasiContainer
 
     /**
      *  The reversibility of the reaction
-     */
-    bool mReversible;
+     */ 
+    //bool mReversible;
 
     /**
      *  A vector of links between the substrates of the reaction 
@@ -350,6 +353,11 @@ class CReaction : public CCopasiContainer
      *  This describes the mapping of the Metabs and Params to the function parameters
      */
     CFunctionParameterMap mMap;
+
+    /**
+     *  This is a list of parameter objects.
+     */
+    CCopasiVectorNS <CParameter> mParameters;
 
     /**
      *
@@ -537,6 +545,11 @@ class CReaction : public CCopasiContainer
     void setFunction(const std::string & functionName);
 
     /**
+     *  Sets a parameter value
+     */
+    void setParameter(const std::string & parameterName, C_FLOAT64 value);
+
+    /**
      *  Sets whether the reaction is reversible
      *  @param bool reversible
      */
@@ -641,7 +654,7 @@ class CReaction : public CCopasiContainer
         os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
       else
         os << "   mpFunctionCompartment == 0 " << std::endl;
-      os << "   mReversible: " << d.mReversible << std::endl;
+      //os << "   mReversible: " << d.mReversible << std::endl;
       os << "   mId2Substrates" << std::endl;
       os << d.mId2Substrates;
       os << "   mId2Products" << std::endl;
@@ -744,6 +757,12 @@ class CReaction : public CCopasiContainer
     void setScalingFactor();
 
     void initObjects();
+
+    /**
+     * creates the mParamters List of CParameter objects.
+     * mMap needs to be initialized before.
+     */
+    void initializeParameters();
   };
 
 #endif // COPASI_CReaction

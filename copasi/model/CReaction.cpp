@@ -19,6 +19,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
+#include "utilities/CMethodParameter.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -39,11 +40,12 @@ CReaction::CReaction(const std::string & name,
     mScalingFactor2(&mDefaultScalingFactor),
     mpFunctionCompartment(NULL),
     //mCompartmentNumber(1),
-    mReversible(true),
+    //mReversible(true),
     mId2Substrates("Substrates", this),
     mId2Products("Products", this),
     mId2Modifiers("Modifiers", this),
-    mId2Parameters("Parameters", this)
+    mId2Parameters("Parameters", this),
+    mParameters("Parameters", this)
     //mCallParameters(),
     //mCallParameterObjects()
 {
@@ -65,11 +67,12 @@ CReaction::CReaction(const CReaction & src,
     mScalingFactor2(src.mScalingFactor2),
     mpFunctionCompartment(src.mpFunctionCompartment),
     //mCompartmentNumber(src.mCompartmentNumber),
-    mReversible(src.mReversible),
+    //mReversible(src.mReversible),
     mId2Substrates(src.mId2Substrates, this),
     mId2Products(src.mId2Products, this),
     mId2Modifiers(src.mId2Modifiers, this),
-    mId2Parameters(src.mId2Parameters, this)
+    mId2Parameters(src.mId2Parameters, this),
+    mParameters(src.mParameters, this)
     //mCallParameters(src.mCallParameters),
     //mCallParameterObjects(src.mCallParameterObjects)
 {
@@ -125,9 +128,11 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if (mpFunction == NULL)
     return Fail = 1;
 
-  if ((Fail = configbuffer.getVariable("Reversible", "bool", &mReversible,
+  bool revers;
+  if ((Fail = configbuffer.getVariable("Reversible", "bool", &revers,
                                        CReadConfig::SEARCH)))
     return Fail;
+  mChemEq.setReversibility(revers); // TODO: this should be consistent with the ChemEq string
 
   if (configbuffer.getVersion() < "4")
     Fail = loadOld(configbuffer);
@@ -155,8 +160,8 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
     return Fail;
 
-  if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
-    return Fail;
+  /*if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
+    return Fail;*/ //TODO: check: this info should be in the chemEq
 
   Size = mId2Substrates.size();
 
@@ -255,7 +260,9 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
     return Fail;
   if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
-  if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
+
+  bool revers = mChemEq.getReversibility();
+  if ((Fail = configbuffer.setVariable("Reversible", "bool", &revers)))
     return Fail;
   Size = mChemEq.getSubstrates().size();
   if ((Fail = configbuffer.setVariable("Substrates", "C_INT32", &Size)))
@@ -335,7 +342,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   FixSName(mName, tmpstr);
   fout << "\t\t\t<reaction name=\"" << tmpstr << "\"";
   fout << " reversible=\"";
-  if (mReversible)
+  if (mChemEq.getReversibility())
     fout << "true";
   else
     fout << "false";
@@ -431,7 +438,7 @@ const C_FLOAT64 & CReaction::getScaledFlux() const
   {return mScaledFlux;}
 
 bool CReaction::isReversible() const
-  {return (mReversible == true);}
+  {return mChemEq.getReversibility();}
 
 bool CReaction::setName(const std::string & name)
 {
@@ -446,10 +453,10 @@ bool CReaction::setName(const std::string & name)
 }
 
 void CReaction::setChemEq(const std::string & chemEq)
-{mReversible = mChemEq.setChemicalEquation(chemEq);}
+{/*mReversible = */mChemEq.setChemicalEquation(chemEq);}
 
 void CReaction::setReversible(bool reversible)
-{mReversible = reversible;}
+{mChemEq.setReversibility(reversible);}
 
 void CReaction::setFunction(const std::string & functionName)
 {
@@ -458,8 +465,33 @@ void CReaction::setFunction(const std::string & functionName)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
   mMap.initializeFromFunctionParameters(mpFunction->getParameters());
+  initializeParameters();
   //initCallParameters();
   //initCallParameterObjects();
+}
+
+void CReaction::setParameter(const std::string & parameterName, C_FLOAT64 value)
+{
+  mParameters[parameterName]->setValue(value);
+}
+
+void CReaction::initializeParameters()
+{
+  unsigned C_INT32 i;
+  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
+  unsigned C_INT32 pos;
+  std::string name;
+  CParameter param;
+
+  param.setType(CParameter::DOUBLE);
+  param.setValue(1.0);
+
+  for (i = 0, pos = 0; i < imax; ++i)
+    {
+      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
+      param.setName(name);
+      mParameters.add(param);
+    }
 }
 
 void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
@@ -1142,7 +1174,7 @@ void CReaction::setReactantsFromChemEq()
   CCopasiVector <CChemEqElement > prod;
   CFunctionParameter::DataType Type = CFunctionParameter::FLOAT64;
 
-  if (mChemEq.initialized())
+  if (1) //(mChemEq.initialized()) TODO: is this necessary?
     {
       sub = mChemEq.getSubstrates();
       nsub = sub.size();
@@ -1192,11 +1224,12 @@ void CReaction::initObjects()
   //addObjectReference("FunctionParameters", mParameterDescription);
   addObjectReference("Flux", mFlux);
   addObjectReference("ScaledFlux", mScaledFlux);
-  addObjectReference("Reversible", mReversible);
+  //addObjectReference("Reversible", mReversible);
   add(&mId2Substrates);
   add(&mId2Products);
   add(&mId2Modifiers);
-  add(&mId2Parameters);
+  //add(&mId2Parameters);
+  add(&mParameters);
   //addObjectReference("CallParameters", mCallParameters);
   //addObjectReference("CallParameterObjects", mCallParameterObjects);
   //add(&mMap);
