@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:27 $
+   $Date: 2003/11/12 17:18:06 $
    End CVS Header */
 
 /********************************************************
@@ -28,6 +28,7 @@ Contact: Please contact lixu1@vt.edu.
 
 #include "ScanItemWidget.h"
 #include "ScanWidget.h"
+#include "qtUtilities.h"
 #include "utilities/CCopasiParameterGroup.h"
 
 /*
@@ -168,51 +169,23 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 }
 
 void ScanItemWidget::MaxValueChanged(const QString&)
-{
-  pParameter->setValue("max", mMax->text().toDouble());
-  /*  for verfication
-   if (pParameter->getIndex("max")==C_INVALID_INDEX)
-    return;
-   double max = pParameter->getValue("max");
-  */
-}
+{setParameterValue(pParameter, "max", mMax->text());}
 
 void ScanItemWidget::MinValueChanged(const QString&)
-{
-  pParameter->setValue("min", mMin->text().toDouble());
-}
+{setParameterValue(pParameter, "min", mMin->text());}
 
 void ScanItemWidget::DensityValueChanged(const QString&)
-{
-  pParameter->setValue("density", mDensity->text().toDouble());
-  /*  for verfication
-   if (pParameter->getIndex("density")==C_INVALID_INDEX)
-    return;
-   double toDouble = pParameter->getValue("density");
-  */
-}
+{setParameterValue(pParameter, "density", mDensity->text());}
 
 void ScanItemWidget::IndependentClicked()
 {
   if (isFirstWidget)
     mIndependent->setChecked(true);
-  pParameter->setValue("indp", mIndependent->isChecked());
-  /*  for verfication
-   if (pParameter->getIndex("indp")==C_INVALID_INDEX)
-    return;
-   bool Indp = pParameter->getValue("indp");
-  */
+  pParameter->setValue("indp", (bool) mIndependent->isChecked());
 }
 
 void ScanItemWidget::LogarithmicClicked()
-{
-  pParameter->setValue("log", mLogarithmic->isChecked());
-  /*  for verfication
-   if (pParameter->getIndex("log")==C_INVALID_INDEX)
-    return;
-   bool Indp = pParameter->getValue("log");
-  */
-}
+{pParameter->setValue("log", (bool) mLogarithmic->isChecked());}
 
 void ScanItemWidget::RegularGridClicked()
 {
@@ -282,12 +255,11 @@ void ScanItemWidget::ResetData()
 
 void ScanItemWidget::updateObject()
 {
-  mMax->setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("max")));
-  mMin->setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("min")));
-  mDensity->
-  setText(QString::number(* (C_FLOAT64 *) pParameter->getValue("density")));
+  mMax->setText(getParameterValue(pParameter, "max"));
+  mMin->setText(getParameterValue(pParameter, "min"));
+  mDensity-> setText(getParameterValue(pParameter, "density"));
   mLogarithmic->setChecked(* (bool *) pParameter->getValue("log"));
-  mIndependent->setChecked(* (bool *)pParameter->getValue("indp"));
+  mIndependent->setChecked(* (bool *) pParameter->getValue("indp"));
   switch (int(* (C_INT32 *)pParameter->getValue("gridType")))
     {
     case CScanProblem::SD_REGULAR:
@@ -316,12 +288,12 @@ void ScanItemWidget::updateObject()
 void ScanItemWidget::InitializeParameterList()
 {
   //name value type
-  pParameter->addParameter("max", CCopasiParameter::DOUBLE,
-                           (C_FLOAT64) mMax->text().toDouble());
-  pParameter->addParameter("min", CCopasiParameter::DOUBLE,
-                           (C_FLOAT64) mMin->text().toDouble());
-  pParameter->addParameter("density", CCopasiParameter::DOUBLE,
-                           (C_FLOAT64) mDensity->text().toDouble());
+  pParameter->addParameter("max", CCopasiParameter::DOUBLE);
+  setParameterValue(pParameter, "max", mMax->text());
+  pParameter->addParameter("min", CCopasiParameter::DOUBLE);
+  setParameterValue(pParameter, "min", mMin->text());
+  pParameter->addParameter("density", CCopasiParameter::UINT);
+  setParameterValue(pParameter, "density", mDensity->text());
   pParameter->addParameter("log", CCopasiParameter::BOOL,
                            (bool) mLogarithmic->isChecked());
   pParameter->addParameter("indp", CCopasiParameter::BOOL,
@@ -340,7 +312,6 @@ void ScanItemWidget::InitializeParameterList()
     pParameter->addParameter("gridType", CCopasiParameter::INT,
                              (C_INT32) CScanProblem::SD_BOLTZ);
 
-  //  pParameter->addParameter("value", 0, CCopasiParameter::DOUBLE);
   pParameter->addParameter("incr", CCopasiParameter::DOUBLE, (C_FLOAT64) 0);
   pParameter->addParameter("ampl", CCopasiParameter::DOUBLE, (C_FLOAT64) 0);
 }
@@ -390,7 +361,22 @@ void ScanItemWidget::setFirstWidget(bool isFirst)
   if (isFirst)
     {
       mIndependent->setChecked(true);
-      pParameter->setValue("indp", mIndependent->isChecked());
+      pParameter->setValue("indp", (bool) mIndependent->isChecked());
     }
   isFirstWidget = isFirst;
 }
+
+void ScanItemWidget::mousePressEvent (QMouseEvent * e)
+{QWidget::mousePressEvent(e);}
+
+void ScanItemWidget::setScanObject(CCopasiParameterGroup* pNewParameter)
+{pParameter = pNewParameter;}
+
+CCopasiParameterGroup* ScanItemWidget::getScanObject()
+{return pParameter;}
+
+void ScanItemWidget::setCopasiObject(CCopasiObject* pNewObject)
+{pObject = pNewObject;}
+
+CCopasiObject* ScanItemWidget::getCopasiObject()
+{return pObject;}
