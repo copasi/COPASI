@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/10 10:58:57 $
+   $Date: 2004/08/10 12:37:05 $
    End CVS Header */
 
 /**
@@ -3243,6 +3243,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
   mpCurrentHandler = NULL;
   //std::string name;
   std::string sType;
+  CCopasiTask::Type type;
 
   switch (mCurrentElement)
     {
@@ -3252,37 +3253,32 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       mCommon.pCurrentTask = new CCopasiTask();
       //name=mParser.getAttributeValue("name",papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      if (sType == "steadyState")
+      type = CCopasiTask::XMLNameToEnum(sType.c_str());
+      switch (type)
         {
+        case CCopasiTask::steadyState:
           mCommon.pCurrentTask = new CSteadyStateTask();
-        }
-      else if (sType == "timeCourse")
-        {
+          break;
+        case CCopasiTask::timeCourse:
           mCommon.pCurrentTask = new CTrajectoryTask();
-        }
-      else if (sType == "scan")
-        {
+          break;
+        case CCopasiTask::scan:
           mCommon.pCurrentTask = new CScanTask();
-        }
-      else if (sType == "fluxMode")
-        {
+          break;
+        case CCopasiTask::fluxMode:
           mCommon.pCurrentTask = NULL;
-        }
-      else if (sType == "optimization")
-        {
+          break;
+        case CCopasiTask::optimization:
           mCommon.pCurrentTask = NULL;
-        }
-      else if (sType == "parameterFitting")
-        {
+          break;
+        case CCopasiTask::parameterFitting:
           mCommon.pCurrentTask = NULL;
-        }
-      else
-        {
+          break;
+        default:
           fatalError();
+          break;
         }
-      return;
       break;
-
     case Report:
       if (!strcmp(pszName, "Report"))
         {
