@@ -37,6 +37,7 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
   file->setItemEnabled(nexport_menu_SBML, false);
   file->setItemEnabled(nsave_menu_id, false);
   file->setItemEnabled(nsaveas_menu_id, false);
+  msave_button->setEnabled(false);
   dataModel = NULL; // the datamodel tobe used
   splitter = NULL;  // the splittler for sepearting diff views
 
@@ -82,7 +83,10 @@ void CopasiUI3Window::slotFileSaveAs()
               "Choose a file");
 
   if (dataModel && gpsFile)
-    dataModel->saveModel((const char *)gpsFile.utf8());
+    {
+      gpsFile += ".gps";
+      dataModel->saveModel((const char *)gpsFile.utf8());
+    }
 } //cout<<"it comes in filesave as...";}
 
 /***************CopasiUI3Window::newDoc()******
