@@ -22,6 +22,7 @@
 //
 //////////////////////////////////////////////////
 CReportDefinition::CReportDefinition():
+    CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
     rComment(new CComment),
     rHeader(new CHeaderFooter),
     rFooter(new CHeaderFooter),
@@ -68,8 +69,9 @@ void CReportDefinition::setBody(CBody *body)
 //class CComment
 //
 //////////////////////////////////////////////////
-CComment::CComment():
-    cText(new CComment)
+CComment::CComment()
+//  :cText(new CComment)
+    : cText(NULL)
 {}
 
 CComment::~CComment()
@@ -94,7 +96,8 @@ void CComment::setText(CComment *text)
 CHeaderFooter::CHeaderFooter():
     hObject(new CReportObject),
     hText(new CComment),
-    hReport(new CReport)
+    // hReport(new CReport)
+    hReport(NULL)
 {}
 
 CHeaderFooter::~CHeaderFooter()
@@ -131,8 +134,10 @@ void CHeaderFooter::setReport(CReport *report)
 //
 //////////////////////////////////////////////////
 CBody::CBody():
-    bTable(new CReportTable),
-    bReport(new CReport)
+    //    bTable(new CReportTable),
+    //    bReport(new CReport)
+    bTable(NULL),
+    bReport(NULL)
 {}
 
 CBody::~CBody()
@@ -179,6 +184,7 @@ void CReportObject::setName(const std::string * name)
 //
 //////////////////////////////////////////////////
 CReport::CReport():
+    CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
     rReportDef(new CReportDefinition),
     rAppend(true),
     reportKey(CKeyFactory::add("Report", this))
