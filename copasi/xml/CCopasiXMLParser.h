@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/10 22:16:16 $
+   $Date: 2003/12/12 03:22:18 $
    End CVS Header */
 
 /**
@@ -60,8 +60,13 @@ struct SCopasiXMLParserCommon
     std::string FunctionDescription;
 
     /**
-        * Pointer to the currently processed reaction.
-        */
+     * Indicates whether the current function was already in the list;
+     */
+    bool mExistingFunction;
+
+    /**
+     * Pointer to the currently processed reaction.
+     */
     CReaction * pReaction;
 
     /**
@@ -1891,16 +1896,40 @@ class CCopasiXMLParser : public CExpat
     void popElementHandler();
 
     /**
+     * Set the list of loaded functions
+     * @param CCopasiVectorN< CFunction > * pFunctionList
+     */
+    void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
+
+    /**
      * Retrieve the list of loaded functions
-     * @return  CCopasiVectorN< CFunction > * pFunctionList
+     * @return CCopasiVectorN< CFunction > * pFunctionList
      */
     CCopasiVectorN< CFunction > * getFunctionList() const;
 
     /**
+     * Set the loaded model functions
+     * @param CModel * pModel
+     */
+    void setModel(CModel * pModel);
+
+    /**
      * Retrieve the loaded model functions
-     * @return   CModel * pModel
+     * @return CModel * pModel
      */
     CModel * getModel() const;
+
+    /**
+     * Set the list of loaded reports
+     * @param CCopasiVectorN< CReportDefinition > * pReportList
+     */
+    void setReportList(CCopasiVectorN< CReportDefinition > * pReportList);
+
+    /**
+     * Retrieve the list of loaded reports
+     * @return CCopasiVectorN< CReportDefinition > * pReportList
+     */
+    CCopasiVectorN< CReportDefinition > * CCopasiXMLParser::getReportList() const;
   };
 
 #endif // COPASI_CCopasiXMLParser

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/11 21:43:54 $
+   $Author: shoops $ 
+   $Date: 2003/12/12 03:22:18 $
    End CVS Header */
 
 /**
@@ -78,6 +78,10 @@ bool CCopasiXML::load(std::istream & is)
 
   CCopasiXMLParser Parser;
 
+  Parser.setFunctionList(mpFunctionList);
+  Parser.setModel(mpModel);
+  Parser.setReportList(mpReportList);
+
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
 
@@ -95,6 +99,7 @@ bool CCopasiXML::load(std::istream & is)
 
   mpFunctionList = Parser.getFunctionList();
   mpModel = Parser.getModel();
+  mpReportList = Parser.getReportList();
 
   return success;
 }
