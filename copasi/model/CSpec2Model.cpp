@@ -126,7 +126,7 @@ void CSpec2Model::processCompartments()
     {
       if (it->getType() == CSpecLine::CPT)
         {
-          string comp_name = it->extractCpt();
+          std::string comp_name = it->extractCpt();
           //C_FLOAT64 comp_vol = atof(it->extractRight().c_str());
           //CCompartment *compartment = new CCompartment(comp_name, comp_vol);
           //mModel->getCompartments().add(compartment);
@@ -312,7 +312,7 @@ void CSpec2Model::processDeTerms()
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       CMetab *LHSMetab = getLHSMetab(*it);
-      cout << LHSMetab->getName() << endl;
+      std::cout << LHSMetab->getName() << std::endl;
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::iterator termit = termstack.begin();
 
@@ -322,7 +322,7 @@ void CSpec2Model::processDeTerms()
           // The rate constant is used to relate this term to a particular reaction.
           std::string rate_constant = (*termit)->getRateConstant();
           num_change = (*termit)->getSign() * (*termit)->getMultiplier();
-          cout << rate_constant << " num_change: " << num_change << endl;
+          std::cout << rate_constant << " num_change: " << num_change << std::endl;
           // Find or create the CTempReaction with this rate constant
           CTempReaction *reaction = trs.findReaction(rate_constant);
 
@@ -418,9 +418,9 @@ std::vector<CDeTerm *> CSpec2Model::createTermStack(std::string str)
 
   for (; it != termstack->end(); it++)
     {
-      cout << " ----------- " << endl << **it << endl;
+      std::cout << " ----------- " << std::endl << **it << std::endl;
       (*it)->compile(mRateVector);
-      cout << **it << endl << endl;
+      std::cout << **it << std::endl << std::endl;
     }
 
   std::cout << "Done compiling\n";
@@ -488,9 +488,9 @@ void CSpec2Model::processMoieties()
           // :TODO: metab.setInitialConcentration(iconc);
           //mModel->getCompartments()[compartment_name]->addMetabolite(metab);
           mModel->addMetabolite(compartment_name, moiety_name, 0, METAB_DEPENDENT);
-          cout << "Added moiety " << moiety_name
+          std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
-          << ", " << contents << endl;
+          << ", " << contents << std::endl;
         }
     }
 }
@@ -547,11 +547,11 @@ void CSpec2Model::processFunctions()
 
           while ((type = static_cast<CDeTerm::Type>(scanner.yylex())))
             {
-              cout << type << endl;
+              std::cout << type << std::endl;
               if (type == CDeTerm::IDENT)
                 {
                   ParameterName = scanner.YYText();
-                  cout << "ParameterName: " << ParameterName << endl;
+                  std::cout << "ParameterName: " << ParameterName << std::endl;
                   try
                     {
                       //Parameters.add(ParameterName,
@@ -565,13 +565,13 @@ void CSpec2Model::processFunctions()
                     {
                       /* Parameter exists not found */
 
-                      cout << "Exception" << endl;
+                      std::cout << "Exception" << std::endl;
                       if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
                         throw Exception;
                     }
                 }
             }
-          cout << pFunction->getParameters() << endl;
+          std::cout << pFunction->getParameters() << std::endl;
           Copasi->FunctionDB.add(pFunction);
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
