@@ -95,6 +95,14 @@ PostBuild_Cmds=copy Debug\*.lib ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CChemEq.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqElement.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\model\CCompartment.cpp
 # End Source File
 # Begin Source File
@@ -117,6 +125,14 @@ SOURCE=..\..\copasi\model\CReaction.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\CChemEq.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqElement.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\copasi\model\CCompartment.h

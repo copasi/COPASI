@@ -8,7 +8,8 @@
 #include <fstream>
 #include <iomanip>
 
-#include "copasi.h"			
+#include "copasi.h"
+#include "model/CCompartment.h"			
 #include "CDatum.h"
 #include "COutputLine.h"
 

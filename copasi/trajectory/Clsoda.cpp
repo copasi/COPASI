@@ -89,8 +89,10 @@
 #include "mem.h"
 #endif
 
+#include "copasi.h"
+#include "model/CCompartment.h"
 #include "Clsoda.h"
-#include "utilities/utilities.h"
+// #include "utilities/utilities.h"
 
 #define max(a , b)  ((a) > (b) ? (a) : (b))
 #define min(a , b)  ((a) < (b) ? (a) : (b))

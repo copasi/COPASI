@@ -26,6 +26,7 @@
  */
 
 #include "copasi.h"
+#include "model/CCompartment.h"
 #include "CODESolver.h"
 
 CODESolver::CODESolver()

@@ -87,6 +87,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\matrix.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\test\test.cpp
 # End Source File
 # End Group

@@ -59,7 +59,6 @@ C_INT main(void)
 {
   cout << "Starting main program." << endl;
     
-    
   try
     {
       cout << "sizeof(long) = " << sizeof(long) << endl;
@@ -446,7 +445,7 @@ C_INT32  TestNewton(void)
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/NewtonTest.gps");
+    CReadConfig inbuf("gps\\NewtonTest.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();

@@ -18,7 +18,86 @@
 #include "trajectory/trajectory.h"
 #include "utilities/utilities.h"
 
-C_INT main(void)
+#include "VirtualBase.h"
+
+// #include "function/function.h"
+#include <typeinfo>
+
+int main(void)
+{
+  CBaseFunction baseFunction;
+  CKinFunction kinFunction;
+  CMassAction massFunction;
+  
+  CBaseFunction *pFunction;
+  pFunction = &baseFunction;
+  pFunction = &kinFunction;
+  pFunction = &massFunction;
+
+  CFunctionDB functionDB;
+  functionDB.initialize();
+  
+  // vector< CCallParameter > parameters;
+  // pFunction->calcValue(parameters);
+  
+  VirtualBase base;
+  VirtualDerived derived;
+  
+  VirtualBase *pbase;
+  	
+  cout << "char: " << typeid(char).name() << endl;
+  cout << "char *: " << typeid(char *).name() << endl;
+  cout << "base: " << typeid(base).name() << endl;
+  cout << "derived: " << typeid(derived).name() << endl;
+  
+  pbase = &base;
+  cout << "pbase (base): " << typeid(pbase).name() << endl;
+//  cout << "*pbase (base): " << typeid(*pbase).name() << endl;
+  cout << pbase->getName() << endl;
+  
+  pbase = &derived;
+  cout << "pbase (derived): " << typeid(pbase).name() << endl;
+//  cout << "*pbase (derived): " << typeid(*pbase).name() << endl;
+  cout << pbase->getName() << endl;
+  
+  return 0;
+  
+}
+
+VirtualBase::VirtualBase()
+{
+  mFirstName = "Stefan";
+  mLastName = "Hoops";
+}
+
+VirtualBase::~VirtualBase()
+{
+}
+
+
+string VirtualBase::getName() 
+{
+  return mLastName;
+}
+
+VirtualDerived::VirtualDerived()
+{
+  // mFirstName = "Stefan";
+  // mLastName = "Hoops";
+  mFullName = "Stefan Hoops";
+}
+
+VirtualDerived::~VirtualDerived()
+{
+}
+
+
+string VirtualDerived::getName() 
+{
+  return mFullName;
+}
+
+C_INT main2(void)
 {
   try
     {

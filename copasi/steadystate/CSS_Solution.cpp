@@ -402,8 +402,8 @@ C_INT32  CSS_Solution::isSteadyState( void )
   maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
  
   if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
-  return mSs_solution;
   */
+  return mSs_solution;
 }
 
 
