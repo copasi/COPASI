@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46 $ $Author: ssahle $ $Date: 2004/09/30 10:04:54 $  
+# $Revision: 1.47 $ $Author: gauges $ $Date: 2004/10/01 14:50:51 $  
 ######################################################################
 
 include(../common.pri)
@@ -155,6 +155,7 @@ HEADERS += \
            ReactionsWidget1.h \
            ScanItemWidget.h \
            ScanWidget.h \
+           SliderDialog.h \
            StateWidget.h \
            StateSubwidget.h \
            SteadyStateWidget.h \
@@ -219,6 +220,7 @@ SOURCES += \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
+           SliderDialog.cpp \
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \

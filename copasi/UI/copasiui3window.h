@@ -1,17 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/09/23 13:37:09 $
+   $Date: 2004/10/01 14:50:52 $
    End CVS Header */
 
 #include <qmainwindow.h>
 #include <qtoolbar.h>
+#include "qvariant.h"
 
 class QToolButton;
 class ListViews;
 class DataModelGUI;
+class SliderDialog;
 
 class CopasiUI3Window : public QMainWindow
   {
@@ -43,6 +45,7 @@ class CopasiUI3Window : public QMainWindow
     void slotQuit();
     void slotConvertToIrreversible();
     void closeEvent(QCloseEvent* ce);
+    void slotToggleSliders(const QVariant& variant);
 
   private:
     int closeFlag;
@@ -57,4 +60,5 @@ class CopasiUI3Window : public QMainWindow
     bool bobject_browser_open;
     void createToolBar();
     void createMenuBar();
+    SliderDialog* sliders;
   };
