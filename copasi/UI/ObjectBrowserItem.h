@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/02 15:54:36 $
+   $Author: jpahle $ 
+   $Date: 2004/02/24 15:24:53 $
    End CVS Header */
 
 /********************************************************
@@ -84,6 +84,12 @@ class ObjectBrowserItem : public QListViewItem
     {
       KeySpace = KEYBASE;
     }
+
+    static long getKeySpace()
+    {
+      return KeySpace;
+    }
+
     CBrowserObject* getObject()
     {
       return pBrowserObject;
