@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/02/26 18:58:55 $
    End CVS Header */
 
 #include <iostream>
@@ -77,11 +77,10 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
 
   this->scrollView = new QScrollView(this);
   this->scrollView->setResizePolicy(QScrollView::AutoOneFit);
-  this->scrollView->setHScrollBarMode(QScrollView::AlwaysOff);
+  //this->scrollView->setHScrollBarMode(QScrollView::AlwaysOff);
   this->sliderBox = new QVBox(0);
   this->sliderBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   this->sliderBox->layout()->setAutoAdd(false);
-  ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
   this->scrollView->addChild(this->sliderBox);
   mainLayout->addWidget(this->scrollView);
 
@@ -176,7 +175,7 @@ void SliderDialog::createNewSlider()
           else
             {
               // update the slider
-              this->sliderBox->update();
+              this->currSlider->update();
             }
         }
     }
@@ -192,14 +191,14 @@ void SliderDialog::removeSlider()
 {
   if (this->currSlider)
     {
-      CCopasiVectorN<CSlider>* pSliderList = CCopasiDataModel::Global->getGUI()->pSliderList;
+      CCopasiVector<CSlider>* pSliderList = CCopasiDataModel::Global->getGUI()->pSliderList;
       unsigned int i, maxCount = pSliderList->size();
       for (i = 0; i < maxCount;++i)
         {
           CSlider* pTmpSlider = (*pSliderList)[i];
           if (pTmpSlider == this->currSlider->getCSlider())
             {
-              pSliderList->remove(pTmpSlider->getObjectName());
+              pSliderList->remove(i);
               break;
             }
         }
@@ -245,9 +244,9 @@ void SliderDialog::addSlider(CSlider* pSlider)
   assert(pGUI);
   if (this->equivalentSliderExists(pSlider)) return;
 
-  this->currSlider = new CopasiSlider(pSlider, this);
+  this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
   this->currSlider->setHidden(true);
-  ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, this->currSlider);
+  ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 1, this->currSlider);
   this->currSlider->setHidden(false);
   connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
   connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
@@ -305,15 +304,8 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
   if (id == -1)
     {
       this->setEnabled(false);
-      QLayoutIterator it = this->sliderBox->layout()->iterator();
-      QLayoutItem* pChild = it.current();
-      while (pChild)
-        {
-          this->sliderBox->layout()->removeItem(pChild);
-          delete pChild;
-          ++it;
-          pChild = it.current();
-        }
+
+      this->clearSliderBox();
 
       this->currentFolderId = -1;
       ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
@@ -325,37 +317,30 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
     {
       this->mpDeactivatedLabel->setHidden(true);
       this->sliderBox->layout()->remove(this->mpDeactivatedLabel);
-      QLayoutIterator it = this->sliderBox->layout()->iterator();
-      QLayoutItem* pChild = it.current();
-      while (pChild)
-        {
-          this->sliderBox->layout()->removeItem(pChild);
-          delete pChild;
-          ++it;
-          pChild = it.current();
-        }
+      this->clearSliderBox();
       this->setEnabled(true);
 
       this->currentFolderId = id;
       // add the new set of sliders to the layout
       CCopasiTask* pTask = this->getTaskForFolderId(this->currentFolderId);
       assert(pTask);
-      std::vector<CSlider*>* pVector = this->getCSlidersForObject(static_cast<CCopasiObject*>(pTask), pVector);
+
+      std::vector<CSlider*>* pVector = new std::vector<CSlider*>;
+
+      pVector = this->getCSlidersForObject(static_cast<CCopasiObject*>(pTask), pVector);
 
       unsigned int i, maxCount = pVector->size();
 
       for (i = 0; i < maxCount;++i)
         {
           CSlider* pCSlider = pVector->at(i);
-          // check if any object values have changed and set the slider
-          // accordingly if possible
-          CopasiSlider* pCopasiSlider = new CopasiSlider(pCSlider, this);
+          CopasiSlider* pCopasiSlider = new CopasiSlider(pCSlider, this->sliderBox);
+          pCopasiSlider->setHidden(true);
           ((QVBoxLayout*)this->sliderBox->layout())->addWidget(pCopasiSlider);
+          pCopasiSlider->setHidden(false);
         }
-      if (maxCount > 0)
-        {
-          ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
-        }
+      pdelete(pVector);
+      ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
     }
 }
 
@@ -478,7 +463,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
   {
     SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
     assert(pGUI);
-    CCopasiVectorN<CSlider>* pSliderList = pGUI->pSliderList;
+    CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
     assert(pSliderList);
     unsigned int i, maxSliders = pSliderList->size();
     for (i = 0; i < maxSliders;++i)
@@ -491,3 +476,21 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
       }
     return pVector;
   }
+
+void SliderDialog::clearSliderBox()
+{
+  QLayoutIterator it = this->sliderBox->layout()->iterator();
+  QLayoutItem* pChild = it.current();
+  while (pChild)
+    {
+      QWidget* pWidget = pChild->widget();
+      if (pWidget)
+        {
+          pWidget->setHidden(true);
+        }
+      this->sliderBox->layout()->removeItem(pChild);
+      pdelete(pChild);
+      ++it;
+      pChild = it.current();
+    }
+}

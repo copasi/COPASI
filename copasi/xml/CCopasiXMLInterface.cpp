@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/24 09:53:47 $
+   $Date: 2005/02/26 18:58:55 $
    End CVS Header */
 
 /**
@@ -22,12 +22,19 @@
 #include "report/CReportDefinition.h"
 #include "plot/CPlotSpecification.h"
 #include "CCopasiXMLParser.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/CSlider.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI():
     pSliderList(NULL)
-{}
+{
+  this->pSliderList = new CCopasiVector<CSlider>;
+}
 
-SCopasiXMLGUI::~SCopasiXMLGUI() {}
+SCopasiXMLGUI::~SCopasiXMLGUI()
+{
+  pdelete(pSliderList);
+}
 
 void encodeNONE(const char & chr, std::ostringstream & xml)
 {

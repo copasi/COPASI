@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/25 01:50:48 $
+   $Author: gauges $ 
+   $Date: 2005/02/26 18:58:55 $
    End CVS Header */
 
 /**
@@ -5289,7 +5289,7 @@ void CCopasiXMLParser::ListOfSlidersElement::start(const XML_Char *pszName,
     case ListOfSliders:
       if (strcmp(pszName, "ListOfSliders")) fatalError();
       if (!mCommon.pGUI->pSliderList)
-        mCommon.pGUI->pSliderList = new CCopasiVectorN< CSlider >;
+        mCommon.pGUI->pSliderList = new CCopasiVector< CSlider >;
       break;
 
     case Slider:

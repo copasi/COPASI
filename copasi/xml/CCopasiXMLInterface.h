@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 02:58:08 $
+   $Author: gauges $ 
+   $Date: 2005/02/26 18:58:55 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 #include "copasi.h"
 
 class CModel;
+template <class CType> class CCopasiVector;
 template <class CType> class CCopasiVectorN;
 class CFunction;
 class CCopasiTask;
@@ -62,7 +63,7 @@ class SCopasiXMLGUI
      * Pointer to a vector of sliders which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CSlider > * pSliderList;
+    CCopasiVector< CSlider > * pSliderList;
   };
 
 class CCopasiXMLInterface
