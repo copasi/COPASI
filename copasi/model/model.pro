@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: ssahle $ $Date: 2003/07/24 11:27:30 $  
+# $Revision: 1.5 $ $Author: ssahle $ $Date: 2003/08/04 09:45:06 $  
 ######################################################################
 
 LIB = model
@@ -8,6 +8,7 @@ include(../lib.pri)
 # Input
 HEADERS += CChemEq.h \
            CChemEqElement.h \
+           CChemEqInterface.h \
            CCompartment.h \
            CDeTerm.h \
            CMetab.h \
@@ -23,6 +24,7 @@ HEADERS += CChemEq.h \
            
 SOURCES += CChemEq.cpp \
            CChemEqElement.cpp \
+           CChemEqInterface.cpp \
            CCompartment.cpp \
            CDeTerm.cpp \
            CMetab.cpp \
