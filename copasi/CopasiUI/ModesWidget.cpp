@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/26 21:51:51 $
+   $Date: 2004/09/27 21:53:57 $
    End CVS Header */
 
 /*******************************************************************
@@ -58,26 +58,17 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
 
   connect(listView, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
+
+  loadModes();
 }
 
 void ModesWidget::loadModes()
 {
   listView->clear();
-  // Clearing the listview
-  /*QListViewItem* item = listView->firstChild();
-  QListViewItem* oldItem;
-  while (item)
-    {
-      listView->takeItem(item);
-      oldItem = item;
-      item = item->nextSibling();
-      delete oldItem;
-    }*/
 
   CModel* model = dataModel->getModel();
   QListViewItem* item;
 
-  /***CL ***/ // fill table with new values
   if (modes)
     {
       unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
@@ -155,13 +146,13 @@ bool ModesWidget::update(ListViews::ObjectType C_UNUSED(objectType),
 
   //TODO: only if necessary
 
-  pdelete(modes);
-  loadModes();
+  //pdelete(modes);
+  //loadModes();
   return true;
 }
 
 bool ModesWidget::enter(const std::string & C_UNUSED(key))
 {
-  loadModes();
+  //loadModes();
   return true;
 }
