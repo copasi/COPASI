@@ -295,44 +295,81 @@ void ReactionsWidget1::slotBtnOKClicked()
   if (pReaction->setName(LineEdit1->text().latin1()))
     name = LineEdit1->text();
 
-  pReaction->setChemEq(LineEdit1->text().latin1());
+  pReaction->setChemEq(LineEdit2->text().latin1());
   pReaction->setFunction(ComboBox1->currentText().latin1());
+
   CCopasiVector< CReaction::CId2Metab > & Substrates =
     pReaction->getId2Substrates();
+  Substrates.cleanup();
   CCopasiVector< CReaction::CId2Metab > & Products =
     pReaction->getId2Products();
+  Products.cleanup();
   CCopasiVector< CReaction::CId2Metab > & Modifiers =
     pReaction->getId2Modifiers();
+  Modifiers.cleanup();
   CCopasiVector< CReaction::CId2Param > & Parameters =
     pReaction->getId2Parameters();
+  Parameters.cleanup();
 
   const CFunctionParameters & Variables =
     pReaction->getFunction().getParameters();
 
   unsigned C_INT32 i, imax = Variables.size();
+  unsigned C_INT32 j, jmax;
+  unsigned C_INT32 l;
   CReaction::CId2Metab Metabolite;
   CReaction::CId2Param Parameter;
   const CCopasiVectorN< CMetab > & MetaboliteList = mModel->getMetabolites();
-  for (i = 0; i < imax; i++)
+
+  std::string ThisUsage;
+  for (i = 0, l = 0; i < imax; i++, l++)
     {
-      if (Variables[i]->getUsage() == "PARAMETER")
+      ThisUsage = Variables[i]->getUsage();
+      if (ThisUsage == "PARAMETER")
         {
-          Parameter.setIdentifierName(table->verticalHeader()->label(i).latin1());
-          Parameter.setValue(table->text(i, 0).toDouble());
+          Parameter.setIdentifierName(table->verticalHeader()->label(l).latin1());
+          Parameter.setValue(table->text(l, 0).toDouble());
           Parameters.add(Parameter);
         }
       else
         {
-          Metabolite.setIdentifierName(table->verticalHeader()->label(i).latin1());
-          Metabolite.setMetaboliteName(table->text(i, 0).latin1());
-          Metabolite.setCompartmentName(MetaboliteList[table->text(i, 0).latin1()]->getCompartment()->getName());
+          if (Variables[i]->getType() < CFunctionParameter::VINT32)
+            {
+              Metabolite.setIdentifierName(table->verticalHeader()->label(l).latin1());
+              Metabolite.setMetaboliteName(table->text(l, 0).latin1());
+              Metabolite.setCompartmentName(MetaboliteList[table->text(l, 0).latin1()]->getCompartment()->getName());
 
-          if (Variables[i]->getUsage() == "SUBSTRATE")
-            Substrates.add(Metabolite);
-          else if (Variables[i]->getUsage() == "PRODUCT")
-            Products.add(Metabolite);
-          else if (Variables[i]->getUsage() == "MODIFIER")
-            Modifiers.add(Metabolite);
+              if (ThisUsage == "SUBSTRATE")
+                Substrates.add(Metabolite);
+              else if (ThisUsage == "PRODUCT")
+                Products.add(Metabolite);
+              else if (ThisUsage == "MODIFIER")
+                Modifiers.add(Metabolite);
+            }
+          else
+            {
+              if (ThisUsage == "SUBSTRATE")
+                for (j = 0, jmax = 0; j < pReaction->getChemEq().getSubstrates().size(); j++)
+                  jmax += pReaction->getChemEq().getSubstrates()[j]->getMultiplicity();
+              else if (ThisUsage == "PRODUCT")
+                for (j = 0, jmax = 0; j < pReaction->getChemEq().getProducts().size(); j++)
+                  jmax += pReaction->getChemEq().getProducts()[j]->getMultiplicity();
+
+              for (j = 0; j < jmax; j++)
+                {
+                  Metabolite.setIdentifierName(table->verticalHeader()->label(l).latin1());
+                  Metabolite.setMetaboliteName(table->text(l, 0).latin1());
+                  Metabolite.setCompartmentName(MetaboliteList[table->text(l, 0).latin1()]->getCompartment()->getName());
+
+                  if (ThisUsage == "SUBSTRATE")
+                    Substrates.add(Metabolite);
+                  else if (ThisUsage == "PRODUCT")
+                    Products.add(Metabolite);
+
+                  l++;
+                }
+              l--;
+            }
         }
     }
 
@@ -532,8 +569,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         }
       else if (VariableList[i].second == "PARAMETER")
         {
-          if (HaveParameters)
-            table->setText(i, 0, QString::number(pReaction->getId2Parameters()[VariableList[i].first.latin1()]->getValue()));
+          if (HaveParameters &&
+              (j = pReaction->getId2Parameters().getIndex(VariableList[i].first.latin1())) != C_INVALID_INDEX)
+            table->setText(i, 0, QString::number(pReaction->getId2Parameters()[j]->getValue()));
           else
             table->setText(i, 0, QString::number(1.0));
         }
