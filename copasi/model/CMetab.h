@@ -251,6 +251,11 @@ class CMetab
      *
      */
     C_INT16 isValidName();
+
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CMetab & d);
   };
 
 class CMetabOld

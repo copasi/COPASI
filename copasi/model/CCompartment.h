@@ -160,6 +160,11 @@ class CCompartment
      *
      */
     C_INT16 isValidName() const;
+
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CCompartment & d);
   };
 
 #endif // COPASI_CCompartment
