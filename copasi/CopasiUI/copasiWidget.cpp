@@ -6,8 +6,6 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-int CopasiWidget::maxMinWidth = 0;
-int CopasiWidget::maxMinHeight = 0;
 int CopasiWidget::realMinHeight = 0;
 int CopasiWidget::realMinWidth = 0;
 
@@ -43,8 +41,6 @@ void CopasiWidget::resize (int w, int h)
     }
   //after initialization
   //realMinWidth and realMinHeight are set,
-  //   QWidget* qParent=topLevelWidget();
-  //    QWidget::resize(topLevelWidget()->width(), topLevelWidget()->height());
   QWidget::resize(w, h);
 }
 
@@ -55,11 +51,6 @@ void CopasiWidget::resizeEvent (QResizeEvent * event)
   QWidget* qParent = topLevelWidget();
   if ((qParent->size().width() < realMinWidth || qParent->size().height() < realMinHeight))
     qParent->setMinimumSize(realMinWidth, realMinHeight);
-
-  // if (w<realMinWidth)
-  //  w=realMinWidth;
-  // if (h<realMinHeight)
-  //  h=realMinHeight;
   resize(w, h);
   // QWidget::resizeEvent (event);
 }

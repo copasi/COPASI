@@ -41,7 +41,6 @@ CopasiUI3Window::CopasiUI3Window():
     msave_button(NULL),
     file(NULL)
 {
-  resize(100, 100); // to resize the screen..to fit this size
   // Set the window caption/title
   setCaption("Copasi ");
   createToolBar(); // creates a tool bar

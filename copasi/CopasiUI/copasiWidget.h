@@ -15,8 +15,6 @@ class CopasiWidget : public QWidget
   public slots:
     virtual void resize (int w, int h);
   public:
-    static int maxMinWidth;
-    static int maxMinHeight;
     static int realMinWidth;
     static int realMinHeight;
   private:
