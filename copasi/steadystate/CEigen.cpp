@@ -8,7 +8,6 @@
  *
  */
 
-
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
@@ -23,7 +22,7 @@ CEigen::CEigen()
   CONSTRUCTOR_TRACE;
   // initialise variables
   mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-    mEigen_nzero = mEigen_ncplxconj = 0;
+                                  mEigen_nzero = mEigen_ncplxconj = 0;
 
   // 15 parameters for DGEES_()
   // #1: (input) characer*1
@@ -61,11 +60,11 @@ CEigen::CEigen()
 /**
  * Deconstructor
  */
-CEigen::~CEigen() {DESTRUCTOR_TRACE;}
+CEigen::~CEigen() {DESTRUCTOR_TRACE; }
 
 /**
  * return the matrix
- */
+ */ 
 //TNT::Matrix < C_FLOAT64 > CEigen::getMatrix()
 //{
 //  return mMatrix;
@@ -73,25 +72,23 @@ CEigen::~CEigen() {DESTRUCTOR_TRACE;}
 
 /**
  * Set the Matrix
- */
+ */ 
 //void CEigen::setMatrix(C_INT32 rows, C_INT32 cols)
 //{
 //  mMatrix.newsize(rows, cols);
 //}
 
 //Get the max eigenvalue real part
-C_FLOAT64  CEigen::getEigen_maxrealpart()
+C_FLOAT64 CEigen::getEigen_maxrealpart()
 {
   return mEigen_maxrealpart;
 }
-
 
 //Get the max eigenvalue imaginary  part
 C_FLOAT64 CEigen::getEigen_maximagpart()
 {
   return mEigen_maximagpart;
 }
-
 
 // Get the number of zero eigenvalues
 C_FLOAT64 CEigen::getEigen_nzero()
@@ -111,7 +108,6 @@ C_FLOAT64 CEigen::getEigen_hierarchy()
   return mEigen_hierarchy;
 }
 
-
 //initialize variables for eigenvalue calculations
 //
 void CEigen::initialize()
@@ -119,16 +115,16 @@ void CEigen::initialize()
   cleanup();
 
   mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-  mEigen_nzero = mEigen_ncplxconj = 0;
+                                  mEigen_nzero = mEigen_ncplxconj = 0;
 
-  mLDA = mN>1 ? mN : 1;
-  mA = new C_FLOAT64[mLDA*mLDA];
+  mLDA = mN > 1 ? mN : 1;
+  mA = new C_FLOAT64[mLDA * mLDA];
 
   mEigen_r = new C_FLOAT64[mN];
   mEigen_i = new C_FLOAT64[mN];
 
-  mLWork = mN > 1365 ? mN * 3: 4096;
-  mWork = new C_FLOAT64[mN];
+  mLWork = mN > 1365 ? mN * 3 : 4096;
+  mWork = new C_FLOAT64[mLWork];
 }
 
 void CEigen::cleanup()
@@ -147,31 +143,32 @@ void CEigen::CalcEigenvalues(C_FLOAT64 & SSRes,
 
   mN = ss_jacob.num_rows();
   initialize();
-  
+
   // copy the jacobian into mA
-  for (i=0; i<mN; i++)
-    for (j=0; j<mN; j++)
-      mA[i*mN+j] = ss_jacob[i][j];
+  for (i = 0; i < mN; i++)
+    for (j = 0; j < mN; j++)
+      mA[i*mN + j] = ss_jacob[i][j];
 
   // calculate the eigenvalues
   //res = dgees_(&mJobvs,
   dgees_(&mJobvs,
          &mSort,
-         NULL, // mSelect,           //NULL,
-         &mN,                //&n,
+         NULL,  // mSelect,           //NULL,
+         &mN,                 //&n,
          mA,
          & mLDA,
-         & mSdim,        // output
+         & mSdim,         // output
          mEigen_r,
          mEigen_i,
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,            //NULL
+         mBWork,             //NULL
          &mInfo);            //output
-  if (mInfo) fatalError();
-  
+  if (mInfo)
+    fatalError();
+
   statistics(SSRes);
 }
 
@@ -182,16 +179,17 @@ void CEigen::statistics(C_FLOAT64 SSRes)
   C_FLOAT64 distt, maxt, tott;
 
   // sort the eigenvalues
-  quicksort(mEigen_r, mEigen_i, 0, mN-1);
+  quicksort(mEigen_r, mEigen_i, 0, mN - 1);
 
   // calculate various eigenvalue statistics
   mEigen_maxrealpart = mEigen_r[0];
   mEigen_maximagpart = fabs(mEigen_i[0]);
 
-  for (i=0; i<mN; i++)
+  for (i = 0; i < mN; i++)
     {
       // for the largest real part
-      if (mEigen_r[i] > mEigen_maxrealpart) mEigen_maxrealpart = mEigen_r[i];
+      if (mEigen_r[i] > mEigen_maxrealpart)
+        mEigen_maxrealpart = mEigen_r[i];
       // for the largest imaginary part
       if (fabs(mEigen_i[i]) > mEigen_maximagpart)
         mEigen_maximagpart = fabs(mEigen_i[i]);
@@ -199,9 +197,11 @@ void CEigen::statistics(C_FLOAT64 SSRes)
       if (fabs(mEigen_r[i]) > SSRes)
         {
           // positive real part
-          if (mEigen_r[i]>=SSRes) mEigen_nposreal++;
+          if (mEigen_r[i] >= SSRes)
+            mEigen_nposreal++;
           // negative real part
-          if (mEigen_r[i]<=-SSRes) mEigen_nnegreal++;
+          if (mEigen_r[i] <= -SSRes)
+            mEigen_nnegreal++;
           if (fabs(mEigen_i[i]) > SSRes)
             {
               // complex
@@ -227,45 +227,51 @@ void CEigen::statistics(C_FLOAT64 SSRes)
             }
         }
     }
-  
+
   if (mEigen_nposreal > 0)
     {
-      if (mEigen_r[0] > fabs(mEigen_r[mN-1])) mx = 0; else mx = mN-1;
+      if (mEigen_r[0] > fabs(mEigen_r[mN - 1]))
+        mx = 0;
+      else
+        mx = mN - 1;
       if (mEigen_nposreal == mN)
-        mn = mEigen_nposreal-1;
-      else if (mEigen_r[mEigen_nposreal-1] < fabs(mEigen_r[mEigen_nposreal]))
-        mn = mEigen_nposreal-1; 
-      else mn = mEigen_nposreal;
+        mn = mEigen_nposreal - 1;
+      else if (mEigen_r[mEigen_nposreal - 1] < fabs(mEigen_r[mEigen_nposreal]))
+        mn = mEigen_nposreal - 1;
+      else
+        mn = mEigen_nposreal;
     }
   else
     {
-      mx = mN-1; // index of the largest absolute real part
+      mx = mN - 1; // index of the largest absolute real part
       mn = 0; // index of the smallest absolute real part
     }
 
   mEigen_stiffness = fabs(mEigen_r[mx]) / fabs(mEigen_r[mn]);
 
-  maxt = tott = fabs(1/mEigen_r[mn]);
+  maxt = tott = fabs(1 / mEigen_r[mn]);
   distt = 0.0;
-  for (i=1; i<mN; i++)
-    if(i!=mn)
+  for (i = 1; i < mN; i++)
+    if (i != mn)
       {
-        distt += maxt - fabs(1/mEigen_r[i]);
-        tott += fabs(1/mEigen_r[i]);
+        distt += maxt - fabs(1 / mEigen_r[i]);
+        tott += fabs(1 / mEigen_r[i]);
       }
-  mEigen_hierarchy = distt / tott / (mN-1);
+  mEigen_hierarchy = distt / tott / (mN - 1);
 }
 
 // routines for sorting one matrix taking along another one
 // useful to sort complex numbers by their real or imaginary parts
 C_INT32 CEigen::qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
 {
-  C_INT32 done=0, i=p, j=r;
-  C_FLOAT64 a, b, x=A[p];
+  C_INT32 done = 0, i = p, j = r;
+  C_FLOAT64 a, b, x = A[p];
   while (!done)
     {
-      while ((A[j] <= x) && (j > p)) j--;
-      while ((A[i] > x) && (i < r)) i++;
+      while ((A[j] <= x) && (j > p))
+        j--;
+      while ((A[i] > x) && (i < r))
+        i++;
       if (i < j)
         {
           a = A[i];
@@ -291,7 +297,7 @@ void CEigen::quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
     {
       q = qs_partition(A, B, p, r);
       quicksort(A, B, p, q);
-      quicksort(A, B, q+1, r);
+      quicksort(A, B, q + 1, r);
     }
 }
 
