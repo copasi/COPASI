@@ -7,12 +7,6 @@ MyTable::MyTable(QWidget * parent, const char * name)
   deleteConfirmation = true;
 }
 
-MyTable::MyTable(int numRows, int numCols, QWidget * parent, const char * name)
-    : StretchTable (numRows, numCols, parent, name)
-{
-  deleteConfirmation = true;
-}
-
 /*void MyTable::mousePressEvent(QMouseEvent *mpe)
 {
  QMessageBox::information(this, "Application name",
@@ -42,14 +36,14 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 
       switch (choice)
         {
-        case 0:     // Yes or Enter
+        case 0:      // Yes or Enter
           {
             removeSelectedRows(true);
             //True for Completely selected rows.
             break;
           }
 
-        case 1:     // No or Escape
+        case 1:      // No or Escape
           {
             // No
             break;
