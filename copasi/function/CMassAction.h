@@ -20,19 +20,27 @@ class CMassAction : public CFunction
     // Operations
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMassAction();
+    CMassAction(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
+     * Copy constructor
+     * @param "const CFunction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMassAction(const CFunction & src);
+    CMassAction(const CFunction & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Specified constructor
+     * Specified constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMassAction(const TriLogic & reversible);
+    CMassAction(const TriLogic & reversible,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

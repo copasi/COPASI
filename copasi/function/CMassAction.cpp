@@ -9,16 +9,25 @@
 #include "CMassAction.h"
 
 #define COPASI_TRACE_CONSTRUCTION
-CMassAction::CMassAction() : CFunction()
+CMassAction::CMassAction(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::MassAction);
 }
 
-CMassAction::CMassAction(const CFunction & src) : CFunction(src)
+CMassAction::CMassAction(const CFunction & src,
+                         const CCopasiContainer * pParent):
+    CFunction(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
-CMassAction::CMassAction(const TriLogic & reversible) : CFunction()
+CMassAction::CMassAction(const TriLogic & reversible,
+                         const CCopasiContainer * pParent):
+    CFunction((reversible == TriTrue) ?
+              "Mass action (reversible)" :
+              "Mass action (irreversible)",
+              pParent)
 {
   CONSTRUCTOR_TRACE;
   if (reversible != TriFalse && reversible != TriTrue)
@@ -36,7 +45,7 @@ CMassAction::CMassAction(const TriLogic & reversible) : CFunction()
 
   if (isReversible() == TriTrue)
     {
-      setName("Mass action (reversible)");
+      // setName("Mass action (reversible)");
       setDescription("k1 * PRODUCT <substrate_i> "
                      "- k2 * PRODUCT <product_j>");
       getParameters().add("k2",
@@ -48,7 +57,7 @@ CMassAction::CMassAction(const TriLogic & reversible) : CFunction()
     }
   else
     {
-      setName("Mass action (irreversible)");
+      // setName("Mass action (irreversible)");
       setDescription("k1 * PRODUCT <substrate_i>");
     }
 }
@@ -110,29 +119,29 @@ std::string CMassAction::getSBMLString(const CCallParameters & callParameterName
 }
 
 C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
-{
-  unsigned C_INT32 i, imax;
-  C_FLOAT64 **Factor;
-  C_FLOAT64 Substrates = 0.0, Products = 0.0;
-
-  imax = ((std::vector< C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
-  if (imax)
   {
-    Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
-      Factor =
-        &*((std::vector< C_FLOAT64*>*)callParameters[1])->begin();   // first substr.
+    unsigned C_INT32 i, imax;
+    C_FLOAT64 **Factor;
+    C_FLOAT64 Substrates = 0.0, Products = 0.0;
 
-      for (i = 0; i < imax; i++)
-        Substrates *= **(Factor++);
-    }
+    imax = ((std::vector< C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
+    if (imax)
+      {
+        Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
+        Factor =
+          &*((std::vector< C_FLOAT64*>*)callParameters[1])->begin();   // first substr.
 
-  if (isReversible() == TriFalse)
-  return Substrates;
+        for (i = 0; i < imax; i++)
+          Substrates *= **(Factor++);
+      }
 
-  imax = ((std::vector< C_FLOAT64 *> *)callParameters[3])->size();   // NoProducts
-  if (imax)
-    {
-      Products = *(C_FLOAT64 *) callParameters[2];             // k2
+    if (isReversible() == TriFalse)
+      return Substrates;
+
+    imax = ((std::vector< C_FLOAT64 *> *)callParameters[3])->size();   // NoProducts
+    if (imax)
+      {
+        Products = *(C_FLOAT64 *) callParameters[2];             // k2
         Factor =
           &*((std::vector< C_FLOAT64*>*)callParameters[3])->begin();   // first product
 
@@ -140,30 +149,30 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
           Products *= **(Factor++);
       }
 
-  return Substrates - Products;
-}
+    return Substrates - Products;
+  }
 
 bool CMassAction::dependsOn(const void * parameter,
                             const CCallParameters & callParameters) const
-{
-  if (parameter == callParameters[0]) return true;
+  {
+    if (parameter == callParameters[0]) return true;
 
-  std::vector< C_FLOAT64 * >::const_iterator it;
-  std::vector< C_FLOAT64 * >::const_iterator end;
+    std::vector< C_FLOAT64 * >::const_iterator it;
+    std::vector< C_FLOAT64 * >::const_iterator end;
 
-  it = ((std::vector< C_FLOAT64 * > *) callParameters[1])->begin();
-  end = ((std::vector< C_FLOAT64 * > *) callParameters[1])->end();
+    it = ((std::vector< C_FLOAT64 * > *) callParameters[1])->begin();
+    end = ((std::vector< C_FLOAT64 * > *) callParameters[1])->end();
 
-  for (; it != end; it++) if (parameter == *it) return true;
+    for (; it != end; it++) if (parameter == *it) return true;
 
-      if (isReversible() == TriFalse) return false;
+    if (isReversible() == TriFalse) return false;
 
-        if (parameter == callParameters[2]) return true;
+    if (parameter == callParameters[2]) return true;
 
-          it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
-          end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
+    it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
+    end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
 
-          for (; it != end; it++) if (parameter == *it++) return true;
+    for (; it != end; it++) if (parameter == *it++) return true;
 
-              return false;
-            }
+    return false;
+  }
