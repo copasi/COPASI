@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/18 20:29:27 $
+   $Date: 2005/03/30 14:29:54 $
    End CVS Header */
 
 /**
@@ -69,7 +69,7 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 // Default constructor
 COptMethod::COptMethod():
     CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
-    mOptProblem(NULL),
+    mpOptProblem(NULL),
     //    mParameters(NULL),
     //    mParameterMin(NULL),
     //    mParameterMax(NULL),
@@ -79,7 +79,7 @@ COptMethod::COptMethod():
 COptMethod::COptMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent):
     CCopasiMethod(CCopasiTask::optimization, subType, pParent),
-    mOptProblem(NULL),
+    mpOptProblem(NULL),
     //    mParameters(NULL),
     //    mParameterMin(NULL),
     //    mParameterMax(NULL),
@@ -89,7 +89,7 @@ COptMethod::COptMethod(CCopasiMethod::SubType subType,
 COptMethod::COptMethod(const COptMethod & src,
                        const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
-    mOptProblem(src.mOptProblem),
+    mpOptProblem(src.mpOptProblem),
     //    mParameters(src.mParameters),
     //    mParameterMin(src.mParameterMin),
     //    mParameterMax(src.mParameterMax),
@@ -103,7 +103,7 @@ COptMethod::~COptMethod()
 void COptMethod::setProblem(COptProblem * problem)
 {
   assert(problem);
-  mOptProblem = problem;
+  mpOptProblem = problem;
 }
 
 // Returns True if this method is capable of handling adjustable parameter boundary
@@ -114,7 +114,7 @@ bool COptMethod::isBounded(void)
 }
 
 //virtual C_INT32 COptMethod::Optimise(C_FLOAT64 (*func) (void))
-C_INT32 COptMethod::optimise(void)
+bool COptMethod::optimise(void)
 {
-  return 0;
+  return false;
 }

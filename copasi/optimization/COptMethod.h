@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:16 $
+   $Date: 2005/03/30 14:29:54 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "utilities/CCopasiMethod.h"
 
 class COptProblem;
+class COptItem;
 template < class CType > class CVector;
 
 // YOHE: this is an abstract class that contains many virtual functions
@@ -46,18 +47,19 @@ class COptMethod : public CCopasiMethod
     //data member
   protected:
     /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
-    COptProblem * mOptProblem;        // pointer to remote problem
-
-    //These parameters are optimization parameters, not method (algm) parameters
-    //they are for the model or calculation function.
-    //Their memories are stored in COptProblem. Here are only pointers.
-    //    CVector< C_FLOAT64 > * mParameters;    // pointer to parameters
-    //    CVector< C_FLOAT64 > * mParameterMin;  // the minimum values of parameters
-    //    CVector< C_FLOAT64 > * mParameterMax;  // the maximum values of parameters
+    COptProblem * mpOptProblem;        // pointer to remote problem
 
     const bool mBounds;            // True if method accepts bounds on the parameters
 
-    //rohan: modified 7/26
+    /**
+     * A vector of pointers to the update methods for the optimization parameters
+     */
+    std::vector< UpdateMethod * > * mpSetCalculateVariable;
+
+    /**
+     * A vector of pointers to the optimization parameter
+     */
+    std::vector< COptItem * > * mpOptItem;
 
     // Operations
   private:
@@ -100,8 +102,9 @@ class COptMethod : public CCopasiMethod
      * Execute the optimization algorithm calling simulation routine 
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
+     * @ return success;
      */
-    virtual C_INT32 optimise();
+    virtual bool optimise();
 
     /**
      * Returns True if this method is capable of handling adjustable parameter 
