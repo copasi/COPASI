@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:55 $
+   $Author: ssahle $ 
+   $Date: 2004/09/20 13:36:31 $
    End CVS Header */
 
 #ifndef MYLINEEDIT_H
@@ -17,9 +17,30 @@ class MyLineEdit: public QLineEdit
   public:
     MyLineEdit(QWidget * parent = 0, const char * name = 0);
     MyLineEdit (const QString & contents, QWidget * parent, const char * name = 0);
-    void focusOutEvent (QFocusEvent *);
+    //void focusOutEvent (QFocusEvent *);
+
+    bool isChanged() const {return mChanged;};
+
   protected:
-    bool deleteConfirmation;
+    QString mOldText;
+    bool mChanged;
+    QColor mOldColor;
+    QColor mNewColor;
+
+    void process();
+    void setupWidget();
+
+  protected slots:
+    void slotLostFocus();
+    void slotReturnPressed();
+    void slotTextChanged(const QString & text);
+
+  public slots:
+    //force processing of changes in the LineEdit widget. This is
+    //needed when the ReturnPressed and LostFocus signals do not apply
+    void slotForceUpdate();
+
+    virtual void setText(const QString & text);
 
   signals:
     void edited();

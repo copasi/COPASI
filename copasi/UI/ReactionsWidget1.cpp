@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.146 $
+   $Revision: 1.147 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:48 $
+   $Date: 2004/09/20 13:36:31 $
    End CVS Header */
 
 /*********************************************************************
@@ -200,6 +200,8 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
+  LineEdit2->slotForceUpdate();
+  std::cout << "SaveToReaction " << std::endl;
   if (!mRi.isValid()) return false; //TODO: may be warn the user ?
 
   //first check if new metabolites need to be created
@@ -224,10 +226,15 @@ void ReactionsWidget1::slotBtnCancelClicked()
 {enter(objKey);}
 
 void ReactionsWidget1::slotBtnOKClicked()
-{saveToReaction();}
+{
+  LineEdit2->slotForceUpdate();
+  saveToReaction();
+}
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
+  LineEdit2->slotForceUpdate();
+
   // tell the reaction interface
   mRi.setReversibility(CheckBox->isChecked());
 
@@ -321,7 +328,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:             // Yes or Enter
+        case 0:              // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -345,7 +352,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                    // No or Escape
+        default:                     // No or Escape
           break;
         }
       //}
@@ -354,6 +361,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
+  std::cout << "FillWidget " << std::endl;
   LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
 
   LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
