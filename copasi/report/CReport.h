@@ -57,7 +57,7 @@ class CReport : public CCopasiObject
     /**
     returns the target of the Report Tag
     */
-    const std::string getTarget();
+    const std::string& getTarget();
 
     /**
     sets the reference to the report

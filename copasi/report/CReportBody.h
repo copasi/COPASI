@@ -92,7 +92,7 @@ class CReportTable
     /**
     gets the Seperator attribute of the Table tag
     */
-    inline const std::string getSeperator()
+    inline const std::string& getSeperator()
     {
       return mSeperator;
     }

@@ -51,7 +51,7 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    inline std::string getComment()
+    inline const std::string & getComment()
     {
       return mComment;
     }
@@ -84,7 +84,7 @@ class CReportDefinition : public CCopasiObject
     */
     void setReportBody(CReportBody *pNewBody);
 
-    inline std::string getKey()
+    inline std::string & getKey()
     {
       return mKey;
     }

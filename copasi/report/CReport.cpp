@@ -30,7 +30,7 @@ CReportDefinition* CReport::getReportDefinition()
 void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
-const std::string CReport::getTarget()
+const std::string& CReport::getTarget()
 {return mTarget;}
 
 void CReport::setTarget(const std::string target)

@@ -34,7 +34,7 @@ void CReportDefinitionVector::cleanup()
   mReportDefinitions.clear();
 }
 
-std::string CReportDefinitionVector::getKey()
+const std::string& CReportDefinitionVector::getKey()
 {
   return mKey;
 }

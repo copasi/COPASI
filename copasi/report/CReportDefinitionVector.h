@@ -41,7 +41,7 @@ class CReportDefinitionVector: public CCopasiContainer
 
     void cleanup();
 
-    std::string getKey();
+    const std::string& getKey();
   };
 
 #endif // !defined(AFX_REPORTDEFINITIONVECTOR_H__172081F2_7BF6_49FA_8FC7_C890F2CB1974__INCLUDED_)
