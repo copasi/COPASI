@@ -100,7 +100,8 @@ void ModelWidget::loadModel(CModel *model)
       ComboBox3->clear();
       QStringList comboEntries;
 
-      for (unsigned int temp1 = 0; mModel->TimeUnitName[temp1] != ""; temp1++)
+      unsigned int temp1;
+      for (temp1 = 0; mModel->TimeUnitName[temp1] != ""; temp1++)
         {
           comboEntries.push_front(mModel->TimeUnitName[temp1].c_str());
           //QMessageBox::information(this, "tIME uNIT", mModel->TimeUnitName[temp1].c_str());
