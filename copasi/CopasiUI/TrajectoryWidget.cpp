@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/02 20:50:25 $
+   $Author: ssahle $ 
+   $Date: 2005/03/24 16:15:16 $
    End CVS Header */
 
 /********************************************************
@@ -611,6 +611,7 @@ void TrajectoryWidget::saveTrajectoryTask()
   trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 
   //set initial state
+  CCopasiDataModel::Global->getModel()->compileIfNecessary();
   trajectoryproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   //method

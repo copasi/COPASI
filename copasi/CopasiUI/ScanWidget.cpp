@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.180 $
+   $Revision: 1.181 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:23:56 $
+   $Date: 2005/03/24 16:15:16 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -422,6 +422,7 @@ bool ScanWidget::saveScan() const
     //scrollview->updateFromWidgetList();
 
     //set initial state
+    CCopasiDataModel::Global->getModel()->compileIfNecessary();
     scanProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
     return true;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/25 01:47:52 $
+   $Author: ssahle $ 
+   $Date: 2005/03/24 16:15:16 $
    End CVS Header */
 
 /********************************************************
@@ -244,6 +244,7 @@ void SteadyStateWidget::CommitButtonClicked()
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
   assert(steadystatemethod);
 
+  CCopasiDataModel::Global->getModel()->compileIfNecessary();
   steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   bool bJacobian = taskJacobian->isChecked();
