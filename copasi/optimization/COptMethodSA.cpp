@@ -16,7 +16,8 @@
 #define FALSE 0
 #define PI 3.1415926
 
-#include "vector.h"
+#include <vector>
+
 #include "copasi.h"
 #include "COptMethod.h"
 #include "COptMethodSA.h"
@@ -148,9 +149,9 @@ C_INT32 COptMethodSA::optimise()
     {
       for (int ff = 0; ff < NumIteration; ff++) //step adjustments
         {
-          std::cout << "New iteration begins ......" << endl;
-          std::cout << "Current Temperature: " << t << endl;
-          std::cout << "Number of Temperature Change: " << NumTempChange << endl;
+          std::cout << "New iteration begins ......" << std::endl;
+          std::cout << "Current Temperature: " << t << std::endl;
+          std::cout << "Number of Temperature Change: " << NumTempChange << std::endl;
 
           for (j = 0; j < NumDirection; j++) // adjustment in all directions
             {
