@@ -26,13 +26,13 @@ ParameterTable::ParameterTable(QWidget * parent, const char * name)
   initTable();
 
   connect(this, SIGNAL(currentChanged(int, int)),
-           this, SLOT(handleCurrentCell(int, int)));
+          this, SLOT(handleCurrentCell(int, int)));
 
   connect(this, SIGNAL(valueChanged(int, int)),
-           this, SLOT(slotCellChanged(int, int)));
+          this, SLOT(slotCellChanged(int, int)));
 
   connect(this, SIGNAL(signalChanged(int, int, QString)),
-           parent, SLOT(slotTableChanged(int, int, QString)));
+          parent, SLOT(slotTableChanged(int, int, QString)));
 }
 
 void ParameterTable::initTable()
@@ -166,6 +166,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
           setItem(rowCounter, 2, item);
         }
 
+      adjustRow(rowCounter);
+
       //mLine2Index
 
       ++rowCounter;
@@ -259,11 +261,10 @@ ColorTableItem::ColorTableItem(QTable *t, EditType et, QColor c, const QString t
 }
 
 ColorTableItem::~ColorTableItem()
-{
-}
+{}
 
 void ColorTableItem::paint(QPainter *p, const QColorGroup &cg,
-                            const QRect &cr, bool selected)
+                           const QRect &cr, bool selected)
 {
   QColorGroup g(cg);
   g.setColor(QColorGroup::Base, color);
