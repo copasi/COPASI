@@ -244,6 +244,7 @@ int MetabolitesWidget1::isName(QString setValue)
 		else
 		return 0;
 		}
+return 0;
 }
 
 
