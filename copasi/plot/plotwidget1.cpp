@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.1 2003/10/14 15:08:28 huwenjun Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.2 2003/10/14 15:56:34 huwenjun Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,8 +26,8 @@
 #include "plotwindow.h"
 #include "plotspec.h"
 
-// temporary...
-#include <fstream>
+//temporary
+#include <math.h>
 
 CurveSpecScrollView::CurveSpecScrollView(QWidget * parent = 0, const char * name = 0, WFlags f = 0)
     : QScrollView(parent, name, f)
@@ -141,6 +141,27 @@ PlotWidget1::PlotWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 
   connect(deletePlotButton, SIGNAL(clicked()), this, SLOT(deletePlot()));
   connect(addPlotButton, SIGNAL(clicked()), this, SLOT(addPlot()));
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
+
+  // for the test application
+
+  // prepare the data file - 'simulates' what happens in copasi
+  targetfile.open(filename.c_str(), std::ios::in | std::ios::out | std::ios::trunc);
+
+  stepSize = 100;  // also the initial number of points
+  count = 0;
+
+  for (int i = 1; i <= stepSize; i++)
+    {
+      double temp = 0.05 * double(i);
+      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
+    }
+
+  pos = targetfile.tellp();
+
+  // a timer that controls periodic appending of data
+  QTimer* timer = new QTimer();
+  connect(timer, SIGNAL(timeout()), this, SLOT(appendData()));
+  timer->start(4000);
 }
 
 //-----------------------------------------------------------------------------
@@ -171,6 +192,9 @@ PlotWidget1::~PlotWidget1()
       delete plotWinVector[plotWinVector.size() - 1];  //always delete from the end of the vector
       plotWinVector.pop_back();
     }
+
+  // for the test application
+  targetfile.close();
 }
 
 //-----------------------------------------------------------------------------
@@ -307,16 +331,16 @@ void PlotWidget1::startPlot()
 
       // we need a file stream from somewhere...(probably this model)
       // for now this is a dummy value
-      std::fstream sourcefile;
-      sourcefile.open("plotdata", std::ios::in);
+      //std::fstream sourcefile;
+      //sourcefile.open("plotdata", std::ios::in);
 
-      PlotTaskSpec* ptspec = new PlotTaskSpec(sourcefile, titleLineEdit->text().latin1(),
+      PlotTaskSpec* ptspec = new PlotTaskSpec(targetfile, titleLineEdit->text().latin1(),
                                               vindices, crvspecs, PlotTaskSpec::PlotType(0));
 
       plotSpecVector.push_back(ptspec);
 
       // create a new window
-      PlotWindow* win = new PlotWindow(filename);
+      PlotWindow* win = new PlotWindow(targetfile);
       plotWinVector.push_back(win);
 
       win->resize(600, 360);
@@ -491,4 +515,26 @@ bool PlotWidget1::leave()
 
   //dummy
   return true;
+}
+
+//-----------------------------------------------------------------------------
+// for the test application
+
+void PlotWidget1::appendData()
+{
+  writeFile(count);
+  count++;
+}
+
+//-----------------------------------------------------------------------------
+
+void PlotWidget1::writeFile(int step)
+{
+  targetfile.seekp(pos);
+  for (int i = 1 + (step + 1) * stepSize; i <= stepSize * (step + 2); i++)
+    {
+      double temp = 0.05 * double(i);
+      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
+    }
+  pos = targetfile.tellp();
 }
