@@ -1,3 +1,5 @@
+#include "copasi.h"
+
 #include <iostream>
 #include <sstream>
 
