@@ -164,10 +164,10 @@ void SteadyStateWidget::CommitChange()
           steadystatemethod->setValue((const char *)strname.utf8(), substrate.toDouble());
           break;
         case CMethodParameter::INT:
-          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toInt());
+          steadystatemethod->setValue((const char *)strname.utf8(), (C_INT32)substrate.toInt());
           break;
         case CMethodParameter::UINT:
-          steadystatemethod->setValue((const char *)strname.utf8(), substrate.toUInt());
+          steadystatemethod->setValue((const char *)strname.utf8(), (unsigned C_INT32)substrate.toUInt());
           break;
         case CMethodParameter::BOOL:;
           steadystatemethod->setValue((const char *)strname.utf8(), bool(substrate.toUShort()));
