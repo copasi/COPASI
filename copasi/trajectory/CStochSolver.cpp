@@ -195,8 +195,9 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
   CStochBalance bal;
   C_INT32 new_num;
+  unsigned C_INT32 i;
 
-  for (unsigned C_INT32 i = 0; i < mLocalBalances[rxn].size(); i++)
+  for (i = 0; i < mLocalBalances[rxn].size(); i++)
     {
       bal = mLocalBalances[rxn][i]; // iterator?
       new_num = bal.mMetabAddr->getNumberInt() + bal.mBalance;
@@ -205,7 +206,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
   vector<C_INT32> dep_nodes = mDG.getDependents(rxn);
 
-  for (unsigned int i = 0; i < dep_nodes.size(); i++)
+  for (i = 0; i < dep_nodes.size(); i++)
     {
       unsigned int ii = dep_nodes[i];
       mAmuOld[ii] = mAmu[ii] ;
@@ -215,7 +216,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   mA0Old = mA0;
   mA0 = 0;
 
-  for (unsigned int i = 0; i < mModel->getReactions().size(); i++)
+  for (i = 0; i < mModel->getReactions().size(); i++)
     {
       mA0 += mAmu[i];
     }
@@ -320,7 +321,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   for (i = 0; i < num_reactions; i++)
     {
-      CCopasiVector<CChemEqElement> & bbb = mModel->getReactions()[i]->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> & bbb = mModel->getReactions()[i]->getChemEq().getBalances();
 
       //cout << endl << i << " : " ;
 
@@ -390,7 +391,7 @@ set
 
     // Get the balances  associated with the reaction at this index
     // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
-    CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+    const CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
     cout << reaction_index << " affects ";
 
