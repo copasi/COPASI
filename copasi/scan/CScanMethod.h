@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/04 15:17:41 $
+   $Author: shoops $ 
+   $Date: 2005/03/16 20:33:02 $
    End CVS Header */
 
 /**
@@ -31,7 +31,8 @@ class CScanItem
   protected:
     unsigned C_INT32 mNumSteps;
 
-    C_FLOAT64 * mpValue;
+    // C_FLOAT64 * mpValue;
+    CCopasiObject * mpValue;
 
     C_FLOAT64 mStoreValue;
 
@@ -48,10 +49,13 @@ class CScanItem
     unsigned C_INT32 getNumSteps() const {return mNumSteps;};
 
     void restoreValue() const
-      {if (mpValue) *mpValue = mStoreValue;};
+      {
+        if (mpValue)
+          mpValue->getObjectParent()->setValueOfNamedReference(mpValue->getObjectName(), mStoreValue);
+      };
 
     void storeValue()
-    {if (mpValue) mStoreValue = *mpValue;};
+  {if (mpValue) mStoreValue = * (C_FLOAT64 *) mpValue->getReference();};
 
     virtual
     void reset();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/04 15:17:41 $
+   $Author: shoops $ 
+   $Date: 2005/03/16 20:33:02 $
    End CVS Header */
 
 /**
@@ -75,7 +75,7 @@ CScanItem::CScanItem(const CCopasiParameterGroup* si)
   CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(tmpString);
   if (!tmpObject) {mpValue = NULL; return;}
   if (!tmpObject->isValueDbl()) {mpValue = NULL; return;}
-  mpValue = (C_FLOAT64*)tmpObject->getReference();
+  mpValue = tmpObject;
 }
 
 void CScanItem::reset()
@@ -126,12 +126,15 @@ CScanItemLinear::CScanItemLinear(const CCopasiParameterGroup* si)
 void CScanItemLinear::step()
 {
   //do something ...
-  *mpValue = mMin + mIndex * mFaktor;
+  C_FLOAT64 Value = mMin + mIndex * mFaktor;
+
   if (mLog)
-    *mpValue = exp(*mpValue);
+    Value = exp(Value);
   //the index
   if (mIndex > mNumSteps)
     mFlagFinished = true;
+
+  mpValue->getObjectParent()->setValueOfNamedReference(mpValue->getObjectName(), Value);
   ++mIndex;
 
   //std::cout << "SILinear " << mMin + (mIndex-1)*mFaktor<< std::endl;
@@ -161,6 +164,8 @@ CScanItemRandom::CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg)
 
 void CScanItemRandom::step()
 {
+  C_FLOAT64 Value;
+
   //the index
   if (mIndex > mNumSteps)
     mFlagFinished = true;
@@ -169,27 +174,28 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:  //uniform
-          *mpValue = mMin + mRg->getRandomCC() * mFaktor;
+        case 0:   //uniform
+          Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
-            *mpValue = exp(*mpValue);
+            Value = exp(Value);
           break;
 
-        case 1:  //normal
+        case 1:   //normal
           tmpF = mRg->getRandomNormal01();
-          *mpValue = mMin + tmpF * mMax;
+          Value = mMin + tmpF * mMax;
           if (mLog)
-            *mpValue = exp(*mpValue);
+            Value = exp(Value);
           break;
 
-        case 2:  //poisson
-          *mpValue = mRg->getRandomPoisson(mMin);
+        case 2:   //poisson
+          Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
           break;
         }
     }
 
+  mpValue->getObjectParent()->setValueOfNamedReference(mpValue->getObjectName(), Value);
   ++mIndex;
 }
 
