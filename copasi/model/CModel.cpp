@@ -178,6 +178,7 @@ void CModel::buildStoi()
 	      }
         }
     }
+  cout << "Stoichiometry Matrix" << endl;
   cout << mStoi << endl;
     
   return;
@@ -197,7 +198,9 @@ void CModel::lUDecomposition()
   TNT::UpperTriangularView < TNT::Matrix < C_FLOAT64 > > U(mLU);
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
 
+  cout << "U" << endl;
   cout << U << endl;
+  cout << "L" << endl;
   cout << L << endl;
 
   mMetabolitesX = mMetabolites;
@@ -230,7 +233,6 @@ void CModel::lUDecomposition()
 	  mStepsX[colLU[i]-1] = pStep;
         }
     }
-  cout << mLU << endl;
 
   return;
 }
@@ -301,6 +303,7 @@ void CModel::buildRedStoi()
 
 	mRedStoi[i][j] = Sum;
       }
+  cout << "Reduced Stoichiometry Matrix" << endl;
   cout << mRedStoi << endl;
     
   return;
@@ -309,9 +312,8 @@ void CModel::buildRedStoi()
 void CModel::buildL()
 {
   unsigned C_INT32 size = mMetabolites.size();
-  unsigned C_INT32 i, j, jmax;
+  unsigned C_INT32 i, j, jmax, k;
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
-  cout << L << endl;
   
   mL.newsize(size,size);
   jmax = (size < mSteps->size()) ? size : mSteps->size();
@@ -329,20 +331,25 @@ void CModel::buildL()
   for (j=jmax; j<size; j++)
     mL[j][j] = 1.0;
 
-  cout << mL << endl;
-  
   /* Calculate the inverse of L and store it in the upper triangular 
      part of L */
-  for (i=1; i<size; i++)
+
+  C_FLOAT64 *sum;
+  for (j=0; j<size-1;j++)
+    for (i=j+1; i<size; i++)
     {
-      mL[i-1][i] = - mL[i][i-1];
-      for (j=0; j<i-1; j++)
-	mL[j][i] = mL[i][j] - mL[i][i-1] * mL[j][i-1];
+        sum = &mL[j][i];
+        *sum = - mL[i][j];
+        for (k=j+1; k<i-1; k++)
+            // I[i][j] -= mL[i][k] * I[k][j]
+            *sum -= mL[i][k] * mL[j][k];
     }
 
+  cout << "L" << endl; 
   cout << 
-    TNT::UnitLowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL) 
+    TNT::LowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL) 
        << endl;
+  cout << "L inverse" << endl; 
   cout << 
     TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(mL)
        << endl;
@@ -382,7 +389,7 @@ void CModel::buildMoieties()
   unsigned C_INT32 jmax = imin;
   
   CMoiety Moiety;
-    
+  
   mMoieties->cleanup();
 
   for (i=imin; i<imax; i++)
@@ -394,8 +401,8 @@ void CModel::buildMoieties()
         
       for (j=0; j<jmax; j++)
         {
-	  if (mL[i][j] != 0.0)
-	    Moiety.add(mL[i][j], mMetabolitesX[j]);
+	  if (mL[j][i] != 0.0)
+	    Moiety.add(mL[j][i], mMetabolitesX[j]);
         }
       Moiety.setInitialValue();
       cout << Moiety.getDescription() << endl;
