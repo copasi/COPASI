@@ -23,7 +23,7 @@ std::string CMetabNameInterface::empty_string = "";
 CMetabNameInterface::~CMetabNameInterface()
 {}
 
-const std::string & CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
+std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
 {
   CMetab * metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
   if (metab)
@@ -32,9 +32,12 @@ const std::string & CMetabNameInterface::getDisplayName(const CModel* model, con
     return empty_string;
 }
 
-const std::string & CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
+std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
 {
-  return metab.getName();
+  if (CMetabNameInterface::isUnique(model, metab.getName()))
+    return metab.getName();
+  else
+    return metab.getName() + '{' + metab.getCompartment()->getName() + '}';
 }
 
 std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std::string & name)
@@ -88,11 +91,11 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
           if (unique)
             unique = false;
           else
-            return true;
+            return false; //return true
         }
     }
 
-  return unique;
+  return true; //return unique;
 }
 
 bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)

@@ -35,14 +35,14 @@ class CMetabNameInterface
     * metabolite is unique it is used unaltered. If it is not then the compartment
     * is added to the name to make it unique.
     */
-    static const std::string & getDisplayName(const CModel* model, const std::string & key);
+    static std::string getDisplayName(const CModel* model, const std::string & key);
 
     /**
     * This returns a name to use for display in the gui. If the name of the
     * metabolite is unique it is used unaltered. If it is not then the compartment
     * is added to the name to make it unique.
     */
-    static const std::string & getDisplayName(const CModel* model, const CMetab & metab);
+    static std::string getDisplayName(const CModel* model, const CMetab & metab);
 
     /**
     * This tries to find the metabolite with the given name. If the name is not unique and 
