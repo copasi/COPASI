@@ -2,6 +2,7 @@
 #include "CReportDefinition.h"
 #include "CReportBody.h"
 #include "CReport.h"
+#include "CCopasiContainer.h"
 
 //////////////////////////////////////////////////
 //
@@ -20,6 +21,7 @@ CReport::~CReport()
 
 void CReport::cleanup()
 {
+  objectList.clear();
   //  CKeyFactory::remove(mKey);
   // mpReportDef pointer shall be dealt outside, where it is created
   //  pdelete(mpReportDef);
@@ -59,7 +61,16 @@ void CReport::printFooter()
 }
 
 void CReport::compile()
-{}
+{
+  CCopasiContainer* pCopasiObject;
+  int i;
+  for (i = 0; i < mpReportDef->getBodyAddr()->size(); i++)
+    {
+      CCopasiObject* pSelected =
+        (CCopasiObject*)pCopasiObject->getObject((*(mpReportDef->getBodyAddr()))[i]);
+      objectList.push_back(pSelected);
+    }
+}
 
 void CReport::printBody(CReport * pReport)
 {if (pReport) pReport->printBody();}

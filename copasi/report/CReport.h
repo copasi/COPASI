@@ -20,6 +20,7 @@ class CReportTable;
 class CReport : public CCopasiObject
   {
   private:
+    std::vector<CCopasiObject*> objectList;
     CReportDefinition *mpReportDef;
     std::string mTarget;
     bool mAppend;

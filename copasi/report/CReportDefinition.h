@@ -30,6 +30,9 @@ class CReportDefinition : public CCopasiObject
     std::string mComment;
     std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mFooterVector;
+
+    std::vector<CCopasiObjectName> mBodyVector;
+
     CReportBody *mpBody;
     std::string mSeperator;
     bool mbTitle;
@@ -65,6 +68,11 @@ class CReportDefinition : public CCopasiObject
     {
       mComment = comment;
     }
+
+    /**
+    gets the body in the report tag
+    */
+    std::vector<CCopasiObjectName>* getBodyAddr();
 
     /**
     gets the header in the report tag

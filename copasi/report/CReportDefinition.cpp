@@ -35,6 +35,9 @@ void CReportDefinition::cleanup()
   mFooterVector.clear();
 }
 
+std::vector<CCopasiObjectName>* CReportDefinition::getBodyAddr()
+{return &mBodyVector;}
+
 std::vector<CCopasiObjectName>* CReportDefinition::getHeaderAddr()
 {return &mHeaderVector;}
 

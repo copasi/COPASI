@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.14 2003/08/19 17:02:22 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.15 2003/09/09 21:55:31 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -263,8 +263,8 @@ void TableDefinition1::loadTableDefinition1()
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   C_INT32 i;
-  for (i = 0; i < pReportDefinition->getHeaderAddr()->size(); i++)
-    itemsTable->insertItem((*(pReportDefinition->getHeaderAddr()))[i].c_str());
+  for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i++)
+    itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
   comboTask->setEnabled(true);
 
   if (pReportDefinition->getSeperator() == "/t")
@@ -300,11 +300,11 @@ void TableDefinition1::slotBtnConfirmClicked()
 {
   //check for the connection int i =0;
   CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
-  pReportDefinition->getHeaderAddr()->clear();
+  pReportDefinition->getBodyAddr()->clear();
 
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
-    pReportDefinition->getHeaderAddr()->push_back(CCopasiObjectName(itemsTable->text(i).latin1()));
+    pReportDefinition->getBodyAddr()->push_back(CCopasiObjectName(itemsTable->text(i).latin1()));
 
   if (tabChecked->isChecked())
     pReportDefinition->setSeperator("/t");
