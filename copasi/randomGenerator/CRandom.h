@@ -152,6 +152,32 @@ class CRandom
      */
     virtual const C_FLOAT64 & getRandomOO();
 
+    /**
+     * Produces a Normally distributed random number with mean=0 and SD=1
+     * @return const C_FLOAT64 & random
+     */
+    const C_FLOAT64 & getRandomNormal01();
+
+    /**
+     * Produces a Normally distributed random number with Mean=mean and SD=sd
+     * @return const C_FLOAT64 & random
+     */
+    const C_FLOAT64 & getRandomNormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd);
+
+    /**
+     * Produces a Strictly Positive Normally distributed random number
+     * with Mean=mean and SD=sd
+     * @return const C_FLOAT64 & random
+     */
+    const C_FLOAT64 & getRandomNormalPositive(const C_FLOAT64 & mean, const C_FLOAT64 & sd);
+
+    /**
+     * Produces a Normally distributed random number with Mean=mean and SD=sd
+     * in Logarithmic scale
+     * @return const C_FLOAT64 & random
+     */
+    const C_FLOAT64 & getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd);
+
   protected:
     /**
      * Set the Modulus
