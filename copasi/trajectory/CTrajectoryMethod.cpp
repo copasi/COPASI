@@ -11,6 +11,8 @@
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CTrajectoryMethod.h"
+#include "CStochMethod.h"
+#include "CStochDirectMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 
@@ -34,6 +36,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
       break;
 
     case stochastic:
+      Method = new CStochDirectMethod();
       break;
 
     case hybrid:
@@ -75,13 +78,10 @@ CTrajectoryMethod::~CTrajectoryMethod()
 const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
 {return mTypeEnum;}
 
-/**
- *  Set a pointer to the current state.
- *  This method is used by CTrajectory 
- *  @param "CState *" currentState
- */
 void CTrajectoryMethod::setCurrentState(CState * currentState)
-{mpCurrentState = currentState;}
+{
+  mpCurrentState = currentState;
+}
 
 /**
  *  Set a pointer to the problem.

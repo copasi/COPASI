@@ -39,7 +39,10 @@ class CTrajectoryMethod : public CMethodParameterList
     CTrajectoryMethod::Type mTypeEnum;
 
     /**
-     *  A pointer to the current state
+     *  A pointer to the current state. This is set from outside
+     *  with the setState() method and never changed anywhere else.
+     *  It´s used to report the results
+     *  to the calling TrajectoryTask
      */
     CState * mpCurrentState;
 
@@ -83,7 +86,8 @@ class CTrajectoryMethod : public CMethodParameterList
 
     /**
      *  Set a pointer to the current state.
-     *  This method is used by CTrajectory 
+     *  This method is used by CTrajectoryTask::process()
+     *  The results of the simulation are passed via this CState variable
      *  @param "CState *" currentState
      */
     void setCurrentState(CState * currentState);

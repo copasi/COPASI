@@ -81,7 +81,10 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
 
       mpMethod = CTrajectoryMethod::
                  createTrajectoryMethod((CTrajectoryMethod::Type) Method);
-      mpMethod->load(configBuffer);
+      // load the right parameters if several are in the file
+      mpMethod->loadSpecific(configBuffer,
+                             mpMethod->getName(),
+                             mpMethod->getType());
     }
 }
 
