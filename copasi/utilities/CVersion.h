@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:35:35 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:42:41 $
    End CVS Header */
 
 /**
@@ -16,6 +16,7 @@
 #define COPASI_CVersion
 
 #include <string>
+#include "copasi.h"
 
 class CVersion
   {
