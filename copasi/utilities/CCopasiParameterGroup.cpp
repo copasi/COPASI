@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/09/30 15:28:29 $
+   $Date: 2005/01/18 20:22:49 $
    End CVS Header */
 
 /**
@@ -35,6 +35,14 @@ CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
 {deleteGroup();}
+
+CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParameterGroup & rhs)
+{
+  setObjectName(rhs.getObjectName());
+  createGroup((parameterGroup *) rhs.mpValue);
+
+  return *this;
+}
 
 void CCopasiParameterGroup::createGroup(const parameterGroup * pGroup)
 {
