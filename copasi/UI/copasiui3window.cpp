@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/12 04:17:06 $
+   $Date: 2003/12/12 16:55:31 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -222,12 +222,13 @@ void CopasiUI3Window::slotFileSave()
   if (!Line.compare(0, 8, "Version="))
     {
       /* Ask for permision to overwrite write? */
-      /* If no open call slotFileSaveAs */
-      choice = QMessageBox::warning(this,
-                                    "Confirm File Version Update",
-                                    "You are to overwrite an existing Gepasi.\n"
-                                    "This will render the file unreadable for Gepasi",
-                                    "Continue", "Save As", 0, 0, 1);
+      /* If no call slotFileSaveAs */
+      choice =
+        QMessageBox::warning(this,
+                             "Confirm File Version Update",
+                             "You are to overwrite an existing Gepasi File.\n"
+                             "This will render the file unreadable for Gepasi",
+                             "Continue", "Save As", 0, 0, 1);
     }
 
   if (choice) slotFileSaveAs();
