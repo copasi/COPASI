@@ -567,12 +567,15 @@ void ScanWidget::loadScan()
   else
     steadyState->setChecked(false);
 
-  activeObject = ObjectListBox->count() - 1; //because of the empty item
-  activeObject --;  // list base start from 1, but list base start from 0;
-  while (activeObject >= 0)
-    deleteButtonClicked();
-  ObjectListBox->clear();
-  ObjectListBox->insertItem(trUtf8("click here to add new item"));
+  if (scanTask->getProblem()->getListSize() == 0)
+    {
+      activeObject = ObjectListBox->count() - 1; //because of the empty item
+      activeObject --;  // list base start from 1, but list base start from 0;
+      while (activeObject >= 0)
+        deleteButtonClicked();
+      ObjectListBox->clear();
+      ObjectListBox->insertItem(trUtf8("click here to add new item"));
+    }
 }
 
 bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
