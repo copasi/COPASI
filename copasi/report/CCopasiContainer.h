@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 14:54:26 $
+   $Author: gasingh $ 
+   $Date: 2004/02/25 22:31:16 $
    End CVS Header */
 
 /**
@@ -80,7 +80,7 @@ class CCopasiContainer: public CCopasiObject
 
     virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
-    bool remove(CCopasiObject * pObject);
+    virtual bool remove(CCopasiObject * pObject);
 
   protected:
     virtual void initObjects();
