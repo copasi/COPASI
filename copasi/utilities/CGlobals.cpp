@@ -11,7 +11,7 @@
 #include "output/COutput.h"
 
 CGlobals::CGlobals():
-    pFunctionDB(new CFunctionDB),
+    pFunctionDB(new CFunctionDB("Kinetic Functions")),
     pUDFunctionDB(new CUDFunctionDB),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >),
     pOutputList(new COutputList)
