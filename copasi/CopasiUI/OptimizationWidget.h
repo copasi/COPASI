@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:58 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/17 02:05:53 $
    End CVS Header */
 
 /********************************************************
@@ -47,6 +47,11 @@ class OptimizationWidget : public CopasiParametersWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+
+    inline std::string getKey()
+    {
+      return objKey;
+    }
     //manually added
     QLineEdit* expressionText;
     ScanScrollView* itemsTable;

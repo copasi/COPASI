@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 20:00:29 $
+   $Date: 2003/10/17 02:05:53 $
    End CVS Header */
 
 /********************************************************
@@ -368,6 +368,7 @@ void OptimizationWidget::deleteButtonClicked()
 
   emit show_me();
 
+  //update the active
   if (activeObject >= 0)
     ListBoxClicked(itemnamesTable->item(activeObject));
 
@@ -540,7 +541,7 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
 
   COptFunction* optFunction = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   // need further work
-  if (optFunction->bExisted(pObject->getCN().c_str()))
+  if (optFunction->Index(pObject->getCN().c_str()) == C_INVALID_INDEX)
     return false;
 
   int widgetOffset;
@@ -549,6 +550,7 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
 
   //by default isFirstWidget is set as false,
   OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
+
   ScanItemWidgetWidth = itemsTable->visibleWidth();
 
   widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
