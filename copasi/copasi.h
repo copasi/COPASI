@@ -41,6 +41,7 @@
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define timeb _timeb         // they just have a different name for this guy
 # define ftime _ftime         // they just have a different name for this guy
+# define strcasecmp _stricmp  // they just have a different name for this guy
 #else
 # define C_INT32 int
 # define C_INT int
@@ -75,10 +76,10 @@ extern std::ofstream DebugFile;
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
   {DebugFile << "Construct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << std::endl; }
+    << ", \tAddress: " << (void *) this << std::endl;}
 #  define DESTRUCTOR_TRACE \
   {DebugFile << "Destruct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << std::endl; }
+    << ", \tAddress: " << (void *) this << std::endl;}
 # endif // COPASI_TRACE_CONSTRUCTION
 #endif // COPASI_DEBUG
 
@@ -101,10 +102,12 @@ extern std::ofstream DebugFile;
 #define FALSE 0
 
 // protected free
-#define pfree(p) {if (p) {free(p); p = NULL; }}
-#define pdelete(p) {if (p) {delete p; p = NULL; }}
-#define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL; }}
+#define pfree(p) {if (p) {free(p); p = NULL;}}
+#define pdelete(p) {if (p) {delete p; p = NULL;}}
+#define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL;}}
 
 // suppress unused parameter warnings
-#define C_UNUSED(p)
+#define C_UNUSED(p) 
+// #define COPASI_DEPRECATED
+
 #endif // COPASI_copasi
