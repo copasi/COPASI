@@ -620,7 +620,7 @@ In the function definition dialog, you give your function a name in the <guilabe
           <mml:mo>(</mml:mo>
             <mml:mrow>
              <mml:mi>S</mml:mi>
-             <mml:mmo>/</mml:mmo> 
+             <mml:mo>/</mml:mo> 
               <mml:mrow>
                 <mml:mo>(</mml:mo>
                   <mml:mrow>
