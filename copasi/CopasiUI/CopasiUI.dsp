@@ -145,10 +145,6 @@ SOURCE=.\moc_MetabolitesWidget1.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_MoietiesWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\moc_MoietyWidget.cpp
 # End Source File
 # Begin Source File
@@ -162,19 +158,6 @@ SOURCE=.\moc_ReactionsWidget.cpp
 # Begin Source File
 
 SOURCE=.\moc_ReactionsWidget1.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\MoietiesWidget.cpp
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
