@@ -115,6 +115,10 @@ SOURCE=.\CKinFunction.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CKinFunctionFlexLexer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMassAction.cpp
 # End Source File
 # Begin Source File
@@ -128,10 +132,6 @@ SOURCE=.\CRange.cpp
 # Begin Source File
 
 SOURCE=.\CUsageRange.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\lexkk.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -183,11 +183,11 @@ SOURCE=.\CUsageRange.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\function.h
+SOURCE=.\FlexLexer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\lexkk.h
+SOURCE=.\function.h
 # End Source File
 # End Group
 # End Target
