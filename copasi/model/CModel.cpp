@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/12 23:28:36 $
+   $Date: 2003/11/13 23:52:12 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1871,9 +1871,14 @@ bool CModel::removeMetabolite(const std::string & key)
   if (!metab)
     return false;
 
-  //Check if Reaction with that name exists
+  /* Check if metabolite with that name exists */
   if (mMetabolites.getIndex(metab) == C_INVALID_INDEX)
     return false;
+
+  /* Before deleting the metabolite, delete all the reactions that are dependent */
+  std::vector<std::string> reacKeys = removeMetabReacKeys(key);
+  for (int i = 0; i < reacKeys.size(); i++)
+    removeReaction(reacKeys[i]);
 
   mMetabolites.remove(mMetabolites.getIndex(metab));
   return true;
@@ -1900,13 +1905,24 @@ bool CModel::addCompartment(const std::string & name,
   return true;
 }
 
-bool CModel::removeCompartment(const std::string & name)
+bool CModel::removeCompartment(const std::string & key)
 {
-  //Check if Compartment with that name exists
-  if (mCompartments.getIndex(name) == C_INVALID_INDEX)
+  CCompartment *comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+
+  if (!comp)
     return false;
 
-  mCompartments.remove(name);
+  //Check if Compartment with that name exists
+  unsigned C_INT32 index = mCompartments.CCopasiVector< CCompartment >::getIndex(comp);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  /* Delete the dependent Metabolites before deleting the Compartment */
+  const CCopasiVectorNS <CMetab> &Metabs = comp->getMetabolites();
+  for (int i = 0; i < Metabs.size(); i++)
+    removeMetabolite(Metabs[i]->getKey());
+
+  mCompartments.CCopasiVector< CCompartment >::remove(index);
   return true;
 }
 
@@ -1935,13 +1951,19 @@ bool CModel::addReaction(const CReaction & reaction)
   return true;
 }
 
-bool CModel::removeReaction(const std::string & name)
+bool CModel::removeReaction(const std::string & key)
 {
-  //Check if Reaction with that name exists
-  if (mSteps.getIndex(name) == C_INVALID_INDEX)
+  CReaction *reaction = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
+
+  if (!reaction)
     return false;
 
-  mSteps.remove(name);
+  //Check if Reaction exists
+  unsigned C_INT32 index = mSteps.CCopasiVector< CReaction >::getIndex(reaction);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  mSteps.CCopasiVector< CReaction >::remove(index);
   return true;
 }
 

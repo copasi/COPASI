@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/12 23:28:35 $
+   $Date: 2003/11/13 23:52:11 $
    End CVS Header */
 
 /***********************************************************************
@@ -354,9 +354,9 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:     // Yes or Enter
+            case 0:      // Yes or Enter
               {
-                QString name(table->text(j, 0));
+                //QString name(table->text(j, 0));
 
                 std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeMetabReacKeys(mKeys[j]);
 
@@ -388,7 +388,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:     // No or Escape
+            case 1:      // No or Escape
               break;
             }
         }

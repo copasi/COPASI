@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/11 20:47:16 $
+   $Date: 2003/11/13 23:52:11 $
    End CVS Header */
 
 /*******************************************************************
@@ -265,15 +265,15 @@ void ReactionsWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:   // Yes or Enter
+            case 0:    // Yes or Enter
               {
-                QString name(table->text(j, 0));
+                //QString name(table->text(j, 0));
                 table->removeSelectedRows(true);
-                dataModel->getModel()->removeReaction(name.latin1());
+                dataModel->getModel()->removeReaction(mKeys[j]);
                 ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[j]);
                 break;
               }
-            case 1:   // No or Escape
+            case 1:    // No or Escape
               {
                 break;
               }

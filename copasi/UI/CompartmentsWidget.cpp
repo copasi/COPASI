@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/12 23:28:35 $
+   $Date: 2003/11/13 23:52:12 $
    End CVS Header */
 
 /*******************************************************************
@@ -233,9 +233,9 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:    // Yes or Enter
+            case 0:     // Yes or Enter
               {
-                QString name(table->text(j, 0));
+                //QString name(table->text(j, 0));
 
                 CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
 
@@ -277,13 +277,13 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                 if (choice == 0)
                   {
                     table->removeSelectedRows(true);
-                    dataModel->getModel()->removeCompartment(name.latin1());
+                    dataModel->getModel()->removeCompartment(mKeys[j]);
                     ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[j]);
                   }
 
                 break;
               }
-            case 1:    // No or Escape
+            case 1:     // No or Escape
               {
                 break;
               }
