@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/24 01:56:26 $
+   $Date: 2003/11/13 18:40:55 $
    End CVS Header */
 
 /********************************************************
@@ -457,10 +457,35 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
   CCopasiContainer::objectMap::const_iterator pFirstObject = it;
 
-  if (it == end) return;
+  if (it == end) return; //empty list
+
+  while (it != end) // find all missing reference attribute
+    {
+      currentField = it->second;
+      if (!currentField->isContainer())
+        {
+          ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, currentField, objectItemList);
+          currentItemField->attachKey();
+          currentItemField->setObjectType(FIELDATTR);
+          currentItemField->setText(0, currentField->getObjectName().c_str());
+          lastField = currentItemField;
+        }
+      it++;
+    }
+
+  it = pFirstObject; //reset to the beginning
+  while (it != end)
+    {
+      if (it->second->isContainer())
+        break;
+      it++;
+    }
+
+  if (it == end) return; //no container found
 
   const CCopasiContainer::objectMap * pFieldList =
-    &((CCopasiContainer *) it->second)->getObjects();
+    &(((CCopasiContainer *) it->second)->getObjects());
+
   CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
   CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
 
