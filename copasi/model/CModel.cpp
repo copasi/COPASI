@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.211 $
+   $Revision: 1.212 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/31 15:45:19 $
+   $Date: 2005/02/09 00:57:55 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
 #include "utilities/COutputHandler.h"
-#include "CopasiUI/CReactionInterface.h"
+#include "CReactionInterface.h"
 #include "clapackwrap.h"
 
 #ifdef COPASI_DEBUG
