@@ -125,9 +125,8 @@ void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
  * @param "CReadConfig &" configBuffer
  */
 
-/*
 void CScanProblem::load(CReadConfig & configBuffer,
-                              CReadConfig::Mode mode)
+                        CReadConfig::Mode mode)
 {
   if (configBuffer.getVersion() < "4.0")
     {
@@ -145,13 +144,13 @@ void CScanProblem::load(CReadConfig & configBuffer,
   else
     {
       string Tmp;
- 
+
       configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
       if (Tmp == Copasi->Model->getTitle())
         mpModel = Copasi->Model;
       else
         fatalError();
- 
+
       configBuffer.getVariable("TrajectoryProblemStepNumber",
                                "C_INT32", &mStepNumber);
       configBuffer.getVariable("TrajectoryProblemStepSize",
@@ -166,20 +165,17 @@ void CScanProblem::load(CReadConfig & configBuffer,
       mpInitialState->load(configBuffer);
     }
 }
- 
- */
 
 /**
  * Save a trajectory problem
  * @param "CWriteConfig &" configBuffer
  */
 
-/*
 void CScanProblem::save(CWriteConfig & configBuffer) const
   {
     string Tmp = mpModel->getTitle();
     configBuffer.setVariable("TrajectoryProblemModel", "string", &Tmp);
- 
+
     configBuffer.setVariable("TrajectoryProblemStepNumber",
                              "C_INT32", &mStepNumber);
     configBuffer.setVariable("TrajectoryProblemStepSize",
@@ -192,7 +188,6 @@ void CScanProblem::save(CWriteConfig & configBuffer) const
                              "C_FLOAT64", &mEndTime);
     mpInitialState->save(configBuffer);
   }
- */
 
 bool CScanProblem::processTrajectory() const {return mProcessTrajectory;}
 

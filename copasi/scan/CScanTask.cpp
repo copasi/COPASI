@@ -82,3 +82,13 @@ void CScanTask::process()
 
   return;
 }
+
+void CScanTask::load(CReadConfig & configBuffer)
+{
+  mpProblem->load(configBuffer);
+}
+
+void CScanTask::save(CWriteConfig & configBuffer)
+{
+  mpProblem->save(configBuffer);
+}
