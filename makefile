@@ -17,19 +17,17 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 all: 	test doc/html/index.html
 
 OBJS	= $(OBJDIR)/CCompartment.o \
-	  $(OBJDIR)/CReadConfig.o  \
 	  $(OBJDIR)/CDatum.o \
+	  $(OBJDIR)/CCopasiMessage.o \
+	  $(OBJDIR)/CCopasiException.o \
+	  $(OBJDIR)/CReadConfig.o  \
+	  $(OBJDIR)/CWriteConfig.o  \
           $(OBJDIR)/main.o
 
 test: 	dependencies $(OBJDIR) $(OBJS)
 	$(CXX) $(CFLAGS) -o test $(OBJS)
 
-SRCS =  $(SRCDIR)/main.cpp \
-	$(SRCDIR)/CCompartment.cpp \
-        $(SRCDIR)/CDatum.cpp \
-	$(SRCDIR)/CReadConfig.cpp
-
-dependencies: $(SRCS) $(INCDIR)/*.h
+dependencies: $(SRCDIR)/*.cpp $(INCDIR)/*.h
 	@touch ./dependencies
 	makedepend -f./dependencies -- $(CFLAGS) \
 	-I/usr/lib/gcc-lib/i386-slackware-linux/egcs-2.91.66/include  \
