@@ -135,7 +135,8 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
 
   mparent = (CopasiUI3Window*)parent;
-  mparent->disable_object_browser_menu();
+  if (mparent)
+    mparent->disable_object_browser_menu();
 
   objectItemList = new ObjectList();
   refreshList = new ObjectList();
@@ -158,7 +159,8 @@ ObjectBrowser::~ObjectBrowser()
   delete objectItemList;
   delete refreshList;
   // no need to delete child widgets, Qt does it all for us
-  mparent->enabled_object_browser_menu();
+  if (mparent)
+    mparent->enabled_object_browser_menu();
 }
 
 void ObjectBrowser::cancelClicked()
