@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/10 11:10:20 $
+   $Author: anuragr $ 
+   $Date: 2004/10/28 17:56:09 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -43,6 +43,7 @@ void ReactionsWidget::init()
   mOT = ListViews::REACTION;
   numCols = 5;
   table->setNumCols(numCols);
+  std::vector<const CCopasiObject*> objectstemp;
   //table->QTable::setNumRows(1);
 
   //Setting table headers
@@ -52,6 +53,13 @@ void ReactionsWidget::init()
   tableHeader->setLabel(2, "Equation");
   tableHeader->setLabel(3, "Kinetics");
   tableHeader->setLabel(4, "Flux");
+  colWidth.reserve(5); // reserve only for the number of columns needed
+
+  colWidth[0] = 80;
+  colWidth[1] = 80;
+  colWidth[2] = 80;
+  colWidth[3] = 80;
+  colWidth[4] = 80;
 
   //this restricts users from editing function names
   table->setColumnReadOnly (3, true);
@@ -62,12 +70,39 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 {
   if (!obj) return;
   const CReaction* pRea = (const CReaction*)obj;
+
   table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
-  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false)));
+
+  QString eqString = FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false));
+
+  if (colWidth[1] < 7*eqString.length())
+    {
+      colWidth[1] = 7 * eqString.length();
+      table->setColumnWidth(2, colWidth[1]);
+    }
+
+  table->setText(row, 2, eqString);
+
   if (&(pRea->getFunction()))
-    table->setText(row, 3, FROM_UTF8(pRea->getFunction().getObjectName()));
+    {
+      QString funcString = FROM_UTF8(pRea->getFunction().getObjectName());
+      if (colWidth[2] < 7*funcString.length())
+        {
+          colWidth[2] = 7 * funcString.length();
+
+          C_INT32 atemp = colWidth[2];
+          C_INT32 btemp = funcString.length();
+
+          table->setColumnWidth(3, colWidth[2]);
+        }
+
+      table->setText(row, 3, funcString);
+    }
 
   table->setText(row, 4, QString::number(pRea->getFlux()));
+
+  // a call to this function modifies the colWidth variable only if the width required
+  // for the current object(name) is more than the value of colWidth
 }
 
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:43 $
+   $Author: anuragr $ 
+   $Date: 2004/10/28 17:56:10 $
    End CVS Header */
 
 /****************************************************************************
@@ -73,6 +73,12 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<std::string> mKeys;
 
     C_INT32 numCols;
+
+    std::vector<C_INT32> colWidth;
+
+    // colWidth 'protected' so that the width can be filled by
+    // any subclass
+
     std::vector<bool> mFlagChanged;
     std::vector<bool> mFlagDelete;
     std::vector<bool> mFlagNew;

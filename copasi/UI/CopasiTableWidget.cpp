@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 20:55:35 $
+   $Author: anuragr $ 
+   $Date: 2004/10/28 17:56:10 $
    End CVS Header */
 
 /*******************************************************************
@@ -44,7 +44,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   table->setSorting (false);
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnReadOnly(0, true);
-  table->setColumnWidth(0, 20);
+
   table->verticalHeader()->setResizeEnabled(false);
   //table->setSelectionMode(QTable::MultiRow);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
@@ -134,6 +134,7 @@ void CopasiTableWidget::fillTable()
   //clear last line
   for (i = 0; i < numCols; ++i)
     table->clearCell(jmax, i);
+
   mFlagRO[jmax] = false;
   mKeys[jmax] = "";
   mFlagChanged[jmax] = false;

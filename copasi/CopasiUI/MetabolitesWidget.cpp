@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/15 17:13:35 $
+   $Author: anuragr $ 
+   $Date: 2004/10/28 17:56:09 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -61,6 +61,17 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(6, "Compartment");
   tableHeader->setLabel(7, "Rate");
 
+  colWidth.reserve(8); // reserve only for the number of columns needed
+
+  colWidth[0] = 50;
+  colWidth[1] = 50;
+  colWidth[2] = 50;
+  colWidth[3] = 50;
+  colWidth[4] = 50;
+  colWidth[5] = 50;
+  colWidth[6] = 50;
+  colWidth[7] = 50;
+
   //this restricts users from editing concentration values on the table
   table->setColumnReadOnly (3, true);
   //this restricts users from editing status values on the table
@@ -73,20 +84,32 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   if (!obj) return;
   const CMetab* pMetab = (const CMetab*)obj;
 
+  table->setColumnWidth(0, colWidth[0]);
   //1: name
-  table->setText(row, 1, FROM_UTF8(pMetab->getObjectName()));
+  QString metabolitenameString = FROM_UTF8(pMetab->getObjectName());
+
+  if (metabolitenameString.length()*7 > colWidth[1])
+    {
+      colWidth[1] = metabolitenameString.length() * 7;
+      table->setColumnWidth(1, colWidth[1]);
+    }
+
+  table->setText(row, 1, metabolitenameString);
 
   //2,3,7: Concentrations, Numbers
+
   if (mFlagConc)
     {
       table->setText(row, 2, QString::number(pMetab->getInitialConcentration()));
       table->setText(row, 3, QString::number(pMetab->getConcentration()));
+      table->setColumnWidth(7, colWidth[7]);
       table->setText(row, 7, QString::number(pMetab->getConcentrationRate()));
     }
   else
     {
       table->setText(row, 2, QString::number(pMetab->getInitialNumber()));
       table->setText(row, 3, QString::number(pMetab->getNumber()));
+      table->setColumnWidth(7, colWidth[7]);
       table->setText(row, 7, QString::number(pMetab->getNumberRate()));
     }
 
@@ -298,7 +321,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                          // Yes or Enter
+    case 0:                           // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -310,7 +333,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                          // No or Escape
+    case 1:                           // No or Escape
       break;
     }
 }
