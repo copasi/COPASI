@@ -6,14 +6,17 @@
  */
 
 #define COPASI_TRACE_CONSTRUCTION
-#include "CKinFunction.h"
 
 #undef yyFlexLexer
 #define yyFlexLexer CKinFunctionFlexLexer
-#include <FlexLexer.h>
 
+// #include <strstream>
+// #include <iostream>
 #include <sstream>
-// #include "lexkk.h"
+
+#include "copasi.h"
+#include "FlexLexer.h"
+#include "CKinFunction.h"
 
 CKinFunction::CKinFunction() : CFunction()
 {  
@@ -85,7 +88,7 @@ C_INT32 CKinFunction::parse()
 {
   int i = 1;
   istringstream buffer(getDescription());
-  CKinFunctionFlexLexer Scanner(&buffer);
+  CKinFunctionFlexLexer Scanner((istream *) &buffer);
 
   // add the root node
   mNodes.add(CNodeK(N_ROOT, N_NOP));
