@@ -328,7 +328,7 @@ void CTempReaction::compile(CModel *model,
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
   // and constructs the chemical equations.
-  reaction->setChemEqFromString(chemeqdesc, *model);
+  //  reaction->setChemEqFromString(chemeqdesc, *model);
 
   // Set up the kinetic function, and add it to the database
   CKinFunction *fun = new CKinFunction();
