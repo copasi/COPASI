@@ -237,7 +237,7 @@ unsigned C_INT32 CScanMethod::CountScan(void)
   int i;
   unsigned C_INT32 TotIteration = 1;
   unsigned C_INT32 scanDimension = scanProblem->getListSize();
-  for (i = 0; i < ScanDimension; i++)
+  for (i = 0; i < scanDimension; i++)
     if (scanProblem->getScanItemParameter(i, "indp"))
       TotIteration *= (unsigned C_INT32) scanProblem->getScanItemParameter(i, "density");
   return TotIteration;
