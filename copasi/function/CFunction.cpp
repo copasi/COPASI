@@ -25,40 +25,44 @@ CFunction::CFunction(const CFunction & src)
   mUsageDescriptions = CCopasiVectorNS < CUsageRange > (src.mUsageDescriptions);
   mParameters = CFunctionParameters(src.mParameters);
 }
+CFunction::~CFunction() {cleanup(); DESTRUCTOR_TRACE; }
 
-CFunction::~CFunction() {cleanup(); DESTRUCTOR_TRACE;}
-
-void CFunction::cleanup() 
+void CFunction::cleanup()
 {
   mUsageDescriptions.cleanup();
   mParameters.cleanup();
 }
 
 void CFunction::load(CReadConfig & configBuffer,
-			 CReadConfig::Mode mode)
+                     CReadConfig::Mode mode)
 {
+  cleanup();
+
   if (configBuffer.getVersion() < "4")
     {
       C_INT32 Type;
       CUsageRange UsageDescription;
-      
+
       mode = CReadConfig::SEARCH;
       configBuffer.getVariable("User-defined", "C_INT32", &Type, mode);
+
       switch (Type)
         {
         case 1:
           mType = CFunction::UserDefined;
           break;
+
         default:
           fatalError();
         }
+
       configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
 
       configBuffer.getVariable("Substrates", "C_INT32", &Type);
       UsageDescription.setUsage("Substrates");
       UsageDescription.setLow(Type);
       mUsageDescriptions.add(UsageDescription);
-      
+
       configBuffer.getVariable("Products", "C_INT32", &Type);
       UsageDescription.setUsage("Products");
       UsageDescription.setLow(Type);
@@ -74,7 +78,7 @@ void CFunction::load(CReadConfig & configBuffer,
 
   configBuffer.getVariable("FunctionName", "string", &mName, mode);
   configBuffer.getVariable("Description", "string", &mDescription);
-  
+
   if (configBuffer.getVersion() >= "4")
     {
       unsigned C_INT32 Size;
@@ -83,6 +87,7 @@ void CFunction::load(CReadConfig & configBuffer,
       mUsageDescriptions.load(configBuffer, Size);
       mParameters.load(configBuffer);
     }
+
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are
   // the only ones occuring in those files.
@@ -100,29 +105,22 @@ void CFunction::save(CWriteConfig & configBuffer)
   mUsageDescriptions.save(configBuffer);
   mParameters.save(configBuffer);
 }
-
-void CFunction::setName(const string& name){mName = name;}
-
-const string & CFunction::getName() const {return mName;}
+void CFunction::setName(const string& name){mName = name; }
+const string & CFunction::getName() const { return mName; }
 
 void CFunction::setDescription(const string & description)
-{mDescription = description;}
-
-const string & CFunction::getDescription() const{return mDescription;}
-
-void CFunction::setType(const CFunction::Type & type){mType = type;}
-
-const CFunction::Type & CFunction::getType() const {return mType;}
+{mDescription = description; }
+const string & CFunction::getDescription() const{ return mDescription; }
+void CFunction::setType(const CFunction::Type & type){mType = type; }
+const CFunction::Type & CFunction::getType() const { return mType; }
 
 void CFunction::setReversible(const TriLogic & reversible)
-{mReversible = reversible;} 
-
-const TriLogic & CFunction::isReversible() const {return mReversible;}
-
-CFunctionParameters & CFunction::getParameters() {return mParameters;}
+{mReversible = reversible; }
+const TriLogic & CFunction::isReversible() const { return mReversible; }
+CFunctionParameters & CFunction::getParameters() { return mParameters; }
 
 unsigned C_INT32 CFunction::getParameterPosition(const string & name)
-{return mParameters[0] - mParameters[name];}
+{ return mParameters[0] - mParameters[name]; }
 
 C_FLOAT64 CFunction::calcValue(const CCallParameters & callParameters) const
-{return 0.0;}
+  { return 0.0; }
