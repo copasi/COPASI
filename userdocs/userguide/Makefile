@@ -64,11 +64,13 @@ IMAGES = images/Compartments_01.png \
 # versions of the XHTML stylesheet (or we can fix it if we know enough about docbook.)
 HTML_STYLESHEET=/usr/share/xml/docbook/stylesheet/nwalsh/html/profile-docbook.xsl
 
+FO_STYLESHEET=copasi_fo.xsl
+
 XHTML_STYLESHEET=copasi_xhtml.xsl
 
 PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
 
-JAVA=/usr/lib/j2sdk1.5-sun/bin/java
+JAVA=/usr/bin/java
 
 SAXON_JAR=/usr/share/java/saxon-6.5.3.jar
 
@@ -79,22 +81,31 @@ XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.S
 
 PDFLATEX=/usr/bin/pdflatex
 
-.PHONY: clean
+PDFXMLTEX=/usr/bin/pdfxmltex
+
+.PHONY: clean all
+
+all: copasi.pdf copasi.xhtml copasi.html
 
 copasi.tex: $(SOURCES)
 	$(XSLTPROC) -o $@ $< $(PDF_STYLESHEET) 
 
-copasi.pdf: copasi.tex $(IMAGES)
-	$(PDFLATEX) $<
-	$(PDFLATEX) $<
-	$(PDFLATEX) $<
-    
-copasi.html: $(SOURCES) $(IMAGES)
+#copasi.pdf: copasi.tex $(IMAGES)
+#	$(PDFLATEX) $<
+#	$(PDFLATEX) $<
+#	$(PDFLATEX) $<
+ 
+copasi.pdf: copasi.fo
+	$(PDFXMLTEX) $<
+	
+copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
 	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
 
-copasi.xhtml: $(SOURCES) $(IMAGES)
+copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
 	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
 
+copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
 
 clean:
 	rm -f copasi.pdf
@@ -104,3 +115,4 @@ clean:
 	rm -f copasi.log
 	rm -f copasi.aux
 	rm -f copasi.glo
+	rm -f fotex.log

@@ -5,13 +5,15 @@ The stylesheet for the tex/pdf document is from the db2latex-xsl package which i
 The stylesheet for the html document is from Norman Walsh and is located in the docboo-xsl package version 1.66.
 
 The html output is actually not a valid html file since it contains MathML elements. The browsers I tested (Mozilla, Konqueror and Safari) seem to render it anyway.
-Maybe we should use a latex to html converter to create valid html with images instead of MathML formules.
+I tried a latex2html converter to generate a valid html file, but the result was not satisfactory.
 
 The xhtml output is OK, unfortunatelly we can not run tidy on it to make it more readable because tidy drops
 some necessary whitespaces.
 
-I disabled image scaling for now and tried to get the images scaled correctly via customization layers, but so far they are not scaled, no matter what I do.
+I disabled image scaling for the generation of xhtml and tried to get the images scaled correctly via customization layers, but so far they are not scaled, no matter what I do.
 At least they are big enough to be seen. Maybe we can use some stylesheet to scale them correctly.
 
-
-The tex output also has a bug. The = sign in mathml equations is omitted by the output. So before making the pdf from the tex file, one has to manually add the = sign. So far this only concerns one equation for the GUI documentation. THis will be very annoying once the methods and functions documentation is added.
+The tex output from db2latex also has a bug. The = sign in mathml equations is omitted by the output. So before making the pdf from the tex file, one has to manually add the = sign. So far this only concerns one equation for the GUI documentation. THis will be very annoying once the methods and functions documentation is added.
+Due to this bug I changed the Makefile to use passivetex instead of db2latex. Passivetex (which needs xmltex) can be installed as debian packages, unfortunatelly I have not been able to download the sources for other platform like Mac. Trying to download it from the server results in an error 403 (permission denied). I emailed the webmaster about this. So so far either one installes a complete latex distribution that already includes passivetex, or use debian unstable.
+The output from passivetex looks very nice, just the headers and footers are not completely what I want, but this can be changed in the customization layer eventually.
+I would very much like to use the pache FOP project for the creation of the PDF file, but the old version that is available does not support MathML and the rewrite is not as stable (according to the webpage). It is also hard to judge how fast the rewrite is progressing since I found no information regarding this on the webpage.

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- <!DOCTYPE book SYSTEM "/usr/share/doc/db2latex-xsl/samples/test_mathml_presentation/dtd/DocML.dtd" [
- <!ENTITY gui SYSTEM "copasi_GUI.xml" >  
- <!ENTITY commandLine SYSTEM "copasi_commandLine.xml" >  
- <!ENTITY methods SYSTEM "copasi_methods.xml" >  
- <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >
- ]> 
 
-<book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
- -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook EBNF Module V1.1CR1//EN"
         "http://www.oasis-open.org/docbook/xml/mathml/1.1CR1/dbmathml.dtd" 
 [
@@ -16,6 +8,7 @@
  <!ENTITY methods SYSTEM "copasi_methods.xml" >  
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
 ]> 
+
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 &gui;
 <!--
