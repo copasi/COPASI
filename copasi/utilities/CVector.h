@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:20 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 14:22:32 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -157,6 +157,21 @@ template <class CType> class CVector
       memcpy(mVector, rhs.mVector, mRows * sizeof(CType));
 
       return * this;
+    }
+
+    /**
+     * Assignement operator
+     * @param const CType & value
+     * @return CVector <CType> & lhs
+     */
+    virtual CVector< CType > & operator = (const CType & value)
+    {
+      unsigned C_INT32 i;
+      CType * tmp = mVector;
+
+      for (i = 0; i < mRows; i++, tmp++) *tmp = value;
+
+      return *this;
     }
 
     /**
