@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.9 2003/08/08 15:43:52 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.10 2003/08/09 02:40:06 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,8 @@ class QFrame;
 class QPushButton;
 //class QTable;
 class QRadioButton;
-class ScanScrollView;
+//class ScanScrollView;
+class QListBox;
 class CModel;
 
 class TableDefinition : public CopasiWidget
@@ -36,7 +37,7 @@ class TableDefinition : public CopasiWidget
     TableDefinition(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition();
     CModel *mModel;
-    ScanScrollView* itemsTable;
+    QListBox* itemsTable;
     void loadTableDefinition();
 
     QFrame* bodyField;
@@ -68,7 +69,7 @@ class TableDefinition : public CopasiWidget
     QGridLayout* frame4Layout;
 
     QWidget* pParent;
-    std::vector<QWidget*> selectedList;
+    std::vector<CCopasiObject*> selectedList;
 
   protected slots:
     virtual void tabButtonClicked();
@@ -78,6 +79,12 @@ class TableDefinition : public CopasiWidget
     virtual void languageChange();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnConfirmClicked();
+
+    virtual void addButtonClicked();
+
+    virtual void deleteButtonClicked();
+    virtual void upButtonClicked();
+    virtual void downButtonClicked();
   };
 
 #endif // TABLEDEFINITION_H
