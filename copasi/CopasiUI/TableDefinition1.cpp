@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.12 2003/08/15 13:05:05 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.13 2003/08/15 14:14:36 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -304,15 +304,15 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
-    pReportDefinition->getHeaderAddr()->push_back(*(new CCopasiObjectName(std::string(itemsTable->text(i)))));
+    pReportDefinition->getHeaderAddr()->push_back(CCopasiObjectName(itemsTable->text(i).latin1()));
 
   if (tabChecked->isChecked())
     pReportDefinition->setSeperator("/t");
   else
-    pReportDefinition->setSeperator(std::string(seperatorEdit->text()));
+    pReportDefinition->setSeperator(seperatorEdit->text().latin1());
 
   pReportDefinition->setTitle(titleChecked->isChecked());
-  pReportDefinition->setComment(std::string(commentEdit->text()));
+  pReportDefinition->setComment(commentEdit->text().latin1());
 }
 
 void TableDefinition1::nameTextChanged(const QString &)
