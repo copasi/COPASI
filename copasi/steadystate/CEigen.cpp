@@ -140,10 +140,8 @@ void CEigen::initialize()
 // eigenvalue calculatiosn
 void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
 { 
-  
-  /*
 
- int res;
+  //int res;
  //char jobvs = 'N';      //#1
  //char sort = 'N';       //#2
 
@@ -179,21 +177,22 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
        mA[i*mN+j] = ss_jacob[i][j];
 
  // calculate the eigenvalues
- res = dgees_( &mJobvs,                     //ok, done
-               &mSort,                      //ok, done
-	       mSelect,          //NULL,    //ok, done
-	       &mN,              //&n,      //ok, done
-                  mA,                       //ok, done
-                          &mLDA,            //ok, done
-                          &mSdim,           //ok, done (output)
-                          mEigen_r,         //ok, done
-                  mEigen_i,                 //ok, done
-                          mVS,              //ok, done
-                          &mLdvs,           //ok, done
-                          mWork,            //ok, done
-                  &mLWork,                  //ok, done
-	          mBWork,         //NULL    //ok, done
-                          &mInfo);          //ok, done (output)
+ //res = dgees_( &mJobvs,                     
+ dgees_( &mJobvs,                 
+         &mSort,                      
+          mSelect,          //NULL,   
+	 &mN,              //&n,    
+          mA,                    
+         &(int)mLDA,            
+         &(int)mSdim,           // output
+          mEigen_r,         
+          mEigen_i,               
+          mVS,              
+         &(int)mLdvs,       
+          mWork,            
+         &(int)mLWork,               
+          mBWork,         //NULL
+         &mInfo);          //output
 
  // release the work array
  delete [] mWork;
@@ -202,7 +201,7 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
  //mEigen_nzero = mEigen_ncplxconj = 0.0;
 
  // sort the eigenvalues
- qsort( mEigen_r, mEigen_i, 0, mN-1 );
+ quicksort( mEigen_r, mEigen_i, 0, mN-1 );
  // search for the number of positive real parts
  for( pz=0; pz<mN; pz++ )
   if( mEigen_r[pz] < 0.0 ) break;
@@ -267,10 +266,48 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
   }
  mEigen_hierarchy = distt / tott / (mN-1);
 
-  */
-
 }
 
+
+
+// routines for sorting one matrix taking along another one
+// useful to sort complex numbers by their real or imaginary parts
+int CEigen::qs_partition(double *A, double *B, int p, int r)
+{
+ int done=0, i=p, j=r;
+ double a, b, x=A[p];
+  while (!done)
+  {
+   while( (A[j] <= x) && (j > p) ) j--;
+   while( (A[i] > x) && (i < r) ) i++;
+   if( i < j )
+   {
+        a = A[i];
+    A[i] = A[j];
+        A[j] = a;
+        b = B[i];
+    B[i] = B[j];
+        B[j] = b;
+   }
+   else
+   {
+        done = 1;
+    return j;
+   }
+  }
+ return 0;
+}
+ 
+void CEigen::quicksort(double *A, double *B, int p, int r)
+{
+ int q;
+ if( p < r )
+ {
+  q = qs_partition( A, B, p, r );
+  quicksort( A, B, p, q );
+  quicksort( A, B, q+1, r );
+ }
+}
 
 
 

@@ -154,7 +154,7 @@ class CEigen {
    * Not referenced if mSort = 'N'
    * ???????????????????????????????????????????
    */
-  C_INT32 * mBWork;
+  int * mBWork;
 
 
   /**
@@ -170,7 +170,13 @@ class CEigen {
    *           Schur form no longer satisfy mSelect=.True. This could
    *           caused by underflow due to scaling
    */
-  C_INT32 mInfo;
+  int mInfo;
+
+
+
+/* sorts two arrays using one as the criterion for sorting */
+int qs_partition(double *A, double *B, int p, int r);
+void quicksort(double *A, double *B, int p, int r);
 
 
  public:
