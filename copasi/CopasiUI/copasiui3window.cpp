@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/06 19:13:37 $
+   $Date: 2004/05/06 19:56:27 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -409,6 +409,11 @@ void CopasiUI3Window::createToolBar()
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  toolTip[1] = "<p>Click this button to save the file you "
+               "are editing. You will be prompted for a file name.\n"
+               "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
 
   QToolButton* toolb;
