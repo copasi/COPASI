@@ -88,17 +88,6 @@ void CopasiUI3Window::slotFileSaveAs()
       dataModel->saveModel((const char *)gpsFile.utf8());
       //the below are to reopen the file and created the relative objects
       dataModel->loadModel((const char *)gpsFile.utf8());
-      CReadConfig inbuf((const char *)gpsFile.utf8());
-      if (inbuf.getVersion() < "4.0")
-        {
-          msave_button->setEnabled(false);
-          file->setItemEnabled(nsave_menu_id, false);
-        }
-      else
-        {
-          msave_button->setEnabled(true);
-          file->setItemEnabled(nsave_menu_id, true);
-        }
     }
 } //cout<<"it comes in filesave as...";}
 
@@ -157,19 +146,10 @@ void CopasiUI3Window::slotFileOpen()
   if (dataModel && gpsFile)
     {
       dataModel->loadModel((const char *)gpsFile.utf8());
-      CReadConfig inbuf((const char *)gpsFile.utf8());
-      if (inbuf.getVersion() < "4.0")
-        {
-          msave_button->setEnabled(false);
-          file->setItemEnabled(nsave_menu_id, false);
-        }
-      else
-        {
-          msave_button->setEnabled(true);
-          file->setItemEnabled(nsave_menu_id, true);
-        }
       file->setItemEnabled(nexport_menu_SBML, true);
       file->setItemEnabled(nsaveas_menu_id, true);
+      msave_button->setEnabled(true);
+      file->setItemEnabled(nsave_menu_id, true);
     }
 }
 
@@ -184,19 +164,14 @@ void CopasiUI3Window::slotFileSave()
 {
   if (dataModel && gpsFile)
     {
-      dataModel->saveModel((const char *)gpsFile.utf8());
-      //the below are to reopen the file and created the relative objects
-      dataModel->loadModel((const char *)gpsFile.utf8());
       CReadConfig inbuf((const char *)gpsFile.utf8());
       if (inbuf.getVersion() < "4.0")
-        {
-          msave_button->setEnabled(false);
-          file->setItemEnabled(nsave_menu_id, false);
-        }
+        slotFileSaveAs();
       else
         {
-          msave_button->setEnabled(true);
-          file->setItemEnabled(nsave_menu_id, true);
+          dataModel->saveModel((const char *)gpsFile.utf8());
+          //the below are to reopen the file and created the relative objects
+          dataModel->loadModel((const char *)gpsFile.utf8());
         }
     }
 }
