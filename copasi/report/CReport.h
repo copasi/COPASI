@@ -21,7 +21,7 @@ class CReportTable;
 class CReport : public CCopasiObject
   {
   private:
-    std::ostream* outputTarget;
+    std::ostream * ostream;
     std::vector<CCopasiObject*> footerObjectList;
     std::vector<CCopasiObject*> bodyObjectList;
     std::vector<CCopasiObject*> headerObjectList;
@@ -46,6 +46,14 @@ class CReport : public CCopasiObject
        *  Destructor.
        */
     ~CReport();
+
+    /**
+    set the ostream 
+    */
+    void setOutputStream(std::ostream & outStream)
+    {
+      ostream = & outStream;
+    }
 
     /**
     returns the reference of the Report Tag
