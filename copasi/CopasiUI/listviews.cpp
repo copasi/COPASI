@@ -31,7 +31,7 @@
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
-#include "ExpressionWidget.h"
+#include "OptimizationWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
 #include "report/CReportDefinition.h"
@@ -329,8 +329,8 @@ void ListViews::ConstructNodeWidgets()
   trajectoryWidget = new TrajectoryWidget(this);
   trajectoryWidget->hide();
 
-  expressionWidget = new ExpressionWidget(this);
-  expressionWidget->hide();
+  optimizationWidget = new OptimizationWidget(this);
+  optimizationWidget->hide();
 
   modesWidget = new ModesWidget(this);
   modesWidget->hide();
@@ -526,16 +526,16 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:              //Time course
+      case 23:               //Time course
         return trajectoryWidget;
         break;
       case 31:
-        return expressionWidget;
+        return optimizationWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:             //Report
+      case 43:              //Report
         return tableDefinition;
         break;
       case 5:
@@ -1055,7 +1055,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
   switch (objectType)
     {
     case METABOLITE:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1081,7 +1081,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case COMPARTMENT:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1107,7 +1107,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case REACTION:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1133,7 +1133,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case FUNCTION:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       //        scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1160,7 +1160,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
       break;
     case MODEL:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       steadystateWidget->update(objectType, action, key);
       trajectoryWidget->update(objectType, action, key);
@@ -1193,7 +1193,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
       break;
     case STATE:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       //        scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1219,7 +1219,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //  tableDefinition1->update(objectType, action, key);
       break;
     case REPORT:
-      //  expressionWidget->update(objectType, action, key);
+      //  optimizationWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       steadystateWidget->update(objectType, action, key);
       trajectoryWidget->update(objectType, action, key);

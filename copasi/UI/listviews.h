@@ -189,7 +189,7 @@ class ListViews : public QSplitter
     ModelWidget *modelWidget;
     TableDefinition *tableDefinition;
     TableDefinition1 *tableDefinition1;
-    ExpressionWidget *expressionWidget;
+    OptimizationWidget *optimizationWidget;
   };
 
 #endif

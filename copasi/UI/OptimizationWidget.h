@@ -1,14 +1,14 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
+ ** Form interface generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.13 2003/09/28 20:18:19 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.1 2003/09/29 04:25:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
-#ifndef EXPRESSIONWIDGET_H
-#define EXPRESSIONWIDGET_H
+#ifndef OptimizationWidget_H
+#define OptimizationWidget_H
 
 #include <qvariant.h>
 #include "copasiWidget.h"
@@ -25,13 +25,13 @@ class QLineEdit;
 class QTextEdit;
 class CExpression;
 
-class ExpressionWidget : public CopasiWidget
+class OptimizationWidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    ExpressionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~ExpressionWidget();
+    OptimizationWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~OptimizationWidget();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -53,9 +53,10 @@ class ExpressionWidget : public CopasiWidget
     QFrame* bodyField;
     QPushButton* confirmButton;
     QPushButton* cancelButton;
+    std::vector<QWidget*> selectedList;
 
   protected:
-    QGridLayout* ExpressionWidgetLayout;
+    QGridLayout* OptimizationWidgetLayout;
     QVBoxLayout* layout18;
     QGridLayout* layout17;
     QHBoxLayout* layout16;
@@ -77,4 +78,4 @@ class ExpressionWidget : public CopasiWidget
     virtual void slotBtnConfirmClicked();
   };
 
-#endif // EXPRESSIONWIDGET_H
+#endif // OptimizationWidget_H

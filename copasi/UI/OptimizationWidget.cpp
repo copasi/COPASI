@@ -1,8 +1,8 @@
 /****************************************************************************
- ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
+ ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.16 2003/09/28 20:26:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.1 2003/09/29 04:25:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,7 +20,7 @@
 #include <qwhatsthis.h>
 #include <qtextbrowser.h>
 
-#include "ExpressionWidget.h"
+#include "OptimizationWidget.h"
 #include "copasi.h"
 #include "listviews.h"
 #include "ObjectBrowser.h"
@@ -35,10 +35,10 @@
 #include "./icons/scanwidgetbuttonicon.xpm"
 
 /*
- *  Constructs a ExpressionWidget as a child of 'parent', with the 
+ *  Constructs a OptimizationWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
+OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
     bUpdated(false)
 {
@@ -48,8 +48,8 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   QPixmap image3((const char**) image3_data);
 
   if (!name)
-    setName("ExpressionWidget");
-  ExpressionWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ExpressionWidgetLayout");
+    setName("OptimizationWidget");
+  OptimizationWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "OptimizationWidgetLayout");
 
   layout18 = new QVBoxLayout(0, 0, 6, "layout18");
 
@@ -132,7 +132,7 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
   layout14_2->addWidget(cancelButton);
   layout18->addLayout(layout14_2);
 
-  ExpressionWidgetLayout->addLayout(layout18, 0, 0);
+  OptimizationWidgetLayout->addLayout(layout18, 0, 0);
   languageChange();
   clearWState(WState_Polished);
 
@@ -165,7 +165,7 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 /*
  *  Destroys the object and frees any allocated resources
  */
-ExpressionWidget::~ExpressionWidget()
+OptimizationWidget::~OptimizationWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
@@ -174,7 +174,7 @@ ExpressionWidget::~ExpressionWidget()
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void ExpressionWidget::languageChange()
+void OptimizationWidget::languageChange()
 {
   setCaption(tr("Expression"));
   expressionEditlabel->setText(tr("Expression"));
@@ -188,7 +188,7 @@ void ExpressionWidget::languageChange()
   cancelButton->setText(tr("cancel"));
 }
 
-bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool OptimizationWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   switch (objectType)
     {
@@ -201,7 +201,7 @@ bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Actio
   return true;
 }
 
-bool ExpressionWidget::leave()
+bool OptimizationWidget::leave()
 {
   //let the user confirm?
   if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
@@ -212,7 +212,7 @@ bool ExpressionWidget::leave()
   return true;
 }
 
-bool ExpressionWidget::enter(const std::string & key)
+bool OptimizationWidget::enter(const std::string & key)
 {
   objKey = key;
   CExpression* func = (CExpression*)(CCopasiContainer*)CKeyFactory::get(key);
@@ -224,7 +224,7 @@ bool ExpressionWidget::enter(const std::string & key)
     return false;
 }
 
-bool ExpressionWidget::loadFromExpression(CExpression*)
+bool OptimizationWidget::loadFromExpression(CExpression*)
 {
   bUpdated = false;
   CExpression* func = (CExpression*)(CCopasiContainer*)CKeyFactory::get(objKey);
@@ -233,7 +233,7 @@ bool ExpressionWidget::loadFromExpression(CExpression*)
   return true;
 }
 
-void ExpressionWidget::addButtonClicked()
+void OptimizationWidget::addButtonClicked()
 {
   ObjectBrowser* pSelectedObjects = new ObjectBrowser();
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
@@ -274,7 +274,7 @@ void ExpressionWidget::addButtonClicked()
   //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
 }
 
-void ExpressionWidget::deleteButtonClicked()
+void OptimizationWidget::deleteButtonClicked()
 {
   QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
   UINT32 selectedIndex = itemnamesTable->index(selectedItem);
@@ -288,7 +288,7 @@ void ExpressionWidget::deleteButtonClicked()
     }
 }
 
-void ExpressionWidget::upButtonClicked()
+void OptimizationWidget::upButtonClicked()
 {
   QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
   UINT32 selectedIndex = itemnamesTable->index(selectedItem);
@@ -311,7 +311,7 @@ void ExpressionWidget::upButtonClicked()
     }
 }
 
-void ExpressionWidget::downButtonClicked()
+void OptimizationWidget::downButtonClicked()
 {
   QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
   UINT32 selectedIndex = itemnamesTable->index(selectedItem);
@@ -334,8 +334,8 @@ void ExpressionWidget::downButtonClicked()
     }
 }
 
-void ExpressionWidget::slotBtnCancelClicked()
+void OptimizationWidget::slotBtnCancelClicked()
 {}
 
-void ExpressionWidget::slotBtnConfirmClicked()
+void OptimizationWidget::slotBtnConfirmClicked()
 {}
