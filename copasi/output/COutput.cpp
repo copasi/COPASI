@@ -242,7 +242,7 @@ const std::string & COutput::getName() const {return getObjectName();}
 /**
  * print the titles of the steady-state data file
  */
-void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const
+void COutput::sSOutputTitles(std::ostream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const
   {
     std::string Name;
 
@@ -258,7 +258,7 @@ void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 S
 /**
  * print mpValue of each Object in the steady-state data file
  */
-void COutput::sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const
+void COutput::sSOutputData(std::ostream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const
   {
     std::string Name;
 
@@ -274,7 +274,7 @@ void COutput::sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSS
 /**
  * print the titles of the time couse data file
  */
-void COutput::dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const
+void COutput::dynOutputTitles(std::ostream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const
   {
     std::string Name;
 
@@ -290,7 +290,7 @@ void COutput::dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16
 /**
  * print the mpValue of Object in the time course data file
  */
-void COutput::dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const
+void COutput::dynOutputData(std::ostream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const
   {
     std::string Name;
 
@@ -330,7 +330,7 @@ void COutput::compile(const std::string & name, CModel *model, CSteadyStateTask 
 /**
  * Output the comments to the output reporting file
  */
-void COutput::repComments(std::ofstream &fout) const
+void COutput::repComments(std::ostream &fout) const
   {
     fout << Copasi->pModel->getComments() << std::endl;
   }
@@ -338,7 +338,7 @@ void COutput::repComments(std::ofstream &fout) const
 /**
  * Output the model title to the output reporting file
  */
-void COutput::repTitle(std::ofstream &fout) const
+void COutput::repTitle(std::ostream &fout) const
   {
     fout << Copasi->pModel->getTitle() << std::endl << std::endl;
   }
@@ -346,7 +346,7 @@ void COutput::repTitle(std::ofstream &fout) const
 /**
  * Print each line of the header in the reporting file
  */
-void COutput::repHeaderLine(std::ofstream &fout, int width, std::string OutStr) const
+void COutput::repHeaderLine(std::ostream &fout, int width, std::string OutStr) const
   {
     int pre, suf, i;
     std::string Str = "*";
@@ -370,7 +370,7 @@ void COutput::repHeaderLine(std::ofstream &fout, int width, std::string OutStr) 
 /**
  * print the header of the reporting file
  */
-void COutput::repHeader(std::ofstream &fout) const
+void COutput::repHeader(std::ostream &fout) const
   {
     std::string TimeStamp, TimeStr;
     int width, i;
@@ -410,7 +410,7 @@ void COutput::repHeader(std::ofstream &fout) const
 /**
  * print the parameters of the simulation
  */
-void COutput::repParams(std::ofstream &fout) const
+void COutput::repParams(std::ostream &fout) const
   {
     std::string StrOut;
     unsigned C_INT32 i, j;
@@ -454,7 +454,7 @@ void COutput::repParams(std::ofstream &fout) const
 /**
  * print the structural analysis
  */
-void COutput::repStruct(std::ofstream &fout) const
+void COutput::repStruct(std::ostream &fout) const
   {
     unsigned C_INT32 i, j;
     CModel *model = Copasi->pModel;
@@ -612,7 +612,7 @@ void COutput::repStruct(std::ofstream &fout) const
 /**
  * print the results of the steady-state simulation
  */
-void COutput::repSS(std::ofstream &fout) const
+void COutput::repSS(std::ostream &fout) const
   {
     unsigned C_INT32 i;
     double rate;
@@ -688,7 +688,7 @@ void COutput::repSS(std::ofstream &fout) const
 /**
  * print the results of the stability analysis
  */
-void COutput::repStability(std::ofstream &fout) const
+void COutput::repStability(std::ostream &fout) const
   {
     unsigned C_INT32 i, imax;
     unsigned C_INT32 j, jmax;
@@ -738,7 +738,7 @@ void COutput::repStability(std::ofstream &fout) const
 /**
  * print the results of the MCA
  */
-void COutput::repMCA(std::ofstream & C_UNUSED(fout)) const
+void COutput::repMCA(std::ostream & C_UNUSED(fout)) const
   {
 #if 0
 
@@ -759,7 +759,7 @@ void COutput::repMCA(std::ofstream & C_UNUSED(fout)) const
 /**
  * print the titles of the time-course data file
  */
-void COutput::dynOutputTitles(std::ofstream &fout, std::string & C_UNUSED(DynName)) const
+void COutput::dynOutputTitles(std::ostream &fout, std::string & C_UNUSED(DynName)) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
@@ -770,7 +770,7 @@ void COutput::dynOutputTitles(std::ofstream &fout, std::string & C_UNUSED(DynNam
 /**
  * print a line of data (one time point) on the time-course data file
  */
-void COutput::dynOutputData(std::ofstream &fout, std::string & C_UNUSED(DynName)) const
+void COutput::dynOutputData(std::ostream &fout, std::string & C_UNUSED(DynName)) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
@@ -781,7 +781,7 @@ void COutput::dynOutputData(std::ofstream &fout, std::string & C_UNUSED(DynName)
 /**
  * print the titles of the steady-state data file
  */
-void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName) const
+void COutput::sSOutputTitles(std::ostream &fout, std::string &SSName) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
@@ -793,7 +793,7 @@ void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName) const
 /**
  * print a line of data (one iteration) on the steady-state data file
  */
-void COutput::sSOutputData(std::ofstream &fout, std::string &SSName) const
+void COutput::sSOutputData(std::ostream &fout, std::string &SSName) const
   {
     for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
       {
@@ -805,7 +805,7 @@ void COutput::sSOutputData(std::ofstream &fout, std::string &SSName) const
 /*
  * print the reporting data file
  */
-void COutput::copasiRep(std::ofstream &fout) const
+void COutput::copasiRep(std::ostream &fout) const
   {
     repHeader(fout);
 
@@ -835,7 +835,7 @@ void COutput::copasiRep(std::ofstream &fout) const
 /*
  * print the steady state data file
  */
-void COutput::copasiSS(std::ofstream &fout) const
+void COutput::copasiSS(std::ostream &fout) const
   {
     std::string SSName = "Steady-state output";
 
@@ -854,7 +854,7 @@ void COutput::copasiSS(std::ofstream &fout) const
 /*
  * print the time course dynamic data file
  */
-void COutput::copasiDyn(std::ofstream &fout, int time) const
+void COutput::copasiDyn(std::ostream &fout, int time) const
   {
     std::string DynName = "Time-course output";
 

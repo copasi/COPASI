@@ -155,7 +155,7 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 /**
  * print the titles of the steady-state data file
  */
-void COutputLine::sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
+void COutputLine::sSOutputTitles(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   unsigned C_INT32 i;
   CDatum * item;
@@ -204,7 +204,7 @@ void COutputLine::sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT
 /**
  * print the mpValue of each Object in the steady-state data file
  */
-void COutputLine::sSOutputData(std::ofstream &fout, C_INT16 SSSeparator,
+void COutputLine::sSOutputData(std::ostream &fout, C_INT16 SSSeparator,
                                C_INT16 SSColWidth, C_INT16 C_UNUSED(SSQuotes))
 {
   unsigned C_INT32 i;
@@ -305,7 +305,7 @@ void COutputLine::sSOutputData(std::ofstream &fout, C_INT16 SSSeparator,
 /**
  * print the titles of the time course data file
  */
-void COutputLine::dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
+void COutputLine::dynOutputTitles(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
   unsigned C_INT32 i;
   CDatum * item;
@@ -354,7 +354,7 @@ void COutputLine::dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_I
 /**
  * print the mpValue of each Object in the time course data file
  */
-void COutputLine::dynOutputData(std::ofstream &fout, C_INT16 DynSeparator,
+void COutputLine::dynOutputData(std::ostream &fout, C_INT16 DynSeparator,
                                 C_INT16 DynColWidth, C_INT16 C_UNUSED(DynQuotes))
 {
   unsigned C_INT32 i;

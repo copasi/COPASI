@@ -39,7 +39,7 @@ void CScanTask::cleanup()
   pdelete(mpOutEnd);
 }
 
-void CScanTask::initializeReporting(std::ofstream & out)
+void CScanTask::initializeReporting(std::ostream & out)
 {
   pdelete(mpOutEnd);
   mpOut = & out;
@@ -91,8 +91,8 @@ void CScanTask::process()
     // execute many simulations
     mpMethod->scan(i, true);
 
-  if (mpOutEnd)
-    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
+  //  if (mpOutEnd)
+  //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
 
   return;
 }

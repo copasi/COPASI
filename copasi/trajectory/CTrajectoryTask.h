@@ -63,7 +63,7 @@ class CTrajectoryTask
     /**
      * Pointer to the output stream for reporting
      */
-    std::ofstream * mpOut;
+    std::ostream * mpOut;
 
     /**
      * Produces the output. time=0 for init, time=1 for point, time=2 for end.
@@ -114,7 +114,7 @@ class CTrajectoryTask
      * Initilize the reporting feature
      * @param ofstream & out
      */
-    void initializeReporting(std::ofstream & out);
+    void initializeReporting(std::ostream & out);
 
     /**
      * Loads parameters for this solver with data coming from a

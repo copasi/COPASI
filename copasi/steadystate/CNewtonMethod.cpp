@@ -125,7 +125,7 @@ CSteadyStateMethod::ReturnCode
 CNewtonMethod::process(CState & steadyState,
                        const CState & initialState)
 {
-  std::ofstream output;
+  //  std::ostream output;
   CTrajectoryTask * pTrajectory = NULL;
   CTrajectoryProblem * pTrajectoryProblem = NULL;
   CTrajectoryMethod * pTrajectoryMethod = NULL;
@@ -421,7 +421,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,              /* fortran style vector */
+                           mdxdt.array() - 1,               /* fortran style vector */
                            1);
         }
 
@@ -478,7 +478,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,              /* fortran style vector */
+                   mdxdt.array() - 1,               /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

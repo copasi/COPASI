@@ -108,22 +108,22 @@ class COutputLine : public CCopasiContainer
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputTitles(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the mpValue of each Object in the steady-state data file
      */
-    void sSOutputData(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputData(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the titles of the time couse data file
      */
-    void dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputTitles(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      * print the mpValue of Object in the time course data file
      */
-    void dynOutputData(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputData(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
     /**
      *  Sets the name of this line, (For example: Interactive time course)

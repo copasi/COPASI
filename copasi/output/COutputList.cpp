@@ -118,7 +118,7 @@ void COutputList::addOutput(COutput &newOutput)
 /*
  * print the reporting data file
  */
-void COutputList::copasiRep(std::ofstream &fout) const
+void COutputList::copasiRep(std::ostream &fout) const
   {
     for (unsigned C_INT32 i = 0; i < mList.size(); i++)
       {
@@ -129,7 +129,7 @@ void COutputList::copasiRep(std::ofstream &fout) const
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(std::ofstream &fout) const
+void COutputList::copasiSS(std::ostream &fout) const
   {
     for (unsigned C_INT32 i = 0; i < mList.size(); i++)
       {
@@ -140,7 +140,7 @@ void COutputList::copasiSS(std::ofstream &fout) const
 /*
  * print the time course dynamic data file
  */
-void COutputList::copasiDyn(std::ofstream &fout, int time) const
+void COutputList::copasiDyn(std::ostream &fout, int time) const
   {
     for (unsigned C_INT32 i = 0; i < mList.size(); i++)
       {

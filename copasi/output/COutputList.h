@@ -94,17 +94,17 @@ class COutputList
     /*
      * print the time course dynamic data file
      */
-    void copasiDyn(std::ofstream &fout, int time) const;
+    void copasiDyn(std::ostream &fout, int time) const;
 
     /*
      * print the steady state data file
      */
-    void copasiSS(std::ofstream &fout) const;
+    void copasiSS(std::ostream &fout) const;
 
     /*
      * print the reporting data file
      */
-    void copasiRep(std::ofstream &fout) const;
+    void copasiRep(std::ostream &fout) const;
 
     /**
      * Assign the pointer to each datum object for time couse

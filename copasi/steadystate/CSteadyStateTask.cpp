@@ -55,7 +55,7 @@ void CSteadyStateTask::cleanup()
   pdelete(mpOutEnd);
 }
 
-void CSteadyStateTask::initializeReporting(std::ofstream & out)
+void CSteadyStateTask::initializeReporting(std::ostream & out)
 {
   pdelete(mpOutEnd);
 
