@@ -16,7 +16,8 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "listviews.h"
-#include <qlistbox.h> 
+#include <qlistbox.h>
+#include <qfont.h> 
 /*
  *  Constructs a CompartmentsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -115,6 +116,8 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
 
   commitChanges = new QPushButton("&Commit Changes", Frame4_1);
   cancelChanges = new QPushButton("&Cancel Changes", Frame4_1);
+  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
+  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
 
   hBoxLayout4_1->addWidget(commitChanges);
   hBoxLayout4_1->addWidget(cancelChanges);

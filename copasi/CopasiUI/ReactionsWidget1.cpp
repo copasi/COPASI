@@ -20,7 +20,8 @@
 #include <qframe.h>
 #include <qcheckbox.h>
 #include "listviews.h"
-#include "model/CChemEqElement.h" 
+#include "model/CChemEqElement.h"
+#include <qfont.h> 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -170,6 +171,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   commitChanges = new QPushButton("&Commit Changes", Frame4h);
   cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
+  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
+  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
+
   hBoxLayout4h->addWidget(commitChanges);
   hBoxLayout4h->addSpacing(15);
   hBoxLayout4h->addWidget(cancelChanges);

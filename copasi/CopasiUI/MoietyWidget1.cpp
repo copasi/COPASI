@@ -15,7 +15,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "listviews.h"
-
+#include <qfont.h> 
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -101,6 +101,9 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   //Th buttons are laid out using the Horizontal Layout
   commitChanges = new QPushButton("&Commit Changes", Frame4d);
   cancelChanges = new QPushButton("&Cancel Changes", Frame4d);
+  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
+  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
+
   hBoxLayout4d->addWidget(commitChanges);
   hBoxLayout4d->addSpacing(15);
   hBoxLayout4d->addWidget(cancelChanges);
