@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/15 08:15:01 $
+   $Author: ssahle $ 
+   $Date: 2004/06/15 09:12:53 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -11,11 +11,11 @@
 
 #include "SBMLImporter.h"
 
-#include "copasi/model/CModel.h"
-#include "copasi/model/CCompartment.h"
-#include "copasi/model/CMetab.h"
-#include "copasi/model/CReaction.h"
-#include "copasi/function/CKinFunction.h"
+#include "model/CModel.h"
+#include "model/CCompartment.h"
+#include "model/CMetab.h"
+#include "model/CReaction.h"
+#include "function/CKinFunction.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
