@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/05/19 00:39:49 $  
+# $Revision: 1.2 $ $Author: gauges $ $Date: 2004/10/21 14:43:17 $  
 ######################################################################
 
 LIB = steadystate
@@ -7,14 +7,14 @@ include(../lib.pri)
 
 # Input
 HEADERS += CEigen.h \
-           CMca.h \
+           CMCAMethod.h \
            CNewtonMethod.h \
            CSteadyStateMethod.h \
            CSteadyStateProblem.h \
            CSteadyStateTask.h
 
 SOURCES += CEigen.cpp \
-           CMca.cpp \
+           CMCAMethod.cpp \
            CNewtonMethod.cpp \
            CSteadyStateMethod.cpp \
            CSteadyStateProblem.cpp \
