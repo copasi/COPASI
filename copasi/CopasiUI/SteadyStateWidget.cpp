@@ -166,6 +166,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   setTabOrder(ExportFileButton, reportDefinitionButton);
 
   //  mSteadyStateTask = NULL;
+  reportDefinitionButton->setEnabled(false);
 }
 
 /*

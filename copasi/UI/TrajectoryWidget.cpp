@@ -204,6 +204,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   //mTrajectoryTask = NULL;
+  reportDefinitionButton->setEnabled(false);
 }
 
 /*

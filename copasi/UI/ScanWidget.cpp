@@ -264,6 +264,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   trajectory->setEnabled(false);
   eTrajectory->setEnabled(false);
+
+  reportDefinitionButton->setEnabled(false);
 }
 
 void ScanWidget::SteadyStateEditing()
