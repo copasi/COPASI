@@ -13,7 +13,7 @@
 
 using namespace std ;
 
-#ifdef sparc 
+#if (defined sparc || defined __CYGWIN__)
 # define C_INT32 long
 # define C_INT int
 # define C_INT16 short
@@ -21,7 +21,7 @@ using namespace std ;
 # define C_FLOAT32 float
 #endif
 
-#ifdef i386
+#if (defined i386 && !defined __CYGWIN__)
 # define C_INT32 int
 # define C_INT int
 # define C_INT16 short
