@@ -89,22 +89,19 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
       std::map<std::string, CMathVariableMetab * >::iterator it;
       CMathVariableMetab * variableMetab;
 
-      C_INT32 noOfMetaboliteRows = metabList.size();
-      table->setNumRows(noOfMetaboliteRows);
+      table->setNumRows(metabList.size());
       int index = 0;
       for (it = metabList.begin(); it != metabList.end();++it)
         {
-          //QMessageBox::information(this, "key",it->first.c_str());
           variableMetab = it->second;
-          table->setText(index, 0, variableMetab->getName().c_str());
-          CCopasiObject *metabObject = variableMetab->getObject();
-          table->setText(index, 1, metabObject->getName().c_str());
+
+          table->setText(index, 0, it->first.c_str());
+          table->setText(index, 1, variableMetab->getObject()->getName().c_str());
           table->setText(index, 2, QString::number(variableMetab->getInitialConcentration()));
           table->setText(index, 3, QString::number(variableMetab->getInitialParticleNumber()));
           table->setText(index, 4, QString::number(variableMetab->getConcentration()));
           table->setText(index, 5, QString::number(variableMetab->getParticleNumber()));
-          //CMathConstantCompartment & compart =variableMetab->getCompartment();
-          //table->setText(index, 6, compart.getName().c_str());
+          table->setText(index, 6, variableMetab->getCompartment().getName().c_str());
           index++;
         }
 

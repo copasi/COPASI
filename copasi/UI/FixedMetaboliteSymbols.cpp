@@ -91,8 +91,8 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
           table->setText(index, 1, metabObject->getName().c_str());
           table->setText(index, 2, QString::number(constantMetab->getConcentration()));
           table->setText(index, 3, QString::number(constantMetab->getParticleNumber()));
-          CMathConstantCompartment &Compartment = constantMetab->getCompartment();
-          table->setText(index, 4, Compartment.getName().c_str());
+          //CMathConstantCompartment &Compartment = constantMetab->getCompartment();
+          table->setText(index, 4, constantMetab->getCompartment().getName().c_str());
           index++;
         }
 
