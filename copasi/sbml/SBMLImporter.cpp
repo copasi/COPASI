@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 09:49:29 $
+   $Date: 2004/06/21 11:00:17 $
    End CVS Header */
 
 #include <iostream>
@@ -54,194 +54,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
           std::string unitId = uDef->getId();
           if (unitId == "substance")
             {
-              if (uDef->getNumUnits() == 1)
-                {
-                  Unit* u = uDef->getUnit(0);
-                  if ((u->getKind() == UNIT_KIND_MOLE))
-                    {
-                      if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
-                        {
-                          switch (u->getScale())
-                            {
-                            case 0:
-                              copasiModel->setQuantityUnit(CModel::Mol);
-                              break;
-                            case - 3:
-                              copasiModel->setQuantityUnit(CModel::mMol);
-                              break;
-                            case - 6:
-                              copasiModel->setQuantityUnit(CModel::microMol);
-                              break;
-                            case - 9:
-                              copasiModel->setQuantityUnit(CModel::nMol);
-                              break;
-                            case - 12:
-                              copasiModel->setQuantityUnit(CModel::pMol);
-                              break;
-                            case - 15:
-                              copasiModel->setQuantityUnit(CModel::fMol);
-                              break;
-                            default:
-                              DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                              exit(1);
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          throw StdException("Error. Invalid SBML substance unit definition.");
-                        }
-                    }
-                  else if ((u->getKind() == UNIT_KIND_ITEM))
-                    {
-                      if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0))
-                        {
-                          copasiModel->setQuantityUnit(CModel::number);
-                        }
-                      else
-                        {
-                          throw StdException("Error. Invalid SBML substance unit definition.");
-                        }
-                    }
-                  else
-                    {
-                      throw StdException("Error. Invalid SBML volume unit definition.");
-                    }
-                }
-              else
-                {
-                  throw StdException("Error. Invalid SBML substance unit definition.");
-                }
+              copasiModel->setQuantityUnit(this->handleSubstanceUnit(uDef));
             }
           else if (unitId == "time")
             {
-              if (uDef->getNumUnits() == 1)
-                {
-                  Unit* u = uDef->getUnit(0);
-                  if ((u->getKind() == UNIT_KIND_SECOND))
-                    {
-                      if ((u->getExponent() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
-                        {
-                          if (u->getMultiplier() == 1.0)
-                            {
-                              switch (u->getScale())
-                                {
-                                case 0:
-                                  copasiModel->setTimeUnit(CModel::s);
-                                  break;
-                                case - 3:
-                                  copasiModel->setTimeUnit(CModel::ms);
-                                  break;
-                                case - 6:
-                                  copasiModel->setTimeUnit(CModel::micros);
-                                  break;
-                                case - 9:
-                                  copasiModel->setTimeUnit(CModel::ns);
-                                  break;
-                                case - 12:
-                                  copasiModel->setTimeUnit(CModel::ps);
-                                  break;
-                                case - 15:
-                                  copasiModel->setTimeUnit(CModel::fs);
-                                  break;
-                                default:
-                                  DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
-                                  exit(1);
-                                  break;
-                                }
-                            }
-                          else if (u->getMultiplier() == 60.0)
-                            {
-                              copasiModel->setTimeUnit(CModel::m);
-                            }
-                          else if (u->getMultiplier() == 3600.0)
-                            {
-                              copasiModel->setTimeUnit(CModel::h);
-                            }
-                          else if (u->getMultiplier() == 86400.0)
-                            {
-                              copasiModel->setTimeUnit(CModel::d);
-                            }
-                          else
-                            {
-                              throw StdException("Error. Invalid SBML time unit definition.");
-                            }
-                        }
-                      else
-                        {
-                          throw StdException("Error. Invalid SBML time unit definition.");
-                        }
-                    }
-                  else
-                    {
-                      throw StdException("Error. Invalid SBML time unit definition.");
-                    }
-                }
-              else
-                {
-                  throw StdException("Error. Invalid SBML time unit definition.");
-                }
+              copasiModel->setTimeUnit(this->handleTimeUnit(uDef));
             }
           else if (unitId == "volume")
             {
-              if (uDef->getNumUnits() == 1)
-                {
-                  Unit* u = uDef->getUnit(0);
-                  if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
-                    {
-                      if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
-                        {
-                          switch (u->getScale())
-                            {
-                            case 0:
-                              copasiModel->setVolumeUnit(CModel::l);
-                              break;
-                            case - 3:
-                              copasiModel->setVolumeUnit(CModel::ml);
-                              break;
-                            case - 6:
-                              copasiModel->setVolumeUnit(CModel::microl);
-                              break;
-                            case - 9:
-                              copasiModel->setVolumeUnit(CModel::nl);
-                              break;
-                            case - 12:
-                              copasiModel->setVolumeUnit(CModel::pl);
-                              break;
-                            case - 15:
-                              copasiModel->setVolumeUnit(CModel::fl);
-                              break;
-                            default:
-                              DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                              exit(1);
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          throw StdException("Error. Invalid SBML volume unit definition.");
-                        }
-                    }
-                  else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
-                    {
-                      if ((u->getExponent() == 3) && (u->getMultiplier() == 1) && (u->getScale() == 0))
-                        {
-                          copasiModel->setVolumeUnit(CModel::m3);
-                        }
-                      else
-                        {
-                          throw StdException("Error. Invalid SBML volume unit definition.");
-                        }
-                    }
-                  else
-                    {
-                      throw StdException("Error. Invalid SBML volume unit definition.");
-                    }
-                }
-              else
-                {
-                  throw StdException("Error. Invalid SBML volume unit definition.");
-                }
+              copasiModel->setVolumeUnit(this->handleVolumeUnit(uDef));
             }
           else if ((unitId == "area") || (unitId == "length"))
             {
@@ -278,11 +99,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
           throw StdException("Error. Expected SBML Compartment, got NULL pointer.");
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
-      if (copasiCompartment == NULL)
-        {
-          DebugFile << "Error. Could not create Copasi compartment." << std::endl;
-          throw StdException("Error. Could not create Copasi compartment.");
-        }
       std::string key = sbmlCompartment->getId();
       if (!sbmlCompartment->isSetId())
         {
@@ -307,11 +123,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
       if (copasiCompartment != NULL)
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
-          if (copasiMetabolite == NULL)
-            {
-              DebugFile << "Error. Could not create Copasi Metabolite." << std::endl;
-              throw StdException("Error. Could not create Copasi Metabolite.");
-            }
           std::string key;
           if (!sbmlSpecies->isSetId())
             {
@@ -1181,4 +992,249 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdExcept
     {
       throw StdException("Error. readSBML needs a valid CFunctionDB object.");
     }
+}
+
+/**
+ * Returns the copasi QuantityUnit corresponding to the given SBML
+ *  Substance UnitDefinition.
+ */
+CModel::QuantityUnit
+SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef) throw (StdException)
+{
+  CModel::QuantityUnit qUnit = CModel::Mol;
+  if (uDef == NULL)
+    {
+      DebugFile << "Argument to handleSubstanceUnit is NULL pointer." << std::endl;
+      throw StdException("Error. Argument to handleSubstanceUnit is NULL pointer.");
+    }
+  if (uDef->getNumUnits() == 1)
+    {
+      Unit* u = uDef->getUnit(0);
+      if (u == NULL)
+        {
+          DebugFile << "Expected Unit, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected Unit, got NULL pointer.");
+        }
+      if ((u->getKind() == UNIT_KIND_MOLE))
+        {
+          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+            {
+              switch (u->getScale())
+                {
+                case 0:
+                  qUnit = CModel::Mol;
+                  break;
+                case - 3:
+                  qUnit = CModel::mMol;
+                  break;
+                case - 6:
+                  qUnit = CModel::microMol;
+                  break;
+                case - 9:
+                  qUnit = CModel::nMol;
+                  break;
+                case - 12:
+                  qUnit = CModel::pMol;
+                  break;
+                case - 15:
+                  qUnit = CModel::fMol;
+                  break;
+                default:
+                  DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                  exit(1);
+                  break;
+                }
+            }
+          else
+            {
+              throw StdException("Error. Invalid SBML substance unit definition.");
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_ITEM))
+        {
+          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0))
+            {
+              qUnit = CModel::number;
+            }
+          else
+            {
+              throw StdException("Error. Invalid SBML substance unit definition.");
+            }
+        }
+      else
+        {
+          throw StdException("Error. Invalid SBML volume unit definition.");
+        }
+    }
+  else
+    {
+      throw StdException("Error. Invalid SBML substance unit definition.");
+    }
+  return qUnit;
+}
+
+/**
+ * Returns the copasi TimeUnit corresponding to the given SBML Time
+ *  UnitDefinition.
+ */
+CModel::TimeUnit
+SBMLImporter::handleTimeUnit(const UnitDefinition* uDef) throw(StdException)
+{
+  CModel::TimeUnit tUnit = CModel::s;
+  if (uDef == NULL)
+    {
+      DebugFile << "Argument to handleTimeUnit is NULL pointer." << std::endl;
+      throw StdException("Error. Argument to handleTimeUnits is NULL pointer.");
+    }
+  if (uDef->getNumUnits() == 1)
+    {
+      Unit* u = uDef->getUnit(0);
+      if (u == NULL)
+        {
+          DebugFile << "Expected Unit, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected Unit, got NULL pointer.");
+        }
+      if ((u->getKind() == UNIT_KIND_SECOND))
+        {
+          if ((u->getExponent() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+            {
+              if (u->getMultiplier() == 1.0)
+                {
+                  switch (u->getScale())
+                    {
+                    case 0:
+                      tUnit = CModel::s;
+                      break;
+                    case - 3:
+                      tUnit = CModel::ms;
+                      break;
+                    case - 6:
+                      tUnit = CModel::micros;
+                      break;
+                    case - 9:
+                      tUnit = CModel::ns;
+                      break;
+                    case - 12:
+                      tUnit = CModel::ps;
+                      break;
+                    case - 15:
+                      tUnit = CModel::fs;
+                      break;
+                    default:
+                      DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
+                      exit(1);
+                      break;
+                    }
+                }
+              else if (u->getMultiplier() == 60.0)
+                {
+                  tUnit = CModel::m;
+                }
+              else if (u->getMultiplier() == 3600.0)
+                {
+                  tUnit = CModel::h;
+                }
+              else if (u->getMultiplier() == 86400.0)
+                {
+                  tUnit = CModel::d;
+                }
+              else
+                {
+                  throw StdException("Error. Invalid SBML time unit definition.");
+                }
+            }
+          else
+            {
+              throw StdException("Error. Invalid SBML time unit definition.");
+            }
+        }
+      else
+        {
+          throw StdException("Error. Invalid SBML time unit definition.");
+        }
+    }
+  else
+    {
+      throw StdException("Error. Invalid SBML time unit definition.");
+    }
+  return tUnit;
+}
+
+/**
+ * Returns the copasi VolumeUnit corresponding to the given SBML Volume
+ *  UnitDefinition.
+ */
+CModel::VolumeUnit
+SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef) throw (StdException)
+{
+  CModel::VolumeUnit vUnit = CModel::l;
+  if (uDef == NULL)
+    {
+      DebugFile << "Argument to handleVolumeUnit is NULL pointer." << std::endl;
+      throw StdException("Error. Argument to handleVolumeUnit is NULL pointer.");
+    }
+  if (uDef->getNumUnits() == 1)
+    {
+      Unit* u = uDef->getUnit(0);
+      if (u == NULL)
+        {
+          DebugFile << "Expected Unit, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected Unit, got NULL pointer.");
+        }
+      if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
+        {
+          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && ((u->getScale() % 3) == 0) && (u->getScale() < 1) && (u->getScale() > -16))
+            {
+              switch (u->getScale())
+                {
+                case 0:
+                  vUnit = CModel::l;
+                  break;
+                case - 3:
+                  vUnit = CModel::ml;
+                  break;
+                case - 6:
+                  vUnit = CModel::microl;
+                  break;
+                case - 9:
+                  vUnit = CModel::nl;
+                  break;
+                case - 12:
+                  vUnit = CModel::pl;
+                  break;
+                case - 15:
+                  vUnit = CModel::fl;
+                  break;
+                default:
+                  DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
+                  exit(1);
+                  break;
+                }
+            }
+          else
+            {
+              throw StdException("Error. Invalid SBML volume unit definition.");
+            }
+        }
+      else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
+        {
+          if ((u->getExponent() == 3) && (u->getMultiplier() == 1) && (u->getScale() == 0))
+            {
+              vUnit = CModel::m3;
+            }
+          else
+            {
+              throw StdException("Error. Invalid SBML volume unit definition.");
+            }
+        }
+      else
+        {
+          throw StdException("Error. Invalid SBML volume unit definition.");
+        }
+    }
+  else
+    {
+      throw StdException("Error. Invalid SBML volume unit definition.");
+    }
+  return vUnit;
 }

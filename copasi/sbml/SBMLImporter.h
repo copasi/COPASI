@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 09:49:29 $
+   $Date: 2004/06/21 11:00:17 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -15,9 +15,10 @@
 
 #include "function/CFunctionDB.h"
 #include "sbml/StdException.h"
+#include "sbml/UnitDefinition.hpp"
+#include "model/CModel.h"
 
 class SBMLDocument;
-class CModel;
 class CCompartment;
 class CMetab;
 class CReaction;
@@ -98,6 +99,24 @@ class SBMLImporter
      * with the AST_POWER node.
      */
     void replacePowerFunctionNodes(ASTNode* node);
+
+    /**
+     * Returns the copasi VolumeUnit corresponding to the given SBML Volume
+     *  UnitDefinition.
+     */
+    CModel::VolumeUnit handleVolumeUnit(const UnitDefinition* uDef) throw (StdException);
+
+    /**
+     * Returns the copasi QuantityUnit corresponding to the given SBML
+     *  Substance UnitDefinition.
+     */
+    CModel::QuantityUnit handleSubstanceUnit(const UnitDefinition* uDef) throw (StdException);
+
+    /**
+     * Returns the copasi TimeUnit corresponding to the given SBML Time
+     *  UnitDefinition.
+     */
+    CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef) throw (StdException);
 
   public:
     SBMLImporter();
