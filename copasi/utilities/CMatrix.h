@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 21:49:12 $
+   $Date: 2003/11/03 21:53:38 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -558,8 +558,8 @@ class CUnitLowerTriangularView
                                const CUnitLowerTriangularView< Matrix > & A);
 #else
     friend
-    std::ostream &operator << (std::ostream &os,
-                               const CUnitLowerTriangularView< Matrix > & A);
+    std::ostream &operator << <> (std::ostream &os,
+                                  const CUnitLowerTriangularView< Matrix > & A);
 #endif // WIN32
   };
 
