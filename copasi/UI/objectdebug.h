@@ -1,16 +1,16 @@
 /* Begin CVS Header
-   $Source$
-   $Revision$
-   $Name$
-   $Author$ 
-   $Date$
+   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Tue Apr 1 19:46:57 2003
- **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.2 2003/04/02 12:20:04 ssahle Exp $)
+ ** Created: Do Dez 16 10:00:20 2004
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,9 +24,10 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QSpacerItem;
+class QPushButton;
 class QListView;
 class QListViewItem;
-class QPushButton;
 
 class ObjectDebug : public QDialog
   {
@@ -44,9 +45,13 @@ class ObjectDebug : public QDialog
 
   protected:
     QGridLayout* ObjectDebugLayout;
+    QSpacerItem* spacer5;
 
   protected slots:
     virtual void languageChange();
+
+    virtual void action(QListViewItem * item, const QPoint & pnt, int col);
+
   private:
     void addObjectRecursive(QWidget * parent, void * ptr);
     void init();

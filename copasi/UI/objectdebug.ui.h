@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:08:14 $
+   $Date: 2004/12/16 13:51:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -123,4 +123,9 @@ void ObjectDebug::init()
   ListOfObjects->addColumn("Display name", -1);
   ListOfObjects->addColumn("Unique name", -1);
   ListOfObjects->addColumn("CN", -1);
+}
+
+void ObjectDebug::action(QListViewItem * item, const QPoint & pnt, int col)
+{
+  std::cout << "action! " << std::endl;
 }
