@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -199,21 +199,16 @@ EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-llapack 	-lblas 	-lF77 	-lfl
+LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-lmkl_lapack 	-lmkl_p3         -lg2c         -lpthread
 
 
-#	-lqt \
-#	-lqui \
-#	-lXft \
-#	-lfreetype \
-#	-lXrender \
-#	-lSM \
-#	-lICE \
-#	-lXinerama \
-#	-lXext \
-#	-lX11 \
-#	-ldl
+#  Use this for standard clapack
+#	-llapack \
+#	-lblas \
+#	-lF77 \
+#	-lfl
 
+#  Use this for the intel performance library under linux
 #	-lmkl_lapack \
 #	-lmkl_p3 \
 #	-lg2c \
@@ -397,7 +392,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -532,30 +527,6 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
-
-#LDADD = \
-#	../elementaryFluxModes/libelementaryFluxModes.a \
-#	../function/libfunction.a \
-#	../model/libmodel.a \
-#	../output/liboutput.a \
-#	../steadystate/libsteadystate.a \
-#	../trajectory/libtrajectory.a \
-#	../utilities/libutilities.a
-
-#SUBDIRS = \
-#        function \
-#        output \
-#        model \
-#        steadystate \
-#        trajectory \
-#        utilities
-
-#all-recursive install-data-recursive install-exec-recursive \
-#installdirs-recursive install-recursive uninstall-recursive  \
-#check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
-
-#$(SUBDIRS): ../
-#	@test -d $@ || ln -s ../$@ $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

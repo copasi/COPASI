@@ -15,20 +15,35 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
-	-lelementaryFluxModes \
-        -lfunction \
+        -lelementaryFluxModes \
         -lmodel \
+        -lfunction \
         -loutput \
         -lsteadystate \
         -ltrajectory \
         -lutilities \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+        -loutput \
+        -lfunction \
+        -lmodel \
+        -lmkl_lapack \
+	-lmkl_p3 \
+        -lg2c \
+        -lpthread
+
+#  Use this for standard clapack
+#       -llapack \
+#       -lblas \
+#       -lF77 \
+#       -lfl
+
+#  Use this for the intel performance library under linux
+#       -lmkl_lapack \
+#       -lmkl_p3 \
+#       -lg2c \
+#       -lpthread \
 
 # the library search path.
-LDFLAGS = -all-static \
+LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
         -L../function \
         -L../model \
@@ -37,15 +52,6 @@ LDFLAGS = -all-static \
         -L../trajectory \
         -L../utilities \
 	$(USER_LDFLAGS)
-
-LDADD = \
-	../elementaryFluxModes/libelementaryFluxModes.a \
-        ../function/libfunction.a \
-        ../model/libmodel.a \
-        ../output/liboutput.a \
-	../steadystate/libsteadystate.a \
-        ../trajectory/libtrajectory.a \
-        ../utilities/libutilities.a
 
 SUBDIRS = \
 	elementaryFluxModes \

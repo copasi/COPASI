@@ -52,23 +52,18 @@ LIBS = $(LIB_QT) \
 	-loutput \
 	-lfunction \
 	-lmodel \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-lmkl_lapack \
+	-lmkl_p3 \
+        -lg2c \
+        -lpthread
 
-#	-lqt \
-#	-lqui \
-#	-lXft \
-#	-lfreetype \
-#	-lXrender \
-#	-lSM \
-#	-lICE \
-#	-lXinerama \
-#	-lXext \
-#	-lX11 \
-#	-ldl
+#  Use this for standard clapack
+#	-llapack \
+#	-lblas \
+#	-lF77 \
+#	-lfl
 
+#  Use this for the intel performance library under linux
 #	-lmkl_lapack \
 #	-lmkl_p3 \
 #	-lg2c \
@@ -83,27 +78,3 @@ LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities
-
-#LDADD = \
-#	../elementaryFluxModes/libelementaryFluxModes.a \
-#	../function/libfunction.a \
-#	../model/libmodel.a \
-#	../output/liboutput.a \
-#	../steadystate/libsteadystate.a \
-#	../trajectory/libtrajectory.a \
-#	../utilities/libutilities.a
-
-#SUBDIRS = \
-#        function \
-#        output \
-#        model \
-#        steadystate \
-#        trajectory \
-#        utilities
-
-#all-recursive install-data-recursive install-exec-recursive \
-#installdirs-recursive install-recursive uninstall-recursive  \
-#check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
-
-#$(SUBDIRS): ../
-#	@test -d $@ || ln -s ../$@ $@
