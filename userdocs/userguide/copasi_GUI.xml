@@ -1162,10 +1162,10 @@ Once you have made all the settings, you confirm the slider definfinition with t
   <imagedata fileref="images/Sliders_03.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>slider dialog with one slider</phrase>
+   <phrase>slider dialog with three sliders</phrase>
  </textobject>
  <caption>
-  <para>slider dialog with one slider</para>
+  <para>slider dialog with three sliders</para>
  </caption> 
 </mediaobject>
 </screenshot>
