@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.15 2003/09/28 20:18:19 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.16 2003/09/28 20:26:31 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -262,9 +262,9 @@ void ExpressionWidget::addButtonClicked()
       return;
     }
 
-  if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
+  if (itemnamesTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
     {
-      itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
+      itemnamesTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
       //      selectedList.push_back((*pSelectedVector)[i]);
       bUpdated = true;
     }
@@ -276,22 +276,22 @@ void ExpressionWidget::addButtonClicked()
 
 void ExpressionWidget::deleteButtonClicked()
 {
-  QListBoxItem* selectedItem = itemsTable->selectedItem ();
-  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
+  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
   if (selectedItem)
     {
       //      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
       //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
       //      int pp = selectedList.size();
-      itemsTable->removeItem(selectedIndex);
+      itemnamesTable->removeItem(selectedIndex);
       bUpdated = true;
     }
 }
 
 void ExpressionWidget::upButtonClicked()
 {
-  QListBoxItem* selectedItem = itemsTable->selectedItem ();
-  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
+  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
   if ((selectedItem) && (selectedIndex != 0))
     {
       //swap in selectedList
@@ -303,19 +303,19 @@ void ExpressionWidget::upButtonClicked()
       //      selectedList[selectedIndex - 1] = pDownObject;
 
       //swap in ListBox
-      QString pDownItemStr(itemsTable->item(selectedIndex)->text());
-      QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
-      itemsTable->changeItem (pUpperItemStr, selectedIndex);
-      itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
+      QString pDownItemStr(itemnamesTable->item(selectedIndex)->text());
+      QString pUpperItemStr(itemnamesTable->item(selectedIndex - 1)->text());
+      itemnamesTable->changeItem (pUpperItemStr, selectedIndex);
+      itemnamesTable->changeItem (pDownItemStr, selectedIndex - 1);
       bUpdated = true;
     }
 }
 
 void ExpressionWidget::downButtonClicked()
 {
-  QListBoxItem* selectedItem = itemsTable->selectedItem ();
-  UINT32 selectedIndex = itemsTable->index(selectedItem);
-  if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
+  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
+  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
+  if ((selectedItem) && (itemnamesTable->item(selectedIndex + 1)))
     {
       //swap in selectedList
       //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
@@ -326,10 +326,10 @@ void ExpressionWidget::downButtonClicked()
       //      selectedList[selectedIndex] = pDownObject;
 
       //swap in ListBox
-      QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
-      QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
-      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
-      itemsTable->changeItem (pDownItemStr, selectedIndex);
+      QString pDownItemStr(itemnamesTable->item(selectedIndex + 1)->text());
+      QString pUpperItemStr(itemnamesTable->item(selectedIndex)->text());
+      itemnamesTable->changeItem (pUpperItemStr, selectedIndex + 1);
+      itemnamesTable->changeItem (pDownItemStr, selectedIndex);
       bUpdated = true;
     }
 }
