@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:14 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:38:21 $
    End CVS Header */
 
 /*******************************************************************
@@ -108,7 +108,7 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   Layout5->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel"));
+  cancelChanges->setText(trUtf8("Revert"));
   Layout5->addWidget(cancelChanges);
 
   CompartmentsWidget1Layout->addMultiCellLayout(Layout5, 8, 8, 0, 1);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:25 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:41:57 $
    End CVS Header */
 
 /********************************************************
@@ -86,7 +86,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   //  Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel"));
+  cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
 
   ExportFileButton = new QPushButton(this, "ExportFileButton");

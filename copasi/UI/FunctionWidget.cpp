@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:17 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:40:00 $
    End CVS Header */
 
 /***********************************************************************
@@ -54,8 +54,8 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
   btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
@@ -261,7 +261,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:         // Yes or Enter
+            case 0:          // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -281,7 +281,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:         // No or Escape
+            case 1:          // No or Escape
               break;
             }
         }

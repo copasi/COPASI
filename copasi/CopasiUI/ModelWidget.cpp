@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 18:08:20 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:40:01 $
    End CVS Header */
 
 /*******************************************************************
@@ -80,7 +80,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   Layout5->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel"));
+  cancelChanges->setText(trUtf8("Revert"));
   Layout5->addWidget(cancelChanges);
 
   // preliminary

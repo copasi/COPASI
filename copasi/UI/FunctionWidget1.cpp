@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 13:31:56 $
+   $Date: 2004/05/07 17:40:00 $
    End CVS Header */
 
 /**********************************************************************
@@ -90,7 +90,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Layout1->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel"));
+  cancelChanges->setText(trUtf8("Revert"));
   Layout1->addWidget(cancelChanges);
 
   deleteFcn = new QPushButton(this, "deleteFcn");
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                   // The user clicked the Retry again button or pressed Enter
+            case 0:                                    // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                   // The user clicked the Quit or pressed Escape
+            case 1:                                    // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -922,7 +922,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:           // Yes or Enter
+        case 0:            // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -954,7 +954,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:           // No or Escape
+        case 1:            // No or Escape
           break;
         }
     }

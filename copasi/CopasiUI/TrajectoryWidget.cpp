@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 13:40:10 $
+   $Date: 2004/05/07 17:42:42 $
    End CVS Header */
 
 /********************************************************
@@ -135,7 +135,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(nStepSize, 3, 1);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Step Size"));
+  TextLabel1->setText(trUtf8("Interval size"));
   TrajectoryWidgetLayout->addWidget(TextLabel1, 3, 0);
 
   //****
@@ -145,7 +145,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(nStepNumber, 3, 3);
 
   TextLabel1_2 = new QLabel(this, "TextLabel1_2");
-  TextLabel1_2->setText(trUtf8("Step Number"));
+  TextLabel1_2->setText(trUtf8("Intervals"));
   TrajectoryWidgetLayout->addWidget(TextLabel1_2, 3, 2);
 
   //******************************
@@ -174,7 +174,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //  Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel"));
+  cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
 
   ExportToFileButton = new QPushButton(this, "ExportToFileButton");

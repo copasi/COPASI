@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:14 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:38:20 $
    End CVS Header */
 
 /*******************************************************************
@@ -59,8 +59,8 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Volume");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
   btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
@@ -317,7 +317,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:         // Yes or Enter
+            case 0:          // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -330,7 +330,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:         // No or Escape
+            case 1:          // No or Escape
               break;
             }
         }

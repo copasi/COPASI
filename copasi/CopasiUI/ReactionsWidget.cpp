@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:23 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:41:56 $
    End CVS Header */
 
 /*******************************************************************
@@ -63,8 +63,8 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Reaction");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
   btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
@@ -288,7 +288,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:      // Yes or Enter
+            case 0:       // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -304,7 +304,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:             // No or Escape
+            default:              // No or Escape
               break;
             }
         }

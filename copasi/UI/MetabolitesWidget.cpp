@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 13:35:37 $
+   $Date: 2004/05/07 17:40:01 $
    End CVS Header */
 
 /***********************************************************************
@@ -68,8 +68,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   tableHeader->setLabel(4, "Status");
   tableHeader->setLabel(5, "Compartment");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
   btnSwitchCols = new QPushButton("&Show Numbers", this);
   btnDelete = new QPushButton("&Delete", this);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:26 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:41:57 $
    End CVS Header */
 
 /*******************************************************************
@@ -60,8 +60,8 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Comment");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 

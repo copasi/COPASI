@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:16 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:38:22 $
    End CVS Header */
 
 /********************************************************
@@ -336,7 +336,7 @@ void FunctionItemWidget::languageChange()
   buttonSign->setText(tr("+/-"));
   buttonCos->setText(tr("cos"));
   buttonConfirm->setText(tr("Confirm"));
-  buttonCancel->setText(tr("Cancel"));
+  buttonCancel->setText(tr("Revert"));
   buttonClear->setText(tr("Clear"));
 }
 

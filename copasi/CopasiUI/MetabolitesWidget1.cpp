@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:18 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 17:40:01 $
    End CVS Header */
 
 /*******************************************************************
@@ -156,7 +156,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   Layout7->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel"));
+  cancelChanges->setText(trUtf8("Revert"));
   Layout7->addWidget(cancelChanges);
 
   MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);

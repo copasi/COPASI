@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:57:07 $
+   $Date: 2004/05/07 17:41:56 $
    End CVS Header */
 
 /*********************************************************************
@@ -70,11 +70,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("&Commit"));
+  commitChanges->setText(trUtf8("Commit"));
   Layout1->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("&Cancel"));
+  cancelChanges->setText(trUtf8("Revert"));
   Layout1->addWidget(cancelChanges);
 
   newReaction = new QPushButton(this, "newReaction");

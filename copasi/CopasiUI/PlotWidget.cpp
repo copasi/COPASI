@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:59:47 $
+   $Date: 2004/05/07 17:41:56 $
    End CVS Header */
 
 /*******************************************************************
@@ -47,8 +47,8 @@ PlotWidget::PlotWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Volume");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  btnOK = new QPushButton("Commit", this);
+  btnCancel = new QPushButton("Revert", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
