@@ -281,7 +281,8 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         ReactionsWidget.cpp \
         ReactionsWidget1.cpp \
 	SteadyStateWidget.cpp \
-  TrajectoryWidget.cpp \
+	StretchTable.cpp \
+	TrajectoryWidget.cpp \
         copasiui3window.cpp \
         listviews.cpp
 
@@ -326,6 +327,7 @@ EXTRA_DIST = \
 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp \
 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp \
 	SteadyStateWidget.h SteadyStateWidget.cpp SteadyStateWidget.moc.cpp \
+	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
@@ -407,8 +409,8 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
 	MyLineEdit.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
 	ReactionsWidget1.$(OBJEXT) SteadyStateWidget.$(OBJEXT) \
-	TrajectoryWidget.$(OBJEXT) copasiui3window.$(OBJEXT) \
-	listviews.$(OBJEXT)
+	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
+	copasiui3window.$(OBJEXT) listviews.$(OBJEXT)
 CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
@@ -453,7 +455,8 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/SteadyStateWidget.moc.Po \
-@AMDEP_TRUE@	$(DEPDIR)/Subject.Po $(DEPDIR)/TrajectoryWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/StretchTable.Po $(DEPDIR)/Subject.Po \
+@AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.Po \
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.moc.Po \
@@ -564,6 +567,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget1.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SteadyStateWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SteadyStateWidget.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/StretchTable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Subject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/TrajectoryWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/TrajectoryWidget.moc.Po@am__quote@
