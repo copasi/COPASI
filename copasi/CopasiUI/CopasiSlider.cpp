@@ -1,18 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/05 14:48:39 $
+   $Author: shoops $ 
+   $Date: 2004/11/08 16:46:19 $
    End CVS Header */
 
-#include "CopasiSlider.h"
+#include <cmath>
+
 #include "qlabel.h"
 #include "qstring.h"
 #include "qslider.h"
+
+#include "CopasiSlider.h"
+#include "qtUtilities.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectReference.h"
-#include "qtUtilities.h"
 
 CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent), mpObject(object), mTypeVar(undefined), mMinValue(0.0), mMaxValue(0.0), mNumMinorTicks(100), mMinorMajorFactor(10), mpSlider(NULL), mpLabel(NULL)
 {

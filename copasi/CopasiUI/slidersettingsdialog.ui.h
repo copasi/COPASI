@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/05 16:19:48 $
+   $Author: shoops $ 
+   $Date: 2004/11/08 16:46:19 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,8 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+
+#include <cmath>
 
 CopasiSlider* SliderSettingsDialog::getSlider()
 {
