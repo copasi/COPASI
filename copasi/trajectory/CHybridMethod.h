@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/16 10:48:03 $
+   $Author: shoops $ 
+   $Date: 2004/12/17 02:52:44 $
    End CVS Header */
 
 /**
@@ -499,7 +499,7 @@ class CHybridMethod : public CTrajectoryMethod
      *   Vector holding information on the status of metabolites. They can
      *   have low or high particle numbers.
      */
-    std::vector <CHybridMethod::metabStatus> mMetabFlags;
+    std::vector <metabStatus> mMetabFlags;
 
     /**
      *   Internal representation of the balances of each reaction. The index of
