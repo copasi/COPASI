@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 11:40:36 $
+   $Date: 2004/06/07 08:57:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -48,7 +48,10 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //table->setSelectionMode(QTable::MultiRow);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
   if (mRO)
-    table->setReadOnly(true);
+    {
+      table->setReadOnly(true);
+      table->hideColumn(0);
+    }
   resizeTable(1);
 
   //here the buttons are defined
