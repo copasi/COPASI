@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/24 21:05:09 $
+   $Date: 2003/10/29 23:34:49 $
    End CVS Header */
 
 #include <qmessagebox.h>
 #include "MyTable.h"
-
-#include "model/CModel.h"//By G
+#include "listviews.h"
+#include "copasi.h"
 
 MyTable::MyTable(QWidget * parent, const char * name)
     : StretchTable (parent, name)
@@ -46,14 +46,14 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 
       switch (choice)
         {
-        case 0:             // Yes or Enter
+        case 0:              // Yes or Enter
           {
             removeSelectedRows(true);
             //True for Completely selected rows.
             break;
           }
 
-        case 1:             // No or Escape
+        case 1:              // No or Escape
           {
             // No
             break;
@@ -96,15 +96,13 @@ void MyTable::removeSelectedRows(bool full)
           noOfRowsDeleted++;
         }
     }
-  setProtected(true);
+
+  setProtected(true); //By G
   setNumRows(numRows() - noOfRowsDeleted);
-  //setProtected(false);
+  setProtected(false); //By G
 
-  //  dataModel->getModel()->removeCompartment(name);
-
-  //emit updated();
+  //emit updated();;
   //emit leaf(mModel);
-  //ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
 }
 
 void MyTable::setSorting (bool b, bool wholeRows)

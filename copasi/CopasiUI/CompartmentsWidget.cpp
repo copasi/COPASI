@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/24 21:05:09 $
+   $Date: 2003/10/29 23:34:55 $
    End CVS Header */
 
 /*******************************************************************
@@ -60,6 +60,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+  btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -70,6 +71,8 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnDelete);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);
@@ -85,9 +88,10 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
           SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this,
           SLOT(slotBtnCancelClicked()));
+  connect(btnDelete, SIGNAL(clicked ()), this,
+          SLOT(slotBtnDeleteClicked()));
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
-
   connect(table, SIGNAL(currentChanged(int, int)),
           this, SLOT(CurrentValueChanged(int, int)));
 
@@ -216,6 +220,36 @@ void CompartmentsWidget::slotBtnCancelClicked()
   fillTable();
 }
 
+void CompartmentsWidget::slotBtnDeleteClicked()
+{
+  int choice = QMessageBox::warning(this, "Confirm Delete",
+                                    "Delete Selected Rows?\n"
+                                    "Only Fully Selected Rows will be deleted." ,
+                                    "Yes", "No", 0, 0, 1);
+  switch (choice)
+    {
+    case 0: // Yes or Enter
+      {
+        int j = table->currentRow();
+        if (table->isRowSelected(j, true)) //True for Completely selected rows.
+          {
+            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+              {
+                QString name(table->text(j, 0));
+                table->removeSelectedRows(true);
+                dataModel->getModel()->removeCompartment(name.latin1());
+                ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[j]);
+              }
+          }
+        break;
+      }
+    case 1: // No or Escape
+      {
+        break;
+      }
+    }
+}
+
 void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
     int C_UNUSED(col))
 {}
@@ -246,6 +280,7 @@ bool CompartmentsWidget::leave()
 bool CompartmentsWidget::enter(const std::string & key)
 {
   //does nothing.
+  //fillTable();
   return true;
 }
 

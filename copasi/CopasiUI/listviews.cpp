@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2003/10/29 15:23:29 $
+   $Author: gasingh $ 
+   $Date: 2003/10/29 23:34:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -545,7 +545,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                           //Time course
+      case 23:                            //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -554,10 +554,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                          //Report
+      case 43:                           //Report
         return tableDefinition;
         break;
-      case 42:                          //Plots
+      case 42:                           //Plots
         return plotWidget;
         break;
       case 5:
@@ -675,7 +675,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   currentWidget = newWidget;
   lastKey = itemKey;
 
-  //To show the folders open or close or locked -- By G
+  //Icon Synchronization implemented.
+  //To show the folders Open or Close or locked -- By G
   QListViewItemIterator it(folders);
   for (; it.current(); ++it)
     {
@@ -838,6 +839,10 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
 
   //just do everything. TODO: Later we can decide from parameters what really needs to be done
 
+  updateAllListviews1(111);
+  loadCompartmentsToDataModel();
+  updateAllListviews2(111);
+
   updateAllListviews1(112);
   loadMetabolitesToDataModel();
   updateAllListviews2(112);
@@ -845,10 +850,6 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   updateAllListviews1(114);
   loadReactionsToDataModel();
   updateAllListviews2(114);
-
-  updateAllListviews1(111);
-  loadCompartmentsToDataModel();
-  updateAllListviews2(111);
 
   updateAllListviews1(113);
   loadMoietiesToDataModel();
@@ -960,6 +961,7 @@ void ListViews::loadMetabolitesToDataModel()
   for (j = 0; j < noOfMetabolites; j++)
     {
       metab = metabolites[j];
+
       //f = new Folder(parent, metab->getName().c_str());
       f = new Folder(parent, CMetabNameInterface::getDisplayName(dataModel->getModel(), *metab).c_str());
       f->setID(parent->getID());
