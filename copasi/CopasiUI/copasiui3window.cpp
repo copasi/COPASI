@@ -17,6 +17,7 @@
 #include "output/COutputList.h"
 #include "output/COutput.h"
 #include "model/CModel.h"
+#include "ObjectBrowser.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
@@ -296,8 +297,8 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[7] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileprint};
-  const char* toolTip[7];
+  QPixmap icon[8] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileprint, fileopen};
+  const char* toolTip[8];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
@@ -320,6 +321,7 @@ void CopasiUI3Window::createMenuBar()
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Import SBML</b> command "
                "from the <b>File</b> menu.</p>";
+
   toolTip[5] = "Click this button to export a SBML file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Export SBML</b> command "
@@ -329,15 +331,19 @@ void CopasiUI3Window::createMenuBar()
                "are editing.\n You can also select the Print "
                "command from the File menu.";
 
-  const char* iconName[7] = {"&New", "&Open", "&Save", "&SaveAs", "&Import SBML", "&Export SBML", "&Print"};
-  const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotFilePrint())};
-  QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P};
-  int fileSeperator[7] = {0, 0, 0, 0, 0, 0, 1};
+  toolTip[7] = "Click this button to select the output objects "
+               ".\n You can also select the only numeric value "
+               "command from the File menu.";
+
+  const char* iconName[8] = {"&New", "&Open", "&Save", "&SaveAs", "&Import SBML", "&Export SBML", "&Print", "&Object Browser"};
+  const char* slotFileName[8] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotFilePrint()), SLOT(slotObjectBrowser())};
+  QKeySequence hotKey[8] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P, CTRL + Key_B};
+  int fileSeperator[8] = {0, 0, 0, 0, 0, 0, 1};
 
   file = new QPopupMenu(this);
   menuBar()->insertItem("&File", file);
   int j;
-  for (j = 0; j < 7; j++)
+  for (j = 0; j < 8; j++)
     {
       if (fileSeperator[j] == 1)
         file->insertSeparator();
@@ -369,6 +375,12 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
   help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
+}
+
+void CopasiUI3Window::slotObjectBrowser()
+{
+  ObjectBrowser* objectBrowser = new ObjectBrowser();
+  objectBrowser->show();
 }
 
 void CopasiUI3Window::slotImportSBML()

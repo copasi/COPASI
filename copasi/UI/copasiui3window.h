@@ -27,6 +27,7 @@ class CopasiUI3Window : public QMainWindow
     void slotFilePrint();
     void slotImportSBML();
     void slotExportSBML();
+    void slotObjectBrowser();
     void about();
     void aboutQt();
 
