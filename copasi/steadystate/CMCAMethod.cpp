@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/30 19:21:07 $
+   $Date: 2004/12/01 22:28:28 $
    End CVS Header */
 
 #include <cmath>
@@ -181,14 +181,14 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       }
 
   //debug
-  std::cout << "aux1 = redStoi * unscaledElasticities" << std::endl;
+  /*std::cout << "aux1 = redStoi * unscaledElasticities" << std::endl;
   for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumVariableMetabs(); j++)
         std::cout << "  " << aux1[i][j];
       std::cout << std::endl;
     }
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 
   // aux2 = aux1 * m1 (shifting indices for dgefa)
   //CMatrix<C_FLOAT64> aux2; aux2.resize(mpModel->getNumIndependentMetabs()+1, mpModel->getNumIndependentMetabs()+1);
@@ -201,7 +201,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       }
 
   //debug
-  std::cout << "aux2 = aux1 * L,  equals reduced Jacobian?" << std::endl;
+  std::cout << "aux2 = aux1 * L,  equals reduced Jacobian" << std::endl;
   for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
@@ -243,14 +243,14 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     dgesl(aux2, mpModel->getNumIndependentMetabs(), ssipvt, aux1[i + 1], 1);
 
   //debug
-  std::cout << "aux1 = inv(aux2)" << std::endl;
+  /*std::cout << "aux1 = inv(aux2)" << std::endl;
   for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux1[i + 1][j + 1];
       std::cout << std::endl;
     }
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 
   // aux2 = - ml * aux1 (shifting indeces back to 0 again)
   for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
@@ -262,14 +262,14 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       }
 
   //debug
-  std::cout << "aux2 = -L*aux1" << std::endl;
+  /*std::cout << "aux2 = -L*aux1" << std::endl;
   for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
         std::cout << "  " << aux2[i][j];
       std::cout << std::endl;
     }
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 
   // mGamma = aux2 *RedStoi
   mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), mpModel->getTotSteps());
@@ -291,7 +291,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   free((void *) aux2);
   pfree(ssipvt);
 
-  std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi ?)" << std::endl;
+  std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi)" << std::endl;
   std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
 
   return MCA_OK;
@@ -339,7 +339,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         // change the use of Col[] and Row[] to mSteps and mMetabolites
         // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
 
-        if (fabs(mpModel->getReactionsX()[i]->getFlux()) >= res)
+        if (fabs(mpModel->getReactionsX()[i]->getFlux()
+                 *mpModel->getMetabolitesX()[j]->getCompartment()->getVolumeInv()) >= res)
           {
             mScaledElasticities[i][j] = mUnscaledElasticities[i][j]
                                         * mpModel->getMetabolitesX()[j]->getNumber()
@@ -377,7 +378,17 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (i = 0; i < mpModel->getTotSteps(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        if (fabs(mpModel->getReactionsX()[i]->getFlux()) >= res)
+        //this is a hack. We just take the volume of the first compartment that appears in the
+        //reaction and use it to calculate a concentration rate. I hope it scales better than
+        //the unscaled flux
+        const CCopasiVector < CChemEqElement > & balances = mpModel->getReactionsX()[i]->getChemEq().getBalances();
+        C_FLOAT64 tmp;
+        if (balances.size())
+          tmp = balances[0]->getMetabolite().getCompartment()->getVolumeInv();
+        else
+          tmp = 1;
+
+        if (fabs(mpModel->getReactionsX()[i]->getFlux()*tmp) >= res)
           mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]
                                 * mpModel->getReactionsX()[j]->getFlux()
                                 / mpModel->getReactionsX()[i]->getFlux();
