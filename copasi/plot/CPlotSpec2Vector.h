@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:50:13 $
+   $Author: shoops $ 
+   $Date: 2005/03/02 20:49:45 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -11,13 +11,13 @@
 
 #include <iostream>
 #include <string>
-#include "utilities/CCopasiVector.h"
 #include "CPlotSpecification.h"
 #include "utilities/CopasiTime.h"
+#include "report/CCopasiObject.h"
 
 class PlotWindow;
 
-class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
+class CPlotSpec2Vector : public CCopasiObject
   {
   private:
     std::string mKey;
@@ -26,6 +26,7 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
     std::vector<CCopasiObject*> mObjects;
 
     std::vector<C_FLOAT64> data;
+    CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
 
     enum inputType {NO_INPUT, FROM_STREAM, FROM_OBJECTS};
     inputType inputFlag;
@@ -46,8 +47,7 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
     bool compile();
 
   public:
-    CPlotSpec2Vector(const std::string & name = "PlotSpecifications",
-                     const CCopasiContainer* pParent = &RootContainer);
+    CPlotSpec2Vector(const std::string & name = "PlotSpecifications");
 
     //CPlotSpec2Vector();
 
@@ -70,6 +70,9 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
     void cleanup();
 
     const std::string& getKey();
+
+    bool setPlotDefinitionList(CCopasiVectorN< CPlotSpecification > * pPlotDefinitionList);
+    CCopasiVectorN< CPlotSpecification > * getPlotDefintionList();
   };
 
 #endif
