@@ -167,6 +167,13 @@ void DataModel<T>::createModel(const char* fileName)
   model = new CModel();
   modelUpdate = true;
   notify(MODEL);
+
+  pdelete(steadystatetask);
+  steadystatetask = new CSteadyStateTask();
+  steadystatetask->setModel(model);
+  steadystatetaskUpdate = true;
+  notify(STEADYSTATETASK);
+
   saveModel(fileName);
 }
 
