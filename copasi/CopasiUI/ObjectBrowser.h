@@ -26,7 +26,7 @@ class ObjectBrowser : public QWidget
   public:
     objectList* objectItemList;
 
-    ObjectBrowserItem** objectList;
+    ObjectBrowserItem** mpObjectList;
 
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
