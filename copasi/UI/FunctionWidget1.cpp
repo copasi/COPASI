@@ -41,24 +41,25 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   //The Main layout used is the Vertical Layout
 
   QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame1 = new QFrame(this, "Frame1");
+  /*Frame1 = new QFrame(this, "Frame1");
   Frame1->setFrameShape(QFrame::Box);
-  Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1);
-  /*Frame0=new QFrame(this, "Frame0");
+     Frame1->setFrameShadow(QFrame::Plain);
+  vboxLayout->addWidget(Frame1); */
+  Frame0 = new QFrame(this, "Frame0");
   Frame0->setFrameShape(QFrame::Box);
-     Frame0->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame0); */
+  Frame0->setFrameShadow(QFrame::Plain);
+  vboxLayout->addWidget(Frame0);
 
   //This Frame had to be added because of the border around the frame
 
+  /*QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
+  vboxLayout1->addSpacing(10); */
+  QVBoxLayout *vboxLayout0 = new QVBoxLayout(Frame0, 0);
+  vboxLayout0->addSpacing(1);
+  Frame1 = new QFrame(Frame0, "Frame1");
+  vboxLayout0->addWidget(Frame1);
   QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
   vboxLayout1->addSpacing(10);
-  /*QVBoxLayout *vboxLayout0 = new QVBoxLayout(Frame0,0);
-     vboxLayout0->addSpacing(5);
-     Frame1 = new QFrame(Frame0, "Frame1");
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addWidget(Frame1); */
 
   // adding frames to each row
   //Frame = new QFrame(Frame1, "Frame");
@@ -180,8 +181,11 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout7a->addWidget(cancelChanges);
 
   // signals and slots connections
+  /*** For Cancel Button Clicked ***/
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
+
+  /*** For Commit Button Clicked ***/
 }
 
 int FunctionWidget1::isName(QString setValue)
