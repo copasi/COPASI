@@ -1065,7 +1065,7 @@ void CModel::initializeMetabolites()
       {
         mMetabolites.add(mCompartments[i]->getMetabolites()[j]);
         //        mCompartments[i]->getMetabolites()[j]->setModel(this);
-        mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
+        // mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
       }
 }
 

@@ -225,7 +225,14 @@ const std::string & CMetab::getName() const {return mName;}
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConcDbl;}
 
+#ifndef COPASI_DEPRECATED
 const C_INT32 & CMetab::getNumberInt() const {return mNumberInt;}
+
+const C_INT32 & CMetab::getInitialNumberInt() const
+  {
+    return mINumberInt;
+  }
+#endif
 
 C_FLOAT64 CMetab::getNumberDbl() const
   {
@@ -236,11 +243,6 @@ C_FLOAT64 CMetab::getNumberDbl() const
 const C_FLOAT64 & CMetab::getInitialConcentration() const
   {
     return mIConcDbl;
-  }
-
-const C_INT32 & CMetab::getInitialNumberInt() const
-  {
-    return mINumberInt;
   }
 
 C_FLOAT64 CMetab::getInitialNumberDbl() const
@@ -302,6 +304,7 @@ void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
                            * mpModel->getQuantity2NumberFactor());
 }
 
+#ifndef COPASI_DEPRECATED
 void CMetab::setNumberInt(const C_INT32 number)
 {
   mNumberInt = number;
@@ -315,6 +318,7 @@ void CMetab::setInitialNumberInt(const C_INT32 initialNumber)
   mIConcDbl = ((C_FLOAT64) initialNumber) * mpCompartment->getVolumeInv()
               * mpModel->getNumber2QuantityFactor();
 }
+#endif
 
 void CMetab::setNumberDbl(const C_FLOAT64 number)
 {
@@ -493,6 +497,7 @@ void CMetab::setRate(const C_FLOAT64 & rate)
 }
 void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate;}
 
+#ifndef COPASI_DEPRECATED
 void CMetab::checkConcentrationAndNumber()
 {
   if (mNumberInt < 0)
@@ -507,5 +512,5 @@ void CMetab::checkConcentrationAndNumber()
       setInitialNumberInt(getInitialNumberInt());
     }
 }
-
+#endif
 const void * CMetab::getObjectValueAddress() const {return &mConcDbl;}
