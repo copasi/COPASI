@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.57 $ $Author: shoops $ $Date: 2004/10/27 14:22:33 $  
+# $Revision: 1.58 $ $Author: shoops $ $Date: 2004/10/27 16:31:01 $  
 ######################################################################
 
 include(../common.pri)
@@ -109,9 +109,9 @@ contains(BUILD_OS, SunOS) {
 HEADERS += \
            AboutDialog.h \
            ChemEqValidator.h \
-#           CMCAWidget.h \
-#           CMCAResultSubwidget.h \
-#           CMCAResultWidget.h \
+           CMCAWidget.h \
+           CMCAResultSubwidget.h \
+           CMCAResultWidget.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
@@ -181,9 +181,9 @@ HEADERS += \
 
 SOURCES += \
            AboutDialog.cpp \
-#           CMCAWidget.cpp \
-#           CMCAResultSubwidget.cpp \
-#           CMCAResultWidget.cpp \
+           CMCAWidget.cpp \
+           CMCAResultSubwidget.cpp \
+           CMCAResultWidget.cpp \
            CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
