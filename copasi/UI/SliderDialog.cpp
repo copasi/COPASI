@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 09:30:54 $
+   $Date: 2005/02/16 13:27:35 $
    End CVS Header */
 
 #include <iostream>
@@ -55,7 +55,8 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     currSlider(NULL),
     currentFolderId(0),
     mpDataModel(dataModel),
-    mSliderValueChanged(false)
+    mSliderValueChanged(false),
+    mSliderPressed(false)
 {
   this->setWFlags(this->getWFlags() | WStyle_StaysOnTop);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -113,7 +114,6 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
 
-  connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
@@ -225,11 +225,6 @@ void SliderDialog::editSlider()
   delete pSettingsDialog;
 }
 
-void SliderDialog::toggleRunButtonState(bool notState)
-{
-  //this->runTaskButton->setEnabled(!notState);
-}
-
 SliderDialog::~SliderDialog()
 {
   std::map<C_INT32, std::vector< CopasiSlider* > >::iterator it = this->sliderMap.begin();
@@ -284,6 +279,7 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
     }
   connect(slider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
   connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+  connect(slider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
@@ -383,15 +379,30 @@ void SliderDialog::runTask()
 void SliderDialog::sliderValueChanged()
 {
   this->mSliderValueChanged = true;
+  if ((!this->mSliderPressed) && this->autoRunCheckBox->isChecked())
+    {
+      /*
+      disconnect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      this->runTask();
+      connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      */
+      this->mSliderValueChanged = false;
+    }
 }
 
 void SliderDialog::sliderReleased()
 {
   if (this->mSliderValueChanged && this->autoRunCheckBox->isChecked())
     {
-      this->mSliderValueChanged = false;
       this->runTask();
+      this->mSliderValueChanged = false;
     }
+  this->mSliderPressed = false;
+}
+
+void SliderDialog::sliderPressed()
+{
+  this->mSliderPressed = true;
 }
 
 void SliderDialog::runTimeCourse()
