@@ -23,6 +23,7 @@ CopasiUI_MOC = \
 	SteadyStateWidget.moc.cpp \
 	ScanWidget.moc.cpp \
 	TrajectoryWidget.moc.cpp \
+	ObjectBrowser.moc.cpp \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp \
 	objectdebug.moc.cpp 
@@ -54,6 +55,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	SteadyStateWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
+	ObjectBrowser.cpp \
         copasiui3window.cpp \
 	copasiWidget.cpp \
         listviews.cpp \
@@ -104,6 +106,7 @@ EXTRA_DIST = \
 	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
+	ObjectBrowser.h ObjectBrowser.cpp ObjectBrowser.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp

@@ -256,6 +256,7 @@ CopasiUI_MOC = \
 	SteadyStateWidget.moc.cpp \
 	ScanWidget.moc.cpp \
 	TrajectoryWidget.moc.cpp \
+	ObjectBrowser.moc.cpp \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp \
 	objectdebug.moc.cpp 
@@ -288,6 +289,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	SteadyStateWidget.cpp \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
+	ObjectBrowser.cpp \
         copasiui3window.cpp \
 	copasiWidget.cpp \
         listviews.cpp \
@@ -340,6 +342,7 @@ EXTRA_DIST = \
 	ScanWidget.h ScanWidget.cpp ScanWidget.moc.cpp \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
+	ObjectBrowser.h ObjectBrowser.cpp ObjectBrowser.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
@@ -411,12 +414,12 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	MyLineEdit.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
 	ReactionsWidget1.moc.$(OBJEXT) SteadyStateWidget.moc.$(OBJEXT) \
 	ScanWidget.moc.$(OBJEXT) TrajectoryWidget.moc.$(OBJEXT) \
-	copasiui3window.moc.$(OBJEXT) listviews.moc.$(OBJEXT) \
-	objectdebug.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-	Observer.$(OBJEXT) Subject.$(OBJEXT) \
-	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-	CompartmentSymbols.$(OBJEXT) ConstantSymbols.$(OBJEXT) \
-	DifferentialEquations.$(OBJEXT) \
+	ObjectBrowser.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
+	listviews.moc.$(OBJEXT) objectdebug.moc.$(OBJEXT) \
+	main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
+	Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+	CompartmentsWidget1.$(OBJEXT) CompartmentSymbols.$(OBJEXT) \
+	ConstantSymbols.$(OBJEXT) DifferentialEquations.$(OBJEXT) \
 	FixedMetaboliteSymbols.$(OBJEXT) FunctionWidget.$(OBJEXT) \
 	FunctionWidget1.$(OBJEXT) FunctionSymbols.$(OBJEXT) \
 	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
@@ -425,9 +428,9 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	MyLineEdit.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
 	ReactionsWidget1.$(OBJEXT) ScanWidget.$(OBJEXT) \
 	SteadyStateWidget.$(OBJEXT) StretchTable.$(OBJEXT) \
-	TrajectoryWidget.$(OBJEXT) copasiui3window.$(OBJEXT) \
-	copasiWidget.$(OBJEXT) listviews.$(OBJEXT) \
-	objectdebug.$(OBJEXT)
+	TrajectoryWidget.$(OBJEXT) ObjectBrowser.$(OBJEXT) \
+	copasiui3window.$(OBJEXT) copasiWidget.$(OBJEXT) \
+	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
 CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
@@ -467,8 +470,9 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.Po \
 @AMDEP_TRUE@	$(DEPDIR)/MoietyWidget1.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/MyLineEdit.Po $(DEPDIR)/MyLineEdit.moc.Po \
-@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/Observer.Po \
-@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.Po \
+@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/ObjectBrowser.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowser.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/Observer.Po $(DEPDIR)/ReactionsWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.moc.Po \
@@ -584,6 +588,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyLineEdit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyLineEdit.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyTable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ObjectBrowser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ObjectBrowser.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Observer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.moc.Po@am__quote@
