@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 08:59:10 $
+   $Date: 2004/10/09 14:40:48 $
    End CVS Header */
 
 /********************************************************
@@ -276,10 +276,11 @@ void SteadyStateWidget::runSteadyStateTask()
 
   tmpBar->finish(); pdelete(tmpBar);
 
-  //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
-  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
   unsetCursor();
+
+  pListView->switchToOtherWidget(211, ""); //change to the results window
 }
 
 void SteadyStateWidget::loadSteadyStateTask()
