@@ -27,6 +27,8 @@ class ReactionsWidget : public QWidget
     MyTable *table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
+    int tableWidth;
+    bool binitialized;
 
   public:
     ReactionsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

@@ -34,6 +34,8 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 {
   mModel = NULL;
+  binitialized = true;
+
   table = new MyTable(0, 3, this, "tblMoieties");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
@@ -99,18 +101,30 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
-      int newWidth = re->size().width();
-
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 1.0, weight1 = 1.0, weight2 = 6.0;
-      float weightSum = weight0 + weight1 + weight2;
-      int w0, w1, w2;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth - w0 - w1;
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
-      table->setColumnWidth(2, w2);
+      if (binitialized)
+        {
+          int newWidth = re->size().width();
+          newWidth -= 35; //Accounting for the left (vertical) header width.
+          float weight0 = 1.0, weight1 = 1.0, weight2 = 6.0;
+          float weightSum = weight0 + weight1 + weight2;
+          int w0, w1, w2;
+          w0 = newWidth * (weight0 / weightSum);
+          w1 = newWidth * (weight1 / weightSum);
+          w2 = newWidth - w0 - w1;
+          table->setColumnWidth(0, w0);
+          table->setColumnWidth(1, w1);
+          table->setColumnWidth(2, w2);
+          binitialized = false;
+          tableWidth = newWidth;
+        }
+      else
+        {
+          int newWidth = re->size().width();
+          int i;
+          for (i = 0; i < table->numCols(); i++)
+            table->setColumnWidth(i, newWidth * table->columnWidth(i) / tableWidth);
+          tableWidth = newWidth;
+        }
     }
 }
 

@@ -9,12 +9,15 @@
 #ifndef COMPARTMENTS_WIDGET_H
 #define COMPARTMENTS_WIDGET_H
 
-#include <qtable.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
+#include <qtable.h> 
+//#include <qpushbutton.h>
+//#include "MyTable.h"
 #include "copasi.h"
 
 class CModel;
+class QPushButton;
+class QGridLayout;
+class QTable;
 
 class CompartmentsWidget : public QWidget
   {
@@ -22,9 +25,12 @@ class CompartmentsWidget : public QWidget
 
   protected:
     CModel *mModel;
-    MyTable *table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    QTable* table;
+    QPushButton* btnOK;
+    QPushButton* btnCancel;
+    QGridLayout* CompartmentsWidgetLayout;
+    bool binitialized;
+    int tableWidth;
 
   public:
     CompartmentsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

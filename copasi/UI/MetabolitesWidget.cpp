@@ -33,6 +33,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
     : QWidget(parent, name, f)
 {
   mModel = NULL;
+  binitialized = true;
+
   table = new MyTable(0, 5, this, "tblMetabolites");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
@@ -166,21 +168,33 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
-      int newWidth = re->size().width();
-
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
-      float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
-      int w0, w1, w2, w3 , w4;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth * (weight2 / weightSum);
-      w3 = newWidth * (weight3 / weightSum);
-      w4 = newWidth - w0 - w1 - w2 - w3;
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
-      table->setColumnWidth(2, w2);
-      table->setColumnWidth(3, w3);
-      table->setColumnWidth(4, w4);
+      if (binitialized)
+        {
+          int newWidth = re->size().width();
+          newWidth -= 35; //Accounting for the left (vertical) header width.
+          float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
+          float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
+          int w0, w1, w2, w3 , w4;
+          w0 = newWidth * (weight0 / weightSum);
+          w1 = newWidth * (weight1 / weightSum);
+          w2 = newWidth * (weight2 / weightSum);
+          w3 = newWidth * (weight3 / weightSum);
+          w4 = newWidth - w0 - w1 - w2 - w3;
+          table->setColumnWidth(0, w0);
+          table->setColumnWidth(1, w1);
+          table->setColumnWidth(2, w2);
+          table->setColumnWidth(3, w3);
+          table->setColumnWidth(4, w4);
+          binitialized = false;
+          tableWidth = newWidth;
+        }
+      else
+        {
+          int newWidth = re->size().width();
+          int i;
+          for (i = 0; i < table->numCols(); i++)
+            table->setColumnWidth(i, newWidth * table->columnWidth(i) / tableWidth);
+          tableWidth = newWidth;
+        }
     }
 }

@@ -24,6 +24,8 @@ class ModesWidget : public QWidget
     CModel *mModel;
     MyTable *table;
     QPushButton *btnCalculate;
+    int tableWidth;
+    bool binitialized;
 
   public:
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

@@ -24,6 +24,8 @@ class MoietyWidget : public QWidget
   protected:
     CModel *mModel;
     MyTable *table;
+    int tableWidth;
+    bool binitialized;
 
   public:
     MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

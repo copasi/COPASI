@@ -7,12 +7,19 @@
  ** Compartments----It is Basically the First level of Compartments
  ********************************************************************/
 
-#include <qlayout.h>
-#include <qwidget.h>
-#include <qmessagebox.h>
-#include <qfont.h>
+#include "CompartmentsWidget.h" 
+//#include <qlayout.h>
+//#include <qwidget.h>
+//#include <qmessagebox.h>
 
-#include "copasi.h"
+//added by Liang
+#include <qvariant.h>
+#include <qpushbutton.h>
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "CompartmentsWidget.h"
@@ -37,32 +44,36 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
 
 {
   mModel = NULL;
-  table = new MyTable(0, 2, this, "tblCompartments");
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(table);
+  binitialized = true;
+  if (!name)
+    setName("CompartmentsWidget");
+  resize(417, 471);
+  setCaption(trUtf8("CompartmentsWidget"));
+  CompartmentsWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CompartmentsWidgetLayout");
 
-  //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Volume");
-
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
-
-  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
-
-  //To match the Table left Vertical Header Column Width.
-  hBoxLayout->addSpacing(32);
-
-  hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
-
-  table->sortColumn (0, true, true);
-  table->setSorting (true);
+  table = new QTable(this, "table");
+  table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Name"));
+  table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Volume"));
+  table->setFrameShadow(QTable::Sunken);
+  table->setResizePolicy(QTable::Manual);
+  table->setNumRows(0);
+  table->setNumCols(2);
+  table->setRowMovingEnabled(FALSE);
+  table->setSorting(TRUE);
   table->setFocusPolicy(QWidget::WheelFocus);
+  table->sortColumn (0, true, true);
+
+  CompartmentsWidgetLayout->addMultiCellWidget(table, 0, 0, 0, 1);
+
+  btnOK = new QPushButton(this, "btnOK");
+  btnOK->setText(trUtf8("&OK"));
+
+  CompartmentsWidgetLayout->addWidget(btnOK, 1, 0);
+
+  btnCancel = new QPushButton(this, "btnCancel");
+  btnCancel->setText(trUtf8("&Cancel"));
+
+  CompartmentsWidgetLayout->addWidget(btnCancel, 1, 1);
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
@@ -127,16 +138,28 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
-      int newWidth = re->size().width();
-
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 3.5, weight1 = 6.5;
-      float weightSum = weight0 + weight1;
-      int w0, w1;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth - w0;
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
+      if (binitialized)
+        {
+          int newWidth = re->size().width();
+          newWidth -= 35; //Accounting for the left (vertical) header width.
+          float weight0 = 3.5, weight1 = 6.5;
+          float weightSum = weight0 + weight1;
+          int w0, w1;
+          w0 = newWidth * (weight0 / weightSum);
+          w1 = newWidth - w0;
+          table->setColumnWidth(0, w0);
+          table->setColumnWidth(1, w1);
+          binitialized = false;
+          tableWidth = newWidth;
+        }
+      else
+        {
+          int newWidth = re->size().width();
+          int i;
+          for (i = 0; i < table->numCols(); i++)
+            table->setColumnWidth(i, newWidth * table->columnWidth(i) / tableWidth);
+          tableWidth = newWidth;
+        }
     }
 }
 

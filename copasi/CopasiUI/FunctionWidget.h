@@ -27,6 +27,8 @@ class FunctionWidget : public QWidget
     Q_OBJECT
   protected:
     MyTable *table;
+    bool binitialized;
+    int tableWidth;
 
   public:
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

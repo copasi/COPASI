@@ -35,6 +35,8 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
 
 {
   mModel = NULL;
+  binitialized = true;
+
   table = new MyTable(0, 2, this, "tblCompartments");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
@@ -101,16 +103,28 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
-      int newWidth = re->size().width();
-
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 3.5, weight1 = 6.5;
-      float weightSum = weight0 + weight1;
-      int w0, w1;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth - w0;
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
+      if (binitialized)
+        {
+          int newWidth = re->size().width();
+          newWidth -= 35; //Accounting for the left (vertical) header width.
+          float weight0 = 3.5, weight1 = 6.5;
+          float weightSum = weight0 + weight1;
+          int w0, w1;
+          w0 = newWidth * (weight0 / weightSum);
+          w1 = newWidth - w0;
+          table->setColumnWidth(0, w0);
+          table->setColumnWidth(1, w1);
+          binitialized = false;
+          tableWidth = newWidth;
+        }
+      else
+        {
+          int newWidth = re->size().width();
+          int i;
+          for (i = 0; i < table->numCols(); i++)
+            table->setColumnWidth(i, newWidth * table->columnWidth(i) / tableWidth);
+          tableWidth = newWidth;
+        }
     }
 }
 
