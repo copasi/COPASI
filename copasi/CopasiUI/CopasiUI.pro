@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.68 $ $Author: gauges $ $Date: 2004/12/10 15:14:10 $  
+# $Revision: 1.69 $ $Author: gauges $ $Date: 2004/12/10 20:50:09 $  
 ######################################################################
 
 include(../common.pri)
@@ -107,6 +107,7 @@ contains(BUILD_OS, SunOS) {
 # Input
 HEADERS += \
            AboutDialog.h \
+           CCopasiPlotSelectionDialog.h \
            CCopasiSelectionDialog.h \
            CCopasiSelectionWidget.h \
            CCopasiSimpleSelectionTree.h \
@@ -187,6 +188,7 @@ HEADERS += \
 
 SOURCES += \
            AboutDialog.cpp \
+           CCopasiPlotSelectionDialog.cpp \
            CCopasiSelectionDialog.cpp \
            CCopasiSelectionWidget.cpp \
            CCopasiSimpleSelectionTree.cpp \
