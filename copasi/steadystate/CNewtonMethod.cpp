@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 15:12:33 $
+   $Date: 2004/10/05 12:28:43 $
    End CVS Header */
 
 #include <algorithm>
@@ -21,6 +21,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
+#include "utilities/CCopasiException.h"
 
 #include "clapackwrap.h"        //use CLAPACK
 #include "utilities/utility.h"
@@ -139,7 +140,6 @@ CNewtonMethod::processInternal()
   CTrajectoryTask * pTrajectory = NULL;
   CTrajectoryProblem * pTrajectoryProblem = NULL;
   CTrajectoryMethod * pTrajectoryMethod = NULL;
-  bool foundSteadyState = false;
 
   cleanup();
 
@@ -158,6 +158,27 @@ CNewtonMethod::processInternal()
   mScaledResolution =
     mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
   //TODO discuss scaling
+
+  // convert CState to CStateX
+  mInitialStateX = mpProblem->getInitialState();
+  mStateX = mInitialStateX;
+
+  mDimension = mStateX.getVariableNumberSize();
+  mX = const_cast< C_FLOAT64 * >(mStateX.getVariableNumberVector().array());
+
+  mH.resize(mDimension);
+  mXold.resize(mDimension);
+  mdxdt.resize(mDimension);
+  mJacobianX.resize(mDimension, mDimension);
+  mIpiv = new C_INT [mDimension];
+
+  CNewtonMethod::NewtonReturnCode returnCode;
+  if (mUseNewton)
+    {
+      returnCode = processNewton();
+      if (returnCode == CNewtonMethod::found)
+        return returnProcess(true, mFactor, mResolution);
+    }
 
   if (mUseIntegration || mUseBackIntegration)
     {
@@ -187,45 +208,31 @@ CNewtonMethod::processInternal()
       pTrajectory->initialize();
     }
 
-  // convert CState to CStateX
-  mInitialStateX = mpProblem->getInitialState();
-  mStateX = mInitialStateX;
-
-  mDimension = mStateX.getVariableNumberSize();
-  mX = const_cast< C_FLOAT64 * >(mStateX.getVariableNumberVector().array());
-
-  mH.resize(mDimension);
-  mXold.resize(mDimension);
-  mdxdt.resize(mDimension);
-  mJacobianX.resize(mDimension, mDimension);
-  mIpiv = new C_INT [mDimension];
-
-  CNewtonMethod::NewtonReturnCode returnCode;
-
-  if (mUseNewton && !foundSteadyState)
-    {
-      returnCode = processNewton();
-      if (returnCode == CNewtonMethod::found)
-        foundSteadyState = true;
-    }
-
   C_FLOAT64 EndTime;
-
-  if (mUseIntegration && !foundSteadyState)
+  if (mUseIntegration)
     {
-      for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
+      for (EndTime = 1; EndTime < 1.0e5; EndTime *= 10)
         {
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
-          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
-                                         + EndTime);
-          pTrajectory->process();
+          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
+
+          try
+            {
+              pTrajectory->process();
+            }
+          catch (CCopasiException Exception)
+            {
+              std::cout << std::endl << "exception in trajectory task" << std::endl;
+              mStateX = *pTrajectory->getState();
+              break;
+            }
 
           mStateX = *pTrajectory->getState();
           const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           if (isSteadyState())
             {
-              foundSteadyState = true;
-              break;
+              *mpSteadyState = mStateX; //convert back to CState
+              return returnProcess(true, mFactor, mResolution);
             }
 
           //try Newton
@@ -234,15 +241,12 @@ CNewtonMethod::processInternal()
             {
               returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
-                {
-                  foundSteadyState = true;
-                  break;
-                }
+              {return returnProcess(true, mFactor, mResolution);}
             }
         }
     }
 
-  if (mUseBackIntegration && !foundSteadyState)
+  if (false /*mUseBackIntegration*/) //TODO:disabled at the moment
     {
       for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
         {
@@ -255,8 +259,8 @@ CNewtonMethod::processInternal()
           const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           if (isSteadyState())
             {
-              foundSteadyState = true;
-              break;
+              *mpSteadyState = mStateX; //convert back to CState
+              return returnProcess(true, mFactor, mResolution);
             }
 
           //try Newton
@@ -265,10 +269,7 @@ CNewtonMethod::processInternal()
             {
               returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
-                {
-                  foundSteadyState = true;
-                  break;
-                }
+              {return returnProcess(true, mFactor, mResolution);}
             }
         }
     }
@@ -276,9 +277,8 @@ CNewtonMethod::processInternal()
   pdelete(pTrajectory);
   cleanup();
 
-  //steadyState = mSteadyState;
-
-  return returnProcess(foundSteadyState, mFactor, mResolution);
+  *mpSteadyState = mStateX; //convert back to CState
+  return returnProcess(false, mFactor, mResolution);
 }
 
 CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
@@ -428,7 +428,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                         /* fortran style vector */
+                           mdxdt.array() - 1,                          /* fortran style vector */
                            1);
         }
 
@@ -490,7 +490,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                         /* fortran style vector */
+                   mdxdt.array() - 1,                          /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

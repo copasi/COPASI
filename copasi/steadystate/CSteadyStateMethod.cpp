@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:15:49 $
+   $Date: 2004/10/05 12:29:31 $
    End CVS Header */
 
 /**
@@ -122,9 +122,9 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
       mpProblem->isStabilityAnalysisRequested())
     mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
 
-  /* hack to force the model to reflect the solution */
-  CVector< C_FLOAT64 > Derivatives(mpSteadyState->getVariableNumberSize());
-  mpProblem->getModel()->getDerivatives_particles(mpSteadyState, Derivatives);
+  //CVector< C_FLOAT64 > Derivatives(mpSteadyState->getVariableNumberSize());
+  mpProblem->getModel()->setState(mpSteadyState);
+  mpProblem->getModel()->updateRates();
 
   if (mpProblem->isStabilityAnalysisRequested())
     {
@@ -143,10 +143,6 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
 
 /**
  * This instructs the method to calculate a the steady state
- * starting with the initialState given.
- * The steady state is returned in the object pointed to by steadyState.
- * @param CState * steadyState
- * @param const CState * initialState
  * @return CSteadyStateMethod::ReturnCode returnCode
  */
 CSteadyStateMethod::ReturnCode
