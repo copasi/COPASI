@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.158 $
+   $Revision: 1.159 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/26 11:36:02 $
+   $Author: chlee $ 
+   $Date: 2004/11/04 15:54:10 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,6 +54,7 @@
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
+#include "ParamFittingWidget.h"
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
 
@@ -338,6 +339,9 @@ void ListViews::ConstructNodeWidgets()
   timeSeriesWidget = new TimeSeriesWidget(this);
   timeSeriesWidget->hide();
 
+  paramFittingWidget = new ParamFittingWidget(this);
+  paramFittingWidget->hide();
+
   optimizationWidget = new OptimizationWidget(this);
   optimizationWidget->hide();
 
@@ -429,7 +433,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                 //Report
+      case 43:                  //Report
         return tableDefinition;
         break;
       case 42:
@@ -437,6 +441,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       case 5:
         return functionWidget;
+        break;
+      case 33:
+        return paramFittingWidget;
         break;
       }
 
