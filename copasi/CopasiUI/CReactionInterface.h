@@ -67,10 +67,26 @@ class CReactionInterface
     void setReactionName(const std::string & name) {mReactionName = name;};
     const std::string & getReactionName() const {return mReactionName;};
 
-    void setChemEqString(const std::string & eq);
+    /**
+     * set a new chemical equation.
+     * newFunction suggests a new kinetic function which is only used if adequate.
+     */
+    void setChemEqString(const std::string & eq, const std::string & newFunction = "");
     std::string getChemEqString() const {return mChemEq.getChemicalEquationConverted();};
+
     bool isReversible() const {return mChemEq.getReversibility();};
-    void setReversibility(bool rev);
+
+    /**
+     * set the reversibility.
+     * newFunction suggests a new kinetic function which is only used if adequate.
+     */
+    void setReversibility(bool rev, const std::string & newFunction = "");
+
+    /**
+     * reverse the reaction and set the reversibility.
+     * newFunction suggests a new kinetic function which is only used if adequate.
+     */
+    void reverse(bool rev, const std::string & newFunction = "");
 
     /**
      * This produces a list of metab names (from the chem eq) for use in
@@ -84,6 +100,7 @@ class CReactionInterface
      * enforced when the function is the same as before
      */
     void setFunction(const std::string & fn, bool force = false);
+
     const std::string & getFunctionName() const
       {if (mpFunction) return mpFunction->getName(); else return emptyString;};
 
@@ -138,6 +155,12 @@ class CReactionInterface
     void connectFromScratch(std::string role, bool pedantic);
 
     void clearFunction();
+
+    /**
+     * checks if newFunction is an valid function for the reaction.
+     * If it is not or if newFunction="" another function is chosen.
+     */
+    void findAndSetFunction(const std::string & newFunction = "");
   };
 
 #endif

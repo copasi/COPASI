@@ -1,5 +1,5 @@
-#include "CReactionInterface.h"
-#include "qstring.h"
+#include "CReactionInterface.h" 
+//#include "qstring.h"
 #include "model/CReaction.h"
 #include "model/CModel.h"
 #include "model/CChemEqElement.h"
@@ -184,42 +184,49 @@ void CReactionInterface::clearFunction()
   mNameMap.clear();
 }
 
-void CReactionInterface::setChemEqString(const std::string & eq)
+void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
   mChemEq.setChemicalEquation(eq);
-
-  //get list of possible functions and check if the current function is in it.
-  std::vector<std::string> fl = getListOfPossibleFunctions();
-
-  C_INT32 i, imax = fl.size();
-  for (i = 0; i < imax; ++i)
-    if (fl[i] == getFunctionName()) break;
-
-  //if (i<imax) return; // brute force
-  if (i == imax) i = 0;
-
-  //change function  TODO : heuristics
-  if (imax == 0) setFunction("", true);
-  else setFunction(fl[i], true); // brute force
+  findAndSetFunction(newFunction);
 }
 
-void CReactionInterface::setReversibility(bool rev)
+void CReactionInterface::setReversibility(bool rev, const std::string & newFunction)
 {
-  //set the new reversibility
   mChemEq.setReversibility(rev);
+  findAndSetFunction(newFunction);
+}
 
-  //get list of possible functions and check if the current function is in it.
+void CReactionInterface::reverse(bool rev, const std::string & newFunction)
+{
+  mChemEq.setReversibility(rev);
+  mChemEq.reverse();
+  findAndSetFunction(newFunction);
+}
+
+void CReactionInterface::findAndSetFunction(const std::string & newFunction)
+{
+  // get list of possible functions and check if the current function
+  // or the newFunction is in it.
   std::vector<std::string> fl = getListOfPossibleFunctions();
 
   C_INT32 i, imax = fl.size();
-  for (i = 0; i < imax; ++i)
-    if (fl[i] == getFunctionName()) break;
+  if (newFunction == "")
+    {
+      for (i = 0; i < imax; ++i)
+        if (fl[i] == getFunctionName()) break;
+    }
+  else
+    {
+      for (i = 0; i < imax; ++i)
+        if (fl[i] == newFunction) break;
+    }
 
-  //if (i<imax) return; // brute force
+  // if not found just take the first function. no heuristics yet
+  if (i == imax) i = 0;
 
-  //change function  TODO : heuristics
+  //change function
   if (imax == 0) setFunction("", true);
-  else setFunction(fl[0], true);  //brute force
+  else setFunction(fl[i], true);  //brute force
 }
 
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
@@ -290,7 +297,8 @@ bool CReactionInterface::isLocked(std::string usage) const
     if (isVector(pos))
       {
         if (paramSize != 1) fatalError();
-        if (listSize == 0) return true; else return false; //really?
+        //if (listSize == 0) return true; else return false; //really?
+        return true;
       }
     else
       {
