@@ -1,0 +1,85 @@
+***********************************
+*       Gepasi version 3.30       *
+*    Intel Pentium executable     *
+* Tuesday, 08 October 2002, 15:50 *
+***********************************
+
+SEQFB 2
+
+This is Hofmeyr's SEQFB
+Newton only
+this version does not find a steady state
+
+KINETIC PARAMETERS
+R1 (Allosteric inhibition (empirical))
+ Vf =  1.0000e+001
+ Vr =  1.0000e+000
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ n =  2.0000e+000
+ Ki =  1.0000e+000
+R2 (Reversible Michaelis-Menten)
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ Vf =  2.0000e+000
+ Vr =  1.0000e+000
+R3 (Allosteric inhibition (empirical))
+ Vf =  1.0000e+000
+ Vr =  1.0000e+000
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ n =  2.0000e+000
+ Ki =  1.0000e+000
+R4 (Reversible Michaelis-Menten)
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ Vf =  5.0000e+000
+ Vr =  1.0000e+000
+R5 (Allosteric inhibition (empirical))
+ Vf =  1.0000e+000
+ Vr =  1.0000e+000
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ n =  2.0000e+000
+ Ki =  1.0000e+000
+R6 (Reversible Michaelis-Menten)
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ Vf =  5.0000e+000
+ Vr =  1.0000e+000
+R7 (Reversible Michaelis-Menten)
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ Vf =  1.0000e+001
+ Vr =  1.0000e+000
+R8 (Reversible Michaelis-Menten)
+ Kms =  1.0000e+000
+ Kmp =  1.0000e+000
+ Vf =  1.0000e+001
+ Vr =  1.0000e+000
+
+COMPARTMENTS
+V(compartment) =  1.0000e+000
+
+A STEADY STATE COULD NOT BE FOUND.
+(below are the last unsuccessful trial values)
+[         X] =  1.000000e+001 mM, tt =  0.000000e+000 s, rate =  0.000e+000 mM/s
+[         A] =  2.209915e+001 mM, tt =  1.549594e+001 s, rate =  7.496e-001 mM/s
+[         B] =  4.639500e+000 mM, tt =  3.253220e+000 s, rate = -3.094e-001 mM/s
+[         C] =  3.357719e-001 mM, tt =  4.812877e-001 s, rate = -9.029e-001 mM/s
+[         D] =  4.399921e-001 mM, tt =  6.306746e-001 s, rate = -1.962e+000 mM/s
+[         E] =  2.777732e-001 mM, tt =  3.813091e-001 s, rate = -2.314e+000 mM/s
+[         F] =  2.649989e-001 mM, tt =  3.637734e-001 s, rate = -8.101e+000 mM/s
+[         Y] =  2.000000e+000 mM, tt =  0.000000e+000 s, rate =  0.000e+000 mM/s
+[         Z] =  1.000000e+000 mM, tt =  0.000000e+000 s, rate =  0.000e+000 mM/s
+J(R1) =  1.426126e+000 mM*ml/s
+J(R2) =  1.426126e+000 mM*ml/s
+J(R3) =  6.976532e-001 mM*ml/s
+J(R4) =  6.976532e-001 mM*ml/s
+J(R5) =  7.284724e-001 mM*ml/s
+J(R6) =  7.284724e-001 mM*ml/s
+J(R7) =  6.976532e-001 mM*ml/s
+J(R8) =  7.284724e-001 mM*ml/s
+
+The linear stability analysis based on the eigenvalues
+of the Jacobian matrix is only valid for steady states.
