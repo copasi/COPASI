@@ -293,11 +293,11 @@ void CModel::buildConsRel()
     
   C_INT32 i,j;
 
-  C_INT32 imax = (mConsRel.num_rows() < mConsRel.num_cols()) ? 
+  C_INT32 imin = (mConsRel.num_rows() > mConsRel.num_cols()) ? 
     mConsRel.num_cols() : mConsRel.num_rows();
     
   // wei for compiler for (i=0; i<min(mConsRel.num_rows(), mConsRel.num_cols()); i++)
-  for (i=0; i<imax; i++)
+  for (i=0; i<imin; i++)
     mConsRel[i+1][i] = mStoi[i+1][i];
     
   for (j=0; j<mConsRel.num_cols(); j++)
