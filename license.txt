@@ -1,0 +1,16 @@
+COPASI is a biochemical simulator
+by the Mendes and Kummer groups at VBI and EML
+
+This program is free and is intended for test purposes only. 
+You cannot redistribute this test version.
+
+COPASI is provided "AS IS" without warranty of any kind, either 
+express or implied, including but not limited to the implied 
+warranties of merchantability and fitness for a particular 
+purpose. In no event shall the Authors be liable for any damages 
+whatsoever including direct, indirect, incidental, consequential, 
+loss of business profits or special damages, even if the Authors 
+have been advised of the possibility of such damages.
+
+The future release version of COPASI will be free for academic 
+and non-profit research use.

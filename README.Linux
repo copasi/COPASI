@@ -1,0 +1,28 @@
+This is the Linux build of a COPASI test version.
+
+INSTALLATION:
+
+You can unpack the package anywhere. The binary should work immediately.
+However for the tutorial wizard to work you need to set an environment
+variable:
+
+
+If you use bash type (while replacing <copasi-path> with the directory where 
+you installed COPASI):
+
+export COPASI_HELP_PATH=<copasi-path>/share/doc/copasi
+
+If you want to use that permanently you can add that command to your .bashrc
+file.
+
+
+If you use tcsh type (while replacing <copasi-path> with the directory where 
+you installed COPASI):
+
+setenv COPASI_HELP_PATH <copasi-path>/share/doc/copasi
+
+
+KNOWN PROBLEMS
+
+We built this as a statically linked binary. It should therefore run on most
+Linux x86 computers. 

@@ -1,0 +1,21 @@
+This is the Windows build of a COPASI test version.
+
+INSTALLATION:
+
+If you have a previous versions of COPASI installed, please uninstall it
+first. You can do this from the Start button, by selecting 
+COPASI\Uninstall Copasi Test. You can also uninstall it from the Control
+Panel.
+
+To install this package run the SETUP.EXE file and follow the on-screen
+instructions. 
+
+
+KNOWN PROBLEMS:
+
+Please visit the Copasi web page for more information:
+http://www.copasi.org
+
+
+COPASI was developed by the Mendes and Kummer groups at the Virginia 
+Bioinformatics Institute and the European Media Lab Research.
