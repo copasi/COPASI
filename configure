@@ -1630,27 +1630,27 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test "${enable_debug}" != no; then
+if test x"${enable_release}" != x"yes" -a x"${enable_debug}" != x"no"; then
   cps_release="CONFIG+=debug"
 else
   cps_release="CONFIG+=release"
 fi
 
-if test "${enable_thread}" != no; then
+if test x"${enable_thread}" != x"no"; then
   cps_thread="CONFIG+=thread"
 else
   cps_thread="CONFIG-=thread"
 fi
 
-if test "${MKL_PATH}" != ""; then
+if test x"${MKL_PATH}" != x""; then
   cps_mkl_path="MKL_PATH=$MKL_PATH"
 fi
 
-if test "${CLAPACK_PATH}" != ""; then
+if test x"${CLAPACK_PATH}" != x""; then
   cps_clapack_path="CLAPACK_PATH=$CLAPACK_PATH"
 fi
 
-if test "${EXPAT_PATH}" != ""; then
+if test x"${EXPAT_PATH}" != x""; then
   cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
 fi
 
