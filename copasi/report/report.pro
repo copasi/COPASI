@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: lixu1 $ $Date: 2003/08/13 16:06:45 $  
+# $Revision: 1.6 $ $Author: lixu1 $ $Date: 2003/09/10 01:08:12 $  
 ######################################################################
 
 LIB = report
@@ -9,6 +9,7 @@ include(../lib.pri)
 HEADERS += CCopasiContainer.h \
            CCopasiObject.h \
            CCopasiObjectName.h \
+           CCopasiStaticString.h \
            CCopasiObjectReference.h \
 		   CReportDefinition.h \
 		   CReportDefinitionVector.h \
@@ -19,6 +20,7 @@ HEADERS += CCopasiContainer.h \
 SOURCES += CCopasiContainer.cpp \
            CCopasiObject.cpp \
            CCopasiObjectName.cpp \
+           CCopasiStaticString.cpp \
 		   CReportDefinition.cpp \
 		   CReportDefinitionVector.cpp \
 	       CKeyFactory.cpp \
