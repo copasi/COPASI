@@ -99,6 +99,7 @@ C_INT32 TestCopasiXML();
 int main(int argc, char *argv[])
 {
   cout << "Starting main program." << endl;
+  CCopasiContainer::init();
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
 
@@ -165,7 +166,9 @@ int main(int argc, char *argv[])
       cout << Exception.getMessage().getText() << endl;
     }
 
-  delete Copasi;
+  pdelete(Copasi);
+  pdelete(CCopasiContainer::Root);
+
   cout << "Leaving main program." << endl;
   return 0;
 }
@@ -353,7 +356,7 @@ C_INT32 TestCopasiObject(void)
   cout << cn << endl;
 
   CCompartment * pCompartment =
-    (CCompartment *) (CCopasiContainer *) RootContainer.getObject(cn);
+    (CCompartment *) (CCopasiContainer *) CCopasiContainer::Root->getObject(cn);
 
   cout << *pCompartment << endl;
   return 0;
