@@ -73,62 +73,61 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
           table->removeRow(0);
         }
 
-      CMathModel *mathmodel = new CMathModel();
-      //const CModel *mModel=mathmodel->getModel();
+      /* CMathModel *mathmodel=new CMathModel();
+      mathmodel->setModel(mModel);
+       const CModel *nModel=mathmodel->getModel();*/
 
       //unsigned C_INT32 k= mModel->getIntMetab();
+      CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
+      C_INT32 noOfMetaboliteRows = metabolite.size();
+      table->setNumRows(noOfMetaboliteRows);
+      CMetab *metab;
 
-      //CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
-      //C_INT32 noOfMetaboliteRows = metabolite.size();
-      //table->setNumRows(noOfMetaboliteRows);
-      //CMetab *metab;
-
-      //for (i=0; i<= noOfMetaboliteRows; i++)
-      //{
-      //CMathConstantMetab *metablist=new CMathConstantMetab(metabolite);
-      //metablist = mathmodel->getFixedMetabList();
-      //C_INT32 noOfMetabElements = metablist->size();
-      //table->setNumRows(noOfMetabElements);
-
-      //metab = metabolite[i];
-      //table->setText(i, 0, metab->getName().c_str());
-      //table->setText(i, 1, QString::number(metab->getObject()->getName()));
-      //table->setText(i, 2, QString::number(metab->getConcentration()));
-      //table->setText(i, 3, QString::number(metab->getParticleNumber()));
-      //table->setText(i, 4, QString::number(metab->getCompartment->getName()));
-
-      /*double m=(*(metab->getConcentration()));
-      QString *m1;
-      //QString ms = m1.setNum(m,'g',6);
-         m1=  QString::setNum(m,'g',6);            
-      table->setText(j, 1,*m1);
-       
-      //table->setText(j, 1,ms); */
-      /*table->setText(j, 1, QString::number(metab->getConcentration()));
-
-      table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-      table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-      #ifdef XXXX
-      if (QString::number(metab->getStatus()) == "0")
+      for (i = 0; i < noOfMetaboliteRows; i++)
         {
-          table->setText(j, 3, "defineda");
-        }
-      else if (QString::number(metab->getStatus()) == "1")
-        {
-          table->setText(j, 3, "definedb");
-        }
-      else if (QString::number(metab->getStatus()) == "2")
-        {
-          table->setText(j, 3, "definedc");
-        }
-      #endif // XXXX
-      table->setText(j, 4, metab->getCompartment()->getName().c_str());
-      }
+          //CMathConstantMetab *metablist=new CMathConstantMetab(metabolite);
+          //metablist = mathmodel->getFixedMetabList();
+          //C_INT32 noOfMetabElements = metablist->size();
 
-      //table->sortColumn(0,true,true);*/ 
-      //}
+          metab = metabolite[i];
+          table->setText(i, 0, metab->getName().c_str());
+          //table->setText(i, 1, QString::number(metab->getObject()->getName()));
+          //table->setText(i, 2, QString::number(metab->getConcentration()));
+          //table->setText(i, 3, QString::number(metab->getParticleNumber()));
+          //table->setText(i, 4, QString::number(metab->getCompartment->getName()));
+
+          /*double m=(*(metab->getConcentration()));
+          QString *m1;
+          //QString ms = m1.setNum(m,'g',6);
+             m1=  QString::setNum(m,'g',6);            
+          table->setText(j, 1,*m1);
+           
+          //table->setText(j, 1,ms); */
+          /*table->setText(j, 1, QString::number(metab->getConcentration()));
+
+          table->setText(j, 2, QString::number(metab->getNumberDbl()));
+
+          table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
+
+          #ifdef XXXX
+          if (QString::number(metab->getStatus()) == "0")
+            {
+              table->setText(j, 3, "defineda");
+            }
+          else if (QString::number(metab->getStatus()) == "1")
+            {
+              table->setText(j, 3, "definedb");
+            }
+          else if (QString::number(metab->getStatus()) == "2")
+            {
+              table->setText(j, 3, "definedc");
+            }
+          #endif // XXXX
+          table->setText(j, 4, metab->getCompartment()->getName().c_str());
+          }
+
+          //table->sortColumn(0,true,true);*/
+        }
     }
 }
 

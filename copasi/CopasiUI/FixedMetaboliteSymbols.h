@@ -22,7 +22,7 @@ class FixedMetaboliteSymbols : public QWidget
     Q_OBJECT
 
   protected:
-    CModel * mModel;
+    const CModel * mModel;
     CMathModel *mathmodel;
     CMathConstantMetab *metablist;
     MyTable * table;
