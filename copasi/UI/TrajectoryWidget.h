@@ -24,6 +24,7 @@ class QTable;
 class CTrajectoryTask;
 class CTrajectoryProblem;
 class CTrajectoryMethod;
+class CModel;
 
 class TrajectoryWidget : public QWidget
   {
@@ -58,6 +59,9 @@ class TrajectoryWidget : public QWidget
     QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportToFileButton;
+
+  signals:
+    virtual void runFinished(CModel*);
 
   public slots:
     virtual void CancelChange();

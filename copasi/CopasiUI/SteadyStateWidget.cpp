@@ -24,6 +24,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
+#include "listviews.h"
 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -134,6 +135,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
   connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
+  connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
+          SLOT(loadModelNodes(CModel*)));
 
   // tab order
   setTabOrder(taskName, bExecutable);
@@ -235,6 +238,8 @@ void SteadyStateWidget::RunTask()
   mSteadyStateTask->initializeReporting(output);
 
   mSteadyStateTask->process();
+
+  emit runFinished(mSteadyStateTask->getProblem()->getModel());
 }
 
 void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)

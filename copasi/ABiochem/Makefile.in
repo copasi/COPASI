@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.5 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -507,7 +507,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=ABiochem.h layout.pl experiments.pl ABiochem.dsp erdos.h 1d.cpp nets.css abiochem.xml wattstrog.cpp clo.h 1d.dsp Erdos.dsp abiochem.cpp index.pl clo.cpp wattsrog.dsp ab.cpp ab.dsp 
+KDE_DIST=layout.pl experiments.pl abiochem.xml wattstrog.cpp 1d.dsp Erdos.dsp index.pl wattsrog.dsp ab.dsp ABiochem.h ABiochem.dsp erdos.h 1d.cpp nets.css clo.h abiochem.cpp clo.cpp ab.cpp 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

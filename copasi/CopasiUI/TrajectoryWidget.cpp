@@ -24,6 +24,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "model/CModel.h"
+#include "listviews.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -172,7 +173,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
-
+  connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
+          SLOT(loadModelNodes(CModel*)));
   mTrajectoryTask = NULL;
 }
 
@@ -272,6 +274,8 @@ void TrajectoryWidget::RunTask()
   mTrajectoryTask->initializeReporting(output);
 
   mTrajectoryTask->process();
+
+  emit runFinished(mTrajectoryTask->getProblem()->getModel());
 }
 
 void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)

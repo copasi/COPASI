@@ -25,6 +25,7 @@ class QTable;
 class CSteadyStateTask;
 class CSteadyStateProblem;
 class CSteadyStateMethod;
+class CModel;
 
 class SteadyStateWidget : public QWidget
   {
@@ -52,6 +53,9 @@ class SteadyStateWidget : public QWidget
     QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportFileButton;
+
+  signals:
+    virtual void runFinished(CModel*);
 
   public slots:
     virtual void CancelChange();

@@ -43,9 +43,17 @@ MESSAGES Messages[] =
     {MCChemEq + 2, "CChemEq (2): Substrates in different Compartments."},
     {MCChemEq + 3, "CChemEq (3): No Substrates and Products are in different compartments."},
 
-    //
+    // CMethodParameter
     {MCMethodParameter + 1, "CMethodParameter (1): Invalid value '%f' for '%s' "
      "which is of type '%s'."},
+
+    // CTrajectoryMethod
+    {MCTrajectoryMethod + 1, "CTrajectoryMethod (1): Hybrid simulation not "
+     "applicable, since the stoicheometry contains a non-integer."},
+    {MCTrajectoryMethod + 2, "CTrajectoryMethod (2): Hybrid simulation not "
+     "applicable, since reversible reactions exists."},
+    {MCTrajectoryMethod + 3, "CTrajectoryMethod (2): Hybrid simulation not "
+     "applicable, since more than one compartment is involved."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

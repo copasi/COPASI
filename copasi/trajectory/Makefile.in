@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.14 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.15 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -242,7 +242,9 @@ libtrajectory_a_SOURCES = \
 	CLsodaMethod.cpp \
 	CStochMethod.cpp \
 	CStochDirectMethod.cpp \
-	CStochNextReactionMethod.cpp
+	CStochNextReactionMethod.cpp \
+	CHybridMethod.cpp \
+	CHybridNextReactionRKMethod.cpp
 
 
 EXTRA_DIST = \
@@ -255,7 +257,9 @@ EXTRA_DIST = \
 	CLsodaMethod.h	CLsodaMethod.cpp \
 	CStochMethod.h CStochMethod.cpp \
 	CStochDirectMethod.h CStochDirectMethod.cpp \
-	CStochNextReactionMethod.h CStochNextReactionMethod.cpp
+	CStochNextReactionMethod.h CStochNextReactionMethod.cpp \
+	CHybridMethod.h CHybridMethod.cpp \
+	CHybridNextReactionRKMethod.h CHybridNextReactionRKMethod.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -273,14 +277,16 @@ libtrajectory_a_LIBADD =
 am_libtrajectory_a_OBJECTS = CTrajectoryTask.$(OBJEXT) \
 	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
 	CLsodaMethod.$(OBJEXT) CStochMethod.$(OBJEXT) \
-	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT)
+	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT) \
+	CHybridMethod.$(OBJEXT) CHybridNextReactionRKMethod.$(OBJEXT)
 #>- libtrajectory_a_OBJECTS = $(am_libtrajectory_a_OBJECTS)
-#>+ 7
+#>+ 8
 libtrajectory_a_final_OBJECTS = libtrajectory_a.all_cpp.o 
 libtrajectory_a_nofinal_OBJECTS = CTrajectoryTask.$(OBJEXT) \
 	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
 	CLsodaMethod.$(OBJEXT) CStochMethod.$(OBJEXT) \
-	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT)
+	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT) \
+	CHybridMethod.$(OBJEXT) CHybridNextReactionRKMethod.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libtrajectory_a_OBJECTS = $(libtrajectory_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libtrajectory_a_OBJECTS = $(libtrajectory_a_final_OBJECTS)
 
@@ -290,7 +296,9 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CLsodaMethod.Po \
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CHybridMethod.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CHybridNextReactionRKMethod.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CLsodaMethod.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CStochDirectMethod.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CStochMethod.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CStochNextReactionMethod.Po \
@@ -362,6 +370,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CHybridMethod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CHybridNextReactionRKMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CLsodaMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochDirectMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochMethod.Po@am__quote@
@@ -556,11 +566,11 @@ force-reedit:
 
 
 #>+ 11
-libtrajectory_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CTrajectoryTask.cpp $(srcdir)/CTrajectoryProblem.cpp $(srcdir)/CTrajectoryMethod.cpp $(srcdir)/CLsodaMethod.cpp $(srcdir)/CStochMethod.cpp $(srcdir)/CStochDirectMethod.cpp $(srcdir)/CStochNextReactionMethod.cpp
+libtrajectory_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CTrajectoryTask.cpp $(srcdir)/CTrajectoryProblem.cpp $(srcdir)/CTrajectoryMethod.cpp $(srcdir)/CLsodaMethod.cpp $(srcdir)/CStochMethod.cpp $(srcdir)/CStochDirectMethod.cpp $(srcdir)/CStochNextReactionMethod.cpp $(srcdir)/CHybridMethod.cpp $(srcdir)/CHybridNextReactionRKMethod.cpp
 	@echo 'creating libtrajectory_a.all_cpp.cpp ...'; \
 	rm -f libtrajectory_a.all_cpp.files libtrajectory_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libtrajectory_a.all_cpp.final; \
-	for file in CTrajectoryTask.cpp CTrajectoryProblem.cpp CTrajectoryMethod.cpp CLsodaMethod.cpp CStochMethod.cpp CStochDirectMethod.cpp CStochNextReactionMethod.cpp ; do \
+	for file in CTrajectoryTask.cpp CTrajectoryProblem.cpp CTrajectoryMethod.cpp CLsodaMethod.cpp CStochMethod.cpp CStochDirectMethod.cpp CStochNextReactionMethod.cpp CHybridMethod.cpp CHybridNextReactionRKMethod.cpp ; do \
 	  echo "#include \"$$file\"" >> libtrajectory_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libtrajectory_a.all_cpp.final; \
 	done; \
