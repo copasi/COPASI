@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>336</width>
-            <height>189</height>
+            <width>346</width>
+            <height>151</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,22 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="1" column="0">
-            <property name="name">
-                <cstring>confirmButton</cstring>
-            </property>
-            <property name="text">
-                <string>Confirm</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>cancelButton</cstring>
-            </property>
-            <property name="text">
-                <string>Cancel</string>
-            </property>
-        </widget>
         <widget class="QFrame" row="0" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>frame5</cstring>
@@ -57,12 +41,36 @@
                         <string>ReportDefinitions</string>
                     </property>
                 </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>targetLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Target</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>appendChecked</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Append</string>
+                    </property>
+                </widget>
                 <widget class="QComboBox" row="0" column="1">
                     <property name="name">
                         <cstring>comboBox9</cstring>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="2" column="1">
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>jumpButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>edit</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
                     <property name="name">
                         <cstring>targetEdit</cstring>
                     </property>
@@ -73,31 +81,31 @@
                         <enum>Sunken</enum>
                     </property>
                 </widget>
-                <widget class="QLabel" row="2" column="0">
+                <widget class="QPushButton" row="1" column="2">
                     <property name="name">
-                        <cstring>targetLabel</cstring>
+                        <cstring>browseButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Target</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox" row="3" column="1">
-                    <property name="name">
-                        <cstring>appendChecked</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Append</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>jumpButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Jump to...</string>
+                        <string>browse</string>
                     </property>
                 </widget>
             </grid>
+        </widget>
+        <widget class="QPushButton" row="1" column="0">
+            <property name="name">
+                <cstring>confirmButton</cstring>
+            </property>
+            <property name="text">
+                <string>Confirm</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
         </widget>
     </grid>
 </widget>
