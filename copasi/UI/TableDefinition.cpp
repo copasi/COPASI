@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:14:35 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:26 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,6 +29,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -99,8 +100,8 @@ void TableDefinition::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
-      table->setText(j, 0, (*objects)[j]->getName().c_str());
-      table->setText(j, 1, (*objects)[j]->getComment().c_str());
+      table->setText(j, 0, FROM_UTF8((*objects)[j]->getName()));
+      table->setText(j, 1, FROM_UTF8((*objects)[j]->getComment()));
       mKeys[j] = (*objects)[j]->getKey();
     }
   table->setText(jmax, 1, "");
@@ -115,9 +116,9 @@ void TableDefinition::createNewObject()
       i++;
       name = "ReportDefinition";
       name += "_";
-      name += QString::number(i).latin1();
+      name += QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
   ListViews::notify(ListViews::REPORT, ListViews::ADD);
 }

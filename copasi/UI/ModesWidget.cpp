@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:12:14 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:19 $
    End CVS Header */
 
 /*******************************************************************
@@ -23,6 +23,7 @@
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "ModesWidget.h"
 #include "listviews.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -117,12 +118,12 @@ void ModesWidget::loadModes(CModel *model)
             {
               table->setText(j, 0, "Irreversible");
             }
-          //QString y=modes->isFluxModeReversible(j)->c_str();
-          //QString x=modes->getFluxModeDescription(j).c_str();
+          //QString y=modes->isFluxModeReversible(j)->;
+          //QString x=modes->getFluxModeDescription(j).;
           //QMessageBox::information(this, "recahed ",x);
           //table->setText(j, 0,y);
-          //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
-          table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+          //table->setText(j, 0,modes->getFluxModeDescription(j).);
+          table->setText(j, 1, FROM_UTF8(modes->getFluxModeDescription(j)));
         } /*** CL ***/
     }
 }
@@ -255,12 +256,12 @@ void ModesWidget::slotBtnCalculateClicked()
         {
           table->setText(j, 0, "Irreversible");
         }
-      //QString y=modes->isFluxModeReversible(j)->c_str();
-      //QString x=modes->getFluxModeDescription(j).c_str();
+      //QString y=modes->isFluxModeReversible(j)->;
+      //QString x=modes->getFluxModeDescription(j).;
       //QMessageBox::information(this, "recahed ",x);
       //table->setText(j, 0,y);
-      //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
-      table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+      //table->setText(j, 0,modes->getFluxModeDescription(j).);
+      table->setText(j, 1, modes->getFluxModeDescription(j).);
     }***CL***/
 }
 

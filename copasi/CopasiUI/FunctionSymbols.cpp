@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:43 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:17 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,7 +25,9 @@
 #include "utilities/CGlobals.h"
 #include "listviews.h"
 #include "function/CFunctionDB.h"
-#include "function/CFunction.h" 
+#include "function/CFunction.h"
+#include "qtUtilities.h"
+
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
  *  displaying the Metabolites in model 'model'.
@@ -112,15 +114,15 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
       for (it = functionList.begin(); it != functionList.end();++it)
         {
           mathSymbol = it->second;
-          table->setText(index, 0, it->first.c_str());
+          table->setText(index, 0, FROM_UTF8(it->first));
 
           CFunction *metabObject = (CFunction *)mathSymbol->getObject();
-          table->setText(index, 1, metabObject->getName().c_str());
+          table->setText(index, 1, FROM_UTF8(metabObject->getName()));
           QStringList functionType;
           CFunctionParameters &functParam = metabObject->getParameters();
           for (int j = 0; j < functParam.size(); j++)
             {
-              functionType.push_back(functParam[j]->getName().c_str());
+              functionType.push_back(FROM_UTF8(functParam[j]->getName()));
             }
           QComboTableItem * item = new QComboTableItem(table, functionType, false);
           table->setItem(index, 2, item);

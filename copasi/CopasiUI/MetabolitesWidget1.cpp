@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:07:24 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:18 $
    End CVS Header */
 
 /*******************************************************************
@@ -34,6 +34,7 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /*
  *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
@@ -192,8 +193,8 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
   CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
   CCompartment *compt;
   mComboCompartment->clear();
-  mEditName->setText(metab->getName().c_str());
-  //Metabolite1_Name = new QString(metab->getName().c_str());
+  mEditName->setText(FROM_UTF8(metab->getName()));
+  //Metabolite1_Name = new QString(metab->getName().);
 
   mEditInitConcentration->setText(QString::number(metab->getInitialConcentration()));
 
@@ -213,7 +214,7 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
   else
     mCheckStatus->setChecked(false);
 
-  mEditStatus->setText(CMetab::StatusName[metab->getStatus()].c_str());
+  mEditStatus->setText(FROM_UTF8(CMetab::StatusName[metab->getStatus()]));
 
   mComboCompartment->setDuplicatesEnabled (false);
   unsigned C_INT32 m;
@@ -222,10 +223,10 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
       //showMessage("mudita","It comes here");
 
       compt = allcompartments[m];
-      //mComboCompartment->insertStringList(compt->getName().c_str(),j);
-      mComboCompartment->insertItem(compt->getName().c_str());
+      //mComboCompartment->insertStringList(compt->getName().,j);
+      mComboCompartment->insertItem(FROM_UTF8(compt->getName()));
     }
-  mComboCompartment->setCurrentText(metab->getCompartment()->getName().c_str());
+  mComboCompartment->setCurrentText(FROM_UTF8(metab->getCompartment()->getName()));
 
   return true;
 }
@@ -238,9 +239,9 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   //name
   QString name(mEditName->text());
-  if (name.latin1() != metab->getName())
+  if ((const char *)name.utf8() != metab->getName())
     {
-      metab->setName(name.latin1());
+      metab->setName((const char *)name.utf8());
       //TODO: update the reactions (the real thing, not the gui)
       //      propably not necessary anymore when reaction uses keys instead of names
       ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, objKey);
@@ -248,10 +249,10 @@ bool MetabolitesWidget1::saveToMetabolite()
 
   //compartment
   QString Compartment = mComboCompartment->currentText();
-  if (Compartment.latin1() != metab->getCompartment()->getName())
+  if ((const char *)Compartment.utf8() != metab->getCompartment()->getName())
     {
       std::string CompartmentToRemove = metab->getCompartment()->getName();
-      dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(metab);
+      dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
       dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getName());
       dataModel->getModel()->initializeMetabolites();
       //ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");

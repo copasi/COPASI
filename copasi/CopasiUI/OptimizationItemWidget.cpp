@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:23 $
+   $Date: 2004/05/03 20:20:21 $
    End CVS Header */
 
 /********************************************************
@@ -14,6 +14,16 @@ Date: 10/01
 Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
+#include <qvariant.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qcombobox.h>
+#include <qframe.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qmessagebox.h>
+
 #include "OptimizationWidget.h"
 #include "OptimizationItemWidget.h"
 #include "ScanItemWidget.h"
@@ -24,16 +34,8 @@ Contact: Please contact lixu1@vt.edu.
 #include "function/CKinFunction.h"
 #include "optimization/COptFunction.h"
 #include "utilities/CCopasiException.h"
+#include "qtUtilities.h"
 
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qframe.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qmessagebox.h> 
 /*
  *  Constructs a OptimizationItemWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -187,21 +189,21 @@ void OptimizationItemWidget::slotLowerEdit()
   lineLower->setEnabled(true);
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
-  strFunction = lineLower->text().latin1();
+  strFunction = lineLower->text().utf8();
   pFuncDlg->setStrFunction(&strFunction);
 
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
-      lineLower->setText(strFunction.c_str());
+      lineLower->setText(FROM_UTF8(strFunction));
       COptFunction* func =
         dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
       int nIndex; // this nIndex must exist;
       nIndex = func->Index(mpObject->getCN());
-      func->mMinList[nIndex] = strFunction.c_str();
+      func->mMinList[nIndex] = FROM_UTF8(strFunction);
       if (!(func->mMinFunctionList[nIndex]))
         func->mMinFunctionList[nIndex] = new CKinFunction();
       // dont go through the compile function
-      func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex].c_str());
+      func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex]);
       try
         {
           func->mMinFunctionList[nIndex]->compile();
@@ -233,20 +235,20 @@ void OptimizationItemWidget::slotUpperEdit()
   lineUpper->setEnabled(true);
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
-  strFunction = lineUpper->text().latin1();
+  strFunction = lineUpper->text().utf8();
   pFuncDlg->setStrFunction(&strFunction);
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
-      lineUpper->setText(strFunction.c_str());
+      lineUpper->setText(FROM_UTF8(strFunction));
       COptFunction* func =
         dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
       int nIndex; // this nIndex must exist;
       nIndex = func->Index(mpObject->getCN());
-      func->mMaxList[nIndex] = strFunction.c_str();
+      func->mMaxList[nIndex] = FROM_UTF8(strFunction);
       if (!(func->mMaxFunctionList[nIndex]))
         func->mMaxFunctionList[nIndex] = new CKinFunction();
       // dont go through the compile function
-      func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex].c_str());
+      func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex]);
       try
         {
           func->mMaxFunctionList[nIndex]->compile();
@@ -270,7 +272,7 @@ std::string OptimizationItemWidget::getItemUpperLimit()
   if (checkUpperInf->isChecked())
     return "+inf";
   else
-    return lineUpper->text().latin1();
+    return lineUpper->text().utf8();
 }
 
 std::string OptimizationItemWidget::getItemLowerLimit()
@@ -278,7 +280,7 @@ std::string OptimizationItemWidget::getItemLowerLimit()
   if (checkLowerInf->isChecked())
     return "-inf";
   else
-    return lineLower->text().latin1();
+    return lineLower->text().utf8();
 }
 
 CCopasiObject* OptimizationItemWidget::getCopasiObject()
@@ -291,7 +293,7 @@ void OptimizationItemWidget::setCopasiObjectPtr (CCopasiObject* sourceObject)
   if (!sourceObject) // NULL pointer
     return;
   mpObject = sourceObject;
-  ObjectName->setText(mpObject->getObjectUniqueName().c_str());
+  ObjectName->setText(FROM_UTF8(mpObject->getObjectUniqueName()));
 }
 
 void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
@@ -308,7 +310,7 @@ void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
       checkUpperInf->setChecked(false);
       //buttonUpperEdit->setEnabled(true);
       lineUpper->setEnabled(true);
-      lineUpper->setText(strUpperLimit.c_str());
+      lineUpper->setText(FROM_UTF8(strUpperLimit));
     }
 }
 
@@ -326,26 +328,26 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
       checkLowerInf->setChecked(false);
       //buttonLowerEdit->setEnabled(true);
       lineLower->setEnabled(true);
-      lineLower->setText(strLowerLimit.c_str());
+      lineLower->setText(FROM_UTF8(strLowerLimit));
     }
 }
 
 std::string OptimizationItemWidget::getItemUpperOper()
 {
-  return comboBoxUpperOp->currentText().latin1();
+  return comboBoxUpperOp->currentText().utf8();
 }
 
 std::string OptimizationItemWidget::getItemLowerOper()
 {
-  return comboBoxLowerOp->currentText().latin1();
+  return comboBoxLowerOp->currentText().utf8();
 }
 
 void OptimizationItemWidget::setItemUpperOper(std::string oper)
 {
-  comboBoxUpperOp->setCurrentText (oper.c_str());
+  comboBoxUpperOp->setCurrentText(FROM_UTF8(oper));
 }
 
 void OptimizationItemWidget::setItemLowerOper(std::string oper)
 {
-  comboBoxLowerOp->setCurrentText (oper.c_str());
+  comboBoxLowerOp->setCurrentText(FROM_UTF8(oper));
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:14:34 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:25 $
    End CVS Header */
 
 /********************************************************
@@ -340,7 +340,7 @@ void SteadyStateWidget::loadSteadyStateTask()
   CCopasiParameter::Type Type;
   for (i = 0; i < steadystatemethod->size(); i++)
     {
-      strname = (steadystatemethod->getName(i)).c_str();
+      strname = FROM_UTF8(steadystatemethod->getName(i));
       rowHeader->setLabel(i, tr(strname));
 
       value = getParameterValue(steadystatemethod, i, &Type);
@@ -365,7 +365,7 @@ void SteadyStateWidget::ExportToFileButtonClicked()
   if (textFile)
     {
       textFile += ".txt";
-      CWriteConfig outbuf(textFile.latin1());
+      CWriteConfig outbuf((const char *)textFile.utf8());
       CSteadyStateTask* mSteadyStateTask =
         dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
       //      mSteadyStateTask->save(outbuf);

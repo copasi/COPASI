@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:13:51 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,6 +54,7 @@
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
 #include "listviews.h"
+#include "qtUtilities.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -546,7 +547,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                   //Time course
+      case 23:                                    //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -555,10 +556,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                  //Report
+      case 43:                                   //Report
         return tableDefinition;
         break;
-      case 42:                                  //Plots
+      case 42:                                   //Plots
         return plotWidget;
         break;
       case 5:
@@ -897,7 +898,7 @@ void ListViews::loadPlotsToDataModel()   //TODO
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -922,7 +923,7 @@ void ListViews::loadReportDefinition()
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -944,7 +945,7 @@ void ListViews::loadCompartmentsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
@@ -968,8 +969,8 @@ void ListViews::loadMetabolitesToDataModel()
     {
       metab = metabolites[j];
 
-      //f = new Folder(parent, metab->getName().c_str());
-      f = new Folder(parent, CMetabNameInterface::getDisplayName(dataModel->getModel(), *metab).c_str());
+      //f = new Folder(parent, metab->getName().);
+      f = new Folder(parent, FROM_UTF8(CMetabNameInterface::getDisplayName(dataModel->getModel(), *metab)));
       f->setID(parent->getID());
       f->setObjectKey(metab->getKey());
       dataModel->addData(parent, f);
@@ -991,7 +992,7 @@ void ListViews::loadReactionsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f); // TODO: do we really want to add this to the datamodel here?
@@ -1014,7 +1015,7 @@ void ListViews::loadMoietiesToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey()); //TODO: give moieties a key
       dataModel->addData(parent, f);
@@ -1035,7 +1036,7 @@ void ListViews::loadFunctionsToDataModel()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      f = new Folder(parent, obj->getName().c_str());
+      f = new Folder(parent, FROM_UTF8(obj->getName()));
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:13:34 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:21 $
    End CVS Header */
 
 /********************************************************
@@ -45,6 +45,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "TrajectoryWidget.h"
 #include "SteadyStateWidget.h"
 #include "utilities/CCopasiException.h"
+#include "qtUtilities.h"
 
 #include "report/CKeyFactory.h"
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -439,7 +440,7 @@ bool OptimizationWidget::loadFromExpression(COptFunction*)
 {
   bUpdated = false;
   COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
-  expressionName->setText(func->getObjectUniqueName().c_str());
+  expressionName->setText(FROM_UTF8(func->getObjectUniqueName()));
   //  expressionText->setText(func-> serialize a function to a std::stream
   return true;
 }
@@ -474,7 +475,7 @@ void OptimizationWidget::addButtonClicked()
     }
 
   if (addNewOptItem((*pSelectedVector)[i]))
-    itemnamesTable->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+    itemnamesTable->insertItem (FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()), nSelectedObjects - 1);
 
   pdelete(pSelectedVector);
 }
@@ -491,7 +492,7 @@ void OptimizationWidget::deleteButtonClicked()
   CCopasiObject* pOptObject =
     ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
   if (optFunction->mParaList.size() > 0)  // for reloading
-    optFunction->removeItem(pOptObject->getCN().c_str());
+    optFunction->removeItem(pOptObject->getCN());
 
   itemsTable->removeChild(selectedList[2*activeObject]);
   itemsTable->removeChild(selectedList[2*activeObject + 1]);
@@ -532,7 +533,7 @@ void OptimizationWidget::deleteButtonClicked()
       pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
       ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
       activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-      activeTitle->setText(pOptObject->getCN().c_str());
+      activeTitle->setText(FROM_UTF8(pOptObject->getCN()));
     }
 
   nSelectedObjects--;
@@ -611,13 +612,13 @@ void OptimizationWidget::upButtonClicked()
   //lower one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectUp->getCN().c_str());
+  activeTitle->setText(FROM_UTF8(pObjectUp->getCN()));
 
   //activate
   //upper one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectDown->getCN().c_str());
+  activeTitle->setText(FROM_UTF8(pObjectDown->getCN()));
 
   //Update ListBox
   QString tmp = itemnamesTable->text (activeObject);
@@ -691,12 +692,12 @@ void OptimizationWidget::downButtonClicked()
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectDown->getCN().c_str());
+  activeTitle->setText(FROM_UTF8(pObjectDown->getCN()));
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectUp->getCN().c_str());
+  activeTitle->setText(FROM_UTF8(pObjectUp->getCN()));
 
   //Update ListBox
   QString tmp = itemnamesTable->text (activeObject);
@@ -716,7 +717,7 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   COptFunction* optFunction =
     dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
   // cannot be found in the list
-  if (optFunction->Index(pObject->getCN().c_str()) != C_INVALID_INDEX)
+  if (optFunction->Index(pObject->getCN()) != C_INVALID_INDEX)
     return false;
 
   int widgetOffset;
@@ -735,7 +736,7 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
 
-  newTitleBar->setText(pObject->getCN().c_str());
+  newTitleBar->setText(FROM_UTF8(pObject->getCN()));
   newTitleBar->setReadOnly(TRUE);
 
   itemsTable->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
@@ -837,7 +838,7 @@ void OptimizationWidget::slotBtnConfirmClicked()
               if (!func->mMinFunctionList[i])
                 func->mMinFunctionList[i] = new CKinFunction();
               up = false;
-              func->mMinFunctionList[i]->setDescription(func->mMinList[i].c_str());
+              func->mMinFunctionList[i]->setDescription(func->mMinList[i]);
               // will automatically call the compile function for CKinFunction
             }
 
@@ -846,14 +847,14 @@ void OptimizationWidget::slotBtnConfirmClicked()
               if (!func->mMaxFunctionList[i])
                 func->mMaxFunctionList[i] = new CKinFunction();
               up = true;
-              func->mMaxFunctionList[i]->setDescription(func->mMaxList[i].c_str());
+              func->mMaxFunctionList[i]->setDescription(func->mMaxList[i]);
               // will automatically call the compile function for CKinFunction
             }
         }
       catch (CCopasiException Exception)
         {
           std::string warning_msg = "Invalid function expression. with common name<";
-          warning_msg += func->mParaList[i]->getCN().c_str();
+          warning_msg += func->mParaList[i]->getCN();
           if (up)
             warning_msg += ">\n Please check the upper bound function again \n";
           else
@@ -861,7 +862,7 @@ void OptimizationWidget::slotBtnConfirmClicked()
           warning_msg += "Do you still want to keep your input ? \nPress <Yes> to keep.";
 
           if (QMessageBox::warning(this, "Invalid Function Input",
-                                   warning_msg.c_str(),
+                                   FROM_UTF8(warning_msg),
                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
             {
               activeObject = i;

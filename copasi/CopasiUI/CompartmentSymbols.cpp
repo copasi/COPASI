@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:12:40 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -19,6 +19,7 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 
+#include "qtUtilities.h"
 #include "CompartmentSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
@@ -111,21 +112,21 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
         {
           QStringList comboEntries1, comboEntries2;
           constantCompart = it->second;
-          table->setText(index, 0, it->first.c_str());
+          table->setText(index, 0, FROM_UTF8(it->first));
 
 #ifdef XXXX
           const CCopasiVectorNS < CCompartment > &list1 = mModel->getModel()->getCompartments();
           for (int m = 0; m < list1.size(); m++)
             {
               const std::string &name1 = list1[m]->getName();
-              comboEntries2.push_back(name1.c_str());
+              comboEntries2.push_back(FROM_UTF8(name1));
             }
           QComboTableItem * item1 = new QComboTableItem(table, comboEntries2, false);
-          item1->setCurrentItem(constantCompart->getObject()->getName().c_str());
+          item1->setCurrentItem(FROM_UTF8(constantCompart->getObject()->getName()));
           table->setItem(index, 1, item1);
 #endif // XXXX
           table->setText(index, 1,
-                         constantCompart->getObject()->getName().c_str());
+                         FROM_UTF8(constantCompart->getObject()->getName()));
           table->setText(index, 2, QString::number(constantCompart->getValue()));
 
           table->setText(index, 3, QString::number(constantCompart->getTransientValue()));
@@ -134,7 +135,7 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
           for (unsigned C_INT32 l = 0; l < list.size(); l++)
             {
               const std::string &name = list[l]->getName();
-              comboEntries1.push_back(name.c_str());
+              comboEntries1.push_back(FROM_UTF8(name));
             }
           QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
           table->setItem(index, 4, item);

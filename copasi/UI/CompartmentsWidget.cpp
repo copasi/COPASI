@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:33:44 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -27,6 +27,7 @@
 #include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -114,7 +115,7 @@ void CompartmentsWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 0, FROM_UTF8(obj->getName()));
       table->setText(j, 1, QString::number(obj->getVolume()));
       mKeys[j] = obj->getKey();
     }
@@ -129,9 +130,9 @@ void CompartmentsWidget::createNewObject()
     {
       i++;
       name = "compartment_";
-      name += QString::number(i).latin1();
+      name += (const char *)QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
   //emit updated();
   //emit leaf(mModel);
@@ -187,9 +188,9 @@ void CompartmentsWidget::slotBtnOKClicked()
 
           //name
           QString name(table->text(j, 0));
-          if (name.latin1() != obj->getName())
+          if ((const char *)name.utf8() != obj->getName())
             {
-              obj->setName(name.latin1());
+              obj->setName((const char *)name.utf8());
               changed[j] = 1;
             }
 
@@ -265,7 +266,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                   unsigned C_INT32 k;
                   for (k = 0; k < noOfMetabs; k++)
                     {
-                      effectedMetabList.append(Metabs[k]->getName().c_str());
+                      effectedMetabList.append(FROM_UTF8(Metabs[k]->getName()));
                       effectedMetabList.append(", ");
                     }
 
@@ -283,7 +284,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                         {
                           CReaction* reac =
                             dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
-                          effectedReacList.append(reac->getName().c_str());
+                          effectedReacList.append(FROM_UTF8(reac->getName()));
                           effectedReacList.append(", ");
                         }
 
@@ -316,7 +317,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:        // Yes or Enter
+            case 0:         // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -329,7 +330,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:        // No or Escape
+            case 1:         // No or Escape
               break;
             }
         }

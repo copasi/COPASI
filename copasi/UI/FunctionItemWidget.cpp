@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:38 $
+   $Date: 2004/05/03 20:20:16 $
    End CVS Header */
 
 /********************************************************
@@ -15,12 +15,6 @@ Comment : FunctionItemWidget for editing of the optimization function
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include "FunctionItemWidget.h"
-#include "ObjectBrowser.h"
-#include "copasi.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiObjectName.h"
-
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qtextedit.h>
@@ -31,6 +25,13 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qcolor.h>
+
+#include "FunctionItemWidget.h"
+#include "ObjectBrowser.h"
+#include "copasi.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
+#include "qtUtilities.h"
 
 /*
  *  Constructs a FunctionItemWidget as a child of 'parent', with the 
@@ -390,7 +391,7 @@ void FunctionItemWidget::slotButtonItems()
     }
 
   //  if (addNewScanItem((*pSelectedVector)[i]))
-  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName()., nSelectedObjects - 1);
 
   // wrap the object name;
   objectLinkWrapper((*pSelectedVector)[i]);
@@ -420,7 +421,7 @@ void FunctionItemWidget::slotButton3()
 
 void FunctionItemWidget::slotButtonConfirm()
 {
-  *strFunction = textFunction->text().latin1();
+  *strFunction = textFunction->text().utf8();
   strFunction = NULL;
   QDialog::done(QDialog::Accepted);
 }
@@ -492,7 +493,7 @@ void FunctionItemWidget::slotButtonSign()
        a+/- -> a-/+
   */
   std::string strTemp;
-  strTemp = textFunction->text().latin1();
+  strTemp = textFunction->text().utf8();
   if ((strTemp[strTemp.length() - 1] != '+') && (strTemp[strTemp.length() - 1] != '-'))
     // add a '+' or a '-' in front of the expression
     {
@@ -504,12 +505,12 @@ void FunctionItemWidget::slotButtonSign()
       if (strTemp[strTemp.length() - 1] == '+')
         {
           strTemp[strTemp.length() - 1] = '-';
-          textFunction->setText(strTemp.c_str());
+          textFunction->setText(FROM_UTF8(strTemp));
         }
       else
         {
           strTemp[strTemp.length() - 1] = '+';
-          textFunction->setText(strTemp.c_str());
+          textFunction->setText(FROM_UTF8(strTemp));
         }
     }
   textFunction->moveCursor(QTextEdit::MoveEnd, false);
@@ -518,7 +519,7 @@ void FunctionItemWidget::slotButtonSign()
       like a -> +a
        +/-a -> -/+a
    
-    if (((textFunction->text().latin1())[0] != '+') && ((textFunction->text().latin1())[0] != '-'))
+    if (((textFunction->text().utf8())[0] != '+') && ((textFunction->text().utf8())[0] != '-'))
       // add a '+' or a '-' in front of the expression
       {
         int para, index;
@@ -531,17 +532,17 @@ void FunctionItemWidget::slotButtonSign()
       // change sign of the expression
       {
         std::string strTemp;
-        if ((textFunction->text().latin1())[0] == '+')
+        if ((textFunction->text().utf8())[0] == '+')
           {
-            strTemp = textFunction->text().latin1();
+            strTemp = textFunction->text().utf8();
             strTemp[0] = '-';
-            textFunction->setText(strTemp.c_str());
+            textFunction->setText(strTemp.);
           }
         else
           {
-            strTemp = textFunction->text().latin1();
+            strTemp = textFunction->text().utf8();
             strTemp[0] = '+';
-            textFunction->setText(strTemp.c_str());
+            textFunction->setText(strTemp.);
           }
       }
   */
@@ -687,7 +688,7 @@ void FunctionItemWidget::slotButtonCancel()
 void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
 {
   strFunction = targetFunctionPtr;
-  textFunction->setText(strFunction->c_str());
+  textFunction->setText(FROM_UTF8((*strFunction)));
   textFunction->moveCursor(QTextEdit::MoveEnd, false);
 }
 
@@ -695,20 +696,20 @@ void FunctionItemWidget::objectLinkWrapper(CCopasiObject * pObject)
 {
   std::string lnk;
   lnk = "<";
-  lnk = lnk + pObject->getCN().c_str();
+  lnk = lnk + pObject->getCN();
   lnk = lnk + ">";
-  textFunction->insert(lnk.c_str());
+  textFunction->insert(FROM_UTF8(lnk));
 
   //  textFunction->setColor(QColor(255,0,0));
   //  textFunction->setColor(QColor(0,0,0));
   //  lnk = "<a href=";
-  //  lnk = lnk + pObject->getCN().c_str();
+  //  lnk = lnk + pObject->getCN().;
   //  lnk = lnk + ">";
-  //  lnk = lnk + pObject->getObjectUniqueName().c_str();
+  //  lnk = lnk + pObject->getObjectUniqueName().;
   //  lnk = lnk + "</a>";
-  //  textFunction->setText(textFunction->text() + lnk.c_str());
+  //  textFunction->setText(textFunction->text() + lnk.);
   //  int para, index;
   //  textFunction->getCursorPosition(&para, &index);
-  //  index += strlen(lnk.c_str());
+  //  index += strlen(lnk.);
   textFunction->moveCursor(QTextEdit::MoveEnd, false);
 }

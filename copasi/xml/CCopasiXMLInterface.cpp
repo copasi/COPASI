@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/01/05 20:09:04 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:19:32 $
    End CVS Header */
 
 /**
@@ -23,8 +23,8 @@
 
 std::string CCopasiXMLInterface::encode(const std::string & str)
 {
-  /* We first need to encode the ASII string to UTF-8 */
-  std::string tmp = utf8(str);
+  /* All COPASI std::strings and char are already UTF-8 encoded.*/
+  std::string tmp = str;
   std::ostringstream xml;
 
   unsigned C_INT32 i, imax;
@@ -63,6 +63,8 @@ std::string CCopasiXMLInterface::encode(const std::string & str)
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
 {
+  return str;
+
   std::ostringstream utf8;
 
   /* Based on RFC 2279.

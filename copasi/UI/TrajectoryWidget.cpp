@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:37:56 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:27 $
    End CVS Header */
 
 /********************************************************
@@ -263,7 +263,7 @@ void TrajectoryWidget::CommitChange()
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
   if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
-      ComboBox1->currentText().latin1()) UpdateMethod(false);
+      (const char *)ComboBox1->currentText().utf8()) UpdateMethod(false);
 
   QTableItem * pItem;
   QString value;
@@ -356,7 +356,7 @@ void TrajectoryWidget::loadTrajectoryTask()
   CCopasiParameter::Type Type;
   for (i = 0; i < trajectorymethod->size(); i++)
     {
-      strname = (trajectorymethod->getName(i)).c_str();
+      strname = FROM_UTF8((trajectorymethod->getName(i)));
       rowHeader->setLabel(i, tr(strname));
 
       value = getParameterValue(trajectorymethod, i, &Type);
@@ -370,9 +370,9 @@ void TrajectoryWidget::loadTrajectoryTask()
 
   for (i = 0; i < CTrajectoryMethod::ValidSubTypes.size(); i++)
     ComboBox1->
-    insertItem(CCopasiMethod::SubTypeName[CTrajectoryMethod::ValidSubTypes[i]].c_str());
+    insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[CTrajectoryMethod::ValidSubTypes[i]]));
 
-  ComboBox1->setCurrentText(CCopasiMethod::SubTypeName[trajectorymethod->getSubType()].c_str());
+  ComboBox1->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[trajectorymethod->getSubType()]));
 
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
@@ -397,7 +397,7 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
   assert(trajectorymethod);
 
   CCopasiMethod::SubType SubType =
-    CCopasiMethod::TypeNameToEnum(ComboBox1->currentText().latin1());
+    CCopasiMethod::TypeNameToEnum((const char *)ComboBox1->currentText().utf8());
 
   if (SubType != CCopasiMethod::unset)
     {
@@ -425,7 +425,7 @@ void TrajectoryWidget::ExportToFile()
   if (/*mTrajectoryTask &&*/ textFile)
     {
       textFile += ".txt";
-      CWriteConfig outbuf(textFile.latin1());
+      CWriteConfig outbuf((const char *)textFile.utf8());
       //      ((CTrajectoryTask*)(CCopasiContainer*)GlobalKeys.get(objKey))->save(outbuf);
     }
 }

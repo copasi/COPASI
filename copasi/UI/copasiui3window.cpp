@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/04/03 21:35:48 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:15 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -29,6 +29,7 @@
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
+#include "qtUtilities.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
@@ -59,7 +60,7 @@ CopasiUI3Window::CopasiUI3Window():
   newFlag = 0;
 
   QString Title = "COPASI (";
-  Title += Copasi->ProgramVersion.getVersion().c_str();
+  Title += FROM_UTF8(Copasi->ProgramVersion.getVersion());
   Title += ")";
   setCaption(Title);
   createToolBar(); // creates a tool bar
@@ -88,7 +89,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   const COptions::nonOptionType & Files = COptions::getNonOptions();
   if (Files.size())
-    slotFileOpen(Files[0].c_str());
+    slotFileOpen(FROM_UTF8(Files[0]));
   else
     newDoc();
 
@@ -112,7 +113,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     {
       if (!tmp.endsWith(".gps")) tmp += ".gps";
 
-      dataModel->saveModel(tmp.latin1());
+      dataModel->saveModel(tmp.utf8());
       gpsFile = tmp;
     }
 } //cout<<"it comes in filesave as...";}
@@ -139,7 +140,7 @@ void CopasiUI3Window::newDoc()
    
          if (fileName)
            {
-             dataModel = new DataModel<Folder>((char *)fileName.latin1()); // create the data model
+             dataModel = new DataModel<Folder>((char *)fileName.utf8()); // create the data model
              splitter = new QSplitter(QSplitter::Vertical, this , "main");
              splitter->show();
              this->setCentralWidget(splitter);
@@ -188,7 +189,7 @@ void CopasiUI3Window::newDoc()
     dataModel = new DataModel(); // create the data model
 
   gpsFile = "untitled.gps";
-  dataModel->createModel(gpsFile.latin1());
+  dataModel->createModel(gpsFile.utf8());
   ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
     mpFileMenu->setItemEnabled(nobject_browser, true);
@@ -274,7 +275,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSave()
 {
-  std::ifstream File(gpsFile.latin1());
+  std::ifstream File(gpsFile.utf8());
   std::string Line;
   File >> Line;
   File.close();
@@ -294,7 +295,7 @@ void CopasiUI3Window::slotFileSave()
     }
 
   if (choice) slotFileSaveAs();
-  else if (dataModel) dataModel->saveModel(gpsFile.latin1());
+  else if (dataModel) dataModel->saveModel(gpsFile.utf8());
 }
 
 void CopasiUI3Window::slotQuit()
@@ -372,7 +373,7 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   QString Title = "COPASI (";
-  Title += Copasi->ProgramVersion.getVersion().c_str();
+  Title += FROM_UTF8(Copasi->ProgramVersion.getVersion());
   Title += ")";
   QMessageBox::about(this, Title,
                      "It is a Biochemical path simulator for complex pathways");

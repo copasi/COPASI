@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/06 15:34:17 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:15 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -11,6 +11,7 @@
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
 #include "plot/COutputHandlerPlot.h"
+#include "qtUtilities.h"
 
 DataModel::DataModel()
 {
@@ -295,7 +296,7 @@ void DataModel::populateData()
 
       if (str1 == "") break;
 
-      QString data(str1.c_str());
+      QString data(FROM_UTF8(str1));
 
       int first = data.find(':');
 

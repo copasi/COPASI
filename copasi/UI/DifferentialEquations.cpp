@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 22:04:36 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -26,6 +26,7 @@
 #include "mathmodel/CMathVariable.h"
 #include "mathmodel/CMathEq.h"
 #include "listviews.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -99,13 +100,13 @@ void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
       for (; it != end; ++it)
         {
           pMathEq = it->second->getEq();
-          Text += QString::fromLatin1("<lhs>");
-          Text += QString::fromLatin1(pMathEq->getLeft().getData().c_str());
-          Text += QString::fromLatin1(" =</lhs>");
+          Text += QString::fromUtf8("<lhs>");
+          Text += FROM_UTF8(pMathEq->getLeft().getData());
+          Text += QString::fromUtf8(" =</lhs>");
 
-          Text += QString::fromLatin1("<rhs>");
-          Text += QString::fromLatin1(pMathEq->getRight().getData().c_str());
-          Text += QString::fromLatin1("</rhs>");
+          Text += QString::fromUtf8("<rhs>");
+          Text += FROM_UTF8(pMathEq->getRight().getData());
+          Text += QString::fromUtf8("</rhs>");
         }
 
       textBrowser->setText(Text);

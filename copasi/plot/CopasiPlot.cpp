@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/15 16:55:06 $
+   $Date: 2004/05/03 20:20:28 $
    End CVS Header */
 
 #include <qarray.h>
@@ -18,6 +18,7 @@
 
 #include "CopasiPlot.h"
 #include "CPlotSpec.h"
+#include "CopasiUI/qtUtilities.h"
 
 //TODO: put all the stuff to locally store the data in a separate class!
 
@@ -63,7 +64,7 @@ CopasiPlot::CopasiPlot(CPlotSpec* plotspec, QWidget* parent)
   // white background better for printing...
   setCanvasBackground(white);
 
-  setTitle(ptspec->getTitle().c_str());
+  setTitle(_toUtf8(ptspec->getTitle()));
   setCanvasLineWidth(0);
 
   // allocate memory for the plotting data
@@ -90,7 +91,7 @@ CopasiPlot::CopasiPlot(CPlotSpec* plotspec, QWidget* parent)
   for (k = 0; k < ptspec->getCurves().size(); k++)
     {
       // set up the curve
-      long crv = insertCurve(ptspec->getCurves()[k].title.c_str());
+      long crv = insertCurve(_toUtf8(ptspec->getCurves()[k].title));
 
       setCurvePen(crv, QPen(curveColours[k]));
       setCurveXAxis(crv, ptspec->getCurves()[k].xAxis);
@@ -116,9 +117,9 @@ void setupAxes()
 
   // set axes titles
   // might need some tidying up as to whether to use QString and standard string
-  QString qs1(cspec->axisTitles[0].c_str());
+  QString qs1(_toUtf8(cspec->axisTitles[0]));
   setAxisTitle(cspec->xAxis, qs1);
-  QString qs2(cspec->axisTitles[1].c_str());
+  QString qs2(_toUtf8(cspec->axisTitles[1]));
   setAxisTitle(cspec->yAxis, qs2);
 
   //TODO: maybe set axis titles the same colour as the curve?
@@ -268,16 +269,16 @@ void CopasiPlot::reload2Plot(CPlotSpec* plotspec, std::vector<int> deletedCurveK
 
            // set axes titles
            // might need some tidying up as to whether to use QString and standard string
-           QString qs1(cspec->axisTitles[0].c_str());
+           QString qs1(_toUtf8(cspec->axisTitles[0]));
            setAxisTitle(cspec->xAxis, qs1);
-           QString qs2(cspec->axisTitles[1].c_str());
+           QString qs2(_toUtf8(cspec->axisTitles[1]));
            setAxisTitle(cspec->yAxis, qs2);
 
            //TODO: maybe set axis titles the same colour as the curve?
            // but can't see any methods for doing this...
 
            // set up the curve
-           long crv = insertCurve(cspec->curveTitle.c_str());
+           long crv = insertCurve(_toUtf8(cspec->curveTitle));
 
            setCurvePen(crv, QPen(curveColours[k]));
            setCurveXAxis(crv, cspec->xAxis);

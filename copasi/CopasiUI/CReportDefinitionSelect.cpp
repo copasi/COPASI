@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:06:37 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:15 $
    End CVS Header */
 
 /********************************************************
@@ -28,6 +28,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qfiledialog.h>
 
 #include "copasi.h"
+#include "qtUtilities.h"
 #include "CReportDefinitionSelect.h"
 #include "listviews.h"
 #include "DataModel.h"
@@ -142,18 +143,19 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
-    reportDefinitionNameList->insertItem((*(pReportDefinitionVector))[i]->getName().c_str());
+    reportDefinitionNameList->
+    insertItem(FROM_UTF8((*(pReportDefinitionVector))[i]->getName()));
 
   // if it is an empty list
   if (reportDefinitionNameList->count() == 0)
     {
       std::string name = "ReportDefinition_0";
       dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, "");
-      reportDefinitionNameList->insertItem (name.c_str());
+      reportDefinitionNameList->insertItem(FROM_UTF8(name));
       reportDefinitionNameList->setCurrentItem(1);
       mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
-      mpReport->setTarget(targetEdit->text().latin1());
+      mpReport->setTarget((const char *)targetEdit->text().utf8());
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
       if (QMessageBox::information (NULL, "No Report Definition Defined",
                                     "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
@@ -168,7 +170,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       row = reportDefinitionNameList->currentItem();
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
-      mpReport->setTarget(targetEdit->text().latin1());
+      mpReport->setTarget((const char *)targetEdit->text().utf8());
       return;
     }
   else
@@ -176,11 +178,11 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       C_INT32 i;
       // no use to compare the last one
       for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
-        if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
+        if (reportDefinitionNameList->text(i) == FROM_UTF8(mpReport->getReportDefinition()->getName()))
           break;
       reportDefinitionNameList->setCurrentItem(i);
       appendChecked->setChecked(mpReport->append());
-      targetEdit->setText(mpReport->getTarget().c_str());
+      targetEdit->setText(FROM_UTF8(mpReport->getTarget()));
     }
 }
 
@@ -202,7 +204,7 @@ void CReportDefinitionSelect::confirmClicked()
   row = reportDefinitionNameList->currentItem();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
   mpReport->setAppend(appendChecked->isChecked());
-  mpReport->setTarget(targetEdit->text().latin1());
+  mpReport->setTarget((const char *)targetEdit->text().utf8());
   cleanup();
   QDialog::done(QDialog::Accepted);
   //  delete this;

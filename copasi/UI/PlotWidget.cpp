@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:13:34 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:22 $
    End CVS Header */
 
 /*******************************************************************
@@ -28,6 +28,7 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "plot/CPlotSpec.h"
+#include "qtUtilities.h"
 
 /**
  */
@@ -96,8 +97,8 @@ void PlotWidget::fillTable()
 
   for (j = 0; j < jmax; ++j)
     {
-      table->setText(j, 0, (*objects)[j]->getName().c_str());
-      //TODO table->setText(j, 1, (*objects)[j]->getComment().c_str());
+      table->setText(j, 0, FROM_UTF8((*objects)[j]->getName()));
+      //TODO table->setText(j, 1, (*objects)[j]->getComment().);
       mKeys[j] = (*objects)[j]->getKey();
     }
   table->setText(jmax, 1, "");
@@ -112,9 +113,9 @@ void PlotWidget::createNewObject()
       i++;
       name = "PlotSpec";
       name += "_";
-      name += QString::number(i).latin1();
+      name += QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
   ListViews::notify(ListViews::PLOT, ListViews::ADD);
 }

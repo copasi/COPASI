@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/12 16:56:53 $
+   $Date: 2004/05/03 20:20:21 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -14,6 +14,7 @@
 
 #include "parametertable.h"
 #include "CReactionInterface.h"
+#include "qtUtilities.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
@@ -25,7 +26,7 @@ void ParameterTable::vectorOfStrings2QStringList(std::vector<std::string> vs, QS
 {
   qsl.clear();
   C_INT32 i, imax = vs.size();
-  for (i = 0; i < imax; ++i) qsl += vs[i].c_str();
+  for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
 }
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name)
@@ -111,7 +112,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
       setItem(rowCounter, 0, item);
 
       // add second column
-      item = new ColorTableItem(this, QTableItem::Never, color, ri.getParameterName(i).c_str());
+      item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
       if (usage != "PARAMETER")
         {
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
@@ -131,13 +132,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
             {
               if (ri.isLocked(i))
                 {
-                  item = new ColorTableItem(this, QTableItem::Never, color, (*metabNames)[0].c_str());
+                  item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 2, item);
                 }
               else
                 {
                   combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
-                  combo->setText((*metabNames)[0].c_str());
+                  combo->setText(FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 2, combo);
                 }
             }
@@ -160,7 +161,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
               for (j = 0; j < jmax; ++j)
                 {
                   ++rowCounter;
-                  item = new ColorTableItem(this, QTableItem::Never, color, (*metabNames)[j].c_str());
+                  item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[j]));
                   setItem(rowCounter, 2, item);
                 }
             }

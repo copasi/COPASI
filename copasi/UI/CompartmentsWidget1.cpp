@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:34:04 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -30,6 +30,7 @@
 #include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /*
  *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
@@ -139,7 +140,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
 {
   if (!compartn) return false;
 
-  LineEdit1->setText(compartn->getName().c_str());
+  LineEdit1->setText(FROM_UTF8(compartn->getName()));
 
   const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
@@ -150,7 +151,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   for (j = 0; j < noOfMetabolitesRows; j++)
     {
       mtb = Metabs[j];
-      ListBox1->insertItem(mtb->getName().c_str());
+      ListBox1->insertItem(FROM_UTF8(mtb->getName()));
     }
 
   volumeSave = QString::number(compartn->getInitialVolume());
@@ -169,9 +170,9 @@ bool CompartmentsWidget1::saveToCompartment()
 
   //name
   QString name(LineEdit1->text());
-  if (name.latin1() != comp->getName())
+  if ((const char *)name.utf8() != comp->getName())
     {
-      comp->setName(name.latin1());
+      comp->setName((const char *)name.utf8());
       //TODO: update something else in the model?
       ListViews::notify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
     }

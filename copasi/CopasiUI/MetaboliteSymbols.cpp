@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/04 20:49:57 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:18 $
    End CVS Header */
 
 /*******************************************************************
@@ -23,6 +23,7 @@
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
 #include "listviews.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -110,9 +111,9 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
         {
           variableMetab = it->second;
 
-          table->setText(index, 0, it->first.c_str());
-          table->setText(index, 1, variableMetab->getObject()->getName().c_str());
-          table->setText(index, 2, variableMetab->getCompartment().getName().c_str());
+          table->setText(index, 0, FROM_UTF8(it->first));
+          table->setText(index, 1, FROM_UTF8(variableMetab->getObject()->getName()));
+          table->setText(index, 2, FROM_UTF8(variableMetab->getCompartment().getName()));
           table->setText(index, 3, QString::number(variableMetab->getInitialConcentration()));
           table->setText(index, 4, QString::number(variableMetab->getInitialParticleNumber()));
           table->setText(index, 5, QString::number(variableMetab->getConcentration()));
@@ -130,13 +131,13 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
              {
                
                metab = metabolite[i];
-               table->setText(i, 0, metab->getName().c_str());
+               table->setText(i, 0, metab->getName().);
          table->setText(i, 2, QString::number(metab->getInitialConcentration()));
                table->setText(i, 3, QString::number(metab->getInitialNumberDbl()));
          table->setText(i, 4, QString::number(metab->getConcentration()));
                table->setText(i, 5, QString::number(metab->getNumberDbl()));
          const CCompartment *Compartment=metab->getCompartment();
-               table->setText(i, 6, Compartment->getName().c_str());
+               table->setText(i, 6, Compartment->getName().);
        }*/
     }
 }

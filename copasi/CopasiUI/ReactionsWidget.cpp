@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:13:34 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -31,6 +31,7 @@
 #include "model/CChemEqInterface.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.
@@ -117,8 +118,8 @@ void ReactionsWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, CChemEqInterface::getChemEqString(dataModel->getModel(), *obj, false).c_str());
+      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      table->setText(j, 1, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *obj, false)));
 
       mKeys[j] = obj->getKey();
     }
@@ -135,9 +136,9 @@ void ReactionsWidget::createNewObject()
     {
       i++;
       name = "reaction_";
-      name += QString::number(i).latin1();
+      name += QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
   //emit updated();
   //emit leaf(mModel);
@@ -200,26 +201,26 @@ void ReactionsWidget::slotBtnOKClicked()
 
           //name
           QString name(table->text(j, 0));
-          if (name.latin1() != mRi.getReactionName())
+          if ((const char *)name.utf8() != mRi.getReactionName())
             {
-              mRi.setReactionName(name.latin1());
+              mRi.setReactionName((const char *)name.utf8());
               changed[j] = 1;
             }
 
           //equation
           QString equation(table->text(j, 1));
-          if (equation.latin1() != mRi.getChemEqString())
+          if ((const char *)equation.utf8() != mRi.getChemEqString())
             {
               //first check if the string is a valid equation
-              if (!CChemEqInterface::isValidEq(equation.latin1()))
+              if (!CChemEqInterface::isValidEq((const char *)equation.utf8()))
                 {
                   std::cout << "Not a valid equation!\n\n";
-                  table->setText(j, 1, mRi.getChemEqString().c_str());
+                  table->setText(j, 1, FROM_UTF8(mRi.getChemEqString()));
                 }
               else
                 {
                   //tell the reaction interface
-                  mRi.setChemEqString(equation.latin1());
+                  mRi.setChemEqString((const char *)equation.utf8());
                   changed[j] = 1;
                 }
             }
@@ -231,8 +232,8 @@ void ReactionsWidget::slotBtnOKClicked()
           if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
 
           // update the widget
-          //table->setText(j, 0, mRi.getReactionName().c_str());
-          //table->setText(j, 1, mRi.getChemEqString().c_str());
+          //table->setText(j, 0, mRi.getReactionName().);
+          //table->setText(j, 1, mRi.getChemEqString().);
         }
 
       for (j = 0; j < jmax; ++j)
@@ -287,7 +288,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:     // Yes or Enter
+            case 0:      // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -303,7 +304,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:            // No or Escape
+            default:             // No or Escape
               break;
             }
         }

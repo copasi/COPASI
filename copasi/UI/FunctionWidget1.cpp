@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/04/29 19:28:40 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:17 $
    End CVS Header */
 
 /**********************************************************************
@@ -45,13 +45,13 @@
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
+#include "parametertable.h" // just for the table item widgets
+#include "MyLineEdit.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
 #include "./icons/modifier.xpm"
-#include "parametertable.h" // just for the table item widgets
-
-#include "MyLineEdit.h"
 
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
@@ -245,10 +245,10 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
   // for Name and Description text boxes
   //****************
-  //LineEdit1->setText(func->getName().c_str());
-  LineEdit1->setText(pFunction->getName().c_str());
-  //textBrowser->setText(func->getDescription().c_str());
-  //  Function_Name = new QString(funct->getName().c_str());
+  //LineEdit1->setText(func->getName().);
+  LineEdit1->setText(FROM_UTF8(pFunction->getName()));
+  //textBrowser->setText(FROM_UTF8(func->getDescription()));
+  //  Function_Name = new QString(FROM_UTF8(funct->getName()));
 
   /* Insert line breaks in the function description */
   std::string desc = pFunction->getDescription();
@@ -268,8 +268,8 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
         }
       desc.insert(l, 1, '\n');
     }
-  textBrowser->setText(desc.c_str());
-  //textBrowser->setText(pFunction->getDescription().c_str());
+  textBrowser->setText(FROM_UTF8(desc));
+  //textBrowser->setText(pFunction->getDescription().);
 
   //TODO: the following is unnecessary
   //Emptying the tables
@@ -295,11 +295,11 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
   //create list of data types (for combobox)
   QStringList functionType;
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
-    functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
+    functionType.push_back(FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   for (j = 0; j < noOffunctParams; j++)
     {
-      usage = functParam[j]->getUsage().c_str();
+      usage = FROM_UTF8(functParam[j]->getUsage());
       if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
       else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
       else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
@@ -308,10 +308,10 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
       // col. 0
       Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
-                      functParam[j]->getName().c_str()));
+                      FROM_UTF8(functParam[j]->getName())));
 
       // col. 1
-      QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
+      QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[functParam[j]->getType()]);
       ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
       Table1->setItem(j, 1, item);
       item->setText(temp);
@@ -339,7 +339,7 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 
   for (j = 0; j < noOfApplns; j++)
     {
-      Table2->setText(j, 0, functUsage[j]->getName().c_str());
+      Table2->setText(j, 0, FROM_UTF8(functUsage[j]->getName()));
       Table2->setText(j, 1, QString::number(functUsage[j]->getLow()));
 
       switch (functUsage[j]->getHigh())
@@ -417,13 +417,13 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 //**** Try to get parameters table to display proper texts
 void FunctionWidget1::updateParameters()
 {
-  if (textBrowser->text().latin1() != pFunction->getDescription())
+  if ((const char *)textBrowser->text().utf8() != pFunction->getDescription())
     {
       pFunction->getParameters().cleanup();
 
       try
         {
-          pFunction->setDescription(textBrowser->text().latin1());
+          pFunction->setDescription((const char *)textBrowser->text().utf8());
         }
       catch (CCopasiException Exception)
         {
@@ -434,10 +434,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                // The user clicked the Retry again button or pressed Enter
+            case 0:                                 // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                // The user clicked the Quit or pressed Escape
+            case 1:                                 // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -470,9 +470,9 @@ bool FunctionWidget1::saveToFunction()
   CFunctionParameters &functParam = func->getParameters();
   CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
 
-  if (func->getName() != LineEdit1->text().latin1())
+  if (func->getName() != (const char *)LineEdit1->text().utf8())
     {
-      func->setName(LineEdit1->text().latin1());
+      func->setName((const char *)LineEdit1->text().utf8());
       ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, objKey);
     }
 
@@ -493,9 +493,9 @@ bool FunctionWidget1::saveToFunction()
       changed = true;
     }
 
-  if (func->getDescription() != textBrowser->text().latin1())
+  if (func->getDescription() != (const char *)textBrowser->text().utf8())
     {
-      func->setDescription(textBrowser->text().latin1());
+      func->setDescription((const char *)textBrowser->text().utf8());
       changed = true;
 
       CUsageRange Application;
@@ -541,19 +541,19 @@ bool FunctionWidget1::saveToFunction()
 
           for (i = 0; i < 4; i++)
             {
-              if (param_Type.latin1() == CFunctionParameter::DataTypeName[i])
+              if ((const char *)param_Type.utf8() == CFunctionParameter::DataTypeName[i])
                 Type = (CFunctionParameter::DataType) i;
             }
 
-          // functParam[j]->setName(param_Name.latin1());
+          // functParam[j]->setName(param_Name.utf8());
           if (functParam[j]->getType() != Type)
             {
               functParam[j]->setType(Type);
               ParametersChanged = true;
             }
-          if (functParam[j]->getUsage() != param_Usage.latin1())
+          if (functParam[j]->getUsage() != (const char *)param_Usage.utf8())
             {
-              functParam[j]->setUsage(param_Usage.latin1());
+              functParam[j]->setUsage((const char *)param_Usage.utf8());
               ParametersChanged = true;
             }
           functParam.updateUsageRanges();
@@ -612,7 +612,7 @@ bool FunctionWidget1::saveToFunction()
                 }
 
               /***** there is no setName  here ????? ******/
-              functUsage[j]->setUsage(app_Desc.latin1());
+              functUsage[j]->setUsage((const char *)app_Desc.utf8());
 
               functUsage[j]->setLow(int_Low);
 
@@ -811,8 +811,8 @@ void FunctionWidget1::slotCancelButtonClicked()
 void FunctionWidget1::slotCommitButtonClicked()
 {
   //update pFunction values
-  if (pFunction->getName() != LineEdit1->text().latin1())
-    pFunction->setName(LineEdit1->text().latin1());
+  if (pFunction->getName() != (const char *)LineEdit1->text().utf8())
+    pFunction->setName((const char *)LineEdit1->text().utf8());
   // update RadioButtons also ?? in savetoFcn, func obtains radio button values
   /**** For Radio Buttons ****/
   if (RadioButton1->isChecked() == true)
@@ -829,7 +829,7 @@ void FunctionWidget1::slotCommitButtonClicked()
     }
 
   /* Remove line breaks from the function description */
-  std::string desc = textBrowser->text().latin1();
+  std::string desc = (const char *)textBrowser->text().utf8();
   unsigned int loc = 0;
   while (1)
     {
@@ -838,11 +838,11 @@ void FunctionWidget1::slotCommitButtonClicked()
         break;
       desc.erase(loc, 1);
     }
-  textBrowser->setText(desc.c_str());
+  textBrowser->setText(FROM_UTF8(desc));
 
-  if (pFunction->getDescription() != textBrowser->text().latin1())
+  if (pFunction->getDescription() != (const char *)textBrowser->text().utf8())
     {
-      pFunction->setDescription(textBrowser->text().latin1());
+      pFunction->setDescription((const char *)textBrowser->text().utf8());
       updateParameters();
       updateApplication();
     }
@@ -893,7 +893,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             {
               //reacFound[i] = 1;
               reacFound = 1;
-              msg1.append((*pReactions)[k]->getName().c_str());
+              msg1.append((*pReactions)[k]->getName().);
               msg1.append(" ---> ");
               //msg1.append(table->text(ToBeDeleted[i], 0));
               msg1.append("\n");
@@ -923,7 +923,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:        // Yes or Enter
+        case 0:         // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -932,7 +932,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             if (reacFound == 0)
               {
                 unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getName().c_str());
+                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getName().);
                 //if ((index != NULL) && (size != NULL)) {
                 Copasi->pFunctionDB->removeFunction(objKey);
                 //Copasi->pFunctionDB->loadedFunctions()[min(index,20 - 1)];
@@ -955,7 +955,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:        // No or Escape
+        case 1:         // No or Escape
           break;
         }
     }
@@ -985,10 +985,10 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   if (col == 1)
     {
       param_Type = Table1->text(row, col);
-      //functParam[row]->setType(Table1->text(row, col).latin1());
+      //functParam[row]->setType((const char *)Table1->text(row, col).utf8());
       for (int i = 0; i < 4; i++)
         {
-          if (param_Type.latin1() == CFunctionParameter::DataTypeName[i])
+          if ((const char *)param_Type.utf8() == CFunctionParameter::DataTypeName[i])
             Type = (CFunctionParameter::DataType) i;
         }
 
@@ -1022,7 +1022,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
       Table1->setPixmap(row, 2, *pPixMap);
       Table1->setRowHeight(row, Table1->rowHeight(row)); // updateCell()
 
-      functParam[row]->setUsage(usage.latin1());
+      functParam[row]->setUsage((const char *)usage.utf8());
     }
   // Update the usage range to get proper min and max values
   functParam.updateUsageRanges();
@@ -1041,7 +1041,7 @@ void FunctionWidget1::slotAppTableValueChanged(int row, int col)
   /*if (col == 0)
     {
       app_Desc = Table2->text(row, col);
-      functUsage[row]->setUsage(app_Desc.latin1());
+      functUsage[row]->setUsage((const char *)app_Desc.utf8());
     }*/ // Application Description should be restricted from change 
 
   if (col == 1)

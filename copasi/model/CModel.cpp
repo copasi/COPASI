@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.163 $
+   $Revision: 1.164 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/04/06 23:30:33 $
+   $Date: 2004/05/03 20:20:27 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -44,13 +44,13 @@
 #include "clapackwrap.h"
 
 const char * CModel::VolumeUnitName[] =
-  {"l", "ml", "µl", "nl", "pl", "fl", NULL};
+  {"l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
 const char * CModel::TimeUnitName[] =
   {"s", "m", "h", "d", NULL};
 
 const char * CModel::QuantityUnitName[] =
-  {"Mol", "mMol", "µMol", "nMol", "pMol", "fMol", "#", NULL};
+  {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:12:40 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:14 $
    End CVS Header */
 
 /*******************************************************************
@@ -23,6 +23,7 @@
 #include "mathmodel/CMathConstant.h"
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -106,9 +107,9 @@ bool ConstantSymbols::loadConstantSymbols(CMathModel *model)
       for (; it != end; ++it)
         {
           pConstant = it->second;
-          table->setText(index, 0, it->first.c_str());
-          table->setText(index, 1, pConstant->getObject()->getName().c_str());
-          table->setText(index, 2, pConstant->getReaction().c_str());
+          table->setText(index, 0, FROM_UTF8(it->first));
+          table->setText(index, 1, FROM_UTF8(pConstant->getObject()->getName()));
+          table->setText(index, 2, FROM_UTF8(pConstant->getReaction()));
           table->setText(index, 3, QString::number(pConstant->getValue()));
           index++;
         }

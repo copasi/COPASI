@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:36:11 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:17 $
    End CVS Header */
 
 /***********************************************************************
@@ -27,6 +27,7 @@
 #include "function/CKinFunction.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Functions subsection of the tree for 
@@ -102,7 +103,7 @@ void FunctionWidget::fillTable()
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 0, FROM_UTF8(obj->getName()));
 
       QString ftype;
       switch (obj->getType())
@@ -151,16 +152,16 @@ void FunctionWidget::slotBtnOKClicked() //By G
 
       //Allow change in name if type is 'user-defined'.
       QString name(table->text(j, 0));
-      if (name.latin1() != obj->getName())
+      if ((const char *)name.utf8() != obj->getName())
         {
           QString type(table->text(j, 1));
           if (type == "user-defined")
             {
-              obj->setName(name.latin1());
+              obj->setName((const char *)name.utf8());
               renamed[j] = 1;
             }
           else
-            table->setText(j, 0, obj->getName().c_str());
+            table->setText(j, 0, FROM_UTF8(obj->getName()));
         }
     }
 
@@ -231,7 +232,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   if (func == reacFunc)
                     {
                       reacFound[i] = 1;
-                      msg1.append((*pReactions)[k]->getName().c_str());
+                      msg1.append(FROM_UTF8((*pReactions)[k]->getName()));
                       msg1.append(" ---> ");
                       msg1.append(table->text(ToBeDeleted[i], 0));
                       msg1.append("\n");
@@ -260,7 +261,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:        // Yes or Enter
+            case 0:         // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -280,7 +281,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:        // No or Escape
+            case 1:         // No or Escape
               break;
             }
         }
@@ -309,9 +310,9 @@ void FunctionWidget::createNewObject()
     {
       i++;
       name = "function_";
-      name += QString::number(i).latin1();
+      name += (const char *)QString::number(i).utf8();
     }
-  table->setText(table->numRows() - 1, 0, name.c_str());
+  table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   table->setNumRows(table->numRows());
   //emit updated();
   //emit leaf(mModel);

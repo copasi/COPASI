@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:13:25 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:20 $
    End CVS Header */
 
 /********************************************************
@@ -14,11 +14,6 @@ Date: 04/03
 Comment : Copasi Object Browser: 
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
-#include "copasi.h"
-#include "ObjectBrowser.h"
-#include "ObjectBrowserItem.h"
-#include "copasiui3window.h"
-
 #include <qmessagebox.h>
 #include <qvariant.h>
 #include <qheader.h>
@@ -33,14 +28,19 @@ Contact: Please contact lixu1@vt.edu.
 #include <qpixmap.h>
 #include <qsimplerichtext.h>
 
-#include "./icons/objectAll.xpm"
-#include "./icons/objectParts.xpm"
-#include "./icons/objectNone.xpm"
-
+#include "copasi.h"
+#include "ObjectBrowser.h"
+#include "ObjectBrowserItem.h"
+#include "copasiui3window.h"
+#include "qtUtilities.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
+
+#include "./icons/objectAll.xpm"
+#include "./icons/objectParts.xpm"
+#include "./icons/objectNone.xpm"
 
 QPixmap *pObjectAll = 0;   // to store the image of locked icon folder
 QPixmap *pObjectParts = 0;   // to store the image of closed icon folder
@@ -315,8 +315,8 @@ void ObjectBrowser::nextClicked()
             ObjectItemText->setColor(blue);
           if ((*outputVector)[i])
             {
-              //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
-              ObjectItemText->insertParagraph((*outputVector)[i]->getObjectType().c_str(), -1);
+              //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
+              ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectType()), -1);
             }
         }
       /*
@@ -328,8 +328,8 @@ void ObjectBrowser::nextClicked()
                   ObjectItemText->setColor(blue);
                 if (pHead->pItem->getObject()->pCopasiObject)
                   {
-                    //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN().c_str(), -1);
-                    ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType().c_str(), -1);
+                    //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
+                    ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType()., -1);
                     i++;
                   }
               }
@@ -415,7 +415,7 @@ void ObjectBrowser::loadData()
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
-  itemRoot->setText(0, root->getName().c_str());
+  itemRoot->setText(0, FROM_UTF8(root->getName()));
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
   removeDuplicate(objectItemList);
@@ -475,7 +475,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
       current = it->second;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
-      currentItem->setText(0, current->getObjectName().c_str());
+      currentItem->setText(0, FROM_UTF8(current->getObjectName()));
       if (current->isContainer())
         {
           currentItem->setObjectType(CONTAINERATTR);
@@ -547,7 +547,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, currentField, objectItemList);
           currentItemField->attachKey();
           currentItemField->setObjectType(FIELDATTR);
-          currentItemField->setText(0, currentField->getObjectName().c_str());
+          currentItemField->setText(0, FROM_UTF8(currentField->getObjectName()));
           lastField = currentItemField;
         }
       it++;
@@ -575,7 +575,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, NULL, objectItemList);
       currentItemField->attachKey();
       currentItemField->setObjectType(FIELDATTR);
-      currentItemField->setText(0, currentField->getObjectName().c_str());
+      currentItemField->setText(0, FROM_UTF8(currentField->getObjectName()));
       lastField = currentItemField;
       it = pFirstObject;
       last = NULL;
@@ -588,12 +588,12 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           if (current->isContainer())
             pSubField =
               getFieldCopasiObject((CCopasiContainer *) current,
-                                   currentField->getObjectName().c_str());
+                                   FROM_UTF8(currentField->getObjectName()));
           else
             pSubField = NULL; // this shall be an exception error
 
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
-          currentItem->setText(0, current->getObjectName().c_str());
+          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
           currentItem->setObjectType(FIELDATTR);
           currentItem->attachKey();
 
@@ -685,7 +685,7 @@ CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiContainer * pCurrent, 
           if (pResult)
             return pResult;
         }
-      if (QString(it->second->getObjectName().c_str()) == name)
+      if (FROM_UTF8(it->second->getObjectName()) == name)
         return it->second;
       it++;
     }

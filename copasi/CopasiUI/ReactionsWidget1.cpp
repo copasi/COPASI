@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:13:26 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:24 $
    End CVS Header */
 
 /*********************************************************************
@@ -26,6 +26,7 @@
 #include <qframe.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
+
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
@@ -38,6 +39,7 @@
 #include "parametertable.h"
 #include "report/CKeyFactory.h"
 #include "MyLineEdit.h"
+#include "qtUtilities.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -211,7 +213,7 @@ bool ReactionsWidget1::saveToReaction()
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
 
-  mRi.setReactionName(LineEdit1->text().latin1());
+  mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
@@ -251,7 +253,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   // tell the reaction interface
-  mRi.setFunction(p2.latin1());
+  mRi.setFunction((const char *)p2.utf8());
 
   // update the widget
   FillWidgetFromRI();
@@ -260,9 +262,9 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  std::string rName = LineEdit1->text().latin1();
+  std::string rName = (const char *)LineEdit1->text().utf8();
 
-  std::string eq = LineEdit2->text().latin1();
+  std::string eq = (const char *)LineEdit2->text().utf8();
 
   //first check if the string is a valid equation
   if (!CChemEqInterface::isValidEq(eq))
@@ -289,9 +291,9 @@ void ReactionsWidget1::slotBtnNewClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  LineEdit1->setText(mRi.getReactionName().c_str());
+  LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
 
-  LineEdit2->setText(mRi.getChemEqString().c_str());
+  LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
 
   //LineEdit3->setText(QString::number(reactn->getFlux())); //TODO
 
@@ -312,7 +314,7 @@ void ReactionsWidget1::FillWidgetFromRI()
   // if there is a current function the parameter table is initialized
   if (mRi.getFunctionName() != "")
     {
-      ComboBox1->setCurrentText(mRi.getFunctionName().c_str());
+      ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
       table->updateTable(mRi);
     }
 
@@ -334,7 +336,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     {
       if (sub == 0)
         {
-          mRi.setMetab(index, table->text(table->mIndex2Line[index], 2).latin1());
+          mRi.setMetab(index, (const char *)table->text(table->mIndex2Line[index], 2).utf8());
         }
     }
 

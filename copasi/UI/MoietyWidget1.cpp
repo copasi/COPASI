@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:12:14 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:20 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,13 +22,14 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
+
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "MoietyWidget1.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"
 #include "listviews.h"
-
+#include "qtUtilities.h"
 #include "report/CKeyFactory.h"
 
 /*
@@ -103,7 +104,7 @@ int MoietyWidget1::isName(QString setValue)
 
   //  moiety1 = moieties[(std::string) setValue];
   //  if (moiety1 != NULL)
-  if (mModel->getMoieties().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
+  if (mModel->getMoieties().getIndex((std::string)setValue.utf8()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;
@@ -128,9 +129,9 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 {
   if (!moiety) return false;
 
-  textBrowser->setText(moiety->getDescription().c_str());
+  textBrowser->setText(FROM_UTF8(moiety->getDescription()));
 
-  LineEdit3->setText(moiety->getName().c_str());
+  LineEdit3->setText(FROM_UTF8(moiety->getName()));
 
   LineEdit2->setText(QString::number(moiety->getNumber()));
 
@@ -148,9 +149,9 @@ void MoietyWidget1::loadName(QString setValue)
 
   const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   CMoiety *moiety;
-  moiety = moieties[(std::string)setValue.latin1()];
-  textBrowser->setText(moiety->getDescription().c_str());
-  //ListBox1->insertItem(moiety->getDescription().c_str());
+  moiety = moieties[(std::string)setValue.utf8()];
+  textBrowser->setText(FROM_UTF8(moiety->getDescription()));
+  //ListBox1->insertItem(moiety->getDescription().);
 
   /*CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
   C_INT32 noOfMetabolitesRows = Metabs.size();
@@ -162,11 +163,11 @@ void MoietyWidget1::loadName(QString setValue)
   for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
   {
      mtb = Metabs[j];
-     ListBox1->insertItem(mtb->getName().c_str());
+     ListBox1->insertItem(mtb->getName().);
   }*/
 
-  LineEdit3->setText(moiety->getName().c_str());
-  Moiety1_Name = new QString(moiety->getName().c_str());
+  LineEdit3->setText(FROM_UTF8(moiety->getName()));
+  Moiety1_Name = new QString(FROM_UTF8(moiety->getName()));
 
   LineEdit2->setText(QString::number(moiety->getNumber()));
 }

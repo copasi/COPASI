@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:13:25 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:19 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,6 +25,7 @@
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "model/CMoiety.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Moiety subsection of the tree.
@@ -108,23 +109,23 @@ void MoietyWidget::fillTable() //By G
 
   if (jmax)
     {
-      pixelsWide0 = fm.width(objects[0]->getName().c_str());
+      pixelsWide0 = fm.width(FROM_UTF8(objects[0]->getName()));
       pixelsWide1 = fm.width(QString::number(objects[0]->getNumber()));
-      pixelsWide2 = fm.width(objects[0]->getDescription().c_str());
+      pixelsWide2 = fm.width(FROM_UTF8(objects[0]->getDescription()));
     }
 
   int k;
   for (j = 0; j < jmax; ++j)
     {
       obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
-      k = fm.width(obj->getName().c_str());
+      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      k = fm.width(FROM_UTF8(obj->getName()));
       k > pixelsWide0 ? pixelsWide0 = k : 1;
       table->setText(j, 1, QString::number(obj->getNumber()));
       k = fm.width(QString::number(obj->getNumber()));
       k > pixelsWide1 ? pixelsWide1 = k : 1;
-      table->setText(j, 2, obj->getDescription().c_str());
-      k = fm.width(obj->getDescription().c_str());
+      table->setText(j, 2, FROM_UTF8(obj->getDescription()));
+      k = fm.width(FROM_UTF8(obj->getDescription()));
       k > pixelsWide2 ? pixelsWide2 = k : 1;
 
       mKeys[j] = obj->getKey();
@@ -163,9 +164,9 @@ void MoietyWidget::repaint_table()
   for (j = 0; j < noOfMoietyRows; j++)
     {
       moiety = moieties[j];
-      table->setText(j, 0, moiety->getName().c_str());
+      table->setText(j, 0, FROM_UTF8(moiety->getName()));
       table->setText(j, 1, QString::number(moiety->getNumber()));
-      table->setText(j, 2, moiety->getDescription().c_str());
+      table->setText(j, 2, FROM_UTF8(moiety->getDescription()));
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:53:33 $
+   $Date: 2004/05/03 20:20:22 $
    End CVS Header */
 
 #include <qstring.h>
@@ -39,15 +39,15 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 
     case CCopasiParameter::STRING:
       return
-      QString::fromLatin1((* (std::string *) group->getValue(index)).c_str());
+      FROM_UTF8((* (std::string *) group->getValue(index)));
       break;
 
     case CCopasiParameter::GROUP:
-      return QString::fromLatin1(group->getName(index).c_str());
+      return FROM_UTF8((group->getName(index)));
       break;
 
     case CCopasiParameter::INVALID:
-      return QString::fromLatin1("INVALID");
+      return QString::fromUtf8("INVALID");
       break;
     }
 
@@ -106,7 +106,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
       break;
 
     case CCopasiParameter::STRING:
-      STRING = value.latin1();
+      STRING = value.utf8();
       return group->setValue(index, STRING);
       break;
 

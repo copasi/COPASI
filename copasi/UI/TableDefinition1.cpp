@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:37:56 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:26 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.32 2004/04/19 08:37:56 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.33 2004/05/03 20:20:26 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,6 +41,7 @@
 #include "report/CCopasiStaticString.h"
 #include "report/CReport.h"
 #include "ScanWidget.h"
+#include "qtUtilities.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
@@ -269,15 +270,15 @@ void TableDefinition1::loadTableDefinition1()
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
   itemsTable->clear();
 
-  nameEdit->setText(pReportDefinition->getObjectName().c_str());
-  commentEdit->setText(pReportDefinition->getComment().c_str());
+  nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
+  commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   unsigned C_INT32 i;
   // i+=2; is due to skip to show the seperator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
-      itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
+      itemsTable->insertItem(FROM_UTF8((*(pReportDefinition->getBodyAddr()))[i]));
     }
   comboTask->setEnabled(true);
 
@@ -290,7 +291,7 @@ void TableDefinition1::loadTableDefinition1()
     {
       seperatorEdit->setEnabled(true);
       tabChecked->setChecked(false);
-      seperatorEdit->setText(pReportDefinition->getSeperator().getStaticString().c_str());
+      seperatorEdit->setText(FROM_UTF8(pReportDefinition->getSeperator().getStaticString()));
     }
   bUpdated = false;
 }
@@ -321,11 +322,11 @@ void TableDefinition1::slotBtnConfirmClicked()
   if (tabChecked->isChecked())
     Seperator = "\t";
   else
-    Seperator = seperatorEdit->text().latin1();
+    Seperator = (const char *)seperatorEdit->text().utf8();
 
   pReportDefinition->setTitle(titleChecked->isChecked());
   pReportDefinition->
-  setComment(CCopasiStaticString(commentEdit->text().latin1()).getCN());
+  setComment(CCopasiStaticString((const char *)commentEdit->text().utf8()).getCN());
 
   CCopasiObjectName SeperatorCN(Seperator.getCN());
   CCopasiObjectName Title;
@@ -335,7 +336,7 @@ void TableDefinition1::slotBtnConfirmClicked()
     {
       pSelectedObject =
         CCopasiContainer::ObjectFromName(ListOfContainer,
-                                         CCopasiObjectName(itemsTable->text(i).latin1()));
+                                         CCopasiObjectName((const char *)itemsTable->text(i).utf8()));
 
       if (pSelectedObject)
         {
@@ -422,16 +423,16 @@ void TableDefinition1::addButtonClicked()
   unsigned C_INT32 i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
-      if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
+      if (itemsTable->findItem(FROM_UTF8((*pSelectedVector)[i]->getCN())) == NULL)
         {
-          itemsTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
+          itemsTable->insertItem(FROM_UTF8((*pSelectedVector)[i]->getCN()));
           //      selectedList.push_back((*pSelectedVector)[i]);
           bUpdated = true;
         }
 
   pdelete(pSelectedVector);
   //  if (addNewScanItem((*pSelectedVector)[i]))
-  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
+  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName()., nSelectedObjects - 1);
 }
 
 void TableDefinition1::deleteButtonClicked()
@@ -457,7 +458,7 @@ void TableDefinition1::upButtonClicked()
       //swap in selectedList
       //      CCopasiObject* pDownObject = selectedList[selectedIndex];
       // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().);
       //     CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
       //      selectedList[selectedIndex] = pUpperObject;
       //      selectedList[selectedIndex - 1] = pDownObject;
@@ -480,7 +481,7 @@ void TableDefinition1::downButtonClicked()
       //swap in selectedList
       //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
       // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().);
       //      CCopasiObject* pUpperObject = selectedList[selectedIndex];
       //      selectedList[selectedIndex + 1] = pUpperObject;
       //      selectedList[selectedIndex] = pDownObject;

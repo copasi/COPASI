@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/25 21:08:02 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:18 $
    End CVS Header */
 
 /***********************************************************************
@@ -30,6 +30,7 @@
 #include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -142,7 +143,7 @@ void MetabolitesWidget::fillTable()
 
   for (j = 0; j < compartments.size(); j++)
     {
-      compartmentType.push_back(compartments[j]->getName().c_str());
+      compartmentType.push_back(FROM_UTF8(compartments[j]->getName()));
     }
 
   /* QComboBox * statusComboBox; //= new QComboBox(NULL , "");
@@ -158,7 +159,7 @@ void MetabolitesWidget::fillTable()
     {
       obj = objects[j];
 
-      table->setText(j, 0, obj->getName().c_str());
+      table->setText(j, 0, FROM_UTF8(obj->getName()));
 
       if (btn_flag == 0) //By G
         {
@@ -178,18 +179,18 @@ void MetabolitesWidget::fillTable()
       table->setItem(j, 3, fixedCB);
 
       //col 4 Status
-      table->setText(j, 4, CMetab::StatusName[obj->getStatus()].c_str());
+      table->setText(j, 4, FROM_UTF8(CMetab::StatusName[obj->getStatus()]));
       /*statusComboBox = new QComboBox(NULL , "");
       //statusComboBox->insertStrList(&statusType);
       //statusComboBox->insertItem("fixed");
       statusComboBox->insertItem("variable");
       statusComboBox->insertItem("fixed");
       table->setCellWidget(j, 4, statusComboBox);
-      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].c_str());*/
+      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].);*/
 
-      //table->setText(j, 4, obj->getCompartment()->getName().c_str());
+      //table->setText(j, 4, obj->getCompartment()->getName().);
 
-      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
+      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].);
       //create list of data types (for combobox)
 
       // col. 3
@@ -199,11 +200,11 @@ void MetabolitesWidget::fillTable()
       // next line causing some probs: 103 errors ComboItem undeclared identifier
       //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
 
-      //item->setText(CMetab::StatusName[obj->getStatus()].c_str());
+      //item->setText(CMetab::StatusName[obj->getStatus()].);
       //table->setItem(j, 3, item);
 
-      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
-      //table->setText(j, 4, obj->getCompartment()->getName().c_str());
+      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].);
+      //table->setText(j, 4, obj->getCompartment()->getName().);
 
       //******** uncomment out for setCellWidget at each cell
       //table->setCellWidget(j,3,statusComboBox);
@@ -241,9 +242,9 @@ void MetabolitesWidget::createNewObject()
       {
         i++;
         name = "metabolite_";
-        name += QString::number(i).latin1();
+        name += (const char *)QString::number(i).utf8();
       }
-    table->setText(table->numRows() - 1, 0, name.c_str());
+    table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
     table->setNumRows(table->numRows());
     //emit updated();
     //emit leaf(mModel);
@@ -301,14 +302,14 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
         {
           obj->setStatus(CMetab::METAB_FIXED);
           table->setText(row, 4,
-                         CMetab::StatusName[CMetab::METAB_FIXED].c_str());
+                         FROM_UTF8(CMetab::StatusName[CMetab::METAB_FIXED]));
         }
       else
         {
           //handle fixed CBs that have just been unchecked
           obj->setStatus(CMetab::METAB_VARIABLE);
           table->setText(row, 4,
-                         CMetab::StatusName[CMetab::METAB_VARIABLE].c_str());
+                         FROM_UTF8(CMetab::StatusName[CMetab::METAB_VARIABLE]));
         }
       dataModel->getModel()->compile();
       // may have to keep previous checkbox status to make unchecked independent
@@ -337,9 +338,9 @@ void MetabolitesWidget::slotBtnOKClicked()
 
           //name
           QString name(table->text(j, 0));
-          if (name.latin1() != obj->getName())
+          if ((const char *)name.utf8() != obj->getName())
             {
-              obj->setName(name.latin1());
+              obj->setName((const char *)name.utf8());
               renamed[j] = 1;
             }
 
@@ -377,7 +378,7 @@ void MetabolitesWidget::slotBtnOKClicked()
 
           //fixed?
           QString status(table->text(j, 4));
-          if (status.latin1() != CMetab::StatusName[obj->getStatus()])
+          if ((const char *)status.utf8() != CMetab::StatusName[obj->getStatus()])
             {
               if (obj->getStatus() != CMetab::METAB_FIXED)
                 obj->setStatus(CMetab::METAB_FIXED);
@@ -389,15 +390,15 @@ void MetabolitesWidget::slotBtnOKClicked()
 
           //compartment
           QString Compartment(table->text(j, 5));
-          if (Compartment.latin1() != obj->getCompartment()->getName())
+          if ((const char *)Compartment.utf8() != obj->getCompartment()->getName())
             {
               unsigned C_INT32 index =
                 dataModel->getModel()->
-                getCompartments().getIndex(Compartment.latin1());
+                getCompartments().getIndex((const char *)Compartment.utf8());
               if (index != C_INVALID_INDEX)
                 {
                   dataModel->getModel()->
-                  getCompartments()[Compartment.latin1()]->
+                  getCompartments()[(const char *)Compartment.utf8()]->
                   addMetabolite(*obj);
                   dataModel->getModel()->
                   getCompartments()[obj->getCompartment()->getName()]->
@@ -512,7 +513,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                   for (unsigned C_INT32 j = 0; j < effectedReacKeys.size(); j++)
                     {
                       CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
-                      effectedReacList.append(reac->getName().c_str());
+                      effectedReacList.append(FROM_UTF8(reac->getName()));
                       effectedReacList.append(", ");
                     }
 
@@ -538,7 +539,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                              // Yes or Enter
+            case 0:                               // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -551,7 +552,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                              // No or Escape
+            case 1:                               // No or Escape
               break;
             }
         }

@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/19 08:28:41 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:15 $
    End CVS Header */
 
 #include <string>
 
+#include "qtUtilities.h"
 #include "CReactionInterface.h" 
 //#include "qstring.h"
 #include "model/CReaction.h"
@@ -59,7 +60,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
      std::vector<std::string>::iterator end = ret.end();
      while (it<end)
      {
-      QString verification(it->c_str());
+      QString verification(FROM_UTF8(*it));
       it++;
      }
     */

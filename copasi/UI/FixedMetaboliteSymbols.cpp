@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/04/26 11:12:40 $
+   $Author: shoops $ 
+   $Date: 2004/05/03 20:20:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -24,6 +24,7 @@
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -107,12 +108,12 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
       int index = 0;
       for (it = metabList.begin(); it != metabList.end();++it)
         {
-          //QMessageBox::information(this, "key",it->first.c_str());
+          //QMessageBox::information(this, "key",it->first.);
           constantMetab = it->second;
-          table->setText(index, 0, constantMetab->getName().c_str());
+          table->setText(index, 0, FROM_UTF8(constantMetab->getName()));
           CCopasiObject *metabObject = constantMetab->getObject();
-          table->setText(index, 1, metabObject->getName().c_str());
-          table->setText(index, 2, constantMetab->getCompartment().getName().c_str());
+          table->setText(index, 1, FROM_UTF8(metabObject->getName()));
+          table->setText(index, 2, FROM_UTF8(constantMetab->getCompartment().getName()));
           table->setText(index, 3, QString::number(constantMetab->getConcentration()));
           table->setText(index, 4, QString::number(constantMetab->getParticleNumber()));
           index++;
@@ -131,12 +132,12 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
            {
               
              metab = metabolite[i];
-             table->setText(noOfMetaboliteRows-i-1, 0, metab->getName().c_str());
+             table->setText(noOfMetaboliteRows-i-1, 0, metab->getName().);
        //table->setText(noOfMetaboliteRows-i-1, 1, QString::number(metab->getObject()->getName()));
              table->setText(noOfMetaboliteRows-i-1, 2, QString::number(metab->getConcentration()));
              table->setText(noOfMetaboliteRows-i-1, 3, QString::number(metab->getNumberDbl()));
       const CCompartment *Compartment=metab->getCompartment();
-            table->setText(noOfMetaboliteRows-i-1, 4, Compartment->getName().c_str());
+            table->setText(noOfMetaboliteRows-i-1, 4, Compartment->getName().);
       }*/
     }
 }
