@@ -171,6 +171,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout8->addLayout(Layout7);
 
   scrollview = new ScanScrollView(this, 0, 0);
+  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
+  delete parameterTable;
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->setHScrollBarMode(QScrollView::Auto);
   scrollview->setSelectedList(&selectedList);
@@ -652,6 +655,7 @@ void ScanScrollView::contentsMousePressEvent(class QMouseEvent *e)
 void ScanScrollView:: resizeEvent(QResizeEvent * e)
 {
   QScrollView::resizeEvent(e);
+  QScrollView::repaintContents(true);
   if (!pSelectedList)
     return;
   unsigned i;
