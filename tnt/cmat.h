@@ -171,7 +171,7 @@ class Matrix
 
   public:
 
-#ifdef WIN32
+#ifndef WIN32
     operator T**(){ return  row_; }
     operator T**() const { return row_; }
 #endif // WIN32
