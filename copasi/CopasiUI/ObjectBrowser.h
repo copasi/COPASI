@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/12/02 15:54:36 $
+   $Author: jpahle $ 
+   $Date: 2004/10/05 15:10:34 $
    End CVS Header */
 
 /********************************************************
@@ -80,6 +80,10 @@ class ObjectBrowser : public QDialog
 
     void updateUI();
     void loadUI();
+
+    void swap(int, int, ObjectBrowserItem**);
+    int partition(int, int, int, ObjectBrowserItem**);
+    void quick_sort(int, int, ObjectBrowserItem**);
 
   public slots:
     virtual void cancelClicked();

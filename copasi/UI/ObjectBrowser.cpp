@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/05 11:16:49 $
+   $Date: 2004/10/05 15:09:52 $
    End CVS Header */
 
 /********************************************************
@@ -365,14 +365,14 @@ void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObjec
     }
 }
 
-void swap(int first_pos, int second_pos, ObjectBrowserItem** array)
+void ObjectBrowser::swap(int first_pos, int second_pos, ObjectBrowserItem** array)
 {
   ObjectBrowserItem* tmp = array[first_pos];
   array[first_pos] = array[second_pos];
   array[second_pos] = tmp;
 }
 
-int partition(int split_pos, int start_pos, int end_pos, ObjectBrowserItem** quick_sort_array)
+int ObjectBrowser::partition(int split_pos, int start_pos, int end_pos, ObjectBrowserItem** quick_sort_array)
 {
   void* tmp = quick_sort_array[split_pos]->getObject()->pCopasiObject;
   if (split_pos != start_pos)
@@ -396,7 +396,7 @@ int partition(int split_pos, int start_pos, int end_pos, ObjectBrowserItem** qui
   return start_pos;
 }
 
-void quick_sort(int m, int n, ObjectBrowserItem** quick_sort_array)
+void ObjectBrowser::quick_sort(int m, int n, ObjectBrowserItem** quick_sort_array)
 {
   if (m < n)
     {
