@@ -43,8 +43,6 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
-  btnOK->setFont(QFont("Times", 10, QFont::Bold));
-  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -100,12 +98,12 @@ void ReactionsWidget::loadReactions(CModel *model)
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
+  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
+  //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
 }
 
 void ReactionsWidget::slotTableSelectionChanged()

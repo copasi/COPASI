@@ -44,23 +44,6 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(1, "Number");
   tableHeader->setLabel(2, "Equation");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
-
-  btnOK->setFont(QFont("Times", 10, QFont::Bold));
-  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
-
-  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
-
-  //To match the Table left Vertical Header Column Width.
-  hBoxLayout->addSpacing(32);
-
-  hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
-
   table->sortColumn (0, TRUE, TRUE);
   table->setSorting (TRUE);
   table->setFocusPolicy(QWidget::WheelFocus);
@@ -69,8 +52,6 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void MoietyWidget::loadMoieties(CModel *model)
@@ -93,7 +74,6 @@ void MoietyWidget::loadMoieties(CModel *model)
 
       //Now filling the table.
       CMoiety *moiety;
-      //CEquation *eqn;
 
       for (C_INT32 j = 0; j < noOfMoietyRows; j++)
         {
@@ -101,21 +81,8 @@ void MoietyWidget::loadMoieties(CModel *model)
           table->setText(j, 0, moiety->getName().c_str());
           table->setText(j, 1, QString::number(moiety->getNumber()));
           table->setText(j, 2, moiety->getDescription().c_str());
-          //table->setText(j, 2,QString::number(moiety->dependentNumber()));
         }
     }
-}
-
-void MoietyWidget::slotBtnOKClicked()
-{
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnOKClicked())");
-}
-
-void MoietyWidget::slotBtnCancelClicked()
-{
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
 }
 
 void MoietyWidget::slotTableSelectionChanged()
@@ -138,7 +105,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
       int w0, w1, w2;
       w0 = newWidth * (weight0 / weightSum);
       w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth - w0 - w1 ;
+      w2 = newWidth - w0 - w1;
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);
       table->setColumnWidth(2, w2);
@@ -149,7 +116,6 @@ void MoietyWidget::slotTableCurrentChanged(int row, int col, int m , const QPoin
 {
   QString x = table->text(row, col);
   emit name(x);
-  //QMessageBox::information(this, "Compartments Widget",x);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

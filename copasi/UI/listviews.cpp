@@ -1108,9 +1108,8 @@ void ListViews::slotFunctionTableChanged(QString &s)
 void ListViews::slotNewReaction()
 {
   //Constructing the Reactions Widget1
-  QMessageBox::information(this, "listviews Widget", "entered here");
-  reactionsWidget1 = new ReactionsWidget1(this);
-  //reactionsWidget1->hide();
+  //reactionsWidget1 = new ReactionsWidget1(this);
+  reactionsWidget1->isName("R1");
   currentWidget = reactionsWidget1;
 
   if (lastWidget)
@@ -1118,4 +1117,5 @@ void ListViews::slotNewReaction()
 
   if (currentWidget)
     currentWidget->show();
+  lastWidget = currentWidget;
 }

@@ -24,13 +24,10 @@ class MoietyWidget : public QWidget
   protected:
     CModel *mModel;
     MyTable *table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
 
   public:
     MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
     void loadMoieties(CModel *model);
-    //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
 
   public slots:
@@ -42,8 +39,6 @@ class MoietyWidget : public QWidget
   protected slots:
 
     virtual void slotTableSelectionChanged();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnCancelClicked();
 
   private:
     void showMessage(QString caption, QString text);

@@ -178,13 +178,13 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4h->addSpacing(15);
 
   commitChanges = new QPushButton("&Commit Changes", Frame4h);
-  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
+  //commitChanges->setFont(QFont("Times", 10, QFont::Bold));
   cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
-  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
+  //cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
   newReaction = new QPushButton("&New", Frame4h);
-  newReaction->setFont(QFont("Times", 10, QFont::Bold));
+  //newReaction->setFont(QFont("Times", 10, QFont::Bold));
   deleteReaction = new QPushButton("&Delete", Frame4h);
-  deleteReaction->setFont(QFont("Times", 10, QFont::Bold));
+  //deleteReaction->setFont(QFont("Times", 10, QFont::Bold));
 
   hBoxLayout4h->addWidget(newReaction);
   hBoxLayout4h->addSpacing(15);
@@ -200,7 +200,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  //connect(LineEdit2, SIGNAL(sideySignal()), this, SLOT(slotGetFocus()));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
 
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
@@ -414,7 +413,7 @@ void ReactionsWidget1::loadName(QString setValue)
   the widget with the initial values.*/
 void ReactionsWidget1::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
+  //QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Reaction1_Name);
 }
 
@@ -428,15 +427,15 @@ void ReactionsWidget1::slotBtnOKClicked()
   CWriteConfig *Rtn = new CWriteConfig(filename);
   /*This code is to save the changes in the reaction*/
   /*
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  CReaction *reactn2;
-  reactn2 = reactions[(std::string)name.latin1()];
-  CChemEq * chem;
-  chem = & reactn1->getChemEq();
-  chem->setChemicalEquation(chemical_reaction->latin1());
-  reactn1->setChemEq(chemical_reaction->latin1());
-  reactn1->save(*Rtn);
-  Copasi->Model->save(*Rtn);
+   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+   CReaction *reactn2;
+   reactn2 = reactions[(std::string)name.latin1()];
+   CChemEq * chem;
+   chem = & reactn1->getChemEq();
+   chem->setChemicalEquation(chemical_reaction->latin1());
+   reactn1->setChemEq(chemical_reaction->latin1());
+   reactn1->save(*Rtn);
+   Copasi->Model->save(*Rtn);
   */
   mModel->save(*Rtn);
   delete Rtn;
@@ -697,6 +696,6 @@ void ReactionsWidget1::slotLineEditChanged()
 
 void ReactionsWidget1::slotBtnNewClicked()
 {
-  QMessageBox::information(this, "Reactions Widget", "adding a new reaction");
+  // QMessageBox::information(this, "Reactions Widget", "adding a new reaction");
   emit new_reaction();
 }
