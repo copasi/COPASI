@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.175 $
+   $Revision: 1.176 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/24 15:01:49 $
+   $Author: shoops $ 
+   $Date: 2004/05/26 13:36:04 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1490,31 +1490,30 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   CModel::QuantityUnit Unit = unit;
   bool success = true;
 
-  //TODO use AVOGADRO from copasi.h
   switch (Unit)
     {
     case Mol:
-      mQuantity2NumberFactor = 6.020402E23;
+      mQuantity2NumberFactor = AVOGADRO;
       break;
 
     case mMol:
-      mQuantity2NumberFactor = 6.020402E20;
+      mQuantity2NumberFactor = AVOGADRO * 1E-3;
       break;
 
     case microMol:
-      mQuantity2NumberFactor = 6.020402E17;
+      mQuantity2NumberFactor = AVOGADRO * 1E-6;
       break;
 
     case nMol:
-      mQuantity2NumberFactor = 6.020402E14;
+      mQuantity2NumberFactor = AVOGADRO * 1E-9;
       break;
 
     case pMol:
-      mQuantity2NumberFactor = 6.020402E11;
+      mQuantity2NumberFactor = AVOGADRO * 1E-12;
       break;
 
     case fMol:
-      mQuantity2NumberFactor = 6.020402E8;
+      mQuantity2NumberFactor = AVOGADRO * 1E-15;
       break;
 
     case number:
