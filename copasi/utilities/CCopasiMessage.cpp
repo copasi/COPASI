@@ -159,8 +159,6 @@ unsigned C_INT32 CCopasiMessage::getNumber(void) {return mNumber;}
 
 string TimeStamp()
 {
-  time_t timezone, altzone;
-
   time_t Time;
   tm     *sTime = NULL;
   char str[20];

@@ -12,9 +12,17 @@
 
 using namespace std ;
 
+#define C_INT32 long
+#define C_INT int
+#define C_INT16 short
+#define C_FLOAT64 double
+#define C_FLOAT32 float
+
 #ifdef WIN32 
 #define vsnprintf _vsnprintf // they just have a different name for this guy
 #define snprintf  _snprintf  // they just have a different name for this guy
+#undef C_INT32
+#define C_INT32 int
 #endif  // WIN32
 
 #ifdef TRUE
@@ -26,12 +34,6 @@ using namespace std ;
 #undef FALSE
 #endif
 #define FALSE 0
-
-#define C_INT32 long
-#define C_INT int
-#define C_INT16 short
-#define C_FLOAT64 double
-#define C_FLOAT32 float
 
 //YH: new defined parameters used by more than one classes
 #define SS_FOUND 1             //steady state found

@@ -12,6 +12,11 @@
 #include "CCompartment.h"
 #include "utilities/utilities.h"
 
+#ifdef WIN32
+#define max(a , b)  ((a) > (b) ? (a) : (b))
+#define min(a , b)  ((a) < (b) ? (a) : (b))
+#endif // WIN32
+
 CReaction::CReaction()
 {
   mFlux = 0.0;

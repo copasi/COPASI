@@ -62,7 +62,7 @@ class CFunctionParameter
    *  @param "const string &" usage
    */
   CFunctionParameter(const string & name,
-                         const CFunctionParameter::DataType & type,
+                         const DataType & type,
                          const string & usage);
 
   /**
