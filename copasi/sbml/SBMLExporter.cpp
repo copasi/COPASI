@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 08:15:01 $
+   $Date: 2004/06/15 08:22:47 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -14,9 +14,9 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 
-SBMLExporter::HTML_HEADER = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n<title>Comments</title>\n</head><body>";
+const char* SBMLExporter::HTML_HEADER = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n<title>Comments</title>\n</head><body>";
 
-SBMLExporter::HTML_FOOTER = "</body>\n</html>";
+const char* SBMLExporter::HTML_FOOTER = "</body>\n</html>";
 
 /**
  ** Constructor for the exporter.
