@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/05 12:52:04 $
+   $Date: 2004/09/24 13:29:58 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -11,8 +11,8 @@
 #define COPASI_MAIN
 #include "copasiversion.h"
 
-#include "copasiui3window.h" 
-//#include "objectdebug.h"
+#include "copasiui3window.h"
+#include "objectdebug.h"
 
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   a.setMainWidget(&window);
   window.getDataModel()->setQApp(&a);
 
-  window.resize(640, 480);
+  window.resize(800, 600);
   window.show();
 
   //ObjectDebug objwindow;
