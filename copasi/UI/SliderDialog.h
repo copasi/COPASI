@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/17 14:36:15 $
+   $Date: 2005/01/13 15:47:48 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -42,6 +42,7 @@ class SliderDialog: public QDialog
   protected:
     QPushButton* runTaskButton;
     QCheckBox* autoRunCheckBox;
+    QCheckBox* mpAutoModifyRangesCheckBox;
     QScrollView* scrollView;
     QVBox* sliderBox;
     QPopupMenu* contextMenu;
@@ -55,6 +56,8 @@ class SliderDialog: public QDialog
     DataModelGUI* mpDataModel;
 
     bool mSliderValueChanged;
+
+    bool mModifyRanges;
 
     void init();
 
@@ -73,9 +76,11 @@ class SliderDialog: public QDialog
     virtual void addSliderToTask(CopasiSlider* slider);
     virtual void deleteSliderFromTask(CopasiSlider* slider);
     virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
+    virtual void updateAllSliders();
 
   public slots:
     void toggleRunButtonState(bool);
+    void toggleAutoUpdateRanges(bool);
 
   protected slots:
     void removeSlider();

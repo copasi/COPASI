@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/10 16:40:30 $
+   $Author: gauges $ 
+   $Date: 2005/01/13 15:47:48 $
    End CVS Header */
 
 #include <iostream>
@@ -47,13 +47,15 @@ char* SliderDialog::knownTaskNames[] = {"Time Course"};
 SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(parent),
     runTaskButton(NULL),
     autoRunCheckBox(NULL),
+    mpAutoModifyRangesCheckBox(NULL),
     scrollView(NULL),
     sliderBox(NULL),
     contextMenu(NULL),
     currSlider(NULL),
     currentFolderId(0),
     mpDataModel(dataModel),
-    mSliderValueChanged(false)
+    mSliderValueChanged(false),
+    mModifyRanges(true)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
@@ -67,6 +69,16 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   mainLayout->addWidget(this->scrollView);
 
   QHBoxLayout* layout1 = new QHBoxLayout(0);
+  layout1->addStretch();
+  this->mpAutoModifyRangesCheckBox = new QCheckBox(this);
+  this->mpAutoModifyRangesCheckBox->setChecked(true);
+  this->mpAutoModifyRangesCheckBox->setText("update ranges");
+  layout1->addWidget(this->mpAutoModifyRangesCheckBox);
+  layout1->addStretch();
+  mainLayout->addSpacing(10);
+  mainLayout->addLayout(layout1);
+
+  layout1 = new QHBoxLayout(0);
   layout1->addStretch();
   this->autoRunCheckBox = new QCheckBox(this);
   this->autoRunCheckBox->setChecked(true);
@@ -90,6 +102,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
 
+  connect(mpAutoModifyRangesCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleAutoModifyRanges(bool)));
   connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
@@ -203,7 +216,7 @@ void SliderDialog::editSlider()
 
 void SliderDialog::toggleRunButtonState(bool notState)
 {
-  this->runTaskButton->setEnabled(!notState);
+  //this->runTaskButton->setEnabled(!notState);
 }
 
 SliderDialog::~SliderDialog()
@@ -223,6 +236,7 @@ SliderDialog::~SliderDialog()
     }
   delete this->runTaskButton;
   delete this->autoRunCheckBox;
+  delete this->mpAutoModifyRangesCheckBox;
   delete this->sliderBox;
   delete this->scrollView;
 }
@@ -253,7 +267,8 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
   this->addSliderToTask(slider);
   if (folderId == this->currentFolderId)
     {
-      ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, slider);
+      unsigned int numSliders = this->sliderMap[this->currentFolderId].size();
+      ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(/*this->sliderBox->children()->count() - 3*/numSliders, slider);
       slider->setHidden(false);
     }
   connect(slider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
@@ -349,6 +364,7 @@ void SliderDialog::runTask()
     {
       this->setEnabled(false);
       ((this)->*(this->taskMap[this->currentFolderId]))();
+      this->updateAllSliders();
       this->setEnabled(true);
     }
 }
@@ -462,4 +478,21 @@ void SliderDialog::deleteSliderFromTask(CopasiSlider* slider)
   // delete an exisiting parameter group for this object
   CCopasiParameterGroup* parameterGroup = static_cast<CCopasiParameterGroup*>(parameter);
   parameterGroup->removeParameter(slider->parameterGroup()->getObjectName());
+}
+
+void SliderDialog::updateAllSliders()
+{
+  std::vector<CopasiSlider*>& sliders = sliderMap[currentFolderId];
+  std::vector<CopasiSlider*>::iterator it = sliders.begin();
+  std::vector<CopasiSlider*>::iterator endIt = sliders.end();
+  while (it != endIt)
+    {
+      (*it)->updateValue(this->mModifyRanges);
+      ++it;
+    }
+}
+
+void SliderDialog::toggleAutoUpdateRanges(bool update)
+{
+  this->mModifyRanges = update;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/25 14:33:42 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -45,6 +45,7 @@ class CopasiSlider: public QVBox
     C_FLOAT64 maxValue() const;
     CCopasiParameterGroup* parameterGroup() const;
     void setParameterGroup(CCopasiParameterGroup* parameterGroup);
+    void updateValue(bool modifyRange);
 
   public slots:
     void sliderValueChanged(int value);
@@ -66,6 +67,7 @@ class CopasiSlider: public QVBox
     unsigned C_INT32 mNumMinorTicks;
     unsigned C_INT32 mMinorMajorFactor;
     CCopasiParameter::Type mType;
+    bool mValueOutOfRange;
 
     void updateSliderData();
     void updateLabel();

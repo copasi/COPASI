@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/12 23:05:22 $
+   $Author: gauges $ 
+   $Date: 2005/01/13 15:47:48 $
    End CVS Header */
 
 #include <cmath>
@@ -19,7 +19,7 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObjectName.h"
 
-CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent), mpObject(object) , mpSlider(NULL), mpLabel(NULL), mpParameterGroup(NULL)
+CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent), mpObject(object) , mpSlider(NULL), mpLabel(NULL), mpParameterGroup(NULL), mValueOutOfRange(false)
 {
   this->mpLabel = new QLabel(this);
   this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -228,6 +228,10 @@ void CopasiSlider::updateLabel()
   labelString += "] {";
   labelString += QString::number(this->value());
   labelString += "}";
+  if (this->mValueOutOfRange)
+    {
+      labelString += " (Value out of range!)";
+    }
   this->mpLabel->setText(labelString);
 }
 
@@ -319,5 +323,43 @@ void CopasiSlider::setParameterGroup(CCopasiParameterGroup* parameterGroup)
       parameter = parameterGroup->getParameter("minorMajorFactor"); // unsigned int
       assert(parameter);
       this->mMinorMajorFactor = *(C_INT32*)parameter->getValue();
+    }
+}
+
+void CopasiSlider::updateValue(bool modifyRange)
+{
+  CCopasiParameter* parameter = this->mpParameterGroup->getParameter("value");    // double
+  assert(parameter);
+  C_FLOAT64 value = *(C_FLOAT64*)parameter->getValue();
+  if (this->mpObject->isValueDbl())
+    {
+      value = *(double*)this->mpObject->getReference();
+    }
+  else if (this->mpObject->isValueInt())
+    {
+      value = (double)(*(int*)this->mpObject->getReference());
+    }
+  if (value != this->mValue)
+    {
+      if ((value > this->mMaxValue) || (value < this->mMinValue))
+        {
+          if (!modifyRange)
+            {
+              this->mValueOutOfRange = true;
+            }
+          else
+            {
+              this->mValueOutOfRange = false;
+              if (value < this->mMinValue)
+                {
+                  this->setMinValue(0.0);
+                }
+              else
+                {
+                  this->setMaxValue(value*2);
+                }
+            }
+        }
+      this->setValue(value);
     }
 }
