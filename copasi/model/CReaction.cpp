@@ -600,7 +600,7 @@ void CReaction::old2New(const vector < CMetab* > & metabolites)
 
 C_FLOAT64 CReaction::calculate() 
 {
-  return mFunction->calcValue(mCallParameters);
+  return mFlux = mFunction->calcValue(mCallParameters);
 }
 
 /**
