@@ -341,38 +341,59 @@ void ListViews::slotFolderChanged( QListViewItem *i )
 	FolderListItem *item=( FolderListItem* )i;
 	bigWidget->setText("You Clicked On: " + item->folder()->folderName());	
 	//char * fName=item->folder()->folderName();
-
+	
+	QListViewItem* i1=i->parent () ;
+	// get the qlistview item in form of folderlistitem...
+	FolderListItem *item1=( FolderListItem* )i1;
       
 	int value=QString::compare(item->folder()->folderName(),"Metabolites");
 
 	if(!value)
-			currentWidget=metabolitesWidget;
+		currentWidget=metabolitesWidget;
 
 	else if(! (value=QString::compare(item->folder()->folderName(),"Reactions")))
-		{
-
-		int value1;
+	{
 		currentWidget=reactionsWidget; 
-showMessage("Mudita","it is outside the second level");
-		if(! (value1=QString::compare(item->folder()->folderName(),"Aldolase")))
-			{
-				reactionsWidget1->loadName("Aldolase");
-				currentWidget=reactionsWidget1;
-			showMessage("Mudita","it enters Aldolase");
-			}
+
+	}
 		
-			else if(! (value1=QString::compare(item->folder()->folderName(),"Respiration")))
-			{
-				showMessage("Mudita","it enters respiration");
-				reactionsWidget1->loadName("Respiration");
-				currentWidget=reactionsWidget1;
-			
-			};
-		}
 	else if(! (value=QString::compare(item->folder()->folderName(),"Compartments")))
 	  currentWidget=compartmentsWidget; 
 	else if(! (value=QString::compare(item->folder()->folderName(),"Moiety")))
 	  currentWidget=moietyWidget; 
+
+	
+	else if(! (value=QString::compare(item1->folder()->folderName(),"Compartments")))
+	{
+		if(compartmentsWidget1->isName(item->folder()->folderName()) == 1)
+		{
+		currentWidget=compartmentsWidget1;
+		}
+	}
+	
+	else if(! (value=QString::compare(item1->folder()->folderName(),"Reactions")))
+	{
+		if(reactionsWidget1->isName(item->folder()->folderName()) == 1)
+		{
+		currentWidget=reactionsWidget1;
+		}
+	}
+	
+	else if(! (value=QString::compare(item1->folder()->folderName(),"Metabolites")))
+	{
+		if(metabolitesWidget1->isName(item->folder()->folderName()) == 1)
+		{
+		currentWidget=metabolitesWidget1;
+		}
+	}
+	/*else if(! (value=QString::compare(item1->folder()->folderName(),"Moiety")))
+	{
+		if(moietyWidget1->isName(item->folder()->folderName()) == 1)
+		{
+		currentWidget=moietyWidget1;
+		}
+	}
+	*/
 	else
 	{
 	    		
@@ -647,6 +668,7 @@ void ListViews::loadNodes(CModel *model)
 		QListViewItem* loadNode;// to load the tree with that stuff
 		// UPDATE THE METABOLITES STUFF..
 		metabolitesWidget->loadMetabolites(model);
+		metabolitesWidget1->loadMetabolites(model);
 		loadNode=searchNode("Metabolites");
 		if(loadNode)
 		{
@@ -659,6 +681,7 @@ void ListViews::loadNodes(CModel *model)
 
 	  // UPDATE THE REACTIONS STUFF..
 		reactionsWidget->loadReactions(model);
+		reactionsWidget1->loadReactions(model);
 		loadNode=searchNode("Reactions");
 		if(loadNode)
 		{
@@ -671,6 +694,7 @@ void ListViews::loadNodes(CModel *model)
 
 		// UPDATE THE COMPARTMENTS STUFF..
 		compartmentsWidget->loadCompartments(model);
+		compartmentsWidget1->loadCompartments(model);
 		loadNode=searchNode("Compartments");
 		if(loadNode)
 		{
@@ -685,6 +709,7 @@ void ListViews::loadNodes(CModel *model)
 
 	// UPDATE THE MOIETIES STUFF..
 		//moietyWidget->loadMoieties(model);
+		//moietyWidget1->loadMoieties(model);
 		loadNode=searchNode("Moiety");
 		if(loadNode)
 		{
@@ -734,13 +759,19 @@ void ListViews::ConstructNodeWidgets()
 		reactionsWidget1 = new ReactionsWidget1( this );
 		reactionsWidget1->hide();
 
+	/*//Constructing the Moiety Widget1
+		moietyWidget1 = new MoietyWidget1( this );
+		moietyWidget1->hide();*/
 
 
+	//Constructing the Compartments Widget1
+		compartmentsWidget1 = new CompartmentsWidget1( this );
+		compartmentsWidget1->hide();
 
 
-
-
-
+	//Constructing the Metabolites Widget1
+		metabolitesWidget1 = new MetabolitesWidget1( this );
+		metabolitesWidget1->hide();
 
 		
 	}
@@ -810,7 +841,7 @@ void ListViews::loadReactions(QListViewItem* i)
 		// multiply myId by 10 and than add these items with seq nu..of that id..
 		myId=10*myId;
 
-		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
+		CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 		C_INT32 noOfReactionsRows = reactions.size();
 	    
 			//Now filling the table.
@@ -823,6 +854,8 @@ void ListViews::loadReactions(QListViewItem* i)
 			dataModel->addData(p,f);
 			
 		}
+
+
 
 }
 
@@ -918,3 +951,10 @@ void ListViews::showMessage(QString title,QString text)
 {
 	 QMessageBox::about ( this,title,text );
 }
+
+
+
+
+
+
+

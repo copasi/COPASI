@@ -12,7 +12,7 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-//#include "MyTreeAndListWidget.h"
+#include "listviews.h"
 
 /* 
  *  Constructs a MetabolitesWidget which is a child of 'parent', with the 
@@ -204,17 +204,96 @@ MetabolitesWidget1::MetabolitesWidget1( QWidget *parent, const char * name, WFla
    
 }
 
+int MetabolitesWidget1::isName(QString setValue)
+{
+
+	if (mModel == NULL)
+	{ 
+		return 0;
+	}
+	
+	vector < CMetab * > metabolites = mModel->getMetabolites();
+			
+		//Now filling the table.
+		CMetab *metab1;
+		
+		int i=0;			
+		int myValue=-1;
+		for(;i<metabolites.size();i++)
+			{
+				metab1 = metabolites[i];
+                int value=QString::compare(metab1->getName().c_str(),setValue);   
+                if(!value)
+                {
+					myValue=i;
+					break;
+				}
+			}
+
+		if(myValue != -1)
+		{
+		metab1=  metabolites[myValue];
+		//metab1 = metabolites[(string)setValue];
+	
+		if(metab1 !=NULL)
+		{	
+			loadName(setValue);
+			//metab1=NULL;
+			return 1;
+		}
+		else
+		return 0;
+		}
+}
+
+
+
+
 void MetabolitesWidget1::loadMetabolites(CModel *model)
 {
 	if (model != NULL)
 	{
 		mModel = model;
+	}
+}
+
+
+
+
+
+
+
+void MetabolitesWidget1::loadName(QString setValue)
+{
+	
+    if (mModel == NULL)
+	{ return;
+	}
+		
+
 		vector < CMetab * > metabolites = mModel->getMetabolites();
 			
 		//Now filling the table.
 		CMetab *metab;
 
-			metab = metabolites[1];
+
+		int i=0;			
+		int myValue=-1;
+		for(;i<metabolites.size();i++)
+			{
+				metab = metabolites[i];
+                int value=QString::compare(metab->getName().c_str(),setValue);   
+                if(!value)
+                {
+					myValue=i;
+					break;
+				}
+			}
+
+		if(myValue != -1)
+		{
+			metab=  metabolites[myValue];
+			
 			LineEdit1->setText(metab->getName().c_str());
 		    
 			LineEdit4->setText(QString::number(*(metab->getInitialConcentration())));
@@ -268,5 +347,6 @@ void MetabolitesWidget1::loadMetabolites(CModel *model)
 			}
 		
 	}
+
 
 }

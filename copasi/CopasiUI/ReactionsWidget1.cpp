@@ -195,43 +195,80 @@ ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f
    
 }
 
+int ReactionsWidget1::isName(QString setValue)
+{
 
+	if (mModel == NULL)
+	{ 
+		return 0;
+	}
+	
+
+	CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+
+		
+		CReaction *reactn1;
+		reactn1 = reactions[(string) setValue];
+
+		
+	if(reactn1 !=NULL)
+	{	
+		loadName(setValue);
+		//reactn1=NULL;
+		return 1;
+	}
+	else
+		return 0;
+}
+
+void ReactionsWidget1::loadReactions(CModel *model)
+{
+	if (model != NULL)
+	{
+		mModel = model;
+	}
+}
 
 void ReactionsWidget1::loadName(QString setValue)
 {
-	//if (model != NULL)
-	//{
-		//mModel = model;
-		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
+	
+    if (mModel == NULL)
+	{ return;
+	}
+	
+	
+		CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 		C_INT32 noOfReactionsRows = reactions.size();
 		
 		CReaction *reactn;
-		CChemEq chemEq;
+		CChemEq * chemEq;
 		CFunction *function;
-		int i=0;			
+
+	/*	int i=0;			
 		int myValue=-1;
 		for(;i<reactions.size();i++)
-		{
-
-
-		     reactn = reactions[i];
-         int value=QString::compare(reactn->getName().c_str(),setValue);   
-             if(!value)
-             {
-			   myValue=i;
-			   break;
-			 }
-		}
+			{
+				reactn = reactions[i];
+                int value=QString::compare(reactn->getName().c_str(),setValue);   
+                if(!value)
+                {
+					myValue=i;
+					break;
+				}
+			}
 
 		if(myValue != -1)
 		{
-		reactn = reactions[myValue];
+		reactn = reactions[myValue];*/
+
+
+			reactn = reactions[(string)setValue];
 		
 
 			LineEdit1->setText(reactn->getName().c_str());
 
-		    chemEq = reactn->getChemEq();
-			LineEdit2->setText(chemEq.getChemicalEquation().c_str());
+		    chemEq = & reactn->getChemEq();
+			LineEdit2->setText(chemEq->getChemicalEquation().c_str());
 			
 			LineEdit3->setText(QString::number(reactn->getFlux()));
 
@@ -245,7 +282,6 @@ void ReactionsWidget1::loadName(QString setValue)
 			if(reactn->isReversible() == TRUE)
 			{
 				checkBox->setChecked(TRUE);
-			}
 			}
 
 			
@@ -351,18 +387,18 @@ void ReactionsWidget1::loadName(QString setValue)
 	{
 	//for the combo box
 	QStringList comboEntries5;
-    comboEntries5= QString::number(react5[0]->getValue());
+    comboEntries5= QString::number(react5[k]->getValue());
     QComboTableItem * item = new QComboTableItem(table, comboEntries5, FALSE );
     table->setItem( i+1, 0, item );
     }
 
 
-
+}
 
 }
-	}
 
-//}
+
+
 
 
 

@@ -7,7 +7,7 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-//#include "MyTreeAndListWidget.h"
+#include "listviews.h"
 
 /* 
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
@@ -105,26 +105,64 @@ MoietyWidget1::MoietyWidget1( QWidget *parent, const char * name, WFlags f )
 }
 
 
+int MoietyWidget1::isName(QString setValue)
+{
 
-//Th function for loading the moities in this form
+	if (mModel == NULL)
+	{ 
+		return 0;
+	}
+	
+
+	
+		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
+		C_INT32 noOfMoietyRows = moieties.size();
+		CMoiety *moiety1;
+		moiety1= moieties[(string) setValue];
+
+				
+	if(	moiety1 !=NULL)
+	{	
+		loadName(setValue);
+		return 1;
+	}
+	else
+		return 0;
+}
+
 void MoietyWidget1::loadMoieties(CModel *model)
 {
 	if (model != NULL)
 	{
 		mModel = model;
+	}
+}
+
+
+
+
+
+
+
+void MoietyWidget1::loadName(QString setValue)
+{
+	
+    if (mModel == NULL)
+	{ return;
+	}
 		
 		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
 		C_INT32 noOfMoietyRows = moieties.size();
 		CMoiety *moiety;
-		moiety= moieties[2];
-
+		moiety= moieties[(string)setValue];
+	
 		
 		LineEdit1->setText(moiety->getDescription().c_str());
 		LineEdit3->setText(moiety->getName().c_str());
 		LineEdit2->setText(QString::number(moiety->getNumber()));
 		  	
 		}
-}
+
 
 
 

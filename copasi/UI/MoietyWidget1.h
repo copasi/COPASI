@@ -27,6 +27,10 @@ protected:
 public:
     MoietyWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
 	void loadMoieties(CModel *model);
+	void loadName(QString setValue);
+	int isName(QString setValue);
+	
+
     QLabel* TextLabel1;
     QLabel* TextLabel2;
     QLabel* TextLabel3;

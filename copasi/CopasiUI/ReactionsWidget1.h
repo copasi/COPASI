@@ -34,6 +34,8 @@ protected:
 public:
     ReactionsWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
 	void loadName(QString setValue);
+	int isName(QString setValue);
+	void loadReactions(CModel *model);
     QFrame* Line1;
 	QFrame* Line2;
 

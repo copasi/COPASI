@@ -29,6 +29,10 @@ protected:
 public:
     CompartmentsWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
 	void loadCompartments(CModel *model);
+	void loadName(QString setValue);
+	int isName(QString setValue);
+	
+	
 	QLineEdit* LineEdit1;
     QLineEdit* LineEdit3;
     QLineEdit* LineEdit4;

@@ -8,7 +8,7 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-//#include "MyTreeAndListWidget.h"
+#include "listviews.h"
 
 /* 
  *  Constructs a ComaprtmentsWidget which is a child of 'parent', with the 
@@ -112,17 +112,50 @@ CompartmentsWidget1::CompartmentsWidget1( QWidget *parent, const char * name, WF
    
 }
 
+int CompartmentsWidget1::isName(QString setValue)
+{
+
+	if (mModel == NULL)
+	{ 
+		return 0;
+	}
+	
+	CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+
+		
+	if(	compartments[(string) setValue]  !=NULL)
+	{	
+	loadName(setValue);
+		//compartn1 =NULL;
+		return 1;
+	}
+	else
+		return 0;
+}
+
 void CompartmentsWidget1::loadCompartments(CModel *model)
 {
 	if (model != NULL)
 	{
 		mModel = model;
+	}
+}
+
+
+void CompartmentsWidget1::loadName(QString setValue)
+{
+	
+    if (mModel == NULL)
+	{ return;
+	}
+		
+
 		CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 			
 	
 		CCompartment *compartn;
 
-			compartn = compartments[1];
+			compartn = compartments[(string)setValue];
 
 			LineEdit1->setText(compartn->getName().c_str());
 			
@@ -144,8 +177,9 @@ void CompartmentsWidget1::loadCompartments(CModel *model)
 			LineEdit4->setText( QString::number(compartn->getVolume()));
 			LineEdit4->setReadOnly(true);
 
+
 			
 		
 	}
 
-}
+

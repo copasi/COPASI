@@ -30,7 +30,9 @@ protected:
 public:
     MetabolitesWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
 	void loadMetabolites(CModel *model);
-
+	void loadName(QString setValue);
+	int isName(QString setValue);
+	
     QGroupBox* GroupBox1;
     QGroupBox* GroupBox2;
 

@@ -75,7 +75,7 @@ void ReactionsWidget::loadReactions(CModel *model)
 			table->removeRow(0);
 		}
 		
-		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
+		CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 		C_INT32 noOfReactionsRows = reactions.size();
 		table->setNumRows(noOfReactionsRows);
 
