@@ -367,8 +367,8 @@ void ScanWidget::upButtonClicked()
 
   emit hide_me();
 
-  CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
-  CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
+  CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -379,15 +379,13 @@ void ScanWidget::upButtonClicked()
   //lower one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  //  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
-  activeTitle->setText(pObjectUp->getCN().c_str());
+  activeTitle->setText(pObjectUp->getName().c_str());
 
   //activate
   //upper one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  //  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
-  activeTitle->setText(pObjectDown->getCN().c_str());
+  activeTitle->setText(pObjectDown->getName().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -408,8 +406,8 @@ void ScanWidget::downButtonClicked()
 
   emit hide_me();
   activeObject++;
-  CCopasiObject* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
-  CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
+  CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getObject();
+  CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -418,14 +416,12 @@ void ScanWidget::downButtonClicked()
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  //  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
-  activeTitle->setText(pObjectDown->getCN().c_str());
+  activeTitle->setText(pObjectDown->getName().c_str());
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  //  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
-  activeTitle->setText(pObjectUp->getCN().c_str());
+  activeTitle->setText(pObjectUp->getName().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -544,10 +540,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   emit hide_me();
 
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
-  //  if (scrollview->visibleWidth() >= parameterTable->minimumSizeHint().width())
   ScanItemWidgetWidth = scrollview->visibleWidth();
-  //  else
-  //    ScanItemWidgetWidth = parameterTable->minimumSizeHint().width();
 
   widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
 
@@ -555,8 +548,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
-  //  pObject->getObjectUniqueName();
-  //  newTitleBar->setText(pObject->getObjectUniqueName().c_str());
+
   newTitleBar->setText(pObject->getCN().c_str());
   newTitleBar->setReadOnly(TRUE);
 
