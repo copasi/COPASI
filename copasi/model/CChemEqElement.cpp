@@ -60,7 +60,9 @@ void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
 
 C_FLOAT64 CChemEqElement::getMultiplicity() const
-  {return mMultiplicity;}
+  {
+    return mMultiplicity;
+  }
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {

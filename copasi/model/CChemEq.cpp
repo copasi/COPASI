@@ -510,7 +510,8 @@ C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
       }
 
     C_INT32 ccc, i, imax = tmpVector->size();
-    for (i = 0, ccc = 0; i < imax; ++i)
+    ccc = 0;
+    for (i = 0; i < imax; ++i)
       ccc += (C_INT32)floor((*tmpVector)[i]->getMultiplicity());
 
     return ccc;

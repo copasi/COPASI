@@ -132,6 +132,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
+  C_INT32 idx, multp;
   char strtmp[32];
   CCopasiVector < CChemEqElement > reactants;
   s = metabolites.size();
@@ -150,13 +151,13 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   bool revers = mChemEq.getReversibility();
   if ((Fail = configbuffer.setVariable("Reversible", "bool", &revers)))
     return Fail;
-  Size = mChemEq.getSubstrates().size();
+  Size = getSubstrateMolecularity();
   if ((Fail = configbuffer.setVariable("Substrates", "C_INT32", &Size)))
     return Fail;
-  Size = mChemEq.getProducts().size();
+  Size = getProductMolecularity();
   if ((Fail = configbuffer.setVariable("Products", "C_INT32", &Size)))
     return Fail;
-  Size = mChemEq.getModifiers().size();
+  Size = getModifierMolecularity();
   if ((Fail = configbuffer.setVariable("Modifiers", "C_INT32", &Size)))
     return Fail;
   Size = mParameters.size();
@@ -164,52 +165,63 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
     return Fail;
   reactants = mChemEq.getSubstrates();
   Size = reactants.size();
-  for (i = 0; i < Size; i++)
+  for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
+            multp = reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
         return - 1;
-      sprintf(strtmp, "Subs%ld", i);
-      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
-        return Fail;
+      for (j = 0; j < multp; j++)
+        {
+          sprintf(strtmp, "Subs%ld", idx++);
+          if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+            return Fail;
+        }
     }
   reactants = mChemEq.getProducts();
   Size = reactants.size();
-  for (i = 0; i < Size; i++)
+  for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
+            multp = reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
         return - 1;
-      sprintf(strtmp, "Prod%ld", i);
-      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
-        return Fail;
+      for (j = 0; j < multp; j++)
+        {
+          sprintf(strtmp, "Prod%ld", idx++);
+          if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+            return Fail;
+        }
     }
-
   reactants = mChemEq.getModifiers();
   Size = reactants.size();
-  for (i = 0; i < Size; i++)
+  for (i = 0, idx = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
         if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
+            multp = reactants[i]->getMultiplicity();
             break;
           }
       if (c == -1)
         return - 1;
-      sprintf(strtmp, "Modf%ld", i);
-      if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
-        return Fail;
+      for (j = 0; j < multp; j++)
+        {
+          sprintf(strtmp, "Modf%ld", idx++);
+          if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
+            return Fail;
+        }
     }
   Size = mParameters.size();
   for (i = 0; i < Size; i++)
@@ -331,7 +343,7 @@ void CReaction::setChemEq(const std::string & chemEq)
 
 bool CReaction::addModifier(const std::string &name)
 {
-  mChemEq.addMetaboliteByName(name, 0.0, CChemEq::MODIFIER);
+  mChemEq.addMetaboliteByName(name, 1.0, CChemEq::MODIFIER);
   return true;
 }
 
