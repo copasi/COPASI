@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/06/10 19:29:44 $
+   $Date: 2004/06/10 20:57:21 $
    End CVS Header */
 
 /**
@@ -30,9 +30,10 @@ CReportDefinition::CReportDefinition(const std::string & name,
     CCopasiObject(name, pParent, "ReportDefinition"),
     mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(""),
-    mpBody(new CReportBody),
-    mSeperator("/t"),
-    mbTitle(false)
+    mTaskType(CCopasiTask::timeCourse),
+    mSeperator("\t"),
+    mTable(true),
+    mbTitle(true)
 {}
 
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
@@ -40,8 +41,9 @@ CReportDefinition::CReportDefinition(const CReportDefinition & src,
     CCopasiObject(src, pParent),
     mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(src.mComment),
-    mpBody(new CReportBody(*mpBody)),
+    mTaskType(src.mTaskType),
     mSeperator(src.mSeperator),
+    mTable(src.mTable),
     mbTitle(src.mbTitle)
 {}
 
@@ -50,9 +52,9 @@ CReportDefinition::~CReportDefinition()
 
 void CReportDefinition::cleanup()
 {
-  pdelete(mpBody);
   GlobalKeys.remove(mKey);
   mHeaderVector.clear();
+  mBodyVector.clear();
   mFooterVector.clear();
 }
 
@@ -64,12 +66,6 @@ std::vector<CCopasiObjectName>* CReportDefinition::getHeaderAddr()
 
 std::vector<CCopasiObjectName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
-
-CReportBody* CReportDefinition::getReportBody()
-{return mpBody;}
-
-void CReportDefinition::setReportBody(CReportBody *pNewBody)
-{mpBody = pNewBody;}
 
 bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 {mTaskType = taskType; return true;}
@@ -86,8 +82,14 @@ const CCopasiStaticString& CReportDefinition::getSeperator() const
 bool CReportDefinition::getTitle() const
   {return mbTitle;}
 
-void CReportDefinition::setTitle(bool mTitle)
-{mbTitle = mTitle;}
+void CReportDefinition::setTitle(bool title)
+{mbTitle = title;}
+
+bool CReportDefinition::isTable() const
+  {return mTable;}
+
+void CReportDefinition::table(bool table)
+{mTable = table;}
 
 const std::string & CReportDefinition::getKey() const
   {return mKey;}
