@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: ssahle $ $Date: 2005/02/14 13:42:19 $  
+# $Revision: 1.13 $ $Author: ssahle $ $Date: 2005/02/15 12:56:47 $  
 ######################################################################
 
 LIB = plot
@@ -35,3 +35,5 @@ SOURCES += CHistogram.cpp \
 
 FORMS +=  curve2dwidget.ui
 FORMS +=  HistoWidget.ui
+
+INCLUDEPATH += $${QWT_PATH}/include
