@@ -119,9 +119,11 @@ const double CHybridMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
 
+#ifndef  COPASI_DEPRECATED
   C_INT32 * Int = const_cast<C_INT32 *>(mpCurrentState->getVariableNumberVectorInt().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Int++)
     *Int = mpProblem->getModel()->getMetabolites()[i]->getNumberInt();
+#endif // COPASI_DEPRECATED
 
   return deltaT;
 }
