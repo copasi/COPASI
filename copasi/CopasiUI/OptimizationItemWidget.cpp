@@ -226,7 +226,7 @@ void OptimizationItemWidget::setCopasiObjectPtr (CCopasiObject* sourceObject)
   ObjectName->setText(mpObject->getObjectUniqueName().c_str());
 }
 
-OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
+void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
 {
   if (strUpperLimit == "+inf")
     {
@@ -244,7 +244,7 @@ OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
     }
 }
 
-OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
+void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
 {
   if (strLowerLimit == "-inf")
     {
@@ -272,12 +272,12 @@ std::string OptimizationItemWidget::getItemLowerOper()
   return comboBoxLowerOp->currentText().latin1();
 }
 
-OptimizationItemWidget::setItemUpperOper(std::string oper)
+void OptimizationItemWidget::setItemUpperOper(std::string oper)
 {
   comboBoxUpperOp->setCurrentText (oper.c_str());
 }
 
-OptimizationItemWidget::setItemLowerOper(std::string oper)
+void OptimizationItemWidget::setItemLowerOper(std::string oper)
 {
   comboBoxLowerOp->setCurrentText (oper.c_str());
 }
