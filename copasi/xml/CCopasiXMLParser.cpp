@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/18 20:26:26 $
+   $Author: gauges $ 
+   $Date: 2005/02/18 13:01:46 $
    End CVS Header */
 
 /**
@@ -3157,6 +3157,8 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
   std::string name;
   std::string sType;
 
+  mLineNumber = -1;
+
   switch (mCurrentElement)
     {
     case PlotItem:
@@ -3172,6 +3174,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
+          mLineNumber = mParser.getCurrentLineNumber();
           if (!mpCurrentHandler)
             {
               mpCurrentHandler = new ParameterElement(mParser, mCommon);
@@ -3182,6 +3185,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
     case ParameterGroup:
       if (!strcmp(pszName, "ParameterGroup"))
         {
+          mLineNumber = mParser.getCurrentLineNumber();
           if (!mpCurrentHandler)
             {
               mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
@@ -3192,6 +3196,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
     case ListOfChannels:
       if (!strcmp(pszName, "ListOfChannels"))
         {
+          mLineNumber = mParser.getCurrentLineNumber();
           if (!mpCurrentHandler)
             {
               mpCurrentHandler = new ListOfChannelsElement(mParser, mCommon);
@@ -3215,6 +3220,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
 
 void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
 {
+  CCopasiParameter* p;
   switch (mCurrentElement)
     {
     case PlotItem:
@@ -3227,6 +3233,51 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
+          p = mCommon.pCurrentPlotItem->getParameter(mCommon.pCurrentParameter->getObjectName());
+          if (p)
+            {
+              switch (mCommon.pCurrentParameter->getType())
+                {
+                case CCopasiParameter::INT:
+                  p->setValue(*((C_INT32*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::UINT:
+                  p->setValue(*((unsigned C_INT32*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::DOUBLE:
+                  p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::UDOUBLE:
+                  p->setValue(*((C_FLOAT64*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::BOOL:
+                  p->setValue(*((bool*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::STRING:
+                  p->setValue(*((std::string*)mCommon.pCurrentParameter->getValue()));
+                  break;
+
+                case CCopasiParameter::GROUP:
+                case CCopasiParameter::INVALID:
+                  break;
+
+                default:
+                  fatalError();
+                  break;
+                }
+            }
+          else
+            {
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
+                                     mCommon.pCurrentParameter->getObjectName().c_str(),
+                                     mLineNumber);
+            }
+          pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotItem;
         }
       break;
