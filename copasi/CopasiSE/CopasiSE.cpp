@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/25 01:51:46 $
+   $Date: 2005/03/20 04:31:43 $
    End CVS Header */
 
 // Main
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
           return 0;
         }
 
-      CCopasiDataModel::Global->saveModel("");
+      //      CCopasiDataModel::Global->saveModel("");
     }
 
   //  catch (CCopasiException Exception)
