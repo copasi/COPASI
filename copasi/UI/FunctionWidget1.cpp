@@ -41,10 +41,6 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   //The Main layout used is the Vertical Layout
 
   QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  /*Frame1 = new QFrame(this, "Frame1");
-  Frame1->setFrameShape(QFrame::Box);
-     Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1); */
   Frame0 = new QFrame(this, "Frame0");
   Frame0->setFrameShape(QFrame::Box);
   Frame0->setFrameShadow(QFrame::Plain);
@@ -52,8 +48,6 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
 
   //This Frame had to be added because of the border around the frame
 
-  /*QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(10); */
   QVBoxLayout *vboxLayout0 = new QVBoxLayout(Frame0, 0);
   vboxLayout0->addSpacing(1);
   Frame1 = new QFrame(Frame0, "Frame1");
@@ -62,7 +56,6 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   vboxLayout1->addSpacing(10);
 
   // adding frames to each row
-  //Frame = new QFrame(Frame1, "Frame");
   Frame2 = new QFrame(Frame1, "Frame2");
   vboxLayout1->addWidget(Frame2);
   vboxLayout1->addSpacing(10);
@@ -186,6 +179,8 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
 
   /*** For Commit Button Clicked ***/
+  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
+  //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent
 }
 
 int FunctionWidget1::isName(QString setValue)
@@ -300,7 +295,7 @@ void FunctionWidget1::loadName(QString setValue)
       for (int j = 0; j < noOffunctParams; j++)
         {
           Table1->setText(j, 0, functParam[j]->getName().c_str());
-          Table1->setText(j, 1, CFunctionParameter::enumname[functParam[j]->getType()].c_str());
+          Table1->setText(j, 1, enumname[functParam[j]->getType()]);
           Table1->setText(j, 2, functParam[j]->getUsage().c_str());
         }
 
@@ -377,12 +372,16 @@ void FunctionWidget1::loadName(QString setValue)
 
 void FunctionWidget1::slotCancelButtonClicked()
 {
+  QMessageBox::information(this, "Function Widget1", "Cancel changes to Widget");
   emit signalCancelButtonClicked(*Function_Name);
 }
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
+  QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
+
   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
-  //Copasi->FunctionDB.save(*sFunctionDB);
+
+  Copasi->FunctionDB.save(*sFunctionDB);
   delete sFunctionDB;
 }
