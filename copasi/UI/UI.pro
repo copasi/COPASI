@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.26 $ $Author: shoops $ $Date: 2004/02/19 03:33:50 $  
+# $Revision: 1.27 $ $Author: shoops $ $Date: 2004/02/19 19:28:24 $  
 ######################################################################
 
 include(../common.pri)
@@ -60,12 +60,6 @@ contains(BUILD_OS, WIN32) {
           -lqwt
   
   release {
-    LIBS += -Wl,-lqt \
-            -Wl,-lXcursor \
-            -Wl,-lXft \
-            -Wl,-lfontconfig \
-            -Wl,-lpthread
-
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
   }
 
@@ -86,10 +80,24 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libplot.a
 }
 
+release {
+  contains(BUILD_OS, Linux) {   
+    LIBS += -Wl,-lqt \
+            -Wl,-lXcursor \
+            -Wl,-lXft \
+            -Wl,-lfontconfig \
+            -Wl,-lpthread
+  }
+
+  contains(BUILD_OS, SunOS) {
+    LIBS += -Wl,-lqt \
+            -Wl,-lfontconfig \
+            -Wl,-lpthread
+  }
+}
+
 contains(BUILD_OS, SunOS) {
   LIBS += -lICE -ldl
-  LIBS -= -Wl,-lXft \ 
-          -Wl,-lXcursor 
 }  
 
 # Input
