@@ -48,7 +48,6 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
         case CFunction::UserDefined:
           pFunction = new CKinFunction(Function, & configbuffer);
-
           break;
 
         default:
@@ -148,3 +147,51 @@ CFunction * CFunctionDB::findFunction(const string & functionName)
 
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
 { return mLoadedFunctions; }
+
+CCopasiVectorN < CFunction >
+CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
+                               const unsigned C_INT32 noProducts,
+                               const TriLogic reversible)
+{
+  CCopasiVectorN < CFunction > Functions;
+  unsigned C_INT32 i, imax = mLoadedFunctions.size();
+  CFunction *pFunction;
+  CUsageRange *UsageRange;
+  bool Suitable;
+
+  for (i = 0; i < imax; i++)
+    {
+      Suitable = TRUE;
+      pFunction = mLoadedFunctions[i];
+
+      if (reversible != TriUnspecified &&
+          reversible != pFunction->isReversible())
+        Suitable = FALSE;
+
+      try
+        {
+          UsageRange = pFunction->getUsageDescriptions()["SUBSTRATE"];
+
+          if (!UsageRange->isInRange(noSubstrates))
+            Suitable = FALSE;
+
+          UsageRange = pFunction->getUsageDescriptions()["PRODUCT"];
+
+          if (!UsageRange->isInRange(noProducts))
+            Suitable = FALSE;
+        }
+
+      catch (CCopasiException Exception)
+        {
+          if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+            throw Exception;
+          else
+            Suitable = FALSE;
+        }
+
+      if (Suitable)
+        Functions.add(pFunction);
+    }
+
+  return Functions;
+}

@@ -5,7 +5,6 @@
  * (C) Stefan Hoops 2001
  */
 
-
 #ifndef COPASI_CFunctionDB
 #define COPASI_CFunctionDB
 
@@ -15,103 +14,116 @@
 #include "CKinFunction.h"
 
 class CFunctionDB
-{
-  // Attributes
- private:
-  /**
-   *  Filename which contains the function database
-   */
-  string mFilename;
+  {
+    // Attributes
 
-  /**
-   *  Vector of the currently loaded functions
-   *  @supplierCardinality 0..*
-   */
-  CCopasiVectorNS < CFunction > mLoadedFunctions;
+  private:
+    /**
+     *  Filename which contains the function database
+     */
+    string mFilename;
 
-  // Operations
- public:
-  /**
-   *
-   */
-  CFunctionDB();
+    /**
+     *  Vector of the currently loaded functions
+     *  @supplierCardinality 0..*
+     */
+    CCopasiVectorNS < CFunction > mLoadedFunctions;
 
-  /**
-   *
-   */
-  void initialize();
+    // Operations
 
-  /**
-   *
-   */
-  ~CFunctionDB();
+  public:
+    /**
+     *
+     */
+    CFunctionDB();
 
-  /**
-   *
-   */
-  void cleanup();
+    /**
+     *
+     */
+    void initialize();
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return mFail
-   */
-  C_INT32 load(CReadConfig & configbuffer);
+    /**
+     *
+     */
+    ~CFunctionDB();
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return mFail
-   */
-  C_INT32 save(CWriteConfig & configbuffer);
+    /**
+     *
+     */
+    void cleanup();
 
-  /**
-   *
-   */
-  void setFilename(const string & filename);
-    
-  /**
-   *
-   */
-  string getFilename() const;
-    
-  /**
-   *  Load the function functionName from the database
-   *  @param "const string" &functionName
-   *  @return CKinFunction &
-   */
-  CFunction * dBLoad(const string & functionName);
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return mFail
+     */
+    C_INT32 load(CReadConfig & configbuffer);
 
-  /**
-   *  Add the function to the database
-   *  @param CKinFunction &function
-   *  @return C_INT32 Fail
-   */
-  void add(CFunction & function);
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     */
+    C_INT32 save(CWriteConfig & configbuffer);
 
-  /**
-   *  Delete the function functionName from the database
-   *  @param "const string" &functionName
-   *  @return C_INT32 Fail
-   */
-  void dBDelete(const string & functionName);
+    /**
+     *
+     */
+    void setFilename(const string & filename);
 
-  /**
-   *  Search for a function among the loaded functions. If no
-   *  function is found the database is searched and the apropriate 
-   *  function is loaded.
-   *  @param "const string" &functionName
-   *  @return CKinFunction &
-   */
-  CFunction * findFunction(const string & functionName);
+    /**
+     *
+     */
+    string getFilename() const;
 
-  /**
-   *  Retrieves the vector of loades functions.
-   *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
-   */
-  CCopasiVectorNS < CFunction > & loadedFunctions();
-};
+    /**
+     *  Load the function functionName from the database
+     *  @param "const string" &functionName
+     *  @return CKinFunction &
+     */
+    CFunction * dBLoad(const string & functionName);
+
+    /**
+     *  Add the function to the database
+     *  @param CKinFunction &function
+     *  @return C_INT32 Fail
+     */
+
+    void add
+      (CFunction & function);
+
+    /**
+     *  Delete the function functionName from the database
+     *  @param "const string" &functionName
+     *  @return C_INT32 Fail
+     */
+    void dBDelete(const string & functionName);
+
+    /**
+     *  Search for a function among the loaded functions. If no
+     *  function is found the database is searched and the apropriate 
+     *  function is loaded.
+     *  @param "const string" &functionName
+     *  @return CKinFunction &
+     */
+    CFunction * findFunction(const string & functionName);
+
+    /**
+     *  Retrieves the vector of loades functions.
+     *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
+     */
+    CCopasiVectorNS < CFunction > & loadedFunctions();
+
+    /**
+     *  Retrieves the vector of loades functions.
+     *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
+     */
+    CCopasiVectorN < CFunction >
+    suitableFunctions(const unsigned C_INT32 noSubstrates,
+                      const unsigned C_INT32 noProducts,
+                      const TriLogic reversible);
+  };
 
 #endif // COPASI_CFunctionDB

@@ -119,6 +119,9 @@ void CFunction::setReversible(const TriLogic & reversible)
 const TriLogic & CFunction::isReversible() const { return mReversible; }
 CFunctionParameters & CFunction::getParameters() { return mParameters; }
 
+CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
+{ return mUsageDescriptions; }
+
 unsigned C_INT32 CFunction::getParameterPosition(const string & name)
 { return mParameters[0] - mParameters[name]; }
 

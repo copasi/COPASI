@@ -14,121 +14,131 @@
 /**
  *
  */
+
 class CRange
-{
-  //Attributes
- public:
-  /**
-   *  Constants which may be used specifying a Range
-   */
-  enum Constants 
+  {
+    //Attributes
+
+  public:
+    /**
+     *  Constants which may be used specifying a Range
+     */
+    enum Constants
     {
-    Infinity = -1,
-    NoRange = 0
+      Infinity = -1,
+      NoRange = 0
     };
 
- private:
-  /**
-   *  Lower Bound
-   */
-  unsigned C_INT32 mLow;
-    
-  /**
-   *  Upper Bound
-   */
-  unsigned C_INT32 mHigh;
+  private:
+    /**
+     *  Lower Bound
+     */
+    unsigned C_INT32 mLow;
 
-  // Operations
- public:
-  /**
-   *  Default Constructor
-   */
-  CRange();
-    
-  /**
-   *  Copy Constructor
-   *  @param "const CRange" low
-   */
-  CRange(const CRange & src);
+    /**
+     *  Upper Bound
+     */
+    unsigned C_INT32 mHigh;
 
-  /**
-   *  Specific Constructor
-   *  @param "const unsigned C_INT32" low
-   *  @param "const unsigned C_INT32" high
-   */
-  CRange(const unsigned C_INT32 & low,
-         const unsigned C_INT32 & high = CRange::NoRange);
+    // Operations
 
-  /**
-   *  Destructor
-   */
-  virtual ~CRange();
+  public:
+    /**
+     *  Default Constructor
+     */
+    CRange();
 
-  /**
-   *  Cleanup
-   */
-  void cleanup();
+    /**
+     *  Copy Constructor
+     *  @param "const CRange" low
+     */
+    CRange(const CRange & src);
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object. 
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  virtual void load(CReadConfig & configbuffer, 
-                    CReadConfig::Mode mode = CReadConfig::NEXT);
+    /**
+     *  Specific Constructor
+     *  @param "const unsigned C_INT32" low
+     *  @param "const unsigned C_INT32" high
+     */
+    CRange(const unsigned C_INT32 & low,
+           const unsigned C_INT32 & high = CRange::NoRange);
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   * (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return Fail
-   */
-  virtual void save(CWriteConfig & configbuffer);
+    /**
+     *  Destructor
+     */
+    virtual ~CRange();
 
-  /**
-   *  Set the lower Bound
-   *  @param "const unsigned C_INT32" & low
-   */
-  virtual void setLow(const unsigned C_INT32& low);
-    
-  /**
-   *  Set the upper Bound
-   *  @param "const unsigned C_INT32" & high
-   */
-  virtual void setHigh(const unsigned C_INT32 & high);
+    /**
+     *  Cleanup
+     */
+    void cleanup();
 
-  /**
-   *  Set the range, i.e., lower and upper bound simultaniously
-   *  @param "const unsigned C_INT32" & low
-   *  @param "const unsigned C_INT32" & high = CRange::UNSPECIFIED
-   */
-  virtual void setRange(const unsigned C_INT32 & low,
-                        const unsigned C_INT32 & high = CRange::NoRange);
+    /**
+     *  Loads an object with data coming from a CReadConfig object. 
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    virtual void load(CReadConfig & configbuffer,
+                      CReadConfig::Mode mode = CReadConfig::NEXT);
 
-  /**
-   *  Retrieves the lower bound of the range
-   *  @return "const unsigned C_INT32 &" low
-   */
-  virtual const unsigned C_INT32& getLow() const;
-    
-  /**
-   *  Retrieves the upper bound of the range
-   *  @return "const unsigned C_INT32 &" high
-   */
-  virtual const unsigned C_INT32 & getHigh() const;
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     * (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    virtual void save(CWriteConfig & configbuffer);
 
-  /**
-   *  Checks whether we have a real range or just a low bound, i.e., a
-   *  fixed number.
-   */
-  virtual C_INT16 isRange() const;
+    /**
+     *  Set the lower Bound
+     *  @param "const unsigned C_INT32" & low
+     */
+    virtual void setLow(const unsigned C_INT32& low);
 
- private:
-  /**
-   *  Checks whether the values for low and high specify a valid range
-   */
-  virtual void checkRange() const;
-};
+    /**
+     *  Set the upper Bound
+     *  @param "const unsigned C_INT32" & high
+     */
+    virtual void setHigh(const unsigned C_INT32 & high);
+
+    /**
+     *  Set the range, i.e., lower and upper bound simultaniously
+     *  @param "const unsigned C_INT32" & low
+     *  @param "const unsigned C_INT32" & high = CRange::UNSPECIFIED
+     */
+    virtual void setRange(const unsigned C_INT32 & low,
+                          const unsigned C_INT32 & high = CRange::NoRange);
+
+    /**
+     *  Retrieves the lower bound of the range
+     *  @return "const unsigned C_INT32 &" low
+     */
+    virtual const unsigned C_INT32& getLow() const;
+
+    /**
+     *  Retrieves the upper bound of the range
+     *  @return "const unsigned C_INT32 &" high
+     */
+    virtual const unsigned C_INT32 & getHigh() const;
+
+    /**
+     *  Checks whether we have a real range or just a low bound, i.e., a
+     *  fixed number.
+     */
+    virtual const bool isRange() const;
+
+    /**
+     *  Checks whether the value is whithin the range
+     *  @param "const unsigned C_INT32 &" value
+     *  @return "const bool" isInRange
+     */
+    virtual const bool isInRange(const unsigned C_INT32 & value) const;
+
+  private:
+    /**
+     *  Checks whether the values for low and high specify a valid range
+     */
+    virtual void checkRange() const;
+  };
 
 #endif // COPASI_CRange
