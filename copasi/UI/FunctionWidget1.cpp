@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/17 15:04:44 $
+   $Date: 2004/06/17 15:08:27 $
    End CVS Header */
 
 /**********************************************************************
@@ -728,7 +728,126 @@ void FunctionWidget1::slotNewButtonClicked()
 }
 
 void FunctionWidget1::slotDeleteButtonClicked()
-{}
+{
+  //TODO: let the user confirm
+  const CCopasiVectorN < CReaction > * pReactions = NULL;
+  unsigned C_INT32 k, kmax, i = 0;
+  unsigned C_INT32 imax = 1;
+
+  if (Copasi->pModel)
+    {
+      pReactions = &Copasi->pModel->getReactions();
+      kmax = pReactions->size();
+    }
+
+  QString msg1 = "Cannot delete Function(s). ";
+  msg1.append("Following dependencies with listed Reaction(s) exist:\n");
+  QString msg2 = "Are you sure to delete listed Function(s)?\n";
+  int msg1Empty = 1;
+  int msg2Empty = 1;
+  //int *reacFound = new int[imax];
+  int reacFound;
+
+  //for (i = 0; i < imax; i++)
+  //  {
+  //reacFound[i] = 0;
+  reacFound = 0;
+
+  /* Check if Reactions are dependent on Functions to be deleted */
+  if (kmax > 0)
+    {
+      const CFunction* func =
+        dynamic_cast< CFunction * >(GlobalKeys.get(objKey));
+
+      for (k = 0; k < kmax; k++)
+        {
+          const CFunction *reacFunc = &((*pReactions)[k]->getFunction());
+          if (func == reacFunc)
+            {
+              //reacFound[i] = 1;
+              reacFound = 1;
+              msg1.append(FROM_UTF8((*pReactions)[k]->getObjectName()));
+              msg1.append(" ---> ");
+              //msg1.append(table->text(ToBeDeleted[i], 0));
+              msg1.append(FROM_UTF8(pFunction->getObjectName()));
+              msg1.append("\n");
+              msg1Empty = 0;
+              break;
+            }
+        }
+    }
+
+  /* Make a list of Functions on which no Reaction is dependent */
+  //if (reacFound[i] == 0)
+  if (reacFound == 0)
+    {
+      //msg2.append(table->text(ToBeDeleted[i], 0));
+      msg2.append(FROM_UTF8(pFunction->getObjectName()));
+      msg2.append("\n");
+      msg2Empty = 0;
+    }
+  //}
+
+  if (msg2Empty == 0)
+    {
+      int choice = QMessageBox::warning(this,
+                                        "CONFIRM DELETE",
+                                        msg2,
+                                        "Continue", "Cancel", 0, 0, 1);
+
+      /* Check if user chooses to deleted Functions */
+      switch (choice)
+        {
+        case 0:                   // Yes or Enter
+          {
+            /* Delete the Functions on which no Reactions are dependent */
+            //for (i = 0; i < imax; i++)
+            // {
+            //if (reacFound[i] == 0)
+            if (reacFound == 0)
+              {
+                unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
+                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+                //if ((index != NULL) && (size != NULL)) {
+                Copasi->pFunctionDB->removeFunction(objKey);
+                //Copasi->pFunctionDB->loadedFunctions()[min(index,20 - 1)];
+                // enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index,size-1,less<double>())]->getKey());
+                // two values from min should work but it doesn't asks for 3 values, sample API http://wwwasd.web.cern.ch/wwwasd/lhc++/RW/stdlibcr/min_9233.htm
+                enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 2)]->getKey());
+                //pListView->switchToOtherWidget(Copasi->pFunctionDB->loadedFunctions()[min(index,size - 1)]);
+                //table->removeRow(ToBeDeleted[i]);
+                //}
+              }
+            //}
+
+            /* Send notifications for Functions which have been deleted */
+            //for (i = 0; i < imax; i++)
+            //  {
+            //if (reacFound[i] == 0)
+            if (reacFound == 0) //changed from "=" to "=="
+              ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+
+            //}
+            break;
+          }
+        case 1:                   // No or Escape
+          break;
+        }
+    }
+
+  if (msg1Empty == 0)
+    {
+      QMessageBox::warning(this, "Sorry, Cannot Delete",
+                           msg1,
+                           "OK", 0, 0, 0, 1);
+
+      //int choice = QMessageBox::warning(this, "Sorry, Cannot Delete",
+      //                   msg1,
+      //                 "OK", "Navigate to Reaction Widget", 0, 0, 1);
+    }
+
+  //delete[] reacFound;
+}
 
 //************************  standard interface to copasi widgets *********************************
 
