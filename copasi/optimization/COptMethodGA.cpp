@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:30:28 $
+   $Date: 2005/03/30 18:43:57 $
    End CVS Header */
 
 // ga.cpp : Genetic algorithm optimisation.
@@ -17,7 +17,18 @@
 #include "randomGenerator/CRandom.h"
 
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::GeneticAlgorithm, pParent)
+    COptMethod(CCopasiMethod::GeneticAlgorithm, pParent),
+    mGenerations(0),
+    mPopulationSize(0),
+    mpRandom(NULL),
+    mVariableSize(0),
+    mIndividual(0),
+    mCrossOverFalse(0),
+    mCrossOver(0),
+    mValue(0),
+    mShuffle(0),
+    mWins(0),
+    mMutationVarians(0.1)
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
@@ -27,20 +38,33 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
                            const CCopasiContainer * pParent):
-    COptMethod(src, pParent)
+    COptMethod(src, pParent),
+    mGenerations(0),
+    mPopulationSize(0),
+    mpRandom(NULL),
+    mVariableSize(0),
+    mIndividual(0),
+    mCrossOverFalse(0),
+    mCrossOver(0),
+    mValue(0),
+    mShuffle(0),
+    mWins(0),
+    mMutationVarians(0.1)
 {}
 
 COptMethodGA::~COptMethodGA()
-{}
+{cleanup();}
 
 // evaluate the fitness of one individual
 C_FLOAT64 COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
 {
   unsigned C_INT32 j;
 
+  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
+
   // set the paramter values
-  for (j = 0; j < mVariableSize; j++)
-    (*(*mpSetCalculateVariable)[j])(individual[j]);
+  for (j = 0; j < mVariableSize; j++, ++itMethod)
+    (**itMethod)(individual[j]);
 
   // check whether the parametric constraints are fulfilled
   if (!mpOptProblem->checkParametricConstraints()) return DBL_MAX;
@@ -62,14 +86,6 @@ C_FLOAT64 COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
   return mpOptProblem->getCalculateValue();
 }
 
-// copy individual from to position to
-bool COptMethodGA::copy(unsigned C_INT32 from, unsigned C_INT32 to)
-{
-  *mIndividual[to] = *mIndividual[from];
-
-  return true;
-}
-
 bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
 {
   CVector< C_FLOAT64 > * pTmp = mIndividual[to];
@@ -88,16 +104,15 @@ bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
 }
 
 //mutate one individual
-bool COptMethodGA::mutate(unsigned C_INT32 index)
+bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
 {
-  CVector< C_FLOAT64 > & Individual = *mIndividual[index];
   unsigned C_INT32 j;
 
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
     {
       COptItem & OptItem = *(*mpOptItem)[j];
-      C_FLOAT64 & mut = Individual[j];
+      C_FLOAT64 & mut = individual[j];
 
       // calculate the mutatated parameter
       mut *= mpRandom->getRandomNormal(1, mMutationVarians);
@@ -118,9 +133,6 @@ bool COptMethodGA::mutate(unsigned C_INT32 index)
           break;
         }
     }
-
-  // evaluate the fitness
-  mValue[index] = evaluate(Individual);
 
   return true;
 }
@@ -211,11 +223,14 @@ bool COptMethodGA::replicate()
 
   // check if there is one left over and just copy it
   if (mPopulationSize % 2 > 0)
-    copy(mPopulationSize - 1, 2 * mPopulationSize - 1);
+    *mIndividual[2 * mPopulationSize - 1] = *mIndividual[mPopulationSize - 1];
 
   // mutate the offspring
-  for (i = 0; i < mPopulationSize; i++)
-    mutate(mPopulationSize + i);
+  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
+    {
+      mutate(*mIndividual[i]);
+      mValue[i] = evaluate(*mIndividual[i]);
+    }
 
   return true;
 }
@@ -361,8 +376,52 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
         }
     }
 
-  // get the index of the fittest
-  best = fittest();
+  return true;
+}
+
+bool COptMethodGA::initialize()
+{
+  unsigned C_INT32 i;
+
+  if (!COptMethod::initialize()) return false;
+
+  mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
+  mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
+  mpRandom =
+    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator"),
+                             * (unsigned C_INT32 *) getValue("Seed"));
+
+  mVariableSize = mpOptItem->size();
+
+  mIndividual.resize(mPopulationSize);
+  for (i = 0; i < mPopulationSize; i++)
+    mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
+
+  mCrossOverFalse.resize(mVariableSize);
+  mCrossOverFalse = false;
+  mCrossOver.resize(mVariableSize);
+
+  mValue.resize(mPopulationSize);
+
+  mShuffle.resize(mPopulationSize);
+  for (i = 0; i < mPopulationSize; i++)
+    mShuffle[i] = i;
+
+  mWins.resize(mPopulationSize);
+
+  // initialise the variance for mutations
+  mMutationVarians = 0.1;
+
+  return true;
+}
+
+bool COptMethodGA::cleanup()
+{
+  unsigned C_INT32 i;
+
+  pdelete(mpRandom);
+  for (i = 0; i < mPopulationSize; i++)
+    pdelete(mIndividual[i]);
 
   return true;
 }
@@ -371,16 +430,17 @@ bool COptMethodGA::optimise()
 {
   bool success = true;
 
+  if (!initialize()) return false;
+
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
   unsigned C_INT32 Stalled, Stalled10, Stalled30, Stalled50;
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
 
   unsigned C_INT32 i;
-  double bx;
 
-  // initialise the variance for mutations
-  mMutationVarians = 0.1;
+  C_FLOAT64 BestValue;
+  unsigned C_INT32 BestIndex;
 
   // initialise the population
   // first individual is the initial guess
@@ -402,35 +462,16 @@ bool COptMethodGA::optimise()
   creation(1, mPopulationSize);
   // initialise the update register
   // get the index of the fittest
-  best = fittest();
+  BestIndex = fittest();
   // and store that value
-  bx = mValue[best];
+  BestValue = mValue[BestIndex];
+
+  mpOptProblem->setSolutionValue(BestValue);
+  mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
 
   // ITERATE FOR gener GENERATIONS
   for (i = 0; i < mGenerations; i++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
-      // replicate the individuals
-      if (!replicate())
-        {
-          success = false;
-          break;
-        }
-
-      // select the most fit
-      if (!select())
-        {
-          success = false;
-          break;
-        }
-
-      // get the index of the fittest
-      best = fittest();
-      if (mValue[best] < bx)
-        {
-          Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
-          bx = mValue[best];
-        }
-
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
@@ -459,9 +500,36 @@ bool COptMethodGA::optimise()
             }
           Stalled10 = 0;
         }
+      // replicate the individuals
+      else if (!replicate())
+        {
+          success = false;
+          break;
+        }
+
+      // select the most fit
+      if (!select())
+        {
+          success = false;
+          break;
+        }
+
+      // get the index of the fittest
+      BestIndex = fittest();
+      if (mValue[BestIndex] < BestValue)
+        {
+          Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
+          BestValue = mValue[BestIndex];
+
+          mpOptProblem->setSolutionValue(BestValue);
+          mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
+        }
+
       // signal another generation
       //  if(callback != NULL) callback(mValue[best]);
     }
+
+  cleanup();
 
   return success;
 }

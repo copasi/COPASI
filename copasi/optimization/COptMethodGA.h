@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:30:28 $
+   $Date: 2005/03/30 18:43:57 $
    End CVS Header */
 
 /**
@@ -17,9 +17,6 @@
 #include "utilities/CVector.h"
 
 class CRandom;
-
-//  this is an abstract class that contains many virtual functions
-// without definitions
 
 class COptMethodGA : public COptMethod
   {
@@ -59,13 +56,13 @@ class COptMethodGA : public COptMethod
      * Initialize arrays and pointer.
      * @return bool success
      */
-    bool initialize();
+    virtual bool initialize();
 
     /**
      * Cleanup arrays and pointers.
      * @return bool success
      */
-    bool cleanup();
+    virtual bool cleanup();
 
     /**
      * Evaluate the fitness of one individual
@@ -73,14 +70,6 @@ class COptMethodGA : public COptMethod
      * @return C_FLOAT64 fitness
      */
     C_FLOAT64 evaluate(const CVector< C_FLOAT64 > & individual);
-
-    /**
-     * Ccopy individual src to position target
-     * @param unsigned C_INT32 from
-     * @param unsigned C_INT32 to
-     * @return bool success
-     */
-    bool copy(unsigned C_INT32 from, unsigned C_INT32 to);
 
     /**
      * Swap individuals from and to
@@ -92,10 +81,10 @@ class COptMethodGA : public COptMethod
 
     /**
      * Mutate one individual
-     * @param unsigned C_INT32 index
+     * @param CVector< C_FLOAT64 > & individual
      * @return bool success
      */
-    bool mutate(unsigned C_INT32 index);
+    bool mutate(CVector< C_FLOAT64 > & individual);
 
     /**
      * @param const CVector< C_FLOAT64 > & parent1
@@ -110,6 +99,7 @@ class COptMethodGA : public COptMethod
 
     /**
      * Shuffle the parents for breading
+     * @return bool success
      */
     bool shuffle();
 
@@ -141,36 +131,60 @@ class COptMethodGA : public COptMethod
 
     // Attributes
   private:
-    // number of generations
+    /**
+     * number of generations
+     */
     unsigned C_INT32 mGenerations;
 
-    // size of the population
+    /**
+     * size of the population
+     */
     unsigned C_INT32 mPopulationSize;
 
+    /**
+     * a pointer to the randomnumber generator.
+     */
     CRandom * mpRandom;
 
-    // number of parameters
+    /**
+     * number of parameters
+     */
     unsigned C_INT32 mVariableSize;
 
-    // for array of individuals w/ candidate values for the parameters
+    /**
+     * for array of individuals w/ candidate values for the parameters
+     */
     std::vector< CVector < C_FLOAT64 > * > mIndividual;
 
+    /**
+     * Vector used to initialize the crossover point to false
+     */
     CVector< bool > mCrossOverFalse;
+
+    /**
+     * Vector of crossover points.
+     */
     CVector< bool > mCrossOver;
 
-    // array of values of objective function f/ individuals
+    /**
+     * array of values of objective function f/ individuals
+     */
     CVector< C_FLOAT64 > mValue;
 
-    // indexes for shuffling the population
+    /**
+     * indexes for shuffling the population
+     */
     CVector< unsigned C_INT32 > mShuffle;
 
-    // number of wins of each individual in the tournament
+    /**
+     * number of wins of each individual in the tournament
+     */
     CVector< unsigned C_INT32 > mWins;
 
-    // variance for mutations
+    /**
+     * variance for mutations
+     */
     C_FLOAT64 mMutationVarians;
-
-    unsigned int best;   // index of the best individual
   };
 
 #endif  // COPASI_COptMethodGA
