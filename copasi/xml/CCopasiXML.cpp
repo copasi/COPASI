@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/06/10 19:35:20 $
+   $Date: 2004/06/10 20:59:35 $
    End CVS Header */
 
 /**
@@ -619,13 +619,48 @@ bool CCopasiXML::saveParameterGroup(const std::vector< CCopasiParameter * > & gr
 }
 
 //Mrinmayee
+bool CCopasiXML::saveReportSection(const std::string & name,
+                                   const std::vector <CCopasiObjectName> & section)
+{
+  CXMLAttributeList Attributes;
+  Attributes.add("NoName", "");
+
+  unsigned C_INT32 j, jmax = section.size();
+
+  if (jmax)
+    {
+      startSaveElement(name);
+      for (j = 0; j < jmax; j++)
+        {
+          if (section[j].getObjectType() == "html")
+            {
+              //Write in Text
+              startSaveElement("html");
+              Attributes.set(0, "xmlns", "http://www.w3.org/1999/xhtml");
+              startSaveElement("body", Attributes);
+              saveData(section[j].getObjectName()); //TODO check
+              endSaveElement("body");
+              endSaveElement("html");
+            }
+          else
+            {
+              //Write in Object
+              Attributes.set(0, "cn", section[j]);
+              saveElement("Object", Attributes);
+            }
+        }
+      endSaveElement(name);
+    }
+
+  return true;
+}
 
 bool CCopasiXML::saveReportList()
 {
   bool success = true;
   if (!haveReportList()) return success;
 
-  unsigned C_INT32 i, j, imax = mpReportList->size();
+  unsigned C_INT32 i, imax = mpReportList->size();
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
@@ -637,22 +672,6 @@ bool CCopasiXML::saveReportList()
     {
       pReport = (*mpReportList)[i];
 
-      //      if (pReport->isTable())
-      //        {
-      //Table is not yet implemented
-      /*Attributes.erase();
-        Attributes.add("seperator",);
-        Attributes.add("printTitle",);
-        startSaveElement("Table",Attributes);
-        // *** Add stuff here
-        Attributes.erase();
-        Attributes.add("cn",);
-        startSaveElement("Object",Attributes);
-        endSaveElement("Object");
-        endSaveElement("Table");*/ 
-      //}
-      //      else
-      //        {
       Attributes.erase();
       Attributes.add("key", pReport->getKey());
       Attributes.add("name", pReport->getObjectName());
@@ -667,88 +686,33 @@ bool CCopasiXML::saveReportList()
       endSaveElement("body");
       endSaveElement("Comment");
 
-      std::vector <CCopasiObjectName> *header = pReport->getHeaderAddr();
-      if (header->size())
+      if (pReport->isTable())
         {
-          startSaveElement("Header");
-          for (j = 0; j < header->size(); j++)
-            {
-              if ((*header)[j].getObjectType() == "html")
-                {
-                  //Write in Text
-                  startSaveElement("html");
-                  Attributes.erase();
-                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-                  startSaveElement("body", Attributes);
-                  saveData((*header)[j].getObjectName());
-                  endSaveElement("body");
-                  endSaveElement("html");
-                }
-              else
-                {
-                  //Write in Object
-                  Attributes.erase();
-                  Attributes.add("cn", (*header)[j]);
-                  saveElement("Object", Attributes);
-                }
-            }
-          endSaveElement("Header");
-        }
+          Attributes.erase();
+          Attributes.add("seperator", pReport->getSeperator().getStaticString());
+          Attributes.add("printTitle", pReport->getTitle());
+          startSaveElement("Table", Attributes);
 
-      std::vector <CCopasiObjectName> *body = pReport->getBodyAddr();
-      if (body->size())
-        {
-          startSaveElement("Body");
-          for (j = 0; j < body->size(); j++)
-            {
-              if ((*body)[j].getObjectType() == "html")
-                {
-                  //Write in Text
-                  startSaveElement("html");
-                  Attributes.erase();
-                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-                  startSaveElement("body", Attributes);
-                  saveData((*body)[j].getObjectName()); //TODO check
-                  endSaveElement("body");
-                  endSaveElement("html");
-                }
-              else
-                {
-                  //Write in Object
-                  Attributes.erase();
-                  Attributes.add("cn", (*body)[j]);
-                  saveElement("Object", Attributes);
-                }
-            }
-          endSaveElement("Body");
-        }
+          const std::vector <CCopasiObjectName> & Table = * pReport->getBodyAddr();
+          unsigned C_INT32 j, jmax = Table.size();
 
-      std::vector <CCopasiObjectName> *footer = pReport->getFooterAddr();
-      if (footer->size())
-        {
-          startSaveElement("Footer");
-          for (j = 0; j < footer->size(); j++)
+          Attributes.erase();
+          Attributes.add("cn", "");
+
+          for (j = 0; j < jmax; j += 2)
             {
-              if ((*footer)[j].getObjectType() == "html")
-                {
-                  //Write in Text
-                  startSaveElement("html");
-                  Attributes.erase();
-                  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-                  startSaveElement("body", Attributes);
-                  saveData((*footer)[j].getObjectName()); //TODO check
-                  endSaveElement("body");
-                  endSaveElement("html");
-                }
-              else
-                {
-                  //Write in Object
-                  Attributes.erase();
-                  Attributes.add("cn", (*footer)[j]);
-                  saveElement("Object", Attributes);
-                }
+              //Write in Object
+              Attributes.setValue(0, Table[j]);
+              saveElement("Object", Attributes);
             }
-          endSaveElement("Footer");
+
+          endSaveElement("Table");
+        }
+      else
+        {
+          saveReportSection("Header", * pReport->getHeaderAddr());
+          saveReportSection("Body", * pReport->getBodyAddr());
+          saveReportSection("Footer", * pReport->getFooterAddr());
         }
 
       endSaveElement("Report");
