@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/20 21:29:58 $
+   $Author: ssahle $ 
+   $Date: 2004/11/26 15:43:06 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -11,6 +11,8 @@
 
 #include <iostream>
 #include <assert.h>
+
+#include "copasi.h"
 
 /**
  * Template class CMatrix < class CType >
