@@ -19,7 +19,7 @@ class CMatrix
     typedef CType elementType;
 
     // Attributes
-  private:
+  protected:
     /**
      * Number of rows in the matrix.
      */
@@ -70,7 +70,7 @@ class CMatrix
     /**
      * Destructor.
      */
-    ~CMatrix()
+    virtual ~CMatrix()
     {
       if (mArray)
         delete [] mArray;
@@ -80,26 +80,26 @@ class CMatrix
      * The number of elements stored in the matrix.
      * @return unsigned C_INT32 size
      */
-    unsigned C_INT32 size() const {return mRows * mCols;}
+    virtual unsigned C_INT32 size() const {return mRows * mCols;}
 
     /**
      * The number of rows of the matrix.
      * @return unsigned C_INT32 rows
      */
-    unsigned C_INT32 numRows() const {return mRows;}
+    virtual unsigned C_INT32 numRows() const {return mRows;}
 
     /**
      * The number of columns of the matrix
      * @return unsigned C_INT32 cols
      */
-    unsigned C_INT32 numCols() const {return mCols;}
+    virtual unsigned C_INT32 numCols() const {return mCols;}
 
     /**
      * Resize the matrix. The previous content is lost
      * @param unsigned C_INT32 rows
      * @param unsigned C_INT32 cols
      */
-    void resize(unsigned C_INT32 rows, unsigned C_INT32 cols)
+    virtual void resize(unsigned C_INT32 rows, unsigned C_INT32 cols)
     {
       if (rows * cols != mRows * mCols)
         {
@@ -121,7 +121,7 @@ class CMatrix
      * @param const CMatrix <CType> & rhs
      * @return CMatrix <CType> & lhs
      */
-    CMatrix <CType> & operator = (const CMatrix <CType> & rhs)
+    virtual CMatrix <CType> & operator = (const CMatrix <CType> & rhs)
     {
       if (mRows != rhs.mRows || mCols != rhs.mCols)
         resize(rhs.mRows, rhs.mCols);
@@ -136,7 +136,7 @@ class CMatrix
      * @param unsigned C_INT32 row
      * @return CType * row
      */
-    inline CType * operator[](unsigned C_INT32 row)
+    virtual inline CType * operator[](unsigned C_INT32 row)
   {return mArray + row * mCols;}
 
     /**
@@ -144,7 +144,7 @@ class CMatrix
      * @param unsigned C_INT32 row
      * @return const CType * row
      */
-    inline const CType * operator[](unsigned C_INT32 row) const
+    virtual inline const CType * operator[](unsigned C_INT32 row) const
     {return mArray + row * mCols;}
 
     /**
@@ -153,8 +153,8 @@ class CMatrix
      * @param const unsigned C_INT32 & col
      * @return const elementType & element
      */
-    inline elementType & operator()(const unsigned C_INT32 & row,
-                                    const unsigned C_INT32 & col)
+    virtual inline elementType & operator()(const unsigned C_INT32 & row,
+                                            const unsigned C_INT32 & col)
     {return *(mArray + row * mCols + col);}
 
     /**
@@ -163,8 +163,8 @@ class CMatrix
      * @param const unsigned C_INT32 & col
      * @return const elementType & element
      */
-    inline const elementType & operator()(const unsigned C_INT32 & row,
-                                          const unsigned C_INT32 & col) const
+    virtual inline const elementType & operator()(const unsigned C_INT32 & row,
+        const unsigned C_INT32 & col) const
     {return *(mArray + row * mCols + col);}
 
     /**
@@ -172,20 +172,20 @@ class CMatrix
      * for interfacing with clapack routines.
      * @return CType * array
      */
-    CType * array() {return mArray;}
+    virtual CType * array() {return mArray;}
 
     /**
      * Retrieve the array of the matrix elements. This is suitable
      * for interfacing with clapack routines.
      * @return const CType * array
      */
-    const CType * array() const {return mArray;}
+    virtual const CType * array() const {return mArray;}
 
     /**
      * Output stream operator
      * @param ostream & os
      * @param const CMatrix< CType > & A
-     * @retrun ostream & os
+     * @return ostream & os
      */
     friend ostream &operator<<(ostream &os, const CMatrix< CType > & A)
     {
@@ -318,7 +318,7 @@ class CUpperTriangularView
        * Output stream operator
        * @param ostream & os
        * @param const CUpperTriangularView< Matrix > & A
-       * @retrun ostream & os
+       * @return ostream & os
        */
       friend ostream &operator<<(ostream &os,
                                  const CUpperTriangularView< Matrix > & A)
@@ -386,7 +386,7 @@ class CLowerTriangularView
        * Output stream operator
        * @param ostream & os
        * @param const CLowerTriangularView< Matrix > & A
-       * @retrun ostream & os
+       * @return ostream & os
        */
       friend ostream &operator<<(ostream &os,
                                  const CLowerTriangularView< Matrix > & A)
@@ -460,7 +460,7 @@ class CUnitUpperTriangularView
          * Output stream operator
          * @param ostream & os
          * @param const CUnitUpperTriangularView< Matrix > & A
-         * @retrun ostream & os
+         * @return ostream & os
          */
         friend ostream &operator<<(ostream &os,
                                    const CUnitUpperTriangularView< Matrix > & A)
@@ -534,7 +534,7 @@ class CUnitLowerTriangularView
          * Output stream operator
          * @param ostream & os
          * @param const CUnitLowerTriangularView< Matrix > & A
-         * @retrun ostream & os
+         * @return ostream & os
          */
         friend ostream &operator<<(ostream &os,
                                    const CUnitLowerTriangularView< Matrix > & A)
@@ -593,7 +593,7 @@ class CTransposeView
      * Output stream operator
      * @param ostream & os
      * @param const CTransposeView< Matrix > & A
-     * @retrun ostream & os
+     * @return ostream & os
      */
     friend ostream &operator<<(ostream &os,
                                const CTransposeView< Matrix > & A)
