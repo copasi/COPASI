@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Date: 2003/11/11 20:47:16 $
    End CVS Header */
 
 /***********************************************************************
@@ -343,37 +343,41 @@ void MetabolitesWidget::slotBtnCancelClicked()
 
 void MetabolitesWidget::slotBtnDeleteClicked()
 {
-  int choice = QMessageBox::warning(this, "Confirm Delete",
-                                    "Delete Selected Rows?\n"
-                                    "Only Fully Selected Rows will be deleted." ,
-                                    "Yes", "No", 0, 0, 1);
-  switch (choice)
+  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
     {
-    case 0:  // Yes or Enter
-      {
-        int j = table->currentRow();
-        if (table->isRowSelected(j, true)) //True for Completely selected rows.
-          {
-            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+      int j = table->currentRow();
+      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+        {
+          int choice = QMessageBox::warning(this, "Confirm Delete",
+                                            "Delete Selected Rows?",
+                                            //"Only Fully Selected Rows will be deleted." ,
+                                            "Yes", "No", 0, 0, 1);
+          switch (choice)
+            {
+            case 0:   // Yes or Enter
               {
                 QString name(table->text(j, 0));
 
-                ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, mKeys[j]);
+                QString EffectedReactions = dataModel->getModel()->removeMetaboliteEffected(mKeys[j]);
 
-                table->removeSelectedRows(true);
+                if (EffectedReactions)
+                  choice = QMessageBox::warning(this, "Confirm Delete",
+                                                EffectedReactions,
+                                                "Yes", "No", 0, 0, 1);
 
-                CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
-                CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
-                unsigned C_INT32 i = objects.getIndex(metab);
-                objects.remove(i);
+                if (choice == 0)
+                  {
+                    table->removeSelectedRows(true);
+                    dataModel->getModel()->removeMetabolite(mKeys[j]);
+                    ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, mKeys[j]);
+                  }
+
+                break;
               }
-          }
-        break;
-      }
-    case 1:  // No or Escape
-      {
-        break;
-      }
+            case 1:   // No or Escape
+              break;
+            }
+        }
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Date: 2003/11/11 20:47:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -222,34 +222,56 @@ void CompartmentsWidget::slotBtnCancelClicked()
 
 void CompartmentsWidget::slotBtnDeleteClicked()
 {
-  int choice = QMessageBox::warning(this, "Confirm Delete",
-                                    "Delete Selected Rows?\n"
-                                    "Only Fully Selected Rows will be deleted." ,
-                                    "Yes", "No", 0, 0, 1);
-  switch (choice)
+  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
     {
-    case 0:  // Yes or Enter
-      {
-        int j = table->currentRow();
-        if (table->isRowSelected(j, true)) //True for Completely selected rows.
-          {
-            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+      int j = table->currentRow();
+      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+        {
+          int choice = QMessageBox::warning(this, "Confirm Delete",
+                                            "Delete Selected Rows?",
+                                            //"Only Fully Selected Rows will be deleted." ,
+                                            "Yes", "No", 0, 0, 1);
+          switch (choice)
+            {
+            case 0:   // Yes or Enter
               {
                 QString name(table->text(j, 0));
 
-                ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[j]);
+                CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
+                const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
+                C_INT32 noOfMetabs = Metabs.size();
 
-                table->removeSelectedRows(true);
+                if (noOfMetabs > 0)
+                  {
+                    QString listofmetabs = "Follwing Metabolites will be effected:\n";
 
-                dataModel->getModel()->removeCompartment(name.latin1());
+                    listofmetabs.append(Metabs[0]->getName().c_str());
+                    for (int i = 1; i < noOfMetabs; i++)
+                      {
+                        listofmetabs.append(", ");
+                        listofmetabs.append(Metabs[i]->getName().c_str());
+                      }
+
+                    choice = QMessageBox::warning(this, "Confirm Delete",
+                                                  listofmetabs,
+                                                  "Yes", "No", 0, 0, 1);
+                  }
+
+                if (choice == 0)
+                  {
+                    table->removeSelectedRows(true);
+                    dataModel->getModel()->removeCompartment(name.latin1());
+                    ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[j]);
+                  }
+
+                break;
               }
-          }
-        break;
-      }
-    case 1:  // No or Escape
-      {
-        break;
-      }
+            case 1:   // No or Escape
+              {
+                break;
+              }
+            }
+        }
     }
 }
 

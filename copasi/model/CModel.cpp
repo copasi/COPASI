@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 20:47:22 $
+   $Author: gasingh $ 
+   $Date: 2003/11/11 20:47:17 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -11,9 +11,8 @@
 // model.cpp : interface of the CModel class
 //
 /////////////////////////////////////////////////////////////////////////////
-
-#include "copasi.h"
-
+#include "copasi.h" 
+//#include "C:/Qt/3.2.0/include/qstring.h"
 #include <string>
 #include <vector>
 #include <limits.h>
@@ -1707,6 +1706,85 @@ bool CModel::addMetabolite(const std::string & name,
   return mMetabolites.add(pMetab);
 }
 
+QString CModel::removeMetaboliteEffected(const std::string & key)
+{
+  QString EffectedReactions = "Following Reactions will be effected:\n";
+  int reactionFound = 0;
+  const CCopasiVectorN <CReaction> & Reactions = getReactions();
+  C_INT32 j, reactionChecked, jmax = Reactions.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      reactionChecked = 0;
+      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
+      C_INT32 i, imax = Substrates.size();
+      for (i = 0; i < imax; i++)
+        {
+          if (key == Substrates[i]->getMetaboliteKey())
+            {
+              EffectedReactions.append(Reactions[j]->getName().c_str());
+              EffectedReactions.append(", ");
+              reactionFound = 1;
+              reactionChecked = 1;
+              break;
+            }
+        }
+
+      if (reactionChecked == 0)
+        {
+          const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
+          imax = Products.size();
+          for (i = 0; i < imax; i++)
+            if (key == Products[i]->getMetaboliteKey())
+              {
+                EffectedReactions.append(Reactions[j]->getName().c_str());
+                EffectedReactions.append(", ");
+                reactionFound = 1;
+                reactionChecked = 1;
+                break;
+              }
+        }
+
+      if (reactionChecked == 0)
+        {
+          const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
+          imax = Modifiers.size();
+          for (i = 0; i < imax; i++)
+            if (key == Modifiers[i]->getMetaboliteKey())
+              {
+                EffectedReactions.append(Reactions[j]->getName().c_str());
+                EffectedReactions.append(", ");
+                reactionFound = 1;
+                reactionChecked = 1;
+                break;
+              }
+        }
+    }
+
+  if (reactionFound == 1)
+    {
+      EffectedReactions.remove(EffectedReactions.length() - 2, 2);
+      return EffectedReactions;
+    }
+  else
+    return NULL;
+}
+
+bool CModel::removeMetabolite(const std::string & key)
+{
+  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
+
+  if (!metab)
+    return false;
+
+  //Check if Reaction with that name exists
+  if (mMetabolites.getIndex(metab) == C_INVALID_INDEX)
+    return false;
+
+  mMetabolites.remove(mMetabolites.getIndex(metab));
+  return true;
+}
+
 bool CModel::addCompartment(const std::string & name,
                             const C_FLOAT64 & volume)
 {
@@ -1760,6 +1838,16 @@ bool CModel::addReaction(const CReaction & reaction)
 
   mSteps.add(reaction);
   mSteps[reaction.getName()]->compile(mCompartments);
+  return true;
+}
+
+bool CModel::removeReaction(const std::string & name)
+{
+  //Check if Reaction with that name exists
+  if (mSteps.getIndex(name) == C_INVALID_INDEX)
+    return false;
+
+  mSteps.remove(name);
   return true;
 }
 
