@@ -289,6 +289,27 @@
             <xs:field xpath="@name"/>
           </xs:unique>
         </xs:element>
+        <xs:element name="ListOfPlots" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PlotSpecification" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:extension base="cPLOTITEM">
+                    <xs:sequence>
+                      <xs:element name="ListOfPlotItems" minOccurs="1">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="PlotItem" type="cPLOTITEM" minOccurs="1" maxOccurs="unbounded"/>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>      I   
+                    </xs:sequence>  
+                  </xs:extension>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>    
       </xs:sequence>
     </xs:complexType>
     <xs:unique name="ModelStateVariableReference">
@@ -472,6 +493,35 @@
     <xs:attribute name="target" type="xs:anyURI" use="required"/>
     <xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
   </xs:complexType>
+  <xs:complexType name="cPLOTITEM">
+    <xs:extension base="cPARAMETER_LIST">
+      <xs:sequence>
+        <xs:element name="ListOfChannels" minOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ChannelSpec" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:extension base="cOBJECT">
+                    <xs:attribute name="min" type="xs:double" use="optional"/>
+                    <xs:attribute name="max" type="xs:double" use="optional"/>
+                    <xs:attribute name="autoscale" type="xs:boolean" use="optional" default="true"/>
+                  </xs:extension>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="unset"/>
+          <xs:enumeration value="curve2d"/>
+          <xs:enumeration value="plot2d"/>
+          <xs:enumeration value="simWiz"/>
+        </xs:restriction>
+      </xs:attribute> 
+    </xs:extension>  
+  </xs:complexType> 
   <xs:simpleType name="cKEY" id="copasi.KEY">
     <xs:restriction base="xs:ID">
       <xs:pattern value="[_a-zA-Z]+_\d+"/>
