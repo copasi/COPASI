@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/12/03 15:21:34 $
+   $Author: shoops $ 
+   $Date: 2004/01/08 20:16:51 $
    End CVS Header */
 
 /**********************************************************************
@@ -405,10 +405,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                          // The user clicked the Retry again button or pressed Enter
+            case 0:                           // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                          // The user clicked the Quit or pressed Escape
+            case 1:                           // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -934,7 +934,9 @@ bool FunctionWidget1::leave()
 bool FunctionWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  CFunction* func = dynamic_cast<CFunction*>(CKeyFactory::get(key));
+
+  // (CFunction*)(CCopasiContainer*)CKeyFactory::get(key);
   //TODO: check if it really is a compartment
 
   if (func) return loadFromFunction(func);
