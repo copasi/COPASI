@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 07:37:09 $
+   $Date: 2004/09/20 07:40:15 $
    End CVS Header */
 
 /****************************************************************************
@@ -119,11 +119,6 @@ class ListViews : public QSplitter
     bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
     static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
     static bool updateAllListviews(C_INT32 id);
-
-    //void deleteAllMyChildrens(QListViewItem* me);
-    //void addItem(QListViewItem* parent, Folder* child);
-    //void addItem(QListView* parent, Folder* child);
-    //void addItem(Node<Folder>* child);
 
     //the widgets
     QListView *folders;
