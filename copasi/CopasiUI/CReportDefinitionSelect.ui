@@ -59,7 +59,7 @@
                 </widget>
                 <widget class="QComboBox" row="0" column="1">
                     <property name="name">
-                        <cstring>comboBox9</cstring>
+                        <cstring>reportDefinitionNameList</cstring>
                     </property>
                 </widget>
                 <widget class="QPushButton" row="0" column="2">
@@ -110,9 +110,10 @@
     </grid>
 </widget>
 <tabstops>
-    <tabstop>comboBox9</tabstop>
+    <tabstop>reportDefinitionNameList</tabstop>
     <tabstop>jumpButton</tabstop>
     <tabstop>targetEdit</tabstop>
+    <tabstop>browseButton</tabstop>
     <tabstop>appendChecked</tabstop>
     <tabstop>confirmButton</tabstop>
     <tabstop>cancelButton</tabstop>
