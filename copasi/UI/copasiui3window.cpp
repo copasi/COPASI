@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/02/25 20:31:42 $
+   $Date: 2004/03/01 07:10:25 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -269,6 +269,30 @@ void CopasiUI3Window::slotFileSave()
   else if (dataModel) dataModel->saveModel(gpsFile.latin1());
 }
 
+void CopasiUI3Window::slotClose()
+{
+  int choice = 0;
+
+  if (gpsFile)
+    {
+      if (gpsFile != "untitled.gps")
+        {
+          choice =
+            QMessageBox::warning(this,
+                                 "Confirm File Changes Update",
+                                 "Do you want to save the changes you made to previous model ?",
+                                 "Yes", "No", 0, 0, 1);
+
+          if (!(choice))
+            slotFileSave();
+        }
+      else slotFileSave();
+    }
+  else slotFileSaveAs();
+
+  QMainWindow::close();
+}
+
 /***************CopasiUI3Window::slotFilePrint()******
  **
  ** Parameters:- Void
@@ -434,7 +458,7 @@ void CopasiUI3Window::createMenuBar()
     }
 
   mpFileMenu->insertSeparator();
-  mpFileMenu->insertItem("&Close", this, SLOT(close()), CTRL + Key_W);
+  mpFileMenu->insertItem("&Close", this, SLOT(slotClose()), CTRL + Key_W);
   mpFileMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL + Key_Q);
 
   menuBar()->insertSeparator();
