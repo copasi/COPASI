@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.27 $ $Author: shoops $ $Date: 2004/02/19 19:28:24 $  
+# $Revision: 1.28 $ $Author: shoops $ $Date: 2004/04/08 20:55:33 $  
 ######################################################################
 
 include(../common.pri)
@@ -49,12 +49,12 @@ contains(BUILD_OS, WIN32) {
               ../lib/libsteadystate.a \
               ../lib/libtrajectory.a \
               ../lib/librandomGenerator.a \
+              ../lib/libplot.a \
               ../lib/libutilities.a \
               ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/libfunction.a \
-              ../lib/libmodel.a \
-              ../lib/libplot.a 
+              ../lib/libmodel.a
 
   LIBS += -lexpat \
           -lqwt
