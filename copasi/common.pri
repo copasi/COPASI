@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.36 $ $Author: shoops $ $Date: 2005/02/09 01:25:28 $  
+# $Revision: 1.37 $ $Author: shoops $ $Date: 2005/02/09 14:21:57 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -141,8 +141,18 @@ contains(BUILD_OS, SunOS) {
       LIBS+=  -L$${SBML_PATH}/lib
       INCLUDEPATH += $${SBML_PATH}/include
   }
-  LIBS += -lSM
+
   LIBS += -lsbml -lexpat
+
+  contains(CONFIG, qt) {
+    !isEmpty(QWT_PATH){
+       LIBS+=  -L$${QWT_PATH}/lib
+       INCLUDEPATH += $${QWT_PATH}/include
+    }
+    LIBS += -lqwt
+  }
+
+  LIBS += -lSM
 }
  
 contains(BUILD_OS, Linux) {
@@ -154,30 +164,18 @@ contains(BUILD_OS, Linux) {
  
   QMAKE_LFLAGS += -static
 
-  LIBS += -lsbml -lexpat
+  !isEmpty(SBML_PATH){
+    LIBS+=  -L$${SBML_PATH}/lib
+    INCLUDEPATH += $${SBML_PATH}/include
+    LIBS += -lsbml
+  }
 
-  !isEmpty(QWT_PATH){
-      LIBS+=  -L$${QWT_PATH}/lib
-      INCLUDEPATH += $${QWT_PATH}/include
-  }
-#  else {
-#      error( "QWT_PATH must be specified" )
-#  }
   !isEmpty(EXPAT_PATH){
-      LIBS+=  -L$${EXPAT_PATH}/lib
-      INCLUDEPATH += $${EXPAT_PATH}/include
+    LIBS+=  -L$${EXPAT_PATH}/lib
+    INCLUDEPATH += $${EXPAT_PATH}/include
+    LIBS += -lexpat
   }
-  !isEmpty(SBML_PATH){
-      LIBS+=  -L$${SBML_PATH}/lib
-      INCLUDEPATH += $${SBML_PATH}/include
-  }  !isEmpty(EXPAT_PATH){
-      LIBS+=  -L$${EXPAT_PATH}/lib
-      INCLUDEPATH += $${EXPAT_PATH}/include
-  }
-  !isEmpty(SBML_PATH){
-      LIBS+=  -L$${SBML_PATH}/lib
-      INCLUDEPATH += $${SBML_PATH}/include
-  }
+
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
@@ -201,6 +199,14 @@ contains(BUILD_OS, Linux) {
         error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )
       }
     }
+  }
+
+  contains(CONFIG, qt) {
+    !isEmpty(QWT_PATH){
+       LIBS+=  -L$${QWT_PATH}/lib
+       INCLUDEPATH += $${QWT_PATH}/include
+    }
+    LIBS += -lqwt
   }
 }
 
