@@ -14,8 +14,10 @@
  * implementation of nodes must be dereived from CCopasiNode for the tree 
  * to operate properly.
  */
-template < class Data > class CCopasiNode
+template < class _Data > class CCopasiNode
     {
+      typedef _Data Data;
+
       // Attributes
     private:
       /**
