@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/01 14:50:51 $
+   $Date: 2004/10/04 18:44:58 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -96,7 +96,7 @@ void SliderDialog::addSlider(const QString& name, int min, int max, int tickInte
   /*
    CCompartment* comp=new CCompartment();
   comp->setVolume(100.0);
-  CCopasiObject* o=comp->CCopasiContainer::getObject(CCopasiObjectName("Volume"));
+  CCopasiObject* o=comp->CCopasiContainer::getObject(CCopasiObjectName("Reference=Volume"));
   CopasiSlider* cslider=new CopasiSlider(o,this);
   */
 
