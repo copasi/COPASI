@@ -24,7 +24,7 @@ CFG=trajectory - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=trajectory - Win32 Build
 # PROP BASE Target_File "../lib/trajectory.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -79,6 +79,14 @@ SOURCE=.\CStochNextReactionMethod.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CTauLeapMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeSeries.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CTrajectoryMethod.cpp
 # End Source File
 # Begin Source File
@@ -116,6 +124,14 @@ SOURCE=.\CStochMethod.h
 # Begin Source File
 
 SOURCE=.\CStochNextReactionMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTauLeapMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeSeries.h
 # End Source File
 # Begin Source File
 
