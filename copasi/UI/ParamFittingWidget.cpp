@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/11/04 15:53:28 $
+   $Date: 2004/11/15 00:02:45 $
    End CVS Header */
 
 /********************************************************
@@ -91,9 +91,6 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
   QPixmap image1((const char**) image1_data);
   QPixmap image2((const char**) image2_data);
   QPixmap image3((const char**) image3_data);
-
-  if (!name)
-    setName("ExpressionWidget");
 
   ParamFittingWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ParamFittingWidgetLayout");
 
