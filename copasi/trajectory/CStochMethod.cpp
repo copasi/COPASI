@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:38:21 $
+   $Author: jpahle $ 
+   $Date: 2004/12/22 10:47:48 $
    End CVS Header */
 
 #ifdef WIN32
@@ -35,7 +35,7 @@
 C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
-  return 2; // suggest next reaction method
+  return 1; // suggest direct method
 
   // TODO check if stoich is integer
 }
@@ -46,7 +46,7 @@ CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
   C_INT32 result = 1; // direct method as default
   if (pProblem && pProblem->getModel())
     {
-      checkModel(pProblem->getModel());
+      result = checkModel(pProblem->getModel());
     }
 
   CStochMethod * method = NULL;
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =     /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =      /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
