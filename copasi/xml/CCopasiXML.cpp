@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: mkulkarn $ 
-   $Date: 2004/01/16 20:29:26 $
+   $Date: 2004/02/26 19:44:47 $
    End CVS Header */
 
 /**
@@ -517,7 +517,7 @@ bool CCopasiXML::saveTaskList()
       // Report Element
       CReport tReport = pTask->getReport();
       Attributes.erase();
-      // **** whats reference??
+
       //Attributes.add("reference",tReport->);
       Attributes.add("target", tReport.getTarget());
       Attributes.add("append", tReport.append());
@@ -534,7 +534,6 @@ bool CCopasiXML::saveTaskList()
       endSaveElement("InitialState");
 
       // how do u know if its a parameter/ parameter group??
-      // *** is this a list ???
       Attributes.erase();
       Attributes.add("name", tProblem->getName(i));
       Attributes.add("type", CCopasiProblem::XMLType[tProblem->getType()]);
@@ -543,7 +542,6 @@ bool CCopasiXML::saveTaskList()
       endSaveElement("Parameter");
 
       CCopasiParameterGroup::parameterGroup tparamGroup;
-      // get the parameter group ????
       jmax = tparamGroup.size();
       Attributes.erase();
       Attributes.add("name", tProblem->getName(i));
@@ -551,7 +549,6 @@ bool CCopasiXML::saveTaskList()
       for (j = 0; j < jmax; j++)
         {
           Attributes.erase();
-          //fill stuff
           Attributes.add("name", tparamGroup[i]->getName());
           Attributes.add("type", tparamGroup[i]->getType());
           Attributes.add("value", tparamGroup[i]->getValue());
@@ -567,7 +564,6 @@ bool CCopasiXML::saveTaskList()
       Attributes.add("name", tMethod->getName(i));
       Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
       startSaveElement("Method", Attributes);
-      //is this a list??
       Attributes.erase();
       Attributes.add("name", tMethod->getName(i));
       Attributes.add("type", CCopasiTask::XMLType[tMethod->getType()]);
