@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 07:40:15 $
+   $Date: 2004/09/21 15:54:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -90,6 +90,7 @@ class ListViews : public QSplitter
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
     static bool commit();
     void switchToOtherWidget(C_INT32 id, const std::string & key);
+    static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
 
   private:
     CMathModel *mpMathModel;

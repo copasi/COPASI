@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/19 15:09:43 $
+   $Author: ssahle $ 
+   $Date: 2004/09/21 15:54:35 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -141,18 +141,20 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:              // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:               // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:              // Discard clicked or Alt+D pressed
+        case 1:               // Discard clicked or Alt+D pressed
           break;
 
-        case 2:              // Cancel clicked or Escape pressed
+        case 2:               // Cancel clicked or Escape pressed
           return;
           break;
         }
     }
+
+  ListViews::switchAllListViewsToWidget(0, "");
 
   if (!dataModel)
     dataModel = new DataModelGUI(); // create the data model
@@ -166,6 +168,8 @@ void CopasiUI3Window::newDoc()
   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
   mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+  ListViews::switchAllListViewsToWidget(1, "");
 }
 
 /***************CopasiUI3Window::slotFileOpen()******
@@ -199,14 +203,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:              // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:               // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:              // Discard clicked or Alt+D pressed
+            case 1:               // Discard clicked or Alt+D pressed
               break;
 
-            case 2:              // Cancel clicked or Escape pressed
+            case 2:               // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -214,6 +218,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
                             dataModel->getModel()->getKey());
         }
+
+      ListViews::switchAllListViewsToWidget(0, "");
 
       if (!dataModel)
         dataModel = new DataModelGUI; // create a new data model
@@ -238,6 +244,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
           msave_button->setEnabled(true);
           mpFileMenu->setItemEnabled(nsave_menu_id, true);
         }
+      ListViews::switchAllListViewsToWidget(1, "");
     }
 }
 
@@ -301,14 +308,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:              // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:               // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:              // Discard clicked or Alt+D pressed
+        case 1:               // Discard clicked or Alt+D pressed
           break;
 
-        case 2:              // Cancel clicked or Escape pressed
+        case 2:               // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -330,14 +337,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:              // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:               // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:              // Discard clicked or Alt+D pressed
+            case 1:               // Discard clicked or Alt+D pressed
               break;
 
-            case 2:              // Cancel clicked or Escape pressed
+            case 2:               // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -549,14 +556,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:              // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:               // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:              // Discard clicked or Alt+D pressed
+            case 1:               // Discard clicked or Alt+D pressed
               break;
 
-            case 2:              // Cancel clicked or Escape pressed
+            case 2:               // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -564,6 +571,8 @@ void CopasiUI3Window::slotImportSBML()
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
                             dataModel->getModel()->getKey());
         }
+
+      ListViews::switchAllListViewsToWidget(0, "");
 
       if (!dataModel)
         {
@@ -580,6 +589,8 @@ void CopasiUI3Window::slotImportSBML()
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      ListViews::switchAllListViewsToWidget(1, "");
     }
 }
 

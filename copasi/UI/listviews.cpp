@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.147 $
+   $Revision: 1.148 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 07:37:09 $
+   $Date: 2004/09/21 15:54:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -397,7 +397,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:       //Report
+      case 43:        //Report
         return tableDefinition;
         break;
       case 42:
@@ -730,4 +730,17 @@ bool ListViews::commit()
     }
 
   return success;
+}
+
+//static
+void ListViews::switchAllListViewsToWidget(C_INT32 id, const std::string & key)
+{
+  CopasiWidget * tmp;
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  for (; it != ende; ++it)
+    {
+      (*it)->switchToOtherWidget(id, key);
+    }
 }
