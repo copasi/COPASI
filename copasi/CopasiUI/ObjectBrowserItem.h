@@ -55,6 +55,12 @@ class ObjectBrowserItem : public QListViewItem
     {
       mType = newType;
     }
+
+    objectType getType()
+    {
+      return mType;
+    }
+
     //-1 if this is no user checked
     //0 if this is only partly checked
     //1 if this is full checked

@@ -137,6 +137,11 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
     setUncheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
     setUncheck(pCurrent->sibling());
+
+  if (pCurrent->getType() == OBJECTATTR)
+  {}
+  else if (pCurrent->getType() == FIELDATTR)
+  {}
 }
 
 void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
@@ -149,6 +154,11 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
     setCheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
     setCheck(pCurrent->sibling());
+
+  if (pCurrent->getType() == OBJECTATTR)
+  {}
+  else if (pCurrent->getType() == FIELDATTR)
+  {}
 }
 
 void ObjectBrowser::backClicked()
@@ -214,7 +224,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
 
                   objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
                   objectChild->attachKey();
-                  objectChild->setObjectType(CONTAINERATTR);
+                  objectChild->setObjectType(OBJECTATTR);
                   objectChild->setText(0, "Object list");
                   nField = false;
                 }
@@ -271,6 +281,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           current = *it;
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
           currentItem->setText(0, current->getObjectName().c_str());
+          currentItem->setObjectType(FIELDATTR);
           last = currentItem;
           it++;
         }
