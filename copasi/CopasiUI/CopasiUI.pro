@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.71 $ $Author: ssahle $ $Date: 2004/12/22 12:38:25 $  
+# $Revision: 1.72 $ $Author: shoops $ $Date: 2004/12/29 15:07:44 $  
 ######################################################################
 
 include(../common.pri)
@@ -26,7 +26,8 @@ contains(BUILD_OS, WIN32) {
           ../lib/trajectory.lib \
           ../lib/utilities.lib \
           ../lib/plot.lib \
-          ../lib/wizard.lib
+          ../lib/wizard.lib \
+          ../lib/mml.lib
 
   LIBS += $$COPASI_LIBS
   LIBS += $(QTDIR)/lib/qwt.lib
@@ -57,7 +58,8 @@ contains(BUILD_OS, WIN32) {
               ../lib/libreport.a \
               ../lib/libfunction.a \
               ../lib/libmodel.a \
-              ../lib/libwizard.a
+              ../lib/libwizard.a \
+              ../lib/libmml.a
 
   LIBS += -lqwt \
           -lsbml 
@@ -72,6 +74,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libfunction.a \
                 ../lib/libmathmodel.a \
                 ../lib/libmodel.a \
+                ../lib.libmml.a \
                 ../lib/liboptimization.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
@@ -169,8 +172,7 @@ HEADERS += \
            TimeSeriesWidget.h \
            TimeSeriesSubwidget.h \
            TrajectoryWidget.h \
-           Tree.h\
-           ../mml/qtmmlwidget.h
+           Tree.h
 
 # INTERFACES += CompartmentsWidget.ui \
 #               FunctionWidget1.ui \
@@ -247,8 +249,7 @@ SOURCES += \
            TimeSeriesWidget.cpp \
            TimeSeriesSubwidget.cpp \
            TrajectoryWidget.cpp \
-           Tree.cpp \
-           ../mml/qtmmlwidget.cpp
+           Tree.cpp
 
 
 # FORMS +=  TimeSeriesSubwidget.ui
@@ -256,7 +257,7 @@ SOURCES += \
 # FORMS +=  CMCAResultSubwidget.ui
 # FORMS +=  SimpleSelectionWidget.ui        
 # FORMS +=  SliderSettingsDialog.ui    
-#FORMS +=  objectdebug.ui       
+# FORMS +=  objectdebug.ui       
 
 release {
   distribution.path = .

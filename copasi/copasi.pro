@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: gauges $ $Date: 2004/09/23 11:30:18 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2004/12/29 15:07:44 $  
 ######################################################################
 
 include(common.pri)
@@ -12,6 +12,7 @@ SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += mathmodel
 SUBDIRS += model
+SUBDIRS += mml
 SUBDIRS += optimization
 #SUBDIRS += output
 SUBDIRS += plot
