@@ -31,6 +31,7 @@ CMetab::CMetab(const string & name)
     Reset(name);
 }
 
+#ifdef XXXX
 CMetab::CMetab(const string & name, const short status, 
                CCompartment & compartment)
 {
@@ -42,6 +43,7 @@ CMetab::CMetab(const string & name, const short status,
     mStatus      = status;
     mCompartment = &compartment;
 }
+#endif // XXXX
 
 // overload assignment operator
 CMetab &CMetab::operator=(const CMetab &RHS)
@@ -200,3 +202,5 @@ long CMetabOld::Load(CReadConfig &configbuffer)
 }
 
 long CMetabOld::GetIndex() {return mCompartment;}
+
+string CMetabOld::GetName() {return mName;}

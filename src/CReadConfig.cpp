@@ -21,7 +21,7 @@ CReadConfig::CReadConfig(void)
 {
     // initialize everything
     mLineNumber   = 0;
-    mMode         = 0;
+    mMode         = CReadConfig::NEXT;
     mFail         = 0;
 
     InitInputBuffer();
@@ -32,7 +32,7 @@ CReadConfig::CReadConfig(const string& name)
     // initialize everything
     mFilename     = name;
     mLineNumber   = 0;
-    mMode         = 0;
+    mMode         = CReadConfig::NEXT;
     mFail         = 0;
 
     InitInputBuffer();

@@ -16,6 +16,12 @@ CCompartment::CCompartment()
     // initialize everything
     mName   = "compartment";
     mVolume = 1.0;
+    mMetabolites = NULL;
+}
+
+void CCompartment::Init()
+{
+    if (!mMetabolites) mMetabolites = new CCopasiVector < CMetab >;
 }
 
 CCompartment::CCompartment(const string & name,
@@ -25,11 +31,18 @@ CCompartment::CCompartment(const string & name,
     mName   = name;
     if (!IsValidName()) FatalError();
     mVolume = volume;
+    mMetabolites = NULL;
 }
 
 CCompartment::~CCompartment() 
 {
     cout << "~CCompartment " << mName << endl;
+}
+
+void CCompartment::Delete()
+{
+    if (mMetabolites) delete mMetabolites;
+    mMetabolites = NULL;
 }
 
 CCompartment & CCompartment::operator=(const CCompartment & rhs)
@@ -44,7 +57,8 @@ CCompartment & CCompartment::operator=(const CCompartment & rhs)
 long CCompartment::Load(CReadConfig & configbuffer)
 {
     long Fail = 0;
-
+    Init();
+    
     if (Fail = configbuffer.GetVariable("Compartment", "string",
                                         (void *) &mName,
                                         CReadConfig::SEARCH))
@@ -61,7 +75,7 @@ long CCompartment::Load(CReadConfig & configbuffer)
                                         (void *) &MetabolitesNo))
         return Fail;
     
-    Fail = mMetabolites.Load(configbuffer, MetabolitesNo);
+    Fail = mMetabolites->Load(configbuffer, MetabolitesNo);
     
     return Fail;
 }
@@ -78,12 +92,12 @@ long CCompartment::Save(CWriteConfig & configbuffer)
                                         (void *) &mVolume))
         return Fail;
     
-    long size = mMetabolites.Size();
+    long size = mMetabolites->Size();
     if (Fail = configbuffer.SetVariable("MetabolitesNo", "long",
                                         (void *) &size))
         return Fail;
 
-    Fail = mMetabolites.Save(configbuffer);
+    Fail = mMetabolites->Save(configbuffer);
     return Fail;
 }
 
@@ -91,7 +105,8 @@ string CCompartment::GetName() {return mName;}
 
 double CCompartment::GetVolume() {return mVolume;}
 
-CCopasiVector < CMetab > & CCompartment::GetMetabolites() {return mMetabolites;}
+CCopasiVector < CMetab > & CCompartment::GetMetabolites() 
+{return *mMetabolites;}
 
 void CCompartment::SetName(const string & name) 
 {
@@ -104,7 +119,7 @@ void CCompartment::SetVolume(double volume) {mVolume = volume;}
 void CCompartment::AddMetabolite(CMetab &metabolite)
 {
     metabolite.SetCompartment(this);
-    mMetabolites.Add(metabolite);
+    mMetabolites->Add(metabolite);
 }
 
 short CCompartment::IsValidName()

@@ -16,7 +16,7 @@
 class CCopasiMessage
 {
 public:
-    enum COPASI_MESSAGE_TYPE
+    enum Type
     {
         RAW = 0,
         TRACE,
@@ -37,8 +37,8 @@ public:
      *  @param format printf like format string.
      *  @param ... arguments like in printf
      */
-    CCopasiMessage(const COPASI_MESSAGE_TYPE type, const char *format, ... );
-    CCopasiMessage(const COPASI_MESSAGE_TYPE type, unsigned long number, ...);
+    CCopasiMessage(CCopasiMessage::Type type, const char *format, ... );
+    CCopasiMessage(CCopasiMessage::Type type, unsigned long number, ...);
     
     /**
      *  Destructor. 
@@ -60,7 +60,7 @@ public:
      *  Retrieves thetype of the message.
      *  @return mType
      */
-    long GetType();
+    CCopasiMessage::Type GetType();
 
 private:
     /**
@@ -83,7 +83,7 @@ private:
     /**
      *  Message type.
      */
-    COPASI_MESSAGE_TYPE mType;  // Message type
+    CCopasiMessage::Type mType;  // Message type
 
     /**
      *  Message Number

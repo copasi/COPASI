@@ -91,8 +91,8 @@ long CWriteConfig::Fail()
     return mFail;
 }
 
-long CWriteConfig::SetVariable(const string name, 
-                               const string type, 
+long CWriteConfig::SetVariable(const string & name, 
+                               const string & type, 
                                const void *pout)
 {
     mBuffer << name << "=";
@@ -126,8 +126,8 @@ long CWriteConfig::SetVariable(const string name,
     return mFail;
 }
 
-long CWriteConfig::SetVariable(const string name, 
-                               const string type, 
+long CWriteConfig::SetVariable(const string & name, 
+                               const string & type, 
                                const void *pout1, 
                                const void *pout2)
 {

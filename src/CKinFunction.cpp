@@ -5,39 +5,52 @@
 #include "copasi.h"
 #include "CKinFunction.h"
 #include "lexkk.h"
+#include "utilities.h"
 
 short DefinedInsertAllowed(CNodeK src);
 
-CKinFunction::CKinFunction() 
+CKinFunction::CKinFunction()
 {
-    SetReversible(FALSE);
-    mCallParameters = new vector < CKinCallParameter >(1);
-    (*mCallParameters)[0].SetType(CCallParameter::VECTOR_DOUBLE);
-    (*mCallParameters)[0].SetCount(-1);
-    (*mCallParameters)[0].IdentifierTypes().resize(5);
-    (*mCallParameters)[0].IdentifierTypes()[0] = 0;
-    (*mCallParameters)[0].IdentifierTypes()[1] = N_SUBSTRATE;
-    (*mCallParameters)[0].IdentifierTypes()[2] = N_PRODUCT;
-    (*mCallParameters)[0].IdentifierTypes()[3] = N_MODIFIER;
-    (*mCallParameters)[0].IdentifierTypes()[4] = N_KCONSTANT;
+    mCallParameters = NULL;
+    mNodes = NULL;
 }
 
+void CKinFunction::Init()
+{
+    SetReversible(FALSE);
+
+    if (!mCallParameters )
+        mCallParameters = new vector < CKinCallParameter >(1);
+    (*mCallParameters)[0].Init();
+
+    if (!mNodes) mNodes = new CKinNodes;
+}
+    
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
-    SetReversible(FALSE);
-    mCallParameters = new vector < CKinCallParameter >(1);
-    (*mCallParameters)[0].SetType(CCallParameter::VECTOR_DOUBLE);
-    (*mCallParameters)[0].SetCount(-1);
-    (*mCallParameters)[0].IdentifierTypes().resize(5);
-    (*mCallParameters)[0].IdentifierTypes()[0] = 0;
-    (*mCallParameters)[0].IdentifierTypes()[1] = N_SUBSTRATE;
-    (*mCallParameters)[0].IdentifierTypes()[2] = N_PRODUCT;
-    (*mCallParameters)[0].IdentifierTypes()[3] = N_MODIFIER;
-    (*mCallParameters)[0].IdentifierTypes()[4] = N_KCONSTANT;
+    mCallParameters = NULL;
+    mNodes = NULL;
 
     SetName(name);
     SetDescription(description);
+    
+    Init();
+}
+
+CKinFunction::~CKinFunction() {;}
+
+void CKinFunction::Delete() 
+{
+    if (mNodes) delete mNodes;
+    mNodes = NULL;
+    
+    if (mCallParameters) 
+        {
+            (*mCallParameters)[0].Delete();
+            delete mCallParameters;
+        }
+    mCallParameters = NULL;
 }
 
 long CKinFunction::Load(CReadConfig & configbuffer)
@@ -47,6 +60,7 @@ long CKinFunction::Load(CReadConfig & configbuffer)
     long Index = 0;
     long Fail = 0;
     
+    Init();
     if (Fail = configbuffer.GetVariable("FunctionName", "string", &TmpString,
                                         CReadConfig::LOOP))
         return Fail;
@@ -59,7 +73,7 @@ long CKinFunction::Load(CReadConfig & configbuffer)
     if (Fail = configbuffer.GetVariable("Nodes", "long", &Size))
         return Fail;
 
-    if (Fail = mNodes.Load(configbuffer,Size))
+    if (Fail = mNodes->Load(configbuffer,Size))
         return Fail;
 
     ConnectNodes();
@@ -82,17 +96,17 @@ long CKinFunction::Save(CWriteConfig & configbuffer)
     if (Fail = configbuffer.SetVariable("Description", "string", &TmpString))
         return Fail;
 
-    TmpLong = mNodes.Size();
+    TmpLong = mNodes->Size();
     if (Fail = configbuffer.SetVariable("Nodes", "long", &TmpLong))
         return Fail;
 
-    if (Fail = mNodes.Save(configbuffer))
+    if (Fail = mNodes->Save(configbuffer))
         return Fail;
     
     return Fail;
 }
 
-CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
+CCopasiVector < CNodeK > & CKinFunction::Nodes() {return *mNodes;}
 
 void CKinFunction::SetIdentifierType(const string & name,
                                      char identifierType)
@@ -122,27 +136,27 @@ long CKinFunction::Parse()
     // input for the scanner is from the buffer
     kkbuff = kk_scan_string(buffer);
     // add the root node
-    mNodes.Add(CNodeK(N_ROOT, N_NOP));
+    mNodes->Add(CNodeK(N_ROOT, N_NOP));
     // call the lexical analyser successively until done
     for (i=1; i!=0;)
     {
         i = kklex();
         switch (i)
         {
-        case N_IDENTIFIER: mNodes.Add(CNodeK(kktext)); break;
-        case N_NUMBER:     mNodes.Add(CNodeK(atof(kktext))); break;
-        case '+':          mNodes.Add(CNodeK(N_OPERATOR, '+')); break;
-        case '-':          mNodes.Add(CNodeK(N_OPERATOR, '-')); break;
-        case '*':          mNodes.Add(CNodeK(N_OPERATOR, '*')); break;
-        case '/':          mNodes.Add(CNodeK(N_OPERATOR, '/')); break;
-        case '^':          mNodes.Add(CNodeK(N_OPERATOR, '^')); break;
-        case '(':          mNodes.Add(CNodeK(N_OPERATOR, '(')); break;
-        case ')':          mNodes.Add(CNodeK(N_OPERATOR, ')')); break;
-        case N_LOG:        mNodes.Add(CNodeK(N_FUNCTION, N_LOG)); break;
-        case N_LOG10:      mNodes.Add(CNodeK(N_FUNCTION, N_LOG10)); break;
-        case N_EXP:        mNodes.Add(CNodeK(N_FUNCTION, N_EXP)); break;
-        case N_SIN:        mNodes.Add(CNodeK(N_FUNCTION, N_SIN)); break;
-        case N_COS:        mNodes.Add(CNodeK(N_FUNCTION, N_COS)); break;
+        case N_IDENTIFIER: mNodes->Add(CNodeK(kktext)); break;
+        case N_NUMBER:     mNodes->Add(CNodeK(atof(kktext))); break;
+        case '+':          mNodes->Add(CNodeK(N_OPERATOR, '+')); break;
+        case '-':          mNodes->Add(CNodeK(N_OPERATOR, '-')); break;
+        case '*':          mNodes->Add(CNodeK(N_OPERATOR, '*')); break;
+        case '/':          mNodes->Add(CNodeK(N_OPERATOR, '/')); break;
+        case '^':          mNodes->Add(CNodeK(N_OPERATOR, '^')); break;
+        case '(':          mNodes->Add(CNodeK(N_OPERATOR, '(')); break;
+        case ')':          mNodes->Add(CNodeK(N_OPERATOR, ')')); break;
+        case N_LOG:        mNodes->Add(CNodeK(N_FUNCTION, N_LOG)); break;
+        case N_LOG10:      mNodes->Add(CNodeK(N_FUNCTION, N_LOG10)); break;
+        case N_EXP:        mNodes->Add(CNodeK(N_FUNCTION, N_EXP)); break;
+        case N_SIN:        mNodes->Add(CNodeK(N_FUNCTION, N_SIN)); break;
+        case N_COS:        mNodes->Add(CNodeK(N_FUNCTION, N_COS)); break;
         case N_NOP:        // this is an error
             ClearNodes();
             delete [] buffer;
@@ -162,10 +176,10 @@ long CKinFunction::Parse()
 
 double CKinFunction::CalcValue(vector < CCallParameter > & callParameters)
 {
-    return mNodes[0].GetLeft().Value(callParameters[0].Identifiers());
+    return (*mNodes)[0].GetLeft().Value(callParameters[0].Identifiers());
 }
 
-void CKinFunction::ClearNodes() {mNodes.Delete();}
+void CKinFunction::ClearNodes() {mNodes->Delete();}
 
 long CKinFunction::ConnectNodes()
 {
@@ -177,19 +191,19 @@ long CKinFunction::ConnectNodes()
     mNidx = 1;
 
     // point all Left & Right to the root node
-    for (i=1; i<mNodes.Size(); i++)
+    for (i=1; i<mNodes->Size(); i++)
     {
-        mNodes[i].SetLeft(mNodes[0]);
-        mNodes[i].SetRight(mNodes[0]);
+        (*mNodes)[i].SetLeft((*mNodes)[0]);
+        (*mNodes)[i].SetRight((*mNodes)[0]);
     }
     
     // update pointers and references in the tree
-    mNodes[0].SetLeft(ParseExpression(0));
+    (*mNodes)[0].SetLeft(ParseExpression(0));
 
     // further checking for errors
-    if (mNodes[0].IsLeftValid() && 
-        mNodes[0].GetLeft().IsOperator() && 
-        mNodes[0].GetLeft().GetSubtype() == '(')
+    if ((*mNodes)[0].IsLeftValid() && 
+        (*mNodes)[0].GetLeft().IsOperator() && 
+        (*mNodes)[0].GetLeft().GetSubtype() == '(')
     {
 //  sprintf(errstr, "ERROR - missing operand");
 //  errnode should index the node in error 
@@ -199,17 +213,17 @@ long CKinFunction::ConnectNodes()
         errfl++;
     }
 
-    for (i=1; i<mNodes.Size() && !errfl; i++)
+    for (i=1; i<mNodes->Size() && !errfl; i++)
     {
-        switch (mNodes[i].GetType())
+        switch ((*mNodes)[i].GetType())
         {
         case N_OPERATOR:
-            if (!mNodes[i].IsLeftValid()      ||
-                !mNodes[i].IsRightValid()     ||
-                &mNodes[i].GetLeft()  == &mNodes[0] || 
-                &mNodes[i].GetRight() == &mNodes[0])
-                if (mNodes[i].GetSubtype() != '(' &&
-                    mNodes[i].GetSubtype() != ')')
+            if (!(*mNodes)[i].IsLeftValid()      ||
+                !(*mNodes)[i].IsRightValid()     ||
+                &(*mNodes)[i].GetLeft()  == &(*mNodes)[0] || 
+                &(*mNodes)[i].GetRight() == &(*mNodes)[0])
+                if ((*mNodes)[i].GetSubtype() != '(' &&
+                    (*mNodes)[i].GetSubtype() != ')')
                 {
                     if (!errfl)
                     {
@@ -221,18 +235,18 @@ long CKinFunction::ConnectNodes()
                 }
             if (!errfl)
             {
-                if (mNodes[i].IsLeftValid()    && 
-                    mNodes[i].GetLeft().IsOperator() && 
-                    mNodes[i].GetLeft().GetSubtype() == '(' )
+                if ((*mNodes)[i].IsLeftValid()    && 
+                    (*mNodes)[i].GetLeft().IsOperator() && 
+                    (*mNodes)[i].GetLeft().GetSubtype() == '(' )
                 {
 //           sprintf(errstr, "ERROR - missing operand");
                     FatalError();
                     errnode = -1;
                     errfl++;
                 }
-                if (mNodes[i].IsRightValid()    && 
-                    mNodes[i].GetRight().IsOperator() && 
-                    mNodes[i].GetRight().GetSubtype() == ')' )
+                if ((*mNodes)[i].IsRightValid()    && 
+                    (*mNodes)[i].GetRight().IsOperator() && 
+                    (*mNodes)[i].GetRight().GetSubtype() == ')' )
                 {
 //           sprintf(errstr, "ERROR - missing operand");
                     FatalError();
@@ -242,8 +256,8 @@ long CKinFunction::ConnectNodes()
             }
             break;
         case N_IDENTIFIER:
-            if (mNodes[i].IsLeftValid() || 
-                mNodes[i].IsRightValid()  )
+            if ((*mNodes)[i].IsLeftValid() || 
+                (*mNodes)[i].IsRightValid()  )
             {
                 if (!errfl)
                 {
@@ -255,8 +269,8 @@ long CKinFunction::ConnectNodes()
             }
             break;
         case N_NUMBER:
-            if (mNodes[i].IsLeftValid() || 
-                mNodes[i].IsRightValid()  )
+            if ((*mNodes)[i].IsLeftValid() || 
+                (*mNodes)[i].IsRightValid()  )
             {
                 if (!errfl)
                 {
@@ -284,14 +298,14 @@ CNodeK * CKinFunction::ParseExpression(short priority)
     lhs = ParsePrimary();
     if (!lhs) return NULL;
 
-    while( mNidx < mNodes.Size() && 
-           mNodes[mNidx].IsOperator() && 
-           priority < mNodes[mNidx].LeftPrecedence())
+    while( mNidx < mNodes->Size() && 
+           (*mNodes)[mNidx].IsOperator() && 
+           priority < (*mNodes)[mNidx].LeftPrecedence())
     {
         op = mNidx;
         rhs = NULL;
         ++mNidx;
-        rhs = ParseExpression(mNodes[op].RightPrecedence());
+        rhs = ParseExpression((*mNodes)[op].RightPrecedence());
         if (!rhs)
         {
             if (!errfl)
@@ -304,9 +318,9 @@ CNodeK * CKinFunction::ParseExpression(short priority)
         }
         else
         {
-            mNodes[op].SetLeft(*lhs);
-            mNodes[op].SetRight(*rhs);
-            lhs = &mNodes[op] ;
+            (*mNodes)[op].SetLeft(*lhs);
+            (*mNodes)[op].SetRight(*rhs);
+            lhs = &(*mNodes)[op] ;
         }
     }
     return lhs;
@@ -323,7 +337,7 @@ CNodeK * CKinFunction::ParsePrimary()
     npt = NULL;
 
 //    if (Node[mNidx]==NULL)
-    if (mNidx >= mNodes.Size())
+    if (mNidx >= mNodes->Size())
     {
 //  if (!errfl) // execute only if no previous error
 //   errnode = mNidx-1;
@@ -331,29 +345,29 @@ CNodeK * CKinFunction::ParsePrimary()
         return NULL;
     } 
     
-    if (mNodes[mNidx].IsNumber() || 
-        mNodes[mNidx].IsIdentifier())
+    if ((*mNodes)[mNidx].IsNumber() || 
+        (*mNodes)[mNidx].IsIdentifier())
     {
         t = 'K';
     }
     else 
     {
-        t = mNodes[mNidx].GetSubtype();
+        t = (*mNodes)[mNidx].GetSubtype();
     }
     
     switch (t)
     {
     case 'K':
-        mNodes[mNidx].SetLeft(NULL);
-        mNodes[mNidx].SetRight(NULL);
-        npt = &mNodes[mNidx];
+        (*mNodes)[mNidx].SetLeft(NULL);
+        (*mNodes)[mNidx].SetRight(NULL);
+        npt = &(*mNodes)[mNidx];
         ++mNidx;
         return npt;
     case '(': ++mNidx;
         npt = ParseExpression(0);
-        if (mNidx < mNodes.Size()      && 
-            mNodes[mNidx].IsOperator() && 
-            mNodes[mNidx].GetSubtype() == ')')
+        if (mNidx < mNodes->Size()      && 
+            (*mNodes)[mNidx].IsOperator() && 
+            (*mNodes)[mNidx].GetSubtype() == ')')
         {
             ++mNidx;
             return npt;
@@ -387,27 +401,27 @@ CNodeK * CKinFunction::ParsePrimary()
         }
         else
         {
-            npt = &mNodes[op];
+            npt = &(*mNodes)[op];
             // unary operators are taken as functions
-            mNodes[op].SetType(N_FUNCTION);
-            mNodes[op].SetLeft(primary);
-            mNodes[op].SetRight(NULL);
-            return &mNodes[op];
+            (*mNodes)[op].SetType(N_FUNCTION);
+            (*mNodes)[op].SetLeft(primary);
+            (*mNodes)[op].SetRight(NULL);
+            return &(*mNodes)[op];
         }
     default:  return NULL;
     }
-    if (mNidx < mNodes.Size()      &&
-        mNodes[mNidx].IsOperator() &&
-        mNodes[mNidx].GetSubtype() == '(')
+    if (mNidx < mNodes->Size()      &&
+        (*mNodes)[mNidx].IsOperator() &&
+        (*mNodes)[mNidx].GetSubtype() == '(')
     {
         ++mNidx;
-        if (mNidx < mNodes.Size()      &&
-            mNodes[mNidx].IsOperator() &&
-            mNodes[mNidx].GetSubtype() == ')')
+        if (mNidx < mNodes->Size()      &&
+            (*mNodes)[mNidx].IsOperator() &&
+            (*mNodes)[mNidx].GetSubtype() == ')')
         {
-            mNodes[mNidx].SetLeft(npt);
-            mNodes[mNidx].SetRight(NULL);
-            return &mNodes[mNidx];
+            (*mNodes)[mNidx].SetLeft(npt);
+            (*mNodes)[mNidx].SetRight(NULL);
+            return &(*mNodes)[mNidx];
         }
         else ParseExpression(0);
     }
@@ -415,46 +429,112 @@ CNodeK * CKinFunction::ParsePrimary()
 
 void CKinFunction::InitIdentifiers()
 {
-    CKinCallParameter::CKinIdentifier Identifier;
+    CKinIdentifier Identifier;
+    long i;
+
     pair < long, long > Index;
 
-    (*(*mCallParameters)[0].mIdentifiers).clear();
+    (*mCallParameters)[0].Delete();
+    (*mCallParameters)[0].Init();
     
-    for(long i = 0; i < mNodes.Size(); i++)
+    for(i = 0; i < mNodes->Size(); i++)
     {
-        if (mNodes[i].IsIdentifier())
+        if ((*mNodes)[i].IsIdentifier())
         {
-            Index = FindIdentifier(mNodes[i].GetName());
+            Index = FindIdentifier((*mNodes)[i].GetName());
             if ( Index.first == -1 )
             {
-                Identifier.GetName() = mNodes[i].GetName();
-                (*(*mCallParameters)[0].mIdentifiers).push_back(Identifier);
-                Index.second = (*mCallParameters)[0].mIdentifiers->size() - 1;
+                Identifier.SetName((*mNodes)[i].GetName());
+                (*mCallParameters)[0].mIdentifiers->push_back(Identifier);
+                Index.second = (*mCallParameters)[0].mIdentifiers->size()-1;
+                (*(*mCallParameters)[0].mIdentifiers)[Index.second].Init();
             }
-            mNodes[i].SetIndex(Index.second);
+            (*mNodes)[i].SetIndex(Index.second);
             (*(*mCallParameters)[0].mIdentifiers)[Index.second].
-                mNodes->push_back(&mNodes[i]);
+                mNodes->push_back(&(*mNodes)[i]);
         }
     }
-    (*mCallParameters)[0].SetCount((*mCallParameters)[0].Identifiers(0).size());
+    (*mCallParameters)[0].SetCount((*mCallParameters)[0].mIdentifiers->size());
 }
 
-CKinFunction::CKinCallParameter::CKinCallParameter()
+CKinCallParameter::CKinCallParameter()
 {
-    mIdentifiers = new vector < CKinIdentifier >;
+    mIdentifiers = NULL;
 }
 
-CKinFunction::CKinCallParameter::~CKinCallParameter()
+void CKinCallParameter::Init()
 {
-    delete  mIdentifiers;
+    CBaseCallParameter::Init();
+    
+    if (!mIdentifiers) mIdentifiers = new vector < CKinIdentifier >;
+    for (long i = 0; i < mIdentifiers->size(); i++)
+        (*mIdentifiers)[i].Init();
+
+    if (&IdentifierTypes()) 
+    {
+        IdentifierTypes().resize(5);
+        IdentifierTypes()[0] = 0;
+        IdentifierTypes()[1] = N_SUBSTRATE;
+        IdentifierTypes()[2] = N_PRODUCT;
+        IdentifierTypes()[3] = N_MODIFIER;
+        IdentifierTypes()[4] = N_KCONSTANT;
+    }
 }
 
-CKinFunction::CKinCallParameter::CKinIdentifier::CKinIdentifier()
+pair < long, long > CKinFunction::FindIdentifier(const string & name)
 {
-    mNodes = new vector < CNodeK * >;
+    pair < long, long > Tuple(-1, -1);
+    long j;
+    long i;
+    
+    for (j = 0; j < mCallParameters->size(); j++)
+        for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
+            if ((*(*mCallParameters)[j].mIdentifiers)[i].GetName() == name) 
+            {
+                Tuple.first = j;
+                Tuple.second = i;
+                break;
+            }
+
+    return Tuple;
 }
 
-CKinFunction::CKinCallParameter::CKinIdentifier::~CKinIdentifier()
+CKinCallParameter::~CKinCallParameter() {;}
+
+void CKinCallParameter::Delete()
 {
-    delete mNodes;
+    if (mIdentifiers)
+    {
+        for (long i = 0; i < mIdentifiers->size(); i++)
+            (*mIdentifiers)[i].Delete();
+        
+        delete mIdentifiers;
+    }
+    mIdentifiers = NULL;
+
+    CBaseCallParameter::Delete();
 }
+
+CKinIdentifier::CKinIdentifier() 
+{
+    mNodes = NULL;
+}
+
+void CKinIdentifier::Init()
+{
+    if (!mNodes) mNodes = new vector < CNodeK * >;
+}
+
+CKinIdentifier::~CKinIdentifier() {;} 
+
+void CKinIdentifier::Delete()
+{
+    if (mNodes) delete mNodes;
+    mNodes = NULL;
+}
+
+CKinFunction::CKinNodes::CKinNodes() {;}
+
+CKinFunction::CKinNodes::~CKinNodes() {;}
+
+short CKinFunction::CKinNodes::IsInsertAllowed(CNodeK src) {return TRUE;}

@@ -19,57 +19,86 @@
 #include "CNodeK.h"
 #include "CCopasiVector.h"
 
+class CKinIdentifier: public CBaseIdentifier
+{
+// Attributes
+public:
+    /*
+     *  The nodes which access the same identifier.
+     */
+    vector < CNodeK * > * mNodes;
+
+// Operations
+public:
+    /**
+     *  Default constructor
+     */
+    CKinIdentifier();
+                    
+    /**
+     *  Init
+     */
+    void Init();
+            
+    /**
+     *  Destructor
+     */
+    ~CKinIdentifier();
+
+    /**
+     *  Delete
+     */
+    void Delete();
+};
+
+class CKinCallParameter: public CBaseCallParameter
+{
+    friend class CKinFunction;
+// Attributes
+private:
+    vector < CKinIdentifier > * mIdentifiers;
+
+// Operations
+public:
+    /**
+     *  Default constructor
+     */
+    CKinCallParameter();
+
+    /**
+     *  Init
+     */
+    void Init();
+            
+    /**
+     *  Destructor
+     */
+    ~CKinCallParameter();
+
+    /**
+     *  Delete
+     */
+    void Delete();
+};
+    
 class CKinFunction: public CBaseFunction
 {
 // Attributes
 private:
+    class CKinNodes: public CCopasiVector < CNodeK >
+        {
+        private:
+            short IsInsertAllowed(CNodeK src);
+            
+        public:
+            CKinNodes();
+            ~CKinNodes();
+        };
+
     /**
      *  The vector of nodes of the binary tree of the function
      */
-    class CNodes: public CCopasiVector < CNodeK >
-        {
-        private:
-            short IsInsertAllowed(CNodeK src) {return TRUE;}
-        } mNodes;
-
-    class CKinCallParameter: public CBaseCallParameter
-        {
-            friend class CKinFunction;
-        private:
-            class CKinIdentifier: public CBaseIdentifier
-                {
-                // Attributes
-                public:
-                    /*
-                     *  The nodes which access the same identifier.
-                     */
-                    vector < CNodeK * > * mNodes;
-                // Operations
-                public:
-                    /**
-                     *  Default constructor
-                     */
-                    CKinIdentifier();
-                    
-                    /**
-                     *  Destructor
-                     */
-                    ~CKinIdentifier();
-                };
-
-            vector < CKinIdentifier > * mIdentifiers;
-        // Operations
-        public:
-            /**
-             *  Default constructor
-             */
-            CKinCallParameter();
-
-            /**
-             *  Destructor
-             */
-            ~CKinCallParameter();
-        };
+    CKinNodes * mNodes;
     
     /**
      *  The vector of pointers to the identifiers to the function
@@ -95,6 +124,21 @@ public:
      */
     CKinFunction(const string & name,
                  const string & description);
+
+    /**
+     *  Init
+     */
+    void Init();
+            
+    /**
+     *  Destructor
+     */
+    ~CKinFunction();
+
+    /**
+     *  Delete
+     */
+    void Delete();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -137,6 +181,11 @@ public:
      *  @return double
      */
     double CalcValue(vector < CCallParameter > & callParameters);
+
+    /**
+     *
+     */
+    pair < long, long > FindIdentifier(const string & name);
 
 private:
     /**

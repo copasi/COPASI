@@ -24,7 +24,7 @@ CCopasiMessage::CCopasiMessage(void)
     mNumber   = 0;
 }
 
-CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type, 
+CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type, 
                                const char *format, ...)
 {
     long TextSize = INITIALTEXTSIZE;
@@ -57,7 +57,7 @@ CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type,
     if (Text) Handler();
 }
 
-CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type, 
+CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type, 
                                unsigned long number, ...)
 {
     long i = 0;
@@ -129,7 +129,7 @@ void CCopasiMessage::Handler()
     
     if (mType == ERROR) 
     {
-        throw CCopasiException(this);
+        throw CCopasiException(*this);
     }
     else
     {
@@ -155,7 +155,7 @@ string CCopasiMessage::GetText(void)
     return mText;
 }
 
-long CCopasiMessage::GetType(void)
+CCopasiMessage::Type CCopasiMessage::GetType(void)
 {
     return mType;
 }

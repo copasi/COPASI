@@ -2,7 +2,7 @@
 
 CBaseIdentifier::CBaseIdentifier() {mType = 0;}
 
-CBaseIdentifier::~CBaseIdentifier() {;}
+CBaseIdentifier::~CBaseIdentifier() {}
 
 void CBaseIdentifier::SetName(const string & name) {mName = name;}
 

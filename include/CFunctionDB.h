@@ -25,7 +25,7 @@ private:
     /**
      *  Vector of the currently loaded functions
      */
-    CCopasiVector < CKinFunction > mLoadedFunctions;
+    CCopasiVector < CKinFunction > * mLoadedFunctions;
 // Operations
 public:
     /**

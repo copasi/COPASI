@@ -34,6 +34,8 @@ long  TestMessage(void);
 long  TestReadSample(void);
 long  TestMoiety(void);
 long  TestKinFunction(void);
+long  TestBaseFunction(void);
+
 vector < CMetab * >
       InitMetabolites(CCopasiVector < CCompartment > & compartment);
 
@@ -53,15 +55,17 @@ long main(void)
         // TestCompartment();
         // TestDatum();
         // TestMetab();
-        // TestReadSample();
+        TestReadSample();
         // TestMoiety();
-        TestKinFunction();
+        // TestKinFunction();
+        // TestBaseFunction();
+        
         
     }
 
     catch (CCopasiException Exception)
     {
-        cout << Exception.Message.GetText() << endl;
+        cout << Exception.GetMessage().GetText() << endl;
     }
 
     cout << "Leaving main program." << endl;
@@ -78,7 +82,7 @@ long  TestMessage(void)
 
     catch (CCopasiException Exception)
     {
-        cout << Exception.Message.GetText() << endl;
+        cout << Exception.GetMessage().GetText() << endl;
     }
     return 0;
 }
@@ -95,7 +99,7 @@ long  TestException()
     catch (CCopasiException Exception)
     {
         cout << "Entering fatal error handling." << endl;
-        cout << Exception.Message.GetText() << endl;
+        cout << Exception.GetMessage().GetText() << endl;
         cout << "Leaving fatal error handling." << endl;
     }
 
@@ -327,6 +331,7 @@ long TestReadSample(void)
     size = Compartments.Size();
     outbuf2.SetVariable("TotalCompartments", "long", &size);
     Compartments.Save(outbuf2);
+    size = Functions.Size();
     outbuf2.SetVariable("TotalUDKinetics", "long", &size);
     Functions.Save(outbuf2);
     
@@ -368,6 +373,8 @@ long TestMoiety()
 long TestKinFunction()
 {
     CKinFunction f;
+    f.Init();
+    
     f.SetName("test");
     f.SetDescription("(a-b)*(a+b)/5");
     
@@ -391,7 +398,8 @@ long TestKinFunction()
     
     CWriteConfig out("TestKinFunction");
     f.Save(out);
-
+    f.Delete();
+    
     out.Flush();
     
     CReadConfig in("TestKinFunction");
@@ -416,3 +424,17 @@ vector < CMetab * >
     
     return Metabolites;
 }
+
+long TestBaseFunction()
+{
+    CBaseFunction BaseFunction;
+    BaseFunction.Init();
+    
+    BaseFunction.CallParameters().resize(3);
+    BaseFunction.Init();
+    
+    BaseFunction.Delete();
+    
+    return 0;
+}
+

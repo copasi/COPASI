@@ -33,7 +33,7 @@ private:
     /**
      *  Metabolites located in the compartment.
      */
-    CCopasiVector < CMetab > mMetabolites;
+    CCopasiVector < CMetab > * mMetabolites;
     
     
 // Operations
@@ -53,11 +53,21 @@ public:
     CCompartment(const string & name, double volume);
 
     /**
+     *  Init
+     */
+    void Init();
+    
+    /**
      *  Destructor. 
      *  The destructor does nothing.
      */
     ~CCompartment();
 
+    /**
+     *  Delete
+     */
+    void Delete();
+    
     /**
      *  Assignement operator. 
      *  Copies the contents from one CCompartment object to another.

@@ -57,13 +57,13 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    long SetVariable(string name,
-		     string type, 
-		     const void *pout);
-    long SetVariable(string name,
-		     string type, 
-		     const void *pout1, 
-		     const void *pout2);
+    long SetVariable(const string & name,
+		     const string & type, 
+		     const void * pout);
+    long SetVariable(const string & name,
+		     const string & type, 
+		     const void * pout1, 
+		     const void * pout2);
 
 private:
     /**

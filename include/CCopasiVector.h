@@ -16,19 +16,23 @@ private:
     /**
      *
      */
-    vector < CType > mTypes;
+    vector < CType > *mTypes;
 
 // Operations
 public:
     /**
      *
      */
-    CCopasiVector() {;}
+    CCopasiVector() {mTypes = new vector < CType >;}
 
     /**
      *
      */
-    ~CCopasiVector() {cout << "~CCopasiVector " << endl;}
+    ~CCopasiVector() 
+        {
+            delete mTypes;
+            cout << "~CCopasiVector " << endl;
+        }
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -40,9 +44,9 @@ public:
         {
             long Fail = 0;
             
-            mTypes.resize(size);
+            mTypes->resize(size);
             for (long i = 0; i < size; i++)
-                if (Fail = mTypes[i].Load(configbuffer)) break;
+                if (Fail = (*mTypes)[i].Load(configbuffer)) break;
     
             return Fail;
         }
@@ -58,7 +62,7 @@ public:
             long Fail = 0;
 
             for (long i = 0; i < Size(); i++)
-                if (Fail = mTypes[i].Save(configbuffer)) return Fail;
+                if (Fail = (*mTypes)[i].Save(configbuffer)) return Fail;
     
             return Fail;
         }
@@ -70,13 +74,18 @@ public:
         {
 	    if ( ! IsInsertAllowed(src) ) FatalError();
                 
-            mTypes.push_back(src);
+            mTypes->push_back(src);
         }
 
     /**
      *
      */
-    void Delete() {mTypes.clear();}
+    void Delete() 
+        {
+            for (long i = 0; i < mTypes->size(); i++)
+               (*mTypes)[i].Delete();
+            mTypes->clear();
+        }
     
     /**
      *
@@ -84,7 +93,8 @@ public:
     void Delete(long index)
         {
             if ( 0 <= index && index < Size() )
-                mTypes.erase(&mTypes[index], &mTypes[index+1]);
+                (*mTypes)[index].Delete();
+                mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
         }
 
     /**
@@ -101,13 +111,13 @@ public:
     CType &operator[](long index) 
         {
             if (index < 0 || Size() <= index) FatalError();
-            return mTypes[index];
+            return (*mTypes)[index];
         }   
 
     CType operator[](long index) const    
         {
             if (index < 0 || Size() <= index) FatalError();
-            return mTypes[index];
+            return (*mTypes)[index];
         }
     
     CType &operator[](const string &name) 
@@ -115,7 +125,7 @@ public:
             long Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
             
-            return mTypes[Index];
+            return (*mTypes)[Index];
         }   
 
     CType operator[](const string &name) const
@@ -123,19 +133,19 @@ public:
             long Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
             
-            return mTypes[Index];
+            return (*mTypes)[Index];
         }   
 
     /**
      *
      */
-    long Size() {return mTypes.size();}
+    long Size() {return mTypes->size();}
 
 private:
     /**
      *
      */
-    short IsInsertAllowed(CType src)
+    virtual short IsInsertAllowed(CType src)
         {return (GetIndex(src.GetName()) == -1);}
  
     /**
@@ -146,7 +156,7 @@ private:
             long i;
             
             for (i = 0; i < Size(); i++)
-                if ( name == mTypes[i].GetName() ) 
+                if ( name == (*mTypes)[i].GetName() ) 
                     return i;
             
             return -1;

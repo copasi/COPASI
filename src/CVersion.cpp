@@ -21,7 +21,7 @@ CVersion::~CVersion()
  /* get out of here!*/
 }
 
-CVersion::SetVersion(long major, long minor, long devel)
+void CVersion::SetVersion(long major, long minor, long devel)
 {
     mMajor = major;
     mMinor = minor;
@@ -50,7 +50,7 @@ const string & CVersion::GetVersion()
 }
 
 
-CVersion::SetString()
+void CVersion::SetString()
 {
  /* if it is a development version, set a string with 3 numbers */
  if (mDevel<300L)

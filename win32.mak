@@ -1,4 +1,4 @@
-PRG    = test.exe
+PRG    = win32.exe
 
 LINK    = link.exe
 CXX	= cl.exe
@@ -28,10 +28,8 @@ doc/html/index.html: $(INCDIR)/*.h test.dox
 	doxygen test.dox
 
 clean:  
-	-del /f test
+	-del /f $(PRG)
         -rmdir /s /q obj
-	-rmdir /s /q debug
-#	-rmdir /s /q doc
 
 
 

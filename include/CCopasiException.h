@@ -23,15 +23,20 @@ public:
      *  Specific consructor. Creates a exception with a message.
      *  @param pmessage pointer to a CCopasiMessage object.
      */
-    CCopasiException(CCopasiMessage *pmessage);
+    CCopasiException(CCopasiMessage &message);
 
     /**
      *  Destructor. 
      */
     ~CCopasiException();
 
-    CCopasiMessage Message;
+    /**
+     *  Retrieves the Message associated with the exception
+     */
+    CCopasiMessage GetMessage();
+    
 private:
+    CCopasiMessage mMessage;
 
 };
 #endif // COPASI_CCopasiException

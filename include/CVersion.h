@@ -88,13 +88,13 @@ public:
      *  @param minor minor version number. 
      *  @param devel development version number. 
      */
-    SetVersion(long major, long minor, long devel);
+    void SetVersion(long major, long minor, long devel);
 
 private:
     /**
      *  Creates the version string.
      */
-    SetString();
+    void SetString();
 };
 
 #endif // COPASI_CVersion

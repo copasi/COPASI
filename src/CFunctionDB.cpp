@@ -14,7 +14,7 @@ CKinFunction & CFunctionDB::DBLoad(const string & functionName)
 
     CReadConfig inbuf(mFilename);
 
-    return mLoadedFunctions[index];
+    return (*mLoadedFunctions)[index];
 }
 
 void CFunctionDB::DBAdd(CKinFunction & function)
@@ -29,9 +29,9 @@ CKinFunction & CFunctionDB::FindFunction(const string & functionName)
 {
     long i;
     
-    for (i = 0; i < mLoadedFunctions.Size(); i++)
-        if (functionName == mLoadedFunctions[i].GetName())
-            return mLoadedFunctions[i];
+    for (i = 0; i < mLoadedFunctions->Size(); i++)
+        if (functionName == (*mLoadedFunctions)[i].GetName())
+            return (*mLoadedFunctions)[i];
 
     return DBLoad(functionName);
 }

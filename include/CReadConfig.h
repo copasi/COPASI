@@ -57,7 +57,7 @@ private:
     /**
      * Mode = CReadConfig::SEARCH
      */
-    long mMode;
+    CReadConfig::Mode mMode;
 
     /**
      *  Failure status:
@@ -117,7 +117,7 @@ public:
     long GetVariable(const string& name, 
                      const string& type,
                      void * pout,
-                     enum Mode mode = CReadConfig::NEXT);
+                     CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      *  Retrieves a variable from the input file.
@@ -134,7 +134,7 @@ public:
                      const string& type,
                      void * pout1,
                      void * pout2,
-                     enum Mode mode = CReadConfig::NEXT);
+                     CReadConfig::Mode mode = CReadConfig::NEXT);
 };
 #endif // COPASI_CReadConfig
 

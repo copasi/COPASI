@@ -50,9 +50,9 @@ CNodeK::CNodeK(double constant)
     mIndex    = -1;
 }
 
-CNodeK::~CNodeK()
-{
-}
+void CNodeK::Delete() {}
+    
+CNodeK::~CNodeK() {}
 
 long CNodeK::Load(CReadConfig & configbuffer)
 {

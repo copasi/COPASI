@@ -9,17 +9,10 @@
 #include "CCopasiException.h"
 
 
-CCopasiException::CCopasiException(void)
-{
-//    mMessage = 0;
-}
+CCopasiException::CCopasiException(void) {mMessage = * new CCopasiMessage();}
 
-CCopasiException::CCopasiException(CCopasiMessage *pmessage)
-{
-    Message = *pmessage;
-}
+CCopasiException::CCopasiException(CCopasiMessage &message){mMessage = message;}
 
-CCopasiException::~CCopasiException(void)
-{
-}
+CCopasiException::~CCopasiException(void) {}
 
+CCopasiMessage CCopasiException::GetMessage() {return mMessage;}

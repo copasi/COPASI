@@ -87,7 +87,7 @@ public:
      *  @param compartment name of the compartment the metabolite
      *     is located in.
      */
-    CMetab(const string & compartment, short status, CCompartment & name);
+    // CMetab(const string & compartment, short status, CCompartment & name);
 
     /**
      *  Destructor.
@@ -166,7 +166,7 @@ private:
 
 class CMetabOld
 {
-    friend CMetab;
+    friend class CMetab;
     
 // Attributes
 private:
@@ -202,12 +202,14 @@ public:
     long Load(CReadConfig & configbuffer);
 
     long GetIndex();
+
+    string GetName();
 };
 
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
 private:
-     short IsInsertAllowed(CMetabOld src) {return TRUE;}
+    short IsInsertAllowed(CMetabOld src) {return TRUE;}
 };
   
 #endif // COPASI_CMetab
