@@ -87,6 +87,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "copasiXML"=".\xml\copasiXML.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "elementaryFluxModes"=".\elementaryFluxModes\elementaryFluxModes.dsp" - Package Owner=<4>
 
 Package=<5>
