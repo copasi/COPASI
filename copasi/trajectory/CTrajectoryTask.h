@@ -42,27 +42,32 @@ class CTrajectoryTask
 
     /**
      * Initial Output Event
-     */
-    COutputEvent *mpOutInit;
+     */ 
+    //COutputEvent *mpOutInit;
 
     /**
      * Any Point Output Event from beginning to end
-     */
-    COutputEvent *mpOutPoint;
+     */ 
+    //COutputEvent *mpOutPoint;
 
     /**
      * End Phase Output Event
-     */                                       friend CStochMethod *
-    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
-
-    COutputEvent *mpOutEnd;
+     */ 
+    //COutputEvent *mpOutEnd;
 
     /**
      * Pointer to the output stream for reporting
      */
     std::ofstream * mpOut;
 
-    //Operations
+    /**
+     * Produces the output. time=0 for init, time=1 for point, time=2 for end.
+     */
+    void printOutput(const C_INT32 time);
+
+    friend CStochMethod *
+    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
+
   public:
     /**
      * default constructor
