@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:38:21 $
+   $Author: jpahle $ 
+   $Date: 2005/02/03 14:17:44 $
    End CVS Header */
 
 /**
@@ -97,6 +97,7 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
 const double CHybridMethod::step(const double & deltaT)
 {
+  //outputDebug(std::cout, 0);
   // write the current state to the model
   //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
@@ -237,7 +238,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   //deprecated:  mOutputFile.open(DEFAULT_OUTPUT_FILE); // DEFAULT_OUTPUT_FILE in CHybridMethod.h
   //deprecated:  mOutputCounter = OUTPUT_COUNTER; // OUTPUT_COUNTER in CHybridMethod.h
 
-  //deprecated:  outputDebug(cout, 0); // DEBUG
+  //deprecated:  outputDebug(std::cout, 0); // DEBUG
   return;
 }
 
@@ -540,18 +541,17 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
           index = *iter;
           mAmuOld[index] = mAmu[index];
           calculateAmu(index);
-          if (*iter == rIndex)
-            {
-              // draw new random number and update the reaction just fired
-              newTime = time + generateReactionTime(rIndex);
-              mPQ.updateNode(rIndex, newTime);
-            }
-          else
-            {
-              updateTauMu(index, time);
-            }
+          if (*iter != rIndex) updateTauMu(index, time);
         }
     }
+
+  // draw new random number and update the reaction just fired
+  if ((rIndex != -1) && (mReactionFlags[rIndex].mpPrev == NULL))
+    {// reaction is stochastic
+      newTime = time + generateReactionTime(rIndex);
+      mPQ.updateNode(rIndex, newTime);
+    }
+
   // empty the mUpdateSet
   mUpdateSet.clear();
   return;
@@ -587,29 +587,22 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // Iterate through each substrate in the reaction
   const std::vector<CHybridBalance> & substrates = mLocalSubstrates[rIndex];
 
-  int flag = 0;
-
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
       //std::cout << "Num ident = " << num_ident << std::endl;
       //total_substrates += num_ident;
 
-      if (num_ident > 1)
-        {
-          flag = 1;
-          number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getNumber());
-          lower_bound = number - num_ident;
-          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
-          substrate_factor = substrate_factor * pow((double) number, (int) (num_ident - 1)); //optimization
-          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
+      number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getNumber());
+      lower_bound = number - num_ident;
+      //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
+      substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
+      //std::cout << "Substrate factor = " << substrate_factor << std::endl;
 
-          number--; //optimization
-          while (number > lower_bound)
-            {
-              amu *= number;
-              number--;
-            }
+      while (number > lower_bound)
+        {
+          amu *= number;
+          number--;
         }
     }
 
@@ -641,16 +634,10 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   //  mpModel->getReactions()[rIndex]->calculate();
   //  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getParticleFlux() / substrate_factor;
 
-  if (flag)
-    {
-      C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->getParticleFlux() / substrate_factor;
-      //std::cout << "Rate factor = " << rate_factor << std::endl;
-      amu *= rate_factor;
-      mAmu[rIndex] = amu;
-    }
-  else
-  {mAmu[rIndex] = (*mpReactions)[rIndex]->getParticleFlux();}
-
+  C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->getParticleFlux() / substrate_factor;
+  //std::cout << "Rate factor = " << rate_factor << std::endl;
+  amu *= rate_factor;
+  mAmu[rIndex] = amu;
   //std::cout << "Index = " << rIndex << "  Amu = " << amu << std::endl;
   return;
 
@@ -944,7 +931,10 @@ void CHybridMethod::setupPartition()
   for (i = 0; i < mMetabFlags.size(); i++)
     {
       if ((*mpMetabolites)[i]->getNumber() < averageStochLimit)
-        mMetabFlags[i] = LOW;
+        {
+          mMetabFlags[i] = LOW;
+          (*mpMetabolites)[i]->setNumber(floor((*mpMetabolites)[i]->getNumber()));
+        }
       else
         mMetabFlags[i] = HIGH;
     }
@@ -1058,6 +1048,7 @@ void CHybridMethod::partitionSystem()
       if ((mMetabFlags[i] == HIGH) && ((*mpMetabolites)[i]->getNumber() < mLowerStochLimit))
         {
           mMetabFlags[i] = LOW;
+          (*mpMetabolites)[i]->setNumber(floor((*mpMetabolites)[i]->getNumber()));
           // go through all corresponding reactions and update flags
           for (iter = mMetab2React[i].begin(), iterEnd = mMetab2React[i].end(); iter != iterEnd; iter++)
             {
@@ -1297,7 +1288,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                       // Everything !!!
+    case 0:                        // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1407,7 +1398,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                        // Variable values only
+    case 1:                         // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:
