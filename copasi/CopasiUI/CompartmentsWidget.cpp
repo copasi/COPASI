@@ -11,7 +11,7 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "CompartmentsWidget.h"
-
+#include "listviews.h" 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
  *  This widget is a child of 'parent', with the 
@@ -59,8 +59,11 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(clicked(int, int, int, const QPoint &)), this, SLOT(slotTableClicked(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(currentChanged (int, int)), this, SLOT(slotTableCurrentChanged(int, int)));
+  //connect(table, SIGNAL(clicked(int, int, int, const QPoint &)), this, SLOT(slotTableClicked(int, int, int, const QPoint &)));
+
+  connect(table, SIGNAL(clicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  //connect(table, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
+
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
@@ -100,7 +103,7 @@ void CompartmentsWidget::loadCompartments(CModel *model)
 void CompartmentsWidget::mousePressEvent (QMouseEvent * e)
 {
   QMessageBox::information(this, "Application name",
-                            "Clicked (mousePress) On Compartments Widget.");
+                           "Clicked (mousePress) On Compartments Widget.");
 
   QWidget::mousePressEvent(e);
   table->setFocus();
@@ -115,19 +118,22 @@ void CompartmentsWidget::slotTableClicked(int row, int col, int button, const QP
 void CompartmentsWidget::slotBtnOKClicked()
 {
   QMessageBox::information(this, "Compartments Widget",
-                            "Clicked Ok button On Compartments widget.(Inside CompartmentsWidget::slotBtnOKClicked())");
+                           "Clicked Ok button On Compartments widget.(Inside CompartmentsWidget::slotBtnOKClicked())");
 }
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {
   QMessageBox::information(this, "Compartments Widget",
-                            "kk");
+                           "kk");
 }
 
-void CompartmentsWidget::slotTableCurrentChanged(int row, int col)
+void CompartmentsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint &n)
 {
-  //QMessageBox::information(this, "Reactions Widget",
-  //"Current Changed.(Inside ReactionsWidget::slotTableCurrentChanged())");
+  return ;
+  /*CCompartment *compartn;
+     compartn = compartments[row];
+     QString &x=compartn->getName().c_str();
+     emit name(x); */
 }
 
 void CompartmentsWidget::slotTableSelectionChanged()

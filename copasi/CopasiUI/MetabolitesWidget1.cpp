@@ -313,6 +313,11 @@ void MetabolitesWidget1::loadName(QString setValue)
 
       LineEdit9->setText(QString::number(metab->getTransitionTime()));
       LineEdit9->setReadOnly(true);
+      RadioButton1->setChecked(FALSE);
+      RadioButton2->setChecked(FALSE);
+      RadioButton3->setChecked(FALSE);
+      RadioButton4->setChecked(FALSE);
+      RadioButton5->setChecked(FALSE);
 
       if (QString::number(metab->getStatus()) == "0")
         {

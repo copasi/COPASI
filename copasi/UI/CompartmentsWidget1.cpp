@@ -173,6 +173,7 @@ void CompartmentsWidget1::loadName(QString setValue)
   CMetab *mtb;
   ListBox1->setFixedSize(100, 150);
   ListBox1->setAutoScrollBar(true);
+  ListBox1->clear();
 
   for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
     {

@@ -59,6 +59,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4a->addSpacing(83);
   LineEdit1 = new QLineEdit("", Frame4a);
   hBoxLayout4a->addWidget(LineEdit1);
+  LineEdit1->setEnabled(false);
   hBoxLayout4a->addSpacing(20);
 
   //Frame for 2nd Row
@@ -73,6 +74,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
 
   LineEdit2 = new QLineEdit("", Frame4b);
   hBoxLayout4b->addWidget(LineEdit2);
+  LineEdit2->setEnabled(false);
   hBoxLayout4b->addSpacing(180);
 
   //Frame for 3rd Row
@@ -87,6 +89,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
 
   LineEdit3 = new QLineEdit("", Frame4c);
   hBoxLayout4c->addWidget(LineEdit3);
+  LineEdit3->setEnabled(false);
   hBoxLayout4c->addSpacing(180);
 
   //This is the frame for the cancel and the commit buttons
@@ -102,7 +105,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4d->addSpacing(15);
   hBoxLayout4d->addWidget(cancelChanges);
   hBoxLayout4d->addSpacing(15);
-  connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
+  //connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -148,16 +151,11 @@ void MoietyWidget1::loadName(QString setValue)
     }
 
   CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
-  //C_INT32 noOfMoietyRows = moieties.size();
   CMoiety *moiety;
   moiety = moieties[(string)setValue];
-  // const QString & m= moiety->getName().c_str();
-
   LineEdit1->setText(moiety->getDescription().c_str());
   LineEdit3->setText(moiety->getName().c_str());
   LineEdit2->setText(QString::number(moiety->getNumber()));
-  //connect(LineEdit3, SIGNAL(returnPressed()), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &m)));
-  //connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
 }
 
 ///end of all the functions

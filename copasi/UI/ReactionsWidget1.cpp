@@ -233,80 +233,71 @@ void ReactionsWidget1::loadName(QString setValue)
   LineEdit2->setText(chemEq->getChemicalEquation().c_str());
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
-
-  for (C_INT32 j = 0; j < noOfReactionsRows ; j++)
-    {
-      int m = -1;
-      reactn = reactions[j];
-      function = &reactn->getFunction();
-      ComboBox1->insertItem(function->getName().c_str(), m);
-
-      if (reactn->isReversible() == TRUE)
-        {
-          checkBox->setChecked(TRUE);
-        }
-
-      table->setNumCols(1);
-      QHeader *tableHeader1 = table->horizontalHeader();
-      QHeader *tableHeader2 = table->verticalHeader();
-      CCopasiVector < CReaction::CId2Metab> & react3 = reactn->getId2Modifiers();
-
-      if (react3.size() != 0)
-        {
-          table->setNumRows(5);
-          tableHeader2->setLabel(3, "ParameterName");
-          tableHeader2->setLabel(4, "ParameterValue");
-        }
-      else
-        {
-          table->setNumRows(4);
-          tableHeader2->setLabel(2, "ParameterName");
-          tableHeader2->setLabel(3, "ParameterValue");
-        };
-
-      //Setting table headers
-
-      tableHeader1->setLabel(0, "Value");
-
-      tableHeader2->setLabel(0, "Substrates");
-
-      tableHeader2->setLabel(1, "Products");
-
-      table->setColumnWidth (0, 200);
-
-      QString overall2 = "{";
-
-      QString overall4 = "}";
-
-      //CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-      const CCopasiVector < CChemEqElement > &react1 = (reactn->getChemEq()).getSubstrates();
-
-      const CChemEqElement *cchem;
-
-      for (int k = 0; k < react1.size(); k++)
-
-        ;
+  /*
+    for (C_INT32 j = 0; j < noOfReactionsRows ; j++)
       {
-        if (k = 0)
-          {
-            break;
-          }
-        else
-          {
-            cchem = react1[0];
-            QString overall1 = cchem->getMetaboliteName().c_str();
-            QString & overall1_2 = overall1.operator += (overall2) ;
-            QString overall3 = cchem->getCompartmentName().c_str();
-            QString & overall3_4 = overall3.operator += (overall4) ;
-            QString & overall = overall1_2.operator += (overall3_4) ;
-            //for the combo box
-            QStringList comboEntries1;
-            comboEntries1 = overall;
-            QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-            //table->setItem(0, 0, item);
-          }
-      }
+        reactn = reactions[j]; */
+  int m = -1;
+  function = &reactn->getFunction();
+  ComboBox1->insertItem(function->getName().c_str(), m);
+
+  if (reactn->isReversible() == TRUE)
+    {
+      checkBox->setChecked(TRUE);
     }
+
+  table->setNumCols(1);
+  QHeader *tableHeader1 = table->horizontalHeader();
+  QHeader *tableHeader2 = table->verticalHeader();
+  CCopasiVector < CReaction::CId2Metab> * react3 = &reactn->getId2Modifiers();
+
+  if (react3->size() != 0)
+    {
+      table->setNumRows(5);
+      tableHeader2->setLabel(3, "ParameterName");
+      tableHeader2->setLabel(4, "ParameterValue");
+    }
+  else
+    {
+      table->setNumRows(4);
+      tableHeader2->setLabel(2, "ParameterName");
+      tableHeader2->setLabel(3, "ParameterValue");
+    };
+
+  //Setting table headers
+
+  tableHeader1->setLabel(0, "Value");
+
+  tableHeader2->setLabel(0, "Substrates");
+
+  tableHeader2->setLabel(1, "Products");
+
+  table->setColumnWidth (0, 200);
+
+  QString overall2 = "{";
+
+  QString overall4 = "}";
+
+  //CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
+  const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
+
+  const CChemEqElement *cchem;
+
+  for (int k = 0; k < react1->size(); k++)
+    {
+      cchem = (*react1)[k];
+      QString overall1 = cchem->getMetaboliteName().c_str();
+      QString & overall1_2 = overall1.operator += (overall2) ;
+      QString overall3 = cchem->getCompartmentName().c_str();
+      QString & overall3_4 = overall3.operator += (overall4) ;
+      QString & overall = overall1_2.operator += (overall3_4) ;
+      //for the combo box
+      QStringList comboEntries1;
+      comboEntries1 = overall;
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      //table->setItem(0, 0, item);
+    }
+  // }
 }
 
 ///end of all the functions
