@@ -26,6 +26,8 @@ set cps_release="CONFIG+=release"
 :QMAKE
 cd copasi
 echo executing in copasi:
+echo   del /s .qmake.internal.cache
+del /s .qmake.internal.cache
 echo   qmake %cps_release% "MKL_PATH=%CBLAS_LIB%" "EXPAT_PATH=%EXPAT_LIB%"
 qmake %cps_release% "MKL_PATH=%CBLAS_LIB%" "EXPAT_PATH=%EXPAT_LIB%"
 
