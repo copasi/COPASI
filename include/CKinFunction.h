@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 
+#include "copasi.h"
 #include "CNodeK.h"
 #include "CCopasiVector.h"
 
@@ -36,7 +37,11 @@ private:
     /**
      *  The vector of nodes of the binary tree of the function
      */
-    CCopasiVector < CNodeK > mNodes;
+    class CNodes: public CCopasiVector < CNodeK >
+      {
+      private:
+	short IsInsertAllowed(CNodeK src) {return TRUE;}
+      } mNodes;
 
     /**
      *  The vector of pointers to the identifiers to the function
@@ -128,26 +133,26 @@ public:
      *  This sets the name of the function
      *  @param "const string" &name
      */
-    SetName(const string & name);
+    void SetName(const string & name);
 
     /**
      *  This sets the description of the function
      *  @param "const string" &description
      */
-    SetDescription(const string & description);
+    void SetDescription(const string & description);
 
     /**
      *  This sets wheter the function is reversible
      *  @param short reversible
      */
-    SetReversible(short reversible);
+    void SetReversible(short reversible);
 
     /**
      *  This sets the type of an identifier
      *  @param "const string" &name
      *  @param char type
      */
-    SetIdentifierType(const string & name,
+    void SetIdentifierType(const string & name,
                            char type);
 
     /**

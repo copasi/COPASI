@@ -22,8 +22,7 @@ public:
     /**
      *
      */
-    CCopasiVector() {DefinedInsertAllowed = NULL;}
-
+    CCopasiVector() {;}
 
     /**
      *
@@ -68,14 +67,7 @@ public:
      */
     long Add(CType src)
         {
-            if ( DefinedInsertAllowed ) 
-            {
-                if ( ! (*DefinedInsertAllowed)(src) ) FatalError();
-            }
-            else 
-            {
-                if ( ! DefaultInsertAllowed(src) ) FatalError();
-            }
+	    if ( ! IsInsertAllowed(src) ) FatalError();
                 
             mTypes.push_back(src);
         }
@@ -110,19 +102,12 @@ public:
             return Delete(Index);
         }
 
-    /**
-     *
-     */
-    SetInsertAllowed(short (*function)(CType src))
-        {
-            DefinedInsertAllowed = function;
-        }
-
     CType &operator[](long index) 
         {
             if ( 0 <= index && index < Size() ) return mTypes[index];
             FatalError();
         }   
+
     CType operator[](long index) const    
         {
             if ( 0 <= index && index < Size() ) return mTypes[index];
@@ -145,7 +130,6 @@ public:
             return mTypes[Index];
         }   
 
-
     /**
      *
      */
@@ -155,14 +139,9 @@ private:
     /**
      *
      */
-    short DefaultInsertAllowed(CType src)
-        {return ( GetIndex(src.GetName()) == -1 );}
-    
-    /**
-     *
-     */
-    short (*DefinedInsertAllowed)(CType src);
-    
+    short IsInsertAllowed(CType src)
+        {return (GetIndex(src.GetName()) == -1);}
+ 
     /**
      *
      */
@@ -177,6 +156,9 @@ private:
             return -1;
         }
 };
+
+// template < class CType > short DefaultIsInsertAllowed(CType src)
+// {return ( GetIndex(src.GetName()) == -1 );}
 
 #endif // COPASI_CCopasiVector
 

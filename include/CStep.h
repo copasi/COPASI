@@ -169,48 +169,48 @@ public:
     /**
      *
      */
-    long SetName(const string & name);
+    void SetName(const string & name);
 
     /**
      *
      */
-    long SetChemEq(const string & chemEq);
+    void SetChemEq(const string & chemEq);
 
     /**
      *
      */
-    long SetFunction(const string & functionName);
+    void SetFunction(const string & functionName);
 
     /**
      *
      */
-    long SetFlux(double flux);
+    void SetFlux(double flux);
 
     /**
      *
      */
-    long SetReversible(short reversible);
+    void SetReversible(short reversible);
 
     /**
      *
      */
-    long Compile(CCopasiVector < CMetab * > & metabolites);
+    void Compile(CCopasiVector < CMetab * > & metabolites);
     
 private:
     /**
      *
      */
-    long InitIdentifiers();
+    void InitIdentifiers();
 
     /**
      *
      */
-    long SetIdentifiers();
+    void SetIdentifiers();
 
     /**
      *
      */
-    long CheckIdentifiers();
+    void CheckIdentifiers();
 };
 
 #endif // COPASI_CSteb

@@ -9,8 +9,10 @@
 
 #include <string>
 
+#include "copasi.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
+#include "CCopasiVector.h"
 
 class CCompartment;
 
@@ -136,17 +138,17 @@ public:
     /**
      *
      */
-    SetName(const string & name) {mName = name;}
+    void SetName(const string & name) {mName = name;}
 
     /**
      *
      */
-    SetConcentration(double concentration) {mConc = concentration;}
+    void SetConcentration(double concentration) {mConc = concentration;}
     
     /**
      *
      */
-    SetCompartment(CCompartment * compartment) {mCompartment = compartment;} 
+    void SetCompartment(CCompartment * compartment) {mCompartment = compartment;} 
 
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.
@@ -202,4 +204,10 @@ public:
     long GetIndex();
 };
 
+class CMetabolitesOld: public CCopasiVector < CMetabOld >
+{
+private:
+     short IsInsertAllowed(CMetabOld src) {return TRUE;}
+};
+  
 #endif // COPASI_CMetab

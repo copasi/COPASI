@@ -178,55 +178,55 @@ class CNodeK
      * Setting mType the subtype of a node
      * @param "const char" type
      */
-    SetType(const char ype);
+    void SetType(const char ype);
 
     /**
      * Setting mSubtype the subtype of a node
      * @param "const char" subtype
      */
-    SetSubtype(const char subtype);
+    void SetSubtype(const char subtype);
 
     /**
      * Setting mLeft the pointer to the left branch
      * @param CNodeK &left
      */
-    SetLeft(CNodeK & left);
+    void SetLeft(CNodeK & left);
 
     /**
      * Setting mLeft the pointer to the left branch
      * @param CNodeK *pleft
      */
-    SetLeft(CNodeK * pleft);
+    void SetLeft(CNodeK * pleft);
 
     /**
      * Setting mRight the pointer to the right branch
      * @param CNodeK &right
      */
-    SetRight(CNodeK & right);
+    void SetRight(CNodeK & right);
 
     /**
      * Setting mRight the pointer to the right branch
      * @param CNodeK *pright
      */
-    SetRight(CNodeK * pright);
+    void SetRight(CNodeK * pright);
 
     /**
      * Setting mName the name of an identifier
      * @param "const string" &name
      */
-    SetName(const string & name);
+    void SetName(const string & name);
 
     /**
      * Setting the value of a number
      * @param double &constant
      */
-    SetConstant(double & constant);
+    void SetConstant(double & constant);
 
     /**
      * Setting the index of an identifier
      * @param long &index
      */
-    SetIndex(long index);
+    void SetIndex(long index);
 
     /**
      *  This checks whether mLeft points to a valid CNodeK
