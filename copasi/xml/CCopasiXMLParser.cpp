@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 02:59:37 $
+   $Date: 2005/02/19 13:16:53 $
    End CVS Header */
 
 /**
@@ -3531,8 +3531,12 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
       if (strcmp(pszName, "Task")) fatalError();
       // add mCommon.pCurrentTask to the listOfTasks and set
       // mCommon.pCurrentTask to NULL
-      mCommon.pTaskList->add(mCommon.pCurrentTask);
-      mCommon.pCurrentTask = NULL;
+      if (mCommon.pCurrentTask)
+        {
+          mCommon.pTaskList->add(mCommon.pCurrentTask);
+          mCommon.pCurrentTask = NULL;
+        }
+
       mCurrentElement = ListOfTasks;
       break;
 
