@@ -43,12 +43,15 @@ void calculateProbabilities(CCopasiVector < CGene > &gene,
 }
 
 /**
- *  Creates a gene network using a scale-free (Albert-Barabasi) topology
+ *  Creates a gene network using a Albert-Barabasi topology
  *
  *  @param C_INT32 n the total number of genes
  *  @param C_INT32 k the total number of links
  *  @param C_FLOAT64 p the probability that a link is positive
  *  @param C_FLOAT64 r the probability of rewiring a gene
+ *  @param C_FLOAT64 coopval the value for Hill coefficients
+ *  @param C_FLOAT64 rateval the value for rate constants
+ *  @param C_FLOAT64 constval the value for inh/act constants
  *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
  *  @param "char *" comments a string to write comments on the network
  */
@@ -57,6 +60,9 @@ void MakeGeneNetwork(C_INT32 n,
                       C_INT32 k,
                       C_FLOAT64 p,
                       C_FLOAT64 r,
+                      C_FLOAT64 coopval,
+                      C_FLOAT64 rateval,
+                      C_FLOAT64 constval,
                       CCopasiVector < CGene > &gene,
                       char *comments)
 {
@@ -107,10 +113,10 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, constval, coopval);
         }
-      gene[i]->setRate(1.0);
-      gene[i]->setDegradationRate(1.0);
+      gene[i]->setRate(rateval);
+      gene[i]->setDegradationRate(rateval);
     }
   // grow the network one by one for the remainder of the genes
   for (i = ancestors; i < n; i++)
@@ -143,7 +149,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                   if (l == -1)
                     break;
-                  gene[l]->addModifier(gene[i], i, modf, 1.0e-3, 1.0);
+                  gene[l]->addModifier(gene[i], i, modf, constval, coopval);
                 }
               else
                 {
@@ -155,12 +161,12 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                   if (l == -1)
                     break;
-                  gene[i]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
+                  gene[i]->addModifier(gene[l], l, modf, constval, coopval);
                 }
             }
         }
-      gene[i]->setRate(1.0);
-      gene[i]->setDegradationRate(1.0);
+      gene[i]->setRate(rateval);
+      gene[i]->setDegradationRate(rateval);
     }
 #ifdef XXXX
   // now rewire with probability r
@@ -196,7 +202,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
+              gene[j]->addModifier(gene[l], l, modf, constval, coopval);
             }
           // check if we rewire the l2 link
           if (dr250() < r)
@@ -220,7 +226,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l2], l2, modf, 1.0e-3, 1.0);
+              gene[j]->addModifier(gene[l2], l2, modf, constval, coopval);
             }
         }
     }

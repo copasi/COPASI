@@ -38,19 +38,25 @@ namespace clo
   struct options
     {
       options (void) :
+          constants(1.0),
+          coop(1.0),
           genes(10),
           inputs(2),
           positive(0.5),
           prefix("erdos"),
+          rates(1.0),
           rewire(0.1),
           seed(0),
           total(10)
       { }
 
+      double constants;
+      double coop;
       int genes;
       int inputs;
       double positive;
       std::string prefix;
+      double rates;
       double rewire;
       int seed;
       int total;
@@ -64,10 +70,13 @@ namespace clo
   struct option_locations
     {
       typedef int size_type;
+      size_type constants;
+      size_type coop;
       size_type genes;
       size_type inputs;
       size_type positive;
       size_type prefix;
+      size_type rates;
       size_type rewire;
       size_type seed;
       size_type total;
@@ -147,6 +156,9 @@ namespace clo
         option_inputs,
         option_positive,
         option_rewire,
+        option_coop,
+        option_rates,
+        option_constants,
         option_seed,
         option_prefix
       } openum_;

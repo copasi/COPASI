@@ -18,17 +18,15 @@
             <range min="1"/>
 	    <name>genes</name>
 	    <name>g</name>
-	    <name>n</name>
 	    <comment>the total number of genes</comment>
 	</option>
 
 	<option id="inputs" type="int" default="2">
             <range min="1"/>
 	    <name>inputs</name>
-	    <name>k</name>
 	    <name>i</name>
 	    <comment>
-		the number of inputs per gene
+		the number of total interactions
 	    </comment>
 	</option>
 
@@ -44,9 +42,36 @@
 	<option id="rewire" type="double" default="0.1">
             <range min="0.0" max="1.0" />
 	    <name>rewire</name>
-	    <name>r</name>
+	    <name>w</name>
 	    <comment>
 		the probability of rewiring links at random
+	    </comment>
+	</option>
+
+	<option id="coop" type="double" default="1.0">
+            <range min="0.0" />
+	    <name>coop</name>
+	    <name>c</name>
+	    <comment>
+		the value of Hill coefficients
+	    </comment>
+	</option>
+
+	<option id="rates" type="double" default="1.0">
+            <range min="0.0" />
+	    <name>rates</name>
+	    <name>r</name>
+	    <comment>
+		the value of rate constants
+	    </comment>
+	</option>
+
+	<option id="constants" type="double" default="1.0">
+            <range min="0.0" />
+	    <name>constants</name>
+	    <name>k</name>
+	    <comment>
+		the value of inhibition/activation constants
 	    </comment>
 	</option>
 

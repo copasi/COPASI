@@ -28,6 +28,9 @@ using namespace std;
  *  @param C_INT32 k the total number of links
  *  @param C_FLOAT64 p the probability that a link is positive
  *  @param C_FLOAT64 r the probability of rewiring a gene
+ *  @param C_FLOAT64 coopval the value for Hill coefficients
+ *  @param C_FLOAT64 rateval the value for rate constants
+ *  @param C_FLOAT64 constval the value for inh/act constants
  *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
  *  @param "char *" comments a string to write comments on the network
  */
@@ -36,6 +39,9 @@ void MakeGeneNetwork(C_INT32 n,
                       C_INT32 k,
                       C_FLOAT64 p,
                       C_FLOAT64 r,
+                      C_FLOAT64 coopval,
+                      C_FLOAT64 rateval,
+                      C_FLOAT64 constval,
                       CCopasiVector < CGene > &gene,
                       char *comments)
 {
@@ -68,15 +74,15 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, constval, coopval);
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l2], l2, modf, 1.0e-3, 1.0);
+          gene[i]->addModifier(gene[l2], l2, modf, constval, coopval);
         }
-      gene[i]->setRate(1.0);
-      gene[i]->setDegradationRate(1.0);
+      gene[i]->setRate(rateval);
+      gene[i]->setDegradationRate(rateval);
     }
   // now rewire the grid
   for (i = 1; i <= links2; i++) // each link (one link each side)
@@ -111,7 +117,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
+              gene[j]->addModifier(gene[l], l, modf, constval, coopval);
             }
           // check if we rewire the l2 link
           if (dr250() < r)
@@ -135,7 +141,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l2], l2, modf, 1.0e-3, 1.0);
+              gene[j]->addModifier(gene[l2], l2, modf, constval, coopval);
             }
         }
     }

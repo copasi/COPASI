@@ -745,11 +745,26 @@ void WriteGepasi(char *Title, CModel &model)
       sprintf(strtmp, "Title=[%s]ss\nType=2\nI=%s", Metab[i]->getName().data(), Metab[i]->getName().data());
       fout << strtmp << endl;
     }
+  fout << "Scan\nEnabled=0" << endl;
+  sprintf(strtmp, "Dimension=%ld", nmetab);
+  fout << strtmp << endl;
+  // set initial concentrations on scan
+  for (i = 0; i < nmetab; i++)
+    {
+      sprintf(strtmp, "Title=[%s]i\nType=1\nI=%s", Metab[i]->getName().data(), Metab[i]->getName().data());
+      fout << strtmp << endl;
+      fout << "Min=0.1\nMax=10.0\nDensity=10\nLog=1\nIndependent=";
+      if (i == 0)
+        fout << "1";
+      else
+        fout << "0";
+      fout << "\nGrid=1" << endl;
+    }
   do
     {
       getline(fin, linein);
     }
-  while (linein.find("Scan") != 0);
+  while (linein.find("Parameter Links") != 0);
   do
     {
       fout << linein << endl;
@@ -778,7 +793,8 @@ C_INT main(C_INT argc, char *argv[])
   CCopasiVector < CGene > GeneList;
   string prefix;
   CModel model;
-  C_FLOAT64 positive, rewiring;
+  C_FLOAT64 positive, rewiring, coopval, rateval, constval;
+
   char NetTitle[512], comments[2048];
 
   CGeneModifier *test;
@@ -799,6 +815,9 @@ C_INT main(C_INT argc, char *argv[])
       prefix = options.prefix;
       positive = options.positive;
       rewiring = options.rewire;
+      coopval = options.coop;
+      rateval = options.rates;
+      constval = options.constants;
     }
   catch (clo::autoexcept &e)
     {
@@ -827,7 +846,7 @@ C_INT main(C_INT argc, char *argv[])
     {
       Copasi = new CGlobals;
       // build the gene network
-      MakeGeneNetwork(n, k, positive, rewiring, GeneList, comments);
+      MakeGeneNetwork(n, k, positive, rewiring, coopval, rateval, constval, GeneList, comments);
       sprintf(NetTitle, "%s%03ld", prefix.data(), i + 1);
       // create appropriate kinetic types, only those
       // that are really needed for this model

@@ -17,13 +17,16 @@
 namespace
   {
   const char const_usage[] =
-    "  -g, -n, --genes int    the total number of genes\n"
-    "  -i, -k, --inputs int   the number of inputs per gene\n"
-    "  -p, --positive double  the probability of inputs being positive\n"
-    "  -r, --rewire double    the probability of rewiring links at random\n"
-    "  -s, --seed int         a seed for the random number generator\n"
-    "  -t, --total int        the total number of networks to generate\n"
-    "  -x, --prefix string    Prefix for filenames\n";
+    "  -c, --coop double       the value of Hill coefficients\n"
+    "  -g, --genes int         the total number of genes\n"
+    "  -i, --inputs int        the number of total interactions\n"
+    "  -k, --constants double  the value of inhibition/activation constants\n"
+    "  -p, --positive double   the probability of inputs being positive\n"
+    "  -r, --rates double      the value of rate constants\n"
+    "  -s, --seed int          a seed for the random number generator\n"
+    "  -t, --total int         the total number of networks to generate\n"
+    "  -w, --rewire double     the probability of rewiring links at random\n"
+    "  -x, --prefix string     Prefix for filenames\n";
 
   const char const_help_comment[] =
     "use the -h option for help";
@@ -52,6 +55,10 @@ void clo::parser::finalize (void)
     {
       switch (openum_)
         {
+        case option_constants:
+          throw option_error("missing value for 'constants' option");
+        case option_coop:
+          throw option_error("missing value for 'coop' option");
         case option_genes:
           throw option_error("missing value for 'genes' option");
         case option_inputs:
@@ -60,6 +67,8 @@ void clo::parser::finalize (void)
           throw option_error("missing value for 'positive' option");
         case option_prefix:
           throw option_error("missing value for 'prefix' option");
+        case option_rates:
+          throw option_error("missing value for 'rates' option");
         case option_rewire:
           throw option_error("missing value for 'rewire' option");
         case option_seed:
@@ -149,6 +158,11 @@ void clo::parser::parse_short_option (char option, int position, opsource source
 {
   switch (option)
     {
+    case 'c':
+      openum_ = option_coop;
+      state_ = state_value;
+      locations_.coop = position;
+      return;
     case 'g':
       openum_ = option_genes;
       state_ = state_value;
@@ -160,14 +174,9 @@ void clo::parser::parse_short_option (char option, int position, opsource source
       locations_.inputs = position;
       return;
     case 'k':
-      openum_ = option_inputs;
+      openum_ = option_constants;
       state_ = state_value;
-      locations_.inputs = position;
-      return;
-    case 'n':
-      openum_ = option_genes;
-      state_ = state_value;
-      locations_.genes = position;
+      locations_.constants = position;
       return;
     case 'p':
       openum_ = option_positive;
@@ -175,9 +184,9 @@ void clo::parser::parse_short_option (char option, int position, opsource source
       locations_.positive = position;
       return;
     case 'r':
-      openum_ = option_rewire;
+      openum_ = option_rates;
       state_ = state_value;
-      locations_.rewire = position;
+      locations_.rates = position;
       return;
     case 's':
       openum_ = option_seed;
@@ -188,6 +197,11 @@ void clo::parser::parse_short_option (char option, int position, opsource source
       openum_ = option_total;
       state_ = state_value;
       locations_.total = position;
+      return;
+    case 'w':
+      openum_ = option_rewire;
+      state_ = state_value;
+      locations_.rewire = position;
       return;
     case 'x':
       openum_ = option_prefix;
@@ -214,7 +228,21 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
 {
   option = expand_long_name(option);
 
-  if (strcmp(option, "genes") == 0)
+  if (strcmp(option, "constants") == 0)
+    {
+      openum_ = option_constants;
+      locations_.constants = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "coop") == 0)
+    {
+      openum_ = option_coop;
+      locations_.coop = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "genes") == 0)
     {
       openum_ = option_genes;
       locations_.genes = position;
@@ -239,6 +267,13 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
     {
       openum_ = option_prefix;
       locations_.prefix = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "rates") == 0)
+    {
+      openum_ = option_rates;
+      locations_.rates = position;
       state_ = state_value;
       return;
     }
@@ -278,6 +313,48 @@ void clo::parser::parse_value (const char *value)
 {
   switch (openum_)
     {
+    case option_constants:
+      {
+        char *endptr;
+        double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr))
+          ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid floating point value '");
+            error += value;
+            error += "'";
+            throw option_error(error);
+          }
+        if (tmp < 0.0)
+          {
+            throw option_error("floating point value out of range, 'constants' min is 0.0");
+          }
+        options_.constants = tmp;
+      }
+      break;
+    case option_coop:
+      {
+        char *endptr;
+        double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr))
+          ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid floating point value '");
+            error += value;
+            error += "'";
+            throw option_error(error);
+          }
+        if (tmp < 0.0)
+          {
+            throw option_error("floating point value out of range, 'coop' min is 0.0");
+          }
+        options_.coop = tmp;
+      }
+      break;
     case option_genes:
       {
         char *endptr;
@@ -348,6 +425,27 @@ void clo::parser::parse_value (const char *value)
     case option_prefix:
       {
         options_.prefix = value;
+      }
+      break;
+    case option_rates:
+      {
+        char *endptr;
+        double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr))
+          ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid floating point value '");
+            error += value;
+            error += "'";
+            throw option_error(error);
+          }
+        if (tmp < 0.0)
+          {
+            throw option_error("floating point value out of range, 'rates' min is 0.0");
+          }
+        options_.rates = tmp;
       }
       break;
     case option_rewire:
@@ -428,6 +526,12 @@ namespace
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
 
+    if (name_size <= 9 && name.compare(0, name_size, "constants", name_size) == 0)
+      matches.push_back("constants");
+
+    if (name_size <= 4 && name.compare(0, name_size, "coop", name_size) == 0)
+      matches.push_back("coop");
+
     if (name_size <= 5 && name.compare(0, name_size, "genes", name_size) == 0)
       matches.push_back("genes");
 
@@ -439,6 +543,9 @@ namespace
 
     if (name_size <= 6 && name.compare(0, name_size, "prefix", name_size) == 0)
       matches.push_back("prefix");
+
+    if (name_size <= 5 && name.compare(0, name_size, "rates", name_size) == 0)
+      matches.push_back("rates");
 
     if (name_size <= 6 && name.compare(0, name_size, "rewire", name_size) == 0)
       matches.push_back("rewire");
