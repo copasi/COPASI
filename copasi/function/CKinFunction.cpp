@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:47 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/16 19:27:49 $
    End CVS Header */
 
 /**
@@ -130,6 +130,19 @@ void CKinFunction::compile()
   initIdentifierNodes();
 }
 
+void CKinFunction::preCompile()
+{
+  cleanupNodes();
+  parse();
+  connectNodes();
+}
+
+void CKinFunction::connect()
+{
+  // at this time, we need to recognize if we can find if each N_OBJECT has meaning
+  initIdentifierNodes();
+}
+
 C_INT32 CKinFunction::parse()
 {
   int i = 1;
@@ -180,7 +193,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                           // this is an error
+        case N_NOP:                            // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
