@@ -31,8 +31,8 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "SteadyState/CSteadyStateTask.h"
-#include "SteadyState/CSteadyStateProblem.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
@@ -194,8 +194,7 @@ ScanWidget::~ScanWidget()
 }
 
 void ScanWidget::CancelChangeButton()
-{
-}
+{}
 
 void ScanWidget::CommitChangeButton()
 {
@@ -221,8 +220,7 @@ void ScanWidget::TrajectoryButtonClicked()
   scanProblem->setProcessTrajectory(trajectory->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
   if (trajectory->isChecked())
-  {}
-}
+    {}}
 
 void ScanWidget::loadScan(CModel *model)
 {
