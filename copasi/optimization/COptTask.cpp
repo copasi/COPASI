@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2005/01/24 16:11:29 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:53:57 $
    End CVS Header */
 
 /**
@@ -18,8 +18,6 @@
 #include "COptTask.h"
 #include "COptProblem.h"
 #include "COptMethod.h"
-#include "utilities/CGlobals.h" 
-//#include "utilities/CReadConfig.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 

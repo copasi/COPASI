@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/11/16 03:14:01 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:53:56 $
    End CVS Header */
 
 /********************************************************
@@ -18,7 +18,6 @@ Comment : ParameterFittingWidget for UI of the param fitting function
 #include "copasi.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
-#include "utilities/CGlobals.h"
 #include "TrajectoryWidget.h"
 #include "SteadyStateWidget.h" 
 //#include "OptimizationItemWidget.h"

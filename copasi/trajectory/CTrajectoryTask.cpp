@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/07 09:31:44 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:53:57 $
    End CVS Header */
 
 /**
@@ -25,7 +25,6 @@
 #include "CTrajectoryMethod.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "utilities/CGlobals.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 #include "utilities/COutputHandler.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/26 21:47:08 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:53:56 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -15,7 +15,6 @@
 #include "CReaction.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
-#include "utilities/CGlobals.h"
 #include "model/CModel.h"
 
 CChemEqInterface::CChemEqInterface()

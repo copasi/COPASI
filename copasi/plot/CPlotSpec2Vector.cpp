@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 20:42:23 $
+   $Date: 2005/02/18 16:53:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,7 +12,6 @@
 #include "report/CCopasiObjectReference.h"
 #include "model/CModel.h"
 #include "plotwindow.h"
-#include "utilities/CGlobals.h"
 
 CPlotSpec2Vector::CPlotSpec2Vector(const std::string & name,
                                    const CCopasiContainer * pParent):
