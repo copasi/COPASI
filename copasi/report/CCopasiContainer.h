@@ -49,8 +49,7 @@ class CCopasiContainer: public CCopasiObject
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
-    const std::vector< CCopasiObject * > & getObjects() const
-      {return mObjects;}
+    const std::vector< CCopasiObject * > & getObjects() const;
 
     void add(CCopasiObject * pObject);
 
