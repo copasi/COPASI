@@ -20,10 +20,10 @@
 # Differential equations
 
 #compartment 1
-1: E1' = -k11*E1*S1 + k12 * ES1 + k13 *ES1
+1: E1' = -2*k11*E1*S1 + k12 * ES1 * 4  + k13 *ES1/2
 1: S1' = -k11*E1*S1 + k12 * ES1
 1: ES1' = k11*E1*S1 - k12 * ES1 - k13 *ES1
-1: P1' = k13 *ES1 - k14*P1 + k24*P2
+1: P1' = k13 *ES1 - k14*P1^3 + k24*P2
 #compartment 2
 2: E2' = -k21*E2*S2 + k22 * ES2 + k23 *ES2
 2: S2' = -k21*E2*S2 + k22 * ES2
