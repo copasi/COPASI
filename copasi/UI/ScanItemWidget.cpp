@@ -173,11 +173,11 @@ void ScanItemWidget::MinValueChanged(const QString&)
 
 void ScanItemWidget::DensityValueChanged(const QString&)
 {
-  pParameter->setValue("incr", mDensity->text().toDouble());
+  pParameter->setValue("Density", mDensity->text().toDouble());
   /*  for verfication
-   if (pParameter->getIndex("incr")==C_INVALID_INDEX)
+   if (pParameter->getIndex(Density")==C_INVALID_INDEX)
     return;
-   double toDouble = pParameter->getValue("incr");
+   double toDouble = pParameter->getValue("Density");
   */
 }
 
@@ -269,7 +269,7 @@ void ScanItemWidget::updateObject()
 {
   mMax->setText(QString::number(pParameter->getValue("max")));
   mMin->setText(QString::number(pParameter->getValue("min")));
-  mDensity->setText(QString::number(pParameter->getValue("incr")));
+  mDensity->setText(QString::number(pParameter->getValue("Density")));
   mLogarithmic->setChecked(pParameter->getValue("log"));
   mIndependent->setChecked(pParameter->getValue("Indp"));
   switch (int(pParameter->getValue("gridType")))
@@ -302,7 +302,7 @@ void ScanItemWidget::InitializeParameterList()
   //name value type
   pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("min", mMin->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("incr", mDensity->text().toDouble(), CParameter::DOUBLE);
+  pParameter->add("Density", mDensity->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("log", mLogarithmic->text().toUInt(), CParameter::BOOL);
   pParameter->add("Indp", mIndependent->text().toUInt(), CParameter::BOOL);
 
