@@ -32,3 +32,6 @@ CONFIG	+= qt warn_on debug release thread
 INCLUDEPATH	+= ../include
 unix:LIBS	+= -lqwt
 LANGUAGE	= C++
+
+INCLUDEPATH	+= $QWTDIR/include
+LIBS        += -L$QWTDIR/libs
