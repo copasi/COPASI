@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/22 18:58:58 $
+   $Date: 2004/01/09 14:48:25 $
    End CVS Header */
 
 /**
@@ -97,7 +97,7 @@ CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Function"),
     mType(CFunction::Base),
-    mKey(CKeyFactory::add("Function", this)),
+    mKey(GlobalKeys.add("Function", this)),
     mDescription(),
     mReversible(TriUnspecified),
     mUsageDescriptions("Usage Descriptions", this),
@@ -108,7 +108,7 @@ CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
-    mKey(CKeyFactory::add("Function", this)),
+    mKey(GlobalKeys.add("Function", this)),
     mDescription(src.mDescription),
     mReversible(src.mReversible),
     mUsageDescriptions(src.mUsageDescriptions, this),
@@ -117,7 +117,7 @@ CFunction::CFunction(const CFunction & src,
 
 CFunction::~CFunction()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:31 $
+   $Date: 2004/01/09 14:48:20 $
    End CVS Header */
 
 #include <string>
@@ -71,7 +71,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   mReactionReferenceKey = key;
 
   const CReaction *rea;
-  rea = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
+  rea = dynamic_cast< CReaction *>(GlobalKeys.get(key));
 
   mReactionName = rea->getName();
 
@@ -106,7 +106,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
     if (!(*mpParameters == mpFunction->getParameters())) return; // do nothing
 
     CReaction *rea;
-    rea = (CReaction*)(CCopasiContainer*)CKeyFactory::get(mReactionReferenceKey);
+    rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
 
     rea->setName(mReactionName); //TODO: what else needs to be done here?
 
@@ -206,7 +206,6 @@ void CReactionInterface::clearFunction()
 void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
   std::cout << "setChemEqString: " << eq << std::endl;
-  //CModel * pModel = (CModel*) (CKeyFactory::get(mReactionReferenceKey)->getObjectAncestor("Model"));
   mChemEqI.setChemEqString(eq);
   findAndSetFunction(newFunction);
 }

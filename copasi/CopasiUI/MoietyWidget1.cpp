@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:35 $
+   $Date: 2004/01/09 14:48:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -126,6 +126,8 @@ void MoietyWidget1::loadMoieties(CModel *model)
   clicked in the tree   */
 bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 {
+  if (!moiety) return false;
+
   textBrowser->setText(moiety->getDescription().c_str());
 
   LineEdit3->setText(moiety->getName().c_str());
@@ -187,7 +189,7 @@ bool MoietyWidget1::update(ListViews::ObjectType objectType, ListViews::Action a
     {
     case ListViews::MODEL:
       //TODO: check if it really is a compartment
-      if (CKeyFactory::get(objKey)) return loadFromMoiety((CMoiety*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      return loadFromMoiety(dynamic_cast< CMoiety * >(GlobalKeys.get(objKey)));
       break;
     case ListViews::STATE:
       break;
@@ -210,7 +212,7 @@ bool MoietyWidget1::leave()
 bool MoietyWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CMoiety* moiety = (CMoiety*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CMoiety* moiety = dynamic_cast< CMoiety * >(GlobalKeys.get(objKey));
 
   //TODO: check if it really is a Moiety
   if (moiety) return loadFromMoiety(moiety);

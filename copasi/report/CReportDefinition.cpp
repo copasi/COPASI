@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:47 $
+   $Date: 2004/01/09 14:48:32 $
    End CVS Header */
 
 /**
@@ -28,7 +28,7 @@
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
     CCopasiObject(name, pParent, "ReportDefinition"),
-    mKey(CKeyFactory::add("CReportDefinition", this)),
+    mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(""),
     mpBody(new CReportBody),
     mSeperator("/t"),
@@ -38,7 +38,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
                                      const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
-    mKey(CKeyFactory::add("CReportDefinition", this)),
+    mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(src.mComment),
     mpBody(new CReportBody(*mpBody)),
     mSeperator(src.mSeperator),
@@ -51,7 +51,7 @@ CReportDefinition::~CReportDefinition()
 void CReportDefinition::cleanup()
 {
   pdelete(mpBody);
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   mHeaderVector.clear();
   mFooterVector.clear();
 }

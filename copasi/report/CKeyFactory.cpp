@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/08 20:19:25 $
+   $Date: 2004/01/09 14:48:31 $
    End CVS Header */
 
 /**
@@ -19,6 +19,8 @@
 #include <sstream>
 
 #include "CKeyFactory.h"
+
+CKeyFactory GlobalKeys;
 
 CKeyFactory::CDecisionVector::CDecisionVector():
     CVector< bool >()
@@ -110,9 +112,13 @@ bool CKeyFactory::HashTable::remove(const unsigned C_INT32 & index)
   return false;
 }
 
-std::map< std::string, CKeyFactory::HashTable > CKeyFactory::mKeyTable;
-
 CKeyFactory::CDecisionVector CKeyFactory::isDigit("0123456789");
+
+CKeyFactory::CKeyFactory():
+    mKeyTable()
+{}
+
+CKeyFactory::~CKeyFactory() {}
 
 std::string CKeyFactory::add(const std::string & prefix,
                              CCopasiObject * pObject)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.157 $
+   $Revision: 1.158 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/18 20:17:43 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:29 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ const char * CModel::QuantityUnitName[] =
 
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),
-    mKey(CKeyFactory::add("Model", this)),
+    mKey(GlobalKeys.add("Model", this)),
     mComments(),
     mVolumeUnit("ml"),
     mTimeUnit("s"),
@@ -105,7 +105,7 @@ CModel::CModel():
 
 CModel::CModel(const CModel & src):
     CCopasiContainer(src),
-    mKey(CKeyFactory::add("Model", this)),
+    mKey(GlobalKeys.add("Model", this)),
     mComments(src.mComments),
     mVolumeUnit(src.mVolumeUnit),
     mTimeUnit(src.mTimeUnit),
@@ -150,7 +150,7 @@ CModel::CModel(const CModel & src):
 
 CModel::~CModel()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   //cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -1604,7 +1604,7 @@ std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
 {
   std::vector<std::string> compReacKeys, metabReacKeys;
 
-  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+  CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(key));
   const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
   C_INT32 j, jmax = Metabs.size();
 
@@ -1761,7 +1761,7 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
 bool CModel::removeMetabolite(const std::string & key)
 {
   CMetab* pMetabolite =
-    dynamic_cast<CMetab *>(CKeyFactory::get(key));
+    dynamic_cast<CMetab *>(GlobalKeys.get(key));
 
   if (!pMetabolite)
     return false;
@@ -1810,7 +1810,7 @@ bool CModel::addCompartment(const std::string & name,
 bool CModel::removeCompartment(const std::string & key)
 {
   CCompartment *pCompartment =
-    dynamic_cast< CCompartment * >(CKeyFactory::get(key));
+    dynamic_cast< CCompartment * >(GlobalKeys.get(key));
 
   if (!pCompartment)
     return false;
@@ -1865,7 +1865,7 @@ bool CModel::addReaction(const CReaction & reaction)
 bool CModel::removeReaction(const std::string & key)
 {
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CKeyFactory::get(key));
+    dynamic_cast< CReaction * >(GlobalKeys.get(key));
 
   if (!pReaction)
     return false;
@@ -1941,7 +1941,7 @@ bool CModel::CStateTemplate::cleanup()
   for (; it != End; ++it)
     if (*it)
       {
-        CKeyFactory::remove((*it)->first);
+        GlobalKeys.remove((*it)->first);
         delete *it;
         *it = NULL;
       }
@@ -1957,7 +1957,7 @@ bool CModel::CStateTemplate::add(const std::string & objectKey)
 {
   std::pair< std::string, std::string > * pAdd =
     new std::pair< std::string, std::string >
-    (CKeyFactory::add("StateVariable", NULL), objectKey);
+    (GlobalKeys.add("StateVariable", NULL), objectKey);
 
   mList.push_back(pAdd);
 

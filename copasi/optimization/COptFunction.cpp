@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:51 $
+   $Date: 2004/01/09 14:48:31 $
    End CVS Header */
 
 #include <sstream>
@@ -17,7 +17,7 @@
 
 COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pParent)
     : CCopasiContainer(name, pParent, "OptFunction"),
-    mKey(CKeyFactory::add("OptFunction", this))
+    mKey(GlobalKeys.add("OptFunction", this))
 {
   mParaList.clear();
   mMinFunctionList.clear();
@@ -30,7 +30,7 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
     : CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("OptFunction", this)),
+    mKey(GlobalKeys.add("OptFunction", this)),
     mParaList(src.mParaList),
     mMinFunctionList(src.mMinFunctionList),
     mMaxFunctionList(src.mMaxFunctionList),
@@ -42,7 +42,7 @@ COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer,
 
 COptFunction::~COptFunction()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   cleanup();
 }
 

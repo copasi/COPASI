@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/18 20:08:15 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:21 $
    End CVS Header */
 
 /*******************************************************************
@@ -245,7 +245,8 @@ void CompartmentsWidget::slotBtnDeleteClicked()
           compartmentList.append(table->text(ToBeDeleted[i], 0));
           compartmentList.append(", ");
 
-          CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[ToBeDeleted[i]]);
+          CCompartment* comp =
+            dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[ToBeDeleted[i]]));
 
           const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
           C_INT32 noOfMetabs = Metabs.size();
@@ -270,7 +271,8 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                   reacFound = 1;
                   for (int k = 0; k < effectedReacKeys.size(); k++)
                     {
-                      CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[k]);
+                      CReaction* reac =
+                        dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
                       effectedReacList.append(reac->getName().c_str());
                       effectedReacList.append(", ");
                     }
@@ -304,7 +306,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:   // Yes or Enter
+        case 0:    // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -317,7 +319,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:   // No or Escape
+        case 1:    // No or Escape
           break;
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 17:59:24 $
+   $Date: 2004/01/09 14:48:22 $
    End CVS Header */
 
 /*******************************************************************
@@ -253,6 +253,8 @@ MetabolitesWidget1::~MetabolitesWidget1()
    clicked in the tree   */
 bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 {
+  if (!metab) return false;
+
   CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
   CCompartment *compt;
   ComboBox1->clear();
@@ -311,7 +313,7 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 bool MetabolitesWidget1::saveToMetabolite()
 {
   //find pointer to metab from key
-  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
   if (!metab) return false;
 
   //name
@@ -403,7 +405,7 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType, ListViews::Act
     case ListViews::STATE:
     case ListViews::MODEL:
       //TODO: check if it really is a compartment
-      if (CKeyFactory::get(objKey)) return loadFromMetabolite((CMetab*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      return loadFromMetabolite(dynamic_cast< CMetab * >(GlobalKeys.get(objKey)));
       break;
 
     default:
@@ -421,7 +423,7 @@ bool MetabolitesWidget1::leave()
 bool MetabolitesWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
+  CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
   //TODO: check if it really is a compartment
 
   if (metab) return loadFromMetabolite(metab);

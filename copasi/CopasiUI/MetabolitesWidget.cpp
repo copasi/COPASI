@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/18 20:11:51 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:22 $
    End CVS Header */
 
 /***********************************************************************
@@ -488,7 +488,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
               reacFound = 1;
               for (int j = 0; j < effectedReacKeys.size(); j++)
                 {
-                  CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[j]);
+                  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
                   effectedReacList.append(reac->getName().c_str());
                   effectedReacList.append(", ");
                 }
@@ -515,7 +515,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                    // Yes or Enter
+        case 0:                     // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -528,7 +528,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:                    // No or Escape
+        case 1:                     // No or Escape
           break;
         }
     }

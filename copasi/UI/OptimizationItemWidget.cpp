@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/21 14:31:24 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:23 $
    End CVS Header */
 
 /********************************************************
@@ -193,7 +193,8 @@ void OptimizationItemWidget::slotLowerEdit()
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineLower->setText(strFunction.c_str());
-      COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      COptFunction* func =
+        dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
       int nIndex; // this nIndex must exist;
       nIndex = func->Index(mpObject->getCN());
       func->mMinList[nIndex] = strFunction.c_str();
@@ -237,7 +238,8 @@ void OptimizationItemWidget::slotUpperEdit()
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineUpper->setText(strFunction.c_str());
-      COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      COptFunction* func =
+        dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
       int nIndex; // this nIndex must exist;
       nIndex = func->Index(mpObject->getCN());
       func->mMaxList[nIndex] = strFunction.c_str();

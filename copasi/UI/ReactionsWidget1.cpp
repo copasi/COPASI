@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:36 $
+   $Date: 2004/01/09 14:48:24 $
    End CVS Header */
 
 /*********************************************************************
@@ -194,6 +194,8 @@ ReactionsWidget1::~ReactionsWidget1()
    clicked in the tree   */
 bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
+  if (!reaction) return false;
+
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   mRi.initFromReaction(*(dataModel->getModel()), reaction->getKey());
@@ -343,7 +345,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType, ListViews::Actio
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
       //TODO: we have to decide how to handle this
-      if (CKeyFactory::get(objKey)) return loadFromReaction((CReaction*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      return loadFromReaction(dynamic_cast< CReaction * >(GlobalKeys.get(objKey)));
       break;
 
     default:
@@ -361,7 +363,7 @@ bool ReactionsWidget1::leave()
 bool ReactionsWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(key));
   //TODO: check if it really is a compartment
 
   if (reac) return loadFromReaction(reac);

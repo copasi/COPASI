@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 20:49:20 $
+   $Date: 2004/01/09 14:48:33 $
    End CVS Header */
 
 // ReportDefinitionVector.cpp: implementation of the CReportDefinitionVector class.
@@ -21,7 +21,7 @@
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiVectorN< CReportDefinition >(name, pParent),
-    mKey(CKeyFactory::add("CReportDefinitionVector", this))
+    mKey(GlobalKeys.add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -31,7 +31,7 @@ CReportDefinitionVector::~CReportDefinitionVector()
 
 void CReportDefinitionVector::cleanup()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
 }
 
 const std::string& CReportDefinitionVector::getKey()

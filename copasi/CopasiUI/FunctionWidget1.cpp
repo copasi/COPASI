@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/08 20:16:51 $
+   $Date: 2004/01/09 14:48:22 $
    End CVS Header */
 
 /**********************************************************************
@@ -214,7 +214,7 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
       pFunction = CFunction::createFunction(func);
     }
   else if (!pFunction)
-    fatalError();
+    return false;
 
   C_INT32 i, j;
 
@@ -405,10 +405,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                           // The user clicked the Retry again button or pressed Enter
+            case 0:                            // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                           // The user clicked the Quit or pressed Escape
+            case 1:                            // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -602,7 +602,7 @@ bool FunctionWidget1::saveToFunction()
 
 bool FunctionWidget1::saveToFunction()
 {
-  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CFunction* func = dynamic_cast< CFunction * >(GlobalKeys.get(objKey));
   if (!func) return false;
 
   bool changed = false;
@@ -734,13 +734,8 @@ bool FunctionWidget1::saveToFunction()
 
 void FunctionWidget1::updateApplication()
 {
-  //if (textBrowser->text().latin1() != pFunction->getDescription())
-  //{
-  //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  //CFunctionParameters &functParam = func ->getParameters();
   CFunctionParameters &functParam = pFunction->getParameters();
 
-  //CCopasiVectorNS < CUsageRange > & functUsage = func ->getUsageDescriptions();
   CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
 
   CUsageRange Application;
@@ -914,7 +909,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
     {
     case ListViews::MODEL:
       //TODO: check if it really is a compartment
-      if (CKeyFactory::get(objKey)) return loadFromFunction((CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      return loadFromFunction(dynamic_cast< CFunction * >(GlobalKeys.get(objKey)));
       break;
 
     default:
@@ -934,10 +929,7 @@ bool FunctionWidget1::leave()
 bool FunctionWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CFunction* func = dynamic_cast<CFunction*>(CKeyFactory::get(key));
-
-  // (CFunction*)(CCopasiContainer*)CKeyFactory::get(key);
-  //TODO: check if it really is a compartment
+  CFunction* func = dynamic_cast<CFunction*>(GlobalKeys.get(key));
 
   if (func) return loadFromFunction(func);
   else return false;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:19 $
+   $Date: 2004/01/09 14:48:27 $
    End CVS Header */
 
 // CChemEqElement
@@ -56,7 +56,7 @@ const std::string & CChemEqElement::getMetaboliteKey() const
   {return mMetaboliteKey;}
 
 const CMetab & CChemEqElement::getMetabolite() const
-  {return *(CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetaboliteKey);}
+  {return * dynamic_cast< CMetab * >(GlobalKeys.get(mMetaboliteKey));}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
@@ -71,18 +71,18 @@ C_FLOAT64 CChemEqElement::getMultiplicity() const
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {/*
-          unsigned C_INT32 i, imax = compartments.size();
-         
-          for (i = 0; i < imax; i++)
-            if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
-              break;
-         
-          if (i < imax)
-            mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
-          else if (mpMetabolite)
-            mMetaboliteName = mpMetabolite->getName();
-          else
-            mpMetabolite = NULL;*/
+            unsigned C_INT32 i, imax = compartments.size();
+           
+            for (i = 0; i < imax; i++)
+              if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
+                break;
+           
+            if (i < imax)
+              mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
+            else if (mpMetabolite)
+              mMetaboliteName = mpMetabolite->getName();
+            else
+              mpMetabolite = NULL;*/
 }
 
 std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)

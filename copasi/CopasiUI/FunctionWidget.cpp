@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/12/18 20:12:11 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:21 $
    End CVS Header */
 
 /***********************************************************************
@@ -223,7 +223,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           if (kmax > 0)
             {
               const CFunction* func =
-                dynamic_cast< CFunction * >(CKeyFactory::get(mKeys[ToBeDeleted[i]]));
+                dynamic_cast< CFunction * >(GlobalKeys.get(mKeys[ToBeDeleted[i]]));
 
               for (k = 0; k < kmax; k++)
                 {
@@ -260,7 +260,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:     // Yes or Enter
+            case 0:      // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -280,7 +280,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:     // No or Escape
+            case 1:      // No or Escape
               break;
             }
         }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:11:41 $
+   $Date: 2004/01/09 14:48:34 $
    End CVS Header */
 
 /**
@@ -54,7 +54,7 @@ CCopasiParameter::CCopasiParameter():
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
                                    const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add(src.getObjectType(), this)),
+    mKey(GlobalKeys.add(src.getObjectType(), this)),
     mType(src.mType),
     mSize(0),
     mpValue(createValue(src.mpValue))
@@ -71,7 +71,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                       CCopasiObject::ValueDbl :
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
                        (type == BOOL) ? CCopasiObject::ValueBool : 0))),
-    mKey(CKeyFactory::add(objectType, this)),
+    mKey(GlobalKeys.add(objectType, this)),
     mType(type),
     mSize(0),
     mpValue(createValue(pValue))
@@ -79,7 +79,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   deleteValue();
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/05 21:21:36 $
+   $Date: 2004/01/09 14:48:28 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -44,7 +44,7 @@ CMetab::CMetab(const std::string & name,
                      CCopasiObject::Container |
                      CCopasiObject::ValueDbl |
                      CCopasiObject::NonUniqueName),
-    mKey(CKeyFactory::add("Metabolite", this)),
+    mKey(GlobalKeys.add("Metabolite", this)),
     mConc(1.0),
     mIConc(1.0),
     mNumber(1.0),
@@ -66,7 +66,7 @@ CMetab::CMetab(const std::string & name,
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("Metabolite", this)),
+    mKey(GlobalKeys.add("Metabolite", this)),
     mConc(src.mConc),
     mIConc(src.mIConc),
     mNumber(src.mNumber),
@@ -97,7 +97,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 
 CMetab::~CMetab()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

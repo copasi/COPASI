@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:32 $
+   $Date: 2004/01/09 14:48:21 $
    End CVS Header */
 
 /*******************************************************************
@@ -137,6 +137,8 @@ CompartmentsWidget1::~CompartmentsWidget1()
   clicked in the tree   */
 bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
 {
+  if (!compartn) return false;
+
   LineEdit1->setText(compartn->getName().c_str());
 
   const CCopasiVectorNS < CMetab > & Metabs = compartn->getMetabolites();
@@ -162,7 +164,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
 
 bool CompartmentsWidget1::saveToCompartment()
 {
-  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(objKey));
   if (!comp) return false;
 
   //name
@@ -212,7 +214,7 @@ bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Ac
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
       //TODO: check if it really is a compartment
-      if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      return loadFromCompartment(dynamic_cast< CCompartment * >(GlobalKeys.get(objKey)));
       break;
 
     default:
@@ -230,7 +232,7 @@ bool CompartmentsWidget1::leave()
 bool CompartmentsWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+  CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
   //TODO: check if it really is a compartment
 
   if (comp) return loadFromCompartment(comp);

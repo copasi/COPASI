@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:34 $
+   $Date: 2004/01/09 14:48:22 $
    End CVS Header */
 
 /*******************************************************************
@@ -147,7 +147,7 @@ bool ModelWidget::loadModel(CModel *model)
 
 bool ModelWidget::saveToModel()
 {
-  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
 
   if (!model) return false;
 
@@ -218,7 +218,7 @@ bool ModelWidget::convert2NonReversible()
   CReactionInterface ri1, ri2;
   std::string fn, rn1, rn2;
 
-  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
   if (!model) return false;
 
   CCopasiVectorN< CReaction > & steps = model->getReactions();
@@ -317,7 +317,7 @@ bool ModelWidget::leave()
 bool ModelWidget::enter(const std::string & key)
 {
   objKey = key;
-  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(key);
+  CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(key));
   //TODO: check if it really is a model
 
   if (model) return loadModel(model);

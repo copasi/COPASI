@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:47 $
+   $Date: 2004/01/09 14:48:27 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@ const char * CFunctionParameter::RoleName[] =
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(CKeyFactory::add("FunctionParameter", this)),
+    mKey(GlobalKeys.add("FunctionParameter", this)),
     mType((CFunctionParameter::DataType) - 1),
     mUsage("unknown")
 {CONSTRUCTOR_TRACE;}
@@ -35,7 +35,7 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("FunctionParameter", this)),
+    mKey(GlobalKeys.add("FunctionParameter", this)),
     mType(src.mType),
     mUsage(src.mUsage)
 {CONSTRUCTOR_TRACE;}
@@ -45,14 +45,14 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const std::string &usage,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
-    mKey(CKeyFactory::add("FunctionParameter", this)),
+    mKey(GlobalKeys.add("FunctionParameter", this)),
     mType(type),
     mUsage(usage)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::~CFunctionParameter()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

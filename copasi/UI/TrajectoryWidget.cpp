@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 17:35:43 $
+   $Date: 2004/01/09 14:48:25 $
    End CVS Header */
 
 /********************************************************
@@ -223,7 +223,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 TrajectoryWidget::~TrajectoryWidget()
 {
   CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
 
   pdelete(tt);
 }
@@ -244,7 +244,7 @@ void TrajectoryWidget::CancelChange()
 void TrajectoryWidget::CommitChange()
 {
   CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
   CTrajectoryProblem* trajectoryproblem =
@@ -299,7 +299,7 @@ void TrajectoryWidget::runTrajectoryTask()
     }
 
   CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
   tt->initialize();
@@ -326,7 +326,7 @@ void TrajectoryWidget::runTrajectoryTask()
 void TrajectoryWidget::loadTrajectoryTask()
 {
   CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
   CTrajectoryProblem* trajectoryproblem =
@@ -385,7 +385,7 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
   //if (!mTrajectoryTask)
   //  return;
   CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
   CTrajectoryProblem* trajectoryproblem =
@@ -426,7 +426,7 @@ void TrajectoryWidget::ExportToFile()
     {
       textFile += ".txt";
       CWriteConfig outbuf(textFile.latin1());
-      //      ((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey))->save(outbuf);
+      //      ((CTrajectoryTask*)(CCopasiContainer*)GlobalKeys.get(objKey))->save(outbuf);
     }
 }
 
@@ -455,7 +455,7 @@ bool TrajectoryWidget::leave()
 
 bool TrajectoryWidget::enter(const std::string & key)
 {
-  if (!CKeyFactory::get(key)) return false;
+  if (!dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(key))) return false;
 
   objKey = key;
 
@@ -467,7 +467,7 @@ bool TrajectoryWidget::enter(const std::string & key)
 void TrajectoryWidget::ReportDefinitionClicked()
 {
   CTrajectoryTask* trajectoryTask =
-    dynamic_cast< CTrajectoryTask * >(CKeyFactory::get(objKey));
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
   assert(trajectoryTask);
 
   CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);

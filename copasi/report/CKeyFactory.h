@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/08 20:19:25 $
+   $Date: 2004/01/09 14:48:32 $
    End CVS Header */
 
 /**
@@ -64,7 +64,7 @@ class CKeyFactory
     /**
      * A map of hash tables for the prefixes.
      */
-    static std::map< std::string, HashTable > mKeyTable;
+    std::map< std::string, HashTable > mKeyTable;
 
     /**
      * Fast way to decide whether a character is a digit.
@@ -74,27 +74,39 @@ class CKeyFactory
     // Operations
   public:
     /**
+     * Default constructor
+     */
+    CKeyFactory();
+
+    /**
+     * Destructor
+     */
+    ~CKeyFactory();
+
+    /**
      * Add an object with a key generated from the given prefix to the key map.
      * The return value is the actually generated key.
      * @param const std::string & prefix
      * @param CCopasiObject * pObject
      * @return std::string key
      */
-    static std::string add(const std::string & prefix, CCopasiObject * pObject);
+    std::string add(const std::string & prefix, CCopasiObject * pObject);
 
     /**
      * Remove the key and the related object from the key map.
      * @param const std::string & key
      * @return bool success
      */
-    static bool remove(const std::string & key);
+    bool remove(const std::string & key);
 
     /**
      * Retreive the object referred by key from the key map.
      * @param const std::string & key
      * @return CCopasiObject * pObject
      */
-    static CCopasiObject * get(const std::string & key);
+    CCopasiObject * get(const std::string & key);
   };
+
+extern CKeyFactory GlobalKeys;
 
 #endif // COPASI_CKeyFactory

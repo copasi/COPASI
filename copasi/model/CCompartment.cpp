@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/22 01:17:52 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:27 $
    End CVS Header */
 
 // CCompartment
@@ -29,7 +29,7 @@
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Compartment"),
-    mKey(CKeyFactory::add("Compartment", this)),
+    mKey(GlobalKeys.add("Compartment", this)),
     mInitialVolume(1.0),
     mVolume(1.0),
     mVolumeInv(1.0),
@@ -42,7 +42,7 @@ CCompartment::CCompartment(const std::string & name,
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("Compartment", this)),
+    mKey(GlobalKeys.add("Compartment", this)),
     mInitialVolume(src.mInitialVolume),
     mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
@@ -56,7 +56,7 @@ CCompartment::CCompartment(const CCompartment & src,
 
 CCompartment::~CCompartment()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

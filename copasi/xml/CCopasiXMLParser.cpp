@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/30 15:47:09 $
+   $Date: 2004/01/09 14:48:34 $
    End CVS Header */
 
 /**
@@ -1291,7 +1291,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
 
       pCompartment =
-        dynamic_cast< CCompartment* >(CKeyFactory::get(CompartmentKey->second));
+        dynamic_cast< CCompartment* >(GlobalKeys.get(CompartmentKey->second));
       if (!pCompartment) fatalError();
 
       pCompartment->addMetabolite(pMetabolite);
@@ -1451,7 +1451,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
           if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
 
           pCompartment =
-            dynamic_cast< CCompartment* >(CKeyFactory::get(CompartmentKey->second));
+            dynamic_cast< CCompartment* >(GlobalKeys.get(CompartmentKey->second));
           if (!pCompartment) fatalError();
 
           mCommon.pReaction->setCompartment(pCompartment);
@@ -2128,7 +2128,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       if (FunctionKey == mCommon.KeyMap.end()) fatalError();
 
       pFunction =
-        dynamic_cast< CFunction* >(CKeyFactory::get(FunctionKey->second));
+        dynamic_cast< CFunction* >(GlobalKeys.get(FunctionKey->second));
       if (!pFunction) fatalError();
 
       mCommon.pReaction->setFunction(pFunction);
@@ -2276,7 +2276,7 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       if (FunctionParameterKey == mCommon.KeyMap.end()) fatalError();
 
       mpFunctionParameter =
-        dynamic_cast< CFunctionParameter* >(CKeyFactory::get(FunctionParameterKey->second));
+        dynamic_cast< CFunctionParameter* >(GlobalKeys.get(FunctionParameterKey->second));
       if (!mpFunctionParameter) fatalError();
 
       mCommon.SourceParameterKeys.clear();
@@ -2588,7 +2588,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
       for (Values >> Value; it != end && !Values.fail(); ++it, Values >> Value)
         {
-          pMetabolite = dynamic_cast< CMetab* >(CKeyFactory::get(*it));
+          pMetabolite = dynamic_cast< CMetab* >(GlobalKeys.get(*it));
           if (pMetabolite)
             {
               pMetabolite->setInitialNumber(Value);
@@ -2596,7 +2596,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
               continue;
             }
 
-          pCompartment = dynamic_cast< CCompartment* >(CKeyFactory::get(*it));
+          pCompartment = dynamic_cast< CCompartment* >(GlobalKeys.get(*it));
           if (pCompartment)
             {
               pCompartment->setInitialVolume(Value);
@@ -2604,7 +2604,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
               continue;
             }
 
-          pModel = dynamic_cast< CModel* >(CKeyFactory::get(*it));
+          pModel = dynamic_cast< CModel* >(GlobalKeys.get(*it));
           if (pModel)
             {
               pModel->setTime(Value);

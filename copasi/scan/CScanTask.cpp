@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
+   $Date: 2004/01/09 14:48:33 $
    End CVS Header */
 
 /**
@@ -40,7 +40,7 @@ CScanTask::CScanTask():
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
     mpOutEnd(NULL),
-    mKey(CKeyFactory::add("ScanTask", this))
+    mKey(GlobalKeys.add("ScanTask", this))
 {}
 
 CScanTask::CScanTask(const CScanTask & src):
@@ -50,7 +50,7 @@ CScanTask::CScanTask(const CScanTask & src):
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
     mpOutEnd(src.mpOutEnd),
-    mKey(CKeyFactory::add("ScanTask", this))
+    mKey(GlobalKeys.add("ScanTask", this))
 {}
 
 CScanTask::~CScanTask()
@@ -58,7 +58,7 @@ CScanTask::~CScanTask()
 
 void CScanTask::cleanup()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpOutEnd);

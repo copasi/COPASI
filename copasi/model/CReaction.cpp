@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/30 17:21:25 $
+   $Date: 2004/01/09 14:48:30 $
    End CVS Header */
 
 // CReaction
@@ -39,7 +39,7 @@ C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
-    mKey(CKeyFactory::add("Reaction", this)),
+    mKey(GlobalKeys.add("Reaction", this)),
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
     mFlux(0),
@@ -58,7 +58,7 @@ CReaction::CReaction(const std::string & name,
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("Reaction", this)),
+    mKey(GlobalKeys.add("Reaction", this)),
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
     mFlux(src.mFlux),
@@ -80,7 +80,7 @@ CReaction::CReaction(const CReaction & src,
 
 CReaction::~CReaction()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -565,7 +565,7 @@ const std::vector< std::vector<std::string> > CReaction::getParameterMappingName
               SubList.push_back(metabName);
             else
               SubList.push_back(*jt);
-            //pMetab = ((CMetab*)(CCopasiContainer*)(CKeyFactory::get(*jt)));
+            //pMetab = ((CMetab*)(CCopasiContainer*)(GlobalKeys.get(*jt)));
             //if (pMetab)
             //  SubList.push_back(pMetab->getName());
             //else
@@ -587,7 +587,7 @@ std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) c
 
     for (i = 0; i < imax; ++i)
       //      metablist.push_back(&mChemEq.findElementByName(mMetabNameMap[index][i]).getMetabolite());
-      metablist.push_back((CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetabKeyMap[index][i]));
+      metablist.push_back(dynamic_cast< CMetab * >(GlobalKeys.get(mMetabKeyMap[index][i])));
 
     return metablist;
   }
@@ -692,10 +692,10 @@ void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                mMap.addCallParameter(paramName, CKeyFactory::get(mMetabKeyMap[i][j]));
+                mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
             }
           else
-            mMap.setCallParameter(getFunctionParameters()[i]->getName(), CKeyFactory::get(mMetabKeyMap[i][0]));
+            mMap.setCallParameter(getFunctionParameters()[i]->getName(), GlobalKeys.get(mMetabKeyMap[i][0]));
         }
     }
 

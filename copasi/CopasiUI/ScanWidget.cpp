@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.160 $
+   $Revision: 1.161 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:29 $
+   $Date: 2004/01/09 14:48:24 $
    End CVS Header */
 
 /********************************************************
@@ -288,23 +288,19 @@ void ScanWidget::TrajectoryEditing()
 
 ScanWidget::~ScanWidget()
 {
-  if (CKeyFactory::get(scanTaskKey))
-    {
-      CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-      pdelete(scanTask);
-    }
-  if (CKeyFactory::get(SteadyStateKey))
-    {
-      CSteadyStateTask* sst = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
-      pdelete(sst);
-    }
-  if (CKeyFactory::get(TrajectoryKey))
-    {
-      CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
-      pdelete(tt);
-    }
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  pdelete(scanTask);
+
+  CSteadyStateTask* sst =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
+  pdelete(sst);
+
+  CTrajectoryTask* tt =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
+  pdelete(tt);
+
   selectedList.clear();
-  // no need to pdelete child widgets, Qt does it all for us
 }
 
 void ScanWidget::addButtonClicked()
@@ -353,9 +349,10 @@ void ScanWidget::deleteButtonClicked()
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
 
   CCopasiParameterGroup* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
-  //  if (!CKeyFactory::get(scanTaskKey))
+  //  if (!GlobalKeys.get(scanTaskKey))
   //   return;
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   if (scanTask->getProblem()->getListSize() > 0)  // for reloading
     scanTask->getProblem()->
     removeScanItem(pScanObject->CCopasiParameter::getName().c_str());
@@ -428,7 +425,8 @@ void ScanWidget::upButtonClicked()
 
   CCopasiParameterGroup* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
   CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -472,7 +470,8 @@ void ScanWidget::downButtonClicked()
   activeObject++;
   CCopasiParameterGroup* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
   CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
@@ -507,14 +506,16 @@ void ScanWidget::CancelChangeButton()
 
 void ScanWidget::ScanCheckBoxClicked()
 {
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   scanTask->setRequested(sExecutable->isChecked());
   scanButton->setEnabled(sExecutable->isChecked());
 }
 
 void ScanWidget::runScanTask()
 {
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
 
   std::ofstream output;
   if (scanTask->getReport()->getTarget() != "")
@@ -542,7 +543,8 @@ void ScanWidget::runScanTask()
 
 void ScanWidget::SteadyStateButtonClicked()
 {
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   eSteadyState->setEnabled(steadyState->isChecked());
@@ -550,7 +552,8 @@ void ScanWidget::SteadyStateButtonClicked()
 
 void ScanWidget::TrajectoryButtonClicked()
 {
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessTrajectory(trajectory->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
@@ -559,16 +562,18 @@ void ScanWidget::TrajectoryButtonClicked()
 
 void ScanWidget::loadScan()
 {
-  if (!CKeyFactory::get(scanTaskKey)) return;
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+
+  if (!scanTask) return;
 
   // @comment: UI Stuff
   taskName->setText(tr("Scan"));
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   CScanProblem *scanProblem = scanTask->getProblem();
   mModel = scanProblem->getModel();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast< CSteadyStateTask * >(CKeyFactory::get(SteadyStateKey));
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
   assert(mSteadyStateTask);
 
   CSteadyStateProblem * mSteadystateproblem =
@@ -576,7 +581,7 @@ void ScanWidget::loadScan()
   mSteadystateproblem->setModel(mModel);
 
   CTrajectoryTask* mTrajectoryTask =
-    dynamic_cast< CTrajectoryTask * >(CKeyFactory::get(TrajectoryKey));
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
   assert(mTrajectoryTask);
 
   CTrajectoryProblem * mTrajectoryproblem =
@@ -627,7 +632,8 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   if (!pObject)
     return false;
 
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   if (scanTask->getProblem()->bExisted(pObject->getCN().c_str()))
     return false;
 
@@ -756,7 +762,7 @@ void ScanWidget::viewMousePressEvent(QMouseEvent* e)
 
 bool ScanWidget::enter(const std::string & key)
 {
-  if (!CKeyFactory::get(key)) return false;
+  if (!dynamic_cast< CScanTask * >(GlobalKeys.get(key))) return false;
 
   scanTaskKey = key;
 
@@ -793,7 +799,7 @@ bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
 void ScanWidget::ReportDefinitionClicked()
 {
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
-  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)GlobalKeys.get(scanTaskKey);
   pSelectDlg->setReport(scanTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   if (pSelectDlg->exec () == QDialog::Rejected)

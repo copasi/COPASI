@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/11 21:43:22 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:25 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.28 2003/12/11 21:43:22 mkulkarn Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.29 2004/01/09 14:48:25 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -265,7 +265,8 @@ void TableDefinition1::languageChange()
 /*This function is to load the model for the table*/
 void TableDefinition1::loadTableDefinition1()
 {
-  CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
+  CReportDefinition* pReportDefinition =
+    dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
   itemsTable->clear();
 
   nameEdit->setText(pReportDefinition->getObjectName().c_str());
@@ -310,7 +311,8 @@ void TableDefinition1::slotBtnCancelClicked()
 void TableDefinition1::slotBtnConfirmClicked()
 {
   //check for the connection int i =0;
-  CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
+  CReportDefinition* pReportDefinition =
+    dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
   pReportDefinition->getHeaderAddr()->clear();
   pReportDefinition->getBodyAddr()->clear();
 
@@ -502,7 +504,7 @@ void TableDefinition1::downButtonClicked()
 
 bool TableDefinition1::enter(const std::string & key)
 {
-  if (!CKeyFactory::get(key)) return false;
+  if (!dynamic_cast< CReportDefinition * >(GlobalKeys.get(key))) return false;
 
   reportKey = key;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 16:14:50 $
+   $Date: 2004/01/09 14:48:28 $
    End CVS Header */
 
 //
@@ -33,7 +33,7 @@ CMetabNameInterface::~CMetabNameInterface()
 
 std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
 {
-  CMetab * metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
+  CMetab * metab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
   if (metab)
     return getDisplayName(model, *metab);
   else

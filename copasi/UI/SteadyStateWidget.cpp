@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 21:17:58 $
+   $Date: 2004/01/09 14:48:25 $
    End CVS Header */
 
 /********************************************************
@@ -190,8 +190,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 SteadyStateWidget::~SteadyStateWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-  if (!CKeyFactory::get(objKey)) return;
-  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
   pdelete(mSteadyStateTask);
 }
 
@@ -203,7 +203,7 @@ void SteadyStateWidget::CancelButtonClicked()
 void SteadyStateWidget::CommitButtonClicked()
 {
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
 
   CSteadyStateProblem* steadystateproblem =
@@ -237,7 +237,7 @@ void SteadyStateWidget::CommitButtonClicked()
 
 void SteadyStateWidget::RunButtonChecked()
 {
-  if (!CKeyFactory::get(objKey))
+  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey)))
     return;
 
   if (!bExecutable->isChecked())
@@ -262,7 +262,7 @@ void SteadyStateWidget::runSteadyStateTask()
     }
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
 
   mSteadyStateTask->initialize();
@@ -301,8 +301,8 @@ void SteadyStateWidget::runSteadyStateTask()
 
 //void SteadyStateWidget::setModel(CModel* newModel)
 //{
-//  if (!CKeyFactory::get(objKey)) return;
-//  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+//  if (!GlobalKeys.get(objKey)) return;
+//  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)GlobalKeys.get(objKey);
 //  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
 //  steadystateproblem->setModel(newModel);
 //}
@@ -310,7 +310,7 @@ void SteadyStateWidget::runSteadyStateTask()
 void SteadyStateWidget::loadSteadyStateTask()
 {
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CKeyFactory::get(objKey));
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
 
   CSteadyStateProblem* steadystateproblem =
@@ -356,7 +356,7 @@ void SteadyStateWidget::loadSteadyStateTask()
 
 void SteadyStateWidget::ExportToFileButtonClicked()
 {
-  if (!CKeyFactory::get(objKey)) return;
+  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey))) return;
   QString textFile = QFileDialog::getSaveFileName(
                        QString::null, "TEXT Files (*.txt)",
                        this, "save file dialog",
@@ -366,14 +366,15 @@ void SteadyStateWidget::ExportToFileButtonClicked()
     {
       textFile += ".txt";
       CWriteConfig outbuf(textFile.latin1());
-      CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+      CSteadyStateTask* mSteadyStateTask =
+        dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
       //      mSteadyStateTask->save(outbuf);
     }
 }
 
 bool SteadyStateWidget::enter(const std::string & key)
 {
-  if (!CKeyFactory::get(key)) return false;
+  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(key))) return false;
 
   objKey = key;
 
@@ -409,7 +410,7 @@ bool SteadyStateWidget::leave()
 void SteadyStateWidget::ReportDefinitionClicked()
 {
   CSteadyStateTask* steadystateTask =
-    dynamic_cast< CSteadyStateTask * >(CKeyFactory::get(objKey));
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
   assert(steadystateTask);
 
   CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:36 $
+   $Date: 2004/01/09 14:48:23 $
    End CVS Header */
 
 /********************************************************
@@ -364,16 +364,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 OptimizationWidget::~OptimizationWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-  if (CKeyFactory::get(SteadyStateKey))
-    {
-      CSteadyStateTask* sst = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
-      pdelete(sst);
-    }
-  if (CKeyFactory::get(TrajectoryKey))
-    {
-      CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
-      pdelete(tt);
-    }
+  CSteadyStateTask * sst =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
+  pdelete(sst);
+
+  CTrajectoryTask* tt =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
+  pdelete(tt);
 }
 
 /*
@@ -426,7 +423,7 @@ bool OptimizationWidget::leave()
 bool OptimizationWidget::enter(const std::string & key)
 {
   objKey = key;
-  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(key));
   //TODO: check if it really is a compartment
   pSteadyStateWidget->enter(SteadyStateKey);
   pTrajectoryWidget->enter(TrajectoryKey);
@@ -440,7 +437,7 @@ bool OptimizationWidget::enter(const std::string & key)
 bool OptimizationWidget::loadFromExpression(COptFunction*)
 {
   bUpdated = false;
-  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  COptFunction* func = dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
   expressionName->setText(func->getObjectUniqueName().c_str());
   //  expressionText->setText(func-> serialize a function to a std::stream
   return true;
@@ -488,8 +485,10 @@ void OptimizationWidget::deleteButtonClicked()
 
   emit hide_me();
 
-  COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
-  CCopasiObject* pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
+  COptFunction* optFunction =
+    dynamic_cast< COptFunction *>(GlobalKeys.get(objKey));
+  CCopasiObject* pOptObject =
+    ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
   if (optFunction->mParaList.size() > 0)  // for reloading
     optFunction->removeItem(pOptObject->getCN().c_str());
 
@@ -568,7 +567,8 @@ void OptimizationWidget::upButtonClicked()
   CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
   CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
 
-  COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
+  COptFunction* optFunction =
+    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
 
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
@@ -650,7 +650,8 @@ void OptimizationWidget::downButtonClicked()
   CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
   CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
 
-  COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
+  COptFunction* optFunction =
+    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
 
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
@@ -711,7 +712,8 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   if (!pObject)
     return false;
 
-  COptFunction* optFunction = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  COptFunction* optFunction =
+    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
   // cannot be found in the list
   if (optFunction->Index(pObject->getCN().c_str()) != C_INVALID_INDEX)
     return false;
@@ -813,7 +815,8 @@ void OptimizationWidget::slotBtnCancelClicked()
 
 void OptimizationWidget::slotBtnConfirmClicked()
 {
-  COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  COptFunction* func =
+    dynamic_cast< COptFunction * >(GlobalKeys.get(objKey));
   unsigned i;
   for (i = 0; i < func->mParaList.size(); i++)
     {

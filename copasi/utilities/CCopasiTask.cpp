@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/01/05 20:09:05 $
+   $Author: shoops $ 
+   $Date: 2004/01/09 14:48:34 $
    End CVS Header */
 
 /**
@@ -49,7 +49,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
                          const std::string & type):
     CCopasiContainer(name, pParent, type),
     mType(CCopasiTask::unset),
-    mKey(CKeyFactory::add("Task", this)),
+    mKey(GlobalKeys.add("Task", this)),
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
@@ -61,7 +61,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
                          const std::string & type):
     CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
     mType(taskType),
-    mKey(CKeyFactory::add("Task", this)),
+    mKey(GlobalKeys.add("Task", this)),
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
@@ -72,7 +72,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
                          const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
-    mKey(CKeyFactory::add("Task", this)),
+    mKey(GlobalKeys.add("Task", this)),
     mScheduled(src.mScheduled),
     mpProblem(NULL),
     mpMethod(NULL),
@@ -81,7 +81,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
 
 CCopasiTask::~CCopasiTask()
 {
-  CKeyFactory::remove(mKey);
+  GlobalKeys.remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
 }
