@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/21 22:12:36 $
+   $Author: ssahle $ 
+   $Date: 2004/10/07 14:22:06 $
    End CVS Header */
 
 // copasiWidget.cpp: implementation of the CopasiWidget class.
@@ -16,8 +16,8 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction of CopasiWidget
 //////////////////////////////////////////////////////////////////////
-int CopasiWidget::realMinHeight = 0;
-int CopasiWidget::realMinWidth = 0;
+//int CopasiWidget::realMinHeight = 0;
+//int CopasiWidget::realMinWidth = 0;
 
 DataModelGUI* CopasiWidget::dataModel = NULL;
 
@@ -27,11 +27,11 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
 {
   pListView = (ListViews*)parent;
   dataModel = ListViews::getDataModel();
-  bInitialized = false;
-  bSetMinSize = false;
+  //bInitialized = false;
+  //bSetMinSize = false;
 }
 
-void CopasiWidget::resize (int w, int h)
+/*void CopasiWidget::resize (int w, int h)
 {
   if (!bInitialized)
     {
@@ -60,7 +60,7 @@ void CopasiWidget::resize (int w, int h)
   //realMinWidth and realMinHeight are set,
   QWidget::resize(w, h);
 }
-
+ 
 void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
   int w = event->size().width();
@@ -72,7 +72,7 @@ void CopasiWidget::resizeEvent (QResizeEvent * event)
   //  qParent->setMinimumSize(realMinWidth, realMinHeight);
   resize(w, h);
   // QWidget::resizeEvent (event);
-}
+}*/
 
 bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {return true;}

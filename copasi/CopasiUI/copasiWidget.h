@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:51 $
+   $Date: 2004/10/07 14:22:06 $
    End CVS Header */
 
 /********************************************************
@@ -27,19 +27,19 @@ class CopasiWidget : public QWidget
   {
   public:
     CopasiWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0);
-    virtual void resizeEvent (QResizeEvent *);
+    //virtual void resizeEvent (QResizeEvent *);
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
   public slots:
-    virtual void resize (int w, int h);
+    //virtual void resize (int w, int h);
 
   private:
-    static int realMinWidth;
-    static int realMinHeight;
-    bool bInitialized;
-    bool bSetMinSize;
+    //static int realMinWidth;
+    //static int realMinHeight;
+    //bool bInitialized;
+    //bool bSetMinSize;
 
   protected:
     bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
