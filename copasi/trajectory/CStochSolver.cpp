@@ -76,6 +76,22 @@ void CStochMethod::cleanup()
   mRandomGenerator = 0;
 }
 
+C_INT32 CStochMethod::initMethod(C_FLOAT64 start_time)
+{
+  // Populate the vector of propensities
+
+  for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
+    {
+      mAmu.push_back(0);
+      mAmuOld.push_back(0);
+    }
+
+  setupDependencyGraphAndBalances();
+  cout << mDG ;
+  updatePropensities();
+  return 0;
+}
+
 C_INT32 CStochMethod::updatePropensities()
 {
   mA0Old = mA0;
@@ -142,20 +158,20 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // We assume that all substrates are in the same compartment.
   // If there are no substrates, then volume is irrelevant. Otherwise,
   // we can use the volume of the compartment for the first substrate.
-  if (substrates.size() > 0)
+  //if (substrates.size() > 0) //check again!!
+  if (total_substrates > 1) //check again!!
     {
-      C_FLOAT64 volume =
-        substrates[0]->getMetabolite().getCompartment()->getVolume()
-        * substrates[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
-      amu = amu / pow(volume, total_substrates - 1);
-      substrate_factor = substrate_factor / pow(volume, total_substrates - 1);
+      C_FLOAT64 invvolumefactor = pow(
+                                    substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
+                                    * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor(),
+                                    total_substrates - 1);
+      amu *= invvolumefactor;
+      substrate_factor *= invvolumefactor;
     }
 
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-
-  C_FLOAT64 dummy = mModel->getReactions()[index]->calculate() ;
 
   C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
 
@@ -176,28 +192,39 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   // in the reaction.) Then step through each balance, using its
   // multiplicity to calculate a new value for the associated
   // metabolite. Finally, update the metabolite.
-  CCopasiVector <CChemEqElement> & balances =
-    const_cast < CCopasiVector <CChemEqElement> & >
-    (mModel->getReactions()[rxn]->getChemEq().getBalances());
-  CChemEqElement *bal = 0;
-  C_INT32 new_num; // ??? this was a float ???
 
-  for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+  CStochBalance bal;
+  C_INT32 new_num;
+
+  for (unsigned C_INT32 i = 0; i < mLocalBalances[rxn].size(); i++)
     {
-      bal = balances[i];
-      new_num = bal->getMetabolite().getNumberInt() + floor(0.1 + bal->getMultiplicity());
-      bal->getMetabolite().setNumberInt(new_num);
+      bal = mLocalBalances[rxn][i]; // iterator?
+      new_num = bal.mMetabAddr->getNumberInt() + bal.mBalance;
+      bal.mMetabAddr->setNumberInt(new_num);
     }
 
-  // Update the model to take into account the new particle numbers
-  // needs to be replaced by smt more efficient
-  mModel->setNumbersDblAndUpdateConcentrations(mModel->getNumbersDbl());
+  vector<C_INT32> dep_nodes = mDG.getDependents(rxn);
+
+  for (unsigned int i = 0; i < dep_nodes.size(); i++)
+    {
+      unsigned int ii = dep_nodes[i];
+      mAmuOld[ii] = mAmu[ii] ;
+      calculateAmu(ii);
+    }
+
+  mA0Old = mA0;
+  mA0 = 0;
+
+  for (unsigned int i = 0; i < mModel->getReactions().size(); i++)
+    {
+      mA0 += mAmu[i];
+    }
 
   //cout << "Reaktion " << rxn << " new state: " ;
-  for (int j = 0 ; j < 2 ; j++)
-    cout << mModel->getMetabolites()[j]->getNumberInt() << "  ";
+  //for (int j = 0 ; j < 2 ; j++)
+  //  cout << mModel->getMetabolites()[j]->getNumberInt() << "  ";
 
-  cout << endl;
+  //cout << endl;
 
   return 0;
 }
@@ -236,74 +263,7 @@ C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
   return -1 * log(rand2) / mAmu[reaction_index];
 }
 
-// *************** CStochDirectMethod **********************************
-
-CStochDirectMethod::CStochDirectMethod()
-    : CStochMethod()
-{}
-
-CStochDirectMethod::CStochDirectMethod(CModel *model)
-    : CStochMethod(model)
-{}
-CStochDirectMethod::~CStochDirectMethod() {cleanup(); }
-
-C_INT32 CStochDirectMethod::initMethod(C_FLOAT64 time)
-{
-  // Populate the vector of propensities
-
-  for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
-    {
-      mAmu.push_back(0);
-      mAmuOld.push_back(0);
-    }
-
-  return 0;
-}
-
-C_FLOAT64 CStochDirectMethod::doStep(C_FLOAT64 initial_time)
-{
-  updatePropensities();
-  C_INT32 rxn = generateReactionIndex();
-  C_FLOAT64 step_time = generateReactionTime();
-  updateSystemState(rxn);
-  return initial_time + step_time;
-}
-
-// *************** CStochNextReactionMethod ****************************
-
-CStochNextReactionMethod::CStochNextReactionMethod(CModel *model)
-    : CStochMethod(model)
-{}
-CStochNextReactionMethod::~CStochNextReactionMethod() {cleanup(); }
-
-C_INT32 CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
-{
-  // Populate the vector of propensities
-
-  for (unsigned C_INT32 i = 0; i < mModel->getReactions().size(); i++)
-    {
-      mAmu.push_back(0);
-      mAmuOld.push_back(0);
-    }
-
-  setupDependencyGraph();
-  cout << mDG ;
-  updatePropensities();
-  setupPriorityQueue(start_time);
-  return 0;
-}
-
-C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 time)
-{
-  C_FLOAT64 steptime = mPQ.topKey();
-  C_INT32 reaction_index = mPQ.topIndex();
-  updateSystemState(reaction_index);
-  updatePropensities(); // ineffective
-  updatePriorityQueue(reaction_index, steptime);
-  return steptime;
-}
-
-void CStochNextReactionMethod::setupDependencyGraph()
+void CStochMethod::setupDependencyGraphAndBalances()
 {
   vector< set<CMetab*>* > DependsOn;
   vector< set<CMetab*>* > Affects;
@@ -350,7 +310,31 @@ void CStochNextReactionMethod::setupDependencyGraph()
         }
 
       // Ensure that self edges are included
-      mDG.addDependent(i, i);
+      //mDG.addDependent(i, i);
+    }
+
+  // Create local copy of balances
+  CStochBalance bb;
+
+  mLocalBalances.resize(num_reactions);
+
+  for (i = 0; i < num_reactions; i++)
+    {
+      CCopasiVector<CChemEqElement> & bbb = mModel->getReactions()[i]->getChemEq().getBalances();
+
+      //cout << endl << i << " : " ;
+
+      for (j = 0; j < bbb.size(); j++)
+        {
+          bb.mMetabAddr = bbb[j]->getMetaboliteAddr();
+          bb.mBalance = floor(bbb[j]->getMultiplicity() + 0.5);
+
+          if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
+            {
+              mLocalBalances[i].push_back(bb);
+              //cout << bb.mMetabAddr->getName() << "  " ;
+            }
+        }
     }
 
   // Delete the memory allocated in getDependsOn() and getAffects()
@@ -360,6 +344,117 @@ void CStochNextReactionMethod::setupDependencyGraph()
       delete DependsOn[i];
       delete Affects[i];
     }
+}
+
+set
+  <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+  {
+    set
+      <CMetab*> *retset = new set
+                            <CMetab*>;
+
+    CCopasiVector<CReaction::CId2Metab> & subst = mModel->getReactions()[reaction_index]->getId2Substrates();
+
+    CCopasiVector<CReaction::CId2Metab> & modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
+
+    unsigned C_INT32 i;
+
+    CMetab* dummy;
+
+    cout << reaction_index << " depends on ";
+
+    for (i = 0; i < subst.size(); i++)
+      {
+        retset->insert((subst[i]->getMetabolite()));
+        dummy = (subst[i]->getMetabolite());
+        cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
+      }
+
+    for (i = 0; i < modif.size(); i++)
+      {
+        retset->insert((modif[i]->getMetabolite()));
+        dummy = (modif[i]->getMetabolite());
+        cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
+      }
+
+    cout << endl;
+    return retset;
+  }
+
+set
+  <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
+  {
+    set
+      <CMetab*> *retset = new set
+                            <CMetab*>;
+
+    // Get the balances  associated with the reaction at this index
+    // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
+    CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+
+    cout << reaction_index << " affects ";
+
+    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+      {
+        if (fabs(balances[i]->getMultiplicity()) >= 0.1)
+          if (balances[i]->getMetaboliteAddr()->getStatus() != METAB_FIXED)
+            {
+              retset->insert(balances[i]->getMetaboliteAddr());
+              cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
+            }
+      }
+
+    cout << endl;
+    return retset;
+  }
+
+// *************** CStochDirectMethod **********************************
+
+CStochDirectMethod::CStochDirectMethod()
+    : CStochMethod()
+{}
+
+CStochDirectMethod::CStochDirectMethod(CModel *model)
+    : CStochMethod(model)
+{}
+CStochDirectMethod::~CStochDirectMethod() {cleanup(); }
+
+//C_INT32 CStochDirectMethod::initMethod(C_FLOAT64 time)
+//{
+//  return 0;
+//}
+
+C_FLOAT64 CStochDirectMethod::doStep(C_FLOAT64 initial_time)
+{
+  //updatePropensities();
+  C_INT32 rxn = generateReactionIndex();
+  C_FLOAT64 step_time = generateReactionTime();
+  updateSystemState(rxn);
+  return initial_time + step_time;
+}
+
+// *************** CStochNextReactionMethod ****************************
+
+CStochNextReactionMethod::CStochNextReactionMethod(CModel *model)
+    : CStochMethod(model)
+{}
+CStochNextReactionMethod::~CStochNextReactionMethod() {cleanup(); }
+
+C_INT32 CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
+{
+  CStochMethod::initMethod(start_time);
+  setupPriorityQueue(start_time);
+  return 0;
+}
+
+C_FLOAT64 CStochNextReactionMethod::doStep(C_FLOAT64 time)
+{
+  C_FLOAT64 steptime = mPQ.topKey();
+  C_INT32 reaction_index = mPQ.topIndex();
+  updateSystemState(reaction_index);
+  //updatePropensities(); // ineffective
+  updatePriorityQueue(reaction_index, steptime);
+  return steptime;
 }
 
 void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
@@ -392,51 +487,3 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
         }
     }
 }
-
-set
-  <CMetab*> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
-  {
-    set
-      <CMetab*> *retset = new set
-                            <CMetab*>;
-
-    CCopasiVector<CReaction::CId2Metab> subst = mModel->getReactions()[reaction_index]->getId2Substrates();
-
-    CCopasiVector<CReaction::CId2Metab> modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
-
-    unsigned C_INT32 i;
-
-    for (i = 0; i < subst.size(); i++)
-      {
-        retset->insert((subst[i]->getMetabolite()));
-      }
-
-    for (i = 0; i < modif.size(); i++)
-      {
-        retset->insert((modif[i]->getMetabolite()));
-      }
-
-    return retset;
-  }
-
-set
-  <CMetab*> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)
-  {
-    set
-      <CMetab*> *retset = new set
-                            <CMetab*>;
-
-    // Get the balances  associated with the reaction at this index
-    // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
-    CCopasiVector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
-
-    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
-      {
-        if (balances[i]->getMultiplicity() != 0)
-          {
-            retset->insert(balances[i]->getMetaboliteAddr());
-          }
-      }
-
-    return retset;
-  }

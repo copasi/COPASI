@@ -99,6 +99,18 @@ class CStochSolver
   };
 
 /**
+ * Integer Balances  for internal use
+ */
+
+class CStochBalance
+  {
+  public:
+    //CStochBalance();
+    CMetab * mMetabAddr;
+    C_INT32 mBalance;
+  };
+
+/**
  * CStochMethod is a parent to concrete solvers derived from it.
  *
  * These derived solvers do the actual work of the simulation. Each
@@ -140,6 +152,17 @@ class CStochMethod
     C_FLOAT64 mA0Old;
 
     /**
+     * The graph of reactions and their dependent reactions. When a reaction is
+     * executed, the propensities for each of its dependents must be updated.
+     */
+    CDependencyGraph mDG;
+
+    /**
+     * The balances of the reactions as integers
+     */
+    vector < vector <CStochBalance> > mLocalBalances;
+
+    /**
      * The random number generator
      */
     CRandom *mRandomGenerator;
@@ -168,7 +191,7 @@ class CStochMethod
      * @return mFail
      * @see mFail
      */
-    virtual C_INT32 initMethod(C_FLOAT64 time) = 0;
+    virtual C_INT32 initMethod(C_FLOAT64 time);
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
@@ -213,22 +236,31 @@ class CStochMethod
      * @see mFail
      */
     C_INT32 updateSystemState(C_INT32 reaction_index);
-#if 0 // Because these are now done in one step
+
     /**
-     * Determine the value of one of the cmu's
-     * @param index The position in the vector of this value of Cmu
-     * @return mFail
-     * @see mFail
-     */
-    C_INT32 CalculateCmu(C_INT32 index);
+    * Set up the dependency graph and the balances
+    */
+    void setupDependencyGraphAndBalances();
+
+  private:
+
     /**
-     * Determine the value of one of the hmu's
-     * @param index The position in the vector of this value of Cmu
-     * @return mFail
-     * @see mFail
+     * Get the set of metabolites on which a given reaction depends.
+     * @param reaction_index The index of the reaction being executed.
+     * @return The set of metabolites depended on.
      */
-    C_INT32 CalculateHmu(C_INT32 index);
-#endif // 0
+
+    set
+      <CMetab*> *getDependsOn(C_INT32 reaction_index);
+
+    /**
+     * Get the set of metaboloites which change number when a given
+     * reaction is executed.
+     * @param reaction_index The index of the reaction being executed.
+     * @return The set of affected metabolites.
+     */
+    set
+      <CMetab*> *getAffects(C_INT32 reaction_index);
   };
 
 /**
@@ -257,12 +289,14 @@ class CStochDirectMethod : public CStochMethod
      */
     ~CStochDirectMethod();
     // Operations
+
     /**
      * Initialize the method
      * @return mFail
      * @see mFail
-     */
-    C_INT32 initMethod(C_FLOAT64 time);
+     */ 
+    //C_INT32 initMethod(C_FLOAT64 time);
+
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
@@ -286,11 +320,6 @@ class CStochNextReactionMethod: public CStochMethod
   {
   private:
     // Private attributes
-    /**
-     * The graph of reactions and their dependent reactions. When a reaction is
-     * executed, the propensities for each of its dependents must be updated.
-     */
-    CDependencyGraph mDG;
 
     /**
      * The set of putative reactions and associated times at which each reaction occurs.
@@ -330,10 +359,6 @@ class CStochNextReactionMethod: public CStochMethod
   private:
     // Private operations
     /**
-     * Set up the dependency graph
-     */
-    void setupDependencyGraph();
-    /**
      * Set up the priority queue.
      * @param start_time The time at which the simulation starts.
      */
@@ -342,23 +367,6 @@ class CStochNextReactionMethod: public CStochMethod
      * Update the priority queue
      */
     void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
-    /**
-     * Get the set of metabolites on which a given reaction depends.
-     * @param reaction_index The index of the reaction being executed.
-     * @return The set of metabolites depended on.
-     */
-
-    set
-      <CMetab*> *getDependsOn(C_INT32 reaction_index);
-
-    /**
-     * Get the set of metaboloites which change number when a given
-     * reaction is executed.
-     * @param reaction_index The index of the reaction being executed.
-     * @return The set of affected metabolites.
-     */
-    set
-      <CMetab*> *getAffects(C_INT32 reaction_index);
   };
 
 #endif // COPASI_CStochSolver
