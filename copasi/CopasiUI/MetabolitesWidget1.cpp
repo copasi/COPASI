@@ -290,6 +290,9 @@ void MetabolitesWidget1::loadName(QString setValue)
     {
       metab = metabolites[myValue];
 
+      CCopasiVectorNS< CCompartment > & allcompartments = mModel->getCompartments();
+      CCompartment *compt;
+      ComboBox1->clear();
       LineEdit1->setText(metab->getName().c_str());
 
       LineEdit4->setText(QString::number(*(metab->getInitialConcentration())));
@@ -342,9 +345,7 @@ void MetabolitesWidget1::loadName(QString setValue)
 
       */
 
-      CCopasiVectorNS< CCompartment > & allcompartments = mModel->getCompartments();
-
-      CCompartment *compt;
+      ComboBox1->setDuplicatesEnabled (false);
 
       for (int m = 0; m < allcompartments.size(); m++)
         {

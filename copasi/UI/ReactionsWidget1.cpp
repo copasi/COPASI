@@ -224,6 +224,7 @@ void ReactionsWidget1::loadName(QString setValue)
   CChemEq * chemEq;
   CFunction *function;
 
+  ComboBox1->clear();
   reactn = reactions[(string)setValue];
 
   LineEdit1->setText(reactn->getName().c_str());
@@ -277,27 +278,26 @@ void ReactionsWidget1::loadName(QString setValue)
 
       QString overall4 = "}";
 
-      //CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-      const CCopasiVector < CChemEqElement > &react1 = (&reactn->getChemEq())->getSubstrates();
-
-      const CChemEqElement *cchem;
-
-      for (int k = 0; k < react1.size(); k++)
-
-        ;
-      {
-        cchem = react1[0];
-        QString overall1 = cchem->getMetaboliteName().c_str();
-        QString & overall1_2 = overall1.operator += (overall2) ;
-        QString overall3 = cchem->getCompartmentName().c_str();
-        QString & overall3_4 = overall3.operator += (overall4) ;
-        QString & overall = overall1_2.operator += (overall3_4) ;
+      /*//CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
+        const CCopasiVector < CChemEqElement > &react1 = (&reactn->getChemEq())->getSubstrates();
+          const CChemEqElement *cchem;
+        for (int k = 0; k <react1.size(); k++);
+        {
+        cchem=react1[0];
+           QString overall1=cchem->getMetaboliteName().c_str();
+           QString & overall1_2=overall1.operator+=(overall2) ;
+        QString overall3=cchem->getCompartmentName().c_str();
+        QString & overall3_4=overall3.operator+=(overall4) ;
+        QString & overall=overall1_2.operator+=(overall3_4) ;
         //for the combo box
         QStringList comboEntries1;
-        comboEntries1 = overall;
+        comboEntries1= overall;
         QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
         //table->setItem(0, 0, item);
-      }
+         }
+       
+       
+      */
     }
 }
 
