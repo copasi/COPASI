@@ -72,6 +72,12 @@ class CChemEq
   void cleanup();
   
   /**
+   *  Compile
+   *  @param "CCopasiVectorN < CCompartment > &" compartments
+   */
+  void compile(CCopasiVectorN < CCompartment > & compartments);
+  
+  /**
    *  Set the chemical equation
    *  @param "const string &" chemicalEquation (in any form even mixed)
    */
@@ -153,8 +159,8 @@ class CChemEq
    *  @param "vector < CChemEqElement * > &" elements
    *  @param "vector < CMetab * > &" metabolites
    */
-  void compileChemEqElements(vector < CChemEqElement * > & elements,
-			     vector < CMetab * > & metabolites);
+  void compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
+			     CCopasiVectorN < CCompartment > & metabolites);
 
   /**
    *  This function frees a vector of CChemEqElement

@@ -15,6 +15,9 @@ MESSAGES Messages[] =
   // CRange
   MCRange + 1, "CRange (1): Invalid range ('%d', '%d').",
 
+  // CCopasiVector
+  MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found.",
+
   // This must be the last element of the message list! Do not delete!
   0, NULL
   };

@@ -117,10 +117,27 @@ class CCopasiVector : protected vector < CType * >
     }   
 
   /**
-   *
+   *  Retrieves the size of the vector
+   *  @return "unsigned C_INT32" size
    */
-  virtual unsigned C_INT32 size() const 
-    {return vector < CType * >::size();}
+  virtual unsigned C_INT32 size() const {return vector < CType * >::size();}
+
+  /**
+   *  Resizes the vector
+   *  @param "unsigned C_INT32" size
+   */
+  virtual void resize(unsigned C_INT32 size) 
+    {
+      unsigned C_INT32 OldSize = vector < CType * >::size();
+      
+      vector < CType * >::resize(size);
+      unsigned C_INT32 i;
+      iterator Target = begin() + OldSize;
+      
+      for (i=OldSize; i<size; i++)
+	*(Target++) = new CType;
+    }
+  
 };
 
 template < class CType > class CCopasiVectorS 
@@ -155,7 +172,7 @@ template < class CType > class CCopasiVectorS
       unsigned C_INT32 i;
       
       cleanup();
-      resize(size);
+      vector < CType * >::resize(size);
       
       CCopasiVector< CType >::iterator Target = begin();
  
@@ -285,8 +302,8 @@ template < class CType > class CCopasiVectorN
       CCopasiVector< CType >::const_iterator Target = begin();
       
       for (i=0; i<imax; i++)
-        if (name == (*(Target++))->getName()) return i;
-            
+	  if ((*(Target++))->getName() == name) return i;
+      
       return -1;
     }
 };
@@ -324,7 +341,7 @@ template < class CType > class CCopasiVectorNS
       unsigned C_INT32 i;
       
       cleanup();
-      resize(size);
+      vector < CType * >::resize(size);
       
       CCopasiVector< CType >::iterator Target = begin();
  

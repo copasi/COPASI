@@ -49,20 +49,20 @@ CMassAction::CMassAction(C_INT16 reversible)
 CMassAction::~CMassAction() {cleanup();}
 
 C_FLOAT64 
-CMassAction::calcValue(const vector < CCallParameter > & callParameters) const
+CMassAction::calcValue(const CCopasiVector < CCallParameter > & callParameters) const
 {
   C_FLOAT64 Products = 1.0, Substrates = 1.0;
   unsigned C_INT32 i, imax;
   
-  imax = callParameters[0].identifiers().size();
+  imax = callParameters[0]->identifiers().size();
   for (i = 0; i < imax; i++)
-    Substrates *= *(C_FLOAT64 *) callParameters[0].identifiers()[i];
+    Substrates *= *(C_FLOAT64 *) callParameters[0]->identifiers()[i];
 
   if (!isReversible()) return Substrates;
     
-  imax = callParameters[1].identifiers().size();
+  imax = callParameters[1]->identifiers().size();
   for (i = 0; i < imax; i++)
-    Products *= *(C_FLOAT64 *) callParameters[1].identifiers()[i];
+    Products *= *(C_FLOAT64 *) callParameters[1]->identifiers()[i];
     
   return Substrates - Products;
 }

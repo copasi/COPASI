@@ -60,6 +60,11 @@ class CReaction
        *  Destructor
        */
       ~CId2Metab();
+      
+      /**
+       *  cleanup();
+       */
+      void cleanup();
     };
 
   class CId2Param
@@ -88,6 +93,12 @@ class CReaction
        *  Destructor
        */
       ~CId2Param();
+
+      /**
+       *  cleanup();
+       */
+
+      void cleanup();
       /**
        *	Return Identifier Name		Wei Sun		
        */
@@ -134,30 +145,30 @@ class CReaction
    *  A vector of links between the substrates of the reaction 
    *  and function parameters
    */
-  vector < CId2Metab > * mId2Substrates;
+  CCopasiVector < CId2Metab > mId2Substrates;
 
   /**
    *  A vector of links between the products of the reaction 
    *  and function parameters
    */
-  vector < CId2Metab > * mId2Products;
+  CCopasiVector < CId2Metab > mId2Products;
 
   /**
    *  A vector of links between the modifiers of the reaction 
    *  and function parameters
    */
-  vector < CId2Metab > * mId2Modifiers;
+  CCopasiVector < CId2Metab > mId2Modifiers;
 
   /**
    *  A vector of links between the kinetic parameters of the reaction 
    *  and function parameters
    */
-  vector < CId2Param > * mId2Parameters;
+  CCopasiVector < CId2Param > mId2Parameters;
 
   /**
    *  A pointer to the  call parameters of the rate function of the reaction
    */
-  vector < CCallParameter > * mCallParameters;
+  CCopasiVector < CCallParameter > mCallParameters;
 
   /**
    *
@@ -172,16 +183,17 @@ class CReaction
   CReaction();
 
   /**
+   *  Copy constructor
+   *  @param "const CReaction &" src
+   */
+  CReaction(const CReaction & src);
+
+  /**
    *  Named constructor
    *  @param "const string &" name
    */
   CReaction(const string & name);
 
-  /**
-   *  Init
-   */
-  void initialize();
-    
   /**
    *  Destructor
    */
@@ -217,27 +229,27 @@ class CReaction
 
   /**
    *  Retrieves the vector of substrates
-   *  @return "vector < CId2Metab > &"
+   *  @return "CCopasiVector < CId2Metab > &"
    */
-  vector < CId2Metab > &getId2Substrates();
+  CCopasiVector < CId2Metab > &getId2Substrates();
 
   /**
    *  Retrieves the vector of products
-   *  @return "vector < CId2Metab > &"
+   *  @return "CCopasiVector < CId2Metab > &"
    */
-  vector < CId2Metab > &getId2Products();
+  CCopasiVector < CId2Metab > &getId2Products();
 
   /**
    *  Retrieves the vector of modifiers
-   *  @return "vector < CId2Metab > &"
+   *  @return "CCopasiVector < CId2Metab > &"
    */
-  vector < CId2Metab > &getId2Modifiers();
+  CCopasiVector < CId2Metab > &getId2Modifiers();
 
   /**
    *  Retrieves the vector of parameters
-   *  @return "vector < CId2Param > &"
+   *  @return "CCopasiVector < CId2Param > &"
    */
-  vector < CId2Param > &getId2Parameters();
+  CCopasiVector < CId2Param > &getId2Parameters();
 
   /**
    *  Retrieves the name of the reaction

@@ -118,7 +118,7 @@ vector < CBaseCallParameter * > & CBaseFunction::callParameters()
 {return mCallParameters;}
 
 C_FLOAT64 
-CBaseFunction::calcValue(const vector < CCallParameter > & callParameters) const
+CBaseFunction::calcValue(const CCopasiVector < CCallParameter > & callParameters) const
 {return 0.0;}
 
 pair < C_INT32, C_INT32 > 
@@ -239,6 +239,8 @@ CCallParameter::CCallParameter()
 {mType = VECTOR_DOUBLE;}
 
 CCallParameter::~CCallParameter() {}
+
+void CCallParameter::cleanup() {}
 
 void CCallParameter::setType(enum CCallParameter::Type type) {mType = type;}
 

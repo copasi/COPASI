@@ -27,6 +27,13 @@ void CChemEq::cleanup()
   mBalances.cleanup();
 }
 
+void CChemEq::compile(CCopasiVectorN < CCompartment > & compartments)
+{
+  compileChemEqElements(mSubstrates, compartments);
+  compileChemEqElements(mProducts, compartments);
+  compileChemEqElements(mBalances, compartments);
+}
+
 void CChemEq::setChemicalEquation(const string & chemicalEquation)
 {
   string Substrates, Products;
@@ -153,13 +160,13 @@ void CChemEq::splitChemEq(string & left, string & right) const
 }
 
 void 
-CChemEq::compileChemEqElements(vector < CChemEqElement * > & elements,
-			       vector < CMetab * > & metabolites)
+CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
+			       CCopasiVectorN < CCompartment > & compartments)
 {
   unsigned C_INT32 i, imax = elements.size();
   
   for (i=0; i<imax; i++)
-    elements[i]->compile(metabolites);
+    elements[i]->compile(compartments);
 }
 
 void CChemEq::writeChemicalEquation()

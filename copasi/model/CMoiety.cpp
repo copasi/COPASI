@@ -9,6 +9,14 @@
 
 CMoiety::CMoiety() {}
 
+CMoiety::CMoiety(const CMoiety & src) 
+{
+  mName = src.mName;
+  mNumber = src.mNumber;
+  mINumber = src.mINumber;
+  mEquation = CCopasiVector < CChemEqElement >(src.mEquation);
+}
+
 CMoiety::CMoiety(const string & name) {mName = name;}
 
 CMoiety::~CMoiety() {}
@@ -19,19 +27,13 @@ void CMoiety::add(C_FLOAT64 value, CMetab & metabolite)
   element->setMultiplicity(value);
   element->setMetabolite(metabolite);
         
-  mEquation.push_back(element);
+  mEquation.add(element);
 }
 
 void CMoiety::add(C_FLOAT64 value, CMetab * metabolite)
 {add(value, *metabolite);}
 
-void CMoiety::cleanup() 
-{
-  for(unsigned C_INT32 i=0; i < mEquation.size(); i++)
-    if (mEquation[i]) delete mEquation[i];
-  
-  mEquation.clear();
-}
+void CMoiety::cleanup() {mEquation.cleanup();}
 
 #ifdef XXXX
 void CMoiety::cleanup(const string & name)

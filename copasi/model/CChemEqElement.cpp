@@ -17,7 +17,7 @@ CChemEqElement::CChemEqElement(const CChemEqElement & src)
   mMetaboliteName = src.mMetaboliteName;
   mCompartmentName = src.mCompartmentName;
   mMultiplicity = src.mMultiplicity;
-  mpMetabolite = src.mpMetabolite;
+  mpMetabolite = NULL;
 }
 
 CChemEqElement::~CChemEqElement() {}
@@ -58,20 +58,31 @@ const string & CChemEqElement::getCompartmentName() const
 void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
 
-void CChemEqElement::compile(vector < CMetab * > & metabolites)
+void CChemEqElement::compile(CCopasiVectorN < CCompartment > & compartments)
 {
-  unsigned C_INT32 i, imax = metabolites.size();
-  
-  mpMetabolite = NULL;
-  
-  for (i=0; i<imax; i++)
-    if (mMetaboliteName == metabolites[i]->getName())
-      {
-	mpMetabolite = metabolites[i];
-	break;
-      }
+  if (mCompartmentName == "")
+    {
+      unsigned C_INT32 i, imax = compartments.size();
+      
+      for (i=0; i<imax; i++)
+	{
+	  try
+	    {
+	      compartments[i]->metabolites()[mMetaboliteName];
+	      mCompartmentName = compartments[i]->getName();
+	    }
+	  catch (CCopasiException Exception)
+	    {
+	      if ((MCCopasiVector + 1) == Exception.getMessage().getNumber())
+		continue;
+	      else
+		throw Exception;
+	    }
+	}
+    }
 
-  if (i >= imax) fatalError();
+  mpMetabolite = 
+    compartments[mCompartmentName]->metabolites()[mMetaboliteName];
 }
 
 string CChemEqElement::writeElement() const

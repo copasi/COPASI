@@ -15,6 +15,7 @@ typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;} Message;
 #define MCWriteConfig      5200
 #define MCRange            5300
 #define MCKinFunction      5400
+#define MCCopasiVector     5500
 
 /**
  *  This throws an exception with information where the error occured.

@@ -39,7 +39,7 @@ class CMassAction: public CBaseFunction
    *  Calculates the value of the function
    *  @param "vector < C_FLOAT64 * >" identifiers
    */
-  C_FLOAT64 calcValue(const vector < CCallParameter > & callParameters) const;
+  C_FLOAT64 calcValue(const CCopasiVector < CCallParameter > & callParameters) const;
 
   /**
    *  Returns the index of an identifier. The index specifies the position in

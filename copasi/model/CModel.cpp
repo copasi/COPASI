@@ -21,10 +21,6 @@
 
 CModel::CModel()
 {
-  
-  //  mCompartments = NULL;
-  //  mSteps        = NULL;
-  //  mMoieties     = NULL;
   mComments = "";
 
   mpLView = new
@@ -37,12 +33,7 @@ CModel::CModel()
   initialize();
 }
 
-void CModel::initialize()
-{
-  // if ( !mCompartments ) mCompartments = new CCopasiVector < CCompartment >;
-  //  if ( !mSteps )        mSteps        = new CCopasiVector < CReaction >;
-  //  if ( !mMoieties )     mMoieties     = new CCopasiVector < CMoiety >;
-}
+void CModel::initialize() {}
 
 CModel::~CModel()
 {
@@ -57,25 +48,6 @@ void CModel::cleanup()
   mCompartments.cleanup();
   mSteps.cleanup();
   mMoieties.cleanup();
-  /*
-  if ( mCompartments ) 
-    {
-      mCompartments->cleanup();
-      mCompartments = NULL;
-    }
- 
-  if ( mSteps )
-    {
-      mSteps->cleanup();
-      mSteps = NULL;
-    }
-
-  if ( mMoieties )
-    {
-      mMoieties->cleanup();
-      mMoieties = NULL;
-    }
-  */ 
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -118,7 +90,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                        CReadConfig::LOOP)))
     return Fail;
  
-  // if ((Fail = mCompartments->load(configBuffer, Size))) return Fail;
   mCompartments.load(configBuffer, Size);
   
   if (configBuffer.getVersion() < "4")
@@ -170,7 +141,6 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
     return Fail;
  
-  // if ((Fail = mCompartments->save(configBuffer))) return Fail;
   mCompartments.save(configBuffer);
   
   if ((Fail = Copasi.FunctionDB.save(configBuffer))) return Fail;

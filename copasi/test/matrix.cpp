@@ -123,7 +123,7 @@ C_INT main2(void)
       model.initializeMetabolites();
       
       CReaction reaction;
-      reaction.initialize();
+      //      reaction.initialize();
       
       reaction.setName("r_1");
       reaction.setChemEq("m_1 -> m_3");

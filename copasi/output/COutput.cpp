@@ -351,8 +351,8 @@ void COutput::repParams(ofstream &fout, CModel & model)
       for (j = 0; j < model.getReactions()[i]->getId2Parameters().size(); j++)
 	{
 
-	  fout << " " << model.getReactions()[i]->getId2Parameters()[j].getIdentifierName() << " =  ";
-	  fout << setprecision(4) << model.getReactions()[i]->getId2Parameters()[j].getValue();
+	  fout << " " << model.getReactions()[i]->getId2Parameters()[j]->getIdentifierName() << " =  ";
+	  fout << setprecision(4) << model.getReactions()[i]->getId2Parameters()[j]->getValue();
 	  fout << endl;
 		
 	}

@@ -676,7 +676,7 @@ void CDatum::compileDatum(CModel &Model)
       if (Index == -1) break;
       Index1 = Model.getReactions()[Index]->findPara(JStr);
       if (Index1 == -1) break;
-      mpValue = (C_FLOAT64 *)Model.getReactions()[Index]->getId2Parameters()[Index1].getValueAddr();
+      mpValue = (C_FLOAT64 *)Model.getReactions()[Index]->getId2Parameters()[Index1]->getValueAddr();
       mType = CFLOAT64;
       break;
 #if 0

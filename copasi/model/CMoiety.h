@@ -33,33 +33,111 @@ class CMoiety
    */
   C_FLOAT64 mINumber;
 
-
-  // typedef struct ELEMENT {C_FLOAT64 mValue; CMetab * mMetab;};
-  vector < CChemEqElement * > mEquation;
+  /**
+   *  Vector of linear dependent CChemEqElement
+   */
+  CCopasiVector < CChemEqElement > mEquation;
     
   // Operations
  public:
+  /**
+   *  Default constructor
+   */
   CMoiety();
+
+  /**
+   *  Copy constructor
+   *  @param "const CMoiety &" src
+   */
+  CMoiety(const CMoiety & src);
+
+  /**
+   *
+   */
   CMoiety(const string & name);
-  ~CMoiety();
+ 
+  /**
+   *  Destructor
+   */
+ ~CMoiety();
+
+  /**
+   *
+   */
   C_INT32 load(CReadConfig & configBuffer);
+
+  /**
+   *
+   */
   C_INT32 save(CWriteConfig & configBuffer);
-    
+
+  /**
+   *
+   */
   void add(C_FLOAT64 value, CMetab & metabolite);
+
+  /**
+   *
+   */
   void add(C_FLOAT64 value, CMetab * metabolite);
+
+  /**
+   *
+   */
   void cleanup();
+
+  /**
+   *
+   */
   void cleanup(const string & name);
+
+  /**
+   *
+   */
   void cleanup(C_INT32 index);
+
+  /**
+   *
+   */
   void change(C_INT32 index,
 	      C_FLOAT64 value);
+
+  /**
+   *
+   */
   void change(const string & name,
 	      C_FLOAT64 value);
+
+  /**
+   *
+   */
   void setName(const string name);
+
+  /**
+   *
+   */
   void setInitialValue();
+
+  /**
+   *
+   */
   string getName() const;
+
+  /**
+   *
+   */
   string getDescription() const;
+
+  /**
+   *
+   */
   C_FLOAT64 dependentNumber();
+
+  /**
+   *
+   */
   C_FLOAT64 getNumber() const;
+
   /**
    *	Returns the address of mNumber
    */

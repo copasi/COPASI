@@ -445,7 +445,7 @@ C_INT32  TestNewton(void)
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps\\NewtonTest.gps");
+    CReadConfig inbuf("gps/NewtonTest.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();
@@ -576,15 +576,15 @@ C_INT32 TestKinFunction()
   C_FLOAT64 a = 4;
   C_FLOAT64 b = 1;
     
-  vector < CCallParameter > CallParameters;
+  CCopasiVector < CCallParameter > CallParameters;
 
   CallParameters.resize(1);
     
-  CallParameters[0].setType(CCallParameter::VECTOR_DOUBLE);
-  CallParameters[0].identifiers().resize(2);
+  CallParameters[0]->setType(CCallParameter::VECTOR_DOUBLE);
+  CallParameters[0]->identifiers().resize(2);
     
-  CallParameters[0].identifiers()[0] = &a;
-  CallParameters[0].identifiers()[1] = &b;
+  CallParameters[0]->identifiers()[0] = &a;
+  CallParameters[0]->identifiers()[1] = &b;
     
   C_FLOAT64 r = f.calcValue(CallParameters);
     

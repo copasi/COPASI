@@ -14,9 +14,7 @@
 #include "copasi.h"
 
 #include "CBaseIdentifier.h"
-#include "utilities/CVersion.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#include "utilities/utilities.h"
 
 /**
  *
@@ -128,6 +126,11 @@ class CCallParameter
    *
    */
   ~CCallParameter();
+
+  /**
+   *  cleanup();
+   */
+  void cleanup();
 
   /**
    *
@@ -402,7 +405,7 @@ class CBaseFunction
    *  @param "vector < C_FLOAT64 * >" identifiers
    */
   virtual C_FLOAT64 
-    calcValue(const vector < CCallParameter > & callParameters) const;
+    calcValue(const CCopasiVector < CCallParameter > & callParameters) const;
 
   /**
    *  Returns the index of an identifier. The index specifies the position in
