@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/05 21:23:53 $
+   $Date: 2003/12/11 21:31:42 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -177,56 +177,30 @@ void CopasiUI3Window::slotFileOpen()
   // gives the file information to the datamodel to handle it
 
   //Use this *** gpsFile.endsWith(".gps")
-  /*if (!dataModel)
-   dataModel = new DataModel; // create a new data model
-  */
+  if (!dataModel)
+    dataModel = new DataModel; // create a new data model
 
-  //if (dataModel && newFile)
-  // for *.gps files
-  if (dataModel && newFile.endsWith(".gps"))
+  if (dataModel->getModel())
     {
-      if (dataModel->getModel())
-        {
-          ListViews::notify(ListViews::MODEL, ListViews::DELETE,
-                            dataModel->getModel()->getKey());
-
-          if (gpsFile) slotFileSave();
-          else slotFileSaveAs();
-        }
-
-      gpsFile = newFile;
-
-      dataModel->loadModel((const char *)gpsFile.utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::ADD,
+      ListViews::notify(ListViews::MODEL, ListViews::DELETE,
                         dataModel->getModel()->getKey());
 
-      if (!bobject_browser_open)
-        file->setItemEnabled(nobject_browser, true);
-      file->setItemEnabled(nexport_menu_SBML, true);
-      file->setItemEnabled(nsaveas_menu_id, true);
-      msave_button->setEnabled(true);
-      file->setItemEnabled(nsave_menu_id, true);
+      if (gpsFile) slotFileSave();
+      else slotFileSaveAs();
     }
-  else
-    // for *.COPASIxml files
-    {
-      if (!dataModel)
-        dataModel = new DataModel; //create a new data model
 
-      gpsFile = newFile;
-      //      dataModel->createModel(gpsFile.latin1());
-      CCopasiXML parserObject;
-      std::ifstream infile;
-      infile.open((const char *)gpsFile.utf8());
-      parserObject.load(infile);
-      ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
-      if (!bobject_browser_open)
-        file->setItemEnabled(nobject_browser, true);
-      file->setItemEnabled(nexport_menu_SBML, true);
-      file->setItemEnabled(nsaveas_menu_id, true);
-      msave_button->setEnabled(true);
-      file->setItemEnabled(nsave_menu_id, true);
-    }
+  gpsFile = newFile;
+
+  dataModel->loadModel((const char *)gpsFile.utf8());
+  ListViews::notify(ListViews::MODEL, ListViews::ADD,
+                    dataModel->getModel()->getKey());
+
+  if (!bobject_browser_open)
+    file->setItemEnabled(nobject_browser, true);
+  file->setItemEnabled(nexport_menu_SBML, true);
+  file->setItemEnabled(nsaveas_menu_id, true);
+  msave_button->setEnabled(true);
+  file->setItemEnabled(nsave_menu_id, true);
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************

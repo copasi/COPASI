@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/11/05 21:59:17 $
+   $Author: shoops $ 
+   $Date: 2003/12/11 21:31:42 $
    End CVS Header */
 
 #include "DataModel.h"
 #include "DataModel.txt.h"
+#include "function/CFunctionDB.h"
 
 DataModel::DataModel()
 {
@@ -102,38 +103,81 @@ void DataModel::createModel(const char* fileName)
 
 void DataModel::loadModel(const char* fileName)
 {
-  pdelete(model);
-  CReadConfig inbuf(fileName);
-  model = new CModel();
-  model->load(inbuf);
-  searchFolderList(1)->setObjectKey(model->getKey());
+  std::ifstream File(fileName);
+  std::string Line;
+  File >> Line;
 
-  pdelete(steadystatetask);
-  steadystatetask = new CSteadyStateTask();
-  steadystatetask->load(inbuf);
-  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+  if (!Line.compare(0, 8, "Version="))
+    {
+      File.close();
+      pdelete(model);
+      CReadConfig inbuf(fileName);
+      model = new CModel();
+      model->load(inbuf);
+      searchFolderList(1)->setObjectKey(model->getKey());
 
-  pdelete(trajectorytask);
-  trajectorytask = new CTrajectoryTask();
-  trajectorytask->load(inbuf);
-  searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
+      pdelete(steadystatetask);
+      steadystatetask = new CSteadyStateTask();
+      steadystatetask->load(inbuf);
+      searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
-  pdelete(scantask);
-  scantask = new CScanTask();
-  scantask->getProblem()->setModel(model);
-  // future work  scantask->load(inbuf);
-  searchFolderList(32)->setObjectKey(scantask->getKey());
+      pdelete(trajectorytask);
+      trajectorytask = new CTrajectoryTask();
+      trajectorytask->load(inbuf);
+      searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
-  pdelete(reportdefinitions);
-  reportdefinitions = new CReportDefinitionVector();
-  //  reportdefinitions->load(inbuf);
-  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+      pdelete(scantask);
+      scantask = new CScanTask();
+      scantask->getProblem()->setModel(model);
+      // future work  scantask->load(inbuf);
+      searchFolderList(32)->setObjectKey(scantask->getKey());
 
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
-  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+      pdelete(reportdefinitions);
+      reportdefinitions = new CReportDefinitionVector();
+      //  reportdefinitions->load(inbuf);
+      searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
-  Copasi->pOutputList->load(inbuf);
+      pdelete(pOptFunction);
+      pOptFunction = new COptFunction();
+      searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+
+      Copasi->pOutputList->load(inbuf);
+    }
+  else if (!Line.compare(0, 5, "<?xml"))
+    {
+      std::cout << "XML Format" << std::endl;
+      File.seekg(0, std::ios_base::beg);
+
+      CCopasiXML XML;
+
+      XML.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
+      CReportDefinitionVector * pNewReports = new CReportDefinitionVector();
+      XML.setReportList(*pNewReports);
+
+      XML.load(File);
+
+      pdelete(model);
+      model = XML.getModel();
+      model->compile();
+      searchFolderList(1)->setObjectKey(model->getKey());
+
+      pdelete(steadystatetask);
+      steadystatetask = new CSteadyStateTask();
+      searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+
+      pdelete(trajectorytask);
+      trajectorytask = new CTrajectoryTask();
+      searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
+
+      pdelete(scantask);
+      scantask = new CScanTask();
+      scantask->getProblem()->setModel(model);
+      searchFolderList(32)->setObjectKey(scantask->getKey());
+
+      pdelete(reportdefinitions);
+      reportdefinitions = pNewReports;
+      searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+    }
 
   //  steadystatetask->compile();
 }
