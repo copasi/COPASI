@@ -98,7 +98,7 @@ Subs0=0
 Param0=0.1
 Param1=0.5
 Compartment=compartment
-Volume=0.30e-17
+Volume=0.10e-18
 Comments
 
 EndComments
