@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.12 2003/08/11 01:09:44 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.13 2003/08/12 02:43:14 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@ class QFrame;
 class QPushButton;
 //class QTable;
 class QRadioButton;
-//class ScanScrollView;
+class QComboBox;
 class QListBox;
 class CModel;
 class CReport;
@@ -56,15 +56,18 @@ class TableDefinition : public CopasiWidget
     QPushButton* downButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
+    QFrame* frame4;
+    QCheckBox* tabChecked;
+    QLineEdit* seperatorEdit;
+    QLabel* seperatorLabel;
+    QComboBox* comboTask;
+    QFrame* line4;
+    QLabel* taskLabel;
     QFrame* frame5;
     QLabel* targetLabel;
     QLineEdit* targetEdit;
     QCheckBox* titleChecked;
     QCheckBox* appendChecked;
-    QFrame* frame4;
-    QLabel* seperatorLabel;
-    QLineEdit* seperatorEdit;
-    QCheckBox* tabChecked;
 
   protected:
     QGridLayout* TableDefinitionLayout;
@@ -72,9 +75,9 @@ class TableDefinition : public CopasiWidget
     QHBoxLayout* layout7;
     QVBoxLayout* layout6;
     QGridLayout* layout5;
+    QGridLayout* frame4Layout;
     QGridLayout* frame5Layout;
     QHBoxLayout* layout5_2;
-    QGridLayout* frame4Layout;
 
     QWidget* pParent;
     std::vector<CCopasiObject*> selectedList;

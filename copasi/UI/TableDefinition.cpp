@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.17 2003/08/11 01:09:44 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.18 2003/08/12 02:43:14 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,6 +19,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qlistbox.h>
+#include <qcombobox.h>
 
 #include "TableDefinition.h"
 #include "ObjectBrowser.h"
@@ -113,6 +114,44 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
 
   TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
 
+  frame4 = new QFrame(this, "frame4");
+  frame4->setFrameShape(QFrame::Box);
+  frame4->setFrameShadow(QFrame::Sunken);
+  frame4->setLineWidth(1);
+  frame4Layout = new QGridLayout(frame4, 1, 1, 11, 6, "frame4Layout");
+
+  tabChecked = new QCheckBox(frame4, "tabChecked");
+
+  frame4Layout->addWidget(tabChecked, 3, 1);
+
+  seperatorEdit = new QLineEdit(frame4, "seperatorEdit");
+
+  frame4Layout->addWidget(seperatorEdit, 2, 1);
+
+  seperatorLabel = new QLabel(frame4, "seperatorLabel");
+
+  frame4Layout->addWidget(seperatorLabel, 2, 0);
+
+  comboTask = new QComboBox(FALSE, frame4, "comboTask");
+  comboTask->insertItem ("Trajectory Task");
+  comboTask->insertItem ("SteadyState Task");
+  comboTask->insertItem ("Scan Task");
+
+  frame4Layout->addWidget(comboTask, 0, 1);
+
+  line4 = new QFrame(frame4, "line4");
+  line4->setFrameShape(QFrame::HLine);
+  line4->setFrameShadow(QFrame::Sunken);
+  line4->setFrameShape(QFrame::HLine);
+
+  frame4Layout->addMultiCellWidget(line4, 1, 1, 0, 1);
+
+  taskLabel = new QLabel(frame4, "taskLabel");
+
+  frame4Layout->addWidget(taskLabel, 0, 0);
+
+  TableDefinitionLayout->addWidget(frame4, 0, 1);
+
   frame5 = new QFrame(this, "frame5");
   frame5->setFrameShape(QFrame::Box);
   frame5->setFrameShadow(QFrame::Sunken);
@@ -139,26 +178,6 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   frame5Layout->addWidget(appendChecked, 2, 0);
 
   TableDefinitionLayout->addWidget(frame5, 0, 0);
-
-  frame4 = new QFrame(this, "frame4");
-  frame4->setFrameShape(QFrame::Box);
-  frame4->setFrameShadow(QFrame::Sunken);
-  frame4->setLineWidth(1);
-  frame4Layout = new QGridLayout(frame4, 1, 1, 11, 6, "frame4Layout");
-
-  seperatorLabel = new QLabel(frame4, "seperatorLabel");
-
-  frame4Layout->addWidget(seperatorLabel, 0, 0);
-
-  seperatorEdit = new QLineEdit(frame4, "seperatorEdit");
-
-  frame4Layout->addWidget(seperatorEdit, 0, 1);
-
-  tabChecked = new QCheckBox(frame4, "tabChecked");
-
-  frame4Layout->addWidget(tabChecked, 1, 1);
-
-  TableDefinitionLayout->addWidget(frame4, 0, 1);
   languageChange();
   clearWState(WState_Polished);
 
@@ -210,11 +229,12 @@ void TableDefinition::languageChange()
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
+  tabChecked->setText(tr("Tab"));
+  seperatorLabel->setText(tr("Seperator"));
+  taskLabel->setText(tr("Task"));
   targetLabel->setText(tr("Target"));
   titleChecked->setText(tr("Title"));
   appendChecked->setText(tr("Append"));
-  seperatorLabel->setText(tr("Seperator"));
-  tabChecked->setText(tr("Tab"));
 }
 
 /*This function is to load the model for the table*/
