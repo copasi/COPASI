@@ -587,7 +587,7 @@ Copasi now creates a curve object for each object you selected for the y axis an
 <para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify wether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
 <para>Another way to specify wether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
 </para>
-<para>In addition to curves, you can also tell Copasi to draw a histogram of the data generated during a time course simulation (see <xref linkend="" />) or a parameter scan (see <xref linkend="" />). A histogram draws a bar graph that shows how often the parameter took a certain value. To define a histogram instead of a curve you click on the <guibutton>New Histogram...</guibutton> button in the plot definition dialog. For the new histogram you can specifiy a title, the variable for which the histogram should be drawn and the increment of the value. The increment parameter tells Copasi how wide the individual bars of the histogram are going to be. Let's say the value of the parameter was in the range of 3 to 8 and you set the increment to 0.1, Copasi will draw a histogram with 50 bars, each bar representing a value range of 0.1 units.
+<para>In addition to curves, you can also tell Copasi to draw a histogram of the data generated during a time course simulation (see <xref linkend="calculatingTrajectory" />) or a parameter scan (see <xref linkend="parameterScan" />). A histogram draws a bar graph that shows how often the parameter took a certain value. To define a histogram instead of a curve you click on the <guibutton>New Histogram...</guibutton> button in the plot definition dialog. For the new histogram you can specifiy a title, the variable for which the histogram should be drawn and the increment of the value. The increment parameter tells Copasi how wide the individual bars of the histogram are going to be. Let's say the value of the parameter was in the range of 3 to 8 and you set the increment to 0.1, Copasi will draw a histogram with 50 bars, each bar representing a value range of 0.1 units. Curves and histograms can be combined in a single plot.
 </para>
 </sect2>
 </sect1>
@@ -1103,6 +1103,164 @@ To start the calculation, you click the <guibutton>run</guibutton> button. After
 </para>
 <para>
 Depending on wether a steady state was found or not, only the elasticities tab might be enabled. Copasi will state that it could not find a steady state in a label right above the tabs. For all of the results, you can choose if you want Copasi to display them scaled or unscaled.
+</para>
+</sect1>
+<sec1 id="parameterScan" xreflabel="Doing a Parameter Scan">
+<title>Doing a Parameter Scan</title>
+<para>Parameter Scans were introduced in Copasi Build 13. The leaf for parameter scans in the object tree is located under <guibutton>Multiple Tasks -> Parameter Scan</guibutton>. At the top the dialog displays a box called <guilabel>New scan item</guilabel> together with a <guibutton>create...</guibutton>. and when the dialog is opened for the first time, the only item in the widget below is a green box called <guilabel>Task</guilabel>. This widget contains a dropdown list with all the tasks that can be used in a scan. Additionally there is a checkbox called <guilabel>use initial conditions</guilabel> and a checkbox called <guilabel>do output during task</guilabel>.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog when first openend</phrase>
+ </textobject>
+ <caption>
+  <para>Initial scan task dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    The tasks for which scan can be condicted are steady state, time course and metabolic control analysis calculations. So if we want to do a scan for a time course calculation, we choose "Time Course" from the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the two checkboxes for the time being and take a look at the dropdown list at the top of the <guilabel>Scan Task</guilabel> dialog. This dropdown list contains four entries named "Parameter Scan", "Repeat", "Random distribution" and "Output separator". Those are additional elements that can be added to the main widget below to form complex tasks. Let's look at one after the other and start with the "Parameter Scan". As it is right now, the scan task does not do anything since we haven't told it yet which parameter we want to scan. To define a parameter for the scan, you choose "Parameter Scan" from the dropdown list at the top and press the create button. Copasi will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget contains some empty lineedit fields and a button labeled <guibutton>...</guibutton> and a checkbox labeled <guilabel>logarithmic</guilabel>. </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_02.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a Parameter Scan item</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with scan item</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+First thing you have to do is select the parameter for the scan. You do this by clicking on the <guibutton>...</guibutton> button and selecting some parameter from the selection dialog that appears. Once you are finished with your selection and pressed the <guibutton>OK</guibutton> button, the name of the object you chose will appear in the lineedit field beside the <guibutton>...</guibutton> button. In the linedit fields below you can now specifiy the minimal value the parameter will have during the scan as well as the maximal value. After choosing the object, these values will be set to half the objects value for the minimum and double the objects value for the maximum. In the <guilabel>Interval</guilabel> you can specify how many intervals Copasi uses during the scan to raise the value from minimum to maximum. Last but not least, the <guilabel>logarithmic</guilabel> checkbox determines wehter the value is raised in linear steps if the box is unchecked or in logarithmic steps if the box is checked.  Now you are set to run your first simple scan by clicking on the <guibutton>Run</guibutton> at the bottom of the dialog. In order to actually see some result, you have to have some kind of output defined. The scan task can not do reports yet, but if a plot is defined, the scan task will do plotting while running the scan. If you did not change the number of intervals from the default, the scan task will run 10 time course simulations each with a different value for the chosen parameter and in turn you will see 10 plots overlayed in one plot window.
+</para>
+<para>
+    So far we have only scratched the surface of the scan dialog. E.g. if you want to do a twodimensional scan, i.e. a scan where two parameters are independantly scanned, you can add a second <guilabel>Scan</guilabel> widget by adding it to the main dialog just like you did for the first parameter. You select "Parameter Scan" in the dropdown list and push the <guibutton>... Create!</guibutton> button.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_03.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with two Parameter Scan items</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with two scan items</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+After adjusting the minimum and maximum as well as the number of intervals, you can run the scan task again. Copasi will now do a scan for the first parameter while holding the second parameter constant at the minimum. Next, Copasi will raise the second parameter and do another scan from minimum to maximum for the first parameter. This way a full scan for the first parameter is done for every value of the second parameter. You have to be carefull because assuming that you chose 10 intervals for both parameters, Copasi will run 100 time course simulations during this twodimensional scan which can take a long time.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_04.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a Random distribution item</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with random distribution item</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    The "Random distribution" item is similar to the "Parameter Scan" item. With the random distribution a parameter can be given a random value. After adding a "Random distribution" widget to the main dialog, you first have to choose a parameter for which a random value will be set. You can then choose from three distribution forms to generate the random value. The three distributions are "Uniform distribution", "Normal Distribution" and "Poisson Distribution". Additionally you have to set the bounds within which the random value will be set. If all has been set and you press the <guibutton>Run</guibutton>, Copasi will set the parameters value to a random value from the chosen distribution and within the bounds set and run one time course simulation.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_05.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with random distribution and repeat item</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    The "Repeat" item can be used to repeat a certain action several times. E.g. if you add a Repeat widget above a "Random distribution" item, the parameter will be give a random value as many times as specified in the "Repeat" item and run a time course simulation with this value or one of the other tasks specified in the <guilabel>Task</guilabel> item at the bottom of the main widget.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/ParameterScan_06.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>dialog showing scan task dialog with a more complex combination of actions</phrase>
+ </textobject>
+ <caption>
+  <para>scan task dialog with combination of actions</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Different items can be combined in many ways to achieve certain goals. E.g. you could run 10 parameter scans for a certain value each with a different random value for another parameter by combining a "Parameter Scan" item with a "Random distribution" item and a repeat item.
+</para>
+<para>
+With the buttons on the left of each item other then the <guilabel>Task</guilabel> at the bottom, you can move the items up or down in the list or close an item you no longer need. The order of the items in the main widgets determines how Copasi will handle the actions. A widget is controlled by the widget above it. So a <guilabel>Repeat</guilabel> item acts on the widget directly below it.
 </para>
 </sect1>
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
