@@ -1665,6 +1665,7 @@ fi
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
+ rm Makefile */Makefile; \
  echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
                   $cps_mkl_path $cps_clapack_path $cps_expat_path && \
