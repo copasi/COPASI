@@ -95,13 +95,14 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   if (configBuffer.getVersion() < "4")
     {
       // Create the correct compartment / metabolite relationships
-      CMetab Metabolite;
+      CMetab * pMetabolite;
       for (i = 0; i < Copasi.OldMetabolites.size(); i++)
         {
-          Metabolite = *Copasi.OldMetabolites[i];
+		  pMetabolite = new CMetab;
+          *pMetabolite = *Copasi.OldMetabolites[i];
             
           mCompartments[Copasi.OldMetabolites[i]->getIndex()]->
-            addMetabolite(Metabolite);
+            addMetabolite(pMetabolite);
         }
     }
 
@@ -159,7 +160,7 @@ void CModel::buildStoi()
   CCopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
   string Name;
-  
+   
   imax = mMetabolites.size();
   mMetabolitesX.resize(imax);
   j = 0;
@@ -170,8 +171,10 @@ void CModel::buildStoi()
     else
       mMetabolitesX[i - j] = mMetabolites[i];
   
-  
-  mStoi.newsize(imax - j, mSteps.size());
+  for (i=0; i<imax; i++)
+	cout << mMetabolitesX[i]->getName() << ": " << mMetabolitesX[i]->getStatus() << endl;
+
+  mStoi.newsize(imax, mSteps.size());
     
   for (i=0; i<(unsigned C_INT32) mStoi.num_cols(); i++)
     {
@@ -397,7 +400,7 @@ void CModel::buildMoieties()
 {
   unsigned C_INT32 i;
   unsigned C_INT32 imin = mMetabolitesInd.size();
-  unsigned C_INT32 imax = imin + mMetabolitesDep.size();
+  unsigned C_INT32 imax = mMetabolites.size();
   unsigned C_INT32 j;
   unsigned C_INT32 jmax = imin;
   
