@@ -44,8 +44,11 @@ template <class T>
 class Tree{
 
 private:
-   	
+    /** @associates <{Node<T>}>
+     * @link association 
+     * @supplierCardinality 0..1*/
 	Node<T>* head;// declares the head of the tree
+    
 	void addChildren(T* children,T* parent);// this method is used to add the childrens to the tree
 
 public :	
