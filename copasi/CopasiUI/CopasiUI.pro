@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.82 $ $Author: shoops $ $Date: 2005/02/18 16:26:50 $  
+# $Revision: 1.83 $ $Author: shoops $ $Date: 2005/02/18 16:45:55 $  
 ######################################################################
 
 include(../common.pri)
@@ -168,7 +168,6 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            CTimeSeriesTable.h \
-           DataModel.h \
            DataModelGUI.h \
            DifferentialEquations.h \
            FixedMetaboliteSymbols.h \
@@ -244,7 +243,6 @@ SOURCES += \
            copasiui3window.cpp \
            CProgressBar.cpp \
            CTimeSeriesTable.cpp \
-           DataModel.cpp \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
            FixedMetaboliteSymbols.cpp \
