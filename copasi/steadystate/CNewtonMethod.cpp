@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 15:53:02 $
+   $Date: 2004/10/07 09:36:13 $
    End CVS Header */
 
 #include <algorithm>
@@ -25,6 +25,7 @@
 
 #include "clapackwrap.h"        //use CLAPACK
 #include "utilities/utility.h"
+#include "utilities/COutputHandler.h"
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
@@ -65,7 +66,8 @@ CNewtonMethod::~CNewtonMethod()
 
 void CNewtonMethod::cleanup()
 {
-  pdelete(mIpiv);
+  if (mIpiv) delete [] mIpiv; mIpiv = NULL;
+  // pdelete(mIpiv);
 }
 
 void CNewtonMethod::load(CReadConfig & configBuffer,
@@ -115,7 +117,7 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
                                CReadConfig::SEARCH);
       setValue("Newton.IterationLimit", Int);
 
-      configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl);
+      configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl); //typo is necessary!!
       setValue("Newton.Resolution", Dbl);
 
       configBuffer.getVariable("RelativeTolerance", "C_FLOAT64", &Dbl);
@@ -165,13 +167,15 @@ CNewtonMethod::processInternal()
   *mpSteadyStateX = mInitialStateX; //not strictly necessary
 
   mDimension = mpSteadyStateX->getVariableNumberSize();
-  mX = const_cast< C_FLOAT64 * >(mpSteadyStateX->getVariableNumberVector().array());
+  mX = const_cast< CVector< C_FLOAT64 > * >(&mpSteadyStateX->getVariableNumberVector());
 
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
   //mJacobianX.resize(mDimension, mDimension);
   mIpiv = new C_INT [mDimension];
+
+  if (mpProgressHandler) mpProgressHandler->init(0, "performing steady state calculation...", true);
 
   CNewtonMethod::NewtonReturnCode returnCode;
   if (mUseNewton)
@@ -218,6 +222,8 @@ CNewtonMethod::processInternal()
       std::cout << "Try integrating ..." << std::endl;
       for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
         {
+          if (mpProgressHandler) mpProgressHandler->reInit(0, "forward integrating...");
+          if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
           std::cout << "   integrating up to " << EndTime << std::endl;
 
           pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
@@ -289,6 +295,8 @@ CNewtonMethod::processInternal()
   pdelete(pTrajectory);
   cleanup();
 
+  if (mpProgressHandler) mpProgressHandler->finish();
+
   *mpSteadyState = *mpSteadyStateX; //convert back to CState
   return returnProcess(false, mFactor, mResolution);
 }
@@ -312,9 +320,12 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
+      if (mpProgressHandler) /*flagStopped =*/ mpProgressHandler->reInit(0, "newton method...");
+      if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
       //std::cout << "newton: " << k << std::endl << mStateX;
 
-      memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
+      //memcpy(mXold.array(), mX->array(), mDimension * sizeof(C_FLOAT64));
+      mXold = *mX; //should be almost as efficient as the above
 
       //      DebugFile << "Iteration: " << k << std::endl;
       mpSteadyStateX->calculateJacobian(*mpJacobianX, std::min(mFactor, mMaxrate),
@@ -436,13 +447,13 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
         {
           for (j = 0; j < mDimension; j++)
             {
-              mX[j] = mXold[j] - mH[j];
+              (*mX)[j] = mXold[j] - mH[j];
               mH[j] /= 2;
             }
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                            /* fortran style vector */
+                           mdxdt.array() - 1,                             /* fortran style vector */
                            1);
         }
 
@@ -453,7 +464,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           std::cout << "a newton step did not succeed" << std::endl;
 
           //discard the step
-          memcpy(mX, mXold.array(), mDimension * sizeof(C_FLOAT64));
+          *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));
+
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
 
           if (isSteadyState())
@@ -511,7 +523,7 @@ bool CNewtonMethod::isSteadyState()
   if (mDimension == 0) return true;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                            /* fortran style vector */
+                   mdxdt.array() - 1,                             /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
