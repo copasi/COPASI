@@ -1,10 +1,10 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 04/03 
-    Comment : Copasi Object Browser: 
-    Contact: Please contact lixu1@vt.edu.
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 04/03 
+   Comment : Copasi Object Browser: 
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECTBROWSER_H
@@ -61,6 +61,7 @@ class ObjectBrowser : public QWidget
     virtual void nextClicked();
 
   protected:
+    void closeEvent (QCloseEvent * e);
     QGridLayout* ObjectBrowserLayout;
   };
 #endif // OBJECTBROWSER_H

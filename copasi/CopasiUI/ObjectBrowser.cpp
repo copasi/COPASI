@@ -95,6 +95,12 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 /*
  *  Destroys the object and frees any allocated resources
  */
+void ObjectBrowser::closeEvent (QCloseEvent * e)
+{
+  QWidget::closeEvent(e);
+  this->~ObjectBrowser();
+}
+
 ObjectBrowser::~ObjectBrowser()
 {
   delete objectItemList;
@@ -104,6 +110,7 @@ ObjectBrowser::~ObjectBrowser()
 
 void ObjectBrowser::cancelClicked()
 {
+  close();
   qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
 }
 
@@ -176,11 +183,13 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 
 void ObjectBrowser::backClicked()
 {
+  ObjectListView->show();
   qWarning("ObjectBrowser::backClicked(): Not implemented yet!");
 }
 
 void ObjectBrowser::nextClicked()
 {
+  ObjectListView->hide();
   ObjectBrowserItem* rootItem = objectItemList->getRoot()->pItem;
   objectList* outputList = new objectList();
   export(rootItem, outputList);

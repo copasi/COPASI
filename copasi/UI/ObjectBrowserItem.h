@@ -76,7 +76,8 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ~ObjectBrowserItem()
     {
-      delete pBrowserObject;
+      if (getType() != FIELDATTR) //To avoid cross reference/multi deletion
+        delete pBrowserObject;
     }
 
     void attachKey();
@@ -135,6 +136,11 @@ class objectList
     objectList();
     ~objectList()
     {
+      if (index_length != 0)
+        {
+          delete [] quickIndex;
+          delete [] pointerList;
+        }
       while (length > 0)
         pop();
     }

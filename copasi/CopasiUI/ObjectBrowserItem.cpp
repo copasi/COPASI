@@ -32,6 +32,7 @@ browserObject::browserObject()
 
 browserObject::~browserObject()
 {
+  // QT DELETE THIS POINTER
   delete referenceList;
 }
 
@@ -214,6 +215,7 @@ void ObjectBrowserItem::reverseChecked()
 objectList::objectList()
 {
   root = NULL;
+  index_length = 0;
   length = 0;
 }
 
