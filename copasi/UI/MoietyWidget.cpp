@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:06 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:34 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -93,10 +93,12 @@ void MoietyWidget::slotBtnRunClicked()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+              dataModel->autoSave();
+              /*if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                 {
                   mainWidget->saveFile();
                 }
+              */
             }
         }
     }

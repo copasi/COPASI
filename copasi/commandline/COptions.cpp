@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:16 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:35 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -60,6 +60,10 @@ void COptions::init(C_INT argc, char *argv[])
     setValue("Home", PreOptions.Home);
     if (compareValue("Home", (std::string) ""))
       setValue("Home", getHome());
+
+    setValue("Tmp", PreOptions.Tmp);
+    if (compareValue("Tmp", (std::string) ""))
+      setValue("Tmp", getTemp());
 
     setValue("ConfigFile", PreOptions.ConfigFile);
 
@@ -296,4 +300,27 @@ std::string COptions::getHome(void)
     }
 
   return Home;
+}
+
+std::string COptions::getTemp(void)
+{
+  std::string Temp;
+
+  Temp = getEnvironmentVariable("TEMP");
+
+  if (Temp == "")
+    {
+      Temp = getEnvironmentVariable("TEMP");
+      if (Temp == "")
+        {
+          std::ostringstream error;
+          error << std::endl
+          << "  use --tmp TEMP" << std::endl
+          << "  or Please set the environment variable TEMP" << std::endl
+          << "  to point to your temp directory" << std::endl;
+          throw copasi::option_error(error.str());
+        }
+    }
+
+  return Temp;
 }

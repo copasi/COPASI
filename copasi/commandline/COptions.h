@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:20:09 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:35 $
    End CVS Header */
 
 /**
@@ -139,6 +139,7 @@ class COptions
     static std::string getPWD(void);
 
     static std::string getHome(void);
+    static std::string getTemp(void);
   };
 
 #endif // COPASI_COptions

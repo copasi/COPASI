@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/19 21:28:51 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:35 $
    End CVS Header */
 
 /*
@@ -59,6 +59,7 @@ namespace copasi
       std::map<std::string, std::string> Default;
       std::string ExportSBML;
       std::string Home;
+      std::string Tmp;
       std::string ImportSBML;
       std::string Save;
       std::string SystemFunctionDB;
@@ -78,6 +79,7 @@ namespace copasi
       size_type Default;
       size_type ExportSBML;
       size_type Home;
+      size_type Tmp;
       size_type ImportSBML;
       size_type Save;
       size_type SystemFunctionDB;
@@ -159,6 +161,7 @@ namespace copasi
         option_ConfigFile,
         option_CopasiDir,
         option_Home,
+        option_Tmp,
         option_SystemFunctionDB,
         option_UserFunctionDB,
         option_CopasiFile,

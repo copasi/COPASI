@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/02 15:51:06 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:34 $
    End CVS Header */
 
 /****************************************************************************
@@ -14,6 +14,7 @@
 #define DATAMODEL_H
 
 #include "copasi.h"
+#include <qstring.h>
 
 class CReadConfig;
 
@@ -33,7 +34,7 @@ class DataModel
   protected:
     CModel * model;
     bool mChanged;
-
+    QString currentFile;
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
@@ -56,13 +57,16 @@ class DataModel
 
     bool isChanged() const;
     void changed(const bool & changed = true);
-
+    void autoSave();
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
     inline CMCATask* getMCATask() {return mpCMCATask;}
     inline CScanTask* getScanTask() {return scantask;}
     inline CReportDefinitionVector* getReportDefinitionVectorAddr(){return reportdefinitions;}
     inline CPlotSpec2Vector* getPlotSpecVectorAddr(){return plotspecs;}
+
+  private:
+    bool fromAutoSave;
   };
 
 #endif

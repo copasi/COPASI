@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/19 21:28:51 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:35 $
    End CVS Header */
 
 /*
@@ -179,6 +179,8 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'exportSBML' option");
         case option_Home:
           throw option_error("missing value for 'home' option");
+        case option_Tmp:
+          throw option_error("missing value for 'tmp' option");
         case option_ImportSBML:
           throw option_error("missing value for 'importSBML' option");
         case option_Save:
@@ -395,6 +397,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "tmp") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'tmp' option is only allowed on the command line");
+      if (locations_.Tmp)
+        {
+          throw option_error("the 'tmp' option is only allowed once");
+        }
+      openum_ = option_Tmp;
+      locations_.Tmp = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "importSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'importSBML' option is only allowed on the command line");
@@ -519,6 +533,11 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.Home = value;
       }
       break;
+    case option_Tmp:
+      {
+        options_.Tmp = value;
+      }
+      break;
     case option_ImportSBML:
       {
         options_.ImportSBML = value;
@@ -568,6 +587,9 @@ namespace
 
     if (name_size <= 4 && name.compare("home") == 0)
       matches.push_back("home");
+
+    if (name_size <= 3 && name.compare("tmp") == 0)
+      matches.push_back("tmp");
 
     if (name_size <= 10 && name.compare("importSBML") == 0)
       matches.push_back("importSBML");

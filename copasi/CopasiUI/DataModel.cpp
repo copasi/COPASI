@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/25 10:51:29 $
+   $Author: stupe $ 
+   $Date: 2005/02/15 22:41:34 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -22,12 +22,14 @@
 #include "optimization/COptFunction.h"
 #include "xml/CCopasiXML.h"
 #include "steadystate/CMCAMethod.h"
+#include "commandline/COptions.h"
 
 DataModel::DataModel()
 {
   //this->populateData();
   model = NULL;
   mChanged = false;
+  fromAutoSave = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
   scantask = NULL;
@@ -70,7 +72,7 @@ bool DataModel::createModel()
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
-
+  currentFile = "";
   return true;
 }
 
@@ -200,13 +202,51 @@ bool DataModel::loadModel(const char* fileName)
     }
 
   if (model) model->setCompileFlag();
-
+  currentFile = fileName;
   return true;
+}
+
+void DataModel::autoSave()
+{
+  // Variables used to keep track of lenght and position inside string.
+  int i, len;
+  // We can use QString class rather than direct string manipulation.
+  std::string tmpDir, fileName;
+  if (currentFile != "" && currentFile)
+    {
+      // Get the location of Temp directory
+      COptions::getValue("Tmp", tmpDir);
+      len = tmpDir.length();
+      // Replace all occurances of '\' by '/'
+      while (len >= 0)
+        {
+          if (tmpDir[len] == '\\')
+            tmpDir[len] = '/';
+          len--;
+        }
+
+      // Name of the temp file will start from 'tmp_' followed by actual name of the file.
+      tmpDir = tmpDir.append("/tmp_");
+
+      fileName = currentFile.copy();
+      // Extract name of the file from current file name. Remove extension of the file.
+      i = fileName.find_last_of('/');
+      len = fileName.length();
+      fileName = fileName.substr(i + 1, len - i - 5);
+      // Append that to the temp directory address with .cps extension.
+      fileName = tmpDir.append(fileName);
+      fileName = fileName.append(".cps");
+      // Call to Save Model. fromAutoSave is used to make sure that fileName doesn't get overwritten again and again.
+      fromAutoSave = true;
+      saveModel(fileName.c_str());
+      fromAutoSave = false;
+    }
 }
 
 bool DataModel::saveModel(const char* fileName)
 {
   if (fileName == NULL) return false;
+  if (!fromAutoSave) currentFile = fileName;
 
   model->compileIfNecessary();
 
