@@ -1,4 +1,3 @@
-
 #ifndef MY_TREE_AND_LIST_WIDGET_H
 #define MY_TREE_AND_LIST_WIDGET_H
 
@@ -29,7 +28,6 @@ public:
 		return mModel;
 	}
 	void loadNodes(CModel *model);
-
 protected:
 	CModel *mModel;
 	QListView *ListView1;

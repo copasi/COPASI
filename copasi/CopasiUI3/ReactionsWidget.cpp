@@ -148,8 +148,8 @@ void ReactionsWidget::resizeEvent( QResizeEvent * re)
 		float weight0 = 3.5, weight1 = 6.5;
 		float weightSum = weight0 + weight1;
 		int w0, w1;
-		w0 = newWidth * (weight0 / weightSum);
-		w1 = newWidth - w0;
+		w0 = static_cast<int> (newWidth * (weight0 / weightSum));
+		w1 = static_cast<int> (newWidth - w0);
 		table->setColumnWidth(0, w0);
 		table->setColumnWidth(1, w1);
 	}

@@ -5,7 +5,7 @@
 #include "MetabolitesWidget.h"
 #include "MyTreeAndListWidget.h"
 
-#include "Model/CMetab.h"
+#include "model/CMetab.h"
 
 /** 
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -119,10 +119,10 @@ void MetabolitesWidget::resizeEvent( QResizeEvent * re)
 		float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0;
 		float weightSum = weight0 + weight1 + weight2 + weight3 ;
 		int w0, w1, w2, w3;
-		w0 = newWidth * (weight0 / weightSum);
-		w1 = newWidth * (weight1 / weightSum);
-		w2 = newWidth * (weight2 / weightSum);
-		w3 = newWidth - w0 - w1 - w2;
+		w0 = static_cast<int> (newWidth * (weight0 / weightSum));
+		w1 = static_cast<int> (newWidth * (weight1 / weightSum));
+		w2 = static_cast<int> (newWidth * (weight2 / weightSum));
+		w3 = static_cast<int> (newWidth - w0 - w1 - w2);
 		table->setColumnWidth(0, w0);
 		table->setColumnWidth(1, w1);
 		table->setColumnWidth(2, w2);

@@ -26,8 +26,8 @@
 CopasiUI3Window::CopasiUI3Window( QWidget* parent, const char* name, WFlags f )
 	: QMainWindow( parent, name, f )
 {
-	// Set the window caption/title
-	setCaption("Copasi Tree Front-End");
+    // Set the window caption/title
+    setCaption("Copasi Tree Front-End");
 
     // create a toolbar
     tbMain = new QToolBar( this, "MainToolBar" );
@@ -85,7 +85,7 @@ void CopasiUI3Window::slotFileOpen()
 	{
 		//CReadConfig inbuf("gps/bakker.gps");
 		CReadConfig inbuf((const char *)gpsFile.utf8());
-		mModel.load(inbuf);
+                mModel.load(inbuf);
 	}
 	catch (CCopasiException Exception)
     {

@@ -15,6 +15,7 @@ public:
 	void setDeleteConfirmation(bool enable);
 	void removeRow(int row);
 	void removeSelectedRows(bool full = FALSE);
+        void insertRows(long, long) {}
 	//virtual void setSorting ( bool b, bool wholeRows = TRUE);
 
 };
