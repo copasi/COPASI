@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:07 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:24:31 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,8 +31,8 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   if (obj->isVector()) flags += "V"; else flags += " ";
   if (obj->isNameVector()) flags += "N"; else flags += " ";
   if (obj->isReference()) flags += "R"; else flags += " ";
-  if (obj->hasValueInt()) flags += "Int";
-else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
+  if (obj->isValueInt()) flags += "Int";
+else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
 
   element = new QListViewItem((QListViewItem*)parent, obj->getName().c_str(),
                               obj->getObjectType().c_str(),
