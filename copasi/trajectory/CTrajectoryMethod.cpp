@@ -41,6 +41,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type,
       break;
 
     case hybrid:
+      Method = CHybridMethod::createHybridMethod(pProblem);
       break;
 
     default:
