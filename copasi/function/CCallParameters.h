@@ -12,7 +12,6 @@
 #include "CCallParameter.h"
 
 class CCallParameters : public std::vector< const void * >
-  {}
-;
+  {};
 
 #endif // COPASI_CCallParameters

@@ -142,3 +142,28 @@ C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
 
   return Substrates - Products;
 }
+
+bool CMassAction::dependsOn(const void * parameter,
+                            const CCallParameters & callParameters) const
+{
+  if (parameter == callParameters[0]) return true;
+
+  std::vector< C_FLOAT64 * >::const_iterator it;
+  std::vector< C_FLOAT64 * >::const_iterator end;
+
+  it = ((std::vector< C_FLOAT64 * > *) callParameters[1])->begin();
+  end = ((std::vector< C_FLOAT64 * > *) callParameters[1])->end();
+
+  for (; it != end; it++) if (parameter == *it) return true;
+
+      if (isReversible() == TriFalse) return false;
+
+        if (parameter == callParameters[2]) return true;
+
+          it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
+          end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
+
+          for (; it != end; it++) if (parameter == *it++) return true;
+
+              return false;
+            }

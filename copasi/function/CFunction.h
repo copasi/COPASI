@@ -193,10 +193,19 @@ class CFunction
 
     /**
      *  Calculates the value of the function
-     *  @param "vector < void * >" callParameters
+     *  @param const CCallParameters & callParameters
      *  @return "C_FLOAT64" result
      */
     virtual C_FLOAT64 calcValue(const CCallParameters & callParameters) const;
+
+    /**
+     * Returns whether the function depends on the given parameter
+     * &param const void * parameter
+     * &param const CCallParameters & callParameters
+     * &param bool dependsOn
+     */
+    virtual bool dependsOn(const void * C_UNUSED(parameter),
+                           const CCallParameters & C_UNUSED(callParameters)) const;
 
     /**
      *  Adds one usage descriptiont

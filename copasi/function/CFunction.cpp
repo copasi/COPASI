@@ -218,9 +218,11 @@ unsigned C_INT32 CFunction::getParameterPosition(const std::string & name)
 }
 
 C_FLOAT64 CFunction::calcValue(const CCallParameters & C_UNUSED(callParameters)) const
-{
-  return 0.0;
-}
+{return 0.0;}
+
+bool CFunction::dependsOn(const void * C_UNUSED(parameter),
+                          const CCallParameters & C_UNUSED(callParameters)) const
+{return false;}
 
 void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
 {

@@ -108,6 +108,15 @@ class CKinFunction : public CFunction
     calcValue(const CCallParameters & callParameters) const;
 
     /**
+     * Returns whether the function depends on the given parameter
+     * &param const void * parameter
+     * &param const CCallParameters & callParameters
+     * &param bool dependsOn
+     */
+    virtual bool dependsOn(const void * parameter,
+                           const CCallParameters & callParameters) const;
+
+    /**
      *  Retreives the nodes of the function
      */
     CCopasiVectorS < CNodeK > & getNodes();
