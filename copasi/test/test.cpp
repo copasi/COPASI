@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
+   $Date: 2004/01/08 20:20:09 $
    End CVS Header */
 
 // Main
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
       //      TestNewton();
       //      TestSSSolution();
       //YOHE: new test
-      TestOptimization();
+      //      TestOptimization();
       //      TestEigen();
       //      TestCopasiTree();
       //      TestTrajectory();
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      //      ConvertFunctionDB();
+      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
@@ -1637,10 +1637,11 @@ C_INT32 TestMassAction(void)
 C_INT32 ConvertFunctionDB(void)
 {
   CCopasiXML xml;
-
-  ((CCopasiXMLInterface *) &xml)->load("FunctionDB.xml");
+  Copasi->pFunctionDB->load();
 
 #ifdef XXXX
+  ((CCopasiXMLInterface *) &xml)->load("FunctionDB.xml");
+
   CFunctionDB FunctionDB;
 
   FunctionDB.setFilename("FunctionDB.gps");
@@ -1689,6 +1690,7 @@ C_INT32 ConvertFunctionDB(void)
   xml.setFunctionList(FunctionDB.loadedFunctions());
 #endif // XXXX
 
+  xml.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
   ofstream os("FunctionDB.new.xml");
 
   cout << "Writing XML ... ";
