@@ -45,8 +45,7 @@ CTrajectory::CTrajectory(CModel * aModel, C_INT32 aPoints,
   initialize(aModel);
 }
 
-
-/*
+#ifdef XXXX
 CTrajectory::CTrajectory(CModel *model, C_INT32 maxPoints, C_FLOAT64 maxTime, C_INT32 method)
     : mMaxPoints(maxPoints),
       mEndTime(maxTime),
@@ -54,8 +53,7 @@ CTrajectory::CTrajectory(CModel *model, C_INT32 maxPoints, C_FLOAT64 maxTime, C_
       mODESolver(0),
       mStochSolver(0)
 {}
-*/
-
+#endif // XXXX
 
 // Object assignment overloading,
 CTrajectory & CTrajectory::operator = (const CTrajectory& source)
@@ -284,18 +282,18 @@ void CTrajectory::process()
             mTime += length;
         }
     }
+#ifdef XXXX
     else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
     {
         C_FLOAT64 time = 0;
         C_INT32 step = 0;
          while (step < mMaxSteps && time < mEndTime && time >= 0)
          {
-	   //time = mStochSolver->GetMethod()->DoStep(time);
-	   //YH: change to following
-	   time = mStochSolver->getStochMethod()->doStep(time);
+             time = mStochSolver->GetMethod()->DoStep(time);
              step++;
          }
     }
+#endif // XXXX
 
   // if (OutEnd) OutEnd.Print();
 

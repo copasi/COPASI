@@ -78,10 +78,12 @@ class CStochSolver
    * @param method An integer specifying the method to use
    */
   CStochSolver(C_INT32 method);
+  
   /**
    * The destructor
    */
   ~CStochSolver();
+
   /**
    * This initializes the solver, creates an instance of the method, 
    * and initializes that with the given model.
@@ -146,6 +148,7 @@ class CStochMethod
   /**
    * Default constructor
    */
+  CStochMethod();
   CStochMethod(CModel *model);
   /**
    * Destructor
@@ -203,13 +206,14 @@ class CStochMethod
  * is updated after each reaction.
  */
 
-class CStochDirectMethod: public CStochMethod
+class CStochDirectMethod : public CStochMethod
 {
  public:
   // Lifecycle methods
   /**
    * Default constructor
    */
+  CStochDirectMethod();
   CStochDirectMethod(CModel *model);
   /** 
    * Destructor
