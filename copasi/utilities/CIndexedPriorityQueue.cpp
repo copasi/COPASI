@@ -29,7 +29,7 @@ C_INT32 CIndexedPriorityQueue::pushPair(C_INT32 index, C_FLOAT64 key)
     // be done using the buildHeap() method
 
     // First check that the index corresponds to the heap size before insertion
-    if (index != mHeap.size())
+    if (static_cast<unsigned int>(index) != mHeap.size())
     {
         printf("Error inserting pair into priority queue\n");
         return -1;
@@ -81,11 +81,11 @@ void CIndexedPriorityQueue::heapify(C_INT32 current)
     C_INT32 right = rightChild(current);
     C_INT32 highest_priority = current;
     cout << "Heapifying " << current << "(Currently " << mHeap[current].mKey << ")" << endl;
-    if ( (left < mHeap.size()) && (mHeap[left].mKey < mHeap[current].mKey) )
+    if ( (static_cast<unsigned int>(left) < mHeap.size()) && (mHeap[left].mKey < mHeap[current].mKey) )
     {
         highest_priority = left;
     }
-    if ( (right < mHeap.size()) && (mHeap[right].mKey < mHeap[highest_priority].mKey) )
+    if ( (static_cast<unsigned int>(right) < mHeap.size()) && (mHeap[right].mKey < mHeap[highest_priority].mKey) )
     {
         highest_priority = right;
     }
@@ -111,20 +111,19 @@ void CIndexedPriorityQueue::updateAux(C_INT32 pos)
         C_INT32 right = rightChild(pos);
         C_FLOAT64 min;
         C_INT32 min_pos = 0;
-        if (left < mHeap.size())
+        if (static_cast<unsigned int>(left) < mHeap.size())
         {
             min = mHeap[left].mKey;
             min_pos = left;
         }
         C_FLOAT64 val = mHeap[right].mKey;
-        if ((right < mHeap.size()) && ( val < min ) )
+        if ((static_cast<unsigned int>(right) < mHeap.size()) && ( val < min ) )
         {
             min = val;
             min_pos = right;
         }
         if ( (min_pos > 0) && (keyval > min) )
         {
-            C_INT32 min_index = mHeap[min_pos].mIndex;
             swapNodes(mHeap[pos].mIndex, min_pos);
             updateAux(min_pos);
         }
