@@ -1,8 +1,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <qmainwindow.h> 
-//#include <qtoolbar.h>
+#include <qmainwindow.h>
 #include <qtoolbutton.h>
 #include <qtimer.h>
 
@@ -13,19 +12,8 @@ class PlotWindow : public QMainWindow
   {
     Q_OBJECT
 
-    std::fstream targetfile;
-
-    // the write position
-    std::streampos pos;
-
     // a timer that controls automatic updates of the plot
     QTimer* timer;
-
-    // the size of the increment
-    int stepSize;
-
-    // the count of the steps
-    int count;
 
     // points to the specification of the plot inside this window - temporary perhaps
     PlotTaskSpec* ptspec;
@@ -36,11 +24,9 @@ class PlotWindow : public QMainWindow
   public:
     QToolButton * zoomButton;
 
-    PlotWindow(std::string filename);
+    PlotWindow(std::istream& targetfile);
 
     ~PlotWindow();
-
-    void writeFile(int step);
 
     // reloads the plot inside the window, updating it as necessary
     void reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys);
