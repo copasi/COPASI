@@ -98,6 +98,10 @@ SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ExpressionWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\FixedMetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
@@ -263,6 +267,10 @@ SOURCE=.\DataModel.h
 # Begin Source File
 
 SOURCE=.\DifferentialEquations.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ExpressionWidget.h
 # End Source File
 # Begin Source File
 
