@@ -6,29 +6,42 @@
  * Created for Copasi by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
+#include "copasi.h"
+
 #include <sstream>
 
-#include "copasi.h"
 #include "CKeyFactory.h"
 
 std::map< std::string, CCopasiObject * > CKeyFactory::mKeyMap;
+
+std::map< std::string, unsigned C_INT32 > CKeyFactory::mCounterMap;
+
+std::map< std::string, bool > CKeyFactory::mOverflowMap;
 
 std::string CKeyFactory::add(const std::string & prefix,
                              CCopasiObject * pObject)
 {
   std::stringstream key;
-  key << prefix << "_";
-  std::streampos pos = key.str().length();
+  key.str(prefix + "_");
 
-  unsigned C_INT32 count = 1;
-  key << count++;
-  while (mKeyMap.count(key.str()))
+  if (mCounterMap.count(prefix) == 0)
     {
-      key.seekp(pos, std::ios::beg);
-      key << count++;
+      mCounterMap[prefix] = 0;
+      mOverflowMap[prefix] = false;
     }
 
+  unsigned C_INT32 * count = & mCounterMap.find(prefix)->second;
+  key << (*count)++;
+
+  if (mOverflowMap[prefix] == true)
+    while (mKeyMap.count(key.str()))
+      {
+        key.str(prefix + "_");
+        key << (*count)++;
+      }
+
   mKeyMap[key.str()] = pObject;
+  if ((*count) == 0) mOverflowMap[prefix] = true;
 
   return key.str();
 }
@@ -38,8 +51,8 @@ bool CKeyFactory::remove(const std::string & key)
 
 CCopasiObject * CKeyFactory::get(const std::string & key)
 {
-  std::map< std::string, CCopasiObject * >::const_iterator it;
-  it = mKeyMap.find(key);
+  std::map< std::string, CCopasiObject * >::const_iterator it =
+    mKeyMap.find(key);
 
   if (it != mKeyMap.end()) return it->second;
   else return NULL;

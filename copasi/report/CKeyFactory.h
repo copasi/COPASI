@@ -24,6 +24,16 @@ class CKeyFactory
      */
     static std::map< std::string, CCopasiObject * > mKeyMap;
 
+    /**
+     * A map of counters for the prefixes.
+     */
+    static std::map< std::string, unsigned C_INT32 > mCounterMap;
+
+    /**
+     * A map of counter overflows for the prefixes.
+     */
+    static std::map< std::string, bool > mOverflowMap;
+
     // Operations
   public:
     /**
