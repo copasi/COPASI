@@ -56,7 +56,12 @@ class Folder : public QObject
     // inline void setCaption(const QString &name){fCaption(name);}
     // inline QString getCaption(){return fCaption;}
     inline int getID(){return id;}
-    inline void setID(int id){this->id = id;}
+    inline void setID(int id)
+    {
+      this->id = id;
+      mKey = QString::number(this->id) + fName;
+    }
+    inline const QString & getKey() const {return mKey;}
     inline QString folderName() {return fName;}
 
     inline int operator==(Folder &folder)
@@ -74,6 +79,7 @@ class Folder : public QObject
     // QString fCaption;
     QString fName;
     int id;
+    QString mKey;
   };
 
 class FolderListItem : public QListViewItem
@@ -83,6 +89,7 @@ class FolderListItem : public QListViewItem
     FolderListItem(FolderListItem *parent, Folder *f);
     void insertSubFolders(const QObjectList *lst);
     Folder *folder() {return myFolder;}
+    QString key(int, bool) const {return myFolder->getKey();}
 
   protected:
     Folder *myFolder;

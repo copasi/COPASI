@@ -191,7 +191,10 @@ void ListViews::initFolders()
 
   if (next)
     for (next = next->child; next != NULL; next = next->sibling)
-      lstFolders.append(next->info);
+      {
+        if (next->info->getID()) lstFolders.append(next->info);
+        std::cout << next->info->getID() << std::endl;
+      }
 }
 
 /************************ListViews::setupFolders()*****************************
@@ -343,6 +346,7 @@ QListViewItem* ListViews::searchNode(const char* name)
 void ListViews::slotFolderChanged(QListViewItem *i)
 {
   // to show the folders open or close or locked..
+  if (!i) return;
 
   if (i->childCount() != 0)
     i->setPixmap(0, *folderOpen);
@@ -385,44 +389,46 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
     currentWidget = functionWidget;
 
-  else if (! (value = QString::compare(item1->folder()->folderName(), "Compartments")))
+  else if (item1)
     {
-      if (compartmentsWidget1->isName(item->folder()->folderName()) == 1)
+      if (! (value = QString::compare(item1->folder()->folderName(), "Compartments")))
         {
-          currentWidget = compartmentsWidget1;
+          if (compartmentsWidget1->isName(item->folder()->folderName()) == 1)
+            {
+              currentWidget = compartmentsWidget1;
+            }
         }
-    }
 
-  else if (! (value = QString::compare(item1->folder()->folderName(), "Reactions")))
-    {
-      if (reactionsWidget1->isName(item->folder()->folderName()) == 1)
+      else if (! (value = QString::compare(item1->folder()->folderName(), "Reactions")))
         {
-          currentWidget = reactionsWidget1;
+          if (reactionsWidget1->isName(item->folder()->folderName()) == 1)
+            {
+              currentWidget = reactionsWidget1;
+            }
         }
-    }
 
-  else if (! (value = QString::compare(item1->folder()->folderName(), "Metabolites")))
-    {
-      if (metabolitesWidget1->isName(item->folder()->folderName()) == 1)
+      else if (! (value = QString::compare(item1->folder()->folderName(), "Metabolites")))
         {
-          currentWidget = metabolitesWidget1;
+          if (metabolitesWidget1->isName(item->folder()->folderName()) == 1)
+            {
+              currentWidget = metabolitesWidget1;
+            }
+        }
+      else if (! (value = QString::compare(item1->folder()->folderName(), "Moiety")))
+        {
+          if (moietyWidget1->isName(item->folder()->folderName()) == 1)
+            {
+              currentWidget = moietyWidget1;
+            }
+        }
+      else if (! (value = QString::compare(item1->folder()->folderName(), "Functions")))
+        {
+          if (functionWidget1->isName(item->folder()->folderName()) == 1)
+            {
+              currentWidget = functionWidget1;
+            }
         }
     }
-  else if (! (value = QString::compare(item1->folder()->folderName(), "Moiety")))
-    {
-      if (moietyWidget1->isName(item->folder()->folderName()) == 1)
-        {
-          currentWidget = moietyWidget1;
-        }
-    }
-  else if (! (value = QString::compare(item1->folder()->folderName(), "Functions")))
-    {
-      if (functionWidget1->isName(item->folder()->folderName()) == 1)
-        {
-          currentWidget = functionWidget1;
-        }
-    }
-
   else
     currentWidget = bigWidget;
 
@@ -481,7 +487,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                     // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                      // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -503,7 +509,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                   // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                    // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -516,7 +522,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                     // new model is loaded.
+        case MODEL:                      // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -809,7 +815,7 @@ void ListViews::loadMetabolites(QListViewItem* i)
   int myId = item->folder()->getID();
 
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
-  myId = 1000000 * myId;
+  // myId = 10 * myId;
 
   CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
 
@@ -822,7 +828,7 @@ void ListViews::loadMetabolites(QListViewItem* i)
     {
       metab = metabolites[j];
       f = new Folder(p, metab->getName().c_str());
-      f->setID(myId + j + 1);
+      f->setID(myId);
       dataModel->addData(p, f);
     }
 }
@@ -848,7 +854,7 @@ void ListViews::loadMoieties(QListViewItem* i)
   int myId = item->folder()->getID();
 
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
-  myId = 1000000 * myId;
+  //  myId = 10 * myId;
 
   CCopasiVectorN < CMoiety > * moieties = &mModel->getMoieties();
 
@@ -859,7 +865,7 @@ void ListViews::loadMoieties(QListViewItem* i)
     {
       moiety = (*moieties)[j];
       f = new Folder(p, moiety->getName().c_str());
-      f->setID(myId + j + 1);
+      f->setID(myId);
       dataModel->addData(p, f);
     }
 }
@@ -884,7 +890,7 @@ void ListViews::loadReactions(QListViewItem* i)
   int myId = item->folder()->getID();
 
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
-  myId = 1000000 * myId;
+  //  myId = 10 * myId;
 
   CCopasiVectorNS < CReaction > * reactions = &mModel->getReactions();
 
@@ -895,7 +901,7 @@ void ListViews::loadReactions(QListViewItem* i)
     {
       reactn = (*reactions)[j];
       f = new Folder(p, reactn->getName().c_str());
-      f->setID(myId + j + 1);
+      f->setID(myId);
       dataModel->addData(p, f);
     }
 }
@@ -921,7 +927,7 @@ void ListViews::loadCompartments(QListViewItem* i)
   int myId = item->folder()->getID();
 
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
-  myId = 1000000 * myId;
+  //  myId = 10 * myId;
 
   CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
@@ -934,7 +940,7 @@ void ListViews::loadCompartments(QListViewItem* i)
     {
       compartn = compartments[j];
       f = new Folder(p, compartn->getName().c_str());
-      f->setID(myId + j + 1);
+      f->setID(myId);
       dataModel->addData(p, f);
     }
 }
@@ -967,7 +973,7 @@ void ListViews::loadFunction(QListViewItem* i)
   int myId = item->folder()->getID();
 
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
-  myId = 1000000 * myId;
+  //  myId = 10 * myId;
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
 
@@ -980,7 +986,7 @@ void ListViews::loadFunction(QListViewItem* i)
     {
       funct = Functions[j];
       f = new Folder(p, funct->getName().c_str());
-      f->setID(myId + j + 1);
+      f->setID(myId);
       dataModel->addData(p, f);
     }
 }
