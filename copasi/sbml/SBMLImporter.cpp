@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 11:59:03 $
+   $Author: shoops $ 
+   $Date: 2004/06/24 21:05:07 $
    End CVS Header */
+
+#include "copasi.h"
 
 #include <iostream>
 #include <vector>

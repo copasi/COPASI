@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/24 10:03:39 $
+   $Author: shoops $ 
+   $Date: 2004/06/24 21:05:07 $
    End CVS Header */
 
+#include "copasi.h"
 #include "SBMLExporter.h"
 
 #include "sbml/Unit.hpp"
