@@ -548,7 +548,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
-  scrollview->resizeContents(0, widgetOffset + parameterTable->minimumSizeHint().height());
+  scrollview->resizeContents(parameterTable->minimumSizeHint().width(), widgetOffset + parameterTable->minimumSizeHint().height());
   selectedList.push_back(parameterTable);
 
   nSelectedObjects++;
