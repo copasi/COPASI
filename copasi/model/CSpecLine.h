@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/04 20:30:03 $
+   $Date: 2003/11/05 14:36:36 $
    End CVS Header */
 
 #ifndef Copasi_SpecLine
@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "copasi.h"
 
 #include "model/CMetab.h"
 
@@ -24,7 +23,7 @@ class CDeTerm;
  * 
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
- */
+ */ 
 /** @dia:pos 57.4987,10.7701 */
 class CSpecLine
   {
@@ -34,14 +33,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,             // Comments
-      DE,              // Differential equations
-      EQN,             // Moiety specification equations
-      INIT,             // Initializations
-      CNST,             // Constant assignments
-      VOL,             // Volume assignment
-      CPT,             // Compartment volume assignments
-      RATE,             // Rate constant assignments
+      CMNT,              // Comments
+      DE,               // Differential equations
+      EQN,              // Moiety specification equations
+      INIT,              // Initializations
+      CNST,              // Constant assignments
+      VOL,              // Volume assignment
+      CPT,              // Compartment volume assignments
+      RATE,              // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 

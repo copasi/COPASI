@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:29 $
+   $Date: 2003/11/05 14:36:49 $
    End CVS Header */
 
 /**
@@ -24,7 +24,6 @@
 #define COPASI_CHybridMethod
 
 /* INCLUDES ******************************************************************/
-#include "copasi.h"
 #include "CTrajectoryMethod.h"
 #include <set>
 #include <vector>

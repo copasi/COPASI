@@ -10,12 +10,10 @@
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
  ** Created: Tue Apr 1 19:46:58 2003
- **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.2 2003/04/02 12:20:04 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.3 2003/10/16 16:12:45 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-
-#include "objectdebug.h"
 
 #include <qvariant.h>
 #include <qheader.h>
@@ -27,6 +25,8 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
+#include "copasi.h"
+#include "objectdebug.h"
 #include "objectdebug.ui.h"
 
 /*

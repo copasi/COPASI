@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:24 $
+   $Date: 2003/11/05 14:36:38 $
    End CVS Header */
 
 /**
@@ -14,6 +14,7 @@
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
+#include "copasi.h"
 #include "CRealProblem.h"
 
 //? Do I need to call super() ? find out

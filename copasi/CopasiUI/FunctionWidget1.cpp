@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/11/03 17:44:05 $
+   $Author: shoops $ 
+   $Date: 2003/11/05 14:36:25 $
    End CVS Header */
 
 /**********************************************************************
@@ -31,10 +31,10 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qtextbrowser.h>
-#include <qmessagebox.h> 
-//#include <qpixmap.h>
-#include "utilities/CCopasiException.h"
+#include <qmessagebox.h>
+
 #include "copasi.h"
+#include "utilities/CCopasiException.h"
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
 #include "listviews.h"
@@ -421,10 +421,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:              // The user clicked the Retry again button or pressed Enter
+            case 0:               // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:              // The user clicked the Quit or pressed Escape
+            case 1:               // The user clicked the Quit or pressed Escape
               // exit
               break;
             }

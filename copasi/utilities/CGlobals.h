@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:33 $
+   $Date: 2003/11/05 14:36:52 $
    End CVS Header */
 
 #ifndef COPASI_CGlobals
@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "copasi.h"
 #include "CVersion.h"
 
 template < class CType > class CCopasiVectorS;

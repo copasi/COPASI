@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/11/03 19:46:50 $
+   $Author: shoops $ 
+   $Date: 2003/11/05 14:36:55 $
    End CVS Header */
 
 /**
@@ -14,9 +14,9 @@
  * Copyright Stefan Hoops
  */
 
-#include "CExpat.h"
-
 #include "copasi.h"
+
+#include "CExpat.h"
 
 #include "CCopasiXMLParser.h"
 #include "CCopasiXMLInterface.h"

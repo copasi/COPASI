@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:54 $
+   $Date: 2003/11/05 14:36:37 $
    End CVS Header */
 
 /**
@@ -20,7 +20,6 @@
 #define COPTPROBLEM_H
 
 #include <string>
-#include <copasi.h>
 #include <vector>
 
 #include "utilities/CVector.h"

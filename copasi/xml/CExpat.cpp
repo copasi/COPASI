@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:25 $
+   $Date: 2003/11/05 14:36:56 $
    End CVS Header */
 
 /**
@@ -13,6 +13,8 @@
  *
  * Created for Copasi by Stefan Hoops 2003
  */
+
+#include "copasi.h"
 
 #include "CExpat.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ScanItemWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:37 $
+   $Date: 2003/11/05 14:36:27 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,6 +22,8 @@
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
+
+#include "copasi.h"
 #include "report/CCopasiObject.h"
 
 class QVBoxLayout;

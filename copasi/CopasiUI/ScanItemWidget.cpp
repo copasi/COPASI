@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:37 $
+   $Date: 2003/11/05 14:36:27 $
    End CVS Header */
 
 /********************************************************
@@ -18,8 +18,6 @@ Contains: the sub scrollable widget inside the scanwidget
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include "ScanItemWidget.h"
-#include "ScanWidget.h"
 #include <qvariant.h>
 #include <qbuttongroup.h>
 #include <qlabel.h>
@@ -28,6 +26,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "ScanItemWidget.h"
+#include "ScanWidget.h"
 #include "utilities/CCopasiParameterGroup.h"
 
 /*

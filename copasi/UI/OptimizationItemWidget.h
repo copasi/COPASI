@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/18 14:59:27 $
+   $Author: shoops $ 
+   $Date: 2003/11/05 14:36:26 $
    End CVS Header */
 
 /********************************************************
@@ -18,9 +18,11 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef OPTIMIZATIONITEMWIDGET_H
 #define OPTIMIZATIONITEMWIDGET_H
 
-#include "report/CCopasiObject.h"
 #include <qvariant.h>
 #include <qwidget.h>
+
+#include "copasi.h"
+#include "report/CCopasiObject.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportBody.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:50 $
+   $Date: 2003/11/05 14:36:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,6 @@
 
 #include <string>
 #include <vector>
-#include "copasi.h"
 #include "CCopasiObjectName.h"
 
 class CReportTable;

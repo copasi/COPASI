@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:26 $
+   $Date: 2003/11/05 14:36:44 $
    End CVS Header */
 
 /**
@@ -19,7 +19,6 @@
 
 #include <string>
 #include <typeinfo>
-#include "copasi.h"
 #include <iostream>
 
 class CCopasiObjectName;

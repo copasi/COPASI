@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: shoops $ $Date: 2003/10/29 22:15:14 $  
+# $Revision: 1.21 $ $Author: shoops $ $Date: 2003/11/05 14:36:25 $  
 ######################################################################
 
 include(../common.pri)
@@ -77,23 +77,25 @@ contains(BUILD_OS, SunOS) {
 }  
 
 # Input
-HEADERS += CompartmentsWidget.h \
-           CompartmentsWidget1.h \
-           CompartmentSymbols.h \
-           ConstantSymbols.h \
-           copasiui3window.h \
-           copasiWidget.h \
+HEADERS += \
            CReactionInterface.h \
+           CReportDefinitionSelect.h \
+           CompartmentSymbols.h \
+           CompartmentsWidget.h \
+           CompartmentsWidget1.h \
+           ConstantSymbols.h \
+           copasiWidget.h \
+           copasiui3window.h \
            DataModel.h \
            DifferentialEquations.h \
            FixedMetaboliteSymbols.h \
+           FunctionItemWidget.h \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
-           listviews.h \
+           MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
-           MetaboliteSymbols.h \
            ModelWidget.h \
            ModesWidget.h \
            MoietiesWidget.h \
@@ -101,25 +103,24 @@ HEADERS += CompartmentsWidget.h \
            MoietyWidget1.h \
            MyLineEdit.h \
            MyTable.h \
+           listviews.h \
            ObjectBrowser.h \
            ObjectBrowserItem.h \
+           objectdebug.h \
+           OptimizationItemWidget.h \
+           OptimizationWidget.h \
            parametertable.h \
            PlotWidget.h \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
            ScanWidget.h \
-           OptimizationWidget.h \
-           FunctionItemWidget.h \
-           OptimizationItemWidget.h \
            SteadyStateWidget.h \
            StretchTable.h \
-           TrajectoryWidget.h \
-           Tree.h \
            TableDefinition.h \
            TableDefinition1.h \
-           CReportDefinitionSelect.h \
-           objectdebug.h
+           TrajectoryWidget.h \
+           Tree.h
 
 # INTERFACES += CompartmentsWidget.ui \
 #               FunctionWidget1.ui \
@@ -131,24 +132,27 @@ HEADERS += CompartmentsWidget.h \
 #               SteadyStateWidget.ui \
 #               TrajectoryWidget.ui
 
-SOURCES += CompartmentsWidget.cpp \
-           CompartmentsWidget1.cpp \
-           CompartmentSymbols.cpp \
-           ConstantSymbols.cpp \
-           copasiui3window.cpp \
-           copasiWidget.cpp \
+SOURCES += \
            CReactionInterface.cpp \
+           CReportDefinitionSelect.cpp \
+           CompartmentSymbols.cpp \
+           CompartmentsWidget.cpp \
+           CompartmentsWidget1.cpp \
+           ConstantSymbols.cpp \
+           copasiWidget.cpp \
+           copasiui3window.cpp \
            DataModel.cpp \
            DifferentialEquations.cpp \
            FixedMetaboliteSymbols.cpp \
+           FunctionItemWidget.cpp \
            FunctionSymbols.cpp \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
+           MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
-           MetaboliteSymbols.cpp \
            ModelWidget.cpp \
            ModesWidget.cpp \
            MoietiesWidget.cpp \
@@ -158,20 +162,18 @@ SOURCES += CompartmentsWidget.cpp \
            MyTable.cpp \
            ObjectBrowser.cpp \
            ObjectBrowserItem.cpp \
+           objectdebug.cpp \
+           OptimizationItemWidget.cpp \
+           OptimizationWidget.cpp \
            parametertable.cpp \
            PlotWidget.cpp \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
-           OptimizationWidget.cpp \
-           FunctionItemWidget.cpp \
-           OptimizationItemWidget.cpp \
            SteadyStateWidget.cpp \
            StretchTable.cpp \
-           TrajectoryWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
-           CReportDefinitionSelect.cpp \
-           objectdebug.cpp
+           TrajectoryWidget.cpp
 

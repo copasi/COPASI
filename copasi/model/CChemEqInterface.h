@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Date: 2003/11/05 14:36:34 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -12,8 +12,6 @@
 #include <string>
 #include <vector>
 #include <set>
-
-#include "copasi.h"
 
 class CChemEq;
 class CModel;

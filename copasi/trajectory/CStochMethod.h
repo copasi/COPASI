@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:11 $
+   $Date: 2003/11/05 14:36:49 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -11,7 +11,6 @@
 
 #include <set>
 #include <vector>
-#include "copasi.h"
 #include "CTrajectoryMethod.h"
 #include "utilities/CDependencyGraph.h"
 

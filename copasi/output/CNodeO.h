@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CNodeO.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:55 $
+   $Date: 2003/11/05 14:36:41 $
    End CVS Header */
 
 /*****************************************************************************
@@ -16,7 +16,6 @@
 
 #include <string>
 
-#include "copasi.h" 
 //#include "model/model.h"
 #include "function/CNodeK.h"
 #include "CDatum.h"

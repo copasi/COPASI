@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/22 18:58:58 $
+   $Date: 2003/11/05 14:36:31 $
    End CVS Header */
 
 /**
@@ -18,7 +18,6 @@
 
 #include <string>
 
-#include "copasi.h"
 #include "CFunctionParameters.h"
 #include "CCallParameters.h"
 #include "report/CCopasiContainer.h"

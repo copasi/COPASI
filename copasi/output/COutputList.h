@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputList.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:57 $
+   $Date: 2003/11/05 14:36:42 $
    End CVS Header */
 
 /*****************************************************************************
@@ -19,7 +19,6 @@
 
 #include <iostream>
 
-#include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "COutput.h"
 

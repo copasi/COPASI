@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:14 $
+   $Date: 2003/11/05 14:36:48 $
    End CVS Header */
 
 /*****************************************************************************
@@ -17,7 +17,6 @@
 #define COPASI_CMca
 
 #include <vector>
-#include "copasi.h"
 #include "utilities/CMatrix.h"
 
 #define MCA_OK 0

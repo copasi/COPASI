@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:26 $
+   $Date: 2003/11/05 14:36:38 $
    End CVS Header */
 
 /**
@@ -32,10 +32,9 @@
 #define CREALPROBLEM_H
 
 #include <string>
-#include <copasi.h>
 #include <vector>
-#include "math.h"
-#include "float.h"
+#include <math.h>
+#include <float.h>
 
 #include "COptProblem.h"
 

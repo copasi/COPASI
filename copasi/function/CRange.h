@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:53 $
+   $Date: 2003/11/05 14:36:32 $
    End CVS Header */
 
 /**
@@ -16,7 +16,6 @@
 #ifndef COPASI_CRange
 #define COPASI_CRange
 
-#include "copasi.h"
 #include "utilities/readwrite.h"
 #include "report/CCopasiContainer.h"
 
@@ -33,7 +32,7 @@ class CRange : public CCopasiContainer
      */
     enum Constants
     {
-      Infinity = -1,    // 0xFFFF
+      Infinity = -1,     // 0xFFFF
       NoRange = 0
     };
 

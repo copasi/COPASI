@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:37 $
+   $Date: 2003/11/05 14:36:28 $
    End CVS Header */
 
 /********************************************************
@@ -35,6 +35,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qlistbox.h>
 
 #include "copasi.h"
+
 #include "ScanWidget.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"

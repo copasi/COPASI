@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CDatum.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:25:54 $
+   $Date: 2003/11/05 14:36:41 $
    End CVS Header */
 
 /*****************************************************************************
@@ -15,8 +15,7 @@
 #ifndef COPASI_CDatum
 #define COPASI_CDatum
 
-#include <string>
-#include "copasi.h" 
+#include <string> 
 //#include "utilities/CReadConfig.h"
 //#include "utilities/CWriteConfig.h"
 //#include "model/CModel.h"

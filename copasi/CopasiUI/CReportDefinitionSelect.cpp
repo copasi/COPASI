@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:37 $
+   $Date: 2003/11/05 14:36:24 $
    End CVS Header */
 
 /********************************************************
@@ -14,8 +14,6 @@ Date: 08/15
 Comment : CReportDefinitionSelect to select the report definition for one task
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
-
-#include "CReportDefinitionSelect.h"
 
 #include <qvariant.h>
 #include <qpushbutton.h>
@@ -29,9 +27,11 @@ Contact: Please contact lixu1@vt.edu.
 #include <qwhatsthis.h>
 #include <qfiledialog.h>
 
-#include "utilities/CCopasiException.h"
+#include "copasi.h"
+#include "CReportDefinitionSelect.h"
 #include "listviews.h"
 #include "DataModel.h"
+#include "utilities/CCopasiException.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReport.h"
 

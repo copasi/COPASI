@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:46 $
+   $Date: 2003/11/05 14:36:30 $
    End CVS Header */
 
+#include "copasi.h"
 #include "CCallParameters.h"
 #include "CFunction.h"
 
