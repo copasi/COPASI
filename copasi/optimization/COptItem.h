@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:42 $
+   $Date: 2005/01/21 02:14:22 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -25,6 +25,22 @@ class COptItem
      * Specific Constructor
      */
     COptItem(CCopasiParameterGroup & group);
+
+    /**
+     * Checks whether val1 < val2
+     * @param const C_FLOAT64 & val1
+     * @param const C_FLOAT64 & val2
+     * @return bool fulfills
+     */
+    static bool less(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
+
+    /**
+     * Checks whether val1 <= val2
+     * @param const C_FLOAT64 & val1
+     * @param const C_FLOAT64 & val2
+     * @return bool fulfills
+     */
+    static bool lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
 
   public:
     /**
@@ -116,23 +132,52 @@ class COptItem
      */
     static bool isValid(CCopasiParameterGroup & group);
 
+    /**
+     * Compile the optimization item. This function must be called 
+     * before any of the check functions are called.
+     * @return bool success
+     */
     bool compile();
 
+    /**
+     * This functions check whether the value is within the limits
+     * of the optimization item.
+     * @param const C_FLOAT64 & value
+     * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
+     */
     C_INT32 checkConstraint(const C_FLOAT64 & value);
 
+    /**
+     * Checks whether the value fulfills the lower bound constraint.
+     * @param const C_FLOAT64 & value
+     * @return bool fulfills
+     */
     bool checkLowerBound(const C_FLOAT64 & value);
 
+    /**
+     * Checks whether the value fulfills the upper bound constraint.
+     * @param const C_FLOAT64 & value
+     * @return bool fulfills
+     */
     bool checkUpperBound(const C_FLOAT64 & value);
 
-    static bool less(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
+    /**
+     * Retrieve the value of the optimization object.
+     * @return const C_FLOAT64 * objectValue
+     */
+    const C_FLOAT64 * getObjectValue() const;
 
-    static bool lessOrEqual(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
+    /**
+     * Retrieve the value of the lower bound.
+     * @return const C_FLOAT64 * lowerBoundValue
+     */
+    const C_FLOAT64 * getLowerBoundValue() const;
 
-    C_FLOAT64 * getObjectValue();
-
-    C_FLOAT64 * getLowerBoundValue();
-
-    C_FLOAT64 * getUpperBoundValue();
+    /**
+     * Retrieve the value of the upper bound.
+     * @return const C_FLOAT64 * upperBoundValue
+     */
+    const C_FLOAT64 * getUpperBoundValue() const;
 
     //Attributes:
   private:
@@ -142,37 +187,43 @@ class COptItem
     CCopasiParameterGroup * mpGroup;
 
     /**
-     *
+     * A pointer to the object value
      */
-    C_FLOAT64 * mpObjectValue;
+    const C_FLOAT64 * mpObjectValue;
 
     /**
-     *
+     * A pointer to the lower bound value
      */
-    C_FLOAT64 * mpLowerBound;
+    const C_FLOAT64 * mpLowerBound;
 
     /**
-     *
+     * The value of the lower bound (only if not on object) 
      */
     C_FLOAT64 mLowerBound;
 
     /**
-     *
+     * A pointer to the function for checking the lower relationship
+     * @param const C_FLOAT64 & val1
+     * @param const C_FLOAT64 & val2
+     * @return bool fulfills
      */
     bool (*mpLowerRel)(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
 
     /**
-     *
+     * A pointer to the upper bound value
      */
-    C_FLOAT64 * mpUpperBound;
+    const C_FLOAT64 * mpUpperBound;
 
     /**
-     *
+     * The value of the upper bound (only if not on object) 
      */
     C_FLOAT64 mUpperBound;
 
     /**
-     *
+     * A pointer to the function for checking the upper relationship
+     * @param const C_FLOAT64 & val1
+     * @param const C_FLOAT64 & val2
+     * @return bool fulfills
      */
     bool (*mpUpperRel)(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
   };
