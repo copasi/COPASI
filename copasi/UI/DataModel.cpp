@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 16:57:31 $
+   $Author: ssahle $ 
+   $Date: 2005/01/25 10:51:29 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -219,7 +219,7 @@ bool DataModel::saveModel(const char* fileName)
   CCopasiVectorN< CCopasiTask > TaskList;
   if (steadystatetask) TaskList.add(steadystatetask);
   if (trajectorytask) TaskList.add(trajectorytask);
-  //  if (scantask) TaskList.add(scantask);
+  if (scantask) TaskList.add(scantask);
   if (mpCMCATask) TaskList.add(mpCMCATask);
   XML.setTaskList(TaskList);
 
