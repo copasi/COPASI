@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/18 02:56:37 $
+   $Date: 2005/03/30 14:29:27 $
    End CVS Header */
 
 /**
@@ -44,16 +44,6 @@ class COptProblem : public CCopasiProblem
     //data member
   private:
     /**
-     * The minimum values of the parameters
-     */
-    CVector< const C_FLOAT64 * > mCalculateVariablesMin;
-
-    /**
-     * The maximum values of the parameters
-     */
-    CVector< const C_FLOAT64 * > mCalculateVariablesMax;
-
-    /**
      * Pointer to CSteadyStateTask.  To be used in calculate() to select between
      * trajectory and steady state method
      */
@@ -71,6 +61,23 @@ class COptProblem : public CCopasiProblem
     COptFunction * mpFunction;
 
     std::vector< COptItem * > mOptItemList;
+
+    std::vector< UpdateMethod * > mUpdateMethods;
+
+    /**
+     * A vector of results for calculate
+     */
+    C_FLOAT64 mCalculateValue;
+
+    /**
+     * A vector of solution variables
+     */
+    CVector< C_FLOAT64 > mSolutionVariables;
+
+    /**
+     * A vector of solution results
+     */
+    C_FLOAT64 mSolutionValue;
 
     // Implementation
   public:
@@ -128,22 +135,42 @@ class COptProblem : public CCopasiProblem
     virtual bool checkFunctionalConstraints();
 
     /**
+     * Retrieve the size of the variable vectors
+     * @result unsigned C_INT32 VariableSize
+     */
+    unsigned C_INT32 getVariableSize() const;
+
+    /**
+     * Retrieve the update methods for the variables for calculation
+     */
+    std::vector< UpdateMethod * > & getCalculateVariableUpdateMethods();
+
+    /**
+     * Retrieve the result of a calculation
+     */
+    const C_FLOAT64 & getCalculateValue() const;
+
+    /**
+     * Set the solution variables.
+     * @param const CVector< C_FLOAT64 > & value
+     */
+    void setSolutionVariables(const CVector< C_FLOAT64 > & variables);
+
+    /**
+     * Retrieve the solution variables
+     */
+    const CVector< C_FLOAT64 > & getSolutionVariables() const;
+
+    /**
      * Set the solution value.
      * @param const C_FLOAT64 & value
      */
     void setSolutionValue(const C_FLOAT64 & value);
 
     /**
-     * Retrieve the vector of Minimum values of the parameters
-     * @return CVector< const C_FLOAT64 * > & parameterMin
+     * Retrieve the result for the solution
      */
-    CVector< const C_FLOAT64 * > & getParameterMin();
-
-    /**
-     * Retrieve the vector of maximum values of the parameters
-     * @return CVector< C_FLOAT64 * > & parameterMax
-     */
-    CVector< const C_FLOAT64 * > & getParameterMax();
+    const C_FLOAT64 & getSolutionValue() const;
 
     /**
      * Set problem type : Steady State or Trajectory

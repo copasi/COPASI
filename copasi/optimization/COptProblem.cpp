@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/18 02:56:37 $
+   $Date: 2005/03/30 14:29:27 $
    End CVS Header */
 
 /**
@@ -32,8 +32,6 @@
 //  Default constructor
 COptProblem::COptProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::optimization, pParent),
-    mCalculateVariablesMin(),
-    mCalculateVariablesMax(),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
     mOptItemList()
@@ -51,8 +49,6 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mCalculateVariablesMin(src.mCalculateVariablesMin),
-    mCalculateVariablesMax(src.mCalculateVariablesMax),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
     mOptItemList()
@@ -75,17 +71,44 @@ bool COptProblem::setModel(CModel * pModel)
 }
 
 bool COptProblem::initialize()
-{return true;}
+{
+  if (!mpModel) return false;
 
-// check constraints : unimplemented - always returns true
+  std::vector< CCopasiContainer * > ContainerList;
+  ContainerList.push_back(mpModel);
+  ContainerList.push_back(getObjectParent());
+
+  unsigned C_INT32 i;
+  unsigned C_INT32 Size = mOptItemList.size();
+  mUpdateMethods.resize(Size);
+  mSolutionVariables.resize(Size);
+
+  std::vector< COptItem * >::iterator it = mOptItemList.begin();
+  std::vector< COptItem * >::iterator end = mOptItemList.end();
+
+  for (i = 0; it != end; ++it, i++)
+    {
+      if (!(*it)->compile(ContainerList)) return false;
+      mUpdateMethods[i] = (*it)->getUpdateMethod();
+    }
+
+  return true;
+} // :TODO:
+
 bool COptProblem::checkParametricConstraints()
 {
+  std::vector< COptItem * >::const_iterator it = mOptItemList.begin();
+  std::vector< COptItem * >::const_iterator end = mOptItemList.end();
+
+  for (; it != end; ++it)
+    if (!(*it)->checkConstraint()) return false;
+
   return true;
 }
 
 bool COptProblem::checkFunctionalConstraints()
 {
-  return true;
+  return true; // :TODO:
 }
 
 /**
@@ -110,29 +133,31 @@ bool COptProblem::calculate()
       setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
       mpTrajectory->process();
     }
+
+  // :TODO: mCalculateValue = mpFunction->calvValue(NULL);
+
   return true;
 }
 
+const C_FLOAT64 & COptProblem::getCalculateValue() const
+  {return mCalculateValue;}
+
+void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
+{mSolutionVariables = variables;}
+
+const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
+  {return mSolutionVariables;}
+
 void COptProblem::setSolutionValue(const C_FLOAT64 & value)
-{
-  getSolutionResults()[0] = value;
-}
+{mSolutionValue = value;}
 
-// get the minimum value of parameters
-CVector< const C_FLOAT64 * > & COptProblem::getParameterMin()
-{
-  return mCalculateVariablesMin;
-}
-
-// get the maximum value of the parameters
-CVector< const C_FLOAT64 * > & COptProblem::getParameterMax()
-{
-  return mCalculateVariablesMax;
-}
+const C_FLOAT64 & COptProblem::getSolutionValue() const
+  {return mSolutionValue;}
 
 // set the type of problem : Steady State OR Trajectory
 void COptProblem::setProblemType(ProblemType type)
 {
+  // :TODO:
   if (type == SteadyState)
     mpSteadyState = new CSteadyStateTask(/*this*/NULL);
   if (type == Trajectory)
