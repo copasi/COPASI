@@ -52,7 +52,7 @@ unsigned C_INT32 CMethodParameterList::size() const
  * Retrieve the name of the method
  * @return " const string &" name
  */
-const string & CMethodParameterList::getName() const { return mName; }
+const string & CMethodParameterList::getName() const {return mName; }
 
 /**
  * Set the name of the method
@@ -64,7 +64,7 @@ void CMethodParameterList::setName(const string & name) {mName = name; }
  * Retrieve the type of the method
  * @return " const string &" type
  */
-const string & CMethodParameterList::getType() const { return mType; }
+const string & CMethodParameterList::getType() const {return mType; }
 
 /**
  * Set the type of the method
@@ -80,7 +80,7 @@ void CMethodParameterList::setType(const string & type) {mType = type; }
 const string &
 CMethodParameterList::getName(const unsigned C_INT32 & index) const
   {
-    return (*(CCopasiVector<CMethodParameter>*)this)[index]->getName();
+    return *(CCopasiVector<CMethodParameter>*)this)[index]->getName();
   }
 
 /**
@@ -95,6 +95,17 @@ void CMethodParameterList::setValue(const unsigned C_INT32 & index,
 }
 
 /**
+ * Set the value of the indexed parameter
+ * @param "const string &" name
+ * @param "const double &" value
+ */
+void CMethodParameterList::setValue(const string & name,
+                                    const double & value)
+{
+  (*(CCopasiVectorNS<CMethodParameter>*)this)[name]->setValue(value);
+}
+
+/**
  * Retrieve the value of the indexed parameter.
  * @param "const unsigned C_INT32 &" index
  * @return "const double & value
@@ -102,18 +113,26 @@ void CMethodParameterList::setValue(const unsigned C_INT32 & index,
 const double &
 CMethodParameterList::getValue(const unsigned C_INT32 & index) const
   {
-    return (*(CCopasiVector<CMethodParameter>*)this)[index]->getValue();
+    return *(CCopasiVector<CMethodParameter>*)this)[index]->getValue();
+  }
+
+/**
+ * Retrieve the value of the named parameter.
+ * @param "const string &" index
+ * @return "const double & value
+ */
+const double & CMethodParameterList::getValue(const string & name) const
+  {
+    return *(CCopasiVectorNS<CMethodParameter>*)this)[name]->getValue();
   }
 
 /**
  * Add a parameter to the list
  */
-void CMethodParameterList::add
-  (const string & name,
+void CMethodParameterList::add(const string & name,
    const double & value)
   {
-    CCopasiVector<CMethodParameter>::add
-      (new CMethodParameter(name, value));
+    CCopasiVector<CMethodParameter>::add(new CMethodParameter(name, value));
   }
 
 /**

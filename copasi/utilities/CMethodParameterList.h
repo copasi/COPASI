@@ -96,6 +96,14 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
                   const double & value);
 
     /**
+     * Set the value of the indexed parameter
+     * @param "const string &" name
+     * @param "const double &" value
+     */
+    void setValue(const string & name,
+                  const double & value);
+
+    /**
      * Retrieve the value of the indexed parameter.
      * @param "const unsigned C_INT32 &" index
      * @return "const double & value
@@ -103,12 +111,18 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
     const double & getValue(const unsigned C_INT32 & index) const;
 
     /**
+     * Retrieve the value of the named parameter.
+     * @param "const string &" index
+     * @return "const double & value
+     */
+    const double & getValue(const string & name) const;
+
+    /**
      * Add a parameter to the list
      * @param "const string &" name 
      * @param "const double &" value (Default = 0.0)
      */
-    void add
-      (const string & name,
+    void add(const string & name,
        const double & value = 0.0);
 
     /**
