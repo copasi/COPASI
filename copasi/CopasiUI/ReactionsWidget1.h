@@ -59,7 +59,7 @@ class ReactionsWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
     void loadReactions(CModel *model);
-
+    CFunction *function1;
     QString *Reaction1_Name;
     QString name;
     QFrame* Line1;
@@ -98,7 +98,7 @@ class ReactionsWidget1 : public QWidget
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
     virtual void slotCheckBoxClicked();
-
+    virtual void slotComboBoxSelectionChanged(const QString &);
   signals:
     void signal_emitted(QString &);
   };

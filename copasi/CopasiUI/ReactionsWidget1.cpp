@@ -26,6 +26,8 @@
 #include "listviews.h"
 #include "model/model.h"
 #include "function/function.h"
+#include "function/CFunctionParameters.h"
+#include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
 
 using std::cout;
@@ -112,6 +114,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4d ->addWidget(ComboBox1);
   ComboBox1->setFixedSize(225, 20);
   hBoxLayout4d->addSpacing(50);
+  //ComboBox1->setEditable(true);
 
   checkBox = new QCheckBox (Frame4d, "checkBox");
 
@@ -191,6 +194,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
+  //connect(ComboBox1, SIGNAL(textChanged(const QString &)), this, SLOT(slotComboBoxSelectionChanged()));
+  connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -231,7 +236,7 @@ void ReactionsWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
     {
-      return ;
+      return;
     }
 
   name = setValue;
@@ -254,6 +259,7 @@ void ReactionsWidget1::loadName(QString setValue)
 
   int m = -1;
   function = &reactn->getFunction();
+  function1 = &reactn->getFunction();
   ComboBox1->insertItem(function->getName().c_str(), m);
   checkBox->setChecked(FALSE);
 
@@ -498,4 +504,23 @@ void ReactionsWidget1::slotCheckBoxClicked()
       ComboBox1->insertStringList(comboEntries, -1);
       QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
     }
+}
+
+void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
+{
+  /*QMessageBox::information(this, p2, "inside the comboBox");
+  const string & p1=p2.latin1();
+  CFunctionParameters &functionParameters = function1->getParameters();
+
+  CFunctionParameter *functionParameter=new CFunctionParameter();
+  functionParameter = functionParameters.operator[](p1);
+  //functionParameter = (functionParameters)[p1];
+
+  /* for (int i =0; i<4; i++)
+  {
+  string p3=functionParameter[i].getName();
+    string p4=functionParameter[i].getUsage();
+  QMessageBox::information(this, p3.c_str(),"trying to see if it returns a value");
+
+  }*/
 }
