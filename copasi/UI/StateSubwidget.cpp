@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 13:41:31 $
+   $Date: 2004/10/04 13:34:13 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Thu Sep 30 13:16:33 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.2 2004/09/30 13:41:31 ssahle Exp $)
+ ** Created: Mon Oct 4 02:19:56 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.3 2004/10/04 13:34:13 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,9 +23,13 @@
 #include <qtable.h>
 #include <qsplitter.h>
 #include <qlabel.h>
+#include <qtextedit.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
+#include "steadystate/CSteadyStateTask.h"
 #include "StateSubwidget.ui.h"
 
 /*
@@ -39,9 +43,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
     setName("StateSubwidget");
   StateSubwidgetLayout = new QVBoxLayout(this, 11, 6, "StateSubwidgetLayout");
 
-  tabWidget2 = new QTabWidget(this, "tabWidget2");
+  tabWidget = new QTabWidget(this, "tabWidget");
 
-  tab = new QWidget(tabWidget2, "tab");
+  tab = new QWidget(tabWidget, "tab");
   tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
 
   concentrationsTable = new QTable(tab, "concentrationsTable");
@@ -56,9 +60,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   concentrationsTable->setNumRows(3);
   concentrationsTable->setNumCols(4);
   tabLayout->addWidget(concentrationsTable);
-  tabWidget2->insertTab(tab, QString(""));
+  tabWidget->insertTab(tab, QString(""));
 
-  tab_2 = new QWidget(tabWidget2, "tab_2");
+  tab_2 = new QWidget(tabWidget, "tab_2");
   tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
 
   numbersTable = new QTable(tab_2, "numbersTable");
@@ -73,9 +77,9 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   numbersTable->setNumRows(3);
   numbersTable->setNumCols(4);
   tabLayout_2->addWidget(numbersTable);
-  tabWidget2->insertTab(tab_2, QString(""));
+  tabWidget->insertTab(tab_2, QString(""));
 
-  TabPage = new QWidget(tabWidget2, "TabPage");
+  TabPage = new QWidget(tabWidget, "TabPage");
   TabPageLayout = new QVBoxLayout(TabPage, 11, 6, "TabPageLayout");
 
   tableFlux = new QTable(TabPage, "tableFlux");
@@ -85,12 +89,14 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableFlux->horizontalHeader()->setLabel(tableFlux->numCols() - 1, tr("Flux"));
   tableFlux->setNumCols(tableFlux->numCols() + 1);
   tableFlux->horizontalHeader()->setLabel(tableFlux->numCols() - 1, tr("Particle flux"));
+  tableFlux->setNumCols(tableFlux->numCols() + 1);
+  tableFlux->horizontalHeader()->setLabel(tableFlux->numCols() - 1, tr("Chemical equation"));
   tableFlux->setNumRows(3);
-  tableFlux->setNumCols(3);
+  tableFlux->setNumCols(4);
   TabPageLayout->addWidget(tableFlux);
-  tabWidget2->insertTab(TabPage, QString(""));
+  tabWidget->insertTab(TabPage, QString(""));
 
-  TabPage_2 = new QWidget(tabWidget2, "TabPage_2");
+  TabPage_2 = new QWidget(tabWidget, "TabPage_2");
   TabPageLayout_2 = new QVBoxLayout(TabPage_2, 11, 6, "TabPageLayout_2");
 
   splitterJacobian = new QSplitter(TabPage_2, "splitterJacobian");
@@ -116,8 +122,12 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   layoutEigenvalues = new QGridLayout(privateLayoutWidget_2, 1, 1, 11, 6, "layoutEigenvalues");
 
   tableEigenValues = new QTable(privateLayoutWidget_2, "tableEigenValues");
+  tableEigenValues->setNumCols(tableEigenValues->numCols() + 1);
+  tableEigenValues->horizontalHeader()->setLabel(tableEigenValues->numCols() - 1, tr("Real"));
+  tableEigenValues->setNumCols(tableEigenValues->numCols() + 1);
+  tableEigenValues->horizontalHeader()->setLabel(tableEigenValues->numCols() - 1, tr("Imaginary"));
   tableEigenValues->setNumRows(3);
-  tableEigenValues->setNumCols(3);
+  tableEigenValues->setNumCols(2);
 
   layoutEigenvalues->addMultiCellWidget(tableEigenValues, 1, 1, 0, 1);
   spacer4 = new QSpacerItem(141, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -127,10 +137,17 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
 
   layoutEigenvalues->addWidget(textLabelEigenvalues, 0, 0);
   TabPageLayout_2->addWidget(splitterJacobian);
-  tabWidget2->insertTab(TabPage_2, QString(""));
-  StateSubwidgetLayout->addWidget(tabWidget2);
+  tabWidget->insertTab(TabPage_2, QString(""));
+
+  TabPage_3 = new QWidget(tabWidget, "TabPage_3");
+  TabPageLayout_3 = new QVBoxLayout(TabPage_3, 11, 6, "TabPageLayout_3");
+
+  stabilityTextEdit = new QTextEdit(TabPage_3, "stabilityTextEdit");
+  TabPageLayout_3->addWidget(stabilityTextEdit);
+  tabWidget->insertTab(TabPage_3, QString(""));
+  StateSubwidgetLayout->addWidget(tabWidget);
   languageChange();
-  resize(QSize(503, 611).expandedTo(minimumSizeHint()));
+  resize(QSize(503, 362).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
   init();
 }
@@ -154,17 +171,21 @@ void StateSubwidget::languageChange()
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));
   concentrationsTable->horizontalHeader()->setLabel(3, tr("Transition Time"));
-  tabWidget2->changeTab(tab, tr("Concentrations"));
+  tabWidget->changeTab(tab, tr("Concentrations"));
   numbersTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   numbersTable->horizontalHeader()->setLabel(1, tr("Numbers"));
   numbersTable->horizontalHeader()->setLabel(2, tr("Number rate"));
   numbersTable->horizontalHeader()->setLabel(3, tr("Transition Time"));
-  tabWidget2->changeTab(tab_2, tr("Particle numbers"));
+  tabWidget->changeTab(tab_2, tr("Particle numbers"));
   tableFlux->horizontalHeader()->setLabel(0, tr("Reaction name"));
   tableFlux->horizontalHeader()->setLabel(1, tr("Flux"));
   tableFlux->horizontalHeader()->setLabel(2, tr("Particle flux"));
-  tabWidget2->changeTab(TabPage, tr("Fluxes"));
+  tableFlux->horizontalHeader()->setLabel(3, tr("Chemical equation"));
+  tabWidget->changeTab(TabPage, tr("Fluxes"));
   textLabelJacobian->setText(tr("Jacobian"));
+  tableEigenValues->horizontalHeader()->setLabel(0, tr("Real"));
+  tableEigenValues->horizontalHeader()->setLabel(1, tr("Imaginary"));
   textLabelEigenvalues->setText(tr("Eigenvalues"));
-  tabWidget2->changeTab(TabPage_2, tr("Jacobian"));
+  tabWidget->changeTab(TabPage_2, tr("Jacobian"));
+  tabWidget->changeTab(TabPage_3, tr("Stability"));
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:48:18 $
+   $Date: 2004/10/04 13:34:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,7 +18,129 @@
  ** destructor.
  *****************************************************************************/
 
+#include "model/CChemEqInterface.h"
+#include "qtUtilities.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "steadystate/CEigen.h"
+#include <sstream>
+
 void StateSubwidget::init()
 {
   //bla
+}
+
+bool StateSubwidget::loadMetabolites(const CModel* model)
+{
+  const CCopasiVector<CMetab>& metabs = model->getMetabolites();
+  C_INT32 i, imax = metabs.size();
+
+  concentrationsTable->setNumRows(imax);
+  numbersTable->setNumRows(imax);
+
+  QString name;
+  for (i = 0; i < imax; ++i)
+    {
+      name = FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i]));
+
+      concentrationsTable->setText(i, 0, name);
+      concentrationsTable->setText(i, 1, QString::number(metabs[i]->getConcentration()));
+      concentrationsTable->setText(i, 2, QString::number(metabs[i]->getConcentrationRate()));
+      concentrationsTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
+
+      numbersTable->setText(i, 0, name);
+      numbersTable->setText(i, 1, QString::number(metabs[i]->getNumber()));
+      numbersTable->setText(i, 2, QString::number(metabs[i]->getNumberRate()));
+      numbersTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
+    }
+
+  return true;
+}
+
+bool StateSubwidget::loadReactions(const CModel * model)
+{
+  const CCopasiVector<CReaction>& reacs = model->getReactions();
+  C_INT32 i, imax = reacs.size();
+
+  tableFlux->setNumRows(imax);
+
+  for (i = 0; i < imax; ++i)
+    {
+      tableFlux->setText(i, 0, FROM_UTF8(reacs[i]->getObjectName()));
+      tableFlux->setText(i, 1, QString::number(reacs[i]->getFlux()));
+      tableFlux->setText(i, 2, QString::number(reacs[i]->getParticleFlux()));
+      tableFlux->setText(i, 3, FROM_UTF8(CChemEqInterface::getChemEqString(model, *reacs[i], false)));
+    }
+  return true;
+}
+
+void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
+{
+  const CMatrix< C_FLOAT64 > & jacobian = task->getJacobian();
+
+  tableJacobian->setNumRows(jacobian.numRows());
+  tableJacobian->setNumCols(jacobian.numCols());
+
+  C_INT32 i, imax = jacobian.numRows();
+  C_INT32 j, jmax = jacobian.numCols();
+  for (i = 0; i < imax; ++i)
+    for (j = 0; j < jmax; ++j)
+      {
+        tableJacobian->setText(i, j, QString::number(jacobian(i, j)));
+      }
+
+  QString name;
+  const CCopasiVector<CMetab>& metabs = task->getProblem()->getModel()->getMetabolites();
+  for (i = 0; i < imax; ++i)
+    {
+      name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *metabs[i]));
+      tableJacobian->horizontalHeader()->setLabel(i, name);
+      tableJacobian->verticalHeader()->setLabel(i, name);
+    }
+
+  //Eigenvalues...
+  const CVector< C_FLOAT64 > & eigen_i = task->getEigenValues()->getEigen_i();
+  const CVector< C_FLOAT64 > & eigen_r = task->getEigenValues()->getEigen_r();
+
+  imax = eigen_i.size();
+  tableEigenValues->setNumRows(imax);
+  for (i = 0; i < imax; ++i)
+    {
+      tableEigenValues->setText(i, 0, QString::number(eigen_r[i]));
+      tableEigenValues->setText(i, 1, QString::number(eigen_i[i]));
+    }
+
+  //stability report
+  stabilityTextEdit->setReadOnly(true);
+
+  std::ostringstream ss;
+  ss << *task->getEigenValues();
+
+  stabilityTextEdit->setText(FROM_UTF8(ss.str()));
+}
+
+bool StateSubwidget::loadAll(const CSteadyStateTask * task)
+{
+  const CState * pState = task->getState();
+  const_cast<CModel *>(pState->getModel())->setState(pState);
+  const_cast<CModel *>(pState->getModel())->updateRates();
+
+  if (!loadMetabolites(pState->getModel())) return false;
+  if (!loadReactions(pState->getModel())) return false;
+
+  const CSteadyStateProblem* pProblem =
+    dynamic_cast<const CSteadyStateProblem *>(task->getProblem());
+  assert(pProblem);
+
+  if (pProblem->isJacobianRequested() ||
+      pProblem->isStabilityAnalysisRequested())
+    {
+      tabWidget->setTabEnabled(tabWidget->page(3), true);
+      loadJacobian(task);
+    }
+  else
+    {
+      tabWidget->setTabEnabled(tabWidget->page(3), false);
+    }
+
+  return true;
 }
