@@ -462,24 +462,24 @@ void CSpec2Model::processMoieties()
 void CSpec2Model::processFunctions()
 {
   // Find each function line
-  CFunction *pFunction;
+  CKinFunction Function;
   std::vector<CSpecLine>::iterator it = mSpecLines.begin();
 
   for (; it < mSpecLines.end(); it++)
     {
       if (it->getType() == CSpecLine::FUN)
         {
-          pFunction = new CKinFunction();
+          Function.cleanup();
           std::string tmp = it->extractLeft();
 
           std::string::size_type p1 = tmp.find_first_not_of(" \t");
           std::string::size_type p2 = tmp.find_first_of("(");
-          pFunction->setName(tmp.substr(p1, p2 - p1));
+          Function.setName(tmp.substr(p1, p2 - p1));
 
           std::string parameter =
             tmp.substr(p2 + 1, tmp.find_last_of(")") - p2 - 1);
 
-          //CFunctionParameters & Parameters = pFunction->getParameters();
+          //CFunctionParameters & Parameters = Function.getParameters();
           p1 = 0;
           p2 = 0;
           std::string ParameterName;
@@ -492,16 +492,16 @@ void CSpec2Model::processFunctions()
               //Parameters.add(ParameterName,
               //               CFunctionParameter::FLOAT64,
               //               "unknown");
-              pFunction->addParameter(ParameterName,
-                                      CFunctionParameter::FLOAT64,
-                                      "unknown");
+              Function.addParameter(ParameterName,
+                                    CFunctionParameter::FLOAT64,
+                                    "unknown");
             }
 
           tmp = it->extractRight();
           p1 = tmp.find_first_not_of(" \t");
           p2 = tmp.find_last_not_of(" \t");
           tmp = tmp.substr(p1, p2 - p1 + 1);
-          pFunction->setDescription(tmp);
+          Function.setDescription(tmp);
           // :TODO: We have to identify constants
           //        and define them as parameters.
 
@@ -521,9 +521,9 @@ void CSpec2Model::processFunctions()
                       //Parameters.add(ParameterName,
                       //               CFunctionParameter::FLOAT64,
                       //               "PARAMETER");
-                      pFunction->addParameter(ParameterName,
-                                              CFunctionParameter::FLOAT64,
-                                              "PARAMETER");
+                      Function.addParameter(ParameterName,
+                                            CFunctionParameter::FLOAT64,
+                                            "PARAMETER");
                     }
                   catch (CCopasiException Exception)
                     {
@@ -535,8 +535,8 @@ void CSpec2Model::processFunctions()
                     }
                 }
             }
-          std::cout << pFunction->getParameters() << std::endl;
-          Copasi->pFunctionDB->add(pFunction);
+          std::cout << Function.getParameters() << std::endl;
+          Copasi->pFunctionDB->add(Function);
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
         }
