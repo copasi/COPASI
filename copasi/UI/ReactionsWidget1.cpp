@@ -221,56 +221,44 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   name = setValue;
+
   CReaction *reactn;
-  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  reactn = reactions[(std::string)setValue.latin1()];
+  reactn = mModel->getReactions()[setValue.latin1()];
+
   TriLogic reversible;
   if (reactn->isReversible() == false)
     reversible = TriFalse;
   else
     reversible = TriTrue;
 
-  const CCopasiVectorN < CFunction > & Functions =
-    Copasi->pFunctionDB->suitableFunctions(reactn->getChemEq().getSubstrates().size(),
-                                           reactn->getChemEq().getSubstrates().size(),
-                                           reversible);
-  //const CFunction *function;
-
+  const CCopasiVector< CFunction > Functions
+  = Copasi->pFunctionDB->suitableFunctions(reactn->getChemEq().getSubstrates().size(),
+      reactn->getChemEq().getProducts().size(),
+      reversible);
   const CChemEq * chemEq;
 
   ComboBox1->clear();
 
   LineEdit1->setText(reactn->getName().c_str());
-  //  Reaction1_Name = new QString(reactn->getName().c_str());
 
   chemEq = & reactn->getChemEq();
   LineEdit2->setText(chemEq->getChemicalEquationConverted().c_str());
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
 
-  //function = &reactn->getFunction();  // function seems not to be used afterwards
-  //function1 = &reactn->getFunction(); // function1 seems not to be used either
-  //ComboBox1->insertItem(function->getName().c_str(), m);
-
   QStringList comboEntries;
   QString comboEntry;
   unsigned int temp2;
 
   for (temp2 = 0; temp2 < Functions.size(); temp2++)
-    {
-      const CFunction *function = Functions[temp2];
-      comboEntry = function->getName().c_str();
-      comboEntries.push_front(comboEntry);
-    }
+    comboEntries.push_back(Functions[temp2]->getName().c_str());
 
   ComboBox1->insertStringList(comboEntries, -1);
 
   CheckBox->setChecked(false);
 
   if (reactn->isReversible() == true)
-    {
-      CheckBox->setChecked(true);
-    }
+    CheckBox->setChecked(true);
 
   table->setNumCols(1);
 
@@ -282,8 +270,9 @@ void ReactionsWidget1::loadName(QString setValue)
       ComboBox1->setCurrentText(comboEntry);
       slotComboBoxSelectionChanged(comboEntry);
     }
+
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
-  //emit sideySignal();
+  //  emit sideySignal();
 }
 
 /*This slot is activated when the cancel button is clicked.It basically cancels any changes that
@@ -457,7 +446,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
 
   ComboBox1->clear();
-  const CCopasiVectorN < CFunction > & Functions =
+  const CCopasiVector< CFunction > & Functions =
     Copasi->pFunctionDB->suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
                                            reactn1->getChemEq().getSubstrates().size(),
                                            reversible);
@@ -520,9 +509,16 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 
   /* build list of modifiers */
   QStringList ModifierNames;
-  const CCopasiVector< CMetab > & MetaboliteList = mModel->getMetabolites();
-  for (i = 0, imax = MetaboliteList.size(); i < imax; i++)
-    ModifierNames.push_back(MetaboliteList[i]->getName().c_str());
+  pElementList = &ChemicalEquation.getModifiers();
+  for (i = 0, imax = pElementList->size(); i < imax; i++)
+    {
+      pName = &(*pElementList)[i]->getMetaboliteName();
+      ModifierNames.push_back(pName->c_str());
+    }
+
+  //   const CCopasiVector< CMetab > & MetaboliteList = mModel->getMetabolites();
+  //   for (i = 0, imax = MetaboliteList.size(); i < imax; i++)
+  //     ModifierNames.push_back(MetaboliteList[i]->getName().c_str());
 
   /* build list of all needed variables */
   std::vector< std::pair< QString, QString > > VariableList;
