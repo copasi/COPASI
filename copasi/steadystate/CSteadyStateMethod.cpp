@@ -120,6 +120,10 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
       mpProblem->isStabilityAnalysisRequested())
     mpSteadyState->getJacobian(*mpJacobian, factor, resolution);
 
+  /* hack to force the model to reflect the solution */
+  CVector< C_FLOAT64 > Derivatives(mpSteadyState->getVariableNumberSize());
+  mpProblem->getModel()->getDerivatives(mpSteadyState, Derivatives);
+
   if (mpProblem->isStabilityAnalysisRequested())
     {
       mpEigenValues->calcEigenValues(*mpJacobian);
