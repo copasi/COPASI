@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 13:27:35 $
+   $Date: 2005/02/16 14:10:27 $
    End CVS Header */
 
 #include <iostream>
@@ -56,7 +56,8 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     currentFolderId(0),
     mpDataModel(dataModel),
     mSliderValueChanged(false),
-    mSliderPressed(false)
+    mSliderPressed(false),
+    mpDeactivatedLabel(NULL)
 {
   this->setWFlags(this->getWFlags() | WStyle_StaysOnTop);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -113,6 +114,8 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   this->contextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
   this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
+
+  this->mpDeactivatedLabel = new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", this->sliderBox);
 
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -290,9 +293,21 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
     {
       this->currentFolderId = -1;
       this->setEnabled(false);
+      unsigned int counter;
+      unsigned int maxCount = this->sliderMap[this->currentFolderId].size();
+      for (counter = 0; counter < maxCount;++counter)
+        {
+          CopasiSlider* s = this->sliderMap[this->currentFolderId][counter];
+          s->setHidden(true);
+          this->sliderBox->layout()->remove(s);
+        }
+      ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, this->mpDeactivatedLabel);
+      this->mpDeactivatedLabel->setHidden(false);
     }
   else
     {
+      this->mpDeactivatedLabel->setHidden(true);
+      this->sliderBox->layout()->remove(this->mpDeactivatedLabel);
       this->setEnabled(true);
       // remove all slider objects from the layout
       unsigned int counter;

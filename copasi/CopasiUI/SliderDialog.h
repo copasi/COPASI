@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 13:27:35 $
+   $Date: 2005/02/16 14:10:27 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -58,6 +58,7 @@ class SliderDialog: public QDialog
 
     bool mSliderValueChanged;
     bool mSliderPressed;
+    QLabel* mpDeactivatedLabel;
 
     void init();
 
