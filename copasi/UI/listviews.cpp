@@ -428,6 +428,10 @@ void ListViews::slotFolderChanged(QListViewItem *i)
               currentWidget = functionWidget1;
             }
         }
+      else if (! (value = QString::compare(item->folder()->folderName(), "Mass Conservation")))
+        {
+          currentWidget = moietyWidget;
+        }
     }
   else
     currentWidget = bigWidget;
@@ -487,7 +491,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                      // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                       // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -509,7 +513,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                    // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                     // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -522,7 +526,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                      // new model is loaded.
+        case MODEL:                       // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
