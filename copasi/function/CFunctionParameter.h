@@ -13,11 +13,11 @@
 #include "copasi.h"
 #include "utilities/utilities.h"
 
-static char *enumname[] = { "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
-                            "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"};
-
 class CFunctionParameter
   {
+  public:
+    static const string DataTypeName[12];
+
     //Attributes
 
   public:

@@ -206,7 +206,7 @@ void CompartmentsWidget::tableValueChanged(int row, int col)
   CCompartment *compartn1;
   compartn1 = compartments1[row];
 
-  string x = table->text(row, col);
+  string x = table->text(row, col).latin1();
 
   if (col == 0)
     {

@@ -206,8 +206,7 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 }
 
 void CompartmentsWidget1::slotBtnOKClicked()
-{
-}
+{}
 
 void CompartmentsWidget1::NameChanged(const QString & name)
 {
@@ -218,7 +217,7 @@ void CompartmentsWidget1::NameChanged(const QString & name)
   compartn1 = compartments1[2];
 
   // Structures *mud1 = new Structures();
-  string x = name;
+  string x = name.latin1();
 
   compartn1->setName(x);
 
