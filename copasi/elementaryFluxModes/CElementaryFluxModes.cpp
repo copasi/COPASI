@@ -17,6 +17,8 @@ CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}
 
 void CElementaryFluxModes::calculate(const CModel * model)
 {
+  if (!model) return;
+
   mModel = model;
 
   /* ModelStoi is the transpose of the models stoichiometry matrix */
