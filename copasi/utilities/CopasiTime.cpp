@@ -1,13 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/28 16:13:09 $
+   $Date: 2005/01/28 17:14:53 $
    End CVS Header */
 
-#include <sstream>
 #include <time.h>
+
+#ifdef WIN32
+# include <windows.h>
+# include <winbase.h>
+#else
+# include <sys/time.h>
+# include <sys/resource.h>
+#endif // WIN32
+
+#include <sstream>
 
 #include "copasi.h"
 #include "CopasiTime.h"
@@ -129,8 +138,6 @@ C_INT64 CCopasiTimeVariable::getDays() const
 
 #ifndef WIN32
 
-#include <sys/time.h>
-
 //static
 CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
 {
@@ -141,9 +148,6 @@ CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
   return time;
 }
 #else
-
-#include <windows.h>
-#include <winbase.h>
 
 //static
 CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
@@ -172,10 +176,13 @@ CCopasiTimeVariable CCopasiTimeVariable::getCPUTime()
   return UserTime.QuadPart / LLONG_CONST(10);
 
 #else
-  // :TODO: replace with a function with higher resolution
-  return (C_INT64) clock() * LLONG_CONST(1000000) / (C_INT64) CLOCKS_PER_SEC;
-}
-#endif
+  struct rusage ResourceUsage;
+
+  getrusage(RUSAGE_SELF, &ResourceUsage);
+
+  return ((C_INT64) ResourceUsage.ru_utime.tv_sec) * LLONG_CONST(1000000)
+  + (C_INT64) ResourceUsage.ru_utime.tv_usec;
+#endif // WIN32
 }
 
 std::string CCopasiTimeVariable::LL2String(const C_INT64 & value,
