@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/25 19:37:34 $
+   $Author: ssahle $ 
+   $Date: 2004/06/07 16:11:19 $
    End CVS Header */
 
 /**********************************************************************
@@ -440,10 +440,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                        // The user clicked the Retry again button or pressed Enter
+            case 0:                                         // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                        // The user clicked the Quit or pressed Escape
+            case 1:                                         // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -848,7 +848,7 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   if (pFunction->getDescription() != (const char *)textBrowser->text().utf8())
     {
-      pFunction->setDescription((const char *)textBrowser->text().utf8());
+      //pFunction->setDescription((const char *)textBrowser->text().utf8()); //updateParameters sets the description
       updateParameters();
       updateApplication();
     }
@@ -949,7 +949,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                // Yes or Enter
+        case 0:                 // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -981,7 +981,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                // No or Escape
+        case 1:                 // No or Escape
           break;
         }
     }
