@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/29 03:39:21 $
+   $Date: 2004/06/10 20:57:47 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.36 2004/05/29 03:39:21 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.37 2004/06/10 20:57:47 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -270,7 +270,7 @@ void TableDefinition1::loadTableDefinition1()
     }
   comboTask->setEnabled(true);
 
-  if (pReportDefinition->getSeperator().getStaticString() == "/t")
+  if (pReportDefinition->getSeperator().getStaticString() == "\t")
     {
       seperatorEdit->setEnabled(false);
       tabChecked->setChecked(true);
