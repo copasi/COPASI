@@ -11,6 +11,7 @@
 #include "CReaction.h"
 #include "CMoiety.h"
 #include "utilities/CMatrix.h"
+#include "report/CCopasiContainer.h"
 
 class CCompartment;
 class CState;
@@ -18,7 +19,7 @@ class CStateX;
 template <class CType> class CVector;
 
 /** @dia:pos 177.081,30.2423 */
-class CModel
+class CModel : public CCopasiContainer
   {
     //Attributes
   public:
@@ -76,43 +77,43 @@ class CModel
          */
         inline elementType operator()(const unsigned C_INT32 & row,
                                       const unsigned C_INT32 & col) const
-        {
-          if (row >= mIndependent.size())
-          return mA(row - mIndependent.size(), col);
-          else if (row != col)
-            return mZero;
+          {
+            if (row >= mIndependent.size())
+              return mA(row - mIndependent.size(), col);
+            else if (row != col)
+              return mZero;
             else
               return mUnit;
+          }
+
+        /**
+         * Output stream operator
+         * @param ostream & os
+         * @param const CLinkMatrixView & A
+         * @return ostream & os
+         */
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const CLinkMatrixView & A)
+        {
+          unsigned C_INT32 i, imax = A.numRows();
+          unsigned C_INT32 j, jmax = A.numCols();
+          os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+
+          for (i = 0; i < imax; i++)
+            {
+              for (j = 0; j < jmax; j++)
+                os << "  " << A(i, j);
+              os << std::endl;
             }
-
-            /**
-             * Output stream operator
-             * @param ostream & os
-             * @param const CLinkMatrixView & A
-             * @return ostream & os
-             */
-            friend std::ostream &operator<<(std::ostream &os,
-                                            const CLinkMatrixView & A)
-              {
-                unsigned C_INT32 i, imax = A.numRows();
-                unsigned C_INT32 j, jmax = A.numCols();
-                os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
-
-                for (i = 0; i < imax; i++)
-                  {
-                    for (j = 0; j < jmax; j++)
-                      os << "  " << A(i, j);
-                    os << std::endl;
-                  }
-                return os;
-              }
+          return os;
+        }
       };
 
   private:
     /**
      *  title of the model
      */
-    std::string mTitle;
+    std::string & mTitle;
 
     /**
      *  Comments
@@ -658,6 +659,11 @@ class CModel
     void setState(const CState * state);
 
   private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
+
     /**
      * Set the transient concentrations and volumes according to the
      * given stateX in reduced model representation.
