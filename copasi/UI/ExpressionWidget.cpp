@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.2 2003/09/19 19:48:34 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.3 2003/09/19 19:52:25 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -109,7 +109,6 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 
   ExpressionWidgetLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
   languageChange();
-  resize(QSize(519, 468).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 }
 
