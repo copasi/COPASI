@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: stupe $ 
-   $Date: 2005/01/25 21:51:08 $
+   $Date: 2005/01/27 22:11:44 $
    End CVS Header */
 
 #include <qpushbutton.h>
@@ -120,6 +120,7 @@ void StateWidget::runSetInitialState()
     //dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
     //I need to remove this hardcoding -- sameer
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
-
-  dataModel->getModel()->setInitialState(mSteadyStateTask->getState());
+  const CState *currentState = mSteadyStateTask->getState();
+  if (currentState)
+    dataModel->getModel()->setInitialState(currentState);
 }
