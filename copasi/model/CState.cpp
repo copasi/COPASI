@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:25 $
+   $Date: 2003/11/14 22:11:19 $
    End CVS Header */
 
 // CSate.cpp
@@ -400,8 +400,8 @@ std::ostream & operator << (std::ostream & os, const CState & A)
 {
   os << "State: " << std::endl;
   os << "  Time:     " << A.mTime << std::endl;
-  os << "  Volumes:  " << A.mVolumes << std::endl;
-  os << "  Fixed:    " << A.mFixedNumbers << std::endl;
+  os << "  Volumes:  " << A.mVolumes;
+  os << "  Fixed:    " << A.mFixedNumbers;
   os << "  Variable: " << A.mVariableNumbers << std::endl;
 
   return os;
@@ -680,9 +680,9 @@ std::ostream & operator << (std::ostream & os, const CStateX & A)
 {
   os << "StateX" << std::endl;
   os << "  Time:        " << A.mTime << std::endl;
-  os << "  Volumes:     " << A.mVolumes << std::endl;
-  os << "  Fixed:       " << A.mFixedNumbers << std::endl;
-  os << "  Independend: " << A.mVariableNumbers << std::endl;
+  os << "  Volumes:     " << A.mVolumes;
+  os << "  Fixed:       " << A.mFixedNumbers;
+  os << "  Independend: " << A.mVariableNumbers;
   os << "  Dependend:   " << A.mDependentNumbers << std::endl;
 
   return os;

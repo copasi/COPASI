@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CParticleNumberList.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:23 $
+   $Date: 2003/11/14 22:11:19 $
    End CVS Header */
 
 // CParticleNumberList.cpp
@@ -116,7 +116,7 @@ std::ostream & operator << (std::ostream & os,
 {
   os << "Particle List: " << std::endl;
   os << "  Dbl: " << A.mDbl << std::endl;
-  os << "  Int: " << A.mInt << std::endl;
+  //  os << "  Int: " << A.mInt << std::endl;
 
   return os;
 }
