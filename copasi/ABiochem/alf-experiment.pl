@@ -66,13 +66,11 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	open( TXTFILE, "$tfile" );
 	while( <TXTFILE> )
 	{
-#	 if( /e\(G(\d+) synthesis,[G(\d+)]\) = ((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/ )
-	 if( /e\(G(\[0-9]+) synthesis,\[G(\[0-9]+)\]\) = (\W+)/ )
+	 if( /e\(G([0-9]+) synthesis,\[G([0-9]+)\]\) = ((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/ )
 	 {
 	  $elast[$1*2][$2] = $3;
-print ( e(G$1,G$2)=$3 );
 	 }
-	 if( /e\(G(\d+) degradation,[G(\d+)]\) = ((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/ )
+	 if( /e\(G([0-9]+) degradation,\[G([0-9]+)\]\) = ((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/ )
 	 {
 	  $elast[$1*2+1][$2] = $3;
 	 }
@@ -90,7 +88,6 @@ print ( e(G$1,G$2)=$3 );
 	}
 	close(EFILE);
 
-exit;
     # read the original gepasi file and keep it all in memory
 	open( GPSFILE, "$gfile" );
 	@gpsfile = <GPSFILE>;
