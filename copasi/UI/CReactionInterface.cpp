@@ -253,11 +253,26 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
     }
 
   // if not found then see if there is a best match in the list (i.e. a corresponding rev/irrev function).
-  // otherwise just take the first function. no other heuristics yet
 
-  // first prepare the substring - this is very clumsy at the moment
-  s = currentFunction.substr(0, currentFunction.find ('(') - 1);     //'-1' so as to strip off the white space before '('
+  //if there is a current function try to find a related new function
+  if (currentFunction != "")
+    {
+      s = currentFunction.substr(0, currentFunction.find ('(') - 1);     //'-1' so as to strip off the white space before '('
+      for (i = 0; i < imax; i++)
+        {
+          findresult = fl[i].find(s);
 
+          if (findresult >= 0)    // if find succeeds, the return value is likely to be 0
+            //if (fl[i].find(s) >= 0) - for some reason this doesn't work
+            {
+              setFunction(fl[i], true);  //change function - brute force
+              return;
+            }
+        }
+    }
+
+  //try mass action next
+  s = "Mass action";
   for (i = 0; i < imax; i++)
     {
       findresult = fl[i].find(s);
@@ -270,7 +285,8 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
         }
     }
 
-  // now i = imax, so take the first function
+  //if everything else fails just take the first function from the list
+  //this should not be reached since mass action is a valid kinetic function for every reaction
   setFunction(fl[0], true);  //brute force
 }
 
