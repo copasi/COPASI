@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/21 11:27:46 $
+   $Date: 2004/09/22 21:57:28 $
    End CVS Header */
 
 #include "MyLineEdit.h"
@@ -41,6 +41,7 @@ void MyLineEdit::process()
   if (isModified())
     {
       clearModified();
+      updateColor();
       emit edited();
     }
 }
