@@ -61,12 +61,12 @@ void CFunction::load(CReadConfig & configBuffer,
       configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
 
       configBuffer.getVariable("Substrates", "C_INT32", &Type);
-      UsageDescription.setUsage("Substrates");
+      UsageDescription.setUsage("SUBSTRATES");
       UsageDescription.setLow(Type);
       mUsageDescriptions.add(UsageDescription);
 
       configBuffer.getVariable("Products", "C_INT32", &Type);
-      UsageDescription.setUsage("Products");
+      UsageDescription.setUsage("PRODUCTS");
       UsageDescription.setLow(Type);
       mUsageDescriptions.add(UsageDescription);
 

@@ -179,12 +179,12 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
       try
         {
-          UsageRange = pFunction->getUsageDescriptions()["SUBSTRATE"];
+          UsageRange = pFunction->getUsageDescriptions()["SUBSTRATES"];
 
           if (!UsageRange->isInRange(noSubstrates))
             Suitable = FALSE;
 
-          UsageRange = pFunction->getUsageDescriptions()["PRODUCT"];
+          UsageRange = pFunction->getUsageDescriptions()["PRODUCTS"];
 
           if (!UsageRange->isInRange(noProducts))
             Suitable = FALSE;
@@ -192,7 +192,7 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
       catch (CCopasiException Exception)
         {
-          if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+          if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
             throw Exception;
           else
             Suitable = FALSE;
