@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/04 13:18:16 $
+   $Date: 2005/02/04 14:31:07 $
    End CVS Header */
 
 /**********************************************************************
@@ -53,9 +53,9 @@
 
 #include "mml/qtmmlwidget.h"
 
-#include "./icons/product.xpm"
-#include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm"
+//#include "./icons/product.xpm"
+//#include "./icons/substrate.xpm"
+//#include "./icons/modifier.xpm"
 
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
@@ -178,7 +178,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   //******** applications table *******************************
 
   TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Application"));
+  TextLabel5->setText(trUtf8("Application \nresctrictions"));
   TextLabel5->setAlignment(int(QLabel::AlignTop
                                | QLabel::AlignRight));
   FunctionWidget1Layout->addWidget(TextLabel5, 7, 0);
@@ -187,15 +187,18 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   //FunctionWidget1Layout->addItem(spacer, 8, 0);
 
   Table2 = new QTable(this, "Table2");
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
-  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
-  Table2->setNumRows(3);
-  Table2->setNumCols(3);
-  Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name
+  Table2->setNumCols(2);
+  Table2->horizontalHeader()->setLabel(0, trUtf8("Description"));
+  Table2->horizontalHeader()->setLabel(1, trUtf8("Min"));
+  Table2->setNumRows(1);
+  Table2->setColumnReadOnly (0, true);
+  Table2->setColumnReadOnly (1, true);
   Table2->verticalHeader()->hide();
   Table2->setLeftMargin(0);
-  Table2->setColumnStretchable(2, true);
+  Table2->horizontalHeader()->hide();
+  Table2->setTopMargin(0);
+  Table2->setShowGrid(false);
+  Table2->setColumnStretchable(1, true);
   Table2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
 
@@ -279,9 +282,9 @@ FunctionWidget1::~FunctionWidget1()
 bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 {
   //TODO: memory leak?
-  QPixmap * pProduct = new QPixmap((const char**)product_xpm);
-  QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
-  QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
+  //QPixmap * pProduct = new QPixmap((const char**)product_xpm);
+  //QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
+  //QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
 
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
@@ -334,9 +337,9 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
       QComboTableItem * item2 = new QComboTableItem(Table1, Usages);
       //item->setText(qUsage);
       item2->setCurrentItem(qUsage);
-      if (usage == "SUBSTRATE") item2->setPixmap(*pSubstrate);
-      if (usage == "PRODUCT") item2->setPixmap(*pProduct);
-      if (usage == "MODIFIER") item2->setPixmap(*pModifier);
+      //if (usage == "SUBSTRATE") item2->setPixmap(*pSubstrate);
+      //if (usage == "PRODUCT") item2->setPixmap(*pProduct);
+      //if (usage == "MODIFIER") item2->setPixmap(*pModifier);
       Table1->setItem(j, 2, item2);
     }
   return true;
@@ -344,27 +347,56 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 
 bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
 {
-  unsigned C_INT32 j;
-
-  Table2->setNumRows(usages.size());
-  for (j = 0; j < usages.size(); j++)
+  if (usages.size() == 0)
     {
-      Table2->setText(j, 0, FROM_UTF8(usages[j]->getObjectName()));
-      Table2->setText(j, 1, QString::number(usages[j]->getLow()));
+      Table2->setNumRows(1);
+      Table2->setText(0, 0, "none");
+      Table2->setText(0, 1, "");
+      return true;
+    }
+
+  unsigned C_INT32 j, jmax = usages.size();
+  QString s1, s2;
+  std::string name;
+  Table2->setNumRows(jmax);
+  for (j = 0; j < jmax; ++j)
+    {
+      s1 = "Number of ";
+      name = usages[j]->getObjectName();
+      if (name == "SUBSTRATES")
+        s1 += "Substrates:";
+      else if (name == "PRODUCTS")
+        s1 += "Products:";
+      else if (name == "MODIFIERS")
+        s1 += "Modifiers:";
+      else
+        s1 += FROM_UTF8(name);
+
+      Table2->setText(j, 0, s1);
+      Table2->adjustColumn(0);
 
       switch (usages[j]->getHigh())
         {
         case 0:
-          Table2->setText(j, 2, "NA");
+          s2 = "exactly " + QString::number(usages[j]->getLow());
           break;
 
         case - 1:
-          Table2->setText(j, 2, "infinity");
+          if (usages[j]->getLow() == 0)
+            s2 = "any";
+          else
+            s2 = QString::number(usages[j]->getLow()) + " or more";
           break;
 
         default:
-          Table2->setText(j, 2, QString::number(usages[j]->getHigh()));
+          if (usages[j]->getLow() == usages[j]->getHigh())
+            s2 = "exactly " + QString::number(usages[j]->getLow());
+          else
+            s2 = QString::number(usages[j]->getLow()) + " - "
+                 + QString::number(usages[j]->getHigh());
         }
+
+      Table2->setText(j, 1, s2);
     }
   return true;
 
@@ -908,7 +940,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                       // Yes or Enter
+        case 0:                                        // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -925,7 +957,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                       // No or Escape
+        case 1:                                        // No or Escape
           break;
         }
     }
