@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/02 05:01:16 $
+   $Date: 2003/12/02 05:05:56 $
    End CVS Header */
 
 /********************************************************
@@ -56,7 +56,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      /*
+      /* To change /
          while (pTmp != NULL)
            {
              if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
@@ -70,7 +70,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
              pBrowserObject->referenceList->insert(this);
            }
          else
-      */
+      /* To change */
       {
         CBrowserObject* newBrowserObject = new CBrowserObject();
         newBrowserObject->pCopasiObject = mObject;
@@ -106,7 +106,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   if (mObject != NULL)
     {
       ObjectListItem* pTmp = pList->getRoot();
-      /*
+      /* To change /
             while (pTmp != NULL)
               {
                 if (pTmp->pItem->getObject()->pCopasiObject == mObject)
@@ -120,7 +120,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
                 pBrowserObject->referenceList->insert(this);
               }
             else
-      */
+      /* To change */
       {
         CBrowserObject* newBrowserObject = new CBrowserObject();
         newBrowserObject->pCopasiObject = mObject;

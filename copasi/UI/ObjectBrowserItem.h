@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:57 $
+   $Author: lixu1 $ 
+   $Date: 2003/12/02 05:01:16 $
    End CVS Header */
 
 /********************************************************
@@ -176,6 +176,7 @@ class ObjectList
     void insert(ObjectBrowserItem* pItem); //insert at the first position
     ObjectListItem* getRoot();
     ObjectBrowserItem* pop();
+
   inline int len() {return length;};
 
     void sortList();

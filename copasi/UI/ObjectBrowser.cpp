@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/11/13 18:40:55 $
+   $Date: 2003/12/02 05:01:47 $
    End CVS Header */
 
 /********************************************************
@@ -394,21 +394,15 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
       current = it->second;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
-      if (current->isContainer() && !current->isVector())
+      currentItem->setText(0, current->getObjectName().c_str());
+      if (current->isContainer())
         {
-          currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(CONTAINERATTR);
           currentItem->attachKey();
-          loadChild(currentItem, (CCopasiContainer*) current, nField);
-        }
-      else
-        {
-          currentItem->setText(0, current->getObjectName().c_str());
-          QString st1(current->getObjectName().c_str());
-          if (current->isVector())
+          if (!current->isVector())
+            loadChild(currentItem, (CCopasiContainer*) current, nField);
+          else
             {
-              currentItem->setObjectType(CONTAINERATTR);
-              currentItem->attachKey();
               ObjectBrowserItem* objectChild = currentItem;
               if (nField) // divide into attribute and object lists
                 {
@@ -416,24 +410,26 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
                   objectChild->setObjectType(OBJECTATTR);
                   objectChild->setText(0, "Object list");
                   loadChild(objectChild, (CCopasiContainer *) current, false);
-
+                  /* To change */
                   ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
                   fieldChild->setObjectType(FIELDATTR);
                   fieldChild->setText(0, "Attribute list");
                   loadField(fieldChild, (CCopasiContainer*) current);
 
                   fieldChild->attachKey();
+                  /* To change */
                   objectChild->attachKey();
                 }
               else
                 loadChild(objectChild, (CCopasiContainer *) current, nField);
             }
-          else
-            {
-              currentItem->setObjectType(OBJECTATTR);
-              childStack->insert(currentItem);
-            }
         }
+      else
+        {
+          currentItem->setObjectType(OBJECTATTR);
+          childStack->insert(currentItem);  //attach the key later
+        }
+
       it++;
     }
 
