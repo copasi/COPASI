@@ -26,7 +26,7 @@
 COutput::COutput(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Output"),
-    mOutput("Output Lines", this),
+    mOutputLines("Output Lines", this),
     mTriggerType(),
     Dyn(0),
     DynTitles(0),
@@ -52,7 +52,7 @@ COutput::COutput(const std::string & name,
 COutput::COutput(const COutput & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mOutput(src.mOutput, this),
+    mOutputLines(src.mOutputLines, this),
     mTriggerType(src.mTriggerType),
     Dyn(src.Dyn),
     DynTitles(src.DynTitles),
@@ -84,7 +84,7 @@ void COutput::cleanup()
 {
   //  if (mOutput) delete mOutput;
   //  mOutput = NULL;
-  mOutput.cleanup();
+  mOutputLines.cleanup();
   // mSolution->cleanup();
 }
 
@@ -99,7 +99,7 @@ COutput::~COutput()
 /**
  * Reset output data file and reporting file configure variables
  */
-void COutput::reset()
+void COutput::resetConfiguration()
 {
   Dyn = 0;
   DynTitles = 0;
@@ -119,6 +119,19 @@ void COutput::reset()
   RepComments = 0;
 }
 
+void COutput::setDynConfiguration(C_INT16 pDyn,
+                                  C_INT16 pDynTitles,
+                                  C_INT16 pDynQuotes,
+                                  C_INT16 pDynColWidth,
+                                  C_INT16 pDynSeparator)
+{
+  Dyn = pDyn;
+  DynTitles = pDynTitles;
+  DynQuotes = pDynQuotes;
+  DynColWidth = pDynColWidth;
+  DynSeparator = pDynSeparator;
+}
+
 /**
  *  Return the pointer of the COutputLine that can be output at the same time. 
  *  @return mOutput
@@ -126,7 +139,7 @@ void COutput::reset()
  */
 const CCopasiVectorS < COutputLine > & COutput::getList() const
   {
-    return mOutput;
+    return mOutputLines;
   }
 
 /**
@@ -137,7 +150,35 @@ const CCopasiVectorS < COutputLine > & COutput::getList() const
 void COutput::addLine(COutputLine &newLine)
 {
   // if (!mOutput) init();
-  mOutput.add(newLine);
+  mOutputLines.add(newLine);
+}
+
+COutputLine * COutput::findOrCreateOutputLine(std::string nameOfLine)
+{
+  C_INT32 i;
+  C_INT32 imax = mOutputLines.size();
+
+  for (i = 0; i < imax; i++)
+    {
+      if (nameOfLine == mOutputLines[i]->getName())
+        return mOutputLines[i];
+    }
+  COutputLine * pLine = new COutputLine(nameOfLine);
+  mOutputLines.add(pLine);
+  return pLine;
+}
+
+void COutput::addDatum(std::string nameOfLine,
+                       std::string title,
+                       C_INT32 typeOfOutput,
+                       std::string IName,
+                       std::string JName)
+{
+  COutputLine* pLine = findOrCreateOutputLine(nameOfLine);
+
+  CDatum Datum(title, NULL, typeOfOutput, "");
+  Datum.createObjectString("not known", IName, JName, typeOfOutput);
+  pLine->addDatum(Datum);
 }
 
 /**
@@ -153,7 +194,7 @@ C_INT32 COutput::save(CWriteConfig & configbuffer)
 
   writeDefaultVar(configbuffer);
 
-  mOutput.save(configbuffer);
+  mOutputLines.save(configbuffer);
 
   return Fail;
 }
@@ -199,12 +240,12 @@ void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 S
 {
   std::string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      Name = mOutput[i]->getName();
+      Name = mOutputLines[i]->getName();
 
       if (Name == SSName)
-        mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+        mOutputLines[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -215,12 +256,12 @@ void COutput::sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSS
 {
   std::string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      Name = mOutput[i]->getName();
+      Name = mOutputLines[i]->getName();
 
       if (Name == SSName)
-        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+        mOutputLines[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -231,12 +272,12 @@ void COutput::dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16
 {
   std::string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      Name = mOutput[i]->getName();
+      Name = mOutputLines[i]->getName();
 
       if (Name == DynName)
-        mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+        mOutputLines[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 }
 
@@ -247,12 +288,12 @@ void COutput::dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 D
 {
   std::string Name;
 
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      Name = mOutput[i]->getName();
+      Name = mOutputLines[i]->getName();
 
       if (Name == DynName)
-        mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+        mOutputLines[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 }
 
@@ -261,9 +302,9 @@ void COutput::dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 D
  */
 void COutput::compile(const std::string & name, CModel *model, CState *state)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      mOutput[i]->compile(name, model, state);
+      mOutputLines[i]->compile(name, model, state);
     }
 }
 
@@ -272,9 +313,9 @@ void COutput::compile(const std::string & name, CModel *model, CState *state)
  */
 void COutput::compile(const std::string & name, CModel *model, CSteadyStateTask *soln)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      mOutput[i]->compile(name, model, soln);
+      mOutputLines[i]->compile(name, model, soln);
     }
 
   mSolution = soln;
@@ -714,9 +755,9 @@ void COutput::repMCA(std::ofstream & C_UNUSED(fout))
  */
 void COutput::dynOutputTitles(std::ofstream &fout, std::string & C_UNUSED(DynName))
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      mOutput[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
+      mOutputLines[i]->dynOutputTitles(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 }
 
@@ -725,9 +766,9 @@ void COutput::dynOutputTitles(std::ofstream &fout, std::string & C_UNUSED(DynNam
  */
 void COutput::dynOutputData(std::ofstream &fout, std::string & C_UNUSED(DynName))
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      mOutput[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
+      mOutputLines[i]->dynOutputData(fout, DynSeparator, DynColWidth, DynQuotes);
     }
 }
 
@@ -736,10 +777,10 @@ void COutput::dynOutputData(std::ofstream &fout, std::string & C_UNUSED(DynName)
  */
 void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      if (SSName == mOutput[i]->getName())
-        mOutput[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
+      if (SSName == mOutputLines[i]->getName())
+        mOutputLines[i]->sSOutputTitles(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -748,10 +789,10 @@ void COutput::sSOutputTitles(std::ofstream &fout, std::string &SSName)
  */
 void COutput::sSOutputData(std::ofstream &fout, std::string &SSName)
 {
-  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOutputLines.size(); i++)
     {
-      if (SSName == mOutput[i]->getName())
-        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
+      if (SSName == mOutputLines[i]->getName())
+        mOutputLines[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 

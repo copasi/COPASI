@@ -88,13 +88,6 @@ class CDatum : public CCopasiContainer
     std::string & mObject;
 
     /**
-     *  Creates the mObject
-     *  @param object constant reference to a string specifing the name of the 
-     *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
-     */
-    void createObject(const std::string& IStr, const std::string& JStr, C_INT32 Type);
-
-    /**
      *  Transfers the Type to the associated member data in each class
      *  @Type object constant reference to a type of the datum, for example,D_TCONC
      */
@@ -149,6 +142,13 @@ class CDatum : public CCopasiContainer
      *  cleanup 
      */
     void cleanup();
+
+    /**
+     *  Creates the mObject
+     *  @param object constant reference to a string specifing the name of the
+     *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
+     */
+    void createObjectString(const std::string& model, const std::string& IStr, const std::string& JStr, C_INT32 Type);
 
     /**
      *  Returns a string with the title of this object.

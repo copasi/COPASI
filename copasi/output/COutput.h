@@ -22,7 +22,7 @@ class COutput : public CCopasiContainer
      *  Datum lines can be output in the same time.
      * @supplierCardinality 0..*
      */
-    CCopasiVectorS < COutputLine > mOutput;
+    CCopasiVectorS < COutputLine > mOutputLines;
 
     /**
      *  The type of output trigger
@@ -126,24 +126,28 @@ class COutput : public CCopasiContainer
     CSteadyStateTask *mSolution;
 
     /**
-     * the mathematical model 
-     * :TODO: this should be removed SH
-     */ 
-    // CModel   Model;
-
-    /**
-     * Reset output data file and reporting file configure variable
-     */
-    void reset();
-
-    /**
      * Print each line of the header in the reporting file
      */
     void repHeaderLine(std::ofstream &fout, int width, std::string OutStr);
 
     int CheckEquilibrium();
 
+    COutputLine * findOrCreateOutputLine(std::string nameOfLine);
+
   public:
+
+    /**
+     * Reset output data file and reporting file configure variable
+     */
+    void resetConfiguration();
+
+    void setDynConfiguration(C_INT16 Dyn = 1,
+                             C_INT16 DynTitles = 0,
+                             C_INT16 DynQuotes = 0,
+                             C_INT16 DynColWidth = 12,
+                             C_INT16 DynSeparator = 32);
+
+    void noDynConfiguration() {setDynConfiguration(0);}
 
     /**
      * Default constructor. 
@@ -183,6 +187,16 @@ class COutput : public CCopasiContainer
      *  @see COutputLine Class
      */
     void addLine(COutputLine &newLine);
+
+    /**
+     *  Add new output datum object to a the output line
+     *  with the given name.
+     */
+    void addDatum(std::string nameOfLine,
+                  std::string title,
+                  C_INT32 typeOfOutput,
+                  std::string IName = "",
+                  std::string JName = "");
 
     /**
      *  Return the trigger event type of the COutput.
