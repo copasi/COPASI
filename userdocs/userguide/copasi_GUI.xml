@@ -1075,7 +1075,7 @@ Depending on wether a steady state was found or not, only the elasticities tab m
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
 <title>Defining and Using Sliders</title>
 <para>Starting with Copasi Build 11 sliders to change parameter values interactively are available, but so far they are only available for the time course task.</para>
-<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu. Depending on what element is selected in the object tree, the dialog will be disabled. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and display the sliders that are defined for this task.</para>
+<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and display the sliders that are defined for this task.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
@@ -1099,7 +1099,8 @@ Depending on wether a steady state was found or not, only the elasticities tab m
 </screenshot>
 </para>
 <para>
-If the sliders dialog is active, you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possility to define a new slider.</para>
+Once the slider dialog has been activated, you can add new sliders with the <guibutton>new slider</guibutton> button at the top of the slider dialog. To edit the parameters of an already defined slider, just click on the <guibutton>edit</guibutton> button, which is located on the right side of the slider towards the bottom. If you no longer need a slider you have defined, you can close it by clicking on the <guibutton>close</guibutton> button which is the top button on the right side of the slider. 
+Alternatively you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possility to define a new slider.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
