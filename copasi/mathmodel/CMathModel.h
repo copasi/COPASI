@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Author: ssahle $ 
+   $Date: 2004/06/24 13:04:19 $
    End CVS Header */
 
 /**
@@ -46,6 +46,7 @@ class CMathModel
      *
      */
     const CModel * mpModel;
+    CModel * mpModelNonConst;
 
     /**
      *
@@ -119,7 +120,7 @@ class CMathModel
     /**
      *
      */
-    bool setModel(const CModel * pModel);
+    bool setModel(CModel * pModel);
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/08 21:15:12 $
+   $Author: ssahle $ 
+   $Date: 2004/06/24 13:04:19 $
    End CVS Header */
 
 /**
@@ -62,9 +62,10 @@ CMathModel::~CMathModel()
   pdelete(mpConversionFactor)
 }
 
-bool CMathModel::setModel(const CModel * pModel)
+bool CMathModel::setModel(CModel * pModel)
 {
   mpModel = pModel;
+  mpModelNonConst = pModel;
   return compile();
 }
 
@@ -73,6 +74,7 @@ const CModel * CMathModel::getModel() const {return mpModel;}
 bool CMathModel::compile()
 {
   if (!mpModel) return false;
+  if (!mpModelNonConst->compileIfNecessary()) return false;
 
   bool Success = true;
 
