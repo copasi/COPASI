@@ -24,16 +24,16 @@ CNewtonMethod::CNewtonMethod():
   mTypeEnum = CSteadyStateMethod::Newton;
   setType(CSteadyStateMethod::TypeName[mTypeEnum]);
 
-  add("Newton.UseNewton", 1);
-  add("Newton.UseIntegration", 1);
-  add("Newton.UseBackIntegration", 1);
-  add("Newton.IterationLimit", 50);
+  add("Newton.UseNewton", 1, CMethodParameter::BOOL);
+  add("Newton.UseIntegration", 1, CMethodParameter::BOOL);
+  add("Newton.UseBackIntegration", 1, CMethodParameter::BOOL);
+  add("Newton.IterationLimit", 50, CMethodParameter::UINT);
   add("Newton.DerivationFactor", 1.0e-003);
   add("Newton.Resolution", 1.0e-009);
   add("Newton.LSODA.RelativeTolerance", 1.0e-012);
   add("Newton.LSODA.AbsoluteTolerance", 1.0e-006);
-  add("Newton.LSODA.AdamsMaxOrder", 12);
-  add("Newton.LSODA.BDFMaxOrder", 5);
+  add("Newton.LSODA.AdamsMaxOrder", 12, CMethodParameter::UINT);
+  add("Newton.LSODA.BDFMaxOrder", 5, CMethodParameter::UINT);
 }
 
 CNewtonMethod::~CNewtonMethod()
@@ -57,27 +57,27 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
       switch (Int)
         {
         case 0:
-          setValue("Newton.UseNewton", 1);
-          setValue("Newton.UseIntegration", 1);
-          setValue("Newton.UseBackIntegration", 0);
+          setValue("Newton.UseNewton", true);
+          setValue("Newton.UseIntegration", true);
+          setValue("Newton.UseBackIntegration", false);
           break;
 
         case 1:
-          setValue("Newton.UseNewton", 0);
-          setValue("Newton.UseIntegration", 1);
-          setValue("Newton.UseBackIntegration", 0);
+          setValue("Newton.UseNewton", false);
+          setValue("Newton.UseIntegration", true);
+          setValue("Newton.UseBackIntegration", false);
           break;
 
         case 2:
-          setValue("Newton.UseNewton", 1);
-          setValue("Newton.UseIntegration", 0);
-          setValue("Newton.UseBackIntegration", 0);
+          setValue("Newton.UseNewton", true);
+          setValue("Newton.UseIntegration", false);
+          setValue("Newton.UseBackIntegration", false);
           break;
 
         case 3:
-          setValue("Newton.UseNewton", 0);
-          setValue("Newton.UseIntegration", 0);
-          setValue("Newton.UseBackIntegration", 1);
+          setValue("Newton.UseNewton", false);
+          setValue("Newton.UseIntegration", false);
+          setValue("Newton.UseBackIntegration", true);
           break;
 
         default:
@@ -85,7 +85,7 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
         }
 
       configBuffer.getVariable("SSBackIntegration", "bool", &Bool);
-      if (Bool) setValue("Newton.UseBackIntegration", 1);
+      setValue("Newton.UseBackIntegration", Bool);
 
       configBuffer.getVariable("NewtonLimit", "C_FLOAT64", &Dbl,
                                CReadConfig::SEARCH);
