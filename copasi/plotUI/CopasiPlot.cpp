@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/17 14:46:55 $
+   $Date: 2005/02/25 13:42:22 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -186,22 +186,24 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
 void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
 {
-  if (data.size() == 0) return;
   unsigned C_INT32 i;
-  if (ndata >= data[0]->size())
-    {
-      unsigned C_INT32 newSize = data[0]->size() + 1000;
-      for (i = 0; i < data.size(); i++)
-        data[i]->resize(newSize);
-    }
 
-  //the data that needs to be stored internally:
-  for (i = 0; i < indexTable.size(); ++i)
+  if (data.size() != 0)
     {
-      data[i]->at(ndata) = dataVector[indexTable[i]];
-    }
-  ++ndata;
+      if (ndata >= data[0]->size())
+        {
+          unsigned C_INT32 newSize = data[0]->size() + 1000;
+          for (i = 0; i < data.size(); i++)
+            data[i]->resize(newSize);
+        }
 
+      //the data that needs to be stored internally:
+      for (i = 0; i < indexTable.size(); ++i)
+        {
+          data[i]->at(ndata) = dataVector[indexTable[i]];
+        }
+      ++ndata;
+    }
   //the data that is used immediately:
   for (i = 0; i < mItemTypes.size(); ++i)
     {
