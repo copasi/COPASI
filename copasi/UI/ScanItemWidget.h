@@ -84,6 +84,7 @@ class ScanItemWidget : public QWidget
       return pParameter;
     }
     void loadObject();
+    void updateObject();
 
     void MaxValueChanged(const QString&);
     void MinValueChanged(const QString&);

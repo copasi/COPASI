@@ -371,8 +371,8 @@ void ScanWidget::upButtonClicked()
   CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
   activeObject--;
 
   //deactivate
@@ -412,8 +412,8 @@ void ScanWidget::downButtonClicked()
   CCopasiObject* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getObject();
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->setObject(scanTask->getProblem()->getScanItem(activeObject - 1));
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->setObject(scanTask->getProblem()->getScanItem(activeObject));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->loadObject();
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
 
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);

@@ -239,6 +239,38 @@ void ScanItemWidget::ResetData()
   mPosGaussianRadio->setChecked(0);
 }
 
+void ScanItemWidget::updateObject()
+{
+  mMax->setText(QString::number(pParameter->getValue("max")));
+  mMin->setText(QString::number(pParameter->getValue("max")));
+  mDensity->setText(QString::number(pParameter->getValue("incr")));
+  mLogarithmic->setChecked(pParameter->getValue("log"));
+  mIndependent->setChecked(pParameter->getValue("Indp"));
+  switch (int(pParameter->getValue("gridType")))
+    {
+    case SD_REGULAR:
+      mMinLabel->setText(tr("Min"));
+      mMaxLabel->setText(tr("Max"));
+      mRegularGridRadio->setChecked(1);
+      break;
+    case SD_UNIFORM:
+      mMinLabel->setText(tr("Min"));
+      mMaxLabel->setText(tr("Max"));
+      mUniformRadio->setChecked(1);
+      break;
+    case SD_GAUSS:
+      mMinLabel->setText(tr("Mean"));
+      mMaxLabel->setText(tr("Std.Dev."));
+      mGaussianRadio->setChecked(1);
+      break;
+    case SD_BOLTZ:
+      mMinLabel->setText(tr("Mean"));
+      mMaxLabel->setText(tr("Std.Dev."));
+      mPosGaussianRadio->setChecked(1);
+      break;
+    }
+}
+
 void ScanItemWidget::InitializeParameterList()
 {
   //name value type
