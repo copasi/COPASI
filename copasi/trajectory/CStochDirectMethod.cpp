@@ -1,4 +1,5 @@
 #include "copasi.h"
+#include "CStochDirectMethod.h"
 #include "CTrajectoryMethod.h"
 #include "model/CCompartment.h"
 

@@ -7,12 +7,17 @@
 #include <set>
 
 #include "copasi.h"
+#include "CStochMethod.h"
+#include "CStochDirectMethod.h"
+#include "CStochNextReactionMethod.h"
 #include "utilities/CCopasiVector.h"
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
+#include "CTrajectoryProblem.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
+#include "model/CModel.h"
 
 #ifdef WIN32
 #define min _cpp_min

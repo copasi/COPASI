@@ -1,10 +1,15 @@
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
 
-#include "set"
-#include "CTrajectoryProblem.h"
-#include "model/CModel.h"
+#include <set>
+#include <vector>
+#include "copasi.h"
+#include "CTrajectoryMethod.h"
 #include "utilities/CDependencyGraph.h"
+
+class CModel;
+class CMetab;
+class CTrajectoryProblem;
 
 /**
  * Integer Balances  for internal use
@@ -208,7 +213,7 @@ class CStochMethod : private CTrajectoryMethod
     std::vector < std::vector <CStochBalance> > mLocalBalances;
   };
 
-#include "CStochDirectMethod.h"
-#include "CStochNextReactionMethod.h"
+//#include "CStochDirectMethod.h"
+//#include "CStochNextReactionMethod.h"
 
 #endif // COPASI_CStochMethod

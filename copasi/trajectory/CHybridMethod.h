@@ -23,6 +23,9 @@
 #include <iostream>
 #include <fstream>
 #include "utilities/CVersion.h"
+#include "utilities/CMatrix.h"
+#include "utilities/CDependencyGraph.h"
+#include "utilities/CIndexedPriorityQueue.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS              1000
