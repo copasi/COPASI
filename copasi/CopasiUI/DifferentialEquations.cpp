@@ -14,10 +14,10 @@
 #include <qstylesheet.h>
 
 #include "DifferentialEquations.h"
-#include "listviews.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathVariable.h"
 #include "mathmodel/CMathEq.h"
+#include "listviews.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 

@@ -16,6 +16,7 @@
  */
 template < class _Data > class CCopasiNode
     {
+    public:
       typedef _Data Data;
 
       // Attributes

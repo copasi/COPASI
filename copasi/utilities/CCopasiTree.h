@@ -25,8 +25,11 @@
  *       unless you use the detach node function prior to the destruction of
  *       the tree.
  */
-template < class Node > class CCopasiTree
+template < class _Node > class CCopasiTree
     {
+    public:
+      typedef _Node Node;
+
       // Attributes
     private:
       /**
