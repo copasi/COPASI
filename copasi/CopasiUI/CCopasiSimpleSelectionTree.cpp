@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/09 15:49:53 $
+   $Date: 2004/12/10 12:44:17 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -16,9 +16,9 @@
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 
-CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const char* name, WFlags fl)
+CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const char* name, WFlags fl): QListView(parent, name, fl), mpOutputVector(NULL)
 {
-  this->setSelectionMode(QListView::Single);
+  this->setSelectionMode(QListView::Extended);
   this->setSortColumn(-1);
   this->setRootIsDecorated(true);
   this->reactionSubtree = new QListViewItem(this, "reactions");
@@ -343,5 +343,24 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * ob
           treeItems[item] = object;
         }
       item->setSelected(true);
+    }
+}
+
+void CCopasiSimpleSelectionTree::commitClicked()
+{
+  if (this->mpOutputVector)
+    {
+      std::vector<CCopasiObject*>* treeSelection = this->getTreeSelection();
+      this->mpOutputVector->assign(treeSelection->begin(), treeSelection->end());
+      delete treeSelection;
+    }
+}
+
+void CCopasiSimpleSelectionTree::setOutputVector(std::vector<CCopasiObject*>* outputVector)
+{
+  this->mpOutputVector = outputVector;
+  if (this->mpOutputVector)
+    {
+      this->selectObjects(this->mpOutputVector);
     }
 }
