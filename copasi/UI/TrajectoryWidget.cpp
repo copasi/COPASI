@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:25 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:37:56 $
    End CVS Header */
 
 /********************************************************
@@ -430,7 +430,7 @@ void TrajectoryWidget::ExportToFile()
     }
 }
 
-bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

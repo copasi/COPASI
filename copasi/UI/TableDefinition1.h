@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:03 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:37:56 $
    End CVS Header */
 
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.7 2003/10/16 16:13:03 shoops Exp $)
+($Id: TableDefinition1.h,v 1.8 2004/04/19 08:37:56 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -62,6 +62,8 @@ class TableDefinition1 : public CopasiWidget
   public:
     TableDefinition1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition1();
+
+  private:
     CModel *mModel;
     inline void setModel(CModel* pNewModel)
     {mModel = pNewModel;}
@@ -76,10 +78,13 @@ class TableDefinition1 : public CopasiWidget
     QListBox* itemsTable;
 
     void loadTableDefinition1();
+
+  public:
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
+  private:
     QFrame* bodyField;
     QPushButton* confirmButton;
     QPushButton* cancelButton;

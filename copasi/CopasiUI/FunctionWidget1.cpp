@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/03/10 10:42:56 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:36:11 $
    End CVS Header */
 
 /**********************************************************************
@@ -424,10 +424,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                              // The user clicked the Retry again button or pressed Enter
+            case 0:                               // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                              // The user clicked the Quit or pressed Escape
+            case 1:                               // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -435,7 +435,7 @@ void FunctionWidget1::updateParameters()
 
       std::vector<CNodeK *> & v = ((CKinFunction*) pFunction)->getNodes();
 
-      for (int i = 0; i < v.size(); i++)
+      for (unsigned C_INT32 i = 0; i < v.size(); i++)
         {
           if (v[i]->isIdentifier())
             pFunction->addParameter(v[i]->getName(),
@@ -654,7 +654,7 @@ bool FunctionWidget1::saveToFunction()
   CFunctionParameters &pfunctParam = pFunction->getParameters();
   CFunctionParameter::DataType Type;
   unsigned C_INT32 index;
-  int i, j;
+  unsigned C_INT32 i, j;
 
   for (i = 0; i < pfunctParam.size(); i++)
     {
@@ -705,7 +705,7 @@ bool FunctionWidget1::saveToFunction()
   for (i = 0; i < pfunctUsage.size(); i++)
     {
       // check if function usage exists in pFunctionUsage
-      if (index = functUsage.getIndex(pfunctUsage[i]->getName()) != C_INVALID_INDEX)
+      if ((index = functUsage.getIndex(pfunctUsage[i]->getName())) != C_INVALID_INDEX)
         // match found
         {
           // update min and max values for corresponding usage descriptions
@@ -734,7 +734,7 @@ bool FunctionWidget1::saveToFunction()
     {
       for (j = 0; j < functUsage.size(); j++)
         {
-          if (index = pfunctUsage.getIndex(functUsage[j]->getName()) == NULL)
+          if (index = pfunctUsage.getIndex(functUsage[j]->getName()) == NULL) //TODO  what´s that?
             // the lines below occurs if new functionParameter does not exist in pfunctParam
             {
               changed = true;
@@ -935,7 +935,7 @@ void FunctionWidget1::slotAppTableValueChanged(int row, int col)
     }
 }
 
-bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

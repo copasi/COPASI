@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:21 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:34:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -205,7 +205,7 @@ void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)
   //TODO do not really know what to do here. May be switch to metabolite widget?
 }
 
-bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

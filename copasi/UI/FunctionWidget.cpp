@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:43 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:36:11 $
    End CVS Header */
 
 /***********************************************************************
@@ -260,7 +260,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:       // Yes or Enter
+            case 0:        // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -280,7 +280,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:       // No or Escape
+            case 1:        // No or Escape
               break;
             }
         }
@@ -344,7 +344,7 @@ void FunctionWidget::tableValueChanged(int C_UNUSED(row),
                                        int C_UNUSED(col))
 {}
 
-bool FunctionWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool FunctionWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -365,7 +365,7 @@ bool FunctionWidget::leave()
   return true;
 }
 
-bool FunctionWidget::enter(const std::string & key)
+bool FunctionWidget::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   return true;
@@ -385,7 +385,7 @@ void FunctionWidget::resizeEvent(QResizeEvent * re)
           float weight0 = 4, weight1 = 5;
           float weightSum = weight0 + weight1;
           int w0, w1;
-          w0 = newWidth * (weight0 / weightSum);
+          w0 = (int)(newWidth * (weight0 / weightSum));
           w1 = newWidth - w0 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:43 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:33:44 $
    End CVS Header */
 
 /*******************************************************************
@@ -257,12 +257,13 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                 dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[ToBeDeleted[i]]));
 
               const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-              C_INT32 noOfMetabs = Metabs.size();
+              unsigned C_INT32 noOfMetabs = Metabs.size();
 
               if (noOfMetabs > 0)
                 {
                   metabFound = 1;
-                  for (int k = 0; k < noOfMetabs; k++)
+                  unsigned C_INT32 k;
+                  for (k = 0; k < noOfMetabs; k++)
                     {
                       effectedMetabList.append(Metabs[k]->getName().c_str());
                       effectedMetabList.append(", ");
@@ -277,7 +278,8 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                   if (effectedReacKeys.size() > 0)
                     {
                       reacFound = 1;
-                      for (int k = 0; k < effectedReacKeys.size(); k++)
+                      unsigned C_INT32 k;
+                      for (k = 0; k < effectedReacKeys.size(); k++)
                         {
                           CReaction* reac =
                             dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
@@ -314,7 +316,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:       // Yes or Enter
+            case 0:        // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -327,7 +329,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:       // No or Escape
+            case 1:        // No or Escape
               break;
             }
         }
@@ -338,7 +340,7 @@ void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
     int C_UNUSED(col))
 {}
 
-bool CompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
@@ -361,7 +363,7 @@ bool CompartmentsWidget::leave()
   return true;
 }
 
-bool CompartmentsWidget::enter(const std::string & key)
+bool CompartmentsWidget::enter(const std::string & C_UNUSED(key))
 {
   //does nothing.
   //fillTable();
@@ -380,7 +382,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           float weight0 = 3.5, weight1 = 6.5;
           float weightSum = weight0 + weight1;
           int w0, w1;
-          w0 = newWidth * (weight0 / weightSum);
+          w0 = (int)(newWidth * (weight0 / weightSum));
           w1 = newWidth - w0 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/02/25 12:49:59 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:37:56 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.31 2004/02/25 12:49:59 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.32 2004/04/19 08:37:56 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -273,7 +273,7 @@ void TableDefinition1::loadTableDefinition1()
   commentEdit->setText(pReportDefinition->getComment().c_str());
   titleChecked->setChecked(pReportDefinition->getTitle());
 
-  C_INT32 i;
+  unsigned C_INT32 i;
   // i+=2; is due to skip to show the seperator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
@@ -419,7 +419,7 @@ void TableDefinition1::addButtonClicked()
       return;
     }
 
-  int i = 0;
+  unsigned C_INT32 i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
       if (itemsTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
@@ -516,7 +516,7 @@ bool TableDefinition1::leave()
   return true;
 }
 
-bool TableDefinition1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool TableDefinition1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {
