@@ -8,7 +8,7 @@
 
 #include "copasi.h"
 #include "CVersion.h"
-#include "utilities.h"
+#include "utility.h"
 
 CVersion::CVersion()
 {
@@ -32,24 +32,24 @@ void CVersion::setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
 }
 
 C_INT32 CVersion::getVersionMajor() const
-{
-  return mMajor;
-}
+  {
+    return mMajor;
+  }
 
 C_INT32 CVersion::getVersionMinor() const
-{
-  return mMinor;
-}
+  {
+    return mMinor;
+  }
 
 C_INT32 CVersion::getVersionDevel() const
-{
-  return mDevel;
-}
+  {
+    return mDevel;
+  }
 
 const std::string & CVersion::getVersion() const
-{
-  return mVersion;
-}
+  {
+    return mVersion;
+  }
 
 void CVersion::setString()
 {
