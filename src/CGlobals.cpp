@@ -3,16 +3,10 @@
 
 CGlobals::CGlobals()
 {
-    VersionMajor = 4;
-    VersionMinor = 0;
-    VersionDevel = 1;
-    
-    Version = StringPrint("%d.%d.%d", VersionMajor, 
-                          VersionMinor, VersionDevel);
-    
-    FunctionDB.SetFilename("FunctionDB.gps");
+    FunctionDB.SetName("FunctionDB.gps");
 
     DefaultConc = 0.0;
 }
 
 CGlobals Copasi;
+
