@@ -19,6 +19,7 @@
 #include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -80,21 +81,19 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 void TableDefinition::fillTable()
 {
-  const CReportDefinition* obj;
+  const std::vector<CReportDefinition*>* objects =
+    dataModel->getReportDefinitionVectorAddr()
+    ->getReportDefinitionsAddr();
 
-  const std::vector<CReportDefinition*>& objects =
-    *(dataModel->getReportDefinitionVectorAddr()
-      ->getReportDefinitionsAddr());
-
-  C_INT32 j, jmax = objects.size();
+  C_INT32 j, jmax = objects->size();
   table->setNumRows(jmax);
   mKeys.resize(jmax);
 
   for (j = 0; j < jmax; ++j)
     {
-      obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, obj->getComment().c_str()));
+      obj =;
+      table->setText(j, 0, (*objects)[j]->getName().c_str());
+      table->setText(j, 1, (*objects)[j]->getComment().c_str());
       mKeys[j] = obj->getKey();
     }
   table->setText(jmax, 1, "");
