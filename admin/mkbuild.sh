@@ -108,6 +108,9 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
 
+    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
+    chmod 755 copasi/bin/CopasiSE
+
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 644 copasi/share/copasi/examples/*
 
