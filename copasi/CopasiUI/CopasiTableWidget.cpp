@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:42 $
+   $Date: 2004/09/21 14:49:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -140,7 +140,7 @@ void CopasiTableWidget::fillTable()
   mFlagDelete[jmax] = false;
   mFlagNew[jmax] = false;
   mFlagRenamed[jmax] = false;
-  //updateRow(j);
+  updateRow(jmax);
 
   if (!mRO)
     {
