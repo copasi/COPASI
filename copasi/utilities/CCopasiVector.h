@@ -124,7 +124,7 @@ class CCopasiVector : protected vector < CType * >
     const CType * & operator[](unsigned C_INT32 index) const
       {
         assert(index < vector < CType * >::size());
-        return (const CType *) *(begin() + index);
+        return *(const CType **)(begin() + index);
       }
 
     /**
@@ -342,7 +342,7 @@ class CCopasiVectorN
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCCopasiVector + 1, name.c_str());
 
-        return *(begin() + Index);
+        return *(const CType **)(begin() + Index);
       }
 
   private:
@@ -438,7 +438,7 @@ class CCopasiVectorNS
      *
      */
     const CType * & operator[](unsigned C_INT32 index) const
-      {return ((const CCopasiVector <CType>*) this)->operator [](index); }
+      {return ((const CCopasiVector <CType>) *this)[index]; }
 
     /**
      *
