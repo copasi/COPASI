@@ -331,19 +331,18 @@ C_INT32 TestCompartment(void)
   c.save(of);
   of.flush();
 
-  CCompartment *d = NULL;
-  d = new CCompartment[1];
+  CCopasiVectorNS < CCompartment > d;
+  d.add(&c);
 
-  CCompartment g((string) "test2", 1.1e-2);
-  d[0] = g;
-  d[0].save(of);
+  CCompartment g;
+  g.setName("test2");
+  g.setVolume(1.1e-2);
+
+  d.add(&g);
+  d[1]->save(of);
   of.flush();
 
-  c = d[0];
-
-  delete [] d;
-
-  CReadConfig Specific((string) "TestCompartment.txt");
+  CReadConfig Specific("TestCompartment.txt");
 
   CCopasiVectorNS < CCompartment > ListOut;
 
@@ -646,7 +645,9 @@ C_INT32 TestOptimization(void)
 C_INT32 TestMoiety()
 {
   CMoiety mo("test");
-  CCompartment c("comp", 1.0);
+  CCompartment c;
+  c.setName("comp");
+  c.setVolume(1.0);
 
   c.metabolites().add(CMetab());
   c.metabolites().add(CMetab());
@@ -656,8 +657,7 @@ C_INT32 TestMoiety()
   c.metabolites()[1]->setName("metab 2");
   c.metabolites()[1]->setConcentration(2.0);
 
-  CMetab m;
-  m = *c.metabolites()["metab 2"];
+  CMetab m(*c.metabolites()["metab 2"]);
 
   mo.add(-2000, c.metabolites()[0]);
   mo.add(3, c.metabolites()[1]);
@@ -1825,9 +1825,6 @@ C_INT32 Testmt19937(void)
       if (i % 5 == 4)
         printf("\n");
     }
-
-  cout << &rand->getRandomU() << endl;
-  cout << &rand->getRandomS() << endl;
 
   return 0;
 }
