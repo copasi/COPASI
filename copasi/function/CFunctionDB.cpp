@@ -246,49 +246,38 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
-CCopasiVectorN < CFunction >
+CCopasiVector< CFunction >
 CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
                                const unsigned C_INT32 noProducts,
                                const TriLogic reversible)
 {
-  CCopasiVectorN < CFunction > Functions;
-  unsigned C_INT32 i, imax = mLoadedFunctions.size();
+  CCopasiVector < CFunction > Functions;
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 j, jmax;
   CFunction *pFunction;
-  CUsageRange *UsageRange;
-  bool Suitable;
+  CUsageRange * pRange;
 
-  for (i = 0; i < imax; i++)
+  for (i = 0, imax = mLoadedFunctions.size(); i < imax; i++)
     {
-      Suitable = true;
       pFunction = mLoadedFunctions[i];
 
       if (reversible != TriUnspecified &&
           reversible != pFunction->isReversible())
-        Suitable = false;
+        continue;
 
-      try
+      for (j = 0, jmax = pFunction->getUsageDescriptions().size();
+           j < jmax; j++)
         {
-          UsageRange = pFunction->getUsageDescriptions()["SUBSTRATES"];
+          pRange = pFunction->getUsageDescriptions()[j];
 
-          if (!UsageRange->isInRange(noSubstrates))
-            Suitable = false;
+          if (pRange->getUsage() == "SUBSTRATES")
+            if (!pRange->isInRange(noSubstrates)) break;
 
-          UsageRange = pFunction->getUsageDescriptions()["PRODUCTS"];
-
-          if (!UsageRange->isInRange(noProducts))
-            Suitable = false;
+          if (pRange->getUsage() == "PRODUCTS")
+            if (!pRange->isInRange(noProducts)) break;
         }
 
-      catch (CCopasiException Exception)
-        {
-          if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
-            throw Exception;
-          else
-            Suitable = false;
-        }
-
-      if (Suitable)
-        Functions.add(pFunction);
+      if (j == jmax) Functions.add(pFunction);
     }
 
   return Functions;
