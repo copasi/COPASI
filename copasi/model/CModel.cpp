@@ -1496,6 +1496,7 @@ C_INT32 CModel::addCompartment(std::string &name, C_FLOAT64 vol)
       //  cpt = new CCompartment(name, vol);
       CCompartment cpt;
       cpt.setName(name);
+      cpt.setInitialVolume(vol);
       cpt.setVolume(vol);
 
       mCompartments.add(cpt);
