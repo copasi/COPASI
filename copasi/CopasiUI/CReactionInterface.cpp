@@ -35,7 +35,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     else
       reversible = TriTrue;
 
-    const CCopasiVector < CFunction > & Functions =
+    const std::vector < CFunction * > Functions =
       Copasi->pFunctionDB->suitableFunctions(mChemEq.getSubstrates().size(),
                                              mChemEq.getProducts().size(),
                                              reversible);

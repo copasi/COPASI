@@ -143,7 +143,7 @@ class CFunctionDB : public CCopasiContainer
      *  @param "const TriLogic" reversible the reversibility status
      *  @return "CCopasiVectorN < CKinFunction > " suitableFunctions
      */
-    CCopasiVector< CFunction > suitableFunctions(const unsigned C_INT32 noSubstrates,
+    std::vector< CFunction * > suitableFunctions(const unsigned C_INT32 noSubstrates,
         const unsigned C_INT32 noProducts,
         const TriLogic reversible);
   };
