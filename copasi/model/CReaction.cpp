@@ -363,13 +363,13 @@ const CCopasiVectorN <CParameter> & CReaction::getParameters() const
 void CReaction::setParameterMapping(const std::string & parameterName, const CMetab & metab)
 {
   if (!mpFunction) fatalError();
-  std::vector<CCopasiObject*>::const_iterator it, ende; //TODO: these lines should rather be CCopasiContainer::getObjectByName()
-  it = metab.getObjects().begin();
-  ende = metab.getObjects().end();
-for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
-  if (it == ende) fatalError(); // concentration reference not found
+  //std::vector<CCopasiObject*>::const_iterator it, ende; //TODO: these lines should rather be CCopasiContainer::getObjectByName()
+  //it = metab.getObjects().begin();
+  //ende = metab.getObjects().end();
+  //for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
+  //if (it == ende) fatalError(); // concentration reference not found
 
-  mMap.setCallParameter(parameterName, *it);
+  mMap.setCallParameter(parameterName, &metab);
 }
 
 void CReaction::setParameterMapping(const std::string & parameterName, const std::string & metabName)
@@ -415,13 +415,13 @@ void CReaction::clearParameterMapping(C_INT32 index)
 void CReaction::addParameterMapping(const std::string & parameterName, const CMetab & metab)
 {
   if (!mpFunction) fatalError();
-  std::vector<CCopasiObject*>::const_iterator it, ende;
-  it = metab.getObjects().begin();
-  ende = metab.getObjects().end();
-for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
-  if (it == ende) fatalError(); // concentration reference not found
+  //std::vector<CCopasiObject*>::const_iterator it, ende;
+  //it = metab.getObjects().begin();
+  //ende = metab.getObjects().end();
+  //for (; it != ende; ++it) {if ((*it)->getName() == "Concentration") break;}
+  //if (it == ende) fatalError(); // concentration reference not found
 
-  mMap.addCallParameter(parameterName, *it);
+  mMap.addCallParameter(parameterName, &metab);
 }
 
 void CReaction::addParameterMapping(const std::string & parameterName, const std::string & metabName)
