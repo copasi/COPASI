@@ -15,7 +15,8 @@
 
 #include "report/CCopasiContainer.h"
 #include "model/CModel.h"
-#include "report/CKeyFactory.h"
+#include "report/CKeyFactory.h" 
+//#include "utilities/CCopasiVector.h"
 
 std::string CMetabNameInterface::empty_string = "";
 
@@ -56,7 +57,7 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model, const std::stri
 
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
-  bool found = false;
+  bool unique = true;
   unsigned C_INT32 i;
   CCopasiVector< CMetab > metabs = model->getMetabolites();
   std::string metabName;
@@ -66,24 +67,119 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
       metabName = metabs[i]->getName();
       if (metabName == name)
         {
-          if (found)
-            return false;
+          if (unique)
+            unique = false;
           else
-            found = true;
+            return true;
         }
     }
 
-  return found;
+  return unique;
 }
 
 bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)
 {
-  //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
-  return (model->findMetabByName(name) + 1);
+  C_INT32 pos = name.find('{'), i;
+  CCompartment *comp;
+  CCopasiVectorNS<CMetab> metabs;
+
+  if (pos)    //compartment specified, so check if the metabolite exists in this compartment
+    {
+      std::string metabName = name. substr(0, pos), s;
+      C_INT32 len = name.find('}') - pos - 1;
+
+      C_INT32 index = model -> findCompartment(name.substr(pos + 1, len));
+      if (index < 0)   // the specified compartment does not exist
+        return false;
+
+      comp = (model->getCompartments())[index];
+      metabs = comp->getMetabolites();
+
+      for (i = 0; i < metabs.size(); i++)
+        {
+          s = metabs[i]->getName();
+          if (s == metabName)
+            return true;
+        }
+
+      return false;
+    }
+  else
+    //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
+    return (model->findMetabByName(name) + 1);
 }
 
 std::string CMetabNameInterface::extractCompartmentName(const CModel* model, const std::string & name)
-{}
+{
+  // name is expected to be in the format of "metabolite{compartment}" or simply "metabolite"
+  C_INT32 pos1 = name.find('{'), pos2;
+  const CCompartment *comp;
+
+  if (pos1 > 0)  // extract the compartment name from the string if specified
+    {
+      pos2 = name.find('}');
+      return name.substr(pos1 + 1, pos2 - pos1 - 1);
+    }
+  else
+    {
+      CCopasiVector< CMetab > metabs = model->getMetabolites();
+      C_INT32 index = model->findMetabByName(name);
+
+      if (index < 0)  // the metabolite doesn't exist, so return the first compartment of the model
+        {
+          CCopasiVectorNS< CCompartment > comps = model->getCompartments();
+          comp = comps[0];
+          return comp->getName();
+        }
+      else  //return the first compartment where the metabolite is present
+        {
+          CMetab *metb = metabs[index];
+          comp = metb->getCompartment();
+          return comp->getName();
+        }
+    }
+}
 
 std::string CMetabNameInterface::extractMetabName(const CModel* model, const std::string & name)
-{}
+{
+  // name is expected to be in the format of "metabolite{compartment}" or simply "metabolite"
+  C_INT32 namelength = name.find('{');
+
+  if (namelength >= 0) // compartment is specified, so strip that off
+    return name.substr(0, namelength);
+  else  //compartment is not specified
+    return name;
+}
+
+bool CMetabNameInterface::isValidMetabName(const std::string name)
+{
+  // a valid name does not contain white spaces, and contains either matching or no curly braces
+  C_INT32 pos1, pos2, pos3;
+
+  // make sure the name is not an empty string
+  unsigned C_INT32 len = name.length();
+  if (len < 1)
+    return false;
+
+  // check for white spaces
+  pos1 = name.find(" ");
+  if (pos1 >= 0)
+    return false;
+
+  // curly braces: '{' is not the first character in the string, and appears before '}'
+  // if present, '}' should be the last character in the string
+  pos1 = name.find('{');
+  pos2 = name.find('}');
+  pos3 = name.rfind('{');
+
+  // ok if no braces appear
+  if ((pos1 < 0) && (pos2 < 0))
+    return true;
+
+  // ok  if only one '{' and one '}', braces match, compartment name is not an empty string, and '}' is the last character
+  if ((pos1 > 0) && (pos1 == pos3) && (pos2 > pos1 + 1) && (pos2 + 1 == len))
+    return true;
+
+  // otherwise the name is not valid
+  return false;
+}
