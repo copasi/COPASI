@@ -1,0 +1,66 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		0E0973F80494FFC30C52A85A = {
+			children = (
+			);
+			isa = PBXGroup;
+			refType = 4;
+		};
+		0E0973FA0494FFC30C52A85A = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		0E0973FB0494FFC30C52A85A = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		0E0973FC0494FFC30C52A85A = {
+			buildStyles = (
+				0E0973FA0494FFC30C52A85A,
+				0E0973FB0494FFC30C52A85A,
+			);
+			isa = PBXProject;
+			mainGroup = 0E0973F80494FFC30C52A85A;
+			projectDirPath = "";
+			targets = (
+				0E0973FD0494FFEC0C52A85A,
+			);
+		};
+		0E0973FD0494FFEC0C52A85A = {
+			buildArgumentsString = $ACTION;
+			buildPhases = (
+			);
+			buildSettings = {
+				PRODUCT_NAME = CopasiUI;
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			buildToolPath = /usr/bin/gnumake;
+			buildWorkingDirectory = CopasiUI/;
+			dependencies = (
+			);
+			isa = PBXLegacyTarget;
+			name = CopasiUI;
+			productName = CopasiUI;
+			settingsToExpand = 6;
+			settingsToPassInEnvironment = 287;
+			settingsToPassOnCommandLine = 280;
+			shouldUseHeadermap = 0;
+		};
+	};
+	rootObject = 0E0973FC0494FFC30C52A85A;
+}
