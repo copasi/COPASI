@@ -6,9 +6,6 @@
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-#include "SteadyStateWidget.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
 #include <qfiledialog.h>
 
 #include <qvariant.h>
@@ -22,6 +19,11 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+
+#include "SteadyStateWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "model/CModel.h"
 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -224,6 +226,10 @@ void SteadyStateWidget::RunTask()
 {
   if (mSteadyStateTask == NULL)
     return;
+
+  mSteadyStateTask->getProblem()->getModel()->compile();
+  mSteadyStateTask->getProblem()->
+  setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
 
   std::ofstream output("output.txt");
   mSteadyStateTask->initializeReporting(output);
