@@ -22,10 +22,6 @@
 #include "utilities/CMethodParameter.h"
 #include "report/CKeyFactory.h"
 
-// for test harness
-#include "model/CMetab.h"
-#include "model/CMetabNameInterface.h"
-
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -220,108 +216,76 @@ bool ModelWidget::convert2NonReversible()
 
   CCopasiVectorN< CReaction > & steps = model->getReactions();
 
-  /* commented out temporarily for testing
-    unsigned C_INT32 i, imax = steps.size();
-    for (i = 0; i < imax; ++i)
-      if (steps[i]->isReversible())
-        {
-          ret = false;
-          reac0 = steps[i];
-          std::cout << i << "  ";
-   
-          //create the two new reactions
-          reac1 = new CReaction(*reac0, &steps);
-          rn1 = reac1->getName() + " (forward)";
-          reac1->setName(rn1);
-          steps.add(reac1);
-   
-          reac2 = new CReaction(*reac0, &steps);
-          rn2 = reac2->getName() + " (backward)";
-          reac2->setName(rn2);
-          steps.add(reac2);
-   
-          ri1.initFromReaction(*model, reac1->getKey());
-          ri2.initFromReaction(*model, reac2->getKey());
-   
-          //set the new function
-          fn = reac0->getFunction().getName();
-          std::cout << fn << "  " << std::endl;
-   
-          if (fn == "Mass action (reversible)")
-            {
-              ri1.setReversibility(false, "Mass action (irreversible)");
-              ri2.reverse(false, "Mass action (irreversible)");
-            }
-          else if (fn == "Constant flux (reversible)")
-            {
-              ri1.setReversibility(false, "Constant flux (irreversible)");
-              ri2.reverse(false, "Constant flux (irreversible)");
-            }
-          else
-            {
-              //ri1.setReversibility(false);
-              ri2.reverse(false, "Mass action (irreversible)");
-            }
-   
-          ri1.writeBackToReaction(*model);
-          ri2.writeBackToReaction(*model);
-   
-          //set the kinetic parameters
-   
-          if (fn == "Mass action (reversible)")
-            {
-              reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-              reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
-              ret = true;
-            }
-          else
-            {
-              reac2->setParameterValue("k1", 0);
-            }
-   
-          //remove the old reaction
-          //mSteps.remove(reac0->getName());
-          reactionsToDelete.push_back(reac0->getName());
-        }
-   
-    imax = reactionsToDelete.size();
-    for (i = 0; i < imax; ++i)
-      steps.remove(reactionsToDelete[i]);
-   
-    ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
-   
-    return ret;
-  */
+  unsigned C_INT32 i, imax = steps.size();
+  for (i = 0; i < imax; ++i)
+    if (steps[i]->isReversible())
+      {
+        ret = false;
+        reac0 = steps[i];
+        std::cout << i << "  ";
 
-  // test harness for the functions in class CMetabNameInterface
+        //create the two new reactions
+        reac1 = new CReaction(*reac0, &steps);
+        rn1 = reac1->getName() + " (forward)";
+        reac1->setName(rn1);
+        steps.add(reac1);
 
-  cout << "\nTesting starts\n";
-  std::string comp1 = "newComp", comp2 = "comp2", metname = "A";
-  model->addCompartment(comp1, 1e-17);
-  model->addCompartment(comp2, 1e-17);
-  model->addMetabolite(comp1, metname, 0.01, CMetab::Status(0));
-  model->addMetabolite(comp2, metname, 0.01, CMetab::Status(0));
-  bool result = false;
+        reac2 = new CReaction(*reac0, &steps);
+        rn2 = reac2->getName() + " (backward)";
+        reac2->setName(rn2);
+        steps.add(reac2);
 
-  result = CMetabNameInterface::doesExist(model, "A{comp2}");
-  if (result)
-    cout << "does exist\n";
-  else
-    cout << "does not exist\n";
+        ri1.initFromReaction(*model, reac1->getKey());
+        ri2.initFromReaction(*model, reac2->getKey());
 
-  cout << "metab: " << CMetabNameInterface::extractMetabName(model, "A") << "\n";
-  cout << "metab: " << CMetabNameInterface::extractMetabName(model, "WW{comp}") << "\n";
-  cout << "comp: " << CMetabNameInterface::extractCompartmentName(model, "A{comp}") << "\n";
-  cout << "comp: " << CMetabNameInterface::extractCompartmentName(model, "X") << "\n";
-  cout << "comp: " << CMetabNameInterface::extractCompartmentName(model, "A") << "\n";
+        //set the new function
+        fn = reac0->getFunction().getName();
+        std::cout << fn << "  " << std::endl;
 
-  result = CMetabNameInterface::isValidMetabName("{mm}");
-  if (result)
-    cout << "valid\n";
-  else
-    cout << "not valid\n";
+        if (fn == "Mass action (reversible)")
+          {
+            ri1.setReversibility(false, "Mass action (irreversible)");
+            ri2.reverse(false, "Mass action (irreversible)");
+          }
+        else if (fn == "Constant flux (reversible)")
+          {
+            ri1.setReversibility(false, "Constant flux (irreversible)");
+            ri2.reverse(false, "Constant flux (irreversible)");
+          }
+        else
+          {
+            //ri1.setReversibility(false);
+            ri2.reverse(false, "Mass action (irreversible)");
+          }
 
-  return true;
+        ri1.writeBackToReaction(*model);
+        ri2.writeBackToReaction(*model);
+
+        //set the kinetic parameters
+
+        if (fn == "Mass action (reversible)")
+          {
+            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            ret = true;
+          }
+        else
+          {
+            reac2->setParameterValue("k1", 0);
+          }
+
+        //remove the old reaction
+        //mSteps.remove(reac0->getName());
+        reactionsToDelete.push_back(reac0->getName());
+      }
+
+  imax = reactionsToDelete.size();
+  for (i = 0; i < imax; ++i)
+    steps.remove(reactionsToDelete[i]);
+
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+
+  return ret;
 }
 
 bool ModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
