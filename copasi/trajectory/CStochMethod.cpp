@@ -19,7 +19,7 @@
 #define max _cpp_max
 #endif // WIN32
 
-C_INT32 CStochMethod::checkModel(CModel * pmodel)
+C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
   return 2; // suggest next reaction method
@@ -94,7 +94,7 @@ const double CStochMethod::step(const double & deltaT)
   float time = mpCurrentState->getTime();
   float endtime = time + deltaT;
 
-  for (i = 0; ((i < mMaxSteps) && (time < endtime)); i++)
+  for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (time < endtime)); i++)
     {
       time = doSingleStep(time, endtime);
     }
@@ -118,7 +118,7 @@ const double CStochMethod::step(const double & deltaT,
                                 const CState * initialState)
 {
   /* get configuration data */
-  mMaxSteps = getValue("STOCH.MaxSteps");
+  mMaxSteps = (C_INT32) getValue("STOCH.MaxSteps");
 
   *mpCurrentState = *initialState;
 
@@ -372,7 +372,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
       //std::cout << std::endl << i << " : ";
 
-      for (j = 0; j < bbb.size(); j++)
+      for (j = 0; (unsigned C_INT32) j < bbb.size(); j++)
         {
           bb.mMetabAddr = bbb[j]->getMetaboliteAddr();
           bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
