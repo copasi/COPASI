@@ -230,8 +230,14 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
   // calculate various eigenvalue statistics
   mEigen_maxrealpart = mEigen_r[0];
   mEigen_maximagpart = fabs(mEigen_i[0]);
-  for( i=0; i<mN; i++ )
+
+  cout << "mN is: " <<mN<<endl;
+
+  for(int scan=0; scan<mN; scan++ )
     {
+      //YOHE: new test -- 4/12/02
+      cout<<"mEigen_r["<<scan<<"]: " <<mEigen_r[scan]<<", mEigen_i["<<scan<<"] is: "<<mEigen_i[scan]<<endl;
+
       // for the largest real part
       if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
       // for the largest imaginary part
