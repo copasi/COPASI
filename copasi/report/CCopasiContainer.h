@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:31:48 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:25:12 $
    End CVS Header */
 
 /**
@@ -75,16 +75,19 @@ class CCopasiContainer: public CCopasiObject
     virtual void initObjects();
 
     template <class CType> void addObjectReference(const std::string & name,
-        CType & reference)
-    {createReference(name, this, reference);}
+        CType & reference,
+        const unsigned C_INT32 & flag = 0)
+    {createReference(name, this, reference, flag);}
 
     template <class CType> void addVectorReference(const std::string & name,
-        CType & reference)
-    {createVectorReference(name, this, reference);}
+        CType & reference,
+        const unsigned C_INT32 & flag = 0)
+    {createVectorReference(name, this, reference, flag);}
 
     template <class CType> void addMatrixReference(const std::string & name,
-        CType & reference)
-    {createMatrixReference(name, this, reference);}
+        CType & reference,
+        const unsigned C_INT32 & flag = 0)
+    {createMatrixReference(name, this, reference, flag);}
   };
 
 #ifdef XXXX 

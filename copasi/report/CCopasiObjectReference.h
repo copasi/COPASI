@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:31:48 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:25:12 $
    End CVS Header */
 
 /**
@@ -36,9 +36,12 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
   public:
     CCopasiObjectReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           referenceType & reference):
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
         CCopasiObject(name, pParent, "Reference",
-                      CCopasiObject::Reference | CCopasiObject::NonUniqueName),
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
@@ -74,7 +77,8 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
   public:
     CCopasiVectorReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           referenceType & reference):
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
         CCopasiObject(name, pParent, "Reference",
                       CCopasiObject::Reference | CCopasiObject::NonUniqueName),
         mReference(reference)
@@ -96,7 +100,11 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 #endif
       (getObjectName() + cn,
        getObjectParent(),
-       mReference[cn.getIndex()]);
+       mReference[cn.getIndex()],
+       isValueBool() ? CCopasiObject::ValueBool :
+       isValueInt() ? CCopasiObject::ValueInt :
+       isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0
+);
     }
 
     virtual void * getReference() {return &mReference;}
@@ -119,7 +127,8 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
   public:
     CCopasiMatrixReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           referenceType & reference):
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
         CCopasiObject(name, pParent, "Reference",
                       CCopasiObject::Reference | CCopasiObject::NonUniqueName),
         mReference(reference)
@@ -142,7 +151,10 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
       (getObjectName() + cn,
        getObjectParent(),
        mReference(cn.getIndex(),
-                  cn.getIndex(1)));
+                  cn.getIndex(1)),
+       isValueBool() ? CCopasiObject::ValueBool :
+       isValueInt() ? CCopasiObject::ValueInt :
+       isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0);
     }
 
     virtual void * getReference() {return &mReference;}

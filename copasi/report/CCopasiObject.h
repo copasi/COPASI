@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:58 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:25:12 $
    End CVS Header */
 
 /**
@@ -123,8 +123,9 @@ class CCopasiObject
 
     bool isReference() const;
 
-    bool hasValueInt() const;
-    bool hasValueDbl() const;
+    bool isValueBool() const;
+    bool isValueInt() const;
+    bool isValueDbl() const;
 
     virtual void * getReference();
 
@@ -138,19 +139,22 @@ class CCopasiObject
 template <class CType> CCopasiObjectReference< CType > *
 createReference(const std::string & name,
                 const CCopasiContainer * pParent,
-                CType & reference)
-{return new CCopasiObjectReference< CType >(name, pParent, reference);}
+                CType & reference,
+                const unsigned C_INT32 & flag = 0)
+{return new CCopasiObjectReference< CType >(name, pParent, reference, flag);}
 
 template <class CType> CCopasiVectorReference< CType > *
 createVectorReference(const std::string & name,
                       const CCopasiContainer * pParent,
-                      CType & reference)
-{return new CCopasiVectorReference< CType >(name, pParent, reference);}
+                      CType & reference,
+                      const unsigned C_INT32 & flag = 0)
+{return new CCopasiVectorReference< CType >(name, pParent, reference, flag);}
 
 template <class CType> CCopasiMatrixReference< CType > *
 createMatrixReference(const std::string & name,
                       const CCopasiContainer * pParent,
-                      CType & reference)
-{return new CCopasiMatrixReference< CType >(name, pParent, reference);}
+                      CType & reference,
+                      const unsigned C_INT32 & flag = 0)
+{return new CCopasiMatrixReference< CType >(name, pParent, reference, flag);}
 
 #endif // COPASI_CCopasiObject

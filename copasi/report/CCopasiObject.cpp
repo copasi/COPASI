@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:31:46 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:25:12 $
    End CVS Header */
 
 /**
@@ -186,8 +186,11 @@ bool CCopasiObject::isNameVector() const
 bool CCopasiObject::isReference() const
   {return (0 < (mObjectFlag & Reference));}
 
-bool CCopasiObject::hasValueInt() const
+bool CCopasiObject::isValueBool() const
+  {return (0 < (mObjectFlag & ValueBool));}
+
+bool CCopasiObject::isValueInt() const
   {return (0 < (mObjectFlag & ValueInt));}
 
-bool CCopasiObject::hasValueDbl() const
+bool CCopasiObject::isValueDbl() const
   {return (0 < (mObjectFlag & ValueDbl));}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:49 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:25:12 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1359,19 +1359,19 @@ void CModel::initObjects()
   //  add(&mSteps);
   //  add(&mStepsX);
   //  add(&mStepsInd);
-  addVectorReference("Fluxes", mFluxes);
+  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
   //  addVectorReference("Reduced Model Fluxes", mFluxesX);
-  addVectorReference("Scaled Fluxes", mScaledFluxes);
+  addVectorReference("Scaled Fluxes", mScaledFluxes, CCopasiObject::ValueDbl);
   //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
   // addObjectReference("Transition Time", mTransitionTime);
-  addMatrixReference("Stoichiometry", mStoi);
-  addMatrixReference("Reduced Model Stoichiometry", mRedStoi);
+  addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
+  addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
   // addVectorReference("Metabolite Interchanges", mRowLU);
   // addVectorReference("Reaction Interchanges", mColLU);
   // addMatrixReference("L", mL);
-  addMatrixReference("Link Matrix", mLView);
+  addMatrixReference("Link Matrix", mLView, CCopasiObject::ValueDbl);
   addObjectReference("Quantity Unit", mQuantityUnit);
-  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor);
+  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
   // addObjectReference("Inverse Quantity Conversion Factor",
   //                    mNumber2QuantityFactor);
 }
