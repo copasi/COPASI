@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:46 $
+   $Date: 2004/09/22 21:56:56 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,6 +29,7 @@
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qmessagebox.h>
+#include <qvalidator.h>
 
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
@@ -57,8 +58,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblName, 0, 0);
 
   mEditName = new QLineEdit(this, "mEditName");
-  //  mEditName->setFrameShape(QLineEdit::LineEditPanel);
-  //  mEditName->setFrameShadow(QLineEdit::Sunken);
   MetabolitesWidget1Layout->addMultiCellWidget(mEditName, 0, 0, 1, 3);
 
   mLblCompartment = new QLabel(this, "mLblCompartment");
@@ -92,11 +91,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   mEditStatus->setEnabled(false);
   MetabolitesWidget1Layout->addWidget(mEditStatus, 3, 3);
 
-  //  QSpacerItem* spacer = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //  MetabolitesWidget1Layout->addItem(spacer, 4, 2);
-  //  QSpacerItem* spacer_2 = new QSpacerItem(100, 70, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  //  MetabolitesWidget1Layout->addItem(spacer_2, 4, 0);
-
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
@@ -109,6 +103,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
 
   mEditInitConcentration = new QLineEdit(this, "mEditInitConcentration");
+  mEditInitConcentration->setValidator(new QDoubleValidator(mEditInitConcentration));
   MetabolitesWidget1Layout->addWidget(mEditInitConcentration, 6, 1);
 
   mLblConcentration = new QLabel(this, "mLblConcentration");
@@ -124,6 +119,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblInitNumber, 7, 0);
 
   mEditInitNumber = new QLineEdit(this, "mEditInitNumber");
+  mEditInitNumber->setValidator(new QDoubleValidator(mEditInitNumber));
   MetabolitesWidget1Layout->addWidget(mEditInitNumber, 7, 1);
 
   mLblNumber = new QLabel(this, "mLblNumber");
@@ -423,7 +419,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                           // Yes or Enter
+    case 0:                            // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -439,7 +435,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                           // No or Escape
+    case 1:                            // No or Escape
       break;
     }
 }
