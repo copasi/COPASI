@@ -13,7 +13,7 @@
 #include "utilities/CGlobals.h"
 #include "CTrajectory.h"
 
-using namespace std;
+using std::cout;
 
 //default constructor
 CTrajectory::CTrajectory()
