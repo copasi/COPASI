@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/09 03:37:10 $
+   $Date: 2005/01/18 20:26:26 $
    End CVS Header */
 
 /**
@@ -3816,7 +3816,8 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
           switch (mCommon.pCurrentParameter->getType())
             {
             case CCopasiParameter::GROUP:
-              p->setValue(*((std::vector<CCopasiParameter*>*)mCommon.pCurrentParameter->getValue()));
+              * (CCopasiParameterGroup *) p =
+                * (CCopasiParameterGroup *) mCommon.pCurrentParameter;
               break;
 
             case CCopasiParameter::INT:
@@ -3860,6 +3861,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
       fatalError();
       break;
     }
+
   return;
 }
 
@@ -4281,7 +4283,8 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
           switch (mCommon.pCurrentParameter->getType())
             {
             case CCopasiParameter::GROUP:
-              p->setValue(*((std::vector<CCopasiParameter*>*)mCommon.pCurrentParameter->getValue()));
+              * (CCopasiParameterGroup *) p =
+                * (CCopasiParameterGroup *) mCommon.pCurrentParameter;
               break;
 
             case CCopasiParameter::INT:
