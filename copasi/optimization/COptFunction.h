@@ -21,7 +21,7 @@ class COptProblem;
 
 class COptFunction: public CCopasiContainer
   {
-  public:
+  public:  //function
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
@@ -35,7 +35,18 @@ class COptFunction: public CCopasiContainer
 
     //remove an item with the existing name
     bool removeItem(const std::string & name);
-  public:
+
+    //get key function of a COptFunction
+    inline std::string getKey()
+    {return mKey;}
+
+    COptProblem* getProblem()
+    {return mpProblem;}
+
+    COptMethod* getMethod()
+    {return mpMethod;}
+
+  public:  // constructor and deconstuctor
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -56,19 +67,10 @@ class COptFunction: public CCopasiContainer
 
     ~COptFunction();
 
-  protected:
-
+  private:
     void cleanup();
     COptProblem* mpProblem;
     COptMethod* mpMethod;
-
-  public:
     std::string mKey;
-
-    COptProblem* getProblem()
-    {return mpProblem;}
-
-    COptMethod* getMethod()
-    {return mpMethod;}
   };
 #endif
