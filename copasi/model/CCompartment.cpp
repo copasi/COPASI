@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:50 $
+   $Date: 2003/10/28 22:10:31 $
    End CVS Header */
 
 // CCompartment
@@ -182,9 +182,6 @@ bool CCompartment::addMetabolite(const CMetab & metabolite)
 bool CCompartment::addMetabolite(CMetab * pMetabolite)
 {
   bool success = mMetabolites.add(pMetabolite, true);
-
-  // pMetabolite->initCompartment();
-  // pMetabolite->initModel();
 
   return success;
 }

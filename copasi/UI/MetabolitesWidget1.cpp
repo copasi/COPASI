@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Date: 2003/10/28 22:10:30 $
    End CVS Header */
 
 /*******************************************************************
@@ -329,8 +329,9 @@ bool MetabolitesWidget1::saveToMetabolite()
   QString Compartment = ComboBox1->currentText();
   if (Compartment.latin1() != metab->getCompartment()->getName())
     {
-      dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*metab);
-      dataModel->getModel()->getCompartments()[metab->getCompartment()->getName()]->getMetabolites().remove(metab->getName());
+      std::string CompartmentToRemove = metab->getCompartment()->getName();
+      dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(metab);
+      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getName());
       dataModel->getModel()->initializeMetabolites();
       //ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
       ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
