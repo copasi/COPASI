@@ -225,12 +225,12 @@ bool ModelWidget::convert2NonReversible()
         std::cout << i << "  ";
 
         //create the two new reactions
-        reac1 = new CReaction(*reac0);
+        reac1 = new CReaction(*reac0, &steps);
         rn1 = reac1->getName() + " (forward)";
         reac1->setName(rn1);
         steps.add(reac1);
 
-        reac2 = new CReaction(*reac0);
+        reac2 = new CReaction(*reac0, &steps);
         rn2 = reac2->getName() + " (backward)";
         reac2->setName(rn2);
         steps.add(reac2);
