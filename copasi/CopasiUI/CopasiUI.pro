@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2003/08/05 14:33:27 $  
+# $Revision: 1.11 $ $Author: lixu1 $ $Date: 2003/08/13 14:36:14 $  
 ######################################################################
 
 include(../common.pri)
@@ -108,6 +108,7 @@ HEADERS += CompartmentsWidget.h \
            TrajectoryWidget.h \
            Tree.h \
            TableDefinition.h \
+           TableDefinition1.h \
            objectdebug.h
 
 # INTERFACES += CompartmentsWidget.ui \
@@ -156,5 +157,6 @@ SOURCES += CompartmentsWidget.cpp \
            StretchTable.cpp \
            TrajectoryWidget.cpp \
            TableDefinition.cpp \
+           TableDefinition1.cpp \
            objectdebug.cpp
 
