@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 13:23:24 $
+   $Date: 2004/11/23 17:06:28 $
    End CVS Header */
 
 #ifndef CMCAWIDGET_H
@@ -38,6 +38,7 @@ class CMCAWidget : public CopasiWidget
     ~CMCAWidget();
 
     void loadMCATask();
+    void saveMCATask();
     //    void setModel(CModel* newModel);
 
     QFrame* line7;
@@ -55,7 +56,6 @@ class CMCAWidget : public CopasiWidget
 
   public slots:
     virtual void CancelButtonClicked();
-    virtual void CommitButtonClicked();
     virtual void parameterValueChanged();
     virtual void runMCATask();
     virtual void ReportDefinitionClicked();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 07:36:03 $
+   $Date: 2004/11/23 17:06:27 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -82,9 +82,11 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
 
+  /*
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
+  */
 
   CMCAWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
 
@@ -105,6 +107,7 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
 
   taskSteadyState = new QCheckBox(this, "taskSteadyState");
   taskSteadyState->setText(trUtf8("perform Steady State Analysis"));
+
   taskSteadyState->setChecked(true);
   CMCAWidgetLayout->addWidget(taskSteadyState, 2, 1);
 
@@ -117,7 +120,7 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runMCATask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+  //connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
   connect(taskSteadyState, SIGNAL(toggled(bool)), this, SLOT(taskSteadyStateToggled()));
 
   // tab order
@@ -126,7 +129,7 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(parameterTable, bRunButton);
   setTabOrder(bRunButton, cancelChange);
 
-  reportDefinitionButton->setEnabled(false);
+  //reportDefinitionButton->setEnabled(false);
 }
 
 /*
@@ -140,25 +143,6 @@ void CMCAWidget::CancelButtonClicked()
   loadMCATask();
 }
 
-void CMCAWidget::CommitButtonClicked()
-{
-  /*
-  CMCATask* mMCATask =
-  dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
-  assert(mMCATask);
-
-  CMcaProblem* mcaproblem =
-  dynamic_cast<CMCAProblem *>(mMCATask->getProblem());
-  assert(mcaproblem);
-
-  CMca* mcamethod =
-  dynamic_cast<CMca *>(mMCATask->getMethod());
-  assert(mcamethod);
-
-  loadMCATask();
-  */
-}
-
 void CMCAWidget::parameterValueChanged()
 {
   qWarning("CMCAWidget::parameterValueChanged(): Not implemented yet!");
@@ -166,6 +150,7 @@ void CMCAWidget::parameterValueChanged()
 
 void CMCAWidget::runMCATask()
 {
+  saveMCATask();
   if (dataModel->isChanged())
     {
       const QApplication* qApp = dataModel->getQApp();
@@ -181,24 +166,25 @@ void CMCAWidget::runMCATask()
             }
         }
     }
-  CommitButtonClicked();
-
   if (bRunButton->text() != "Run")
     {
       hide();
       return;
     }
 
-  CMCATask* mMCATask =
+  CMCATask* mcaTask =
     dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
-  assert(mMCATask);
+  assert(mcaTask);
 
-  mMCATask->initialize();
+  mcaTask->initialize();
+  CMCAProblem* mcaProblem =
+    dynamic_cast<CMCAProblem *>(mcaTask->getProblem());
+  assert(mcaProblem);
 
   // if a steady state analysis is needed, run it first
   // if a steady state was found, set the flag in the mca task
   // set the resolution of the mca task
-  if (taskSteadyState->isChecked())
+  if (mcaProblem->isSteadyStateRequested())
     {
       CSteadyStateTask* steadyStateTask = dataModel->getSteadyStateTask();
       assert(steadyStateTask);
@@ -232,8 +218,7 @@ void CMCAWidget::runMCATask()
       protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 
       unsetCursor();
-      dynamic_cast<CMCAMethod*>(mMCATask->getMethod())->setIsSteadyState(dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState());
-      std::cout << "steady state: " << dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState() << std::endl;
+      dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setIsSteadyState(dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState());
     }
 
   setCursor(Qt::WaitCursor);
@@ -242,7 +227,7 @@ void CMCAWidget::runMCATask()
 
   try
     {
-      mMCATask->process();
+      mcaTask->process();
     }
 
   catch (CCopasiException Exception)
@@ -267,23 +252,76 @@ void CMCAWidget::runMCATask()
 
 void CMCAWidget::loadMCATask()
 {
-  CMCATask* mMCATask =
+  CMCATask* mcaTask =
     dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
-  assert(mMCATask);
+  assert(mcaTask);
 
-  CMCAProblem* mcaproblem =
-    dynamic_cast<CMCAProblem *>(mMCATask->getProblem());
-  assert(mcaproblem);
+  CMCAProblem* mcaProblem =
+    dynamic_cast<CMCAProblem *>(mcaTask->getProblem());
+  assert(mcaProblem);
 
-  CMCAMethod* mcamethod =
-    dynamic_cast<CMCAMethod *>(mMCATask->getMethod());
-  assert(mcamethod);
+  CMCAMethod* mcaMethod =
+    dynamic_cast<CMCAMethod *>(mcaTask->getMethod());
+  assert(mcaMethod);
 
   taskName->setText(tr("Metabolic Control Analysis"));
   taskName->setEnabled(false);
 
-  //bool bSteadyState = mcaproblem->isSteadyStateRequested();
+  taskSteadyState->setChecked(mcaProblem->isSteadyStateRequested());
   this->initParameterTable();
+}
+
+void CMCAWidget::saveMCATask()
+{
+  CMCATask* mcaTask =
+    dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
+  assert(mcaTask);
+
+  CMCAProblem* mcaProblem =
+    dynamic_cast<CMCAProblem *>(mcaTask->getProblem());
+  assert(mcaProblem);
+
+  CMCAMethod* mcaMethod =
+    dynamic_cast<CMCAMethod *>(mcaTask->getMethod());
+  assert(mcaMethod);
+
+  bool isSteadyStateRequested = taskSteadyState->isChecked();
+  mcaProblem->setSteadyStateRequested(isSteadyStateRequested);
+
+  unsigned int numMCAParameters = mcaMethod->size();
+  unsigned int numSteadyStateParameters = 0;
+  QString value;
+
+  unsigned int k;
+  if (this->dataModel->getSteadyStateTask())
+    {
+      numSteadyStateParameters = this->dataModel->getSteadyStateTask()->getMethod()->size();
+    }
+  if (this->taskSteadyState->isChecked())
+    {
+      for (k = 0; k < numMCAParameters; k++)
+        {
+          value = parameterTable->text(k, 0);
+          setParameterValue(mcaMethod, k, value);
+        }
+      if (this->dataModel->getSteadyStateTask() && this->dataModel->getSteadyStateTask()->getMethod())
+        {
+          CSteadyStateMethod* sMethod = dynamic_cast<CSteadyStateMethod*>(this->dataModel->getSteadyStateTask()->getMethod());
+          for (k = 0; k < numSteadyStateParameters; k++)
+            {
+              value = parameterTable->text(k + numMCAParameters, 0);
+              setParameterValue(sMethod, k, value);
+            }
+        }
+    }
+  else
+    {
+      for (k = 0; k < numMCAParameters; k++)
+        {
+          value = parameterTable->text(k, 0);
+          setParameterValue(mcaMethod, k, value);
+        }
+    }
 }
 
 bool CMCAWidget::enter(const std::string & key)
@@ -330,6 +368,7 @@ bool CMCAWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
 bool CMCAWidget::leave()
 {
   //let the user confirm?
+  saveMCATask();
   return true;
 }
 
@@ -351,10 +390,15 @@ void CMCAWidget::ReportDefinitionClicked()
 
 void CMCAWidget::taskSteadyStateToggled()
 {
-  if (!taskSteadyState->isChecked())
-  {}
-  else
-  {}
+  // update should only be done when the user commits or leaves the widget
+  /*
+  CMCATask* mcaTask =
+   dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
+  assert(mcaTask);
+  CMCAProblem* mcaProblem=dynamic_cast<CMCAProblem*>(mcaTask->getProblem()); 
+  assert(mcaProblem); 
+  mcaProblem->setSteadyStateRequested(taskSteadyState->isChecked());  
+  */
   this->initParameterTable();
 }
 
