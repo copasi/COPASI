@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/09 20:14:01 $
+   $Author: shoops $ 
+   $Date: 2003/12/10 19:42:30 $
    End CVS Header */
 
 /**
@@ -2331,7 +2331,6 @@ void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
       if (strcmp(pszName, "StateTemplate")) fatalError();
       break;
 
-#ifdef XXXX
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
 
@@ -2343,7 +2342,6 @@ void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
-#endif // XXXX
 
     default:
       fatalError();
@@ -2369,6 +2367,56 @@ void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
       mCurrentElement = StateTemplate;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::StateTemplateVariableElement::StateTemplateVariableElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::StateTemplateVariableElement::~StateTemplateVariableElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case StateTemplateVariable:
+      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::StateTemplateVariableElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case StateTemplateVariable:
+      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
       break;
 
     default:
