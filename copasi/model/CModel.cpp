@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.193 $
+   $Revision: 1.194 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:38:46 $
+   $Date: 2004/10/06 09:53:29 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -781,14 +781,14 @@ void CModel::setTransitionTimes()
                 TotalFlux += PartialFlux;
             }
 
-          if (TotalFlux == 0.0)
-            for (j = 0; j < jmax; j++)
-              {
-                PartialFlux = - mStoi[i][j] * *mParticleFluxes[j];
+          //if (TotalFlux == 0.0) //TODO discuss
+          for (j = 0; j < jmax; j++)
+            {
+              PartialFlux = - mStoi[i][j] * *mParticleFluxes[j];
 
-                if (PartialFlux > 0.0)
-                  TotalFlux += PartialFlux;
-              }
+              if (PartialFlux > 0.0)
+                TotalFlux += PartialFlux;
+            }
 
           if (TotalFlux == 0.0)
             TransitionTime = DBL_MAX;
@@ -796,7 +796,7 @@ void CModel::setTransitionTimes()
             TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
-          mMetabolites[i]->setNumberRate(TotalFlux);
+          //mMetabolites[i]->setNumberRate(TotalFlux);
 
           if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
             mTransitionTime = DBL_MAX;
@@ -1193,7 +1193,7 @@ void CModel::updateRates()
       mMetabolites[i]->setNumberRate(tmp);
     }
 
-  //TODO. transition Times
+  setTransitionTimes();
 }
 
 //**********************************************************************
