@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 13:21:12 $
+   $Date: 2004/10/27 06:47:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -49,7 +49,7 @@ void WizardDialog::buttonGroup2_clicked(int)
     }
   if (WizardDialog::helpPath != "")
     {
-      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[this->buttonGroup->selectedId()];
+      QString source = WizardDialog::helpPath + "/" + WizardDialog::texts[this->buttonGroup->selectedId()];
       this->textBrowser->setSource(source);
     }
 }
@@ -82,7 +82,7 @@ void WizardDialog::init()
     {
       // the next line will hopefully ensure that this works under windows as well.
       WizardDialog::helpPath = QDir(helpPath.c_str()).absPath().latin1();
-      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[0];
+      QString source = WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }
   else
