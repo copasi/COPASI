@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/17 21:09:39 $
+   $Author: chlee $ 
+   $Date: 2003/12/18 16:48:34 $
    End CVS Header */
 
 /***********************************************************************
@@ -292,7 +292,8 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
       obj = objects[row];
       //if fixed checkbox is selected, then make sure to update status
       fCheck = table->item(row, col);
-      fixedCB = dynamic_cast< QCheckTableItem * >(fCheck);
+      // fixedCB = dynamic_cast< QCheckTableItem * >(fCheck);
+      fixedCB = (QCheckTableItem *) fCheck;
       if (fixedCB && fixedCB->isChecked())
         {
           obj->setStatus(CMetab::METAB_FIXED);
@@ -512,7 +513,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                 // Yes or Enter
+        case 0:                  // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -525,7 +526,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:                 // No or Escape
+        case 1:                  // No or Escape
           break;
         }
     }
