@@ -188,7 +188,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
   //  This section defines few of the variables that will be used in the code
   lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
   currentWidget = bigWidget; // keeps track of the currentWidget in use
-  lastWidget = bigWidget; // keeps track of the lastWidget that was used
   lastKey = "";
 
   // establishes the communication betweent the folders clicked and the routine called....
@@ -516,13 +515,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:       //Time course
+      case 23:        //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:      //Report
+      case 43:       //Report
         return tableDefinition;
         break;
       case 5:

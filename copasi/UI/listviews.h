@@ -121,7 +121,6 @@ class ListViews : public QSplitter
     static DataModel* dataModel;
     QListViewItem* lastSelection;
     QWidget* currentWidget;
-    QWidget* lastWidget;
     std::string lastKey;
 
     static std::set<ListViews *> mListOfListViews;
