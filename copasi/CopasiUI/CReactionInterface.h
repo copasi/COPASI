@@ -43,7 +43,7 @@ class CReactionInterface
     /**
      * A copy of the function parameters
      */
-    CFunctionParameters mParameters;
+    CFunctionParameters * mpParameters;
 
     /**
      * what metabolite for what function parameter
@@ -107,23 +107,23 @@ class CReactionInterface
     std::vector< std::string > getListOfPossibleFunctions() const;
 
     C_INT32 size() const
-    {if (mpFunction) return mParameters.size(); else return 0;};
+    {if (mpFunction) return mpParameters->size(); else return 0;};
 
     bool isVector(C_INT32 index) const
       {
-        if (mpFunction) return (mParameters[index]->getType() == CFunctionParameter::VFLOAT64);
+        if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
         else return (false);
       }
 
     std::string getUsage(C_INT32 index) const
       {
-        if (mpFunction) return mParameters[index]->getUsage();
+        if (mpFunction) return (*mpParameters)[index]->getUsage();
         else return emptyString;
       }
 
     std::string getParameterName(C_INT32 index) const
       {
-        if (mpFunction) return mParameters[index]->getName();
+        if (mpFunction) return (*mpParameters)[index]->getName();
         else return emptyString;
       }
 

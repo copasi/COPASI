@@ -9,8 +9,10 @@
 #include "report/CKeyFactory.h"
 #include "model/CMetabNameInterface.h"
 
-CReactionInterface::CReactionInterface(){emptyString = "";}
-CReactionInterface::~CReactionInterface(){}
+CReactionInterface::CReactionInterface():
+    mpParameters(NULL)
+{emptyString = "";}
+CReactionInterface::~CReactionInterface(){pdelete(mpParameters);}
 
 std::vector<std::string> CReactionInterface::getListOfMetabs(std::string role) const
   {
@@ -74,7 +76,8 @@ void CReactionInterface::initFromReaction(const std::string & key)
   mChemEq = rea->getChemEq();
 
   mpFunction = &(rea->getFunction());
-  mParameters = mpFunction->getParameters();
+  pdelete(mpParameters)
+  mpParameters = new CFunctionParameters(mpFunction->getParameters());
 
   mNameMap = rea->getParameterMappingName();
 
@@ -90,7 +93,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
   {
     if (!mValid) return; // do nothing
 
-    if (!(mParameters == mpFunction->getParameters())) return; // do nothing
+    if (!(*mpParameters == mpFunction->getParameters())) return; // do nothing
 
     CReaction *rea;
     rea = (CReaction*)(CCopasiContainer*)CKeyFactory::get(mReactionReferenceKey);
@@ -135,12 +138,12 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
 if (fn == "") {clearFunction(); return;}
 
   // save the old parameter names
-  CFunctionParameters oldParameters = mParameters;
+  CFunctionParameters *oldParameters = mpParameters;
 
   //get the function
   mpFunction = Copasi->pFunctionDB->findLoadFunction(fn);
   if (!mpFunction) fatalError();
-  mParameters = mpFunction->getParameters();
+  mpParameters = new CFunctionParameters(mpFunction->getParameters());
 
   //initialize mValues[]
   //try to keep old values if the name is the same
@@ -153,7 +156,7 @@ if (fn == "") {clearFunction(); return;}
       if (getUsage(i) == "PARAMETER")
         {
           for (j = 0; j < jmax; ++j)
-            if (oldParameters[j]->getName() == getParameterName(i)) break;
+            if ((*oldParameters)[j]->getName() == getParameterName(i)) break;
 
           if (j == jmax) mValues[i] = 0.1;
           else mValues[i] = oldValues[j];
@@ -175,12 +178,14 @@ if (fn == "") {clearFunction(); return;}
   connectFromScratch("MODIFIER", false); // we can not be pedantic about modifiers
   // because modifiers are not taken into acount
   // when looking for suitable functions
+
+  pdelete(oldParameters);
 }
 
 void CReactionInterface::clearFunction()
 {
   mpFunction = NULL;
-  mParameters.cleanup();
+  pdelete(mpParameters);
   mValid = false;
 
   mValues.clear();
@@ -236,7 +241,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 {
   unsigned C_INT32 j, jmax;
-  unsigned C_INT32 i, imax = mParameters.getNumberOfParametersByUsage(role);
+  unsigned C_INT32 i, imax = mpParameters->getNumberOfParametersByUsage(role);
   if (!imax) return;
 
   // get the list of chem eq elements
@@ -245,7 +250,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;
   unsigned C_INT32 pos = 0;
-  Type = mParameters.getParameterByUsage(role, pos).getType();
+  Type = mpParameters->getParameterByUsage(role, pos).getType();
 
   if (Type == CFunctionParameter::VFLOAT64)
     {
@@ -261,7 +266,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
       for (i = 1; i < imax; ++i)
         {
-          Type = mParameters.getParameterByUsage(role, pos).getType();
+          Type = mpParameters->getParameterByUsage(role, pos).getType();
           if (Type != CFunctionParameter::FLOAT64) fatalError();
 
           if (el.size() > i)
@@ -285,11 +290,11 @@ bool CReactionInterface::isLocked(std::string usage) const
     else if (usage == "MODIFIER") listSize = mChemEq.getModifiers().size();
 
     // get number of parameters
-    unsigned C_INT32 paramSize = mParameters.getNumberOfParametersByUsage(usage);
+    unsigned C_INT32 paramSize = mpParameters->getNumberOfParametersByUsage(usage);
 
     // get index of first parameter
     unsigned C_INT32 pos = 0;
-    mParameters.getParameterByUsage(usage, pos); --pos;
+    mpParameters->getParameterByUsage(usage, pos); --pos;
 
     // decide
     if (isVector(pos))
@@ -318,12 +323,12 @@ void CReactionInterface::setMetab(C_INT32 index, std::string mn)
       mNameMap[index][0] = mn;
 
       // if we have two parameters of this usage change the other one.
-      if ((listSize == 2) && (mParameters.getNumberOfParametersByUsage(usage) == 2))
+      if ((listSize == 2) && (mpParameters->getNumberOfParametersByUsage(usage) == 2))
         {
           // get index of other parameter
           unsigned C_INT32 pos = 0;
-          mParameters.getParameterByUsage(usage, pos);
-          if ((pos - 1) == index) mParameters.getParameterByUsage(usage, pos);
+          mpParameters->getParameterByUsage(usage, pos);
+          if ((pos - 1) == index) mpParameters->getParameterByUsage(usage, pos);
           --pos;
 
           // get name if other metab
@@ -363,42 +368,42 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::str
 
 bool CReactionInterface::createMetabolites(CModel & model) const
   {/*
-            C_INT32 i, imax;
-            const CCopasiVector<CChemEqElement> * el;
-            bool ret = false;
-            std::string compartmentName = model.getCompartments()[0]->getName();
-            //just the first compartment. This could be done more intelligently.
-         
-            el = &(mChemEq.getSubstrates());
-            imax = el->size();
-            for (i = 0; i < imax; ++i)
-              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                {
-                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                  ret = true;
-                }
-         
-            el = &(mChemEq.getProducts());
-            imax = el->size();
-            for (i = 0; i < imax; ++i)
-              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                {
-                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                  ret = true;
-                }
-         
-            el = &(mChemEq.getModifiers());
-            imax = el->size();
-            for (i = 0; i < imax; ++i)
-              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                {
-                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                  ret = true;
-                }
-         
-            return ret;
-            //TODO: this method somehow still assumes unique names
-            //
-          */
+                C_INT32 i, imax;
+                const CCopasiVector<CChemEqElement> * el;
+                bool ret = false;
+                std::string compartmentName = model.getCompartments()[0]->getName();
+                //just the first compartment. This could be done more intelligently.
+             
+                el = &(mChemEq.getSubstrates());
+                imax = el->size();
+                for (i = 0; i < imax; ++i)
+                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                    {
+                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                      ret = true;
+                    }
+             
+                el = &(mChemEq.getProducts());
+                imax = el->size();
+                for (i = 0; i < imax; ++i)
+                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                    {
+                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                      ret = true;
+                    }
+             
+                el = &(mChemEq.getModifiers());
+                imax = el->size();
+                for (i = 0; i < imax; ++i)
+                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                    {
+                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                      ret = true;
+                    }
+             
+                return ret;
+                //TODO: this method somehow still assumes unique names
+                //
+              */
     return true;
   }
