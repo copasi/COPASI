@@ -1,28 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/11 19:34:15 $
+   $Date: 2004/11/17 14:32:00 $
    End CVS Header */
 
 #include "DataModelGUI.h"
 #include "DataModel.txt.h"
-#include "mathmodel/CMathModel.h"
-#include "plot/COutputHandlerPlot.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
-#include "model/CModel.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "scan/CScanTask.h"
-#include "steadystate/CMCATask.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/CPlotSpec2Vector.h"
-#include "optimization/COptFunction.h"
-#include "model/CMetabNameInterface.h"
-#include "utilities/CGlobals.h"
+#include "ListViews.h"
+
 #include "function/CFunctionDB.h"
+#include "mathmodel/CMathModel.h"
+#include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
+#include "optimization/COptFunction.h"
+#include "plot/COutputHandlerPlot.h"
+#include "plot/CPlotSpec2Vector.h"
+#include "report/CReportDefinitionVector.h"
+#include "scan/CScanTask.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CMCATask.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "utilities/CGlobals.h"
 
 //int Folder::smModifier = 0;
 
@@ -64,6 +66,8 @@ void DataModelGUI::linkDataModelToGUI()
   mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
   mTree.findNodeFromId(43).setObjectKey(reportdefinitions->getKey());
   mTree.findNodeFromId(42).setObjectKey(plotspecs->getKey());
+
+  ListViews::setDataModel(this);
 }
 
 void DataModelGUI::populateData()
