@@ -188,7 +188,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   Copasi->pModel = this;
 
   // For old Versions we must read the list of Metabolites beforehand
-
   if (configBuffer.getVersion() < "4")
     {
       if ((Fail = configBuffer.getVariable("TotalMetabolites", "C_INT32",
@@ -295,14 +294,14 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   initializeMetabolites();
 
-  if ((Fail = Copasi->pFunctionDB->load(configBuffer)))
+  if ((Fail = Copasi->pFunctionDB->load(configBuffer))) // slow
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
     return Fail;
 
-  mSteps.load(configBuffer, Size);
+  mSteps.load(configBuffer, Size); // slow
 
   // DebugFile << std::endl << mSteps << std::endl;  //debug
 
