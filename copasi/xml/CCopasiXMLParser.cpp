@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:40:35 $
+   $Author: mkulkarn $ 
+   $Date: 2003/11/03 19:46:50 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 #include "function/CFunction.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
 
 #ifdef COPASI_TEMPLATE
 CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
@@ -109,6 +110,8 @@ CCopasiXMLParser::CCopasiXMLParser() :
   mCommon.pModel = NULL;
   mCommon.pFunctionList = NULL;
   mCommon.pFunction = NULL;
+  mCommon.pReportList = NULL;
+  mCommon.pReport = NULL;
 
   enableElementHandler(true);
 }
@@ -490,6 +493,8 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
+      mCommon.FunctionDescription = mCommon.Comment;
+      mCommon.Comment = "";
       mCurrentElement = MathML;
 
       break;
@@ -538,7 +543,8 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
+      mCommon.Comment = mCommon.pParser->getCharacterData("\n\t ", "");
+      //mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
 
       mCommon.pParser->enableCharacterDataHandler(false);
       //    mCommon.pParser->enableCdataSectionHandler(false);
@@ -977,6 +983,8 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       // mCommon.pModel->setComments(mParser.getCharacterData());
       mParser.popElementHandler();
       mCurrentElement = -1;
+
+      pdelete(mpCurrentHandler);
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2296,15 +2304,535 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * C_UNUSED(pszNa
 
 void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * C_UNUSED(pszName)) {}
 
+//Mrinmayee
 CCopasiXMLParser::ListOfReportsElement::ListOfReportsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
 {}
 
-CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement() {}
+CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement()
+{
+  pdelete(mpCurrentHandler);
+}
 
-void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char * C_UNUSED(pszName),
-    const XML_Char ** C_UNUSED(papszAttrs))
+void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName, const XML_Char **papszAttrs)
+{
+  mCurrentElement++; // We should always be on the next element
+
+  switch (mCurrentElement)
+    {
+    case COPASI:
+      if (strcmp(pszName, "COPASI")) fatalError();
+      break;
+
+    case ListOfFunctions:
+      if (strcmp(pszName, "ListOfFunctions")) fatalError();
+      if (!mCommon.pFunctionList)
+        mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
+      break;
+
+    case Model:
+      break;
+
+    case ListOfTasks:
+      break;
+
+    case ListOfReports:
+      if (strcmp(pszName, "ListOfReports")) fatalError();
+      if (!mCommon.pReportList)
+        mCommon.pReportList = new CCopasiVectorN< CReportDefinition >;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case COPASI:
+      break;
+
+    case ListOfFunctions:
+      if (strcmp(pszName, "ListOfFunctions")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      //Tell the parent element we are done.
+      mParser.onEndElement(pszName);
+      break;
+
+    case Model:
+      break;
+
+    case ListOfTasks:
+      break;
+
+    case ListOfReports:
+      if (strcmp(pszName, "ListOfReports")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      //Tell the parent element we are done.
+      mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::ReportElement::ReportElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpCommentElement(NULL),
+    mpHeaderElement(NULL),
+    mpBodyElement(NULL)
+    //mpFooterElement(NULL)
 {}
 
-void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char * C_UNUSED(pszName)) {}
+CCopasiXMLParser::ReportElement::~ReportElement()
+{
+  pdelete(mpCommentElement);
+  pdelete(mpHeaderElement);
+  pdelete(mpBodyElement);
+  //pdelete(mpFooterElement);
+}
+
+void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  const char * Key;
+  //const char * type;
+  const char * Name;
+
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
+
+      Key = mParser.getAttributeValue("key", papszAttrs);
+      Name = mParser.getAttributeValue("name", papszAttrs);
+      //type = mParser.getAttributeValue("type", papszAttrs);
+
+      /* We have a new report and add it to the list */
+      mCommon.pReportList->add(mCommon.pReport, true);
+      mCommon.KeyMap[Key] = mCommon.pReport->getKey();
+
+      break;
+
+    case Comment:
+      if (strcmp(pszName, "Comment")) fatalError();
+
+      /* If we do not have a Comment element handler we create one. */
+      if (!mpCommentElement)
+        mpCommentElement = new CommentElement(mParser, mCommon);
+
+      /* Push the Comment element handler on the stack and call it. */
+      mpCurrentHandler = mpCommentElement;
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    case Header:
+      if (strcmp(pszName, "Header")) fatalError();
+
+      /* If we do not have a Header element handler we create one. */
+      if (!mpHeaderElement)
+        mpHeaderElement = new HeaderElement(mParser, mCommon);
+
+      /* Push the Header element handler on the stack and call it. */
+      mpCurrentHandler = mpHeaderElement;
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    case Body:
+      if (strcmp(pszName, "Body")) fatalError();
+
+      /* If we do not have a Body element handler we create one. */
+      if (!mpBodyElement)
+        mpBodyElement = new BodyElement(mParser, mCommon);
+
+      /* Push the Body element handler on the stack and call it. */
+      mpCurrentHandler = mpBodyElement;
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+      //case Footer:
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
+      mCurrentElement = -1;
+      mParser.popElementHandler();
+
+      // Tell the parent element we are done.
+      mParser.onEndElement(pszName);
+      break;
+
+    case Comment:
+      if (strcmp(pszName, "Comment")) fatalError();
+      // check parameter type CCopasiStaticString
+      mCommon.pReport->setComment(mCommon.Comment);
+      mCommon.Comment = "";
+
+      pdelete(mpCurrentHandler);
+      break;
+
+    case Header:
+      if (strcmp(pszName, "Header")) fatalError();
+      mCurrentElement = Report;
+      break;
+
+    case Body:
+      if (strcmp(pszName, "Body")) fatalError();
+      mCurrentElement = Report;
+      break;
+
+      //case Footer:
+
+    default:
+      fatalError();
+      break;
+    }
+}
+
+CCopasiXMLParser::HeaderElement::HeaderElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::HeaderElement::~HeaderElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case Header:
+      if (strcmp(pszName, "Header")) fatalError();
+      break;
+
+    case Text:
+      if (strcmp(pszName, "Text")) fatalError();
+
+      /* If we do not have a text element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new TextElement(mParser, mCommon);
+
+      /* Push the text element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+
+      /* If we do not have an Object element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ObjectElement(mParser, mCommon);
+
+      /* Push the Text element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+      //case Report:
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Header:
+      if (strcmp(pszName, "Header")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case Text:
+      if (strcmp(pszName, "Text")) fatalError();
+      mCurrentElement = Header;
+      break;
+
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+      mCurrentElement = Header;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+}
+
+CCopasiXMLParser::BodyElement::BodyElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::BodyElement::~BodyElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case Body:
+      if (strcmp(pszName, "Body")) fatalError();
+      break;
+
+    case Complex:
+      if (strcmp(pszName, "Complex")) fatalError();
+
+      /* If we do not have a complex element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ComplexElement(mParser, mCommon);
+
+      /* Push the complex element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+      //case Table:
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Body:
+      if (strcmp(pszName, "Body")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case Complex:
+      if (strcmp(pszName, "Complex")) fatalError();
+      mCurrentElement = Body;
+      break;
+
+      //case Table:
+
+    default:
+      fatalError();
+      break;
+    }
+}
+
+/***** Footer not yet implemented ****/
+
+/*
+ 
+CCopasiXMLParser::FooterElement::FooterElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+ 
+ 
+CCopasiXMLParser::FooterElement::~FooterElement()
+{
+  pdelete(mpCurrentHandler);
+}  
+ 
+void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+ 
+}
+ 
+ 
+void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
+{
+ 
+ 
+}
+ */
+
+CCopasiXMLParser::ObjectElement::ObjectElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ObjectElement::~ObjectElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ObjectElement::start(const XML_Char *pszName,
+    const XML_Char ** papszAttrs)
+{
+  const char *cn;
+  mCurrentElement++; // We should always be on the next element
+
+  switch (mCurrentElement)
+    {
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+
+      cn = mParser.getAttributeValue("cn", papszAttrs);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+      //mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
+
+      mCommon.pParser->enableCharacterDataHandler(false);
+      //    mCommon.pParser->enableCdataSectionHandler(false);
+
+      // Tell the parent element we are done.
+      mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+}
+
+CCopasiXMLParser::ComplexElement::ComplexElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::ComplexElement::~ComplexElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::ComplexElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case Complex:
+      if (strcmp(pszName, "Complex")) fatalError();
+      break;
+
+    case Text:
+      if (strcmp(pszName, "Text")) fatalError();
+
+      /* If we do not have a text element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new TextElement(mParser, mCommon);
+
+      /* Push the text element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+
+      /* If we do not have an Object element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ObjectElement(mParser, mCommon);
+
+      /* Push the Text element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::ComplexElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Complex:
+      if (strcmp(pszName, "Complex")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case Text:
+      if (strcmp(pszName, "Text")) fatalError();
+      mCurrentElement = Complex;
+      break;
+
+    case Object:
+      if (strcmp(pszName, "Object")) fatalError();
+      mCurrentElement = Complex;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+}

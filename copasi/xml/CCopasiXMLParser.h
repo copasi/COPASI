@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:40:35 $
+   $Author: mkulkarn $ 
+   $Date: 2003/11/03 19:46:50 $
    End CVS Header */
 
 /**
@@ -30,6 +30,7 @@ class CReaction;
 class CFunction;
 class CFunctionParameter;
 class CCopasiXMLParser;
+class CReportDefinition;
 
 struct SCopasiXMLParserCommon
   {
@@ -38,7 +39,7 @@ struct SCopasiXMLParserCommon
     CModel * pModel;
 
     /**
-     * Storrage for a comment.
+     * Storage for a comment.
      */
     std::string Comment;
 
@@ -59,8 +60,8 @@ struct SCopasiXMLParserCommon
     std::string FunctionDescription;
 
     /**
-     * Pointer to the currently processed reaction.
-     */
+        * Pointer to the currently processed reaction.
+        */
     CReaction * pReaction;
 
     /**
@@ -82,8 +83,13 @@ struct SCopasiXMLParserCommon
     /**
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */ 
-    // CCopasiVectorN< CCopasiReport > * pReportList;
+     */
+    CCopasiVectorN< CReportDefinition > * pReportList;
+
+    /**
+     * Pointer to the currently processed report
+     */
+    CReportDefinition * pReport;
   };
 
 class CCopasiXMLParser : public CExpat
@@ -1069,9 +1075,278 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class ObjectElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Object
+         */
+        enum Element
+        {
+          Object = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ObjectElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ObjectElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class ComplexElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Complex
+         */
+        enum Element
+        {
+          Complex = 0,
+          Object,
+          Text
+          //Report
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ComplexElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ComplexElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class HeaderElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Header
+         */
+        enum Element
+        {
+          Header = 0,
+          Object,
+          Text
+          /*Report*/
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        HeaderElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~HeaderElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class BodyElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Body
+         */
+        enum Element
+        {
+          Body = 0,
+          Complex
+          //Table
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        BodyElement(CCopasiXMLParser & parser,
+                    SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~BodyElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+    /*** Footer Element not yet implemented
+
+    class FooterElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+         {
+           // Attributes
+         private:
+           /**
+            *  Footer
+            */
+    /*
+    enum Element
+    {
+      Footer = 0,
+    Object,
+    Text
+    // Report
+    };
+
+    // Operations
+    public:
     /**
-     * 
+     * Constructor
      */
+    /*
+          FooterElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+          /**
+           * Destructor
+           */
+    /*
+          virtual ~FooterElement();
+
+          /**
+           * Start element handler
+           * @param const XML_Char *pszName
+           * @param const XML_Char **papszAttrs
+           */
+    /*
+          virtual void start(const XML_Char *pszName,
+                             const XML_Char **papszAttrs);
+
+          /**
+           * End element handler
+           * @param const XML_Char *pszName
+           */
+    /*
+          virtual void end(const XML_Char *pszName);
+        };
+
+     End Footer ****/
+
+  class ReportElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Report
+         */
+        enum Element
+        {
+          Report = 0,
+          Comment,
+          Header,
+          Body
+          //Footer
+        };
+
+        CommentElement * mpCommentElement;
+        HeaderElement * mpHeaderElement;
+        BodyElement * mpBodyElement;
+        //FooterElement * mpFooterElement;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        ReportElement(CCopasiXMLParser & parser,
+                      SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~ReportElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+    /**
+        * 
+        */
   class COPASIElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
