@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 18:41:51 $
+   $Date: 2004/06/10 19:33:24 $
    End CVS Header */
 
 /**
@@ -77,7 +77,7 @@ CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
     CCopasiParameterGroup(TypeName[type], pParent, "Method"),
     mType(type),
     mSubType(subType)
-{setName(SubTypeName[mType]);}
+{setName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):
