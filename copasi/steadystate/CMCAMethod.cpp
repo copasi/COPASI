@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 20:39:43 $
+   $Date: 2004/11/26 20:41:17 $
    End CVS Header */
 
 #include <cmath>
@@ -307,8 +307,7 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
     }
   else
     {
-      // mFcc = I + mDxv * mGamma
-
+      // unscaledFluxCC = I + unscaledElasticities * unscaledConcCC
       for (i = 0; i < mUnscaledFluxCC.numRows(); i++)
         for (j = 0; j < mUnscaledFluxCC.numCols(); j++)
           {
