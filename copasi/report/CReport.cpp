@@ -24,10 +24,10 @@ void CReport::cleanup()
   pdelete(mpReportDef);
 }
 
-CReportDefinition* CReport::getDefReference()
+CReportDefinition* CReport::getReportDefinition()
 {return mpReportDef;}
 
-void CReport::setDefReference(CReportDefinition* reportDef)
+void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
 const std::string CReport::getTarget()

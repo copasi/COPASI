@@ -47,12 +47,12 @@ class CReport : public CCopasiObject
     /**
     returns the reference of the Report Tag
     */
-    CReportDefinition* getDefReference();
+    CReportDefinition* getReportDefinition();
 
     /**
     sets the reference to the report
     */
-    void setDefReference(CReportDefinition *reportDef);
+    void setReportDefinition(CReportDefinition *reportDef);
 
     /**
     returns the target of the Report Tag
@@ -62,7 +62,7 @@ class CReport : public CCopasiObject
     /**
     sets the reference to the report
     */
-    void setTarget(const std::string *target);
+    void setTarget(const std::string target);
 
     /**
     Returns whether the Report Tag is appended or not
