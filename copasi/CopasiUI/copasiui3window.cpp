@@ -38,6 +38,28 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
   splitter = NULL;  // the splittler for sepearting diff views
 
   resize(766, 400); // to resize the screen..to fit this size
+
+  if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
+    {
+      // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
+      //"Choose a file");
+      QString fileName = "Sample.txt";
+
+      if (fileName)
+        {
+          dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+          splitter = new QSplitter(QSplitter::Vertical, this , "main");
+          splitter->show();
+          this->setCentralWidget(splitter);
+        }
+    }
+
+  if (dataModel)
+    {
+      listViews = new ListViews(splitter);
+      listViews->setDataModel(dataModel);
+      listViews->show();
+    }
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -63,27 +85,27 @@ void CopasiUI3Window::newDoc()
   // and assigns only one dataModel to all the views
   // hence maintaning doc/view architecture
 
-  if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
-    {
-      // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
-      //"Choose a file");
-      QString fileName = "Sample.txt";
+  /* if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
+     {
+       // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
+       //"Choose a file");
+       QString fileName = "Sample.txt";
 
-      if (fileName)
-        {
-          dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
-          splitter = new QSplitter(QSplitter::Vertical, this , "main");
-          splitter->show();
-          this->setCentralWidget(splitter);
-        }
-    }
+       if (fileName)
+         {
+           dataModel = new DataModel<Folder>((char *)fileName.ascii()); // create the data model
+           splitter = new QSplitter(QSplitter::Vertical, this , "main");
+           splitter->show();
+           this->setCentralWidget(splitter);
+         }
+     }
 
-  if (dataModel)
-    {
-      listViews = new ListViews(splitter);
-      listViews->setDataModel(dataModel);
-      listViews->show();
-    }
+   if (dataModel)
+     {
+       listViews = new ListViews(splitter);
+       listViews->setDataModel(dataModel);
+       listViews->show();
+     }*/
 }
 
 /***************CopasiUI3Window::slotFileOpen()******

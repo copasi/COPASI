@@ -140,6 +140,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   table->sortColumn (0, TRUE, TRUE);
   table->setFixedSize(300, 150);
+  //table->setShowGrid(true);
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnWidth (0, 200);
 
