@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 15:56:05 $
+   $Date: 2004/12/16 17:12:57 $
    End CVS Header */
 
 /**
@@ -53,7 +53,7 @@ class CTrajectoryTask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryTask(const CCopasiContainer * pParent = NULL);
+    CTrajectoryTask(const CCopasiContainer * pParent = & RootContainer);
 
     /* *
      * Copy constructor

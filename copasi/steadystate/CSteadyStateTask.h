@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/09 14:41:47 $
+   $Date: 2004/12/16 17:12:36 $
    End CVS Header */
 
 /**
@@ -82,7 +82,7 @@ class CSteadyStateTask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateTask(const CCopasiContainer * pParent = NULL);
+    CSteadyStateTask(const CCopasiContainer * pParent = & RootContainer);
 
     /**
      * Copy constructor
