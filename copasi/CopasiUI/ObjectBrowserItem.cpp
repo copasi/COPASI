@@ -32,7 +32,6 @@ browserObject::browserObject()
 
 browserObject::~browserObject()
 {
-  // QT DELETE THIS POINTER
   delete referenceList;
 }
 
