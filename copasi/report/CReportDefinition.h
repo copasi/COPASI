@@ -26,6 +26,13 @@ class CReportDefinition
      */
     CReportDefinition();
 
+  private:
+
+    CComment *rComment;
+    CHeaderFooter *rHeader;
+    CHeaderFooter *rFooter;
+    CBody *rBody;
+
   public:
 
     /**
@@ -34,9 +41,14 @@ class CReportDefinition
     ~CReportDefinition();
 
     /**
+    cleanup
+    */
+    void cleanup();
+
+    /**
     Returns the comments in the report tag
     */
-    CComment getComment();
+    CComment* getComment();
 
     /**
     sets the comments in the report tag
@@ -46,7 +58,7 @@ class CReportDefinition
     /**
     gets the header in the report tag
     */
-    CHeaderFooter getHeader();
+    CHeaderFooter* getHeader();
 
     /**
     sets the header in the report tag
@@ -56,7 +68,7 @@ class CReportDefinition
     /**
     gets the footer in the report tag
     */
-    CHeaderFooter getFooter();
+    CHeaderFooter* getFooter();
 
     /**
     sets the footer in the report tag
@@ -66,7 +78,7 @@ class CReportDefinition
     /**
     gets the Body in the report tag
     */
-    CBody getBody();
+    CBody* getBody();
 
     /**
     sets the Body in the report tag
@@ -76,23 +88,29 @@ class CReportDefinition
 
 class CComment
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CComment();
+  private:
+    CComment *cText;
 
   public:
 
     /**
-    *  Destructor.
+       *  Default constructor.
+       */
+    CComment();
+
+    /**
+    cleanup
     */
+    void cleanup();
+    /**
+     *  Destructor.
+     */
     ~CComment();
 
     /**
     gets the text
     */
-    CComment getText();
+    CComment* getText();
 
     /**
     sets the text 
@@ -102,23 +120,31 @@ class CComment
 
 class CHeaderFooter
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CHeaderFooter();
+  private:
+    CObject *hObject;
+    CComment *hText;
+    CReport *hReport;
 
   public:
+    /**
+        *  Default constructor.
+        */
+    CHeaderFooter();
 
     /**
-    *  Destructor.
+    cleanup
     */
+    void cleanup();
+
+    /**
+       *  Destructor.
+       */
     ~CHeaderFooter();
 
     /**
     gets the Object in the Header or Footer tag
     */
-    CObject getObject();
+    CObject* getObject();
 
     /**
     sets the Object in the Header or Footer tag
@@ -128,7 +154,7 @@ class CHeaderFooter
     /**
     gets the Text in the Header or Footer tag
     */
-    CComment getText();
+    CComment* getText();
 
     /**
     sets the Text in the Header or Footer tag
@@ -138,7 +164,7 @@ class CHeaderFooter
     /**
     gets the report in the Header or Footer tag
     */
-    CReport getReport();
+    CReport* getReport();
 
     /**
     sets the Report in the Header or Footer tag
@@ -148,13 +174,20 @@ class CHeaderFooter
 
 class CBody
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CBody();
+  private:
+    CReport *bReport;
+    CTable *bTable;
 
   public:
+    /**
+        *  Default constructor.
+        */
+    CBody();
+
+    /**
+    cleanup
+    */
+    void cleanup();
 
     /**
     *  Destructor.
@@ -164,7 +197,7 @@ class CBody
     /**
     gets the report in the Body Tag
     */
-    CReport getReport();
+    CReport* getReport();
 
     /**
     sets the Report in the Body tag
@@ -174,7 +207,7 @@ class CBody
     /**
     gets the Table tag  in the Body Tag
     */
-    CTable getTable();
+    CTable* getTable();
 
     /**
     sets the Table tag in the Body tag
@@ -184,23 +217,24 @@ class CBody
 
 class CObject
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CObject();
+  private:
+    const std::string * oName;
 
   public:
+    /**
+        *  Default constructor.
+        */
+    CObject();
 
     /**
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~CObject();
 
     /**
     returns the name of the Object Tag
     */
-    const std::string getName();
+    const std::string* getName();
 
     /**
     sets the name of the Object tag
@@ -210,23 +244,31 @@ class CObject
 
 class CReport
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CReport();
+  private:
+    CReport *rReport;
+    const std::string * rTarget;
+    bool rAppend;
 
   public:
+    /**
+        *  Default constructor.
+        */
+    CReport();
 
     /**
-    *  Destructor.
+    cleanup
     */
+    void cleanup();
+
+    /**
+       *  Destructor.
+       */
     ~CReport();
 
     /**
     returns the reference of the Report Tag
     */
-    CReport getReference();
+    CReport* getReference();
 
     /**
     sets the reference to the report
@@ -236,7 +278,7 @@ class CReport
     /**
     returns the target of the Report Tag
     */
-    const std::string getTarget();
+    const std::string* getTarget();
 
     /**
     sets the reference to the report
@@ -256,23 +298,31 @@ class CReport
 
 class CTable
   {
-  protected:
-    /**
-     *  Default constructor.
-     */
-    CTable();
+  private:
+    CObject *tObject;
+    const std::string * tSeperator;
+    bool tPrintTitle;
 
   public:
+    /**
+        *  Default constructor.
+        */
+    CTable();
 
     /**
-    *  Destructor.
+    cleanup
     */
+    void cleanup();
+
+    /**
+       *  Destructor.
+       */
     ~CTable();
 
     /**
     gets the Object tag of the Table tag
     */
-    CObject getObject();
+    CObject* getObject();
 
     /**
        sets the Object tag of the Table tag
@@ -282,7 +332,7 @@ class CTable
     /**
     gets the Seperator attribute of the Table tag
     */
-    const std::string getSeperator();
+    const std::string* getSeperator();
 
     /**
        sets the seperator attribute of the Table tag
