@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:29 $
+   $Date: 2003/11/26 21:17:58 $
    End CVS Header */
 
 /********************************************************
@@ -267,7 +267,7 @@ void SteadyStateWidget::runSteadyStateTask()
 
   mSteadyStateTask->initialize();
 
-  if (!mSteadyStateTask->getReport()->getStream())
+  if (!mSteadyStateTask->getReport().getStream())
     {
       if (QMessageBox::information (NULL, "No output specified,",
                                     "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running steadystate task with no output?",
@@ -408,12 +408,14 @@ bool SteadyStateWidget::leave()
 
 void SteadyStateWidget::ReportDefinitionClicked()
 {
-  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
-  CSteadyStateTask* steadystateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  pSelectDlg->setReport(steadystateTask->getReport());
+  CSteadyStateTask* steadystateTask =
+    dynamic_cast< CSteadyStateTask * >(CKeyFactory::get(objKey));
+  assert(steadystateTask);
+
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  pSelectDlg->setReport(&steadystateTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
-  if (pSelectDlg->exec () == QDialog::Rejected)
-    {
-      return;
-    }
+  pSelectDlg->exec();
+
+  delete pSelectDlg;
 }

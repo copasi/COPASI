@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 16:51:24 $
+   $Date: 2003/11/26 21:17:57 $
    End CVS Header */
 
 /**
@@ -113,7 +113,7 @@ CState * CTrajectoryTask::getState()
 
 bool CTrajectoryTask::initialize(std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod && mpReport);
+  assert(mpProblem && mpMethod);
 
   CTrajectoryProblem* pProblem =
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
@@ -121,8 +121,8 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
 
   bool success = true;
 
-  if (!mpReport->open(pOstream)) success = false;
-  if (!mpReport->compile()) success = false;
+  if (!mReport.open(pOstream)) success = false;
+  if (!mReport.compile()) success = false;
   if (!pProblem->getModel()->compile()) success = false;
   //  if (!pProblem->
   //      setInitialState(pProblem->getModel()->getInitialState()))
@@ -134,7 +134,7 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
 
 bool CTrajectoryTask::process()
 {
-  assert(mpProblem && mpMethod && mpReport);
+  assert(mpProblem && mpMethod);
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
@@ -148,10 +148,10 @@ bool CTrajectoryTask::process()
   CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
 
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mpReport->printHeader();
+  mReport.printHeader();
 
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mpReport->printBody();
+  mReport.printBody();
 
   C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
@@ -161,7 +161,7 @@ bool CTrajectoryTask::process()
   ActualStepSize = pMethod->step(StepSize, mpState);
 
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mpReport->printBody();
+  mReport.printBody();
 
 #ifdef  XXXX_Event
   if (ActualStepSize != StepSize)
@@ -175,7 +175,7 @@ bool CTrajectoryTask::process()
       ActualStepSize = pMethod->step(StepSize);
 
       pProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpReport->printBody();
+      mReport.printBody();
 
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
@@ -191,7 +191,7 @@ bool CTrajectoryTask::process()
 
 #ifdef  XXXX_Event
       pProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpReport->printBody();
+      mReport.printBody();
 
       if (ActualStepSize != (pProblem->getEndTime() - Time))
         {
@@ -203,7 +203,7 @@ bool CTrajectoryTask::process()
   pProblem->setEndState(new CState(*mpState));
 
   pProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mpReport->printFooter();
+  mReport.printFooter();
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:27 $
+   $Date: 2003/11/26 21:17:57 $
    End CVS Header */
 
 /**
@@ -26,7 +26,6 @@
 class CTrajectoryProblem;
 class CTrajectoryMethod;
 class CState;
-class CReport;
 
 class CTrajectoryTask : public CCopasiTask
   {

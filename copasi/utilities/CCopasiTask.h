@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:44 $
+   $Date: 2003/11/26 21:17:57 $
    End CVS Header */
 
 /**
@@ -20,10 +20,10 @@
 #include <string>
 
 #include "report/CCopasiContainer.h"
+#include "report/CReport.h"
 
 class CCopasiProblem;
 class CCopasiMethod;
-class CReport;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -83,7 +83,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * The report used to track results of the task.
      */
-    CReport * mpReport;
+    CReport mReport;
 
     // Operations
   protected:
@@ -196,7 +196,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * Retrieve the report
      */
-    CReport * getReport();
+    CReport & getReport();
   };
 
 #endif // COPASI_CCopasiTask

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
+   $Date: 2003/11/26 21:17:57 $
    End CVS Header */
 
 /**
@@ -94,7 +94,7 @@ const CEigen * CSteadyStateTask::getEigenValues()
 
 bool CSteadyStateTask::initialize(std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod && mpReport);
+  assert(mpProblem && mpMethod);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -102,8 +102,8 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
   bool success = true;
 
-  if (!mpReport->open(pOstream)) success = false;
-  if (!mpReport->compile()) success = false;
+  if (!mReport.open(pOstream)) success = false;
+  if (!mReport.compile()) success = false;
   if (!pProblem->getModel()->compile()) success = false;
 
   pdelete(mpSteadyState);
@@ -122,7 +122,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
 bool CSteadyStateTask::process()
 {
-  assert(mpProblem && mpMethod && mpReport);
+  assert(mpProblem && mpMethod);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -132,15 +132,15 @@ bool CSteadyStateTask::process()
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  mpReport->printHeader();
+  mReport.printHeader();
 
   mResult = pMethod->process(*mpSteadyState,
                              pProblem->getInitialState(),
                              mJacobian,
                              mpEigenValues);
 
-  mpReport->printBody();
-  mpReport->printFooter();
+  mReport.printBody();
+  mReport.printFooter();
 
   return (mResult != CSteadyStateMethod::notFound);
 }

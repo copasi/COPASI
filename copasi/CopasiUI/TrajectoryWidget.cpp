@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 16:51:24 $
+   $Date: 2003/11/26 21:17:58 $
    End CVS Header */
 
 /********************************************************
@@ -304,7 +304,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->initialize();
 
-  if (!tt->getReport()->getStream())
+  if (!tt->getReport().getStream())
     {
       if (QMessageBox::information (NULL, "No output specified,",
                                     "No report output target defined, Copasi cannot create output for you.\n Do you want to continue running trajectory task with no output?",
@@ -465,12 +465,14 @@ bool TrajectoryWidget::enter(const std::string & key)
 
 void TrajectoryWidget::ReportDefinitionClicked()
 {
-  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
-  CTrajectoryTask* trajectoryTask = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  pSelectDlg->setReport(trajectoryTask->getReport());
+  CTrajectoryTask* trajectoryTask =
+    dynamic_cast< CTrajectoryTask * >(CKeyFactory::get(objKey));
+  assert(trajectoryTask);
+
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  pSelectDlg->setReport(&trajectoryTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
-  if (pSelectDlg->exec () == QDialog::Rejected)
-    {
-      return;
-    }
+  pSelectDlg->exec();
+
+  delete pSelectDlg;
 }
