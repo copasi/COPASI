@@ -153,25 +153,25 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   deleteButton = new QPushButton(this, "deleteButton");
   deleteButton->setText(trUtf8(""));
-  deleteButton->setPixmap(image0);
+  //  deleteButton->setPixmap(image0);
 
   Layout6->addWidget(deleteButton, 0, 1);
 
   downButton = new QPushButton(this, "downButton");
   downButton->setText(trUtf8(""));
-  downButton->setPixmap(image1);
+  //  downButton->setPixmap(image1);
 
   Layout6->addWidget(downButton, 1, 1);
 
   addButton = new QPushButton(this, "addButton");
   addButton->setText(trUtf8(""));
-  addButton->setPixmap(image2);
+  //  addButton->setPixmap(image2);
 
   Layout6->addWidget(addButton, 0, 0);
 
   upButton = new QPushButton(this, "upButton");
   upButton->setText(trUtf8(""));
-  upButton->setPixmap(image3);
+  //  upButton->setPixmap(image3);
 
   Layout6->addWidget(upButton, 1, 0);
 
