@@ -30,7 +30,7 @@
 #include "utilities/CGlobals.h"
 #include "ABiochem/clo.h"
 #include "ABiochem/CGene.h"
-#include "ABiochem/erdos.h"
+#include "ABiochem/ABiochem.h"
 
 extern "C" void r250_init(int seed);
 extern "C" unsigned int r250n(unsigned n);
@@ -492,7 +492,7 @@ C_INT main(C_INT argc, char *argv[])
   for (i = 0; i < tot; i++)
     {
       // build the gene network
-      Erdos(n, k, positive, GeneList, comments);
+      MakeGeneNetwork(n, k, positive, GeneList, comments);
       sprintf(NetTitle, "%s%03ld", prefix.data(), i + 1);
       // create graph files
       WriteDot(NetTitle, GeneList);

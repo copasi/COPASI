@@ -1,8 +1,8 @@
 /**
- *  ABiochem  -  Erdos
+ *  ABiochem  -  wattstrog
  *
  *  A program to generate random gene networks 
- *  following an Erdos-Renyi topology
+ *  following an Watts-Stroganz small-world topology
  *  
  *  writen by Pedro Mendes, September 2002
  *  Biochemical Networks Modeling Group
