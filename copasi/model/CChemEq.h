@@ -108,7 +108,7 @@ class CChemEq : public CCopasiContainer
      *  @param "const string &" chemicalEquation (in any form even mixed)
     *  @return "bool" returns reversibility of reaction (TRUE if reversible)
      */
-    bool setChemicalEquation(const std::string & chemicalEquation);
+    bool setChemicalEquation(const std::string & chemicalEquation, const CModel & model);
 
     void setReversibility(bool revers) {mReversible = revers;}
     bool getReversibility() const {return mReversible;}
@@ -141,8 +141,9 @@ class CChemEq : public CCopasiContainer
      * @param const C_FLOAT64 mult
      * @param const MetaboliteRole role
      * @return bool success
-     */
-    bool addMetabolite(CMetab * pMetab, const C_FLOAT64 mult, const MetaboliteRole role);
+     */ 
+    //bool addMetabolite(CMetab * pMetab, const C_FLOAT64 mult, const MetaboliteRole role);
+    bool addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role);
 
     /**
      *  Retrieves the vector of substrates and their multiplicity 
@@ -221,9 +222,11 @@ class CChemEq : public CCopasiContainer
      *  @return "CChemEqElement" element
      */
     CChemEqElement extractElement(const std::string & input,
-                                  std::string::size_type & pos) const;
+                                  std::string::size_type & pos,
+                                  const CModel & model) const;
     CChemEqElement extractModifier(const std::string & input,
-                                   std::string::size_type & pos) const;
+                                   std::string::size_type & pos,
+                                   const CModel & model) const;
 
     /**
      *  Adds an element to the vector given by structure. The element is
@@ -243,7 +246,8 @@ class CChemEq : public CCopasiContainer
      *  @param "const string &" reaction
      *  @param "CChemEq::MetaboliteRole" role (default: CChemEq::PRODUCT
      */
-    void setChemEqElements(CCopasiVector < CChemEqElement > & elements,
+    void setChemEqElements(const CModel & model,
+                           CCopasiVector < CChemEqElement > & elements,
                            const std::string & reaction,
                            CChemEq::MetaboliteRole role = CChemEq::PRODUCT,
                            const bool modif = false);
