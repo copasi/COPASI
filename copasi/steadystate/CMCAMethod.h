@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 07:31:02 $
+   $Date: 2004/10/28 08:20:03 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -32,7 +32,7 @@ class CMCAMethod: public CCopasiMethod
 
     CMatrix <C_FLOAT64> mGamma;
 
-    const CModel * mpModel;
+    CModel * mpModel;
 
     /**
      * an n+1 integer vector of pivot indices.
@@ -69,7 +69,7 @@ class CMCAMethod: public CCopasiMethod
      * User defined constructor
      * @param refer to Model and factor
      */
-    CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
+    CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
 
     /**
      * Deconstructor
@@ -80,7 +80,7 @@ class CMCAMethod: public CCopasiMethod
     /**
      * Set the Model
      */
-    void setModel(const CModel* model);
+    void setModel(CModel* model);
 
     /**
      * Get the Model

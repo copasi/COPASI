@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 07:31:02 $
+   $Date: 2004/10/28 08:20:04 $
    End CVS Header */
 
 #include <cmath>
@@ -41,7 +41,7 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
  * User defined constructor
  * @param refer to Model and factor
  */
-CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent):
+CMCAMethod::CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent):
     CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent),
     mSsipvt(NULL)
 {
@@ -73,7 +73,7 @@ CMCAMethod::~CMCAMethod()
 /**
  * Set the Model
  */
-void CMCAMethod::setModel(const CModel* model)
+void CMCAMethod::setModel(CModel* model)
 {
   mpModel = model;
 }
