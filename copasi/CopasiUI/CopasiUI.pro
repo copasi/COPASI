@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2003/07/02 14:36:26 $  
+# $Revision: 1.9 $ $Author: ssahle $ $Date: 2003/07/03 09:19:37 $  
 ######################################################################
 
 include(../common.pri)
@@ -94,7 +94,6 @@ HEADERS += CompartmentsWidget.h \
            MyTable.h \
            ObjectBrowser.h \
            ObjectBrowserItem.h \
-           Observer.h \
            parametertable.h \
            ReactionsWidget.h \
            ReactionsWidget1.h \
@@ -102,7 +101,6 @@ HEADERS += CompartmentsWidget.h \
            ScanWidget.h \
            SteadyStateWidget.h \
            StretchTable.h \
-           Subject.h \
            TrajectoryWidget.h \
            Tree.h \
            TableDefinition.h \
@@ -125,6 +123,7 @@ SOURCES += CompartmentsWidget.cpp \
            copasiui3window.cpp \
            copasiWidget.cpp \
            CReactionInterface.cpp \
+           DataModel.cpp \
            DifferentialEquations.cpp \
            FixedMetaboliteSymbols.cpp \
            FunctionSymbols.cpp \
@@ -144,7 +143,6 @@ SOURCES += CompartmentsWidget.cpp \
            MyTable.cpp \
            ObjectBrowser.cpp \
            ObjectBrowserItem.cpp \
-           Observer.cpp \
            parametertable.cpp \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
@@ -152,7 +150,6 @@ SOURCES += CompartmentsWidget.cpp \
            ScanWidget.cpp \
            SteadyStateWidget.cpp \
            StretchTable.cpp \
-           Subject.cpp \
            TrajectoryWidget.cpp \
            TableDefinition.cpp \
            objectdebug.cpp
