@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/09 15:45:23 $
+   $Date: 2004/11/23 03:56:54 $
    End CVS Header */
 
 // copasi.h
@@ -46,12 +46,15 @@
 #endif
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
+# define C_INT64 long long int
 # define C_INT32 long
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
 #else
 #ifdef WIN32
+# define C_INT64 __int64
+# define LLONG_MAX _I64_MAX
 # define C_INT32 int
 # define C_INT16 short
 # define C_FLOAT64 double
@@ -62,6 +65,7 @@
 # define min _cpp_min
 # define max _cpp_max
 #else
+# define C_INT64 long long int
 # define C_INT32 long
 # define C_INT16 short
 # define C_FLOAT64 double
