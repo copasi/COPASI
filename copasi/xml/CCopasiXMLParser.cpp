@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 21:47:23 $
+   $Date: 2003/12/05 21:25:17 $
    End CVS Header */
 
 /**
@@ -813,29 +813,29 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       break;
 
     case ListOfCompartments:
-      if (strcmp(pszName, "ListOfCompartments"))
+      if (!strcmp(pszName, "ListOfCompartments"))
         mpCurrentHandler = new ListOfCompartmentsElement(mParser, mCommon);
 
       break;
 
     case ListOfMetabolites:
-      if (strcmp(pszName, "ListOfMetabolites"))
+      if (!strcmp(pszName, "ListOfMetabolites"))
         mpCurrentHandler = new ListOfMetabolitesElement(mParser, mCommon);
       break;
 
     case ListOfReactions:
-      if (strcmp(pszName, "ListOfReactions"))
+      if (!strcmp(pszName, "ListOfReactions"))
         mpCurrentHandler = new ListOfReactionsElement(mParser, mCommon);
       break;
 
-#ifdef XXXX
     case StateTemplate:
-      if (strcmp(pszName, "StateTemplate"))
+      if (!strcmp(pszName, "StateTemplate"))
         mpCurrentHandler = new StateTemplateElement(mParser, mCommon);
       break;
 
+#ifdef XXXX
     case InitialState:
-      if (strcmp(pszName, "InitialState"))
+      if (!strcmp(pszName, "InitialState"))
         mpCurrentHandler = new InitialStateElement(mParser, mCommon);
       break;
 #endif // XXXX
@@ -1189,6 +1189,8 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   const char * Key;
   const char * Name;
   const char * Compartment;
+  const char * status;
+  CMetab::Status Status;
   const char * StateVariable;
   std::map< std::string, std::string >::const_iterator CompartmentKey;
 
@@ -1202,11 +1204,14 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       Compartment = mParser.getAttributeValue("compartment", papszAttrs);
+      status = mParser.getAttributeValue("status", papszAttrs);
+      Status = (CMetab::Status) mParser.toEnum(status, CMetab::XMLStatus);
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       pMetabolite = new CMetab();
       mCommon.KeyMap[Key] = pMetabolite->getKey();
       pMetabolite->setName(Name);
+      pMetabolite->setStatus(Status);
 
       CompartmentKey = mCommon.KeyMap.find(Compartment);
       if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
@@ -2296,6 +2301,75 @@ void CCopasiXMLParser::SourceParameterElement::end(const XML_Char *pszName)
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::StateTemplateElement::StateTemplateElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::StateTemplateElement::~StateTemplateElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  switch (mCurrentElement)
+    {
+    case StateTemplate:
+      if (strcmp(pszName, "StateTemplate")) fatalError();
+      break;
+
+#ifdef XXXX
+    case StateTemplateVariable:
+      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+
+      /* If we do not have a StateTemplateVariable element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new StateTemplateVariableElement(mParser, mCommon);
+
+      /* Push the StateTemplateVariable element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+      break;
+#endif // XXXX
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::StateTemplateElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case StateTemplate:
+      if (strcmp(pszName, "StateTemplate")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    case StateTemplateVariable:
+      if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+      mCurrentElement = StateTemplate;
       break;
 
     default:

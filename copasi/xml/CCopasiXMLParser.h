@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 21:47:23 $
+   $Date: 2003/12/05 21:25:30 $
    End CVS Header */
 
 /**
@@ -73,6 +73,11 @@ struct SCopasiXMLParserCommon
      * A map relating CopasiXML function keys with internal keys
      */
     std::map< std::string, std::string > KeyMap;
+
+    /**
+     * A map relating StateVariables to Object keys
+     */
+    std::map< std::string, std::string > StateVariableMap;
 
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
@@ -155,6 +160,48 @@ class CCopasiXMLParser : public CExpat
       };
 
 #endif // COPASI_TEMPLATE
+
+  class StateTemplateElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          StateTemplate = 0,
+          StateTemplateVariable
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        StateTemplateElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~StateTemplateElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
 
   class SourceParameterElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
