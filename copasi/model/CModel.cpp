@@ -207,10 +207,12 @@ void CModel::buildStoi()
       mMetabolitesX[imax - ++j] = mMetabolites[i];
     else
       mMetabolitesX[i - j] = mMetabolites[i];
-  
+
+  /*  
   for (i=0; i<imax; i++)
     mMetabolites[i] = mMetabolitesX[i];
-  
+  */
+
   mFluxes.resize(mSteps.size());
   for (i=0; i<mSteps.size(); i++)
     mFluxes[i] = (C_FLOAT64 *) mSteps[i]->getFluxAddr();
@@ -223,7 +225,8 @@ void CModel::buildStoi()
       for (j=0; j<(unsigned C_INT32) mStoi.num_rows(); j++)
         {
           mStoi[j][i] = 0.0;
-          Name = mMetabolites[j]->getName();
+          // Name = mMetabolites[j]->getName();
+          Name = mMetabolitesX[j]->getName();
 
           for (k=0; k<Structure.size(); k++)
             if (Structure[k]->getMetaboliteName() == Name)
