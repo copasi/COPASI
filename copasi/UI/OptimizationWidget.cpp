@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.3 2003/09/30 04:10:40 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.4 2003/09/30 04:14:02 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -448,8 +448,9 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
     return false;
 
   CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  if (optFunction->getProblem()->bExisted(pObject->getCN().c_str()))
-    return false;
+  // need further work
+  // if (optFunction->getProblem()->bExisted(pObject->getCN().c_str()))
+  //    return false;
 
   int widgetOffset;
   int ScanItemWidgetWidth;
