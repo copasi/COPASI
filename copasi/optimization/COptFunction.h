@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 20:00:28 $
+   $Date: 2003/10/17 02:05:26 $
    End CVS Header */
 
 /********************************************************
@@ -29,7 +29,7 @@ class COptProblem;
 
 class COptFunction: public CCopasiContainer
   {
-  public:     //function
+  public:      //function
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
@@ -39,7 +39,7 @@ class COptFunction: public CCopasiContainer
     std::vector<CKinFunction*> mMaxFunctionList;
 
     // check if a parameter already existing inside the mParaList
-    bool bExisted(const std::string & name);
+    int Index(const std::string & name);
 
     // add a new item inside
     int addItem(CCopasiObject* pObject);
@@ -60,7 +60,7 @@ class COptFunction: public CCopasiContainer
     COptMethod* getMethod()
     {return mpMethod;}
 
-  public:     // constructor and deconstuctor
+  public:      // constructor and deconstuctor
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")

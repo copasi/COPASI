@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 01:40:09 $
+   $Date: 2003/10/17 02:05:26 $
    End CVS Header */
 
 #include <sstream>
@@ -66,20 +66,22 @@ void COptFunction::cleanup()
 }
 
 // check if a parameter already existing inside the mParaList
-bool COptFunction::bExisted(const std::string & name)
+int COptFunction::Index(const std::string & name)
 {
   int i;
+  if (mParaList.size() == 0) // nothing inside the list
+    return 1;
   for (i = 0; i < mParaList.size(); i++)
     if (mParaList[i]->getCN() == name)
-      return true;
-  return false;
+      return i;
+  return C_INVALID_INDEX;
 }
 
 // add a new item inside
 int COptFunction::addItem(CCopasiObject* pObject)
 {
-  if (bExisted(pObject->getCN()))
-    return - 1; //
+  if (Index(pObject->getCN()) == C_INVALID_INDEX)
+    return C_INVALID_INDEX; //
   mParaList.push_back(pObject);
   mMinList.push_back("-inf");
   mMaxList.push_back("+inf");
