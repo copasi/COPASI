@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.10 2003/10/04 19:04:59 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.11 2003/10/04 19:08:00 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -220,7 +220,10 @@ CCopasiObject* OptimizationItemWidget::getCopasiObject()
 
 void OptimizationItemWidget::setCopasiObjecPtr (CCopasiObject* sourceObject)
 {
+  if (!sourceObject) // NULL pointer
+    return;
   mpObject = sourceObject;
+  ObjectName->setText(mpObject->getObjectUniqueName().c_str());
 }
 
 OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
