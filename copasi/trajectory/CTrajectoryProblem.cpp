@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:13 $
+   $Date: 2004/03/17 22:19:33 $
    End CVS Header */
 
 /**
@@ -37,6 +37,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     mInitialState(),
     mEndState()
 {
+  addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+
   CONSTRUCTOR_TRACE;
   //  mInitialState.setModel(mpModel);
   //  mEndState.setModel(mpModel);
