@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/09 14:16:17 $
+   $Date: 2005/03/14 09:55:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -154,7 +154,11 @@ void CSlider::sync()
 void CSlider::writeToObject()
 {
   if (!this->mpSliderObject) return;
-  if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
+  if (mpSliderObject->isReference() && mpSliderObject->getObjectParent())
+    {
+      mpSliderObject->getObjectParent()->setValueOfNamedReference(mpSliderObject->getObjectName(), mValue);
+    }
+  else if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
     {
       C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getReference());
 
