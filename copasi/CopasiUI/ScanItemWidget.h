@@ -1,5 +1,5 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\ScanItemWidget.ui'
+ ** $Author: Liang Xu
  **
  ** Created: Thu May 22 10:43:21 2003
  **      by:  The User Interface Compiler (uic)

@@ -1,6 +1,6 @@
 /****************************************************************************
  **  $ CopasiUI/ScanWidget.h               
- **  $ Author  : Mudita Singhal
+ **  $ Author  : Liang Xu
  **  
  ** This is the header file for the Scan Widget
  *****************************************************************************/

@@ -255,7 +255,47 @@ void ScanWidget::addButtonClicked()
 }
 
 void ScanWidget::deleteButtonClicked()
-{}
+{
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+    return;
+
+  emit hide_me();
+  scrollview->removeChild(selectedList[2*activeObject]);
+  scrollview->removeChild(selectedList[2*activeObject + 1]);
+
+  int i = activeObject + 1;
+  int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT;
+
+  for (; i < selectedList.size() / 2; i++)
+    {
+      scrollview->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
+      scrollview->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + TITLE_HEIGHT);
+    }
+
+  std::vector<QWidget*>::iterator it = selectedList.begin();
+  std::vector<QWidget*>::iterator BeginDel;
+  std::vector<QWidget*>::iterator ToDel;
+  while (it < selectedList.end())
+    {
+      if (it - selectedList.begin() == 2*activeObject)
+        {
+          BeginDel = it;
+          delete (*it);
+          ToDel = ++it;
+          delete (*ToDel);
+          ++ToDel;
+          selectedList.erase(BeginDel, ToDel);
+          break;
+        }
+      it++;
+      it++;
+    }
+
+  activeObject--;
+  nSelectedObjects--;
+  scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
+  emit show_me();
+}
 
 void ScanWidget::upButtonClicked()
 {}
