@@ -8,6 +8,7 @@ DataModel::DataModel(char* fileName)
   steadystatetask = NULL;
   scantask = NULL;
   reportdefinitions = NULL;
+  pOptFunction = NULL;
 }
 
 Folder* DataModel::searchFolderList(int id)
