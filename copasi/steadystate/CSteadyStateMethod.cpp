@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:59:33 $
+   $Date: 2004/10/07 09:37:04 $
    End CVS Header */
 
 /**
@@ -96,7 +96,8 @@ CSteadyStateMethod::process(CState * pState,
                             CMatrix< C_FLOAT64 > & jacobian,
                             CMatrix< C_FLOAT64 > & jacobianX,
                             CEigen * pEigenValues,
-                            CEigen * pEigenValuesX)
+                            CEigen * pEigenValuesX,
+                            CCallbackHandler* handler)
 {
   mpSteadyState = pState;
   mpSteadyStateX = pStateX;
@@ -105,6 +106,7 @@ CSteadyStateMethod::process(CState * pState,
   mpJacobianX = & jacobianX;
   mpEigenValues = pEigenValues;
   mpEigenValuesX = pEigenValuesX;
+  mpProgressHandler = handler;
 
   return processInternal();
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:59:34 $
+   $Date: 2004/10/07 09:37:04 $
    End CVS Header */
 
 /**
@@ -161,7 +161,8 @@ bool CSteadyStateTask::process()
                              mJacobian,
                              mJacobianX,
                              mpEigenValues,
-                             mpEigenValuesX);
+                             mpEigenValuesX,
+                             mpProgressHandler);
 
   mReport.printBody();
   mReport.printFooter();
