@@ -65,11 +65,9 @@ void CopasiUI3Window::newDoc()
 
   if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
     {
-      QString fileName = QFileDialog::getOpenFileName(
-                           QString::null, "*.txt",
-                           this, "open file dialog",
-                           "Choose a file");
-      //QString fileName="sample.txt";
+      // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
+      //"Choose a file");
+      QString fileName = "Sample.txt";
 
       if (fileName)
         {
