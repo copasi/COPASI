@@ -122,7 +122,7 @@ void CSS_Solution::process(void)
 
   mNewton->process();
   if(mNewton->isSteadyState())
-	return;
+	afterFindSteadyState();
 
   while (t < pow(10,10))
     {
@@ -136,22 +136,37 @@ void CSS_Solution::process(void)
   //Backward trajectory until -10^10
 
 
+
 }
 
-#ifdef XXXXXX
+
+/**
+ *  Process after the steady state is found
+ */
+void CSS_Solution::afterFindSteadyState()
+{
+
+  return;
+}
+
+
+//#ifdef XXXXXX
 
 //Yongqun: change SSStrategy to mOption
 //
 void CSS_Solution::steadyState( void )
 {
+#ifdef XXXXXX
+
   int i,j;
   int temp_points;
-  BOOL tt_infinity;
+  //BOOL tt_infinity;
+  bool tt_infinity;     //YH: change it
   double jtot, ftot;
   // set the number of function and jacobian evaluations to zero
   mNjeval = jtot = 0.0;
   mNfeval = ftot = 0.0;
-  lsoda_state = 1;
+  //lsoda_state = 1;                //YH: comment out
   mSs_njacob = mSs_nfunction = 0;
   // use the damped Newton method
   // if( (SSStrategy==0) || (SSStrategy==2) )
@@ -169,7 +184,7 @@ void CSS_Solution::steadyState( void )
       jtot += (double) mSs_njacob;
     }
   // use forward integration
-  if( ( (mOption==0) && (ss_solution!=SS_FOUND) ) // if newton failed
+  if( ( (mOption==0) && (mSs_solution!=SS_FOUND) ) // if newton failed
       || (mOption==1) // or forward integration only
       )
     {
@@ -191,7 +206,7 @@ void CSS_Solution::steadyState( void )
 	  //set the initial time
 	  lsoda_time = lsoda_endt = 0;
 	  // set the state for the first call
-	  lsoda_state = 1; 
+	  // lsoda_state = 1;                 //YH: comment out
 	  // the increment is 10 times the previous
 	  lsoda_incr *= 10;
 	  // set max iterations to default value
@@ -212,14 +227,14 @@ void CSS_Solution::steadyState( void )
 	      // update count of function and jacobian evaluations
 	      ftot += (double) mSs_nfunction;
 	      jtot += (double) mSs_njacob;
-	      if( ss_solution == SS_FOUND ) break;
+	      if( mSs_solution == SS_FOUND ) break;
 	    }
 	}
       // restore Points
       Points = temp_points;
     }
   // use backwards integration
-  if( ( (SSBackInt) && (ss_solution!=SS_FOUND) ) // if others failed
+  if( ( (SSBackInt) && (mSs_solution!=SS_FOUND) ) // if others failed
       || (mOption==3) // or backwards integration only
       )
     {
@@ -241,7 +256,7 @@ void CSS_Solution::steadyState( void )
 	  //set the initial time
 	  lsoda_time = lsoda_endt = 0;
 	  // set the state for the first call
-	  lsoda_state = 1; 
+	  //lsoda_state = 1;                 //YH: comment out
 	  // the increment is 10 times the previous
 	  lsoda_incr *= 10;
 	  // set max iterations to default value
@@ -262,7 +277,7 @@ void CSS_Solution::steadyState( void )
   // store the counters in mNfeval & mNjeval
   mNfeval = ftot;
   mNjeval = jtot;
-  if( ss_solution == SS_FOUND )
+  if( mSs_solution == SS_FOUND )
     {
       try
 	{
@@ -279,7 +294,8 @@ void CSS_Solution::steadyState( void )
 	    mModel.Step[i].Flux = (*(mModel.Step[i].Kinetics->Function))((void *) &mModel, &mSs_x[1], i);
 	  //   mModel.Step[i].Flux = (*(mModel.Step[mModel.Col[i]].Kinetics->Function))((void *) &mModel, &mSs_x[1], mModel.Col[i]);
 	  // calculate the transition times
-	  tt_infinity = FALSE;
+	  //tt_infinity = FALSE;
+	  tt_infinity = false;           //YH: change it
 	  mModel.TransTime = 0.0;
 	  for( i=0; i<mModel.TotMetab; i++)
 	    {
@@ -309,14 +325,12 @@ void CSS_Solution::steadyState( void )
 		  else
 		    {
 		      mModel.Metabolite[mModel.Row[i]].TT = DBL_MAX;
-		      tt_infinity = TRUE;
+		      //tt_infinity = TRUE;
+                      tt_infinity = true;          //YH: change it
 		    }
 		}
 	    }
 	}
-      //__finally  
-      //{
-      //}
       if( tt_infinity ) Model.TransTime = DBL_MAX;
     }
   // else
@@ -333,7 +347,11 @@ void CSS_Solution::steadyState( void )
   //  // set the overall transition time to zero
   //  Model.TransTime = 0.0;
   // }
+
+#endif
 }
+
+/*
 
 // finds out if current state is a valid steady state
 // destroys the contents of matrix ss_dxdt
@@ -361,13 +379,15 @@ C_INT32 CSS_Solution::isSteadyState( void )
   return mSs_solution;
 }
 
-/*
+*/
+
 
 // YH: move the following function to here from CNewton class
  
 // finds out if current state is a valid steady state
-C_INT32 CNewton::isSteadyState( void )
+C_INT32  CSS_Solution::isSteadyState( void )
 {
+  /*
   unsigned C_INT32 i, dim = mModel->getIndMetab();
   double maxrate;
 
@@ -383,14 +403,13 @@ C_INT32 CNewton::isSteadyState( void )
  
   if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
   return mSs_solution;
+  */
 }
 
-*/
 
 
 
-
-#endif //XXXXXX
+//#endif //XXXXXX
 
 
 

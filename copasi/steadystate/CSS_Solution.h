@@ -26,13 +26,26 @@
 #define TRAJBACK 3;
 
 //these defines are directly from GepasiDoc.h
-#define SS_FOUND 0
-#define SS_NOT_FOUND 1
-#define SS_SINGULAR_JACOBIAN 2
-#define SS_DAMPING_LIMIT 3
-#define SS_ITERATION_LIMIT 4
-#define MCA_OK 0
-#define MCA_SINGULAR 1
+//#define SS_FOUND 0
+//#define SS_NOT_FOUND 1
+//YH: change the #define value for easy condition evalution
+//#define SS_FOUND 1
+//#define SS_NOT_FOUND 0              //declare in copasi.h file
+
+
+//#define SS_SINGULAR_JACOBIAN 2
+//#define SS_DAMPING_LIMIT 3
+//#define SS_ITERATION_LIMIT 4
+//#define MCA_OK 0
+//#define MCA_SINGULAR 1              //declare in copasi.h file
+
+/**
+ * These are from CNewton.h
+ */
+#define DefaultNewtonLimit 1
+//Note: they may not be 1.0, check where it comes from orignially (Y.H.)
+#define DefaultSSRes 1.0 
+#define DefaultDerivFactor 1.0
 
 class CNewton;
 class CTrajectory;
@@ -55,12 +68,12 @@ class CSS_Solution
   /**
    *  variable for steady-state solution
    */
-  //C_FLOAT64 * mSs_x;
+  C_FLOAT64 * mSs_x;
 
   /**
    *  variable for steady-state solution
    */
-  //C_FLOAT64 * mSs_xnew;
+  C_FLOAT64 * mSs_xnew;
 
   /**
    *  variable for steady-state solution
@@ -74,11 +87,11 @@ class CSS_Solution
   C_INT32 mSs_solution;
 
   //more variables
-  //C_FLOAT64 mNjeval;
+  C_FLOAT64 mNjeval;
 
-  //C_FLOAT64 mNfeval;
+  C_FLOAT64 mNfeval;
   
-  // C_INT32 mSs_njacob;
+  C_INT32 mSs_njacob;
 
   /**
    *  The CTrajectory to work with
@@ -174,6 +187,12 @@ class CSS_Solution
    */
   void process(void);
 
+
+  /**
+   *  Process after the steady state is found
+   */
+  void afterFindSteadyState();
+
   /**
    *  Analyze steady state
    */
@@ -183,7 +202,7 @@ class CSS_Solution
    *  Check if it is steady state
    *  @return an int acting like a bool
    */
-  //C_INT32 isSteadyState( void );
+  C_INT32 isSteadyState( void );
 
 };
 
