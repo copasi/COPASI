@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/10 20:39:38 $
+   $Author: shoops $ 
+   $Date: 2003/12/10 22:16:16 $
    End CVS Header */
 
 /**
@@ -34,7 +34,7 @@ class CReportDefinition;
 
 struct SCopasiXMLParserCommon
   {
-    CCopasiXMLParser * pParser;
+    //    CCopasiXMLParser * pParser;
 
     CModel * pModel;
 
@@ -77,7 +77,7 @@ struct SCopasiXMLParserCommon
     /**
      * A map relating StateVariables to Object keys
      */
-    std::map< std::string, std::string > StateVariableMap;
+    std::vector< std::string > StateVariableList;
 
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.

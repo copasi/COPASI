@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/10 20:39:49 $
+   $Author: shoops $ 
+   $Date: 2003/12/10 22:16:16 $
    End CVS Header */
 
 /**
@@ -106,7 +106,7 @@ CCopasiXMLParser::CCopasiXMLParser() :
   create();
 
   mElementHandlerStack.push(new COPASIElement(*this, mCommon));
-  mCommon.pParser = this;
+  //  mCommon.pParser = this;
   mCommon.pModel = NULL;
   mCommon.pFunctionList = NULL;
   mCommon.pFunction = NULL;
@@ -134,12 +134,12 @@ void CCopasiXMLParser::onEndElement(const XML_Char *pszName)
 #ifdef XXXX
 void CCopasiXMLParser::onStartCdataSection()
 {
-  long i = mCommon.pParser->getCurrentByteIndex();
+  long i = mParser.getCurrentByteIndex();
 }
 
 void CCopasiXMLParser::onEndCdataSection()
 {
-  long i = mCommon.pParser->getCurrentByteIndex();
+  long i = mParser.getCurrentByteIndex();
 }
 #endif // XXXX
 
@@ -527,8 +527,7 @@ void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
 
-      mCommon.pParser->enableCharacterDataHandler(true);
-      //    mCommon.pParser->enableCdataSectionHandler(true);
+      mParser.enableCharacterDataHandler(true);
       break;
 
     default:
@@ -547,11 +546,10 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      mCommon.Comment = mCommon.pParser->getCharacterData("\n\t ", "");
-      //mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
+      mCommon.Comment = mParser.getCharacterData("\n\t ", "");
+      //mCommon.FunctionDescription = mParser.getCharacterData("\n\t ", "");
 
-      mCommon.pParser->enableCharacterDataHandler(false);
-      //    mCommon.pParser->enableCdataSectionHandler(false);
+      mParser.enableCharacterDataHandler(false);
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -1212,8 +1210,11 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
       CompartmentKey = mCommon.KeyMap.find(Compartment);
       if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
+
       pCompartment =
-        (CCompartment*)(CCopasiContainer*)CKeyFactory::get(CompartmentKey->second);
+        dynamic_cast< CCompartment* >(CKeyFactory::get(CompartmentKey->second));
+      if (!pCompartment) fatalError();
+
       pCompartment->add(pMetabolite);
 
       break;
@@ -1369,8 +1370,11 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
         {
           CompartmentKey = mCommon.KeyMap.find(Compartment);
           if (CompartmentKey == mCommon.KeyMap.end()) fatalError();
+
           pCompartment =
-            (CCompartment*)(CCopasiContainer*)CKeyFactory::get(CompartmentKey->second);
+            dynamic_cast< CCompartment* >(CKeyFactory::get(CompartmentKey->second));
+          if (!pCompartment) fatalError();
+
           mCommon.pReaction->setCompartment(pCompartment);
         }
 
@@ -2042,8 +2046,10 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       FunctionKey = mCommon.KeyMap.find(Function);
       if (FunctionKey == mCommon.KeyMap.end()) fatalError();
+
       pFunction =
-        (CFunction*)(CCopasiContainer*)CKeyFactory::get(FunctionKey->second);
+        dynamic_cast< CFunction* >(CKeyFactory::get(FunctionKey->second));
+      if (!pFunction) fatalError();
 
       mCommon.pReaction->setFunction(pFunction);
       break;
@@ -2188,8 +2194,10 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
         mParser.getAttributeValue("functionParameter", papszAttrs);
       FunctionParameterKey = mCommon.KeyMap.find(FunctionParameter);
       if (FunctionParameterKey == mCommon.KeyMap.end()) fatalError();
+
       mpFunctionParameter =
-        (CFunctionParameter*)(CCopasiContainer*)CKeyFactory::get(FunctionParameterKey->second);
+        dynamic_cast< CFunctionParameter* >(CKeyFactory::get(FunctionParameterKey->second));
+      if (!mpFunctionParameter) fatalError();
 
       mCommon.SourceParameterKeys.clear();
       break;
@@ -2327,6 +2335,8 @@ void CCopasiXMLParser::StateTemplateElement::start(const XML_Char *pszName,
     {
     case StateTemplate:
       if (strcmp(pszName, "StateTemplate")) fatalError();
+
+      mCommon.StateVariableList.clear();
       break;
 
     case StateTemplateVariable:
@@ -2388,12 +2398,27 @@ CCopasiXMLParser::StateTemplateVariableElement::~StateTemplateVariableElement()
 void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
+  const char * Key;
+  const char * ObjectReference;
+  std::map< std::string, std::string >::const_iterator ObjectKey;
+  std::pair< std::string, std::string > Map;
+
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
     {
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
+
+      Key = mParser.getAttributeValue("key", papszAttrs);
+      ObjectReference = mParser.getAttributeValue("objectReference",
+                        papszAttrs);
+
+      ObjectKey = mCommon.KeyMap.find(ObjectReference);
+      if (ObjectKey == mCommon.KeyMap.end()) fatalError();
+
+      mCommon.StateVariableList.push_back(ObjectKey->second);
+
       break;
 
     default:
@@ -2438,12 +2463,19 @@ CCopasiXMLParser::InitialStateElement::~InitialStateElement()
 void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
+  const char * Type;
+
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
     {
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
+
+      Type = mParser.getAttributeValue("type", papszAttrs, "initialState");
+      if (strcmp(Type, "initialState")) fatalError();
+
+      mParser.enableCharacterDataHandler();
       break;
 
     default:
@@ -2456,10 +2488,50 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 {
+  std::istringstream Values;
+  std::vector< std::string >::iterator it;
+  std::vector< std::string >::iterator end;
+  double Value;
+  CModel * pModel;
+  CCompartment * pCompartment;
+  CMetab * pMetabolite;
+
   switch (mCurrentElement)
     {
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
+
+      Values.str(mParser.getCharacterData("\n\t ", " "));
+
+      it = mCommon.StateVariableList.begin();
+      end = mCommon.StateVariableList.end();
+
+      for (; it != end && !Values.fail(); ++it, Values >> Value)
+        {
+          pMetabolite = dynamic_cast< CMetab* >(CKeyFactory::get(*it));
+          if (pMetabolite)
+            {
+              pMetabolite->setInitialNumber(Value);
+              continue;
+            }
+
+          pCompartment = dynamic_cast< CCompartment* >(CKeyFactory::get(*it));
+          if (pCompartment)
+            {
+              pCompartment->setInitialVolume(Value);
+              continue;
+            }
+
+          pModel = dynamic_cast< CModel* >(CKeyFactory::get(*it));
+          if (pModel)
+            {
+              pModel->setTime(Value);
+              continue;
+            }
+
+          fatalError();
+        }
+
       mParser.popElementHandler();
       mCurrentElement = -1;
 
@@ -2908,10 +2980,10 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Object")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      //mCommon.FunctionDescription = mCommon.pParser->getCharacterData("\n\t ", "");
+      //mCommon.FunctionDescription = mParser.getCharacterData("\n\t ", "");
 
-      mCommon.pParser->enableCharacterDataHandler(false);
-      //    mCommon.pParser->enableCdataSectionHandler(false);
+      mParser.enableCharacterDataHandler(false);
+      //    mParser.enableCdataSectionHandler(false);
 
       // Tell the parent element we are done.
       mParser.onEndElement(pszName);
