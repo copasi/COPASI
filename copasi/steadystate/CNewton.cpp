@@ -83,7 +83,7 @@ void CNewton::setStartingPoint(const C_FLOAT64 * particleNumbers)
         mSs_x[i] = particleNumbers[i];
     }
   else
-    mSs_x = mModel->getInitialNumbers();
+    mSs_x = mModel->getInitialNumbersDbl();
 }
 
 //set mModel

@@ -304,7 +304,7 @@ void CSS_Solution::process(ofstream &fout)
       if (mNewton->isSteadyState())
         {
           pdelete(mSs_x);
-          mSs_x = mModel->getNumbers();
+          mSs_x = mModel->getNumbersDbl();
 
           if (isSteadyState())
             afterFindSteadyState();
@@ -318,7 +318,7 @@ void CSS_Solution::process(ofstream &fout)
       StartTime = 0;
       EndTime = 1;
       pdelete(mSs_x);
-      mSs_x = mModel->getInitialNumbers();
+      mSs_x = mModel->getInitialNumbersDbl();
 
       mTraj->setPoints(1);
 
@@ -331,7 +331,7 @@ void CSS_Solution::process(ofstream &fout)
           mTraj->process(fout);
 
           pdelete(mSs_x);
-          mSs_x = mModel->getNumbers();
+          mSs_x = mModel->getNumbersDbl();
 
           if (isSteadyState())
             afterFindSteadyState();
@@ -345,7 +345,7 @@ void CSS_Solution::process(ofstream &fout)
               if (mNewton->isSteadyState())
                 {
                   pdelete(mSs_x);
-                  mSs_x = mModel->getNumbers();
+                  mSs_x = mModel->getNumbersDbl();
 
                   if (isSteadyState())
                     afterFindSteadyState();
@@ -366,7 +366,7 @@ void CSS_Solution::process(ofstream &fout)
       StartTime = 0;
       EndTime = -1;
       pdelete(mSs_x);
-      mSs_x = mModel->getInitialNumbers();
+      mSs_x = mModel->getInitialNumbersDbl();
       mTraj->setPoints(1);
 
       while (EndTime > -1.0e10 && mSs_solution != SS_FOUND)
@@ -378,7 +378,7 @@ void CSS_Solution::process(ofstream &fout)
           mTraj->process(fout);
 
           pdelete(mSs_x);
-          mSs_x = mModel->getNumbers();
+          mSs_x = mModel->getNumbersDbl();
 
           if (isSteadyState())
             {
@@ -394,7 +394,7 @@ void CSS_Solution::process(ofstream &fout)
               if (mNewton->isSteadyState())
                 {
                   pdelete(mSs_x);
-                  mSs_x = mModel->getNumbers();
+                  mSs_x = mModel->getNumbersDbl();
 
                   if (isSteadyState())
                     afterFindSteadyState();
