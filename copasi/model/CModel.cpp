@@ -182,13 +182,13 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   setQuantityUnit(mQuantityUnitName); // set the factors
 
   if (configBuffer.getVersion() < "4")
+    mInitialTime = 0;
+  else
     {
       if ((Fail = configBuffer.getVariable("InitialTime", "C_FLOAT64",
                                            &mInitialTime)))
         return Fail;
     }
-  else
-    mInitialTime = 0;
 
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
