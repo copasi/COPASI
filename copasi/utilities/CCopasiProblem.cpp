@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 22:04:55 $
+   $Date: 2005/03/30 14:31:34 $
    End CVS Header */
 
 /**
@@ -21,33 +21,21 @@
 CCopasiProblem::CCopasiProblem():
     CCopasiParameterGroup("NoName", NULL, "Problem"),
     mType(CCopasiTask::unset),
-    mpModel(NULL),
-    mCalculateVariables(),
-    mCalculateResults(),
-    mSolutionVariables(),
-    mSolutionResults()
+    mpModel(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
                                const CCopasiContainer * pParent):
     CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
     mType(type),
-    mpModel(NULL),
-    mCalculateVariables(),
-    mCalculateResults(),
-    mSolutionVariables(),
-    mSolutionResults()
+    mpModel(NULL)
 {}
 
 CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
                                const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     mType(src.mType),
-    mpModel(src.mpModel),
-    mCalculateVariables(src.mCalculateVariables),
-    mCalculateResults(src.mCalculateResults),
-    mSolutionVariables(src.mSolutionVariables),
-    mSolutionResults(src.mSolutionResults)
+    mpModel(src.mpModel)
 {}
 
 CCopasiProblem::~CCopasiProblem() {}
@@ -65,24 +53,6 @@ CModel * CCopasiProblem::getModel() const {return mpModel;}
 //void CCopasiProblem::setInitialState(const CState & initialState) {}
 
 // propably for optimization only
-
-unsigned C_INT32 CCopasiProblem::getVariableSize() const
-  {return mCalculateVariables.size();}
-
-unsigned C_INT32 CCopasiProblem::getResultSize() const
-  {return mCalculateResults.size();}
-
-CVector< C_FLOAT64 > & CCopasiProblem::getCalculateVariables()
-{return mCalculateVariables;}
-
-CVector< C_FLOAT64 > & CCopasiProblem::getCalculateResults()
-{return mCalculateResults;}
-
-CVector< C_FLOAT64 > & CCopasiProblem::getSolutionVariables()
-{return mSolutionVariables;}
-
-CVector< C_FLOAT64 > & CCopasiProblem::getSolutionResults()
-{return mSolutionResults;}
 
 bool CCopasiProblem::initialize() {return true;}
 
