@@ -93,13 +93,13 @@ C_FLOAT64 ddot(C_INT32 n,
  * (this is a destructive function, some changes are irreversible)
  *
  */
-void FixSName(string &original, string &fixed)
+void FixSName(const string &original, string &fixed)
 ;
 
 /*
  * Fixes a string to a XHTML valid equivalent
  */
-void FixXHTML(string &original, string &fixed)
+void FixXHTML(const string &original, string &fixed)
 ;
 
 #endif // COPASI_utilities
