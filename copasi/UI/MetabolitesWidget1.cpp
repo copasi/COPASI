@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:22 $
+   $Author: chlee $ 
+   $Date: 2004/02/09 20:27:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -380,7 +380,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
         }
     }
-
+  dataModel->getModel()->compile();
   enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
 
   return true; //TODO: really check
