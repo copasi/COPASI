@@ -1,6 +1,10 @@
 #ifndef COPASI_CCopasiVector
 #define COPASI_CCopasiVector
 
+#ifdef WIN32
+# pragma warning (disable: 4786)
+#endif  // WIN32
+
 #include <vector>
 #include <string>
 #include <iostream>
