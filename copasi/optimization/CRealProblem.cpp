@@ -6,17 +6,14 @@
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
-
 #include "CRealProblem.h"
 
 //? Do I need to call super() ? find out
-   
+
 //  Default constructor
 CRealProblem::CRealProblem()
-{
-}
+{}
 
-   
 // Destructor
 CRealProblem::~CRealProblem()
 { }
@@ -29,7 +26,7 @@ CRealProblem::~CRealProblem()
 //       Global minimum found by TRUST:
 //        [-2.90354, -2.90354, ..., -2.90354].
 // calculate function for optimization
-void CRealProblem::calculate() 
+C_FLOAT64 CRealProblem::calculate()
 {
   int j;
 
@@ -41,16 +38,19 @@ void CRealProblem::calculate()
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness
+
   try
     {
-      fitness0=0;
-      for (j=0;j < parameterNum;j++)
+      fitness0 = 0;
+
+      for (j = 0; j < parameterNum; j++)
         {
-          fitness=fitness0+pow(parameterValues[j],4.0)-16.0*pow(parameterValues[j],2.0)
-            +5.0*parameterValues[j];
-          fitness0=fitness;
+          fitness = fitness0 + pow(parameterValues[j], 4.0) - 16.0 * pow(parameterValues[j], 2.0)
+                    + 5.0 * parameterValues[j];
+          fitness0 = fitness;
         }
-      fitness=fitness0/2.0;
+
+      fitness = fitness0 / 2.0;
     }
   catch (unsigned int e)
     {
@@ -60,4 +60,5 @@ void CRealProblem::calculate()
   //set the best value as the fitness;
   setBestValue(fitness);
 
+  return fitness;
 }

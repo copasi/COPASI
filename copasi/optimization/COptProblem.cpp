@@ -8,12 +8,9 @@
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
-
 #include "COptProblem.h"
 
-
 // double * mParameterValues;        // pointer to parameters
-
 
 //  Default constructor
 COptProblem::COptProblem()
@@ -26,7 +23,6 @@ COptProblem::COptProblem()
   initialize();
 }
 
-
 // Destructor
 COptProblem::~COptProblem()
 { }
@@ -36,7 +32,7 @@ COptProblem::COptProblem(const COptProblem& source)
 {
   mParameterValues = source.mParameterValues;
   mParameterNum = source.mParameterNum;
-  mBestValue =source.mBestValue;
+  mBestValue = source.mBestValue;
   mParameterMin = source.mParameterMin;     // the minimum values of parameters
   mParameterMax = source.mParameterMax;
 }
@@ -58,7 +54,6 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
   return *this;
 }
 
-
 //clean up memory
 void COptProblem::cleanup(void)
 {
@@ -66,7 +61,6 @@ void COptProblem::cleanup(void)
   mParameterNum = 0;
   mBestValue = 0.0;
 }
-
 
 //  Initialization of private variables
 void COptProblem::initialize(void)
@@ -76,11 +70,9 @@ void COptProblem::initialize(void)
   mParameterMax = new double;
 }
 
-
 //
-void COptProblem::calculate()
-{ }
-
+C_FLOAT64 COptProblem::calculate()
+{ return 0; }
 
 //set the parameter values
 void COptProblem::setParamterValues(double * aDouble)

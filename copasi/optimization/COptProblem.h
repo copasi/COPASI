@@ -8,7 +8,6 @@
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
 
-
 #ifndef COPTPROBLEM_H
 #define COPTPROBLEM_H
 
@@ -17,122 +16,130 @@
 #include <vector>
 
 //
+
 class COptProblem
-{
+  {
+    //data member
 
-  //data member
- private:
-  
-  double * mParameterValues;        // pointer to parameters
-  int mParameterNum;          // the number of parameters
-  double mBestValue;          // the best result of the problem
-  double * mParameterMin;     // the minimum values of parameters
-  double * mParameterMax;     // the maximum values of parameters
+  private:
 
+    double * mParameterValues;        // pointer to parameters
+    int mParameterNum;          // the number of parameters
+    double mBestValue;          // the best result of the problem
+    double * mParameterMin;     // the minimum values of parameters
+    double * mParameterMax;     // the maximum values of parameters
 
-  // Implementation
- public:
+    // Implementation
 
-  /**
-   * Default constructor
-   */
-  COptProblem();
+  public:
 
-  /**
-   * Destructor
-   */
-  virtual ~COptProblem();
+    /**
+     * Default constructor
+     */
+    COptProblem();
 
+    /**
+     * Destructor
+     */
+    virtual ~COptProblem();
 
-  /**
-   * Copy constructor
-   * @param source a COptProblem object for copy
-   */
-  COptProblem(const COptProblem& source);
+    /**
+     * Copy constructor
+     * @param source a COptProblem object for copy
+     */
+    COptProblem(const COptProblem& source);
 
-  /**
-   * Object assignment overloading
-   * @param source a COptProblem object for copy
-   * @return an assigned COptProblem object
-   */
-  COptProblem& operator=(const COptProblem& source);
+    /**
+     * Object assignment overloading
+     * @param source a COptProblem object for copy
+     * @return an assigned COptProblem object
+     */
+    COptProblem& operator=(const COptProblem& source);
 
+    /**
+     * clean up memory
+     */
+    void cleanup(void);
 
-  /**
-   * clean up memory
-   */
-  void cleanup(void);
+    /**
+     * Initialization of private variables
+     */
+    void initialize(void);
 
-  /**
-   * Initialization of private variables
-   */
-  void initialize(void);
+    /**
+     * calculate function for optimization
+     */
+    virtual C_FLOAT64 calculate();
 
-  /**
-   * calculate function for optimization
-   */
-  virtual void calculate(); 
+    /**
+     * calculate function for optimization
+     */
+    virtual bool checkParametricConstraints();
 
-  /*
-   * set the parameter values
-   */
-  void setParamterValues(double * aDouble);
- 
-  /**
-   * get the parameter values
-   */
-  double * getParameterValues(); 
+    /**
+     * calculate function for optimization
+     */
+    virtual bool checkFunctionalConstraints();
 
-  /*
-   * set a parameter
-   */
-  void setParameter(int aNum, double aDouble);
- 
-  /**
-   * get a parameter
-   */
-  double getParameter(int aNum); 
+    /*
+     * set the parameter values
+     */
+    void setParamterValues(double * aDouble);
 
-  /*
-   * set parameter number
-   */
-  void setParameterNum(int aNum);
+    /**
+     * get the parameter values
+     */
+    double * getParameterValues();
 
-  /*
-   * get parameter number
-   */
-  int getParameterNum();
+    /*
+     * set a parameter
+     */
+    void setParameter(int aNum, double aDouble);
 
-  /*
-   * set the best value
-   */
-  void setBestValue(double aDouble);
+    /**
+     * get a parameter
+     */
+    double getParameter(int aNum);
 
-  /*
-   * get the best value
-   */
-  double getBestValue();
+    /*
+     * set parameter number
+     */
+    void setParameterNum(int aNum);
 
-  /*
-   * set the minimum value of parameters
-   */
-  void setParameterMin(double * aDouble);
+    /*
+     * get parameter number
+     */
+    int getParameterNum();
 
-  /*
-   * get the minimum value of parameters
-   */
-  double * getParameterMin();
+    /*
+     * set the best value
+     */
+    void setBestValue(double aDouble);
 
-  /*
-   * set the maximum value of the paramters
-   */
-  void setParameterMax(double * aDouble);
+    /*
+     * get the best value
+     */
+    double getBestValue();
 
-  /*
-   * get the maximum value of the parameters
-   */
-  double * getParameterMax();
+    /*
+     * set the minimum value of parameters
+     */
+    void setParameterMin(double * aDouble);
 
-};
+    /*
+     * get the minimum value of parameters
+     */
+    double * getParameterMin();
 
-#endif  // the end 
+    /*
+     * set the maximum value of the paramters
+     */
+    void setParameterMax(double * aDouble);
+
+    /*
+     * get the maximum value of the parameters
+     */
+    double * getParameterMax();
+  };
+
+#endif  // the end

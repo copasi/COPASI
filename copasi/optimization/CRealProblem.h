@@ -20,7 +20,6 @@
  * 
  */
 
-
 #ifndef CREALPROBLEM_H
 #define CREALPROBLEM_H
 
@@ -30,39 +29,35 @@
 #include "math.h"
 #include "float.h"
 
-
 #include "COptProblem.h"
 
 //
+
 class CRealProblem : public COptProblem
-{
+  {
+    //data member
+    //no real variables defined here, but the base class has many members
 
-  //data member
-  //no real variables defined here, but the base class has many members
- private:
-  
-  
-  // Implementation
- public:
+  private:
 
-  /**
-   * Default constructor
-   */
-  CRealProblem();
+    // Implementation
 
-  /**
-   * Destructor
-   */
-  ~CRealProblem();
+  public:
 
+    /**
+     * Default constructor
+     */
+    CRealProblem();
 
+    /**
+     * Destructor
+     */
+    ~CRealProblem();
 
-  /**
-   * calculate function for optimization
-   */
-  void calculate(); 
+    /**
+     * calculate function for optimization
+     */
+    C_FLOAT64 calculate();
+  };
 
- 
-};
-
-#endif  // the end 
+#endif  // the end
