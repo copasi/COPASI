@@ -60,11 +60,11 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout2->addWidget(bRunButton);*/
 
   commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
+  commitChange->setText(trUtf8("Commit"));
   Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
+  cancelChange->setText(trUtf8("Cancel"));
   Layout2->addWidget(cancelChange);
 
   /*ExportFileButton = new QPushButton(this, "ExportFileButton");

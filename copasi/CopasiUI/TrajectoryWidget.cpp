@@ -141,16 +141,16 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunTask = new QPushButton(this, "bRunTask");
-  bRunTask->setText(trUtf8("Run Task"));
+  bRunTask->setText(trUtf8("Run"));
   bRunTask->setEnabled(false);
   Layout2->addWidget(bRunTask);
 
   commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
+  commitChange->setText(trUtf8("Commit"));
   Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
+  cancelChange->setText(trUtf8("Cancel"));
   Layout2->addWidget(cancelChange);
 
   ExportToFileButton = new QPushButton(this, "ExportToFileButton");

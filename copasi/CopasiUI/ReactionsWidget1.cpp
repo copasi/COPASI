@@ -57,19 +57,19 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("&Commit Changes"));
+  commitChanges->setText(trUtf8("&Commit"));
   Layout1->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("&Cancel Changes"));
+  cancelChanges->setText(trUtf8("&Cancel"));
   Layout1->addWidget(cancelChanges);
 
   newReaction = new QPushButton(this, "newReaction");
-  newReaction->setText(trUtf8("&New Reaction"));
+  newReaction->setText(trUtf8("&New"));
   Layout1->addWidget(newReaction);
 
   deleteReaction = new QPushButton(this, "deleteReaction");
-  deleteReaction->setText(trUtf8("&Delete Reaction"));
+  deleteReaction->setText(trUtf8("&Delete"));
   Layout1->addWidget(deleteReaction);
 
   ReactionsWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 3);

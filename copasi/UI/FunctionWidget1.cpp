@@ -63,11 +63,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit Changes"));
+  commitChanges->setText(trUtf8("Commit"));
   Layout1->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel Changes"));
+  cancelChanges->setText(trUtf8("Cancel"));
   Layout1->addWidget(cancelChanges);
 
   FunctionWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 1);

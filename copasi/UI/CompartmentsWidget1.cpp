@@ -93,11 +93,11 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
 
   commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit Changes"));
+  commitChanges->setText(trUtf8("Commit"));
   Layout5->addWidget(commitChanges);
 
   cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel Changes"));
+  cancelChanges->setText(trUtf8("Cancel"));
   Layout5->addWidget(cancelChanges);
 
   CompartmentsWidget1Layout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
