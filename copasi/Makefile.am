@@ -11,7 +11,6 @@ copasi_LDADD = \
 	./utilities/libutilities.a 
 
 SUBDIRS = \
-	CopasiUI \
 	commandline\
 	elementaryFluxModes \
 	function \
@@ -21,6 +20,7 @@ SUBDIRS = \
 	steadystate \
 	trajectory \
 	utilities \
+	CopasiUI \
 	test 
 
 EXTRA_DIST = \
