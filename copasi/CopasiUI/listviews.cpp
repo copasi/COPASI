@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/28 18:34:36 $
+   $Author: shoops $ 
+   $Date: 2004/05/29 02:41:11 $
    End CVS Header */
 
 /****************************************************************************
@@ -551,7 +551,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                       //Time course
+      case 23:                                        //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -560,10 +560,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                      //Report
+      case 43:                                       //Report
         return tableDefinition;
         break;
-      case 42:                                      //Plots
+      case 42:                                       //Plots
         return plotWidget;
         break;
       case 5:
@@ -841,11 +841,38 @@ bool ListViews::updateAllListviews2(C_INT32 id) //static
 }
 
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
-    Action C_UNUSED(action), const std::string & C_UNUSED(key)) //static
+    Action action, const std::string & C_UNUSED(key)) //static
 {
   bool success = true;
 
-  //  if (dataModel->getModel() == NULL) return false;
+  switch (objectType)
+    {
+    case METABOLITE:
+    case COMPARTMENT:
+    case REACTION:
+    case FUNCTION:
+    case REPORT:
+    case PLOT:
+      if (dataModel) dataModel->changed();
+      break;
+
+    case MODEL:
+      switch (action)
+        {
+        case CHANGE:
+        case RENAME:
+          if (dataModel) dataModel->changed();
+          break;
+        case ADD:
+        case DELETE:
+        default:
+          break;
+        }
+      break;
+
+    default:
+      break;
+    }
 
   //just do everything. TODO: Later we can decide from parameters what really needs to be done
 
