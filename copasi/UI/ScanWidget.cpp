@@ -228,6 +228,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   connect(scanButton, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   connect(steadyState, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));

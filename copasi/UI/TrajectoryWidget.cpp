@@ -201,6 +201,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   //mTrajectoryTask = NULL;
 }
