@@ -1,16 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:55:43 $
+   $Date: 2004/04/26 15:26:04 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CPlotSpecVector.h"
 #include "report/CKeyFactory.h"
+#include "model/CModel.h"
 #include "CPlotSpec.h"
 #include "plotwindow.h"
+#include "utilities/CGlobals.h"
 
 CPlotSpecVector::CPlotSpecVector(const std::string & name,
                                  const CCopasiContainer * pParent):
@@ -19,8 +21,12 @@ CPlotSpecVector::CPlotSpecVector(const std::string & name,
     pSource(NULL),
     ncols(0),
     mReport(),
+    mRepDef(),
     inputFlag(NO_INPUT)
-{}
+{
+  mReport.setReportDefinition(&mRepDef);
+  createDebugReport(); //for debugging only
+}
 
 CPlotSpecVector::~CPlotSpecVector()
 {
@@ -161,4 +167,19 @@ bool CPlotSpecVector::doPlotting()
   updateAllPlots();
 
   return success;
+}
+
+void CPlotSpecVector::createDebugReport()
+{
+  std::cout << "Create Debug Report for Plot" << std::endl;
+
+  mRepDef.getBodyAddr()->clear();
+
+  //std::cout << Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN() << std::endl;
+  CCopasiObjectName name = Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN();
+  std::cout << name << std::endl;
+
+  mRepDef.getBodyAddr()->push_back(name);
+
+  mReport.compile();
 }
