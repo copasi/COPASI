@@ -13,10 +13,7 @@ CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
     mKey(CKeyFactory::add("CReportDefinitionVector", this))
-{
-  CReportDefinition * test = new CReportDefinition();
-  mReportDefinitions.push_back(test);
-}
+{}
 
 CReportDefinitionVector::~CReportDefinitionVector()
 {
@@ -44,3 +41,17 @@ void CReportDefinitionVector::load(CReadConfig & configBuffer)
 
 void CReportDefinitionVector::save(CWriteConfig & configBuffer)
 {}
+
+bool CReportDefinitionVector::addReportDefinition(const std::string name, const std::string comment)
+{
+  C_INT32 i;
+  for (i = 0; i < mReportDefinitions.size(); i++)
+    if (mReportDefinitions[i]->getName() == name)
+      return false; // duplicate name
+
+  CReportDefinition* pNewReportDef = new CReportDefinition();
+  mReportDefinitions.push_back(pNewReportDef);
+  pNewReportDef->setComment(comment);
+  pNewReportDef->setObjectName(name);
+  return true;
+}

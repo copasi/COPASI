@@ -25,6 +25,8 @@ class CReportDefinitionVector: public CCopasiContainer
 
     const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
+    bool addReportDefinition(const std::string name, const std::string comment);
+
     /**
      * Loads parameters for this solver with data coming from a
      * CReadConfig object. (CReadConfig object reads an input stream)
