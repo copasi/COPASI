@@ -15,7 +15,9 @@
  * Defaulut constructor
  */
 CEigen::CEigen()
-{   }
+{ 
+  initialize();
+}
 
 /**
  * User defined constructor
@@ -26,6 +28,7 @@ CEigen::CEigen(int rows, int cols)
 {
 
   mMatrix.newsize(rows, cols);
+  initialize();
 }
 
 /**
@@ -68,18 +71,59 @@ C_FLOAT64 * CEigen::getWork() const
   return mWork;
 }
 
+//initialize variables for eigenvalue calculations
+//
+void CEigen::initialize()
+{
+   
+  // * #1: (input) characer*1
+  mJobvs = 'N';
+  // * #2: (input) characer*1
+  mSort = 'N';
+  // * #3: (input) Logical function of two double precision arguments
+  mSelect = NULL;
+  // * #4: (input) The order of the matrix A 
+  mN = 0;
+  // * #5: (input/output) The double precision array, dimension (LDA,N)
+  //C_FLOAT64 * mA;
+  // * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
+  //C_INT32 mLDA;
+  // * #7: (output) an integer
+  //C_INT32 mSdim;
+  // * #8: array with dimension (mN)
+  //C_FLOAT64 * mWR;
+  // * #9: array with dimension (mN)
+  //C_FLOAT64 * mWI;
+  // * #10: (output) array with dimension (mLdvs, mN)
+  //C_FLOAT64 * mVS;
+  // * #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
+  //C_INT32 mLdvs;
+  // * #12: (workspace/output) double precision array, dimension (mLWork)
+  //C_FLOAT64 * mWork;
+  // * #13: (input) Dimension of array Work, its value >= max(1,3*mN).
+  //C_INT32 mLWork;
+  // * #14: (workspace) Logical array, dimension (N)
+  //C_INT32 * mBWork;
+  // * #15: (output) an integer
+  //C_INT32 mInfo;
+
+} 
+
+
 // eigenvalue calculations
 void CEigen::CalcEigenvalues( void )
-{
+{ 
 
-  /* 
+  /*
+
  int res;
- char jobvs = 'N';
- char sort = 'N';
+ //char jobvs = 'N';      //#1
+ //char sort = 'N';       //#2
 
  long int lda;
  long int sdim;
- int n, pz, mx, mn;        // YH: don't use "long" any more
+ // int n, pz, mx, mn;        // YH: don't use "long" any more
+ int pz, mx, mn;        // YH: don't use "long" any more
  long int ldvs = 1;
  double *work;
  long int lwork = 4096;
@@ -88,22 +132,31 @@ void CEigen::CalcEigenvalues( void )
  double distt, maxt, tott;
 
  // the dimension of the matrix
- n = Model.IndMetab;
- lda = n>1 ? n : 1;
+ //n = Model.IndMetab;
+ //lda = n>1 ? n : 1;
+ mN = Model.IndMetab;
+ lda = mN>1 ? mN : 1;
+
 
  // create the matrices
  work = new double[lwork];
 
  // copy the jacobian into J
- for( i=0; i<n; i++ )
-  for( j=0; j<n; j++ )
-   eigen_jacob[i*n+j] = ss_jacob[i+1][j+1];
+ // for( i=0; i<n; i++ )
+ // for( j=0; j<n; j++ )
+ //  eigen_jacob[i*n+j] = ss_jacob[i+1][j+1];
+ for( i=0; i<mN; i++ )
+   for( j=0; j<mN; j++ )
+     eigen_jacob[i*mN+j] = ss_jacob[i+1][j+1];
+
+
+
 
  // calculate the eigenvalues
- res = dgees_( &jobvs,                     //ok
-              &sort,                       //ok
-                          NULL,            //ok
-                          &n,              //ok
+ res = dgees_( &mJobvs,                     //ok, done
+              &mSort,                       //ok, done
+	       mSelect,          //NULL,    //ok
+	       &mN,              //&n,      //ok
                   eigen_jacob,             //ok
                           &lda,            //ok
                           &sdim,           //ok
