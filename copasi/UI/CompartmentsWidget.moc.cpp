@@ -66,7 +66,13 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
   static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
   static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
   static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0 };
-  static const QUMethod slot_4 = {"tableClicked", 0, 0 };
+
+  static const QUParameter param_slot_4[] =
+    {
+      { 0, &static_QUType_int, 0, QUParameter::In },
+      { 0, &static_QUType_int, 0, QUParameter::In }
+    };
+  static const QUMethod slot_4 = {"tableValueChanged", 2, param_slot_4 };
 
   static const QMetaData slot_tbl[] =
     {
@@ -75,7 +81,7 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
       { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
       { "slotBtnOKClicked()", &slot_2, QMetaData::Protected },
       { "slotBtnCancelClicked()", &slot_3, QMetaData::Protected },
-      { "tableClicked()", &slot_4, QMetaData::Protected }
+      { "tableValueChanged(int,int)", &slot_4, QMetaData::Protected }
     };
 
   static const QUParameter param_signal_0[] =
@@ -183,7 +189,7 @@ bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
       break;
 
     case 4:
-      tableClicked();
+      tableValueChanged(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2));
       break;
 
     default:

@@ -45,7 +45,7 @@ class CompartmentsWidget : public QWidget
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
-    virtual void tableClicked();
+    virtual void tableValueChanged(int, int);
 
   private:
     void showMessage(QString caption, QString text);
