@@ -26,7 +26,6 @@ CCopasiNode::~CCopasiNode()
 
   if (mpParent)
     mpParent->removeChild(this);
-  std::cout << "deleting: " << this << std::endl;
 }
 
 bool CCopasiNode::setParent(CCopasiNode * pParent)
