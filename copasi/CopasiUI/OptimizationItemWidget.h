@@ -52,14 +52,14 @@ class OptimizationItemWidget : public QWidget
     std::string getItemUpperLimit();
     std::string getItemLowerLimit();
 
-    setItemUpperLimit(std::string strUpperLimit);
-    setItemLowerLimit(std::string strLowerLimit);
+    void setItemUpperLimit(std::string strUpperLimit);
+    void setItemLowerLimit(std::string strLowerLimit);
 
     std::string getItemUpperOper();
     std::string getItemLowerOper();
 
-    setItemUpperOper(std::string oper);
-    setItemLowerOper(std::string oper);
+    void setItemUpperOper(std::string oper);
+    void setItemLowerOper(std::string oper);
 
     CCopasiObject* getCopasiObject();
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
