@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/11/13 18:50:12 $
+   $Date: 2003/11/13 18:50:47 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.24 2003/11/13 18:50:12 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.25 2003/11/13 18:50:47 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -273,6 +273,7 @@ void TableDefinition1::loadTableDefinition1()
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   C_INT32 i;
+  // i+=2; is due to skip to show the seperator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
       itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
