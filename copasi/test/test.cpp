@@ -1616,12 +1616,13 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
 {
     cout << "Testing CIndexedPriorityQueue\n";
     int size = in_size;
+	int i,j;
     cout << "Creating priority queue of size " << size << endl;
     CIndexedPriorityQueue pq;
     CRandom *rand = new CRandom(1);
     C_FLOAT64 rndval;
     cout << "Unordered input:\n";
-    for (int i = 0; i < size ; i++)
+    for (i = 0; i < size ; i++)
     {
         rndval = rand->getUniformRandom();
         cout << "element " << i << ":" << rndval << endl;
@@ -1631,18 +1632,18 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
     pq.buildHeap();
     // Display the priority queue
     cout << "\nPriority Queue:\n";
-    for (int j = 0; j < size; j++) 
+    for (j = 0; j < size; j++) 
     {
         cout << " " << j << "-" << setprecision (5) << pq[j];
     }
     cout << endl;
     cout << "Testing update node\n";
-    for (int i = 0; i < size; i++)
+    for (i = 0; i < size; i++)
     {
         cout << "Reset node at top index: ";
         pq.updateNode(pq.topIndex(), 10000);
         cout << "New queue = ";
-        for (int j = 0; j < size; j++) cout << " " << j << "-" << setprecision(5) << pq[j] << setprecision(6);
+        for (j = 0; j < size; j++) cout << " " << j << "-" << setprecision(5) << pq[j] << setprecision(6);
         cout << endl;
     }
     cout << "Done testing CIndexedPriorityQueue\n\n";    
