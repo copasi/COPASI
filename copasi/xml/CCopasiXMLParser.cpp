@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/11 22:22:32 $
+   $Date: 2003/12/30 15:47:09 $
    End CVS Header */
 
 /**
@@ -2048,8 +2048,6 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
   const char * Name;
   const char * Value;
 
-  CCopasiParameter * pParameter;
-
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -2061,12 +2059,13 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       Value = mParser.getAttributeValue("value", papszAttrs);
 
-      pParameter = new CCopasiParameter(Name, CCopasiParameter::DOUBLE);
-      pParameter->setValue((C_FLOAT64) atof(Value));
+      mCommon.pReaction->
+      getParameters().addParameter(Name,
+                                   CCopasiParameter::DOUBLE,
+                                   (C_FLOAT64) atof(Value));
 
-      mCommon.KeyMap[Key] = pParameter->getKey();
-
-      mCommon.pReaction->getParameters().add(pParameter, true);
+      mCommon.KeyMap[Key] =
+        mCommon.pReaction->getParameters().getParameter(Name)->getKey();
 
       break;
 
