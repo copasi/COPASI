@@ -129,17 +129,14 @@ void DataModel<T>::removeData(T* i)
 
   if (node)
     {
-      Node<T>* newNode = new Node<T>;
-      *newNode = *node;
+      last = node;
+      notify(DELETE);
 
-      last = newNode;
       myTree.deleteNode(i);
       folderList.remove(i);
     }
-  else
-    last = NULL;
 
-  notify(DELETE);
+  last = NULL;
 }
 
 /*
