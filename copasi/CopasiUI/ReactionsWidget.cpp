@@ -210,14 +210,14 @@ void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QP
     {
       std::string name = "Reaction";
       int i = 0;
-      CReaction* newReaction = new CReaction();
+      CReaction newReaction;
       while (mModel->addReaction(newReaction) == -1)
         {
           i++;
           name = "Reaction";
           name += "_";
           name += QString::number(i);
-          newReaction->setName(name);
+          newReaction.setName(name);
         }
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
