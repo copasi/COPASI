@@ -52,10 +52,10 @@ LIBS = $(LIB_QT) \
 	-loutput \
 	-lfunction \
 	-lmodel \
-	-lmkl_lapack \
-	-lmkl_p3 \
-        -lg2c \
-        -lpthread
+	-llapack \
+	-lblas \
+	-lF77 \
+	-lfl
 
 #  Use this for standard clapack
 #	-llapack \

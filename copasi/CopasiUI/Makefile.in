@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -199,7 +199,7 @@ EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-lmkl_lapack 	-lmkl_p3         -lg2c         -lpthread
+LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-llapack 	-lblas 	-lF77 	-lfl
 
 
 #  Use this for standard clapack
@@ -392,7 +392,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
