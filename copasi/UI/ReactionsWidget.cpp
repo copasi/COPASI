@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 17:56:09 $
+   $Date: 2004/10/28 18:47:01 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -78,24 +78,22 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   if (colWidth[1] < 7*eqString.length())
     {
       colWidth[1] = 7 * eqString.length();
-      table->setColumnWidth(2, colWidth[1]);
     }
+
+  table->setColumnWidth(2, colWidth[1]);
 
   table->setText(row, 2, eqString);
 
   if (&(pRea->getFunction()))
     {
       QString funcString = FROM_UTF8(pRea->getFunction().getObjectName());
+
       if (colWidth[2] < 7*funcString.length())
         {
           colWidth[2] = 7 * funcString.length();
-
-          C_INT32 atemp = colWidth[2];
-          C_INT32 btemp = funcString.length();
-
-          table->setColumnWidth(3, colWidth[2]);
         }
 
+      table->setColumnWidth(3, colWidth[2]);
       table->setText(row, 3, funcString);
     }
 
@@ -170,6 +168,11 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 
 void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
+  C_INT32 j;
+
+  for (j = 0; j < 5; j ++)
+    colWidth[j] = 80;
+
   if (!dataModel->getModel())
     return;
 

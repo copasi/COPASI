@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 17:56:09 $
+   $Date: 2004/10/28 18:47:01 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -91,8 +91,9 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   if (metabolitenameString.length()*7 > colWidth[1])
     {
       colWidth[1] = metabolitenameString.length() * 7;
-      table->setColumnWidth(1, colWidth[1]);
     }
+
+  table->setColumnWidth(1, colWidth[1]);
 
   table->setText(row, 1, metabolitenameString);
 
@@ -264,6 +265,11 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 
 void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
+  C_INT32 j = 0;
+
+  for (j = 0; j < 8; j++)
+    colWidth[j] = 50;
+
   if (!dataModel->getModel())
     return;
 
