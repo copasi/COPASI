@@ -13,6 +13,8 @@ C_INT32 TestOptimization(void);
 
 C_INT main(C_INT argc, char *argv[])
 {
+  unsigned C_INT32 i, imax;
+
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
 
@@ -35,19 +37,39 @@ C_INT main(C_INT argc, char *argv[])
       const std::vector<std::string> &non_options =
         parser.get_non_options();
 
-      std::cout << options.CopasiLib << " "
-      << locations.CopasiLib << std::endl;
-      std::cout << options.SystemFunctionDB << " "
+      std::cout << "libdir \t'" << options.libdir << "' "
+      << locations.libdir << std::endl;
+      std::cout << "SystemFunctionDB \t'" << options.SystemFunctionDB << "' "
       << locations.SystemFunctionDB << std::endl;
-      std::cout << options.UserFunctionDB << " "
+      std::cout << "UserFunctionDB \t'" << options.UserFunctionDB << "' "
       << locations.UserFunctionDB << std::endl;
-      std::cout << options.rc << " "
-      << locations.rc << std::endl;
-      std::cout << options.save << " "
+      std::cout << "configFile \t'" << options.configFile << "' "
+      << locations.configFile << std::endl;
+      std::cout << "save \t'" << options.save << "' "
       << locations.save << std::endl;
+      std::cout << "ImportSBML \t'" << options.ImportSBML << "' "
+      << locations.ImportSBML << std::endl;
+      std::cout << "ExportSBML \t'" << options.ExportSBML << "' "
+      << locations.ExportSBML << std::endl;
+      std::cout << std::endl;
 
-      unsigned C_INT32 i, imax = non_options.size();
-      for (i = 0; i < imax; i++)
+      std::cout << "Flag \t'" << options.Flag << "' "
+      << locations.Flag << std::endl;
+      std::cout << "Bool \t'" << options.Bool << "' "
+      << locations.Bool << std::endl;
+      std::cout << std::endl;
+
+      std::cout << "Defaults (" << options.Default.size() << "):" << std::endl;
+
+      std::map<std::string, std::string>::const_iterator begin;
+      std::map<std::string, std::string>::const_iterator end;
+      for (begin = options.Default.begin(), end = options.Default.end();
+           begin != end; begin++)
+        std::cout << "  '" << begin->first << "'\t '" << begin->second
+        << "'" << std::endl;
+      std::cout << std::endl;
+
+      for (i = 0, imax = non_options.size(); i < imax; i++)
         std::cout << non_options[i] << std::endl;
     }
 
