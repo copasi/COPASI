@@ -10,35 +10,17 @@
 #include <vector>
 
 #include "copasi.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CGlobals.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "model/CCompartment.h"
-#include "output/CDatum.h"
-#include "output/COutputLine.h"
-#include "output/COutput.h"
-#include "output/COutputList.h"
-#include "output/COutputEvent.h"
-#include "utilities/CCopasiVector.h"
-#include "model/CMetab.h"
-#include "function/CNodeK.h"
-#include "function/CKinFunction.h"
-#include "model/CReaction.h"
-#include "model/CMoiety.h"
-#include "model/CModel.h"
-#include "trajectory/CODESolver.h"
-#include "trajectory/CTrajectory.h"
-#include "steadystate/CSS_Solution.h"
-#include "steadystate/CNewton.h"
+#include "utilities/utilities.h"
+#include "model/model.h"
+#include "output/output.h"
+#include "function/function.h"
+#include "trajectory/trajectory.h"
+#include "steadystate/steadystate.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
-#include "output/output.h"
-#include "steadystate/CMca.h"
 
 C_INT32  TestReadConfig(void);
 C_INT32  TestWriteConfig(void);
@@ -96,9 +78,9 @@ C_INT main(void)
       // TestDatum();
       // TestMetab();
       // TestReadSample();
-      TestTrajectory();
+      // TestTrajectory();
       // by Yongqun He
-      // TestNewton();
+      TestNewton();
       // TestSSSolution();
 
       // TestTrajectory();
@@ -360,64 +342,64 @@ C_INT32 TestReadSample(void)
 
 C_INT32 TestOutputEvent(void)
 {
-	C_INT32 size = 0;
+  C_INT32 size = 0;
 
-    cout << "Entering TestOutputEvent." << endl;
+  cout << "Entering TestOutputEvent." << endl;
 
-	ofstream  fout, fout1, fout2;
-	//fout.open("TestSS.out");
-	fout1.open("TestDyn.out");
-	//fout2.open("TestRep.out");
+  ofstream  fout, fout1, fout2;
+  //fout.open("TestSS.out");
+  fout1.open("TestDyn.out");
+  //fout2.open("TestRep.out");
 
-    CReadConfig inbuf("c:/wsun/copasi_dev/copasi/gps/DANNY.gps");
+  CReadConfig inbuf("c:/wsun/copasi_dev/copasi/gps/DANNY.gps");
 
-	CModel model;
-	model.load(inbuf);
-	model.buildStoi();
-	model.lUDecomposition();
-	model.setMetabolitesStatus();
-	model.buildRedStoi();
-	model.buildL();
-	model.buildMoieties();
+  CModel model;
+  model.load(inbuf);
+  model.buildStoi();
+  model.lUDecomposition();
+  model.setMetabolitesStatus();
+  model.buildRedStoi();
+  model.buildL();
+  model.buildMoieties();
     
-	COutputList oList;
+  COutputList oList;
 
-	oList.load(inbuf);
+  oList.load(inbuf);
 
-	CWriteConfig outbuf("wei.gps");
-	oList.save(outbuf);
+  CWriteConfig outbuf("wei.gps");
+  oList.save(outbuf);
 
-	oList.setModel(model);
+  oList.setModel(model);
 
-	string SS = "Steady-state output";
-	oList.compile(SS);
+  string SS = "Steady-state output";
+  oList.compile(SS);
 
-	//oList.CCopasi_SS(fout);
-	//oList.CCopasi_Dyn(fout1);
-	//oList.CCopasi_Rep(fout2);
+  //oList.CCopasi_SS(fout);
+  //oList.CCopasi_Dyn(fout1);
+  //oList.CCopasi_Rep(fout2);
 
-	CTrajectory traj(&model, 20, 10.0, 1);
+  CTrajectory traj(&model, 20, 10.0, 1);
 
-	COutputEvent event(traj, 0, &oList, fout1);
+  COutputEvent event(traj, 0, &oList, fout1);
 
-	traj.cleanup();
-    cout << "Leaving TestOutputEvent..." << endl;
+  traj.cleanup();
+  cout << "Leaving TestOutputEvent..." << endl;
 
-	//fout.close();
-	fout1.close();
-	//fout2.close();
+  //fout.close();
+  fout1.close();
+  //fout2.close();
 
-	return 0;
+  return 0;
 }
 
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/brusselator.gps");
+  CReadConfig inbuf("gps/NewtonTest.gps");
   CModel model;
 
-  COutput output;
-  output.load(inbuf);
+  // COutput output;
+  // output.load(inbuf);
   
   model.load(inbuf);
   model.buildStoi();
@@ -450,9 +432,9 @@ C_INT32 TestMCA(void)
     model.lUDecomposition();
     model.setMetabolitesStatus();
     model.buildRedStoi();	
-
-	CMca MCA(model, 0);
-	return 0;
+    
+    CMca mMCA();
+    return 0;
 }
 
 
@@ -463,7 +445,7 @@ C_INT32  TestNewton(void)
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/BakkerComp.gps");
+    CReadConfig inbuf("gps/NewtonTest.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();
@@ -472,17 +454,19 @@ C_INT32  TestNewton(void)
     model.buildRedStoi();
     model.buildL();
     model.buildMoieties();
- 
- 
+    model.getReactions().size();
+    
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
     newton.setModel(&model);
-    newton.initialize();
+    // newton.initialize();
  
     //get mDerivFactor, mSSRes, and mNewtonLimit,
     //or may use their default values
-    newton.setDerivFactor(1.0);
-    newton.setSSRes(1.0);
+    newton.setDerivFactor(0.1);
+    newton.setSSRes(1.0e-9);
+    newton.setNewtonLimit(50);
+    
     // newton.setNewtonLimit(1);
  
  
@@ -491,7 +475,7 @@ C_INT32  TestNewton(void)
  
     //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
     //and mSs_solution??? or don't need to care about them here??
-    newton.init_Ss_x_new();
+    newton.init_Ss_x();
  
     newton.process();
  
@@ -515,15 +499,15 @@ C_INT32  TestSSSolution(void)
     model.buildRedStoi();
     model.buildL();
     model.buildMoieties();
- 
+
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
     newton.setModel(&model);
-    newton.initialize();
+    // newton.initialize();
     newton.setDerivFactor(1.0);
     newton.setSSRes(1.0);
     newton.setSs_nfunction(0);
-    newton.init_Ss_x_new();
+    newton.init_Ss_x();
 
     CTrajectory traj(&model, 20, 10.0, 1);
     traj.load(inbuf);

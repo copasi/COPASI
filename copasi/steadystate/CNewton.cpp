@@ -68,7 +68,7 @@ void CNewton::initialize()
   cleanup();
   unsigned C_INT32 dim = mModel->getIndMetab();
   
-  mSs_x = new C_FLOAT64[dim];
+  mSs_xnew = new C_FLOAT64[dim];
   // mSs_xnew = new C_FLOAT64[dim];
   mSs_dxdt.newsize(dim);
   mSs_h = new C_FLOAT64[dim];
@@ -82,8 +82,10 @@ void CNewton::initialize()
 //Y.H.
 //set up mSs_x and mSs_x's default values
 //they should come from steady state class, though
-void CNewton::init_Ss_x_new(void)
-{mSs_xnew = mModel->getInitialNumbers();}
+void CNewton::init_Ss_x(void)
+{
+  mSs_x = mModel->getInitialNumbers();
+}
 
   
 //Object assignment overloading
@@ -168,6 +170,10 @@ C_FLOAT64 CNewton::getDerivFactor() const
 {
   return mDerivFactor;
 }
+
+void CNewton::setNewtonLimit(C_INT32 limit) {mNewtonLimit = limit;}
+
+C_INT32  CNewton::getNewtonLimit() const {return mNewtonLimit;}
 
 // set mSs_nfunction
 void CNewton::setSs_nfunction(C_INT32 aInt)
@@ -275,15 +281,16 @@ void CNewton::process(void)
       //}
       nmaxrate = maxrate * 1.001;
       // copy values of increment to mSs_h
-      for(i=0;i<dim;i++) mSs_h[i+1] = mSs_dxdt[i+1];
+      for(i=0;i<dim;i++) mSs_h[i] = mSs_dxdt[i];
       for( i=0; (i<32) && (nmaxrate>maxrate) ; i++ )
 	{
 	  for( j=0; j<dim; j++ )
 	    {
-	      mSs_xnew[j+1] = mSs_x[j+1] - mSs_h[j+1];
-	      mSs_h[j+1] /= 2;
+	      mSs_xnew[j] = mSs_x[j] - mSs_h[j];
+	      mSs_h[j] /= 2;
 	    }
-	  mModel->setConcentrations(mSs_xnew);
+	  // this is done inside lSODAEval
+	  // mModel->setConcentrations(mSs_xnew);
 	  // update the dependent metabolites
 	  //  try
 	  //{
@@ -303,7 +310,7 @@ void CNewton::process(void)
 	      mSs_solution = SS_FOUND;
 	      // check if solution is valid
 	      for( i=0; i<mModel->getIntMetab(); i++ )
-		if( mSs_x[i+1] < 0.0 )
+		if( mSs_x[i] < 0.0 )
 		  {
 		    mSs_solution = SS_NOT_FOUND;
 		    break;
@@ -318,7 +325,7 @@ void CNewton::process(void)
 	      return;
 	    }
 	}
-      for(i=0;i<mModel->getIntMetab();i++) mSs_x[i+1] = mSs_xnew[i+1];
+      for(i=0;i<dim;i++) mSs_x[i] = mSs_xnew[i];
       maxrate = nmaxrate;
     }
   if( maxrate < mSSRes )
@@ -326,7 +333,7 @@ void CNewton::process(void)
       mSs_solution = SS_FOUND;
       // check if solution is valid
       for( i=0; i<dim; i++ )
-	if( mSs_x[i+1] < 0.0 )
+	if( mSs_x[i] < 0.0 )
 	  {
 	    mSs_solution = SS_NOT_FOUND; 
 	    break;
