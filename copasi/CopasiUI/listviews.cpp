@@ -390,7 +390,10 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   int value = QString::compare(item->folder()->folderName(), "Metabolites");
 
   if (!value)
-    currentWidget = metabolitesWidget;
+    {
+      currentWidget = metabolitesWidget;
+      metabolitesWidget->repaint_table();
+    }
   else if (! (value = QString::compare(item->folder()->folderName(), "Metabolite Symbols")))
     currentWidget = metaboliteSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Differential Equations")))
@@ -398,9 +401,15 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   else if (! (value = QString::compare(item->folder()->folderName(), "Fixed Metabolite Symbols")))
     currentWidget = fixedMetaboliteSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Reactions")))
-    currentWidget = reactionsWidget;
+    {
+      currentWidget = reactionsWidget;
+      reactionsWidget->repaint_table();
+    }
   else if (! (value = QString::compare(item->folder()->folderName(), "Compartments")))
-    currentWidget = compartmentsWidget;
+    {
+      currentWidget = compartmentsWidget;
+      compartmentsWidget->repaint_table();
+    }
   else if (! (value = QString::compare(item->folder()->folderName(), "Compartment Symbols")))
     currentWidget = compartmentSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Constant Symbols")))
@@ -410,7 +419,10 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   else if (! (value = QString::compare(item->folder()->folderName(), "Moiety")))
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
-    currentWidget = functionWidget;
+    {
+      currentWidget = functionWidget;
+      functionWidget->repaint_table();
+    }
   else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
     currentWidget = steadystateWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Time Course")))

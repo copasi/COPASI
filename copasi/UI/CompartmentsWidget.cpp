@@ -165,7 +165,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
-      repaint_table();
+      //      repaint_table();
       if (binitialized)
         {
           int newWidth = re->size().width();
