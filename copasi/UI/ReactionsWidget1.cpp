@@ -508,19 +508,41 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  /*QMessageBox::information(this, p2, "inside the comboBox");
-  const string & p1=p2.latin1();
-  CFunctionParameters &functionParameters = function1->getParameters();
+  QMessageBox::information(this, p2, "inside the comboBox");
+  const string & p1 = p2.latin1();
+  CFunction * function = Copasi->FunctionDB.findFunction(p1);
+  CFunctionParameters &functionParameters = function->getParameters();
+  int count_substrates = 0;
+  int count_products = 0;
+  int count_parameters = 0;
+  //CFunctionParameter *functionParameter=new CFunctionParameter();
 
-  CFunctionParameter *functionParameter=new CFunctionParameter();
-  functionParameter = functionParameters.operator[](p1);
-  //functionParameter = (functionParameters)[p1];
+  //functionParameter = functionParameters.operator[](p1);
 
-  /* for (int i =0; i<4; i++)
-  {
-  string p3=functionParameter[i].getName();
-    string p4=functionParameter[i].getUsage();
-  QMessageBox::information(this, p3.c_str(),"trying to see if it returns a value");
+  //index using some value and loop thru...
 
-  }*/
+  string usagetypes[100];
+
+  for (int i = 0; i < functionParameters.size(); i++)
+    {
+      //string p3=functionParameters[i]->getName();
+      string p4 = functionParameters[i]->getUsage();
+      usagetypes[i] = p4;
+
+      //little bit left...just to sort and add the variables in the combo box.
+      if (p4 == "SUBSTRATES")
+        {
+          count_substrates++;
+        }
+      else if (p4 == "PRODUCTS")
+        {
+          count_products++;
+        }
+      else if (p4 == "PARAMETERS")
+        {
+          count_parameters++;
+        }
+    }
+
+  //QMessageBox::information(this,m1,"gfgdf");
 }
