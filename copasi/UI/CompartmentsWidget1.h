@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:47 $
+   $Author: chlee $ 
+   $Date: 2004/05/26 02:37:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,6 +43,8 @@ class CompartmentsWidget1 : public CopasiWidget
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void slotBtnNewClicked();
+    virtual void slotBtnDeleteClicked();
     virtual void slotListBoxCurrentChanged(const QString &);
 
   protected:
@@ -66,6 +68,8 @@ class CompartmentsWidget1 : public CopasiWidget
     QLineEdit* LineEdit3;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
+    QPushButton* newCompartmentBtn;
+    QPushButton* deleteCompartmentBtn;
     QFrame* Line4_3;
   };
 

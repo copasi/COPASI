@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 20:25:25 $
+   $Author: chlee $ 
+   $Date: 2004/05/26 02:37:56 $
    End CVS Header */
 
 /*******************************************************************
@@ -111,6 +111,14 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   cancelChanges->setText(trUtf8("Revert"));
   Layout5->addWidget(cancelChanges);
 
+  newCompartmentBtn = new QPushButton(this, "newCompartmentBtn");
+  newCompartmentBtn->setText(trUtf8("New"));
+  Layout5->addWidget(newCompartmentBtn);
+
+  deleteCompartmentBtn = new QPushButton(this, "deleteCompartmentBtn");
+  deleteCompartmentBtn->setText(trUtf8("Delete"));
+  Layout5->addWidget(deleteCompartmentBtn);
+
   CompartmentsWidget1Layout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
 
   Line4_3 = new QFrame(this, "Line4_3");
@@ -123,6 +131,8 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(newCompartmentBtn, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+  connect(deleteCompartmentBtn, SIGNAL(clicked()), this, SLOT(slotBtnDeleteClicked()));
   connect(ListBox1, SIGNAL(selected(const QString&)), this, SLOT(slotListBoxCurrentChanged(const QString&)));
 }
 
@@ -199,6 +209,124 @@ void CompartmentsWidget1::slotBtnOKClicked()
 {
   //let the user confirm?
   saveToCompartment();
+}
+
+void CompartmentsWidget1::slotBtnNewClicked()
+{
+  std::string name = "compartment_0";
+  int i = 0;
+  CCompartment* pCom;
+  while (!(pCom = dataModel->getModel()->createCompartment(name)))
+    {
+      i++;
+      name = "compartment_";
+      name += (const char *)QString::number(i).utf8();
+    }
+  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
+  enter(pCom->getKey());
+}
+
+void CompartmentsWidget1::slotBtnDeleteClicked()
+{
+  if (!dataModel->getModel())
+    return;
+
+  CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(objKey));
+
+  QString compartmentList = "Are you sure you want to delete listed COMPARTMENT?\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
+  int metabFound = 0;
+  int reacFound = 0;
+
+  //unsigned C_INT32 i, imax = keys.size();
+  //for (i = 0; i < imax; i++) //all compartments
+  //{
+  compartmentList.append(FROM_UTF8(comp->getObjectName()));
+  compartmentList.append(", ");
+
+  //CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(keys[i]));
+
+  const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
+  unsigned C_INT32 noOfMetabs = Metabs.size();
+
+  if (noOfMetabs > 0)
+    {
+      metabFound = 1;
+      unsigned C_INT32 k;
+      for (k = 0; k < noOfMetabs; k++)
+        {
+          effectedMetabList.append(FROM_UTF8(Metabs[k]->getObjectName()));
+          effectedMetabList.append(", ");
+        }
+
+      effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+      effectedMetabList.append("  ---> ");
+      effectedMetabList.append(FROM_UTF8(comp->getObjectName()));
+      effectedMetabList.append("\n");
+
+      std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnCompartment(objKey);
+      if (effectedReacKeys.size() > 0)
+        {
+          reacFound = 1;
+          std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+          for (it = effectedReacKeys.begin(); it != itEnd; ++it)
+            {
+              effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+              effectedReacList.append(", ");
+            }
+
+          effectedReacList.remove(effectedReacList.length() - 2, 2);
+          effectedReacList.append("  ---> ");
+          effectedReacList.append(FROM_UTF8(comp->getObjectName()));
+          effectedReacList.append("\n");
+        }
+    }
+  //}
+
+  compartmentList.remove(compartmentList.length() - 2, 2);
+
+  QString msg = compartmentList;
+  if (metabFound == 1)
+    {
+      msg.append("\n \n");
+      msg.append(effectedMetabList);
+      if (reacFound == 1)
+        {
+          msg.append("\n \n");
+          msg.append(effectedReacList);
+        }
+    }
+
+  C_INT32 choice;
+  if (metabFound == 1)
+    choice = QMessageBox::warning(this,
+                                  "CONFIRM DELETE",
+                                  msg,
+                                  "Continue", "Cancel", 0, 0, 1);
+  else
+    choice = 0;
+
+  switch (choice)
+    {
+    case 0:                // Yes or Enter
+      {
+        unsigned C_INT32 size = Copasi->pModel->getCompartments().size();
+        unsigned C_INT32 index = Copasi->pModel->getCompartments().getIndex(comp->getObjectName());
+        /*for (i = 0; i < imax; i++)
+          {
+            dataModel->getModel()->removeCompartment(keys[i]);
+          }*/
+        dataModel->getModel()->removeCompartment(objKey);
+        //for (i = 0; i < imax; i++)
+        enter(Copasi->pModel->getCompartments()[std::min(index, size - 2)]->getKey());
+        ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
+        //TODO notify about metabs and reactions
+        break;
+      }
+    case 1:                // No or Escape
+      break;
+    }
 }
 
 void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))

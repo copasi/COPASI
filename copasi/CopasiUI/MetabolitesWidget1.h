@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/25 12:41:41 $
+   $Author: chlee $ 
+   $Date: 2004/05/26 02:37:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -45,6 +45,8 @@ class MetabolitesWidget1 : public CopasiWidget
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void slotBtnNewClicked();
+    virtual void slotBtnDeleteClicked();
 
   protected:
     bool loadFromMetabolite(const CMetab*);
@@ -79,6 +81,8 @@ class MetabolitesWidget1 : public CopasiWidget
     QFrame* Line3;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
+    QPushButton* newMetaboliteBtn;
+    QPushButton* deleteMetaboliteBtn;
   };
 
 #endif // METABOLITESWIDGET1_H

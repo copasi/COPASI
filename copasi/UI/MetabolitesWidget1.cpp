@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:47 $
+   $Author: chlee $ 
+   $Date: 2004/05/26 02:37:55 $
    End CVS Header */
 
 /*******************************************************************
@@ -159,6 +159,14 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   cancelChanges->setText(trUtf8("Revert"));
   Layout7->addWidget(cancelChanges);
 
+  newMetaboliteBtn = new QPushButton(this, "newMetaboliteBtn");
+  newMetaboliteBtn->setText(trUtf8("New"));
+  Layout7->addWidget(newMetaboliteBtn);
+
+  deleteMetaboliteBtn = new QPushButton(this, "deleteMetaboliteBtn");
+  deleteMetaboliteBtn->setText(trUtf8("Delete"));
+  Layout7->addWidget(deleteMetaboliteBtn);
+
   MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
 
   setTabOrder(mEditName, mComboCompartment);
@@ -167,6 +175,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   setTabOrder(mEditInitConcentration, mEditInitNumber);
   setTabOrder(mEditInitNumber, commitChanges);
   setTabOrder(commitChanges, cancelChanges);
+  setTabOrder(cancelChanges, newMetaboliteBtn);
+  setTabOrder(newMetaboliteBtn, deleteMetaboliteBtn);
 
   // OK button
   connect(commitChanges, SIGNAL(clicked()),
@@ -174,6 +184,10 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   // Cancel button
   connect(cancelChanges, SIGNAL(clicked()),
           this, SLOT(slotBtnCancelClicked()));
+  connect(newMetaboliteBtn, SIGNAL(clicked()),
+          this, SLOT(slotBtnNewClicked()));
+  connect(deleteMetaboliteBtn, SIGNAL(clicked()),
+          this, SLOT(slotBtnDeleteClicked()));
 }
 
 /*
@@ -317,6 +331,102 @@ void MetabolitesWidget1::slotBtnOKClicked()
 {
   //let the user confirm?
   saveToMetabolite();
+}
+
+void MetabolitesWidget1::slotBtnNewClicked()
+{
+  if (dataModel->getModel()->getCompartments().size() == 0)
+    dataModel->getModel()->createCompartment("compartment");
+
+  std::string name = "metabolite";
+  int i = 0;
+  CMetab* pMetab;
+  while (!(pMetab = dataModel->getModel()->createMetabolite(name, "", 1.0, CMetab::METAB_VARIABLE)))
+    {
+      i++;
+      name = "metabolite_";
+      name += (const char *)QString::number(i).utf8();
+    }
+  enter(pMetab->getKey());
+  ListViews::notify(ListViews::METABOLITE, ListViews::ADD);
+}
+
+void MetabolitesWidget1::slotBtnDeleteClicked()
+{
+  if (!dataModel->getModel())
+    return;
+
+  QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
+  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
+  int reacFound = 0;
+
+  //unsigned C_INT32 i, imax = keys.size();
+  //for (i = 0; i < imax; i++)
+  //  {
+  //metabList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
+  metabList.append(FROM_UTF8(GlobalKeys.get(objKey)->getObjectName()));
+  metabList.append(", ");
+
+  //CMetab* metab =
+  //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
+
+  std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnMetab(objKey);
+
+  if (effectedReacKeys.size() > 0)
+    {
+      reacFound = 1;
+      std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+      for (it = effectedReacKeys.begin(); it != itEnd; ++it)
+        {
+          effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+          effectedReacList.append(", ");
+        }
+      effectedReacList.remove(effectedReacList.length() - 2, 2);
+      effectedReacList.append("  ---> ");
+      effectedReacList.append(FROM_UTF8(GlobalKeys.get(objKey)->getObjectName()));
+      effectedReacList.append("\n");
+    }
+  //}
+
+  metabList.remove(metabList.length() - 2, 2);
+
+  QString msg = metabList;
+  if (reacFound == 1)
+    {
+      msg.append("\n \n");
+      msg.append(effectedReacList);
+    }
+
+  C_INT32 choice;
+  if (reacFound == 1)
+    choice = QMessageBox::warning(this,
+                                  "CONFIRM DELETE",
+                                  msg,
+                                  "Continue", "Cancel", 0, 0, 1);
+  else
+    choice = 0;
+
+  switch (choice)
+    {
+    case 0:                 // Yes or Enter
+      {
+        unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
+        //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+        unsigned C_INT32 index = Copasi->pModel->getMetabolites().getIndex(GlobalKeys.get(objKey));
+        /*for (i = 0; i < imax; i++)
+               {
+                 dataModel->getModel()->removeMetabolite(keys[i]);
+               }*/
+        dataModel->getModel()->removeMetabolite(objKey);
+        enter(Copasi->pModel->getMetabolites()[std::min(index, size - 2)]->getKey());
+        //for (i = 0; i < imax; i++)
+        ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, objKey);
+        //TODO notify about reactions
+        break;
+      }
+    case 1:                 // No or Escape
+      break;
+    }
 }
 
 bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
