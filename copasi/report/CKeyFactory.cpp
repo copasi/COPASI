@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 17:42:41 $
+   $Date: 2005/04/06 13:01:02 $
    End CVS Header */
 
 /**
@@ -183,6 +183,8 @@ bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
 
 bool CKeyFactory::remove(const std::string & key)
 {
+  if (key.length() == 0) return false;
+
   unsigned C_INT32 pos = key.length() - 1;
   while (isDigit(key[pos]) && pos) --pos;
 
