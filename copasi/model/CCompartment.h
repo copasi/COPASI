@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:00 $
+   $Date: 2004/08/05 12:50:39 $
    End CVS Header */
 
 /**
@@ -59,7 +59,6 @@ class CCompartment : public CCopasiContainer
      */
     /** @dia:route 3,9; h,128.756,35.403,118.742,53.4961,108.729 */
     CCopasiVectorNS < CMetab > mMetabolites;
-    // Operations
 
   public:
     /**
@@ -77,11 +76,6 @@ class CCompartment : public CCopasiContainer
      */
     CCompartment(const CCompartment & src,
                  const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Init
-     */ 
-    // void initialize();
 
     /**
      *  Destructor. 
@@ -104,42 +98,10 @@ class CCompartment : public CCopasiContainer
     C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  Writes the data in Gepasi 3.21 file format
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a ofstream object.
-     *  Writes the data in SBML file format
-     *  @param "std::ofstream &" fout ofstream that should be already open
-     */ 
-    //    void saveSBML(std::ofstream &fout);
-
-    /**
      *  Returns a string with the name of this compartment.
      *  @return std::string key
      */
     virtual const std::string & getKey() const;
-
-    /**
-     *  Returns a string with the name of this compartment.
-     *  @return mName
-     *  @see mName
-     */ 
-    //    const std::string & getName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
