@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:31:51 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/11 21:43:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,7 +36,7 @@ class CReportDefinition : public CCopasiObject
     // Operations
   private:
     std::string mKey;
-    CCopasiStaticString mComment;
+    std::string mComment;
     std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mFooterVector;
 
@@ -72,7 +72,7 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    CCopasiStaticString& getComment()
+    std::string & getComment()
     {
       return mComment;
     }
@@ -80,7 +80,7 @@ class CReportDefinition : public CCopasiObject
     /**
     sets the comments in the report tag
     */
-    void setComment(const CCopasiStaticString& comment)
+    void setComment(const std::string & comment)
     {
       mComment = comment;
     }

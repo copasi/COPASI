@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/11 15:59:16 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/11 21:43:54 $
    End CVS Header */
 
 /**
@@ -515,7 +515,7 @@ bool CCopasiXML::saveReportList()
       startSaveElement("Report", Attributes);
 
       startSaveElement("Comment");
-      saveData(pReport->getComment().getStaticString());
+      saveData(pReport->getComment());
       endSaveElement("Comment");
 
       std::vector <CCopasiObjectName> *header = pReport->getHeaderAddr();
@@ -549,11 +549,11 @@ bool CCopasiXML::saveReportList()
           startSaveElement("Complex");
           for (j = 0; j < body->size(); j++)
             {
-              if ((*body)[j].getObjectType() == "string")
+              if ((*body)[j].getObjectType() == "String")
                 {
                   //Write in Text
                   startSaveElement("Text");
-                  saveData((*body)[j]);
+                  saveData((*body)[j].getName());
                   endSaveElement("Text");
                 }
               else
