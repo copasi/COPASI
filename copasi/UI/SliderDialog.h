@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/02 17:06:46 $
+   $Date: 2004/11/03 09:43:27 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -94,8 +94,10 @@ class CopasiSlider: public QVBox
 
     double value() const;
     void setValue(double value);
-    double tickInterval() const;
-    void setTickInterval(double tickInterval);
+    unsigned int minorMajorFactor() const;
+    void setMinorMajorFactor(unsigned int factor);
+    double minorTickInterval() const;
+    void setMinorTickInterval(double tickInterval);
     CCopasiObject* object() const;
     void setObject(CCopasiObject* object);
     void setMinValue(double value);
@@ -115,7 +117,8 @@ class CopasiSlider: public QVBox
     NumberType typeVar;
     double minValueVar;
     double maxValueVar;
-    double factorVar;
+    double mMinorFactor;
+    unsigned int mMinorMajorFactor;
     QSlider* slider;
     QLabel* label;
 
