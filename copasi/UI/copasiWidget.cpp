@@ -38,7 +38,7 @@ void CopasiWidget::resize (int w, int h)
         {
           QWidget* qParent = topLevelWidget();
           qParent->setMinimumSize(realMinWidth, realMinHeight);
-          qParent->resize(realMinWidth, realMinHeight);
+          //   qParent->resize(realMinWidth, realMinHeight);
         }
       return;
     }
