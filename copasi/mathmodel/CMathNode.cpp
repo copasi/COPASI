@@ -45,7 +45,7 @@ CMathNodeOperation::~CMathNodeOperation() {}
 
 std::string CMathNodeOperation::getText() const
   {
-    stringstream text;
+    std::stringstream text;
     CMathNode * pChild =
       (CMathNode *) const_cast< CMathNodeOperation * >(this)->getChild();
 
@@ -56,10 +56,10 @@ std::string CMathNodeOperation::getText() const
         if (pChild->getSibbling())
           text << ((CMathNode *) pChild->getSibbling())->getText();
         else
-          text << "???";
+          text << "-?-";
       }
     else
-      text << "???" << mOperation << "???";
+      text << "-?-" << mOperation << "-?-";
 
     return text.str();
   }
@@ -76,7 +76,7 @@ CMathNodeDerivative::~CMathNodeDerivative() {}
 
 std::string CMathNodeDerivative::getText() const
   {
-    stringstream text;
+    std::stringstream text;
     CMathNode * pChild =
       (CMathNode *) const_cast< CMathNodeDerivative * >(this)->getChild();
 
@@ -89,12 +89,12 @@ std::string CMathNodeDerivative::getText() const
         if (pChild->getSibbling())
           text << ((CMathNode *) pChild->getSibbling())->getText();
         else
-          text << "???";
+          text << "-?-";
 
         text << ")";
       }
     else
-      text << "???(???)";
+      text << "-?-(-?-)";
 
     return text.str();
   }
@@ -113,7 +113,7 @@ CMathNodeNumber::~CMathNodeNumber() {}
 
 std::string CMathNodeNumber::getText() const
   {
-    stringstream text;
+    std::stringstream text;
     text << mNumber;
 
     return text.str();
@@ -136,7 +136,7 @@ std::string CMathNodeSymbol::getText() const
     if (mpSymbol)
       return mpSymbol->getName();
     else
-      return "???";
+      return "-?-";
   }
 
 CMathNodeFunction::CMathNodeFunction(const CMathSymbol * pSymbol):
@@ -151,10 +151,10 @@ CMathNodeFunction::~CMathNodeFunction() {}
 
 std::string CMathNodeFunction::getText() const
   {
-    stringstream text;
+    std::stringstream text;
 
     if (!mpSymbol)
-      text << "???()";
+      text << "-?-()";
     else
       {
         text << mpSymbol->getName() << "(";
