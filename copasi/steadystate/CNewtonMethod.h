@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 09:36:13 $
+   $Author: gauges $ 
+   $Date: 2004/10/26 15:19:27 $
    End CVS Header */
 
 /**
@@ -97,6 +97,7 @@ class CNewtonMethod : public CSteadyStateMethod
      */
     virtual CSteadyStateMethod::ReturnCode
     processInternal();
+    bool isSteadyState();
 
   private:
     /**
@@ -111,8 +112,6 @@ class CNewtonMethod : public CSteadyStateMethod
 
     CNewtonMethod::NewtonReturnCode
     returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode);
-
-    bool isSteadyState();
 
     void cleanup();
   };
