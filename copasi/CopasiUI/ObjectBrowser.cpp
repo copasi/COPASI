@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:48 $
+   $Author: jpahle $ 
+   $Date: 2004/10/05 09:02:11 $
    End CVS Header */
 
 /********************************************************
@@ -415,7 +415,8 @@ void ObjectBrowser::loadData()
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
-  itemRoot->setText(0, FROM_UTF8(root->getObjectName()));
+  //  itemRoot->setText(0, FROM_UTF8(root->getObjectName()));
+  itemRoot->setText(0, QString("Copasi"));
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
   removeDuplicate(objectItemList);
