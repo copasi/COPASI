@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 10:50:31 $
+   $Date: 2004/12/22 12:33:01 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -558,7 +558,12 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //      break;
       case N_IDENTIFIER :
         for (i = 0; i < level; ++i) out << " ";
-        out << "<mi>" << mName << "</mi>" << std::endl;
+        if (mName.substr(0, 1) == "K")
+          out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
+        else if (mName.substr(0, 1) == "V")
+          out << "<msub><mi>V</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
+        else
+          out << "<mi>" << mName << "</mi>" << std::endl;
         break;
       case N_OPERATOR:
         switch (mSubtype)
@@ -610,7 +615,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
                 out << "</mfenced>" << std::endl;
               }
             for (i = 0; i < level + 1; ++i) out << " ";
-            out << "<mo>" << " " << "</mo>" << std::endl;
+            out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
             flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
             if (flag)
               {
