@@ -178,16 +178,19 @@ std::string CMetabNameInterface::extractMetabName(const CModel* model, const std
 bool CMetabNameInterface::isValidMetabName(const std::string name)
 {
   // a valid name does not contain white spaces, and contains either matching or no curly braces
-  C_INT32 pos1, pos2, pos3;
+  C_INT32 pos1, pos2, pos3, end;
+  end = name.find_last_not_of(" ") + 1;  // the end of the string
+  if (end < 0)   // the string consists of white spaces only
+    return false;
 
   // make sure the name is not an empty string
   unsigned C_INT32 len = name.length();
   if (len < 1)
     return false;
 
-  // check for white spaces
+  // check for white spaces before the end of the string
   pos1 = name.find(" ");
-  if (pos1 >= 0)
+  if ((pos1 >= 0) && (pos1 <= end))
     return false;
 
   // curly braces: '{' is not the first character in the string, and appears before '}'
@@ -200,8 +203,8 @@ bool CMetabNameInterface::isValidMetabName(const std::string name)
   if ((pos1 < 0) && (pos2 < 0))
     return true;
 
-  // ok  if only one '{' and one '}', braces match, compartment name is not an empty string, and '}' is the last character
-  if ((pos1 > 0) && (pos1 == pos3) && (pos2 > pos1 + 1) && (pos2 + 1 == len))
+  // ok  if only one '{' and one '}', braces match, neither metabolite name nor compartment name is an empty string, and '}' is the last character that is not a white space
+  if ((pos1 > 0) && (pos1 == pos3) && (pos2 > pos1 + 1) && (pos2 + 1 == end))
     return true;
 
   // otherwise the name is not valid
