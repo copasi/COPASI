@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/19 13:51:21 $
+   $Author: gauges $ 
+   $Date: 2005/02/03 14:44:37 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -364,6 +364,18 @@ void CCopasiSimpleSelectionTree::commitClicked()
     {
       std::vector<CCopasiObject*>* treeSelection = this->getTreeSelection();
       this->mpOutputVector->assign(treeSelection->begin(), treeSelection->end());
+      std::vector<CCopasiObject*>::iterator it = this->mpOutputVector->begin();
+      while (it != this->mpOutputVector->end())
+        {
+          if (*it == NULL)
+            {
+              it = this->mpOutputVector->erase(it);
+            }
+          else
+            {
+              ++it;
+            }
+        }
       delete treeSelection;
     }
 }
