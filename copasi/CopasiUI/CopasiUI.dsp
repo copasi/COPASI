@@ -54,6 +54,18 @@ CFG=CopasiUI - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CMCAResultSubwidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAResultWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\model\CModel.cpp
 # End Source File
 # Begin Source File
@@ -260,6 +272,22 @@ SOURCE=.\TrajectoryWidget.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\CMCAResultSubwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAResultSubwidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAResultWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMCAWidget.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\CompartmentsWidget.h
