@@ -526,6 +526,8 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
           mColLU[colLU[i]] = tmp;
         }
     }
+  //   std::cout << mRowLU << std::endl;
+  //   std::cout << mColLU << std::endl;
 
   mFluxesX.resize(mStepsX.size());
   mScaledFluxesX.resize(mStepsX.size());
@@ -770,8 +772,8 @@ void CModel::buildMoieties()
         }
 
       pMoiety->setInitialValue();
-      std::cout << pMoiety->getDescription() << " = "
-      << pMoiety->getNumber() << std::endl;
+      //      std::cout << pMoiety->getDescription() << " = "
+      //      << pMoiety->getNumber() << std::endl;
 
       mMoieties.add(pMoiety);
     }
@@ -1056,6 +1058,11 @@ CState * CModel::getInitialState() const
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolites[i]->getInitialNumberInt();
 
+    //     std::cout << "getInitialState " << mInitialTime;
+    //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
+    //       std::cout << " " << mMetabolitesX[i]->getInitialConcentration();
+    //     std::cout << std::endl;
+
     return s;
   }
 
@@ -1098,6 +1105,11 @@ CStateX * CModel::getInitialStateX() const
     Int = const_cast<C_INT32 *>(s->getFixedNumberVectorInt().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Int++)
       *Int = mMetabolitesX[i]->getInitialNumberInt();
+
+    //     std::cout << "getInitialStateX " << mInitialTime;
+    //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
+    //       std::cout << " " << mMetabolitesX[i]->getInitialConcentration();
+    //     std::cout << std::endl;
 
     return s;
   }
@@ -1215,6 +1227,7 @@ void CModel::setState(const CState * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
+  //  std::cout << *state << std::endl;
   /* Set the time */
   mTime = state->getTime();
 
@@ -1239,6 +1252,11 @@ void CModel::setState(const CState * state)
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
+
+  //   std::cout << "setState " << mTime;
+  //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
+  //     std::cout << " " << mMetabolitesX[i]->getConcentration();
+  //   std::cout << std::endl;
 
   return;
 }
@@ -1277,6 +1295,7 @@ void CModel::setState(const CStateX * state)
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
+  //  std::cout << *state << std::endl;
   /* Set the time */
   mTime = state->getTime();
 
@@ -1292,7 +1311,7 @@ void CModel::setState(const CStateX * state)
      numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVectorDbl().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getConcentration())
+    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getConcentration())
     = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
       * mNumber2QuantityFactor;
 
@@ -1300,7 +1319,7 @@ void CModel::setState(const CStateX * state)
      concentration which has been already set above */
   const C_INT32 * Int = state->getVariableNumberVectorInt().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Int++)
-    *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolitesX[i]->getNumberInt()) = *Int;
 
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */
@@ -1315,6 +1334,11 @@ void CModel::setState(const CStateX * state)
                        * mNumber2QuantityFactor);
       (const_cast<CStateX *>(state))->setDependentNumber(i, NumberDbl);
     }
+
+  //   std::cout << "setStateX " << mTime;
+  //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
+  //     std::cout << " " << mMetabolitesX[i]->getConcentration();
+  //   std::cout << std::endl;
 
   return;
 }
@@ -1486,10 +1510,10 @@ C_INT32 CModel::addReaction(CReaction *r)
   return mSteps.size();
 }
 
-const std::vector <unsigned C_INT32> & CModel::getMetabolitePermutation() const
+const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
   {return mRowLU;}
 
-const std::vector <unsigned C_INT32> & CModel::getReactionPermutation() const
+const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
   {return mColLU;}
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const

@@ -48,7 +48,7 @@ CState & CState::operator =(const CStateX & stateX)
 
       mVariableNumbers.resize(iTotal);
 
-      const std::vector <unsigned C_INT32> & Permutation =
+      const CVector< unsigned C_INT32 > & Permutation =
         mpModel->getMetabolitePermutation();
 
       /* We have to set the Dbl and Int representation independently
@@ -408,7 +408,7 @@ CStateX & CStateX::operator =(const CState & state)
       iVariable = mVariableNumbers.size();
       iTotal = iVariable + mDependentNumbers.size();
 
-      const std::vector <unsigned C_INT32> & Permutation =
+      const CVector< unsigned C_INT32 > & Permutation =
         mpModel->getMetabolitePermutation();
 
       /* We have to set the Dbl and Int representation independently

@@ -220,12 +220,12 @@ class CModel : public CCopasiContainer
     /**
      * Vector for storing the row interchanges during LU-Decomposition
      */
-    std::vector< unsigned C_INT32 > mRowLU;
+    CVector< unsigned C_INT32 > mRowLU;
 
     /**
      * Vector for storing the column interchanges during LU-Decomposition
      */
-    std::vector< unsigned C_INT32 > mColLU;
+    CVector< unsigned C_INT32 > mColLU;
 
     /**
      *   This matrix stores L
@@ -673,15 +673,15 @@ class CModel : public CCopasiContainer
 
     /**
      * Retrieve the metabolite permutation vector
-     * @return const vector <unsigned C_INT32> & permutation
+     * @return CVector< unsigned C_INT32 > & permutation
      */
-    const std::vector<unsigned C_INT32> & getMetabolitePermutation() const;
+    const CVector< unsigned C_INT32 > & getMetabolitePermutation() const;
 
     /**
      * Retrieve the reaction permutation vector
-     * @return const vector <unsigned C_INT32> & permutation
+     * @return const CVector<unsigned C_INT32> & permutation
      */
-    const std::vector<unsigned C_INT32> & getReactionPermutation() const;
+    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
 
     /**
      * Calculates the particle numbers of the dependent
