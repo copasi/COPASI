@@ -550,7 +550,8 @@ class CReaction
     void cleanupCallParameters();
 
     /**
-     *
+     *  gets mParameterDescription from mFunction and then creates the vectors inside
+     *  mCallParameters (If needed)
      */
     void initCallParameters();
 
@@ -560,7 +561,7 @@ class CReaction
     void setCallParameters();
 
     /**
-     *
+     *  Checks if all the Pointers in mCallParameters are !=NULL
      */
     void checkCallParameters();
 
