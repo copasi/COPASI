@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.5 2003/09/19 20:37:45 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.6 2003/09/19 20:40:49 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -67,19 +67,26 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout5 = new QGridLayout(0, 1, 1, 0, 6, "layout5");
 
+  //manually change to add icon for alignment need
   upButton = new QPushButton(this, "upButton");
-
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
   layout5->addWidget(upButton, 1, 0);
 
-  downButton = new QPushButton(this, "downButton");
-
-  layout5->addWidget(downButton, 1, 1);
-
   deleteButton = new QPushButton(this, "deleteButton");
-
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
   layout5->addWidget(deleteButton, 0, 1);
 
+  downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
+  layout5->addWidget(downButton, 1, 1);
+
   addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
+  layout5->addWidget(addButton, 0, 0);
 
   layout5->addWidget(addButton, 0, 0);
   layout6->addLayout(layout5);
