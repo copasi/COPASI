@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:38 $
+   $Author: chlee $ 
+   $Date: 2003/10/23 19:51:03 $
    End CVS Header */
 
 /**********************************************************************
@@ -372,6 +372,7 @@ void FunctionWidget1::updateParameters()
       std::vector<CNodeK *> v = kinFunc->getNodes();
 
       // go through nodes and determine if identifier, if so, then add to parameters
+      func->getParameters().cleanup();
       for (int i = 0; i < v.size(); i++)
         {
           if (((CNodeK*)v[i])->isIdentifier())
@@ -389,10 +390,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:     // The user clicked the Retry again button or pressed Enter
+        case 0:      // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:     // The user clicked the Quit or pressed Escape
+        case 1:      // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
@@ -528,7 +529,7 @@ bool FunctionWidget1::saveToFunction()
       else
         {
           /***** for Table 2: Applications table *****/
-          C_INT32 noOfApplns =
+          /*C_INT32 noOfApplns =
             std::min(functUsage.size(), (unsigned C_INT32) Table2->numRows());
 
           //  Table2->setNumRows(noOfApplns);
@@ -552,13 +553,14 @@ bool FunctionWidget1::saveToFunction()
                   int_High = app_High.toInt();
                 }
 
-              /***** there is no setName  here ????? ******/
+              /***** there is no setName  here ????? ****** /
               functUsage[j]->setUsage(app_Desc.latin1());
 
               functUsage[j]->setLow(int_Low);
 
               functUsage[j]->setHigh(int_High);
-            }
+            }*/
+          updateApplication();
         }
     }
 
@@ -570,11 +572,55 @@ bool FunctionWidget1::saveToFunction()
   return true;
 }
 
+void FunctionWidget1::updateApplication()
+{
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+
+  C_INT32 j;
+
+  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
+  /***** for Table 2: Applications table *****/
+  C_INT32 noOfApplns =
+    std::min(functUsage.size(), (unsigned C_INT32) Table2->numRows());
+
+  //  Table2->setNumRows(noOfApplns);
+
+  for (j = 0; j < noOfApplns; j++)
+    {
+      //app_Desc = new QString(Table2->text(j,0));
+      app_Desc = Table2->text(j, 0);
+      //app_Low=new QString(Table2->text(j,1));
+      app_Low = Table2->text(j, 1);
+      int_Low = app_Low.toInt();
+      app_High = Table2->text(j, 2);
+      //app_High = new QString(Table2->text(j,2));
+
+      if (QString::compare(app_High, "NA") == 0)
+        {
+          int_High = 0;
+        }
+      else
+        {
+          int_High = app_High.toInt();
+        }
+
+      /***** there is no setName  here ????? ******/
+      functUsage[j]->setUsage(app_Desc.latin1());
+
+      functUsage[j]->setLow(int_Low);
+
+      functUsage[j]->setHigh(int_High);
+    }
+}
+
 /*This function is called when the Function Description LineEdit is changed.*/
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
+  //  if (textbrowser.getText() ==
   // update the widget
   updateParameters();
+  //updateApplication();
+  //saveToFunction();
 }
 
 void FunctionWidget1::slotCancelButtonClicked()

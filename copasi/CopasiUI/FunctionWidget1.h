@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:51 $
+   $Author: chlee $ 
+   $Date: 2003/10/23 19:51:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -51,6 +51,7 @@ class FunctionWidget1 : public CopasiWidget
   protected:
     bool loadFromFunction(CFunction*);
     void updateParameters();
+    void updateApplication();
     bool saveToFunction();
     std::string objKey;
 
