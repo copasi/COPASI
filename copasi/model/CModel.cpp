@@ -788,3 +788,11 @@ const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
 {
   return *mpInverseLView;
 }
+
+/**
+ *  Get the reverse Matrix of this Model
+ */
+const TNT::Matrix < C_FLOAT64 >& CModel::getML() const
+{
+	return mL;
+}

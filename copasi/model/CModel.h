@@ -106,7 +106,7 @@ class CModel
    */
   TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
     *mpInverseLView;  
-  
+
 #ifdef XXXX
   /**
    *  number of internal metabolites
@@ -471,6 +471,11 @@ class CModel
     TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
     & getInverseL() const;
   
+  /**
+   *  Get the reverse Matrix of this Model
+   */
+  const TNT::Matrix < C_FLOAT64 >& getML() const;
+
 
 #ifdef XXXX
   /**
