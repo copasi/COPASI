@@ -1,8 +1,8 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\tabledefinition.ui'
- **
+ ** 
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.14 2003/08/12 16:36:18 lixu1 Exp $)
+ **      by: Liang Xu
+  ($Id: TableDefinition.h,v 1.15 2003/08/12 18:44:58 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
