@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/14 05:28:16 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:16:11 $
    End CVS Header */
 
 /*******************************************************************
@@ -334,6 +334,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       std::string CompartmentToRemove = metab->getCompartment()->getObjectName();
       CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
       CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
+      CCopasiDataModel::Global->getModel()->setCompileFlag();
       CCopasiDataModel::Global->getModel()->initializeMetabolites();
       //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
@@ -347,24 +348,10 @@ bool MetabolitesWidget1::saveToMetabolite()
   if (fabs(temp1 - metab->getInitialConcentration()) > 1e-40)
     {
       metab->setInitialConcentration(temp1);
-      metab->setConcentration(temp1); //TODO ??
+      //metab->setConcentration(temp1);
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      CCopasiDataModel::Global->getModel()->setCompileFlag();
+      //CCopasiDataModel::Global->getModel()->setCompileFlag();
     }
-
-  /*else
-    {
-      QString initialNumber(mEditInitNumber->text());
-      C_FLOAT64 temp2;
-      temp2 = initialNumber.toDouble();
-      if (fabs(temp2 - metab->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
-        {
-          metab->setInitialNumber(temp2);
-          metab->setNumber(temp2); //TODO ??
-          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-          CCopasiDataModel::Global->getModel()->setCompileFlag();
-        }
-    }*/
 
   //fixed?
   if (mCheckStatus->isChecked() == true)
@@ -385,7 +372,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
-  enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
+  //enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
 
   //mChanged = false;
   return true; //TODO: really check
@@ -414,7 +401,8 @@ bool MetabolitesWidget1::loadReactionsTable()
   return true;
 }
 
-void MetabolitesWidget1::slotReactionTableCurrentChanged(int mRow, int mCol, int mButton, const QPoint & mCur)
+void MetabolitesWidget1::slotReactionTableCurrentChanged(int C_UNUSED(mRow), int C_UNUSED(mCol),
+    int C_UNUSED(mButton), const QPoint & C_UNUSED(mCur))
 {
   std::set<std::string> reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
   CReaction* pReac;
@@ -522,7 +510,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                            // Yes or Enter
+    case 0:                                             // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -545,7 +533,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                            // No or Escape
+    case 1:                                             // No or Escape
       break;
     }
 }

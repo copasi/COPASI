@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:16:32 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -178,6 +178,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
       CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
       CCopasiDataModel::Global->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
+      CCopasiDataModel::Global->getModel()->setCompileFlag();
       CCopasiDataModel::Global->getModel()->initializeMetabolites();
       //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
       ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
@@ -197,7 +198,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
         }*/
     } //TODO check if changing the compartment of a metabolite really works. NO!!!
 
-  CCopasiDataModel::Global->getModel()->setCompileFlag(); //TODO: check if really necessary
+  //CCopasiDataModel::Global->getModel()->setCompileFlag();
 }
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -328,7 +329,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                   // Yes or Enter
+    case 0:                                    // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -340,7 +341,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                   // No or Escape
+    case 1:                                    // No or Escape
       break;
     }
 }
