@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/11/13 18:50:47 $
+   $Author: shoops $ 
+   $Date: 2003/11/21 19:47:25 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.25 2003/11/13 18:50:47 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.26 2003/11/21 19:47:25 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -336,7 +336,7 @@ void TableDefinition1::slotBtnConfirmClicked()
             {
               Title =
                 pSelectedObject->getObjectParent()->getCN();
-              Title += "Reference=Name";
+              Title += ",Reference=Name";
               pReportDefinition->getHeaderAddr()->push_back(Title);
 
               Title =
