@@ -478,16 +478,6 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
   LUfactor(LU, rowLU, colLU);
 
-#ifdef DEBUG_MATRIX
-  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(LU, 0.0);
-  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(LU, 0.0, 1.0);
-
-  DebugFile << "U" << std::endl;
-  DebugFile << U << std::endl;
-  DebugFile << "L" << std::endl;
-  DebugFile << L << std::endl;
-#endif
-
   // mMetabolitesX = mMetabolites;
 
   mStepsX.resize(mSteps.size());
@@ -535,8 +525,8 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
     }
 
 #ifdef DEBUG_MATRIX
-  DebugFile << mRowLU << std::endl;
-  DebugFile << mColLU << std::endl;
+  DebugFile << "Metabolite reordering " << mRowLU << std::endl;
+  DebugFile << "Reaction reordering " << mColLU << std::endl;
 #endif
 
   mFluxesX.resize(mStepsX.size());
