@@ -227,6 +227,11 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   return Fail;
 }
 
+C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
+{
+  return 0;
+}
+
 void CModel::compile()
 {
   buildStoi();

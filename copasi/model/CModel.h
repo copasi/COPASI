@@ -173,6 +173,15 @@ class CModel
     C_INT32 save(CWriteConfig &configBuffer);
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+    *  This is saved in the format required by Gepasi 3.21
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    C_INT32 saveOld(CWriteConfig &configBuffer);
+
+    /**
      *  This function must be called to initialize the vector of Metabolites
      *  after finishing adding metabolites to compartments.
      */
