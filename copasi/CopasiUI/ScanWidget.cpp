@@ -228,13 +228,22 @@ ScanWidget::~ScanWidget()
 void ScanWidget::addButtonClicked()
 {
   ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  if (pSelectedObjects->exec () == QDialog::Rejected)
+    return;
   ObjectList* pSelectedList = pSelectedObjects->outputList();
-  delete pSelectedObjects;
 
   if (pSelectedList == NULL)
     return;
 
-  addNewScanItem(pSelectedList->pop()->getObject()->pCopasiObject);
+  ObjectListItem* pListItem = pSelectedList->getRoot();
+  for (; pListItem; pListItem = pListItem->pNext)
+    if ((pListItem->pItem) && (pListItem->pItem->getObject()) && (pListItem->pItem->getObject()->pCopasiObject))
+      break;
+
+  if (pSelectedList->getRoot())
+    addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
+
+  delete pSelectedObjects;
   delete pSelectedList;
 }
 

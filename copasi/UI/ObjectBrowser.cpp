@@ -42,7 +42,7 @@ QPixmap *pObjectNone = 0;     // to store the image of open icon folder
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(NULL, name, fl)
+    : QDialog(NULL, name, parent == NULL, fl)
 {
   if (!name)
     setName("ObjectBrowser");
@@ -73,63 +73,45 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   cancelButton = new QPushButton(this, "cancelButton");
   cancelButton->setText(trUtf8("Cancel"));
 
-  ObjectBrowserLayout->addWidget(cancelButton, 2, 0);
+  if (parent)
+    ObjectBrowserLayout->addWidget(cancelButton, 2, 0);
+  else
+    ObjectBrowserLayout->addWidget(cancelButton, 2, 2);
 
   nextButton = new QPushButton(this, "nextButton");
-  nextButton->setText(trUtf8("Next >"));
+  if (parent)
+    nextButton->setText(trUtf8("Next >"));
+  else
+    nextButton->setText(trUtf8("OK"));
 
   ObjectBrowserLayout->addWidget(nextButton, 2, 3);
 
-  backButton = new QPushButton(this, "backButton");
-  backButton->setText(trUtf8("< Back"));
-
-  ObjectBrowserLayout->addWidget(backButton, 2, 2);
-  QSpacerItem* spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  ObjectBrowserLayout->addItem(spacer, 2, 1);
+  if (parent)
+    {
+      backButton = new QPushButton(this, "backButton");
+      backButton->setText(trUtf8("< Back"));
+      ObjectBrowserLayout->addWidget(backButton, 2, 2);
+      QSpacerItem* spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
+      ObjectBrowserLayout->addItem(spacer, 2, 1);
+    }
 
   // tab order
   setTabOrder(ObjectListView, cancelButton);
-  setTabOrder(cancelButton, backButton);
-  setTabOrder(backButton, nextButton);
+  if (parent)
+    {
+      setTabOrder(cancelButton, backButton);
+      setTabOrder(backButton, nextButton);
+    }
+  else
+    setTabOrder(cancelButton, nextButton);
 
-  /*
-    if (!name)
-      setName("ObjectBrowser");
-    resize(516, 321);
-    setCaption(trUtf8("TabListView"));
-    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectBrowserLayout");
-   
-    cancelButton = new QPushButton(this, "cancelButton");
-    cancelButton->setText(trUtf8("Cancel"));
-   
-    ObjectBrowserLayout->addWidget(cancelButton, 1, 2);
-   
-    nextButton = new QPushButton(this, "nextButton");
-    nextButton->setText(trUtf8("Next"));
-   
-    ObjectBrowserLayout->addWidget(nextButton, 1, 1);
-   
-    backButton = new QPushButton(this, "backButton");
-    backButton->setText(trUtf8("Back"));
-   
-    ObjectBrowserLayout->addWidget(backButton, 1, 0);
-   
-    ObjectListView = new QListView(this, "ObjectListView");
-    ObjectListView->addColumn(trUtf8("Object Browser"));
-    ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-   
-    ObjectListView->setAcceptDrops(FALSE);
-    ObjectListView->setResizeMode(QListView::LastColumn);
-    ObjectListView->setTreeStepSize(19);
-   
-    ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 2);
-  */
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
   pObjectNone = new QPixmap((const char**)ptrObjectNone);
   pObjectParts = new QPixmap((const char**)ptrObjectParts);
 
   // signals and slots connections
-  connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
+  if (parent)
+    connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
   connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
@@ -270,6 +252,12 @@ ObjectList* ObjectBrowser::outputList()
 
 void ObjectBrowser::nextClicked()
 {
+  if (!mparent)
+    {
+      QDialog::done(QDialog::Accepted);
+      return;
+    }
+
   ObjectList* outputList;
   ObjectBrowserItem* rootItem;
   switch (currentPage)

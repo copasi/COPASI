@@ -1,19 +1,19 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 04/03 
- Comment : Copasi Object Browser including:
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 04/03 
+Comment : Copasi Object Browser including:
 
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
-    there may exist multiply wrappers to one browserObject
+   there may exist multiply wrappers to one browserObject
 ObjectListItem
 ObjectList: A queue for all element: 
-   The reason I dont use std:vector is
-   for efficiency requirement for all 
-   object browser item update
- Contact: Please contact lixu1@vt.edu.
+  The reason I dont use std:vector is
+  for efficiency requirement for all 
+  object browser item update
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #include "ObjectBrowserItem.h"
@@ -247,6 +247,8 @@ ObjectBrowserItem* ObjectList::pop()
   ObjectBrowserItem* returnValue = root->pItem;
   ObjectListItem* delNode = root;
   root = root->pNext;
+  if (root)
+    root->pLast = NULL;
   length--;
   delete delNode;
   return returnValue;

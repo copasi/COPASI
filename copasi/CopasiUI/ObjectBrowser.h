@@ -12,6 +12,7 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -29,7 +30,7 @@ class CopasiUI3Window;
 
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 
-class ObjectBrowser : public QWidget
+class ObjectBrowser : public QDialog
   {
     Q_OBJECT
   private:

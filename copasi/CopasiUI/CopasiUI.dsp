@@ -239,6 +239,10 @@ SOURCE=.\moc_ReactionsWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\moc_ScanItemWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\moc_ScanWidget.cpp
 # End Source File
 # Begin Source File
@@ -316,6 +320,10 @@ SOURCE=.\ReactionsWidget1.cpp
 # Begin Source File
 
 SOURCE=.\ReactionsWidget1.moc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanItemWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -1152,6 +1160,39 @@ InputName=ReactionsWidget1
 # End Source File
 # Begin Source File
 
+SOURCE=.\ScanItemWidget.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanItemWidget.h...
+InputDir=.
+InputPath=.\ScanItemWidget.h
+InputName=ScanItemWidget
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanItemWidget.h...
+InputDir=.
+InputPath=.\ScanItemWidget.h
+InputName=ScanItemWidget
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\ScanWidget.h
 
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
@@ -1268,5 +1309,38 @@ SOURCE=.\Tree.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\ScanWidget.moc
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanWidget.cpp...
+InputDir=.
+InputPath=.\ScanWidget.moc
+InputName=ScanWidget
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ScanWidget.cpp...
+InputDir=.
+InputPath=.\ScanWidget.moc
+InputName=ScanWidget
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

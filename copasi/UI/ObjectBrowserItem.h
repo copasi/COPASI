@@ -1,19 +1,19 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 04/03 
- Comment : Copasi Object Browser including:
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 04/03 
+Comment : Copasi Object Browser including:
 
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
-    there may exist multiply wrappers to one browserObject
+   there may exist multiply wrappers to one browserObject
 ObjectListItem
 ObjectList: A queue for all element: 
-   The reason I dont use std:vector is
-   for efficiency requirement for all 
-   object browser item update
- Contact: Please contact lixu1@vt.edu.
+  The reason I dont use std:vector is
+  for efficiency requirement for all 
+  object browser item update
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECT_BROWSER_ITEM_H
@@ -72,8 +72,8 @@ class ObjectBrowserItem : public QListViewItem
 
     // inline const QString & getKey() const {return mKey;}
 
-    ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList);
-    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList);
+    ObjectBrowserItem (QListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+    ObjectBrowserItem (ObjectBrowserItem * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     ~ObjectBrowserItem()
     {
       if (getType() != FIELDATTR) //To avoid cross reference/multi deletion

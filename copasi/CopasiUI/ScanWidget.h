@@ -10,8 +10,9 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
 #include <qscrollview.h>
+#include "copasiWidget.h"
+
 class QVBox;
 class QHBoxLayout;
 class QGridLayout;
@@ -77,6 +78,7 @@ class ScanWidget : public CopasiWidget
   signals:
     void hide_me();
     void show_me();
+
   public slots:
     virtual void CancelChangeButton();
     virtual void CommitChangeButton();
