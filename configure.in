@@ -29,6 +29,12 @@ else
   cps_release="CONFIG+=release"
 fi
 
+if test "${enable_thread}" != no; then
+  cps_thread="CONFIG+=thread"
+else
+  cps_thread="CONFIG-=thread"
+fi
+
 if test "${MKL_PATH}" != ""; then
   cps_mkl_path="MKL_PATH=$MKL_PATH"
 fi
@@ -47,8 +53,8 @@ fi
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
- echo "  qmake $cps_release $cps_mkl_path $cps_clapack_path $cps_expat_path" && \
- qmake $cps_release $cps_mkl_path $cps_clapack_path $cps_expat_path && \
+ echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
+ qmake $cps_release $cps_thread $cps_mkl_path $cps_clapack_path $cps_expat_path && \
  cat Makefile | sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' > $$.tmp && \
  mv $$.tmp Makefile \
 )
