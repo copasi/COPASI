@@ -15,34 +15,34 @@
 string StringPrint( char * format, ...);
 
 
-    void lsoda_dgefa(C_FLOAT64 ** a, 
+    void dgefa(C_FLOAT64 ** a, 
                      C_INT32 n, 
                      C_INT32 * ipvt, 
                      C_INT32 * info);
 
-    C_INT32 lsoda_idamax(C_INT32 n,
+    C_INT32 idamax(C_INT32 n,
                          C_FLOAT64 * dx,
                          C_INT32 incx);
 			 
-    void lsoda_dgesl(C_FLOAT64 ** a,
+    void dgesl(C_FLOAT64 ** a,
                      C_INT32 n,
                      C_INT32 * ipvt, 
                      C_FLOAT64 * b, 
                      C_INT32 job);
 
-    void lsoda_daxpy(C_INT32 n,
+    void daxpy(C_INT32 n,
                      C_FLOAT64 da, 
                      C_FLOAT64 * dx,
                      C_INT32 incx, 
                      C_FLOAT64 * dy,
                      C_INT32 incy);
 
-    void lsoda_dscal(C_INT32 n,
+    void dscal(C_INT32 n,
                      C_FLOAT64 da,
                      C_FLOAT64 * dx,
                      C_INT32 incx);
 
-    C_FLOAT64 lsoda_ddot(C_INT32 n, 
+    C_FLOAT64 ddot(C_INT32 n, 
                          C_FLOAT64 * dx,
                          C_INT32 incx, 
                          C_FLOAT64 * dy,
