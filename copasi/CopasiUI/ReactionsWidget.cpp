@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:40 $
+   $Date: 2004/09/10 11:10:20 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -41,7 +41,7 @@ std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 void ReactionsWidget::init()
 {
   mOT = ListViews::REACTION;
-  numCols = 4;
+  numCols = 5;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -51,9 +51,11 @@ void ReactionsWidget::init()
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Equation");
   tableHeader->setLabel(3, "Kinetics");
+  tableHeader->setLabel(4, "Flux");
 
   //this restricts users from editing function names
   table->setColumnReadOnly (3, true);
+  table->setColumnReadOnly (4, true);
 }
 
 void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -64,6 +66,8 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false)));
   if (&(pRea->getFunction()))
     table->setText(row, 3, FROM_UTF8(pRea->getFunction().getObjectName()));
+
+  table->setText(row, 4, QString::number(pRea->getFlux()));
 }
 
 void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
@@ -106,6 +110,7 @@ void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_I
     table->setText(row, 2, "");
   if (exc != 3)
     table->setText(row, 3, "");
+  table->setText(row, 4, "");
 }
 
 QString ReactionsWidget::defaultObjectName() const

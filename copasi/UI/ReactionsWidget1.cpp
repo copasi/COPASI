@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.144 $
+   $Revision: 1.145 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:41 $
+   $Date: 2004/09/10 11:10:20 $
    End CVS Header */
 
 /*********************************************************************
@@ -57,18 +57,18 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   if (!name)
     setName("ReactionsWidget1");
   setCaption(trUtf8("ReactionsWidget1"));
+
   ReactionsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Name"));
-
   ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
   TextLabel7 = new QLabel(this, "TextLabel7");
   TextLabel7->setText(trUtf8("Symbol Definition"));
-
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
+  //Buttons:
   Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
   commitChanges = new QPushButton(this, "commitChanges");
@@ -89,85 +89,72 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   ReactionsWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 3);
 
-  TextLabel8 = new QLabel(this, "TextLabel8");
-  TextLabel8->setText(trUtf8("Flux"));
-
-  ReactionsWidget1Layout->addWidget(TextLabel8, 10, 0);
+  //
 
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
   Line2->setFrameShape(QFrame::HLine);
-
   ReactionsWidget1Layout->addMultiCellWidget(Line2, 6, 7, 0, 3);
 
   Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
-
   ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);
 
   Line3 = new QFrame(this, "Line3");
   Line3->setFrameShape(QFrame::HLine);
   Line3->setFrameShadow(QFrame::Sunken);
   Line3->setFrameShape(QFrame::HLine);
-
   ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);
 
+  // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
   TextLabel6->setText(trUtf8("Kinetics"));
-
   ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
 
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 2);
 
+  newKinetics = new QPushButton(this, "newKinetics");
+  newKinetics->setText(trUtf8("&New Kinetics"));
+  ReactionsWidget1Layout->addWidget(newKinetics, 4, 3);
+
+  TextLabel8 = new QLabel(this, "TextLabel8");
+  TextLabel8->setText(trUtf8("Flux:"));
+  ReactionsWidget1Layout->addWidget(TextLabel8, 5, 1);
+
+  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3->setEnabled(FALSE);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 2, 3);
+
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
 
+  // equation line
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Chemical Equation"));
+  ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
+
   LineEdit2 = new MyLineEdit(this, "LineEdit2");
-  LineEdit2->setFrameShape(QLineEdit::LineEditPanel);
-  LineEdit2->setFrameShadow(QLineEdit::Sunken);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 2);
 
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 3);
-
-  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-
-  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 3);
+  CheckBox = new QCheckBox(this, "CheckBox");
+  CheckBox->setText(trUtf8("Reversible"));
+  ReactionsWidget1Layout->addWidget(CheckBox, 2, 3);
 
   Line4 = new QFrame(this, "Line4");
   Line4->setFrameShape(QFrame::HLine);
   Line4->setFrameShadow(QFrame::Sunken);
   Line4->setFrameShape(QFrame::HLine);
-
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
 
   table = new ParameterTable(this, "table");
-
   ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
 
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setEnabled(FALSE);
-
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 10, 10, 1, 3);
   QSpacerItem* spacer = new QSpacerItem(80, 101, QSizePolicy::Minimum, QSizePolicy::Expanding);
   ReactionsWidget1Layout->addItem(spacer, 9, 0);
-
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Chemical Reaction"));
-
-  ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
-
-  newKinetics = new QPushButton(this, "newKinetics");
-  newKinetics->setText(trUtf8("&New Kinetics"));
-
-  ReactionsWidget1Layout->addWidget(newKinetics, 5, 1);
-  QSpacerItem* spacer_2 = new QSpacerItem(111, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  ReactionsWidget1Layout->addItem(spacer_2, 5, 2);
-
-  CheckBox = new QCheckBox(this, "CheckBox");
-  CheckBox->setText(trUtf8("Reversible"));
-
-  ReactionsWidget1Layout->addWidget(CheckBox, 5, 3);
 
   setTabOrder(LineEdit1, LineEdit2);
   setTabOrder(LineEdit2, ComboBox1);
@@ -178,7 +165,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   setTabOrder(LineEdit3, commitChanges);
   setTabOrder(commitChanges, cancelChanges);
   setTabOrder(cancelChanges, newReaction);
-  setTabOrder(newReaction, deleteReaction);
+  setTabOrder(newReaction, deleteReaction); //TODO !!!!!
 
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
@@ -234,16 +221,10 @@ bool ReactionsWidget1::saveToReaction()
 }
 
 void ReactionsWidget1::slotBtnCancelClicked()
-{
-  //let the user confirm
-  enter(objKey); // reload
-}
+{enter(objKey);}
 
 void ReactionsWidget1::slotBtnOKClicked()
-{
-  //let the user confirm?
-  saveToReaction();
-}
+{saveToReaction();}
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
@@ -304,8 +285,6 @@ void ReactionsWidget1::slotBtnNewClicked()
     }
   //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   //table->setNumRows(table->numRows());
-  //emit updated();
-  //emit leaf(mModel);
   ListViews::notify(ListViews::REACTION, ListViews::ADD);
   enter(dataModel->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
@@ -342,7 +321,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:           // Yes or Enter
+        case 0:            // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -366,7 +345,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                  // No or Escape
+        default:                   // No or Escape
           break;
         }
       //}
@@ -379,7 +358,11 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
 
-  //LineEdit3->setText(QString::number(reactn->getFlux())); //TODO
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  if (reac)
+    LineEdit3->setText(QString::number(reac->getFlux()));
+  else
+    LineEdit3->setText("");
 
   // the reversibility checkbox
   CheckBox->setChecked(false);
@@ -451,7 +434,6 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
 
 bool ReactionsWidget1::leave()
 {
-  //TODO: let the user confirm?
   return saveToReaction();
 }
 
@@ -459,7 +441,6 @@ bool ReactionsWidget1::enter(const std::string & key)
 {
   objKey = key;
   CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(key));
-  //TODO: check if it really is a compartment
 
   if (reac) return loadFromReaction(reac);
   else return false;
