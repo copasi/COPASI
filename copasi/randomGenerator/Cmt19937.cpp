@@ -42,7 +42,7 @@ void Cmt19937::initialize(unsigned C_INT32 seed)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
-                             unsigned C_INT32 key_length)
+                             C_INT32 key_length)
 {
   int i, j, k;
   initialize(19650218UL);
@@ -97,15 +97,15 @@ const unsigned C_INT32 & Cmt19937::getRandomU()
 {
   if (--mLeft == 0)
     next_state();
-  mNumber = *mNext++;
+  mNumberU = *mNext++;
 
   /* Tempering */
-  mNumber ^= (mNumber >> 11);
-  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
-  mNumber ^= (mNumber << 15) & 0xefc60000UL;
-  mNumber ^= (mNumber >> 18);
+  mNumberU ^= (mNumberU >> 11);
+  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
+  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
+  mNumberU ^= (mNumberU >> 18);
 
-  return mNumber;
+  return mNumberU;
 }
 
 /* generates a random number on [0,0x7fffffff]-interval */
@@ -113,16 +113,15 @@ const C_INT32 & Cmt19937::getRandomS()
 {
   if (--mLeft == 0)
     next_state();
-  mNumber = *mNext++;
+  mNumberU = *mNext++;
 
   /* Tempering */
-  mNumber ^= (mNumber >> 11);
-  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
-  mNumber ^= (mNumber << 15) & 0xefc60000UL;
-  mNumber ^= (mNumber >> 18);
-  mNumber >>= 1;
+  mNumberU ^= (mNumberU >> 11);
+  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
+  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
+  mNumberU ^= (mNumberU >> 18);
 
-  return mNumber;
+  return mNumberS = mNumberU >> 1;
 }
 
 // const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max)
@@ -134,15 +133,15 @@ const C_FLOAT64 & Cmt19937::getRandomCC()
 {
   if (--mLeft == 0)
     next_state();
-  mNumber = *mNext++;
+  mNumberU = *mNext++;
 
   /* Tempering */
-  mNumber ^= (mNumber >> 11);
-  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
-  mNumber ^= (mNumber << 15) & 0xefc60000UL;
-  mNumber ^= (mNumber >> 18);
+  mNumberU ^= (mNumberU >> 11);
+  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
+  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
+  mNumberU ^= (mNumberU >> 18);
 
-  return mFloat = (C_FLOAT64)mNumber * (1.0 / 4294967295.0);
+  return mFloat = (C_FLOAT64)mNumberU * (1.0 / 4294967295.0);
   /* divided by 2^32-1 */
 }
 
@@ -151,15 +150,15 @@ const C_FLOAT64 & Cmt19937::getRandomCO()
 {
   if (--mLeft == 0)
     next_state();
-  mNumber = *mNext++;
+  mNumberU = *mNext++;
 
   /* Tempering */
-  mNumber ^= (mNumber >> 11);
-  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
-  mNumber ^= (mNumber << 15) & 0xefc60000UL;
-  mNumber ^= (mNumber >> 18);
+  mNumberU ^= (mNumberU >> 11);
+  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
+  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
+  mNumberU ^= (mNumberU >> 18);
 
-  return mFloat = (C_FLOAT64)mNumber * (1.0 / 4294967296.0);
+  return mFloat = (C_FLOAT64)mNumberU * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 
@@ -168,15 +167,15 @@ const C_FLOAT64 & Cmt19937::getRandomOO()
 {
   if (--mLeft == 0)
     next_state();
-  mNumber = *mNext++;
+  mNumberU = *mNext++;
 
   /* Tempering */
-  mNumber ^= (mNumber >> 11);
-  mNumber ^= (mNumber << 7) & 0x9d2c5680UL;
-  mNumber ^= (mNumber << 15) & 0xefc60000UL;
-  mNumber ^= (mNumber >> 18);
+  mNumberU ^= (mNumberU >> 11);
+  mNumberU ^= (mNumberU << 7) & 0x9d2c5680UL;
+  mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
+  mNumberU ^= (mNumberU >> 18);
 
-  return mFloat = ((C_FLOAT64)mNumber + 0.5) * (1.0 / 4294967296.0);
+  return mFloat = ((C_FLOAT64)mNumberU + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 

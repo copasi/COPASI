@@ -73,7 +73,7 @@ const unsigned C_INT32 & CRandom::getRandomU()
 {
   /* Every random number generator has to implement this. */
   fatalError();
-  return mNumber;
+  return mNumberU;
 }
 
 /**
@@ -82,8 +82,7 @@ const unsigned C_INT32 & CRandom::getRandomU()
  */
 const C_INT32 & CRandom::getRandomS()
 {
-  getRandomU();
-  return mNumber &= 0x7ffffff;
+  return mNumberS = getRandomU() & 0x7ffffff;
 }
 
 /**
@@ -99,9 +98,9 @@ const unsigned C_INT32 & CRandom::getRandomU(const unsigned C_INT32 & max)
 
   do
     getRandomU();
-  while (mNumber >= Limit);
+  while (mNumberU >= Limit);
 
-  return mNumber %= Max;
+  return mNumberU %= Max;
 }
 
 /**
@@ -117,9 +116,9 @@ const C_INT32 & CRandom::getRandomS(const C_INT32 & max)
 
   do
     getRandomU();
-  while (mNumber >= Limit);
+  while (mNumberU >= Limit);
 
-  return mNumber %= Max;
+  return mNumberS = mNumberU % Max;
 }
 
 /**

@@ -27,12 +27,17 @@ class CRandom
 
   private:
     /**
-     * The
+     * A unsigned 32-bit integer random number.
      */
-    unsigned C_INT32 mNumber;
+    unsigned C_INT32 mNumberU;
 
     /**
-     *
+     * A singned 32-bit integer random number.
+     */
+    C_INT32 mNumberS;
+
+    /**
+     * A 64-bit floating point random number.
      */
     C_FLOAT64 mFloat;
 

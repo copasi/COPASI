@@ -89,8 +89,7 @@ const unsigned C_INT32 & Cr250::getRandomU()
 
 const C_INT32 & Cr250::getRandomS()
 {
-  r250();
-  return mNumber &= 0x7ffffff;
+  return mNumberS = r250() & 0x7ffffff;
 }
 
 const unsigned C_INT32 & Cr250::getRandomU(const unsigned C_INT32 & max)
@@ -100,7 +99,7 @@ const unsigned C_INT32 & Cr250::getRandomU(const unsigned C_INT32 & max)
 
 const C_INT32 & Cr250::getRandomS(const C_INT32 & max)
 {
-  return r250n(max + 1);
+  return mNumberS = r250n(max + 1);
 }
 
 const C_FLOAT64 & Cr250::getRandomCC()
@@ -127,14 +126,14 @@ const unsigned C_INT32 & Cr250::r250(void)
   else
     j = mIndex + 103;
 
-  mNumber = mBuffer[mIndex] ^= mBuffer[j];
+  mNumberU = mBuffer[mIndex] ^= mBuffer[j];
 
   if (mIndex > 248)      /* Increment pointer for next time */
     mIndex = 0;
   else
     mIndex++;
 
-  return mNumber;
+  return mNumberU;
 }
 
 const unsigned C_INT32 & Cr250::r250n(const unsigned C_INT16 & max)
@@ -148,15 +147,15 @@ const unsigned C_INT32 & Cr250::r250n(const unsigned C_INT16 & max)
       r250();
       r250(); // Why a second call?
     }
-  while (mNumber >= limit);
+  while (mNumberU >= limit);
 
-  return mNumber %= max;
+  return mNumberU %= max;
 }
 
 const C_FLOAT64 & Cr250::dr250()
 {
-  mNumber = r250();
-  return mFloat = mNumber / 65536.;   /* Return a number in [0.0 to 1.0) */
+  mNumberU = r250();
+  return mFloat = mNumberU / 65536.;   /* Return a number in [0.0 to 1.0) */
 }
 
 unsigned C_INT16 Cr250::myrand()

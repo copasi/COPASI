@@ -135,7 +135,7 @@ class Cmt19937 : private CRandom
     const C_FLOAT64 & getRandomOO();
 
     void init_by_array(unsigned C_INT32 init_key[],
-                       unsigned C_INT32 key_length);
+                       C_INT32 key_length);
 
     C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
   };
