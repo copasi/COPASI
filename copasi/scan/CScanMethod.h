@@ -81,7 +81,7 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(unsigned C_INT32 i, bool nl);
+    void scan(unsigned C_INT32 s, bool C_UNUSED(nl));
 
     /**
      *  Set the value of the scan parameter based on the distribution
