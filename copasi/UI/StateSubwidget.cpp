@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 10:03:26 $
+   $Date: 2004/09/30 13:41:31 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Thu Sep 30 11:21:05 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.1 2004/09/30 10:03:26 ssahle Exp $)
+ ** Created: Thu Sep 30 13:16:33 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.2 2004/09/30 13:41:31 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
