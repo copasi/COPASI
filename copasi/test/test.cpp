@@ -27,6 +27,7 @@
 #include "model/CSpec2Model.h"
 #include "output/output.h"
 #include "function/CMassAction.h"
+#include "function/CFunctionDB.h"
 #include "optimization/COptMethod.h"
 #include "optimization/CRealProblem.h"
 #include "utilities/CGlobals.h"
@@ -430,8 +431,8 @@ C_INT32 TestReadSample(void)
   model.save(outbuf);
   outbuf.flush();
 
-  Copasi->FunctionDB.cleanup();
-  Copasi->FunctionDB.initialize();
+  Copasi->pFunctionDB->cleanup();
+  Copasi->pFunctionDB->initialize();
 
   CReadConfig inbuf2("copasi.gps");
   CModel model2;
@@ -497,8 +498,8 @@ C_INT32 TestTrajectory(void)
   CMathModel MathModel;
   MathModel.setModel(&model);
 
-  Copasi->OutputList.load(inbuf);
-  Copasi->OutputList.save(outbuf);
+  Copasi->pOutputList->load(inbuf);
+  Copasi->pOutputList->save(outbuf);
 
   CTrajectoryTask traj;
   //traj.setModel(&model);
@@ -529,7 +530,7 @@ C_INT32 TestTrajectoryTask(void)
   model.compile();
   model.save(outbuf);
 
-  Copasi->OutputList.load(inbuf);
+  Copasi->pOutputList->load(inbuf);
 
   // COutput Output;
   // Output.resetConfiguration();
@@ -539,7 +540,7 @@ C_INT32 TestTrajectoryTask(void)
   // Output.addDatum("Time-course output", "time", 14);
   // Copasi->OutputList.addOutput(Output);
 
-  Copasi->OutputList.save(outbuf);
+  Copasi->pOutputList->save(outbuf);
 
   CTrajectoryTask traj;
   traj.load(inbuf);
@@ -595,7 +596,7 @@ C_INT32 TestSSSolution(void)
   model.load(inbuf);
   model.compile();
 
-  Copasi->OutputList.load(inbuf);
+  Copasi->pOutputList->load(inbuf);
 
   CSteadyStateTask ss_soln;
   ss_soln.load(inbuf);
@@ -1580,19 +1581,6 @@ C_INT32 TestMassAction(void)
   return 0;
 }
 
-C_INT32 TestFunctionDB(void)
-{
-  CFunctionDB FunctionDB;
-
-  FunctionDB.setFilename("FunctionDB.gps");
-  FunctionDB.initialize();
-
-  CFunction * pFunction;
-  pFunction = FunctionDB.findLoadFunction("Henri-Michaelis-Menten (irreversible)");
-
-  return 0;
-}
-
 C_INT32 ConvertFunctionDB(void)
 {
   CFunctionDB FunctionDB;
@@ -1866,7 +1854,7 @@ C_INT32 TestSpec2Model()
   Output.addDatum("Time-course output", "X(t)", 3, "X");
   Output.addDatum("Time-course output", "Y(t)", 3, "Y");
   Output.addDatum("Time-course output", "time", 14);
-  Copasi->OutputList.addOutput(Output);
+  Copasi->pOutputList->addOutput(Output);
 
   //Copasi->OutputList.save(outbuf);
 
