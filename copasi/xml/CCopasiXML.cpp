@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/24 21:12:01 $
+   $Author: ssahle $ 
+   $Date: 2004/06/28 15:27:55 $
    End CVS Header */
 
 /**
@@ -689,7 +689,7 @@ bool CCopasiXML::saveReportList()
       if (pReport->isTable())
         {
           Attributes.erase();
-          Attributes.add("seperator", pReport->getSeperator().getStaticString());
+          Attributes.add("separator", pReport->getSeparator().getStaticString());
           Attributes.add("printTitle", pReport->getTitle());
           startSaveElement("Table", Attributes);
 
@@ -699,7 +699,7 @@ bool CCopasiXML::saveReportList()
           Attributes.erase();
           Attributes.add("cn", "");
 
-          for (j = 0; j < jmax; j += 2) // We skip the seperator
+          for (j = 0; j < jmax; j += 2) // We skip the separator
             {
               Attributes.setValue(0, Table[j]);
               saveElement("Object", Attributes);

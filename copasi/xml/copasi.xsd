@@ -266,7 +266,7 @@
                           <xs:sequence>
                             <xs:element name="Object" type="cOBJECT" minOccurs="0" maxOccurs="unbounded"/>
                           </xs:sequence>
-                          <xs:attribute name="seperator" type="xs:string" use="optional" default=" "/>
+                          <xs:attribute name="separator" type="xs:string" use="optional" default=" "/>
                           <xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
                         </xs:complexType>
                       </xs:element>

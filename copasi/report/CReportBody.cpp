@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportBody.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:45 $
+   $Author: ssahle $ 
+   $Date: 2004/06/28 15:26:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -40,7 +40,7 @@ void CReportBody::setTable(CReportTable *table)
 //////////////////////////////////////////////////
 CReportTable::CReportTable():
     mpObjectNameVector(NULL),
-    mSeperator(" "),
+    mSeparator(" "),
     mPrintTitle(true)
 {}
 

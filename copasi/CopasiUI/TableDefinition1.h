@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/11 13:25:00 $
+   $Date: 2004/06/28 15:24:57 $
    End CVS Header */
 
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.9 2004/05/11 13:25:00 ssahle Exp $)
+($Id: TableDefinition1.h,v 1.10 2004/06/28 15:24:57 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -45,7 +45,7 @@ class TableDefinition1 : public CopasiWidget
   protected slots:
     //virtual void nameTextChanged(const QString&);
     virtual void commentTextChanged(const QString&);
-    virtual void seperatorTextChanged(const QString&);
+    virtual void separatorTextChanged(const QString&);
     virtual void tabButtonClicked();
     virtual void titleButtonClicked();
 
@@ -95,8 +95,8 @@ class TableDefinition1 : public CopasiWidget
     //    QTable* itemsTable;
     QFrame* frame4;
     QCheckBox* tabChecked;
-    QLineEdit* seperatorEdit;
-    QLabel* seperatorLabel;
+    QLineEdit* separatorEdit;
+    QLabel* separatorLabel;
     QComboBox* comboTask;
     QFrame* line4;
     QLabel* taskLabel;

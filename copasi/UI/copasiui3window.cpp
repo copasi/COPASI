@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/16 16:13:56 $
+   $Date: 2004/06/28 15:24:57 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -145,14 +145,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:        // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:         // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:        // Discard clicked or Alt+D pressed
+        case 1:         // Discard clicked or Alt+D pressed
           break;
 
-        case 2:        // Cancel clicked or Escape pressed
+        case 2:         // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -203,14 +203,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:        // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:         // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:        // Discard clicked or Alt+D pressed
+            case 1:         // Discard clicked or Alt+D pressed
               break;
 
-            case 2:        // Cancel clicked or Escape pressed
+            case 2:         // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -297,14 +297,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:        // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:         // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:        // Discard clicked or Alt+D pressed
+        case 1:         // Discard clicked or Alt+D pressed
           break;
 
-        case 2:        // Cancel clicked or Escape pressed
+        case 2:         // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -326,14 +326,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:        // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:         // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:        // Discard clicked or Alt+D pressed
+            case 1:         // Discard clicked or Alt+D pressed
               break;
 
-            case 2:        // Cancel clicked or Escape pressed
+            case 2:         // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -472,14 +472,14 @@ void CopasiUI3Window::createMenuBar()
   const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "Object &Browser"};
   const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotObjectBrowser())};
   QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_B};
-  int fileSeperator[7] = {0, 0, 0, 0, 0, 0, 1};
+  int fileSeparator[7] = {0, 0, 0, 0, 0, 0, 1};
 
   mpFileMenu = new QPopupMenu(this);
   menuBar()->insertItem("&File", mpFileMenu);
   int j;
   for (j = 0; j < 7; j++)
     {
-      if (fileSeperator[j] == 1)
+      if (fileSeparator[j] == 1)
         mpFileMenu->insertSeparator();
 
       int id;
@@ -538,14 +538,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:        // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:         // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:        // Discard clicked or Alt+D pressed
+            case 1:         // Discard clicked or Alt+D pressed
               break;
 
-            case 2:        // Cancel clicked or Escape pressed
+            case 2:         // Cancel clicked or Escape pressed
               return;
               break;
             }

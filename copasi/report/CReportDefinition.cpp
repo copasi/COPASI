@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 14:37:38 $
+   $Date: 2004/06/28 15:26:36 $
    End CVS Header */
 
 /**
@@ -31,7 +31,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
     mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(""),
     mTaskType(CCopasiTask::timeCourse),
-    mSeperator("\t"),
+    mSeparator("\t"),
     mTable(true),
     mbTitle(true)
 {}
@@ -42,7 +42,7 @@ CReportDefinition::CReportDefinition(const CReportDefinition & src,
     mKey(GlobalKeys.add("CReportDefinition", this)),
     mComment(src.mComment),
     mTaskType(src.mTaskType),
-    mSeperator(src.mSeperator),
+    mSeparator(src.mSeparator),
     mTable(src.mTable),
     mbTitle(src.mbTitle)
 {}
@@ -73,11 +73,11 @@ bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 const CCopasiTask::Type & CReportDefinition::getTaskType() const
   {return mTaskType;}
 
-void CReportDefinition::setSeperator(const CCopasiStaticString& Seperator)
-{mSeperator = Seperator;}
+void CReportDefinition::setSeparator(const CCopasiStaticString& Separator)
+{mSeparator = Separator;}
 
-const CCopasiStaticString& CReportDefinition::getSeperator() const
-  {return mSeperator;}
+const CCopasiStaticString& CReportDefinition::getSeparator() const
+  {return mSeparator;}
 
 bool CReportDefinition::getTitle() const
   {return mbTitle;}
@@ -100,13 +100,13 @@ void CReportDefinition::addTableElement(const std::string & cn)
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
     isFirst = true;
 
-  CCopasiObjectName SeperatorCN(mSeperator.getCN());
+  CCopasiObjectName SeparatorCN(mSeparator.getCN());
   CCopasiObjectName Title;
 
   if (!isFirst)
     {
-      mHeaderVector.push_back(SeperatorCN);
-      mBodyVector.push_back(SeperatorCN);
+      mHeaderVector.push_back(SeparatorCN);
+      mBodyVector.push_back(SeparatorCN);
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;

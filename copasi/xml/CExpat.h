@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:36:26 $
+   $Author: ssahle $ 
+   $Date: 2004/06/28 15:27:56 $
    End CVS Header */
 
 /**
@@ -78,7 +78,7 @@ class CExpatTemplate
       destroy();
 
       //
-      // If the encoding or seperator are empty, then NULL
+      // If the encoding or separator are empty, then NULL
       //
 
       if (pszEncoding != NULL && pszEncoding [0] == 0)

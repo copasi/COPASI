@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 20:57:47 $
+   $Author: ssahle $ 
+   $Date: 2004/06/28 15:24:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.37 2004/06/10 20:57:47 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.38 2004/06/28 15:24:57 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -128,13 +128,13 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   frame4Layout->addWidget(tabChecked, 3, 1);
 
-  seperatorEdit = new QLineEdit(frame4, "seperatorEdit");
+  separatorEdit = new QLineEdit(frame4, "separatorEdit");
 
-  frame4Layout->addWidget(seperatorEdit, 2, 1);
+  frame4Layout->addWidget(separatorEdit, 2, 1);
 
-  seperatorLabel = new QLabel(frame4, "seperatorLabel");
+  separatorLabel = new QLabel(frame4, "separatorLabel");
 
-  frame4Layout->addWidget(seperatorLabel, 2, 0);
+  frame4Layout->addWidget(separatorLabel, 2, 0);
 
   comboTask = new QComboBox(FALSE, frame4, "comboTask");
   comboTask->insertItem("Scan Task");
@@ -194,8 +194,8 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(nameEdit, commentEdit);
   setTabOrder(commentEdit, titleChecked);
   setTabOrder(titleChecked, comboTask);
-  setTabOrder(comboTask, seperatorEdit);
-  setTabOrder(seperatorEdit, tabChecked);
+  setTabOrder(comboTask, separatorEdit);
+  setTabOrder(separatorEdit, tabChecked);
   setTabOrder(tabChecked, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
@@ -206,7 +206,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   //connect(nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(nameTextChanged(const QString&)));
   connect(commentEdit, SIGNAL(textChanged(const QString&)), this, SLOT(commentTextChanged(const QString&)));
-  connect(seperatorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(seperatorTextChanged(const QString&)));
+  connect(separatorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(separatorTextChanged(const QString&)));
 
   connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
   connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
@@ -243,7 +243,7 @@ void TableDefinition1::languageChange()
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
   tabChecked->setText(tr("Tab"));
-  seperatorLabel->setText(tr("Seperator"));
+  separatorLabel->setText(tr("Separator"));
   taskLabel->setText(tr("Task"));
   commentLabel->setText(tr("Comment"));
   targetLabel->setText(tr("ReportDefinition"));
@@ -263,23 +263,23 @@ void TableDefinition1::loadTableDefinition1()
   titleChecked->setChecked(pReportDefinition->getTitle());
 
   unsigned C_INT32 i;
-  // i+=2; is due to skip to show the seperator
+  // i+=2; is due to skip to show the separator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
       itemsTable->insertItem(FROM_UTF8((*(pReportDefinition->getBodyAddr()))[i]));
     }
   comboTask->setEnabled(true);
 
-  if (pReportDefinition->getSeperator().getStaticString() == "\t")
+  if (pReportDefinition->getSeparator().getStaticString() == "\t")
     {
-      seperatorEdit->setEnabled(false);
+      separatorEdit->setEnabled(false);
       tabChecked->setChecked(true);
     }
   else
     {
-      seperatorEdit->setEnabled(true);
+      separatorEdit->setEnabled(true);
       tabChecked->setChecked(false);
-      seperatorEdit->setText(FROM_UTF8(pReportDefinition->getSeperator().getStaticString()));
+      separatorEdit->setText(FROM_UTF8(pReportDefinition->getSeparator().getStaticString()));
     }
   bUpdated = false;
 }
@@ -309,13 +309,14 @@ void TableDefinition1::slotBtnConfirmClicked()
   pReportDefinition->getBodyAddr()->clear();
   pReportDefinition->setTitle(titleChecked->isChecked());
 
-  CCopasiStaticString Seperator;
+  CCopasiStaticString Separator;
   if (tabChecked->isChecked())
-    Seperator = "\t";
+    Separator = "\t";
   else
-    Seperator = (const char *)seperatorEdit->text().utf8();
+    Separator = (const char *)separatorEdit->text().utf8();
+  pReportDefinition->setSeparator(Separator);
 
-  CCopasiObjectName SeperatorCN(Seperator.getCN());
+  CCopasiObjectName SeparatorCN(Separator.getCN());
   CCopasiObjectName Title;
   std::vector< CCopasiContainer * > ListOfContainer;
   CCopasiObject* pSelectedObject;
@@ -344,8 +345,8 @@ void TableDefinition1::slotBtnConfirmClicked()
           pReportDefinition->getHeaderAddr()->push_back(Title);
           pReportDefinition->getBodyAddr()->push_back(pSelectedObject->getCN());
 
-          pReportDefinition->getHeaderAddr()->push_back(SeperatorCN);
-          pReportDefinition->getBodyAddr()->push_back(SeperatorCN);
+          pReportDefinition->getHeaderAddr()->push_back(SeparatorCN);
+          pReportDefinition->getBodyAddr()->push_back(SeparatorCN);
         }
     }
 
@@ -365,7 +366,7 @@ void TableDefinition1::slotBtnConfirmClicked()
 void TableDefinition1::commentTextChanged(const QString &)
 {bUpdated = true;}
 
-void TableDefinition1::seperatorTextChanged(const QString &)
+void TableDefinition1::separatorTextChanged(const QString &)
 {bUpdated = true;}
 
 void TableDefinition1::comboTaskChanged(const QString & C_UNUSED(string))
@@ -379,9 +380,9 @@ void TableDefinition1::tabButtonClicked()
   bUpdated = true;
   if (tabChecked->isChecked())
     {
-      seperatorEdit->setText("");
+      separatorEdit->setText("");
     }
-  seperatorEdit->setEnabled(!tabChecked->isChecked());
+  separatorEdit->setEnabled(!tabChecked->isChecked());
 }
 
 void TableDefinition1::addButtonClicked()
