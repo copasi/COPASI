@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.194 $
+   $Revision: 1.195 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:53:29 $
+   $Date: 2004/10/08 12:50:38 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -760,40 +760,45 @@ void CModel::setTransitionTimes()
   unsigned C_INT32 i, imax = mMetabolites.size();
   unsigned C_INT32 j, jmax = mSteps.size();
 
-  C_FLOAT64 TotalFlux, PartialFlux;
+  C_FLOAT64 TotalFlux_p, TotalFlux_n, min_flux, PartialFlux;
   C_FLOAT64 TransitionTime;
 
   mTransitionTime = 0.0;
 
   for (i = 0; i < imax; i++)
     {
-      TotalFlux = 0.0;
-
       if (CMetab::METAB_FIXED == mMetabolites[i]->getStatus())
         mMetabolites[i]->setTransitionTime(DBL_MAX);
       else
         {
+          TotalFlux_p = 0.0;
           for (j = 0; j < jmax; j++)
             {
               PartialFlux = mStoi[i][j] * *mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
-                TotalFlux += PartialFlux;
+                TotalFlux_p += PartialFlux;
             }
 
           //if (TotalFlux == 0.0) //TODO discuss
+          TotalFlux_n = 0.0;
           for (j = 0; j < jmax; j++)
             {
               PartialFlux = - mStoi[i][j] * *mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
-                TotalFlux += PartialFlux;
+                TotalFlux_n += PartialFlux;
             }
 
-          if (TotalFlux == 0.0)
+          if (TotalFlux_p < TotalFlux_n)
+            min_flux = TotalFlux_p;
+          else
+            min_flux = TotalFlux_n;
+
+          if (min_flux == 0.0)
             TransitionTime = DBL_MAX;
           else
-            TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
+            TransitionTime = mMetabolites[i]->getNumber() / min_flux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
           //mMetabolites[i]->setNumberRate(TotalFlux);
@@ -1907,4 +1912,8 @@ std::pair< std::string, std::string >
 CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
   {
     return * mList[index];
+  }
+
+C_INT32 CModel::suitableForStochasticSimulation() const
+  {
   }

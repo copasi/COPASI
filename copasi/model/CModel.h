@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:38:46 $
+   $Date: 2004/10/08 12:50:38 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -921,6 +921,11 @@ class CModel : public CCopasiContainer
      * get address of progress bar handler
      **/
     CCallbackHandler* getCompileHandlerAddr();
+
+    /**
+     * check if the model is suitable for stochastic simulation
+     **/
+    C_INT32 suitableForStochasticSimulation() const;
 
   private:
 
