@@ -11,8 +11,8 @@
 CReport::CReport():
     CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
     mpReportDef(NULL),
-    mAppend(true),
-    mKey(CKeyFactory::add("Report", this))
+    mAppend(true)
+    //,mKey(CKeyFactory::add("Report", this))
 {}
 
 CReport::~CReport()
@@ -20,7 +20,7 @@ CReport::~CReport()
 
 void CReport::cleanup()
 {
-  CKeyFactory::remove(mKey);
+  //  CKeyFactory::remove(mKey);
   pdelete(mpReportDef);
 }
 

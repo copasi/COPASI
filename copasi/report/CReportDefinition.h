@@ -26,7 +26,7 @@ class CReportDefinition : public CCopasiObject
   {
     // Operations
   private:
-    std::string key;
+    std::string mKey;
     std::string mComment;
     std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mFooterVector;

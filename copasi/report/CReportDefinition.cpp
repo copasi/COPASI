@@ -17,6 +17,7 @@
 //////////////////////////////////////////////////
 CReportDefinition::CReportDefinition():
     CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
+    mKey(CKeyFactory::add("SteadyStateTask", this)),
     mComment(""),
     mpBody(new CReportBody)
 {}
@@ -27,6 +28,7 @@ CReportDefinition::~CReportDefinition()
 void CReportDefinition::cleanup()
 {
   pdelete(mpBody);
+  CKeyFactory::remove(mKey);
   mHeaderVector.clear();
   mFooterVector.clear();
 }

@@ -20,7 +20,7 @@ class CReportDefinitionVector: public CCopasiContainer
     std::string mKey;
 
   public:
-    CReportDefinitionVector(const std::string &, const CCopasiContainer*);
+    CReportDefinitionVector(const std::string & name = "noname", const CCopasiContainer* pParent = NULL);
     ~CReportDefinitionVector();
 
     const std::vector< CReportDefinition >* getReportDefinitionsAddr();

@@ -26,6 +26,7 @@ const std::vector< CReportDefinition >* CReportDefinitionVector::getReportDefini
 
 void CReportDefinitionVector::cleanup()
 {
+  CKeyFactory::remove(mKey);
   mReportDefinitions.clear();
 }
 

@@ -23,7 +23,7 @@ class CReport : public CCopasiObject
     CReportDefinition *mpReportDef;
     std::string mTarget;
     bool mAppend;
-    std::string mKey;
+    //    std::string mKey;
 
   public:
     /**
