@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: ssahle $ $Date: 2004/06/22 16:01:10 $  
+# $Revision: 1.5 $ $Author: ssahle $ $Date: 2004/08/31 12:21:14 $  
 ######################################################################
 
 LIB = utilities
@@ -23,11 +23,10 @@ HEADERS += CCopasiException.h \
            CMatrix.h \
            COutputHandler.h \
            CReadConfig.h \
+           CopasiTime.h \
            CVector.h \
            CVersion.h \
-#           CWriteConfig.h \
            messages.h \
-#           readwrite.h \
            utility.h
 
 SOURCES += CCopasiException.cpp \
@@ -42,6 +41,6 @@ SOURCES += CCopasiException.cpp \
            CIndexedPriorityQueue.cpp \
            COutputHandler.cpp \
            CReadConfig.cpp \
+           CopasiTime.cpp \
            CVersion.cpp \
-#           CWriteConfig.cpp \
            utility.cpp
