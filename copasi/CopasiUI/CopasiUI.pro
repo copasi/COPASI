@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.50 $ $Author: gauges $ $Date: 2004/10/08 16:46:13 $  
+# $Revision: 1.51 $ $Author: shoops $ $Date: 2004/10/13 18:30:41 $  
 ######################################################################
 
 include(../common.pri)
@@ -30,16 +30,11 @@ contains(BUILD_OS, WIN32) {
 
   LIBS += $$COPASI_LIBS
   LIBS += $(QTDIR)/lib/qwt.lib
-
+  LIBS += libsbml.lib libexpat-compat.lib
   
   TARGETDEPS += $$COPASI_LIBS
 
-  debug {
-    LIBS += libsbmlD.lib libexpat-compatD.lib
-  }
-
   release {
-    LIBS += libsbml.lib libexpat-compat.lib
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 } else {
