@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:32 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 20:08:15 $
    End CVS Header */
 
 /*******************************************************************
@@ -82,6 +82,14 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
+void CompartmentSymbols::filltable()
+{
+  CMathModel *mpMathModel = new CMathModel();
+  mpMathModel->setModel(dataModel->getModel());
+
+  loadCompartmentSymbols(mpMathModel);
+}
+
 void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
 {
   if (model != NULL)
@@ -91,7 +99,7 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
       //Emptying the table
       int numberOfRows = table->numRows();
 
-      for (int i = 0; i < numberOfRows; i++)
+      for (int i = 1; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -188,4 +196,23 @@ void CompartmentSymbols::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(4, w4);
     }
   CopasiWidget::resizeEvent(re);
+}
+
+bool CompartmentSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: check if it really is a compartment
+      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      filltable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:48 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,12 +42,15 @@ class ConstantSymbols : public CopasiWidget
     void loadConstantSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotTableSelectionChanged();
 
   private:
+    void filltable();
     void showMessage(QString caption, QString text);
   };
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:49 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -46,6 +46,8 @@ class FixedMetaboliteSymbols : public CopasiWidget
     void loadFixedMetaboliteSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
@@ -53,6 +55,7 @@ class FixedMetaboliteSymbols : public CopasiWidget
 
   private:
     void showMessage(QString caption, QString text);
+    void filltable();
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:52 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,6 +42,8 @@ class MetaboliteSymbols : public CopasiWidget
     void loadMetaboliteSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
@@ -49,6 +51,7 @@ class MetaboliteSymbols : public CopasiWidget
 
   private:
     void showMessage(QString caption, QString text);
+    void filltable();
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:32 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:03 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,6 +81,14 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
+void DifferentialEquations::filltable()
+{
+  CMathModel *mpMathModel = new CMathModel();
+  mpMathModel->setModel(dataModel->getModel());
+
+  //loadDifferentialEquations(mpMathModel);
+}
+
 void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
 {
   std::map< std::string, CMathVariableMetab * > & MetabList =
@@ -123,4 +131,23 @@ void DifferentialEquations::slotBtnOKClicked()
 void DifferentialEquations::slotBtnCancelClicked()
 {
   //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
+}
+
+bool DifferentialEquations::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: check if it really is a compartment
+      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      filltable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }

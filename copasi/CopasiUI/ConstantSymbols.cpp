@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:32 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:03 $
    End CVS Header */
 
 /*******************************************************************
@@ -78,6 +78,14 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+}
+
+void ConstantSymbols::filltable()
+{
+  CMathModel *mpMathModel = new CMathModel();
+  mpMathModel->setModel(dataModel->getModel());
+
+  loadConstantSymbols(mpMathModel);
 }
 
 void ConstantSymbols::loadConstantSymbols(CMathModel *model)
@@ -174,4 +182,23 @@ void ConstantSymbols::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(3, w3);
     }
   CopasiWidget::resizeEvent(re);
+}
+
+bool ConstantSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: check if it really is a compartment
+      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      filltable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }

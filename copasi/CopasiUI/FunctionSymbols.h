@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:50 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,12 +43,15 @@ class FunctionSymbols : public CopasiWidget
     void loadFunctionSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotTableSelectionChanged();
 
   private:
+    void filltable();
     void showMessage(QString caption, QString text);
   };
 

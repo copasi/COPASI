@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:33 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:02 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,6 +81,14 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+}
+
+void MetaboliteSymbols::filltable()
+{
+  CMathModel *mpMathModel = new CMathModel();
+  mpMathModel->setModel(dataModel->getModel());
+
+  loadMetaboliteSymbols(mpMathModel);
 }
 
 void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
@@ -185,4 +193,23 @@ void MetaboliteSymbols::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(4, w4);
     }
   CopasiWidget::resizeEvent(re);
+}
+
+bool MetaboliteSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      //TODO: check if it really is a compartment
+      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
+      filltable();
+      break;
+
+    default:
+      break;
+    }
+  return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:46 $
+   $Author: gasingh $ 
+   $Date: 2003/12/22 07:12:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -39,8 +39,11 @@ class CompartmentSymbols : public CopasiWidget
 
   public:
     CompartmentSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
+
     void loadCompartmentSymbols(CMathModel *model);
     void resizeEvent(QResizeEvent * re);
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected slots:
     virtual void slotBtnOKClicked();
@@ -48,6 +51,7 @@ class CompartmentSymbols : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
+    void filltable();
     void showMessage(QString caption, QString text);
   };
 
