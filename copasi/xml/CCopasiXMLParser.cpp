@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/09 14:16:16 $
+   $Date: 2005/03/10 12:07:40 $
    End CVS Header */
 
 /**
@@ -5397,9 +5397,9 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
           pSlider->setAssociatedEntityKey(mCommon.KeyMap.get(AssociatedEntityKey)->getKey());
           pSlider->setSliderObject((std::string) ObjectCN);
           pSlider->setSliderType(ObjectType);
-          pSlider->setSliderValue(ObjectValue);
-          pSlider->setMinValue(MinValue);
           pSlider->setMaxValue(MaxValue);
+          pSlider->setMinValue(MinValue);
+          pSlider->setSliderValue(ObjectValue);
           pSlider->setTickNumber(TickNumber);
           pSlider->setTickFactor(TickFactor);
 
