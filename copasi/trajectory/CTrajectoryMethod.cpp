@@ -11,11 +11,9 @@
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CTrajectoryMethod.h"
-#include "CStochMethod.h"
-#include "CStochDirectMethod.h"
-#include "CStochNextReactionMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
+#include "model/CCompartment.h"
 
 const std::string CTrajectoryMethod::TypeName[] =
   {
@@ -37,7 +35,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
       break;
 
     case stochastic:
-      Method = new CStochNextReactionMethod();
+      Method = (CStochMethod *) new CStochDirectMethod();
       break;
 
     case hybrid:

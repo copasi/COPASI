@@ -31,8 +31,8 @@
 #include "steadystate/CMca.h"
 #include "randomGenerator/CRandom.h"
 #include "utilities/CluX.h"
-#include "report/CCopasiObjectName.h"
-#include "report/CMetabNew.h"
+#include "report/CCopasiObjectName.h" 
+// #include "report/CMetabNew.h"
 
 using namespace std;
 
@@ -317,14 +317,6 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getName() << endl;
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
-
-  CMetabNew M;
-  cout << M.getReference(&M) << endl;
-  cout << M.getCN() << endl;
-
-  CMetabNew Copy(M);
-  cout << Copy.getReference(&M) << endl;
-  cout << Copy.getCN() << endl;
 
   return 0;
 }

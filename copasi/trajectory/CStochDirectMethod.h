@@ -14,13 +14,17 @@
 
 class CStochDirectMethod : public CStochMethod
   {
-  public:
+    friend CTrajectoryMethod *
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
+
+  private:
     // Lifecycle methods
     /**
      * Default constructor
      */
     CStochDirectMethod();
 
+  public:
     /**
      * Initialization.
      */

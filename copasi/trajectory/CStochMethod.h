@@ -2,7 +2,6 @@
 #define COPASI_CStochMethod
 
 #include "utilities/CVector.h"
-#include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 
@@ -130,12 +129,13 @@ class CStochMethod : private CTrajectoryMethod
     */
     C_INT32 mMaxIntBeforeStep;
 
-  public:
-
+  protected:
     /**
      *  Default constructor.
      */
     CStochMethod();
+
+  public:
     /**
      *  Copy constructor.
      *  @param "const CStochMethod &" src
@@ -201,4 +201,8 @@ class CStochMethod : private CTrajectoryMethod
      */
     std::vector < std::vector <CStochBalance> > mLocalBalances;
   };
+
+#include "CStochDirectMethod.h"
+#include "CStochNextReactionMethod.h"
+
 #endif // COPASI_CStochMethod

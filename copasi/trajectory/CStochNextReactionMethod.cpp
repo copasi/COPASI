@@ -1,5 +1,6 @@
 #include "copasi.h"
-#include "CStochNextReactionMethod.h"
+#include "CTrajectoryMethod.h"
+#include "model/CCompartment.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod()
     : CStochMethod()

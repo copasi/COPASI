@@ -6,10 +6,11 @@
 #include <limits.h>
 #include <set>
 
+#include "copasi.h"
 #include "utilities/utilities.h"
 #include "function/function.h"
 #include "randomGenerator/CRandom.h"
-#include "CStochMethod.h"
+#include "CTrajectoryMethod.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
@@ -353,7 +354,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
             }
         }
     }
-  mMaxBalance = maxBalance; cout << "maxbalance" << mMaxBalance << endl;
+  mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
   mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
 

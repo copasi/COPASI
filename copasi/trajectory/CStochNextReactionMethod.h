@@ -5,6 +5,9 @@
 
 class CStochNextReactionMethod: public CStochMethod
   {
+    friend CTrajectoryMethod *
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
+
   private:
     // Private attributes
 

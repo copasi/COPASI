@@ -123,5 +123,6 @@ class CTrajectoryMethod : public CMethodParameterList
   };
 
 #include "CLsodaMethod.h"
+#include "CStochMethod.h"
 
 #endif // COPASI_CTrajectoryMethod
