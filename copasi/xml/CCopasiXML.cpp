@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/04 21:46:47 $
+   $Date: 2003/12/05 21:23:07 $
    End CVS Header */
 
 /**
@@ -161,6 +161,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("compartment", "");
+      Attributes.add("status", "");
       Attributes.add("stateVariable", "");
 
       for (i = 0; i < imax; i++)
@@ -170,7 +171,8 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(0, pMetab->getKey());
           Attributes.setValue(1, pMetab->getName());
           Attributes.setValue(2, pMetab->getCompartment()->getKey());
-          Attributes.setValue(3,
+          Attributes.setValue(3, CMetab::XMLStatus[pMetab->getStatus()]);
+          Attributes.setValue(4,
                               mpModel->getStateTemplate().getKey(pMetab->getKey()));
 
           saveElement("Metabolite", Attributes);
@@ -388,10 +390,11 @@ bool CCopasiXML::saveFunctionList()
   bool success = true;
 
   if (!haveFunctionList()) return success;
+  unsigned C_INT32 i, imax = mpFunctionList->size();
+
+  if (!imax) return success;
 
   CXMLAttributeList Attributes;
-
-  unsigned C_INT32 i, imax = mpFunctionList->size();
   CFunction * pFunction = NULL;
 
   startSaveElement("ListOfFunctions");
@@ -492,9 +495,10 @@ bool CCopasiXML::saveReportList()
   bool success = true;
   if (!haveReportList()) return success;
 
-  CXMLAttributeList Attributes;
-
   unsigned C_INT32 i, j, imax = mpReportList->size();
+  if (!imax) return success;
+
+  CXMLAttributeList Attributes;
   CReportDefinition * pReport = NULL;
 
   startSaveElement("ListOfReports");
