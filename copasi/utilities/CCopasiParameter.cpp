@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:17 $
+   $Date: 2003/10/31 22:01:12 $
    End CVS Header */
 
 /**
@@ -28,8 +28,20 @@ const std::string CCopasiParameter::TypeName[] =
     "integer",
     "unsigned integer",
     "bool",
-    "group"
-    "string"
+    "group",
+    "string",
+    ""
+  };
+
+const char* CCopasiParameter::XMLType[] =
+  {
+    "float",
+    "integer",
+    "unsignedInteger",
+    "bool",
+    "group",
+    "string",
+    NULL
   };
 
 CCopasiParameter::CCopasiParameter():

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 18:19:03 $
+   $Date: 2003/10/31 22:01:12 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -27,8 +27,6 @@ class CCopasiParameter: public CCopasiContainer
   {
     // Attributes
   public:
-    static const std::string TypeName[];
-
     enum Type
     {
       DOUBLE = 0,
@@ -39,6 +37,17 @@ class CCopasiParameter: public CCopasiContainer
       STRING,
       INVALID = -1
     };
+
+    /**
+     * String literals for the GUI to display type names of parameters known
+     * to COPASI.
+     */
+    static const std::string TypeName[];
+
+    /**
+     * XML type names of parameters known to COPASI.
+     */
+    static const char* XMLType[];
 
   private:
     /**
@@ -152,14 +161,24 @@ class CCopasiParameter: public CCopasiContainer
      * @param const CType & value
      * @return bool isValidValue
      */
-    template <class CType> bool isValidValue(const CType & value) const
+    template <class CType>
+    bool isValidValue(const CType & C_UNUSED(value)) const
       {
         if (mSize != sizeof(CType)) return false;
         return true;
       }
 
   private:
+    /**
+     * Create or copy the value
+     * @param const void * pValue = NULL
+     * @return void * pValue
+     */
     void * createValue(const void * pValue = NULL);
+
+    /**
+     * Delete the value
+     */
     void deleteValue();
   };
 
