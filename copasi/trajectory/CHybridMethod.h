@@ -434,7 +434,7 @@ class CHybridMethod : private CTrajectoryMethod
      *   @param rIndex The index of the reaction being executed.
      *   @return The set of metabolites depended on.
      */
-    std::set <const CMetab *> *getDependsOn(C_INT32 rIndex);
+    std::set <std::string> *getDependsOn(C_INT32 rIndex);
 
     /**
      *   Gets the set of metabolites which change number when a given
@@ -443,7 +443,7 @@ class CHybridMethod : private CTrajectoryMethod
      *   @param rIndex The index of the reaction being executed.
      *   @return The set of affected metabolites.
      */
-    std::set <const CMetab *> *getAffects(C_INT32 rIndex);
+    std::set <std::string> *getAffects(C_INT32 rIndex);
 
     /**
      *   Gets the set of metabolites, which participate in the given

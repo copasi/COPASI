@@ -68,13 +68,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:    // non-integer stoichometry
+    case - 3:     // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:    // reversible reaction exists
+    case - 2:     // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:    // more than one compartment involved
+    case - 1:     // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -943,11 +943,13 @@ void CHybridMethod::setupBalances()
 // juergen: based on Carel's Next Reaction Method
 void CHybridMethod::setupDependencyGraph()
 {
-  std::vector< std::set<const CMetab*>* > dependsOn;
-  std::vector< std::set<const CMetab*>* > affects;
-  C_INT32 numReactions = mReactions->size();
-  C_INT32 i, j;
+  mDG.clear();
+  std::vector< std::set<std::string>* > DependsOn;
+  std::vector< std::set<std::string>* > Affects;
+  unsigned C_INT32 numReactions = mpModel->getReactions().size();
+  unsigned C_INT32 i, j;
   // Do for each reaction:
+
   for (i = 0; i < numReactions; i++)
     {
       // Get the set of metabolites  which affect the value of amu for this
@@ -955,10 +957,11 @@ void CHybridMethod::setupDependencyGraph()
       // the set of substrates, since the kinetics can involve other
       // reactants, e.g. catalysts. We thus need to step through the
       // rate function and pick out every reactant which can vary.
-      dependsOn.push_back(getDependsOn(i));
+      DependsOn.push_back(getDependsOn(i));
       // Get the set of metabolites which are affected when this reaction takes place
-      affects.push_back(getAffects(i));
+      Affects.push_back(getAffects(i));
     }
+
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
   for (i = 0; i < numReactions; i++)
@@ -968,10 +971,11 @@ void CHybridMethod::setupDependencyGraph()
           // Determine whether the intersection of these two sets is non-empty
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
-          std::set<const CMetab*>::iterator iter = affects[i]->begin();
-          for (; iter != affects[i]->end(); iter++)
+
+          std::set<std::string>::iterator iter = Affects[i]->begin();
+          for (; iter != Affects[i]->end(); iter++)
             {
-              if (dependsOn[j]->count(*iter))
+              if (DependsOn[j]->count(*iter))
                 {
                   // The set intersection is non-empty
                   mDG.addDependent(i, j);
@@ -980,14 +984,15 @@ void CHybridMethod::setupDependencyGraph()
             }
         }
       // Ensure that self edges are included
-      mDG.addDependent(i, i);
+      //mDG.addDependent(i, i);
     }
+
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
   for (i = 0; i < numReactions; i++)
     {
-      delete dependsOn[i];
-      delete affects[i];
+      delete DependsOn[i];
+      delete Affects[i];
     }
   return;
 }
@@ -1261,26 +1266,24 @@ C_INT32 CHybridMethod::findMetab(const CMetab * metab)
  *   @return The set of metabolites depended on.
  */ 
 // juergen: based Carel's Next Reaction Method, adapted by Sven
-std::set<const CMetab*> *CHybridMethod::getDependsOn(C_INT32 rIndex)
+std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 reaction_index)
 {
-  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
+  std::set<std::string> *retset = new std::set<std::string>;
 
-  CCopasiVector<CReaction::CId2Metab> & subst = (*mReactions)[rIndex]->getId2Substrates();
+  unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
+  unsigned C_INT32 j, jmax;
 
-  CCopasiVector<CReaction::CId2Metab> & modif = (*mReactions)[rIndex]->getId2Modifiers();
+  std::vector <const CMetab*> metablist;
 
-  unsigned C_INT32 i;
-
-  for (i = 0; i < subst.size(); i++)
+  for (i = 0; i < imax; ++i)
     {
-      retset->insert((subst[i]->getMetabolite()));
+      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
+        continue;
+      metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
+      jmax = metablist.size();
+      for (j = 0; j < jmax; ++j)
+      {retset->insert(metablist[j]->getKey());}
     }
-
-  for (i = 0; i < modif.size(); i++)
-    {
-      retset->insert((modif[i]->getMetabolite()));
-    }
-
   return retset;
 }
 
@@ -1292,9 +1295,9 @@ std::set<const CMetab*> *CHybridMethod::getDependsOn(C_INT32 rIndex)
  *   @return The set of affected metabolites.
  */ 
 // juergen: based on Carel's Next Reaction Method
-std::set<const CMetab*> *CHybridMethod::getAffects(C_INT32 rIndex)
+std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
 {
-  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
+  std::set<std::string> *retset = new std::set<std::string>;
 
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
@@ -1303,7 +1306,7 @@ std::set<const CMetab*> *CHybridMethod::getAffects(C_INT32 rIndex)
     {
       if (mBalances[rIndex][i].balance != 0)
         {
-          retset->insert(mBalances[rIndex][i].metabolitePointer);
+          retset->insert(mBalances[rIndex][i].metabolitePointer->getKey());
         }
     }
   return retset;
@@ -1318,7 +1321,7 @@ std::set<const CMetab*> *CHybridMethod::getAffects(C_INT32 rIndex)
  */
 std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
 {
-  std::set<C_INT32> *retset = new std::set<C_INT32>;
+  /*std::set<C_INT32> *retset = new std::set<C_INT32>;
 
   CCopasiVector<CReaction::CId2Metab> & subst = (*mReactions)[rIndex]->getId2Substrates();
 
@@ -1342,7 +1345,7 @@ std::set<C_INT32> *CHybridMethod::getParticipatesIn(C_INT32 rIndex)
       retset->insert(findMetab(modif[i]->getMetabolite()));
     }
 
-  return retset;
+  return retset;*/ //TODO reac
 }
 
 /**
@@ -1393,7 +1396,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:    // Everything !!!
+    case 0:     // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: " << getName() << " Method: " /* << mMethod */ << std::endl;
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "mDim: " << mDim << std::endl;
@@ -1498,7 +1501,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:     // Variable values only
+    case 1:      // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
