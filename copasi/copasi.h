@@ -60,6 +60,10 @@
 #endif
 #endif
 
+#if (defined __GNUC__ && __GNUC__ < 3)
+# define ios_base ios
+#endif
+
 #ifdef USE_MKL
 # define C_INT int
 #else
