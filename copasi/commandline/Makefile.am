@@ -37,22 +37,28 @@ LIBS = \
 	-Wl,-lreport \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-Wl,-lutilities \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
-	-Wl,-lutilities \
 	-Wl,-loutput \
 	-Wl,-lrandomGenerator \
-	-llapack -lblas -lF77 -lfl
+  -Wl,-lmodel \
+	-Wl,-lfunction \
+	-Wl,-lutilities \
+	-Wl,-lreport \
+	-llapack -lblas -lg2c -lfl
+
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
+
+#  Use this for gcc 3.2 with clapack
+#	-llapack -lblas -lg2c -lfl
 
 #  Use this for the intel performance library under linux
 #	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 # the library search path.
-LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
+LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
         -L../function \
         -L../model \
