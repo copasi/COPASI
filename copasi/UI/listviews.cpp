@@ -24,8 +24,6 @@
 #include "FunctionWidget1.h"
 #include "ModesWidget.h"
 
-#include "SteadyStateWidget.h"
-
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
 QPixmap *folderOpen = 0;     // to store the image of open icon folder
@@ -393,8 +391,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
     currentWidget = functionWidget;
-  else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
-    currentWidget = steadystateWidget;
+  //else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
+  //currentWidget = steadystateWidget;
 
   else if (item1)
     {
@@ -745,8 +743,8 @@ void ListViews::loadNodes(CModel *model)
           loadNode = NULL;
         }
 
-      // AT THE END... SET THE UPDATE FALSE SO THAT NO OTHER VIEW IS ABLE TO REPEAT THE
-      // SAME STUFF AGAIN..
+      // Load the Elementary Modes
+      modesWidget->loadModes(model);
       dataModel->setModelUpdate(false);
     }
 }
@@ -782,8 +780,8 @@ void ListViews::ConstructNodeWidgets()
     functionWidget = new FunctionWidget(this);
     functionWidget->hide();
 
-    steadystateWidget = new SteadyStateWidget(this);
-    steadystateWidget->hide();
+    //steadystateWidget = new SteadyStateWidget(this);
+    //steadystateWidget->hide();
 
     //Constructing the Reactions Widget1
     reactionsWidget1 = new ReactionsWidget1(this);

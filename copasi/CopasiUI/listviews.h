@@ -25,7 +25,7 @@
 // #include "model/model.h"
 class CSteadyStateTask;
 
-class SteadyStateWidget;
+//class SteadyStateWidget;
 
 class MetabolitesWidget;
 
@@ -141,7 +141,7 @@ class ListViews : public QSplitter, public Observer
     QListView *folders;
     QMultiLineEdit *bigWidget;
 
-    SteadyStateWidget *steadystateWidget;
+    //SteadyStateWidget *steadystateWidget;
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;
@@ -171,6 +171,7 @@ class ListViews : public QSplitter, public Observer
     void loadMoieties(QListViewItem*);
     void loadCompartments(QListViewItem*);
     void loadFunction(QListViewItem*);
+    void loadModes(QListViewItem*);
     void showMessage(QString caption, QString text);
   };
 

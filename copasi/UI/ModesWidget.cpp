@@ -1,5 +1,5 @@
 /*******************************************************************
- **  $ CopasiUI/CompartmentsWidget.cpp                 
+ **  $ CopasiUI/ModesWidget.cpp                 
  **  $ Author  : Mudita Singhal
  **
  ** This file is used to create the GUI FrontPage for the 
@@ -12,7 +12,7 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 #include "copasi.h"
-#include "model/CCompartment.h"
+#include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "ModesWidget.h"
 #include "listviews.h"
 
@@ -71,43 +71,34 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   //connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
 }
 
-/*void ModesWidget::loadCompartments(CModel *model)
+void ModesWidget::loadModes(CModel *model)
 {
   if (model != NULL)
     {
       mModel = model;
       //Emptying the table
       int numberOfRows = table->numRows();
- 
+
       for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
- 
-      CCopasiVectorNS < CCompartment > & compartments =
- 
-        mModel->getCompartments();
- 
-      C_INT32 noOfCompartmentsRows = compartments.size();
- 
-      table->setNumRows(noOfCompartmentsRows);
- 
-      //Now filling the table.
-      CCompartment *compartn;
- 
-      for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
-        {
-          compartn = compartments[j];
-          table->setText(j, 0, compartn->getName().c_str());
-          table->setText(j, 1, QString::number(compartn->getVolume()));
-        }
+
+      /* CElementaryFluxModes *modes;
+      unsigned C_INT32 noOfModesRows=modes->getFluxModeSize(); 
+      table->setNumRows(noOfModesRows);
+      bool status;
+          for (C_INT32 j = 0; j < noOfModesRows; j++)
+          {
+            status=modes->isFluxModeReversible(j);
+            //table->setText(j, 0, QString::String(status));
+      table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
+            table->setText(j, 1,modes->getFluxModeDescription(j).c_str());
+          }*/
     }
 }
- 
-void ModesWidget::slotTableCurrentChanged(int row,
-    int col,
-    int C_UNUSED(m) ,
-    const QPoint & C_UNUSED(n))
+
+/*void ModesWidget::slotTableCurrentChanged(int row,int col,int C_UNUSED(m) ,const QPoint & C_UNUSED(n))
 {
   QString x = table->text(row, col);
   emit name(x);
