@@ -52,10 +52,10 @@ echo "Set the icon in the Info.plist file."
 
 # copy the examples into the Resources directory
     echo "Make example directory."
-    mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples
+    mkdir -p ${TMPDIR}/copasi/examples
     echo "Copy examples to example directory."
     for EXAMPLE in $EXAMPLES;do
-        cp ${EXAMPLE} ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples/
+        cp ${EXAMPLE} ${TMPDIR}/copasi/examples/
     done
 
 # copy the files for the wizard into the Resources directory
