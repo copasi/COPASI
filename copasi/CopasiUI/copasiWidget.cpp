@@ -53,10 +53,10 @@ void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
   int w = event->size().width();
   int h = event->size().height();
-  if (w < realMinWidth)
-    w = realMinWidth;
-  if (h < realMinHeight)
-    h = realMinHeight;
+  // if (w<realMinWidth)
+  //  w=realMinWidth;
+  // if (h<realMinHeight)
+  //  h=realMinHeight;
   resize(w, h);
   // QWidget::resizeEvent (event);
 }
