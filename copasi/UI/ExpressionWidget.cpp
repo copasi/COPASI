@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.10 2003/09/22 04:44:35 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.11 2003/09/23 02:59:21 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -170,7 +170,7 @@ void ExpressionWidget::languageChange()
 {
   setCaption(tr("Expression"));
   expressionEditlabel->setText(tr("Expression"));
-  expressionNameLabel->setText(tr("Expresion Name"));
+  expressionNameLabel->setText(tr("Expression Name"));
   itemsLabel->setText(tr("Copasi Items"));
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);

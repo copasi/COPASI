@@ -70,7 +70,7 @@
                                 <cstring>expressionNameLabel</cstring>
                             </property>
                             <property name="text">
-                                <string>Expresion Name</string>
+                                <string>Expression Name</string>
                             </property>
                         </widget>
                     </grid>
