@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/06 06:31:49 $
+   $Date: 2004/10/06 19:33:39 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -26,6 +26,7 @@ class QSlider;
 class CCopasiObject;
 class QLabel;
 class CopasiSlider;
+class QPopupMenu;
 
 class SliderDialog: public QDialog
   {
@@ -42,6 +43,8 @@ class SliderDialog: public QDialog
     QCheckBox* autoRunCheckBox;
     QScrollView* scrollView;
     QVBox* sliderBox;
+    QPopupMenu* contextMenu;
+    CopasiSlider* currSlider;
     std::map<C_INT32 , std::vector< CopasiSlider* > > sliderMap;
     C_INT32 currentFolderId;
 
@@ -52,8 +55,15 @@ class SliderDialog: public QDialog
     static C_INT32 numMappings;
     static C_INT32 folderMappings[][2];
 
+    virtual void contextMenuEvent(QContextMenuEvent* e);
+
   public slots:
     void toggleRunButtonState(bool);
+
+  protected slots:
+    void removeSlider();
+    void editSlider();
+    void createNewSlider();
   };
 
 class CopasiSlider: public QVBox

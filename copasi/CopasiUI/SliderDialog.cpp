@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/06 06:31:49 $
+   $Date: 2004/10/06 19:33:40 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -15,12 +15,9 @@
 #include "qslider.h"
 #include "qlayout.h"
 #include "qlabel.h"
-#include "qapplication.h"
-#include "qfontmetrics.h"
-#include "qpainter.h"
-#include "qstyle.h"
 #include "qobjectlist.h"
 #include "qtooltip.h"
+#include "qpopupmenu.h"
 #include "report/CCopasiObject.h"
 #include "model/CCompartment.h"
 #include "report/CCopasiObjectName.h"
@@ -40,7 +37,9 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
     runTaskButton(NULL),
     autoRunCheckBox(NULL),
     scrollView(NULL),
-    sliderBox(NULL)
+    sliderBox(NULL),
+    contextMenu(NULL),
+    currSlider(NULL)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
@@ -72,10 +71,63 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
   layout2->addStretch();
   mainLayout->addLayout(layout2);
 
+  this->contextMenu = new QPopupMenu(this);
+  this->contextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
+  this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
+  this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
+
   connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
   this->setCurrentFolderId(-1);
   this->init();
+}
+
+void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
+{
+  QWidget* widget = this->childAt(e->pos());
+  if (dynamic_cast<QLabel*>(widget) || dynamic_cast<QSlider*>(widget))
+    {
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(1), true);
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), true);
+      this->currSlider = dynamic_cast<CopasiSlider*>(widget->parent());
+    }
+  else
+    {
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(1), false);
+      this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), false);
+    }
+  this->contextMenu->popup(e->globalPos());
+}
+
+void SliderDialog::createNewSlider()
+{
+  this->currSlider = NULL;
+}
+
+void SliderDialog::removeSlider()
+{
+  if (this->currSlider)
+    {
+      std::vector<CopasiSlider*>::iterator it = this->sliderMap[this->currentFolderId].begin();
+      std::vector<CopasiSlider*>::iterator endPos = this->sliderMap[this->currentFolderId].end();
+      while (it != endPos)
+        {
+          if ((*it) == this->currSlider)
+            {
+              this->sliderMap[this->currentFolderId].erase(it);
+              break;
+            }
+          ++it;
+        }
+      this->sliderBox->layout()->remove(this->currSlider);
+      delete this->currSlider;
+      this->currSlider = NULL;
+    }
+}
+
+void SliderDialog::editSlider()
+{
+  this->currSlider = NULL;
 }
 
 void SliderDialog::toggleRunButtonState(bool notState)
