@@ -272,8 +272,14 @@ void SteadyStateWidget::RunButtonClicked()
   mSteadyStateTask->getProblem()->
   setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
 
-  std::ofstream output("steadystate.txt");
-  mSteadyStateTask->initializeReporting(output);
+  //  std::ofstream output("steadystate.txt");
+  //  mSteadyStateTask->initializeReporting(output);
+
+  if (mSteadyStateTask->getReport()->getTarget() != "")
+    {
+      std::ofstream output(mSteadyStateTask->getReport()->getTarget().c_str());
+      mSteadyStateTask->initializeReporting(output);
+    }
 
   setCursor(Qt::WaitCursor);
 

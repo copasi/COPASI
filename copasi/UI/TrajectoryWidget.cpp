@@ -322,9 +322,15 @@ void TrajectoryWidget::RunTask()
   tt->getProblem()->
   setStartTime(tt->getProblem()->getStartTime());
 
-  std::ofstream output("trajectory.txt");
-  output << "# "; // Hack for gnuplot
-  tt->initializeReporting(output);
+  if (tt->getReport()->getTarget() != "")
+    {
+      std::ofstream output(tt->getReport()->getTarget().c_str());
+      output << "# "; // Hack for gnuplot
+      tt->initializeReporting(output);
+    }
+
+  // std::ofstream output("trajectory.txt");
+  // tt->initializeReporting(output);
 
   tt->process();
 

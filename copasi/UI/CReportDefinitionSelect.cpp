@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.21 2003/09/18 03:17:36 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.22 2003/09/18 04:20:50 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,6 +19,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qfiledialog.h>
 
 #include "utilities/CCopasiException.h"
 #include "listviews.h"
@@ -219,7 +220,16 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 
 void CReportDefinitionSelect::jumpToFileBrowser()
 {
-  int i = 0;
+  QString reportFile = QFileDialog::getSaveFileName(
+                         QString::null, "TEXT Files (*.txt)",
+                         this, "report target file browser",
+                         "Choose to create a new a file");
+
+  if (reportFile)
+    {
+      reportFile += ".txt";
+      targetEdit->setText(reportFile);
+    }
 }
 
 void CReportDefinitionSelect::setReport(CReport* newReport)

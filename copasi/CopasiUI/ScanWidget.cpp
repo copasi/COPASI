@@ -506,8 +506,11 @@ void ScanWidget::ScanCheckBoxClicked()
 void ScanWidget::ScanButtonClicked()
 {
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-  std::ofstream output("scan.txt");
-  scanTask->initializeReporting(output);
+  if (scanTask->getReport()->getTarget() != "")
+    {
+      std::ofstream output(scanTask->getReport()->getTarget().c_str());
+      scanTask->initializeReporting(output);
+    }
 
   //prepare for the output value addr
   valueAddrMatrix.resize(nSelectedObjects);
