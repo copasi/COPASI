@@ -12,6 +12,7 @@
 #include "CTrajectoryTask.h"
 #include "CTrajectoryProblem.h"
 #include "CTrajectoryMethod.h"
+#include "output/COutput.h"
 #include "output/COutputEvent.h"
 #include "output/COutputList.h"
 #include "model/CModel.h"

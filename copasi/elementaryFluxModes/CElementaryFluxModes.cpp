@@ -11,6 +11,7 @@
 #include "copasi.h"
 #include "CElementaryFluxModes.h"
 #include "CEFMAlgorithm.h"
+#include "utilities/CMethodParameter.h"
 
 CElementaryFluxModes::CElementaryFluxModes(){CONSTRUCTOR_TRACE; mModel = NULL;}
 CElementaryFluxModes::~CElementaryFluxModes(){DESTRUCTOR_TRACE;}

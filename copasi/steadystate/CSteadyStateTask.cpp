@@ -16,6 +16,7 @@
 #include "CEigen.h"
 #include "output/COutputEvent.h"
 #include "output/COutputList.h"
+#include "output/COutput.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
 

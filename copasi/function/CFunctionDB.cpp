@@ -12,6 +12,7 @@
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiObjectReference.h"
+#include "utilities/CMethodParameter.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):

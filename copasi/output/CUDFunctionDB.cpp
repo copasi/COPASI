@@ -11,6 +11,7 @@
 #include "utilities/readwrite.h"
 #include "CUDFunctionDB.h"
 #include "CUDFunction.h"
+#include "utilities/CMethodParameter.h"
 
 /**
  *

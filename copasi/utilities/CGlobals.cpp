@@ -1,7 +1,8 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "CGlobals.h"
-#include "utilities/CCopasiException.h"
+#include "CCopasiException.h"
+#include "CMethodParameter.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "output/CUDFunctionDB.h"

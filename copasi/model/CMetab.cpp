@@ -10,6 +10,7 @@
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "utilities/utility.h"
+#include "utilities/CMethodParameter.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "CCompartment.h"

@@ -9,6 +9,7 @@
 #include "COutputEvent.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "COutputList.h"
+#include "COutput.h"
 
 /**
  * Default constructor. 
