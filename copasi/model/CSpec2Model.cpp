@@ -182,7 +182,7 @@ void CSpec2Model::processInits()
           if (vit != mDeVector.end())  // this _does_ correspond to a metabolite.
             {
               C_FLOAT64 iconc = atof(contents.c_str());
-              mModel->addMetabolite(comp_name, metab_name, iconc, CMetab::METAB_VARIABLE);
+              mModel->addMetabolite(metab_name, comp_name, iconc, CMetab::METAB_VARIABLE);
             }
           else
             {
@@ -452,7 +452,7 @@ void CSpec2Model::processMoieties()
                                            contents));
 
           metab.setName(moiety_name);
-          mModel->addMetabolite(compartment_name, moiety_name, 0, CMetab::METAB_DEPENDENT);
+          mModel->addMetabolite(moiety_name, compartment_name, 0, CMetab::METAB_DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
           << ", " << contents << std::endl;

@@ -158,7 +158,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
   // some types need more input... (mI or mJ)
   switch (Type)
     {
-    case D_UNDEF:               // Fall through as all have no mI and no mJ
+    case D_UNDEF:                // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -168,7 +168,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
     case D_RTOL:
     case D_ATOL:
     case D_SSRES:
-    case D_UFUNC:             // D_UFUNC has mI
+    case D_UFUNC:              // D_UFUNC has mI
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -183,7 +183,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
     case D_THIER:
     case D_STIFF:
       break;
-    case D_ICONC:               // Fall through as all have mI but no mJ
+    case D_ICONC:                // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -197,7 +197,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
       if (Fail)
         return Fail;
       break;
-    case D_KIN:                 // Fall through as all have mI and mJ
+    case D_KIN:                  // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
@@ -255,7 +255,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
   // some types need more output... (mI or mJ)
   switch (Type)
     {
-    case D_UNDEF:               // Fall through as all have no mI and no mJ
+    case D_UNDEF:                // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -265,7 +265,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_RTOL:
     case D_ATOL:
     case D_SSRES:
-    case D_UFUNC:             // D_UFUNC has mI
+    case D_UFUNC:              // D_UFUNC has mI
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -280,7 +280,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
     case D_THIER:
     case D_STIFF:
       break;
-    case D_ICONC:               // Fall through as all have mI but no mJ
+    case D_ICONC:                // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -295,7 +295,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
       if (Fail)
         return Fail;
       break;
-    case D_KIN:                 // Fall through as all have mI and mJ
+    case D_KIN:                  // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
@@ -340,7 +340,7 @@ void CDatum::createObjectString(const std::string& model, const std::string& ISt
   // Create CMetab part
   switch (Type)
     {
-    case D_UNDEF:               // Fall through as all have no mI and no mJ
+    case D_UNDEF:                // Fall through as all have no mI and no mJ
     case D_T:
     case D_RT:
     case D_INTS:
@@ -367,7 +367,7 @@ void CDatum::createObjectString(const std::string& model, const std::string& ISt
       mObjectName.append("CMetab = \"");
       mObjectName.append("\"");
       break;
-    case D_ICONC:               // Fall through as all have mI but no mJ
+    case D_ICONC:                // Fall through as all have mI but no mJ
     case D_SCONC:
     case D_TCONC:
     case D_SFLUX:
@@ -379,7 +379,7 @@ void CDatum::createObjectString(const std::string& model, const std::string& ISt
     case D_EIGVI:
       mObjectName.append("CMetab = \"" + IStr + "\"");
       break;
-    case D_KIN:                 // Fall through as all have mI and mJ
+    case D_KIN:                  // Fall through as all have mI and mJ
     case D_ELAST:
     case D_CCC:
     case D_FCC:
@@ -448,7 +448,7 @@ std::string CDatum::transferType(C_INT32 Type)
 
     case D_EIGVR:
     case D_EIGVI:
-    case D_EIG:              // These types have no assocaited member data
+    case D_EIG:               // These types have no assocaited member data
       break;
     case D_ICONC:
       cMemb = "mIConc";
@@ -474,16 +474,16 @@ std::string CDatum::transferType(C_INT32 Type)
     case D_TT:
       cMemb = "mTT";
       break;
-    case D_KIN:              //???
+    case D_KIN:               //???
       cMemb = "mParameters";
       break;
-    case D_ELAST:             //???
+    case D_ELAST:              //???
       cMemb = "mIColmIRow";
       break;
-    case D_CCC:              //???
+    case D_CCC:               //???
       cMemb = "mIRowmICol";
       break;
-    case D_FCC:              //???
+    case D_FCC:               //???
       cMemb = "mIColmICol";
       break;
     }
@@ -611,7 +611,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
   switch (Type)
     {
 #if 0
-    case D_UNDEF:               // Fall through as all have no mI and no mJ
+    case D_UNDEF:                // Fall through as all have no mI and no mJ
     case D_RT:
     case D_INTS:
     case D_FEVAL:
@@ -621,12 +621,12 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
     case D_ATOL:
 #endif
 
-    case D_SSRES:             // steady-state resolution
+    case D_SSRES:              // steady-state resolution
       //   mpValue = soln->getSSResAddr();
       fatalError();
       mType = CFLOAT64;
       break;
-    case D_UFUNC:             // user functions
+    case D_UFUNC:              // user functions
       Index = FindUDFunct(mTitle);
       if (Index == -1)
         break;
@@ -635,7 +635,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
       mpValue = pFunct->getValueAddr();
       mType = CFLOAT64;
       break;
-    case D_DERIV:             // Derive Factor
+    case D_DERIV:              // Derive Factor
       //   mpValue = soln->getDerivFactorAddr();
       fatalError();
       mType = CFLOAT64;
@@ -646,51 +646,51 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
     case D_POINT:
 #endif
 
-    case D_EIGMR:             // max real eigenvalue component
+    case D_EIGMR:              // max real eigenvalue component
       mpValue = &soln->getEigenValues()->getEigen_maxrealpart();
       mType = CFLOAT64;
       break;
-    case D_EIGMI:             // max absolute imaginary eigenvalue component
+    case D_EIGMI:              // max absolute imaginary eigenvalue component
       mpValue = &soln->getEigenValues()->getEigen_maximagpart();
       mType = CFLOAT64;
       break;
-    case D_EIGPR:              // number of eigenvalues w/ positive real parts
+    case D_EIGPR:               // number of eigenvalues w/ positive real parts
       mpValue = &soln->getEigenValues()->getEigen_nposreal();
       mType = CFLOAT64;
       break;
-    case D_EIGNR:             // number of eigenvalues w/ negative real parts
+    case D_EIGNR:              // number of eigenvalues w/ negative real parts
       mpValue = &soln->getEigenValues()->getEigen_nnegreal();
       mType = CFLOAT64;
       break;
-    case D_EIGR:              // number of real eigenvalues
+    case D_EIGR:               // number of real eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nreal();
       mType = CFLOAT64;
       break;
-    case D_EIGI:             // number of imaginary eigenvalues
+    case D_EIGI:              // number of imaginary eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nimag();
       mType = CFLOAT64;
       break;
-    case D_EIGC:             // number of complex eigenvalues
+    case D_EIGC:              // number of complex eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_ncplxconj();
       mType = CFLOAT64;
       break;
-    case D_EIGZ:             // number of zero eigenvalues
+    case D_EIGZ:              // number of zero eigenvalues
       mpValue = &soln->getEigenValues()->getEigen_nzero();
       mType = CFLOAT64;
       break;
-    case D_THIER:             // time hierarchy
+    case D_THIER:              // time hierarchy
       mpValue = &soln->getEigenValues()->getEigen_hierarchy();
       mType = CFLOAT64;
       break;
-    case D_STIFF:             // stiffness
+    case D_STIFF:              // stiffness
       mpValue = &soln->getEigenValues()->getEigen_stiffness();
       mType = CFLOAT64;
       break;
-    case D_T:             // time
+    case D_T:              // time
       mpValue = &state->getTime();
       mType = CFLOAT64;
       break;
-    case D_ICONC:               // Fall through as all have mI but no mJ
+    case D_ICONC:                // Fall through as all have mI but no mJ
       IStr = getObjectIStr(mObjectName, 0);
       Index = Model->findMetabByName(IStr); //TODO
       if (Index == -1)
@@ -719,7 +719,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
     case D_SFLUX:
     case D_TFLUX:
       IStr = getObjectIStr(mObjectName, 0);
-      Index = Model->findStep(IStr);
+      Index = Model->getReactions().getIndex(IStr);
       if (Index == -1)
         break;
       mpValue = & Model->getReactions()[Index]->getFlux();
@@ -727,7 +727,7 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
       break;
     case D_VOL:
       IStr = getObjectIStr(mObjectName, 0);
-      Index = Model->findCompartment(IStr);
+      Index = Model->getCompartments().getIndex(IStr);
       if (Index == -1)
         break;
       mpValue = Model->getCompartments()[Index]->getVolumeAddr();
@@ -749,10 +749,10 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
       break;
 #endif
 
-    case D_KIN:                 // Fall through as all have mI and mJ
+    case D_KIN:                  // Fall through as all have mI and mJ
       IStr = getObjectIStr(mObjectName, 1);
       JStr = getObjectJStr(mObjectName);
-      Index = Model->findStep(IStr);
+      Index = Model->getReactions().getIndex(IStr);
       if (Index == -1)
         break;
       //Index1 = Model->getReactions()[Index]->findPara(JStr);

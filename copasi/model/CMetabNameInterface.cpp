@@ -100,7 +100,8 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 
 bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)
 {
-  C_INT32 pos = name.find('{'), i;
+  C_INT32 pos = name.find('{');
+  unsigned C_INT32 i;
   CCompartment *comp;
   CCopasiVectorNS<CMetab> metabs;
 
@@ -112,7 +113,7 @@ bool CMetabNameInterface::doesExist(const CModel* model, const std::string & nam
       std::string metabName = name. substr(0, pos), s;
       C_INT32 len = name.find('}') - pos - 1;
 
-      C_INT32 index = model -> findCompartment(name.substr(pos + 1, len));
+      C_INT32 index = model->getCompartments().getIndex(name.substr(pos + 1, len));
       if (index < 0)   // the specified compartment does not exist
         return false;
 
@@ -164,7 +165,8 @@ std::string CMetabNameInterface::extractCompartmentName(const CModel* model, con
     }
 }
 
-std::string CMetabNameInterface::extractMetabName(const CModel* model, const std::string & name)
+std::string CMetabNameInterface::extractMetabName(const CModel* C_UNUSED(model),
+    const std::string & name)
 {
   // name is expected to be in the format of "metabolite{compartment}" or simply "metabolite"
   C_INT32 namelength = name.find('{');

@@ -164,8 +164,10 @@ class CCompartment : public CCopasiContainer
      *  Adds a metabolite to the compartment. Only the concentration is taken from
      *  the metabolite, the number of particles is calculated according to the
      *  volume of the compartment
+     *  @param const CMetab & metabolite;
+     *  @return bool success
      */
-    void addMetabolite(CMetab & metabolite);
+    bool addMetabolite(const CMetab & metabolite);
 
     /**
      *  Adds a metabolite to the compartment. Only the concentration is taken from

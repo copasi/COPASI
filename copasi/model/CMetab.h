@@ -148,7 +148,7 @@ class CMetab : public CCopasiContainer
      */
     void cleanup();
     void initModel();
-    void initCompartment(const CCompartment * pCompartment);
+    void initCompartment(const CCompartment * pCompartment = NULL);
 
     /**
      *  Assignment operator.

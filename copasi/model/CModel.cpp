@@ -1012,57 +1012,6 @@ C_INT32 CModel::findMetabByName(const std::string & Target) const
     return - 1;
   }
 
-C_INT32 CModel::findMetabByKey(const std::string & Target) const
-  {
-    unsigned C_INT32 i, s;
-    std::string key;
-
-    s = mMetabolites.size();
-    for (i = 0; i < s; i++)
-      {
-        key = mMetabolites[i]->getKey();
-        if (key == Target)
-          return i;
-      }
-    return - 1;
-  }
-
-/**
- *        Returns the index of the step
- */
-C_INT32 CModel::findStep(const std::string & Target) const
-  {
-    unsigned C_INT32 i, s;
-    std::string name;
-
-    s = mSteps.size();
-    for (i = 0; i < s; i++)
-      {
-        name = mSteps[i]->getName();
-        if (name == Target)
-          return i;
-      }
-    return - 1;
-  }
-
-/**
- *        Returns the index of the compartment
- */
-C_INT32 CModel::findCompartment(const std::string & Target) const
-  {
-    unsigned C_INT32 i, s;
-    std::string name;
-
-    s = mCompartments.size();
-    for (i = 0; i < s; i++)
-      {
-        name = mCompartments[i]->getName();
-        if (name == Target)
-          return i;
-      }
-    return - 1;
-  }
-
 /**
  *        Returns the index of the Moiety
  */
@@ -1714,56 +1663,82 @@ void CModel::setTime(const C_FLOAT64 & time) {mTime = time;}
 
 const C_FLOAT64 & CModel::getTime() const {return mTime;}
 
-C_INT32 CModel::addMetabolite(const std::string & comp,
-                              const std::string & name,
-                              C_FLOAT64 iconc,
-                              C_INT16 status)
+bool CModel::addMetabolite(const std::string & name,
+                           const std::string & compartment,
+                           const C_FLOAT64 & iconc,
+                           const CMetab::Status & status)
 {
-  CMetab metab;
-  C_INT32 c;
+  unsigned C_INT32 Index;
 
-  c = findCompartment(comp);
+  if (compartment == "" && mCompartments.size() != 0)
+    Index = 0;
+  else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
+    return false;
 
-  if (c == -1) return - 1;
-  if (mCompartments[c]->getMetabolites().getIndex(name) != -1) return - 1;
+  if (mCompartments[Index]->getMetabolites().getIndex(name) != C_INVALID_INDEX)
+    return false;
 
-  metab.setModel(this);
-  metab.setCompartment(mCompartments[c]);
-  metab.setName(name);
-  metab.setStatus(status);
-  metab.setInitialConcentration(iconc);
-  mCompartments[c]->addMetabolite(metab);
-  mMetabolites.add(mCompartments[c]->getMetabolites()[name]);
+  CMetab * pMetab = new CMetab(name);
+  // pMetab->setName(name);
 
-  return 0;
+  // mCompartments[Index]->addMetabolite(pMetab) takes care of the below
+  // pMetab->setModel(this);
+  // pMetab->setCompartment(mCompartments[Index]);
+
+  pMetab->setStatus(status);
+  pMetab->setInitialConcentration(iconc);
+
+  if (!mCompartments[Index]->addMetabolite(pMetab))
+    {
+      delete pMetab;
+      return false;
+    }
+
+  return mMetabolites.add(pMetab);
 }
 
-C_INT32 CModel::addCompartment(std::string &name, C_FLOAT64 vol)
+bool CModel::addCompartment(const std::string & name,
+                            const C_FLOAT64 & volume)
 {
   // check if there is already a volume with this name
-  if (findCompartment(name) == -1)
+  if (mCompartments.getIndex(name) == C_INVALID_INDEX)
     {
       //  cpt = new CCompartment(name, vol);
       CCompartment cpt;
       cpt.setName(name);
-      cpt.setInitialVolume(vol);
-      cpt.setVolume(vol);
+      cpt.setInitialVolume(volume);
+      cpt.setVolume(volume);
 
       mCompartments.add(cpt);
-      return mCompartments.size();
+      return mCompartments.add(cpt);
     }
   else
-    return - 1;
+    return false;
 }
 
-unsigned C_INT32 CModel::addReaction(const CReaction & r)
+bool CModel::addReaction(const std::string & name)
 {
-  if (mSteps.getIndex(r.getName()) != C_INVALID_INDEX)
-    return C_INVALID_INDEX;
+  if (mSteps.getIndex(name) != C_INVALID_INDEX)
+    return false;
 
-  mSteps.add(r);
-  mSteps[r.getName()]->compile(mCompartments);
-  return mSteps.size();
+  CReaction * pReaction = new CReaction(name);
+
+  if (!mSteps.add(pReaction, true))
+    {
+      delete pReaction;
+      return false;
+    }
+  return true;
+}
+
+bool CModel::addReaction(const CReaction & reaction)
+{
+  if (mSteps.getIndex(reaction.getName()) != C_INVALID_INDEX)
+    return false;
+
+  mSteps.add(reaction);
+  mSteps[reaction.getName()]->compile(mCompartments);
+  return true;
 }
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const

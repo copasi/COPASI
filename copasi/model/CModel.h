@@ -648,21 +648,6 @@ class CModel : public CCopasiContainer
     C_INT32 findMetabByName(const std::string & Target) const;
 
     /**
-     * Returns the index of the metab
-     */
-    C_INT32 findMetabByKey(const std::string & Target) const;
-
-    /**
-     * Returns the index of the step
-     */
-    C_INT32 findStep(const std::string & Target) const;
-
-    /**
-     * Returns the index of the compartment
-     */
-    C_INT32 findCompartment(const std::string & Target) const;
-
-    /**
      * Returns the index of the Moiety
      */
     C_INT32 findMoiety(std::string &Target) const;
@@ -834,31 +819,40 @@ class CModel : public CCopasiContainer
 
     /**
      * Add a metabolite to the model
-     * @param comp name of compartment to own this metabolite
-     * @param name name of metabolite
-     * @param iconc initial concentration of metabolite
-     * @param status metabolite status (see CMetab for valid values)
+     * @param const std::string & name
+     * @param const std::string & compartment (default "")
+     * @param const C_FLOAT64 & iconc (default 1.0)
+     * @param const CMetab::Status & status (default CMetab::METAB_VARIABL)
+     * @return bool success (false if failed)
+     * @see CMetab for more information
      */
-    C_INT32 addMetabolite(const std::string & comp,
-                          const std::string & name,
-                          C_FLOAT64 iconc,
-                          C_INT16 status);
+    bool addMetabolite(const std::string & name,
+                       const std::string & compartment = "",
+                       const C_FLOAT64 & iconc = 1.0,
+                       const CMetab::Status & status = CMetab::METAB_VARIABLE);
 
     /**
      * Add a compartment to the model
-     * @param name name of the new compartment
-     * @param vol volume of the new compartment
-     * @return C_INT32 number of compartments in the model 
-     *   (after insertion) or -1 if failed
+     * @param const std::string &name
+     * @param const C_FLOAT64 & volume (default 1.0)
+     * @return bool success (false if failed)
      */
-    C_INT32 addCompartment(std::string &name, C_FLOAT64 vol);
+    bool addCompartment(const std::string & name,
+                        const C_FLOAT64 & volume = 1.0);
 
     /**
      * Add a new rection to the model
-     * @param r a pointer to the new reaction
-     * @return C_INT32 number of reactions in the model (after insertion)
+     * @param const std::string &name
+     * @return bool success (false if failed)
      */
-    unsigned C_INT32 addReaction(const CReaction & r);
+    bool addReaction(const std::string &name);
+
+    /**
+     * Add a new rection to the model
+     * @param const CReaction & reaction
+     * @return bool success (false if failed)
+     */
+    bool addReaction(const CReaction & reaction);
 
     /**
      * Retrieve the metabolite permutation vector

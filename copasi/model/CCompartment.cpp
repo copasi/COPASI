@@ -165,11 +165,18 @@ void CCompartment::setVolume(C_FLOAT64 volume)
 
 /* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
    In the case the compartment is part of a model also mpModel is set. */
-void CCompartment::addMetabolite(CMetab &metabolite)
-{mMetabolites.add(metabolite);}
+bool CCompartment::addMetabolite(const CMetab & metabolite)
+{return mMetabolites.add(metabolite);}
 
 bool CCompartment::addMetabolite(CMetab * pMetabolite)
-{return mMetabolites.add(pMetabolite, true);}
+{
+  bool success = mMetabolites.add(pMetabolite, true);
+
+  pMetabolite->initCompartment();
+  pMetabolite->initModel();
+
+  return success;
+}
 
 bool CCompartment::isValidName(const std::string & name) const
   {return (name.find_first_of(" ") == std::string::npos);}
