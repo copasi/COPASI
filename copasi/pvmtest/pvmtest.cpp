@@ -1,15 +1,3 @@
-// Main
-//
-// (C) Pedro Mendes 2000
-//
-
-// #include <iostream>
-// #include <fstream>
-// #include <string>
-// #include <strstream>
-// #include <vector>
-// #include <iomanip>
-// #include <algorithm>
 
 #define COPASI_MAIN
 
@@ -17,13 +5,17 @@
 #include "utilities/CGlobals.h"
 #include "optimization/COptMethod.h"
 #include "optimization/CRealProblem.h"
+#include "utilities/CCopasiException.h"
 
 C_INT32 TestOptimization(void);     //yohe: new
 
-int main(int argc, char *argv[])
+C_INT main(C_INT argc, char *argv[])
 {
   cout << "Starting main program." << endl;
+
+  CCopasiContainer::init();
   Copasi = new CGlobals;
+
   Copasi->setArguments(argc, argv);
 
   try
@@ -36,33 +28,32 @@ int main(int argc, char *argv[])
       cout << Exception.getMessage().getText() << endl;
     }
 
-  delete Copasi;
+  pdelete(Copasi);
+  pdelete(CCopasiContainer::Root);
+
   cout << "Leaving main program." << endl;
   return 0;
-}
+} // end of main
 
 C_INT32 TestOptimization(void)
 {
-  int i;
+  int i, num_params;
   cout << "TestOptimization() begins --- " << endl;
   COptMethod * CRand = COptMethod::createMethod();
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
-  //CRandom *testRand = new CRandom(2);
-  //CRandom *rand;
-  //CRandom::Type t;
-  //t=CRandom::r250;
-  //rand = CRandom::createGenerator(t,2);
 
   // set parameter numbers....
-  CReal->setParameterNum(5);
+  /**** hard coded num of params ***/
+  num_params = 10;
+  CReal->setParameterNum(num_params);
 
   // set the individual parameters
 
   CRand->setValue(0, 100000);
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < num_params; i++)
     {
       CReal->setParameterMin(i, -5);
       CReal->setParameterMax(i, 2);
@@ -70,7 +61,7 @@ C_INT32 TestOptimization(void)
 
   CRand->optimise();
   cout << "result---best values";
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < num_params; i++)
     {
       cout << CReal->getBestValue(i);
       cout << "\n";
