@@ -334,6 +334,10 @@ SOURCE=.\listviews.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\mathematics.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MetabolitesWidget.h
 # End Source File
 # Begin Source File
