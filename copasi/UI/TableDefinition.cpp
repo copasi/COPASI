@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.21 2003/08/12 19:40:22 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.22 2003/08/13 13:17:12 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -208,7 +208,7 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 
-  connect(comboTask, SIGNAL(activated(const QString & string)), this, SLOT(comboTaskChanged(const QString & string)));
+  connect(comboTask, SIGNAL(activated(const QString &)), this, SLOT(comboTaskChanged(const QString &)));
 }
 
 /*

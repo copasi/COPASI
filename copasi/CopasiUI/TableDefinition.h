@@ -2,7 +2,7 @@
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
- ($Id: TableDefinition.h,v 1.16 2003/08/12 19:40:22 lixu1 Exp $)
+($Id: TableDefinition.h,v 1.17 2003/08/13 13:17:13 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -34,7 +34,21 @@ class QString;
 class TableDefinition : public CopasiWidget
   {
     Q_OBJECT
+  protected slots:
+    virtual void tabButtonClicked();
+    virtual void titleButtonClicked();
+    virtual void appendButtonClicked();
 
+    virtual void languageChange();
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnConfirmClicked();
+
+    virtual void addButtonClicked();
+    virtual void deleteButtonClicked();
+    virtual void upButtonClicked();
+    virtual void downButtonClicked();
+
+    virtual void comboTaskChanged(const QString & string);
   public:
     TableDefinition(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition();
@@ -89,22 +103,6 @@ class TableDefinition : public CopasiWidget
 
     QWidget* pParent;
     std::vector<CCopasiObject*> selectedList;
-
-  protected slots:
-    virtual void comboTaskChanged(const QString & string);
-    virtual void tabButtonClicked();
-    virtual void titleButtonClicked();
-    virtual void appendButtonClicked();
-
-    virtual void languageChange();
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnConfirmClicked();
-
-    virtual void addButtonClicked();
-
-    virtual void deleteButtonClicked();
-    virtual void upButtonClicked();
-    virtual void downButtonClicked();
   };
 
 #endif // TABLEDEFINITION_H
