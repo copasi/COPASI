@@ -6,10 +6,6 @@ include(../lib.pri)
 LIB= wizard
 CONFIG	+= qt 
 
-contains(BUILD_OS, Darwin) {
-  INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
-}
-
 unix {
   UI_DIR = .
   MOC_DIR = .
