@@ -131,6 +131,10 @@ SOURCE=.\copasiWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CReactionInterface.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
@@ -223,6 +227,10 @@ SOURCE=.\moc_ObjectBrowser.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\moc_parametertable.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\moc_ReactionsWidget.cpp
 # End Source File
 # Begin Source File
@@ -288,6 +296,10 @@ SOURCE=.\ObjectBrowserItem.cpp
 # Begin Source File
 
 SOURCE=.\Observer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\parametertable.cpp
 # End Source File
 # Begin Source File
 
@@ -491,6 +503,10 @@ InputName=copasiui3window
 # Begin Source File
 
 SOURCE=.\copasiWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
 
@@ -1001,6 +1017,39 @@ InputName=ObjectBrowserItem
 
 SOURCE=.\Observer.h
 # PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\parametertable.h
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing parametertable.h...
+InputDir=.
+InputPath=.\parametertable.h
+InputName=parametertable
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing parametertable.h...
+InputDir=.
+InputPath=.\parametertable.h
+InputName=parametertable
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
