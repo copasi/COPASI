@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/09 15:40:00 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:41:03 $
    End CVS Header */
 
 /**
@@ -225,6 +225,52 @@ class CCopasiXMLParser : public CExpat
       };
 
 #endif // COPASI_TEMPLATE
+
+  class UnknownElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          Unknown = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        UnknownElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~UnknownElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+    /**
+     *
+     */
+    UnknownElement mUnknownElement;
 
   class InitialStateElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -1826,6 +1872,8 @@ class CCopasiXMLParser : public CExpat
          */
         virtual void end(const XML_Char *pszName);
       };
+    friend void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName,
+        const XML_Char **papszAttrs);
 
   class ListOfReportsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {

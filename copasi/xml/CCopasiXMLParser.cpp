@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/01 15:45:14 $
+   $Date: 2004/12/20 18:41:03 $
    End CVS Header */
 
 /**
@@ -110,7 +110,8 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
 CCopasiXMLParser::CCopasiXMLParser() :
     CExpat(),
     mCommon(),
-    mElementHandlerStack()
+    mElementHandlerStack(),
+    mUnknownElement(*this, this->mCommon)
 {
   create();
 
@@ -230,6 +231,45 @@ void CCopasiXMLParser::setPlotList(CCopasiVectorN< CPlotSpecification > * pPlotL
 
 CCopasiVectorN< CPlotSpecification > * CCopasiXMLParser::getPlotList() const
   {return mCommon.pPlotList;}
+
+CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::UnknownElement::~UnknownElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::UnknownElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  /* We count the level of subelements of the Unknown Elelement */
+  mCurrentElement++;
+
+  return;
+}
+
+void CCopasiXMLParser::UnknownElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case Unknown:
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
+      break;
+
+    default:
+      mCurrentElement--;
+      break;
+    }
+
+  return;
+}
 
 CCopasiXMLParser::COPASIElement::COPASIElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
@@ -3297,7 +3337,8 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mCommon.pCurrentTask = new CMCATask();
           break;
         default:
-          fatalError();
+          mParser.pushElementHandler(&mParser.mUnknownElement);
+          mParser.onStartElement(pszName, papszAttrs);
           break;
         }
       return;
