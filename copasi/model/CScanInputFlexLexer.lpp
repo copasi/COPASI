@@ -25,6 +25,8 @@ varlist {ident}(,{ident})*
 
 vol (VOLUME|Volume|volume)[ \t]*
 
+op (+|-|*|/|^|\(|\))
+
 eol \n
 
 spc [ \t]*
@@ -66,6 +68,9 @@ chr .
 {ident}\({varlist}\){spc}={spc}{rhs} { // A function
 			return CSpecLine::FUN;
 }
+
+{ident}				{ // An identifier
+			return 
 
 %%
 

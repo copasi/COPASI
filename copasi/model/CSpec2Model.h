@@ -7,6 +7,7 @@
 #include "copasi.h"
 #include "model.h"
 #include "CSpecLine.h"
+#include "CDeTerm.h"
 /**
  * CSpec2Model
  *
@@ -136,6 +137,26 @@ class CSpec2Model
      * Parse a line
      */
     C_INT32 parseLine(string line);
+    /**
+     * Return the left hand side metabolite in a differential equation
+     */
+    CMetab *getLHSMetab(CBaseEqn &);
+    /**
+     * 
+     */
+    void processDeTerms();
+    /**
+     *
+     */
+    vector<CDeTerm *> createTermStack(string str);
+    /**
+     *
+     */
+    CReaction *findReaction(string);
+    /**
+     *
+     */
+    string expandRate(CDeTerm *);
  private:
     /**
      * The name of the specification file
@@ -152,11 +173,20 @@ class CSpec2Model
     /**
      * The differential equation contents, for further processing
      */
-    vector<CBaseEqn> mReactVector;
+    vector<CBaseEqn> mDeVector;
     /**
      * The moiety equation contents, for further processing
      */
     vector<CBaseEqn> mMoietyVector;
+    /**
+     * The constants, which are later plugged into rates or moiety equations
+     */
+    vector<CNameVal> mConstVector;
+    /**
+     * The rate constants, used later to create reactions and 
+     * to parse the differential equations.
+     */
+    vector<CNameVal> mRateVector;
     /**
      * A pointer to the model being constructed.
      */

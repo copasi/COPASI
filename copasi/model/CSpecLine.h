@@ -135,4 +135,41 @@ class CBaseEqn
     string mContents;
 };
 
+/**
+ * The CNameVal class holds a name-value pair.
+ * CNameVal is used as an intermediate in processing the spec input.
+ */
+
+class CNameVal
+{
+ public:
+    /**
+     * Named constructor
+     */
+    CNameVal(string name, C_FLOAT64 val): mName(name), mVal(val) {}
+    /*
+     * Destructor
+     */
+    ~CNameVal();
+    /**
+     * Return the name
+     * @return The name
+     */
+    string getName() { return mName; }
+    /**
+     * Return the value
+     * @return The value field
+     */
+    C_FLOAT64 getVal() { return mVal; }
+ private:
+    /** 
+     * The name
+     */
+    string mName;
+    /**
+     * The value
+     */
+    C_FLOAT64 mVal;
+};
+
 #endif // Copasi_SpecLine
