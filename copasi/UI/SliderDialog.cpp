@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/14 14:09:00 $
+   $Date: 2005/03/14 14:34:33 $
    End CVS Header */
 
 #include <iostream>
@@ -388,6 +388,11 @@ void SliderDialog::fillSliderBox()
           if (!found)
             {
               this->setCurrentSlider(new CopasiSlider((*pVector)[i], this->sliderBox));
+              connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+              connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+              connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+              connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+              connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
               this->currSlider->installEventFilter(this);
               this->currSlider->setHidden(true);
               this->sliderMap[this->currentFolderId].push_back(this->currSlider);
@@ -424,14 +429,6 @@ void SliderDialog::fillSliderBox()
       widget->setHidden(true);
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(0, widget);
       this->setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
-      if (this->currSlider)
-        {
-          connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-          connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-          connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-          connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-          connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-        }
       widget->setHidden(false);
     }
 }
