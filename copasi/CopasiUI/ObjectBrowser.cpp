@@ -125,6 +125,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   ObjectBrowserItem::resetKeySpace();
   loadData();
   currentPage = LISTVIEWPAGE;
+  mOutputObjectList = NULL;
 }
 
 /*
@@ -234,10 +235,12 @@ void ObjectBrowser::backClicked()
 }
 
 //need to delete the list outside the funciton
+/*
 ObjectList* ObjectBrowser::outputList()
 {
   ObjectList* outputList;
   ObjectBrowserItem* rootItem;
+  if (object
   rootItem = objectItemList->getRoot()->pItem;
   outputList = new ObjectList();
   eXport(rootItem, outputList);
@@ -249,11 +252,20 @@ ObjectList* ObjectBrowser::outputList()
   else
     return outputList;
 }
+ */
+
+void ObjectBrowser::setOutputList(ObjectList* pObjectList)
+{
+  mOutputObjectList = pObjectList;
+}
 
 void ObjectBrowser::nextClicked()
 {
   if (!mparent)
     {
+      ObjectBrowserItem* rootItem;
+      rootItem = objectItemList->getRoot()->pItem;
+      eXport(rootItem, mOutputObjectList);
       QDialog::done(QDialog::Accepted);
       return;
     }
@@ -308,7 +320,13 @@ void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList)
   else //it has no child
     {
       if (pCurrent->isChecked() && (pCurrent->getType() != FIELDATTR))
-        outputList->insert(pCurrent);
+        {
+          ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem();
+          browserObject* pCopybrowserObject = new browserObject();
+          pCopyCurrent->setObject(pCopybrowserObject);
+          pCopybrowserObject->pCopasiObject = pCurrent->getObject()->pCopasiObject;
+          outputList->insert(pCopyCurrent);
+        }
       // else skip current item
     }
 }

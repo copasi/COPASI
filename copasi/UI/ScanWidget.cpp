@@ -230,13 +230,19 @@ ScanWidget::~ScanWidget()
 void ScanWidget::addButtonClicked()
 {
   ObjectBrowser* pSelectedObjects = new ObjectBrowser();
-  if (pSelectedObjects->exec () == QDialog::Rejected)
-    return;
-  ObjectList* pSelectedList = pSelectedObjects->outputList();
+  ObjectList* pSelectedList = new ObjectList();
+  pSelectedObjects->setOutputList(pSelectedList);
 
-  if (pSelectedList == NULL)
+  if (pSelectedObjects->exec () == QDialog::Rejected)
     {
-      delete pSelectedObjects;
+      delete pSelectedList;
+      return;
+    }
+
+  if (pSelectedList->len() <= 0)
+    {
+      delete pSelectedList;
+      //      delete pSelectedObjects;
       return;
     }
 
@@ -247,13 +253,13 @@ void ScanWidget::addButtonClicked()
 
   if (!pSelectedList->getRoot()) //no result returned
     {
-      delete pSelectedObjects;
+      //      delete pSelectedObjects;
       delete pSelectedList;
       return;
     }
 
   addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
-  delete pSelectedObjects;
+  //  delete pSelectedObjects;
   delete pSelectedList;
 }
 
@@ -435,7 +441,7 @@ void ScanWidget::loadScan(CModel *model)
                     parameterTable->setNumCols(1);
                     parameterTable->setFocusPolicy(QWidget::WheelFocus);
                     parameterTable->horizontalHeader()->setLabel(0, "Value");
-           
+             pObject->getCN();
                     for (C_INT32 j = 0; j < itemList->size(); j++)
                       {
                         parameterTable->setNumRows(itemList->size());
@@ -469,6 +475,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), TITLE_HEIGHT));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
+  pObject->getCN();
   newTitleBar->setText(pObject->getCN().c_str());
   newTitleBar->setReadOnly(TRUE);
 
@@ -558,7 +565,7 @@ void ScanScrollView:: resizeEvent(QResizeEvent * e)
   QScrollView::resizeEvent(e);
   if (!pSelectedList)
     return;
-  int i;
+  unsigned i;
   for (i = 0; i < pSelectedList->size(); i++)
     {
       (*pSelectedList)[i]->setFixedWidth(visibleWidth());

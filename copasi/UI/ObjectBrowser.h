@@ -36,6 +36,7 @@ class ObjectBrowser : public QDialog
   private:
     pageIndex currentPage;
     CopasiUI3Window* mparent;
+    ObjectList* mOutputObjectList;
 
   public:
     ObjectList* objectItemList;
@@ -51,7 +52,7 @@ class ObjectBrowser : public QDialog
     QTextEdit* ObjectItemText;
 
     //Each Function calls the output shall be responsible to delete the list
-    ObjectList* outputList();
+    //    ObjectList* outputList();
 
     void eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList);
 
@@ -65,6 +66,7 @@ class ObjectBrowser : public QDialog
     void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiObject* pCurrent, const char* name);
+    void setOutputList(ObjectList* pObjectList);
 
     void updateUI();
     void loadUI();

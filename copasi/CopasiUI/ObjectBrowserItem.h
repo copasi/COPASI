@@ -7,12 +7,12 @@ Comment : Copasi Object Browser including:
 
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
-   there may exist multiply wrappers to one browserObject
+  there may exist multiply wrappers to one browserObject
 ObjectListItem
 ObjectList: A queue for all element: 
-  The reason I dont use std:vector is
-  for efficiency requirement for all 
-  object browser item update
+ The reason I dont use std:vector is
+ for efficiency requirement for all 
+ object browser item update
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
@@ -63,6 +63,11 @@ class ObjectBrowserItem : public QListViewItem
     browserObject* getObject()
     {
       return pBrowserObject;
+    }
+
+    void setObject(browserObject* pNewObject)
+    {
+      pBrowserObject = pNewObject;
     }
 
     virtual QString key (int column, bool ascending) const
