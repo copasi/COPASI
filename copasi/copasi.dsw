@@ -258,7 +258,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "sbml"=..\..\..\development\copasi_dev\copasi\sbml\sbml.dsp - Package Owner=<4>
+Project: "sbml"=.\sbml\sbml.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
