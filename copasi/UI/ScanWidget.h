@@ -55,6 +55,7 @@ class ScanWidget : public CopasiWidget
 
   private:
     static int nSelectedObjects;
+    static int nTitleHeight;
     int activeObject;
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);

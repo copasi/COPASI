@@ -41,9 +41,9 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
-#define TITLE_HEIGHT 16
-
 int ScanWidget::nSelectedObjects = 0;
+int ScanWidget::nTitleHeight = 16;
+
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -190,171 +190,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setTabOrder(scrollview, commitChange);
   setTabOrder(commitChange, cancelChange);
 
-  /*
-    setCaption(trUtf8("ScanWidget"));
-    ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout"); 
-   
-    TextLabel1 = new QLabel(this, "TextLabel1");
-    TextLabel1->setText(trUtf8("Problem"));
-   
-    ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
-    taskName = new QLineEdit(this, "taskName");
-   
-    ScanWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 4);
-   
-    Line1 = new QFrame(this, "Line1");
-    Line1->setFrameShape(QFrame::HLine);
-    Line1->setFrameShadow(QFrame::Sunken);
-    Line1->setFrameShape(QFrame::HLine);
-   
-    ScanWidgetLayout->addMultiCellWidget(Line1, 1, 1, 0, 5);
-   
-    Line2 = new QFrame(this, "Line2");
-    Line2->setFrameShape(QFrame::HLine);
-    Line2->setFrameShadow(QFrame::Sunken);
-    Line2->setFrameShape(QFrame::HLine);
-   
-    ScanWidgetLayout->addMultiCellWidget(Line2, 8, 8, 0, 5);
-   
-    sExecutable = new QCheckBox(this, "sExecutable");
-    sExecutable->setText(trUtf8("Scan Executable"));
-   
-    ScanWidgetLayout->addWidget(sExecutable, 0, 5);
-   
-    Layout2 = new QHBoxLayout(0, 0, 6, "Layout2"); 
-   
-    commitChange = new QPushButton(this, "commitChange");
-    commitChange->setText(trUtf8("Scan"));
-    Layout2->addWidget(commitChange);
-   
-    cancelChange = new QPushButton(this, "cancelChange");
-    cancelChange->setText(trUtf8("Cancel"));
-    Layout2->addWidget(cancelChange);
-   
-    ScanWidgetLayout->addMultiCellLayout(Layout2, 9, 9, 0, 5);
-   
-    Layout3 = new QHBoxLayout(0, 0, 6, "Layout3"); 
-   
-    steadyState = new QCheckBox(this, "steadyState");
-    steadyState->setText(trUtf8("Steady State"));
-    Layout3->addWidget(steadyState);
-   
-    eSteadyState = new QToolButton(this, "eSteadyState");
-    eSteadyState->setText(trUtf8("Edit Steady"));
-    Layout3->addWidget(eSteadyState);
-   
-    ScanWidgetLayout->addMultiCellLayout(Layout3, 2, 2, 0, 2);
-   
-    Layout4 = new QHBoxLayout(0, 0, 6, "Layout4"); 
-    trajectory = new QCheckBox(this, "trajectory");
-    trajectory->setText(trUtf8("Trajectory"));
-    Layout4->addWidget(trajectory);
-   
-    eTrajectory = new QToolButton(this, "eTrajectory");
-    eTrajectory->setText(trUtf8("Edit Trajectory"));
-    Layout4->addWidget(eTrajectory);
-   
-    ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 4, 5);
-   
-    Line1_2 = new QFrame(this, "Line1_2");
-    Line1_2->setFrameShape(QFrame::HLine);
-    Line1_2->setFrameShadow(QFrame::Sunken);
-    Line1_2->setFrameShape(QFrame::HLine);
-   
-    ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 5);
-   
-    scrollview = new ScanScrollView(this, 0, 0);
-    scrollview->setVScrollBarMode(QScrollView::Auto);
-    scrollview->setSelectedList(&selectedList);
-   
-    ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 7, 2, 5);
-   
-    TextLabel3 = new QLabel(this, "TextLabel3");
-    TextLabel3->setText(trUtf8(""));
-   
-    ScanWidgetLayout->addWidget(TextLabel3, 2, 3);
-   
-    TextLabel2 = new QLabel(this, "TextLabel2");
-    TextLabel2->setText(trUtf8("Scan Items"));
-   
-    ScanWidgetLayout->addWidget(TextLabel2, 4, 0);
-   
-    addButton = new QPushButton(this, "addButton");
-    addButton->setText(trUtf8("(+) Add"));
-   
-    ScanWidgetLayout->addWidget(addButton, 5, 0);
-   
-    deleteButton = new QPushButton(this, "deleteButton");
-    deleteButton->setText(trUtf8("(-) Delete"));
-   
-    ScanWidgetLayout->addWidget(deleteButton, 5, 1);
-   
-    downButton = new QPushButton(this, "downButton");
-    downButton->setText(trUtf8("(v) Down"));
-   
-    ScanWidgetLayout->addWidget(downButton, 6, 1);
-   
-    upButton = new QPushButton(this, "upButton");
-    upButton->setText(trUtf8("(^) Up "));
-   
-    ScanWidgetLayout->addWidget(upButton, 6, 0);
-   
-    ObjectListBox = new QListBox(this, "ObjectListBox");
-    ObjectListBox->insertItem(trUtf8(""));
-   
-    ScanWidgetLayout->addMultiCellWidget(ObjectListBox, 7, 7, 0, 1);
-   
-   
-    ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 4);
-   
-    TextLabel2 = new QLabel(this, "TextLabel2");
-    TextLabel2->setText(trUtf8("Scan Items"));
-   
-    ScanWidgetLayout->addWidget(TextLabel2, 4, 0);
-   
-    downButton = new QPushButton(this, "downButton");
-    downButton->setText(trUtf8("    (v) Down"));
-   
-    ScanWidgetLayout->addWidget(downButton, 9, 0);
-   
-    upButton = new QPushButton(this, "upButton");
-    upButton->setText(trUtf8("(^) Up "));
-   
-    ScanWidgetLayout->addWidget(upButton, 8, 0);
-   
-    deleteButton = new QPushButton(this, "deleteButton");
-    deleteButton->setText(trUtf8("   (-) Delete"));
-   
-    ScanWidgetLayout->addWidget(deleteButton, 7, 0);
-   
-    addButton = new QPushButton(this, "addButton");
-    addButton->setText(trUtf8("(+) Add"));
-   
-    ScanWidgetLayout->addWidget(addButton, 6, 0);
-    QSpacerItem* spacer = new QSpacerItem(61, 181, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    ScanWidgetLayout->addItem(spacer, 5, 0);
-   
-    scrollview = new ScanScrollView(this, 0, 0);
-    scrollview->setVScrollBarMode(QScrollView::Auto);
-    scrollview->setSelectedList(&selectedList);
-    //  for (int temp = 1; temp <= 6; temp++)
-    //    addNewScanItem(NULL);
-   
-    ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
-   
-    // tab order
-    setTabOrder(taskName, sExecutable);
-    setTabOrder(sExecutable, steadyState);
-    setTabOrder(steadyState, trajectory);
-    setTabOrder(trajectory, addButton);
-    setTabOrder(addButton, deleteButton);
-    setTabOrder(deleteButton, upButton);
-    setTabOrder(upButton, downButton);
-    setTabOrder(downButton, scrollview);
-    setTabOrder(scrollview, commitChange);
-    setTabOrder(commitChange, cancelChange);
-  */
-
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
@@ -378,6 +213,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   scanTask = NULL;
   activeObject = -1;
+
+  nTitleHeight = fontMetrics().height() + 6;
 
   pSteadyStateWidget = new SteadyStateWidget(NULL);
   pSteadyStateWidget->hide();
@@ -454,12 +291,12 @@ void ScanWidget::deleteButtonClicked()
 
   ObjectListBox->removeItem (activeObject);
   int i = activeObject + 1;
-  int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT;
+  int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
 
   for (; i < selectedList.size() / 2; i++)
     {
       scrollview->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
-      scrollview->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + TITLE_HEIGHT);
+      scrollview->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + nTitleHeight);
     }
 
   std::vector<QWidget*>::iterator it = selectedList.begin();
@@ -667,17 +504,17 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   emit hide_me();
   int widgetOffset;
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
-  widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
+  widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
 
   ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
-  newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), TITLE_HEIGHT));
+  newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), nTitleHeight));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
   pObject->getObjectUniqueName();
   newTitleBar->setText(pObject->getObjectUniqueName().c_str());
   newTitleBar->setReadOnly(TRUE);
 
-  scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
+  scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
   selectedList.push_back(newTitleBar);
 
   parameterTable->setObject(pObject);
@@ -706,7 +543,7 @@ void ScanWidget::ListBoxClicked(QListBoxItem * item)
   if (nSelectedObjects && ObjectListBox->index(item) >= 0) //select an object
     {
       double newActiveObject = ObjectListBox->index(item) + 0.5;
-      QPoint point(0, newActiveObject * (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT));
+      QPoint point(0, newActiveObject * (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight));
       QMouseEvent e(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
       scrollview->center(e.x(), e.y());
       viewMousePressEvent(&e);
@@ -754,7 +591,7 @@ void ScanWidget::viewMousePressEvent(QMouseEvent* e)
       activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
     }
 
-  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT);
+  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
   if (ObjectListBox->currentItem() != -1)
     ObjectListBox->setSelected(ObjectListBox->currentItem(), false);
   ObjectListBox->setSelected(activeObject, true);
