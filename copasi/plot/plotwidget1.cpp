@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/18 15:39:23 $
+   $Author: ssahle $ 
+   $Date: 2004/12/02 20:00:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.25 2004/11/18 15:39:23 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.26 2004/12/02 20:00:51 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -273,6 +273,8 @@ void PlotWidget1::addCurveGroupBox()
   //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   //if (!pspec) return;
 
+  C_INT32 storeTab = tabs->count();
+
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
@@ -298,6 +300,8 @@ void PlotWidget1::addCurveGroupBox()
                       objects1[i], objects2[i]);
         }
     }
+
+  tabs->setCurrentPage(storeTab);
 
   //pdelete(pBrowser1);
   //pdelete(pBrowser2);
