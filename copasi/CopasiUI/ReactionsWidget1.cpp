@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.150 $
+   $Revision: 1.151 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 08:53:36 $
+   $Date: 2004/10/08 13:13:19 $
    End CVS Header */
 
 /*********************************************************************
@@ -27,6 +27,7 @@
 #include <qcheckbox.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include <qtooltip.h>
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
@@ -326,7 +327,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                 // Yes or Enter
+        case 0:                  // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -350,7 +351,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                        // No or Escape
+        default:                         // No or Escape
           break;
         }
       //}
@@ -388,6 +389,8 @@ void ReactionsWidget1::FillWidgetFromRI()
   if (mRi.getFunctionName() != "")
     {
       ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
+      QToolTip::add(ComboBox1, FROM_UTF8(mRi.getFunctionDescription()));
+
       table->updateTable(mRi, *dataModel->getModel());
     }
   else
