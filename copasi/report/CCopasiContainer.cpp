@@ -21,8 +21,9 @@ CCopasiContainer::CCopasiContainer(const std::string & name,
     CCopasiObject(name, pParent, type, flag)
 {}
 
-CCopasiContainer::CCopasiContainer(const CCopasiContainer & src):
-    CCopasiObject(src)
+CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
+                                   const CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
 {initObjects();}
 
 CCopasiContainer::~CCopasiContainer()

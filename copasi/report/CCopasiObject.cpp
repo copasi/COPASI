@@ -32,44 +32,45 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mObjectFlag(flag)
 {}
 
-CCopasiObject::CCopasiObject(const CCopasiObject & src):
+CCopasiObject::CCopasiObject(const CCopasiObject & src,
+                             const CCopasiContainer * pParent):
     mObjectName(src.mObjectName),
     mObjectType(src.mObjectType),
-    mpObjectParent(src.mpObjectParent),
+    mpObjectParent(const_cast<CCopasiContainer *>(pParent ? pParent : src.mpObjectParent)),
     mObjectFlag(src.mObjectFlag)
 {}
 
 CCopasiObject::~CCopasiObject() {}
 
 CCopasiObjectName CCopasiObject::getCN() const
-{
-  CCopasiObjectName CN;
-
-  if (mpObjectParent)
   {
-    std::stringstream tmp;
-    tmp << mpObjectParent->getCN();
+    CCopasiObjectName CN;
 
-      if (mpObjectParent->isNameVector())
-        tmp << "[" << mObjectName << "]";
-      else if (mpObjectParent->isVector())
-        tmp << "[" << mpObjectParent->getIndex(this) << "]";
+    if (mpObjectParent)
+      {
+        std::stringstream tmp;
+        tmp << mpObjectParent->getCN();
 
-      tmp << "," << mObjectType << "=" << mObjectName;
-      CN = tmp.str();
-    }
-  else
-    {
-      CN = CCopasiObjectName::escape(mObjectType)
-           + "=" + CCopasiObjectName::escape(mObjectName);
-    }
+        if (mpObjectParent->isNameVector())
+          tmp << "[" << mObjectName << "]";
+        else if (mpObjectParent->isVector())
+          tmp << "[" << mpObjectParent->getIndex(this) << "]";
 
-  return CN;
-}
+        tmp << "," << mObjectType << "=" << mObjectName;
+        CN = tmp.str();
+      }
+    else
+      {
+        CN = CCopasiObjectName::escape(mObjectType)
+             + "=" + CCopasiObjectName::escape(mObjectName);
+      }
+
+    return CN;
+  }
 
 CCopasiObject *
 CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
-{return NULL;}
+  {return NULL;}
 
 const std::string & CCopasiObject::getName() const {return mObjectName;}
 
@@ -81,7 +82,7 @@ CCopasiObject * CCopasiObject::getObjectParent() const {return mpObjectParent;}
 
 unsigned C_INT32
 CCopasiObject::getIndex(const CCopasiObject * C_UNUSED(pObject)) const
-{return C_INVALID_INDEX;}
+  {return C_INVALID_INDEX;}
 
 void * CCopasiObject::getReference() {return this;}
 
