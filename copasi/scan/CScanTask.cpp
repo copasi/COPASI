@@ -102,16 +102,10 @@ void CScanTask::process()
   if ((mpProblem->getSteadyStateTask() != NULL) && mpProblem->processSteadyState())
     {
       mpProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
-      mpProblem->getSteadyStateTask()->getProblem()->
-      setInitialState(mpProblem->getSteadyStateTask()->getProblem()->getModel()->getInitialState());
     }
   if ((mpProblem->getTrajectoryTask() != NULL) && mpProblem->processTrajectory())
     {
       mpProblem->getTrajectoryTask()->getProblem()->getModel()->compile();
-      mpProblem->getTrajectoryTask()->getProblem()->
-      setInitialState(mpProblem->getTrajectoryTask()->getProblem()->getModel()->getInitialState());
-      mpProblem->getTrajectoryTask()->getProblem()->
-      setStartTime(mpProblem->getTrajectoryTask()->getProblem()->getStartTime());
     }
 
   unsigned C_INT32 scanDimension = mpProblem->getListSize();

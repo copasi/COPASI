@@ -228,11 +228,17 @@ void CScanProblem::calculate()
   if ((mpSteadyState != NULL) && mProcessSteadyState)
     {
       // std::cout << "COptProblem: mpSteadyState";
+      getSteadyStateTask()->getProblem()->
+      setInitialState(getSteadyStateTask()->getProblem()->getModel()->getInitialState());
       mpSteadyState->process();
     }
   if ((mpTrajectory != NULL) && mProcessTrajectory)
     {
       // std::cout << "COptProblem: mpTrajectory";
+      getTrajectoryTask()->getProblem()->
+      setInitialState(getTrajectoryTask()->getProblem()->getModel()->getInitialState());
+      getTrajectoryTask()->getProblem()->
+      setStartTime(getTrajectoryTask()->getProblem()->getStartTime());
       mpTrajectory->process();
     }
 }
