@@ -200,14 +200,14 @@ public:
      * Clean up internal pointer variables
      */
      void Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt, 
-                   double * ss_h, int * ss_ipvt, double ** ss_jacob);
+                   double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob);
 
      /**
       * returns the largest value in a vector
       * @param mtm is a pointer to ??????
       */
 
-     C_FLOAT64 SS_XNorn( C_FLOAT64 * mtx );
+     //C_FLOAT64 SS_XNorn( C_FLOAT64 * mtx );
 
 
 };

@@ -389,3 +389,18 @@ C_INT32 CModel::getDepMetab() const
 {
     return mMetabolitesDep.size();
 }
+
+
+// Added by Yongqun He
+/**
+* Get the total steps
+*
+*/
+//C_INT32 CModel::getTotSteps()
+//{
+  // return mSteps;   //should not return mSteps
+//}
+
+
+
+

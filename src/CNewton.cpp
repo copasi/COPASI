@@ -101,17 +101,17 @@ C_FLOAT64 CNewton::GetDerivFactor() const
 
 
 // returns the largest value in a vector
-C_FLOAT64 CNewton::SS_XNorn( C_FLOAT64 * mtx )
-{
- int i;
+//C_FLOAT64 CNewton::SS_XNorn( C_FLOAT64 * mtx )
+//{
+// int i;
 
  // get the index of the element with the largest magnitude
  //Yongqun: idamax is an extern fn that returns a int. Find it out
  //orig: i = idamax( mModel.IntMetab, mtx, 1 );
- i = idamax( mModel->getIntMetab(), mtx, 1 );
+// i = idamax( mModel->getIntMetab(), mtx, 1 );
 
- return fabs( mtx[i] );
-}
+// return fabs( mtx[i] );
+//}
 
 
 //similar to SS_Newton() in gepasi except a few modification
@@ -141,17 +141,18 @@ void CNewton::ProcessNewton(void)
     ss_jacob[i] = new double[mModel->getTotMetab()+1];
 
   int i,j,k,l,m;
-  double maxrate, nmaxrate;
+  C_FLOAT64 maxrate, nmaxrate;
   C_INT32 info;
   ss_solution = SS_NOT_FOUND;
 
   //  try
   // {
     //note from Yongqun: this fn should be from CModel::ls...
-    FEval( 0, 0, ss_x, ss_dxdt );
+  //FEval( 0, 0, ss_x, ss_dxdt );
+    mModel->lSODAEval(0, 0, ss_x, ss_dxdt );
 
     ss_nfunction++;
-    maxrate = SS_XNorn( ss_dxdt );
+    maxrate =xNorm(mModel->getIntMetab(), ss_dxdt,1);
     if( maxrate < mSSRes )
     ss_solution = SS_FOUND;
     if( ss_solution == SS_FOUND )
@@ -209,9 +210,10 @@ void CNewton::ProcessNewton(void)
    // update the dependent metabolites
    //  try
    //{
-    FEval( 0, 0, ss_xnew, ss_dxdt );
+   //FEval( 0, 0, ss_xnew, ss_dxdt );
+    mModel->lSODAEval( 0, 0, ss_xnew, ss_dxdt );
     ss_nfunction++;
-    nmaxrate = SS_XNorn( ss_dxdt );
+    nmaxrate = xNorm(mModel->getIntMetab(), ss_dxdt,1);
     //}
   //finally
   //{
@@ -295,69 +297,4 @@ void CNewton::Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt,
   delete [] ss_jacob;
 }
 
-
-// this function evaluates the balance equations
-void CNewton::FEval(int num, double time, double *y, double *ydot )
-{
- register int i, j, k;
- for(i=0;i<mModel->getIndMetab();i++)
- {
-  ydot[i+1] = 0.0;
-  // for( j=0; j<mModel->TotStep; j++ )
-  for( j=0; j<mModel->getTotSteps(); j++   //from Y.H.
-   {
-   if( mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]] != 0.0 )
-      ydot[i+1] += mModel->Stoichiometry[mModel->Row[i]][mModel->Col[j]]
-          * (*(mModel->Step[mModel->Col[j]].Kinetics->Function))((void *)mModel, &y[1], mModel->Col[j]);
-  }
-//  ydot[i+1] *= mModel->Compartment[mModel->Metabolite[mModel->Row[i]].Compart].Volume;
- }
- for( k=0; i<mModel->getIntMetab(); i++, k++)
- {
-  ydot[i+1] = 0.0;
-  for( j=0; j<mModel->getIndMetab(); j++)
-   ydot[i+1] -= mModel->ConsRel[i][j] * ydot[j+1];
-//  y[i+1] = mModel->Moiety[k].IConc;
-//  for( j=0; j<mModel->getIndMetab(); j++)
-//   y[i+1] -= mModel->ConsRel[i][j] * y[j+1];
- }
-}
-
-
-// evaluates the Jacobian matrix
-void CNewton::JEval( double *y, double **ydot )
-{
- register int i, j;
- double store, temp, *f1, *f2;
- double K1, K2, K3;
- // constants for differentiation by finite differences
- K1 = 1 + mDerivFactor;
- K2 = 1 - mDerivFactor;
- K3 = 2 * mDerivFactor;
- // arrays to store function values
- f1 = new double[mModel->getIntMetab()+1];
- f2 = new double[mModel->getIntMetab()+1];
- // iterate over all metabolites
- for( i=1; i<mModel->getIndMetab()+1; i++ )
- {
-  // if y[i] is zero, the derivative will be calculated at a small
-  // positive value (no point in considering negative values!).
-  // let's stick with mSSRes*(1.0+mDerivFactor)
-  store = y[i];
-  if( store < mSSRes ) temp = mSSRes*K1;
-  else temp = store;
-  y[i] = temp*K1;
-  FEval( 0, 0, y, f1 );
-  ss_nfunction++;
-  y[i] = temp*K2;
-  FEval( 0, 0, y, f2 );
-  ss_nfunction++;
-  for( j=1; j<mModel->getIndMetab()+1; j++ )
-   ydot[j][i] = (f1[j]-f2[j])/(temp*K3);
-  y[i] = store;
- }
- delete [] f1;
- delete [] f2;
- ss_njacob++;
-}
 

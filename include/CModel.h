@@ -315,6 +315,14 @@ public:
      *  param C_FLOAT64 & y
      */
     void setConcentrations(const C_FLOAT64 *y);
+
+    // Added by Yongqun He
+    /**
+     * Get the total steps
+     * @return C_INT32 total steps;
+     */
+    C_INT32 getTotSteps();
+
     
 #ifdef XXXX
     /**

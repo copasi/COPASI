@@ -6,7 +6,7 @@
 #include "CSS_Solution.h"
 
 //extern "C" int idamax( int n, double *dx, int incx );
-
+extern ss_nfunction;
 //default constructor
 CSS_Solution::CSS_Solution()
 {
@@ -82,7 +82,7 @@ void CSS_Solution:: SetModel(CModel * aModel)
 
 
 //get mNewton
-CModel * CSS_Solution::GetModel() const;
+CModel * CSS_Solution::GetModel() const
 {
   return mModel;
 }
@@ -108,9 +108,9 @@ void CSS_Solution::Process(void)
 
   mNewton->ProcessNewton();
 
-  where (t < pow(10,10))
+  while (t < pow(10,10))
   {
-    if(IsSteadyState)
+    if(IsSteadyState())
       return;
 
     t *= 10;
@@ -124,17 +124,17 @@ void CSS_Solution::Process(void)
 
 
 // returns the largest value in a vector
-double CSS_Solution::SS_XNorn( double *mtx )
-{
- int i;
+//double CSS_Solution::SS_XNorn( double *mtx )
+//{
+// int i;
 
  // get the index of the element with the largest magnitude
  //Yongqun: idamax is a extern fn that returns a int. Find it out
- i = idamax( mModel.IntMetab, mtx, 1 );
+// i = idamax( mModel.IntMetab, mtx, 1 );
  //i = lsoda_idamax( mModel.IntMetab, mtx, 1 ); //can't use private fn
 
- return fabs( mtx[i] );
-}
+// return fabs( mtx[i] );
+//}
 
 
 //Yongqun: change SSStrategy to mOption
@@ -157,11 +157,12 @@ void CSS_Solution::SteadyState( void )
  if((mOption==0) || (mOption==2)) 
 {
   // we start with initial concentrations as the guess
-  for( i=0; i<mModel.TotMetab; i++ )
+  for( i=0; i<mModel->getTotMetab(); i++ )
    ss_x[i+1] = ss_xnew[i+1] = mModel.Metabolite[mModel.Row[i]].IConc * 
                               mModel.Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
   // first attempt a solution by the newton method
-  SS_Newton();
+  //SS_Newton();
+  mNewton->ProcessNewton();
   ftot += (double) ss_nfunction;
   jtot += (double) ss_njacob;
  }
