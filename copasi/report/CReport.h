@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 19:46:39 $
+   $Date: 2003/12/04 17:34:23 $
    End CVS Header */
 
 /****************************************************************************
@@ -39,9 +39,9 @@ class CReport : public CCopasiContainer
     std::string mTarget;
     bool mAppend;
 
-    std::vector<CCopasiObject*> footerObjectList;
-    std::vector<CCopasiObject*> bodyObjectList;
-    std::vector<CCopasiObject*> headerObjectList;
+    std::vector< CCopasiObject * > footerObjectList;
+    std::vector< CCopasiObject * > bodyObjectList;
+    std::vector< CCopasiObject * > headerObjectList;
 
   public:
     /**
@@ -92,6 +92,11 @@ class CReport : public CCopasiContainer
      * @return std::ostream * pOstream
      */
     std::ostream * CReport::getStream() const;
+
+    /**
+     * Close the stream if the report own the stream
+     */
+    void close();
 
     /**
      * transfer every individual object list from name vector
