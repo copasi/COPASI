@@ -323,7 +323,6 @@ void ScanItemWidget::InitializeParameterList()
         if (mPosGaussianRadio->isChecked())
           pParameter->add("gridType", SD_BOLTZ, CParameter::INT);
 
-  pParameter->add("value", 0, CParameter::DOUBLE);
   pParameter->add("incr", 0, CParameter::DOUBLE);
   pParameter->add("ampl", 0, CParameter::DOUBLE);
 }
