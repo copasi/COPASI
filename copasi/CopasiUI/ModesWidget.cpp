@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:47 $
+   $Date: 2004/09/17 14:46:49 $
    End CVS Header */
 
 /*******************************************************************
@@ -153,7 +153,7 @@ void ModesWidget::loadModes(CModel *model)
           item->setText(1, FROM_UTF8(modes->getFluxModeDescription(j)));
           std::string reactionEq = "";
           unsigned int x;
-          CFluxMode mode = modes->getFluxMode(j);
+          const CFluxMode & mode = modes->getFluxMode(j);
           for (x = 0; x < mode.size(); x++)
             {
               reactionEq += mode.getReactionEquation(x, mModel);
@@ -173,11 +173,11 @@ void ModesWidget::loadModes(CModel *model)
  */
 void ModesWidget::slotTableSelectionChanged()
 {/*
-        if (!table->hasFocus())
-          {
-            table->setFocus();
-          }
-          */
+          if (!table->hasFocus())
+            {
+              table->setFocus();
+            }
+            */
   if (!listView->hasFocus())
     {
       listView->setFocus();
