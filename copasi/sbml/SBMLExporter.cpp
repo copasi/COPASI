@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/24 09:09:43 $
+   $Date: 2004/06/24 10:03:39 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -510,7 +510,8 @@ KineticLaw SBMLExporter::createSBMLKineticLawFromCReaction(const CReaction* copa
 
       kLaw.setMath(node);
       /* add the parameters */
-      for (unsigned int counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
         {
           const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
           if (para->getUsage() == "PARAMETER")
@@ -706,7 +707,8 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
 bool SBMLExporter::isEmptyString(const std::string str)
 {
   bool result = true;
-  for (unsigned int counter = 0; counter < str.size(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < str.size(); counter++)
     {
       if ((str[counter] != ' ') && (str[counter] != '\n') && (str[counter] != '\t') && (str[counter] != '\r'))
         {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/23 17:46:45 $
+   $Author: gauges $ 
+   $Date: 2004/06/24 10:03:39 $
    End CVS Header */
 
 #include <string>
@@ -58,7 +58,8 @@ ConverterASTNode::ConverterASTNode(const ASTNode &templ): ASTNode(templ.getType(
     {
       this->setName(templ.getName());
     }
-  for (unsigned int counter = 0; counter < templ.getNumChildren(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < templ.getNumChildren(); counter++)
     {
       this->addChild(new ConverterASTNode(*templ.getChild(counter)));
     }

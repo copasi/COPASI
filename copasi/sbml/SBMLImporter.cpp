@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 07:52:11 $
+   $Author: gauges $ 
+   $Date: 2004/06/24 10:03:39 $
    End CVS Header */
 
 #include <iostream>
@@ -50,7 +50,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
 
   if (sbmlModel->getNumUnitDefinitions() != 0)
     {
-      for (unsigned int counter = 0; counter < sbmlModel->getNumUnitDefinitions(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < sbmlModel->getNumUnitDefinitions(); counter++)
         {
           UnitDefinition* uDef = sbmlModel->getUnitDefinition(counter);
           std::string unitId = uDef->getId();
@@ -555,7 +556,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 {
                   bool found = false;
                   /* first check if the parameter is defined in the reaction */
-                  for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
+                  unsigned int x;
+                  for (x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                     {
                       Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
                       std::string parameterName;
@@ -589,7 +591,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                    * is a global parameter */
                   if (!found)
                     {
-                      for (unsigned int x = 0; x < sbmlModel->getNumParameters(); x++)
+                      unsigned int x;
+                      for (x = 0; x < sbmlModel->getNumParameters(); x++)
                         {
                           Parameter* parameter = sbmlModel->getParameter(x);
                           //DebugFile << "global parameter " << x << ": " << parameter << std::endl;
@@ -702,7 +705,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               else
                 {
                   bool found = false;
-                  for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
+                  unsigned int x;
+                  for (x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                     {
                       Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
                       if (parameter == NULL)
@@ -728,7 +732,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     }
                   if (!found)
                     {
-                      for (unsigned int x = 0; x < sbmlModel->getNumParameters(); x++)
+                      unsigned int x;
+                      for (x = 0; x < sbmlModel->getNumParameters(); x++)
                         {
                           Parameter* parameter = sbmlModel->getParameter(x);
                           if (parameter == NULL)
@@ -886,7 +891,8 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
     }
   else
     {
-      for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < node->getNumChildren(); counter++)
         {
           this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substMap, reversible);
         }
@@ -902,7 +908,8 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
   ConverterASTNode* newNode = new ConverterASTNode(*node);
   newNode->setChildren(new List());
   /* make the replacement recursively, depth first */
-  for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < node->getNumChildren(); counter++)
     {
       ConverterASTNode* newChild = this->replaceUserDefinedFunctions(node->getChild(counter), sbmlModel);
       if (newChild == NULL)
@@ -947,7 +954,8 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
       throw StdException("Error. The number of parameters to the function call " + functionName + " does not correspond to the number of parameters givven in the definition of the function.");
     }
   std::map<std::string, ASTNode*> varMap;
-  for (unsigned int counter = 0; counter < uDefFunction->getNumChildren() - 1; counter++)
+  unsigned int counter;
+  for (counter = 0; counter < uDefFunction->getNumChildren() - 1; counter++)
     {
       varMap[uDefFunction->getChild(counter)->getName()] = function->getChild(counter);
     }
@@ -962,7 +970,8 @@ FunctionDefinition*
 SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* sbmlModel)
 {
   FunctionDefinition* fDef = NULL;
-  for (unsigned int counter = 0; counter < sbmlModel->getNumFunctionDefinitions(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < sbmlModel->getNumFunctionDefinitions(); counter++)
     {
       std::string functionName = sbmlModel->getFunctionDefinition(counter)->getName();
       if (sbmlModel->getFunctionDefinition(counter)->isSetId())
@@ -1001,7 +1010,8 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
     {
       newNode = new ConverterASTNode(*node);
       newNode->setChildren(new List());
-      for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < node->getNumChildren(); counter++)
         {
           newNode->addChild(this->replaceBvars(node->getChild(counter), bvarMap));
         }
@@ -1037,7 +1047,8 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
           //node->setType(AST_POWER);
           node->setCharacter('^');
         }
-      for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < node->getNumChildren(); counter++)
         {
           this->replacePowerFunctionNodes(node->getChild(counter));
         }
@@ -1337,7 +1348,8 @@ void SBMLImporter::replaceCompartmentNodes(ConverterASTNode* node, std::map<std:
         }
     }
   unsigned int num = node->getNumChildren();
-  for (unsigned int counter = 0; counter < num; counter++)
+  unsigned int counter;
+  for (counter = 0; counter < num; counter++)
     {
       this->replaceCompartmentNodes((ConverterASTNode*)(node->getChild(counter)), compartmentMap);
     }
