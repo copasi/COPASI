@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/09 12:13:28 $
+   $Date: 2005/03/10 12:05:13 $
    End CVS Header */
 
 #include <iostream>
@@ -256,19 +256,23 @@ void SliderDialog::addSlider(CSlider* pSlider)
   // check if there already is a slider for this  object
   SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
   assert(pGUI);
-  if (this->equivalentSliderExists(pSlider)) return;
-
-  pGUI->pSliderList->add(pSlider);
-  this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
-  this->sliderMap[this->currentFolderId].push_back(this->currSlider);
-  this->currSlider->setHidden(true);
-  ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
-  connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-  connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-  connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-  connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-  connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-  this->currSlider->setHidden(false);
+  if (!this->equivalentSliderExists(pSlider))
+    {
+      pGUI->pSliderList->add(pSlider);
+    }
+  if (!findCopasiSliderForCSlider(pSlider))
+    {
+      this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
+      this->currSlider->setHidden(true);
+      this->sliderMap[this->currentFolderId].push_back(this->currSlider);
+      ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
+      connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      connect(this->currSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+      connect(this->currSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+      connect(this->currSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+      connect(this->currSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+      this->currSlider->setHidden(false);
+    }
 }
 
 CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
@@ -335,58 +339,58 @@ void SliderDialog::fillSliderBox()
     {
       std::vector<CSlider*>* pVector = this->getCSlidersForCurrentFolderId();
       // maybe other program parts have added or deleted some sliders
-      // actually this is not correct. Even if the vector sizes are the same, it could be that just as many sliders have been deleted as newly generated.
       unsigned int i, j, maxSliders, maxWidgets;
       maxWidgets = v.size();
       maxSliders = pVector->size();
-      if (maxSliders > maxWidgets)
+      SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
+      assert(pGUI);
+      // add CopasiSlider for all CSliders that don't have one.
+      for (i = 0; i < maxSliders;++i)
         {
-          // add CopasiSlider for all CSliders that don't have one.
-          for (i = 0; i < maxSliders;++i)
+          bool found = false;
+          for (j = 0; j < maxWidgets; j++)
             {
-              bool found = false;
-              for (j = 0; j < maxWidgets; j++)
+              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
+              if (!pTmpSlider) break;
+              if (pTmpSlider->getCSlider() == (*pVector)[i])
                 {
-                  CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-                  if (!pTmpSlider) break;
-                  if (pTmpSlider->getCSlider() == (*pVector)[i])
-                    {
-                      found = true;
-                      break;
-                    }
-                }
-              if (!found)
-                {
-                  this->addSlider((*pVector)[i]);
+                  found = true;
+                  break;
                 }
             }
-        }
-      else if (maxSliders < maxWidgets)
-        {
-          // delete CopasiSliders which have no correponding CSlider
-          for (j = 0; j < maxWidgets;++j)
+          if (!found)
             {
-              bool found = false;
-              for (i = 0; i < maxSliders; i++)
+              this->currSlider = new CopasiSlider((*pVector)[i], this->sliderBox);
+              this->currSlider->setHidden(true);
+              this->sliderMap[this->currentFolderId].push_back(this->currSlider);
+
+              //this->addSlider((*pVector)[i]);
+            }
+        }
+      // delete CopasiSliders which have no correponding CSlider
+      for (j = 0; j < maxWidgets;++j)
+        {
+          bool found = false;
+          for (i = 0; i < maxSliders; i++)
+            {
+              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
+              if (!pTmpSlider) break;
+              if (pTmpSlider->getCSlider() == (*pVector)[i])
                 {
-                  CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-                  if (!pTmpSlider) break;
-                  if (pTmpSlider->getCSlider() == (*pVector)[i])
-                    {
-                      found = true;
-                      break;
-                    }
+                  found = true;
+                  break;
                 }
-              if (!found)
-                {
-                  CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-                  assert(pTmpSlider);
-                  this->removeSlider(pTmpSlider);
-                }
+            }
+          if (!found)
+            {
+              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
+              assert(pTmpSlider);
+              this->removeSlider(pTmpSlider);
             }
         }
       delete pVector;
     }
+  v = this->sliderMap[this->currentFolderId];
   unsigned int i, maxCount = v.size();
   for (i = maxCount; i != 0;--i)
     {
