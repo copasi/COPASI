@@ -32,7 +32,7 @@ template < class CType > class CCopasiVector:
        *  Default constructor
        */
       CCopasiVector(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = &RootContainer,
+                    const CCopasiContainer * pParent = NULL,
                     const unsigned C_INT32 & flag = CCopasiObject::Vector):
           std::vector< CType * >(),
           CCopasiContainer(name, pParent, "Vector", flag)
@@ -47,6 +47,7 @@ template < class CType > class CCopasiVector:
           CCopasiContainer(src, pParent)
       {
         CONSTRUCTOR_TRACE;
+
         unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
         iterator Target = begin();
         const_iterator Source = src.begin();
@@ -58,7 +59,8 @@ template < class CType > class CCopasiVector:
       /**
        *  Destructor
        */
-    virtual ~CCopasiVector() {DESTRUCTOR_TRACE;}
+      virtual ~CCopasiVector()
+    {DESTRUCTOR_TRACE;}
 
       /**
        *  Cleanup
@@ -220,7 +222,7 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
        *  Default constructor
        */
       CCopasiVectorS(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = &RootContainer):
+                     const CCopasiContainer * pParent = NULL):
       CCopasiVector< CType >(name, pParent){}
 
       /**
@@ -298,17 +300,19 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *  Default constructor
        */
       CCopasiVectorN(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = &RootContainer):
+                     const CCopasiContainer * pParent = NULL):
           CCopasiVector< CType >(name, pParent,
                                  CCopasiObject::Vector
-                             + CCopasiObject::NameVector){}
+                                 + CCopasiObject::NameVector)
+      {}
 
       /**
        *  Copy constructor
        */
       CCopasiVectorN(const CCopasiVectorN < CType > & src,
                      const CCopasiContainer * pParent = NULL) :
-      CCopasiVector < CType > (src, pParent) {}
+          CCopasiVector < CType > (src, pParent)
+      {}
 
       /**
        *  Destructor
@@ -445,8 +449,9 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
        *  Default constructor
        */
       CCopasiVectorNS(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = &RootContainer):
-      CCopasiVectorN< CType >(name, pParent) {}
+                      const CCopasiContainer * pParent = NULL):
+          CCopasiVectorN< CType >(name, pParent)
+      {}
 
       /**
        *  Copy constructor
