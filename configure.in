@@ -1,70 +1,89 @@
-dnl without this order in this file, autoconf will not work!
-dnl the argument is a source file out of your sources. But
-dnl acinclude.m4 makes the job for all programs ;-)
-AC_INIT(acinclude.m4)
+# Original Author was Kalle@kde.org
+# I lifted it in some mater. (Stephan Kulow)
+# I used much code from Janos Farkas
 
-dnl enable the following if you want to use autoconf/automake 
-dnl framework from a certain directory (like kde-common)
-dnl AC_CONFIG_AUX_DIR(admin)
+dnl Process this file with autoconf to produce a configure script.
 
+AC_INIT(acinclude.m4) dnl a source file from your sub dir
+
+dnl This is so we can use kde-common
+AC_CONFIG_AUX_DIR(admin)
+
+dnl This ksh/zsh feature conflicts with `cd blah ; pwd`
+unset CDPATH
+
+dnl Checking host/target/build systems, for make, install etc.
 AC_CANONICAL_SYSTEM
+dnl Perform program name transformation
 AC_ARG_PROGRAM
 
+dnl Automake doc recommends to do this only here. (Janos)
 AM_INIT_AUTOMAKE(copasi,0.1)
 
+dnl almost the same like KDE_SET_PEFIX but the path is /usr/local
+dnl
+unset CDPATH
+dnl make /usr/local the default for the installation
 AC_PREFIX_DEFAULT(/usr/local)
+
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
+KDE_FAST_CONFIGURE
+KDE_CONF_FILES
 
 dnl without this order in this file, automake will be confused!
-dnl 
+dnl
 AM_CONFIG_HEADER(config.h)
 
 dnl checks for programs.
 dnl first check for c/c++ compilers
 AC_CHECK_COMPILERS
-dnl check for lex
-AM_PROG_LEX
+
+dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
+dnl CFLAGS="$NOOPT_CFLAGS" dnl __kdevelop[noopt]__
+CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 
 dnl create only shared libtool-libraries
-AC_ENABLE_SHARED(yes)
+AC_ENABLE_SHARED(no)
 
 dnl set the following to yes, if you want to create static
-dnl libtool-libraries
-AC_ENABLE_STATIC(no)
+dnl libtool-libraries, too.
+AC_ENABLE_STATIC(yes)
 
 dnl create a working libtool-script
 KDE_PROG_LIBTOOL
 
-dnl check for presence of dynamic-loading-library functions
-KDE_CHECK_LIBDL
-KDE_CHECK_LIBPTHREAD
+dnl activate the next macro call for DLOPEN tests and setting LIBDL
+dnl   (n.b. KDE_MISC_TESTS does the same to you, so use either this or the next one)
+dnl KDE_CHECK_DLOPEN
 
-dnl activate the following for some additional tests
-dnl   (compat, crypt, socket, nsl, ...)
-KDE_MISC_TESTS
+dnl activate the next macro call for some additional tests
+dnl   (compat, crypt, socket, nsl, dlopen, ...)
+dnl KDE_MISC_TESTS dnl __kdevelop__
 
-dnl add --with-extra-includes and --with-extra-libs switch to ./configure
-dnl
-AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
+dnl KDE_NEED_FLEX dnl __kdevelop__
+dnl AC_PROG_YACC dnl __kdevelop__
+
+KDE_CHECK_EXTRA_LIBS
 all_libraries="$all_libraries $USER_LDFLAGS"
 all_includes="$all_includes $USER_INCLUDES"
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
 
+dnl for NLS support. Call them in this order!
+dnl WITH_NLS is for the po files
+AM_KDE_WITH_NLS
+
+KDE_USE_QT(3)
 AC_PATH_QT
 
-AC_SUBST(AUTODIRS)
+dnl KDE_NEED_FLEX dnl __kdevelop__
+dnl AC_PROG_YACC dnl __kdevelop__
 
-dnl in this space add everything you want to check for
-dnl examples are specific headers, libraries, etc.
-
-
-
-dnl perform program name transformation
-AC_ARG_PROGRAM
+dnl Perform program name transformation
+dnl AC_ARG_PROGRAM
 
 dnl add here all your Makefiles. These will be created by configure
-AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/report/Makefile copasi/randomGenerator/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile tnt/Makefile)
+AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile tnt/Makefile)

@@ -28,24 +28,23 @@ EXTRA_DIST =  \
 	random.c
 
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = ABiochem
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
-	-lelementaryFluxModes \
-	-lmodel \
-        -lfunction \
-        -loutput \
-        -lsteadystate \
-        -ltrajectory \
-        -lutilities \
-        -loutput \
-        -lfunction \
-        -lmodel \
-	-lrandomGenerator \
+	-Wl,-lelementaryFluxModes \
+	-Wl,-lmodel \
+        -Wl,-lfunction \
+        -Wl,-loutput \
+        -Wl,-lsteadystate \
+        -Wl,-ltrajectory \
+        -Wl,-lutilities \
+        -Wl,-loutput \
+	-Wl,-loptimization \
+        -Wl,-lfunction \
+        -Wl,-lmodel \
 	-llapack \
 	-lblas \
 	-lF77 \

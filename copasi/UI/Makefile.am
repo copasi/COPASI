@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = CopasiUI
 
-CopasiUI_MOC_SOURCES = \
+CopasiUI_MOC = \
 	CompartmentsWidget1.moc.cpp \
 	CompartmentsWidget.moc.cpp \
 	FunctionWidget1.moc.cpp \
@@ -15,7 +15,7 @@ CopasiUI_MOC_SOURCES = \
 	copasiui3window.moc.cpp \
 	listviews.moc.cpp
 
-CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) \
+CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	main.cpp \
 	MyTable.cpp \
 	Observer.cpp \
@@ -40,6 +40,7 @@ CopasiUI_LIBS = \
 	../model \
 	../function \
 	../output \
+	../optimization \
 	../randomGenerator \
 	../steadystate \
 	../trajectory \
@@ -65,28 +66,27 @@ EXTRA_DIST = \
 	listviews.h listviews.cpp moc_listviews.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = CopasiUI
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = $(LIB_QT) \
-	-lelementaryFluxModes \
-	-lmodel \
-	-lfunction \
-	-loutput \
-	-lsteadystate \
-	-ltrajectory \
-	-lutilities \
-	-loutput \
-	-lfunction \
-	-lmodel \
-	-lrandomGenerator \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-Wl,-lelementaryFluxModes \
+	-Wl,-lmodel \
+	-Wl,-lfunction \
+	-Wl,-loutput \
+	-Wl,-lsteadystate \
+	-Wl,-ltrajectory \
+	-Wl,-lrandomGenerator \
+	-Wl,-lutilities \
+	-Wl,-loutput \
+	-Wl,-lfunction \
+	-Wl,-lmodel \
+	-lmkl_lapack \
+	-lmkl_p3 \
+	-lg2c \
+	-lpthread
 
 #  Use this for standard clapack
 #	-llapack \
@@ -101,11 +101,12 @@ LIBS = $(LIB_QT) \
 #	-lpthread \
 
 # the library search path.
-LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
+LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
 	-L../model \
 	-L../output \
+	-L../optimization \
 	-L../randomGenerator \
 	-L../steadystate \
 	-L../trajectory \

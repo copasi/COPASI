@@ -11,6 +11,7 @@ test_LIBS = \
 	../model \
 	../function \
 	../output \
+	../optimization \
 	../randomGenerator \
 	../steadystate \
 	../trajectory \
@@ -21,28 +22,28 @@ test_LIBS = \
 EXTRA_DIST = test.cpp matrix.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = test
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
-	-lelementaryFluxModes \
-	-lmodel \
-        -lfunction \
-        -loutput \
-        -lsteadystate \
-        -ltrajectory \
-        -lutilities \
-        -loutput \
-        -lfunction \
-        -lmodel \
-	-lrandomGenerator \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-Wl,-lelementaryFluxModes \
+	-Wl,-lmodel \
+	-Wl,-lfunction \
+	-Wl,-loutput \
+	-Wl,-loptimization \
+	-Wl,-lsteadystate \
+	-Wl,-ltrajectory \
+	-Wl,-lrandomGenerator \
+	-Wl,-lutilities \
+	-Wl,-loutput \
+	-Wl,-lfunction \
+	-Wl,-lmodel \
+	-lmkl_lapack \
+	-lmkl_p3 \
+	-lg2c \
+	-lpthread
 
 #  Use this for standard clapack
 #	-llapack \
@@ -62,6 +63,7 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
         -L../function \
         -L../model \
         -L../output \
+	-L../optimization \
 	-L../randomGenerator \
         -L../steadystate \
         -L../trajectory \

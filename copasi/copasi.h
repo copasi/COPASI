@@ -29,16 +29,7 @@
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
-#endif
-
-#if (defined i386 && !defined __CYGWIN__)
-# define C_INT32 int
-# define C_INT int
-# define C_INT16 short
-# define C_FLOAT64 double
-# define C_FLOAT32 float
-#endif
-
+#else
 #ifdef WIN32
 # define C_INT32 int
 # define C_INT int
@@ -49,7 +40,14 @@
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define timeb _timeb         // they just have a different name for this guy
 # define ftime _ftime         // they just have a different name for this guy
-#endif  // WIN32
+#else
+# define C_INT32 int
+# define C_INT int
+# define C_INT16 short
+# define C_FLOAT64 double
+# define C_FLOAT32 float
+#endif
+#endif
 
 /* Define COPASI_DEBUG */
 #ifndef NDEBUG              // for gcc
