@@ -145,7 +145,7 @@ class CCopasiVector
    *
    */
   virtual C_INT16 isInsertAllowed(const CType & src)
-    {return (getIndex(src.getName()) + 1);}
+    {return (getIndex(src.getName()) == (unsigned C_INT32) -1);}
  
   /**
    *
@@ -308,12 +308,12 @@ class CCopasiVectorP
    *
    */
   virtual C_INT16 isInsertAllowed(const CType & src)
-    {return (getIndex(src->getName()) + 1);}
+    {return (getIndex(src->getName()) == (unsigned C_INT32) -1);}
  
   /**
    *
    */
-  C_INT32 getIndex(const string &name) const
+  unsigned C_INT32 getIndex(const string &name) const
     {
       unsigned C_INT32 i;
             
