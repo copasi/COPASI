@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 20:49:20 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:59:03 $
    End CVS Header */
 
 // ReportDefinitionVector.h: interface for the CReportDefinitionVector class.
@@ -25,8 +25,8 @@ class CReportDefinitionVector: public CCopasiVectorN< CReportDefinition >
     std::string mKey;
 
   public:
-    CReportDefinitionVector(const std::string & name = "noname",
-                            const CCopasiContainer* pParent = NULL);
+    CReportDefinitionVector(const std::string & name = "ReportDefinitions",
+                            const CCopasiContainer* pParent = &RootContainer);
 
     ~CReportDefinitionVector();
 

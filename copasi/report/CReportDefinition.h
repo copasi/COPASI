@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/11 21:43:29 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:59:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -72,10 +72,10 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    std::string & getComment()
-    {
-      return mComment;
-    }
+    const std::string & getComment() const
+      {
+        return mComment;
+      }
 
     /**
     sets the comments in the report tag
@@ -115,25 +115,25 @@ class CReportDefinition : public CCopasiObject
       mSeperator = Seperator;
     }
 
-    CCopasiStaticString& getSeperator()
-    {
-      return mSeperator;
-    }
+    const CCopasiStaticString& getSeperator() const
+      {
+        return mSeperator;
+      }
 
-    bool getTitle()
-    {
-      return mbTitle;
-    }
+    bool getTitle() const
+      {
+        return mbTitle;
+      }
 
     void setTitle(bool mTitle)
     {
       mbTitle = mTitle;
     }
 
-    inline std::string & getKey()
-    {
-      return mKey;
-    }
+    inline const std::string & getKey() const
+      {
+        return mKey;
+      }
   };
 
 #endif
