@@ -88,4 +88,4 @@ dnl Perform program name transformation
 dnl AC_ARG_PROGRAM
 
 dnl add here all your Makefiles. These will be created by configure
-AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile copasi/scan/Makefile tnt/Makefile)
+AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile tnt/Makefile)
