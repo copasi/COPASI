@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 21:57:29 $
+   $Date: 2004/09/30 09:07:30 $
    End CVS Header */
 
 /**
@@ -55,23 +55,23 @@ class CTrajectoryTask : public CCopasiTask
      */
     CTrajectoryTask(const CCopasiContainer * pParent = NULL);
 
-    /**
+    /* *
      * Copy constructor
      * @param const CTrajectoryTask & src
      * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CTrajectoryTask(const CTrajectoryTask & src,
-                    const CCopasiContainer * pParent = NULL);
+     */ 
+    //CTrajectoryTask(const CTrajectoryTask & src,
+    //                const CCopasiContainer * pParent = NULL);
 
-    /**
+    /* *
      * special constructor. Allows definition of a Trajectory task without loading one
-     */
-    CTrajectoryTask(CTrajectoryProblem * pProblem,
-                    CTrajectoryMethod::SubType type =
-                      CTrajectoryMethod::deterministic,
-                    const CCopasiContainer * pParent = NULL);
+     */ 
+    //CTrajectoryTask(CTrajectoryProblem * pProblem,
+    //                CTrajectoryMethod::SubType type =
+    //                  CTrajectoryMethod::deterministic,
+    //                const CCopasiContainer * pParent = NULL);
 
-    /**
+    /* *
      * special constructor. Allows definition of a Trajectory task
      * and a problem without loading one.
      *  @param "CModel *" pmodel
@@ -79,13 +79,13 @@ class CTrajectoryTask : public CCopasiTask
      *  @param "C_FLOAT64" endtime
      *  @param "unsigned C_INT32" stepnumber : number of steps
      *  @param "CTrajectoryMethod::SubType" type : type of the method that will be created
-     */
-    CTrajectoryTask(CModel * pModel,
-                    C_FLOAT64 starttime, C_FLOAT64 endtime,
-                    unsigned C_INT32 stepnumber,
-                    CTrajectoryMethod::SubType type
-                    = CTrajectoryMethod::deterministic,
-                    const CCopasiContainer * pParent = NULL);
+     */ 
+    //CTrajectoryTask(CModel * pModel,
+    //                C_FLOAT64 starttime, C_FLOAT64 endtime,
+    //                unsigned C_INT32 stepnumber,
+    //                CTrajectoryMethod::SubType type
+    //                = CTrajectoryMethod::deterministic,
+    //                const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -124,6 +124,12 @@ class CTrajectoryTask : public CCopasiTask
      * @return CState * pState
      */
     CState * getState();
+
+    /**
+     * gets a reference to the time series
+     * @return time series
+     */
+    const CTimeSeries & getTimeSeries() const;
 
   private:
     /**

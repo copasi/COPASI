@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/21 21:29:59 $
+   $Date: 2004/09/30 09:07:30 $
    End CVS Header */
 
 /**
@@ -34,7 +34,8 @@
 
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
-    mpState(NULL)
+    mpState(NULL),
+    mTimeSeriesRequested(true)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod =
@@ -43,17 +44,19 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mpMethod->setObjectParent(this);
 }
 
-CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
+/*CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
                                  const CCopasiContainer * pParent):
     CCopasiTask(src, pParent),
-    mpState(src.mpState)
-{fatalError();}
+    mpState(src.mpState),
+    mTimeSeriesRequested(src.mTimeSeriesRequested)
+{fatalError();}*/
 
-CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
+/*CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
                                  CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
-    mpState(NULL)
+    mpState(NULL),
+    mTimeSeriesRequested(true)
 {
   mpProblem = pProblem;
   mpProblem->setObjectParent(this);
@@ -61,27 +64,28 @@ CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
     CTrajectoryMethod::createTrajectoryMethod(subType,
         (CTrajectoryProblem *) mpProblem);
   mpMethod->setObjectParent(this);
-}
+}*/
 
-CTrajectoryTask::CTrajectoryTask(CModel * pModel,
+/*CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  C_FLOAT64 starttime, C_FLOAT64 endtime,
                                  unsigned C_INT32 stepnumber,
                                  CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
-    mpState(NULL)
+    mpState(NULL),
+    mTimeSeriesRequested(true)
 {
   mpProblem = new CTrajectoryProblem(this);
   ((CTrajectoryProblem *) mpProblem)->setModel(pModel);
   ((CTrajectoryProblem *) mpProblem)->setStartTime(starttime);
   ((CTrajectoryProblem *) mpProblem)->setEndTime(endtime);
   ((CTrajectoryProblem *) mpProblem)->setStepNumber(stepnumber);
-
+ 
   mpMethod =
     CTrajectoryMethod::createTrajectoryMethod(subType,
         (CTrajectoryProblem *) mpProblem);
   mpMethod->setObjectParent(this);
-}
+}*/
 
 CTrajectoryTask::~CTrajectoryTask()
 {
@@ -89,7 +93,9 @@ CTrajectoryTask::~CTrajectoryTask()
 }
 
 void CTrajectoryTask::cleanup()
-{pdelete(mpState);}
+{
+  pdelete(mpState);
+}
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
 {
@@ -105,9 +111,6 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   mpMethod->setObjectParent(this);
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
-
-CState * CTrajectoryTask::getState()
-{return mpState;}
 
 bool CTrajectoryTask::initialize(std::ostream * pOstream)
 {
@@ -152,6 +155,10 @@ bool CTrajectoryTask::process()
   mReport.printBody();
 
   if (mpOutputHandler) mpOutputHandler->init();
+  if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
+
+  if (mpOutputHandler) mpOutputHandler->doOutput();
+  if (mTimeSeriesRequested) mTimeSeries.add();
 
   C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
@@ -162,6 +169,9 @@ bool CTrajectoryTask::process()
 
   pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printBody();
+
+  if (mpOutputHandler) mpOutputHandler->doOutput();
+  if (mTimeSeriesRequested) mTimeSeries.add();
 
 #ifdef  XXXX_Event
   if (ActualStepSize != StepSize)
@@ -177,6 +187,7 @@ bool CTrajectoryTask::process()
       pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
       mReport.printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
+      if (mTimeSeriesRequested) mTimeSeries.add();
 
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
@@ -193,6 +204,7 @@ bool CTrajectoryTask::process()
 #ifdef  XXXX_Event
       pProblem->getModel()->getDerivatives(mpState, Derivatives);
       mReport.printBody();
+      if (mTimeSeriesRequested) mTimeSeries.add();
 
       if (ActualStepSize != (pProblem->getEndTime() - Time))
         {
@@ -206,7 +218,10 @@ bool CTrajectoryTask::process()
   pProblem->getModel()->getDerivatives_particles(mpState, Derivatives);
   mReport.printFooter();
 
+  if (mpOutputHandler) mpOutputHandler->doOutput();
   if (mpOutputHandler) mpOutputHandler->finish();
+  if (mTimeSeriesRequested) mTimeSeries.add();
+  if (mTimeSeriesRequested) mTimeSeries.finish();
 
   return true;
 }
@@ -226,3 +241,9 @@ bool CTrajectoryTask::setMethodType(const int & type)
 
   return true;
 }
+
+CState * CTrajectoryTask::getState()
+{return mpState;}
+
+const CTimeSeries & CTrajectoryTask::getTimeSeries() const
+  {return mTimeSeries;}
