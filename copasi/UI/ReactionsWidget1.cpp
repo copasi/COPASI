@@ -3,7 +3,7 @@
  **  $ Author  : Mudita Singhal
  **
  ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Moiety----It is Basically 
+ ** obtained from the data model about the Recations----It is Basically 
  ** the Second level of Reactions.
  **********************************************************************/
 
