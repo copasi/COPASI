@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 15:06:42 $
+   $Date: 2004/12/13 14:04:30 $
    End CVS Header */
 
 /********************************************************
@@ -291,6 +291,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
 void ObjectBrowserWidget::setOutputVector(std::vector<CCopasiObject*>* pObjectVector)
 {
   mOutputObjectVector = pObjectVector;
+  this->clearClicked();
   if (mOutputObjectVector) selectObjects(mOutputObjectVector);
 }
 
@@ -655,7 +656,6 @@ void ObjectBrowserWidget::selectObjects(std::vector<CCopasiObject*>* pObjectVect
   ObjectBrowserItem* rootItem;
 
   rootItem = objectItemList->getRoot()->pItem;
-
   for (i = 0; i < pObjectVector->size(); i++)
     {
       if ((*pObjectVector)[i]) selectObjects(rootItem, (*pObjectVector)[i]);
