@@ -197,10 +197,7 @@ void ListViews::initFolders()
 
   if (next)
     for (next = next->child; next != NULL; next = next->sibling)
-      {
-        if (next->info->getID()) lstFolders.append(next->info);
-        //        std::cout << next->info->getID() << std::endl;
-      }
+      if (next->info->getID()) lstFolders.append(next->info);
 }
 
 /************************ListViews::setupFolders()*****************************
@@ -304,7 +301,6 @@ QListViewItem* ListViews::searchNode(int id)
 {
   FolderListItem *item;
   QListViewItemIterator it(folders);
-  std::cout << "Searching Node: " << id << std::endl;
 
   for (; it.current(); ++it)
     {

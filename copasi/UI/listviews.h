@@ -63,12 +63,11 @@ class Folder : public QObject
     inline void setID(int id, bool fixed = false)
     {
       mKey = QString::number(id) + "_" + fName;
+
       if (fixed)
         this->id = id;
       else
         this->id = id * 1000000 + getModifier();
-
-      std::cout << fName << ": ID = " << this->id << ", Key = " << mKey << std::endl;
     }
   inline const QString & getKey() const {return mKey;}
     inline QString folderName() {return fName;}
@@ -77,7 +76,6 @@ class Folder : public QObject
     {
       mModifier++;
       mModifier %= 1000000;
-      std::cout << "Modifier: " << mModifier << std::endl;
       return mModifier;
     }
 

@@ -25,7 +25,6 @@ template <class T>
 
 class Node
   {
-
   public:
     T* info;
     Node* child;
@@ -46,7 +45,6 @@ template <class T>
 
 class Tree
   {
-
   private:
     /** @associates <{Node<T>}>
      * @link association 
@@ -66,7 +64,6 @@ class Tree
     void display(Node<T>* next); // displays the given tree in in-order traversal..
     void display(); // displays the tree from the root..
     int deleteNode(T* node); // delete's the node...
-
   };
 
 // Node: implementation of the Node class.
@@ -80,7 +77,6 @@ Node<T>::Node()
   child = NULL;
   sibling = NULL;
   parent = NULL;
-
 }
 
 template <class T>
@@ -109,7 +105,6 @@ template <class T>
 Tree<T>::Tree()
 {
   head = NULL;
-
 }
 
 /********************************
@@ -129,12 +124,10 @@ Tree<T>::~Tree()
 template <class T>
 void Tree<T>::addRoot(T* parent)
 {
-
   Node<T>* newNode = new Node<T>;
   newNode->info = parent;
   newNode->parent = head;
   head = newNode;
-
 }
 
 /*************************************************************************
@@ -146,7 +139,6 @@ void Tree<T>::addRoot(T* parent)
 template <class T>
 void Tree<T>::addChildren(T* info, T* parent)
 {
-
   Node<T>* newNode = new Node<T>;
   newNode->info = info;
   Node<T>* parentNode = NULL;
@@ -163,7 +155,6 @@ void Tree<T>::addChildren(T* info, T* parent)
       newNode->parent = head;
       head = newNode;
     }
-
 }
 
 /*************************************************************************
@@ -175,7 +166,6 @@ void Tree<T>::addChildren(T* info, T* parent)
 template <class T>
 void Tree<T>::addSibling(T* info, T* parent)
 {
-
   Node<T> *parentNode = NULL, *myParent = NULL;
 
   parentNode = search(parent, head); // get the poiter to the parent
@@ -200,7 +190,6 @@ void Tree<T>::addSibling(T* info, T* parent)
     }
   else
     addChildren(info, parent);
-
 }
 
 /*************************************************************************
@@ -213,13 +202,12 @@ void Tree<T>::addSibling(T* info, T* parent)
 template <class T>
 Node<T>* Tree<T>::search(T* info, Node<T>* next)
 {
-
   Node<T>* ret;
 
   if (next)
     {
       if (next->info == info)
-      { return next;}
+      {return next;}
       else
         {
           if (ret = search(info, next->sibling))
@@ -229,11 +217,9 @@ Node<T>* Tree<T>::search(T* info, Node<T>* next)
           else
             return NULL;
         }
-
     }
   else
     return NULL;
-
 }
 
 /*************************************************************************
@@ -245,13 +231,11 @@ Node<T>* Tree<T>::search(T* info, Node<T>* next)
 template <class T>
 int Tree<T>::deleteNode(T* node)
 {
-
   Node<T>*deleteNode; // a node to be deleted
   deleteNode = search(node, head); // gets the node to be deleted...
 
   if (deleteNode)
     {
-
       if (deleteNode == head) //I AM THE HEAD NODE...
         head = NULL;
       else
@@ -275,11 +259,9 @@ int Tree<T>::deleteNode(T* node)
 
       // free node...
       return 1;
-
     }
   else
     return 0;
-
 }
 
 /*************************************************************************
@@ -295,12 +277,9 @@ void Tree<T>::display(Node<T>* next)
 {
   if (next != NULL)
     {
-      //   cout<<endl<<*next->info;
       display(next->sibling);
       display(next->child);
-
     }
-
 }
 
 //This is no argument method that displays the entier tree
