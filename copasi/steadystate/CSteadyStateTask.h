@@ -21,6 +21,7 @@ class CSteadyStateProblem;
 class CState;
 class COutputEvent;
 class CEigen;
+class CModel;
 
 class CSteadyStateTask
   {
@@ -74,6 +75,8 @@ class CSteadyStateTask
 
     //Operations
   public:
+
+    void setModel(CModel* mModel);
     /**
      * default constructor
      */

@@ -17,6 +17,7 @@
 
 #include "output/output.h"
 #include "model/CState.h"
+#include "model/cmodel.h"
 #include "utilities/CGlobals.h"
 
 #define XXXX_Reporting
@@ -171,4 +172,10 @@ void CSteadyStateTask::process()
     mpOutEnd->print(*this, *Copasi->pOutputList, *mpOut);
 
   return;
+}
+
+void CSteadyStateTask::setModel(CModel* mModel)
+{
+  if (mpProblem)
+    mpProblem->setModel(mModel);
 }
