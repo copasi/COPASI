@@ -21,12 +21,13 @@
 #include "model/CSpec2Model.h"
 #include "output/output.h"
 #include "function/function.h"
-#include "trajectory/trajectory.h"
-#include "steadystate/steadystate.h"
 #include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
 #include "randomGenerator/CRandom.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CEigen.h"
+#include "steadystate/CMca.h"
 
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
@@ -294,17 +295,15 @@ C_INT32 TestCompartment(void)
   return 0;
 }
 
-#ifdef XXXX
-
 C_INT32 TestDatum(void)
 {
   cout << "Entering TestDatum." << endl;
   C_FLOAT64 doublevariable;
   cout << "creating a CDatum object..." << endl;
   CDatum d((string)"[medicarpin]t",
+           &doublevariable,
            D_TCONC,
-           (string)"medicarpin",
-           (string)"", &doublevariable);
+           (string)"medicarpin");
   cout << "Opening an output stream" << endl;
   CWriteConfig of("TestDatum1.txt");
   d.save(of);
@@ -325,32 +324,6 @@ C_INT32 TestDatum(void)
   cout << endl;
   return 0;
 }
-
-C_INT32 TestMetab(void)
-{
-  cout << "Entering TestMetab." << endl;
-  cout << "creating a CMetab object..." << endl;
-
-  CCompartmentVector ListIn;
-  CReadConfig VectorIn((string) "TestCompartmentVector.txt");
-  ListIn.load(VectorIn);
-
-  CMetab c((string) "MetabTest", 1, ListIn[0]);
-
-  cout << "Opening an output stream" << endl;
-  CWriteConfig of("TestMetab.txt");
-  c.save(of, ListIn);
-  of.flush();
-
-  CMetab d;
-  CReadConfig inf("TestMetab.txt");
-  d.load(inf, ListIn);
-
-  cout << endl;
-  return 0;
-}
-
-#endif
 
 C_INT32 TestReadSample(void)
 {
@@ -557,49 +530,6 @@ C_INT32 TestMCA(void)
 }
 
 // by YH
-C_INT32 TestNewton(void)
-{
-  //    C_INT32 size = 0;
-  //    C_INT32 i;
-
-  CReadConfig inbuf("gps/NewtonTest.gps");
-  //   CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
-  CModel model;
-  model.load(inbuf);
-  model.compile();
-
-  model.getReactions().size();
-
-  //set up CNewton object and pass to CSS_Solution
-  CNewton newton;
-  newton.setModel(model);
-  // newton.initialize();
-
-  //get mDerivFactor, mSSRes, and mNewtonLimit,
-  //or may use their default values
-  //YOHE: new test 03/22/02
-  //newton.setDerivFactor(0.1);
-  newton.setDerivFactor(0.003);
-  cout << "setDerivFactor(0.003)" << endl;
-  newton.setSSRes(1.0e-9);
-  newton.setNewtonLimit(50);
-  //cout << "newton DerivFactor, SSRes, and NewtonLimit are: "
-  //     << newton.getDerivFactor()<<", "<<newton.getSSRes()<<", "
-  //     << newton.getNewtonLimit()<<endl;
-
-  //how to get ss_nfunction?
-  newton.setSs_nfunction(0);
-
-  //how to get mSs_x, mSs_new, mSs_dxdt, mSs_h, mSs_jacob, mSs_ipvt
-  //and mSs_solution??? or don't need to care about them here??
-
-  newton.setStartingPoint();
-  newton.process();
-
-  return 0;
-}
-
-// by YH
 C_INT32 TestSSSolution(void)
 {
   CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
@@ -611,14 +541,14 @@ C_INT32 TestSSSolution(void)
 
   Copasi->OutputList.load(inbuf);
 
-  CSS_Solution ss_soln;
+  CSteadyStateTask ss_soln;
   ss_soln.load(inbuf);
-  ss_soln.setModel(&model);
-  ss_soln.initialize();
+  //  ss_soln.setModel(&model);
 
   ofstream output("output.txt");
+  ss_soln.initializeReporting(output);
 
-  ss_soln.process(output);
+  ss_soln.process();
 
   return 0;
 }
@@ -636,16 +566,23 @@ C_INT32 TestEigen(void)
 
   CEigen myEigen;
 
+  C_FLOAT64 matrix[9];
+  matrix[0] = -1;
+  matrix[2] = 4;
+  matrix[3] = -2;
+  matrix[3] = -3;
+  matrix[5] = 4;
+  matrix[6] = 0;
+  matrix[6] = -3;
+  matrix[8] = 1;
+  matrix[6] = 3;
   //initialize matrix
-  TNT::Matrix<C_FLOAT64> matrix(3, 3,
-                                " -1 4 -2 "
-                                " -3 4  0 "
-                                " -3 1  3 ");
   //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3];
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
   C_FLOAT64 ssRes = 0.0;
 
-  myEigen.CalcEigenvalues(ssRes, matrix);
+  myEigen.calcEigenValues(matrix, 3);
+  myEigen.stabilityAnalysis(ssRes);
 
   cout << "!!! Yongqun Testing: the max eigenvalue real part is: " << myEigen.getEigen_maxrealpart() << endl;
   cout << "!!! Yongqun Testing: the max eigenvalue imag part is: " << myEigen.getEigen_maximagpart() << endl;
