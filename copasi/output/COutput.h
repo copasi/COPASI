@@ -128,7 +128,7 @@ class COutput : public CCopasiContainer
     /**
      * Print each line of the header in the reporting file
      */
-    void repHeaderLine(std::ofstream &fout, int width, std::string OutStr);
+    void repHeaderLine(std::ofstream &fout, int width, std::string OutStr) const;
 
     int CheckEquilibrium();
 
@@ -242,77 +242,77 @@ class COutput : public CCopasiContainer
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputTitles(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const;
 
     /**
      * print the mpValue of Object in the steady-state data file
      */
-    void sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    void sSOutputData(std::ofstream &fout, std::string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) const;
 
     /**
      * print the titles of the time couse data file
      */
-    void dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputTitles(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const;
 
     /**
      * print the mpValue of Object in the time course data file
      */
-    void dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    void dynOutputData(std::ofstream &fout, std::string &DynName, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) const;
 
     /**
      * print the header of the reporting file
      */
-    void repHeader(std::ofstream &fout);
+    void repHeader(std::ofstream &fout) const;
 
     /**
      * Output the comments to the output reporting file
      */
-    void repComments(std::ofstream &fout);
+    void repComments(std::ofstream &fout) const;
 
     /**
      * print the parameters of the simulation
      */
-    void repParams(std::ofstream &fout);
+    void repParams(std::ofstream &fout) const;
 
     /**
      * print the structural analysis
      */
-    void repStruct(std::ofstream &fout);
+    void repStruct(std::ofstream &fout) const;
 
     /**
      * print the results of the stability analysis
      */
-    void repStability(std::ofstream &fout);
+    void repStability(std::ofstream &fout) const;
 
     /**
      * print the results of the MCA
      */
-    void repMCA(std::ofstream &fout);
+    void repMCA(std::ofstream &fout) const;
 
     /**
      * print the titles of the time-course data file
      */
-    void dynOutputTitles(std::ofstream &fout, std::string &DynName);
+    void dynOutputTitles(std::ofstream &fout, std::string &DynName) const;
 
     /**
      * print a line of data (one time point) on the time-course data file
      */
-    void dynOutputData(std::ofstream &fout, std::string &DynName);
+    void dynOutputData(std::ofstream &fout, std::string &DynName) const;
 
     /**
      * print the titles of the steady-state data file
      */
-    void sSOutputTitles(std::ofstream &fout, std::string &SSName);
+    void sSOutputTitles(std::ofstream &fout, std::string &SSName) const;
 
     /**
      * print a line of data (one iteration) on the steady-state data file
      */
-    void sSOutputData(std::ofstream &fout, std::string &SSName);
+    void sSOutputData(std::ofstream &fout, std::string &SSName) const;
 
     /**
      * Output the model title to the output reporting file
      */
-    void repTitle(std::ofstream &fout);
+    void repTitle(std::ofstream &fout) const;
 
     /**
      * Assign the pointer to each datum object for time course
@@ -327,17 +327,17 @@ class COutput : public CCopasiContainer
     /*
      * print the time course dynamic data file
      */
-    void copasiDyn(std::ofstream &fout, int time);
+    void copasiDyn(std::ofstream &fout, int time) const;
 
     /*
      * print the steady state data file
      */
-    void copasiSS(std::ofstream &fout);
+    void copasiSS(std::ofstream &fout) const;
 
     /*
      * print the reporting data file
      */
-    void copasiRep(std::ofstream &fout);
+    void copasiRep(std::ofstream &fout)const;
 
     /**
      * Write output control variables from input configburg buffer
@@ -354,7 +354,7 @@ class COutput : public CCopasiContainer
     /**
      * print the results of the steady-state simulation
      */
-    void repSS(std::ofstream &fout);
+    void repSS(std::ofstream &fout) const;
   };
 
 #endif //COutput.h

@@ -115,7 +115,7 @@ class CUDFunction: public CKinFunction
     /**
      * Return the value of user defined function
      */
-    C_FLOAT64 getValue() const;
+    const C_FLOAT64 & getValue() const;
 
     //CCallParameters & getCallParameters();
 

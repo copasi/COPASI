@@ -196,7 +196,7 @@ void * CUDFunction::getValueAddr()
 /**
  * Return the value of user defined function
  */
-C_FLOAT64 CUDFunction::getValue() const
+const C_FLOAT64 & CUDFunction::getValue() const
   {
     return mValue;
   }

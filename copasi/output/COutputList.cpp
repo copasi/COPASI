@@ -108,35 +108,35 @@ void COutputList::addOutput(COutput &newOutput)
 /*
  * print the reporting data file
  */
-void COutputList::copasiRep(std::ofstream &fout)
-{
-  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
-    {
-      mList[i]->copasiRep(fout);
-    }
-}
+void COutputList::copasiRep(std::ofstream &fout) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiRep(fout);
+      }
+  }
 
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(std::ofstream &fout)
-{
-  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
-    {
-      mList[i]->copasiSS(fout);
-    }
-}
+void COutputList::copasiSS(std::ofstream &fout) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiSS(fout);
+      }
+  }
 
 /*
  * print the time course dynamic data file
  */
-void COutputList::copasiDyn(std::ofstream &fout, int time)
-{
-  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
-    {
-      mList[i]->copasiDyn(fout, time);
-    }
-}
+void COutputList::copasiDyn(std::ofstream &fout, int time) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiDyn(fout, time);
+      }
+  }
 
 /**
  * Assign the mpvalue in CDatum for each type

@@ -54,13 +54,13 @@ class COutputEvent
      * Copy output at the specified time 
      * @param tra refers to the CTrajectory object.
      */
-    void print(COutputList list, std::ofstream &fout);
+    void print(const COutputList & list, std::ofstream &fout) const;
 
     /**
      * Copy output at the specified time 
      * @param tra refers to the CSS_solution object.
      */
-    void print(CSteadyStateTask &ss, COutputList list, std::ofstream &fout);
+    void print(const CSteadyStateTask &ss, const COutputList & list, std::ofstream &fout) const;
   };
 
 #endif // COutputEvent
