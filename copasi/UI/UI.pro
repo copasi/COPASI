@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.51 $ $Author: shoops $ $Date: 2004/10/13 18:30:41 $  
+# $Revision: 1.52 $ $Author: gauges $ $Date: 2004/10/21 15:09:02 $  
 ######################################################################
 
 include(../common.pri)
@@ -129,6 +129,7 @@ HEADERS += \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
+           MCAWidget.h \
            MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
@@ -200,6 +201,7 @@ SOURCES += \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
+           MCAWidget.cpp \
            MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \

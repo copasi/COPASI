@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MCAWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 12:48:30 $
+   $Date: 2004/10/21 15:09:02 $
    End CVS Header */
 
 #ifndef MCAWIDGET_H
@@ -24,10 +24,6 @@ class QLineEdit;
 class QPushButton;
 class QRadioButton;
 class QTable;
-class CSteadyStateTask;
-class CSteadyStateProblem;
-class CSteadyStateMethod;
-class CModel;
 
 class MCAWidget : public CopasiWidget
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MCAWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 12:48:30 $
+   $Date: 2004/10/21 15:09:02 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -100,7 +100,7 @@ MCAWidget::MCAWidget(QWidget* parent, const char* name, WFlags fl)
   MCAWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
 
   taskSteadyState = new QCheckBox(this, "taskSteadyState");
-  taskStability->setText(trUtf8("perform Steady State Analysis"));
+  taskSteadyState->setText(trUtf8("perform Steady State Analysis"));
   MCAWidgetLayout->addWidget(taskSteadyState, 2, 2);
 
   line8_2 = new QFrame(this, "line8_2");
@@ -322,5 +322,4 @@ void MCAWidget::taskSteadyStateToggled()
   if (!taskSteadyState->isChecked())
   {}
   else
-  {}
-}
+    {}}
