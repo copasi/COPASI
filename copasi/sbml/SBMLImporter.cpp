@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 13:30:00 $
+   $Date: 2004/06/16 14:32:33 $
    End CVS Header */
 
 #include <iostream>
@@ -281,8 +281,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   for (unsigned int counter = num; counter > 0; counter--)
     {
       Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
-      CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, compartmentMap[sbmlSpecies->getCompartment()]);
-      this->speciesMap[sbmlSpecies->getId()] = copasiMetabolite;
+      CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
+      if (copasiCompartment != NULL)
+        {
+          CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
+          this->speciesMap[sbmlSpecies->getId()] = copasiMetabolite;
+        }
     }
 
   /* Create all reactions */
@@ -331,7 +335,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, sbmlCompartment->getVolume());
-  //std::cerr << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
+  std::cerr << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   return copasiCompartment;
 }
 
@@ -430,9 +434,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
+          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
 
-          exit(1);
+          //exit(1);
         }
       if (compartment == NULL)
         {
@@ -458,8 +463,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          exit(1);
+          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
+          //exit(1);
         }
       if (compartment == NULL)
         {
@@ -484,8 +490,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
-          std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          exit(1);
+          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
+          //exit(1);
         }
       if (compartment == NULL)
         {
