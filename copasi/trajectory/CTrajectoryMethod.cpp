@@ -24,9 +24,11 @@ const std::string CTrajectoryMethod::TypeName[] =
   };
 
 CTrajectoryMethod *
-CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
+CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type,
+    CTrajectoryProblem * pProblem)
 {
   CTrajectoryMethod * Method = NULL;
+
   switch (type)
     {
     case unspecified:
@@ -35,7 +37,7 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
       break;
 
     case stochastic:
-      Method = (CStochMethod *) new CStochDirectMethod();
+      Method = CStochMethod::createStochMethod(pProblem);
       break;
 
     case hybrid:

@@ -22,7 +22,7 @@ class CRandom;
 class CStochMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
 
   protected:
 
@@ -100,11 +100,18 @@ class CStochMethod : private CTrajectoryMethod
   private:
 
     /**
+     *  This checks if a model is suitable for stochastic simulation.
+     *  It returns a suggestion which method to use
+     *  @param model The model to check
+     *  @return 1: direct method, 2: next reaction method, -1: no stochastic simulation possible
+     */
+    static C_INT32 checkModel(CModel * pmodel);
+
+    /**
      * Get the set of metabolites on which a given reaction depends.
      * @param reaction_index The index of the reaction being executed.
      * @return The set of metabolites depended on.
      */
-
     std::set<CMetab*> *getDependsOn(C_INT32 reaction_index);
 
     /**
@@ -148,12 +155,10 @@ class CStochMethod : private CTrajectoryMethod
     ~CStochMethod();
 
     /**
-     *  This checks if a model is suitable for stochastic simulation.
-     *  It returns a suggestion which method to use
-     *  @param model The model to check
-     *  @return 1: direct method, 2: next reaction method, -1: no stochastic simulation possible
+     *  Chooses a stochastic method adequate for the problem
      */
-    static C_INT32 checkModel(CModel model);
+    static CStochMethod *
+    createStochMethod(CTrajectoryProblem * pProblem = NULL);
 
     /**
      *  This instructs the method to calculate a time step of deltaT
@@ -186,7 +191,7 @@ class CStochMethod : private CTrajectoryMethod
     CRandom *mRandomGenerator;
 
     /**
-     * A pointer to the instance of CModel being used. May get thrown out later
+     * A pointer to the instance of CModel being used.
      */
     CModel *mpModel;
 

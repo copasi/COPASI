@@ -59,13 +59,17 @@ class CTrajectoryMethod : public CMethodParameterList
     CTrajectoryMethod();
 
   public:
+
     /**
-     * Create a trajectory method.
+     * Create a trajectory method for a special problem.
      * Note: the returned object has to be released after use with delete
+     * a problem is also passed so that the method has a chance to choose an
+     * appropriate simulation method.
      */
     static CTrajectoryMethod *
     createTrajectoryMethod(CTrajectoryMethod::Type type
-                           = CTrajectoryMethod::deterministic);
+                           = CTrajectoryMethod::deterministic,
+                           CTrajectoryProblem * pProblem = NULL);
 
     /**
      *  Copy constructor.

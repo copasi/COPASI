@@ -36,6 +36,39 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
     mpOutEnd(src.mpOutEnd)
 {}
 
+CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
+                                 CTrajectoryMethod::Type type):
+    mpProblem(pProblem),
+    mpMethod(NULL),
+    mpState(NULL),
+    mpOutInit(NULL),
+    mpOutPoint(NULL),
+    mpOutEnd(NULL)
+{
+  if (mpProblem)
+    {
+      mpMethod = CTrajectoryMethod::createTrajectoryMethod(type, pProblem);
+    }
+}
+
+CTrajectoryTask::CTrajectoryTask(CModel * pModel,
+                                 C_FLOAT64 starttime, C_FLOAT64 endtime,
+                                 unsigned C_INT32 stepnumber,
+                                 CTrajectoryMethod::Type type):
+    mpProblem(NULL),
+    mpMethod(NULL),
+    mpState(NULL),
+    mpOutInit(NULL),
+    mpOutPoint(NULL),
+    mpOutEnd(NULL)
+{
+  mpProblem = new CTrajectoryProblem(pModel, starttime, endtime, stepnumber);
+  if (mpProblem)
+    {
+      mpMethod = CTrajectoryMethod::createTrajectoryMethod(type, mpProblem);
+    }
+}
+
 CTrajectoryTask::~CTrajectoryTask()
 {
   cleanup();

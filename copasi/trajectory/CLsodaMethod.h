@@ -8,7 +8,7 @@ class CStateX;
 class CLsodaMethod : private CTrajectoryMethod
   {
     friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
+    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type, CTrajectoryProblem * pProblem);
 
     // Attributes
   private:

@@ -76,6 +76,17 @@ class CTrajectoryProblem
     CTrajectoryProblem(const CTrajectoryProblem & src);
 
     /**
+     *  special constructor. Allows simple definition of a TrajectoryProblem
+     *  @param "CModel *" pmodel
+     *  @param "C_FLOAT64" starttime
+     *  @param "C_FLOAT64" endtime
+     *  @param "unsigned C_INT32" stepnumber : number of steps
+     */
+    CTrajectoryProblem(CModel * pmodel,
+                       C_FLOAT64 starttime, C_FLOAT64 endtime,
+                       unsigned C_INT32 stepnumber = 200);
+
+    /**
      *  Destructor.
      */
     ~CTrajectoryProblem();

@@ -14,9 +14,8 @@
 
 class CStochDirectMethod : public CStochMethod
   {
-    friend CTrajectoryMethod *
-    CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type);
-
+    friend CStochMethod *
+    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
   private:
     // Lifecycle methods
     /**

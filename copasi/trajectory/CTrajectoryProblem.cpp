@@ -30,6 +30,22 @@ CTrajectoryProblem::CTrajectoryProblem():
     mpInitialState = mpModel->getInitialState();
 }
 
+CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
+                                       C_FLOAT64 starttime, C_FLOAT64 endtime,
+                                       unsigned C_INT32 stepnumber):
+    mpModel(pmodel),
+    mStepNumber(stepnumber),
+    mStepNumberSetLast(true),
+    mStartTime(starttime),
+    mEndTime(endtime),
+    mpInitialState(NULL),
+    mpEndState(NULL)
+{
+  if (mpModel)
+    mpInitialState = mpModel->getInitialState();
+  sync();
+}
+
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src

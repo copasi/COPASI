@@ -19,10 +19,41 @@
 #define max _cpp_max
 #endif // WIN32
 
-C_INT32 CStochMethod::checkModel(CModel model)
+C_INT32 CStochMethod::checkModel(CModel * pmodel)
 {
   // Here several checks will be performed to validate the model
   return 2; // suggest next reaction method
+}
+
+CStochMethod *
+CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
+{
+  C_INT32 result = 1; // direct method as default
+  if (pProblem && pProblem->getModel())
+    {
+      checkModel(pProblem->getModel());
+    }
+
+  CStochMethod * method = NULL;
+
+  if (result < 0)
+    {
+      //error. stochastic simulation not possible
+    }
+  else if (result == 1)
+    {
+      method = new CStochDirectMethod();
+    }
+  else if (result == 2)
+    {
+      method = new CStochNextReactionMethod();
+    }
+  else
+    {
+      //should not happen
+    }
+
+  return method;
 }
 
 CStochMethod::CStochMethod():

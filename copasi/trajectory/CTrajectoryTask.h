@@ -13,9 +13,10 @@
 
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "CTrajectoryMethod.h"
 
 class CTrajectoryProblem;
-class CTrajectoryMethod;
+//class CTrajectoryMethod;
 class CState;
 class COutputEvent;
 
@@ -51,7 +52,9 @@ class CTrajectoryTask
 
     /**
      * End Phase Output Event
-     */
+     */                                       friend CStochMethod *
+    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
+
     COutputEvent *mpOutEnd;
 
     /**
@@ -71,6 +74,26 @@ class CTrajectoryTask
      * @param const CTrajectoryTask & src
      */
     CTrajectoryTask(const CTrajectoryTask & src);
+
+    /**
+     * special constructor. Allows definition of a Trajectory task without loading one
+     */
+    CTrajectoryTask(CTrajectoryProblem * pProblem,
+                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic);
+
+    /**
+     * special constructor. Allows definition of a Trajectory task
+     * and a problem without loading one.
+     *  @param "CModel *" pmodel
+     *  @param "C_FLOAT64" starttime
+     *  @param "C_FLOAT64" endtime
+     *  @param "unsigned C_INT32" stepnumber : number of steps
+     *  @param "CTrajectoryMethod::Type" type : type of the method that will be created
+     */
+    CTrajectoryTask(CModel * pModel,
+                    C_FLOAT64 starttime, C_FLOAT64 endtime,
+                    unsigned C_INT32 stepnumber,
+                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic);
 
     /**
      * Destructor
