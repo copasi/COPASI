@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 16:05:47 $
+   $Date: 2004/08/31 12:14:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -292,10 +292,10 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
 void CopasiTableWidget::updateRow(const C_INT32 row)
 {
   QString tmp;
-  if (mFlagChanged[row]) tmp += "* ";
-  if (mFlagDelete[row]) tmp += "del ";
+  if (mFlagChanged[row]) tmp += "changed ";
+  if (mFlagDelete[row]) tmp += "delete ";
   if (mFlagNew[row]) tmp += "new ";
-  if (mFlagRenamed[row]) tmp += "ren ";
+  if (mFlagRenamed[row]) tmp += "renamed ";
   if (mFlagRO[row]) tmp += "ro ";
 
   table->setText(row, 0, tmp);
