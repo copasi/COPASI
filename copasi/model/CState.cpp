@@ -356,7 +356,7 @@ void CState::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
   const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
   unsigned C_INT32 i, imax = Reactions.size();
 
-  vector< CMetab * > & Metabolites =
+  std::vector< CMetab * > & Metabolites =
     const_cast<CModel *>(mpModel)->getMetabolites();
   unsigned C_INT32 j, jmax = mpModel->getIntMetab();
 
