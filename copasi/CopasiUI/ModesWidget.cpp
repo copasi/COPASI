@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/08 19:47:24 $
+   $Date: 2004/01/09 19:28:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -57,7 +57,7 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(1, "Elementary Mode");
 
   btnCalculate = new QPushButton("&Run", this);
-  modes = new CElementaryFluxModes();
+  modes = NULL; //new CElementaryFluxModes();
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -98,7 +98,7 @@ void ModesWidget::loadModes(CModel *model)
     }
 
   /***CL ***/ // fill table with new values
-  if (modes != NULL)
+  if (modes)
     {
       unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
       table->setNumRows(noOfModesRows);
@@ -231,7 +231,8 @@ void ModesWidget::slotBtnCalculateClicked()
       table->removeRow(0);
     }******CL***/
 
-  //modes = new CElementaryFluxModes();
+  pdelete(modes);
+  modes = new CElementaryFluxModes();
   modes->calculate(mModel);
   loadModes(mModel);
   /***CL***unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
