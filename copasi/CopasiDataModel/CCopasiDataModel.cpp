@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/09 14:11:53 $
+   $Date: 2005/03/09 16:07:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -114,7 +114,16 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.setGUI(*pGUI);
         }
 
-      if (!XML.load(File)) return false;
+      if (!XML.load(File))
+        {
+          XML.freeModel();
+          XML.freeTaskList();
+          XML.freeReportList();
+          XML.freePlotList();
+          XML.freeGUI();
+
+          return false;
+        }
 
       newModel();
 
