@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/27 06:47:38 $
+   $Author: shoops $ 
+   $Date: 2004/12/08 19:56:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,9 +17,8 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
-#if defined(Q_OS_MACX)
-#include "Carbon.h"
-#endif
+
+#include "commandline/COptions.h"
 
 char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
 
@@ -59,29 +58,14 @@ void WizardDialog::init()
   WFlags f = this->getWFlags();
   f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
   this->setWFlags(f);
-  const char* tmp = getenv("COPASI_HELP_PATH");
-  std::string helpPath;
-  if (tmp)
-    {
-      helpPath = tmp;
-    }
 
-#if defined(Q_OS_MACX)
+  std::string WizardDir;
+  COptions::getValue("WizardDir", WizardDir);
 
-  CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-  CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
-                        kCFURLPOSIXPathStyle);
-  helpPath = std::string(CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding())) + "/Contents/Resources/";
-#endif
-
-#if defined(Q_OS_WIN32)
-
-#endif
-
-  if (!helpPath.empty())
+  if (!WizardDir.empty())
     {
       // the next line will hopefully ensure that this works under windows as well.
-      WizardDialog::helpPath = QDir(helpPath.c_str()).absPath().latin1();
+      WizardDialog::helpPath = QDir(WizardDir.c_str()).absPath().utf8();
       QString source = WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }
