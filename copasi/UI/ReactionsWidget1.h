@@ -57,7 +57,7 @@ class ReactionsWidget1 : public QWidget
     QFrame* Line3;
     QLabel* TextLabel6;
     QLineEdit* LineEdit1;
-    QLineEdit* LineEdit2;
+    MyLineEdit* LineEdit2;
     QComboBox* ComboBox1;
     QFrame* Line4;
     QTable* table;

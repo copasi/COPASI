@@ -109,7 +109,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
 
-  LineEdit2 = new QLineEdit(this, "LineEdit2");
+  LineEdit2 = new MyLineEdit(this, "LineEdit2");
   LineEdit2->setFrameShape(QLineEdit::LineEditPanel);
   LineEdit2->setFrameShadow(QLineEdit::Sunken);
 
@@ -162,7 +162,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(const QString &)));
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotLineEditChanged()));
+  connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
   connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
 }
@@ -386,6 +386,7 @@ void ReactionsWidget1::loadName(QString setValue)
       line++;
     }
   ComboBox1->setCurrentText(reactn->getFunction().getName().c_str());
+
   //  slotComboBoxSelectionChanged(reactn->getFunction().getName().c_str());
   //emit sideySignal();
 }
@@ -504,7 +505,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   unsigned int count = 0;
 
   //for clearing the values of the table
-  for (count = 0; count <= numrows; count++)
+  for (count = 0; count < table->numRows(); count++)
     {
       table->clearCell(count, 0);
     }
