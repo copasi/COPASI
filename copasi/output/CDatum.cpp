@@ -650,7 +650,7 @@ void CDatum::compileDatum(CModel &Model)
       IStr = getObjectIStr(mObject, 0);
       Index = Model.findCompartment(IStr);
       if (Index == -1) break;
-      mpValue = Model.getCompartments()[Index]->getVolumeAddr();
+      mpValue = (*Model.getCompartments())[Index].getVolumeAddr();
       mType = CFLOAT64;
       break;						
     case D_MOIT:
