@@ -36,7 +36,7 @@ class COptAlgorithm
   //they are for the model or calculation function. 
   //Their memories are stored in COptProblem. Here are only pointers.
   double * mParameters;       // pointer to parameters
-  int mParameterNum;          // the number of parameters
+  unsigned int mParameterNum;          // the number of parameters
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
 
@@ -49,16 +49,16 @@ class COptAlgorithm
   // Implementation
  public:
 
-   /**
-    * Default constructor
-    */
-   COptAlgorithm();
+  /**
+   * Default constructor
+   */
+  COptAlgorithm();
 
-   /**
-    * Destructor
-    */
-   virtual ~COptAlgorithm();
-   //~COptAlgorithm();
+  /**
+   * Destructor
+   */
+  virtual ~COptAlgorithm();
+  //~COptAlgorithm();
 
   /**
    * Copy constructor
@@ -75,75 +75,73 @@ class COptAlgorithm
 
 
 
-   /**
-    * clean up memory
-    */
-    int cleanup(void);
+  /**
+   * clean up memory
+   */
+  int cleanup(void);
 
-   /**
-    * Initialization of private variables
-    */
-   bool initialize(void);
+  /**
+   * Initialization of private variables
+   */
+  bool initialize(void);
 
-   /**
-    * Execute the optimization algorithm calling simulation routine 
-    * when needed. It is noted that this procedure can give feedback 
-    * of its progress by the callback function set with SetCallback.
-    */
-   virtual int optimise();
+  /**
+   * Execute the optimization algorithm calling simulation routine 
+   * when needed. It is noted that this procedure can give feedback 
+   * of its progress by the callback function set with SetCallback.
+   */
+  virtual int optimise();
    
 
 
-   /**
-    * set the number of method parameters
-    */
-   void setMethodParameterNumber(int aNum);
+  /**
+   * set the number of method parameters
+   */
+  void setMethodParameterNumber(int aNum);
 
-   /**
-    * get the number of method parameters
-    */
-   int getMethodParameterNumber(void);
+  /**
+   * get the number of method parameters
+   */
+  unsigned int getMethodParameterNumber(void);
 
 
-   /**
-    * get method parameter that matches a specific index 
-    */
-   vector <COptAlgorithmParameter> * getMethodParameters();
+  /**
+   * get method parameter that matches a specific index 
+   */
+  vector <COptAlgorithmParameter> & getMethodParameters();
 
-   /**
-    * set a method parameter
-    */
-   void setMethodParameterValue(int i, double value);
+  /**
+   * set a method parameter
+   */
+  void setMethodParameterValue(int i, double value);
 
-   /**
-    * get method parameter that matches a specific index 
-    */
-   double getMethodParameterValue(int i);
+  /**
+   * get method parameter that matches a specific index 
+   */
+  double getMethodParameterValue(int i);
 
-   /**
-    * get method parameter name
-    */
-   string getMethodParameterName(int i);
+  /**
+   * get method parameter name
+   */
+  string getMethodParameterName(int i);
 
-   /**
-    * get method name
-    */
-   string getMethodName(void);
+  /**
+   * get method name
+   */
+  string getMethodName(void);
 
-   /**
-    * get method version
-    */
-   string getMethodVersion(void);
+  /**
+   * get method version
+   */
+  string getMethodVersion(void);
    
-   /**
-    * Returns True if this method is capable of handling adjustable parameter 
-    * boundary constraints, False otherwise
-    */
-   //virtual bool isBounded( void );
-   bool isBounded( void );
-
+  /**
+   * Returns True if this method is capable of handling adjustable parameter 
+   * boundary constraints, False otherwise
+   */
+  //virtual bool isBounded( void );
+  bool isBounded( void );
 
 };
-
 
 #endif  // the end 

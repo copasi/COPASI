@@ -1,4 +1,3 @@
-
 /**
  *  File name: CGA.h
  *
@@ -43,7 +42,7 @@
 class CGA : public COptAlgorithm
 {
   //private members
-private:
+ private:
   unsigned int mGener;	     // number of generations
   unsigned int mPopSize;     // size of the population
   int mCrossNum;	     // number of crossover points
@@ -62,7 +61,7 @@ private:
   CRealProblem mRealProblem;
 
   //implementations
-public:
+ public:
 
   /**
    * default constructor
@@ -178,7 +177,7 @@ public:
   /**
    * get generation number
    */
-  int getGeneration() ;
+  unsigned int getGeneration() ;
 
   /**
    * get population size

@@ -33,7 +33,7 @@ COptAlgorithmParameter::COptAlgorithmParameter(const COptAlgorithmParameter& sou
 // Object assignment overloading,
 COptAlgorithmParameter & COptAlgorithmParameter::operator = (const COptAlgorithmParameter& source)
 {
-  if(this != &source)
+  if (this != &source)
     {
       mName = source.mName;
       mValue = source.mValue;
@@ -71,17 +71,3 @@ double COptAlgorithmParameter::getValue()
 {
   return mValue;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

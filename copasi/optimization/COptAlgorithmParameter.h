@@ -27,15 +27,15 @@ class COptAlgorithmParameter
   //implementation
  public:
 
-   /**
-    * Default constructor
-    */
-   COptAlgorithmParameter();
+  /**
+   * Default constructor
+   */
+  COptAlgorithmParameter();
 
-   /**
-    * Destructor
-    */
-   ~COptAlgorithmParameter();
+  /**
+   * Destructor
+   */
+  ~COptAlgorithmParameter();
 
   /**
    * Copy constructor
@@ -52,33 +52,30 @@ class COptAlgorithmParameter
 
 
 
-   /**
-    * set name
-    * @param aName a string to be set as mName
-    */
+  /**
+   * set name
+   * @param aName a string to be set as mName
+   */
   void setName(string aName);
 
-   /**
-    * get the private member mName
-    * @return mName
-    */
+  /**
+   * get the private member mName
+   * @return mName
+   */
   string getName();
 
-   /**
-    * set the value
-    * @param aValue the double to be set as the private member mValue
-    */
+  /**
+   * set the value
+   * @param aValue the double to be set as the private member mValue
+   */
   void setValue(double aValue);
 
-   /**
-    * get the private member mValue
-    * @return the mValue, the private member
-    */
+  /**
+   * get the private member mValue
+   * @return the mValue, the private member
+   */
   double getValue();
 
 };
 
-
 #endif  // the end 
-
-

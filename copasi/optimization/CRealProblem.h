@@ -45,26 +45,24 @@ class CRealProblem : public COptProblem
   // Implementation
  public:
 
-   /**
-    * Default constructor
-    */
-   CRealProblem();
+  /**
+   * Default constructor
+   */
+  CRealProblem();
 
-   /**
-    * Destructor
-    */
-   ~CRealProblem();
+  /**
+   * Destructor
+   */
+  ~CRealProblem();
 
 
 
-   /**
-    * calculate function for optimization
-    */
-   void calculate(); 
+  /**
+   * calculate function for optimization
+   */
+  void calculate(); 
 
  
 };
 
-
 #endif  // the end 
-

@@ -42,23 +42,22 @@ void CRealProblem::calculate()
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness
   try
-  {
-   fitness0=0;
-   for(j=0;j < parameterNum;j++)
-   {
-     fitness=fitness0+pow(parameterValues[j],4.0)-16.0*pow(parameterValues[j],2.0)
-                              +5.0*parameterValues[j];
-     fitness0=fitness;
-   }
-   fitness=fitness0/2.0;
-  }
-  catch( unsigned int e )
-  {
-   fitness = DBL_MAX;
-  }
+    {
+      fitness0=0;
+      for (j=0;j < parameterNum;j++)
+        {
+          fitness=fitness0+pow(parameterValues[j],4.0)-16.0*pow(parameterValues[j],2.0)
+            +5.0*parameterValues[j];
+          fitness0=fitness;
+        }
+      fitness=fitness0/2.0;
+    }
+  catch (unsigned int e)
+    {
+      fitness = DBL_MAX;
+    }
 
   //set the best value as the fitness;
-   setBestValue(fitness);
+  setBestValue(fitness);
 
 }
-
