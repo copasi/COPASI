@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.10 2003/08/19 18:15:36 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.11 2003/08/19 18:32:14 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -137,6 +137,16 @@ void CReportDefinitionSelect::cancelClicked()
 
 void CReportDefinitionSelect::confirmClicked()
 {
+  if (!mpReport)
+    //exception made here
+    return;
+  DataModel* dataModel = ListViews::getDataModel();
+  CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+  C_INT32 row;
+  row = reportDefinitionNameList->currentItem();
+  mpReport->setReportDefinintion((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+  mpReport->setAppend(appendChecked->isChecked());
+  mpReport->setTarget(std::string(targetEdit->text()));
   cleanup();
   close();
 }
