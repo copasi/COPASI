@@ -323,30 +323,38 @@ void CScanProblem::setScanParameterValue(unsigned C_INT32 i,
         {
         case SD_UNIFORM:
           if (getScanItemParameter(j, "log"))
-            setScanItemParameter(j, "value", min* pow(10, ampl * pCr250Generator->getRandomCO())); //dr250()
+            *((*pValueAddrMatrix)[j]) = min * pow(10, ampl * pCr250Generator->getRandomCO()); //dr250()
+          //            setScanItemParameter(j, "value", min* pow(10, ampl * pCr250Generator->getRandomCO())); //dr250()
           else
-            setScanItemParameter(j, "value", min + ampl * pCr250Generator->getRandomCO()); //dr250()
+            *((*pValueAddrMatrix)[j]) = min + ampl * pCr250Generator->getRandomCO(); //dr250()
+          //            setScanItemParameter(j, "value", min + ampl * pCr250Generator->getRandomCO()); //dr250()
           break;
         case SD_GAUSS:
           if (getScanItemParameter(j, "log"))
             //CRandom::getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
-            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
+            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalLog(min, max);
+          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
           else
-            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormal(min, max));
+            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormal(min, max);
+          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormal(min, max));
           break;
         case SD_BOLTZ:
           if (getScanItemParameter(j, "log"))
-            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
+            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalLog(min, max);
+          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
           else
-            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalPositive(min, max));
+            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalPositive(min, max);
+          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalPositive(min, max));
           break;
         case SD_REGULAR:
           // log scale
           if (getScanItemParameter(j, "log"))
-            setScanItemParameter(j, "value", (min*pow(10, incr*i)));
+            *((*pValueAddrMatrix)[j]) = min * pow(10, incr * i);
+          //            setScanItemParameter(j, "value", (min*pow(10, incr*i)));
           // non-log scale
           else
-            setScanItemParameter(j, "value", (min + incr*i));
+            *((*pValueAddrMatrix)[j]) = (min + incr * i);
+          //            setScanItemParameter(j, "value", (min + incr*i));
           break;
         }
     }
