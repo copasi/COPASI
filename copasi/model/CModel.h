@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 15:01:49 $
+   $Date: 2004/06/11 14:25:59 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -35,7 +35,7 @@ class CModel : public CCopasiContainer
     /**
      * Enum of valid volume units
      */
-    enum VolumeUnit {l = 0, ml, microl, nl, pl, fl};
+    enum VolumeUnit {m3 = 0, l, ml, microl, nl, pl, fl};
 
     /**
      * String representation of valid volume units
