@@ -41,13 +41,15 @@ class CReport : public CCopasiObject
        */
     ~CReport();
 
-    inline void setReportDefinintion(CReportDefinition* pNewReportDefinition)
-    {mpReportDef = pNewReportDefinition;}
-
     /**
     returns the reference of the Report Tag
     */
     CReportDefinition* getReportDefinition();
+
+    /**
+    returns the reference of the Report Tag
+    */
+    void compile();
 
     /**
     sets the reference to the report

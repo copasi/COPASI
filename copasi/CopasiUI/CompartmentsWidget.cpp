@@ -98,7 +98,6 @@ void CompartmentsWidget::fillTable()
 
 void CompartmentsWidget::createNewObject()
 {
-#ifdef XXXX
   {
     std::string name = "compartment_0";
     int i = 0;
@@ -115,7 +114,6 @@ void CompartmentsWidget::createNewObject()
     //emit leaf(mModel);
     ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
   }
-#endif
 }
 
 void CompartmentsWidget::slotTableCurrentChanged(int row,

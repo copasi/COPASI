@@ -25,15 +25,18 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
+CReport* CScanTask::mReport = NULL;
+
 CScanTask::CScanTask():
     CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
     mRequested(true),
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
     mpOutEnd(NULL),
-    mReport(new CReport),
     mKey(CKeyFactory::add("ScanTask", this))
-{}
+{
+  mReport = new CReport();
+}
 
 CScanTask::CScanTask(const CScanTask & src):
     CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
@@ -41,9 +44,10 @@ CScanTask::CScanTask(const CScanTask & src):
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
     mpOutEnd(src.mpOutEnd),
-    mReport(new CReport),
     mKey(CKeyFactory::add("ScanTask", this))
-{}
+{
+  mReport = new CReport();
+}
 
 CScanTask::~CScanTask()
 {cleanup();}
@@ -120,10 +124,16 @@ void CScanTask::process()
     if (mpProblem->getScanItemParameter(i, "indp")) break;
   if (i >= 0)
     // execute many simulations
-    mpMethod->scan(i, true);
+    mpMethod->scan(i, true, &call_back_report);
 
   //  if (mpOutEnd)
   //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
 
   return;
+}
+
+void CScanTask::call_back_report()
+{
+  if (mReport)
+    mReport->printBody();
 }

@@ -68,7 +68,7 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(unsigned C_INT32 s, bool C_UNUSED(nl));
+    void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*call_back_report)());
   };
 
 #endif // COPASI_CTrajectoryMethod

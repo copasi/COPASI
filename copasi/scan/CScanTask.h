@@ -24,11 +24,13 @@ class CScanTask : public CCopasiContainer
     //Attributes
   private:
 
-    CReport * mReport;
+    static CReport * mReport;
     /**
      * Flag indicating whether the task shall be executed by CopasiSE
      */
     bool mRequested;
+
+    static void call_back_report();
 
     /**
      * A pointer to the problem to be integrated.
@@ -60,6 +62,7 @@ class CScanTask : public CCopasiContainer
     */
     CVector<C_FLOAT64*>* pValueAddrMatrix;
     //Operations
+
   public:
 
     inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)

@@ -57,3 +57,6 @@ void CReport::printFooter()
 {
   // for loop print out mpReportDef->getFooter()
 }
+
+void CReport::compile()
+{}

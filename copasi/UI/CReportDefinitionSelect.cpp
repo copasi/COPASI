@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.13 2003/08/19 21:32:07 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.14 2003/09/04 19:21:45 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -130,7 +130,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
     {
       C_INT32 row;
       row = reportDefinitionNameList->currentItem();
-      mpReport->setReportDefinintion((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+      mpReport->setReportDefinition((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(targetEdit->text().latin1());
     }
@@ -162,7 +162,7 @@ void CReportDefinitionSelect::confirmClicked()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
-  mpReport->setReportDefinintion((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+  mpReport->setReportDefinition((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
   mpReport->setAppend(appendChecked->isChecked());
   mpReport->setTarget(targetEdit->text().latin1());
   cleanup();
