@@ -21,17 +21,14 @@
 #include "utilities/utility.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
-
-#ifdef WIN32
-#define min _cpp_min
-#define max _cpp_max
-#endif // WIN32
+#include "report/CKeyFactory.h"
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
+    mKey(CKeyFactory::add("Reaction", this)),
     mName(mObjectName),
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
@@ -57,6 +54,7 @@ CReaction::CReaction(const std::string & name,
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("Reaction", this)),
     mName(mObjectName),
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
@@ -83,7 +81,12 @@ CReaction::CReaction(const CReaction & src,
     }
 }
 
-CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE;}
+CReaction::~CReaction()
+{
+  CKeyFactory::remove(mKey);
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
 
 void CReaction::cleanup()
 {
@@ -408,6 +411,9 @@ const CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters() con
 
 CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters()
 {return mId2Parameters;}
+
+std::string CReaction::getKey() const
+  {return mKey;}
 
 const std::string & CReaction::getName() const
   {return mName;}

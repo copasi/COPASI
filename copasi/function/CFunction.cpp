@@ -11,11 +11,13 @@
 #include "CFunctionParameters.h"
 #include "CFunction.h"
 #include "utilities/utility.h"
+#include "report/CKeyFactory.h"
 
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Function"),
     mType(CFunction::Base),
+    mKey(CKeyFactory::add("Function", this)),
     mName(mObjectName),
     mDescription(),
     mReversible(TriUnspecified),
@@ -27,6 +29,7 @@ CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
+    mKey(CKeyFactory::add("Function", this)),
     mName(mObjectName),
     mDescription(src.mDescription),
     mReversible(src.mReversible),
@@ -36,6 +39,7 @@ CFunction::CFunction(const CFunction & src,
 
 CFunction::~CFunction()
 {
+  CKeyFactory::remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -170,64 +174,33 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
 
 std::string CFunction::getSBMLString(const CCallParameterPointers & C_UNUSED(callParameterNames),
                                      const std::string & C_UNUSED(r)) const
-  {
-    return "0";
-  }
+  {return "0";}
 
-void CFunction::setName(const std::string& name)
-{
-  mName = name;
-}
+std::string CFunction::getKey() const {return mKey;}
 
-const std::string & CFunction::getName() const
-  {
-    return mName;
-  }
+void CFunction::setName(const std::string& name) {mName = name;}
 
-void CFunction::setDescription(const std::string & description)
-{
-  mDescription = description;
-}
+const std::string & CFunction::getName() const {return mName;}
 
-const std::string & CFunction::getDescription() const
-  {
-    return mDescription;
-  }
+void CFunction::setDescription(const std::string & description) {mDescription = description;}
 
-void CFunction::setType(const CFunction::Type & type)
-{
-  mType = type;
-}
+const std::string & CFunction::getDescription() const {return mDescription;}
 
-const CFunction::Type & CFunction::getType() const
-  {
-    return mType;
-  }
+void CFunction::setType(const CFunction::Type & type) {mType = type;}
 
-void CFunction::setReversible(const TriLogic & reversible)
-{
-  mReversible = reversible;
-}
+const CFunction::Type & CFunction::getType() const {return mType;}
 
-const TriLogic & CFunction::isReversible() const
-  {
-    return mReversible;
-  }
+void CFunction::setReversible(const TriLogic & reversible) {mReversible = reversible;}
 
-CFunctionParameters & CFunction::getParameters()
-{
-  return mParameters;
-}
+const TriLogic & CFunction::isReversible() const {return mReversible;}
+
+CFunctionParameters & CFunction::getParameters() {return mParameters;}
 
 const CFunctionParameters & CFunction::getParameters() const
-  {
-    return mParameters;
-  }
+  {return mParameters;}
 
 CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
-{
-  return mUsageDescriptions;
-}
+{return mUsageDescriptions;}
 
 //unsigned C_INT32 CFunction::getParameterPosition(const std::string & name) const
 //{return mParameters[0] - mParameters[name];}
@@ -252,6 +225,4 @@ void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
 void CFunction::addParameter(const std::string & name,
                              const CFunctionParameter::DataType & type,
                              const std::string & usage)
-{
-  mParameters.add(name, type, usage);
-}
+{mParameters.add(name, type, usage);}

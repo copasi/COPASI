@@ -240,6 +240,11 @@ class CReaction : public CCopasiContainer
     static C_FLOAT64 mDefaultScalingFactor;
 
     /**
+     *  The key of the reaction
+     */
+    std::string mKey;
+
+    /**
      *  The name of the reaction
      */
     std::string & mName;
@@ -446,6 +451,12 @@ class CReaction : public CCopasiContainer
      */
     const CCopasiVectorN < CId2Param > & getId2Parameters() const;
     CCopasiVectorN < CId2Param > & getId2Parameters();
+
+    /**
+     *  Retrieves the key of the reaction
+     *  @return std::string key
+     */
+    std::string getKey() const;
 
     /**
      *  Retrieves the name of the reaction

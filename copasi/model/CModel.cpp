@@ -24,6 +24,7 @@
 #include "CState.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiVector.h"
@@ -36,6 +37,7 @@
 
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),
+    mKey(CKeyFactory::add("Model", this)),
     mTitle(mObjectName),
     mComments(),
     mCompartments("Compartments", this),
@@ -67,6 +69,7 @@ CModel::CModel():
 
 CModel::CModel(const CModel & src):
     CCopasiContainer(src),
+    mKey(CKeyFactory::add("Model", this)),
     mTitle(mObjectName),
     mComments(src.mComments),
     mCompartments(src.mCompartments, this),
@@ -111,6 +114,7 @@ CModel::CModel(const CModel & src):
 
 CModel::~CModel()
 {
+  CKeyFactory::remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -887,19 +891,15 @@ unsigned C_INT32 CModel::getDimension() const
 /**
  *        Return the comments of this model        Wei Sun 
  */
-std::string CModel::getComments() const
-  {
-    return mComments;
-  }
+std::string CModel::getComments() const {return mComments;}
+
+std::string CModel::getKey() const {return mKey;}
 
 /**
  *        Return the title of this model
  *        @return string
  */
-std::string CModel::getTitle() const
-  {
-    return mTitle;
-  }
+std::string CModel::getTitle() const {return mTitle;}
 
 CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}

@@ -11,6 +11,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
 #include "CCompartment.h"
 #include "CModel.h"
 #include "CMetab.h"
@@ -29,6 +30,7 @@ void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Metabolite"),
+    mKey(CKeyFactory::add("Metabolite", this)),
     mName(mObjectName),
     mConcDbl(1.0),
     mIConcDbl(1.0),
@@ -47,6 +49,7 @@ CMetab::CMetab(const std::string & name,
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("Metabolite", this)),
     mName(CCopasiContainer::mObjectName),
     mConcDbl(src.mConcDbl),
     mIConcDbl(src.mIConcDbl),
@@ -78,7 +81,11 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   return *this;  // Assignment operator returns left side.
 }
 
-CMetab::~CMetab() {DESTRUCTOR_TRACE;}
+CMetab::~CMetab()
+{
+  CKeyFactory::remove(mKey);
+  DESTRUCTOR_TRACE;
+}
 
 void CMetab::cleanup() {}
 
@@ -211,20 +218,13 @@ void CMetab::saveSBML(std::ofstream &fout)
   fout << "\"/>" << std::endl;
 }
 
-const std::string & CMetab::getName() const
-  {
-    return mName;
-  }
+std::string CMetab::getKey() const {return mName;}
 
-const C_FLOAT64 & CMetab::getConcentration() const
-  {
-    return mConcDbl;
-  }
+const std::string & CMetab::getName() const {return mName;}
 
-const C_INT32 & CMetab::getNumberInt() const
-  {
-    return mNumberInt;
-  }
+const C_FLOAT64 & CMetab::getConcentration() const {return mConcDbl;}
+
+const C_INT32 & CMetab::getNumberInt() const {return mNumberInt;}
 
 C_FLOAT64 CMetab::getNumberDbl() const
   {

@@ -25,6 +25,11 @@ class CCompartment : public CCopasiContainer
 
   private:
     /**
+     *  Key of the compartment.
+     */
+    std::string mKey;
+
+    /**
      *  Name of the compartment.
      */
     std::string & mName;
@@ -119,6 +124,12 @@ class CCompartment : public CCopasiContainer
      *  @param "std::ofstream &" fout ofstream that should be already open
      */
     void saveSBML(std::ofstream &fout);
+
+    /**
+     *  Returns a string with the name of this compartment.
+     *  @return std::string key
+     */
+    std::string getKey() const;
 
     /**
      *  Returns a string with the name of this compartment.

@@ -47,6 +47,11 @@ class CMetab : public CCopasiContainer
     // Attributes
   private:
     /**
+     *  Key of the metabolite
+     */
+    std::string mKey;
+
+    /**
      *  Name of the metabolite
      */
     std::string & mName;
@@ -192,7 +197,14 @@ class CMetab : public CCopasiContainer
     bool setName(const std::string & name);
 
     /**
+     *  Retrieve the key of the metabolite.
+     * @return std::string key
+     */
+    std::string getKey() const;
+
+    /**
      *  Retrieve the name of the metabolite.
+     * @return const std::string & name
      */
     const std::string & getName() const;
 

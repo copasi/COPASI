@@ -111,6 +111,11 @@ class CModel : public CCopasiContainer
 
   private:
     /**
+     *  key of the model
+     */
+    std::string mKey;
+
+    /**
      *  title of the model
      */
     std::string & mTitle;
@@ -447,6 +452,12 @@ class CModel : public CCopasiContainer
      * @return string
      */
     std::string getComments() const;
+
+    /**
+     * Return the key of this model
+     * @return string key
+     */
+    std::string getKey() const;
 
     /**
      * Return the title of this model

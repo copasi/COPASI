@@ -15,11 +15,13 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
 #include "CCompartment.h"
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Compartment"),
+    mKey(CKeyFactory::add("Compartment", this)),
     mName(mObjectName),
     mInitialVolume(1.0),
     mVolume(1.0),
@@ -33,6 +35,7 @@ CCompartment::CCompartment(const std::string & name,
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("Compartment", this)),
     mName(CCopasiContainer::mObjectName),
     mInitialVolume(src.mInitialVolume),
     mVolume(src.mVolume),
@@ -45,7 +48,11 @@ CCompartment::CCompartment(const CCompartment & src,
   //    mMetabolites[i]->setCompartment(this);
 }
 
-CCompartment::~CCompartment() {DESTRUCTOR_TRACE;}
+CCompartment::~CCompartment()
+{
+  CKeyFactory::remove(mKey);
+  DESTRUCTOR_TRACE;
+}
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}
 
@@ -117,6 +124,8 @@ void CCompartment::saveSBML(std::ofstream &fout)
   fout << "\t\t\t<compartment name=\"" << str << "\"";
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
+
+std::string CCompartment::getKey() const {return mKey;}
 
 const std::string & CCompartment::getName() const {return mName;}
 

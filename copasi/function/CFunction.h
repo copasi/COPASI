@@ -35,12 +35,17 @@ class CFunction : public CCopasiContainer
   private:
 
     /**
-     *  The type of the function
+     * The type of the function
      */
     CFunction::Type mType;
 
     /**
-     *  The name of the function
+     * The key of the function
+     */
+    std::string mKey;
+
+    /**
+     * The name of the function
      */
     std::string & mName;
 
@@ -132,6 +137,12 @@ class CFunction : public CCopasiContainer
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
     virtual std::string getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const;
+
+    /**
+     *  Retrieves the key of the function
+     *  @return std::string name
+     */
+    virtual std::string getKey() const;
 
     /**
      *  Retrieves the name of the function
