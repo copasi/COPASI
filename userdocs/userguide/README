@@ -1,14 +1,17 @@
 The Makefile for the documentation is supposed to work on a Debian/unstable installation.
-As XSLT processor I choose xsltproc, but Saxon (6.5.3) and xalan should work as well. Saxonb 8 does not seem to work to well though.
+As XSLT processor I choose saxon 6.5.3 because xalan does not seem to be as stable and xsltproc does not support extensions.
 
 The stylesheet for the tex/pdf document is from the db2latex-xsl package which is installed as version 0.8pre1.
 The stylesheet for the html document is from Norman Walsh and is located in the docboo-xsl package version 1.66.
 
 The html output is actually not a valid html file since it contains MathML elements. The browsers I tested (Mozilla, Konqueror and Safari) seem to render it anyway.
+Maybe we should use a latex to html converter to create valid html with images instead of MathML formules.
 
-As soon as the bugs in the xhtml stylesheet are resolved (either we do it, or we wait for the maintainer to do it), we should switch to that.
+The xhtml output is OK, unfortunatelly we can not run tidy on it to make it more readable because tidy drops
+some necessary whitespaces.
 
-Also the figures in the html document are very small with the standard style mozilla uses. We should maybe provide our own stylesheet that overrides the size of the figures so that they are a little larger.
+I disabled image scaling for now and tried to get the images scaled correctly via customization layers, but so far they are not scaled, no matter what I do.
+At least they are big enough to be seen. Maybe we can use some stylesheet to scale them correctly.
 
 
 The tex output also has a bug. The = sign in mathml equations is omitted by the output. So before making the pdf from the tex file, one has to manually add the = sign. So far this only concerns one equation for the GUI documentation. THis will be very annoying once the methods and functions documentation is added.
