@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/24 09:51:11 $
+   $Author: shoops $ 
+   $Date: 2005/02/24 15:56:02 $
    End CVS Header */
 
 #include "copasi.h"
@@ -30,13 +30,15 @@
 
 CCopasiDataModel * CCopasiDataModel::Global = NULL;
 
-CCopasiDataModel::CCopasiDataModel():
+CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mpVersion(new CVersion),
     mpFunctionList(new CFunctionDB),
     mpModel(NULL),
     mpTaskList(NULL),
     mpReportDefinitionList(NULL),
     mpPlotDefinitionList(NULL),
+    mWithGUI(withGUI),
+    mpGUI(NULL),
     mChanged(false),
     mAutoSaveNeeded(false),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
@@ -57,6 +59,7 @@ CCopasiDataModel::~CCopasiDataModel()
   pdelete(mpTaskList);
   pdelete(mpReportDefinitionList);
   pdelete(mpPlotDefinitionList);
+  pdelete(mpGUI);
   pdelete(pOldMetabolites);
 }
 
@@ -107,6 +110,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
       newModel();
 
+      XML.setGUI(* mpGUI);
+
       if (XML.getModel())
         {
           pdelete(mpModel);
@@ -155,6 +160,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName,
   XML.setTaskList(*mpTaskList);
   XML.setReportList(*mpReportDefinitionList);
   XML.setPlotList(*mpPlotDefinitionList);
+  XML.setGUI(*mpGUI);
 
   // We are first writing to a temporary stream to prevent accidental
   // destruction of an existing file in case the save command fails.
@@ -213,6 +219,12 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
   pdelete(mpPlotDefinitionList);
   mpPlotDefinitionList = new CCopasiVectorN< CPlotSpecification >;
+
+  if (mWithGUI)
+    {
+      pdelete(mpGUI);
+      mpGUI = new SCopasiXMLGUI;
+    }
 
   changed(false);
 
@@ -335,6 +347,9 @@ CCopasiVectorN<CPlotSpecification> * CCopasiDataModel::getPlotDefinitionList()
 
 CFunctionDB * CCopasiDataModel::getFunctionList()
 {return mpFunctionList;}
+
+SCopasiXMLGUI * CCopasiDataModel::getGUI()
+{return mpGUI;}
 
 CVersion * CCopasiDataModel::getVersion()
 {return mpVersion;}

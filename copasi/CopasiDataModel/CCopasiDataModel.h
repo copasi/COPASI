@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:13:57 $
+   $Date: 2005/02/24 15:56:02 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -14,6 +14,7 @@ class CModel;
 class CReportDefinitionVector;
 class CPlotSpecification;
 class CFunctionDB;
+class SCopasiXMLGUI;
 
 // :TODO: remove
 class CMetabOld;
@@ -29,7 +30,7 @@ class CCopasiDataModel
   {
     // Operations
   public:
-    CCopasiDataModel();
+    CCopasiDataModel(const bool withGUI = false);
     ~CCopasiDataModel();
 
     bool loadModel(const std::string & fileName);
@@ -51,6 +52,7 @@ class CCopasiDataModel
     CCopasiVectorN<CPlotSpecification> * getPlotDefinitionList();
 
     CFunctionDB * getFunctionList();
+    SCopasiXMLGUI * getGUI();
     CVersion * getVersion();
 
     bool isChanged() const;
@@ -64,6 +66,8 @@ class CCopasiDataModel
     CCopasiVectorN< CCopasiTask > * mpTaskList;
     CReportDefinitionVector * mpReportDefinitionList;
     CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
+    bool mWithGUI;
+    SCopasiXMLGUI * mpGUI;
 
     std::string mSaveFileName;
     bool mChanged;
