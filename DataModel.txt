@@ -35,4 +35,4 @@
 4:42:Plots
 4:43:Reports
 0:5:Functions
-0:6:Prefereneces
+0:6:Preferences
