@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/03/01 07:10:25 $
+   $Date: 2004/03/10 07:03:48 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -55,6 +55,8 @@ CopasiUI3Window::CopasiUI3Window():
     mpFileMenu(NULL)
 {
   // Set the window caption/title
+  closeFlag = 0;
+
   QString Title = "COPASI (";
   Title += Copasi->ProgramVersion.getVersion().c_str();
   Title += ")";
@@ -269,7 +271,7 @@ void CopasiUI3Window::slotFileSave()
   else if (dataModel) dataModel->saveModel(gpsFile.latin1());
 }
 
-void CopasiUI3Window::slotClose()
+void CopasiUI3Window::slotQuit()
 {
   int choice = 0;
 
@@ -290,7 +292,36 @@ void CopasiUI3Window::slotClose()
     }
   else slotFileSaveAs();
 
-  QMainWindow::close();
+  closeFlag = 1;
+
+  qApp->quit();
+}
+
+void CopasiUI3Window::closeEvent(QCloseEvent* ce)
+{
+  if (closeFlag == 0)
+    {
+      int choice = 0;
+
+      if (gpsFile)
+        {
+          if (gpsFile != "untitled.gps")
+            {
+              choice =
+                QMessageBox::warning(this,
+                                     "Confirm File Changes Update",
+                                     "Do you want to save the changes you made to previous model ?",
+                                     "Yes", "No", 0, 0, 1);
+
+              if (!(choice))
+                slotFileSave();
+            }
+          else slotFileSave();
+        }
+      else slotFileSaveAs();
+
+      qApp->quit();
+    }
 }
 
 /***************CopasiUI3Window::slotFilePrint()******
@@ -458,8 +489,9 @@ void CopasiUI3Window::createMenuBar()
     }
 
   mpFileMenu->insertSeparator();
-  mpFileMenu->insertItem("&Close", this, SLOT(slotClose()), CTRL + Key_W);
-  mpFileMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL + Key_Q);
+  mpFileMenu->insertItem("&Close", this, SLOT(slotQuit()), CTRL + Key_W);
+  mpFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
+  //mpFileMenu->insertItem("&Quit", qApp, SLOT(closeAllWindows()), CTRL + Key_Q);
 
   menuBar()->insertSeparator();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/03/01 07:11:54 $
+   $Date: 2004/03/10 07:03:48 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -38,9 +38,12 @@ class CopasiUI3Window : public QMainWindow
     void slotObjectBrowser();
     void about();
     void aboutQt();
-    void slotClose();
+
+    void slotQuit();
+    void closeEvent(QCloseEvent* ce);
 
   private:
+    int closeFlag;
     QString gpsFile;
     QToolButton * msave_button;
     QPopupMenu * mpFileMenu;
