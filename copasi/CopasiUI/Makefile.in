@@ -239,6 +239,7 @@ CopasiUI_MOC = \
 	CompartmentsWidget.moc.cpp \
 	CompartmentSymbols.moc.cpp \
 	ConstantSymbols.moc.cpp \
+	DifferentialEquations.moc.cpp \
 	FixedMetaboliteSymbols.moc.cpp \
 	FunctionWidget1.moc.cpp \
 	FunctionWidget.moc.cpp \
@@ -267,6 +268,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         CompartmentsWidget1.cpp \
 	CompartmentSymbols.cpp \
 	ConstantSymbols.cpp \
+	DifferentialEquations.cpp \
 	FixedMetaboliteSymbols.cpp \
         FunctionWidget.cpp \
         FunctionWidget1.cpp \
@@ -313,6 +315,7 @@ EXTRA_DIST = \
 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp \
 	CompartmentSymbols.h CompartmentSymbols.cpp CompartmentSymbols.moc.cpp \
 	ConstantSymbols.h ConstantSymbols.cpp ConstantSymbols.moc.cpp \
+	DifferentialEquations.h DifferentialEquations.cpp DifferentialEquations.moc.cpp \
 	FixedMetaboliteSymbols.h FixedMetaboliteSymbols.cpp FixedMetaboliteSymbols.moc.cpp \
 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp \
 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp \
@@ -389,6 +392,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	CompartmentsWidget.moc.$(OBJEXT) \
 	CompartmentSymbols.moc.$(OBJEXT) ConstantSymbols.moc.$(OBJEXT) \
+	DifferentialEquations.moc.$(OBJEXT) \
 	FixedMetaboliteSymbols.moc.$(OBJEXT) \
 	FunctionWidget1.moc.$(OBJEXT) FunctionWidget.moc.$(OBJEXT) \
 	FunctionSymbols.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
@@ -402,6 +406,7 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	Observer.$(OBJEXT) Subject.$(OBJEXT) \
 	CompartmentsWidget.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
 	CompartmentSymbols.$(OBJEXT) ConstantSymbols.$(OBJEXT) \
+	DifferentialEquations.$(OBJEXT) \
 	FixedMetaboliteSymbols.$(OBJEXT) FunctionWidget.$(OBJEXT) \
 	FunctionWidget1.$(OBJEXT) FunctionSymbols.$(OBJEXT) \
 	MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
@@ -427,6 +432,8 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/CompartmentsWidget1.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.Po \
 @AMDEP_TRUE@	$(DEPDIR)/ConstantSymbols.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.Po \
+@AMDEP_TRUE@	$(DEPDIR)/DifferentialEquations.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.Po \
 @AMDEP_TRUE@	$(DEPDIR)/FixedMetaboliteSymbols.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/FunctionSymbols.Po \
@@ -537,6 +544,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CompartmentsWidget1.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ConstantSymbols.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ConstantSymbols.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/DifferentialEquations.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/DifferentialEquations.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/FixedMetaboliteSymbols.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/FixedMetaboliteSymbols.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/FunctionSymbols.Po@am__quote@

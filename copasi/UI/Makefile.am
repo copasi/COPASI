@@ -6,6 +6,7 @@ CopasiUI_MOC = \
 	CompartmentsWidget.moc.cpp \
 	CompartmentSymbols.moc.cpp \
 	ConstantSymbols.moc.cpp \
+	DifferentialEquations.moc.cpp \
 	FixedMetaboliteSymbols.moc.cpp \
 	FunctionWidget1.moc.cpp \
 	FunctionWidget.moc.cpp \
@@ -33,6 +34,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         CompartmentsWidget1.cpp \
 	CompartmentSymbols.cpp \
 	ConstantSymbols.cpp \
+	DifferentialEquations.cpp \
 	FixedMetaboliteSymbols.cpp \
         FunctionWidget.cpp \
         FunctionWidget1.cpp \
@@ -77,6 +79,7 @@ EXTRA_DIST = \
 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp \
 	CompartmentSymbols.h CompartmentSymbols.cpp CompartmentSymbols.moc.cpp \
 	ConstantSymbols.h ConstantSymbols.cpp ConstantSymbols.moc.cpp \
+	DifferentialEquations.h DifferentialEquations.cpp DifferentialEquations.moc.cpp \
 	FixedMetaboliteSymbols.h FixedMetaboliteSymbols.cpp FixedMetaboliteSymbols.moc.cpp \
 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp \
 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp \
