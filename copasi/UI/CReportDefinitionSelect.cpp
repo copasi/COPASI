@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.24 2003/09/18 22:36:43 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.25 2003/09/18 23:06:57 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -152,29 +152,27 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       jumpToReportDefinitionEdit();
       return;
     }
-  catch (CCopasiException Exception)
-    {}}
 
-if (!mpReport->getReportDefinition())
-  {
-    C_INT32 row;
-    row = reportDefinitionNameList->currentItem();
-    mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
-    mpReport->setAppend(appendChecked->isChecked());
-    mpReport->setTarget(targetEdit->text().latin1());
-    return;
-  }
-else
-  {
-    C_INT32 i;
-    // no use to compare the last one
-    for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
-      if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
-        break;
-    reportDefinitionNameList->setCurrentItem(i);
-    appendChecked->setChecked(mpReport->append());
-    targetEdit->setText(mpReport->getTarget().c_str());
-  }
+  if (!mpReport->getReportDefinition())
+    {
+      C_INT32 row;
+      row = reportDefinitionNameList->currentItem();
+      mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+      mpReport->setAppend(appendChecked->isChecked());
+      mpReport->setTarget(targetEdit->text().latin1());
+      return;
+    }
+  else
+    {
+      C_INT32 i;
+      // no use to compare the last one
+      for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
+        if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
+          break;
+      reportDefinitionNameList->setCurrentItem(i);
+      appendChecked->setChecked(mpReport->append());
+      targetEdit->setText(mpReport->getTarget().c_str());
+    }
 }
 
 void CReportDefinitionSelect::cancelClicked()
