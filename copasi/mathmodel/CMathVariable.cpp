@@ -8,6 +8,7 @@
 
 #include "copasi.h"
 #include "CMathVariable.h"
+#include "CMathConstant.h"
 #include "CMathEq.h"
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
@@ -86,7 +87,7 @@ C_FLOAT64 CMathVariableMetab::getParticleNumber() const
 
 bool CMathVariableMetab::compile()
 {
-  mpCompartment = (CMathConstantCompartment *)
+  mpCompartment = (CMathConstantCompartment *)(CMathConstant *)
                   CMathSymbol::find(((CMetab *) mpObject)->getCompartment());
 
   if (mpCompartment) return true;

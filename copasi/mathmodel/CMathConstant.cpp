@@ -63,7 +63,7 @@ C_FLOAT64 CMathConstantMetab::getParticleNumber() const
 
 bool CMathConstantMetab::compile()
 {
-  mpCompartment = (CMathConstantCompartment *)
+  mpCompartment = (CMathConstantCompartment *)(CMathConstant *)
                   CMathSymbol::find(((CMetab *) mpObject)->getCompartment());
 
   if (mpCompartment) return true;
