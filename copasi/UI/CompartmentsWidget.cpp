@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 15:53:59 $
+   $Date: 2004/05/21 08:57:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -70,9 +70,10 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
   pComp->setInitialVolume(table->text(row, 2).toDouble());
 }
 
-void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row)
+void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  table->setText(row, 2, QString::number(1.0));
+  if (exc != 2)
+    table->setText(row, 2, QString::number(1.0));
 }
 
 QString CompartmentsWidget::defaultObjectName() const
@@ -196,7 +197,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:              // Yes or Enter
+    case 0:               // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -208,7 +209,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:              // No or Escape
+    case 1:               // No or Escape
       break;
     }
 }

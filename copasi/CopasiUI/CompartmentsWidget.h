@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 16:01:20 $
+   $Date: 2004/05/21 08:57:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -64,9 +64,9 @@ class CompartmentsWidget : public CopasiTableWidget
 
     /**
      * this is used to fill a row of the table when a new object is added to the table.
-     * it fills only the data columns, not the name.
+     * it fills only the data columns, not the name. It should not fill column exc.
      */
-    virtual void defaultTableLineContent(unsigned C_INT32 row);
+    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
 
     /**
      * the prefix that is used to construct new object names

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/19 19:02:11 $
+   $Author: ssahle $ 
+   $Date: 2004/05/21 08:57:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -49,18 +49,18 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, const char * name, WFlags 
   btnCancel = new QPushButton("Revert", this);
   btnDelete = new QPushButton("&Delete", this);
 
-  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
+  mHLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
-  hBoxLayout->addSpacing(32);
+  mHLayout->addSpacing(32);
 
-  hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnDelete);
-  hBoxLayout->addSpacing(50);
+  mHLayout->addSpacing(50);
+  mHLayout->addWidget(btnOK);
+  mHLayout->addSpacing(5);
+  mHLayout->addWidget(btnCancel);
+  mHLayout->addSpacing(5);
+  mHLayout->addWidget(btnDelete);
+  mHLayout->addSpacing(50);
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
@@ -110,7 +110,7 @@ void CopasiTableWidget::fillTable()
       updateRow(j);
     }
   for (i = 0; i < numCols; ++i)
-    table->setText(jmax, i, "");
+    table->clearCell(jmax, i);
   btnOK->setEnabled(false);
   btnCancel->setEnabled(false);
 }
@@ -199,10 +199,13 @@ void CopasiTableWidget::slotValueChanged(int row, int col)
 
       if (col == 1) //name entered
         {
-          defaultTableLineContent(row);
+          defaultTableLineContent(row, 0);
         }
       else //some value entered
-        table->setText(row, 1, createNewName(defaultObjectName()));
+        {
+          table->setText(row, 1, createNewName(defaultObjectName()));
+          defaultTableLineContent(row, col);
+        }
     }
   else
     {
@@ -350,7 +353,7 @@ void CopasiTableWidget::tableLineToObject(unsigned C_INT32, CCopasiObject*)
 //  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::deleteObjects(const std::vector<std::string> &)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32)
+void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 // QString CopasiTableWidget::defaultObjectName() const
 //  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
