@@ -1230,6 +1230,7 @@ void ListViews::slotNewReaction()
   //Constructing the Reactions Widget1
   //reactionsWidget1 = new ReactionsWidget1(this);
   reactionsWidget->slotTableCurrentChanged(reactionsWidget->numTableRows() - 1, 0, 0, QPoint());
+  //
   reactionsWidget1->isName("R1");
   currentWidget = reactionsWidget1;
 
