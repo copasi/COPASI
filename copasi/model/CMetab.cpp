@@ -9,6 +9,7 @@
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
+#include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "CCompartment.h"
 #include "CMetab.h"
