@@ -14,6 +14,7 @@ using namespace std ;
 
 #ifdef WIN32 
 #define vsnprintf _vsnprintf // they just have a different name for this guy
+#define snprintf  _snprintf  // they just have a different name for this guy
 #endif  // WIN32
 
 #ifdef TRUE

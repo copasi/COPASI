@@ -17,6 +17,7 @@
 #include "CMetab.h"
 // #include "CNodeK.h"
 #include "CKinetics.h"
+#include "CStep.h"
 
 int  TestReadConfig(void);
 int  TestWriteConfig(void);
@@ -262,11 +263,14 @@ int TestReadSample(void)
 
     // CNodeKVector Nodes;
     // Nodes.Load(inbuf);
-
+    CStep Step;
+    Step.Load(inbuf);
+    
     CKinetics Kinetics;
     Kinetics.Load(inbuf);
     
     CWriteConfig outbuf("copasi.gps");
+    Step.Save(outbuf);
     Kinetics.Save(outbuf);
     Metabolites.Save(outbuf, Compartments);
     Compartments.Save(outbuf);
