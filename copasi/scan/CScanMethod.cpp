@@ -27,9 +27,9 @@ CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 CScanMethod::CScanMethod()
 {}
 
-/**
- *  The main scan method.
- */
+CScanMethod::CScanMethod(const CScanMethod & src){}
+
+CScanMethod::~CScanMethod(){}
 
 void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
 {

@@ -13,7 +13,6 @@
 #include "utilities/CMethodParameterList.h"
 
 class CScanProblem;
-
 class CScanMethod
   {
   protected:

@@ -148,7 +148,7 @@ void ScanWidget::loadScan(CModel *model)
     {
       mModel = model;
       taskName->setText(tr("Scan"));
-      //scanTask= new CScanTask();
+      scanTask = new CScanTask();
       //scanTask->getProblem()->setModel(model);
     }
 }
