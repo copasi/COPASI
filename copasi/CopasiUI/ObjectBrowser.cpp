@@ -90,6 +90,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   refreshList = new objectList();
   ObjectBrowserItem::resetKeySpace();
   loadData();
+  currentPage = LISTVIEWPAGE;
 }
 
 /*
@@ -183,17 +184,38 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 
 void ObjectBrowser::backClicked()
 {
-  ObjectListView->show();
-  qWarning("ObjectBrowser::backClicked(): Not implemented yet!");
+  switch (currentPage)
+    {
+    case LISTVIEWPAGE:
+      //last page
+      break;
+    case SELECTEDITEMPAGE:
+      currentPage = LISTVIEWPAGE;
+      ObjectListView->show();
+      // ->hide();
+      break;
+    }
 }
 
 void ObjectBrowser::nextClicked()
 {
-  ObjectListView->hide();
-  ObjectBrowserItem* rootItem = objectItemList->getRoot()->pItem;
-  objectList* outputList = new objectList();
-  export(rootItem, outputList);
-  delete outputList;
+  objectList* outputList;
+  ObjectBrowserItem* rootItem;
+  switch (currentPage)
+    {
+    case LISTVIEWPAGE:
+      ObjectListView->hide(); //last page
+      rootItem = objectItemList->getRoot()->pItem;
+      outputList = new objectList();
+      export(rootItem, outputList);
+      delete outputList;
+      currentPage = SELECTEDITEMPAGE;
+      break;
+    case SELECTEDITEMPAGE:
+      // show();
+      // ->hide();
+      break;
+    }
 }
 
 void ObjectBrowser::export(ObjectBrowserItem* pCurrent, objectList* outputList)

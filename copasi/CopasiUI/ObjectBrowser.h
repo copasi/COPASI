@@ -23,10 +23,14 @@ class objectList;
 class QListViewItem;
 class CCopasiContainer;
 class CCopasiObject;
+
+enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
+
 class ObjectBrowser : public QWidget
   {
     Q_OBJECT
-
+  private:
+    pageIndex currentPage;
   public:
     objectList* objectItemList;
     objectList* refreshList;
