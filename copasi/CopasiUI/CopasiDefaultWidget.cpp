@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiDefaultWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/26 21:49:35 $
+   $Date: 2004/10/08 12:57:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,6 +22,7 @@
 //#include <qtoolbar.h>
 #include <qwidget.h> 
 //#include <qframe.h>
+#include <qpixmap.h>
 
 #include "copasi.h" 
 //#include "utilities/CCopasiVector.h"
@@ -32,6 +33,8 @@
 //#include "DataModelGUI.h"
 #include "qtUtilities.h" 
 //#include "report/CKeyFactory.h"
+
+#include "./icons/copasi_beta.xpm"
 
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
@@ -46,12 +49,15 @@ CopasiDefaultWidget::CopasiDefaultWidget(QWidget *parent, const char * name, WFl
   if (!name)
     setName("CopasiDefaultWidget");
   //setCaption("CopasiDefaultWidget");
-  CopasiDefaultWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CopasiDefaultWidgetLayout");
+  CopasiDefaultWidgetLayout = new QGridLayout(this, 3, 3, 11, 6, "CopasiDefaultWidgetLayout");
+
+  QPixmap * pLogo = new QPixmap((const char**)copasi_beta_xpm);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText("empty");
+  TextLabel1->setPixmap(*pLogo);
 
-  CopasiDefaultWidgetLayout->addWidget(TextLabel1, 2, 0);
+  CopasiDefaultWidgetLayout->addWidget(TextLabel1, 1, 1);
 
   // signals and slots connections
 }
