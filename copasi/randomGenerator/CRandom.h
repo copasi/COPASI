@@ -2,6 +2,7 @@
 #define COPASI_CRandom
 
 #include <string>
+using std::string;
 
 class CRandom
   {

@@ -15,7 +15,8 @@
 class Cr250 : public CRandom
   {
     friend CRandom * CRandom::createGenerator(CRandom::Type type,
-        unsigned C_INT32 seed = 0);
+        unsigned C_INT32 seed);
+
     // Attributes
   private:
     static unsigned C_INT32 mInitialBuffer[250];
