@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/17 22:49:44 $
+   $Author: ssahle $ 
+   $Date: 2003/10/29 10:36:37 $
    End CVS Header */
 
 /****************************************************************************
@@ -64,6 +64,8 @@ class TableDefinition1;
 class OptimizationWidget;
 class CopasiWidget;
 class Folder;
+class PlotWidget1;
+class PlotWidget;
 
 //*********************************************************************************
 
@@ -155,6 +157,7 @@ class ListViews : public QSplitter
     static void loadCompartmentsToDataModel();
     static void loadFunctionsToDataModel();
     static void loadReportDefinition();
+    static void loadPlotsToDataModel();
 
     //the widgets
     QListView *folders;
@@ -199,6 +202,8 @@ class ListViews : public QSplitter
     TableDefinition *tableDefinition;
     TableDefinition1 *tableDefinition1;
     OptimizationWidget *optimizationWidget;
+    PlotWidget1 *plotWidget1;
+    PlotWidget *plotWidget;
   };
 
 #endif
