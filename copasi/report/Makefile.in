@@ -237,16 +237,14 @@ noinst_LIBRARIES = libreport.a
 libreport_a_SOURCES = \
 	CCopasiObjectName.cpp \
 	CCopasiObject.cpp \
-	CCopasiContainer.cpp \
-	CMetabNew.cpp
+	CCopasiContainer.cpp
 
 
 EXTRA_DIST = \
 	CCopasiObjectName.h	CCopasiObjectName.cpp \
 	CCopasiObject.h	CCopasiObject.cpp \
 	CCopasiObjectReference.h \
-	CCopasiContainer.h	CCopasiContainer.cpp \
-	CMetabNew.h	CMetabNew.cpp
+	CCopasiContainer.h	CCopasiContainer.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -262,8 +260,7 @@ LIBRARIES = $(noinst_LIBRARIES)
 libreport_a_AR = $(AR) cru
 libreport_a_LIBADD =
 am_libreport_a_OBJECTS = CCopasiObjectName.$(OBJEXT) \
-	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT) \
-	CMetabNew.$(OBJEXT)
+	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT)
 libreport_a_OBJECTS = $(am_libreport_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -274,8 +271,7 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CCopasiContainer.Po \
 @AMDEP_TRUE@	$(DEPDIR)/CCopasiObject.Po \
-@AMDEP_TRUE@	$(DEPDIR)/CCopasiObjectName.Po \
-@AMDEP_TRUE@	$(DEPDIR)/CMetabNew.Po
+@AMDEP_TRUE@	$(DEPDIR)/CCopasiObjectName.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -336,7 +332,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiObjectName.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMetabNew.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)

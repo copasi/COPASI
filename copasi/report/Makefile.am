@@ -4,15 +4,13 @@ noinst_LIBRARIES = libreport.a
 libreport_a_SOURCES = \
 	CCopasiObjectName.cpp \
 	CCopasiObject.cpp \
-	CCopasiContainer.cpp \
-	CMetabNew.cpp
+	CCopasiContainer.cpp
 
 EXTRA_DIST = \
 	CCopasiObjectName.h	CCopasiObjectName.cpp \
 	CCopasiObject.h	CCopasiObject.cpp \
 	CCopasiObjectReference.h \
-	CCopasiContainer.h	CCopasiContainer.cpp \
-	CMetabNew.h	CMetabNew.cpp
+	CCopasiContainer.h	CCopasiContainer.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
