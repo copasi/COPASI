@@ -16,14 +16,14 @@
 class CReportDefinitionVector: public CCopasiContainer
   {
   private:
-    std::vector<CReportDefinition> mReportDefinitions;
+    std::vector<CReportDefinition*> mReportDefinitions;
     std::string mKey;
 
   public:
     CReportDefinitionVector(const std::string & name = "noname", const CCopasiContainer* pParent = NULL);
     ~CReportDefinitionVector();
 
-    const std::vector< CReportDefinition >* getReportDefinitionsAddr();
+    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
     /**
      * Loads parameters for this solver with data coming from a

@@ -20,7 +20,7 @@ CReportDefinitionVector::~CReportDefinitionVector()
   cleanup();
 }
 
-const std::vector< CReportDefinition >* CReportDefinitionVector::getReportDefinitionsAddr()
+const std::vector< CReportDefinition*>* CReportDefinitionVector::getReportDefinitionsAddr()
 {
   return &mReportDefinitions;
 }
