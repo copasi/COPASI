@@ -24,14 +24,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,    // Comments
-      DE,     // Differential equations
-      EQN,    // Moiety specification equations
-      INIT,    // Initializations
-      CNST,    // Constant assignments
-      VOL,    // Volume assignment
-      CPT,    // Compartment volume assignments
-      RATE,    // Rate constant assignments
+      CMNT,     // Comments
+      DE,      // Differential equations
+      EQN,     // Moiety specification equations
+      INIT,     // Initializations
+      CNST,     // Constant assignments
+      VOL,     // Volume assignment
+      CPT,     // Compartment volume assignments
+      RATE,     // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -202,17 +202,17 @@ class CTempMetab
   {
   public:
     enum Type{UNDEF = 0, SUBSTRATE, PRODUCT, DUAL};
-    CTempMetab(CMetab *metab) : mMetab(metab), mMultiplicity(0), mNumChange(0) {}
+    CTempMetab(const CMetab *metab) : mMetab(metab), mMultiplicity(0), mNumChange(0) {}
 
     CTempMetab(const CTempMetab &rhs);
-    CMetab *getMetab() {return mMetab;}
-    C_INT32 getMultiplicity() {return mMultiplicity;}
-    void setMultiplicity(C_INT32 mult) {mMultiplicity = mult;}
-    C_INT32 getNumChange() {return mNumChange;}
-    void setNumChange(C_INT32 num) {mNumChange = num;}
+    const CMetab *getMetab() const {return mMetab;}
+    C_INT32 getMultiplicity() const {return mMultiplicity;}
+    void setMultiplicity(const C_INT32 mult) {mMultiplicity = mult;}
+    C_INT32 getNumChange() const {return mNumChange;}
+    void setNumChange(const C_INT32 num) {mNumChange = num;}
 
   private:
-    CMetab *mMetab;
+    const CMetab *mMetab;
     C_INT32 mMultiplicity;
     C_INT32 mNumChange;
 
@@ -229,11 +229,12 @@ class CTempReaction
   {
   public:
     CTempReaction(std::string name) : mName(name) {}
+    CTempReaction(const CDeTerm *deTerm);
     std::string getName() {return mName;}
     void setDescription(std::string desc) {mRateDescription = desc;}
     std::string getDescription() {return mRateDescription;}
 
-    CTempMetab *addMetabolite(CMetab *metab);
+    CTempMetab *addMetabolite(const CMetab *metab);
     std::vector< CTempMetab> &getMetabs() {return mMetabs;}
 
     void compile(CModel *model,

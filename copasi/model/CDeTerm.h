@@ -31,7 +31,7 @@ class CDeTerm
     /**
      * Retrieve the rate constant
      */
-    std::string getRateConstant() {return mRateConstant;}
+    std::string getRateConstant() const {return mRateConstant;}
 
     /**
      * Set the multiplier
@@ -41,7 +41,7 @@ class CDeTerm
     /**
      * Get the multiplier
      */
-    C_FLOAT64 getMultiplier() {return mMultiplier;}
+    C_FLOAT64 getMultiplier() const {return mMultiplier;}
 
     /**
      * Set the sign
@@ -50,7 +50,7 @@ class CDeTerm
     /**
      * Retrieve the sign
      */
-    C_INT32 getSign() {return mSign;}
+    C_INT32 getSign() const {return mSign;}
 
     /**
      * Add an element to the vector of tokens describing the rate
@@ -63,11 +63,11 @@ class CDeTerm
     /**
      * Extract the top level metabolites in this DeTerm
      */
-    std::string getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity);
+    std::string getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity) const;
     /**
      * Return the size of the token stack
      */
-    C_INT32 size() {return mTokenStack.size();}
+    C_INT32 size() const {return mTokenStack.size();}
 
     /**
      * Access the stack at a given position
@@ -76,7 +76,7 @@ class CDeTerm
     /**
      * Return the full description string. This will have been modified by the end.
      */
-    std::string getDescription();
+    std::string getDescription() const;
     /**
      * Do things like strip out the multiplier and determine the rate constant
      */

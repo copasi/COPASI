@@ -308,14 +308,13 @@ void CSpec2Model::processDeTerms()
   for (; it != mDeVector.end(); it++)  //every DE in File
     {
       // Create a stack of terms on the RHS of the DE.
-      std::cout << std::endl << "Creating term stack\n";
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       CMetab *LHSMetab = getLHSMetab(*it);
       std::cout << std::endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
+
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::iterator termit = termstack.begin();
-
       for (; termit != termstack.end(); termit++)  //every Term in DE
         {
           // The rate constant is used to relate this term to a particular reaction.
@@ -328,20 +327,21 @@ void CSpec2Model::processDeTerms()
           if (reaction == 0)
             {
               std::cout << "new reaction" << std::endl;
-              std::string rate = expandRate(*termit);
-              reaction = new CTempReaction(rate_constant);
-              reaction->setDescription(rate);
-              reaction->setIdentifiers(*termit);
+              //std::string rate = expandRate(*termit);
+              reaction = new CTempReaction(*termit);
+              //reaction->setDescription(rate);
+              //reaction->setIdentifiers(*termit);
               trs.addReaction(reaction);
               reaction = trs.findReaction(rate_constant);
             }
 
           // Add the LHS metabolite to the temp reaction
           tmp_metab = reaction->addMetabolite(LHSMetab);
-
-          tmp_metab->setNumChange(num_change);
+          tmp_metab->setNumChange(num_change + tmp_metab->getNumChange());
 
           // Add the metabolites on the RHS of the DE.
+
+          // todo: this is only necessary once. it should be checked if all reactions with the same rate const are identical
           CMetab *metabolite = 0;
 
           std::string metabolite_name;
@@ -412,7 +412,6 @@ std::vector<CDeTerm *> CSpec2Model::createTermStack(std::string str)
     }
 
   // Now, compile each term. i.e. extract the multiplier and rate constant
-  std::cout << "Created term stack. Compiling...\n";
 
   std::vector<CDeTerm*>::iterator it = termstack->begin();
 
@@ -422,8 +421,6 @@ std::vector<CDeTerm *> CSpec2Model::createTermStack(std::string str)
       (*it)->compile(mRateVector);
       std::cout << **it << std::endl << std::endl;
     }
-
-  std::cout << "Done compiling\n";
   return *termstack;
 }
 

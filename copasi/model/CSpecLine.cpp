@@ -186,7 +186,7 @@ CTempMetab::CTempMetab(const CTempMetab &rhs)
     mNumChange(rhs.mNumChange)
 {}
 
-CTempMetab *CTempReaction::addMetabolite(CMetab *metab)
+CTempMetab *CTempReaction::addMetabolite(const CMetab *metab)
 {
   // First try to find this metabolite on the existing stack
 
@@ -202,6 +202,13 @@ CTempMetab *CTempReaction::addMetabolite(CMetab *metab)
   mMetabs.push_back(CTempMetab(metab));
 
   return &*(mMetabs.end() - 1);
+}
+
+CTempReaction::CTempReaction(const CDeTerm *deTerm)
+    : mName(deTerm->getRateConstant())
+{
+  mRateDescription = deTerm->getDescription();
+  setIdentifiers(deTerm);
 }
 
 void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
