@@ -424,40 +424,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     }
 
   else
-    {
-      switch (item->folder()->getID())
-        {
-        case 21 :                   // for showing addition...of new components..
-
-          // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
-
-          /*if(this->searchNode(215) == NULL)
-          {
-           str = QString("1");
-                 p=item->folder();
-                 f = new Folder(0,str);
-                 f->setID(215);
-
-          dataModel->addData(dataModel->getRoot()->info,f);
-           dataModel->notifyAll();
-          }*/
-          currentWidget = bigWidget;
-          break;
-
-        case 41:
-          //this used to show how the data is removed..
-          /*item=(FolderListItem*)this->searchNode(42);
-          if(item){
-           dataModel->removeData(item->folder());
-           dataModel->notifyAll();
-          }*/
-          currentWidget = bigWidget;
-          break;
-
-        default:
-          currentWidget = bigWidget;
-        }
-    }
+    currentWidget = bigWidget;
 
   // this is used to hide and show the necessary widget on the screen
   if (lastWidget)

@@ -47,7 +47,7 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
  ** Descripton:- This method is called when the users clicks on the save as 
  **              option in the menu File 
  *******************************************************************************************/
-void CopasiUI3Window::slotFileSaveAs(){} //cout<<"it comes in filesave as..."; }
+void CopasiUI3Window::slotFileSaveAs(){} //cout<<"it comes in filesave as...";}
 
 /***************CopasiUI3Window::newDoc()******
  **
@@ -66,7 +66,7 @@ void CopasiUI3Window::newDoc()
   if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
     {
       QString fileName = QFileDialog::getOpenFileName(
-                           QString::null, "sample.txt",
+                           QString::null, "*.txt",
                            this, "open file dialog",
                            "Choose a file");
       //QString fileName="sample.txt";
@@ -191,15 +191,15 @@ void CopasiUI3Window::createToolBar()
                               this, slotFileName[j], tbMain);
 
       QWhatsThis::add
-        (toolb, toolTip[j]);
+      (toolb, toolTip[j]);
     }
 
   toolb = QWhatsThis::whatsThisButton(tbMain);
 
   QWhatsThis::add
-    (toolb, "This is a <b>What's This</b> button "
-     "It enables the user to ask for help "
-     "about widgets on the screen.");
+  (toolb, "This is a <b>What's This</b> button "
+   "It enables the user to ask for help "
+   "about widgets on the screen.");
 }
 
 /***************CopasiUI3Window::createMenuBar()**********************************
