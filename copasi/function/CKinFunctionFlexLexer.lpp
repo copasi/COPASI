@@ -1,10 +1,11 @@
 /* scanner for kinetic functions */
 
 /* remember to comment out the #include <unistd.h> */
-%option outfile="lexkk.cpp"
-%option prefix="kk"
+%option outfile="CKinFunctionFlexLexer.cpp"
+%option prefix="CKinFunction"
 %option noyywrap
 %option never-interactive
+%option c++
 
 %{
 #include "copasi.h"
@@ -45,6 +46,6 @@ COS   return N_COS;
      
 [ \t\r\n]+ /* eat up whitespace */
      
-.     return N_NOP;
+..     return N_NOP;
      
 %%

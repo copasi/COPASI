@@ -8,10 +8,10 @@ libfunction_a_SOURCES = \
 	CFunctionParameter.cpp \
 	CFunctionParameters.cpp \
 	CKinFunction.cpp \
+	CKinFunctionFlexLexer.cpp \
 	CMassAction.cpp \
 	CFunctionDB.cpp \
-	CNodeK.cpp \
-	lexkk.cpp
+	CNodeK.cpp
 
 EXTRA_DIST = \
 	CRange.h		CRange.cpp \
@@ -21,9 +21,11 @@ EXTRA_DIST = \
 	CFunctionParameters.h	CFunctionParameters.cpp \
 	CMassAction.h 		CMassAction.cpp \
 	CKinFunction.h		CKinFunction.cpp \
+	CKinFunctionFlexLexer.cpp \
+	CKinFunctionFlexLexer.lpp \
+	FlexLexer.h \
 	CFunctionDB.h		CFunctionDB.cpp \
 	CNodeK.h		CNodeK.cpp \
-	lexkk.h 		lexkk.cpp\
 	CCallParameter.h \
 	CCallParameters.h
 
@@ -33,7 +35,7 @@ EXTRA_DIST = \
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
 
 .lpp.cpp:
-	$(LEX) $<
+	$(LEX) -t $< | grep -v unistd.h > $@
 
 %.cpp: %.lpp
-	$(LEX) $<
+	$(LEX) -t $< | grep -v unistd.h > $@

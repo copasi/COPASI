@@ -7,7 +7,13 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "CKinFunction.h"
-#include "lexkk.h"
+
+#undef yyFlexLexer
+#define yyFlexLexer CKinFunctionFlexLexer
+#include <FlexLexer.h>
+
+#include <sstream>
+// #include "lexkk.h"
 
 CKinFunction::CKinFunction() : CFunction()
 {  
@@ -77,25 +83,21 @@ void CKinFunction::compile()
 
 C_INT32 CKinFunction::parse()
 {
-  C_INT32 i;
-  char *buffer;
-  YY_BUFFER_STATE kkbuff;
-  // create a buffer big enough to contain the function string
-  buffer = new char[getDescription().length()+1];
-  // copy it into the buffer
-  strcpy(buffer, getDescription().c_str());
-  // input for the scanner is from the buffer
-  kkbuff = kk_scan_string(buffer);
+  int i = 1;
+  istringstream buffer(getDescription());
+  CKinFunctionFlexLexer Scanner(&buffer);
+
   // add the root node
   mNodes.add(CNodeK(N_ROOT, N_NOP));
+
   // call the lexical analyser successively until done
-  for (i=1; i!=0;)
+  while (i)
     {
-      i = kklex();
+      i = Scanner.yylex();
       switch (i)
         {
-        case N_IDENTIFIER: mNodes.add(CNodeK(kktext)); break;
-        case N_NUMBER:     mNodes.add(CNodeK(atof(kktext))); break;
+        case N_IDENTIFIER: mNodes.add(CNodeK(Scanner.YYText())); break;
+        case N_NUMBER:     mNodes.add(CNodeK(atof(Scanner.YYText()))); break;
         case '+':          mNodes.add(CNodeK(N_OPERATOR, '+')); break;
         case '-':          mNodes.add(CNodeK(N_OPERATOR, '-')); break;
         case '*':          mNodes.add(CNodeK(N_OPERATOR, '*')); break;
@@ -110,16 +112,11 @@ C_INT32 CKinFunction::parse()
         case N_COS:        mNodes.add(CNodeK(N_FUNCTION, N_COS)); break;
         case N_NOP:        // this is an error
 	  mNodes.cleanup();
-	  delete [] buffer;
-	  kk_delete_buffer(kkbuff);
-	  // should return the position for the erroneous character
-	  return 1;
+          /* :TODO: create a valid error message returning the eroneous node */
+          fatalError();
+	  return 0;
         }
     }
-  // release allocated memory
-  delete [] buffer;
-  kk_delete_buffer(kkbuff);
-
   return 0;
 }
 
