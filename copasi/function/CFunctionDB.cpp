@@ -10,14 +10,10 @@
 #include "CFunctionDB.h"
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
-
-CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE;}
-
+CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE; }
 void CFunctionDB::initialize() {}
-
-CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE;}
-
-void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
+CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE; }
+void CFunctionDB::cleanup() {mLoadedFunctions.cleanup(); }
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
@@ -31,7 +27,7 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
   else
     configbuffer.getVariable("TotalKinetics", "C_INT32", &Size,
                              CReadConfig::LOOP);
-  
+
   for (C_INT32 i = 0; i < Size; i++)
     {
       // We should really read the function type first before we allocate,
@@ -40,6 +36,7 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
       pFunction->load(configbuffer);
       mLoadedFunctions.add(pFunction);
     }
+
   return Fail;
 }
 
@@ -47,7 +44,7 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 {
   C_INT32 Size = mLoadedFunctions.size();
   C_INT32 Fail = 0;
-    
+
   if ((Fail = configbuffer.setVariable("TotalKinetics", "C_INT32", &Size)))
     return Fail;
 
@@ -55,19 +52,17 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 
   return Fail;
 }
+void CFunctionDB::setFilename(const string & filename) {mFilename = filename; }
+string CFunctionDB::getFilename() const { return mFilename; }
 
-void CFunctionDB::setFilename(const string & filename) {mFilename = filename;}
-    
-string CFunctionDB::getFilename() const {return mFilename;}
-
-CFunction * CFunctionDB::dBLoad(const string & functionName) 
+CFunction * CFunctionDB::dBLoad(const string & functionName)
 {
   CFunction Function;
   CFunction * pFunction = NULL;
   C_INT32 Index = mLoadedFunctions.size();
 
   CReadConfig inbuf(mFilename);
-    
+
   while (functionName != Function.getName())
     {
       Function.cleanup();
@@ -79,27 +74,41 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
     case CFunction::Base:
       pFunction = new CFunction(Function);
       break;
+
     case CFunction::MassAction:
       pFunction = new CMassAction(Function.isReversible());
       break;
+
     case CFunction::PreDefined:
+
     case CFunction::UserDefined:
       pFunction = new CKinFunction(Function);
       break;
+
     case CFunction::Output:
       pFunction = new CUDFunction(Function);
       break;
+
     default:
       fatalError();
     }
-  
-  mLoadedFunctions.add(pFunction);
+
+  try
+    {
+      mLoadedFunctions.add(pFunction);
+    }
+  catch (CCopasiException Exception)
+    {
+      if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+        throw Exception;
+    }
 
   return mLoadedFunctions[Index];
 }
 
-void CFunctionDB::add(CFunction & function)
-{mLoadedFunctions.add(function);}
+void CFunctionDB::add
+  (CFunction & function)
+{mLoadedFunctions.add(function); }
 
 // void CFunctionDB::dBDelete(const string & functionName)
 // {
@@ -112,9 +121,9 @@ CFunction * CFunctionDB::findFunction(const string & functionName)
   for (i = 0; i < mLoadedFunctions.size(); i++)
     if (functionName == mLoadedFunctions[i]->getName())
       return mLoadedFunctions[i];
-    
+
   return dBLoad(functionName);
 }
 
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
-{return mLoadedFunctions;}
+{ return mLoadedFunctions; }
