@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/06 19:33:40 $
+   $Author: ssahle $ 
+   $Date: 2004/10/07 12:07:07 $
    End CVS Header */
 
 #include "SliderDialog.h"
@@ -39,7 +39,8 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
     scrollView(NULL),
     sliderBox(NULL),
     contextMenu(NULL),
-    currSlider(NULL)
+    currSlider(NULL),
+    currentFolderId(0)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
