@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/07 07:41:01 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 17:36:32 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.21 2004/10/07 07:41:01 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.22 2004/10/08 17:36:32 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,8 +30,9 @@
 #include "curve2dwidget.h"
 #include "plotwindow.h"
 #include "CPlotSpecification.h"
-#include "report/CKeyFactory.h"
-#include "CopasiUI/ObjectBrowserDialog.h"
+#include "report/CKeyFactory.h" 
+//#include "CopasiUI/ObjectBrowserDialog.h"
+#include "CopasiUI/SimpleSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiUI/DataModelGUI.h" 
 //temporary
@@ -187,11 +188,12 @@ void PlotWidget1::addCurveTab(const std::string & title,
 
 void PlotWidget1::addCurveGroupBox()
 {
-  ObjectBrowserDialog* pBrowser1 = new ObjectBrowserDialog();
-  ObjectBrowserDialog* pBrowser2 = new ObjectBrowserDialog();
+  SimpleSelectionDialog* pBrowser1 = new SimpleSelectionDialog();
+  SimpleSelectionDialog* pBrowser2 = new SimpleSelectionDialog();
 
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   pBrowser1->setOutputVector(pVector1);
+  pBrowser1->setModel(dataModel->getModel());
 
   if (pBrowser1->exec () == QDialog::Rejected)
     {
@@ -212,6 +214,7 @@ void PlotWidget1::addCurveGroupBox()
 
   std::vector<CCopasiObject*>* pVector2 = new std::vector<CCopasiObject*>();
   pBrowser2->setOutputVector(pVector2);
+  pBrowser2->setModel(dataModel->getModel());
 
   if (pBrowser2->exec () == QDialog::Rejected)
     {
