@@ -104,7 +104,11 @@ void ReactionsWidget::fillTable()
 //**************************************************************************
 
 void ReactionsWidget::createNewObject()
-{}
+{
+  CReaction * reac = new CReaction("New Reaction", &dataModel->getModel()->getReactions());
+  dataModel->getModel()->getReactions().add(reac);
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");   //TODO: more specific
+}
 
 void ReactionsWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(col),
@@ -116,6 +120,8 @@ void ReactionsWidget::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       //TODO: create a new Object
+      std::cout << "Create new Reaction" << std::endl;
+      createNewObject();
     }
 
   pListView->switchToOtherWidget(mKeys[row]);
