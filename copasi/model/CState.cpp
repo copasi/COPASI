@@ -607,3 +607,32 @@ void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 
   return;
 }
+
+void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                  const C_FLOAT64 & factor,
+                                  const C_FLOAT64 & resolution) const
+  {
+    const_cast<CModel *>(mpModel)->setState(this);
+    const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
+    unsigned C_INT32 i, imax = Reactions.size();
+
+    CCopasiVectorN< CMetab > & Metabolites =
+      const_cast<CModel *>(mpModel)->getMetabolites();
+    unsigned C_INT32 j, jmax = mpModel->getIntMetab();
+
+    C_FLOAT64 * x;
+
+    for (j = 0; j < jmax; j++)
+      {
+        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+
+        for (i = 0; i < imax; i++)
+          {
+            elasticityMatrix(i, j) =
+              Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+            std::cout << *x << ", " << elasticityMatrix(i, j) << std::endl;
+          }
+      }
+
+    return;
+  }

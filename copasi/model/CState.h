@@ -413,6 +413,17 @@ class CStateX: public CState
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
 
+    /**
+     * Calculates the elasticity Matrix of the state and stores it in the 
+     * provided matrix.
+     * @param CMatrix< C_FLOAT64 > & elasticityMatrix
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                     const C_FLOAT64 & factor,
+                                     const C_FLOAT64 & resolution) const;
+
     friend std::ostream & operator << (std::ostream & os, const CStateX & A)
     {
       os << "StateX" << std::endl;

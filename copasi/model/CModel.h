@@ -657,18 +657,18 @@ class CModel : public CCopasiContainer
      */
     void setState(const CState * state);
 
-  private:
-    /**
-     * Initialize the contained CCopasiObjects
-     */
-    void initObjects();
-
     /**
      * Set the transient concentrations and volumes according to the
      * given stateX in reduced model representation.
      * @param const CState * stateX
      */
     void setState(const CStateX * state);
+
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
   };
 
 #endif // CModel
