@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/12 16:55:31 $
+   $Author: lixu1 $ 
+   $Date: 2003/12/17 21:30:44 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -177,30 +177,33 @@ void CopasiUI3Window::slotFileOpen()
   // gives the file information to the datamodel to handle it
 
   //Use this *** gpsFile.endsWith(".gps")
-  if (!dataModel)
-    dataModel = new DataModel; // create a new data model
-
-  if (dataModel->getModel())
+  if (newFile)
     {
-      ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+      if (!dataModel)
+        dataModel = new DataModel; // create a new data model
+
+      if (dataModel->getModel())
+        {
+          ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+                            dataModel->getModel()->getKey());
+
+          if (gpsFile) slotFileSave();
+          else slotFileSaveAs();
+        }
+
+      gpsFile = newFile;
+
+      dataModel->loadModel((const char *)gpsFile.utf8());
+      ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         dataModel->getModel()->getKey());
 
-      if (gpsFile) slotFileSave();
-      else slotFileSaveAs();
+      if (!bobject_browser_open)
+        file->setItemEnabled(nobject_browser, true);
+      file->setItemEnabled(nexport_menu_SBML, true);
+      file->setItemEnabled(nsaveas_menu_id, true);
+      msave_button->setEnabled(true);
+      file->setItemEnabled(nsave_menu_id, true);
     }
-
-  gpsFile = newFile;
-
-  dataModel->loadModel((const char *)gpsFile.utf8());
-  ListViews::notify(ListViews::MODEL, ListViews::ADD,
-                    dataModel->getModel()->getKey());
-
-  if (!bobject_browser_open)
-    file->setItemEnabled(nobject_browser, true);
-  file->setItemEnabled(nexport_menu_SBML, true);
-  file->setItemEnabled(nsaveas_menu_id, true);
-  msave_button->setEnabled(true);
-  file->setItemEnabled(nsave_menu_id, true);
 }
 
 /***************CopasiUI3Window::slotFileSave()*****************
