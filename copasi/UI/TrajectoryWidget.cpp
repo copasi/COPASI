@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:44 $
+   $Date: 2004/07/05 14:22:46 $
    End CVS Header */
 
 /********************************************************
@@ -228,7 +228,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(nStepSize, SIGNAL(lostFocus()), this, SLOT(StepsizeSlot()));
   connect(nStepNumber, SIGNAL(lostFocus()), this, SLOT(NumStepsSlot()));
 
-  reportDefinitionButton->setEnabled(false);
+  //reportDefinitionButton->setEnabled(false);
 }
 
 /*
@@ -523,11 +523,6 @@ bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Actio
   switch (objectType)
     {
     case ListViews::MODEL:
-      // check if there is a list of Report Defs
-      CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
-      if (pReportDefinitionVector)
-        reportDefinitionButton->setEnabled(true);
       break;
     default:
       break;
