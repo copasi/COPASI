@@ -5,6 +5,7 @@
 
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
+#include "function/CFunction.h"
 
 int main(int argc, char **argv)
 {
