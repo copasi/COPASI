@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/20 15:53:19 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:17:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,6 +18,8 @@
 #include "report/CCopasiContainer.h"
 #include "CopasiUI/CCopasiSelectionDialog.h"
 #include "CopasiUI/qtUtilities.h"
+
+// comboBoxType lines|points|symbols
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
@@ -36,10 +38,13 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if ((!mpObjectX) || (!mpObjectY)) return false;
 
   lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
-  //lineEditXCN->setText(FROM_UTF8(co1->getCN()));
 
   lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
-  //lineEditYCN->setText(FROM_UTF8(co2->getCN()));
+
+  const void* tmp;
+
+  if (!(tmp = curve->getValue("Line type"))) return false;
+  comboBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -63,21 +68,9 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     curve->getChannels().resize(0);
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX->getCN()));
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY->getCN()));
-    /* if (!curve) return false;
 
-     curve->title = lineEditTitle->text().latin1();
+    curve->setValue("Line type", (unsigned C_INT32)comboBoxType->currentItem());
 
-     //read the comboboxes for axis selection
-     if (comboXAxis->currentItem() == 0) curve->xAxis = QwtPlot::xTop;
-     else curve->xAxis = QwtPlot::xBottom;
-
-     if (comboYAxis->currentItem() == 1) curve->yAxis = QwtPlot::yRight;
-     else curve->yAxis = QwtPlot::yLeft;
-
-     //read the comboboxes for data channel selection
-     curve->mChannels[0].index = comboXData->currentItem();
-     curve->mChannels[1].index = comboYData->currentItem();
-    */
     return true;
   }
 
