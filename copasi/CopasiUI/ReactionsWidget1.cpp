@@ -9,7 +9,7 @@
 
 #include <qgroupbox.h>
 #include <qlabel.h>
-#include <qlineedit.h>
+
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -19,7 +19,7 @@
 #include <qframe.h>
 #include <qcheckbox.h>
 #include <qfont.h>
-
+#include <qlineedit.h>
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "ReactionsWidget1.h"
@@ -80,9 +80,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4b->addWidget(TextLabel2);
   hBoxLayout4b->addSpacing(17);
 
-  LineEdit2 = new QLineEdit("", Frame4b);
+  LineEdit2 = new MyLineEdit("", Frame4b);
   hBoxLayout4b->addWidget(LineEdit2);
-  LineEdit2->setFocusPolicy(QWidget::StrongFocus);
   hBoxLayout4b->addSpacing(50);
 
   //Frame for 3rd Row
@@ -193,8 +192,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotGetFocus()));
-  connect(this, SIGNAL(focusChanged()), this, SLOT(slotLineEditChanged()));
+  //connect(LineEdit2, SIGNAL(sideySignal()), this, SLOT(slotGetFocus()));
+  connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -395,6 +394,8 @@ void ReactionsWidget1::loadName(QString setValue)
       table->setText(line, 0, QString::number(react4z[k]->getValue()));
       line++;
     }
+
+  //emit sideySignal();
 }
 
 /*This slot is activated when the cancel button is clicked.It basically cancels any changes that
@@ -682,16 +683,4 @@ void ReactionsWidget1::slotLineEditChanged()
       checkBox->setChecked(FALSE);
     }
   slotCheckBoxClicked();
-}
-
-void ReactionsWidget1::slotGetFocus()
-{
-  if (LineEdit2->isFocusEnabled() == true)
-    {
-      QMessageBox::information(this, "Reactions Widget", "true");
-    }
-  if (LineEdit2->hasFocus() == true)
-    {
-      emit focusChanged();
-    }
 }

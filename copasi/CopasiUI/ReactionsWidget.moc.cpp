@@ -18,9 +18,9 @@
 #endif
 
 const char *ReactionsWidget::className() const
-  {
-    return "ReactionsWidget";
-  }
+{
+  return "ReactionsWidget";
+}
 
 QMetaObject *ReactionsWidget::metaObj = 0;
 static QMetaObjectCleanUp cleanUp_ReactionsWidget;
@@ -50,33 +50,29 @@ QMetaObject* ReactionsWidget::staticMetaObject()
   if (metaObj)
     return metaObj;
   QMetaObject* parentObject = QWidget::staticMetaObject();
-  static const QUParameter param_slot_0[] =
-    {
-      {0, &static_QUType_int, 0, QUParameter::In },
-      {0, &static_QUType_int, 0, QUParameter::In },
-      {0, &static_QUType_int, 0, QUParameter::In },
-      {0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
-    };
-  static const QUMethod slot_0 = {"slotTableCurrentChanged", 4, param_slot_0 };
-  static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
-  static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
-  static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0 };
-  static const QMetaData slot_tbl[] =
-    {
-      {"slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
-      {"slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
-      {"slotBtnOKClicked()", &slot_2, QMetaData::Protected },
-      {"slotBtnCancelClicked()", &slot_3, QMetaData::Protected }
-    };
-  static const QUParameter param_signal_0[] =
-    {
-      {0, &static_QUType_QString, 0, QUParameter::InOut }
-    };
-  static const QUMethod signal_0 = {"name", 1, param_signal_0 };
-  static const QMetaData signal_tbl[] =
-    {
-      {"name(QString&)", &signal_0, QMetaData::Public }
-    };
+  static const QUParameter param_slot_0[] = {
+        {0, &static_QUType_int, 0, QUParameter::In},
+        {0, &static_QUType_int, 0, QUParameter::In},
+        {0, &static_QUType_int, 0, QUParameter::In},
+        {0, &static_QUType_ptr, "const QPoint&", QUParameter::In}
+      };
+  static const QUMethod slot_0 = {"slotTableCurrentChanged", 4, param_slot_0};
+  static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0};
+  static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0};
+  static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0};
+  static const QMetaData slot_tbl[] = {
+                                        {"slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public},
+                                        {"slotTableSelectionChanged()", &slot_1, QMetaData::Protected},
+                                        {"slotBtnOKClicked()", &slot_2, QMetaData::Protected},
+                                        {"slotBtnCancelClicked()", &slot_3, QMetaData::Protected}
+                                      };
+  static const QUParameter param_signal_0[] = {
+        {0, &static_QUType_QString, 0, QUParameter::InOut}
+      };
+  static const QUMethod signal_0 = {"name", 1, param_signal_0};
+  static const QMetaData signal_tbl[] = {
+                                          {"name(QString&)", &signal_0, QMetaData::Public}
+                                        };
   metaObj = QMetaObject::new_metaobject(
               "ReactionsWidget", parentObject,
               slot_tbl, 4,
@@ -92,8 +88,7 @@ QMetaObject* ReactionsWidget::staticMetaObject()
 
 void* ReactionsWidget::qt_cast(const char* clname)
 {
-  if (!qstrcmp(clname, "ReactionsWidget"))
-    return (ReactionsWidget*)this;
+  if (!qstrcmp(clname, "ReactionsWidget")) return (ReactionsWidget*)this;
   return QWidget::qt_cast(clname);
 }
 
@@ -118,18 +113,10 @@ bool ReactionsWidget::qt_invoke(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->slotOffset())
     {
-    case 0:
-      slotTableCurrentChanged(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2), static_QUType_int.get(_o + 3), *((QPoint*)static_QUType_ptr.get(_o + 4)));
-      break;
-    case 1:
-      slotTableSelectionChanged();
-      break;
-    case 2:
-      slotBtnOKClicked();
-      break;
-    case 3:
-      slotBtnCancelClicked();
-      break;
+    case 0: slotTableCurrentChanged(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2), static_QUType_int.get(_o + 3), *((QPoint*)static_QUType_ptr.get(_o + 4))); break;
+    case 1: slotTableSelectionChanged(); break;
+    case 2: slotBtnOKClicked(); break;
+    case 3: slotBtnCancelClicked(); break;
     default:
       return QWidget::qt_invoke(_id, _o);
     }
@@ -140,9 +127,7 @@ bool ReactionsWidget::qt_emit(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->signalOffset())
     {
-    case 0:
-      name(static_QUType_QString.get(_o + 1));
-      break;
+    case 0: name(static_QUType_QString.get(_o + 1)); break;
     default:
       return QWidget::qt_emit(_id, _o);
     }

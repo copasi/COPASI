@@ -18,9 +18,9 @@
 #endif
 
 const char *CopasiUI3Window::className() const
-  {
-    return "CopasiUI3Window";
-  }
+{
+  return "CopasiUI3Window";
+}
 
 QMetaObject *CopasiUI3Window::metaObj = 0;
 static QMetaObjectCleanUp cleanUp_CopasiUI3Window;
@@ -50,23 +50,22 @@ QMetaObject* CopasiUI3Window::staticMetaObject()
   if (metaObj)
     return metaObj;
   QMetaObject* parentObject = QMainWindow::staticMetaObject();
-  static const QUMethod slot_0 = {"slotFileOpen", 0, 0 };
-  static const QUMethod slot_1 = {"slotFileSave", 0, 0 };
-  static const QUMethod slot_2 = {"slotFileSaveAs", 0, 0 };
-  static const QUMethod slot_3 = {"newDoc", 0, 0 };
-  static const QUMethod slot_4 = {"slotFilePrint", 0, 0 };
-  static const QUMethod slot_5 = {"about", 0, 0 };
-  static const QUMethod slot_6 = {"aboutQt", 0, 0 };
-  static const QMetaData slot_tbl[] =
-    {
-      {"slotFileOpen()", &slot_0, QMetaData::Protected },
-      {"slotFileSave()", &slot_1, QMetaData::Protected },
-      {"slotFileSaveAs()", &slot_2, QMetaData::Protected },
-      {"newDoc()", &slot_3, QMetaData::Protected },
-      {"slotFilePrint()", &slot_4, QMetaData::Protected },
-      {"about()", &slot_5, QMetaData::Protected },
-      {"aboutQt()", &slot_6, QMetaData::Protected }
-    };
+  static const QUMethod slot_0 = {"slotFileOpen", 0, 0};
+  static const QUMethod slot_1 = {"slotFileSave", 0, 0};
+  static const QUMethod slot_2 = {"slotFileSaveAs", 0, 0};
+  static const QUMethod slot_3 = {"newDoc", 0, 0};
+  static const QUMethod slot_4 = {"slotFilePrint", 0, 0};
+  static const QUMethod slot_5 = {"about", 0, 0};
+  static const QUMethod slot_6 = {"aboutQt", 0, 0};
+  static const QMetaData slot_tbl[] = {
+                                        {"slotFileOpen()", &slot_0, QMetaData::Protected},
+                                        {"slotFileSave()", &slot_1, QMetaData::Protected},
+                                        {"slotFileSaveAs()", &slot_2, QMetaData::Protected},
+                                        {"newDoc()", &slot_3, QMetaData::Protected},
+                                        {"slotFilePrint()", &slot_4, QMetaData::Protected},
+                                        {"about()", &slot_5, QMetaData::Protected},
+                                        {"aboutQt()", &slot_6, QMetaData::Protected}
+                                      };
   metaObj = QMetaObject::new_metaobject(
               "CopasiUI3Window", parentObject,
               slot_tbl, 7,
@@ -82,8 +81,7 @@ QMetaObject* CopasiUI3Window::staticMetaObject()
 
 void* CopasiUI3Window::qt_cast(const char* clname)
 {
-  if (!qstrcmp(clname, "CopasiUI3Window"))
-    return (CopasiUI3Window*)this;
+  if (!qstrcmp(clname, "CopasiUI3Window")) return (CopasiUI3Window*)this;
   return QMainWindow::qt_cast(clname);
 }
 
@@ -91,27 +89,13 @@ bool CopasiUI3Window::qt_invoke(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->slotOffset())
     {
-    case 0:
-      slotFileOpen();
-      break;
-    case 1:
-      slotFileSave();
-      break;
-    case 2:
-      slotFileSaveAs();
-      break;
-    case 3:
-      newDoc();
-      break;
-    case 4:
-      slotFilePrint();
-      break;
-    case 5:
-      about();
-      break;
-    case 6:
-      aboutQt();
-      break;
+    case 0: slotFileOpen(); break;
+    case 1: slotFileSave(); break;
+    case 2: slotFileSaveAs(); break;
+    case 3: newDoc(); break;
+    case 4: slotFilePrint(); break;
+    case 5: about(); break;
+    case 6: aboutQt(); break;
     default:
       return QMainWindow::qt_invoke(_id, _o);
     }

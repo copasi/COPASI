@@ -4,7 +4,7 @@
  *****************************************************************************/
 #ifndef LISTVIEWS_H
 #define LISTVIEWS_H
-
+//public QLineEdit:
 #include <qsplitter.h>
 #include <qstring.h>
 #include <qobject.h>
@@ -53,11 +53,11 @@ class Folder : public QObject
 
     inline Folder(Folder *parent, const QString &name)
         : QObject(parent, name), fName(name){}
-    // inline void setCaption(const QString &name){ fCaption(name); }
-    // inline QString getCaption(){return fCaption; }
-    inline int getID(){ return id; }
-    inline void setID(int id){this->id = id; }
-    inline QString folderName() { return fName; }
+    // inline void setCaption(const QString &name){fCaption(name);}
+    // inline QString getCaption(){return fCaption;}
+    inline int getID(){return id;}
+    inline void setID(int id){this->id = id;}
+    inline QString folderName() {return fName;}
 
     inline int operator==(Folder &folder)
     {
@@ -68,7 +68,7 @@ class Folder : public QObject
     // {
     //  s<<"I am :-"<<f.getID()<<endl;
     //  return s;
-    // }
+    //}
 
   protected:
     // QString fCaption;
@@ -82,7 +82,7 @@ class FolderListItem : public QListViewItem
     FolderListItem(QListView *parent, Folder *f);
     FolderListItem(FolderListItem *parent, Folder *f);
     void insertSubFolders(const QObjectList *lst);
-    Folder *folder() { return myFolder; }
+    Folder *folder() {return myFolder;}
 
   protected:
     Folder *myFolder;
@@ -94,7 +94,7 @@ class ListViews : public QSplitter, public Observer
 
   public:
     ListViews(QWidget *parent = 0, const char *name = 0);
-    ~ListViews(){dataModel->detach(this); }
+    ~ListViews(){dataModel->detach(this);}
 
     void setDataModel(DataModel<Folder>* dm);
     void update(Subject*, int status); //overides..the update method...

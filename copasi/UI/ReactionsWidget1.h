@@ -15,6 +15,7 @@
 #include "model/model.h"
 #include "qtable.h"
 #include "MyTable.h"
+#include "MyLineEdit.h"
 
 class QAction;
 
@@ -66,7 +67,7 @@ class ReactionsWidget1 : public QWidget
     QFrame* Line2;
 
     QLineEdit* LineEdit1;
-    QLineEdit* LineEdit2;
+    MyLineEdit* LineEdit2;
     QLineEdit* LineEdit3;
 
     QLabel* TextLabel1;
@@ -100,10 +101,11 @@ class ReactionsWidget1 : public QWidget
     virtual void slotCheckBoxClicked();
     virtual void slotComboBoxSelectionChanged(const QString &);
     virtual void slotLineEditChanged();
-    virtual void slotGetFocus();
+    //virtual void slotGetFocus();
   signals:
     void signal_emitted(QString &);
-    void focusChanged();
+    //void focusChanged();
+    //void sideySignal();
   };
 
 #endif

@@ -18,9 +18,9 @@
 #endif
 
 const char *CompartmentsWidget1::className() const
-  {
-    return "CompartmentsWidget1";
-  }
+{
+  return "CompartmentsWidget1";
+}
 
 QMetaObject *CompartmentsWidget1::metaObj = 0;
 static QMetaObjectCleanUp cleanUp_CompartmentsWidget1;
@@ -50,22 +50,19 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
   if (metaObj)
     return metaObj;
   QMetaObject* parentObject = QWidget::staticMetaObject();
-  static const QUMethod slot_0 = {"slotBtnCancelClicked", 0, 0 };
-  static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0 };
-  static const QMetaData slot_tbl[] =
-    {
-      {"slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
-      {"slotBtnOKClicked()", &slot_1, QMetaData::Protected }
-    };
-  static const QUParameter param_signal_0[] =
-    {
-      {0, &static_QUType_QString, 0, QUParameter::InOut }
-    };
-  static const QUMethod signal_0 = {"signal_emitted", 1, param_signal_0 };
-  static const QMetaData signal_tbl[] =
-    {
-      {"signal_emitted(QString&)", &signal_0, QMetaData::Protected }
-    };
+  static const QUMethod slot_0 = {"slotBtnCancelClicked", 0, 0};
+  static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0};
+  static const QMetaData slot_tbl[] = {
+                                        {"slotBtnCancelClicked()", &slot_0, QMetaData::Protected},
+                                        {"slotBtnOKClicked()", &slot_1, QMetaData::Protected}
+                                      };
+  static const QUParameter param_signal_0[] = {
+        {0, &static_QUType_QString, 0, QUParameter::InOut}
+      };
+  static const QUMethod signal_0 = {"signal_emitted", 1, param_signal_0};
+  static const QMetaData signal_tbl[] = {
+                                          {"signal_emitted(QString&)", &signal_0, QMetaData::Protected}
+                                        };
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget1", parentObject,
               slot_tbl, 2,
@@ -81,8 +78,7 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
 
 void* CompartmentsWidget1::qt_cast(const char* clname)
 {
-  if (!qstrcmp(clname, "CompartmentsWidget1"))
-    return (CompartmentsWidget1*)this;
+  if (!qstrcmp(clname, "CompartmentsWidget1")) return (CompartmentsWidget1*)this;
   return QWidget::qt_cast(clname);
 }
 
@@ -107,12 +103,8 @@ bool CompartmentsWidget1::qt_invoke(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->slotOffset())
     {
-    case 0:
-      slotBtnCancelClicked();
-      break;
-    case 1:
-      slotBtnOKClicked();
-      break;
+    case 0: slotBtnCancelClicked(); break;
+    case 1: slotBtnOKClicked(); break;
     default:
       return QWidget::qt_invoke(_id, _o);
     }
@@ -123,9 +115,7 @@ bool CompartmentsWidget1::qt_emit(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->signalOffset())
     {
-    case 0:
-      signal_emitted(static_QUType_QString.get(_o + 1));
-      break;
+    case 0: signal_emitted(static_QUType_QString.get(_o + 1)); break;
     default:
       return QWidget::qt_emit(_id, _o);
     }
