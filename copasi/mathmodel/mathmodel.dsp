@@ -98,6 +98,10 @@ SOURCE=.\CMathModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CMathNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMathSymbol.cpp
 # End Source File
 # Begin Source File
@@ -119,6 +123,10 @@ SOURCE=.\CMathEq.h
 # Begin Source File
 
 SOURCE=.\CMathModel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMathNode.h
 # End Source File
 # Begin Source File
 
