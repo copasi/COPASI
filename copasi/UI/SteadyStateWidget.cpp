@@ -150,8 +150,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
-          SLOT(loadModelNodes(CModel*)));
+  //connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,
+  //        SLOT(loadModelNodes(CModel*)));
 
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 

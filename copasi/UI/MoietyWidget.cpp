@@ -59,11 +59,11 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
+  //connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
 
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  //connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
+  //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 void MoietyWidget::loadMoieties(CModel *model)
