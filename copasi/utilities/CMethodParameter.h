@@ -1,7 +1,7 @@
 /**
  *  CParameter class.
- *  This class is used to describe method paramters. This class is intended
- *  to be used with integration or optimization methods.
+ *  This class is used to describe parameters. This class is intended
+ *  to be used with integration or optimization methods or reactions.
  *  
  *  Created for Copasi by Stefan Hoops 2002
  */
@@ -55,11 +55,11 @@ class CParameter: public CCopasiContainer
      * Default constructor
      * @param "const string &" name (Default = "")
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & objectType (default: "Method Parameter")
+     * @param const std::string & objectType (default: "Parameter")
      */
     CParameter(const std::string & name = "NoName",
                const CCopasiContainer * pParent = NULL,
-               const std::string & objectType = "Method Parameter");
+               const std::string & objectType = "Parameter");
 
     /**
      * Copy constructor
@@ -75,13 +75,13 @@ class CParameter: public CCopasiContainer
      * @param const C_FLOAT64 & value
      * @param const CParameter::Type & type
      * @param const CCopasiContainer * pParent (default: NULL)
-     * @param const std::string & objectType (default: "Method Parameter")
+     * @param const std::string & objectType (default: "Parameter")
      */
     CParameter(const std::string & name,
                const C_FLOAT64 & value,
                const Type & type,
                const CCopasiContainer * pParent = NULL,
-               const std::string & objectType = "Method Parameter");
+               const std::string & objectType = "Parameter");
 
     /**
      * Destructor
