@@ -11,8 +11,8 @@
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "report/CCopasiObjectReference.h" 
+// #include "report/CKeyFactory.h"
 #include "utilities/CMethodParameter.h"
 #include "xml/CCopasiXML.h"
 
@@ -80,19 +80,18 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
       switch (Function.getType())
         {
         case CFunction::Base:
-          pFunction = new CFunction(Function, &mLoadedFunctions);
+          pFunction = new CFunction(Function);
           break;
 
         case CFunction::MassAction:
-          pFunction = new CMassAction(Function, &mLoadedFunctions);
+          pFunction = new CMassAction(Function);
           break;
 
         case CFunction::PreDefined:
 
         case CFunction::UserDefined:
           pFunction = new CKinFunction(Function,
-                                       &configbuffer,
-                                       &mLoadedFunctions);
+                                       &configbuffer);
           break;
 
         default:
@@ -101,7 +100,7 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
       try
         {
-          mLoadedFunctions.add(pFunction);
+          mLoadedFunctions.add(pFunction, true);
         }
 
       catch (CCopasiException Exception)

@@ -40,8 +40,12 @@ CMetab::CMetab(const std::string & name,
     mTT(0.0),
     mStatus(METAB_VARIABLE)
 {
-  initModel();
-  initCompartment(NULL);
+  if (getObjectParent())
+    {
+      initModel();
+      initCompartment(NULL);
+    }
+
   initObjects();
   CONSTRUCTOR_TRACE;
 }

@@ -173,8 +173,8 @@ void CFunctionParameters::updateUsageRanges()
 
       if ((index = mUsageRanges.getIndex(*Usage)) == C_INVALID_INDEX)
         {
-          pUsageRange = new CUsageRange(*Usage, &mUsageRanges);
-          mUsageRanges.add(pUsageRange);
+          pUsageRange = new CUsageRange(*Usage);
+          mUsageRanges.add(pUsageRange, true);
 
           if (*Type < CFunctionParameter::VINT32)
             {

@@ -91,7 +91,7 @@ template < class CType > class CCopasiVector:
        */
       virtual bool add(const CType & src)
       {
-        CType * Element = new CType(src, this);
+        CType * Element = new CType(src);
 
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
@@ -123,10 +123,7 @@ template < class CType > class CCopasiVector:
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
-        bool success = CCopasiContainer::add(src);
-        if (adopt) src->setObjectParent(this);
-
-        return success;
+        return CCopasiContainer::add(src, adopt);
       }
 
       /**
@@ -387,7 +384,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCCopasiVector + 2, src.getName().c_str());
 
-        CType * Element = new CType(src, this);
+        CType * Element = new CType(src);
 
         push_back(Element);
         return CCopasiContainer::add(Element);
@@ -405,9 +402,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
-        bool success = CCopasiContainer::add(src);
-        if (adopt) src->setObjectParent(this);
-        return success;
+        return CCopasiContainer::add(src, adopt);
       }
 
       /**

@@ -369,16 +369,17 @@ void ObjectBrowser::loadData()
   loadUI();
 }
 
-void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent, bool nField)
+void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
+                              CCopasiContainer* copaParent, bool nField)
 {
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
   ObjectList* childStack = new ObjectList();
 
-  const std::map< const std::string, CCopasiObject *> * pObjectList = & copaParent->getObjects();
-  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
-  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
+  const CCopasiContainer::objectMap * pObjectList = & copaParent->getObjects();
+  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
+  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
   while (it != end)
     {
@@ -443,17 +444,17 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
-  const std::map< const std::string, CCopasiObject *> * pObjectList = &copaParent->getObjects();
-  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
-  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
-  std::map< const std::string, CCopasiObject *>::const_iterator pFirstObject = it;
+  const CCopasiContainer::objectMap * pObjectList = & copaParent->getObjects();
+  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
+  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
+  CCopasiContainer::objectMap::const_iterator pFirstObject = it;
 
-  if (it == end)
-    return;
+  if (it == end) return;
 
-  const std::map< const std::string, CCopasiObject *> *pFieldList = & ((CCopasiContainer*) it->second)->getObjects();
-  std::map< const std::string, CCopasiObject *>::const_iterator fieldIt = pFieldList->begin();
-  std::map< const std::string, CCopasiObject *>::const_iterator fieldEnd = pFieldList->end();
+  const CCopasiContainer::objectMap * pFieldList =
+    &((CCopasiContainer *) it->second)->getObjects();
+  CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
+  CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
 
   while (fieldIt != fieldEnd)
     {
@@ -467,8 +468,16 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       last = NULL;
       while (it != end)
         {
+          CCopasiObject* pSubField;
           current = it->second;
-          CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
+
+          if (current->isContainer())
+            pSubField =
+              getFieldCopasiObject((CCopasiContainer *) current,
+                                   currentField->getObjectName().c_str());
+          else
+            pSubField = NULL;
+
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
@@ -528,11 +537,13 @@ void ObjectBrowser::loadUI()
     setCheckMark(pCurrent->pItem);
 }
 
-CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiObject* pCurrent, const char* name)
+CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name)
 {
-  const std::map< const std::string, CCopasiObject *> * pObjectList = & ((CCopasiContainer*)pCurrent)->getObjects();
-  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->find(name);
-  if (it != pObjectList->end())
+  const CCopasiContainer::objectMap * pObjectList = & pCurrent->getObjects();
+  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
+  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
+
+  if (it != end)
     return it->second;
   else
     return NULL;

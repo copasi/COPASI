@@ -67,7 +67,7 @@ class ObjectBrowser : public QDialog
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent, bool nField);
     void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
 
-    CCopasiObject* getFieldCopasiObject(CCopasiObject* pCurrent, const char* name);
+    CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
     void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
 
     void updateUI();

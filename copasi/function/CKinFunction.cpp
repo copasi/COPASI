@@ -171,7 +171,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                       // this is an error
+        case N_NOP:                        // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -507,40 +507,41 @@ void CKinFunction::createParameters()
 
   unsigned C_INT32 i, imax = mNodes.size();
 
-  CFunctionParameter Parameter;
-  Parameter.setType(CFunctionParameter::FLOAT64);
+  CFunctionParameter *pParameter;
 
   for (i = 0; i < imax; i++)
     {
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
-          Parameter.setName(mNodes[i]->getName());
+          pParameter = new CFunctionParameter(mNodes[i]->getName());
+          //          Parameter.setName(mNodes[i]->getName());
+          pParameter->setType(CFunctionParameter::FLOAT64);
 
           switch (mNodes[i]->getSubtype())
             {
             case N_SUBSTRATE:
-              Parameter.setUsage("SUBSTRATE");
-              if (Substrates.getIndex(Parameter.getName()) == C_INVALID_INDEX)
-                Substrates.add(Parameter);
+              pParameter->setUsage("SUBSTRATE");
+              if (Substrates.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+                Substrates.add(pParameter, true);
               break;
 
             case N_PRODUCT:
-              Parameter.setUsage("PRODUCT");
-              if (Products.getIndex(Parameter.getName()) == C_INVALID_INDEX)
-                Products.add(Parameter);
+              pParameter->setUsage("PRODUCT");
+              if (Products.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+                Products.add(pParameter, true);
               break;
 
             case N_MODIFIER:
-              Parameter.setUsage("MODIFIER");
-              if (Modifiers.getIndex(Parameter.getName()) == C_INVALID_INDEX)
-                Modifiers.add(Parameter);
+              pParameter->setUsage("MODIFIER");
+              if (Modifiers.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+                Modifiers.add(pParameter, true);
               break;
 
             case N_KCONSTANT:
             case N_NOP:
-              Parameter.setUsage("PARAMETER");
-              if (Parameters.getIndex(Parameter.getName()) == C_INVALID_INDEX)
-                Parameters.add(Parameter);
+              pParameter->setUsage("PARAMETER");
+              if (Parameters.getIndex(pParameter->getName()) == C_INVALID_INDEX)
+                Parameters.add(pParameter, true);
               break;
 
             default:
