@@ -37,7 +37,7 @@ void CFunctionDB::initObjects()
 bool CFunctionDB::load()
 {
   CCopasiXML XML;
-  ifstream DB(mFilename.c_str());
+  std::ifstream DB(mFilename.c_str());
   if (DB.fail()) return false;
   if (!XML.load(DB)) return false;
 
