@@ -312,7 +312,7 @@ void CSpec2Model::processDeTerms()
           cout << "In term\n";
           // The rate constant is used to relate this term to a particular reaction.
           string rate_constant = (*termit)->getRateConstant();
-          num_change = (*termit)->getMultiplier();
+          num_change = (*termit)->getSign() * (*termit)->getMultiplier();
           // Find or create the CTempReaction with this rate constant
           CTempReaction *reaction = trs.findReaction(rate_constant);
 
@@ -321,7 +321,9 @@ void CSpec2Model::processDeTerms()
               string rate = expandRate(*termit);
               reaction = new CTempReaction(rate_constant);
               reaction->setDescription(rate);
+              reaction->setIdentifiers(*termit);
               trs.addReaction(reaction);
+              reaction = trs.findReaction(rate_constant);
             }
 
           // Add the LHS metabolite to the temp reaction
@@ -348,9 +350,12 @@ void CSpec2Model::processDeTerms()
     }
 
   // Now create proper CReaction's from each of the CTempReact's
+  mModel->initializeMetabolites();
+
   for (C_INT32 i = 0; i < trs.size(); i++)
     {
-      trs[i].compile(mModel);
+      trs[i].compile(mModel, mRateVector, mConstVector);
+      cout << trs[i] << endl;
     }
 }
 

@@ -9,11 +9,17 @@
 #include "copasi.h"
 #include "CFunctionParameter.h"
 
+static const string CFunctionParameter::enumname[12] =
+  {
+    "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
+    "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"
+  };
+
 CFunctionParameter::CFunctionParameter()
 {
   CONSTRUCTOR_TRACE;
   mName = "untitled";
-  mType = (CFunctionParameter::DataType) -1;
+  mType = (CFunctionParameter::DataType) - 1;
   mUsage = "unknown";
 }
 
@@ -34,19 +40,16 @@ CFunctionParameter::CFunctionParameter(const string & name,
   mType = type;
   mUsage = usage;
 }
-
-CFunctionParameter::~CFunctionParameter(){DESTRUCTOR_TRACE;}
-
+CFunctionParameter::~CFunctionParameter(){DESTRUCTOR_TRACE; }
 void CFunctionParameter::cleanup() {}
 
-void CFunctionParameter::load(CReadConfig & configbuffer, 
-				  CReadConfig::Mode mode)
+void CFunctionParameter::load(CReadConfig & configbuffer,
+                              CReadConfig::Mode mode)
 {
   configbuffer.getVariable("FunctionParameter", "string", &mName, mode);
   configbuffer.getVariable("DataType", "C_INT32", &mType);
   configbuffer.getVariable("Usage", "string", &mUsage);
 }
-
 
 void CFunctionParameter::save(CWriteConfig & configbuffer)
 {
@@ -54,22 +57,19 @@ void CFunctionParameter::save(CWriteConfig & configbuffer)
   configbuffer.setVariable("DataType", "C_INT32", &mType);
   configbuffer.setVariable("Usage", "string", &mUsage);
 }
-
-
-void CFunctionParameter::setName(const string & name){mName = name;}
-
-const string & CFunctionParameter::getName() const {return mName;}
+void CFunctionParameter::setName(const string & name){mName = name; }
+const string & CFunctionParameter::getName() const { return mName; }
 
 void CFunctionParameter::setUsage(const string & usage)
-{mUsage = usage;}
+{mUsage = usage; }
 
-const string & CFunctionParameter::getUsage() const 
-{return mUsage;}
+const string & CFunctionParameter::getUsage() const
+  { return mUsage; }
 
-void 
+void
 CFunctionParameter::setType(const CFunctionParameter::DataType & type)
-{mType = type;}
+{mType = type; }
 
-const CFunctionParameter::DataType & 
-CFunctionParameter::getType() const 
-{return mType;}
+const CFunctionParameter::DataType &
+CFunctionParameter::getType() const
+  { return mType; }

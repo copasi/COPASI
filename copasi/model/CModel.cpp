@@ -859,6 +859,7 @@ void CModel::initializeMetabolites()
 
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
+  mMetabolites.clear();
 
   for (i = 0; i < mCompartments.size(); i++)
     for (j = 0; j < mCompartments[i]->metabolites().size(); j++)

@@ -33,16 +33,6 @@ class CDeTerm
     string getRateConstant() { return mRateConstant; }
 
     /**
-     * Set the rate constant
-     */
-    void setRate(string rate) {mRate = rate; }
-
-    /**
-     * Retrieve the rate constant
-     */
-    string getRate() { return mRate; }
-
-    /**
      * Set the multiplier
      */
     void setMultiplier(C_FLOAT64 multiplier) {mMultiplier = multiplier; }
@@ -90,6 +80,10 @@ class CDeTerm
      * Do things like strip out the multiplier and determine the rate constant
      */
     void compile(vector<CNameVal> &rates);
+    /**
+     * Get the Token Stack
+     */
+    const vector<pair<Type, string>* > & getTokenStack() const { return mTokenStack; }
 
   private:
     /**
@@ -112,10 +106,6 @@ class CDeTerm
      * The rate constant
      */
     string mRateConstant;
-    /**
-     * The rate function as a string
-     */
-    std::string mRate;
 
     friend ostream & operator<<(ostream &os, const CDeTerm & d)
     {
@@ -124,7 +114,7 @@ class CDeTerm
       << "StoiCoeficient = " << d.mMultiplier << endl;
       os << "TokenStack :" << endl;
 
-      int i;
+      unsigned int i;
 
       for (i = 0; i < d.mTokenStack.size(); i++)
         os << "  " << i << ": Type = '" << d.mTokenStack[i]->first

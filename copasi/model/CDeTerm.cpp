@@ -61,7 +61,7 @@ string CDeTerm::getDescription()
 
   for (; it != mTokenStack.end(); it++)
     {
-      retval += (*it)->first;
+      retval += (*it)->second;
     }
 
   return retval;
@@ -166,8 +166,6 @@ void CDeTerm::compile(vector<CNameVal> &rates)
           break;
         }
     }
-
-  cout << *this << endl;
 }
 
 string CDeTerm::getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity)
