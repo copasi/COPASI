@@ -1290,3 +1290,19 @@ void ListViews::dataModelUpdated()
 {
   dataModel->setModelUpdate(true);
 }
+
+void ListViews::slotHideWidget()
+{
+  if (lastWidget)
+    lastWidget->hide();
+}
+
+void ListViews::slotShowWidget()
+{
+  //QMessageBox::information(this, "Metabolites Widget","kk");
+  currentWidget = scanWidget;
+
+  currentWidget->show();
+
+  lastWidget = currentWidget;
+}

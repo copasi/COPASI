@@ -131,6 +131,8 @@ class ListViews : public QSplitter, public Observer
     virtual void slotMoietyTableChanged(const QString &);
     virtual void slotReactionTableChanged(const QString &);
     virtual void slotNewReaction();
+    virtual void slotHideWidget();
+    virtual void slotShowWidget();
   protected:
     CModel *mModel;  // the re to the model...
     CMathModel *mpMathModel;

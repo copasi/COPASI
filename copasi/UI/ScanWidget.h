@@ -59,6 +59,8 @@ class ScanWidget : public CopasiWidget
     CModel *mModel;
 
   signals:
+    void hide_me();
+    void show_me();
   public slots:
   };
 
