@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.215 $
+   $Revision: 1.216 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 10:12:27 $
+   $Author: shoops $ 
+   $Date: 2005/03/20 04:24:35 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -380,7 +380,6 @@ bool CModel::forceCompile()
 
 void CModel::buildStoi()
 {
-  CCopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
   std::string key;
 
@@ -405,7 +404,8 @@ void CModel::buildStoi()
     {
       if (mpCompileHandler) mpCompileHandler->progress(i);
 
-      Structure = mSteps[i]->getChemEq().getBalances(); //TODO use reference
+      const CCopasiVector < CChemEqElement > &Structure
+      = mSteps[i]->getChemEq().getBalances();
 
       for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
         {
