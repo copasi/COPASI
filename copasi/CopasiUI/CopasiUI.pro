@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.76 $ $Author: shoops $ $Date: 2005/02/08 23:14:48 $  
+# $Revision: 1.77 $ $Author: shoops $ $Date: 2005/02/09 13:26:17 $  
 ######################################################################
 
 include(../common.pri)
@@ -30,8 +30,6 @@ contains(BUILD_OS, WIN32) {
           ../lib/mml.lib
 
   LIBS += $$COPASI_LIBS
-  LIBS += $(QTDIR)/lib/qwt.lib
-  LIBS += libsbml.lib
   
   TARGETDEPS += $$COPASI_LIBS
 
@@ -61,9 +59,6 @@ contains(BUILD_OS, WIN32) {
          -Wl,--end-group \
          $${LIBS}
 
-  LIBS += -lqwt \
-          -lsbml 
-  
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
   }
@@ -121,14 +116,12 @@ contains(BUILD_OS, Linux) {
   }
 }
 
-release {
-  contains(BUILD_OS, SunOS) {
+contains(BUILD_OS, SunOS) {
+  release {
     LIBS += -Wl,-lqt-mt \
             -Wl,-lpthread
   }
-}
 
-contains(BUILD_OS, SunOS) {
   LIBS += -lICE -ldl
 }  
 
