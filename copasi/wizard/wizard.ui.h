@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 13:05:31 $
+   $Date: 2004/10/08 13:16:15 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,7 +17,9 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+#if defined(Q_OS_MACX)
 #include "Carbon.h"
+#endif
 
 char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
 
@@ -65,6 +67,7 @@ void WizardDialog::init()
     }
 
 #if defined(Q_OS_MACX)
+
   CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
   CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
                         kCFURLPOSIXPathStyle);
