@@ -373,6 +373,8 @@ void ReactionsWidget1::slotBtnOKClicked()
         }
     }
 
+  pReaction->compile(mModel->getCompartments());
+
   emit updated();
   emit leaf(mModel);
   emit signal_emitted(*Reaction1_Name);
