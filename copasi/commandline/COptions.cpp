@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/25 01:45:57 $
+   $Author: stupe $ 
+   $Date: 2005/03/07 15:00:19 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -296,19 +296,35 @@ std::string COptions::getHome(void)
 
 std::string COptions::getTemp(void)
 {
-  std::string Temp;
-
+  std::string Temp, User, mCreateUserDir;
+  int i;
   Temp = getEnvironmentVariable("TEMP");
+  if (Temp == "") Temp = getEnvironmentVariable("TMP");
 
-  if (Temp == "")
-    Temp = getEnvironmentVariable("TMP");
+  User = getEnvironmentVariable("USER");
+  if (User == "") User = getEnvironmentVariable("USERNAME");
 
   if (Temp == "")
 #ifdef WIN32
     Temp = getEnvironmentVariable("windir") + "\\Temp";
 #else
     Temp = "/tmp";
+
 #endif // WIN32
+
+#ifdef WIN32
+  mCreateUserDir = "" + Temp + "\\" + User;
+#else
+  mCreateUserDir = Temp + "/" + User;
+#endif
+  Temp = mCreateUserDir;
+  mCreateUserDir = "mkdir " + mCreateUserDir;
+  i = system(mCreateUserDir.c_str());
+  if (i == -1)
+    {
+      CCopasiMessage Message(CCopasiMessage::RAW, "Unable to Create Temoporary Directory:\nAutoSave feature is disabled." , "");
+      Temp = "";
+    }
 
   return Temp;
 }

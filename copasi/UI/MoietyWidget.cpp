@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: stupe $ 
-   $Date: 2005/02/23 03:13:15 $
+   $Date: 2005/03/07 15:00:19 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -96,7 +96,7 @@ void MoietyWidget::slotBtnRunClicked()
             {
               if (!CCopasiDataModel::Global->autoSave())
                 {
-                  QMessageBox::question(mainWidget, "Temporary File Save Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
+                  //QMessageBox::question(mainWidget, "Temporary File Save Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
                   if (QMessageBox::question(mainWidget, "Please save the changes !!!", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                     {
                       mainWidget->saveFile();

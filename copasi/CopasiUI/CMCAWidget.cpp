@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/03 10:39:24 $
+   $Author: stupe $ 
+   $Date: 2005/03/07 15:00:18 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -201,7 +201,7 @@ void CMCAWidget::runMCATask()
             {
               if (!CCopasiDataModel::Global->autoSave())
                 {
-                  QMessageBox::question(mainWidget, "Temporary File Save Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
+                  //QMessageBox::question(mainWidget, "Temporary File Creation Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
                   if (QMessageBox::question(mainWidget, "Please save the changes !!!", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                     {
                       mainWidget->saveFile();
