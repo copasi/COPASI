@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 15:00:50 $
+   $Date: 2003/10/18 15:53:51 $
    End CVS Header */
 
 /********************************************************
@@ -36,6 +36,8 @@ class ScanScrollView;
 class OptimizationItemWidget;
 class QListBoxItem;
 class QCheckBox;
+class SteadyStateWidget;
+class TrajectoryWidget;
 
 class OptimizationWidget : public CopasiParametersWidget
   {
@@ -50,7 +52,6 @@ class OptimizationWidget : public CopasiParametersWidget
     virtual bool enter(const std::string & key = "");
 
     const std::string getKey();
-    std::string objKey;
     //manually added
     QLineEdit* expressionText;
     ScanScrollView* itemsTable;
@@ -96,6 +97,10 @@ class OptimizationWidget : public CopasiParametersWidget
     virtual void slotBtnConfirmClicked();
     virtual void ListBoxClicked (QListBoxItem * item);
     virtual void ListBoxDoubleClicked (QListBoxItem* item);
+    virtual void steadystateEditing();
+    virtual void timeEditing();
+    virtual void steadystateEnable();
+    virtual void timeEnable();
 
   signals:
     void hide_me();
@@ -107,6 +112,13 @@ class OptimizationWidget : public CopasiParametersWidget
     int nSelectedObjects;
     int nTitleHeight;
     int activeObject;
+    std::string objKey;
+
+    std::string SteadyStateKey;
+    std::string TrajectoryKey;
+    SteadyStateWidget* pSteadyStateWidget;
+    TrajectoryWidget* pTrajectoryWidget;
+
     bool addNewOptItem(CCopasiObject* pObject);
   };
 

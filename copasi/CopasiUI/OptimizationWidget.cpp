@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 15:00:50 $
+   $Date: 2003/10/18 15:53:51 $
    End CVS Header */
 
 /********************************************************
@@ -41,6 +41,10 @@ Contact: Please contact lixu1@vt.edu.
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "optimization/COptFunction.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "TrajectoryWidget.h"
+#include "SteadyStateWidget.h"
 
 #include "report/CKeyFactory.h"
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -269,6 +273,8 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   ExpressionWidgetLayout->addMultiCellWidget(expressionName, 0, 0, 1, 2);
 
   methodCombo = new QComboBox(FALSE, this, "methodCombo");
+  methodCombo->insertItem("Genetic algorithms(SA)");
+  methodCombo->insertItem("Random Search");
 
   ExpressionWidgetLayout->addMultiCellWidget(methodCombo, 1, 1, 1, 2);
 
@@ -326,6 +332,12 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
 
+  connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(steadystateEnable()));
+  connect(timeCheck, SIGNAL(clicked()), this, SLOT(timeEnable()));
+
+  connect(steadystateEditButton, SIGNAL(clicked()), this, SLOT(steadystateEditing()));
+  connect(timeEditButton, SIGNAL(clicked()), this, SLOT(timeEditing()));
+
   nTitleHeight = fontMetrics().height() + 6;
   expressionName->setText("Optimization Task");
   expressionName->setEnabled(false);
@@ -334,6 +346,16 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   expressionText->setEnabled(false);
 
   itemnamesTable->insertItem(trUtf8("click here to add new item"));
+
+  steadystateEditButton->setEnabled(false);
+  timeEditButton->setEnabled(false);
+
+  SteadyStateKey = (new CSteadyStateTask())->getKey();
+  TrajectoryKey = (new CTrajectoryTask())->getKey();
+  pSteadyStateWidget = new SteadyStateWidget(NULL);
+  pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pSteadyStateWidget->hide();
+  pTrajectoryWidget->hide();
 }
 
 /*
@@ -342,6 +364,16 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 OptimizationWidget::~OptimizationWidget()
 {
   // no need to delete child widgets, Qt does it all for us
+  if (CKeyFactory::get(SteadyStateKey))
+    {
+      CSteadyStateTask* sst = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
+      pdelete(sst);
+    }
+  if (CKeyFactory::get(TrajectoryKey))
+    {
+      CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
+      pdelete(tt);
+    }
 }
 
 /*
@@ -396,6 +428,8 @@ bool OptimizationWidget::enter(const std::string & key)
   objKey = key;
   COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(key);
   //TODO: check if it really is a compartment
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
 
   if (func)
     return loadFromExpression(func);
@@ -824,4 +858,24 @@ void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
 const std::string OptimizationWidget::getKey()
 {
   return objKey;
+}
+
+void OptimizationWidget::steadystateEditing()
+{
+  pSteadyStateWidget->show();
+}
+
+void OptimizationWidget::timeEditing()
+{
+  pTrajectoryWidget->show();
+}
+
+void OptimizationWidget::steadystateEnable()
+{
+  steadystateEditButton->setEnabled(steadystateCheck->isChecked());
+}
+
+void OptimizationWidget::timeEnable()
+{
+  timeEditButton->setEnabled(timeCheck->isChecked());
 }
