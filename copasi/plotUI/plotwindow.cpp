@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/09 01:31:14 $
+   $Author: ssahle $ 
+   $Date: 2004/12/02 20:37:36 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -64,6 +64,7 @@ PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 
 bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
+  this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
   return plot->initFromSpec(psv, ptrSpec);
 }
 
