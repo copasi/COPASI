@@ -533,7 +533,7 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
   // mMetabolitesX = mMetabolites;
 
-  mStepsX.resize(mSteps.size());
+  mStepsX.resize(mSteps.size(), false);
 
   for (i = 0; i < mSteps.size(); i++)
     mStepsX[i] = mSteps[i];
