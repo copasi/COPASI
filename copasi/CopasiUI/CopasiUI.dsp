@@ -82,6 +82,10 @@ SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CReportDefinitionSelect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DataModel.cpp
 # End Source File
 # Begin Source File
@@ -243,6 +247,10 @@ SOURCE=.\copasiWidget.h
 # Begin Source File
 
 SOURCE=.\CReactionInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinitionSelect.h
 # End Source File
 # Begin Source File
 
