@@ -134,8 +134,37 @@ C_INT32 CNodeK::save(CWriteConfig & configbuffer) const
 #endif // XXXX
     return Fail;
   }
-char CNodeK::getType() const { return mType; }
-char CNodeK::getSubtype() const { return mSubtype; }
+
+C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
+  {
+    C_INT32 Fail = 0;
+
+    if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
+      return Fail;
+    if (mType == N_NUMBER)
+      {
+        if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
+          return Fail;
+      }
+    else if (isIdentifier())
+      {
+        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex)))
+          return Fail;
+        if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
+          return Fail;
+      }
+    return Fail;
+  }
+
+char CNodeK::getType() const
+  {
+    return mType;
+  }
+
+char CNodeK::getSubtype() const
+  {
+    return mSubtype;
+  }
 
 CNodeK & CNodeK::getLeft() const
   {
@@ -168,22 +197,77 @@ string CNodeK::getName() const
       }
 #endif // XXXX
   }
-C_FLOAT64 CNodeK::getConstant() const { return mConstant; }
-C_INT32 CNodeK::getIndex() const { return mIndex; }
-void CNodeK::setType(char type) {mType = type; }
-void CNodeK::setSubtype(char subtype) {mSubtype = subtype; }
-void CNodeK::setLeft(CNodeK & left) {mLeft = &left; }
-void CNodeK::setLeft(CNodeK * pleft) {mLeft = pleft; }
-void CNodeK::setRight(CNodeK & right) {mRight = &right; }
-void CNodeK::setRight(CNodeK * pright) {mRight = pright; }
-void CNodeK::setName(const string & name) {mName = name; }
-void CNodeK::setConstant(C_FLOAT64 & constant) {mConstant = constant; }
-void CNodeK::setIndex(C_INT32 index) {mIndex = index; }
-C_INT16 CNodeK::isLeftValid() const { return (mLeft != NULL); }
-C_INT16 CNodeK::isRightValid() const { return (mRight != NULL); }
-C_INT16 CNodeK::isNumber() const { return (mType == N_NUMBER); }
 
-#ifdef XXXX
+C_FLOAT64 CNodeK::getConstant() const
+  {
+    return mConstant;
+  }
+
+C_INT32 CNodeK::getIndex() const
+  {
+    return mIndex;
+  }
+
+void CNodeK::setType(char type)
+{
+  mType = type;
+}
+
+void CNodeK::setSubtype(char subtype)
+{
+  mSubtype = subtype;
+}
+
+void CNodeK::setLeft(CNodeK & left)
+{
+  mLeft = &left;
+}
+
+void CNodeK::setLeft(CNodeK * pleft)
+{
+  mLeft = pleft;
+}
+
+void CNodeK::setRight(CNodeK & right)
+{
+  mRight = &right;
+}
+
+void CNodeK::setRight(CNodeK * pright)
+{
+  mRight = pright;
+}
+
+void CNodeK::setName(const string & name)
+{
+  mName = name;
+}
+
+void CNodeK::setConstant(C_FLOAT64 & constant)
+{
+  mConstant = constant;
+}
+
+void CNodeK::setIndex(C_INT32 index)
+{
+  mIndex = index;
+}
+
+C_INT16 CNodeK::isLeftValid() const
+  {
+    return (mLeft != NULL);
+  }
+
+C_INT16 CNodeK::isRightValid() const
+  {
+    return (mRight != NULL);
+  }
+
+C_INT16 CNodeK::isNumber() const
+  {
+    return (mType == N_NUMBER);
+  }
+
 C_INT16 CNodeK::isIdentifier() const
   {
     switch (mType)
@@ -199,8 +283,11 @@ C_INT16 CNodeK::isIdentifier() const
         return FALSE;
       }
   }
-#endif // XXXX
-C_INT16 CNodeK::isOperator() const { return mType == N_OPERATOR; }
+
+C_INT16 CNodeK::isOperator() const
+  {
+    return mType == N_OPERATOR;
+  }
 
 C_INT16 CNodeK::leftPrecedence() const
   {

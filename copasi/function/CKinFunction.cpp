@@ -96,7 +96,12 @@ void CKinFunction::load(CReadConfig & configBuffer,
 
 void CKinFunction::saveOld(CWriteConfig & configBuffer)
 {
+  C_INT32 i, size;
   CFunction::saveOld(configBuffer);
+  size = mNodes.size();
+  configBuffer.setVariable("Nodes", "C_INT32", &size);
+  for (i = 0; i < size; i++)
+    mNodes[i]->saveOld(configBuffer);
 }
 
 void CKinFunction::compile()
@@ -157,7 +162,7 @@ C_INT32 CKinFunction::parse()
           mNodes.add(pNode);
           break;
 
-        case N_NOP:            // this is an error
+        case N_NOP:             // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

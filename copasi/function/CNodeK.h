@@ -147,6 +147,14 @@ class CNodeK
     C_INT32 save(CWriteConfig & configbuffer) const;
 
     /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  This writes the information in Gepasi 3.21 file format
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    C_INT32 saveOld(CWriteConfig & configbuffer) const;
+
+    /**
      * Retrieving mType the type of a node
      * @return char
      */
@@ -263,8 +271,8 @@ class CNodeK
     /**
      *  This checks whether the node is an identifier (mType = N_IDENTIFIER)
      *  @return int 1 or 0
-     */ 
-    // C_INT16 isIdentifier() const;
+     */
+    C_INT16 isIdentifier() const;
 
     /**
      *  This checks whether the node is a operator (mType = N_OPERATOR)
