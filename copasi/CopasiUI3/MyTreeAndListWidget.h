@@ -10,6 +10,11 @@
 #include <qpixmap.h>
 #include <qlineedit.h>
 
+#include "copasi.h"
+#include "model/model.h"
+
+#include "MetabolitesWidget.h"
+
 class MyListView;
 class MyTreeAndListWidget : public QSplitter
 {
@@ -18,13 +23,18 @@ class MyTreeAndListWidget : public QSplitter
 public:
 	MyTreeAndListWidget( QWidget *parent = 0, const char *name = 0 );
 	//~MyTreeAndListWidget()
+	CModel* getModel()
+	{
+		return &mModel;
+	}
 
 protected:
+	CModel mModel;
 	QListViewItem* initializeTree();
 	
 	MyListView *ListView1;
 	QMultiLineEdit *bigWidget;
-	QLineEdit *bigWidget2;
+	MetabolitesWidget *metabolitesWidget;
 
 protected slots:
     virtual void slotTreeSelectionChanged(QListViewItem*);

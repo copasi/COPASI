@@ -148,11 +148,12 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
     : QSplitter( Qt::Horizontal, parent, name )
 {
 
-    if ( !name )
+    CReadConfig inbuf("gps/bakker.gps");
+	mModel.load(inbuf);
+
+	if ( !name )
 	setName( "MyTreeAndListWidget" );
-    //resize( 838, 518 ); 
-    //setProperty( "caption", tr( "CopasiUI2" ) );
-    //setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
+        
 
     ListView1 = new MyListView( this, "ListView1" );
 	
@@ -168,18 +169,20 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
     bigWidget = new QMultiLineEdit( this );
     bigWidget->setText( "This widget will get all the remaining space" );
     bigWidget->setFrameStyle( QFrame::Panel | QFrame::Plain );
+	bigWidget->setReadOnly(TRUE);
 
-	bigWidget2 = new QLineEdit(this);
-	bigWidget2->setText( "This is the second widget." );
-	bigWidget2->hide();
-   
+	//Constructing the Metabolites Widget
+	metabolitesWidget = new MetabolitesWidget( this );
+	metabolitesWidget->hide();
+	
+	   
 	// signals and slots connections
     connect( ListView1, SIGNAL( selectionChanged(QListViewItem*) ), this, SLOT( slotTreeSelectionChanged(QListViewItem*) ) );
 	
 	
 	//Selecting up the default item.
 	ListView1->setSelected ( defaultItem, TRUE ) ;
-	
+		
 }
 
 
@@ -273,6 +276,8 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 {
     
 	static QListViewItem* lastSelection = NULL;
+	static QWidget* lastWidget = NULL;
+	static QWidget* currentWidget = bigWidget;
 	
 	
 	//qWarning( "CopasiUI2DialogBase::slotTreeSelectionChanged(QListViewItem*): Not implemented yet!" );
@@ -281,8 +286,7 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
                               "Hi!!\n"
                               "I am inside MyTreeAndListWidget::slotTreeSelectionChanged.\n"
 							  "You clicked: " + item->text(0));*/
-	bigWidget->setText("You Clicked On: " + item->text(0));
-	
+		
 	item->setPixmap( 0, *folderOpen );
 	if (lastSelection)
 	{
@@ -290,28 +294,36 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 	}
 	lastSelection = item;
 
-	/*
-	switch(item->text(0))
+	
+	QString selectedItem = item->text(0);
+	if (selectedItem == "Metabolites")
 	{
-		case "ODEs":
-		{
-			bigWidget->hide();
-			bigWidget2->show();
-
-		}
-		case default:
-		{
-			bigWidget->show();
-			bigWidget2->hide();
-		}
+		lastWidget->hide();
+		currentWidget = metabolitesWidget;
 	}
-	*/
+	else if  (selectedItem == "ODEs")
+	{
+		//Carry on this way for other Items
+		bigWidget->setText("You Clicked On: " + selectedItem);
+	}
+	else
+	{
+		bigWidget->setText("You Clicked On: " + selectedItem);
+		currentWidget = bigWidget;
+	}
 
+
+	if (lastWidget)
+	{
+		lastWidget->hide();
+	}
+	if (currentWidget)	
+	{
+		currentWidget->show();
+	}
+	lastWidget = currentWidget;
+		
 }
-
-
-
-
 
 
 
