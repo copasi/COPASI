@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.137 $
+   $Revision: 1.138 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 22:15:23 $
+   $Author: gasingh $ 
+   $Date: 2003/11/12 23:28:36 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1705,13 +1705,111 @@ bool CModel::addMetabolite(const std::string & name,
   return mMetabolites.add(pMetab);
 }
 
-std::string CModel::removeMetaboliteEffected(const std::string & key)
+std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
+{
+  std::vector<std::string> compReacKeys, metabReacKeys;
+
+  CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(key);
+  const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
+  C_INT32 j, jmax = Metabs.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      metabReacKeys = removeMetabReacKeys(Metabs[j]->getKey());
+      if (compReacKeys.size() == 0)
+        {
+          compReacKeys.resize(metabReacKeys.size());
+          compReacKeys = metabReacKeys;
+        }
+      else
+        {
+          int reacFound = 0;
+          for (int i = 0; i < metabReacKeys.size(); i++)
+            {
+              reacFound = 0;
+              for (int k = 0; k < compReacKeys.size(); k++)
+                {
+                  if (compReacKeys[k] == metabReacKeys[i])
+                    {
+                      reacFound = 1;
+                      break;
+                    }
+                }
+              if (reacFound == 0)
+                {
+                  compReacKeys.resize(compReacKeys.size() + 1);
+                  compReacKeys[compReacKeys.size() - 1] = metabReacKeys[i];
+                }
+            }
+        }
+    }
+
+  return compReacKeys;
+}
+
+std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
+{
+  std::vector<std::string> Keys;
+  int k = 0;
+  int reactionFound = 0;
+  const CCopasiVectorN<CReaction> & Reactions = getReactions();
+  C_INT32 j, reactionChecked, jmax = Reactions.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      reactionChecked = 0;
+      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
+      C_INT32 i, imax = Substrates.size();
+      for (i = 0; i < imax; i++)
+        {
+          if (key == Substrates[i]->getMetaboliteKey())
+            {
+              Keys.resize(k + 1);
+              Keys[k++] = Reactions[j]->getKey();
+              reactionChecked = 1;
+              break;
+            }
+        }
+
+      if (reactionChecked == 0)
+        {
+          const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
+          imax = Products.size();
+          for (i = 0; i < imax; i++)
+            if (key == Products[i]->getMetaboliteKey())
+              {
+                Keys.resize(k + 1);
+                Keys[k++] = Reactions[j]->getKey();
+                reactionChecked = 1;
+                break;
+              }
+        }
+
+      if (reactionChecked == 0)
+        {
+          const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
+          imax = Modifiers.size();
+          for (i = 0; i < imax; i++)
+            if (key == Modifiers[i]->getMetaboliteKey())
+              {
+                Keys.resize(k + 1);
+                Keys[k++] = Reactions[j]->getKey();
+                reactionChecked = 1;
+                break;
+              }
+        }
+    }
+
+  return Keys;
+}
+
+/*std::string CModel::removeMetabReactions(const std::string & key)
 {
   std::string EffectedReactions = "Following Reactions will be effected:\n";
   int reactionFound = 0;
   const CCopasiVectorN <CReaction> & Reactions = getReactions();
   C_INT32 j, reactionChecked, jmax = Reactions.size();
-
+ 
   for (j = 0; j < jmax; j++)
     {
       reactionChecked = 0;
@@ -1728,7 +1826,7 @@ std::string CModel::removeMetaboliteEffected(const std::string & key)
               break;
             }
         }
-
+ 
       if (reactionChecked == 0)
         {
           const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
@@ -1743,7 +1841,7 @@ std::string CModel::removeMetaboliteEffected(const std::string & key)
                 break;
               }
         }
-
+ 
       if (reactionChecked == 0)
         {
           const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
@@ -1759,15 +1857,12 @@ std::string CModel::removeMetaboliteEffected(const std::string & key)
               }
         }
     }
-
+ 
   if (reactionFound == 1)
-    {
-      EffectedReactions.substr(0, EffectedReactions.length() - 2);
-      return EffectedReactions;
-    }
+      return EffectedReactions.substr(0, EffectedReactions.length() - 2);    
   else
-    return NULL;
-}
+   return NULL;
+}*/
 
 bool CModel::removeMetabolite(const std::string & key)
 {

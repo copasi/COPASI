@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/11 21:25:01 $
+   $Author: gasingh $ 
+   $Date: 2003/11/12 23:28:35 $
    End CVS Header */
 
 /***********************************************************************
@@ -354,16 +354,30 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:    // Yes or Enter
+            case 0:     // Yes or Enter
               {
                 QString name(table->text(j, 0));
 
-                QString EffectedReactions = dataModel->getModel()->removeMetaboliteEffected(mKeys[j]).c_str();
+                std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeMetabReacKeys(mKeys[j]);
 
-                if (EffectedReactions)
-                  choice = QMessageBox::warning(this, "Confirm Delete",
-                                                EffectedReactions,
-                                                "Yes", "No", 0, 0, 1);
+                if (effectedReacKeys.size() > 0)
+                  {
+                    QString effectedReac = "\nFollowing Reactions will be effected:\n";
+
+                    CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[0]);
+                    effectedReac.append(reac->getName().c_str());
+
+                    for (int i = 1; i < effectedReacKeys.size(); i++)
+                      {
+                        effectedReac.append(", ");
+                        reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[i]);
+                        effectedReac.append(reac->getName().c_str());
+                      }
+
+                    choice = QMessageBox::warning(this, "Confirm Delete",
+                                                  effectedReac,
+                                                  "Yes", "No", 0, 0, 1);
+                  }
 
                 if (choice == 0)
                   {
@@ -374,7 +388,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:    // No or Escape
+            case 1:     // No or Escape
               break;
             }
         }

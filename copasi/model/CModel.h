@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/11 21:15:54 $
+   $Author: gasingh $ 
+   $Date: 2003/11/12 23:28:36 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -832,8 +832,9 @@ class CModel : public CCopasiContainer
     /* Remove a metabolite from the model */
     bool removeMetabolite(const std::string & key);
 
-    /* Retreives list of Reactions which are dependent on the Metabolite */
-    std::string removeMetaboliteEffected(const std::string & key);
+    /* Retreives list of Reactions Keys which are dependent on the Metabolite */
+    std::vector<std::string> removeMetabReacKeys(const std::string & key);
+    //std::string removeMetabReactions(const std::string & key);
 
     /**
      * Add a compartment to the model
@@ -844,7 +845,11 @@ class CModel : public CCopasiContainer
     bool addCompartment(const std::string & name,
                         const C_FLOAT64 & volume = 1.0);
 
+    /* Remove a Compartment from the model */
     bool removeCompartment(const std::string & name);
+
+    /* Retreives list of Reactions Keys which are dependent on the Compartment*/
+    std::vector<std::string> removeCompReacKeys(const std::string & key);
 
     /**
      * Add a new rection to the model

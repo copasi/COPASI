@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/11 20:47:16 $
+   $Date: 2003/11/12 23:28:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -233,27 +233,44 @@ void CompartmentsWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:   // Yes or Enter
+            case 0:    // Yes or Enter
               {
                 QString name(table->text(j, 0));
 
                 CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
+
                 const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
                 C_INT32 noOfMetabs = Metabs.size();
 
                 if (noOfMetabs > 0)
                   {
-                    QString listofmetabs = "Follwing Metabolites will be effected:\n";
+                    QString effectedItems = "Following Metabolites will be effected:\n";
 
-                    listofmetabs.append(Metabs[0]->getName().c_str());
+                    effectedItems.append(Metabs[0]->getName().c_str());
                     for (int i = 1; i < noOfMetabs; i++)
                       {
-                        listofmetabs.append(", ");
-                        listofmetabs.append(Metabs[i]->getName().c_str());
+                        effectedItems.append(", ");
+                        effectedItems.append(Metabs[i]->getName().c_str());
+                      }
+
+                    std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeCompReacKeys(mKeys[j]);
+                    if (effectedReacKeys.size() > 0)
+                      {
+                        effectedItems.append("\nFollowing Reactions will be effected:\n");
+
+                        CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[0]);
+                        effectedItems.append(reac->getName().c_str());
+
+                        for (int i = 1; i < effectedReacKeys.size(); i++)
+                          {
+                            effectedItems.append(", ");
+                            reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[i]);
+                            effectedItems.append(reac->getName().c_str());
+                          }
                       }
 
                     choice = QMessageBox::warning(this, "Confirm Delete",
-                                                  listofmetabs,
+                                                  effectedItems,
                                                   "Yes", "No", 0, 0, 1);
                   }
 
@@ -266,7 +283,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:   // No or Escape
+            case 1:    // No or Escape
               {
                 break;
               }
