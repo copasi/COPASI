@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 14:01:05 $
+   $Date: 2004/09/09 14:15:05 $
    End CVS Header */
 
 #include <iostream>
@@ -192,10 +192,9 @@ void CMetab::initObjects()
 }
 
 // non-member
-bool operator<(const CMetab &lhs, const CMetab &rhs)
+/*bool operator<(const CMetab &lhs, const CMetab &rhs)
 {
   // Do the comparison based on the name
-
   if (lhs.getObjectName() < rhs.getObjectName())
     {
       return true;
@@ -204,7 +203,7 @@ bool operator<(const CMetab &lhs, const CMetab &rhs)
     {
       return false;
     }
-}
+}*/
 
 /**
  * Return rate of production of this metaboLite
@@ -214,7 +213,7 @@ const C_FLOAT64 & CMetab::getRate() const
 
 void CMetab::setRate(const C_FLOAT64 & rate)
 {
-  //converts particles/time  to concentration/time
+  //converts particles/time to concentration/time
   mRate = rate * getCompartment()->getVolumeInv()
           * mpModel->getNumber2QuantityFactor();
 }

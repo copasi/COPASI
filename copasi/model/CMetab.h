@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 14:01:05 $
+   $Date: 2004/09/09 14:15:05 $
    End CVS Header */
 
 /**
@@ -362,7 +362,7 @@ class CMetabOld : public CCopasiContainer
 /**
  * Non member less than operator. This is needed, for example, when searching for an 
  * instance CMetab in a set of CMetab.
- */
-bool operator< (const CMetab &lhs, const CMetab &rhs);
+ */ 
+//bool operator< (const CMetab &lhs, const CMetab &rhs);
 
 #endif // COPASI_CMetab
