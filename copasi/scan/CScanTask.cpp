@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "utilities/COutputHandler.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::scan, pParent)
@@ -89,7 +90,7 @@ bool CScanTask::initialize(std::ostream * out)
   return success;
 }
 
-void CScanTask::load(CReadConfig & configBuffer)
+void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
 {
   CScanProblem* pProblem =
     dynamic_cast<CScanProblem *>(mpProblem);
@@ -100,15 +101,17 @@ void CScanTask::load(CReadConfig & configBuffer)
 
 bool CScanTask::process()
 {
-  if (!mpProblem)
-    fatalError();
-  if (!mpMethod)
-    fatalError();
+  if (!mpProblem) fatalError();
+  if (!mpMethod) fatalError();
+
+  CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
+  if (!pProblem) fatalError();
+  CScanMethod * pMethod = dynamic_cast<CScanMethod *>(mpMethod);
+  if (!pMethod) fatalError();
 
   bool success = true;
 
-  CScanProblem * pProblem = (CScanProblem *) mpProblem;
-  CScanMethod * pMethod = (CScanMethod *) mpMethod;
+  initSubtask();
 
   pMethod->setProblem(pProblem);
 
@@ -167,13 +170,70 @@ bool CScanTask::process()
 bool CScanTask::processCallback()
 {
   //do tasks
+  mpSubtask->processForScan(!mAdjustInitialConditions, mOutputInSubtask);
 
   //do output
-  if (mpOutputHandler) mpOutputHandler->doOutput();
+  if (mpOutputHandler && (!mOutputInSubtask)) mpOutputHandler->doOutput();
 
   //do progress bar
   ++mProgress;
   if (mpProgressHandler) return !mpProgressHandler->progress(mProgress);
+
+  return true;
+}
+
+bool CScanTask::outputSeparatorCallback()
+{
+  if (mpOutputHandler) return mpOutputHandler->doSeparator();
+  return true;
+}
+
+bool CScanTask::initSubtask()
+{
+  if (!mpProblem) fatalError();
+  CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
+  if (!pProblem) fatalError();
+
+  //get the parameters from the problem
+  CCopasiTask::Type type = *(CCopasiTask::Type*)(pProblem->getValue("Subtask"));
+
+  switch (type)
+    {
+    case CCopasiTask::steadyState:
+      mpSubtask = const_cast<CCopasiTask*>
+                  (dynamic_cast<const CCopasiTask*>
+                   (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Steady-State"))));
+      break;
+
+    case CCopasiTask::timeCourse:
+      mpSubtask = const_cast<CCopasiTask*>
+                  (dynamic_cast<const CCopasiTask*>
+                   (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Time-Course"))));
+      break;
+
+    default:
+      mpSubtask = NULL;
+    }
+
+  /*
+  if (type == CCopasiTask::steadyState)
+    {
+      mpSubtask=const_cast<CCopasiTask*>
+                   (dynamic_cast<const CCopasiTask*>
+                     (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Steady-State"))));
+    }
+  else
+    {mpSubtask=NULL;}*/
+
+  if (!mpSubtask) return false;
+
+  mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+  mpSubtask->setProgressHandler(NULL);
+  mpSubtask->initialize();
+
+  mOutputInSubtask = *(bool*)(pProblem->getValue("Output in subtask"));
+
+  mAdjustInitialConditions = *(bool*)(pProblem->getValue("Adjust initial conditions"));
 
   return true;
 }

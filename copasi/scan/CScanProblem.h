@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/18 14:40:20 $
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -28,6 +28,8 @@ class CScanProblem : public CCopasiProblem
     {
       SCAN_REPEAT = 0,
       SCAN_LINEAR,
+      SCAN_RANDOM,
+      SCAN_BREAK,
       SD_UNIFORM,
       SD_GAUSS,
       SD_BOLTZ,

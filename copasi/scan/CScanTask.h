@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/04 17:20:48 $
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -45,19 +45,16 @@ class CScanTask : public CCopasiTask
      */
     unsigned C_INT32 mProgress;
 
-    /*
-     Output value address
-    */ 
-    //   CVector<C_FLOAT64*>* pValueAddrMatrix;
-    //Operations
+    /**
+     * the subtask
+     */
+    CCopasiTask* mpSubtask;
+
+    bool mOutputInSubtask;
+
+    bool mAdjustInitialConditions;
 
   public:
-
-    //    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
-    //    {
-    //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
-    //      pValueAddrMatrix = pInputValueAddrMatrix;
-    //}
 
     /**
      * default constructor
@@ -82,7 +79,7 @@ class CScanTask : public CCopasiTask
     void cleanup();
 
     /**
-     * Initilize 
+     * Initialize 
      * @param ofstream & out
      */
     bool initialize(std::ostream * out);
@@ -100,8 +97,20 @@ class CScanTask : public CCopasiTask
     virtual bool process();
 
     /**
-     * Do the single tasks and the output
+     * Do the subtask and the output
      */
     bool processCallback();
+
+    /**
+     * output separators
+     */
+    bool outputSeparatorCallback();
+
+  protected:
+
+    /**
+     * Init the subtask
+     */
+    bool initSubtask();
   };
 #endif // COPASI_CScanTask

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -106,6 +106,7 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 void CScanProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
+  mpModel = const_cast<CModel*>(mInitialState.getModel());
 }
 
 /**
@@ -196,10 +197,22 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, uns
     tmp->addParameter("Object", CCopasiParameter::STRING, std::string(""));
 
   //create specific parameters
-  if ((type == SCAN_LINEAR))
+  if ((type == SCAN_LINEAR) || (type == SCAN_RANDOM))
     {
       tmp->addParameter("Minimum", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
       tmp->addParameter("Maximum", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+      tmp->addParameter("log", CCopasiParameter::BOOL, false);
+    }
+
+  if (type == SCAN_RANDOM)
+    {
+      tmp->addParameter("Distribution type", CCopasiParameter::UINT, (unsigned C_INT32)0);
+    }
+
+  if (type == SCAN_BREAK)
+    {
+      tmp->addParameter("Report break", CCopasiParameter::UINT, (unsigned C_INT32)0);
+      tmp->addParameter("Plot break", CCopasiParameter::UINT, (unsigned C_INT32)0);
     }
 
   return tmp;
@@ -217,9 +230,11 @@ void CScanProblem::createDebugScan(CModel* model)
   clearScanItems();
   setModel(model);
 
-  CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 5, model->getReactions()[0]->getParameters().getParameter(0));
+  //TODO: use the value instead of the parameter itself
+
+  CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 15, model->getReactions()[0]->getParameters().getParameter(0));
   tmp->setValue("Minimum", 0.34);
   tmp->setValue("Maximum", 0.78);
 
-  createScanItem(SCAN_REPEAT, 3);
+  // createScanItem(SCAN_REPEAT, 3);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/04 17:20:48 $
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -22,6 +22,7 @@
 #include "report/CReport.h"
 
 class CScanProblem;
+class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
 
@@ -40,7 +41,9 @@ class CScanItem
 
   public:
     static
-    CScanItem* createScanItemFromParameterGroup(const CCopasiParameterGroup* si);
+    CScanItem* createScanItemFromParameterGroup(const CCopasiParameterGroup* si,
+        CRandom* rg,
+        CScanTask* st);
 
     unsigned C_INT32 getNumSteps() const {return mNumSteps;};
 
@@ -84,8 +87,34 @@ class CScanItemLinear: public CScanItem
   {
   private:
     C_FLOAT64 mMin, mMax, mFaktor;
+    bool mLog;
   public:
     CScanItemLinear(const CCopasiParameterGroup* si);
+    void step();
+  };
+
+//***********************************+
+
+class CScanItemRandom: public CScanItem
+  {
+  private:
+    C_FLOAT64 mMin, mMax, mFaktor;
+    CRandom* mRg;
+    bool mLog;
+  public:
+    CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg);
+    void step();
+  };
+
+//***********************************+
+
+class CScanItemBreak: public CScanItem
+  {
+  private:
+    unsigned C_INT32 mPlotB, mReportB;
+    CScanTask* mST;
+  public:
+    CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st);
     void step();
   };
 
@@ -146,9 +175,9 @@ class CScanMethod : public CCopasiMethod
     /**
      *  Copy constructor.
      *  @param "const CTrajectoryMethod &" src
-     */
-    CScanMethod(const CScanMethod & src,
-                const CCopasiContainer * pParent = NULL);
+     */ 
+    //CScanMethod(const CScanMethod & src,
+    //            const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

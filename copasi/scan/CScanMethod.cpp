@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:32:01 $
    End CVS Header */
 
 /**
@@ -37,7 +37,9 @@
 //**************** CScanItem classes ***************************
 
 //static
-CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGroup* si)
+CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGroup* si,
+    CRandom* rg,
+    CScanTask* st)
 {
   if (!si) return NULL;
 
@@ -50,6 +52,12 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(const CCopasiParameterGro
 
   if (type == CScanProblem::SCAN_LINEAR)
     tmp = new CScanItemLinear(si);
+
+  if (type == CScanProblem::SCAN_RANDOM)
+    tmp = new CScanItemRandom(si, rg);
+
+  if (type == CScanProblem::SCAN_BREAK)
+    tmp = new CScanItemBreak(si, st);
 
   return tmp;
 }
@@ -81,7 +89,10 @@ void CScanItem::reset()
 
 CScanItemRepeat::CScanItemRepeat(const CCopasiParameterGroup* si)
     : CScanItem(si)
-{}
+{
+  if (mNumSteps >= 1)
+    --mNumSteps; // for the repeat item mNumSteps is the number of iterations, not of intervals
+}
 
 void CScanItemRepeat::step()
 {
@@ -98,10 +109,17 @@ void CScanItemRepeat::step()
 //*******
 
 CScanItemLinear::CScanItemLinear(const CCopasiParameterGroup* si)
-    : CScanItem(si)
+    : CScanItem(si),
+    mLog(false)
 {
+  mLog = *(bool*)(si->getValue("log"));
   mMin = *(C_FLOAT64*)(si->getValue("Minimum"));
   mMax = *(C_FLOAT64*)(si->getValue("Maximum"));
+  if (mLog)
+    {
+      mMin = log(mMin);
+      mMax = log(mMax);
+    }
   mFaktor = (mMax - mMin) / mNumSteps;
 }
 
@@ -109,13 +127,76 @@ void CScanItemLinear::step()
 {
   //do something ...
   *mpValue = mMin + mIndex * mFaktor;
-
+  if (mLog)
+    *mpValue = exp(*mpValue);
   //the index
   if (mIndex > mNumSteps)
     mFlagFinished = true;
   ++mIndex;
 
   //std::cout << "SILinear " << mMin + (mIndex-1)*mFaktor<< std::endl;
+}
+
+//*******
+
+CScanItemRandom::CScanItemRandom(const CCopasiParameterGroup* si, CRandom* rg)
+    : CScanItem(si),
+    mRg(rg),
+    mLog(false)
+{
+  mLog = *(bool*)(si->getValue("log"));
+  mMin = *(C_FLOAT64*)(si->getValue("Minimum"));
+  mMax = *(C_FLOAT64*)(si->getValue("Maximum"));
+  if (mLog)
+    {
+      mMin = log(mMin);
+      mMax = log(mMax);
+    }
+  mNumSteps = 0;
+  mFaktor = (mMax - mMin);
+}
+
+void CScanItemRandom::step()
+{
+  //the index
+  if (mIndex > mNumSteps)
+    mFlagFinished = true;
+  else
+    {
+      *mpValue = mMin + mRg->getRandomCC() * mFaktor;
+      if (mLog)
+        *mpValue = exp(*mpValue);
+    }
+
+  ++mIndex;
+}
+
+//*******
+
+CScanItemBreak::CScanItemBreak(const CCopasiParameterGroup* si, CScanTask* st)
+    : CScanItem(si),
+    mPlotB(0),
+    mReportB(0),
+    mST(NULL)
+{
+  mReportB = *(unsigned C_INT32*)(si->getValue("Report break"));
+  mPlotB = *(unsigned C_INT32*)(si->getValue("Plot break"));
+  mST = st;
+  mNumSteps = 0;
+}
+
+void CScanItemBreak::step()
+{
+  //the index
+  if (mIndex > mNumSteps)
+    mFlagFinished = true;
+  else
+    {
+      //TODO: tell the task what exactly to do...
+      mST->outputSeparatorCallback();
+    }
+
+  ++mIndex;
 }
 
 //**************** CScanMethod class ***************************
@@ -130,23 +211,26 @@ CScanMethod::CScanMethod():
     //    mVariableSize(0),
     //    mpVariables(NULL)
 {
-  addParameter("Random Number Generator", CCopasiParameter::STRING,
-               CRandom::TypeName[1]);
-  addParameter("Random Number Seed", CCopasiParameter::INT, (C_INT32) 0);
+  //  addParameter("Random Number Generator", CCopasiParameter::STRING,
+  //               CRandom::TypeName[1]);
+  //  addParameter("Random Number Seed", CCopasiParameter::INT, (C_INT32) 0);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
 
-CScanMethod::CScanMethod(const CScanMethod & src,
+/*CScanMethod::CScanMethod(const CScanMethod & src,
                          const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
     mpProblem(NULL),
     mpRandomGenerator(NULL)
     //    mVariableSize(0),
     //    mpVariables(NULL)
-{}
+{}*/
 
 CScanMethod::~CScanMethod()
 {
   cleanupScanItems();
+  delete mpRandomGenerator;
+  mpRandomGenerator = NULL;
 }
 
 bool CScanMethod::cleanupScanItems()
@@ -170,7 +254,9 @@ bool CScanMethod::init()
   unsigned C_INT32 i, imax = mpProblem->getNumberOfScanItems();
   for (i = 0; i < imax; ++i)
     {
-      mScanItems.push_back(CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i)));
+      mScanItems.push_back(CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
+                           mpRandomGenerator,
+                           (CScanTask*)(getObjectParent())));
       mTotalSteps *= mScanItems[i]->getNumSteps();
     }
 
@@ -220,13 +306,15 @@ bool CScanMethod::loop(unsigned C_INT32 level)
 
 bool CScanMethod::calculate() const
   {
-    std::cout << "Scan: calculate..." << std::endl;
+    //std::cout << "*********** Scan: calculate... ************" << std::endl;
     return ((CScanTask*)(getObjectParent()))->processCallback();
   }
 
 void CScanMethod::setProblem(const CScanProblem * problem)
 {mpProblem = problem;}
 
+//*************************************************
+//*************************************************
 //*************************************************
 
 #ifdef XXXX
