@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 13:25:40 $
+   $Date: 2005/02/18 09:58:02 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
 #define CopasiSlider_H__
 
-#include "qvbox.h"
+#include "qhbox.h"
 #include "utilities/CCopasiParameter.h"
 
 class QSlider;
@@ -17,8 +17,9 @@ class QWidget;
 class CCopasiObject;
 class QLabel;
 class CCopasiParameterGroup;
+class QToolButton;
 
-class CopasiSlider: public QVBox
+class CopasiSlider: public QHBox
   {
     Q_OBJECT
   public:
@@ -51,15 +52,22 @@ class CopasiSlider: public QVBox
     void sliderValueChanged(int value);
     void qSliderReleased();
     void qSliderPressed();
+    void closeButtonClicked();
+    void editButtonClicked();
+
   signals:
     void valueChanged(double);
     void sliderReleased();
     void sliderPressed();
+    void closeClicked(CopasiSlider* slider);
+    void editClicked(CopasiSlider* slider);
 
   protected:
     CCopasiObject* mpObject;
     QSlider* mpSlider;
     QLabel* mpLabel;
+    QToolButton* mpCloseButton;
+    QToolButton* mpEditButton;
     CCopasiParameterGroup* mpParameterGroup;
     C_FLOAT64 mTickInterval;
     C_FLOAT64 mMinValue;

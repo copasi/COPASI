@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/17 12:26:45 $
+   $Date: 2005/02/18 09:58:02 $
    End CVS Header */
 
 #include <iostream>
@@ -11,6 +11,7 @@
 #include <mathematics.h>
 
 #include "qhbox.h"
+#include "qvbox.h"
 #include "qlistbox.h"
 #include "qcheckbox.h"
 #include "qpushbutton.h"
@@ -283,6 +284,8 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
   connect(slider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
   connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
   connect(slider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+  connect(slider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+  connect(slider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
@@ -523,4 +526,16 @@ void SliderDialog::updateAllSliders()
       (*it)->updateValue(this->mpAutoModifyRangesCheckBox->isChecked());
       ++it;
     }
+}
+
+void SliderDialog::removeSlider(CopasiSlider* slider)
+{
+  this->currSlider = slider;
+  this->removeSlider();
+}
+
+void SliderDialog::editSlider(CopasiSlider* slider)
+{
+  this->currSlider = slider;
+  this->editSlider();
 }

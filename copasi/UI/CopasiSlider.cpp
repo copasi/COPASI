@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 13:25:40 $
+   $Date: 2005/02/18 09:58:02 $
    End CVS Header */
 
 #include <cmath>
@@ -11,6 +11,9 @@
 #include "qlabel.h"
 #include "qstring.h"
 #include "qslider.h"
+#include "qpixmap.h"
+#include "qtoolbutton.h"
+#include "qvbox.h"
 
 #include "CopasiSlider.h"
 #include "qtUtilities.h"
@@ -19,17 +22,36 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObjectName.h"
 
-CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QVBox(parent), mpObject(object) , mpSlider(NULL), mpLabel(NULL), mpParameterGroup(NULL), mValueOutOfRange(false)
-{
-  this->mpLabel = new QLabel(this);
-  this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  this->mpSlider = new QSlider(Qt::Horizontal, this);
+#include "icons/closeSlider.xpm"
+#include "icons/editSlider.xpm"
 
+CopasiSlider::CopasiSlider(CCopasiObject* object, QWidget* parent): QHBox(parent), mpObject(object) , mpSlider(NULL), mpLabel(NULL), mpCloseButton(NULL), mpEditButton(NULL), mpParameterGroup(NULL), mValueOutOfRange(false)
+{
+  this->setFrameShape(QFrame::Box);
+  this->setSpacing(2);
+  this->setMargin(2);
+  QVBox* sliderLayout = new QVBox(this);
+  this->mpLabel = new QLabel(sliderLayout);
+  this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  this->mpSlider = new QSlider(Qt::Horizontal, sliderLayout);
   this->mpSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+
+  QVBox* buttonLayout = new QVBox(this);
+  buttonLayout->setSpacing(0);
+  QPixmap icons[2] = {closeSlider, editSlider};
+  this->mpCloseButton = new QToolButton(buttonLayout);
+  this->mpCloseButton->setPixmap(icons[0]);
+  this->mpCloseButton->setFixedSize(13, 13);
+  this->mpEditButton = new QToolButton(buttonLayout);
+  this->mpEditButton->setPixmap(icons[1]);
+  this->mpEditButton->setFixedSize(13, 13);
   this->updateSliderData();
+
   connect(this->mpSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
   connect(this->mpSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
   connect(this->mpSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
+  connect(this->mpCloseButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
+  connect(this->mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
 }
 
 CopasiSlider::~CopasiSlider()
@@ -368,4 +390,14 @@ void CopasiSlider::updateValue(bool modifyRange)
         }
       this->setValue(value);
     }
+}
+
+void CopasiSlider::closeButtonClicked()
+{
+  emit closeClicked(this);
+}
+
+void CopasiSlider::editButtonClicked()
+{
+  emit editClicked(this);
 }
