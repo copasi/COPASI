@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/Tree.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:01:59 $
+   $Date: 2004/10/15 17:15:57 $
    End CVS Header */
 
 /****************************************************************************
@@ -29,6 +29,7 @@
  ** wants to store
  *********************************************************/
 #include <vector>
+#include <string>
 #include <qstring.h>
 
 class IndexedTree;
