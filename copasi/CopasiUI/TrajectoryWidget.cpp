@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/11 15:19:01 $
+   $Date: 2004/11/11 15:58:39 $
    End CVS Header */
 
 /********************************************************
@@ -499,45 +499,45 @@ void TrajectoryWidget::saveTrajectoryTask()
 {
   CTrajectoryTask* tt =
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
-  if (tt != NULL)
+
+  assert(tt);
+
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
+
+  //numbers
+  if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
+    trajectoryproblem->setStepSize(nStepSize->text().toDouble());
+  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
+    trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
+  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
+  trajectoryproblem->setEndTime(nEndTime->text().toDouble());
+
+  trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
+
+  //set initial state
+  trajectoryproblem->setInitialState(dataModel->getModel()->getInitialState());
+
+  //method
+  if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
+      (const char *)ComboBox1->currentText().utf8())
+    UpdateMethod(false);
+
+  QTableItem * pItem;
+  QString value;
+  QString strname;
+
+  unsigned C_INT32 i;
+  for (i = 0; i < trajectorymethod->size(); i++)
     {
-      CTrajectoryProblem* trajectoryproblem =
-        dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
-      assert(trajectoryproblem);
-
-      CTrajectoryMethod* trajectorymethod =
-        dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
-      assert(trajectorymethod);
-
-      //numbers
-      if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
-        trajectoryproblem->setStepSize(nStepSize->text().toDouble());
-      else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
-        trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
-      trajectoryproblem->setStartTime(nStartTime->text().toDouble());
-      trajectoryproblem->setEndTime(nEndTime->text().toDouble());
-
-      trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
-
-      //set initial state
-      trajectoryproblem->setInitialState(dataModel->getModel()->getInitialState());
-
-      //method
-      if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
-          (const char *)ComboBox1->currentText().utf8())
-        UpdateMethod(false);
-
-      QTableItem * pItem;
-      QString value;
-      QString strname;
-
-      unsigned C_INT32 i;
-      for (i = 0; i < trajectorymethod->size(); i++)
-        {
-          pItem = parameterTable->item(i, 0);
-          value = pItem->text();
-          setParameterValue(trajectorymethod, i, value);
-        }
+      pItem = parameterTable->item(i, 0);
+      value = pItem->text();
+      setParameterValue(trajectorymethod, i, value);
     }
 }
 
