@@ -16,10 +16,10 @@
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qmultilineedit.h>
+#include "copasi.h"
 #include "DataModel.h"
 #include "Observer.h"
 #include "Tree.h"
-#include "copasi.h"
 
 //public QLineEdit:
 // #include "model/model.h"
