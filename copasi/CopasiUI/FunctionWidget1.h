@@ -34,6 +34,7 @@ class FunctionWidget1 : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
+    virtual void slotFcnDescriptionChanged();
     virtual void slotCancelButtonClicked();
     virtual void slotCommitButtonClicked();
     virtual void slotTableValueChanged(int row, int col);

@@ -184,6 +184,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
+  connect(Line2, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
 bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be const
@@ -347,13 +348,21 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
 void FunctionWidget1::updateParameters()
 {
   CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  // for addition of objects from Description field
-  //CFunctionParameters &functParam = func->getParameters();
+
   // next step place the text area contents into the function description
   func->setDescription(textBrowser->text().latin1());
+
   // compile and retrieve nodes
+  CKinFunction* kinFunc = (CKinFunction*) func;
+  kinFunc->compile();
+  std::vector<CNodeK *> v = kinFunc->getNodes();
+
   // go through nodes and determine if identifier, if so, then add to parameters
-  //func->addParameter(name, FLOAT64,usage);
+  for (int i = 0; i < v.size(); i++)
+    {
+      if (((CNodeK*)v[i])->isIdentifier())
+        func->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
+    }
   // Call loadFromFunction to display the table
   loadFromFunction(func);
 } //end of function
@@ -529,6 +538,29 @@ bool FunctionWidget1::saveToFunction()
   return true;
 }
 
+/*This function is called when the Function Description LineEdit is changed.*/
+void FunctionWidget1::slotFcnDescriptionChanged()
+{
+  std::string eq = textBrowser->text().latin1();
+
+  //first check if the string is a valid equation
+  /*if (!CChemEqInterface::isValidEq(eq))
+    {
+      //TODO: bring up a message window??
+      //debugging
+      std::cout << "Not a valid equation!\n\n";
+      return;  // abort further processing
+    }
+  //  else  //debugging
+  //    cout<<"Valid equation\n\n";
+
+  // tell the reaction interface
+  mRi.setChemEqString(eq);
+
+  // update the widget
+  //updateParameters();*/
+}
+
 void FunctionWidget1::slotCancelButtonClicked()
 {
   //TODO: let the user confirm
@@ -538,7 +570,7 @@ void FunctionWidget1::slotCancelButtonClicked()
 void FunctionWidget1::slotCommitButtonClicked()
 {
   // Call function to add params from desc field into param table
-  //updateParameters();
+  //updateParameters();  **** Move this to slotFcnDescChanged()
   //let the user confirm?
   saveToFunction();
 }
