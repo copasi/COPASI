@@ -508,7 +508,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   QMessageBox::information(this, p2, "inside the comboBox");
   const string & p1 = p2.latin1();
-  CFunction * function = Copasi->FunctionDB.findFunction(p1);
+  CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
   CFunctionParameters &functionParameters = function->getParameters();
   int count_substrates = 0;
   int count_products = 0;
