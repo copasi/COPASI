@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/06 22:39:29 $
+   $Author: ssahle $ 
+   $Date: 2005/01/04 17:17:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -53,6 +53,7 @@ void DataModelGUI::linkDataModelToGUI()
   COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
   tmpHandler->setPlotSpecVectorAddress(plotspecs);
   trajectorytask->setOutputHandler(tmpHandler);
+  scantask->setOutputHandler(tmpHandler);
 
   //math model
   pdelete(mpMathModel);
