@@ -31,6 +31,8 @@
 #include "steadystate/CMca.h"
 #include "randomGenerator/CRandom.h"
 #include "utilities/CluX.h"
+#include "report/CCopasiObjectName.h"
+#include "report/CMetabNew.h"
 
 using namespace std;
 
@@ -60,7 +62,7 @@ C_INT32 TestOptimization(void);     //yohe: new
 C_INT32 TestElementaryFluxMode(void);
 C_INT32 Testr250(void);
 C_INT32 Testmt19937(void);
-
+C_INT32 TestCopasiObject(void);
 C_INT32 ConvertFunctionDB(void);
 C_INT32 MakeFunctionDB(void);
 C_INT32 MakeFunctionEntry(const string &name,
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
       //      TestNewton();
       //      TestSSSolution();
       //YOHE: new test
-      TestOptimization();
+      //      TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
       //      TestTrajectoryTask();
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
+      TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -249,6 +252,83 @@ C_INT32 TestWriteConfig(void)
   return 0;
 }
 
+C_INT32 TestCopasiObject(void)
+{
+  CCopasiObjectName Name("CN=Root,Vector=Metabolites\\[ADH\\],Metabolite=ADH");
+  cout << Name << endl;
+  cout << CCopasiObjectName::unescape(Name) << endl;
+
+  Name = (std::string) "CN=Root\\,Vector=Metabolites[ADH],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "CN=Root\\\\,Vector=Metabolites[ADH],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites[ADH],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites[7A],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites[A 7],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites[27],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getName(1) << endl;
+  cout << Name.getIndex(1) << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites[2][7],Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getName(1) << endl;
+  cout << Name.getIndex(1) << endl;
+  cout << Name.getRemainder() << endl;
+
+  Name = (std::string) "Vector=Metabolites,Metabolite=ADH";
+  cout << Name.getPrimary() << endl;
+  cout << Name.getObjectType() << endl;
+  cout << Name.getObjectName() << endl;
+  cout << Name.getName() << endl;
+  cout << Name.getIndex() << endl;
+  cout << Name.getRemainder() << endl;
+
+  CMetabNew M;
+  cout << M.getReference(&M) << endl;
+  cout << M.getCN() << endl;
+
+  CMetabNew Copy(M);
+  cout << Copy.getReference(&M) << endl;
+  cout << Copy.getCN() << endl;
+
+  return 0;
+}
+
 C_INT32 TestCompartment(void)
 {
   cout << "Entering TestCompartment." << endl;
@@ -356,58 +436,6 @@ C_INT32 TestReadSample(void)
   return 0;
 }
 
-C_INT32 TestOutputEvent(void)
-{
-  //  C_INT32 size = 0;
-
-  cout << "Entering TestOutputEvent." << endl;
-
-  ofstream fout, fout1, fout2;
-  //fout.open("TestSS.out");
-  fout1.open("TestDyn.out");
-  //fout2.open("TestRep.out");
-
-  CReadConfig inbuf("c:/wsun/copasi_dev/copasi/gps/DANNY.gps");
-
-  CModel model;
-  model.load(inbuf);
-  model.buildStoi();
-  model.lUDecomposition();
-  model.setMetabolitesStatus();
-  model.buildRedStoi();
-  model.buildL();
-  model.buildMoieties();
-
-  COutputList oList;
-
-  oList.load(inbuf);
-
-  CWriteConfig outbuf("wei.gps");
-  oList.save(outbuf);
-
-  //  oList.setModel(model);
-
-  string SS = "Steady-state output";
-  //  oList.compile(SS);
-
-  //oList.CCopasi_SS(fout);
-  //oList.CCopasi_Dyn(fout1);
-  //oList.CCopasi_Rep(fout2);
-
-  CTrajectory traj;
-  traj.setModel(&model);
-  //  COutputEvent event(traj, 0, &oList, fout1);
-
-  traj.cleanup();
-  cout << "Leaving TestOutputEvent..." << endl;
-
-  //fout.close();
-  fout1.close();
-  //fout2.close();
-
-  return 0;
-}
-
 C_INT32 TestTrajectory(void)
 {
   string InputFile(Copasi->Arguments[1]);
@@ -468,41 +496,6 @@ C_INT32 TestTrajectoryTask(void)
   ofstream output("output.txt");
   traj.initializeReporting(output);
   traj.process();
-  traj.cleanup();
-
-  return 0;
-}
-
-C_INT32 TestStochDirectMethod(void)
-{
-  cout << "Testing stoch direct method\n";
-  string InputFile(Copasi->Arguments[1]);
-  string OutputFile(Copasi->Arguments[2]);
-  CReadConfig inbuf(InputFile);
-  inbuf.getDefaults();
-
-  cout << "Creating model\n";
-  CModel model;
-  model.load(inbuf);
-  model.compile();
-
-  cout << "Creating trajectory\n";
-  CTrajectory traj;
-  cout << "Setting model\n";
-  traj.setModel(&model);
-  cout << "Setting method\n";
-  traj.setMethod(CTrajectory::STOCH_DIRECT); // method 2 corresponds to the direct method
-  cout << "Setting end time\n";
-  traj.setEndTime(1.0);
-  cout << "Setting max points\n";
-  traj.setMaxSteps(100);
-  cout << "Initializing trajectory\n";
-  traj.initialize();
-
-  ofstream output("output.txt");
-
-  cout << "Running trajectory\n";
-  traj.process(output);
   traj.cleanup();
 
   return 0;
