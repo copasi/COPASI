@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: stupe $ 
+   $Date: 2005/03/14 04:49:00 $
    End CVS Header */
 
 /*******************************************************************
@@ -31,6 +31,7 @@
 #include "CompartmentsWidget1.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
+#include "model/CMetab.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -190,8 +191,25 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   TextLabel2_2->setText("Transient Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
   TextLabel2->setText("Initial  Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
   /* ---> */
-
+  currentCompt = compartn;
   return true;
+}
+void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
+{
+  const CCopasiVectorNS < CMetab > & Metabs = currentCompt->getMetabolites();
+  C_INT32 noOfMetabolitesRows = Metabs.size();
+  const CMetab *mtb;
+  std::string mMetName;
+  C_INT32 j;
+  for (j = 0; j < noOfMetabolitesRows; j++)
+    {
+      mtb = Metabs[j];
+      mMetName = mtb->getObjectName();
+      if (ListBox1->currentText() == mtb->getObjectName().c_str())
+        {
+          pListView->switchToOtherWidget(0, mtb->getKey());
+        }
+    }
 }
 
 bool CompartmentsWidget1::saveToCompartment()
@@ -327,7 +345,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                           // Yes or Enter
+    case 0:                            // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
         unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -345,14 +363,9 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                           // No or Escape
+    case 1:                            // No or Escape
       break;
     }
-}
-
-void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
-{
-  //TODO do not really know what to do here. May be switch to metabolite widget?
 }
 
 bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
