@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 08:59:10 $
+   $Author: jpahle $ 
+   $Date: 2004/10/18 09:34:41 $
    End CVS Header */
 
 /********************************************************
@@ -82,6 +82,7 @@ class SteadyStateWidget : public CopasiWidget
     //virtual void RunButtonChecked();
     virtual void runSteadyStateTask();
     virtual void ReportDefinitionClicked();
+    virtual void taskJacobianToggled();
 
   protected:
     QGridLayout* SteadyStateWidgetLayout;

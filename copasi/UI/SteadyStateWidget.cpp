@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/09 14:40:48 $
+   $Author: jpahle $ 
+   $Date: 2004/10/18 09:34:41 $
    End CVS Header */
 
 /********************************************************
@@ -154,6 +154,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+  connect(taskJacobian, SIGNAL(toggled(bool)), this, SLOT(taskJacobianToggled()));
 
   // tab order
   setTabOrder(taskName, bExecutable);
@@ -303,7 +304,7 @@ void SteadyStateWidget::loadSteadyStateTask()
   bool bJacobian = steadystateproblem->isJacobianRequested();
   bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
   taskJacobian->setChecked(bJacobian);
-  taskStability->setChecked(bStatistics);
+  if (bJacobian) taskStability->setChecked(bStatistics);
 
   QTableItem * pItem;
   QString value;
@@ -383,4 +384,9 @@ void SteadyStateWidget::ReportDefinitionClicked()
   pSelectDlg->exec();
 
   delete pSelectDlg;
+}
+
+void SteadyStateWidget::taskJacobianToggled()
+{
+  if (!taskJacobian->isChecked()) taskStability->setChecked(false);
 }
