@@ -46,8 +46,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(TextLabel5, 1, 0);
 
   LineEdit1 = new QLineEdit(this, "LineEdit1");
-  QFont LineEdit1_font(LineEdit1->font());
-  LineEdit1->setFont(LineEdit1_font);
+  //  QFont LineEdit1_font(LineEdit1->font());
+  //  LineEdit1->setFont(LineEdit1_font);
   LineEdit1->setFrameShape(QLineEdit::LineEditPanel);
   LineEdit1->setFrameShadow(QLineEdit::Sunken);
 

@@ -115,7 +115,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel"));
+  cancelChange->setText(trUtf8("cancelChange"));
   Layout2->addWidget(cancelChange);
 
   ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
@@ -178,7 +178,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->setHScrollBarMode(QScrollView::Auto);
   scrollview->setSelectedList(&selectedList);
-
   Layout24->addWidget(scrollview);
 
   ScanWidgetLayout->addMultiCellLayout(Layout24, 4, 4, 0, 2);
