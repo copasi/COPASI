@@ -336,6 +336,7 @@ bool MetabolitesWidget1::saveToMetabolite()
   if (fabs(temp1 - metab->getInitialConcentration()) > 1e-10)
     {
       metab->setInitialConcentration(temp1);
+      metab->setConcentration(temp1);
       ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
     }
 
@@ -347,6 +348,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (fabs(temp2 - metab->getInitialNumberDbl()) > 1e-3) //TODO: this is extremely ugly
         {
           metab->setInitialNumberDbl(temp2);
+          metab->setNumberDbl(temp2);
           ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
         }
     }
