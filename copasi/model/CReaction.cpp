@@ -24,6 +24,7 @@ CReaction::CReaction()
 {
   CONSTRUCTOR_TRACE;
   mFlux = 0.0;
+  mScaledFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
   mScalingFactor = &mDefaultScalingFactor;
@@ -34,6 +35,7 @@ CReaction::CReaction(const CReaction & src)
   CONSTRUCTOR_TRACE;
   mName = src.mName;
   mFlux = src.mFlux;
+  mScaledFlux = src.mScaledFlux;
   mReversible = src.mReversible;
   mChemEq = src.mChemEq;
   setFunction(src.mFunction->getName());
@@ -50,6 +52,7 @@ CReaction::CReaction(const string & name)
   CONSTRUCTOR_TRACE;
   mName = name;
   mFlux = 0.0;
+  mScaledFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
   mScalingFactor = &mDefaultScalingFactor;
@@ -66,25 +69,6 @@ void CReaction::cleanup()
   cleanupCallParameters();
   mParameterDescription.cleanup();
 }
-
-#ifdef XXXX
-CReaction & CReaction::operator=(const CReaction & rhs)
-{
-  mName = rhs.mName;
-  mChemEq = rhs.mChemEq;
-  mFunction = rhs.mFunction;
-  mFlux = rhs.mFlux;
-  mReversible = rhs.mReversible;
-  mId2Substrates = rhs.mId2Substrates;
-  mId2Products = rhs.mId2Products;
-  mId2Modifiers = rhs.mId2Modifiers;
-  mId2Parameters = rhs.mId2Parameters;
-  mCallParameters = rhs.mCallParameters;
-
-  return *this;
-}
-
-#endif // XXXX
 
 C_INT32 CReaction::load(CReadConfig & configbuffer)
 {
@@ -111,10 +95,8 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if (mFunction == NULL)
     return Fail = 1;
 
-  if ((Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux)))
-    return Fail;
-
-  if ((Fail = configbuffer.getVariable("Reversible", "bool", &mReversible)))
+  if ((Fail = configbuffer.getVariable("Reversible", "bool", &mReversible,
+                                       CReadConfig::SEARCH)))
     return Fail;
 
   if (configbuffer.getVersion() < "4")
@@ -140,9 +122,6 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   string KinType = mFunction->getName();
 
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
-    return Fail;
-
-  if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
@@ -435,6 +414,11 @@ const C_FLOAT64 & CReaction::getFlux() const
     return mFlux;
   }
 
+const C_FLOAT64 & CReaction::getScaledFlux() const
+  {
+    return mScaledFlux;
+  }
+
 bool CReaction::isReversible() const
   {
     return (mReversible == TRUE);
@@ -448,11 +432,6 @@ void CReaction::setName(const string & name)
 void CReaction::setChemEq(const string & chemEq)
 {
   mReversible = mChemEq.setChemicalEquation(chemEq);
-}
-
-void CReaction::setFlux(C_FLOAT64 flux)
-{
-  mFlux = flux;
 }
 
 void CReaction::setReversible(bool reversible)
@@ -792,8 +771,9 @@ void CReaction::old2New(const vector < CMetab* > & metabolites)
 
 C_FLOAT64 CReaction::calculate()
 {
-  //  return mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
-  return mFlux = mScalingFactor2 * mFunction->calcValue(mCallParameters);
+  mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
+  mScaledFlux = *mScalingFactor2 * mFlux;
+  return mFlux;
 }
 
 void CReaction::CId2Metab::setIdentifierName(const string & identifierName)
@@ -1256,14 +1236,14 @@ void CReaction::setScalingFactor()
   if (1 == getCompartmentNumber())
     {
       mScalingFactor = & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
-      mScalingFactor2 = mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume()
-                        * mChemEq.getBalances()[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
     }
   else
     {
       mScalingFactor = &mDefaultScalingFactor;
-      mScalingFactor2 = 1;
     }
+
+  mScalingFactor2 =
+    & mChemEq.getBalances()[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
 }
 
 void CReaction::setReactantsFromChemEq()

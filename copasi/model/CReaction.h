@@ -245,6 +245,11 @@ class CReaction
     C_FLOAT64 mFlux;
 
     /**
+     *  The scaled flux of the reaction
+     */
+    C_FLOAT64 mScaledFlux;
+
+    /**
      *  A Pointer to the scaling factor for the flux to calculate the particle number
      *  changes. For a single compartment reaction this is the volume of
      *  the compartment
@@ -254,7 +259,7 @@ class CReaction
     /**
      *  The scaling factor. It is compartment volume times a factor for the unit
      */
-    C_FLOAT64 mScalingFactor2;
+    const C_FLOAT64 * mScalingFactor2;
 
     /**
      *  The number of compartments the reaction takes place in 
@@ -442,9 +447,15 @@ class CReaction
 
     /**
      *  Retrieves the flux of the reaction
-     *  @return C_FLOAT64
+     *  @return const C_FLOAT64 & flux
      */
     const C_FLOAT64 & getFlux() const;
+
+    /**
+     *  Retrieves the scaled flux of the reaction
+     *  @return const C_FLOAT64 & scaledFlux
+     */
+    const C_FLOAT64 & getScaledFlux() const;
 
     /**
      *  Retrieves whether the reaction is reversible
@@ -469,12 +480,6 @@ class CReaction
      *  @param "const string &" functionName
      */
     void setFunction(const string & functionName);
-
-    /**
-     *  Sets the flux of the reaction
-     *  @param C_FLOAT64 flux
-     */
-    void setFlux(C_FLOAT64 flux);
 
     /**
      *  Sets whether the reaction is reversible
