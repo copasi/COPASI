@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 15:09:22 $
+   $Date: 2004/10/04 15:12:33 $
    End CVS Header */
 
 #include <algorithm>
@@ -428,7 +428,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                        /* fortran style vector */
+                           mdxdt.array() - 1,                         /* fortran style vector */
                            1);
         }
 
@@ -466,20 +466,21 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 CNewtonMethod::NewtonReturnCode
 CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
-  /* Make sure the model reflects the current state */
-  if (returnCode == CNewtonMethod::found)
+  mpProblem->getModel()->setStateX(&mStateX);
+  mpProblem->getModel()->updateRates();
+  *mpSteadyState = mStateX; //convert back to CState
+
+  /*if (returnCode == CNewtonMethod::found)
     {
       const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
       *mpSteadyState = mStateX; //convert back to CState
     }
   else
     {
-      const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
-      *mpSteadyState = mStateX; //convert back to CState
-      //      const_cast<CModel *>(mpProblem->getInitialState().getModel())
-      //      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
-      //      *mpSteadyState = mpProblem->getInitialState();
-    }
+      const_cast<CModel *>(mpProblem->getInitialState().getModel())
+      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
+      *mpSteadyState = mpProblem->getInitialState();
+    }*/
 
   return returnCode;
 }
@@ -489,7 +490,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                        /* fortran style vector */
+                   mdxdt.array() - 1,                         /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
