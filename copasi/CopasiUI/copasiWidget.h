@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:04 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:45 $
    End CVS Header */
 
 /********************************************************
@@ -17,10 +17,10 @@
 
 #if !defined COPASI_WIDGET_H
 #define COPASI_WIDGET_H
-#include "qwidget.h"
+#include <qwidget.h>
 #include "listviews.h"
 
-class DataModel;
+class DataModelGUI;
 class QResizeEvent;
 
 class CopasiWidget : public QWidget
@@ -43,7 +43,7 @@ class CopasiWidget : public QWidget
     bool bSetMinSize;
 
   protected:
-    static DataModel* dataModel;
+    static DataModelGUI* dataModel;
     ListViews* pListView;
   };
 

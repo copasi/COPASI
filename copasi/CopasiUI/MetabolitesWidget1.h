@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/26 02:37:55 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -29,6 +29,8 @@ class QLineEdit;
 class QPushButton;
 // class QRadioButton;
 class QCheckBox;
+
+class CMetab;
 
 class MetabolitesWidget1 : public CopasiWidget
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:25:51 $
+   $Date: 2004/07/02 13:47:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,19 +15,12 @@
 
 #include <set>
 #include <qsplitter.h>
-#include <qstring.h>
-#include <qptrlist.h>
 #include <qlistview.h>
-#include <vector>
-#include <qvaluelist.h>
-#include <qobjectlist.h>
-#include <qheader.h>
-#include <qmessagebox.h>
-#include <qmultilineedit.h>
-#include <qimage.h>
 
-#include "DataModel.h"
+#include "copasi.h"
 #include "Tree.h"
+
+class DataModelGUI;
 
 class CSteadyStateTask;
 class CTrajectoryTask;
@@ -94,8 +87,8 @@ class ListViews : public QSplitter
     enum Action {CHANGE = 0, ADD, DELETE, RENAME};
     enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT};
 
-    void setDataModel(DataModel* dm);
-    static DataModel* getDataModel() {return dataModel;};
+    void setDataModel(DataModelGUI* dm);
+    static DataModelGUI* getDataModel() {return dataModel;};
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
     static bool commit();
     void switchToOtherWidget(const std::string & key);
@@ -127,7 +120,7 @@ class ListViews : public QSplitter
     void slotFolderChanged(QListViewItem*);
 
   private:
-    static DataModel* dataModel;
+    static DataModelGUI* dataModel;
     QListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;

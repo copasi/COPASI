@@ -1,29 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 13:22:57 $
+   $Date: 2004/07/02 13:47:30 $
    End CVS Header */
 
-#include "DataModel.h"
-#include "DataModel.txt.h"
+#include "DataModel.h" 
+//#include "DataModel.txt.h"
 #include "function/CFunctionDB.h"
-#include "mathmodel/CMathModel.h"
-#include "plot/COutputHandlerPlot.h"
-#include "qtUtilities.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
-#include "CProgressBar.h"
 
-int Folder::mModifier = 0;
+#include "utilities/CGlobals.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "scan/CScanTask.h"
+#include "report/CReportDefinitionVector.h"
+#include "plot/CPlotSpecVector.h"
+#include "optimization/COptFunction.h"
+#include "xml/CCopasiXML.h"
 
 DataModel::DataModel()
 {
-  this->populateData();
+  //this->populateData();
   model = NULL;
-  mpMathModel = NULL;
-  mMathModelUpdateScheduled = false;
+  //mpMathModel = NULL;
+  //mMathModelUpdateScheduled = false;
   mChanged = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
@@ -33,53 +36,6 @@ DataModel::DataModel()
   pOptFunction = NULL;
 }
 
-Folder* DataModel::searchFolderList(int id)
-{
-  for (Folder* f = folderList.first(); f; f = folderList.next())
-    if (f->getID() == id)
-      return f;
-
-  return NULL;
-}
-
-Node<Folder> * DataModel::addData(Folder* parent, Folder* child)
-{
-  myTree.addSibling(child, parent);
-  folderList.append(child);
-  return /*last = */ myTree.search(child, myTree.getRoot());    //propably needs to return
-}
-
-void DataModel::removeData(Folder* i)
-{
-  Node<Folder>* node = myTree.search(i, myTree.getRoot());
-
-  if (node)
-    {
-      //last = node;
-      //notify(DELETE);
-
-      myTree.deleteNode(i);
-      folderList.remove(i);
-    }
-
-  //last = NULL;
-}
-
-void DataModel::removeAllChildren(Folder* f)
-{
-  Node<Folder>* node = myTree.search(f, myTree.getRoot());
-  Folder* fff;
-
-  if (!node->child) return;
-
-  while (node->child)
-    {
-      fff = node->child->info;
-      removeData(node->child->info);
-      delete fff;
-    }
-}
-
 void DataModel::createModel()
 {
   mChanged = false;
@@ -87,44 +43,44 @@ void DataModel::createModel()
   pdelete(model);
   model = new CModel();
   Copasi->pModel = model;
-  CProgressBar* tmpBar = new CProgressBar(this);
-  model->setCompileHandler(tmpBar);
-  searchFolderList(1)->setObjectKey(model->getKey());
+  //  CProgressBar* tmpBar = new CProgressBar(this);
+  //  model->setCompileHandler(tmpBar);
+  //  searchFolderList(1)->setObjectKey(model->getKey());
 
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel();
-  mpMathModel->setModel(model);
+  //  pdelete(mpMathModel);
+  //  mpMathModel = new CMathModel();
+  //  mpMathModel->setModel(model);
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
-  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+  //  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  trajectorytask->setOutputHandler(tmpHandler);
-  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
+  //  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
+  //  trajectorytask->setOutputHandler(tmpHandler);
+  //  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
-  searchFolderList(32)->setObjectKey(scantask->getKey());
+  //  searchFolderList(32)->setObjectKey(scantask->getKey());
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
-  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+  //  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
   plotspecs = new CPlotSpecVector();
-  searchFolderList(42)->setObjectKey(plotspecs->getKey());
+  //  searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
-  tmpHandler->setPlotSpecVectorAddress(plotspecs);
+  //  tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
-  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+  //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 }
 
 void DataModel::loadModel(const char* fileName)
@@ -141,44 +97,44 @@ void DataModel::loadModel(const char* fileName)
       pdelete(model);
       CReadConfig inbuf(fileName);
       model = new CModel();
-      CProgressBar* tmpBar = new CProgressBar(this);
-      model->setCompileHandler(tmpBar);
+      //      CProgressBar* tmpBar = new CProgressBar(this);
+      //      model->setCompileHandler(tmpBar);
       model->load(inbuf);
-      searchFolderList(1)->setObjectKey(model->getKey());
+      //searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
       steadystatetask = new CSteadyStateTask();
       steadystatetask->load(inbuf);
-      searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+      //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
       pdelete(trajectorytask);
       trajectorytask = new CTrajectoryTask();
       trajectorytask->load(inbuf);
-      COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-      trajectorytask->setOutputHandler(tmpHandler);
-      searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
+      //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
+      //trajectorytask->setOutputHandler(tmpHandler);
+      //searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       pdelete(scantask);
       scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
       // future work  scantask->load(inbuf);
-      searchFolderList(32)->setObjectKey(scantask->getKey());
+      //searchFolderList(32)->setObjectKey(scantask->getKey());
 
       pdelete(reportdefinitions);
       reportdefinitions = new CReportDefinitionVector();
       //  reportdefinitions->load(inbuf);
-      searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+      //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
       pdelete(plotspecs);
       plotspecs = new CPlotSpecVector();
       //  plotspecs->load(inbuf);
-      searchFolderList(42)->setObjectKey(plotspecs->getKey());
+      //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
-      tmpHandler->setPlotSpecVectorAddress(plotspecs);
+      //tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
       pdelete(pOptFunction);
       pOptFunction = new COptFunction();
-      searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+      //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
       //Copasi->pOutputList->load(inbuf);
     }
@@ -204,9 +160,9 @@ void DataModel::loadModel(const char* fileName)
 
       pdelete(model);
       model = XML.getModel();
-      CProgressBar* tmpBar = new CProgressBar(this);
-      model->setCompileHandler(tmpBar);
-      searchFolderList(1)->setObjectKey(model->getKey());
+      //      CProgressBar* tmpBar = new CProgressBar(this);
+      //      model->setCompileHandler(tmpBar);
+      //searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
       pdelete(trajectorytask);
@@ -233,34 +189,34 @@ void DataModel::loadModel(const char* fileName)
 
       if (!steadystatetask) steadystatetask = new CSteadyStateTask();
       steadystatetask->getProblem()->setModel(model);
-      searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+      //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
       if (!trajectorytask) trajectorytask = new CTrajectoryTask();
       trajectorytask->getProblem()->setModel(model);
-      COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-      trajectorytask->setOutputHandler(tmpHandler);
-      searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
+      //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
+      //trajectorytask->setOutputHandler(tmpHandler);
+      //searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       if (!scantask) scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
-      searchFolderList(32)->setObjectKey(scantask->getKey());
+      //searchFolderList(32)->setObjectKey(scantask->getKey());
 
       pdelete(reportdefinitions);
       reportdefinitions = pNewReports;
-      searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+      //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
       pdelete(plotspecs);
       plotspecs = pNewPlotSpecs;
-      searchFolderList(42)->setObjectKey(plotspecs->getKey());
+      //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
-      tmpHandler->setPlotSpecVectorAddress(plotspecs);
+      //tmpHandler->setPlotSpecVectorAddress(plotspecs);
     }
 
   model->setCompileFlag();
 
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel();
-  mpMathModel->setModel(model);
+  //  pdelete(mpMathModel);
+  //  mpMathModel = new CMathModel();
+  //  mpMathModel->setModel(model);
 
   //  steadystatetask->compile();
 }
@@ -287,77 +243,6 @@ void DataModel::saveModel(const char* fileName)
   XML.save(os);
 }
 
-void DataModel::populateData()
-{
-  QString str = QString("Folder ");
-  Folder *f = new Folder(0, str);
-  f->setID(0, true);
-  myTree.addRoot(f);
-  folderList.append(f);
-
-  // const int MAX = 80;
-  std::string str1;
-
-  std::stringstream in;
-  in.str(DataModeltxt);
-
-  std::string delimiter("\x0a\x0d");
-  char c;
-
-  while (!in.eof())
-    {
-      str1 = "";
-      while (!in.fail())
-        {
-          in.get(c);
-          if (delimiter.find(c) != std::string::npos) break;
-          str1 += c;
-        }
-
-      if (str1 == "") break;
-
-      QString data(FROM_UTF8(str1));
-
-      int first = data.find(':');
-
-      int second = data.find(':', first + 1);
-
-      int parentId = data.mid(0, first).toInt();
-
-      int myId = data.mid(first + 1, second - first - 1).toInt();
-
-      QString myStr = data.mid(second + 1, data.length() - second - 1);
-
-      str = QString(myStr);
-
-      Folder* parent = this->searchFolderList(parentId);
-
-      Folder* f1;
-
-      f1 = (parentId == 0) ? new Folder(0, str) : new Folder(parent, str);
-
-      f1->setID(myId, true);
-
-      myTree.addSibling(f1, parent);
-
-      folderList.append(f1);
-    }
-}
-
-bool DataModel::updateMathModel()
-{
-  if (mMathModelUpdateScheduled) mpMathModel->setModel(model);
-
-  mMathModelUpdateScheduled = false;
-  return true;
-}
-
-bool DataModel::scheduleMathModelUpdate(const bool & update)
-{
-  mMathModelUpdateScheduled = update;
-  return true;
-}
-
 bool DataModel::isChanged() const {return mChanged;}
 
 void DataModel::changed(const bool & changed) {mChanged = changed;}
@@ -368,7 +253,7 @@ void DataModel::importSBML(const char* fileName)
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
-  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+  //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
   pdelete(model);
   SBMLImporter* importer = new SBMLImporter();
@@ -383,41 +268,41 @@ void DataModel::importSBML(const char* fileName)
       model = new CModel();
     }
 
-  CProgressBar* tmpBar = new CProgressBar(this);
-  model->setCompileHandler(tmpBar);
+  //  CProgressBar* tmpBar = new CProgressBar(this);
+  //  model->setCompileHandler(tmpBar);
   Copasi->pModel = model;
-  searchFolderList(1)->setObjectKey(model->getKey());
+  //searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
-  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
+  //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  trajectorytask->setOutputHandler(tmpHandler);
-  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
+  //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
+  //trajectorytask->setOutputHandler(tmpHandler);
+  //searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
-  searchFolderList(32)->setObjectKey(scantask->getKey());
+  //searchFolderList(32)->setObjectKey(scantask->getKey());
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
-  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+  //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
   plotspecs = new CPlotSpecVector();
-  searchFolderList(42)->setObjectKey(plotspecs->getKey());
+  //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
-  tmpHandler->setPlotSpecVectorAddress(plotspecs);
+  //tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel();
-  mpMathModel->setModel(model);
+  //  pdelete(mpMathModel);
+  //  mpMathModel = new CMathModel();
+  //  mpMathModel->setModel(model);
 }
 
 void DataModel::exportSBML(const char* fileName)
@@ -428,9 +313,3 @@ void DataModel::exportSBML(const char* fileName)
 
   exporter.exportSBML(model, fileName);
 }
-
-void DataModel::setQApp(QApplication* app)
-{mpApp = app;}
-
-QApplication* DataModel::getQApp() const
-  {return mpApp;}

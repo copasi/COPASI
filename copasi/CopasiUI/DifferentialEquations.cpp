@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:17:23 $
+   $Date: 2004/07/02 13:47:32 $
    End CVS Header */
 
 /*******************************************************************
@@ -26,6 +26,7 @@
 #include "mathmodel/CMathVariable.h"
 #include "mathmodel/CMathEq.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "qtUtilities.h"
 
 /**

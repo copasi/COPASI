@@ -1,18 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 16:22:56 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CProgressBar.h"
 #include <qprogressdialog.h>
 #include <qapplication.h>
-#include "DataModel.h"
+#include "DataModelGUI.h"
 
-CProgressBar::CProgressBar(DataModel* dm)
+CProgressBar::CProgressBar(DataModelGUI* dm)
 {
   mDataModel = dm;
   mpWidget = NULL;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:00:33 $
+   $Date: 2004/07/02 13:47:41 $
    End CVS Header */
 
 /*********************************************************************
@@ -26,11 +26,13 @@
 #include <qframe.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
+#include <qmessagebox.h>
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
@@ -340,7 +342,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:          // Yes or Enter
+        case 0:           // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -364,7 +366,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                 // No or Escape
+        default:                  // No or Escape
           break;
         }
       //}

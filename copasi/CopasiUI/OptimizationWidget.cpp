@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:21 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:39 $
    End CVS Header */
 
 /********************************************************
@@ -27,6 +27,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qtextbrowser.h>
+#include <qmessagebox.h>
 
 #include "ScanWidget.h"
 #include "ScanItemWidget.h"
@@ -413,12 +414,8 @@ bool OptimizationWidget::update(ListViews::ObjectType objectType,
 
 bool OptimizationWidget::leave()
 {
-  //let the user confirm?
-  if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
-    {
-      slotBtnConfirmClicked();
-      bUpdated = false;
-    }
+  slotBtnConfirmClicked();
+  bUpdated = false;
   return true;
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 17:18:06 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:41 $
    End CVS Header */
 
 /********************************************************
@@ -30,6 +30,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "ScanWidget.h"
 #include "qtUtilities.h"
 #include "utilities/CCopasiParameterGroup.h"
+#include "scan/CScanProblem.h"
 
 /*
  *  Constructs a ScanItemWidget which is a child of 'parent', with the 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:02:17 $
+   $Date: 2004/07/02 13:47:42 $
    End CVS Header */
 
 /********************************************************
@@ -27,8 +27,9 @@ Contact: Please contact lixu1@vt.edu.
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qmessagebox.h>
 
-#include "DataModel.h"
+#include "DataModelGUI.h"
 #include "qtUtilities.h"
 
 #include "SteadyStateWidget.h"

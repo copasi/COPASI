@@ -1,17 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:23:34 $
+   $Date: 2004/07/02 13:47:46 $
    End CVS Header */
 
 #include <qmainwindow.h>
 #include <qtoolbar.h>
 
-#include "listviews.h"
-
 class QToolButton;
+class ListViews;
+class DataModelGUI;
+
 class CopasiUI3Window : public QMainWindow
   {
     Q_OBJECT
@@ -20,10 +21,10 @@ class CopasiUI3Window : public QMainWindow
     CopasiUI3Window();
     void enabled_object_browser_menu();
     void disable_object_browser_menu();
-    DataModel* getDataModel();
+    DataModelGUI* getDataModel();
 
   protected:
-    DataModel* dataModel; // to keep track of the data model..
+    DataModelGUI* dataModel; // to keep track of the data model..
     //QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:16:13 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,6 +25,7 @@
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 

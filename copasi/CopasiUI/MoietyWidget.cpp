@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 18:00:08 $
+   $Date: 2004/07/02 13:47:38 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -19,6 +19,7 @@
 #include "model/CModel.h"
 #include "model/CMoiety.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 

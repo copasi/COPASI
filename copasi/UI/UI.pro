@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.37 $ $Author: ssahle $ $Date: 2004/07/02 08:25:50 $  
+# $Revision: 1.38 $ $Author: ssahle $ $Date: 2004/07/02 13:47:29 $  
 ######################################################################
 
 include(../common.pri)
@@ -120,6 +120,7 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            DataModel.h \
+           DataModelGUI.h \
            DifferentialEquations.h \
            FixedMetaboliteSymbols.h \
            FunctionItemWidget.h \
@@ -178,6 +179,7 @@ SOURCES += \
            copasiui3window.cpp \
            CProgressBar.cpp \
            DataModel.cpp \
+           DataModelGUI.cpp \
            DifferentialEquations.cpp \
            FixedMetaboliteSymbols.cpp \
            FunctionItemWidget.cpp \

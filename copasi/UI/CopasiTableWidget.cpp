@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:16:13 $
+   $Date: 2004/07/02 13:47:29 $
    End CVS Header */
 
 /*******************************************************************
@@ -26,6 +26,7 @@
 #include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 

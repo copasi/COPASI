@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:43 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:44 $
    End CVS Header */
 
 // copasiWidget.cpp: implementation of the CopasiWidget class.
@@ -19,7 +19,7 @@
 int CopasiWidget::realMinHeight = 0;
 int CopasiWidget::realMinWidth = 0;
 
-DataModel* CopasiWidget::dataModel = NULL;
+DataModelGUI* CopasiWidget::dataModel = NULL;
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
     : QWidget (parent, name, f)

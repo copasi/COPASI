@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:05:58 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 /********************************************************
@@ -26,12 +26,13 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qfiledialog.h>
+#include <qmessagebox.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
 #include "CReportDefinitionSelect.h"
 #include "listviews.h"
-#include "DataModel.h"
+#include "DataModelGUI.h"
 #include "utilities/CCopasiException.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReport.h"
@@ -139,7 +140,7 @@ void CReportDefinitionSelect::languageChange()
 
 void CReportDefinitionSelect::loadReportDefinitionVector()
 {
-  DataModel* dataModel = ListViews::getDataModel();
+  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
@@ -198,7 +199,7 @@ void CReportDefinitionSelect::confirmClicked()
   if (!mpReport)
     //exception made here
     return;
-  DataModel* dataModel = ListViews::getDataModel();
+  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
@@ -217,7 +218,7 @@ void CReportDefinitionSelect::cleanup()
 
 void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 {
-  DataModel* dataModel = ListViews::getDataModel();
+  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();

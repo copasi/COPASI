@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:18:35 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 /*******************************************************************
@@ -29,6 +29,7 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
+#include "DataModelGUI.h"
 
 std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
   {
@@ -198,7 +199,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:               // Yes or Enter
+    case 0:                // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -210,7 +211,7 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:               // No or Escape
+    case 1:                // No or Escape
       break;
     }
 }

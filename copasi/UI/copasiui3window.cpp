@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:23:34 $
+   $Date: 2004/07/02 13:47:45 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -18,14 +18,9 @@
 
 #include "copasiui3window.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "ObjectBrowser.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "utilities/CGlobals.h" 
-//#include "output/COutputList.h"
-//#include "output/COutput.h"
+#include "utilities/CGlobals.h"
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
@@ -76,7 +71,7 @@ CopasiUI3Window::CopasiUI3Window():
   if (!dataModel)
     {
       // create the data model
-      dataModel = new DataModel();
+      dataModel = new DataModelGUI();
 
       //splitter = new QSplitter(QSplitter::Vertical, this , "main");
       //splitter->show();
@@ -146,21 +141,21 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:           // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:            // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:           // Discard clicked or Alt+D pressed
+        case 1:            // Discard clicked or Alt+D pressed
           break;
 
-        case 2:           // Cancel clicked or Escape pressed
+        case 2:            // Cancel clicked or Escape pressed
           return;
           break;
         }
     }
 
   if (!dataModel)
-    dataModel = new DataModel(); // create the data model
+    dataModel = new DataModelGUI(); // create the data model
 
   gpsFile = "";
   dataModel->createModel();
@@ -204,14 +199,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:           // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:            // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:           // Discard clicked or Alt+D pressed
+            case 1:            // Discard clicked or Alt+D pressed
               break;
 
-            case 2:           // Cancel clicked or Escape pressed
+            case 2:            // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -221,7 +216,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
         }
 
       if (!dataModel)
-        dataModel = new DataModel; // create a new data model
+        dataModel = new DataModelGUI; // create a new data model
 
       gpsFile = newFile;
 
@@ -298,14 +293,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:           // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:            // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:           // Discard clicked or Alt+D pressed
+        case 1:            // Discard clicked or Alt+D pressed
           break;
 
-        case 2:           // Cancel clicked or Escape pressed
+        case 2:            // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -327,14 +322,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:           // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:            // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:           // Discard clicked or Alt+D pressed
+            case 1:            // Discard clicked or Alt+D pressed
               break;
 
-            case 2:           // Cancel clicked or Escape pressed
+            case 2:            // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -539,14 +534,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:           // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:            // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:           // Discard clicked or Alt+D pressed
+            case 1:            // Discard clicked or Alt+D pressed
               break;
 
-            case 2:           // Cancel clicked or Escape pressed
+            case 2:            // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -557,7 +552,7 @@ void CopasiUI3Window::slotImportSBML()
 
       if (!dataModel)
         {
-          dataModel = new DataModel; // create a new data model
+          dataModel = new DataModelGUI; // create a new data model
         }
 
       dataModel->importSBML((const char *)SBMLFile.utf8());
@@ -604,5 +599,5 @@ void CopasiUI3Window::disable_object_browser_menu()
   bobject_browser_open = true;
 }
 
-DataModel* CopasiUI3Window::getDataModel()
+DataModelGUI* CopasiUI3Window::getDataModel()
 {return dataModel;}

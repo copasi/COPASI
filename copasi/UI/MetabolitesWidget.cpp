@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/30 16:04:39 $
+   $Date: 2004/07/02 13:47:35 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -19,6 +19,7 @@
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 
@@ -138,7 +139,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
       if (index != C_INVALID_INDEX)
         {
           dataModel->getModel()->
-          getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(*pMetab);
+          getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
           dataModel->getModel()->
           getCompartments()[pMetab->getCompartment()->getObjectName()]->
           getMetabolites().remove(pMetab->getObjectName());
@@ -276,7 +277,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                   // Yes or Enter
+    case 0:                    // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -288,7 +289,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                   // No or Escape
+    case 1:                    // No or Escape
       break;
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:18:33 $
+   $Date: 2004/07/02 13:47:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -23,14 +23,16 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
 #include <qtextbrowser.h>
+#include "copasiWidget.h"
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QLabel;
 class QLineEdit;
 class CModel;
+class CMoiety;
+
 class MoietyWidget1 : public CopasiWidget
   {
     Q_OBJECT

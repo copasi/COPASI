@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:17:24 $
+   $Date: 2004/07/02 13:47:34 $
    End CVS Header */
 
 /**********************************************************************
@@ -39,6 +39,7 @@
 #include "utilities/CCopasiException.h"
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
+#include "model/CModel.h"
 #include "listviews.h"
 #include "utilities/CGlobals.h"
 #include "function/CFunction.h"
@@ -798,7 +799,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                      // Yes or Enter
+        case 0:                       // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -830,7 +831,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                      // No or Escape
+        case 1:                       // No or Escape
           break;
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:25:51 $
+   $Date: 2004/07/02 13:47:47 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,7 +18,10 @@
  ** This file is used to create the visual tree based on the information obtained from the data
  ** model about the tree
  **********************************************************************/
+#include <qobjectlist.h>
+#include <qimage.h>
 
+#include "DataModelGUI.h"
 #include "CompartmentSymbols.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
@@ -56,6 +59,7 @@
 #include "model/CMetabNameInterface.h"
 #include "listviews.h"
 #include "qtUtilities.h"
+#include "utilities/CGlobals.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -236,7 +240,7 @@ ListViews::~ListViews()
  ** Description:-This method is used to set the datamodel to be used by the
  ** listview class to extract the data from the data-model
  ************************************************************************************/
-void ListViews::setDataModel(DataModel* dm)
+void ListViews::setDataModel(DataModelGUI* dm)
 {
   dataModel = dm;
 
@@ -361,9 +365,6 @@ void ListViews::ConstructNodeWidgets()
 
   modesWidget = new ModesWidget(this);
   modesWidget->hide();
-
-  //defaultWidget = new CopasiDefaultWidget(this);
-  //defaultWidget->hide();
 }
 
 /************************ListViews::addItem(QListViewItem* parent,Folder* child)------>
@@ -1084,10 +1085,10 @@ void ListViews::loadFunctionsToDataModel()
  ** Description:- This method is used to show the message box on the screen
  ****************************************************************************************/
 
-void ListViews::showMessage(QString title, QString text)
+/*void ListViews::showMessage(QString title, QString text)
 {
   QMessageBox::about (this, title, text);
-}
+}*/
 
 void ListViews::loadSteadyStateTaskNodes(CSteadyStateTask* steadystatetask)
 {
@@ -1140,7 +1141,7 @@ void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
 //static members **************************
 
 std::set<ListViews *> ListViews::mListOfListViews;
-DataModel* ListViews::dataModel;
+DataModelGUI* ListViews::dataModel;
 
 bool ListViews::attach()
 {

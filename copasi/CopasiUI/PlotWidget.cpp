@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:35:31 $
+   $Date: 2004/07/02 13:47:40 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -22,6 +22,8 @@
 #include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
+#include "plot/CPlotSpecVector.h"
+#include "DataModelGUI.h"
 
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {

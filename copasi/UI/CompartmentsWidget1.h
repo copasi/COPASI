@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/26 02:37:55 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -27,6 +27,8 @@ class QLineEdit;
 class QListBox;
 class QListBoxItem;
 class QPushButton;
+
+class CCompartment;
 
 class CompartmentsWidget1 : public CopasiWidget
   {

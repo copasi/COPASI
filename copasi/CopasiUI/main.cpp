@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 22:25:05 $
+   $Date: 2004/07/02 13:47:48 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -11,14 +11,15 @@
 #define COPASI_MAIN
 #include "copasiversion.h"
 
-#include "copasiui3window.h" 
-//#include "objectdebug.h"
+#include "copasiui3window.h"
+#include "objectdebug.h"
 
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
+#include "DataModelGUI.h"
 
 int main(int argc, char **argv)
 {
@@ -42,8 +43,8 @@ int main(int argc, char **argv)
   window.resize(640, 480);
   window.show();
 
-  //ObjectDebug objwindow;
-  //objwindow.show();
+  ObjectDebug objwindow;
+  objwindow.show();
 
   a.exec();
 

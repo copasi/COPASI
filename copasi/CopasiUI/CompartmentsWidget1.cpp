@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:16:13 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 /*******************************************************************
@@ -23,6 +23,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qlistbox.h>
+#include <qmessagebox.h>
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "CompartmentsWidget1.h"
@@ -31,6 +32,7 @@
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
+#include "DataModelGUI.h"
 
 /*
  *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
@@ -309,22 +311,22 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                 // Yes or Enter
+    case 0:                  // Yes or Enter
       {
-        unsigned C_INT32 size = Copasi->pModel->getCompartments().size();
-        unsigned C_INT32 index = Copasi->pModel->getCompartments().getIndex(comp->getObjectName());
+        unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
+        unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
         /*for (i = 0; i < imax; i++)
           {
             dataModel->getModel()->removeCompartment(keys[i]);
           }*/
         dataModel->getModel()->removeCompartment(objKey);
         //for (i = 0; i < imax; i++)
-        enter(Copasi->pModel->getCompartments()[std::min(index, size - 2)]->getKey());
+        enter(dataModel->getModel()->getCompartments()[std::min(index, size - 2)]->getKey());
         ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                 // No or Escape
+    case 1:                  // No or Escape
       break;
     }
 }

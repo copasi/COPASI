@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:35:32 $
+   $Date: 2004/07/02 13:47:43 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -18,8 +18,9 @@
 #include "MyTable.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
+#include "report/CReportDefinitionVector.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 22:22:45 $
+   $Date: 2004/07/02 13:47:27 $
    End CVS Header */
 
 #if !defined HANDLER_PROGRESS_BAR
@@ -11,7 +11,7 @@
 
 #include "utilities/COutputHandler.h"
 class QProgressDialog;
-class DataModel;
+class DataModelGUI;
 
 /**
  *  This is used to call the progress bar code
@@ -20,7 +20,7 @@ class DataModel;
 class CProgressBar : public CCallbackHandler
   {
   public:
-    CProgressBar(DataModel* dm);
+    CProgressBar(DataModelGUI* dm);
     virtual ~CProgressBar() {};
 
     virtual bool init(C_INT32 maxSteps, const std::string & text);
@@ -30,7 +30,7 @@ class CProgressBar : public CCallbackHandler
 
   private:
     QProgressDialog * mpWidget;
-    DataModel* mDataModel;
+    DataModelGUI* mDataModel;
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:17:24 $
+   $Date: 2004/07/02 13:47:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -24,6 +24,7 @@
 #include "mathmodel/CMathSymbol.h"
 #include "utilities/CGlobals.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "qtUtilities.h"

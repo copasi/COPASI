@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 08:17:23 $
+   $Date: 2004/07/02 13:47:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -21,6 +21,7 @@
 
 #include "FixedMetaboliteSymbols.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"

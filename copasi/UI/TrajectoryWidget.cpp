@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/30 11:46:43 $
+   $Date: 2004/07/02 13:47:44 $
    End CVS Header */
 
 /********************************************************
@@ -36,6 +36,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "trajectory/CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "CReportDefinitionSelect.h"
 

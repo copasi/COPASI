@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/18 15:53:51 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 13:47:39 $
    End CVS Header */
 
 /********************************************************
@@ -18,6 +18,7 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef OptimizationWidget_H
 #define OptimizationWidget_H
 
+#include <vector>
 #include <qvariant.h>
 #include "copasiWidget.h"
 
@@ -38,6 +39,7 @@ class QListBoxItem;
 class QCheckBox;
 class SteadyStateWidget;
 class TrajectoryWidget;
+class CCopasiObject;
 
 class OptimizationWidget : public CopasiParametersWidget
   {

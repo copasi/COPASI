@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:57:59 $
+   $Date: 2004/07/02 13:47:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,7 +17,9 @@
 #ifndef COPASI_TABLE_WIDGET_H
 #define COPASI_TABLE_WIDGET_H
 
-#include <qtable.h>
+#include <vector>
+
+//#include <qtable.h>
 #include "copasi.h"
 #include "copasiWidget.h"
 
@@ -26,6 +28,7 @@ class QGridLayout;
 class QTable;
 class QHBoxLayout;
 class MyTable;
+class CCopasiObject;
 
 class CopasiTableWidget : public CopasiWidget
   {
