@@ -497,36 +497,6 @@ void ScanWidget::loadScan(CModel *model)
         steadyState->setChecked(true);
       else
         steadyState->setChecked(false);
-
-      //      emit hide_me();
-      //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
-      for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
-        {
-          /*
-                    CMethodParameterList *itemList = scanProblem->getScanItem(i);
-                    itemList->getName();
-                    parameterTable = new QTable(scrollview, "parameterTable");
-                    parameterTable->setNumCols(1);
-                    parameterTable->setFocusPolicy(QWidget::WheelFocus);
-                    parameterTable->horizontalHeader()->setLabel(0, "Value");
-             pObject->getCN();
-                    for (C_INT32 j = 0; j < itemList->size(); j++)
-                      {
-                        parameterTable->setNumRows(itemList->size());
-                        //rowHeader->setLabel(j, itemList(j).c_str());
-           
-                        parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
-                        parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
-                      }
-                    vBox->insertChild(parameterTable);
-                    vBox->setSpacing(15);
-          */
-        }
-
-      //     emit show_me();
-      //      scrollview->addChild(vBox);
-      //      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
-      //      scrollview->setVScrollBarMode(QScrollView::Auto);
     }
 }
 
