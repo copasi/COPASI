@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:06:28 $
+   $Author: ssahle $ 
+   $Date: 2005/02/15 12:30:39 $
    End CVS Header */
 
 #ifndef CMCAWIDGET_H
@@ -47,12 +47,13 @@ class CMCAWidget : public CopasiWidget
     QFrame* line8_2;
     QLabel* taskNameLabel;
     QLabel* parameterValueLabel;
-    QLineEdit* taskName;
+    //QLineEdit* taskName;
     QTable* parameterTable;
     QPushButton* bRunButton;
     QPushButton* cancelChange;
     QPushButton* reportDefinitionButton;
     QCheckBox* taskSteadyState;
+    QCheckBox* bExecutable;
 
   public slots:
     virtual void CancelButtonClicked();

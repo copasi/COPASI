@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/07 18:54:46 $
+   $Date: 2005/02/15 12:32:29 $
    End CVS Header */
 
 /********************************************************
@@ -59,9 +59,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("TrajectoryWidget");
   setCaption(trUtf8("TrajectoryWidget"));
-  TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
+  TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 8, "TrajectoryWidgetLayout");
 
   //Name
+  /*
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
   taskNameLabel->setAlignment(int(QLabel::AlignVCenter
@@ -74,10 +75,37 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
+  */ 
+  //
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
 
-  line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
+  taskNameLabel = new QLabel(this, "taskNameLabel");
+  //taskNameLabel->setText(trUtf8("Task Name"));
+  taskNameLabel->setText(trUtf8("<h2>Time course</h2>"));
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignLeft));
+  //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  tmpLayout->addWidget(taskNameLabel);
+
+  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
+  //SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  tmpLayout->addWidget(bExecutable);
+
+  TrajectoryWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 1, 3);
+
+  QSpacerItem* spacer2 = new QSpacerItem(0, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
+  TrajectoryWidgetLayout->addItem(spacer2, 1, 1);
+
+  //line8 = new QFrame(this, "line8");
+  //line8->setFrameShape(QFrame::HLine);
+  //TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
 
   //*****************************
 
@@ -99,7 +127,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(nEndTime, 2, 3);
 
   TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
-  TextLabel1_2_2->setText(trUtf8("End Time"));
+  TextLabel1_2_2->setText(trUtf8("   End Time"));
   TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 2, 2);
 
   //****
@@ -121,28 +149,34 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(nStepNumber, 3, 3);
 
   TextLabel1_2 = new QLabel(this, "TextLabel1_2");
-  TextLabel1_2->setText(trUtf8("Intervals"));
+  TextLabel1_2->setText(trUtf8("   Intervals"));
   TrajectoryWidgetLayout->addWidget(TextLabel1_2, 3, 2);
 
-  QHBox* tmpBox = new QHBox(this);
+  tmpLayout = new QHBoxLayout();
+  //QHBox* tmpBox = new QHBox(this);
 
-  mCheckBoxStartOutput = new QCheckBox(tmpBox);
+  mCheckBoxStartOutput = new QCheckBox(this);
   mCheckBoxStartOutput->setText(trUtf8("Start output after t="));
-  //QLabel* tmpLable = new QLabel(tmpBox);
-  //tmpLable->setText(trUtf8("Start output after t="));
-  mLineEditStartOutput = new QLineEdit(tmpBox);
+  tmpLayout->addWidget(mCheckBoxStartOutput);
+
+  mLineEditStartOutput = new QLineEdit(this);
   mLineEditStartOutput->setValidator(new QDoubleValidator(nEndTime));
-  TrajectoryWidgetLayout->addMultiCellWidget(tmpBox, 4, 4, 1, 2);
+  tmpLayout->addWidget(mLineEditStartOutput);
+
+  tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
+
+  TrajectoryWidgetLayout->addMultiCellLayout(tmpLayout, 4, 4, 1, 3);
 
   //
   bStoreTimeSeries = new QCheckBox(this, "bStoreTimeSeries");
   bStoreTimeSeries->setText(trUtf8("store time series in memory "));
-  TrajectoryWidgetLayout->addWidget(bStoreTimeSeries, 5, 1);
+  TrajectoryWidgetLayout->addMultiCellWidget(bStoreTimeSeries, 5, 5, 1, 3);
 
   //
   setInitialState = new QCheckBox(this, "setInitialState");
   setInitialState->setText(trUtf8("Use result as new initial state"));
-  TrajectoryWidgetLayout->addWidget(setInitialState, 6, 1, Qt::AlignLeft);
+  TrajectoryWidgetLayout->addMultiCellWidget(setInitialState, 6, 6, 1, 3, Qt::AlignLeft);
 
   //****
   line7_2 = new QFrame(this, "line7_2");
@@ -224,7 +258,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 13, 13, 0, 3);
 
-  setTabOrder(taskName, bExecutable);
+  //setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, setInitialState);
   setTabOrder(setInitialState, nStartTime);
   setTabOrder(nStartTime, nEndTime);
@@ -481,8 +515,8 @@ void TrajectoryWidget::loadTrajectoryTask()
   assert(trajectorymethod);
 
   //name
-  taskName->setText(tr("Trajectory Task"));
-  taskName->setEnabled(false);
+  //taskName->setText(tr("Trajectory Task"));
+  //taskName->setEnabled(false);
 
   //numbers
   nStepSize->setText(QString::number(trajectoryproblem->getStepSize()));

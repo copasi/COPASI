@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/07 18:52:44 $
+   $Date: 2005/02/15 12:30:39 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -55,8 +55,10 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("CMCAWidget");
   setCaption(trUtf8("CMCAWidget"));
+
   CMCAWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CMCAWidgetLayout");
 
+  /*
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
   taskNameLabel->setAlignment(int(QLabel::AlignVCenter
@@ -65,6 +67,35 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
 
   taskName = new QLineEdit(this, "taskName");
   CMCAWidgetLayout->addWidget(taskName, 0, 1);
+  */
+
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
+
+  taskNameLabel = new QLabel(this, "taskNameLabel");
+  //taskNameLabel->setText(trUtf8("Task Name"));
+  taskNameLabel->setText(trUtf8("<h2>Metabolic<br>Control Analysis</h2>"));
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignLeft));
+  //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  tmpLayout->addWidget(taskNameLabel);
+
+  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
+  //SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  tmpLayout->addWidget(bExecutable);
+
+  CMCAWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 1, 2);
+
+  QSpacerItem* spacer2 = new QSpacerItem(0, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
+  CMCAWidgetLayout->addItem(spacer2, 1, 1);
+
+  //********************
 
   taskSteadyState = new QCheckBox(this, "taskSteadyState");
   taskSteadyState->setText(trUtf8("perform Steady State Analysis"));
@@ -132,7 +163,7 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   connect(taskSteadyState, SIGNAL(toggled(bool)), this, SLOT(taskSteadyStateToggled()));
 
   // tab order
-  setTabOrder(taskName, taskSteadyState);
+  //setTabOrder(taskName, taskSteadyState);
   setTabOrder(taskSteadyState, parameterTable);
   setTabOrder(parameterTable, bRunButton);
   setTabOrder(bRunButton, cancelChange);
@@ -272,8 +303,8 @@ void CMCAWidget::loadMCATask()
     dynamic_cast<CMCAMethod *>(mcaTask->getMethod());
   assert(mcaMethod);
 
-  taskName->setText(tr("Metabolic Control Analysis"));
-  taskName->setEnabled(false);
+  //  taskName->setText(tr("Metabolic Control Analysis"));
+  //  taskName->setEnabled(false);
 
   taskSteadyState->setChecked(mcaProblem->isSteadyStateRequested());
   this->initParameterTable();

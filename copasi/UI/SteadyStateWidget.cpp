@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/07 18:54:11 $
+   $Date: 2005/02/15 12:31:58 $
    End CVS Header */
 
 /********************************************************
@@ -63,28 +63,59 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
 
   //********** name ********************
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setText(trUtf8("Task Name"));
-  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
-                                  | QLabel::AlignRight));
-  SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
 
-  taskName = new QLineEdit(this, "taskName");
+  taskNameLabel = new QLabel(this, "taskNameLabel");
+  //taskNameLabel->setText(trUtf8("Task Name"));
+  taskNameLabel->setText(trUtf8("<h2>Steady state</h2>"));
+  //taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+  //                                | QLabel::AlignRight));
+  //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  tmpLayout->addWidget(taskNameLabel);
+
+  //taskName = new QLineEdit(this, "taskName");
   //taskName->setFrameShape(QLineEdit::LineEditPanel);
   //taskName->setFrameShadow(QLineEdit::Sunken);
-  SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
+  //SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
+
+  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
 
   bExecutable = new QCheckBox(this, "bExecutable");
-  setInitialState = new QCheckBox(this, "setInitialState");
   bExecutable->setText(trUtf8("Task Executable"));
-  setInitialState->setText(trUtf8("Use result as new initial state"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);
+  //SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  tmpLayout->addWidget(bExecutable);
+
+  SteadyStateWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 1, 2);
+
+  QSpacerItem* spacer2 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+  SteadyStateWidgetLayout->addItem(spacer2, 1, 1);
+
+  //*************************
+
+  setInitialState = new QCheckBox(this, "setInitialState");
+  setInitialState->setText(trUtf8("Use result as new initial state"));
   setInitialState->setChecked(parent == NULL);
   setInitialState->setEnabled(parent != NULL);
-  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
-  SteadyStateWidgetLayout->addWidget(setInitialState, 1, 2);
+  SteadyStateWidgetLayout->addWidget(setInitialState, 2, 1);
+
+  taskJacobian = new QCheckBox(this, "taskJacobian");
+  taskJacobian->setText(trUtf8("calculate Jacobian"));
+  SteadyStateWidgetLayout->addWidget(taskJacobian, 3, 1);
+
+  taskStability = new QCheckBox(this, "taskStability");
+  taskStability->setText(trUtf8("perform Stability Analysis"));
+  SteadyStateWidgetLayout->addWidget(taskStability, 3, 2);
+  taskStability->setEnabled(false);
+
+  line8_2 = new QFrame(this, "line8_2");
+  line8_2->setFrameShape(QFrame::HLine);
+  //line8_2->setFrameShadow(QFrame::Sunken);
+  //line8_2->setFrameShape(QFrame::HLine);
+  SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 4, 4, 0, 2);
 
   //line8 = new QFrame(this, "line8");
   //line8->setFrameShape(QFrame::HLine);
@@ -97,9 +128,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   parameterValueLabel->setText(trUtf8("Method parameters"));
   parameterValueLabel->setAlignment(int(QLabel::AlignVCenter
                                         | QLabel::AlignRight));
-  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
+  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 5, 0);
   QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  SteadyStateWidgetLayout->addItem(spacer, 5, 0);
+  SteadyStateWidgetLayout->addItem(spacer, 6, 0);
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
@@ -108,17 +139,17 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   colHeader->setLabel(0, tr("Value"));
   parameterTable->setColumnStretchable(0, true);
   parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 5, 6, 1, 2);
 
   QSpacerItem* spacer_3 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  SteadyStateWidgetLayout->addMultiCell(spacer_3, 6, 6, 0, 2);
+  SteadyStateWidgetLayout->addMultiCell(spacer_3, 7, 7, 0, 2);
 
   //************ line ********************
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
   //line6->setFrameShape(QFrame::HLine);
-  SteadyStateWidgetLayout->addMultiCellWidget(line6, 7, 7, 0, 2);
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 8, 8, 0, 2);
 
   //*************** buttons ********************
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
@@ -147,27 +178,12 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
 
-  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 2);
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 9, 9, 0, 2);
 
   //*********************
   //taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
   //taskDescriptionLabel->setText(trUtf8(""));
   //SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
-
-  taskJacobian = new QCheckBox(this, "taskJacobian");
-  taskJacobian->setText(trUtf8("calculate Jacobian"));
-  SteadyStateWidgetLayout->addWidget(taskJacobian, 2, 1);
-
-  taskStability = new QCheckBox(this, "taskStability");
-  taskStability->setText(trUtf8("perform Stability Analysis"));
-  SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
-  taskStability->setEnabled(false);
-
-  line8_2 = new QFrame(this, "line8_2");
-  line8_2->setFrameShape(QFrame::HLine);
-  //line8_2->setFrameShadow(QFrame::Sunken);
-  //line8_2->setFrameShape(QFrame::HLine);
-  SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runSteadyStateTask()));
@@ -180,7 +196,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   connect(taskJacobian, SIGNAL(toggled(bool)), this, SLOT(taskJacobianToggled()));
 
   // tab order
-  setTabOrder(taskName, bExecutable);
+  //setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, setInitialState);
   setTabOrder(setInitialState, taskJacobian);
   setTabOrder(taskJacobian, taskStability);
@@ -343,8 +359,8 @@ void SteadyStateWidget::loadSteadyStateTask()
     dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
   assert(steadystatemethod);
 
-  taskName->setText(tr("Steady State Task"));
-  taskName->setEnabled(false);
+  //taskName->setText(tr("Steady State Task"));
+  //taskName->setEnabled(false);
 
   bool bJacobian = steadystateproblem->isJacobianRequested();
   bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();

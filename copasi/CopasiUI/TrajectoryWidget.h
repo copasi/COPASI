@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/31 18:34:46 $
+   $Date: 2005/02/15 12:32:30 $
    End CVS Header */
 
 /********************************************************
@@ -90,7 +90,7 @@ class TrajectoryWidget : public CopasiWidget
     QLabel* taskNameLabel;
     QFrame* line7;
     QFrame* line7_2;
-    QLineEdit* taskName;
+    //QLineEdit* taskName;
     QComboBox* ComboBox1;
     QLineEdit* nStartTime;
     QCheckBox* bExecutable, *setInitialState;
