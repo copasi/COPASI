@@ -104,4 +104,6 @@ extern std::ofstream DebugFile;
 #define pdelete(p) {if (p) {delete p; p = NULL; }}
 #define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL; }}
 
+// suppress unused parameter warnings
+#define C_UNUSED(p)
 #endif // COPASI_copasi
