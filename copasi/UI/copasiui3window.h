@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/16 13:28:28 $
+   $Author: shoops $ 
+   $Date: 2005/02/22 23:15:18 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -29,6 +29,7 @@ class CopasiUI3Window : public QMainWindow
     DataModelGUI* getDataModel();
     void saveFile();
     TrajectoryWidget* getTrajectoryWidget();
+    void checkPendingMessages();
 
   protected:
     DataModelGUI* dataModel; // to keep track of the data model..

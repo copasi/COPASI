@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/02/22 23:15:18 $
    End CVS Header */
 
 #include <vector>
@@ -107,7 +107,7 @@ CopasiUI3Window::CopasiUI3Window():
   this->sliders->resize(350, 250);
 
   const COptions::nonOptionType & Files = COptions::getNonOptions();
-
+  checkPendingMessages();
   if (Files.size())
     slotFileOpen(FROM_UTF8(Files[0]));
   else
@@ -179,14 +179,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                       // Discard clicked or Alt+D pressed
+        case 1:                                                      // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                       // Cancel clicked or Escape pressed
+        case 2:                                                      // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -243,14 +243,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                       // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                       // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -395,14 +395,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                       // Discard clicked or Alt+D pressed
+        case 1:                                                      // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                       // Cancel clicked or Escape pressed
+        case 2:                                                      // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -424,14 +424,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                       // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                       // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -676,14 +676,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                       // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                       // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                       // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -811,4 +811,23 @@ void CopasiUI3Window::saveFile()
 TrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
 {
   return listViews->trajectoryWidget;
+}
+
+void CopasiUI3Window::checkPendingMessages()
+{
+  CCopasiMessage msg_pending = CCopasiMessage::getLastMessage();
+
+  if (msg_pending.getNumber() != MCCopasiMessage + 1)
+    {
+      QString text;
+      while (msg_pending.getNumber() != MCCopasiMessage + 1)
+        {
+          text += "\n";
+          text += FROM_UTF8(msg_pending.getText());
+          msg_pending = CCopasiMessage::getLastMessage();
+        }
+
+      QMessageBox::warning(this, QString("File Warning"), text,
+                           QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
 }

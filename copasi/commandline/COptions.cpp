@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/17 14:50:35 $
+   $Date: 2005/02/22 23:15:18 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -55,7 +55,9 @@ void COptions::init(C_INT argc, char *argv[])
 
     setValue("CopasiDir", PreOptions.CopasiDir);
     if (compareValue("CopasiDir", (std::string) ""))
-      setValue("CopasiDir", getCopasiDir());
+      {
+        setValue("CopasiDir", getCopasiDir());
+      }
 
     setValue("Home", PreOptions.Home);
     if (compareValue("Home", (std::string) ""))
@@ -201,6 +203,9 @@ std::string COptions::getCopasiDir(void)
       size_t PrgNameSize = 256;
       size_t Returned;
       char * PrgName = new char[PrgNameSize];
+
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "\nCopasi Directory is not set.\nThe help documentation might not be accessible!");
 
       while (!(Returned = GetModuleFileName(NULL, PrgName, PrgNameSize)) ||
              PrgNameSize == Returned)
