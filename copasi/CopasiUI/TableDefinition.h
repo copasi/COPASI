@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:02 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:44:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -40,7 +40,6 @@ class TableDefinition : public CopasiWidget
   public:
     TableDefinition(QWidget *parent, const char * name = 0, WFlags f = 0);
     void resizeEvent(QResizeEvent * re);
-    void createNewObject();
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
@@ -48,7 +47,6 @@ class TableDefinition : public CopasiWidget
 
   protected slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
@@ -56,6 +54,7 @@ class TableDefinition : public CopasiWidget
 
   private:
     void fillTable();
+    void createNewObject();
   };
 
 #endif

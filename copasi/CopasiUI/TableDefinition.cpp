@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/11 21:43:26 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:44:20 $
    End CVS Header */
 
 /*******************************************************************
@@ -130,10 +130,7 @@ void TableDefinition::slotTableCurrentChanged(int row,
   if (row >= table->numRows() || row < 0) return;
 
   if (row == table->numRows() - 1)
-    {
-      //TODO: create a new Object
-      createNewObject();
-    }
+  {createNewObject();}
 
   pListView->switchToOtherWidget(mKeys[row]);
 }
