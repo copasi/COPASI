@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:02 $
+   $Date: 2004/08/31 12:17:21 $
    End CVS Header */
 
 /**
@@ -21,10 +21,8 @@
 #ifndef COPASI_CState
 #define COPASI_CState
 
-#include "CParticleNumberList.h"
+#include "utilities/CVector.h"
 
-class CReadConfig;
-//class CWriteConfig;
 class CModel;
 class CStateX;
 
@@ -57,13 +55,13 @@ class CState
      *
      */
     /** @dia:route 2,0; h,107.298,-19.4621,117.574,-24.3708,127.851 */
-    CParticleNumberList mFixedNumbers;
+    CVector< C_FLOAT64 > mFixedNumbers;
 
     /**
      *
      */
     /** @dia:route 9,0; h,107.298,-17.5621,117.574,-24.3708,127.851 */
-    CParticleNumberList mVariableNumbers;
+    CVector< C_FLOAT64 > mVariableNumbers;
 
     // Operations
   public:
@@ -98,18 +96,6 @@ class CState
     CState & operator =(const CStateX & stateX);
 
     /**
-     * Load a state
-     * @param "CReadConfig &" configBuffer
-     */
-    virtual void load(CReadConfig & configBuffer);
-
-    /**
-     * Save a state
-     * @param "CWriteConfig &" configBuffer
-     */ 
-    //    virtual void save(CWriteConfig & configBuffer) const;
-
-    /**
      *
      */
     virtual void setModel(const CModel * pModel);
@@ -142,7 +128,7 @@ class CState
     /**
      *
      */
-    const unsigned C_INT32 & getFixedNumberSize() const;
+    unsigned C_INT32 getFixedNumberSize() const;
 
     /**
      *
@@ -157,7 +143,7 @@ class CState
     /**
      *
      */
-    const unsigned C_INT32 & getVariableNumberSize() const;
+    unsigned C_INT32 getVariableNumberSize() const;
 
     /**
      *
@@ -235,10 +221,12 @@ class CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                      const C_FLOAT64 & factor,
-                                      const C_FLOAT64 & resolution);
+    /* virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
+                                       const C_FLOAT64 & factor,
+                                       const C_FLOAT64 & resolution);*/
   };
+
+//**********************************************************************************************************
 
 /** @dia:pos 127.956,11.9075 */
 class CStateX: public CState
@@ -252,7 +240,7 @@ class CStateX: public CState
      *
      */
     /** @dia:route 13,0; h,107.298,-15.9621,117.627,11.9075,127.956 */
-    CParticleNumberList mDependentNumbers;
+    CVector< C_FLOAT64 > mDependentNumbers;
 
     // Operations
   public:
@@ -287,19 +275,6 @@ class CStateX: public CState
     CStateX & operator =(const CStateX & stateX);
 
     /**
-     * Load a state
-     * @param "CReadConfig &" configBuffer
-     */
-    virtual void load(CReadConfig & configBuffer);
-
-    /**
-     * Save a state
-     * @param "CWriteConfig &" configBuffer
-     * @param "const CState * pState
-     */ 
-    //    virtual void save(CWriteConfig & configBuffer);
-
-    /**
      *
      */
     virtual void setModel(const CModel * pModel);
@@ -317,7 +292,7 @@ class CStateX: public CState
     /**
      *
      */
-    const unsigned C_INT32 & getDependentNumberSize()const;
+    unsigned C_INT32 getDependentNumberSize()const;
 
     /**
      *
@@ -365,9 +340,9 @@ class CStateX: public CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
+    /*virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                       const C_FLOAT64 & factor,
-                                      const C_FLOAT64 & resolution);
+                                      const C_FLOAT64 & resolution);*/
   };
 
 #endif
