@@ -13,6 +13,9 @@
 
 #include "CCopasiVector.h"
 #include "CMethodParameter.h"
+#include "CReadConfig.h"
+
+class CWriteConfig;
 
 class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
   {

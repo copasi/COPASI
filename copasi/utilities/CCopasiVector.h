@@ -2,6 +2,7 @@
 #define COPASI_CCopasiVector
 
 #include <vector>
+#include <string>
 #include <iostream>
 #include <assert.h>
 
@@ -9,7 +10,7 @@ class CReadConfig;
 
 class CWriteConfig;
 
-class CCopasiMessage;
+#include "CCopasiMessage.h"
 
 template < class CType >
 
