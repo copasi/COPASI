@@ -69,14 +69,20 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
-
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
+          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
+          SLOT(slotCompartmentTableChanged(const QString &)));
+  connect(table, SIGNAL(selectionChanged ()), this,
+          SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this,
+          SLOT(slotBtnOKClicked()));
+  connect(table, SIGNAL(valueChanged(int , int)),
+          this, SLOT(tableValueChanged(int, int)));
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
+          SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent,
+          SLOT(dataModelUpdated()));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -96,7 +102,7 @@ void CompartmentsWidget::loadCompartments(CModel *model)
 }
 
 void CompartmentsWidget::slotTableCurrentChanged(int row,
-    int col,
+    int C_UNUSED(col),
     int C_UNUSED(m) ,
     const QPoint & C_UNUSED(n))
 {
@@ -104,7 +110,6 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       std::string name = "compartment";
-      CCompartment* newCompartment = new CCompartment();
       int i = 0;
       while (mModel->addCompartment(name, 1) == -1)
         {
