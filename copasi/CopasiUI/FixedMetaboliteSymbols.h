@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FixedMetaboliteSymbols.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:51:47 $
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /****************************************************************************
@@ -55,7 +55,6 @@ class FixedMetaboliteSymbols : public CopasiWidget
 
   private:
     void loadFixedMetaboliteSymbols(CMathModel *model);
-    void showMessage(QString caption, QString text);
   };
 
 #endif

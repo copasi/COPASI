@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:33 $
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -109,7 +109,6 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
       int index = 0;
       for (it = metabList.begin(); it != metabList.end();++it)
         {
-          //QMessageBox::information(this, "key",it->first.);
           constantMetab = it->second;
           table->setText(index, 0, FROM_UTF8(constantMetab->getName()));
           CCopasiObject *metabObject = constantMetab->getObject();
@@ -151,23 +150,11 @@ void FixedMetaboliteSymbols::slotTableSelectionChanged()
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void FixedMetaboliteSymbols::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void FixedMetaboliteSymbols::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 void FixedMetaboliteSymbols::resizeEvent(QResizeEvent * re)
 {

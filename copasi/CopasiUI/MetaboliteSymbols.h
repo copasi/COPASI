@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:51:47 $
+   $Date: 2004/07/02 15:24:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -51,7 +51,6 @@ class MetaboliteSymbols : public CopasiWidget
 
   private:
     void loadMetaboliteSymbols(CMathModel *model);
-    void showMessage(QString caption, QString text);
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:33 $
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -141,23 +141,11 @@ void FunctionSymbols::slotTableSelectionChanged()
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void FunctionSymbols::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void FunctionSymbols::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 void FunctionSymbols::resizeEvent(QResizeEvent * re)
 {

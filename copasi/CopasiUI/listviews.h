@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:48 $
+   $Date: 2004/07/02 15:25:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -138,7 +138,7 @@ class ListViews : public QSplitter
     void addItem(QListViewItem* parent, Folder* child);
     void addItem(QListView* parent, Folder* child);
     void addItem(Node<Folder>* child);
-    void showMessage(QString caption, QString text);
+    //void showMessage(QString caption, QString text);
     void loadModes(QListViewItem*);
     static void loadMetabolitesToDataModel();
     static void loadReactionsToDataModel();

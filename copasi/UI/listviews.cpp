@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:47 $
+   $Date: 2004/07/02 15:25:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -557,7 +557,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                          //Time course
+      case 23:                                           //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -566,10 +566,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                         //Report
+      case 43:                                          //Report
         return tableDefinition;
         break;
-      case 42:                                         //Plots
+      case 42:                                          //Plots
         return plotWidget;
         break;
       case 5:
@@ -1076,19 +1076,6 @@ void ListViews::loadFunctionsToDataModel()
       dataModel->addData(parent, f);
     }
 }
-
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
-/*void ListViews::showMessage(QString title, QString text)
-{
-  QMessageBox::about (this, title, text);
-}*/
 
 void ListViews::loadSteadyStateTaskNodes(CSteadyStateTask* steadystatetask)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:51:23 $
+   $Date: 2004/07/02 15:23:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -51,7 +51,6 @@ class ConstantSymbols : public CopasiWidget
 
   private:
     bool loadConstantSymbols(CMathModel *model);
-    void showMessage(QString caption, QString text);
   };
 
 #endif

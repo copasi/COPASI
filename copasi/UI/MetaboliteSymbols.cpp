@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:35 $
+   $Date: 2004/07/02 15:24:05 $
    End CVS Header */
 
 /*******************************************************************
@@ -151,23 +151,11 @@ void MetaboliteSymbols::slotTableSelectionChanged()
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void MetaboliteSymbols::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void MetaboliteSymbols::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 void MetaboliteSymbols::resizeEvent(QResizeEvent * re)
 {

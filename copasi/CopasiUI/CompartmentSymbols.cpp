@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Date: 2004/07/02 15:23:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -154,23 +154,11 @@ void CompartmentSymbols::slotTableSelectionChanged()
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void CompartmentSymbols::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void CompartmentSymbols::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 void CompartmentSymbols::resizeEvent(QResizeEvent * re)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 16:08:16 $
+   $Date: 2004/07/02 15:24:38 $
    End CVS Header */
 
 /*******************************************************************
@@ -121,7 +121,6 @@ bool ModelWidget::loadModel(CModel *model)
   for (temp1 = 0; model->TimeUnitName[temp1] /*!= ""*/; temp1++)
     {
       comboEntries.push_front(QString::fromUtf8(model->TimeUnitName[temp1]));
-      //QMessageBox::information(this, "tIME uNIT", model->TimeUnitName[temp1].);
     }
   ComboBox1->insertStringList(comboEntries, -1);
   ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnit()));
@@ -130,7 +129,6 @@ bool ModelWidget::loadModel(CModel *model)
   for (temp1 = 0; CModel::VolumeUnitName[temp1]  /*!= ""*/; temp1++)
     {
       comboEntries1.push_front(QString::fromUtf8(CModel::VolumeUnitName[temp1]));
-      //QMessageBox::information(this, "Volume Unit", model->VolumeUnitName[temp1].);
     }
   ComboBox2->insertStringList(comboEntries1, -1);
   ComboBox2->setCurrentText(FROM_UTF8(model->getVolumeUnit()));
@@ -139,7 +137,6 @@ bool ModelWidget::loadModel(CModel *model)
   for (temp1 = 0; CModel::QuantityUnitName[temp1] /*!= ""*/; temp1++)
     {
       comboEntries2.push_front(QString::fromUtf8(CModel::QuantityUnitName[temp1]));
-      //QMessageBox::information(this, "Volume Unit", model->QuantityUnitName[temp1].);
     }
   ComboBox3->insertStringList(comboEntries2, -1);
   ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnit()));

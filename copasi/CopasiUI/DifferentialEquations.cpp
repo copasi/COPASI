@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:32 $
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -114,23 +114,11 @@ void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void DifferentialEquations::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void DifferentialEquations::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 bool DifferentialEquations::update(ListViews::ObjectType objectType,
                                    ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:52 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /****************************************************************************
@@ -52,7 +52,6 @@ class FunctionSymbols : public CopasiWidget
 
   private:
     void loadFunctionSymbols(CMathModel *model);
-    void showMessage(QString caption, QString text);
   };
 
 #endif

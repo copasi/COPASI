@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/01/09 19:45:37 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 15:24:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -56,9 +56,6 @@ class ModesWidget : public CopasiWidget
 
     virtual void slotTableSelectionChanged();
     virtual void slotBtnCalculateClicked();
-
-  private:
-    void showMessage(QString caption, QString text);
   };
 
 #endif

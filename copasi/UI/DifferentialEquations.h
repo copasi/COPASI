@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:52 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 15:24:04 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,7 +43,6 @@ class DifferentialEquations : public CopasiWidget
 
   private:
     void loadDifferentialEquations(CMathModel * mathModel);
-    void showMessage(QString caption, QString text);
   };
 
 #endif
