@@ -58,6 +58,7 @@ class ScanWidget : public CopasiWidget
     static int nSelectedObjects;
     static int nTitleHeight;
     int activeObject;
+    QWidget* pParent;
     std::string scanTaskKey;
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);

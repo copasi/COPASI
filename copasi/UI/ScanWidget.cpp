@@ -55,7 +55,8 @@ int ScanWidget::nTitleHeight = 16;
  *  name 'name' and widget flags set to 'f'.
  */
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f)
+    : CopasiWidget(parent, name, f),
+    pParent(parent)
 {
   if (!name)
     setName("ScanWidget");
@@ -496,6 +497,7 @@ void ScanWidget::ScanButtonClicked()
   std::ofstream output("scan.txt");
   scanTask->initializeReporting(output);
   scanTask->process();
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
 }
 
 void ScanWidget::SteadyStateButtonClicked()
