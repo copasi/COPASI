@@ -108,6 +108,12 @@ class CKinFunction : public CFunction
     C_INT32 parse();
 
     /**
+     *  Set the description of the function
+     *  @param "const string &" description
+     */
+    virtual void setDescription(const std::string& description);
+
+    /**
      *  Calculates the value of the function
      *  @param "vector < void * >" identifiers
      *  @return "C_FLOAT64" result

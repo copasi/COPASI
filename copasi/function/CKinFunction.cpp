@@ -170,7 +170,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                  // this is an error
+        case N_NOP:                   // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -182,6 +182,17 @@ C_INT32 CKinFunction::parse()
     }
 
   return 0;
+}
+
+void CKinFunction::setDescription(const std::string& description)
+{
+  CFunction::setDescription(description);
+
+  cleanupNodes();
+  parse();
+  connectNodes();
+  createParameters();
+  initIdentifierNodes();
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
@@ -533,7 +544,7 @@ void CKinFunction::createParameters()
                   break;
 
                 case N_NOP:
-                  Parameter.setUsage("UNKNOWN");
+                  Parameter.setUsage("PARAMETER");
                   Parameters.add(Parameter);
                   break;
 
@@ -550,25 +561,27 @@ void CKinFunction::createParameters()
         }
     }
 
-  imax = Substrates.size();
+  getParameters().cleanup();
 
+  imax = Substrates.size();
   for (i = 0; i < imax; i++)
-    getParameters().add(Substrates[i]);
+    getParameters().add(*Substrates[i]);
+  Substrates.cleanup();
 
   imax = Products.size();
-
   for (i = 0; i < imax; i++)
-    getParameters().add(Products[i]);
+    getParameters().add(*Products[i]);
+  Products.cleanup();
 
   imax = Modifiers.size();
-
   for (i = 0; i < imax; i++)
-    getParameters().add(Modifiers[i]);
+    getParameters().add(*Modifiers[i]);
+  Modifiers.cleanup();
 
   imax = Parameters.size();
-
   for (i = 0; i < imax; i++)
-    getParameters().add(Parameters[i]);
+    getParameters().add(*Parameters[i]);
+  Parameters.cleanup();
 }
 
 void CKinFunction::initIdentifierNodes()
