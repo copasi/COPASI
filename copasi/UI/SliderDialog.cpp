@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/03/23 21:12:26 $
    End CVS Header */
 
 #include <iostream>
@@ -66,8 +66,9 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
 {
   this->setWFlags(this->getWFlags() | WStyle_StaysOnTop);
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
-
+  mainLayout->setMargin(5);
   QHBoxLayout* layout2 = new QHBoxLayout(0);
+  layout2->setMargin(3);
   layout2->addStretch();
   this->newSliderButton = new QPushButton(this);
   this->newSliderButton->setText("new slider");
