@@ -9,20 +9,12 @@ AC_INIT(acinclude.m4) dnl a source file from your sub dir
 dnl This is so we can use kde-common
 AC_CONFIG_AUX_DIR(admin)
 
-dnl This ksh/zsh feature conflicts with `cd blah ; pwd`
-unset CDPATH
-
-dnl Checking host/target/build systems, for make, install etc.
-AC_CANONICAL_SYSTEM
 dnl Perform program name transformation
 AC_ARG_PROGRAM
 
 dnl Automake doc recommends to do this only here. (Janos)
 AM_INIT_AUTOMAKE(copasi,0.1)
 
-dnl almost the same like KDE_SET_PEFIX but the path is /usr/local
-dnl
-unset CDPATH
 dnl make /usr/local the default for the installation
 AC_PREFIX_DEFAULT(/usr/local)
 
@@ -30,62 +22,32 @@ if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
-KDE_FAST_CONFIGURE
-KDE_CONF_FILES
 
-dnl without this order in this file, automake will be confused!
-dnl
-AM_CONFIG_HEADER(config.h)
+if test "${enable_debug}" != no; then
+  qt_release="CONFIG+=debug"
+else
+  qt_release="CONFIG+=release"
+fi
 
-dnl checks for programs.
-dnl first check for c/c++ compilers
-AC_CHECK_COMPILERS
+if test "${MKL_PATH}" != ""; then
+  cps_mkl_path="MKL_PATH=$MKL_PATH"
+fi
 
-dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
-dnl CFLAGS="$NOOPT_CFLAGS" dnl __kdevelop[noopt]__
-CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
+if test "${CLAPACK_PATH}" != ""; then
+  cps_clapack_path="CLAPACK_PATH=$CLAPACK_PATH"
+fi
 
-dnl create only shared libtool-libraries
-AC_ENABLE_SHARED(no)
+if test "${EXPAT_PATH}" != ""; then
+  cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
+fi
 
-dnl set the following to yes, if you want to create static
-dnl libtool-libraries, too.
-AC_ENABLE_STATIC(yes)
 
-dnl create a working libtool-script
-KDE_PROG_LIBTOOL
-
-dnl activate the next macro call for DLOPEN tests and setting LIBDL
-dnl   (n.b. KDE_MISC_TESTS does the same to you, so use either this or the next one)
-dnl KDE_CHECK_DLOPEN
-
-dnl activate the next macro call for some additional tests
-dnl   (compat, crypt, socket, nsl, dlopen, ...)
-dnl KDE_MISC_TESTS dnl __kdevelop__
-
-KDE_NEED_FLEX dnl __kdevelop__
-dnl AC_PROG_YACC dnl __kdevelop__
-
-KDE_CHECK_EXTRA_LIBS
-all_libraries="$all_libraries $USER_LDFLAGS"
-all_includes="$all_includes $USER_INCLUDES"
-AC_SUBST(all_includes)
-AC_SUBST(all_libraries)
-
-dnl for NLS support. Call them in this order!
-dnl WITH_NLS is for the po files
-AM_KDE_WITH_NLS
-
-if test "${enable_CopasiUI}" != no; then
-KDE_USE_QT(3)
-AC_PATH_QT
-fi;
-
-dnl KDE_NEED_FLEX dnl __kdevelop__
-dnl AC_PROG_YACC dnl __kdevelop__
-
-dnl Perform program name transformation
-dnl AC_ARG_PROGRAM
+(
+ cd copasi && \
+ qmake $cps_release $cps_mkl_path $cps_clapack_path $cps_expat_path && \
+ cat Makefile | sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' > $$.tmp && \
+ mv $$.tmp Makefile \
+)
 
 dnl add here all your Makefiles. These will be created by configure
-AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/mathmodel/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile copasi/xml/Makefile)
+AC_OUTPUT(Makefile)
