@@ -154,7 +154,7 @@ void CState::save(CWriteConfig & configBuffer)
   configBuffer.setVariable("State.Time", "C_FLOAT64", &mTime);
 
   Size = mVolumes.size();
-  configBuffer.setVariable("StateVolume.Size", "C_INT32", &Size);
+  configBuffer.setVariable("State.VolumeSize", "C_INT32", &Size);
 
   for (i = 0; i < (unsigned C_INT32) Size; i++)
     {
