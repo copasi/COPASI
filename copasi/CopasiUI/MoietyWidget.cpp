@@ -116,7 +116,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
 
 void MoietyWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
-  QString x = table->text(row, col);
+  QString x = table->text(row, 0);
   emit name(x);
 }
 

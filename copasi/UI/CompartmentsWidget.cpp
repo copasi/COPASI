@@ -110,7 +110,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(m) ,
     const QPoint & C_UNUSED(n))
 {
-  QString x = table->text(row, col);
+  QString x = table->text(row, 0);
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
 }
