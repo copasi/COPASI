@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.84 $ $Author: ssahle $ $Date: 2005/02/22 15:56:30 $  
+# $Revision: 1.85 $ $Author: ssahle $ $Date: 2005/02/27 20:26:47 $  
 ######################################################################
 
 include(../common.pri)
@@ -286,6 +286,9 @@ SOURCES += \
 HEADERS += \
            CMCAResultSubwidget.h \
            CUpDownSubwidget.h \
+           CScanWidgetBreak.h \
+           CScanWidgetRandom.h \
+           CScanWidgetRepeat.h \
            CScanWidgetScan.h \
            CScanWidgetTask.h  \ 
            objectdebug.h \
@@ -297,6 +300,9 @@ HEADERS += \
 SOURCES += \
            CMCAResultSubwidget.cpp \
            CUpDownSubwidget.cpp \
+           CScanWidgetBreak.cpp \
+           CScanWidgetRandom.cpp \
+           CScanWidgetRepeat.cpp \
            CScanWidgetScan.cpp \
            CScanWidgetTask.cpp \  
            objectdebug.cpp \
@@ -311,6 +317,9 @@ SOURCES += \
 # FORMS +=  SliderSettingsDialog.ui    
 # FORMS +=  objectdebug.ui       
 # FORMS += CUpDownSubwidget.ui
+# FORMS += CScanWidgetBreak.ui
+# FORMS += CScanWidgetRandom.ui
+# FORMS += CScanWidgetRepeat.ui
 # FORMS += CScanWidgetScan.ui
 # FORMS += CScanWidgetTask.ui
 

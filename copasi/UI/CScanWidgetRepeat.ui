@@ -1,0 +1,105 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CScanWidgetRepeat</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CScanWidgetRepeat</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>446</width>
+            <height>54</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>5</number>
+        </property>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>frame</cstring>
+            </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>207</red>
+                    <green>206</green>
+                    <blue>249</blue>
+                </color>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>labelTitle</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;h2&gt;Repeat&lt;/h2&gt;</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Maximum</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>16</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>labelNumber</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of iterations</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>lineEditNumber</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<includes>
+    <include location="local" impldecl="in declaration">utilities/CCopasiParameterGroup.h</include>
+    <include location="local" impldecl="in declaration">scan/CScanProblem.h</include>
+    <include location="local" impldecl="in implementation">CScanWidgetRepeat.ui.h</include>
+</includes>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">initFromScanItem( CCopasiParameterGroup * pg )</function>
+    <function returnType="bool">saveToScanItem( CScanProblem * pg ) const</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
