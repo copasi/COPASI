@@ -554,7 +554,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 114:
         return reactionsWidget1;
         break;
-      case 431:
+      case 43:
         return tableDefinition1;
         break;
       case 5:
@@ -806,16 +806,16 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   loadFunctionsToDataModel();
   updateAllListviews2(5);
 
-  updateAllListviews1(431);
+  updateAllListviews1(43);
   loadReportDefinition();
-  updateAllListviews2(431);
+  updateAllListviews2(43);
 
   return success;
 }
 
 void ListViews::loadReportDefinition()
 {
-  Folder * parent = dataModel->searchFolderList(431);
+  Folder * parent = dataModel->searchFolderList(43);
   Folder * f;
 
   dataModel->removeAllChildren(parent);
