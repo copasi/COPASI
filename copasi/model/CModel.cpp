@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.196 $
+   $Revision: 1.197 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 17:35:31 $
+   $Date: 2004/10/14 21:16:26 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,12 @@
 #include "utilities/COutputHandler.h"
 #include "CopasiUI/CReactionInterface.h"
 #include "clapackwrap.h"
+
+#ifdef COPASI_DEBUG
+#define CCHECK {check();}
+#else
+#define CCHECK
+#endif
 
 const char * CModel::VolumeUnitName[] =
   {"m3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
@@ -317,6 +323,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 bool CModel::compile()
 {
+  mCompileIsNecessary = false;
   CMatrix< C_FLOAT64 > LU;
 
   unsigned C_INT32 i, imax = mSteps.size();
@@ -346,6 +353,9 @@ bool CModel::compile()
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
+  //if (flag) std::cout << "* model dirty flag set. " << std::endl;
+
+  if (flag) initializeMetabolites();
 }
 
 bool CModel::compileIfNecessary()
@@ -373,24 +383,7 @@ void CModel::buildStoi()
   unsigned C_INT32 i, j, k, imax;
   std::string key;
 
-  imax = mMetabolites.size();
-  mMetabolitesX.resize(imax, false);
-  j = 0;
-
-  // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
-
-  for (i = 0; i < imax; i++)
-    if (mMetabolites[i]->getStatus() == CMetab::METAB_FIXED)
-      mMetabolitesX[imax - ++j] = mMetabolites[i];
-    else
-      mMetabolitesX[i - j] = mMetabolites[i];
-
-  // Update mMetabolites to reflect the reordering.
-  // We need to to this to allow the use of the full model for simulation.
-  // :TODO: This most definitely breaks output when reading Gepasi files.
-  //        CGlobal::OldMetabolites is still in the expexted order !!!
-  for (i = 0; i < imax; i++)
-    mMetabolites[i] = mMetabolitesX[i];
+  initializeMetabolites();
 
   mFluxes.resize(mSteps.size());
   mParticleFluxes.resize(mSteps.size());
@@ -401,7 +394,8 @@ void CModel::buildStoi()
       mParticleFluxes[i] = & mSteps[i]->getParticleFlux();
     }
 
-  mStoi.resize(imax - j, mSteps.size());
+  imax = mMetabolites.size();
+  mStoi.resize(imax - mNumFixed, mSteps.size());
 
   if (mpCompileHandler) mpCompileHandler->reInit(mStoi.numCols(),
         "building stoichiometry matrix...");
@@ -410,13 +404,12 @@ void CModel::buildStoi()
     {
       if (mpCompileHandler) mpCompileHandler->progress(i);
 
-      Structure = mSteps[i]->getChemEq().getBalances();
+      Structure = mSteps[i]->getChemEq().getBalances(); //TODO use reference
 
       for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
         {
           mStoi[j][i] = 0.0;
-          key = mMetabolites[j]->getKey();
-          // Name = mMetabolitesX[j]->getObjectName();
+          key = mMetabolites[j]->getKey(); //TODO use reference?
 
           for (k = 0; k < Structure.size(); k++)
             if (Structure[k]->getMetaboliteKey() == key)
@@ -811,7 +804,10 @@ void CModel::setTransitionTimes()
     }
 }
 
-void CModel::initializeMetabolites() //TODO: check if this is necessary
+//this is supposed to be so fast it can be called often to be kept up to date
+//all the time. At the moment it creates the mMetabolites and sorts the fixed
+//metabs to the end
+void CModel::initializeMetabolites()
 {
   unsigned C_INT32 i, j;
 
@@ -823,9 +819,28 @@ void CModel::initializeMetabolites() //TODO: check if this is necessary
     for (j = 0; j < mCompartments[i]->getMetabolites().size(); j++)
       {
         mMetabolites.add(mCompartments[i]->getMetabolites()[j]);
-        //        mCompartments[i]->getMetabolites()[j]->setModel(this);
-        // mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
       }
+
+  unsigned C_INT32 imax = mMetabolites.size();
+
+  mMetabolitesX.resize(imax, false);
+
+  // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
+
+  j = 0;
+  for (i = 0; i < imax; i++)
+    if (mMetabolites[i]->getStatus() == CMetab::METAB_FIXED)
+      mMetabolitesX[imax - ++j] = mMetabolites[i];
+    else
+      mMetabolitesX[i - j] = mMetabolites[i];
+
+  mNumFixed = j;
+  // Update mMetabolites to reflect the reordering.
+  // We need to to this to allow the use of the full model for simulation.
+  // :TODO: This most definitely breaks output when reading Gepasi files.
+  //        CGlobal::OldMetabolites is still in the expexted order !!!
+  for (i = 0; i < imax; i++)
+    mMetabolites[i] = mMetabolitesX[i];
 }
 
 //**********************************************************************
@@ -837,7 +852,10 @@ const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   {return mSteps;}
 
 const CCopasiVectorN< CReaction > & CModel::getReactionsX() const
-  {return mStepsX;}
+  {
+    CCHECK
+    return mStepsX;
+  }
 
 const CCopasiVector< CMetab > & CModel::getMetabolites() const
   {return mMetabolites;}
@@ -846,25 +864,25 @@ CCopasiVector< CMetab > & CModel::getMetabolites()
 {return mMetabolites;}
 
 CCopasiVector< CMetab > & CModel::getMetabolitesInd()
-{return mMetabolitesInd;}
+{CCHECK return mMetabolitesInd;}
 
 CCopasiVector< CMetab > & CModel::getMetabolitesDep()
-{return mMetabolitesDep;}
+{CCHECK return mMetabolitesDep;}
 
 const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
-  {return mMetabolitesX;}
+  {CCHECK return mMetabolitesX;}
 
 unsigned C_INT32 CModel::getTotMetab() const
   {return mMetabolites.size();}
 
 unsigned C_INT32 CModel::getIntMetab() const
-  {return mMetabolitesInd.size() + mMetabolitesDep.size();}
+  {return mMetabolites.size() - mNumFixed;}
 
 unsigned C_INT32 CModel::getIndMetab() const
-  {return mMetabolitesInd.size();}
+  {CCHECK return mMetabolitesInd.size();}
 
 unsigned C_INT32 CModel::getDepMetab() const
-  {return mMetabolitesDep.size();}
+  {CCHECK return mMetabolitesDep.size();}
 
 unsigned C_INT32 CModel::getTotSteps() const
   {return mSteps.size();}
@@ -885,25 +903,25 @@ const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
  *  Get the Reduced Stoichiometry Matrix of this Model
  */
 const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
-  {return mRedStoi;}
+  {CCHECK return mRedStoi;}
 
 /**
  *  Get the Stoichiometry Matrix of this Model
  */
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
-  {return mStoi;}
+  {CCHECK return mStoi;}
 
 const CCopasiVectorN < CMoiety > & CModel::getMoieties() const
-  {return mMoieties;}
+  {return mMoieties;} //TODO: resolv when to recalculate moieties...
 
 const CCopasiVectorN< CReaction > & CModel::getStepsX() const
-  {return mStepsX;}
+  {CCHECK return mStepsX;}
 
 const CModel::CLinkMatrixView & CModel::getL() const
-  {return mLView;}
+  {CCHECK return mLView;}
 
 const CModel::CStateTemplate & CModel::getStateTemplate() const
-  {return mStateTemplate;}
+  {CCHECK return mStateTemplate;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -928,10 +946,10 @@ const C_FLOAT64 & CModel::getTime() const
   {return mTime;}
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
-  {return mRowLU;}
+  {CCHECK return mRowLU;}
 
 const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
-  {return mColLU;}
+  {CCHECK return mColLU;}
 
 //**********************************************************************
 
@@ -1025,6 +1043,7 @@ CState CModel::getInitialState() const
 
 CStateX CModel::getInitialStateX() const
   {
+    CCHECK
     unsigned C_INT32 i, imax;
     CStateX s(this);
 
@@ -1061,6 +1080,10 @@ CStateX CModel::getInitialStateX() const
 
 void CModel::setInitialState(const CState * state)
 {
+#ifdef COPASI_DEBUG
+  state->check("CModel::setInitialState()");
+#endif
+
   unsigned C_INT32 i, imax;
 
   /* Set the volumes */
@@ -1088,6 +1111,7 @@ void CModel::setInitialState(const CState * state)
 
 void CModel::setInitialStateX(const CStateX * state)
 {
+  CCHECK
   unsigned C_INT32 i, imax;
 
   /* Set the volumes */
@@ -1119,6 +1143,9 @@ void CModel::setInitialStateX(const CStateX * state)
 
 void CModel::setState(const CState * state)
 {
+#ifdef COPASI_DEBUG
+  state->check("CModel::setState()");
+#endif
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
@@ -1143,6 +1170,7 @@ void CModel::setState(const CState * state)
 
 void CModel::setStateX(const CStateX * state)
 {
+  CCHECK
   unsigned C_INT32 i, imax;
   const C_FLOAT64 * Dbl;
 
@@ -1177,12 +1205,14 @@ void CModel::setStateX(const CStateX * state)
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const
   {
+    CCHECK
     (const_cast< CModel * >(this))->setStateX(&state);
     //TODO this could be done more efficiently
   }
 
 void CModel::updateRates()
 {
+  CCHECK
   unsigned C_INT32 j, jmax = mSteps.size();
   for (j = 0; j < jmax; ++j)
     mSteps[j]->calculate();
@@ -1951,3 +1981,11 @@ std::string CModel::suitableForStochasticSimulation() const
 
     return ""; // Model is appropriate for hybrid simulation
   }
+
+#ifdef COPASI_DEBUG
+void CModel::check() const
+  {
+    if (mCompileIsNecessary)
+    {std::cout << "******** compile should have been called" << std::endl;}
+  }
+#endif

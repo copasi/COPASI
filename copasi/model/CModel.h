@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 17:35:32 $
+   $Date: 2004/10/14 21:16:26 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -375,6 +375,11 @@ class CModel : public CCopasiContainer
     bool mCompileIsNecessary;
 
     CCallbackHandler * mpCompileHandler;
+
+    /**
+     * The number of fixed metabs in the model
+     */
+    C_INT32 mNumFixed;
 
   public:
     /**
@@ -952,6 +957,11 @@ class CModel : public CCopasiContainer
      * @return bool success
      */
     bool buildStateTemplate();
+
+#ifdef COPASI_DEBUG
+  public:
+    void check() const;
+#endif
   };
 
 #endif // CModel
