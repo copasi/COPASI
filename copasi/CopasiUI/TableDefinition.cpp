@@ -81,9 +81,8 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 void TableDefinition::fillTable()
 {
-  const std::vector<CReportDefinition*>* objects =
-    dataModel->getReportDefinitionVectorAddr()
-    ->getReportDefinitionsAddr();
+  const CCopasiVector< CReportDefinition >* objects =
+    dataModel->getReportDefinitionVectorAddr();
 
   C_INT32 j, jmax = objects->size();
   table->setNumRows(jmax);

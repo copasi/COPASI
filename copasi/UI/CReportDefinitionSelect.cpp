@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.14 2003/09/04 19:21:45 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.15 2003/09/10 15:01:36 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -123,14 +123,14 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   DataModel* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 i;
-  for (i = 0; i < pReportDefinitionVector->getReportDefinitionsAddr()->size(); i++)
-    reportDefinitionNameList->insertItem((*(pReportDefinitionVector->getReportDefinitionsAddr()))[i]->getName().c_str());
+  for (i = 0; i < pReportDefinitionVector->size(); i++)
+    reportDefinitionNameList->insertItem((*(pReportDefinitionVector))[i]->getName().c_str());
 
   if (!mpReport->getReportDefinition())
     {
       C_INT32 row;
       row = reportDefinitionNameList->currentItem();
-      mpReport->setReportDefinition((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+      mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(targetEdit->text().latin1());
     }
@@ -162,7 +162,7 @@ void CReportDefinitionSelect::confirmClicked()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
-  mpReport->setReportDefinition((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
+  mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
   mpReport->setAppend(appendChecked->isChecked());
   mpReport->setTarget(targetEdit->text().latin1());
   cleanup();
@@ -180,7 +180,7 @@ void CReportDefinitionSelect::jumpToEdit()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
-  pListView->switchToOtherWidget((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]->getKey());
+  pListView->switchToOtherWidget((*(pReportDefinitionVector))[row]->getKey());
   confirmClicked();
 }
 

@@ -521,13 +521,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:          //Time course
+      case 23:           //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:         //Report
+      case 43:          //Report
         return tableDefinition;
         break;
       case 5:
@@ -820,9 +820,8 @@ void ListViews::loadReportDefinition()
 
   dataModel->removeAllChildren(parent);
 
-  const std::vector<CReportDefinition*>* objects =
-    dataModel->getReportDefinitionVectorAddr()
-    ->getReportDefinitionsAddr();
+  const CCopasiVector< CReportDefinition > * objects =
+    dataModel->getReportDefinitionVectorAddr();
 
   C_INT32 j, jmax = objects->size();
 

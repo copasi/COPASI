@@ -22,7 +22,7 @@ class CReportDefinitionVector: public CCopasiVector< CReportDefinition >
 
     ~CReportDefinitionVector();
 
-    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
+    //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
     bool addReportDefinition(const std::string name, const std::string comment);
 
