@@ -499,7 +499,22 @@ void ScanWidget::ScanButtonClicked()
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   std::ofstream output("scan.txt");
   scanTask->initializeReporting(output);
+
+  //prepare for the output value addr
+  valueMatrix.resize(nSelectedObjects);
+  int objectIndex;
+  for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
+    {
+      valueAddrMatrix[objectIndex] = (C_FLOAT64*)((ScanItemWidget*)selectedList[2 * objectIndex])->getCopasiObject()->getReference();
+      valueMatrix[objectIndex] = *(valueAddrMatrix[objectIndex]);
+    }
+
   scanTask->process();
+
+  //restore the object value
+  for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
+    *(valueAddrMatrix[objectIndex]) = valueMatrix[objectIndex];
+
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
   unsetCursor();
 }

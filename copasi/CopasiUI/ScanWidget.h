@@ -61,7 +61,8 @@ class ScanWidget : public CopasiWidget
     int activeObject;
     QWidget* pParent;
     std::string scanTaskKey;
-    CVector<C_FLOAT64*> valueMatrix;
+    CVector<C_FLOAT64> valueMatrix;
+    CVector<C_FLOAT64*> valueAddrMatrix;
 
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
