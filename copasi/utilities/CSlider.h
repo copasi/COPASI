@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/27 14:17:45 $
+   $Author: gauges $ 
+   $Date: 2005/02/27 15:53:16 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -103,81 +103,87 @@ class CSlider : public CCopasiContainer
 
     /**
      * Set the slider type.
-     * @param const CSlider::Type & type
+     * @param const CSlider::Type  type
      * @return bool succes
      */
-    bool setSliderType(const CSlider::Type & type);
+    bool setSliderType(const CSlider::Type type);
 
     /**
      * Retrieve the slider type.
-     * @return const CSlider::Type & type
+     * @return const CSlider::Type  type
      */
-    const CSlider::Type & getSliderType() const;
+    const CSlider::Type getSliderType() const;
 
     /**
      * Set the slider value.
      * @param const C_FLOAT64 Value
      * @return bool succes
      */
-    bool setSliderValue(const C_FLOAT64 & value);
+    bool setSliderValue(const C_FLOAT64 value);
 
     /**
      * Retrieve the slider Value.
-     * @return const C_FLOAT64 & Value
+     * @return const C_FLOAT64 Value
      */
-    const C_FLOAT64 & getSliderValue() const;
+    const C_FLOAT64 getSliderValue() const;
 
     /**
      * Set the slider minimum value.
      * @param const C_FLOAT64 minValue
      * @return bool succes
      */
-    bool setMinValue(const C_FLOAT64 & minValue);
+    bool setMinValue(const C_FLOAT64 minValue);
 
     /**
      * Retrieve the slider minimum value.
-     * @return const C_FLOAT64 & minValue
+     * @return const C_FLOAT64  minValue
      */
-    const C_FLOAT64 & getMinValue() const;
+    const C_FLOAT64 getMinValue() const;
 
     /**
      * Set the slider maximum value.
      * @param const C_FLOAT64 maxValue
      * @return bool succes
      */
-    bool setMaxValue(const C_FLOAT64 & maxValue);
+    bool setMaxValue(const C_FLOAT64 maxValue);
 
     /**
      * Retrieve the slider maximum value.
      * @return const C_FLOAT64 & maxValue
      */
-    const C_FLOAT64 & getMaxValue() const;
+    const C_FLOAT64 getMaxValue() const;
 
     /**
      * Set the tick number.
      * @param const unsigned C_INT32 & tickNumber
      * @return bool succes
      */
-    bool setTickNumber(const unsigned C_INT32 & tickNumber);
+    bool setTickNumber(const unsigned C_INT32 tickNumber);
 
     /**
      * Retrieve the tick number.
      * @return const unsigned C_INT32 & tickNumber
      */
-    const unsigned C_INT32 & getTickNumber() const;
+    const unsigned C_INT32 getTickNumber() const;
 
     /**
      * Set the tick factor.
      * @param const unsigned C_INT32 & tickFactor
      * @return bool succes
      */
-    bool setTickFactor(const unsigned C_INT32 & tickFactor);
+    bool setTickFactor(const unsigned C_INT32 tickFactor);
 
     /**
      * Retrieve the tick factor.
      * @return const unsigned C_INT32 & tickFactor
      */
-    const unsigned C_INT32 & getTickFactor() const;
+    const unsigned C_INT32 getTickFactor() const;
+
+    /**
+     * Reset the minimum and maximum value to defaults. For the minimum this is
+     * half the current value. For the maximum this is twice the current value.
+     */
+    void resetRange();
 
     // Attributes
   private:
@@ -200,11 +206,6 @@ class CSlider : public CCopasiContainer
      * The value type of the slider's object.
      */
     Type mSliderType;
-
-    /**
-     * The value of the slider's object.
-     */
-    C_FLOAT64 mSliderValue;
 
     /**
      * The minimun value of the slider
