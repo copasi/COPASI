@@ -22,11 +22,14 @@ class CState;
 class COutputEvent;
 class CEigen;
 class CModel;
+class CReport;
 
 class CSteadyStateTask : public CCopasiContainer
   {
     //Attributes
   private:
+
+    CReport* mReport;
 
     /**
      * A pointer to the steady state problem.

@@ -22,12 +22,14 @@
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
 
 #define XXXX_Reporting
 
 CTrajectoryTask::CTrajectoryTask(const std::string & name,
                                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
+    mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(new CTrajectoryProblem),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod()),
@@ -40,6 +42,7 @@ CTrajectoryTask::CTrajectoryTask(const std::string & name,
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
                                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(src.mpProblem),
     mpMethod(src.mpMethod),
@@ -53,6 +56,7 @@ CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
                                  CTrajectoryMethod::Type type,
                                  const CCopasiContainer * pParent):
     CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
+    mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(pProblem),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, pProblem)),
@@ -68,6 +72,7 @@ CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  CTrajectoryMethod::Type type,
                                  const CCopasiContainer * pParent):
     CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
+    mReport(new CReport),
     mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, mpProblem)),
@@ -91,6 +96,7 @@ void CTrajectoryTask::cleanup()
   pdelete(mpOutInit);
   pdelete(mpOutPoint);
   pdelete(mpOutEnd);
+  pdelete(mReport);
 }
 
 std::string CTrajectoryTask::getKey() const {return mKey;}

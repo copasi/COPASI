@@ -19,12 +19,14 @@ class CTrajectoryProblem;
 //class CTrajectoryMethod;
 class CState;
 class COutputEvent;
+class CReport;
 
 class CTrajectoryTask : public CCopasiContainer
   {
     //Attributes
   private:
 
+    CReport* mReport;
     /**
      *  Key 
      */

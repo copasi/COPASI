@@ -15,6 +15,8 @@
 #include "output/COutputList.h"
 #include "output/COutput.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
+
 #include "model/CModel.h"
 #include "model/CState.h"
 
@@ -29,6 +31,7 @@ CScanTask::CScanTask():
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
     mpOutEnd(NULL),
+    mReport(new CReport),
     mKey(CKeyFactory::add("ScanTask", this))
 {}
 
@@ -38,6 +41,7 @@ CScanTask::CScanTask(const CScanTask & src):
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
     mpOutEnd(src.mpOutEnd),
+    mReport(new CReport),
     mKey(CKeyFactory::add("ScanTask", this))
 {}
 
@@ -50,6 +54,7 @@ void CScanTask::cleanup()
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpOutEnd);
+  pdelete(mReport);
 }
 
 void CScanTask::initializeReporting(std::ostream & out)

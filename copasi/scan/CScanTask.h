@@ -17,11 +17,14 @@
 
 class CScanMethod;
 class COutputEvent;
+class CReport;
 
 class CScanTask : public CCopasiContainer
   {
     //Attributes
   private:
+
+    CReport * mReport;
     /**
      * Flag indicating whether the task shall be executed by CopasiSE
      */
