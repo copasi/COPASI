@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:56 $
+   $Date: 2004/06/30 15:18:43 $
    End CVS Header */
 
 /**
@@ -43,7 +43,7 @@ class CChemEqElement : public CCopasiContainer
      * @param const std::string & name (default: "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CChemEqElement(const std::string & name = "NoName",
+    CChemEqElement(const std::string & name = "Chem Eq Element",
                    const CCopasiContainer * pParent = NULL);
 
     /**
@@ -111,6 +111,9 @@ class CChemEqElement : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os,
                                      const CChemEqElement & d);
+
+  private:
+    void initObjects();
   };
 
 #endif // COPASI_CChemEqElement
