@@ -43,6 +43,7 @@
 #include "utilities/CCopasiNode.h"
 #include "utilities/CCopasiTree.h"
 #include "mathmodel/CMathNode.h"
+#include "xml/CCopasiXMLInterface.h"
 
 using namespace std;
 
@@ -92,6 +93,7 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins);
 C_INT32 TestDependencyGraph();
 C_INT32 TestIndexedPriorityQueue(C_INT32);
 C_INT32 TestSpec2Model();
+C_INT32 TestCopasiXML();
 
 int main(int argc, char *argv[])
 {
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
       //      TestEigen();
       //      TestCopasiTree();
       //      TestTrajectory();
-      TestTrajectoryTask();
+      //      TestTrajectoryTask();
       //      TestMoiety();
       //      TestKinFunction();
       //      TestMassAction();
@@ -153,6 +155,8 @@ int main(int argc, char *argv[])
       //      TestSpec2Model();
 
       //      TestElementaryFluxMode();
+
+      TestCopasiXML();
     }
 
   catch (CCopasiException Exception)
@@ -432,7 +436,6 @@ C_INT32 TestReadSample(void)
   outbuf.flush();
 
   Copasi->pFunctionDB->cleanup();
-  //Copasi->pFunctionDB->initialize();
 
   CReadConfig inbuf2("copasi.gps");
   CModel model2;
@@ -1586,7 +1589,6 @@ C_INT32 ConvertFunctionDB(void)
   CFunctionDB FunctionDB;
 
   FunctionDB.setFilename("FunctionDBold.gps");
-  //FunctionDB.initialize();
 
   // FunctionDB.findLoadFunction("Mass action (reversible)");
   // FunctionDB.findLoadFunction("Mass action (irreversible)");
@@ -1911,26 +1913,37 @@ C_INT32 Testr250(void)
 }
 
 C_INT32 Testmt19937(void)
-{/*
-      CRandom * rand = CRandom::createGenerator();
-     
-      int i;
-      unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
-      ((Cmt19937*)rand)->init_by_array(init, length);
-      printf("1000 outputs of getRandomU()\n");
-      for (i = 0; i < 1000; i++)
-        {
-          printf("%10lu ", rand->getRandomU());
-          if (i % 5 == 4)
-            printf("\n");
-        }
-      printf("\n1000 outputs of genrand_real2()\n");
-      for (i = 0; i < 1000; i++)
-        {
-          printf("%10.8f ", rand->getRandomCO());
-          if (i % 5 == 4)
-            printf("\n");
-        }
-     
-      */return 0;
+{
+  /*
+    CRandom * rand = CRandom::createGenerator();
+   
+    int i;
+    unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
+    ((Cmt19937*)rand)->init_by_array(init, length);
+    printf("1000 outputs of getRandomU()\n");
+    for (i = 0; i < 1000; i++)
+      {
+        printf("%10lu ", rand->getRandomU());
+        if (i % 5 == 4)
+          printf("\n");
+      }
+    printf("\n1000 outputs of genrand_real2()\n");
+    for (i = 0; i < 1000; i++)
+      {
+        printf("%10.8f ", rand->getRandomCO());
+        if (i % 5 == 4)
+          printf("\n");
+      }
+  */
+  return 0;
+}
+
+C_INT32 TestCopasiXML()
+{
+  CMetab *pM = new CMetab();
+  pM = new CMetab();
+
+  string tmp = CCopasiXMLInterface::encode("a&sdhjkl<>\"'");
+  tmp = CCopasiXMLInterface::encode("мнопр");
+  return 0;
 }

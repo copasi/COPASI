@@ -22239,7 +22239,7 @@ fi;
 
 
 
-ac_config_files="$ac_config_files Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/mathmodel/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile"
+ac_config_files="$ac_config_files Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/mathmodel/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/scan/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile copasi/xml/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -22741,6 +22741,7 @@ do
   "copasi/steadystate/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/steadystate/Makefile" ;;
   "copasi/test/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/test/Makefile" ;;
   "copasi/pvmtest/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/pvmtest/Makefile" ;;
+  "copasi/xml/Makefile" ) CONFIG_FILES="$CONFIG_FILES copasi/xml/Makefile" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

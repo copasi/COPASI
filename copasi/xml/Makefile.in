@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.26 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -233,101 +233,51 @@ qt_libraries = @qt_libraries@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
-bin_PROGRAMS = test
+noinst_LIBRARIES = libcopasiXML.a
 
-test_SOURCES = \
-	test.cpp
-
-
-test_DEPENDENCIES = $(test_LIBS) check_LIBS
-
-test_LIBS = \
-	../elementaryFluxModes \
-	../mathmodel \
-	../model \
-	../function \
-	../output \
-	../optimization \
-	../randomGenerator \
-	../report \
-	../scan \
-	../steadystate \
-	../trajectory \
-	../utilities \
-	../xml
+libcopasiXML_a_SOURCES = \
+	CExpat.cpp \
+	CCopasiXMLInterface.cpp \
+	CCopasiXML.cpp
 
 
+EXTRA_DIST = \
+	CExpat.h CExpat.cpp \
+	CCopasiXMLInterface.h CCopasiXMLInterface.cpp \
+	CCopasiXML.h CCopasiXML.cpp
 
-# matrix_SOURCES = matrix.cpp
-EXTRA_DIST = test.cpp matrix.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
-
-# the library search path.
-LIBS = \
-	-Wl,-lelementaryFluxModes \
-	-Wl,-lcopasiXML \
-	-Wl,-lmathmodel \
-	-Wl,-lmodel \
-	-Wl,-lfunction \
-	-Wl,-loutput \
-	-Wl,-lreport \
-	-Wl,-loptimization \
-	-Wl,-lscan \
-	-Wl,-lsteadystate \
-	-Wl,-ltrajectory \
-	-Wl,-lrandomGenerator \
-	-Wl,-lutilities \
-	-Wl,-loutput \
-	-Wl,-lfunction \
-	-Wl,-lmodel \
-	-llapack -lblas -lF77 -lfl
-
-
-#  Use this for standard clapack
-#	-llapack -lblas -lF77 -lfl
-
-#  Use this for the intel performance library under linux
-#	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
-
-# the library search path.
-LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
-	-L../elementaryFluxModes \
-	-L../function \
-	-L../mathmodel \
-	-L../model \
-	-L../output \
-	-L../optimization \
-	-L../randomGenerator \
-	-L../report \
-	-L../scan \
-	-L../steadystate \
-	-L../trajectory \
-	-L../utilities \
-	-L../xml
-
-subdir = copasi/test
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+subdir = copasi/xml
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-bin_PROGRAMS = test$(EXEEXT)
-PROGRAMS = $(bin_PROGRAMS)
+LIBRARIES = $(noinst_LIBRARIES)
 
-am_test_OBJECTS = test.$(OBJEXT)
-#>- test_OBJECTS = $(am_test_OBJECTS)
-#>+ 1
-test_OBJECTS = test.$(OBJEXT)
-test_LDADD = $(LDADD)
-test_LDFLAGS =
+libcopasiXML_a_AR = $(AR) cru
+libcopasiXML_a_LIBADD =
+am_libcopasiXML_a_OBJECTS = CExpat.$(OBJEXT) \
+	CCopasiXMLInterface.$(OBJEXT) CCopasiXML.$(OBJEXT)
+#>- libcopasiXML_a_OBJECTS = $(am_libcopasiXML_a_OBJECTS)
+#>+ 5
+libcopasiXML_a_final_OBJECTS = libcopasiXML_a.all_cpp.o 
+libcopasiXML_a_nofinal_OBJECTS = CExpat.$(OBJEXT) \
+	CCopasiXMLInterface.$(OBJEXT) CCopasiXML.$(OBJEXT)
+@KDE_USE_FINAL_FALSE@libcopasiXML_a_OBJECTS = $(libcopasiXML_a_nofinal_OBJECTS)
+@KDE_USE_FINAL_TRUE@libcopasiXML_a_OBJECTS = $(libcopasiXML_a_final_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/test.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CCopasiXML.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CCopasiXMLInterface.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CExpat.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -347,16 +297,24 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(test_SOURCES)
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES = $(libcopasiXML_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(test_SOURCES)
+SOURCES = $(libcopasiXML_a_SOURCES)
 
 #>- all: all-am
 #>+ 1
 all: docs-am  all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .lo .o .obj
+.SUFFIXES: .cpp .lo .lpp .o .obj
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -368,42 +326,24 @@ distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 #>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/test/Makefile
+#>- $(AUTOMAKE) --gnu  copasi/xml/Makefile
 #>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/test/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/test/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/xml/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/xml/Makefile.in
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	CONFIG_HEADERS= CONFIG_LINKS= \
 	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	if test -f $$p \
-	|| test -f $$p1 \
-	; then \
-	f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
-	else :; fi; \
-	done
 
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
-	echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
-	rm -f $(DESTDIR)$(bindir)/$$f; \
-	done
+AR = ar
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-test$(EXEEXT): $(test_OBJECTS) $(test_DEPENDENCIES) 
-	@rm -f test$(EXEEXT)
-	$(CXXLINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libcopasiXML.a: $(libcopasiXML_a_OBJECTS) $(libcopasiXML_a_DEPENDENCIES) 
+	-rm -f libcopasiXML.a
+	$(libcopasiXML_a_AR) libcopasiXML.a $(libcopasiXML_a_OBJECTS) $(libcopasiXML_a_LIBADD)
+	$(RANLIB) libcopasiXML.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -411,7 +351,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiXML.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiXMLInterface.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CExpat.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -470,7 +412,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=test.dsp test 
+KDE_DIST=libcopasiXML.a CsbmlParser.h CsbmlParser.cpp sbmlParser.cpp 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -496,10 +438,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(LIBRARIES)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
 
 install: install-am
 install-exec: install-exec-am
@@ -528,9 +469,11 @@ maintainer-clean-generic:
 #>+ 1
 clean: kde-rpo-clean  clean-am
 
-#>- clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
-#>+ 1
-clean-am: clean-final  clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
+#>- clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
+#>- mostlyclean-am
+#>+ 2
+clean-am: clean-final  clean-generic clean-libtool clean-noinstLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 
@@ -547,7 +490,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 
 install-info: install-info-am
 
@@ -564,23 +507,31 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-binPROGRAMS uninstall-info-am
+uninstall-am: uninstall-info-am
 
-.PHONY: GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libtool distclean distclean-compile \
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
 	distclean-depend distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am info info-am install \
-	install-am install-binPROGRAMS install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool tags uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-info-am
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
 
 
-check_LIBS:
-	@+for d in $(test_LIBS); do (cd $$d && make || rm *.a); done
+.lpp.cpp:
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	-e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	-e 's/#include <unistd.h>/using namespace std;/' > $@
+
+%.cpp: %.lpp
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	-e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	-e 's/#include <unistd.h>/using namespace std;/' > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
@@ -597,38 +548,38 @@ apidox: apidox-am
 #>+ 6
 force-reedit:
 		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/test/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/test/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/xml/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/xml/Makefile.in
 
 
 #>+ 11
-test.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/test.cpp
-	@echo 'creating test.all_cpp.cpp ...'; \
-	rm -f test.all_cpp.files test.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> test.all_cpp.final; \
-	for file in test.cpp ; do \
-	  echo "#include \"$$file\"" >> test.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> test.all_cpp.final; \
+libcopasiXML_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CExpat.cpp $(srcdir)/CCopasiXMLInterface.cpp $(srcdir)/CCopasiXML.cpp
+	@echo 'creating libcopasiXML_a.all_cpp.cpp ...'; \
+	rm -f libcopasiXML_a.all_cpp.files libcopasiXML_a.all_cpp.final; \
+	echo "#define KDE_USE_FINAL 1" >> libcopasiXML_a.all_cpp.final; \
+	for file in CExpat.cpp CCopasiXMLInterface.cpp CCopasiXML.cpp ; do \
+	  echo "#include \"$$file\"" >> libcopasiXML_a.all_cpp.files; \
+	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libcopasiXML_a.all_cpp.final; \
 	done; \
-	cat test.all_cpp.final test.all_cpp.files > test.all_cpp.cpp; \
-	rm -f test.all_cpp.final test.all_cpp.files
+	cat libcopasiXML_a.all_cpp.final libcopasiXML_a.all_cpp.files > libcopasiXML_a.all_cpp.cpp; \
+	rm -f libcopasiXML_a.all_cpp.final libcopasiXML_a.all_cpp.files
 
 #>+ 3
 clean-final:
-	-rm -f test.all_cpp.cpp
+	-rm -f libcopasiXML_a.all_cpp.cpp
 
 #>+ 2
 final:
-	$(MAKE) all-am
+	$(MAKE) libcopasiXML_a_OBJECTS="$(libcopasiXML_a_final_OBJECTS)" all-am
 #>+ 2
 final-install:
-	$(MAKE) install-am
+	$(MAKE) libcopasiXML_a_OBJECTS="$(libcopasiXML_a_final_OBJECTS)" install-am
 #>+ 2
 no-final:
-	$(MAKE) all-am
+	$(MAKE) libcopasiXML_a_OBJECTS="$(libcopasiXML_a_nofinal_OBJECTS)" all-am
 #>+ 2
 no-final-install:
-	$(MAKE) install-am
+	$(MAKE) libcopasiXML_a_OBJECTS="$(libcopasiXML_a_nofinal_OBJECTS)" install-am
 #>+ 3
 cvs-clean:
 	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean

@@ -18,7 +18,8 @@ test_LIBS = \
 	../scan \
 	../steadystate \
 	../trajectory \
-	../utilities
+	../utilities \
+	../xml
 
 # matrix_SOURCES = matrix.cpp
 
@@ -32,6 +33,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 # the library search path.
 LIBS = \
 	-Wl,-lelementaryFluxModes \
+	-Wl,-lcopasiXML \
 	-Wl,-lmathmodel \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
@@ -57,17 +59,18 @@ LIBS = \
 # the library search path.
 LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
-        -L../function \
-        -L../mathmodel \
-        -L../model \
-        -L../output \
+	-L../function \
+	-L../mathmodel \
+	-L../model \
+	-L../output \
 	-L../optimization \
 	-L../randomGenerator \
-        -L../report \
-        -L../scan \
-        -L../steadystate \
-        -L../trajectory \
-        -L../utilities
+	-L../report \
+	-L../scan \
+	-L../steadystate \
+	-L../trajectory \
+	-L../utilities \
+	-L../xml
 
 check_LIBS:
-	@for d in $(test_LIBS); do (cd $$d && make || rm *.a); done
+	@+for d in $(test_LIBS); do (cd $$d && make || rm *.a); done
