@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:45:09 $
+   $Date: 2004/05/24 08:36:43 $
    End CVS Header */
 
 // Main
@@ -795,7 +795,9 @@ C_INT32 TestMoiety()
   mo.add(0, c.getMetabolites()[1]);
 
   //    C_FLOAT64 Value=mo.value();
-  string Description = mo.getDescription();
+  CModel model;
+
+  string Description = mo.getDescription(&model);
 
   // mo.change("metab 2", 2);
 
