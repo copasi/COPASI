@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/12 09:12:10 $
+   $Author: shoops $ 
+   $Date: 2005/01/18 20:21:41 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -216,6 +216,19 @@ class CCopasiParameter: public CCopasiContainer
      * Delete the value
      */
     void deleteValue();
+
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const CCopasiParameter & A
+     * @return ostream & os
+     */
+    friend std::ostream & operator << (std::ostream & os, const CCopasiParameter & A)
+    {
+      os << A.getObjectName() << ": " << A.mType << " 0x" << A.mpValue << std::endl;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CCopasiParameter
