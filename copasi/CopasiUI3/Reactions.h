@@ -2,17 +2,17 @@
 #define METABOLITES_WIDGET_H
 
 #include <qtable.h>
-#include "Model/CModel.h"
 
+class MyTreeAndListWidget;
 class MetabolitesWidget : public QWidget
 {
 protected:
+	MyTreeAndListWidget *myParent;
 	QTable *table;
-	CModel *mModel;
 	
 
 public:
-	MetabolitesWidget(CModel *model, QWidget *parent, const char * name=0, WFlags f=0);
+	MetabolitesWidget(QWidget *parent, const char * name=0, WFlags f=0);
 
 };
 

@@ -66,6 +66,7 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /GZ /c
 # ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(QTDIR)\include" /I "../../copasi" /I "../.." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /FR /YX /FD /GZ /c
@@ -79,6 +80,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 function.lib model.lib output.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept /libpath:"../Debug"
+# SUBTRACT LINK32 /profile /incremental:no /nodefaultlib
 
 !ENDIF 
 
@@ -111,7 +113,15 @@ SOURCE=.\moc_MyTreeAndListWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MyCheckListItem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MyTreeAndListWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -156,6 +166,10 @@ SOURCE=.\MetabolitesWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MyCheckListItem.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MyTreeAndListWidget.h
 
 !IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
@@ -186,6 +200,10 @@ InputName=MyTreeAndListWidget
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

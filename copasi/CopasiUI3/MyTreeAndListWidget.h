@@ -14,8 +14,9 @@
 #include "model/model.h"
 
 #include "MetabolitesWidget.h"
+#include "ReactionsWidget.h"
 
-class MyListView;
+
 class MyTreeAndListWidget : public QSplitter
 {
 	Q_OBJECT
@@ -32,22 +33,15 @@ protected:
 	CModel mModel;
 	QListViewItem* initializeTree();
 	
-	MyListView *ListView1;
+	QListView *ListView1;
 	QMultiLineEdit *bigWidget;
 	MetabolitesWidget *metabolitesWidget;
+	ReactionsWidget *reactionsWidget;
 
 protected slots:
     virtual void slotTreeSelectionChanged(QListViewItem*);
 
 
 };
-
-class MyListView : public QListView
-{
-public:
-	MyListView(QWidget * parent, const char * name);
-	void setOpen(QListViewItem * item, bool open );
-
-};
-
 #endif
+

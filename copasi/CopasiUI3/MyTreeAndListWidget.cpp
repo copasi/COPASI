@@ -1,5 +1,6 @@
 
 #include "MyTreeAndListWidget.h"
+#include "MyCheckListItem.h"
 #include <qmessagebox.h>
 
 
@@ -100,62 +101,39 @@ QPixmap *folderClosed = 0;
 QPixmap *folderOpen = 0;
 
 
-/*
-static const char* const folder_locked[] = { 
-"24 22 4 1",
-"# c #000000",
-"b c #808080",
-". c #c0c0c0",
-//". c None",
-"a c #ffffff",
-".######################.",
-"#aaaaaaaaaaaaaaaaaaaaab#",
-"#a...................bb#",
-"#a...................bb#",
-"#a......#######......bb#",
-"#a....##aaaaaaa##....bb#",
-"#a...#aaaaaaaaaaa#...bb#",
-"#a..#aaaaaaaaaaaaa#..bb#",
-"#a..#aaaaaaaaaaaaa#..bb#",
-"#a..#aaaaaaaaaaaaa#..bb#",
-"#a..#aaaaaaaaaaaaa#..bb#",
-"#a...#aaaaaaaaaaa#...bb#",
-"#a....##aaaaaaa##....bb#",
-"#a......#aa####......bb#",
-"#a......#a#..........bb#",
-"#a......##...........bb#",
-"#a......#............bb#",
-"#a...................bb#",
-"#a...................bb#",
-"#abbbbbbbbbbbbbbbbbbbbb#",
-"#bbbbbbbbbbbbbbbbbbbbbb#",
-".######################."};
-*/
 
-
-
-
-  
-/* 
- *  Constructs a CopasiUI2DialogBase which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
+/** 
+ *  Constructs a widget which has a tree on the left and an area to display
+ *  another widget on the right side of a splitter.
+ *  This widget is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'. 
+ *  @param parent The widget which this widget is a child of.
+ *  @param name The object name is a text that can be used to identify 
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
+ *  You can find an object by name (and type) using child(), and more than one 
+ *  using queryList(). 
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  for more information about these flags.
  */
 
 MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
     : QSplitter( Qt::Horizontal, parent, name )
 {
-
-    CReadConfig inbuf("gps/bakker.gps");
-	mModel.load(inbuf);
+    try
+	{
+		CReadConfig inbuf("gps/bakker.gps");
+		mModel.load(inbuf);
+	}
+	catch (CCopasiException Exception)
+    {
+      cout << Exception.getMessage().getText() << endl;
+    }
 
 	if ( !name )
 	setName( "MyTreeAndListWidget" );
         
 
-    ListView1 = new MyListView( this, "ListView1" );
+    ListView1 = new QListView( this, "ListView1" );
 	
 	
 	folderLocked = new QPixmap( ( const char** )folder_locked );
@@ -172,8 +150,13 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
 	bigWidget->setReadOnly(TRUE);
 
 	//Constructing the Metabolites Widget
-	metabolitesWidget = new MetabolitesWidget( this );
+	metabolitesWidget = new MetabolitesWidget( &mModel, this );
 	metabolitesWidget->hide();
+
+
+	//Constructing the Reactions Widget
+	reactionsWidget = new ReactionsWidget( this );
+	reactionsWidget->hide();
 	
 	   
 	// signals and slots connections
@@ -186,95 +169,181 @@ MyTreeAndListWidget::MyTreeAndListWidget( QWidget *parent, const char *name )
 }
 
 
+/**Method used to construct the subtrees in the tree widget. 
+ */
 
 QListViewItem* MyTreeAndListWidget::initializeTree()
 {
 	
-	/*QPixmap folderLocked( ( const char** ) folder_locked );
-	QPixmap folderLocked( ( const char** ) folder_open_xpm );
-	QPixmap folderClosed( ( const char** ) folder_closed_xpm );
-	*/
 
 	ListView1->addColumn( tr( "Select One" ) );
     ListView1->header()->setLabel( ListView1->header()->count() - 1, *folderLocked, tr( "Select One" ) );
 	ListView1->setRootIsDecorated ( TRUE );
-    QListViewItem * item_2 = new QListViewItem( ListView1, 0 );
+	QListViewItem *defaultItem, *after;
+
+	QListViewItem * item_2 = new QListViewItem( ListView1, 0 );
     item_2->setOpen( TRUE );
-    QListViewItem * item = new QListViewItem( item_2, 0 );
+    QListViewItem * item_3 = new QListViewItem( item_2, 0 );
+    item_3->setOpen( TRUE );
+    QListViewItem * item = new QListViewItem( item_3, 0 );
     item->setText( 0, tr( "Reactions" ) );
     item->setPixmap( 0, *folderClosed );
-    item_2->setOpen( TRUE );
-    item = new QListViewItem( item_2, item );
+    item_3->setOpen( TRUE );
+    item = new QListViewItem( item_3, item );
     item->setText( 0, tr( "Metabolites" ) );
     item->setPixmap( 0, *folderClosed );
-    item_2->setOpen( TRUE );
-    item = new QListViewItem( item_2, item );
+    item_3->setOpen( TRUE );
+    item = new QListViewItem( item_3, item );
     item->setText( 0, tr( "Compartments" ) );
     item->setPixmap( 0, *folderClosed );
-    item_2->setOpen( TRUE );
-    item = new QListViewItem( item_2, item );
+    item_3->setOpen( TRUE );
+    item = new QListViewItem( item_3, item );
     item->setText( 0, tr( "Moieties" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_3->setText( 0, tr( "BioChem" ) );
+    item_3->setPixmap( 0, *folderClosed );
+    item_2->setOpen( TRUE );
+    item = new QListViewItem( item_2, item_3 );
+    item->setText( 0, tr( "Maths" ) );
     item->setPixmap( 0, *folderClosed );
     item_2->setText( 0, tr( "Model" ) );
     item_2->setPixmap( 0, *folderClosed );
-	QListViewItem *defaultItem = item_2;
+	defaultItem = item_2;
 
-    item = new QListViewItem( ListView1, item_2 );
-    item->setText( 0, tr( "ODEs" ) );
-    item->setPixmap( 0, *folderClosed );
-
-    QListViewItem * item_3 = new QListViewItem( ListView1, item );
-    item_3->setOpen( TRUE );
-    item = new QListViewItem( item_3, item );
-    item->setText( 0, tr( "Time - Course" ) );
-    item->setPixmap( 0, *folderClosed );
-    item_3->setOpen( TRUE );
-    item = new QListViewItem( item_3, item );
-    item->setText( 0, tr( "Steady State" ) );
-    item->setPixmap( 0, *folderClosed );
-    item_3->setText( 0, tr( "Tasks" ) );
-    item_3->setPixmap( 0, *folderClosed );
-
-    item = new QListViewItem( ListView1, item_3 );
-    item->setText( 0, tr( "Simulation" ) );
-    item->setPixmap( 0, *folderClosed );
-
-    QListViewItem * item_4 = new QListViewItem( ListView1, item );
+    QListViewItem * item_4 = new QListViewItem( ListView1, item_2 );
     item_4->setOpen( TRUE );
-    item = new QListViewItem( item_4, item );
-    item->setText( 0, tr( "Dynamics" ) );
+    QListViewItem * item_5 = new QListViewItem( item_4, item_2 );
+    item_5->setOpen( TRUE );
+    item = new QListViewItem( item_5, item_2 );
+    item->setText( 0, tr( "Mass Conservation" ) );
     item->setPixmap( 0, *folderClosed );
+    item_5->setOpen( TRUE );
+    item = new QListViewItem( item_5, item );
+    item->setText( 0, tr( "Elementary Modes" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_5->setText( 0, tr( "Stoichiometry" ) );
+    item_5->setPixmap( 0, *folderClosed );
     item_4->setOpen( TRUE );
-    item = new QListViewItem( item_4, item );
+    
+	after = item_5;
+	//QListViewItem * item_6 = new QListViewItem( item_4, item_5 );
+	MyCheckListItem * item_6 = new MyCheckListItem( item_4, "TimeCourse", QCheckListItem::CheckBox);
+	item_6->moveItem(after);
+    item_6->setOpen( TRUE );
+	
+
+    item = new QListViewItem( item_6, item_5 );
+    item->setText( 0, tr( "Trajectory" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_6->setOpen( TRUE );
+    item = new QListViewItem( item_6, item );
+    item->setText( 0, tr( "Phase Plane" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_6->setOpen( TRUE );
+    
+		
+	item = new QListViewItem( item_6, item );
     item->setText( 0, tr( "MCA" ) );
     item->setPixmap( 0, *folderClosed );
+    item_6->setText( 0, tr( "Time Course" ) );
+    item_6->setPixmap( 0, *folderClosed );
     item_4->setOpen( TRUE );
-    item = new QListViewItem( item_4, item );
+    
+	//QListViewItem * item_7 = new QListViewItem( item_4, item_6 );
+    after = item_6;
+	MyCheckListItem * item_7 = new MyCheckListItem( item_4, "SteadyState", QCheckListItem::CheckBox);
+	item_7->moveItem(after);
+	
+	item_7->setOpen( TRUE );
+    item = new QListViewItem( item_7, item_6 );
+    item->setText( 0, tr( "State" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_7->setOpen( TRUE );
+    item = new QListViewItem( item_7, item );
+    item->setText( 0, tr( "MCA" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_7->setOpen( TRUE );
+    item = new QListViewItem( item_7, item );
     item->setText( 0, tr( "Stability" ) );
     item->setPixmap( 0, *folderClosed );
-    item_4->setOpen( TRUE );
-    item = new QListViewItem( item_4, item );
-    item->setText( 0, tr( "Structure" ) );
+    item_7->setOpen( TRUE );
+    
+    item = new QListViewItem( item_7, item );
+	item->setText( 0, tr( "Bifurcation" ) );
     item->setPixmap( 0, *folderClosed );
-    item_4->setText( 0, tr( "Analysis" ) );
+    item_7->setText( 0, tr( "Steady - State" ) );
+    item_7->setPixmap( 0, *folderClosed );
+    item_4->setText( 0, tr( "Tasks" ) );
     item_4->setPixmap( 0, *folderClosed );
 
-    item = new QListViewItem( ListView1, item_4 );
+    QListViewItem * item_8 = new QListViewItem( ListView1, item_4 );
+    item_8->setOpen( TRUE );
+    item = new QListViewItem( item_8, item_4 );
+    item->setText( 0, tr( "Scan" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_8->setOpen( TRUE );
+    item = new QListViewItem( item_8, item );
+    item->setText( 0, tr( "Optimization" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_8->setText( 0, tr( "Multiple Tasks" ) );
+    item_8->setPixmap( 0, *folderClosed );
+
+    QListViewItem * item_9 = new QListViewItem( ListView1, item_8 );
+    item_9->setOpen( TRUE );
+    item = new QListViewItem( item_9, item_8 );
+    item->setText( 0, tr( "Data File" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_9->setOpen( TRUE );
+    item = new QListViewItem( item_9, item );
+    item->setText( 0, tr( "Method" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_9->setText( 0, tr( "Fitting" ) );
+    item_9->setPixmap( 0, *folderClosed );
+
+    QListViewItem * item_10 = new QListViewItem( ListView1, item_9 );
+    item_10->setOpen( TRUE );
+    item = new QListViewItem( item_10, item_9 );
+    item->setText( 0, tr( "Plots" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_10->setOpen( TRUE );
+    item = new QListViewItem( item_10, item );
+    item->setText( 0, tr( "Pathway" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_10->setOpen( TRUE );
+    item = new QListViewItem( item_10, item );
+    item->setText( 0, tr( "Reports" ) );
+    item->setPixmap( 0, *folderClosed );
+    item_10->setText( 0, tr( "Output" ) );
+
+    item = new QListViewItem( ListView1, item_10 );
     item->setText( 0, tr( "Preferences" ) );
     item->setPixmap( 0, *folderClosed );
+
 
 	//This prohibits sorting...original order maintained.
 	ListView1->setSorting (-1);
 	//ListView1->setShowSortIndicator (true);
-    ListView1->setGeometry( QRect( 10, 10, 200, 400 ) ); 
+    ListView1->setGeometry( QRect( 10, 10, 600, 400 ) ); 
+	
+	//Setting Items under checkbox unselectable. Should be close to the
+	//end (after the children have been initialized);
+	item_6->stateChange(FALSE);
+	item_7->stateChange(FALSE);
 	
 	return defaultItem;
 }
 
-
+/**Called when user clicks on a new item on the tree. Changes that are to be 
+ * done as a result of clicking a new folder in the tree are to be done here. 
+ */
 void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 {
     
+	/**Maintains static
+	* variables to remember the last item clicked. The last item has
+	* to be remembered so that it may be modified (for example 
+	* to change back their icon etc).
+	*/
 	static QListViewItem* lastSelection = NULL;
 	static QWidget* lastWidget = NULL;
 	static QWidget* currentWidget = bigWidget;
@@ -301,6 +370,11 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 		lastWidget->hide();
 		currentWidget = metabolitesWidget;
 	}
+	else if  (selectedItem == "Reactions")
+	{
+		lastWidget->hide();
+		currentWidget = reactionsWidget;
+	}
 	else if  (selectedItem == "ODEs")
 	{
 		//Carry on this way for other Items
@@ -326,34 +400,4 @@ void MyTreeAndListWidget::slotTreeSelectionChanged(QListViewItem* item)
 }
 
 
-
-/*********************************
-Class MyListViewItem
-**********************************
-*/
-
-
-MyListView::MyListView(QWidget * parent, const char * name):QListView(parent, name)
-{
-}
-
-void MyListView::setOpen(QListViewItem * item, bool open )
-{
-	/*
-	if (open)
-	{
-		item->setPixmap( 0, *folderClosed );
-	}
-	else
-	{
-		item->setPixmap( 0, *folderOpen );
-	}*/
-	QListView::setOpen(item, open);
-}
-
-
-
-
-
-		
 	

@@ -1,16 +1,32 @@
 #include <qlayout.h>
 #include <qwidget.h>
 
-#include "MetabolitesWidget.h"
-#include "MyTreeAndListWidget.h"
-#include "Model/CModel.h"
+
 #include "Model/CMetab.h"
 
-MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags f)
+#include "MetabolitesWidget.h"
+#include "MyTreeAndListWidget.h"
+
+/** 
+ *  Constructs a Widget for the Metabolites subsection of the tree for 
+ *  displaying the Metabolites in model 'model'.
+ *  This widget is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'. 
+ *  @param model The CModel class which contains the metabolites 
+ *  to be displayed.
+ *  @param parent The widget which this widget is a child of.
+ *  @param name The object name is a text that can be used to identify 
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
+ *  You can find an object by name (and type) using child(), and more than one 
+ *  using queryList(). 
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  for more information about these flags.
+ */
+MetabolitesWidget::MetabolitesWidget(CModel *model, QWidget *parent, const char * name, WFlags f)
 						: QWidget(parent, name, f)
 {
-	myParent = (MyTreeAndListWidget*) parent;
-	CModel *mModel = myParent->getModel();
+	
+	this->mModel = model;
 	vector < CMetab * > metabolites = mModel->getMetabolites();
 	C_INT32 noOfRows = metabolites.size();
 		
@@ -24,6 +40,13 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 	tableHeader->setLabel(2, "Status");
 	tableHeader->setLabel(3, "Concentration");
 
+
+	//Setting Column Widths
+	table->setColumnWidth ( 0, 100 );
+	table->setColumnWidth ( 1, 75 ); 
+	table->setColumnWidth ( 2, 75 );
+	table->setColumnWidth ( 3, 75 );
+
 	CMetab *metab;
 	for (int i = 0; i < noOfRows; i++)
 	{
@@ -32,17 +55,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 		table->setText(i, 1, QString::number(metab->getNumber()));
 		table->setText(i, 2, QString::number(metab->getStatus()));
 		table->setText(i, 3, QString::number(*(metab->getConcentration())));
-		
-
 	}
+	table->sortColumn (0, TRUE, TRUE);
 	
 }
-
-
-
-
-
-
-
-
 

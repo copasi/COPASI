@@ -9,6 +9,10 @@
 #include "trajectory/trajectory.h"
 #include "utilities/utilities.h"
 
+
+
+/**The main function for the COPASI UI.
+*/
 int main( int argc, char** argv )
 {
 	QApplication app( argc, argv );
@@ -16,8 +20,9 @@ int main( int argc, char** argv )
 	CopasiUI3Window window;
 	app.setMainWidget(&window);
 
+	window.resize(800, 600);
 	window.show();
-
+	
 	return app.exec();
 }
 
