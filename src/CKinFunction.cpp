@@ -8,7 +8,16 @@
 
 short DefinedInsertAllowed(CNodeK src);
 
-CKinFunction::CKinFunction() {SetReversible(FALSE);}
+CKinFunction::CKinFunction() 
+{
+  SetReversible(FALSE);
+  IdentifierTypes().resize(5);
+  IdentifierTypes()[0] = 0;
+  IdentifierTypes()[1] = N_SUBSTRATE;
+  IdentifierTypes()[2] = N_PRODUCT;
+  IdentifierTypes()[3] = N_MODIFIER;
+  IdentifierTypes()[4] = N_KCONSTANT;
+}
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
@@ -73,13 +82,13 @@ long CKinFunction::Save(CWriteConfig & configbuffer)
 CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
 
 void CKinFunction::SetIdentifierType(const string & name,
-                                char type)
+                                char identifierType)
 {
     long Index = 0;
     
     if ( Index = FindIdentifier(name) < 0 ) FatalError();
     for (long i = 0; i < mIdentifiers[Index].mNodes.size(); i++)
-        mIdentifiers[Index].mNodes[i]->SetSubtype(type);
+        mIdentifiers[Index].mNodes[i]->SetSubtype(identifierType);
 }
 
 long CKinFunction::Parse()

@@ -26,7 +26,6 @@ public:
         ALL
     };
     
-    
 private:
     /**
      *  Initializes the input buffer for reading.

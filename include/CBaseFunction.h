@@ -16,7 +16,20 @@
 class CBaseFunction
 {
 // Attributes
+public:
+  typedef enum Type
+    {
+      BASIC = 0,
+      USERDIFINED,
+      BUILIN
+    };
+  
 private:
+    /**
+     *  The type of the function
+     */
+    Type mType;
+ 
     /**
      *  The name of the function
      */
@@ -35,7 +48,7 @@ private:
     /**
      *  Vector of allowed types of the function
      */
-    vector < char > mTypes;
+    vector < char > mIdentifierTypes;
 
     /**
      *  Vector of identifiers of the function
@@ -61,6 +74,12 @@ public:
     virtual void SetName(const string & name);
 
     /**
+     *  Set the name of the function
+     *  @param "CBaseIdentifier::TYPE" &type
+     */
+    virtual void SetType(enum Type type);
+
+    /**
      *  Set the description of the function
      *  @param "const string" &description
      */
@@ -77,6 +96,12 @@ public:
      *  @return string
      */
     virtual string GetName();
+    
+    /**
+     *  Retrieves the name of the function
+     *  @return enum Type
+     */
+    virtual long GetType();
     
     /**
      *  Retrieves the description of the function
@@ -97,11 +122,18 @@ public:
     virtual vector < char > & IdentifierTypes();
 
     /**
+     *  Retrieves the number of identifiers of a specific type
+     *  @param char identifierType Default = 0 (all identifiers)
+     *  @return long
+     */
+    virtual long NoIdentifiers(char identifierType = 0);
+
+    /**
      *  Retrieves the vector of identifiers of a specific type
-     *  @param char type Default = 0 (all identifiers)
+     *  @param char identifierType Default = 0 (all identifiers)
      *  @return "vector < char > &"
      */
-    virtual vector< CBaseIdentifier * > Identifiers(char type = 0);
+    virtual vector< CBaseIdentifier * > Identifiers(char identifierType = 0);
 
     /**
      *  Calculates the value of the function

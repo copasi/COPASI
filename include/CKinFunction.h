@@ -48,7 +48,7 @@ private:
     vector < CIdentifier > mIdentifiers;
 
     /**
-     *  This indicates whether the function is reversible
+     *  Internal variable
      */
     long mNidx;
 
@@ -92,10 +92,10 @@ public:
     /**
      *  This sets the type of an identifier
      *  @param "const string" &name
-     *  @param char type
+     *  @param char identifierType
      */
     void SetIdentifierType(const string & name,
-                           char type);
+                           char identifierType);
 
     /**
      *  This parses the function longo a binary tree
