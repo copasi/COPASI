@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 16:59:28 $
+   $Date: 2004/04/19 08:55:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -18,6 +18,7 @@ CPlotSpecVector::CPlotSpecVector(const std::string & name,
     mKey(GlobalKeys.add("CPlotSpecVector", this)),
     pSource(NULL),
     ncols(0),
+    mReport(),
     inputFlag(NO_INPUT)
 {}
 
@@ -43,7 +44,7 @@ bool CPlotSpecVector::addNewPlotSpec(const std::string name /*, const std::strin
     if ((*this)[i]->getName() == name)
       return false; // duplicate name
 
-  CPlotSpec* pNewPlotSpec = new CPlotSpec();
+  CPlotSpec* pNewPlotSpec = new CPlotSpec(name, this);
   //pNewPlotSpec->setComment(comment);
   pNewPlotSpec->setObjectName(name);
 

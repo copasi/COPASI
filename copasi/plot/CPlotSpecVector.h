@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/15 16:55:06 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:55:43 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -12,7 +12,8 @@
 #include <iostream> 
 //#include <vector>
 #include <string>
-#include "utilities/CCopasiVector.h" 
+#include "utilities/CCopasiVector.h"
+#include "report/CReport.h" 
 //#include "CPlotSpec.h"
 
 #include "CPlotSpec.h"
@@ -27,6 +28,8 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     std::istream* pSource;
     C_INT32 ncols;
 
+    CReport mReport;
+
     std::vector<C_FLOAT64> data;
     std::streampos position;
 
@@ -40,8 +43,8 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     bool updateAllPlots();
 
   public:
-    CPlotSpecVector(const std::string & name = "noname",
-                    const CCopasiContainer* pParent = NULL);
+    CPlotSpecVector(const std::string & name = "PlotSpecs",
+                    const CCopasiContainer* pParent = &RootContainer);
 
     ~CPlotSpecVector();
 
