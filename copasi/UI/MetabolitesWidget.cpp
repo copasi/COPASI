@@ -78,8 +78,8 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
 
       //Emptying the table
       int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
+      int i;
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -90,8 +90,8 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
 
       //Now filling the table.
       CMetab *metab;
-
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+      C_INT32 j;
+      for (j = 0; j < noOfMetabolitesRows; j++)
         {
           metab = metabolites[j];
           table->setText(j, 0, metab->getName().c_str());

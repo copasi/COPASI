@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 steadystate.lib report.lib $(QTDIR)\lib\qt-mt302.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib utilities.lib function.lib mathmodel.lib model.lib output.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
+# ADD LINK32 steadystate.lib report.lib $(QTDIR)\lib\qt-mt307.lib mkl_lapack.lib mkl_p3.lib mkl_c.lib utilities.lib function.lib mathmodel.lib model.lib output.lib trajectory.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -202,6 +202,14 @@ SOURCE=.\moc_MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\moc_SteadyStateWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\moc_TrajectoryWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ModesWidget.cpp
 # End Source File
 # Begin Source File
@@ -266,19 +274,11 @@ SOURCE=.\SteadyStateWidget.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\SteadyStateWidget.moc.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Subject.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\TrajectoryWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\TrajectoryWidget.moc.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -998,7 +998,7 @@ SOURCE=..\elementaryFluxModes\CElementaryFluxModes.moc
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
+InputDir=\GRA\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
 
@@ -1011,7 +1011,7 @@ InputName=CElementaryFluxModes
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - MOCing CElementaryFluxModes.cpp...
-InputDir=\Documents and Settings\msinghal\DESKTOP\copasi_dev\copasi\elementaryFluxModes
+InputDir=\GRA\copasi_dev\copasi\elementaryFluxModes
 InputPath=..\elementaryFluxModes\CElementaryFluxModes.moc
 InputName=CElementaryFluxModes
 

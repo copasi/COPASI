@@ -75,8 +75,8 @@ void ModesWidget::loadModes(CModel *model)
       mModel = model;
     }
   int numberOfRows = table->numRows();
-
-  for (int i = 0; i < numberOfRows; i++)
+  int i;
+  for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
     }
@@ -121,8 +121,8 @@ void ModesWidget::slotBtnCalculateClicked()
 
   //Emptying the table
   int numberOfRows = table->numRows();
-
-  for (int i = 0; i < numberOfRows; i++)
+  int i;
+  for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
     }
@@ -135,7 +135,8 @@ void ModesWidget::slotBtnCalculateClicked()
   //QMessageBox::information(this, "recahed ",y);
   table->setNumRows(noOfModesRows);
   //bool status;
-  for (C_INT32 j = 0; j < noOfModesRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfModesRows; j++)
     {
       // status=modes->isFluxModeReversible(j);
       if (modes->isFluxModeReversible(j) == true)

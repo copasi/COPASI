@@ -80,8 +80,8 @@ void CompartmentsWidget::loadCompartments(CModel *model)
       mModel = model;
       //Emptying the table
       int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
+      int i;
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -95,8 +95,8 @@ void CompartmentsWidget::loadCompartments(CModel *model)
 
       //Now filling the table.
       const CCompartment *compartn;
-
-      for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
+      C_INT32 j;
+      for (j = 0; j < noOfCompartmentsRows; j++)
         {
           compartn = compartments[j];
           table->setText(j, 0, compartn->getName().c_str());

@@ -74,8 +74,8 @@ void ReactionsWidget::loadReactions(CModel *model)
       mModel = model;
       //Emptying the table
       int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
+      int i;
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -87,8 +87,8 @@ void ReactionsWidget::loadReactions(CModel *model)
 
       // Now filling the table.
       CReaction *reactn;
-
-      for (C_INT32 j = 0; j < noOfReactionsRows; j++)
+      C_INT32 j;
+      for (j = 0; j < noOfReactionsRows; j++)
         {
           reactn = reactions[j];
           table->setText(j, 0, reactn->getName().c_str());
@@ -99,7 +99,7 @@ void ReactionsWidget::loadReactions(CModel *model)
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-  int i = 0; //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
+  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()

@@ -322,8 +322,8 @@ void MetabolitesWidget1::loadName(QString setValue)
         }
 
       ComboBox1->setDuplicatesEnabled (false);
-
-      for (int m = 0; m < allcompartments.size(); m++)
+      int m;
+      for (m = 0; m < allcompartments.size(); m++)
         {
           //showMessage("mudita","It comes here");
 

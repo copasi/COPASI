@@ -243,8 +243,8 @@ void CopasiUI3Window::createToolBar()
                "command from the File menu.";
 
   QToolButton* toolb;
-
-  for (int j = 0; j < 3; j++)
+  int j;
+  for (j = 0; j < 3; j++)
     {
       toolb = new QToolButton(icon[j], iconName[j], QString::null,
                               this, slotFileName[j], tbMain);
@@ -313,8 +313,8 @@ void CopasiUI3Window::createMenuBar()
 
   file = new QPopupMenu(this);
   menuBar()->insertItem("&File", file);
-
-  for (int j = 0; j < 7; j++)
+  int j;
+  for (j = 0; j < 7; j++)
     {
       if (fileSeperator[j] == 1)
         file->insertSeparator();

@@ -43,8 +43,8 @@ void Subject::detach(Observer* o)
 void Subject::notify(int status)
 {
   int length = _observers.size();
-
-  for (int i = 0; i < length; i++)
+  int i;
+  for (i = 0; i < length; i++)
     _observers[i]->update(this, status);
 }
 Subject::Subject(){}

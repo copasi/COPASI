@@ -217,8 +217,8 @@ void ListViews::initFolders()
 void ListViews::setupFolders()
 {
   folders->clear();
-
-  for (Folder* f = lstFolders.first(); f; f = lstFolders.next())
+  Folder* f;
+  for (f = lstFolders.first(); f; f = lstFolders.next())
     (void)new FolderListItem(folders, f);
 }
 
@@ -911,8 +911,8 @@ void ListViews::loadMetabolites(QListViewItem* i)
 
   //Now filling the table.
   CMetab *metab;
-
-  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfMetabolitesRows; j++)
     {
       metab = metabolites[j];
       f = new Folder(p, metab->getName().c_str());
@@ -948,8 +948,8 @@ void ListViews::loadMoieties(QListViewItem* i)
 
   //Now filling the table.
   CMoiety *moiety;
-
-  for (unsigned C_INT32 j = 0; j < moieties->size(); j++)
+  unsigned C_INT32 j;
+  for (j = 0; j < moieties->size(); j++)
     {
       moiety = (*moieties)[j];
       f = new Folder(p, moiety->getName().c_str());
@@ -984,8 +984,8 @@ void ListViews::loadReactions(QListViewItem* i)
 
   //Now filling the table.
   CReaction *reactn;
-
-  for (unsigned C_INT32 j = 0; j < reactions->size(); j++)
+  unsigned C_INT32 j;
+  for (j = 0; j < reactions->size(); j++)
     {
       reactn = (*reactions)[j];
       f = new Folder(p, reactn->getName().c_str());
@@ -1023,8 +1023,8 @@ void ListViews::loadCompartments(QListViewItem* i)
 
   //Now filling the table.
   const CCompartment *compartn;
-
-  for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfCompartmentsRows; j++)
     {
       compartn = compartments[j];
       f = new Folder(p, compartn->getName().c_str());
@@ -1070,8 +1070,8 @@ void ListViews::loadFunction()
 
   //Now filling the table.
   CFunction *funct;
-
-  for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfFunctionsRows; j++)
     {
       funct = Functions[j];
       f = new Folder(p, funct->getName().c_str());

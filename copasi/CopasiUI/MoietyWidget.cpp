@@ -63,8 +63,8 @@ void MoietyWidget::loadMoieties(CModel *model)
       mModel = model;
       //Emptying the table
       int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
+      int i;
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -76,8 +76,8 @@ void MoietyWidget::loadMoieties(CModel *model)
 
       //Now filling the table.
       CMoiety *moiety;
-
-      for (C_INT32 j = 0; j < noOfMoietyRows; j++)
+      C_INT32 j;
+      for (j = 0; j < noOfMoietyRows; j++)
         {
           moiety = moieties[j];
           table->setText(j, 0, moiety->getName().c_str());

@@ -43,14 +43,14 @@ void MyTable::keyPressEvent (QKeyEvent * e)
 
       switch (choice)
         {
-        case 0:   // Yes or Enter
+        case 0:    // Yes or Enter
           {
             removeSelectedRows(true);
             //True for Completely selected rows.
             break;
           }
 
-        case 1:   // No or Escape
+        case 1:    // No or Escape
           {
             // No
             break;
@@ -67,8 +67,8 @@ void MyTable::setDeleteConfirmation(bool enable)
 void MyTable::removeRow(int row)
 {
   int I = numRows();
-
-  for (int i = row; i < I - 1; i++)
+  int i;
+  for (i = row; i < I - 1; i++)
     {
       swapRows(i, i + 1);
     }
@@ -80,8 +80,8 @@ void MyTable::removeSelectedRows(bool full)
 {
   int I = numRows();
   int noOfRowsDeleted = 0;
-
-  for (int i = 0; i < I; i++)
+  int i;
+  for (i = 0; i < I; i++)
     {
       if (noOfRowsDeleted > 0)
         {

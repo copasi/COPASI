@@ -551,8 +551,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       //QMessageBox::information(this, products[start], "products ");
       //start++;
     }
-
-  for (unsigned int i = 0; i < functionParameters.size(); i++)
+  unsigned int i;
+  for (i = 0; i < functionParameters.size(); i++)
     {
       std::string p4 = functionParameters[i]->getUsage();
       usagetypes[i] = p4;

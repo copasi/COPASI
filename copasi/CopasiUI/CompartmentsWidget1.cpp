@@ -178,8 +178,8 @@ void CompartmentsWidget1::loadName(QString setValue)
   const CMetab *mtb;
   ListBox1->setAutoScrollBar(true);
   ListBox1->clear();
-
-  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfMetabolitesRows; j++)
     {
       mtb = Metabs[j];
       ListBox1->insertItem(mtb->getName().c_str());

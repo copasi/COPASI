@@ -61,7 +61,8 @@ void FunctionWidget::loadFunction()
 {
   //Emptying the table
   int numberOfRows = table->numRows();
-  for (int i = 0; i < numberOfRows; i++)
+  int i;
+  for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
     }
@@ -75,7 +76,8 @@ void FunctionWidget::loadFunction()
   //Now filling the table.
 
   CFunction *funct;
-  for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
+  C_INT32 j;
+  for (j = 0; j < noOfFunctionsRows; j++)
     {
       funct = Functions[j];
       table->setText(j, 0, funct->getName().c_str());
