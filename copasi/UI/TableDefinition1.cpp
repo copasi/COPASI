@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.18 2003/09/12 03:22:03 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.19 2003/09/12 19:12:10 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -317,9 +317,12 @@ void TableDefinition1::slotBtnConfirmClicked()
           pReportDefinition->getHeaderAddr()->push_back(pSelectedObject->getCN());
           // not sure about the full list of possible ancestor types
           // future work: see if there is any other objects
-          pObjectAncestor = pSelectedObject->getObjectAncestor("Compartment");
-          if (!pObjectAncestor)
-            pObjectAncestor = pSelectedObject->getObjectAncestor("Model");
+          /*
+                    pObjectAncestor = pSelectedObject->getObjectAncestor("Compartment");
+                    if (!pObjectAncestor)
+                      pObjectAncestor = pSelectedObject->getObjectAncestor("Model");
+          */
+          pObjectAncestor = pSelectedObject->getObjectParent();
           // Ancestor existing
           if (!pObjectAncestor)
             pReportDefinition->getBodyAddr()->push_back(pObjectAncestor->getCN());
