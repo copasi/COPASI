@@ -100,7 +100,7 @@ void TableDefinition::fillTable()
 
 void TableDefinition::createNewObject()
 {
-  std::string name = "compartment";
+  std::string name = "ReportDefinition_0";
   int i = 0;
   while (!dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, ""))
     {
