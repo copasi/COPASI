@@ -44,7 +44,13 @@ template < class Node > class CCopasiTree
       /**
        * A forward iterator used to traverse the tree.
        */
-    class iterator: public std::iterator<Node, ptrdiff_t>
+#if (defined __GNUC__ && __GNUC__ < 3)
+    class iterator: public std::forward_iterator< Node, ptrdiff_t >
+#else
+    class iterator:
+            public std::iterator< std::forward_iterator_tag, Node, ptrdiff_t >
+#endif
+
         {
         private:
           /**
