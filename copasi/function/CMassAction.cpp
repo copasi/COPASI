@@ -85,20 +85,21 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
   return (unsigned C_INT32) - 1;
 }*/
 
-std::string CMassAction::getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const
+std::string CMassAction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+                                       const std::string &r) const
   {
     std::string sf, tmpstr;
     unsigned C_INT32 i, imax;
-    std::vector< std::string*>* Factor;
+    const std::vector<std::string> * pFactors;
 
-    imax = ((std::vector< std::string *> *)callParameterNames[1])->size();   // NoSubstrates
+    pFactors = &(callParameterNames[1]);   // first substr.
+    imax = pFactors->size();   // NoSubstrates
     if (imax)
       {
-        sf = *(std::string *) callParameterNames[0] + r;           // k1
-        Factor = ((std::vector< std::string*>*)callParameterNames[1]);   // first substr.
+        sf = callParameterNames[0][0] + r;           // k1
         for (i = 0; i < imax; i++)
           {
-            FixSName(*(*Factor)[i], tmpstr);
+            FixSName((*pFactors)[i], tmpstr);
             sf += "*" + tmpstr;
           }
       }
@@ -106,14 +107,14 @@ std::string CMassAction::getSBMLString(const CCallParameterPointers & callParame
     if (isReversible() == TriFalse)
       return sf;
 
-    imax = ((std::vector< std::string *> *)callParameterNames[3])->size();   // NoSubstrates
+    pFactors = &(callParameterNames[3]);
+    imax = pFactors->size();
     if (imax)
       {
-        sf += "-" + *(std::string *) callParameterNames[2] + r;           // k1
-        Factor = ((std::vector< std::string*>*)callParameterNames[3]);   // first product
+        sf += "-" + callParameterNames[2][0] + r;
         for (i = 0; i < imax; i++)
           {
-            FixSName(*(*Factor)[i], tmpstr);
+            FixSName((*pFactors)[i], tmpstr);
             sf += "*" + tmpstr;
           }
       }

@@ -178,7 +178,8 @@ class CNodeK
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      *  @return string
      */
-    std::string getExplicitFunctionString(const CCallParameterPointers & callParameterNames, const std::string &r);
+    std::string getExplicitFunctionString(const std::vector< std::vector< std::string > > & callParameterNames,
+                                          const std::string &r);
 
     /**
      * Retrieving mType the type of a node

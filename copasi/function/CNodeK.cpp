@@ -179,7 +179,8 @@ C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
     return Fail;
   }
 
-std::string CNodeK::getExplicitFunctionString(const CCallParameterPointers & callParameterNames, const std::string &r)
+std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< std::string > > & callParameterNames,
+    const std::string &r)
 {
   char fstr[256];
   switch (mType)
@@ -191,7 +192,7 @@ std::string CNodeK::getExplicitFunctionString(const CCallParameterPointers & cal
       mExplicitFunction = fstr;
       break;
     case N_IDENTIFIER:
-      FixSName(* (std::string *) callParameterNames[mIndex], mExplicitFunction);
+      FixSName(callParameterNames[mIndex][0], mExplicitFunction);
       if (mSubtype == N_KCONSTANT)
         mExplicitFunction += r;
       break;

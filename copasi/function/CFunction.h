@@ -141,7 +141,7 @@ class CFunction : public CCopasiContainer
      *  @param "vector < void * >" callParameters
     *  @param "const string &" r a suffix for parameter names (usually reaction number)
      */
-    virtual std::string getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const;
+    virtual std::string getSBMLString(const std::vector< std::vector < std::string> > & callParameterNames, const std::string &r) const;
 
     /**
      *  Retrieves the key of the function

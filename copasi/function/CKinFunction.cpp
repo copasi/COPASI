@@ -107,7 +107,8 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
     mNodes[i]->saveOld(configBuffer);
 }
 
-std::string CKinFunction::getSBMLString(const CCallParameterPointers & callParameterNames, const std::string &r) const
+std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+                                        const std::string &r) const
   {
     return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
   }

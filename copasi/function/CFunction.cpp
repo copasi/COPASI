@@ -175,7 +175,7 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Description", "string", &mDescription);
 }
 
-std::string CFunction::getSBMLString(const CCallParameterPointers & C_UNUSED(callParameterNames),
+std::string CFunction::getSBMLString(const std::vector< std::vector< std::string > > & C_UNUSED(callParameterNames),
                                      const std::string & C_UNUSED(r)) const
   {return "0";}
 
