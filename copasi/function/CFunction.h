@@ -64,11 +64,16 @@ class CFunction : public CCopasiContainer
     /**
      *  A vector of usages ranges describing the condition under which a 
      *  function may be used.
+     *  Specifically it describes what number of substrates and products a
+     *  reaction may have to be able to use this function as its rate function.
+     *  Consequently the vector has at most two entries (SUBSTRATE and PRODUCT).
      */
     CCopasiVectorNS < CUsageRange > mUsageDescriptions;
 
     /**
-     *  The discription of the parameters of the function
+     *  The discription of the parameters of the function.
+     *  It describes which parameters need to be passed to the function
+     *  for evaluation.
      */
     /** @dia:route 3,2; h,58.2,12.85,56.537,6.51973,52.9592 */
     CFunctionParameters mParameters;
