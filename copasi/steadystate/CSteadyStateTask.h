@@ -38,6 +38,11 @@ class CSteadyStateTask
     CSteadyStateMethod * mpMethod;
 
     /**
+     * Flag indicating whether the task shall be executed by CopasiSE
+     */
+    bool mRequested;
+
+    /**
      * A pointer to the found steady state.
      */
     CState * mpSteadyState;
@@ -133,6 +138,18 @@ class CSteadyStateTask
      * @param CSteadyStateMethod * pMethod
      */
     void setMethod(CSteadyStateMethod * pMethod);
+
+    /**
+     * Set wheter the execution of the task is requested.
+     * @param const bool & execute
+     */
+    void setRequested(const bool & requested);
+
+    /**
+     * Retrieve whether the execution of the task is requested
+     * @return bool isRequested
+     */
+    bool isRequested() const;
 
     /**
      * Retrieves a pointer to steady state.

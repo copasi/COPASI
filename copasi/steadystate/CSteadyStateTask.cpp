@@ -24,6 +24,7 @@
 CSteadyStateTask::CSteadyStateTask():
     mpProblem(NULL),
     mpMethod(NULL),
+    mRequested(false),
     mpSteadyState(NULL),
     mpEigenValues(NULL),
     mpOutEnd(NULL)
@@ -32,6 +33,7 @@ CSteadyStateTask::CSteadyStateTask():
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src):
     mpProblem(src.mpProblem),
     mpMethod(src.mpMethod),
+    mRequested(src.mRequested),
     mpSteadyState(src.mpSteadyState),
     mJacobian(src.mJacobian),
     mpEigenValues(src.mpEigenValues),
@@ -62,6 +64,13 @@ void CSteadyStateTask::initializeReporting(std::ofstream & out)
 
 void CSteadyStateTask::load(CReadConfig & configBuffer)
 {
+  if (configBuffer.getVersion() < "4.0")
+    configBuffer.getVariable("SteadyState", "BOOL", &mRequested,
+                             CReadConfig::LOOP);
+  else
+    configBuffer.getVariable("RunSteadyState", "BOOL", &mRequested,
+                             CReadConfig::LOOP);
+
   pdelete(mpProblem);
   mpProblem = new CSteadyStateProblem();
   mpProblem->load(configBuffer);
@@ -85,6 +94,8 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
 
 void CSteadyStateTask::save(CWriteConfig & configBuffer)
 {
+  configBuffer.setVariable("RunSteadyState", "BOOL", &mRequested);
+
   mpProblem->save(configBuffer);
 
   const C_INT32 Method = mpMethod->getTypeEnum();
@@ -105,11 +116,16 @@ CSteadyStateMethod * CSteadyStateTask::getMethod()
 void CSteadyStateTask::setMethod(CSteadyStateMethod * pMethod)
 {mpMethod = pMethod;}
 
+void CSteadyStateTask::setRequested(const bool & requested)
+{mRequested = requested;}
+
+bool CSteadyStateTask::isRequested() const {return mRequested;}
+
 CState * CSteadyStateTask::getState()
 {return mpSteadyState;}
 
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
-{return mJacobian;}
+  {return mJacobian;}
 
 const CEigen * CSteadyStateTask::getEigenValues()
 {

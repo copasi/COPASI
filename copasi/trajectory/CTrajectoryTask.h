@@ -36,6 +36,11 @@ class CTrajectoryTask
     CTrajectoryMethod * mpMethod;
 
     /**
+     * Flag indicating whether the task shall be executed by CopasiSE
+     */
+    bool mRequested;
+
+    /**
      * A pointer to the current state of the integration.
      */
     CState * mpState;
@@ -153,6 +158,18 @@ class CTrajectoryTask
      * @param CTrajectoryMethod * pMethod
      */
     void setMethod(CTrajectoryMethod * pMethod);
+
+    /**
+     * Set wheter the execution of the task is requested.
+     * @param const bool & execute
+     */
+    void setRequested(const bool & requested);
+
+    /**
+     * Retrieve whether the execution of the task is requested
+     * @return bool isRequested
+     */
+    bool isRequested() const;
 
     /**
      * Retrieves a pointer to current state of the integration.
