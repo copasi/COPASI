@@ -338,6 +338,7 @@ class CReaction
   // typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
   // vector < ELEMENT > getChemStructure() const;
 
+#ifdef XXXX
   /**
    *  Retrieves a vector of substrates and their multiplicity
    *  in the chemical reaction.
@@ -358,6 +359,7 @@ class CReaction
    *  @return "vector < CChemEqElement * > &" products
    */
   vector < CChemEqElement * > & getBalances();
+#endif // XXXX
 
   /**
    *  Retrieves the rate function of the reaction
