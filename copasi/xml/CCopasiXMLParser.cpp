@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/24 19:37:16 $
+   $Date: 2005/02/25 01:50:48 $
    End CVS Header */
 
 /**
@@ -304,7 +304,6 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; /* We should always be on the next element */
 
-  char Default[] = "0";
   const char * versionMajor;
   C_INT32 VersionMajor;
   const char * versionMinor;
@@ -315,9 +314,9 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     case COPASI:
       if (strcmp(pszName, "COPASI")) fatalError();
 
-      versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, Default);
+      versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, "0");
       VersionMajor = atoi(versionMajor);
-      versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, Default);
+      versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, "0");
       VersionMinor = atoi(versionMinor);
 
       mCommon.pVersion->setVersion(VersionMajor, VersionMinor, 0);
@@ -354,12 +353,11 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
         if (mCommon.pGUI)
           mpCurrentHandler = new GUIElement(mParser, mCommon);
         else
-          mpCurrentHandler = &mParser.mUnknownElement;
+          mParser.pushElementHandler(&mParser.mUnknownElement);
       break;
 
     default:
       mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
@@ -5234,19 +5232,16 @@ void CCopasiXMLParser::GUIElement::start(const XML_Char *pszName,
     {
     case GUI:
       if (strcmp(pszName, "GUI")) fatalError();
+      return;
       break;
 
     case ListOfSliders:
-      if (strcmp(pszName, "ListOfSliders")) fatalError();
-
-      /* If we do not have a etc element handler we create one. */
-      if (!mpCurrentHandler)
+      if (!strcmp(pszName, "ListOfSliders"))
         mpCurrentHandler = new ListOfSlidersElement(mParser, mCommon);
       break;
 
     default:
       mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
 
