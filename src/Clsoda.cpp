@@ -215,7 +215,8 @@ Clsoda::~Clsoda()
 {
 }
 
-C_FLOAT64 Clsoda::lsoda_ddot(C_INT32 n, 
+#ifdef XXXX
+C_FLOAT64 Clsoda::ddot(C_INT32 n, 
                              C_FLOAT64 * dx,
                              C_INT32 incx, 
                              C_FLOAT64 * dy,
@@ -233,9 +234,9 @@ C_FLOAT64 Clsoda::lsoda_ddot(C_INT32 n,
 
    --- Output ---
 
-   lsoda_ddot : dot product dx . dy, 0 if n <= 0
+   ddot : dot product dx . dy, 0 if n <= 0
 
-   lsoda_ddot = sum for i = 0 to n-1 of
+   ddot = sum for i = 0 to n-1 of
    dx[lx+i*incx] * dy[ly+i*incy] where lx = 1 if
    incx >= 0, else lx = (-incx)*(n-1)+1, and ly
    is defined in a similar way using incy.
@@ -295,7 +296,7 @@ C_FLOAT64 Clsoda::lsoda_ddot(C_INT32 n,
     return dotprod;
 }
 
-void Clsoda::lsoda_dscal(C_INT32 n, 
+void Clsoda::dscal(C_INT32 n, 
                          C_FLOAT64 da,
                          C_FLOAT64 * dx,
                          C_INT32 incx)
@@ -356,7 +357,7 @@ void Clsoda::lsoda_dscal(C_INT32 n,
     return;
 }
 
-void Clsoda::lsoda_daxpy(C_INT32 n,
+void Clsoda::daxpy(C_INT32 n,
                          C_FLOAT64 da, 
                          C_FLOAT64 * dx,
                          C_INT32 incx, 
@@ -443,13 +444,13 @@ void Clsoda::lsoda_daxpy(C_INT32 n,
 
 }
 
-void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
+void Clsoda::dgesl(C_FLOAT64 ** a,
                          C_INT32 n,
                          C_INT32 * ipvt, 
                          C_FLOAT64 * b,
                          C_INT32 job)
 /*
-   Purpose : lsoda_dgesl solves the linear system
+   Purpose : dgesl solves the linear system
    a * x = b or Transpose(a) * x = b
    using the factors computed by dgeco or degfa.
 
@@ -477,7 +478,7 @@ void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
       if the subroutines are called correctly and if dgeco has
       set rcond > 0 or dgefa has set info = 0.
 
-   BLAS : daxpy, lsoda_ddot
+   BLAS : daxpy, ddot
 */
 {
     C_INT32 nm1, k, j;
@@ -495,7 +496,7 @@ void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
 */
         for (k = 1 ; k <= n ; k++) 
         {
-            t = lsoda_ddot(k-1, a[k], 1, b, 1);
+            t = ddot(k-1, a[k], 1, b, 1);
             b[k] = (b[k] - t) / a[k][k];
         }
 /*
@@ -503,7 +504,7 @@ void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
 */
         for (k = n - 1 ; k >= 1 ; k--) 
         {
-            b[k] = b[k] + lsoda_ddot(n-k, a[k]+k, 1, b+k, 1);
+            b[k] = b[k] + ddot(n-k, a[k]+k, 1, b+k, 1);
             j = ipvt[k];
             if (j != k) 
             {
@@ -529,7 +530,7 @@ void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
             b[j] = b[k];
             b[k] = t;
         }
-        lsoda_daxpy(n-k, t, a[k]+k, 1, b+k, 1);
+        daxpy(n-k, t, a[k]+k, 1, b+k, 1);
     }
 /*
   Now solve Transpose(L) * x = y.
@@ -538,12 +539,12 @@ void Clsoda::lsoda_dgesl(C_FLOAT64 ** a,
     {
         b[k] = b[k] / a[k][k];
         t = -b[k];
-        lsoda_daxpy(k-1, t, a[k], 1, b, 1);
+        daxpy(k-1, t, a[k], 1, b, 1);
     }
 
 }
 
-C_INT32 Clsoda::lsoda_idamax(C_INT32 n, 
+C_INT32 Clsoda::idamax(C_INT32 n, 
                              C_FLOAT64 * dx,
                              C_INT32 incx)
 /* Purpose : Find largest component of C_FLOAT64 vector dx
@@ -556,10 +557,10 @@ C_INT32 Clsoda::lsoda_idamax(C_INT32 n,
 
    --- Output ---
 
-   lsoda_idamax : smallest index, 0 if n <= 0
+   idamax : smallest index, 0 if n <= 0
 
    Find smallest index of maximum magnitude of dx.
-   lsoda_idamax = first i, i=1 to n, to minimize fabs(dx[1-incx+i*incx]).
+   idamax = first i, i=1 to n, to minimize fabs(dx[1-incx+i*incx]).
 
 */
 {
@@ -608,18 +609,18 @@ C_INT32 Clsoda::lsoda_idamax(C_INT32 n,
 }
 
 
-void Clsoda::lsoda_dgefa(C_FLOAT64 ** a, 
+void Clsoda::dgefa(C_FLOAT64 ** a, 
                          C_INT32 n, 
                          C_INT32 * ipvt, 
                          C_INT32 * info)
 /*
-   Purpose : lsoda_dgefa factors a C_FLOAT64 matrix by Gaussian elimination.
+   Purpose : dgefa factors a C_FLOAT64 matrix by Gaussian elimination.
 
-   lsoda_dgefa is usually called by dgeco, but it can be called directly
+   dgefa is usually called by dgeco, but it can be called directly
    with a saving in time if rcond is not needed.
-   (Time for dgeco) = (1+9/n)*(time for lsoda_dgefa).
+   (Time for dgeco) = (1+9/n)*(time for dgefa).
 
-   This c version uses algorithm kji rather than the kij in lsoda_dgefa.f.
+   This c version uses algorithm kji rather than the kij in dgefa.f.
    Note that the fortran version input variable lda is not needed.
 
    On Entry :
@@ -641,13 +642,13 @@ void Clsoda::lsoda_dgefa(C_FLOAT64 ** a,
       *info : = 0 normal value,
               = k if U[k][k] == 0.  This is not an error
                 condition for this subroutine, but it does
-                indicate that lsoda_dgesl or dgedi will divide by
+                indicate that dgesl or dgedi will divide by
                 zero if called.  Use rcond in dgeco for
                 a reliable indication of singularity.
 
                 Notice that the calling program must use &info.
 
-   BLAS : lsoda_daxpy, lsoda_dscal, lsoda_idamax
+   BLAS : daxpy, dscal, idamax
 */
 {
     C_INT32 j, k, i;
@@ -662,7 +663,7 @@ void Clsoda::lsoda_dgefa(C_FLOAT64 ** a,
   Find j = pivot index.  Note that a[k]+k-1 is the address of
   the 0-th element of the row vector whose 1st element is a[k][k].
 */
-        j = lsoda_idamax(n-k+1, a[k]+k-1, 1) + k - 1;      
+        j = idamax(n-k+1, a[k]+k-1, 1) + k - 1;      
         ipvt[k] = j;
 /*
   Zero pivot implies this row already triangularized.
@@ -685,7 +686,7 @@ void Clsoda::lsoda_dgefa(C_FLOAT64 ** a,
   Compute multipliers.
 */
         t = -1. / a[k][k];
-        lsoda_dscal(n-k, t, a[k]+k, 1);
+        dscal(n-k, t, a[k]+k, 1);
 /*
   Column elimination with row indexing.
 */
@@ -697,7 +698,7 @@ void Clsoda::lsoda_dgefa(C_FLOAT64 ** a,
                 a[i][j] = a[i][k];
                 a[i][k] = t;
             }
-            lsoda_daxpy(n-k, t, a[k]+k, 1, a[i]+k, 1);
+            daxpy(n-k, t, a[k]+k, 1, a[i]+k, 1);
         }
     }                     /*  end k-loop  */
 
@@ -705,7 +706,7 @@ void Clsoda::lsoda_dgefa(C_FLOAT64 ** a,
     if (a[n][n] == 0.)
         *info = n;
 }
-
+#endif // XXXX
 
 /*
    free allocated vectors
@@ -2450,7 +2451,7 @@ void Clsoda::prja(C_INT32 neq,
   by vmnorm) is computed, and J is overwritten by P.  P is then
   subjected to LU decomposition in preparation for later solution
   of linear systems with p as coefficient matrix.  This is done
-  by lsoda_dgefa if miter = 2, and by dgbfa if miter = 5.
+  by dgefa if miter = 2, and by dgbfa if miter = 5.
 */
     nje++;
     ierpj = 0;
@@ -2496,7 +2497,7 @@ void Clsoda::prja(C_INT32 neq,
 /*
   Do LU decomposition on P.
 */
-        lsoda_dgefa(wm, n, ipvt, &ier);
+        dgefa(wm, n, ipvt, &ier);
         if (ier != 0)
             ierpj = 1;
         return;
@@ -2763,7 +2764,7 @@ void Clsoda::solsy(C_FLOAT64 * y)
 /*
    This routine manages the solution of the linear system arising from
    a chord iteration.  It is called if miter != 0.
-   If miter is 2, it calls lsoda_dgesl to accomplish this.
+   If miter is 2, it calls dgesl to accomplish this.
    If miter is 5, it calls dgbsl.
 
    y = the right-hand side vector on input, and the solution vector
@@ -2779,7 +2780,7 @@ void Clsoda::solsy(C_FLOAT64 * y)
     }
 
     if (miter == 2)
-        lsoda_dgesl(wm, n, ipvt, y, 0);
+        dgesl(wm, n, ipvt, y, 0);
     return;
 
 }          /*   end solsy   */

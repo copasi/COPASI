@@ -213,6 +213,7 @@ private:
 
     void solsy(C_FLOAT64 * y);
 
+    /*    
     void lsoda_dgefa(C_FLOAT64 ** a, 
                      C_INT32 n, 
                      C_INT32 * ipvt, 
@@ -221,7 +222,7 @@ private:
     C_INT32 lsoda_idamax(C_INT32 n,
                          C_FLOAT64 * dx,
                          C_INT32 incx);
-    
+			 
     void lsoda_dgesl(C_FLOAT64 ** a,
                      C_INT32 n,
                      C_INT32 * ipvt, 
@@ -245,7 +246,7 @@ private:
                          C_INT32 incx, 
                          C_FLOAT64 * dy,
                          C_INT32 incy);
-
+    */
 };
 
 #endif // COPASI_Clsoda

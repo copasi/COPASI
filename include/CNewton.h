@@ -7,6 +7,7 @@
 #define CNewton_H
 
 #include "CModel.h"
+#include "utilities.h"
 
 /**
  * These may be better to appear somewhere else
@@ -31,6 +32,11 @@ private:
      * The limit of iterations on Newton's method
      */
      C_INT32 mNewtonLimit;
+
+    /**
+     * The number counter of FVal() function
+     */
+     C_INT32 mFunctionCounter;
 
     /**
      *  private function, evaluate the balance equations
@@ -97,6 +103,10 @@ private:
 //Operations
 public:
 
+    /**
+     * a counter for Fval() function
+     */
+     static int ss_nfunction;
 
     /**
      * default constructor

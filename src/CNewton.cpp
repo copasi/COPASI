@@ -17,6 +17,7 @@ CNewton::CNewton()
 {
   mModel = NULL;
   mNewtonLimit = DefaultNewtonLimit;
+  ss_nfunction=0;
 }
 
 
@@ -26,6 +27,7 @@ CNewton::CNewton(C_INT32 anInt)
 {
   mModel = NULL;
   mNewtonLimit = anInt;
+  ss_nfunction = 0;
 }
 
 
@@ -34,6 +36,7 @@ CNewton::CNewton(const CNewton& source)
 {
   mModel = source.mModel;
   mNewtonLimit = source.mNewtonLimit;
+  ss_nfunction = source.ss_nfunction;
 }
 
   
@@ -44,6 +47,7 @@ CNewton& CNewton::operator=(const CNewton& source)
     {
       mModel = source.mModel;
       mNewtonLimit = source.mNewtonLimit;
+      ss_nfunction = source.ss_nfunction;
     }
 
   return *this;
@@ -175,13 +179,8 @@ void CNewton::ProcessNewton(void)
     ss_xnew[j+1] = ss_x[j+1] - ss_h[j+1];
     ss_h[j+1] /= 2;
    }
+   mModel->setConcentrations(ss_xnew);
    // update the dependent metabolites
-   for( m=0; j<mModel->getDepMetab(); j++, m++)
-   {
-    ss_xnew[j+1] = mModel.Moiety[m].IConc;
-    for( l=0; l<mModel->getIndMetab(); l++)
-     ss_xnew[j+1] -= mModel.ConsRel[j][l] * ss_xnew[l+1];
-   }
   try
   {
     FEval( 0, 0, ss_xnew, ss_dxdt );
