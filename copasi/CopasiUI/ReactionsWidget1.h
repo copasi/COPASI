@@ -1,11 +1,11 @@
 /****************************************************************************
- **  $ CopasiUI/ReactionsWidget1.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Reactions Widget, i.e the second level 
- ** of Reactions.
- *****************************************************************************/
-
+ ** Form interface generated from reading ui file '.\ReactionsWidget1.ui'
+ **
+ ** Created: Tue Mar 4 02:07:42 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 #include <qsplitter.h>
@@ -17,82 +17,55 @@
 #include "MyTable.h"
 #include "MyLineEdit.h"
 
-class QAction;
-
-class QActionGroup;
-
-class QToolBar;
-
-class QPopupMenu;
-
-class QLabel;
-
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QCheckBox;
-
-class QLineEdit;
-
 class QComboBox;
-
-class QListBoxItem;
-
 class QFrame;
-
-class QRect;
-
-class CModel;
-
+class QLabel;
+class QLineEdit;
 class QPushButton;
+class QTable;
+class CModel;
+class CReaction;
 
 class ReactionsWidget1 : public QWidget
   {
     Q_OBJECT
 
-  protected:
-    QPushButton* cancelChanges;
-    QPushButton* commitChanges;
-    QPushButton* newReaction;
-    QPushButton* deleteReaction;
-    QPushButton* newKinetics;
-    CModel *mModel;
-    QTable *table;
-    //CFunctionDB *fFunctionDB;
-
   public:
-    ReactionsWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
+    ReactionsWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~ReactionsWidget1();
+    CModel *mModel;
     void loadName(QString setValue);
     int isName(QString setValue);
     void loadReactions(CModel *model);
     //const CFunction *function1;
     QString *Reaction1_Name;
     QString name;
-    QFrame* Line1;
-    QFrame* Line2;
 
-    QLineEdit* LineEdit1;
-    MyLineEdit* LineEdit2;
-    QLineEdit* LineEdit3;
-
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
     QLabel* TextLabel4;
-    QLabel* TextLabel5;
+    QLabel* TextLabel7;
+    QPushButton* commitChanges;
+    QPushButton* cancelChanges;
+    QPushButton* newReaction;
+    QPushButton* deleteReaction;
+    QLabel* TextLabel8;
+    QFrame* Line2;
+    QFrame* Line1;
+    QFrame* Line3;
     QLabel* TextLabel6;
-
-    QFrame* Frame1;
-    QFrame* Frame3;
-    QFrame* Frame4a;
-    QFrame* Frame4b;
-    QFrame* Frame4c;
-    QFrame* Frame4d;
-    QFrame* Frame4e;
-    QFrame* Frame4f;
-    QFrame* Frame4g;
-    QFrame* Frame4h;
-
-    CReaction *reactn1;
-    QCheckBox* checkBox;
+    QLineEdit* LineEdit1;
+    QLineEdit* LineEdit2;
     QComboBox* ComboBox1;
+    QFrame* Line4;
+    QTable* table;
+    QLineEdit* LineEdit3;
+    QLabel* TextLabel5;
+    QPushButton* newKinetics;
+    QCheckBox* CheckBox;
+    CReaction *reactn1;
 
     int num_substrates;
     int num_products;
@@ -107,6 +80,10 @@ class ReactionsWidget1 : public QWidget
   signals:
     void signal_emitted(QString &);
     void new_reaction();
+
+  protected:
+    QGridLayout* ReactionsWidget1Layout;
+    QHBoxLayout* Layout1;
   };
 
-#endif
+#endif // REACTIONSWIDGET1_H

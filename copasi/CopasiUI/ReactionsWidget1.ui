@@ -1,0 +1,278 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>ReactionsWidget1</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ReactionsWidget1</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>568</width>
+            <height>479</height>
+        </rect>
+    </property>
+    <property name="font">
+        <font>
+            <family>Times New Roman</family>
+        </font>
+    </property>
+    <property name="caption">
+        <string>ReactionsWidget1</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>TextLabel4</cstring>
+            </property>
+            <property name="text">
+                <string>Name</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="0">
+            <property name="name">
+                <cstring>TextLabel7</cstring>
+            </property>
+            <property name="text">
+                <string>Symbol Definition</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>commitChanges</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Commit Changes</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelChanges</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel Changes</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>newReaction</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;New Reaction</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>deleteReaction</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Delete Reaction</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLabel" row="10" column="0">
+            <property name="name">
+                <cstring>TextLabel8</cstring>
+            </property>
+            <property name="text">
+                <string>Flux</string>
+            </property>
+        </widget>
+        <widget class="Line" row="6" column="0" rowspan="2" colspan="4">
+            <property name="name">
+                <cstring>Line2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="Line" row="11" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="Line" row="1" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Line3</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0">
+            <property name="name">
+                <cstring>TextLabel6</cstring>
+            </property>
+            <property name="text">
+                <string>Kinetics</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>LineEdit1</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>LineEdit2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="4" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>ComboBox1</cstring>
+            </property>
+        </widget>
+        <widget class="Line" row="3" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Line4</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QTable" row="7" column="1" rowspan="3" colspan="3">
+            <column>
+                <property name="text">
+                    <string>Value</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>table</cstring>
+            </property>
+            <property name="numRows">
+                <number>0</number>
+            </property>
+            <property name="numCols">
+                <number>1</number>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="10" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>LineEdit3</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <spacer row="9" column="0">
+            <property name="name">
+                <cstring>Spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>80</width>
+                    <height>101</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>TextLabel5</cstring>
+            </property>
+            <property name="text">
+                <string>Chemical Reaction</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="1">
+            <property name="name">
+                <cstring>newKinetics</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;New Kinetics</string>
+            </property>
+        </widget>
+        <spacer row="5" column="2">
+            <property name="name">
+                <cstring>Spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>111</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QCheckBox" row="5" column="3">
+            <property name="name">
+                <cstring>CheckBox</cstring>
+            </property>
+            <property name="text">
+                <string>Reversible</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

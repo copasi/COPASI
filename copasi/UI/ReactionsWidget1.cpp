@@ -39,173 +39,137 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 
 {
-  //This is to make the Main Frame of the page
-  //The Main layout used is the Vertical Layout
-  QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame1 = new QFrame(this, "Frame1");
-  Frame1->setFrameShape(QFrame::Box);
-  Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1);
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(1);
+  if (!name)
+    setName("ReactionsWidget1");
+  resize(568, 479);
+  setCaption(trUtf8("ReactionsWidget1"));
+  ReactionsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
 
-  //This Frame had to be added because of the border around the frame
-  //The grid Layout is used for this frame
-  Frame3 = new QFrame(Frame1, "Frame3");
-  vboxLayout1->addWidget(Frame3);
-  QGridLayout *gridLayout1 = new QGridLayout(Frame3, 0);
+  TextLabel4 = new QLabel(this, "TextLabel4");
+  TextLabel4->setText(trUtf8("Name"));
 
-  //Frame for Ist Row
-  Frame4a = new QFrame(Frame3, "Frame4a");
-  gridLayout1->addWidget(Frame4a, 0, 0, 0);
-  QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4a, 0);
-  hBoxLayout4a->addSpacing(15);
+  ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
-  TextLabel1 = new QLabel("Name", Frame4a);
-  hBoxLayout4a->addWidget(TextLabel1);
-  hBoxLayout4a->addSpacing(75);
+  TextLabel7 = new QLabel(this, "TextLabel7");
+  TextLabel7->setText(trUtf8("Symbol Definition"));
 
-  LineEdit1 = new QLineEdit("", Frame4a);
-  hBoxLayout4a->addWidget(LineEdit1);
-  hBoxLayout4a->addSpacing(250);
+  ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
-  //Frame for 2nd Row
-  Frame4b = new QFrame(Frame3, "Frame4b");
-  gridLayout1->addWidget(Frame4b, 1, 0, 0);
-  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
-  hBoxLayout4b->addSpacing(15);
+  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
-  TextLabel2 = new QLabel("Chemical Reaction", Frame4b);
-  hBoxLayout4b->addWidget(TextLabel2);
-  hBoxLayout4b->addSpacing(17);
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("&Commit Changes"));
+  Layout1->addWidget(commitChanges);
 
-  LineEdit2 = new MyLineEdit("", Frame4b);
-  hBoxLayout4b->addWidget(LineEdit2);
-  hBoxLayout4b->addSpacing(50);
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("&Cancel Changes"));
+  Layout1->addWidget(cancelChanges);
 
-  //Frame for 3rd Row
-  Frame4c = new QFrame(Frame3, "Frame4c");
-  gridLayout1->addWidget(Frame4c, 2, 0, 0);
-  QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
-  hBoxLayout4c->addSpacing(15);
+  newReaction = new QPushButton(this, "newReaction");
+  newReaction->setText(trUtf8("&New Reaction"));
+  Layout1->addWidget(newReaction);
 
-  Line2 = new QFrame(Frame4c, "Line2");
-  Line2->setGeometry(QRect(80, 10, 91, 31));
-  Line2->setProperty("frameShape", (int)QFrame::HLine);
+  deleteReaction = new QPushButton(this, "deleteReaction");
+  deleteReaction->setText(trUtf8("&Delete Reaction"));
+  Layout1->addWidget(deleteReaction);
+
+  ReactionsWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 3);
+
+  TextLabel8 = new QLabel(this, "TextLabel8");
+  TextLabel8->setText(trUtf8("Flux"));
+
+  ReactionsWidget1Layout->addWidget(TextLabel8, 10, 0);
+
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
   Line2->setFrameShape(QFrame::HLine);
-  hBoxLayout4c->addWidget(Line2);
 
-  //Frame for 4th Row
-  Frame4d = new QFrame(Frame3, "Frame4d");
-  gridLayout1->addWidget(Frame4d, 3, 0, 0);
-  QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
-  hBoxLayout4d->addSpacing(15);
+  ReactionsWidget1Layout->addMultiCellWidget(Line2, 6, 7, 0, 3);
 
-  TextLabel3 = new QLabel("Kinetics", Frame4d);
-  hBoxLayout4d->addWidget(TextLabel3);
-  hBoxLayout4d->addSpacing(65);
-
-  hBoxLayout4d ->setResizeMode(QLayout::Fixed);
-  ComboBox1 = new QComboBox(Frame4d, "ComboBox1");
-  hBoxLayout4d ->addWidget(ComboBox1);
-  ComboBox1->setFixedSize(225, 20);
-
-  hBoxLayout4d->addSpacing(50);
-
-  checkBox = new QCheckBox (Frame4d, "checkBox");
-
-  hBoxLayout4d->addWidget(checkBox);
-  hBoxLayout4d->addSpacing(1);
-
-  TextLabel4 = new QLabel("Reversible", Frame4d);
-  hBoxLayout4d->addWidget(TextLabel4);
-  hBoxLayout4d->addSpacing(20);
-
-  newKinetics = new QPushButton("&New Kinetics", Frame4d);
-  hBoxLayout4d->addWidget(newKinetics);
-  hBoxLayout4d->addSpacing(20);
-
-  //Frame for 5th Row
-  Frame4e = new QFrame(Frame3, "Frame4e");
-  Frame4e->setGeometry(QRect(0, 0, 740, 120));
-  gridLayout1->addMultiCellWidget(Frame4e, 4, 7, 0, 0, 0);
-
-  TextLabel5 = new QLabel(Frame4e, "Symbol Definition");
-  TextLabel5->setGeometry(QRect(10, 40, 110, 50));
-  TextLabel5->setText(trUtf8("Symbol Definition"));
-
-  table = new QTable(Frame4e, "tblsymbol");
-  table->setGeometry(QRect(130, 10, 170, 154));
-
-  table->sortColumn (0, true, true);
-  table->setFixedSize(300, 150);
-  //table->setShowGrid(true);
-  table->setFocusPolicy(QWidget::WheelFocus);
-  table->setColumnWidth (0, 200);
-
-  //Frame for 6th Row
-  Frame4f = new QFrame(Frame3, "Frame4f");
-  gridLayout1->addWidget(Frame4f, 7, 0, 0);
-  QHBoxLayout *hBoxLayout4f = new QHBoxLayout(Frame4f, 0);
-  hBoxLayout4f->addSpacing(15);
-
-  Line1 = new QFrame(Frame4f, "Line1");
-  Line1->setGeometry(QRect(180, 110, 291, 31));
-  Line1->setProperty("frameShape", (int)QFrame::HLine);
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
-  hBoxLayout4f->addWidget(Line1);
 
-  //Frame for 7th Row
-  Frame4g = new QFrame(Frame3, "Frame4g");
-  gridLayout1->addWidget(Frame4g, 8, 0, 0);
-  QHBoxLayout *hBoxLayout4g = new QHBoxLayout(Frame4g, 0);
-  hBoxLayout4g->addSpacing(15);
+  ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);
 
-  TextLabel6 = new QLabel("Flux", Frame4g);
-  hBoxLayout4g->addWidget(TextLabel6);
-  hBoxLayout4g->addSpacing(84);
+  Line3 = new QFrame(this, "Line3");
+  Line3->setFrameShape(QFrame::HLine);
+  Line3->setFrameShadow(QFrame::Sunken);
+  Line3->setFrameShape(QFrame::HLine);
 
-  LineEdit3 = new QLineEdit("", Frame4g);
-  hBoxLayout4g->addWidget(LineEdit3);
-  LineEdit3->setEnabled(false);
-  hBoxLayout4g->addSpacing(250);
+  ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);
 
-  //for the commit and cancel buttons
-  Frame4h = new QFrame(Frame3, "Frame4h");
-  gridLayout1->addWidget(Frame4h, 9, 0, 0);
-  QHBoxLayout *hBoxLayout4h = new QHBoxLayout(Frame4h, 0);
-  hBoxLayout4h->addSpacing(15);
+  TextLabel6 = new QLabel(this, "TextLabel6");
+  TextLabel6->setText(trUtf8("Kinetics"));
 
-  commitChanges = new QPushButton("&Commit Changes", Frame4h);
-  //commitChanges->setFont(QFont("Times", 10, QFont::Bold));
-  cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
-  //cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
-  newReaction = new QPushButton("&New", Frame4h);
-  //newReaction->setFont(QFont("Times", 10, QFont::Bold));
-  deleteReaction = new QPushButton("&Delete", Frame4h);
-  //deleteReaction->setFont(QFont("Times", 10, QFont::Bold));
+  ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
 
-  hBoxLayout4h->addWidget(newReaction);
-  hBoxLayout4h->addSpacing(15);
-  hBoxLayout4h->addWidget(deleteReaction);
-  hBoxLayout4h->addSpacing(15);
-  hBoxLayout4h->addWidget(commitChanges);
-  hBoxLayout4h->addSpacing(15);
-  hBoxLayout4h->addWidget(cancelChanges);
-  hBoxLayout4h->addSpacing(15);
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
+
+  LineEdit2 = new QLineEdit(this, "LineEdit2");
+  LineEdit2->setFrameShape(QLineEdit::LineEditPanel);
+  LineEdit2->setFrameShadow(QLineEdit::Sunken);
+
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 3);
+
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+
+  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 3);
+
+  Line4 = new QFrame(this, "Line4");
+  Line4->setFrameShape(QFrame::HLine);
+  Line4->setFrameShadow(QFrame::Sunken);
+  Line4->setFrameShape(QFrame::HLine);
+
+  ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
+
+  table = new QTable(this, "table");
+  table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Value"));
+  table->setNumRows(0);
+  table->setNumCols(1);
+
+  ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
+
+  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3->setEnabled(FALSE);
+
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 10, 10, 1, 3);
+  QSpacerItem* spacer = new QSpacerItem(80, 101, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  ReactionsWidget1Layout->addItem(spacer, 9, 0);
+
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Chemical Reaction"));
+
+  ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
+
+  newKinetics = new QPushButton(this, "newKinetics");
+  newKinetics->setText(trUtf8("&New Kinetics"));
+
+  ReactionsWidget1Layout->addWidget(newKinetics, 5, 1);
+  QSpacerItem* spacer_2 = new QSpacerItem(111, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  ReactionsWidget1Layout->addItem(spacer_2, 5, 2);
+
+  CheckBox = new QCheckBox(this, "CheckBox");
+  CheckBox->setText(trUtf8("Reversible"));
+
+  ReactionsWidget1Layout->addWidget(CheckBox, 5, 3);
 
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
-  connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
+  connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
-
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
   connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
 }
+
+ReactionsWidget1::~ReactionsWidget1()
+{}
 
 /*This function is used to connect this class to the listviews
     class to basically choose the right widget to display   */
@@ -294,11 +258,11 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   ComboBox1->insertStringList(comboEntries, -1);
-  checkBox->setChecked(false);
+  CheckBox->setChecked(false);
 
   if (reactn->isReversible() == true)
     {
-      checkBox->setChecked(true);
+      CheckBox->setChecked(true);
     }
 
   table->setNumCols(1);
@@ -487,13 +451,13 @@ void ReactionsWidget1::slotCheckBoxClicked()
       reversible = TriFalse;
     }
 
-  if (checkBox->isChecked() == false && reactn1->isReversible() == true)
+  if (CheckBox->isChecked() == false && reactn1->isReversible() == true)
     {
       int i = chemical_reaction.find ("=", 0, true);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
       reversible = TriFalse;
     }
-  else if (checkBox->isChecked() == true && reactn1->isReversible() == false)
+  else if (CheckBox->isChecked() == true && reactn1->isReversible() == false)
     {
       int i = chemical_reaction.find ("->", 0, true);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
@@ -711,11 +675,11 @@ void ReactionsWidget1::slotLineEditChanged()
   reactn1->setChemEq(changed_chemical_reaction);
   if (reactn1->isReversible() == true)
     {
-      checkBox->setChecked(true);
+      CheckBox->setChecked(true);
     }
   else
     {
-      checkBox->setChecked(false);
+      CheckBox->setChecked(false);
     }
   slotCheckBoxClicked();
 }
