@@ -1,11 +1,10 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\function2.ui'
- **
- ** Created: Thu May 30 18:47:54 2002
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/FunctionWidget.h               
+ **  $ Author  : Mrinmayee  Kulkarni
+ **  
+ ** This is the header file for the Function Widget, i.e the First level 
+ ** widget which shows the table of function names and types
+ *****************************************************************************/
 #ifndef FUNCTIONWIDGET_H
 #define FUNCTIONWIDGET_H
 #include <qvariant.h>
@@ -27,22 +26,6 @@ class QTable;
 class CModel;
 
 class CGlobals;
-/*class FunctionWidget : public QWidget
-{ 
-    Q_OBJECT
- 
-public:
-    FunctionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~FunctionWidget();
- 
-    QTable* Table1;
- 
- 
-};
- 
-#endif // FunctionWidget_H */
-
-// make changes for
 
 class FunctionWidget : public QWidget
   {
@@ -51,7 +34,6 @@ class FunctionWidget : public QWidget
   protected:
     MyTable *table;
     CModel *mModel;
-    //CFunction *fFunction;
 
   public:
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
@@ -59,9 +41,14 @@ class FunctionWidget : public QWidget
     void setFocus();
     void resizeEvent(QResizeEvent * re);
 
+  public slots:
+    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+
   protected slots:
-    virtual void slotTableClicked(int row, int col, int button, const QPoint & mousePos);
     virtual void slotTableSelectionChanged();
+
+  signals:
+    void name(QString &);
   };
 
 #endif

@@ -1,11 +1,10 @@
 /****************************************************************************
- ** Form interface generated from reading ui file '.\function.ui'
- **
- ** Created: Wed May 29 16:39:16 2002
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ **  $ CopasiUI/FunctionWidget1.h               
+ **  $ Author  : Mrinmayee Kulkarni
+ **  
+ ** This is the header file for Function Widget1, i.e the Second  level 
+ ** widget which shows detailed description of an individual function
+ *****************************************************************************/
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
 
@@ -28,7 +27,7 @@ class QToolBar;
 
 class QPopupMenu;
 
-class QGroupBox;
+class QButtonGroup;
 
 class QLabel;
 
@@ -63,10 +62,10 @@ class FunctionWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
 
-    QGroupBox* GroupBox1;
-    QGroupBox* GroupBox2;
-    QGroupBox* GroupBox3
-    ;
+    QButtonGroup* ButtonGroup1;
+    QButtonGroup* ButtonGroup2;
+    QButtonGroup* ButtonGroup3;
+
     QRadioButton* RadioButton1;
     QRadioButton* RadioButton2;
     QRadioButton* RadioButton3;
@@ -89,8 +88,6 @@ class FunctionWidget1 : public QWidget
     QLabel* TextLabel8;
     QLabel* TextLabel9;
 
-    QComboBox* ComboBox1;
-
     QFrame* Frame1;
     QFrame* Frame2;
     QFrame* Frame3;
@@ -98,42 +95,10 @@ class FunctionWidget1 : public QWidget
     QFrame* Frame5;
     QFrame* Frame6;
     QFrame* Frame7;
+    QFrame* Frame;
+
+  protected slots:
+    virtual void slotCancelButtonPressed(QString setValue);
   };
 
-#endif // FunctionWidget
-
-/*#include <qvariant.h>
-#include <qwidget.h>
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
-class QLabel;
-class QLineEdit;
-class QRadioButton;
-class QTable;
- 
-class Form1 : public QWidget
-{ 
-    Q_OBJECT
- 
-public:
-    Form1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~Form1();
- 
-    QLineEdit* LineEdit1;
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLineEdit* LineEdit2;
-    QTable* Table1;
-    QTable* Table2;
-    QLabel* TextLabel3;
-    QLabel* TextLabel4;
-    QRadioButton* RadioButton1;
-    QRadioButton* RadioButton2;
-    QRadioButton* RadioButton3;
- 
- 
-};
- 
-#endif // FORM1_H
- */
+#endif // FunctionWidget1

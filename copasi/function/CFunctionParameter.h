@@ -13,119 +13,124 @@
 #include "copasi.h"
 #include "utilities/utilities.h"
 
-class CFunctionParameter 
-{
-  //Attributes
- public:
-  /**
-   *  Valid data type for a function parameter
-   */
-  enum DataType {INT16 = 0, INT32, UINT16, UINT32, FLOAT32, FLOAT64,
-                 VINT16, VINT32, VUINT16, VUINT32, VFLOAT32, VFLOAT64};
+static char *enumname[] = { "INT16", "INT32", "UINT16", "UINT32", "FLOAT32", "FLOAT64",
+                            "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"};
 
- private:
-  /** 
-   *  The name of the parameter. 
-   */
-  string mName;
+class CFunctionParameter
+  {
+    //Attributes
 
-  /** 
-   *  The data type of the parameter this may be one of INT16, INT32, 
-   *  UINT16, UINT32, FLOAT32, FLOAT64, VINT16, VINT32, VUINT16, VUINT32,
-   *  VFLOAT32, VFLOAT64
-   */
-  CFunctionParameter::DataType mType;
+  public:
+    /**
+     *  Valid data type for a function parameter
+     */
+    enum DataType {INT16 = 0, INT32, UINT16, UINT32, FLOAT32, FLOAT64,
+                   VINT16, VINT32, VUINT16, VUINT32, VFLOAT32, VFLOAT64};
 
-  /**
-   *  The usage or meaning of the parameter. This has no functional 
-   *  implication for CFunction but it might be used in derived classes.
-   *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
-   */
-  string mUsage;
+  private:
+    /**
+     *  The name of the parameter. 
+     */
+    string mName;
 
- public:
-  /**
-   *  Default constructor 
-   */
-  CFunctionParameter();
+    /**
+     *  The data type of the parameter this may be one of INT16, INT32, 
+     *  UINT16, UINT32, FLOAT32, FLOAT64, VINT16, VINT32, VUINT16, VUINT32,
+     *  VFLOAT32, VFLOAT64
+     */
+    CFunctionParameter::DataType mType;
 
-  /**
-   *  Copy constructor
-   *  @param "const CFunctionParameter" & src
-   */
-  CFunctionParameter(const CFunctionParameter & src);
+    /**
+     *  The usage or meaning of the parameter. This has no functional 
+     *  implication for CFunction but it might be used in derived classes.
+     *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
+     */
+    string mUsage;
 
-  /**
-   *  Specified constuctorSet all member values at once
-   *  @param "const string &" name
-   *  @param "const CFunctionParameter::DataType &" type
-   *  @param "const string &" usage
-   */
-  CFunctionParameter(const string & name,
-                         const DataType & type,
-                         const string & usage);
+  public:
+    /**
+     *  Default constructor 
+     */
+    CFunctionParameter();
 
-  /**
-   *  Destructor
-   */
-  virtual ~CFunctionParameter();
+    /**
+     *  Copy constructor
+     *  @param "const CFunctionParameter" & src
+     */
+    CFunctionParameter(const CFunctionParameter & src);
 
-  /**
-   *  Cleanup
-   */
-  void cleanup();
+    /**
+     *  Specified constuctorSet all member values at once
+     *  @param "const string &" name
+     *  @param "const CFunctionParameter::DataType &" type
+     *  @param "const string &" usage
+     */
+    CFunctionParameter(const string & name,
+                       const DataType & type,
+                       const string & usage);
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object. 
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  virtual void load(CReadConfig & configbuffer, 
-                    CReadConfig::Mode mode = CReadConfig::NEXT);
+    /**
+     *  Destructor
+     */
+    virtual ~CFunctionParameter();
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   * (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return Fail
-   */
-  virtual void save(CWriteConfig & configbuffer);
+    /**
+     *  Cleanup
+     */
+    void cleanup();
 
-  /**
-   *  Retrieves the name of the parameter
-   *  @return  "const string" & name
-   */
-  const string & getName() const;
+    /**
+     *  Loads an object with data coming from a CReadConfig object. 
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    virtual void load(CReadConfig & configbuffer,
+                      CReadConfig::Mode mode = CReadConfig::NEXT);
 
-  /**
-   *  Sets the name of the parameter
-   *  @param "const string" & name
-   */
-  void setName(const string & name);
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     * (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    virtual void save(CWriteConfig & configbuffer);
 
-  /**
-   *  Retrieves the data type of the parameter
-   *  @return "const CFunctionParameter::DataType" & type
-   */
-  const CFunctionParameter::DataType & getType() const;
+    /**
+     *  Retrieves the name of the parameter
+     *  @return  "const string" & name
+     */
+    const string & getName() const;
 
-  /**
-   *  Sets the data type of the parameter
-   *  @param "const CFunctionParameter::DataType" & type
-   */
-  void setType(const CFunctionParameter::DataType & type);
+    /**
+     *  Sets the name of the parameter
+     *  @param "const string" & name
+     */
+    void setName(const string & name);
 
-  /**
-   *  Retrieves the usage of the parameter
-   *  @return "const string" & usage
-   */
-  const string & getUsage() const;
+    /**
+     *  Retrieves the data type of the parameter
+     *  @return "const CFunctionParameter::DataType" & type
+     */
+    const CFunctionParameter::DataType & getType() const;
 
-  /**
-   *  Sets the usage of the parameter
-   *  @param "const string" & usage
-   */
-  void setUsage(const string & usage);
-};
+    /**
+     *  Sets the data type of the parameter
+     *  @param "const CFunctionParameter::DataType" & type
+     */
+    void setType(const CFunctionParameter::DataType & type);
+
+    /**
+     *  Retrieves the usage of the parameter
+     *  @return "const string" & usage
+     */
+    const string & getUsage() const;
+
+    /**
+     *  Sets the usage of the parameter
+     *  @param "const string" & usage
+     */
+    void setUsage(const string & usage);
+  };
+
 #endif // COPASI_CFunctionParameter

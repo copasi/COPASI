@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\function2.ui'
+/***********************************************************************
+ **  $ CopasiUI/FunctionWidget.cpp                 
+ **  $ Author  : Mrinmayee Kulkarni
  **
- ** Created: Thu May 30 18:47:54 2002
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+ ** This file creates the GUI which displays information obtained 
+ ** from the function database. The name and type of functions are  
+ ** displayes in tablular form. This is the first level widget for functions
+ ************************************************************************/
 #include "FunctionWidget.h"
 
 #include <qlayout.h>
@@ -19,11 +19,23 @@
 #include <qimage.h>
 #include <qpixmap.h>
 #include "utilities/CGlobals.h"
-#include "function/function.h" 
-/*
- *  Constructs a FunctionWidget which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'.
+#include "function/function.h"
+#include "listviews.h" 
+/**
+ *  Constructs a Widget for the Functions subsection of the tree for 
+ *  displaying the functions.
+ *  This widget is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f'. 
+ *  @param model 
+ *  @param parent The widget which this widget is a child of.
+ *  @param name The object name is a text that can be used to identify 
+ *  this QObject. It's particularly useful in conjunction with the Qt Designer.
+ *  You can find an object by name (and type) using child(), and more than one 
+ *  using queryList(). 
+ *  @param flags Flags for this widget. Refer Qt::WidgetFlags of Qt documentation 
+ *  for more information about these flags.
  */
+
 FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
@@ -40,11 +52,11 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(clicked (int, int, int, const QPoint &)), this, SLOT(slotTableClicked(int, int, int, const QPoint &)));
+
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
 }
-
-// ************make changes for function widgets in this function **********
 
 void FunctionWidget::loadFunction(CModel *model)
 {
@@ -74,7 +86,6 @@ void FunctionWidget::loadFunction(CModel *model)
         {
           funct = Functions[j];
           table->setText(j, 0, funct->getName().c_str());
-          //table->setText(j, 1, QString::number((funct->getType())));
           QString ftype;
 
           switch (funct->getType())
@@ -83,7 +94,6 @@ void FunctionWidget::loadFunction(CModel *model)
 
             case 2:
               ftype = QString("pre-defined");
-              //table->setText(j, 1, QString::number((funct->getType())));
               break;
 
             case 3:
@@ -102,23 +112,18 @@ void FunctionWidget::setFocus()
   table->setFocus();
 }
 
-void FunctionWidget::slotTableClicked(int row, int col, int button, const QPoint & mousePos)
-{
-  //QMessageBox::information(this, "Application name",
-  //"Clicked (mousePress) On Metabolites table.");
-
-  if (!table->hasFocus())
-    {
-      table->setFocus();
-    }
-}
-
 void FunctionWidget::slotTableSelectionChanged()
 {
   if (!table->hasFocus())
     {
       table->setFocus();
     }
+}
+
+void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
+{
+  QString x = table->text(row, col);
+  emit name(x);
 }
 
 void FunctionWidget::resizeEvent(QResizeEvent * re)

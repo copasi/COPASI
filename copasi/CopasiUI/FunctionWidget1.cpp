@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\function.ui'
- **
- ** Created: Wed May 29 16:39:16 2002
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/**********************************************************************
+ **  $ CopasiUI/FunctionWidget1.cpp                 
+ **  $ Author  : Mrinmayee Kulkarni
+
+ ** This file creates the GUI for the  information about an individual
+ ** function obtained from the functions database.It is the second level 
+ ** widget for functions.  
+ ***********************************************************************/
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
 #include <qvariant.h>
@@ -18,7 +18,7 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qgroupbox.h>
+#include <qbuttongroup.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qtoolbar.h>
@@ -26,72 +26,12 @@
 #include <qframe.h>
 #include "listviews.h"
 #include "utilities/CGlobals.h"
-#include "function/function.h" 
+#include "function/function.h"
+
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
- */ 
-/*FunctionWidget1::FunctionWidget1(QWidget* parent,  const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
-{
-    
- 
-    LineEdit1 = new QLineEdit(this, "LineEdit1");
-    LineEdit1->setGeometry(QRect(110, 20, 91, 20)); 
- 
-    TextLabel1 = new QLabel(this, "TextLabel1");
-    TextLabel1->setGeometry(QRect(20, 20, 56, 20)); 
-    TextLabel1->setText(trUtf8("Name"));
- 
-    TextLabel2 = new QLabel(this, "TextLabel2");
-    TextLabel2->setGeometry(QRect(20, 60, 56, 20)); 
-    TextLabel2->setText(trUtf8("Description"));
- 
-    LineEdit2 = new QLineEdit(this, "LineEdit2");
-    LineEdit2->setGeometry(QRect(110, 60, 330, 20)); 
- 
-    Table1 = new QTable(this, "Table1");
-    Table1->setNumCols(Table1->numCols() + 1);    Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
-    Table1->setNumCols(Table1->numCols() + 1);    Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
-    Table1->setNumCols(Table1->numCols() + 1);    Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
-    Table1->setNumRows(Table1->numRows() + 1);    Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("1"));
-    Table1->setNumRows(Table1->numRows() + 1);    Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("2"));
-    Table1->setNumRows(Table1->numRows() + 1);    Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("3"));
-    Table1->setGeometry(QRect(110, 160, 335, 104)); 
-    Table1->setNumRows(3);
-    Table1->setNumCols(3);
- 
-    Table2 = new QTable(this, "Table2");
-    Table2->setNumCols(Table2->numCols() + 1);    Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
-    Table2->setNumCols(Table2->numCols() + 1);    Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
-    Table2->setNumCols(Table2->numCols() + 1);    Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
-    Table2->setNumRows(Table2->numRows() + 1);    Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("1"));
-    Table2->setNumRows(Table2->numRows() + 1);    Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("2"));
-    Table2->setNumRows(Table2->numRows() + 1);    Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("3"));
-    Table2->setGeometry(QRect(110, 300, 335, 104)); 
-    Table2->setNumRows(3);
-    Table2->setNumCols(3);
- 
-    TextLabel3 = new QLabel(this, "TextLabel3");
-    TextLabel3->setGeometry(QRect(20, 160, 56, 20)); 
-    TextLabel3->setText(trUtf8("Parameters"));
- 
-    TextLabel4 = new QLabel(this, "TextLabel4");
-    TextLabel4->setGeometry(QRect(20, 300, 56, 20)); 
-    TextLabel4->setText(trUtf8("Application"));
- 
-    RadioButton1 = new QRadioButton(this, "RadioButton1");
-    RadioButton1->setGeometry(QRect(110, 110, 87, 20)); 
-    RadioButton1->setText(trUtf8("reversible"));
- 
-    RadioButton2 = new QRadioButton(this, "RadioButton2");
-    RadioButton2->setGeometry(QRect(230, 110, 87, 20)); 
-    RadioButton2->setText(trUtf8("irreversible"));
- 
-    RadioButton3 = new QRadioButton(this, "RadioButton3");
-    RadioButton3->setGeometry(QRect(350, 110, 87, 20)); 
-    RadioButton3->setText(trUtf8("unknown"));
-} */
+ */
 
 FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
@@ -111,6 +51,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   vboxLayout1->addSpacing(10);
 
   // adding frames to each row
+  //Frame = new QFrame(Frame1, "Frame");
   Frame2 = new QFrame(Frame1, "Frame2");
   vboxLayout1->addWidget(Frame2);
   vboxLayout1->addSpacing(10);
@@ -150,19 +91,20 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4, 0);
   hBoxLayout4a->addSpacing(15);
 
-  GroupBox1 = new QGroupBox ("&Function Type", Frame4);
-  hBoxLayout4a->addWidget(GroupBox1);
+  ButtonGroup1 = new QButtonGroup ("&Function Type", Frame4);
+  hBoxLayout4a->addWidget(ButtonGroup1);
   hBoxLayout4a->addSpacing(20);
+  ButtonGroup1->setExclusive(TRUE);
 
-  RadioButton1 = new QRadioButton(GroupBox1, "RadioButton1");
+  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
   RadioButton1->setGeometry(QRect(110, 15, 87, 20));
   RadioButton1->setText(trUtf8("reversible"));
 
-  RadioButton2 = new QRadioButton(GroupBox1, "RadioButton2");
+  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
   RadioButton2->setGeometry(QRect(230, 15, 87, 20));
   RadioButton2->setText(trUtf8("irreversible"));
 
-  RadioButton3 = new QRadioButton(GroupBox1, "RadioButton3");
+  RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
   RadioButton3->setGeometry(QRect(350, 15, 87, 20));
   RadioButton3->setText(trUtf8("unknown"));
 
@@ -226,9 +168,10 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout7a->addWidget(commitChanges);
   hBoxLayout7a->addSpacing(15);
   hBoxLayout7a->addWidget(cancelChanges);
-}
 
-/********* changes *********************/
+  // signals and slots connections
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonPressed(setValue)));
+}
 
 int FunctionWidget1::isName(QString setValue)
 {
@@ -242,7 +185,6 @@ int FunctionWidget1::isName(QString setValue)
 
   //Now filling the table.
 
-  //CFunction *funct1 = Copasi->FunctionDB.loadedFunctions()["name"];
   CFunction *funct1;
   int i = 0;
   int myValue = -1;
@@ -296,7 +238,6 @@ void FunctionWidget1::loadName(QString setValue)
   //Now filling the table.
 
   CFunction *funct;
-  //CFunction *funct2 = Copasi->FunctionDB.loadedFunctions()["name"]
   int i = 0;
   int myValue = -1;
 
@@ -343,9 +284,7 @@ void FunctionWidget1::loadName(QString setValue)
       for (int j = 0; j < noOffunctParams; j++)
         {
           Table1->setText(j, 0, functParam[j]->getName().c_str());
-          //Table1->setText(j,1,functParam[j]->getType());
-          /**** print enum value as string ***/
-          Table1->setText(j, 1, QString::number((functParam[j]->getType())));
+          Table1->setText(j, 1, enumname[functParam[j]->getType()]);
           Table1->setText(j, 2, functParam[j]->getUsage().c_str());
         }
 
@@ -357,47 +296,68 @@ void FunctionWidget1::loadName(QString setValue)
         {
           Table2->setText(j, 0, functUsage[j]->getName().c_str());
           Table2->setText(j, 1, QString::number(functUsage[j]->getLow()));
-          Table2->setText(j, 2, QString::number(functUsage[j]->getHigh()));
-          //functUsage[j]->getType();
-          //functUsage[j]->getUsage();
+
+          switch (functUsage[j]->getHigh())
+            {
+            case 0:
+              Table2->setText(j, 2, "NA");
+              break;
+
+            default:
+              Table2->setText(j, 2, QString::number(functUsage[j]->getHigh()));
+            }
         }
 
-      /******** make changes here **********************/
-      /*********** FOR RADIO BUTTONS ***********************/
-      /*if(QString::number(metab->getStatus())=="0")
-      {
-      RadioButton1->setChecked(true);
-      RadioButton3->setChecked(true);
-      }
-      else if(QString::number(metab->getStatus())=="1")
-      {
-      RadioButton2->setChecked(true);
-      RadioButton4->setChecked(true);
-      }
-      else if(QString::number(metab->getStatus())=="2")
-      {
-      RadioButton2->setChecked(true);
-      RadioButton5->setChecked(true);
-      }
+      /***********  RADIO BUTTONS ***********************/
+      /*** if function is predefined ****/
+      if (funct->getType() == 1 || funct->getType() == 2)
+        {
+          RadioButton1->setEnabled(FALSE);
+          RadioButton2->setEnabled(FALSE);
+          RadioButton3->setEnabled(FALSE);
+          commitChanges->setEnabled(FALSE);
+          cancelChanges->setEnabled(FALSE);
+        }
 
-      ComboBox1->insertStringList((metab->getCompartment())->getName().c_str(),-1);
-
-      if((metab->getCompartment())->getName()=="Glycosome")
-      {
-      ComboBox1->insertItem("Cytosol",1);
-      ComboBox1->insertItem("Exterior",2);
-      }
-      else if((metab->getCompartment())->getName()=="Cytosol")
-      {
-      ComboBox1->insertItem("Glycosome",1);
-      ComboBox1->insertItem("Exterior",2);
-      }
+      /*** if function is user-defined *****/
       else
-      {
-      ComboBox1->insertItem("Glycosome",1);
-      ComboBox1->insertItem("Cytosol",2);
+        {
+          RadioButton1->setEnabled(TRUE);
+          RadioButton2->setEnabled(TRUE);
+          RadioButton3->setEnabled(TRUE);
+        }
 
-      } */
+      if (funct->isReversible() == -1)
+        {
+          RadioButton1->setEnabled(TRUE);
+          RadioButton1->setChecked(TRUE);
+        }
+      else
+        if (funct->isReversible() == TRUE)
+          {
+            RadioButton2->setEnabled(TRUE);
+            RadioButton2->setChecked(TRUE);
+          }
+        else
+          if (funct->isReversible() == FALSE)
+            {
+              RadioButton3->setEnabled(TRUE);
+              RadioButton3->setChecked(TRUE);
+            }
+
+      /*********** Changes in the loaded data ***************/
+      /************* Only for user-defined functions ************/
+
+      // signals and slots connections
+      /*if(funct->getType()==3)
+      {
+       connect(cancelChanges,SIGNAL(clicked()),this,SLOT(slotCancelButtonPressed(setValue)));
+      }*/
     }
 
 } //end of function
+
+void FunctionWidget1::slotCancelButtonPressed(QString setValue)
+{
+  loadName(setValue);
+}

@@ -97,6 +97,8 @@ class ListViews : public QSplitter, public Observer
   public slots:
     virtual void slotCompartmentSelected(const QString &);
     virtual void slotMetaboliteSelected(const QString &);
+    virtual void slotFunctionSelected(const QString &);
+    virtual void slotFunctionTableChanged(QString &);
     virtual void slotCompartmentTableChanged(QString &);
     virtual void slotMetaboliteTableChanged(QString &);
     virtual void slotMoietyTableChanged(QString &);

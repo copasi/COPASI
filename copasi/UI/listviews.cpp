@@ -991,19 +991,12 @@ void ListViews::loadFunction(QListViewItem* i)
 
   C_INT32 noOfFunctionsRows = Functions.size();
 
-  //vector < CMetab * > metabolites = mModel->getMetabolites();
-
-  // C_INT32 noOfMetabolitesRows = metabolites.size();
-
   //Now filling the table.
   CFunction *funct;
-
-  //CMetab *metab;
 
   for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
     {
       funct = Functions[j];
-      //metab = metabolites[j];
       f = new Folder(p, funct->getName().c_str());
       f->setID(myId + j + 1);
       dataModel->addData(p, f);
@@ -1041,6 +1034,20 @@ void ListViews::slotMetaboliteSelected(const QString &s)
 {
   metabolitesWidget1->isName(s);
   currentWidget = metabolitesWidget1;
+
+  if (lastWidget)
+    lastWidget->hide();
+
+  if (currentWidget)
+    currentWidget->show();
+
+  lastWidget = currentWidget;
+}
+
+void ListViews::slotFunctionSelected(const QString &s)
+{
+  functionWidget1->isName(s);
+  currentWidget = functionWidget1;
 
   if (lastWidget)
     lastWidget->hide();
@@ -1101,6 +1108,20 @@ void ListViews::slotReactionTableChanged(QString &s)
   reactionsWidget1->isName(s);
   //QMessageBox::information(this, "Metabolites Widget","kk");
   currentWidget = reactionsWidget1;
+
+  if (lastWidget)
+    lastWidget->hide();
+
+  if (currentWidget)
+    currentWidget->show();
+
+  lastWidget = currentWidget;
+}
+
+void ListViews::slotFunctionTableChanged(QString &s)
+{
+  functionWidget1->isName(s);
+  currentWidget = functionWidget1;
 
   if (lastWidget)
     lastWidget->hide();

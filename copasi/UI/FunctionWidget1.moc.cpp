@@ -54,9 +54,20 @@ QMetaObject* FunctionWidget1::staticMetaObject()
 
   QMetaObject* parentObject = QWidget::staticMetaObject();
 
+  static const QUParameter param_slot_0[] =
+    {
+      { "setValue", &static_QUType_QString, 0, QUParameter::In }
+    };
+  static const QUMethod slot_0 = {"slotCancelButtonPressed", 1, param_slot_0 };
+
+  static const QMetaData slot_tbl[] =
+    {
+      { "slotCancelButtonPressed(QString)", &slot_0, QMetaData::Protected }
+    };
+
   metaObj = QMetaObject::new_metaobject(
               "FunctionWidget1", parentObject,
-              0, 0,
+              slot_tbl, 1,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -79,7 +90,17 @@ void* FunctionWidget1::qt_cast(const char* clname)
 
 bool FunctionWidget1::qt_invoke(int _id, QUObject* _o)
 {
-  return QWidget::qt_invoke(_id, _o);
+  switch (_id - staticMetaObject()->slotOffset())
+    {
+    case 0:
+      slotCancelButtonPressed(static_QUType_QString.get(_o + 1));
+      break;
+
+    default:
+      return QWidget::qt_invoke(_id, _o);
+    }
+
+  return TRUE;
 }
 
 bool FunctionWidget1::qt_emit(int _id, QUObject* _o)
