@@ -380,19 +380,18 @@ void FunctionWidget1::loadName(QString setValue)
           break;
         }
     }
-
 } //end of function
 
 void FunctionWidget1::slotCancelButtonClicked()
 {
-  QMessageBox::information(this, "Function Widget1", "Cancel changes to Widget");
+  //QMessageBox::information(this, "Function Widget1", "Cancel changes to Widget");
   emit signalCancelButtonClicked(*Function_Name);
 }
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
   int i, j;
-  QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
+  //QMessageBox::information(this, "Function Widget1", "Saving changes to Widget");
 
   CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
 

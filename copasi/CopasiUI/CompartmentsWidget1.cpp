@@ -16,7 +16,6 @@
 #include <qframe.h>
 #include <qlistbox.h>
 #include <qfont.h>
-
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CompartmentsWidget1.h"
@@ -121,8 +120,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
 
   commitChanges = new QPushButton("&Commit Changes", Frame4_1);
   cancelChanges = new QPushButton("&Cancel Changes", Frame4_1);
-  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
-  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
 
   hBoxLayout4_1->addWidget(commitChanges);
   hBoxLayout4_1->addWidget(cancelChanges);
@@ -201,13 +198,13 @@ void CompartmentsWidget1::loadName(QString setValue)
 
 void CompartmentsWidget1::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
+  //QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Compartment1_Name);
 }
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
+  //QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
   std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();

@@ -47,9 +47,6 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
 
-  btnOK->setFont(QFont("Times", 10, QFont::Bold));
-  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
-
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
@@ -154,12 +151,12 @@ void MetabolitesWidget::slotTableSelectionChanged()
 
 void MetabolitesWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
+  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
+  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
 }
 
 void MetabolitesWidget::resizeEvent(QResizeEvent * re)

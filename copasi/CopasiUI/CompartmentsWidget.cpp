@@ -11,13 +11,10 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include <qfont.h>
-
 #include "copasi.h"
 #include "model/CCompartment.h"
 #include "CompartmentsWidget.h"
 #include "listviews.h"
-
-// #include "utilities/CGlobals.h"
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -49,9 +46,6 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
-
-  btnOK->setFont(QFont("Times", 10, QFont::Bold));
-  btnCancel->setFont(QFont("Times", 10, QFont::Bold));
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -152,12 +146,12 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
+  // QMessageBox::information(this, "Compartments Widget", "Do you really want to commit changes");
 }
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
+  // QMessageBox::information(this, "Compartments Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Compartment_Name);
 }
 
