@@ -568,14 +568,14 @@ C_INT32 TestEigen(void)
 
   C_FLOAT64 matrix[9];
   matrix[0] = -1;
-  matrix[2] = 4;
-  matrix[3] = -2;
+  matrix[1] = 4;
+  matrix[2] = -2;
   matrix[3] = -3;
   matrix[5] = 4;
   matrix[6] = 0;
   matrix[6] = -3;
-  matrix[8] = 1;
-  matrix[6] = 3;
+  matrix[7] = 1;
+  matrix[8] = 3;
   //initialize matrix
   //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3];
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
@@ -617,7 +617,7 @@ C_INT32 TestOptimization(void)
 
   // set the individual parameters
 
-  CRand->setMethodParameterValue(0, 100000);
+  CRand->setValue(0, 100000);
 
   for (i = 0; i < 5; i++)
     {

@@ -36,7 +36,6 @@ COptAlgorithm::COptAlgorithm()
     }
   */
 
-  mOptAlgmParams = new CMethodParameterList();
   mMethodVersion = "0";
   mMethodName = "Unknown";
   mBounds = false;
@@ -48,12 +47,11 @@ COptAlgorithm::~COptAlgorithm()
 
 // copy constructor
 COptAlgorithm::COptAlgorithm(const COptAlgorithm& source):
+    CMethodParameterList(source),
     mParameters(source.mParameters),
     mParameterNum(source.mParameterNum),
     mParameterMin(source.mParameterMin),
     mParameterMax(source.mParameterMax),
-    mOptAlgmParams(source.mOptAlgmParams),
-
     mMethodVersion(source.mMethodVersion),
     mMethodName(source.mMethodName),
     mBounds(source.mBounds),
@@ -71,28 +69,6 @@ COptAlgorithm::COptAlgorithm(const COptAlgorithm& source):
   mMethodName = source.mMethodName; 
   mBounds = source.mBounds;  
   */
-}
-
-// Object assignment overloading,
-COptAlgorithm & COptAlgorithm::operator = (const COptAlgorithm& source)
-{
-  cleanup();
-
-  if (this != &source)
-    {
-      mOptProblem = source.mOptProblem;
-      mParameters = source.mParameters;
-      mParameterNum = source.mParameterNum;
-      mParameterMin = source.mParameterMin;
-      mParameterMax = source.mParameterMax;
-      mOptAlgmParams = source.mOptAlgmParams;
-
-      mMethodVersion = source.mMethodVersion;
-      mMethodName = source.mMethodName;
-      mBounds = source.mBounds;
-    }
-
-  return *this;
 }
 
 // Initialization of private variables
@@ -127,10 +103,6 @@ void COptAlgorithm::cleanup(void)
     mParameterMin = NULL;
   if (mParameterMax)
     mParameterMax = NULL;
-
-  if ((mOptAlgmParams) && (mOptAlgmParams->size() != 0))
-    //mOptAlgmParams.clear();
-    mOptAlgmParams = NULL;
 
   return;
 }

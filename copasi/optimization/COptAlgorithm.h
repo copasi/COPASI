@@ -27,7 +27,7 @@ class COptProblem;
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
-class COptAlgorithm
+class COptAlgorithm : public CMethodParameterList
   {
     //data member
   private:
@@ -50,7 +50,7 @@ class COptAlgorithm
     //rohan: modified 7/26
   protected:
     COptProblem * mOptProblem;        // pointer to remote problem
-    CMethodParameterList * mOptAlgmParams; // pointer to parameter list
+
     // Implementation
   public:
 
@@ -69,13 +69,6 @@ class COptAlgorithm
      * @param source a COptAlgorithm object for copy
      */
     COptAlgorithm(const COptAlgorithm & source);
-
-    /**
-     * Object assignment overloading
-     * @param source a COptAlgorithm object for copy
-     * @return an assigned COptAlgorithm object
-     */
-    COptAlgorithm& operator=(const COptAlgorithm & source);
 
     /**
      * clean up memory

@@ -34,11 +34,6 @@ class COptAlgorithmRand : public COptAlgorithm
     COptAlgorithmRand(const COptAlgorithmRand & source);
 
     /**
-     * overloaded assignment operator
-     */
-    COptAlgorithmRand& operator=(const COptAlgorithmRand & source);
-
-    /**
      * destructor
      */
     ~COptAlgorithmRand();
