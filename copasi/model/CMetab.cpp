@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.72 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/12 15:59:33 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 #include <iostream>
@@ -20,6 +20,7 @@
 #include "CCompartment.h"
 #include "CModel.h"
 #include "CMetab.h"
+#include "CMetabNameInterface.h"
 
 //static
 const CCompartment * CMetab::mpParentCompartment = NULL;
@@ -348,6 +349,17 @@ bool CMetab::setValueOfNamedReference(std::string name, C_FLOAT64 value)
 
   return CCopasiContainer::setValueOfNamedReference(name, value);
 }
+
+std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
+  {
+    CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
+    if (tmp)
+      {
+        return CMetabNameInterface::getDisplayName(tmp, *this);
+      }
+
+    return CCopasiObject::getObjectDisplayName(regular, richtext);
+  }
 
 //******************* CMetabOld ***************************************************
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/12 15:59:33 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 /**
@@ -144,6 +144,8 @@ class CMetab : public CCopasiContainer
     virtual void * getReference() const;
 
     virtual bool setValueOfNamedReference(std::string name, C_FLOAT64 value);
+
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
     /**
      *  Cleanup

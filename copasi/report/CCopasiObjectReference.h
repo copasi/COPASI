@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 15:29:40 $
+   $Date: 2005/01/12 23:07:27 $
    End CVS Header */
 
 /**
@@ -56,6 +56,43 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
 
     virtual void print(std::ostream * ostream) const
       {(*ostream) << mReference;};
+
+    virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const
+      {
+        //supress "Value"
+        if (getObjectParent() && getObjectName() == "Value")
+          return getObjectParent()->getObjectDisplayName(regular, richtext);
+
+        //special treatment of metab children
+        if (getObjectParent()->getObjectType() == "Metabolite")
+          {
+            if (getObjectName() == "Concentration")
+              {
+                if (richtext)
+                  {
+                    return "<font color=\"#2222cc\">[</font>"
+                    + getObjectParent()->getObjectDisplayName(regular, richtext)
+                    + "<font color=\"#2222cc\">]</font>";
+                  }
+                else
+                {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]";}
+              }
+
+            if (getObjectName() == "InitialConcentration")
+              {
+                if (richtext)
+                  {
+                    return "<font color=\"#2222cc\">[</font>"
+                    + getObjectParent()->getObjectDisplayName(regular, richtext)
+                    + "<font color=\"#2222cc\">]<sub>Init</sub></font>";
+                  }
+                else
+                {return "[" + getObjectParent()->getObjectDisplayName(regular, richtext) + "]_0";}
+              }
+          }
+
+        return CCopasiObject::getObjectDisplayName(regular, richtext);
+      }
   };
 
 /** @dia:pos 64.092,38.1129 */
