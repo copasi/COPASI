@@ -35,10 +35,10 @@ class COptAlgorithm
     //These parameters are optimization parameters, not method (algm) parameters
     //they are for the model or calculation function.
     //Their memories are stored in COptProblem. Here are only pointers.
-    double * mParameters;       // pointer to parameters
-    unsigned int mParameterNum;          // the number of parameters
-    double * mParameterMin;     // the minimum values of parameters
-    double * mParameterMax;     // the maximum values of parameters
+    C_FLOAT64 * mParameters;       // pointer to parameters
+    unsigned C_INT32 mParameterNum;          // the number of parameters
+    C_FLOAT64 * mParameterMin;     // the minimum values of parameters
+    C_FLOAT64 * mParameterMax;     // the maximum values of parameters
 
     vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
@@ -79,7 +79,7 @@ class COptAlgorithm
     /**
      * clean up memory
      */
-    virtual int cleanup(void);
+    virtual void cleanup(void);
 
     /**
      * Initialization of private variables
@@ -91,17 +91,17 @@ class COptAlgorithm
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
      */
-    virtual int optimise();
+    virtual C_INT32 optimise();
 
     /**
      * set the number of method parameters
      */
-    void setMethodParameterNumber(int aNum);
+    void setMethodParameterNumber(C_INT32 aNum);
 
     /**
      * get the number of method parameters
      */
-    unsigned int getMethodParameterNumber(void);
+    unsigned C_INT32 getMethodParameterNumber(void);
 
     /**
      * get method parameter that matches a specific index 
@@ -111,17 +111,17 @@ class COptAlgorithm
     /**
      * set a method parameter
      */
-    void setMethodParameterValue(int i, double value);
+    void setMethodParameterValue(C_INT32 i, C_FLOAT64 value);
 
     /**
      * get method parameter that matches a specific index 
      */
-    double getMethodParameterValue(int i);
+    C_FLOAT64 getMethodParameterValue(C_INT32 i);
 
     /**
      * get method parameter name
      */
-    string getMethodParameterName(int i);
+    string getMethodParameterName(C_INT32 i);
 
     /**
      * get method name

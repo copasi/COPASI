@@ -1,9 +1,9 @@
 /***************************************************************************
-                         COptAlgorithmRand.cpp  -  Random Optimizer
-                            -------------------
+                        COptAlgorithmRand.cpp  -  Random Optimizer
+                           -------------------
 
-   Programmer           : Rohan Luktuke
-   email                : rluktuke@vt.edu
+  Programmer           : Rohan Luktuke
+  email                : rluktuke@vt.edu
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,7 +24,7 @@
 #include "randomGenerator/CRandom.cpp"
 
 #define TRUE 1
-#define FALSE 0
+#define FALSE 0 
 //enum answer{NO,YES};
 
 using namespace std;
@@ -70,8 +70,7 @@ COptAlgorithmRand::COptAlgorithmRand(): COptAlgorithm()
 COptAlgorithmRand::COptAlgorithmRand(const COptAlgorithmRand& source):
     COptAlgorithm(source),
     rand(source.rand)
-{
-}
+{}
 
 /**
  * Destructor
@@ -95,16 +94,16 @@ COptAlgorithmRand& COptAlgorithmRand::operator=(const COptAlgorithmRand& source)
  * Optimizer Function
  * Returns: nothing
  */
-int COptAlgorithmRand::optimise()
+C_INT32 COptAlgorithmRand::optimise()
 {
-  int linear;
-  double la, x, candx;
-  double *mMin, *mMax;
-  int count, i, j;
+  C_INT32 linear;
+  C_FLOAT64 la, x, candx;
+  C_FLOAT64 *mMin, *mMax;
+  C_INT32 count, i, j;
   //set candx to max value
   candx = DBL_MAX;
   //cout<<"inside optimise()";
-  count = getMethodParameterValue(0);
+  count = (C_INT32) getMethodParameterValue(0);
   /**
    * mMin and mMax store pointers to arrays mParameterMin/Max.
    * particular values can be accessed by using subscripts.
@@ -158,7 +157,7 @@ int COptAlgorithmRand::optimise()
 
           //store the combination of parameter values
           std::cout << "Best Parameters: (";
-          for (int p = 0; p < mOptProblem->getParameterNum(); p++)
+          for (C_INT32 p = 0; p < mOptProblem->getParameterNum(); p++)
             {
               mOptProblem->setBestParameter(p, mOptProblem->getParameter(p));
               std::cout << mOptProblem->getParameter(p) << ", ";

@@ -1,9 +1,9 @@
 /***************************************************************************
-                         COptAlgorithmRand.h  -  Random Optimizer
-                            -------------------
+                        COptAlgorithmRand.h  -  Random Optimizer
+                           -------------------
 
-   Programmer           : Rohan Luktuke
-   email                : rluktuke@vt.edu
+  Programmer           : Rohan Luktuke
+  email                : rluktuke@vt.edu
  ***************************************************************************/
 
 /***************************************************************************
@@ -46,5 +46,5 @@ class COptAlgorithmRand : public COptAlgorithm
     /**
      * optimize function
      */
-    int optimise();
+    C_INT32 optimise();
   };

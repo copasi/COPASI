@@ -26,7 +26,7 @@ COptAlgorithm::COptAlgorithm()
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
 
-  for (unsigned int i = 0; i < mOptAlgmParams.size(); i++)
+  for (unsigned C_INT32 i = 0; i < mOptAlgmParams.size(); i++)
     {
       mOptAlgmParams[i].setName("unknown");
       mOptAlgmParams[i].setValue(0.0);
@@ -96,12 +96,12 @@ bool COptAlgorithm::initialize(void)
   cleanup();
 
   mOptProblem = new COptProblem();
-  mParameters = new double();
-  mParameterMin = new double();
-  mParameterMax = new double();
+  mParameters = new C_FLOAT64();
+  mParameterMin = new C_FLOAT64();
+  mParameterMax = new C_FLOAT64();
 
   /*
-    for (int i=0; i<mOptAlgmParams.size(); i++)
+    for (C_INT32 i=0; i<mOptAlgmParams.size(); i++)
     {
     mOptAlgmParams[i].setName("unknown");
     mOptAlgmParams[i].setValue(0.0);
@@ -112,7 +112,7 @@ bool COptAlgorithm::initialize(void)
 }
 
 //clean up mem
-int COptAlgorithm::cleanup(void)
+void COptAlgorithm::cleanup(void)
 {
   if (mOptProblem)
     mOptProblem = NULL;
@@ -126,11 +126,11 @@ int COptAlgorithm::cleanup(void)
   if (!mOptAlgmParams.empty())
     mOptAlgmParams.clear();
 
-  return 0;
+  return;
 }
 
 // set the number of method parameters
-void COptAlgorithm::setMethodParameterNumber(int aNum)
+void COptAlgorithm::setMethodParameterNumber(C_INT32 aNum)
 {
   mParameterNum = aNum;
 }
@@ -141,7 +141,7 @@ void COptAlgorithm::setProblem(COptProblem * problem)
 }
 
 // get method parameter number
-unsigned int COptAlgorithm::getMethodParameterNumber(void)
+unsigned C_INT32 COptAlgorithm::getMethodParameterNumber(void)
 {
   return mParameterNum;
 }
@@ -153,19 +153,19 @@ vector <COptAlgorithmParameter> & COptAlgorithm::getMethodParameters()
 }
 
 // set method parameter value
-void COptAlgorithm::setMethodParameterValue(int i, double value)
+void COptAlgorithm::setMethodParameterValue(C_INT32 i, C_FLOAT64 value)
 {
   mOptAlgmParams[i].setValue(value);
 }
 
 // get method parameter value
-double COptAlgorithm::getMethodParameterValue(int i)
+C_FLOAT64 COptAlgorithm::getMethodParameterValue(C_INT32 i)
 {
   return mOptAlgmParams[i].getValue();
 }
 
 // get method parameter name
-string COptAlgorithm::getMethodParameterName(int i)
+string COptAlgorithm::getMethodParameterName(C_INT32 i)
 {
   return mOptAlgmParams[i].getName();
 }
@@ -194,8 +194,8 @@ bool COptAlgorithm::isBounded(void)
 // Execute the optimization algorithm calling simulation routine (passed as argument)
 // when needed. It is noted that this procedure can give feedback of its progress by
 // the callback function set with SetCallback
-//virtual int COptAlgorithm::Optimise(double (*func) (void))
-int COptAlgorithm::optimise(void)
+//virtual C_INT32 COptAlgorithm::Optimise(C_FLOAT64 (*func) (void))
+C_INT32 COptAlgorithm::optimise(void)
 {
   return 0;
 }
