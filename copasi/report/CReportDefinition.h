@@ -31,6 +31,7 @@ class CReportDefinition
 
     CComment *rComment;
     CHeaderFooter *rHeader;
+
     std::vector<CHeaderFooter*> rHeaderVector;
     CHeaderFooter *rFooter;
     std::vector<CHeaderFooter*> rFooterVector;
