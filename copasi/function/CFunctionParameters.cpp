@@ -160,44 +160,42 @@ void CFunctionParameters::updateUsageRanges()
   unsigned C_INT32 index;
 
   CUsageRange * pUsageRange = NULL;
-  CUsageRange UsageRange;
 
-  std::string Usage;
-  CFunctionParameter::DataType Type;
+  const std::string * Usage;
+  const CFunctionParameter::DataType * Type;
 
   mUsageRanges.cleanup();
 
   for (i = 0; i < imax; i++)
     {
-      Usage = mParameters[i]->getUsage();
-      Type = mParameters[i]->getType();
+      Usage = &mParameters[i]->getUsage();
+      Type = &mParameters[i]->getType();
 
-      if ((index = mUsageRanges.getIndex(Usage)) == C_INVALID_INDEX)
+      if ((index = mUsageRanges.getIndex(*Usage)) == C_INVALID_INDEX)
         {
-          if (Type < CFunctionParameter::VINT32)
+          pUsageRange = new CUsageRange(*Usage, &mUsageRanges);
+          mUsageRanges.add(pUsageRange);
+
+          if (*Type < CFunctionParameter::VINT32)
             {
               /* Non vectors are assumed to have a fixed number
                  of elements */
-              UsageRange.setRange(1, CRange::NoRange);
-              UsageRange.setUsage(Usage);
-              mUsageRanges.add(UsageRange);
+              pUsageRange->setRange(1, CRange::NoRange);
             }
           else
             {
               /* Vectors are assumed to have at least one element */
-              UsageRange.setRange(1, CRange::Infinity);
-              UsageRange.setUsage(Usage);
-              mUsageRanges.add(UsageRange);
+              pUsageRange->setRange(1, CRange::Infinity);
             }
         }
       else
         {
           pUsageRange = mUsageRanges[index];
 
-          if ((CFunctionParameter::VINT32 <= Type) ||
+          if ((CFunctionParameter::VINT32 <= *Type) ||
               (pUsageRange->getHigh() == (unsigned C_INT32) CRange::Infinity))
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
-                           Usage.c_str(), Type);
+                           Usage->c_str(), Type);
           // this means a vector parameter must be the only parameter with the respective usage
 
           pUsageRange->setLow(pUsageRange->getLow() + 1);
