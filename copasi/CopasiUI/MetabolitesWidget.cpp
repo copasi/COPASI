@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 18:47:01 $
+   $Date: 2004/10/28 20:06:31 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -88,12 +88,12 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   //1: name
   QString metabolitenameString = FROM_UTF8(pMetab->getObjectName());
 
-  if (metabolitenameString.length()*7 > colWidth[1])
+  if (fontMetrics().width(metabolitenameString, metabolitenameString.length()) > colWidth[1])
     {
-      colWidth[1] = metabolitenameString.length() * 7;
+      colWidth[1] = fontMetrics().width(metabolitenameString, metabolitenameString.length());
     }
 
-  table->setColumnWidth(1, colWidth[1]);
+  table->setColumnWidth(1, colWidth[1] + 10);
 
   table->setText(row, 1, metabolitenameString);
 
@@ -327,7 +327,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                           // Yes or Enter
+    case 0:                            // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -339,7 +339,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                           // No or Escape
+    case 1:                            // No or Escape
       break;
     }
 }

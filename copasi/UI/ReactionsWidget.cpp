@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/10/28 18:47:01 $
+   $Date: 2004/10/28 20:06:31 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -14,6 +14,7 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
+#include <qfontmetrics.h>
 
 #include "MyTable.h"
 #include "model/CModel.h"
@@ -75,9 +76,11 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   QString eqString = FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false));
 
-  if (colWidth[1] < 7*eqString.length())
+;
+
+  if (colWidth[1] < fontMetrics().width(eqString, eqString.length()))
     {
-      colWidth[1] = 7 * eqString.length();
+      colWidth[1] = fontMetrics().width(eqString, eqString.length()) + 20;
     }
 
   table->setColumnWidth(2, colWidth[1]);
@@ -88,9 +91,9 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
     {
       QString funcString = FROM_UTF8(pRea->getFunction().getObjectName());
 
-      if (colWidth[2] < 7*funcString.length())
+      if (colWidth[2] < fontMetrics().width(funcString, funcString.length()))
         {
-          colWidth[2] = 7 * funcString.length();
+          colWidth[2] = fontMetrics().width(funcString, funcString.length()) + 20;
         }
 
       table->setColumnWidth(3, colWidth[2]);
