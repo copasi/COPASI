@@ -77,6 +77,12 @@ class CompartmentsWidget1 : public QWidget
     QFrame* Frame4_1;
     QFrame* Frame4_2;
     QFrame* Frame4_3;
+
+  public slots:
+    virtual void commitChangesClicked();
+
+  signals:
+    void folderName(QString);
   };
 
 #endif // CompartmentsWidget
