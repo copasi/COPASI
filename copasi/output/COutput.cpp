@@ -23,28 +23,57 @@
 /**
  *  Default constructor. 
  */
-COutput::COutput()
-{
-  Dyn = 0;
-  DynTitles = 0;
-  DynQuotes = 0;
-  DynColWidth = 0;
-  DynSeparator = 0;
-  SS = 0;
-  SSTitles = 0;
-  SSQuotes = 0;
-  SSColWidth = 0;
-  SSSeparator = 0;
-  SSStrategy = 0;
-  Rep = 0;
-  RepStruct = 0;
-  RepStab = 0;
-  RepMCA = 0;
-  RepComments = 1; //???? No such configure variable in *.GPS files
+COutput::COutput(const std::string & name,
+                 const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Output"),
+    mOutput("Output Lines", this),
+    mTriggerType(),
+    Dyn(0),
+    DynTitles(0),
+    DynQuotes(0),
+    DynColWidth(0),
+    DynSeparator(0),
+    SS(0),
+    SSTitles(0),
+    SSQuotes(0),
+    SSColWidth(0),
+    SSSeparator(0),
+    SSStrategy(0),
+    Rep(0),
+    RepStruct(0),
+    RepStab(0),
+    RepMCA(0),
+    RepComments(1),
+    ConcUnit(),
+    TimeUnit(),
+    mSolution(NULL)
+{}
 
-  //  mOutput = NULL;
-  mSolution = NULL;
-}
+COutput::COutput(const COutput & src,
+                 const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mOutput(src.mOutput, this),
+    mTriggerType(src.mTriggerType),
+    Dyn(src.Dyn),
+    DynTitles(src.DynTitles),
+    DynQuotes(src.DynQuotes),
+    DynColWidth(src.DynColWidth),
+    DynSeparator(src.DynSeparator),
+    SS(src.SS),
+    SSTitles(src.SSTitles),
+    SSQuotes(src.SSQuotes),
+    SSColWidth(src.SSColWidth),
+    SSSeparator(src.SSSeparator),
+    SSStrategy(src.SSStrategy),
+    Rep(src.Rep),
+    RepStruct(src.RepStruct),
+    RepStab(src.RepStab),
+    RepMCA(src.RepMCA),
+    RepComments(src.RepComments),
+    ConcUnit(src.ConcUnit),
+    TimeUnit(src.TimeUnit),
+    mSolution(src.mSolution)
+{}
 
 void COutput::init()
 {
@@ -91,29 +120,14 @@ void COutput::reset()
 }
 
 /**
- *  Assignement operator. 
- *  Copies the contents from one COutput object to another.
- *  @param source reference to the recipient object.
- */
-COutput& COutput::operator=(const COutput &source)
-{
-  mOutput = source.mOutput;
-
-  mSolution = source.mSolution;
-  ConcUnit = source.ConcUnit;
-  TimeUnit = source.TimeUnit;
-  return *this;
-}
-
-/**
  *  Return the pointer of the COutputLine that can be output at the same time. 
  *  @return mOutput
  *  @see mOutput
  */
 const CCopasiVectorS < COutputLine > & COutput::getList() const
-{
-  return mOutput;
-}
+  {
+    return mOutput;
+  }
 
 /**
  *  Add new OutputLine object to a list

@@ -18,7 +18,7 @@ class CReadConfig;
 class CWriteConfig;
 
 template < class CType > class CCopasiVector:
-        protected std::vector< CType * >, protected CCopasiObject
+        protected std::vector< CType * >, public CCopasiContainer
     {
     public:
       typedef typename std::vector< CType * >::value_type value_type;
@@ -35,7 +35,7 @@ template < class CType > class CCopasiVector:
                     const CCopasiContainer * pParent = &RootContainer,
                     const unsigned C_INT32 & flag = CCopasiObject::Vector):
           std::vector< CType * >(),
-          CCopasiObject(name, pParent, "Vector", flag)
+          CCopasiContainer(name, pParent, "Vector", flag)
       {CONSTRUCTOR_TRACE;}
 
       /**
@@ -44,7 +44,7 @@ template < class CType > class CCopasiVector:
       CCopasiVector(const CCopasiVector < CType > & src,
                     const CCopasiContainer * pParent = NULL):
           std::vector< CType * >(src),
-          CCopasiObject(src, pParent)
+          CCopasiContainer(src, pParent)
       {
         CONSTRUCTOR_TRACE;
         unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
@@ -52,7 +52,7 @@ template < class CType > class CCopasiVector:
         const_iterator Source = src.begin();
 
         for (i = 0; i < imax; i++, Target++, Source++)
-          *Target = new CType(**Source);
+          *Target = new CType(**Source, this);
       }
 
       /**
@@ -86,7 +86,7 @@ template < class CType > class CCopasiVector:
        */
       virtual void add(const CType & src)
       {
-        CType * Element = new CType(src);
+        CType * Element = new CType(src, this);
 
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
@@ -136,7 +136,7 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      value_type operator[](unsigned C_INT32 index)
+      value_type & operator[](unsigned C_INT32 index)
       {
         assert(index < ((std::vector< CType * > *)this)->size());
         return *(begin() + index);
@@ -158,8 +158,10 @@ template < class CType > class CCopasiVector:
       /**
        *  Resizes the vector
        *  @param "unsigned C_INT32" size
+       *  @param 
        */
-      virtual void resize(unsigned C_INT32 size)
+      virtual void resize(unsigned C_INT32 size,
+                          const bool & allocate = true)
       {
         unsigned C_INT32 OldSize = ((std::vector< CType * > *)this)->size();
 
@@ -167,8 +169,9 @@ template < class CType > class CCopasiVector:
         unsigned C_INT32 i;
         iterator Target = begin() + OldSize;
 
-        for (i = OldSize; i < size; i++, Target++)
-          *Target = new CType;
+        if (allocate)
+          for (i = OldSize; i < size; i++, Target++)
+            *Target = new CType("NoName", this);
       }
 
       friend std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
@@ -235,7 +238,7 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
 
         for (i = 0; i < size; i++, Target++)
           {
-            *Target = new CType;
+            *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
           }
       }
@@ -257,7 +260,7 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       /**
        *
        */
-      value_type operator[](unsigned C_INT32 index)
+      value_type & operator[](unsigned C_INT32 index)
     {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
@@ -302,14 +305,13 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
 
-      virtual void add
-      (const CType & src)
+      virtual void add(const CType & src)
       {
         if (!isInsertAllowed(&src))
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCCopasiVector + 2, src.getName().c_str());
 
-        CType * Element = new CType(src);
+        CType * Element = new CType(src, this);
 
         push_back(Element);
       }
@@ -350,7 +352,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       /**
        *
        */
-      value_type operator[](unsigned C_INT32 index)
+      value_type & operator[](unsigned C_INT32 index)
     {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
@@ -362,7 +364,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       /**
        *
        */
-      value_type operator[](const std::string &name)
+      value_type & operator[](const std::string &name)
       {
         C_INT32 Index = getIndex(name);
 
@@ -475,7 +477,7 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
         for (i = 0; i < size; i++, Target++)
           {
-            *Target = new CType;
+            *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
           }
       }
@@ -497,7 +499,7 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       /**
        *
        */
-      value_type operator[](unsigned C_INT32 index)
+      value_type & operator[](unsigned C_INT32 index)
     {return ((CCopasiVector <CType>*) this)->operator[](index);}
 
       /**
@@ -509,7 +511,7 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       /**
        *
        */
-      value_type operator[](const std::string &name)
+      value_type & operator[](const std::string &name)
       {return ((CCopasiVectorN <CType>*) this)->operator[](name);}
 
       /**

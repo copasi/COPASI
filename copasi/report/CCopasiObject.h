@@ -64,7 +64,9 @@ class CCopasiObject
 
     const std::string & getObjectType() const;
 
-    CCopasiObject * getObjectParent() const;
+    CCopasiContainer * getObjectParent() const;
+
+    CCopasiContainer * getObjectAncestor(const std::string & type) const;
 
     virtual CCopasiObjectName getCN() const;
 

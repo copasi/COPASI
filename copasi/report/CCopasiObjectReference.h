@@ -117,8 +117,8 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
       return new CCopasiObjectReference< typename CType::elementType >
       (mObjectName + cn,
        getObjectParent(),
-       mReference(cn.getName(),
-                  cn.getName(1)));
+       mReference(cn.getIndex(),
+                  cn.getIndex(1)));
     }
 
     virtual void * getReference() {return &mReference;}

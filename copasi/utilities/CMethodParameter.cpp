@@ -14,14 +14,27 @@
 #include "CWriteConfig.h"
 
 CMethodParameter::CMethodParameter(const std::string & name,
-                                   const double & value) :
-    mName(name),
-    mValue(value)
+                                   const CCopasiContainer * pParent,
+                                   const std::string & type):
+    CCopasiContainer(name, pParent, type),
+    mName(mObjectName),
+    mValue(0)
 {}
 
-CMethodParameter::CMethodParameter(const CMethodParameter & src) :
-    mName(src.mName),
+CMethodParameter::CMethodParameter(const CMethodParameter & src,
+                                   const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(mObjectName),
     mValue(src.mValue)
+{}
+
+CMethodParameter::CMethodParameter(const std::string & name,
+                                   const double & value,
+                                   const CCopasiContainer * pParent,
+                                   const std::string & type):
+    CCopasiContainer(name, pParent, type),
+    mName(mObjectName),
+    mValue(value)
 {}
 
 CMethodParameter::~CMethodParameter() {}
@@ -43,10 +56,10 @@ void CMethodParameter::load(CReadConfig & configBuffer)
 }
 
 void CMethodParameter::save(CWriteConfig & configBuffer) const
-{
-  configBuffer.setVariable("MethodParameterName", "string", &mName);
-  configBuffer.setVariable("MethodParameterValue", "C_FLOAT64", &mValue);
+  {
+    configBuffer.setVariable("MethodParameterName", "string", &mName);
+    configBuffer.setVariable("MethodParameterValue", "C_FLOAT64", &mValue);
 
-  return;
-}
+    return;
+  }
 void CMethodParameter::cleanup() {}

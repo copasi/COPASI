@@ -10,12 +10,13 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
+#include "report/CCopasiContainer.h"
 
 /**
  *
  */ 
 /** @dia:pos -40.594,3.88725 */
-class CRange
+class CRange : public CCopasiContainer
   {
     //Attributes
   public:
@@ -42,23 +43,34 @@ class CRange
     // Operations
   public:
     /**
-     *  Default Constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Range")
      */
-    CRange();
+    CRange(const std::string & name = "NoName",
+           const CCopasiContainer * pParent = NULL,
+           const std::string & type = "Range");
 
     /**
-     *  Copy Constructor
-     *  @param "const CRange" low
+     * Copy Constructor
+     * @param "const CRange" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CRange(const CRange & src);
+    CRange(const CRange & src,
+           const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Specific Constructor
-     *  @param "const unsigned C_INT32" low
-     *  @param "const unsigned C_INT32" high
+     * Specific Constructor
+     * @param "const unsigned C_INT32" low
+     * @param "const unsigned C_INT32" high
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Range")
      */
     CRange(const unsigned C_INT32 & low,
-           const unsigned C_INT32 & high = CRange::NoRange);
+           const unsigned C_INT32 & high = CRange::NoRange,
+           const CCopasiContainer * pParent = NULL,
+           const std::string & type = "Range");
 
     /**
      *  Destructor

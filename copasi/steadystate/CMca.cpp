@@ -281,7 +281,7 @@ int CMca::CalcGamma()
         aux2[i][j] = 0.0;
 
         for (k = 0; k < mpModel->getIndMetab(); k++)
-          aux2[i][j] -= (C_FLOAT64)mpModel->getmLU()[i][k] * aux1[k + 1][j + 1];
+          aux2[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
       }
 
   // mGamma = aux2 *RedStoi

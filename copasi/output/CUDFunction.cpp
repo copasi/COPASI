@@ -24,16 +24,22 @@
 /**
  *  Default constructor
  */
-CUDFunction::CUDFunction() : CKinFunction()
+CUDFunction::CUDFunction(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CKinFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::Output);
 }
 
-CUDFunction::CUDFunction(const CFunction & src) : CKinFunction(src)
+CUDFunction::CUDFunction(const CFunction & src,
+                         const CCopasiContainer * pParent):
+    CKinFunction(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
-CUDFunction::CUDFunction(const CUDFunction & src) : CKinFunction(src)
+CUDFunction::CUDFunction(const CUDFunction & src,
+                         const CCopasiContainer * pParent):
+    CKinFunction(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -42,7 +48,9 @@ CUDFunction::CUDFunction(const CUDFunction & src) : CKinFunction(src)
  *  @param "const string" &description
  */
 CUDFunction::CUDFunction(const std::string & name,
-                         const std::string & description) : CKinFunction()
+                         const std::string & description,
+                         const CCopasiContainer * pParent):
+    CKinFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::Output);
@@ -60,7 +68,7 @@ CUDFunction::~CUDFunction() {cleanup(); DESTRUCTOR_TRACE;}
  */
 void CUDFunction::cleanup()
 {
-  mNodes.cleanup();
+  cleanupNodes();
 
   CFunction::cleanup();
 }
@@ -73,7 +81,7 @@ void CUDFunction::copy(const CUDFunction & in)
 {
   CBaseFunction::copy(in);
 
-  mNodes = CCopasiVectorS < CNodeO > (in.mNodes);
+  mNodes = CVector< CNodeO * > (in.mNodes);
 
   mNidx = in.mNidx;
 
@@ -113,7 +121,15 @@ void CUDFunction::load(CReadConfig & configbuffer,
     {
       configbuffer.getVariable("Nodes", "C_INT32", &Size);
 
-      mNodes.load(configbuffer, Size);
+      mNodes.resize(Size);
+
+      C_INT32 i;
+      for (i = 0; i < Size; i++)
+        {
+          mNodes[i] = new CNodeO;
+          mNodes[i]->load(configbuffer);
+        }
+
       createParameters();
       //mNodes.cleanup();  // create exception
     }
@@ -181,9 +197,9 @@ void * CUDFunction::getValueAddr()
  * Return the value of user defined function
  */
 C_FLOAT64 CUDFunction::getValue() const
-{
-  return mValue;
-}
+  {
+    return mValue;
+  }
 
 C_INT32 CUDFunction::connectNodes()
 {
@@ -474,11 +490,11 @@ CNodeO * CUDFunction::parsePrimary()
         parseExpression(0);
     }
 }
-CCopasiVectorS < CNodeO > & CUDFunction::getNodes() {return mNodes;}
+std::vector< CNodeO * > & CUDFunction::getNodes() {return mNodes;}
 
 void CUDFunction::compile()
 {
-  mNodes.cleanup();
+  cleanupNodes();
   parse();
   connectNodes();
 }
@@ -490,7 +506,7 @@ C_INT32 CUDFunction::parse()
   CKinFunctionFlexLexer Scanner((std::istream *) &buffer);
 
   // add the root node
-  mNodes.add(CNodeO(N_ROOT, N_NOP));
+  mNodes.push_back(new CNodeO(N_ROOT, N_NOP));
 
   // call the lexical analyser successively until done
 
@@ -501,63 +517,63 @@ C_INT32 CUDFunction::parse()
       switch (i)
         {
         case N_IDENTIFIER:
-          mNodes.add(CNodeO(Scanner.YYText()));
+          mNodes.push_back(new CNodeO(Scanner.YYText()));
           break;
 
         case N_NUMBER:
-          mNodes.add(CNodeO(atof(Scanner.YYText())));
+          mNodes.push_back(new CNodeO(atof(Scanner.YYText())));
           break;
 
         case '+':
-          mNodes.add(CNodeO(N_OPERATOR, '+'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '+'));
           break;
 
         case '-':
-          mNodes.add(CNodeO(N_OPERATOR, '-'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '-'));
           break;
 
         case '*':
-          mNodes.add(CNodeO(N_OPERATOR, '*'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '*'));
           break;
 
         case '/':
-          mNodes.add(CNodeO(N_OPERATOR, '/'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '/'));
           break;
 
         case '^':
-          mNodes.add(CNodeO(N_OPERATOR, '^'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '^'));
           break;
 
         case '(':
-          mNodes.add(CNodeO(N_OPERATOR, '('));
+          mNodes.push_back(new CNodeO(N_OPERATOR, '('));
           break;
 
         case ')':
-          mNodes.add(CNodeO(N_OPERATOR, ')'));
+          mNodes.push_back(new CNodeO(N_OPERATOR, ')'));
           break;
 
         case N_LOG:
-          mNodes.add(CNodeO(N_FUNCTION, N_LOG));
+          mNodes.push_back(new CNodeO(N_FUNCTION, N_LOG));
           break;
 
         case N_LOG10:
-          mNodes.add(CNodeO(N_FUNCTION, N_LOG10));
+          mNodes.push_back(new CNodeO(N_FUNCTION, N_LOG10));
           break;
 
         case N_EXP:
-          mNodes.add(CNodeO(N_FUNCTION, N_EXP));
+          mNodes.push_back(new CNodeO(N_FUNCTION, N_EXP));
           break;
 
         case N_SIN:
-          mNodes.add(CNodeO(N_FUNCTION, N_SIN));
+          mNodes.push_back(new CNodeO(N_FUNCTION, N_SIN));
           break;
 
         case N_COS:
-          mNodes.add(CNodeO(N_FUNCTION, N_COS));
+          mNodes.push_back(new CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:            // this is an error
-          mNodes.cleanup();
+        case N_NOP:             // this is an error
+          cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
           return 0;
@@ -565,4 +581,16 @@ C_INT32 CUDFunction::parse()
     }
 
   return 0;
+}
+
+void CUDFunction::cleanupNodes()
+{
+  unsigned C_INT32 i, imax = mNodes.size();
+
+  for (i = 0; i < imax; i++)
+    if (mNodes[i]) delete mNodes[i];
+
+  mNodes.clear();
+
+  return;
 }

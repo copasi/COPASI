@@ -63,7 +63,7 @@
 class CState;
 class CSteadyStateTask;
 
-class CDatum
+class CDatum : public CCopasiContainer
   {
   private:
     /**
@@ -85,7 +85,7 @@ class CDatum
     /**
      *  Name of the object.
      */
-    std::string mObject;
+    std::string & mObject;
 
     /**
      *  Creates the mObject
@@ -115,32 +115,40 @@ class CDatum
   public:
 
     /**
-     *  Default constructor. 
-     *  Creates an empty object with C_INT32 type
+     * Default constructor. 
+     * Creates an empty object with C_INT32 type
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CDatum();
+    CDatum(const std::string & name = "NoName",
+           const CCopasiContainer * pParent = NULL);
 
     /**
-     *  User Defined constructor. 
-     *  Creates an object with contents passed as arguments
-     *  @param title: title of the object.
-     *  @param value: pointer to the memeory location containing the value of the object.
-     *  @param type: type of the object (e.g. C_INT32).
-     *  @param object: the name of this object 
+     * Copy constructor. 
+     * @param const CDatum & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CDatum(const std::string& title, void* value, C_INT32 type, const std::string& object);
+    CDatum(const CDatum & src,
+           const CCopasiContainer * pParent = NULL);
+
+    /**
+     * User Defined constructor. 
+     * Creates an object with contents passed as arguments
+     * @param title: title of the object.
+     * @param value: pointer to the memeory location containing the value of the object.
+     * @param type: type of the object (e.g. C_INT32).
+     * @param object: the name of this object 
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CDatum(const std::string& title,
+           void* value, C_INT32 type,
+           const std::string& object,
+           const CCopasiContainer * pParent = NULL);
 
     /**
      *  cleanup 
      */
     void cleanup();
-
-    /**
-     *  Assignement operator. 
-     *  Copies the contents from one CDatum object to another.
-     *  @param source reference to the recipient object.
-     */
-    CDatum& operator=(const CDatum &source);
 
     /**
      *  Returns a string with the title of this object.
@@ -220,7 +228,7 @@ class CDatum
     /**
      *  Dummy method.
      */
-    std::string getName() const {return "";}
+    const std::string & getName() const {return mObjectName;}
 
     /**
      *  Complie the mpValue in each CDatum

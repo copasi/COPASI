@@ -24,19 +24,26 @@ class CUsageRange : public CRange
      * for CFunction but it might be used in derived classes. Possible
      * usages are SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER 
      */
-    std::string mUsage;
+    std::string & mUsage;
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Range")
      */
-    CUsageRange();
+    CUsageRange(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL,
+                const std::string & type = "Usage Range");
 
     /**
-     *  Copy constructor
-     *  @param "const CUsageRange" & src
+     * Copy constructor
+     * @param "const CUsageRange" & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CUsageRange(const CUsageRange & src);
+    CUsageRange(const CUsageRange & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

@@ -14,7 +14,7 @@
 #include "CMetab.h"
 
 /** @dia:pos 12.8337,93.7809 */
-class CChemEqElement
+class CChemEqElement : public CCopasiContainer
   {
     //  Attributes
 
@@ -45,14 +45,19 @@ class CChemEqElement
   public:
     /**
      *  Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CChemEqElement();
+    CChemEqElement(const std::string & name = "NoName",
+                   const CCopasiContainer * pParent = NULL);
 
     /**
      *  Copy constructor
      *  @param "const CChemEqElement &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CChemEqElement(const CChemEqElement & src);
+    CChemEqElement(const CChemEqElement & src,
+                   const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

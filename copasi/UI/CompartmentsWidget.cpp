@@ -104,7 +104,10 @@ void CompartmentsWidget::loadCompartments(CModel *model)
     }
 }
 
-void CompartmentsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
+void CompartmentsWidget::slotTableCurrentChanged(int row,
+    int col,
+    int C_UNUSED(m) ,
+    const QPoint & C_UNUSED(n))
 {
   QString x = table->text(row, col);
   emit name(x);
@@ -155,7 +158,8 @@ void CompartmentsWidget::slotBtnCancelClicked()
   emit signal_emitted(*Compartment_Name);
 }
 
-void CompartmentsWidget::tableValueChanged(int row, int col)
+void CompartmentsWidget::tableValueChanged(int C_UNUSED(row),
+    int C_UNUSED(col))
 {
   /*CWriteConfig *Mod = new CWriteConfig("try.gps");
 

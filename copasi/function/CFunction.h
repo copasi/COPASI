@@ -13,6 +13,7 @@
 #include "copasi.h"
 #include "CFunctionParameters.h"
 #include "CCallParameters.h"
+#include "report/CCopasiContainer.h"
 
 enum TriLogic
 {
@@ -22,7 +23,7 @@ enum TriLogic
 };
 
 /** @dia:pos 58.2,12.15 */
-class CFunction
+class CFunction : public CCopasiContainer
   {
   public:
     /**
@@ -48,7 +49,7 @@ class CFunction
     /**
      *  The name of the function
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  The mathematical formula
@@ -63,12 +64,11 @@ class CFunction
     /**
      *  A vector of usages ranges describing the condition under which a 
      *  function may be used.
-     * @supplierCardinality 0..**/
+     */
     CCopasiVectorNS < CUsageRange > mUsageDescriptions;
 
     /**
      *  The discription of the parameters of the function
-     *  @supplierCardinality 1 
      */
     /** @dia:route 3,2; h,58.2,12.85,56.537,6.51973,52.9592 */
     CFunctionParameters mParameters;
@@ -77,15 +77,20 @@ class CFunction
   public:
 
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunction();
+    CFunction(const std::string & name = "NoName",
+              const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CFunction &" src
+     * Copy constructor
+     * @param "const CFunction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunction(const CFunction & src);
+    CFunction(const CFunction & src,
+              const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

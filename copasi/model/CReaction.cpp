@@ -22,43 +22,51 @@
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
-CReaction::CReaction()
+CReaction::CReaction(const std::string & name,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Reaction"),
+    mName(mObjectName),
+    mChemEq("Chemical Equation", this),
+    mpFunction(NULL),
+    mParameterDescription(),
+    mFlux(0),
+    mScaledFlux(0),
+    mScalingFactor(&mDefaultScalingFactor),
+    mScalingFactor2(&mDefaultScalingFactor),
+    mCompartmentNumber(1),
+    mReversible(true),
+    mId2Substrates("Substrates", this),
+    mId2Products("Products", this),
+    mId2Modifiers("Modifiers", this),
+    mId2Parameters("Parameters", this),
+    mCallParameters(),
+    mCallParameterNames()
+{CONSTRUCTOR_TRACE;}
+
+CReaction::CReaction(const CReaction & src,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(mObjectName),
+    mChemEq(src.mChemEq, this),
+    mpFunction(src.mpFunction),
+    mParameterDescription(src.mParameterDescription),
+    mFlux(src.mFlux),
+    mScaledFlux(src.mScaledFlux),
+    mScalingFactor(src.mScalingFactor),
+    mScalingFactor2(src.mScalingFactor2),
+    mCompartmentNumber(src.mCompartmentNumber),
+    mReversible(src.mReversible),
+    mId2Substrates(src.mId2Substrates, this),
+    mId2Products(src.mId2Products, this),
+    mId2Modifiers(src.mId2Modifiers, this),
+    mId2Parameters(src.mId2Parameters, this),
+    mCallParameters(src.mCallParameters),
+    mCallParameterNames(src.mCallParameterNames)
 {
   CONSTRUCTOR_TRACE;
-  mFlux = 0.0;
-  mScaledFlux = 0.0;
-  mReversible = true;
-  mFunction = NULL;
-  mScalingFactor = &mDefaultScalingFactor;
+  initCallParameters();
 }
 
-CReaction::CReaction(const CReaction & src)
-{
-  CONSTRUCTOR_TRACE;
-  mName = src.mName;
-  mFlux = src.mFlux;
-  mScaledFlux = src.mScaledFlux;
-  mReversible = src.mReversible;
-  mChemEq = src.mChemEq;
-  setFunction(src.mFunction->getName());
-  mScalingFactor = src.mScalingFactor;
-
-  mId2Substrates = CCopasiVector < CId2Metab > (src.mId2Substrates);
-  mId2Products = CCopasiVector < CId2Metab > (src.mId2Products);
-  mId2Modifiers = CCopasiVector < CId2Metab > (src.mId2Modifiers);
-  mId2Parameters = CCopasiVector < CId2Param > (src.mId2Parameters);
-}
-
-CReaction::CReaction(const std::string & name)
-{
-  CONSTRUCTOR_TRACE;
-  mName = name;
-  mFlux = 0.0;
-  mScaledFlux = 0.0;
-  mReversible = true;
-  mFunction = NULL;
-  mScalingFactor = &mDefaultScalingFactor;
-}
 CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE;}
 
 void CReaction::cleanup()
@@ -94,7 +102,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 
   setFunction(KinType);
 
-  if (mFunction == NULL)
+  if (mpFunction == NULL)
     return Fail = 1;
 
   if ((Fail = configbuffer.getVariable("Reversible", "bool", &mReversible,
@@ -121,7 +129,7 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Equation", "string", &mChemEq)))
     return Fail;
 
-  std::string KinType = mFunction->getName();
+  std::string KinType = mpFunction->getName();
 
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
     return Fail;
@@ -208,7 +216,8 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const std::vector< CMetab* > &metabolites)
+C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
+                           const CCopasiVectorN< CMetab > &metabolites)
 {
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
@@ -220,7 +229,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const std::vector< CMeta
     return Fail;
   if ((Fail = configbuffer.setVariable("Equation", "string", &mChemEq)))
     return Fail;
-  std::string KinType = mFunction->getName();
+  std::string KinType = mpFunction->getName();
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
     return Fail;
   if ((Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux)))
@@ -301,7 +310,6 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   std::string tmpstr, tmpstr2;
   unsigned C_INT32 i;
   CCopasiVector < CChemEqElement > rr;
-  CCopasiVectorS < CNodeK > node;
 
   FixSName(mName, tmpstr);
   fout << "\t\t\t<reaction name=\"" << tmpstr << "\"";
@@ -351,7 +359,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   setCallParameterNames();
   checkCallParameterNames();
   tmpstr2 = StringPrint("_%ld", r);
-  fout << mFunction->getSBMLString(mCallParameterNames, tmpstr2);
+  fout << mpFunction->getSBMLString(mCallParameterNames, tmpstr2);
   cleanupCallParameterNames();
   fout << "\">" << std::endl;
   fout << "\t\t\t\t\t<listOfParameters>" << std::endl;
@@ -397,9 +405,9 @@ CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters()
 }
 
 const std::string & CReaction::getName() const
-{
-  return mName;
-}
+  {
+    return mName;
+  }
 
 CChemEq & CReaction::getChemEq()
 {
@@ -408,23 +416,23 @@ CChemEq & CReaction::getChemEq()
 
 CFunction & CReaction::getFunction()
 {
-  return *mFunction;
+  return *mpFunction;
 }
 
 const C_FLOAT64 & CReaction::getFlux() const
-{
-  return mFlux;
-}
+  {
+    return mFlux;
+  }
 
 const C_FLOAT64 & CReaction::getScaledFlux() const
-{
-  return mScaledFlux;
-}
+  {
+    return mScaledFlux;
+  }
 
 bool CReaction::isReversible() const
-{
-  return (mReversible == true);
-}
+  {
+    return (mReversible == true);
+  }
 
 void CReaction::setName(const std::string & name)
 {
@@ -443,8 +451,8 @@ void CReaction::setReversible(bool reversible)
 
 void CReaction::setFunction(const std::string & functionName)
 {
-  mFunction = Copasi->FunctionDB.findLoadFunction(functionName);
-  if (!mFunction)
+  mpFunction = Copasi->FunctionDB.findLoadFunction(functionName);
+  if (!mpFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
   initCallParameters();
@@ -697,41 +705,43 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   return Fail;
 }
 
-CReaction::CId2Metab::CId2Metab()
-{
-  mpMetabolite = NULL;
-}
+CReaction::CId2Metab::CId2Metab(const std::string & name,
+                                const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Reaction"),
+    mIdentifierName(mObjectName),
+    mMetaboliteName(),
+    mCompartmentName(),
+mpMetabolite(NULL) {}
 
-CReaction::CId2Metab::CId2Metab(const CId2Metab & src)
-{
-  mIdentifierName = src.mIdentifierName;
-  mMetaboliteName = src.mMetaboliteName;
-  mCompartmentName = src.mCompartmentName;
-  mpMetabolite = NULL;
-}
+CReaction::CId2Metab::CId2Metab(const CId2Metab & src,
+                                const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mIdentifierName(mObjectName),
+    mMetaboliteName(src.mMetaboliteName),
+    mCompartmentName(src.mCompartmentName),
+mpMetabolite(src.mpMetabolite) {}
 
-CReaction::CId2Metab::~CId2Metab()
-{}
+CReaction::CId2Metab::~CId2Metab() {}
 
-void CReaction::CId2Metab::cleanup()
-{}
+void CReaction::CId2Metab::cleanup() {}
 
-CReaction::CId2Param::CId2Param()
-{}
+CReaction::CId2Param::CId2Param(const std::string & name,
+                                const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Reaction"),
+    mIdentifierName(mObjectName),
+mValue(0) {}
 
-CReaction::CId2Param::CId2Param(const CId2Param & src)
-{
-  mIdentifierName = src.mIdentifierName;
-  mValue = src.mValue;
-}
+CReaction::CId2Param::CId2Param(const CId2Param & src,
+                                const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mIdentifierName(mObjectName),
+mValue(src.mValue) {}
 
-CReaction::CId2Param::~CId2Param()
-{}
+CReaction::CId2Param::~CId2Param() {}
 
-void CReaction::CId2Param::cleanup()
-{}
+void CReaction::CId2Param::cleanup() {}
 
-void CReaction::old2New(const std::vector< CMetab* > & metabolites)
+void CReaction::old2New(const CCopasiVector< CMetab > & metabolites)
 {
   std::string Name;
   unsigned C_INT32 i, j, s, z;
@@ -773,7 +783,7 @@ void CReaction::old2New(const std::vector< CMetab* > & metabolites)
 
 C_FLOAT64 CReaction::calculate()
 {
-  mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
+  mFlux = *mScalingFactor * mpFunction->calcValue(mCallParameters);
   mScaledFlux = *mScalingFactor2 * mFlux;
   return mFlux;
 }
@@ -782,7 +792,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
     const C_FLOAT64 & derivationFactor,
     const C_FLOAT64 & resolution)
 {
-  if (mFunction->dependsOn(&xi, mCallParameters))
+  if (mpFunction->dependsOn(&xi, mCallParameters))
     {
       C_FLOAT64 store = xi;
       C_FLOAT64 f1, f2;
@@ -809,9 +819,9 @@ void CReaction::CId2Metab::setIdentifierName(const std::string & identifierName)
 }
 
 const std::string & CReaction::CId2Metab::getIdentifierName() const
-{
-  return mIdentifierName;
-}
+  {
+    return mIdentifierName;
+  }
 
 void CReaction::CId2Metab::setMetaboliteName(const std::string & metaboliteName)
 {
@@ -819,9 +829,9 @@ void CReaction::CId2Metab::setMetaboliteName(const std::string & metaboliteName)
 }
 
 const std::string & CReaction::CId2Metab::getMetaboliteName() const
-{
-  return mMetaboliteName;
-}
+  {
+    return mMetaboliteName;
+  }
 
 void CReaction::CId2Metab::setCompartmentName(const std::string & compartmentName)
 {
@@ -829,14 +839,14 @@ void CReaction::CId2Metab::setCompartmentName(const std::string & compartmentNam
 }
 
 const std::string & CReaction::CId2Metab::getCompartmentName() const
-{
-  return mCompartmentName;
-}
+  {
+    return mCompartmentName;
+  }
 
 CMetab * CReaction::CId2Metab::getMetabolite() const
-{
-  return mpMetabolite;
-}
+  {
+    return mpMetabolite;
+  }
 
 void CReaction::CId2Param::setIdentifierName(const std::string & identifierName)
 {
@@ -844,9 +854,9 @@ void CReaction::CId2Param::setIdentifierName(const std::string & identifierName)
 }
 
 const std::string & CReaction::CId2Param::getIdentifierName() const
-{
-  return mIdentifierName;
-}
+  {
+    return mIdentifierName;
+  }
 
 void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
 {
@@ -854,9 +864,9 @@ void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
 }
 
 const C_FLOAT64 & CReaction::CId2Param::getValue() const
-{
-  return mValue;
-}
+  {
+    return mValue;
+  }
 
 /**
  * Returns the address of mValue
@@ -913,7 +923,7 @@ void CReaction::initCallParameters()
   cleanupCallParameters();
   mParameterDescription.cleanup();
 
-  mParameterDescription = CFunctionParameters(mFunction->getParameters());
+  mParameterDescription = CFunctionParameters(mpFunction->getParameters());
 
   unsigned C_INT32 i, imax = mParameterDescription.size();
   mCallParameters.resize(imax);

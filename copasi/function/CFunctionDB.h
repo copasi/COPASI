@@ -135,7 +135,7 @@ class CFunctionDB
 
     /**
      *  Retrieves the vector of functions that are suitable for a
-    *  number of substrates, products and reversibility status.
+     *  number of substrates, products and reversibility status.
      *  @param "const unsigned C_INT32" noSubstrates the number of substrates
      *  @param "const unsigned C_INT32" noProducts the number of products
      *  @param "const TriLogic" reversible the reversibility status

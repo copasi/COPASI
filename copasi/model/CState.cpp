@@ -204,42 +204,42 @@ void CState::setModel(const CModel * pModel)
 const CModel * CState::getModel() const {return mpModel;}
 
 const CVector< C_FLOAT64 > & CState::getFixedNumberVectorDbl() const
-{return mFixedNumbers.getVectorDbl();}
+  {return mFixedNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CState::getFixedNumberVectorInt() const
-{return mFixedNumbers.getVectorInt();}
+  {return mFixedNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
-{return mFixedNumbers.getDbl(index);}
+  {return mFixedNumbers.getDbl(index);}
 
 const C_INT32 & CState::getFixedNumberInt(const unsigned C_INT32 & index) const
-{return mFixedNumbers.getInt(index);}
+  {return mFixedNumbers.getInt(index);}
 
 const unsigned C_INT32 & CState::getFixedNumberSize () const
-{return mFixedNumbers.size();}
+  {return mFixedNumbers.size();}
 
 const CVector< C_FLOAT64 > & CState::getVariableNumberVectorDbl() const
-{return mVariableNumbers.getVectorDbl();}
+  {return mVariableNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CState::getVariableNumberVectorInt() const
-{return mVariableNumbers.getVectorInt();}
+  {return mVariableNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
-{return mVariableNumbers.getDbl(index);}
+  {return mVariableNumbers.getDbl(index);}
 
 const C_INT32 & CState::getVariableNumberInt(const unsigned C_INT32 & index) const
-{return mVariableNumbers.getInt(index);}
+  {return mVariableNumbers.getInt(index);}
 
 const unsigned C_INT32 & CState::getVariableNumberSize () const
-{return mVariableNumbers.size();}
+  {return mVariableNumbers.size();}
 
 const C_FLOAT64 & CState::getVolume(const unsigned C_INT32 & index) const
-{return mVolumes[index];}
+  {return mVolumes[index];}
 
 const CVector< C_FLOAT64 > & CState::getVolumeVector() const {return mVolumes;}
 
 unsigned C_INT32 CState::getVolumeSize() const
-{return mVolumes.size();}
+  {return mVolumes.size();}
 
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & value)
 {mFixedNumbers.set(index, value);}
@@ -276,27 +276,27 @@ void CState::setVolumeVector(const CVector< C_FLOAT64 > & vektor)
 void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & factor,
                          const C_FLOAT64 & resolution) const
-{
-  const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
-  unsigned C_INT32 mNo = Stoi.numRows();
-  unsigned C_INT32 rNo = Stoi.numCols();
+  {
+    const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
+    unsigned C_INT32 mNo = Stoi.numRows();
+    unsigned C_INT32 rNo = Stoi.numCols();
 
-  CMatrix< C_FLOAT64 > E(rNo, mNo);
-  getElasticityMatrix(E, factor, resolution);
+    CMatrix< C_FLOAT64 > E(rNo, mNo);
+    getElasticityMatrix(E, factor, resolution);
 
-  unsigned C_INT32 i, j, k;
-  C_FLOAT64 * sum;
+    unsigned C_INT32 i, j, k;
+    C_FLOAT64 * sum;
 
-  for (i = 0; i < mNo; i++)
-  for (j = 0; j < mNo; j++)
-    {
-      sum = &jacobian(i, j);
-        *sum = 0.0;
+    for (i = 0; i < mNo; i++)
+      for (j = 0; j < mNo; j++)
+        {
+          sum = &jacobian(i, j);
+          *sum = 0.0;
 
-        for (k = 0; k < rNo; k++)
-          *sum += Stoi(i, k) * E(k, j);
-      }
-}
+          for (k = 0; k < rNo; k++)
+            *sum += Stoi(i, k) * E(k, j);
+        }
+  }
 
 void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                   const C_FLOAT64 & factor,
@@ -351,28 +351,28 @@ void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
 void CState::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                  const C_FLOAT64 & factor,
                                  const C_FLOAT64 & resolution) const
-{
-  const_cast<CModel *>(mpModel)->setState(this);
-  const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
-  unsigned C_INT32 i, imax = Reactions.size();
-
-  std::vector< CMetab * > & Metabolites =
-    const_cast<CModel *>(mpModel)->getMetabolites();
-  unsigned C_INT32 j, jmax = mpModel->getIntMetab();
-
-  C_FLOAT64 * x;
-
-  for (j = 0; j < jmax; j++)
   {
-    x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+    const_cast<CModel *>(mpModel)->setState(this);
+    const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
+    unsigned C_INT32 i, imax = Reactions.size();
 
-      for (i = 0; i < imax; i++)
-        elasticityMatrix(i, j) =
-          Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
-    }
+    CCopasiVectorN< CMetab > & Metabolites =
+      const_cast<CModel *>(mpModel)->getMetabolites();
+    unsigned C_INT32 j, jmax = mpModel->getIntMetab();
 
-  return;
-}
+    C_FLOAT64 * x;
+
+    for (j = 0; j < jmax; j++)
+      {
+        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
+
+        for (i = 0; i < imax; i++)
+          elasticityMatrix(i, j) =
+            Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+      }
+
+    return;
+  }
 
 /**************************/
 /* Code for class CStateX */
@@ -487,19 +487,19 @@ void CStateX::setModel(const CModel * pModel)
 }
 
 const CVector< C_FLOAT64 > & CStateX::getDependentNumberVectorDbl() const
-{return mDependentNumbers.getVectorDbl();}
+  {return mDependentNumbers.getVectorDbl();}
 
 const CVector< C_INT32 > & CStateX::getDependentNumberVectorInt() const
-{return mDependentNumbers.getVectorInt();}
+  {return mDependentNumbers.getVectorInt();}
 
 const C_FLOAT64 & CStateX::getDependentNumberDbl(const unsigned C_INT32 & index) const
-{return mDependentNumbers.getDbl(index);}
+  {return mDependentNumbers.getDbl(index);}
 
 const C_INT32 & CStateX::getDependentNumberInt(const unsigned C_INT32 & index) const
-{return mDependentNumbers.getInt(index);}
+  {return mDependentNumbers.getInt(index);}
 
 const unsigned C_INT32 & CStateX::getDependentNumberSize () const
-{return mDependentNumbers.size();}
+  {return mDependentNumbers.size();}
 
 void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_INT32 & value)
@@ -518,42 +518,42 @@ void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vektor)
 void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                           const C_FLOAT64 & factor,
                           const C_FLOAT64 & resolution) const
-{
-  const CModel::CLinkMatrixView & L = mpModel->getL();
-  unsigned C_INT32 mNo = L.numRows();
-  unsigned C_INT32 iNo = L.numCols();
+  {
+    const CModel::CLinkMatrixView & L = mpModel->getL();
+    unsigned C_INT32 mNo = L.numRows();
+    unsigned C_INT32 iNo = L.numCols();
 
-  const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
-  unsigned C_INT32 rNo = redStoi.numCols();
+    const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
+    unsigned C_INT32 rNo = redStoi.numCols();
 
-  CMatrix< C_FLOAT64 > E(rNo, mNo);
-  getElasticityMatrix(E, factor, resolution);
+    CMatrix< C_FLOAT64 > E(rNo, mNo);
+    getElasticityMatrix(E, factor, resolution);
 
-  CMatrix< C_FLOAT64 > tmp(rNo, iNo);
+    CMatrix< C_FLOAT64 > tmp(rNo, iNo);
 
-  unsigned C_INT32 i, j, k;
-  C_FLOAT64 * sum;
+    unsigned C_INT32 i, j, k;
+    C_FLOAT64 * sum;
 
-  for (i = 0; i < rNo; i++)
-  for (j = 0; j < iNo; j++)
-    {
-      sum = &tmp(i, j);
-        *sum = E(i, j);
+    for (i = 0; i < rNo; i++)
+      for (j = 0; j < iNo; j++)
+        {
+          sum = &tmp(i, j);
+          *sum = E(i, j);
 
-        for (k = iNo; k < mNo; k++)
-          *sum += E(i, k) * L(k, j);
-      }
+          for (k = iNo; k < mNo; k++)
+            *sum += E(i, k) * L(k, j);
+        }
 
-  for (i = 0; i < iNo; i++)
-  for (j = 0; j < iNo; j++)
-    {
-      sum = &jacobian(i, j);
-        *sum = 0.0;
+    for (i = 0; i < iNo; i++)
+      for (j = 0; j < iNo; j++)
+        {
+          sum = &jacobian(i, j);
+          *sum = 0.0;
 
-        for (k = 0; k < rNo; k++)
-          *sum += redStoi(i, k) * tmp(k, j);
-      }
-}
+          for (k = 0; k < rNo; k++)
+            *sum += redStoi(i, k) * tmp(k, j);
+        }
+  }
 
 void CStateX::updateDependentNumbers()
 {mpModel->updateDepMetabNumbers(*this);}

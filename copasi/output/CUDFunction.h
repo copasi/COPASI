@@ -7,6 +7,7 @@
 #define COPASI_CUDFunction
 
 #include <string>
+#include <vector>
 
 #include "copasi.h"
 #include "utilities/utilities.h"
@@ -20,7 +21,8 @@ class CUDFunction: public CKinFunction
     /**
      *  The vector of nodes of the binary tree of the function
      */
-    CCopasiVectorS < CNodeO > mNodes;
+    std::vector< CNodeO * > mNodes;
+
     /**
      * Value of user defined function
      */
@@ -38,21 +40,28 @@ class CUDFunction: public CKinFunction
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CUDFunction();
+    CUDFunction(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CFunction &" src
+     * Copy constructor
+     * @param "const CFunction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CUDFunction(const CFunction & src);
+    CUDFunction(const CFunction & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CUDFunction &" src
+     * Copy constructor
+     * @param "const CUDFunction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CUDFunction(const CUDFunction & src);
+    CUDFunction(const CUDFunction & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  This creates a user defined function with a name an description
@@ -60,7 +69,8 @@ class CUDFunction: public CKinFunction
      *  @param "const string" &description
      */
     CUDFunction(const std::string & name,
-                const std::string & description);
+                const std::string & description,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor
@@ -117,7 +127,7 @@ class CUDFunction: public CKinFunction
     /**
      *  Retreives the nodes of the function
      */
-    CCopasiVectorS < CNodeO > & getNodes();
+    std::vector< CNodeO * > & getNodes();
 
   private:
     /**
@@ -142,6 +152,11 @@ class CUDFunction: public CKinFunction
      *  @return CNodeK *
      */
     CNodeO * parsePrimary();
+
+    /**
+     * Cleanup nodes
+     */
+    void cleanupNodes();
   };
 
 #endif

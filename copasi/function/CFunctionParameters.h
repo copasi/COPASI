@@ -11,9 +11,10 @@
 #include "utilities/utilities.h"
 #include "CFunctionParameter.h"
 #include "CUsageRange.h"
+#include "report/CCopasiContainer.h"
 
 /** @dia:pos 10.7176,6.51973 */
-class CFunctionParameters
+class CFunctionParameters : public CCopasiContainer
   {
     // Attributes
 
@@ -38,15 +39,20 @@ class CFunctionParameters
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionParameters();
+    CFunctionParameters(const std::string & name = "NoName",
+                        const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CFunctionParameters &" src
+     * Copy constructor
+     * @param "const CFunctionParameters &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionParameters(const CFunctionParameters & src);
+    CFunctionParameters(const CFunctionParameters & src,
+                        const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

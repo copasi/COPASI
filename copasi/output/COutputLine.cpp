@@ -20,15 +20,21 @@
 /**
  *  Default constructor. 
  */
-COutputLine::COutputLine()
-{
-  //  mLine = NULL;
-}
+COutputLine::COutputLine(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Output Line"),
+    mLine("Data", this),
+    mName(mObjectName)
+{}
 
-void COutputLine::init()
-{
-  //  mLine = new CCDatum;
-}
+COutputLine::COutputLine(const COutputLine & src,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mLine(src.mLine, this),
+    mName(mObjectName)
+{}
+
+void COutputLine::init() {}
 
 void COutputLine::cleanup()
 {
@@ -46,26 +52,14 @@ COutputLine::~COutputLine()
 }
 
 /**
- *  Assignement operator. 
- *  Copies the contents from one COutputLine object to another.
- *  @param source reference to the recipient object.
- */
-COutputLine& COutputLine::operator=(const COutputLine &source)
-{
-  mLine = source.mLine;
-
-  return *this;
-}
-
-/**
  *  Return the pointer of the CDatum that can be output at the same line. 
  *  @return mLine
  *  @see mLine
  */
 const CCopasiVectorS < CDatum > & COutputLine::getLine() const
-{
-  return mLine;
-}
+  {
+    return mLine;
+  }
 
 /**
  *  Sets the name of this line, (For example: Interactive time course)
@@ -162,7 +156,7 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 void COutputLine::sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   unsigned C_INT32 i;
-  CDatum item;
+  CDatum * item;
   std::string Title;
 
   // Set Left Justification
@@ -188,12 +182,12 @@ void COutputLine::sSOutputTitles(std::ofstream &fout, C_INT16 SSSeparator, C_INT
             }
         }
 
-      item = *mLine[i];
+      item = mLine[i];
 
-      if (item.getTitle().length() > (unsigned C_INT32) SSColWidth)
-        Title = item.getTitle().substr(0, SSColWidth);
+      if (item->getTitle().length() > (unsigned C_INT32) SSColWidth)
+        Title = item->getTitle().substr(0, SSColWidth);
       else
-        Title = item.getTitle();
+        Title = item->getTitle();
 
       if (SSQuotes)
         fout << "\"" << std::setw(SSColWidth) << Title << "\"";
@@ -312,7 +306,7 @@ void COutputLine::sSOutputData(std::ofstream &fout, C_INT16 SSSeparator,
 void COutputLine::dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
   unsigned C_INT32 i;
-  CDatum item;
+  CDatum * item;
   std::string Title;
 
   // Set Left Justification
@@ -338,12 +332,12 @@ void COutputLine::dynOutputTitles(std::ofstream &fout, C_INT16 DynSeparator, C_I
             }
         }
 
-      item = *mLine[i];
+      item = mLine[i];
 
-      if (item.getTitle().length() > (unsigned C_INT16) DynColWidth)
-        Title = item.getTitle().substr(0, DynColWidth);
+      if (item->getTitle().length() > (unsigned C_INT16) DynColWidth)
+        Title = item->getTitle().substr(0, DynColWidth);
       else
-        Title = item.getTitle();
+        Title = item->getTitle();
 
       if (DynQuotes)
         fout << "\"" << std::setw(DynColWidth) << Title << "\"";

@@ -50,16 +50,20 @@ class CCompartment : public CCopasiContainer
 
   public:
     /**
-     *  Default constructor. 
-     *  Creates an empty object with mName="compartment" and mVolume=1
+     * Default constructor. 
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCompartment();
+    CCompartment(const std::string & name = "NoName",
+                 const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor.
-     *  @param "const CCompartment &" src
+     * Copy constructor.
+     * @param "const CCompartment &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCompartment(const CCompartment & src);
+    CCompartment(const CCompartment & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      *  Init

@@ -52,11 +52,13 @@ CCopasiObjectName CCopasiObject::getCN() const
         tmp << mpObjectParent->getCN();
 
         if (mpObjectParent->isNameVector())
-          tmp << "[" << mObjectName << "]";
+          tmp << "[" << CCopasiObjectName::escape(mObjectName) << "]";
         else if (mpObjectParent->isVector())
           tmp << "[" << mpObjectParent->getIndex(this) << "]";
+        else
+          tmp << "," << CCopasiObjectName::escape(mObjectType)
+          << "=" << CCopasiObjectName::escape(mObjectName);
 
-        tmp << "," << mObjectType << "=" << mObjectName;
         CN = tmp.str();
       }
     else
@@ -78,11 +80,25 @@ const std::string & CCopasiObject::getObjectName() const {return mObjectName;}
 
 const std::string & CCopasiObject::getObjectType() const {return mObjectType;}
 
-CCopasiObject * CCopasiObject::getObjectParent() const {return mpObjectParent;}
+CCopasiContainer * CCopasiObject::getObjectParent() const {return mpObjectParent;}
+
+CCopasiContainer *
+CCopasiObject::getObjectAncestor(const std::string & type) const
+  {
+    CCopasiContainer * p = getObjectParent();
+
+    while (p)
+      {
+        if (p->getObjectType() == type) return p;
+        p = p->getObjectParent();
+      }
+
+    return NULL;
+  }
 
 unsigned C_INT32
 CCopasiObject::getIndex(const CCopasiObject * C_UNUSED(pObject)) const
-  {return C_INVALID_INDEX;}
+{return C_INVALID_INDEX;}
 
 void * CCopasiObject::getReference() {return this;}
 

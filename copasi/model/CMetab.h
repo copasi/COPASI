@@ -76,7 +76,7 @@ class CMetab : public CCopasiContainer
      *  The metab needs to know about volumes.
      */
     /** @dia:route 15,11; h,158.906,38.003,165.545,54.2961,117.263 */
-    CCompartment * mCompartment;
+    CCompartment * mpCompartment;
 
     /**
      *  pointer to the model the metabolite is located in.
@@ -94,14 +94,20 @@ class CMetab : public CCopasiContainer
     // Operations
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMetab(const CModel * pModel = NULL);
+    CMetab(const std::string & name = "NoName",
+           const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
+     * Copy constructor
+     * @param const CMetab & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMetab(const CMetab & src);
+    CMetab(const CMetab & src,
+           const CCopasiContainer * pParent = NULL);
 
     /**
      *  Specific constructor.
@@ -122,6 +128,8 @@ class CMetab : public CCopasiContainer
      *  Cleanup
      */
     void cleanup();
+    void initModel();
+    void initCompartment();
 
     /**
      *  Assignment operator.
@@ -313,10 +321,10 @@ class CMetab : public CCopasiContainer
       os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << std::endl;
       os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
 
-      if (d.mCompartment)
-        os << "        mCompartment == " << d.mCompartment << std::endl;
+      if (d.mpCompartment)
+        os << "        mpCompartment == " << d.mpCompartment << std::endl;
       else
-        os << "        mCompartment == 0 " << std::endl;
+        os << "        mpCompartment == 0 " << std::endl;
 
       if (d.mpModel)
         os << "        mpModel == " << d.mpModel << std::endl;
@@ -352,7 +360,7 @@ class CMetab : public CCopasiContainer
   };
 
 /** @dia:pos 51.7045,51.8004 */
-class CMetabOld
+class CMetabOld : public CCopasiContainer
   {
     friend class CMetab;
 
@@ -362,7 +370,7 @@ class CMetabOld
     /**
      *  Name of the metabolite
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  Concentration of the metabolite.
@@ -384,9 +392,20 @@ class CMetabOld
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMetabOld();
+    CMetabOld(const std::string & name = "NoName",
+              const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CMetabOld & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CMetabOld(const CMetabOld & src,
+              const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
@@ -414,7 +433,7 @@ class CMetabOld
 
     C_INT32 getIndex() const;
 
-    std::string getName() const;
+    const std::string & getName() const;
   };
 
 /**

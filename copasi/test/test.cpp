@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      //      TestSSSolution();
+      TestSSSolution();
       //YOHE: new test
       //      TestOptimization();
       //      TestEigen();
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
-      TestCopasiObject();
+      //      TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -318,6 +318,14 @@ C_INT32 TestCopasiObject(void)
   cout << Name.getIndex() << endl;
   cout << Name.getRemainder() << endl;
 
+  CReadConfig inbuf("gps/NewtonTest.gps");
+  inbuf.getDefaults();
+
+  CModel model;
+  model.load(inbuf);
+  model.compile();
+
+  cout << model.getCompartments()["compartment"]->getCN() << endl;
   return 0;
 }
 
@@ -377,16 +385,14 @@ C_INT32 TestDatum(void)
   of.flush();
 
   CReadConfig Specific((string) "TestDatum1.txt");
-  CDatum* e;
-  e = new CDatum[2];
-  e[0].load(Specific);
 
-  e[1] = e[0];
+  CDatum e0;
+  e0.load(Specific);
+
+  CDatum e1(e0);
   cout << "Opening another output stream" << endl;
   CWriteConfig of2("TestDatum2.txt");
-  e[1].save(of2);
-
-  delete [] e;
+  e1.save(of2);
 
   cout << endl;
   return 0;
@@ -395,13 +401,13 @@ C_INT32 TestDatum(void)
 C_INT32 TestReadSample(void)
 {
   C_INT32 size = 0;
-
+  CMatrix< C_FLOAT64 > LU;
   CReadConfig inbuf("gps/bakker.gps");
   CModel model;
   model.load(inbuf);
   model.buildStoi();
-  model.lUDecomposition();
-  model.setMetabolitesStatus();
+  model.lUDecomposition(LU);
+  model.setMetabolitesStatus(LU);
   model.buildRedStoi();
   model.buildMoieties();
 
@@ -494,6 +500,7 @@ C_INT32 TestTrajectoryTask(void)
 
 C_INT32 TestMCA(void)
 {
+  CMatrix< C_FLOAT64 > LU;
   cout << "Entering TestReport." << endl;
 
   CReadConfig inbuf("gps/DANNY.gps");
@@ -501,8 +508,8 @@ C_INT32 TestMCA(void)
   CModel model;
   model.load(inbuf);
   model.buildStoi();
-  model.lUDecomposition();
-  model.setMetabolitesStatus();
+  model.lUDecomposition(LU);
+  model.setMetabolitesStatus(LU);
   model.buildRedStoi();
 
   CMca mMCA();

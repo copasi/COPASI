@@ -8,6 +8,8 @@
 #ifndef COPASI_CKinFunction
 #define COPASI_CKinFunction
 
+#include <vector>
+
 #include "CFunction.h"
 #include "CNodeK.h"
 #include "utilities/utilities.h"
@@ -24,7 +26,7 @@ class CKinFunction : public CFunction
      *  @associates <{CNodeK}>
      */
     /** @dia:route 0,2; h,61.7476,54.3157,55.1707,42.4925,46.911 */
-    CCopasiVectorS < CNodeK > mNodes;
+    std::vector< CNodeK * > mNodes;
 
     /**
      *  Internal variable
@@ -34,29 +36,30 @@ class CKinFunction : public CFunction
     // Operations
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CKinFunction();
+    CKinFunction(const std::string & name = "NoName",
+                 const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CFunction &" src
-     *  @param "CReadConfig *" configBuffer (Default = NULL)
+     * Copy constructor
+     * @param "const CFunction &" src
+     * @param "CReadConfig *" configBuffer (Default = NULL)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CKinFunction(const CFunction & src, CReadConfig * configBuffer = NULL);
+    CKinFunction(const CFunction & src,
+                 CReadConfig * configBuffer = NULL,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CKinFunction &" src
+     * Copy constructor
+     * @param "const CKinFunction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CKinFunction(const CKinFunction & src);
-
-    /**
-     *  This creates a kinetic function with a name and description
-     *  @param "const string" &name
-     *  @param "const string" &description
-     */
-    CKinFunction(const std::string & name, const std::string & description);
+    CKinFunction(const CKinFunction & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor
@@ -68,6 +71,7 @@ class CKinFunction : public CFunction
      */
     void cleanup();
 
+#ifdef XXXX
     /**
      *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
@@ -76,6 +80,7 @@ class CKinFunction : public CFunction
      */
     void load(CReadConfig & configbuffer,
               CReadConfig::Mode mode = CReadConfig::LOOP);
+#endif // XXXX
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -122,7 +127,7 @@ class CKinFunction : public CFunction
     /**
      *  Retreives the nodes of the function
      */
-    CCopasiVectorS < CNodeK > & getNodes();
+    std::vector< CNodeK * > & getNodes();
 
   private:
 
@@ -155,6 +160,11 @@ class CKinFunction : public CFunction
      *  calculating the function.
      */
     void initIdentifierNodes();
+
+    /**
+     * Cleanup nodes
+     */
+    void cleanupNodes();
   };
 
 #endif // COPASI_CKinFunction

@@ -15,13 +15,13 @@
 #include "CDatum.h"
 #include "model/model.h"
 #include "utilities/utilities.h"
+#include "report/CCopasiContainer.h"
 
-template < class CType >
-      class CCopasiVector;
+template < class CType > class CCopasiVector;
 class CState;
 class CSteadyStateTask;
 
-class COutputLine
+class COutputLine : public CCopasiContainer
   {
   private:
 #ifdef XXXX
@@ -48,14 +48,25 @@ class COutputLine
      * The name of outputline from configuration file, 
      *  such as "Interactive time course"
      */
-    std::string mName;
+    std::string & mName;
 
   public:
 
     /**
-     *  Default constructor. 
+     * Default constructor. 
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COutputLine();
+    COutputLine(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor. 
+     * @param const COutputLineg & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COutputLine(const COutputLine & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor. 
@@ -65,13 +76,6 @@ class COutputLine
     void init();
 
     void cleanup();
-
-    /**
-     *  Assignement operator. 
-     *  Copies the contents from one COutputLine object to another.
-     *  @param source reference to the recipient object.
-     */
-    COutputLine& operator=(const COutputLine &source);
 
     /**
      *  Return the pointer of the CDatum that can be output at the same line. 
@@ -111,7 +115,7 @@ class COutputLine
     /**
      *  Dummy method.
      */
-    std::string getName() const {return mName;}
+    std::string & getName() const {return mName;}
 
     /**
      *  Complie the mpValue in each output line

@@ -21,47 +21,40 @@ void CMetab::setParentCompartment(const CCompartment * parentCompartment)
 /////////////////////////////////////////////////////////////////////////////
 // CMetab
 
-CMetab::CMetab(const CModel * pModel):
-    CCopasiContainer("NoName", NULL, "Metabolite"),
-    mName(CCopasiContainer::mObjectName)
+CMetab::CMetab(const std::string & name,
+               const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Metabolite"),
+    mName(mObjectName),
+    mConcDbl(Copasi->DefaultConc),
+    mIConcDbl(Copasi->DefaultConc),
+    mNumberInt((C_INT32)(Copasi->DefaultConc * Copasi->DefaultVolume)),
+    mINumberInt((C_INT32)(Copasi->DefaultConc * Copasi->DefaultVolume)),
+    mRate(1.0),
+    mTT(0.0),
+    mStatus(METAB_VARIABLE)
 {
-  if (pModel)
-    mpModel = pModel;
-  else
-    mpModel = Copasi->Model;
+  initModel();
+  initCompartment();
 
-  // initialize everything
   CONSTRUCTOR_TRACE;
-
-  if (!isValidName("metab"))
-    fatalError();
-  mName = "metab";
-
-  mConcDbl = Copasi->DefaultConc;
-  mIConcDbl = Copasi->DefaultConc;
-  mNumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
-  mINumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
-  mRate = 1.0;
-  mTT = 0.0;
-  mStatus = METAB_VARIABLE;
-  mCompartment = const_cast<CCompartment *>(mpParentCompartment);
 }
 
-CMetab::CMetab(const CMetab & src):
-    CCopasiContainer(src),
-    mName(CCopasiContainer::mObjectName)
+CMetab::CMetab(const CMetab & src,
+               const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(CCopasiContainer::mObjectName),
+    mConcDbl(src.mConcDbl),
+    mIConcDbl(src.mIConcDbl),
+    mNumberInt(src.mNumberInt),
+    mINumberInt(src.mINumberInt),
+    mRate(src.mRate),
+    mTT(src.mTT),
+    mStatus(src.mStatus)
 {
-  CONSTRUCTOR_TRACE;
+  initModel();
+  initCompartment();
 
-  mConcDbl = src.mConcDbl;
-  mIConcDbl = src.mIConcDbl;
-  mNumberInt = src.mNumberInt;
-  mINumberInt = src.mINumberInt;
-  mRate = src.mRate;
-  mTT = src.mTT;
-  mStatus = src.mStatus;
-  mCompartment = src.mCompartment;
-  mpModel = src.mpModel;
+  CONSTRUCTOR_TRACE;
 }
 
 CMetab &CMetab::operator=(const CMetabOld &RHS)
@@ -74,13 +67,28 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   mRate = 1.0;
   mTT = 0.0;
   mStatus = RHS.mStatus;
-  mCompartment = NULL;
+  mpCompartment = NULL;
   mpModel = NULL;
 
   return *this;  // Assignment operator returns left side.
 }
+
 CMetab::~CMetab() {DESTRUCTOR_TRACE;}
+
 void CMetab::cleanup() {}
+
+void CMetab::initModel()
+{
+  mpModel = (CModel *) getObjectAncestor("Model");
+  if (!mpModel) mpModel = Copasi->Model;
+}
+
+void CMetab::initCompartment()
+{
+  mpCompartment = (CCompartment *) getObjectAncestor("Compartment");
+  if (!mpCompartment)
+    mpCompartment = const_cast<CCompartment *>(mpParentCompartment);
+}
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)
 {
@@ -174,7 +182,7 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
   Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConcDbl);
   if (Fail)
     return Fail;
-  c = mpModel->getCompartments().getIndex(mCompartment->getName());
+  c = mpModel->getCompartments().getIndex(mpCompartment->getName());
   Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
   if (Fail)
     return Fail;
@@ -215,7 +223,7 @@ const C_INT32 & CMetab::getNumberInt() const
 
 C_FLOAT64 CMetab::getNumberDbl() const
   {
-    return mConcDbl * mCompartment->getVolume()
+    return mConcDbl * mpCompartment->getVolume()
     * mpModel->getQuantity2NumberFactor();
   }
 
@@ -231,7 +239,7 @@ const C_INT32 & CMetab::getInitialNumberInt() const
 
 C_FLOAT64 CMetab::getInitialNumberDbl() const
   {
-    return mIConcDbl * mCompartment->getVolume()
+    return mIConcDbl * mpCompartment->getVolume()
     * mpModel->getQuantity2NumberFactor();
   }
 
@@ -242,7 +250,7 @@ const C_INT16 & CMetab::getStatus() const
 
 CCompartment * CMetab::getCompartment()
 {
-  return mCompartment;
+  return mpCompartment;
 }
 
 const CModel * CMetab::getModel() const
@@ -270,41 +278,41 @@ void CMetab::setName(const std::string & name)
 void CMetab::setConcentration(const C_FLOAT64 concentration)
 {
   mConcDbl = concentration;
-  mNumberInt = (C_INT32) (concentration * mCompartment->getVolume()
+  mNumberInt = (C_INT32) (concentration * mpCompartment->getVolume()
                           * mpModel->getQuantity2NumberFactor());
 }
 
 void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
 {
   mIConcDbl = initialConcentration;
-  mINumberInt = (C_INT32) (initialConcentration * mCompartment->getVolume()
+  mINumberInt = (C_INT32) (initialConcentration * mpCompartment->getVolume()
                            * mpModel->getQuantity2NumberFactor());
 }
 
 void CMetab::setNumberInt(const C_INT32 number)
 {
   mNumberInt = number;
-  mConcDbl = ((C_FLOAT64) number) * mCompartment->getVolumeInv()
+  mConcDbl = ((C_FLOAT64) number) * mpCompartment->getVolumeInv()
              * mpModel->getNumber2QuantityFactor();
 }
 
 void CMetab::setInitialNumberInt(const C_INT32 initialNumber)
 {
   mINumberInt = initialNumber;
-  mIConcDbl = ((C_FLOAT64) initialNumber) * mCompartment->getVolumeInv()
+  mIConcDbl = ((C_FLOAT64) initialNumber) * mpCompartment->getVolumeInv()
               * mpModel->getNumber2QuantityFactor();
 }
 
 void CMetab::setNumberDbl(const C_FLOAT64 number)
 {
-  mConcDbl = number * mCompartment->getVolumeInv()
+  mConcDbl = number * mpCompartment->getVolumeInv()
              * mpModel->getNumber2QuantityFactor();
   mNumberInt = (C_INT32) number;
 }
 
 void CMetab::setInitialNumberDbl(const C_FLOAT64 initialNumber)
 {
-  mIConcDbl = initialNumber * mCompartment->getVolumeInv()
+  mIConcDbl = initialNumber * mpCompartment->getVolumeInv()
               * mpModel->getNumber2QuantityFactor();
   mINumberInt = (C_INT32) initialNumber;
 }
@@ -318,7 +326,7 @@ void CMetab::setStatus(const C_INT16 status)
 
 void CMetab::setCompartment(CCompartment * compartment)
 {
-  mCompartment = compartment;
+  mpCompartment = compartment;
 }
 
 void CMetab::setModel(CModel * model)
@@ -339,7 +347,23 @@ void CMetab::initObjects()
   addObjectReference("TransitionTime", mTT);
 }
 
-CMetabOld::CMetabOld() {CONSTRUCTOR_TRACE;}
+CMetabOld::CMetabOld(const std::string & name,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Old Metabolite"),
+    mName(mObjectName),
+    mIConc(Copasi->DefaultConc),
+    mStatus(METAB_VARIABLE),
+    mCompartment()
+{CONSTRUCTOR_TRACE;}
+
+CMetabOld::CMetabOld(const CMetabOld & src,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(mObjectName),
+    mIConc(src.mIConc),
+    mStatus(src.mStatus),
+    mCompartment(src.mCompartment)
+{CONSTRUCTOR_TRACE;}
 
 CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
 
@@ -399,7 +423,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 }
 C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){return 0;}
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
-std::string CMetabOld::getName() const {return mName;}
+const std::string & CMetabOld::getName() const {return mName;}
 
 /**
  * Returns the address of mIConcDbl  Wei Sun

@@ -15,14 +15,14 @@
 #include "CChemEqElement.h"
 
 /** @dia:pos 52.1566,116.062 */
-class CMoiety
+class CMoiety : public CCopasiContainer
   {
     // Attributes
   private:
     /**
      *
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  Number of Particles of Moietiy.
@@ -44,20 +44,20 @@ class CMoiety
     // Operations
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMoiety();
+    CMoiety(const std::string & name = "NoName",
+            const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CMoiety &" src
+     * Copy constructor
+     * @param "const CMoiety &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMoiety(const CMoiety & src);
-
-    /**
-     *
-     */
-    CMoiety(const std::string & name);
+    CMoiety(const CMoiety & src,
+            const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor
@@ -124,7 +124,7 @@ class CMoiety
     /**
      *
      */
-    std::string getName() const;
+    const std::string & getName() const;
 
     /**
      *

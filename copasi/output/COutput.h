@@ -10,11 +10,12 @@
 
 #include <iostream>
 #include "COutputLine.h"
+#include "report/CCopasiContainer.h"
 
 class COutputLine;
 class CSteadyStateTask;
 
-class COutput
+class COutput : public CCopasiContainer
   {
   private:
     /**
@@ -145,9 +146,20 @@ class COutput
   public:
 
     /**
-     *  Default constructor. 
+     * Default constructor. 
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COutput();
+    COutput(const std::string & name = "NoName",
+            const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor. 
+     * @param const COutput & src,
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COutput(const COutput & src,
+            const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor. 
@@ -157,13 +169,6 @@ class COutput
     void init();
 
     void cleanup();
-
-    /**
-     *  Assignement operator. 
-     *  Copies the contents from one COutput object to another.
-     *  @param source reference to the recipient object.
-     */
-    COutput& operator=(const COutput &source);
 
     /**
      *  Return the pointer of the COutputLine that can be output at the same time. 
@@ -218,7 +223,7 @@ class COutput
     /**
      *  Dummy method.
      */
-    std::string getName() const {return "";}
+    const std::string & getName() const {return mObjectName;}
 
     /**
      * print the titles of the steady-state data file

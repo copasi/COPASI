@@ -9,24 +9,22 @@
 #include "copasi.h"
 #include "CUsageRange.h"
 
-CUsageRange::CUsageRange() : CRange()
-{
-  CONSTRUCTOR_TRACE;
-}
+CUsageRange::CUsageRange(const std::string & name,
+                         const CCopasiContainer * pParent,
+                         const std::string & type):
+    CRange(name, pParent, type),
+    mUsage(mObjectName)
+{CONSTRUCTOR_TRACE;}
 
-CUsageRange::CUsageRange(const CUsageRange & src) : CRange(src)
-{
-  CONSTRUCTOR_TRACE;
-  mUsage = src.mUsage;
-}
+CUsageRange::CUsageRange(const CUsageRange & src,
+                         const CCopasiContainer * pParent):
+    CRange(src, pParent),
+    mUsage(mObjectName)
+{CONSTRUCTOR_TRACE;}
 
-CUsageRange::~CUsageRange()
-{
-  DESTRUCTOR_TRACE;
-}
+CUsageRange::~CUsageRange() {DESTRUCTOR_TRACE;}
 
-void CUsageRange::cleanup()
-{}
+void CUsageRange::cleanup() {}
 
 void CUsageRange::load(CReadConfig & configBuffer,
                        CReadConfig::Mode mode)
@@ -47,11 +45,11 @@ void CUsageRange::setUsage(const std::string & usage)
 }
 
 const std::string & CUsageRange::getUsage() const
-{
-  return mUsage;
-}
+  {
+    return mUsage;
+  }
 
 const std::string & CUsageRange::getName() const
-{
-  return mUsage;
-}
+  {
+    return mUsage;
+  }

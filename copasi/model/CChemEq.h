@@ -13,7 +13,7 @@
 #include "CChemEqElement.h"
 
 /** @dia:pos 52.2128,95.1644 */
-class CChemEq
+class CChemEq : public CCopasiContainer
   {
   public:
     enum MetaboliteRole
@@ -63,15 +63,20 @@ class CChemEq
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CChemEq();
+    CChemEq(const std::string & name = "NoName",
+            const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CChemEq &" src
+     * Copy constructor
+     * @param "const CChemEq &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CChemEq(const CChemEq & src);
+    CChemEq(const CChemEq & src,
+            const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

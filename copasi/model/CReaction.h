@@ -20,14 +20,14 @@
 template < class CType > class CVector;
 
 /** @dia:pos 135.488,75.5337 */
-class CReaction
+class CReaction : public CCopasiContainer
   {
     // Attributes
 
   public:
 
     /** @dia:pos 93.3703,97.2451 */
-    class CId2Metab
+  class CId2Metab : public CCopasiContainer
       {
         friend class CReaction;
         // Attributes
@@ -36,7 +36,7 @@ class CReaction
         /**
          *  The name of the identifier as defined by the called function
          */
-        std::string mIdentifierName;
+        std::string & mIdentifierName;
 
         /**
          *  The name of the metabolite
@@ -57,15 +57,20 @@ class CReaction
       public:
         // Operations
         /**
-         *  Default constructor
+         * Default constructor
+         * @param const std::string & name (default: "NoName")
+         * @param const CCopasiContainer * pParent (default: NULL)
          */
-        CId2Metab();
+        CId2Metab(const std::string & name = "NoName",
+                  const CCopasiContainer * pParent = NULL);
 
         /**
-         *  Copy constructor
-         *  @param "const CId2Metab &" src
+         * Copy constructor
+         * @param "const CId2Metab &" src
+         * @param const CCopasiContainer * pParent (default: NULL)
          */
-        CId2Metab(const CId2Metab & src);
+        CId2Metab(const CId2Metab & src,
+                  const CCopasiContainer * pParent = NULL);
 
         /**
          *  Destructor
@@ -138,7 +143,7 @@ class CReaction
       };
 
     /** @dia:pos 93.7456,113.598 */
-    class CId2Param
+  class CId2Param : public CCopasiContainer
       {
         friend class CReaction;
         // Attributes
@@ -147,7 +152,7 @@ class CReaction
         /**
          *  The name of the parameter as defined by the called function
          */
-        std::string mIdentifierName;
+        std::string & mIdentifierName;
 
         /**
          *  The value of the parameter
@@ -157,15 +162,20 @@ class CReaction
       public:
         // Operations
         /**
-         *  Default constructor
+         * Default constructor
+         * @param const std::string & name (default: "NoName")
+         * @param const CCopasiContainer * pParent (default: NULL)
          */
-        CId2Param();
+        CId2Param(const std::string & name = "NoName",
+                  const CCopasiContainer * pParent = NULL);
 
         /**
-         *  Copy constructor
-         *  @param "const CId2Param &" src
+         * Copy constructor
+         * @param "const CId2Param &" src
+         * @param const CCopasiContainer * pParent (default: NULL)
          */
-        CId2Param(const CId2Param & src);
+        CId2Param(const CId2Param & src,
+                  const CCopasiContainer * pParent = NULL);
 
         /**
          *  Destructor
@@ -227,7 +237,7 @@ class CReaction
     /**
      *  The name of the reaction
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  The chemical equation
@@ -238,7 +248,7 @@ class CReaction
     /**
      *  A pointer to the rate function of the reaction
      */
-    CFunction * mFunction;
+    CFunction * mpFunction;
 
     /**
      *  The description of the function parameters
@@ -324,21 +334,20 @@ class CReaction
 
   public:
     /**
-     *  Default constructor
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CReaction();
+    CReaction(const std::string & name = "NoName",
+              const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CReaction &" src
+     * Copy constructor
+     * @param "const CReaction &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CReaction(const CReaction & src);
-
-    /**
-     *  Named constructor
-     *  @param "const string &" name
-     */
-    CReaction(const std::string & name);
+    CReaction(const CReaction & src,
+              const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor
@@ -376,11 +385,13 @@ class CReaction
     /**
      *  Saves the contents of the object to a CWriteConfig object.
      *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @param CWriteConfig & configbuffer
+     *  @param const CCopasiVectorN< CMetab > & metabolites
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 saveOld(CWriteConfig & configbuffer, const std::vector < CMetab* > &metabolites);
+    C_INT32 saveOld(CWriteConfig & configbuffer,
+                    const CCopasiVectorN< CMetab > & metabolites);
 
     /**
      *  Saves the contents of the object to a ofstream object.
@@ -523,9 +534,9 @@ class CReaction
 
     /**
      *  Retrieves the Compartment Name for substrates, products, and modifiers
-     *  @param "vector < CMetab* > &" Metabolites 
+     *  @param const CCopasiVector< CMetab > & metabolites
      */
-    void old2New(const std::vector < CMetab* > & metabolites);
+    void old2New(const CCopasiVector< CMetab > & metabolites);
 
     /**
      * Returns the address of mFlux  Wei Sun
@@ -567,10 +578,10 @@ class CReaction
       os << "   mChemEq " << std::endl;
       os << d.mChemEq;
 
-      if (d.mFunction)
-        os << "   *mFunction " << d.mFunction->getName() << std::endl;
+      if (d.mpFunction)
+        os << "   *mpFunction " << d.mpFunction->getName() << std::endl;
       else
-        os << "   mFunction == 0 " << std::endl;
+        os << "   mpFunction == 0 " << std::endl;
 
       os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
       os << "   mFlux: " << d.mFlux << std::endl;
@@ -626,7 +637,7 @@ class CReaction
     void cleanupCallParameters();
 
     /**
-     *  gets mParameterDescription from mFunction and then creates the vectors inside
+     *  gets mParameterDescription from mpFunction and then creates the vectors inside
      *  mCallParameters (If needed)
      */
     void initCallParameters();
@@ -647,7 +658,7 @@ class CReaction
     void cleanupCallParameterNames();
 
     /**
-     *  gets mParameterDescription from mFunction and then creates the vectors inside
+     *  gets mParameterDescription from mpFunction and then creates the vectors inside
      *  mCallParameterNames (If needed)
      */
     void initCallParameterNames();

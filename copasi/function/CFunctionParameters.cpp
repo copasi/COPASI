@@ -9,22 +9,21 @@
 #include "copasi.h"
 #include "CFunctionParameters.h"
 
-CFunctionParameters::CFunctionParameters()
-{
-  CONSTRUCTOR_TRACE;
-}
+CFunctionParameters::CFunctionParameters(const std::string & name,
+    const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Variable Description"),
+    mParameters("Variables", this),
+    mUsageRanges("Usage Ranges", this)
+{CONSTRUCTOR_TRACE;}
 
-CFunctionParameters::CFunctionParameters(const CFunctionParameters & src)
-{
-  CONSTRUCTOR_TRACE;
-  mParameters = CCopasiVectorNS < CFunctionParameter >(src.mParameters);
-  mUsageRanges = CCopasiVectorNS < CUsageRange >(src.mUsageRanges);
-}
+CFunctionParameters::CFunctionParameters(const CFunctionParameters & src,
+    const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mParameters(src.mParameters, this),
+    mUsageRanges(src.mUsageRanges, this)
+{CONSTRUCTOR_TRACE;}
 
-CFunctionParameters::~CFunctionParameters()
-{
-  DESTRUCTOR_TRACE;
-}
+CFunctionParameters::~CFunctionParameters() {DESTRUCTOR_TRACE;}
 
 void CFunctionParameters::cleanup()
 {

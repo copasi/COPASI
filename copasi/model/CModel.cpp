@@ -32,16 +32,28 @@ CModel::CModel():
     mTitle(mObjectName),
     mComments(),
     mCompartments("Compartments", this),
-    mMetabolitesInd(),
-    mL(0, 0),
-    mLView(mL, mMetabolitesInd)
+    mMetabolites("Metabolites", this),
+    mMetabolitesX("Reduced Model Metabolites", this),
+    mMetabolitesInd("Independent Metabolites", this),
+    mMetabolitesDep("Dependent Metabolites", this),
+    mSteps("Reactions", this),
+    mStepsX("Reduced Mode Reactions", this),
+    mStepsInd("Independent Reactions", this),
+    mFluxes(),
+    mFluxesX(),
+    mScaledFluxes(),
+    mScaledFluxesX(),
+    mTransitionTime(0),
+    mStoi(),
+    mRedStoi(),
+    mL(),
+    mLView(mL, mMetabolitesInd),
+    mQuantityUnitName("unknown"),
+    mQuantity2NumberFactor(1.0),
+    mNumber2QuantityFactor(1.0)
 {
+  initObjects();
   CONSTRUCTOR_TRACE;
-  mComments = "";
-
-  mQuantityUnitName = "unknown";
-  mNumber2QuantityFactor = 1.0;
-  mQuantity2NumberFactor = 1.0;
 }
 
 CModel::CModel(const CModel & src):
@@ -49,15 +61,27 @@ CModel::CModel(const CModel & src):
     mTitle(mObjectName),
     mComments(src.mComments),
     mCompartments(src.mCompartments, this),
-    mLView(mL, mMetabolitesInd)
+    mMetabolites(src.mMetabolites, this),
+    mMetabolitesX(src.mMetabolitesX, this),
+    mMetabolitesInd(src.mMetabolitesInd, this),
+    mMetabolitesDep(src.mMetabolitesDep, this),
+    mSteps(src.mSteps, this),
+    mStepsX(src.mStepsX, this),
+    mStepsInd(src.mStepsInd, this),
+    mFluxes(src.mFluxes),
+    mFluxesX(src.mFluxesX),
+    mScaledFluxes(src.mScaledFluxes),
+    mScaledFluxesX(src.mScaledFluxesX),
+    mTransitionTime(src.mTransitionTime),
+    mStoi(src.mStoi),
+    mRedStoi(src.mRedStoi),
+    mL(src.mL),
+    mLView(mL, mMetabolitesInd),
+    mQuantityUnitName(src.mQuantityUnitName),
+    mQuantity2NumberFactor(src.mQuantity2NumberFactor),
+    mNumber2QuantityFactor(src.mNumber2QuantityFactor)
 {
   CONSTRUCTOR_TRACE;
-
-  mTitle = src.mTitle;
-  mComments = src.mComments;
-
-  mCompartments = CCopasiVectorNS < CCompartment >(src.mCompartments);
-  mSteps = CCopasiVectorNS < CReaction >(src.mSteps);
 
   mQuantityUnitName = src.mQuantityUnitName;
   mNumber2QuantityFactor = src.mNumber2QuantityFactor;
@@ -87,18 +111,18 @@ void CModel::cleanup()
   mMoieties.cleanup();
 
   /* The references */
-  mStepsX.clear();
-  mStepsInd.clear();
+  mStepsX.resize(0);
+  mStepsInd.resize(0);
 
-  mMetabolites.clear();
-  mMetabolitesX.clear();
-  mMetabolitesInd.clear();
-  mMetabolitesDep.clear();
+  mMetabolites.resize(0);
+  mMetabolitesX.resize(0);
+  mMetabolitesInd.resize(0);
+  mMetabolitesDep.resize(0);
 
-  mFluxes.clear();
-  mFluxesX.clear();
-  mScaledFluxes.clear();
-  mScaledFluxesX.clear();
+  mFluxes.resize(0);
+  mFluxesX.resize(0);
+  mScaledFluxes.resize(0);
+  mScaledFluxesX.resize(0);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -338,11 +362,13 @@ void CModel::saveSBML(std::ofstream &fout)
 
 void CModel::compile()
 {
+  CMatrix< C_FLOAT64 > LU;
+
   buildStoi();
-  lUDecomposition();
-  setMetabolitesStatus();
+  lUDecomposition(LU);
+  setMetabolitesStatus(LU);
   buildRedStoi();
-  buildL();
+  buildL(LU);
   buildMoieties();
 }
 
@@ -353,7 +379,7 @@ void CModel::buildStoi()
   std::string Name;
 
   imax = mMetabolites.size();
-  mMetabolitesX.resize(imax);
+  mMetabolitesX.resize(imax, false);
   j = 0;
 
   // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
@@ -409,7 +435,7 @@ void CModel::buildStoi()
   return;
 }
 
-void CModel::lUDecomposition()
+void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 {
   unsigned C_INT32 i;
 
@@ -424,13 +450,13 @@ void CModel::lUDecomposition()
   for (i = 0; i < mColLU.size(); i++)
     mColLU[i] = i;
 
-  mLU = mStoi;
+  LU = mStoi;
 
-  LUfactor(mLU, rowLU, colLU);
+  LUfactor(LU, rowLU, colLU);
 
 #ifdef DEBUG_MATRIX
-  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(mLU, 0.0);
-  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU, 0.0, 1.0);
+  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(LU, 0.0);
+  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(LU, 0.0, 1.0);
 
   std::cout << "U" << std::endl;
   std::cout << U << std::endl;
@@ -496,34 +522,40 @@ void CModel::lUDecomposition()
   return;
 }
 
-void CModel::setMetabolitesStatus()
+void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 {
   unsigned C_INT32 i, j, k;
   C_FLOAT64 Sum;
 
-  // for (i=0; i<min(mLU.numRows(), mLU.numCols()); i++)
+  // for (i=0; i<min(LU.numRows(), LU.numCols()); i++)
   // for compiler
-  unsigned C_INT32 imax = (mLU.numRows() < mLU.numCols()) ?
-                          mLU.numRows() : mLU.numCols();
+  unsigned C_INT32 imax = (LU.numRows() < LU.numCols()) ?
+                          LU.numRows() : LU.numCols();
 
   for (i = 0; i < imax; i++)
     {
-      if (mLU[i][i] == 0.0)
+      if (LU[i][i] == 0.0)
         break;
 
       mMetabolitesX[i]->setStatus(METAB_VARIABLE);
     }
 
-  mMetabolitesInd.clear();
-  mMetabolitesInd.insert(mMetabolitesInd.begin(), &mMetabolitesX[0], &mMetabolitesX[i]);
-  mStepsInd.insert(mStepsInd.begin(), &mStepsX[0], &mStepsX[i]);
+  mMetabolitesInd.resize(i, false);
+  mStepsInd.resize(i, false);
+  for (j = 0; j < i; j++)
+    {
+      mMetabolitesInd[j] = mMetabolitesX[j];
+      mStepsInd[j] = mStepsX[j];
+    }
+  //  mMetabolitesInd.insert(mMetabolitesInd.begin(), &mMetabolitesX[0], &mMetabolitesX[i]);
+  //  mStepsInd.insert(mStepsInd.begin(), &mStepsX[0], &mStepsX[i]);
 
-  for (j = i; j < mLU.numRows(); j++)
+  for (j = i; j < LU.numRows(); j++)
     {
       Sum = 0.0;
 
-      for (k = 0; k < mLU.numCols(); k++)
-        Sum += fabs(mLU[j][k]);
+      for (k = 0; k < LU.numCols(); k++)
+        Sum += fabs(LU[j][k]);
 
       if (Sum == 0.0)
         break;
@@ -531,10 +563,13 @@ void CModel::setMetabolitesStatus()
       mMetabolitesX[j]->setStatus(METAB_DEPENDENT);
     }
 
-  mMetabolitesDep.clear();
-  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
+  mMetabolitesDep.resize(j - i, false);
+  for (k = i; k < j; k++)
+    mMetabolitesDep[k] = mMetabolitesX[k];
 
-  for (k = j; k < mLU.numRows(); k++)
+  //  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
+
+  for (k = j; k < LU.numRows(); k++)
     mMetabolitesX[k]->setStatus(METAB_FIXED);
 
   return;
@@ -569,13 +604,13 @@ void CModel::buildRedStoi()
         else
           {
             /* For j < i we are missing a part of the sum: */
-            /* Sum +=  mLU[i][j]; since L[i,i] = 1 */
-            Sum = mLU[i][j];
+            /* Sum +=  LU[i][j]; since L[i,i] = 1 */
+            Sum = LU[i][j];
             kmax = i;
           }
 
         for (k = 0; k < kmax; k++)
-          Sum += mLU[i][k] * mLU[k][j];
+          Sum += LU[i][k] * LU[k][j];
 
         mRedStoi[i][j] = Sum;
       }
@@ -589,7 +624,7 @@ void CModel::buildRedStoi()
   return;
 }
 
-void CModel::buildL()
+void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
 {
   C_INT N = mMetabolitesInd.size();
   C_INT LDA = std::max((C_INT) 1, N);
@@ -604,7 +639,7 @@ void CModel::buildL()
 
   for (i = 1; i < (unsigned C_INT32) N; i++)
     for (j = 0; j < i; j++)
-      R(i, j) = mLU(i, j);
+      R(i, j) = LU(i, j);
 
   /* to take care of differences between fortran's and c's memory  acces,
      we need to take the transpose, i.e.,the upper triangular */
@@ -678,10 +713,10 @@ void CModel::buildL()
     for (j = 0; j < jmax; j++)
       {
         sum = & mL(i - imin, j);
-        *sum = - mLU(i, j);
+        *sum = - LU(i, j);
 
         for (k = j + 1; k < jmax; k++)
-          *sum -= mLU(i, k) * R(k, j);
+          *sum -= LU(i, k) * R(k, j);
       }
 
 #ifdef DEBUG_MATRIX
@@ -784,38 +819,25 @@ CCopasiVectorNS < CReaction > & CModel::getReactions()
 }
 
 const CCopasiVectorNS < CReaction > & CModel::getReactions() const
-  {
-    return mSteps;
-  }
+  {return mSteps;}
 
-std::vector < CReaction * > & CModel::getReactionsX()
-{
-  return mStepsX;
-}
+const CCopasiVectorN< CReaction > & CModel::getReactionsX() {return mStepsX;}
 
-std::vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
-std::vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep;}
-std::vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
+CCopasiVectorN< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
+CCopasiVectorN< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
+CCopasiVectorN< CMetab > & CModel::getMetabolitesX() {return mMetabolitesX;}
 
 unsigned C_INT32 CModel::getTotMetab() const
-  {
-    return mMetabolites.size();
-  }
+  {return mMetabolites.size();}
 
 unsigned C_INT32 CModel::getIntMetab() const
-  {
-    return mMetabolitesInd.size() + mMetabolitesDep.size();
-  }
+  {return mMetabolitesInd.size() + mMetabolitesDep.size();}
 
 unsigned C_INT32 CModel::getIndMetab() const
-  {
-    return mMetabolitesInd.size();
-  }
+  {return mMetabolitesInd.size();}
 
 unsigned C_INT32 CModel::getDepMetab() const
-  {
-    return mMetabolitesDep.size();
-  }
+  {return mMetabolitesDep.size();}
 
 // Added by Yongqun He
 /**
@@ -862,10 +884,7 @@ CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
  *        Return the metabolites of this model
  *        @return vector < CMetab * > 
  */
-std::vector < CMetab * > & CModel::getMetabolites()
-{
-  return mMetabolites;
-}
+CCopasiVectorN< CMetab > & CModel::getMetabolites() {return mMetabolites;}
 
 /**
  *  Get the Reduced Stoichiometry Matrix of this Model
@@ -970,12 +989,12 @@ void CModel::initializeMetabolites()
 
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
-  mMetabolites.clear();
+  mMetabolites.resize(0);
 
   for (i = 0; i < mCompartments.size(); i++)
     for (j = 0; j < mCompartments[i]->metabolites().size(); j++)
       {
-        mMetabolites.push_back(mCompartments[i]->metabolites()[j]);
+        mMetabolites.add(mCompartments[i]->metabolites()[j]);
         mCompartments[i]->metabolites()[j]->setModel(this);
         mCompartments[i]->metabolites()[j]->checkConcentrationAndNumber();
       }
@@ -985,17 +1004,14 @@ void CModel::initializeMetabolites()
  * Returns the mStepsX of this model
  * @return vector < CStep * > 
  */
-std::vector < CReaction * > & CModel::getStepsX()
-{
-  return mStepsX;
-}
+const CCopasiVectorN< CReaction > & CModel::getStepsX(){return mStepsX;}
 
 /* only used in steadystate/CMca.cpp */
 /**
  *  Get the mLU matrix of this model
- */
-const CMatrix < C_FLOAT64 > & CModel::getmLU() const
-  {return mLU;}
+ */ 
+// const CMatrix < C_FLOAT64 > & CModel::getmLU() const
+//  {return mLU;}
 
 /* only used in steadystate/CMca.cpp */
 const CModel::CLinkMatrixView & CModel::getL() const
@@ -1214,8 +1230,29 @@ void CModel::initObjects()
 {
   addObjectReference("Name", mTitle);
   addObjectReference("Comments", mComments);
-  add((CCopasiContainer *) &mCompartments);
-  add((CCopasiContainer *) &mMetabolites);
+  add(&mCompartments);
+  add(&mMetabolites);
+  add(&mMetabolitesX);
+  add(&mMetabolitesInd);
+  add(&mMetabolitesDep);
+  add(&mSteps);
+  add(&mStepsX);
+  add(&mStepsInd);
+  addVectorReference("Fluxes", mFluxes);
+  addVectorReference("Reduced Model Fluxes", mFluxesX);
+  addVectorReference("Scaled Fluxes", mScaledFluxes);
+  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
+  // addObjectReference("Transition Time", mTransitionTime);
+  addMatrixReference("Stoichiometry", mStoi);
+  addMatrixReference("Reduced Model Stoichiometry", mRedStoi);
+  // addVectorReference("Metabolite Interchanges", mRowLU);
+  // addVectorReference("Reaction Interchanges", mColLU);
+  // addMatrixReference("L", mL);
+  addMatrixReference("Link Matrix", mLView);
+  addObjectReference("Quantity Unit", mQuantityUnitName);
+  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor);
+  // addObjectReference("Inverse Quantity Conversion Factor",
+  //                    mNumber2QuantityFactor);
 }
 
 void CModel::setState(const CStateX * state)
@@ -1436,7 +1473,7 @@ const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
 CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-    const std::vector< CMetab * > & independent):
+    const CCopasiVectorN< CMetab > & independent):
     mA(A),
     mIndependent(independent)
 {CONSTRUCTOR_TRACE;}
@@ -1448,7 +1485,7 @@ CModel::CLinkMatrixView &
 CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
 {
   const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-  const_cast< std::vector< CMetab * > &>(mIndependent) = rhs.mIndependent;
+  const_cast< CCopasiVectorN< CMetab > &>(mIndependent) = rhs.mIndependent;
 
   return *this;
 }

@@ -10,13 +10,13 @@
 
 #include "CReaction.h"
 #include "CMoiety.h"
+#include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
 #include "report/CCopasiContainer.h"
 
 class CCompartment;
 class CState;
 class CStateX;
-template <class CType> class CVector;
 
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
@@ -32,7 +32,7 @@ class CModel : public CCopasiContainer
       private:
         const CMatrix< C_FLOAT64 > & mA;
         /** @dia:route 39,3; h,117.263,65.6961,127.49,65.7298,129.758 */
-        const std::vector< CMetab * > & mIndependent;
+        const CCopasiVectorN< CMetab > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
 
@@ -40,10 +40,10 @@ class CModel : public CCopasiContainer
         /**
          * Default constructor
          * @param const CMatrix< C_FLOAT64 > & A
-         * @param const vector< CMetab * > & independent
+         * @param const CCopasiVectorN< CMetab > & independent
          */
         CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                        const std::vector< CMetab * > & independent);
+                        const CCopasiVectorN< CMetab > & independent);
 
         /**
          * Destructor.
@@ -73,17 +73,17 @@ class CModel : public CCopasiContainer
          * Retrieve a matrix element  using the c-style indexing.
          * @param const unsigned C_INT32 & row
          * @param const unsigned C_INT32 & col
-         * @return elementType element
+         * @return elementType & element
          */
-        inline elementType operator()(const unsigned C_INT32 & row,
-                                      const unsigned C_INT32 & col) const
+        inline elementType & operator()(const unsigned C_INT32 & row,
+                                        const unsigned C_INT32 & col) const
           {
             if (row >= mIndependent.size())
-              return mA(row - mIndependent.size(), col);
+              return const_cast< elementType & >(mA(row - mIndependent.size(), col));
             else if (row != col)
-              return mZero;
+              return const_cast< elementType & >(mZero);
             else
-              return mUnit;
+              return const_cast< elementType & >(mUnit);
           }
 
         /**
@@ -134,54 +134,52 @@ class CModel : public CCopasiContainer
      *  Vector of reference to metabolites
      */
     /** @dia:route 29,44; h,117.263,61.6961,171.362,46.7423,177.081 */
-    std::vector< CMetab * > mMetabolites;
+    CCopasiVectorN< CMetab > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
     /** @dia:route 17,44; h,117.263,56.6961,171.362,46.7423,177.081 */
-    std::vector< CMetab * > mMetabolitesX;
+    CCopasiVectorN< CMetab > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
     /** @dia:route 21,44; h,117.263,58.2961,171.362,46.7423,177.081 */
-    std::vector< CMetab * > mMetabolitesInd;
+    CCopasiVectorN< CMetab > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
     /** @dia:route 25,44; h,117.263,60.0961,171.362,46.7423,177.081 */
-    std::vector< CMetab * > mMetabolitesDep;
+    CCopasiVectorN< CMetab > mMetabolitesDep;
 
     /**
      *  for array of steps
-     *  @supplierCardinality 0..*
-     *  @associates <{CReaction}>
      */
     /** @dia:route 154,2; h,177.081,90.7423,175.231,75.5337,169.81 */
-    CCopasiVectorNS < CReaction > mSteps;
+    CCopasiVectorNS< CReaction > mSteps;
 
     /**
      *  Vector of reference to reactions in reduced model representation.
      */
     /** @dia:route 154,9; h,177.081,90.7423,175.231,77.4337,169.81 */
-    std::vector< CReaction * > mStepsX;
+    CCopasiVectorN< CReaction > mStepsX;
 
     /**
      *  Vector of reference to independend reactions.
      */
     /** @dia:route 154,13; h,177.081,90.7423,175.231,79.0337,169.81 */
-    std::vector< CReaction * > mStepsInd;
+    CCopasiVectorN< CReaction > mStepsInd;
 
     /**
      *  Vector of fluxes of the reactions.
      *  Note: The fluxes are the order corresponding to mStepX
      */
-    std::vector<const C_FLOAT64 *> mFluxes;
-    std::vector<const C_FLOAT64 *> mFluxesX;
-    std::vector<const C_FLOAT64 *> mScaledFluxes;
-    std::vector<const C_FLOAT64 *> mScaledFluxesX;
+    CVector< const C_FLOAT64 * > mFluxes;
+    CVector< const C_FLOAT64 * > mFluxesX;
+    CVector< const C_FLOAT64 * > mScaledFluxes;
+    CVector< const C_FLOAT64 * > mScaledFluxesX;
 
     /**
      *  Transition time 
@@ -190,26 +188,24 @@ class CModel : public CCopasiContainer
 
     /**
      *  for array of conserved moieties
-     *  @supplierCardinality 0..*
-     *  @associates <{CMoiety}>
      */
     /** @dia:route 178,7; h,177.081,100.342,174.433,136.262,81.1982 */
-    CCopasiVectorN < CMoiety > mMoieties;
+    CCopasiVectorN< CMoiety > mMoieties;
 
     /**
      *   Stoichiometry Matrix
      */
-    CMatrix < C_FLOAT64 > mStoi;
+    CMatrix< C_FLOAT64 > mStoi;
 
     /**
      *   Reduced Stoichiometry Matrix
      */
-    CMatrix < C_FLOAT64 > mRedStoi;
+    CMatrix< C_FLOAT64 > mRedStoi;
 
     /**
      *   The Matrix which stores the LU-Decomposition
-     */
-    CMatrix < C_FLOAT64 > mLU;
+     */ 
+    // CMatrix< C_FLOAT64 > mLU;
 
     /**
      * Vector for storing the row interchanges during LU-Decomposition
@@ -319,19 +315,22 @@ class CModel : public CCopasiContainer
     void buildStoi();
 
     /**
-     *  Build L and InverseL
+     *  Build the core of the link matrix L
+     *  @param const CMatrix< C_FLOAT64 > & LU
      */
-    void buildL();
+    void buildL(const CMatrix< C_FLOAT64 > & LU);
 
     /**
      *  LU-Decomposition of the stoichiometry matrix
+     *  @param CMatrix< C_FLOAT64 > & LU
      */
-    void lUDecomposition();
+    void lUDecomposition(CMatrix< C_FLOAT64 > & LU);
 
     /**
      *  Set the status of the metabolites
+     *  @param const CMatrix< C_FLOAT64 > & LU
      */
-    void setMetabolitesStatus();
+    void setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU);
 
     /**
      *  Build the Reduced Stoichiometry Matrix from the LU decomposition
@@ -352,19 +351,19 @@ class CModel : public CCopasiContainer
      * Retrieves the vector of independent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    std::vector< CMetab * > & getMetabolitesInd();
+    CCopasiVectorN< CMetab > & getMetabolitesInd();
 
     /**
      * Retrieves the vector of dependent metabolites.
      * @return vector < CMetab * > metabolites
      */
-    std::vector< CMetab * > & getMetabolitesDep();
+    CCopasiVectorN< CMetab > & getMetabolitesDep();
 
     /**
      * Retrieves the vector of metabolites at it is used in the reduced model.
      * @return vector < CMetab * > metabolites
      */
-    std::vector< CMetab * > & getMetabolitesX();
+    CCopasiVectorN< CMetab > & getMetabolitesX();
 
     /**
      *  Get the number of total metabolites
@@ -410,9 +409,9 @@ class CModel : public CCopasiContainer
 
     /**
      * Retreives the vector of steps in the order used by the reduced model.
-     * @return vector < CReaction * > & reactions
+     * @return const CCopasiVectorN< CReaction > &
      */
-    std::vector< CReaction * > & getReactionsX();
+    const CCopasiVectorN< CReaction > & getReactionsX();
 
     // Added by Yongqun He
     /**
@@ -459,9 +458,9 @@ class CModel : public CCopasiContainer
 
     /**
      * Return the metabolites of this model
-     * @return vector < CMetab * > 
+     * @return CCopasiVectorN< CMetab > & metabolites 
      */
-    std::vector< CMetab * > & getMetabolites();
+    CCopasiVectorN< CMetab > & getMetabolites();
 
     /**
      *  Get the Stoichiometry Matrix of this Model
@@ -501,15 +500,15 @@ class CModel : public CCopasiContainer
 
     /**
      * Returns the mStepsX of this model
-     * @return vector < CStep * > 
+     * @return const CCopasiVectorN< CReaction > & 
      */
-    std::vector< CReaction * > & getStepsX();
+    const CCopasiVectorN< CReaction > & getStepsX();
 
     /**
      * Get the LU decomposition matrix of this model
      * @return const TNT::Matrix < C_FLOAT64 > & LU
-     */
-    const CMatrix < C_FLOAT64 > & getmLU() const;
+     */ 
+    //    const CMatrix < C_FLOAT64 > & getmLU() const;
 
     /**
      * Get the link matrix L of the relation: Stoi = L * RedStoi

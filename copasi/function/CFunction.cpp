@@ -11,22 +11,27 @@
 #include "CFunctionParameters.h"
 #include "CFunction.h"
 
-CFunction::CFunction()
-{
-  CONSTRUCTOR_TRACE;
-  mReversible = TriUnspecified;
-}
+CFunction::CFunction(const std::string & name,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Function"),
+    mType(CFunction::Base),
+    mName(mObjectName),
+    mDescription(),
+    mReversible(TriUnspecified),
+    mUsageDescriptions("Usage Descriptions", this),
+    mParameters("Variable Descriptions", this)
+{CONSTRUCTOR_TRACE;}
 
-CFunction::CFunction(const CFunction & src)
-{
-  CONSTRUCTOR_TRACE;
-  mType = src.mType;
-  mName = src.mName;
-  mDescription = src.mDescription;
-  mReversible = src.mReversible;
-  mUsageDescriptions = CCopasiVectorNS < CUsageRange > (src.mUsageDescriptions);
-  mParameters = CFunctionParameters(src.mParameters);
-}
+CFunction::CFunction(const CFunction & src,
+                     const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mType(src.mType),
+    mName(src.mName),
+    mDescription(src.mDescription),
+    mReversible(src.mReversible),
+    mUsageDescriptions(src.mUsageDescriptions, this),
+    mParameters(src.mParameters, this)
+{CONSTRUCTOR_TRACE;}
 
 CFunction::~CFunction()
 {
@@ -168,9 +173,9 @@ void CFunction::setName(const std::string& name)
 }
 
 const std::string & CFunction::getName() const
-{
-  return mName;
-}
+  {
+    return mName;
+  }
 
 void CFunction::setDescription(const std::string & description)
 {
@@ -178,9 +183,9 @@ void CFunction::setDescription(const std::string & description)
 }
 
 const std::string & CFunction::getDescription() const
-{
-  return mDescription;
-}
+  {
+    return mDescription;
+  }
 
 void CFunction::setType(const CFunction::Type & type)
 {
@@ -188,9 +193,9 @@ void CFunction::setType(const CFunction::Type & type)
 }
 
 const CFunction::Type & CFunction::getType() const
-{
-  return mType;
-}
+  {
+    return mType;
+  }
 
 void CFunction::setReversible(const TriLogic & reversible)
 {
@@ -198,9 +203,9 @@ void CFunction::setReversible(const TriLogic & reversible)
 }
 
 const TriLogic & CFunction::isReversible() const
-{
-  return mReversible;
-}
+  {
+    return mReversible;
+  }
 
 CFunctionParameters & CFunction::getParameters()
 {
@@ -218,11 +223,11 @@ unsigned C_INT32 CFunction::getParameterPosition(const std::string & name)
 }
 
 C_FLOAT64 CFunction::calcValue(const CCallParameters & C_UNUSED(callParameters)) const
-{return 0.0;}
+  {return 0.0;}
 
 bool CFunction::dependsOn(const void * C_UNUSED(parameter),
                           const CCallParameters & C_UNUSED(callParameters)) const
-{return false;}
+  {return false;}
 
 void CFunction::addUsage(const std::string& usage, C_INT32 low, C_INT32 high)
 {

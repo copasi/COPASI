@@ -16,47 +16,49 @@
 #include "FlexLexer.h"
 #include "CKinFunction.h"
 
-CKinFunction::CKinFunction() : CFunction()
+CKinFunction::CKinFunction(const std::string & name,
+                           const CCopasiContainer * pParent):
+    CFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
   setType(CFunction::UserDefined);
 }
 
 CKinFunction::CKinFunction(const CFunction & src,
-                           CReadConfig * configBuffer) : CFunction(src)
+                           CReadConfig * configBuffer,
+                           const CCopasiContainer * pParent):
+    CFunction(src, pParent)
 {
   CONSTRUCTOR_TRACE;
 
   if (configBuffer)
     if (configBuffer->getVersion() < "4")
       {
-        unsigned C_INT32 Size;
+        unsigned C_INT32 i, Size;
         configBuffer->getVariable("Nodes", "C_INT32", &Size);
+        mNodes.resize(Size);
 
-        mNodes.load(*configBuffer, Size);
+        for (i = 0; i < Size; i++)
+          {
+            mNodes[i] = new CNodeK;
+            mNodes[i]->load(*configBuffer);
+          }
+
         createParameters();
-        mNodes.cleanup();
+
+        cleanupNodes();
       }
 
   compile();
 }
 
-CKinFunction::CKinFunction(const CKinFunction & src) : CFunction(src)
+CKinFunction::CKinFunction(const CKinFunction & src,
+                           const CCopasiContainer * pParent):
+    CFunction(src, pParent)
 {
   CONSTRUCTOR_TRACE;
   compile();
 }
-
-#ifdef XXXX
-CKinFunction::CKinFunction(const std::string & name,
-                           const std::string & description)
-{
-  CONSTRUCTOR_TRACE;
-  setType(CFunction::UserDefined);
-  setName(name);
-  setDescription(description);
-}
-#endif // XXXX
 
 CKinFunction::~CKinFunction()
 {
@@ -66,10 +68,11 @@ CKinFunction::~CKinFunction()
 
 void CKinFunction::cleanup()
 {
-  mNodes.cleanup();
+  cleanupNodes();
   CFunction::cleanup();
 }
 
+#ifdef XXXX
 void CKinFunction::load(CReadConfig & configBuffer,
                         CReadConfig::Mode mode)
 {
@@ -91,6 +94,7 @@ void CKinFunction::load(CReadConfig & configBuffer,
 
   compile();
 }
+#endif // XXXX
 
 void CKinFunction::saveOld(CWriteConfig & configBuffer)
 {
@@ -109,7 +113,7 @@ std::string CKinFunction::getSBMLString(const CCallParameters & callParameterNam
 
 void CKinFunction::compile()
 {
-  mNodes.cleanup();
+  cleanupNodes();
   parse();
   connectNodes();
   initIdentifierNodes();
@@ -123,7 +127,7 @@ C_INT32 CKinFunction::parse()
 
   // add the root node
   CNodeK * pNode = new CNodeK(N_ROOT, N_NOP);
-  mNodes.add(pNode);
+  mNodes.push_back(pNode);
 
   // call the lexical analyser successively until done
 
@@ -137,12 +141,12 @@ C_INT32 CKinFunction::parse()
         case N_OBJECT:
           pNode = new CNodeK(Scanner.YYText());
           pNode->setType(i);
-          mNodes.add(pNode);
+          mNodes.push_back(pNode);
           break;
 
         case N_NUMBER:
           pNode = new CNodeK(atof(Scanner.YYText()));
-          mNodes.add(pNode);
+          mNodes.push_back(pNode);
           break;
 
         case '+':
@@ -153,7 +157,7 @@ C_INT32 CKinFunction::parse()
         case '(':
         case ')':
           pNode = new CNodeK(N_OPERATOR, i);
-          mNodes.add(pNode);
+          mNodes.push_back(pNode);
           break;
 
         case N_LOG:
@@ -162,11 +166,11 @@ C_INT32 CKinFunction::parse()
         case N_SIN:
         case N_COS:
           pNode = new CNodeK(N_FUNCTION, i);
-          mNodes.add(pNode);
+          mNodes.push_back(pNode);
           break;
 
         case N_NOP:                // this is an error
-          mNodes.cleanup();
+          cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
           return 0;
@@ -180,142 +184,142 @@ C_INT32 CKinFunction::parse()
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
-{
-  return mNodes[0]->getLeft().value(callParameters);
-}
+  {
+    return mNodes[0]->getLeft().value(callParameters);
+  }
 
 bool CKinFunction::dependsOn(const void * parameter,
                              const CCallParameters & callParameters) const
-{
-  std::vector< const void * >::const_iterator it = callParameters.begin();
-  std::vector< const void * >::const_iterator end = callParameters.end();
+  {
+    std::vector< const void * >::const_iterator it = callParameters.begin();
+    std::vector< const void * >::const_iterator end = callParameters.end();
 
-  for (; it != end; it++) if (parameter == *it) return true;
+    for (; it != end; it++) if (parameter == *it) return true;
 
     return false;
   }
 
-  C_INT32 CKinFunction::connectNodes()
+C_INT32 CKinFunction::connectNodes()
+{
+  C_INT32 errfl = 0;     // !!! do we need this?
+  C_INT32 errnode = -1;  // !!! do we need this?
+  unsigned C_INT32 i;
+
+  // initialise the control variables
+  mNidx = 1;
+
+  // point all Left & Right to the root node
+
+  for (i = 1; i < mNodes.size(); i++)
     {
-      C_INT32 errfl = 0;     // !!! do we need this?
-      C_INT32 errnode = -1;  // !!! do we need this?
-      unsigned C_INT32 i;
+      mNodes[i]->setLeft(mNodes[0]);
+      mNodes[i]->setRight(mNodes[0]);
+    }
 
-      // initialise the control variables
-      mNidx = 1;
+  // update pointers and references in the tree
+  mNodes[0]->setLeft(parseExpression(0));
 
-      // point all Left & Right to the root node
+  // further checking for errors
+  if (mNodes[0]->isLeftValid() &&
+      mNodes[0]->getLeft().isOperator() &&
+      mNodes[0]->getLeft().getSubtype() == '(')
+    {
+      //  sprintf(errstr, "ERROR - missing operand");
+      //  errnode should index the node in error
+      //  but we don't know its index (pointer only)
+      CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
+                     getName().c_str());
+      errnode = -1;
+      errfl++;
+    }
 
-      for (i = 1; i < mNodes.size(); i++)
+  for (i = 1; i < mNodes.size() && !errfl; i++)
+    {
+      switch (mNodes[i]->getType())
         {
-          mNodes[i]->setLeft(mNodes[0]);
-          mNodes[i]->setRight(mNodes[0]);
-        }
+        case N_OPERATOR:
 
-      // update pointers and references in the tree
-      mNodes[0]->setLeft(parseExpression(0));
-
-      // further checking for errors
-      if (mNodes[0]->isLeftValid() &&
-          mNodes[0]->getLeft().isOperator() &&
-          mNodes[0]->getLeft().getSubtype() == '(')
-        {
-          //  sprintf(errstr, "ERROR - missing operand");
-          //  errnode should index the node in error
-          //  but we don't know its index (pointer only)
-          CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
-                         getName().c_str());
-          errnode = -1;
-          errfl++;
-        }
-
-      for (i = 1; i < mNodes.size() && !errfl; i++)
-        {
-          switch (mNodes[i]->getType())
-            {
-            case N_OPERATOR:
-
-              if (!mNodes[i]->isLeftValid() ||
-                  !mNodes[i]->isRightValid() ||
-                  &mNodes[i]->getLeft() == mNodes[0] ||
-                  &mNodes[i]->getRight() == mNodes[0])
-                if (mNodes[i]->getSubtype() != '(' &&
-                    mNodes[i]->getSubtype() != ')')
+          if (!mNodes[i]->isLeftValid() ||
+              !mNodes[i]->isRightValid() ||
+              &mNodes[i]->getLeft() == mNodes[0] ||
+              &mNodes[i]->getRight() == mNodes[0])
+            if (mNodes[i]->getSubtype() != '(' &&
+                mNodes[i]->getSubtype() != ')')
+              {
+                if (!errfl)
                   {
-                    if (!errfl)
-                      {
-                        // sprintf(errstr, "ERROR - incorrect number of operands");
-                        fatalError();
-                        errnode = i;
-                      }
-
-                    errfl++;
+                    // sprintf(errstr, "ERROR - incorrect number of operands");
+                    fatalError();
+                    errnode = i;
                   }
 
+                errfl++;
+              }
+
+          if (!errfl)
+            {
+              if (mNodes[i]->isLeftValid() &&
+                  mNodes[i]->getLeft().isOperator() &&
+                  mNodes[i]->getLeft().getSubtype() == '(')
+                {
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
+                }
+
+              if (mNodes[i]->isRightValid() &&
+                  mNodes[i]->getRight().isOperator() &&
+                  mNodes[i]->getRight().getSubtype() == ')')
+                {
+                  //           sprintf(errstr, "ERROR - missing operand");
+                  fatalError();
+                  errnode = -1;
+                  errfl++;
+                }
+            }
+
+          break;
+
+        case N_IDENTIFIER:
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
+            {
               if (!errfl)
                 {
-                  if (mNodes[i]->isLeftValid() &&
-                      mNodes[i]->getLeft().isOperator() &&
-                      mNodes[i]->getLeft().getSubtype() == '(')
-                    {
-                      //           sprintf(errstr, "ERROR - missing operand");
-                      fatalError();
-                      errnode = -1;
-                      errfl++;
-                    }
-
-                  if (mNodes[i]->isRightValid() &&
-                      mNodes[i]->getRight().isOperator() &&
-                      mNodes[i]->getRight().getSubtype() == ')')
-                    {
-                      //           sprintf(errstr, "ERROR - missing operand");
-                      fatalError();
-                      errnode = -1;
-                      errfl++;
-                    }
+                  //           sprintf(errstr, "ERROR - unexpected identifier");
+                  fatalError();
+                  errnode = -1;
                 }
 
-              break;
-
-            case N_IDENTIFIER:
-
-              if (mNodes[i]->isLeftValid() ||
-                  mNodes[i]->isRightValid())
-                {
-                  if (!errfl)
-                    {
-                      //           sprintf(errstr, "ERROR - unexpected identifier");
-                      fatalError();
-                      errnode = -1;
-                    }
-
-                  ++errfl;
-                }
-
-              break;
-
-            case N_NUMBER:
-
-              if (mNodes[i]->isLeftValid() ||
-                  mNodes[i]->isRightValid())
-                {
-                  if (!errfl)
-                    {
-                      //           sprintf(errstr, "ERROR - unexpected constant");
-                      fatalError();
-                      errnode = -1;
-                    }
-
-                  ++errfl;
-                }
-
-              break;
+              ++errfl;
             }
-        }
 
-      // return
-      return errfl;
+          break;
+
+        case N_NUMBER:
+
+          if (mNodes[i]->isLeftValid() ||
+              mNodes[i]->isRightValid())
+            {
+              if (!errfl)
+                {
+                  //           sprintf(errstr, "ERROR - unexpected constant");
+                  fatalError();
+                  errnode = -1;
+                }
+
+              ++errfl;
+            }
+
+          break;
+        }
     }
+
+  // return
+  return errfl;
+}
 
 CNodeK * CKinFunction::parseExpression(C_INT16 priority)
 {
@@ -635,7 +639,16 @@ void CKinFunction::initIdentifierNodes()
     }
 }
 
-CCopasiVectorS < CNodeK > & CKinFunction::getNodes()
+std::vector< CNodeK * > & CKinFunction::getNodes() {return mNodes;}
+
+void CKinFunction::cleanupNodes()
 {
-  return mNodes;
+  unsigned C_INT32 i, imax = mNodes.size();
+
+  for (i = 0; i < imax; i++)
+    if (mNodes[i]) delete mNodes[i];
+
+  mNodes.clear();
+
+  return;
 }

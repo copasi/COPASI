@@ -170,15 +170,15 @@ std::string CSpecLine::stripBlanks(const std::string instr)
 }
 
 bool CBaseEqn::operator==(const CBaseEqn &rhs) const
-{
-  if ((mCompartment == rhs.getCompartment()) &&
-      (mMetabolite == rhs.getMetabolite()))
   {
-    return true;
-  }
+    if ((mCompartment == rhs.getCompartment()) &&
+        (mMetabolite == rhs.getMetabolite()))
+      {
+        return true;
+      }
 
-  return false;
-}
+    return false;
+  }
 
 CTempMetab::CTempMetab(const CTempMetab &rhs)
     : mMetab(rhs.mMetab),
@@ -251,61 +251,61 @@ void CTempReaction::create_substrates_and_products_lists()
 }
 
 std::string CTempReaction::getChemEquation() const
-{
-  //std::ostringstream lhs_desc;
-  //std::ostringstream rhs_desc;
-
-  std::ostringstream chemeqn;
-  C_INT32 mult = 0;
-  bool is_first;
-
-  unsigned C_INT32 i;
-
-  is_first = true;
-  for (i = 0; i < mSubstrates.size(); i++)
   {
-    mult = mSubstrates[i].getMultiplicity();
+    //std::ostringstream lhs_desc;
+    //std::ostringstream rhs_desc;
 
-      if (is_first == false)
-        {
-          chemeqn << " + ";
-        }
+    std::ostringstream chemeqn;
+    C_INT32 mult = 0;
+    bool is_first;
 
-      is_first = false;
+    unsigned C_INT32 i;
 
-      if (mult > 1)
-        {
-          chemeqn << mult << "*";
-        }
+    is_first = true;
+    for (i = 0; i < mSubstrates.size(); i++)
+      {
+        mult = mSubstrates[i].getMultiplicity();
 
-      chemeqn << mSubstrates[i].getMetab()->getName();
-    }
+        if (is_first == false)
+          {
+            chemeqn << " + ";
+          }
 
-  chemeqn << " -> ";
+        is_first = false;
 
-  is_first = true;
-  for (i = 0; i < mProducts.size(); i++)
-  {
-    mult = mProducts[i].getMultiplicity();
+        if (mult > 1)
+          {
+            chemeqn << mult << "*";
+          }
 
-      if (is_first == false)
-        {
-          chemeqn << " + ";
-        }
+        chemeqn << mSubstrates[i].getMetab()->getName();
+      }
 
-      is_first = false;
+    chemeqn << " -> ";
 
-      if (mult > 1)
-        {
-          chemeqn << mult << "*";
-        }
+    is_first = true;
+    for (i = 0; i < mProducts.size(); i++)
+      {
+        mult = mProducts[i].getMultiplicity();
 
-      chemeqn << mProducts[i].getMetab()->getName();
-    }
+        if (is_first == false)
+          {
+            chemeqn << " + ";
+          }
 
-  //std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
-  return chemeqn.str();
-}
+        is_first = false;
+
+        if (mult > 1)
+          {
+            chemeqn << mult << "*";
+          }
+
+        chemeqn << mProducts[i].getMetab()->getName();
+      }
+
+    //std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
+    return chemeqn.str();
+  }
 
 void CTempReaction::compile(CModel *model,
                             const std::vector<CNameVal> & rates,
@@ -317,7 +317,8 @@ void CTempReaction::compile(CModel *model,
   std::cout << chemeqdesc << std::endl;
 
   // Create the reaction
-  CReaction *reaction = new CReaction(mName); // XXX TODO: add the bits necessary
+  CReaction *reaction = new CReaction(mName);
+  // XXX TODO: add the bits necessary
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
   // and constructs the chemical equations.

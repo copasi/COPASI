@@ -17,33 +17,45 @@
 
 class CWriteConfig;
 
-class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
+class CMethodParameterList : public CCopasiContainer
   {
     // Attributes
   private:
     /**
      *  The name of the Method
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  The type of the Method
      */
     std::string mType;
 
+    /**
+     * The list of method parameters for this method
+     */
+    CCopasiVectorNS < CMethodParameter > mMethodParameters;
+
     // Operations
   public:
 
     /**
      * Default constructor
+     * @param "const string &" name (Default = "")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Method Parameter List")
      */
-    CMethodParameterList();
+    CMethodParameterList(const std::string & name = "NoName",
+                         const CCopasiContainer * pParent = NULL,
+                         const std::string & type = "Method Parameter List");
 
     /**
      * Copy constructor
      * @param "const CMethodParameter &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMethodParameterList(const CMethodParameterList & src);
+    CMethodParameterList(const CMethodParameterList & src,
+                         const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor

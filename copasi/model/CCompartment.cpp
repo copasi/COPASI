@@ -15,16 +15,18 @@
 #include "report/CCopasiObjectReference.h"
 #include "CCompartment.h"
 
-CCompartment::CCompartment():
-    CCopasiContainer("NoName", NULL, "Compartment"),
+CCompartment::CCompartment(const std::string & name,
+                           const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Compartment"),
     mName(mObjectName),
     mVolume(Copasi->DefaultVolume),
     mVolumeInv(1 / Copasi->DefaultVolume),
     mMetabolites("Metabolites", this)
 {CONSTRUCTOR_TRACE;}
 
-CCompartment::CCompartment(const CCompartment & src):
-    CCopasiContainer(src),
+CCompartment::CCompartment(const CCompartment & src,
+                           const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
     mName(CCopasiContainer::mObjectName),
     mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
@@ -32,8 +34,8 @@ CCompartment::CCompartment(const CCompartment & src):
 {
   CONSTRUCTOR_TRACE;
 
-  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
-    mMetabolites[i]->setCompartment(this);
+  //  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
+  //    mMetabolites[i]->setCompartment(this);
 }
 
 CCompartment::~CCompartment() {DESTRUCTOR_TRACE;}
@@ -142,9 +144,15 @@ void CCompartment::setVolume(C_FLOAT64 volume)
   mVolumeInv = 1.0 / volume;
 }
 
+/* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
+   In the case the compartment is part of a model also mpModel is set. */
+void CCompartment::addMetabolite(CMetab &metabolite)
+{mMetabolites.add(metabolite);}
+
+#ifdef XXXX
 void CCompartment::addMetabolite(CMetab &metabolite)
 {
-  CMetab *pMetabolite = new CMetab(metabolite);
+  CMetab *pMetabolite = new CMetab(metabolite, this);
 
   pMetabolite->setCompartment(this);
   //pMetabolite->setConcentration(pMetabolite->getConcentration());
@@ -153,6 +161,7 @@ void CCompartment::addMetabolite(CMetab &metabolite)
   // from concentrations
   mMetabolites.add(pMetabolite);
 }
+#endif // XXXX
 
 bool CCompartment::isValidName(const std::string & name) const
   {return (name.find_first_of(" ") == std::string::npos);}
@@ -161,7 +170,7 @@ void CCompartment::initObjects()
 {
   addObjectReference("Name", mName);
   addObjectReference("Volume", mVolume);
-  add((CCopasiContainer *) &mMetabolites);
+  add(&mMetabolites);
 }
 
 void * CCompartment::getVolumeAddr()

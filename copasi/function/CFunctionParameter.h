@@ -12,9 +12,10 @@
 #include <iostream>
 
 #include "utilities/utilities.h"
+#include "report/CCopasiContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */
-class CFunctionParameter
+class CFunctionParameter : CCopasiContainer
   {
   public:
     static const std::string DataTypeName[];
@@ -32,7 +33,7 @@ class CFunctionParameter
     /**
      *  The name of the parameter. 
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  The data type of the parameter this may be one of INT16, INT32, 
@@ -50,23 +51,32 @@ class CFunctionParameter
 
   public:
     /**
-     *  Default constructor 
+     * Default constructor 
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionParameter();
+    CFunctionParameter(const std::string & name = "NoName",
+                       const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor
-     *  @param "const CFunctionParameter" & src
+     * Copy constructor
+     * @param "const CFunctionParameter" & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionParameter(const CFunctionParameter & src);
+    CFunctionParameter(const CFunctionParameter & src,
+                       const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Specified constuctor, sets all member values at once
-     *  @param "const string &" name
-     *  @param "const CFunctionParameter::DataType &" type
-     *  @param "const string &" usage
+     * Specified constuctor, sets all member values at once
+     * @param "const string &" name
+     * @param "const CFunctionParameter::DataType &" type
+     * @param "const string &" usage
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFunctionParameter(const std::string & name, const DataType & type, const std::string & usage);
+    CFunctionParameter(const std::string & name,
+                       const DataType & type,
+                       const std::string & usage,
+                       const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor

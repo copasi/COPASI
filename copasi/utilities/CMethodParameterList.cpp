@@ -18,20 +18,25 @@
 /**
  * Default constructor
  */
-CMethodParameterList::CMethodParameterList():
-    CCopasiVectorNS <CMethodParameter> (),
-    mName("No Name"),
-    mType("No Type")
+CMethodParameterList::CMethodParameterList(const std::string & name,
+    const CCopasiContainer * pParent,
+    const std::string & type):
+    CCopasiContainer(name, pParent, type),
+    mName(mObjectName),
+    mType("No Type"),
+    mMethodParameters("Method Parameters", this)
 {}
 
 /**
  * Copy constructor
  * @param "const CMethodParameter &" src
  */
-CMethodParameterList::CMethodParameterList(const CMethodParameterList & src):
-    CCopasiVectorNS <CMethodParameter> (src),
-    mName(src.mName),
-    mType(src.mType)
+CMethodParameterList::CMethodParameterList(const CMethodParameterList & src,
+    const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(mObjectName),
+    mType(src.mType),
+    mMethodParameters(src.mMethodParameters, this)
 {}
 
 /**
@@ -40,16 +45,14 @@ CMethodParameterList::CMethodParameterList(const CMethodParameterList & src):
 CMethodParameterList::~CMethodParameterList() {cleanup();}
 
 void CMethodParameterList::cleanup()
-{CCopasiVectorNS <CMethodParameter>::cleanup();}
+{mMethodParameters.cleanup();}
 
 /**
  * Get the size of the parameter list
  * @return "unsigned C_INT32" size
  */
 unsigned C_INT32 CMethodParameterList::size() const
-{
-  return CCopasiVector<CMethodParameter>::size();
-}
+  {return mMethodParameters.size();}
 
 /**
  * Retrieve the name of the method
@@ -82,9 +85,7 @@ void CMethodParameterList::setType(const std::string & type) {mType = type;}
  */
 const std::string &
 CMethodParameterList::getName(const unsigned C_INT32 & index) const
-{
-  return (*(CCopasiVector<CMethodParameter>*)this)[index]->getName();
-}
+  {return mMethodParameters[index]->getName();}
 
 /**
  * Set the value of the indexed parameter
@@ -93,9 +94,7 @@ CMethodParameterList::getName(const unsigned C_INT32 & index) const
  */
 void CMethodParameterList::setValue(const unsigned C_INT32 & index,
                                     const double & value)
-{
-  (*(CCopasiVector<CMethodParameter>*)this)[index]->setValue(value);
-}
+{mMethodParameters[index]->setValue(value);}
 
 /**
  * Set the value of the indexed parameter
@@ -104,9 +103,7 @@ void CMethodParameterList::setValue(const unsigned C_INT32 & index,
  */
 void CMethodParameterList::setValue(const std::string & name,
                                     const double & value)
-{
-  (*(CCopasiVectorNS<CMethodParameter>*)this)[name]->setValue(value);
-}
+{mMethodParameters[name]->setValue(value);}
 
 /**
  * Retrieve the value of the indexed parameter.
@@ -115,9 +112,7 @@ void CMethodParameterList::setValue(const std::string & name,
  */
 const double &
 CMethodParameterList::getValue(const unsigned C_INT32 & index) const
-{
-  return (*(CCopasiVector<CMethodParameter>*)this)[index]->getValue();
-}
+  {return mMethodParameters[index]->getValue();}
 
 /**
  * Retrieve the value of the named parameter.
@@ -125,20 +120,14 @@ CMethodParameterList::getValue(const unsigned C_INT32 & index) const
  * @return "const double & value
  */
 const double & CMethodParameterList::getValue(const std::string & name) const
-{
-  return (*(CCopasiVectorNS<CMethodParameter>*)this)[name]->getValue();
-}
+  {return mMethodParameters[name]->getValue();}
 
 /**
  * Add a parameter to the list
  */
-void CMethodParameterList::add
-(const std::string & name,
- const double & value)
-{
-  CCopasiVector<CMethodParameter>::add
-  (new CMethodParameter(name, value));
-}
+void CMethodParameterList::add(const std::string & name,
+                               const double & value)
+{mMethodParameters.add(CMethodParameter(name, value));}
 
 /**
  * Load a list of parameters
@@ -154,7 +143,7 @@ void CMethodParameterList::load(CReadConfig & configBuffer,
   C_INT32 Size = 0;
   configBuffer.getVariable("MethodParameterListSize", "C_INT32", &Size);
 
-  CCopasiVectorNS<CMethodParameter>::load(configBuffer, Size);
+  mMethodParameters.load(configBuffer, Size);
 }
 
 void CMethodParameterList::loadSpecific(CReadConfig & configBuffer,
@@ -177,7 +166,7 @@ void CMethodParameterList::loadSpecific(CReadConfig & configBuffer,
       C_INT32 Size = 0;
       configBuffer.getVariable("MethodParameterListSize", "C_INT32", &Size);
 
-      CCopasiVectorNS<CMethodParameter>::load(configBuffer, Size);
+      mMethodParameters.load(configBuffer, Size);
     }
 
   catch (CCopasiException Exception)
@@ -201,7 +190,7 @@ void CMethodParameterList::save(CWriteConfig & configBuffer)
   C_INT32 Size = size();
   configBuffer.setVariable("MethodParameterListSize", "C_INT32", &Size);
 
-  CCopasiVectorNS<CMethodParameter>::save(configBuffer);
+  mMethodParameters.save(configBuffer);
 }
 
 /**

@@ -10,16 +10,24 @@
 #include "utilities/utilities.h"
 #include "CChemEqElement.h"
 #include "CCompartment.h"
-CChemEqElement::CChemEqElement() {CONSTRUCTOR_TRACE; mpMetabolite = NULL;}
+CChemEqElement::CChemEqElement(const std::string & name,
+                               const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Chemical Equation Element"),
+    mMetaboliteName(),
+    mCompartmentName(),
+    mMultiplicity(0),
+    mpMetabolite(NULL)
+{CONSTRUCTOR_TRACE;}
 
-CChemEqElement::CChemEqElement(const CChemEqElement & src)
-{
-  CONSTRUCTOR_TRACE;
-  mMetaboliteName = src.mMetaboliteName;
-  mCompartmentName = src.mCompartmentName;
-  mMultiplicity = src.mMultiplicity;
-  mpMetabolite = NULL;
-}
+CChemEqElement::CChemEqElement(const CChemEqElement & src,
+                               const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mMetaboliteName(src.mMetaboliteName),
+    mCompartmentName(src.mCompartmentName),
+    mMultiplicity(src.mMultiplicity),
+    mpMetabolite(src.mpMetabolite)
+{CONSTRUCTOR_TRACE;}
+
 CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 void CChemEqElement::cleanup() {}
 
@@ -27,7 +35,7 @@ void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
 
 C_FLOAT64 CChemEqElement::getMultiplicity() const
-{return mMultiplicity;}
+  {return mMultiplicity;}
 
 void CChemEqElement::setMetabolite(CMetab & metabolite)
 {
@@ -37,27 +45,27 @@ void CChemEqElement::setMetabolite(CMetab & metabolite)
 }
 
 CMetab & CChemEqElement::getMetabolite() const
-{
-  if (!mpMetabolite)
-  fatalError();
+  {
+    if (!mpMetabolite)
+      fatalError();
 
-  return *mpMetabolite;
-}
+    return *mpMetabolite;
+  }
 
 CMetab * CChemEqElement::getMetaboliteAddr() const
-  {return mpMetabolite;}
+{return mpMetabolite;}
 
-  void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
+void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
 {mMetaboliteName = metaboliteName;}
 
 const std::string & CChemEqElement::getMetaboliteName() const
-{return mMetaboliteName;}
+  {return mMetaboliteName;}
 
 void CChemEqElement::setCompartmentName(const std::string & compartmentName)
 {mCompartmentName = compartmentName;}
 
 const std::string & CChemEqElement::getCompartmentName() const
-{return mCompartmentName;}
+  {return mCompartmentName;}
 
 void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
@@ -90,9 +98,9 @@ void CChemEqElement::compile(CCopasiVectorN < CCompartment > & compartments)
 }
 
 std::string CChemEqElement::writeElement() const
-{
-  if (mMultiplicity == 1.0)
-  return mMetaboliteName;
-  else
-    return StringPrint("%.0lf * %s", mMultiplicity, mMetaboliteName.c_str());
+  {
+    if (mMultiplicity == 1.0)
+      return mMetaboliteName;
+    else
+      return StringPrint("%.0lf * %s", mMultiplicity, mMetaboliteName.c_str());
   }

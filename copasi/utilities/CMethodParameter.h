@@ -11,10 +11,12 @@
 
 #include <string>
 
+#include "report/CCopasiContainer.h"
+
 class CReadConfig;
 class CWriteConfig;
 
-class CMethodParameter
+class CMethodParameter: public CCopasiContainer
   {
     // Attributes
 
@@ -23,7 +25,7 @@ class CMethodParameter
     /**
      *  The name of the attribute
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  The value of the attribute
@@ -37,16 +39,32 @@ class CMethodParameter
     /**
      * Default constructor
      * @param "const string &" name (Default = "")
-     * @param "const double &" value (Default = 0.0)
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Method Parameter")
      */
-    CMethodParameter(const std::string & name = "",
-                     const double & value = 0.0);
+    CMethodParameter(const std::string & name = "NoName",
+                     const CCopasiContainer * pParent = NULL,
+                     const std::string & type = "Method Parameter");
 
     /**
      * Copy constructor
      * @param "const CMethodParameter &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CMethodParameter(const CMethodParameter & src);
+    CMethodParameter(const CMethodParameter & src,
+                     const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor
+     * @param "const string &" name
+     * @param "const double &" value
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Method Parameter")
+     */
+    CMethodParameter(const std::string & name,
+                     const double & value,
+                     const CCopasiContainer * pParent = NULL,
+                     const std::string & type = "Method Parameter");
 
     /**
      * Destructor

@@ -12,28 +12,32 @@
 #include "CRange.h"
 #include "utilities/utilities.h"
 
-CRange::CRange()
-{
-  CONSTRUCTOR_TRACE;
-  mLow = CRange::NoRange;
-  mHigh = CRange::NoRange;
-}
+CRange::CRange(const std::string & name,
+               const CCopasiContainer * pParent,
+               const std::string & type):
+    CCopasiContainer(name, pParent, type),
+    mLow(CRange::NoRange),
+    mHigh(CRange::NoRange)
+{CONSTRUCTOR_TRACE;}
 
-CRange::CRange(const CRange & src)
-{
-  CONSTRUCTOR_TRACE;
-  mLow = src.mLow;
-  mHigh = src.mHigh;
-}
+CRange::CRange(const CRange & src,
+               const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mLow(src.mLow),
+    mHigh(src.mHigh)
+{CONSTRUCTOR_TRACE;}
 
 CRange::CRange(const unsigned C_INT32 & low,
-               const unsigned C_INT32 & high)
-{
-  CONSTRUCTOR_TRACE;
-  mLow = low;
-  mHigh = high;
-}
-CRange::~CRange() {DESTRUCTOR_TRACE; }
+               const unsigned C_INT32 & high,
+               const CCopasiContainer * pParent,
+               const std::string & type):
+    CCopasiContainer("NoName", pParent, type),
+    mLow(low),
+    mHigh(high)
+{CONSTRUCTOR_TRACE;}
+
+CRange::~CRange() {DESTRUCTOR_TRACE;}
+
 void CRange::cleanup(){}
 
 void CRange::load(CReadConfig & configBuffer,
@@ -48,8 +52,8 @@ void CRange::save(CWriteConfig & configBuffer)
   configBuffer.setVariable("Low", "C_INT32", &mLow);
   configBuffer.setVariable("High", "C_INT32", &mHigh);
 }
-void CRange::setLow(const unsigned C_INT32& low) {mLow = low; }
-void CRange::setHigh(const unsigned C_INT32& high) {mHigh = high; }
+void CRange::setLow(const unsigned C_INT32& low) {mLow = low;}
+void CRange::setHigh(const unsigned C_INT32& high) {mHigh = high;}
 
 void CRange::setRange(const unsigned C_INT32 & low,
                       const unsigned C_INT32 & high)
@@ -57,14 +61,14 @@ void CRange::setRange(const unsigned C_INT32 & low,
   mLow = low;
   mHigh = high;
 }
-const unsigned C_INT32& CRange::getLow() const { return mLow; }
-const unsigned C_INT32& CRange::getHigh() const { return mHigh; }
+const unsigned C_INT32& CRange::getLow() const {return mLow;}
+const unsigned C_INT32& CRange::getHigh() const {return mHigh;}
 
 const bool CRange::isRange() const
-  { return (mHigh != (unsigned C_INT32) CRange::NoRange); }
+  {return (mHigh != (unsigned C_INT32) CRange::NoRange);}
 
 const bool CRange::isInRange(const unsigned C_INT32 & value) const
-  { return (mLow == value || (mLow < value && value <= mHigh)); }
+  {return (mLow == value || (mLow < value && value <= mHigh));}
 
 void CRange::checkRange() const
   {

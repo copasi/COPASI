@@ -15,39 +15,35 @@ const std::string CFunctionParameter::DataTypeName[] =
     "VINT16", "VINT32", "VUINT16", "VUINT32", "VFLOAT32", "VFLOAT64"
   };
 
-CFunctionParameter::CFunctionParameter()
-{
-  CONSTRUCTOR_TRACE;
-  mName = "untitled";
-  mType = (CFunctionParameter::DataType) - 1;
-  mUsage = "unknown";
-}
+CFunctionParameter::CFunctionParameter(const std::string & name,
+                                       const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Variable"),
+    mName(mObjectName),
+    mType((CFunctionParameter::DataType) - 1),
+    mUsage("unknown")
+{CONSTRUCTOR_TRACE;}
 
-CFunctionParameter::CFunctionParameter(const CFunctionParameter & src)
-{
-  CONSTRUCTOR_TRACE;
-  mName = src.mName;
-  mType = src.mType;
-  mUsage = src.mUsage;
-}
+CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
+                                       const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mName(mObjectName),
+    mType(src.mType),
+    mUsage(src.mUsage)
+{CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
-                                       const std::string &usage)
-{
-  CONSTRUCTOR_TRACE;
-  mName = name;
-  mType = type;
-  mUsage = usage;
-}
+                                       const std::string &usage,
+                                       const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Variable"),
+    mName(mObjectName),
+    mType(type),
+    mUsage(usage)
+{CONSTRUCTOR_TRACE;}
 
-CFunctionParameter::~CFunctionParameter()
-{
-  DESTRUCTOR_TRACE;
-}
+CFunctionParameter::~CFunctionParameter() {DESTRUCTOR_TRACE;}
 
-void CFunctionParameter::cleanup()
-{}
+void CFunctionParameter::cleanup() {}
 
 void CFunctionParameter::load(CReadConfig & configbuffer,
                               CReadConfig::Mode mode)
@@ -70,9 +66,9 @@ void CFunctionParameter::setName(const std::string & name)
 }
 
 const std::string & CFunctionParameter::getName() const
-{
-  return mName;
-}
+  {
+    return mName;
+  }
 
 void CFunctionParameter::setUsage(const std::string & usage)
 {
@@ -80,9 +76,9 @@ void CFunctionParameter::setUsage(const std::string & usage)
 }
 
 const std::string & CFunctionParameter::getUsage() const
-{
-  return mUsage;
-}
+  {
+    return mUsage;
+  }
 
 void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 {
@@ -92,6 +88,6 @@ void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 const CFunctionParameter::DataType &
 
 CFunctionParameter::getType() const
-{
-  return mType;
-}
+  {
+    return mType;
+  }
