@@ -87,7 +87,8 @@ class ListViews : public QSplitter
     static DataModel* getDataModel() {return dataModel;};
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
     void switchToOtherWidget(const std::string & key);
-
+    void slotHideWidget();
+    void slotShowWidget();
   private:
     CMathModel *mpMathModel;
 
