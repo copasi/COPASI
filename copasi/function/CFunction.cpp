@@ -26,7 +26,7 @@ CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
-    mName(src.mName),
+    mName(mObjectName),
     mDescription(src.mDescription),
     mReversible(src.mReversible),
     mUsageDescriptions(src.mUsageDescriptions, this),
