@@ -104,6 +104,11 @@ void CKinFunction::saveOld(CWriteConfig & configBuffer)
     mNodes[i]->saveOld(configBuffer);
 }
 
+string CKinFunction::getSBMLString(const CCallParameters & callParameterNames, const string &r)
+{
+  return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
+}
+
 void CKinFunction::compile()
 {
   mNodes.cleanup();

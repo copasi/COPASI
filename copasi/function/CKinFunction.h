@@ -83,6 +83,13 @@ class CKinFunction : public CFunction
     void saveOld(CWriteConfig & configBuffer);
 
     /**
+     *  Returns a string containing the explicit function in SBML format
+     *  @param "vector < void * >" callParameters
+    *  @param "const string &" r a suffix for parameter names (usually reaction number)
+     */
+    string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+
+    /**
      *  Compile a function
      */
     void compile();

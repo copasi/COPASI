@@ -98,6 +98,11 @@ class CNodeK
      */
     int attribute1;
 
+    /**
+     *  The explicit function string 
+     */
+    string mExplicitFunction;
+
     // Operations
   public:
     /**
@@ -163,6 +168,16 @@ class CNodeK
      *  @return Fail
      */
     C_INT32 saveOld(CWriteConfig & configbuffer) const;
+
+    /**
+     *  Returns a string that contains the equation defined from
+    *  this node downwards. The function contains explicit names
+    *  of node identifiers, rather than the abstract symbol.
+    *  @param "const CCallParameters &" callParameterNames a vector of string pointers with identifier names
+    *  @param "const string &" r a suffix for parameter names (usually reaction number)
+     *  @return string
+     */
+    string getExplicitFunctionString(const CCallParameters & callParameterNames, const string &r);
 
     /**
      * Retrieving mType the type of a node

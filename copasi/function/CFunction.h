@@ -122,6 +122,13 @@ class CFunction
     virtual void saveOld(CWriteConfig & configBuffer);
 
     /**
+     *  Returns a string containing the explicit function in SBML format
+     *  @param "vector < void * >" callParameters
+    *  @param "const string &" r a suffix for parameter names (usually reaction number)
+     */
+    virtual string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+
+    /**
      *  Retrieves the name of the function
      *  @return "const string &" name
      */

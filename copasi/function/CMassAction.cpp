@@ -73,6 +73,42 @@ unsigned C_INT32 CMassAction::getParameterPosition(const string & name)
   return (unsigned C_INT32) - 1;
 }
 
+string CMassAction::getSBMLString(const CCallParameters & callParameterNames, const string &r)
+{
+  string sf, tmpstr;
+  unsigned C_INT32 i, imax;
+  vector<string*>* Factor;
+
+  imax = ((vector<string *> *)callParameterNames[1])->size();   // NoSubstrates
+  if (imax)
+    {
+      sf = *(string *) callParameterNames[0] + r;           // k1
+      Factor = ((vector<string*>*)callParameterNames[1]);   // first substr.
+      for (i = 0; i < imax; i++)
+        {
+          FixSName(*(*Factor)[i], tmpstr);
+          sf += "*" + tmpstr;
+        }
+    }
+
+  if (isReversible() == TriFalse)
+    return sf;
+
+  imax = ((vector<string *> *)callParameterNames[3])->size();   // NoSubstrates
+  if (imax)
+    {
+      sf += "-" + *(string *) callParameterNames[2] + r;           // k1
+      Factor = ((vector<string*>*)callParameterNames[3]);   // first product
+      for (i = 0; i < imax; i++)
+        {
+          FixSName(*(*Factor)[i], tmpstr);
+          sf += "*" + tmpstr;
+        }
+    }
+
+  return sf;
+}
+
 C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
   {
     unsigned C_INT32 i, imax;

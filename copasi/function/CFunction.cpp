@@ -149,16 +149,16 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   for (i = 0, pos = 0; i < sizep; i++)
     {
       tmpstr1 = mParameters.getParameterByUsage("PARAMETER", pos).getName();
-      tmpstr2 = StringPrint("Paramter%d", i);
+      tmpstr2 = StringPrint("Parameter%d", i);
       configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
     }
   configBuffer.setVariable("FunctionName", "string", &mName);
   configBuffer.setVariable("Description", "string", &mDescription);
+}
 
-  //  unsigned C_INT32 Size = mUsageDescriptions.size();
-  //  configBuffer.setVariable("UsageDescriptionSize", "C_INT32", &Size);
-  //  mUsageDescriptions.save(configBuffer);
-  //  mParameters.save(configBuffer);
+string CFunction::getSBMLString(const CCallParameters & callParameterNames, const string &r)
+{
+  return "0";
 }
 
 void CFunction::setName(const string& name)

@@ -45,6 +45,13 @@ class CMassAction : public CFunction
     virtual unsigned C_INT32 getParameterPosition(const string & name);
 
     /**
+     *  Returns a string containing the explicit function in SBML format
+     *  @param "vector < void * >" callParameters
+    *  @param "const string &" r a suffix for parameter names (usually reaction number)
+     */
+    string getSBMLString(const CCallParameters & callParameterNames, const string &r);
+
+    /**
      *  Calculates the value of the function
      *  @param "vector < void * >" callParameters
      *  @return "C_FLOAT64" result

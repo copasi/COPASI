@@ -7,6 +7,7 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
+#include "utilities/utilities.h"
 #include "utilities/CCopasiMessage.h"
 #include "CNodeK.h"
 
@@ -175,6 +176,99 @@ C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
       }
     return Fail;
   }
+
+string CNodeK::getExplicitFunctionString(const CCallParameters & callParameterNames, const string &r)
+{
+  char fstr[256];
+  switch (mType)
+    {
+    case N_ROOT:
+      return mLeft->getExplicitFunctionString(callParameterNames, r);
+    case N_NUMBER:
+      sprintf(fstr, "%-20g", mConstant);
+      mExplicitFunction = fstr;
+      break;
+    case N_IDENTIFIER:
+      FixSName(* (string *) callParameterNames[mIndex], mExplicitFunction);
+      if (mSubtype == N_KCONSTANT)
+        mExplicitFunction += r;
+      break;
+    case N_OPERATOR:
+      switch (mSubtype)
+        {
+        case '+':
+          mExplicitFunction = mLeft->getExplicitFunctionString(callParameterNames, r) + "+"
+                              + mRight->getExplicitFunctionString(callParameterNames, r);
+          break;
+        case '-':
+          mExplicitFunction = mLeft->getExplicitFunctionString(callParameterNames, r) + "-"
+                              + mRight->getExplicitFunctionString(callParameterNames, r);
+          break;
+        case '*':
+          mExplicitFunction = "(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")*(" + mRight->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case '/':
+          mExplicitFunction = "(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")/(" + mRight->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case '^':
+          mExplicitFunction = "(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")^(" + mRight->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        default:
+          mExplicitFunction.empty();
+        }
+      break;
+    case N_FUNCTION:
+      switch (mSubtype)
+        {
+        case '+':
+          mExplicitFunction = "+(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case '-':
+          mExplicitFunction = "-(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_EXP:
+          mExplicitFunction = "e^(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_LOG:
+          mExplicitFunction = "log10(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_LOG10:
+          mExplicitFunction = "log(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_SIN:
+          mExplicitFunction = "sin(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_COS:
+          mExplicitFunction = "cos(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        case N_GAUSS:
+        case N_BOLTZ:
+        case N_RND:
+          mExplicitFunction = "(" + mLeft->getExplicitFunctionString(callParameterNames, r)
+                              + ")";
+          break;
+        default:
+          mExplicitFunction.empty();
+        }
+      break;
+    default:
+      mExplicitFunction.empty();
+    }
+  return mExplicitFunction;
+}
 
 char CNodeK::getType() const
   {
