@@ -100,9 +100,8 @@ class CState
     /**
      * Save a state
      * @param "CWriteConfig &" configBuffer
-     * @param "const CState * pState
      */
-    virtual void save(CWriteConfig & configBuffer);
+    virtual void save(CWriteConfig & configBuffer) const;
 
     /**
      *
