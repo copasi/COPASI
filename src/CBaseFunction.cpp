@@ -30,6 +30,61 @@ void CBaseFunction::Delete()
     }
 }
 
+C_INT32 CBaseFunction::Load(CReadConfig & configbuffer,
+                            CReadConfig::Mode mode)
+{
+    C_INT32 Fail = 0;
+    CReadConfig::Mode Mode = mode;
+    
+    if (configbuffer.GetVersion() < "4")
+        mType = CBaseFunction::USERDEFINED;
+    else
+    {
+        if (Fail = configbuffer.GetVariable("FunctionType", "C_INT32", &mType,
+                                            Mode))
+            return Fail;
+        Mode = CReadConfig::NEXT;
+    }
+
+    if (Fail = configbuffer.GetVariable("FunctionName", "string", &mName,
+                                        Mode))
+        return Fail;
+    
+    if (Fail = configbuffer.GetVariable("Description", "string", &mDescription))
+        return Fail;
+    
+    if (configbuffer.GetVersion() < "4")
+        mReversible = TRUE;
+    else
+    {
+        if (Fail = configbuffer.GetVariable("Reversible", "C_INT16",
+                                            &mReversible))
+            return Fail;
+    }
+    
+    
+    return Fail;
+}
+
+C_INT32 CBaseFunction::Save(CWriteConfig & configbuffer)
+{
+    C_INT32 Fail = 0;
+    
+    if (Fail = configbuffer.SetVariable("FunctionType", "C_INT32", &mType))
+        return Fail;
+
+    if (Fail = configbuffer.SetVariable("FunctionName", "string", &mName))
+        return Fail;
+    
+    if (Fail = configbuffer.SetVariable("Description", "string", &mDescription))
+        return Fail;
+    
+    if (Fail = configbuffer.SetVariable("Reversible", "C_INT16", &mReversible))
+        return Fail;
+    
+    return Fail;
+}
+
 void CBaseFunction::SetName(const string & name) {mName = name;}
 
 void CBaseFunction::SetType(enum Type type) {mType = type;}

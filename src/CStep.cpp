@@ -148,11 +148,11 @@ C_INT32 CStep::Save(CWriteConfig & configbuffer)
         if (Fail = configbuffer.SetVariable("Identifier", "string",
                                             &(*mSubstrates)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &(*mSubstrates)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
                                             &(*mSubstrates)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &(*mSubstrates)[i].mMetaboliteName))
             return Fail;
     }
     
@@ -164,11 +164,11 @@ C_INT32 CStep::Save(CWriteConfig & configbuffer)
         if (Fail = configbuffer.SetVariable("Identifier", "string",
                                             &(*mProducts)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &(*mProducts)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
                                             &(*mProducts)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &(*mProducts)[i].mMetaboliteName))
             return Fail;
     }
 
@@ -180,11 +180,11 @@ C_INT32 CStep::Save(CWriteConfig & configbuffer)
         if (Fail = configbuffer.SetVariable("Identifier", "string",
                                             &(*mModifiers)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
-                                            &(*mModifiers)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.SetVariable("Compartment", "string",
                                             &(*mModifiers)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &(*mModifiers)[i].mMetaboliteName))
             return Fail;
     }
 
@@ -348,11 +348,11 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
         if (Fail = configbuffer.GetVariable("Identifier", "string",
                                             &(*mSubstrates)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &(*mSubstrates)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
                                             &(*mSubstrates)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &(*mSubstrates)[i].mMetaboliteName))
             return Fail;
     }
     
@@ -364,11 +364,11 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
         if (Fail = configbuffer.GetVariable("Identifier", "string",
                                             &(*mProducts)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &(*mProducts)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
                                             &(*mProducts)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &(*mProducts)[i].mMetaboliteName))
             return Fail;
     }
 
@@ -380,11 +380,11 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
         if (Fail = configbuffer.GetVariable("Identifier", "string",
                                             &(*mModifiers)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &(*mModifiers)[i].mMetaboliteName))
-            return Fail;
         if (Fail = configbuffer.GetVariable("Compartment", "string",
                                             &(*mModifiers)[i].mCompartmentName))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &(*mModifiers)[i].mMetaboliteName))
             return Fail;
     }
 
@@ -406,8 +406,12 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
 
 C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
 {
+    string name;
+    
     C_INT32 Fail = 0;
     C_INT32 Size;
+    C_INT32 i;
+    C_INT32 index;
 
     if (Fail = configbuffer.GetVariable("Substrates", "C_INT32", &Size))
         return Fail;
@@ -424,6 +428,47 @@ C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
     if (Fail = configbuffer.GetVariable("Constants", "C_INT32", &Size))
         return Fail;
     mParameters->resize(Size);
+
+    for (i = 0; i < mSubstrates->size(); i++)
+    {
+        name = StringPrint("Subs%d", i);
+        configbuffer.GetVariable(name, "C_INT32", &index);
+        (*mSubstrates)[i].mIdentifierName = mFunction->CallParameters()[0].
+            Identifiers(N_SUBSTRATE)[i]->GetName();
+
+        (*mSubstrates)[i].mMetaboliteName = StringPrint("%d", index);
+    }
+    
+    for (i = 0; i < mProducts->size(); i++)
+    {
+        name = StringPrint("Prod%d", i);
+        configbuffer.GetVariable(name, "C_INT32", &index);
+        (*mProducts)[i].mIdentifierName = mFunction->CallParameters()[0].
+            Identifiers(N_PRODUCT)[i]->GetName();
+
+        (*mProducts)[i].mMetaboliteName = StringPrint("%d", index);
+    }
+    
+    for (i = 0; i < mModifiers->size(); i++)
+    {
+        name = StringPrint("Modf%d", i);
+        configbuffer.GetVariable(name, "C_INT32", &index);
+        (*mModifiers)[i].mIdentifierName = mFunction->CallParameters()[0].
+            Identifiers(N_MODIFIER)[i]->GetName();
+
+        (*mModifiers)[i].mMetaboliteName = StringPrint("%d", index);
+    }
+    
+    for (i = 0; i < mParameters->size(); i++)
+    {
+        name = StringPrint("Param%d", i);
+        configbuffer.GetVariable(name, "C_FLOAT64", 
+                                 &(*mParameters)[i].mValue);
+        (*mParameters)[i].mIdentifierName = mFunction->CallParameters()[0].
+            Identifiers(N_KCONSTANT)[i]->GetName();
+    }
+    
+        
     return Fail;
 }
 

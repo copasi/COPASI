@@ -12,6 +12,7 @@
 
 #include "copasi.h"
 #include "CCopasiMessage.h"
+#include "messages.h"
 #include "CCopasiException.h"
 
 static string TimeStamp();
@@ -66,8 +67,6 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     C_INT32 Printed = 0;
     
     char *Text = NULL;
-
-#include "messages.h"
 
     while (Messages[i].No != number && Messages[i].Text) Messages[i++];
     

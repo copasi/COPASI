@@ -8,6 +8,10 @@
 
 #include <string>
 
+typedef struct MESSAGES {unsigned C_INT32 No; char * Text;};
+
+#define MCKinFunction 5200
+
 /**
  *  This throws an exception with information where the error occured.
  */

@@ -5,6 +5,7 @@ CGlobals::CGlobals()
 {
     ProgramVersion.SetVersion(4,0,101);
     FunctionDB.SetFilename("FunctionDB.gps");
+    FunctionDB.Init();
 
     DefaultConc = 0.0;
 }

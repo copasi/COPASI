@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "copasi.h"
+#include "CGlobals.h"
 #include "CKinFunction.h"
 #include "lexkk.h"
 #include "utilities.h"
@@ -11,6 +12,8 @@ C_INT16 DefinedInsertAllowed(CNodeK src);
 
 CKinFunction::CKinFunction()
 {
+    SetType(CBaseFunction::USERDEFINED);
+    
     mCallParameters = NULL;
     mNodes = NULL;
 }
@@ -29,6 +32,8 @@ void CKinFunction::Init()
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
+    SetType(CBaseFunction::USERDEFINED);
+    
     mCallParameters = NULL;
     mNodes = NULL;
 
@@ -61,6 +66,10 @@ C_INT32 CKinFunction::Load(CReadConfig & configbuffer)
     C_INT32 Fail = 0;
     
     Init();
+    
+    if (Fail = CBaseFunction::Load(configbuffer)) return Fail;
+    
+#ifdef XXXX
     if (Fail = configbuffer.GetVariable("FunctionName", "string", &TmpString,
                                         CReadConfig::LOOP))
         return Fail;
@@ -69,6 +78,7 @@ C_INT32 CKinFunction::Load(CReadConfig & configbuffer)
     if (Fail = configbuffer.GetVariable("Description", "string", &TmpString))
         return Fail;
     SetDescription(TmpString);
+#endif // XXXX
 
     if (Fail = configbuffer.GetVariable("Nodes", "C_INT32", &Size))
         return Fail;
@@ -78,7 +88,7 @@ C_INT32 CKinFunction::Load(CReadConfig & configbuffer)
 
     ConnectNodes();
     InitIdentifiers();
-    
+
     return Fail;
 }
 
@@ -88,6 +98,9 @@ C_INT32 CKinFunction::Save(CWriteConfig & configbuffer)
     C_INT32 TmpLong;
     C_INT32 Fail = 0;
     
+    if (Fail = CBaseFunction::Save(configbuffer)) return Fail;
+
+#ifdef XXXX    
     TmpString = GetName();
     if (Fail = configbuffer.SetVariable("FunctionName", "string", &TmpString))
         return Fail;
@@ -95,6 +108,7 @@ C_INT32 CKinFunction::Save(CWriteConfig & configbuffer)
     TmpString = GetDescription();
     if (Fail = configbuffer.SetVariable("Description", "string", &TmpString))
         return Fail;
+#endif // XXXX
 
     TmpLong = mNodes->Size();
     if (Fail = configbuffer.SetVariable("Nodes", "C_INT32", &TmpLong))
@@ -115,7 +129,10 @@ void CKinFunction::SetIdentifierType(const string & name,
     
     Index = FindIdentifier(name);
     
-    if ( Index.first < 0 || Index.second < 0 ) FatalError();
+    if ( Index.first < 0 || Index.second < 0 )
+        CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 1, name.c_str(), 
+                       GetName().c_str());
+
     for (C_INT32 i = 0; 
          i < (*(*mCallParameters)[Index.first].
               mIdentifiers)[Index.second].mNodes->size();
@@ -208,6 +225,8 @@ C_INT32 CKinFunction::ConnectNodes()
 //  sprintf(errstr, "ERROR - missing operand");
 //  errnode should index the node in error 
 //  but we don't know its index (pointer only)
+        CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2, 
+                       GetName().c_str());
         FatalError();
         errnode = -1;
         errfl++;

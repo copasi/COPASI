@@ -36,7 +36,17 @@ public:
     /**
      *
      */
+    void Init();
+
+    /**
+     *
+     */
     ~CFunctionDB();
+
+    /**
+     *
+     */
+    void Delete();
 
     /**
      *
@@ -60,7 +70,7 @@ public:
      *  @param CKinFunction &function
      *  @return C_INT32 Fail
      */
-    void DBAdd(CKinFunction & function);
+    void Add(CKinFunction & function);
 
     /**
      *  Delete the function functionName from the database

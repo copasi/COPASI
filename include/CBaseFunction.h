@@ -12,6 +12,8 @@
 #include <vector>
 
 #include "CBaseIdentifier.h"
+#include "CReadConfig.h"
+#include "CWriteConfig.h"
 
 /**
  *
@@ -185,7 +187,7 @@ public:
     enum Type
     {
         BASIC = 0,
-        USERDIFINED,
+        USERDEFINED,
         BUILTIN
     };
   
@@ -236,6 +238,23 @@ public:
      *  Delete
      */
     virtual void Delete();
+
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    C_INT32 Load(CReadConfig & configbuffer,
+                 CReadConfig::Mode mode = CReadConfig::LOOP);
+
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  Set the name of the function

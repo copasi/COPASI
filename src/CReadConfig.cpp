@@ -53,9 +53,9 @@ C_INT32 CReadConfig::Fail()
 string CReadConfig::GetVersion() {return mVersion;}
 
 C_INT32 CReadConfig::GetVariable(const string& name, 
-                              const string& type, 
-                              void * pout,
-                              enum Mode mode)
+                                 const string& type, 
+                                 void * pout,
+                                 enum Mode mode)
 {
     char c[] = " ";
     C_INT32 equal = 0;
@@ -152,10 +152,10 @@ C_INT32 CReadConfig::GetVariable(const string& name,
 }
 
 C_INT32 CReadConfig::GetVariable(const string& name, 
-                              const string& type, 
-                              void * pout1,
-                              void * pout2,
-                              enum Mode mode)
+                                 const string& type, 
+                                 void * pout1,
+                                 void * pout2,
+                                 enum Mode mode)
 {
     string Value;
     

@@ -136,7 +136,10 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
     // Return the value depending on the type
     if ( type == "node" )
     {
-        mBuffer << (C_INT32) (*(char *) pout1) << "," << (C_INT32) (*(char *) pout2);
+        // pout1 and pout2 point to chars mType and mSubtype.
+        // Therfore, we need this complicated cast.
+        mBuffer << (C_INT32) (*(char *) pout1) << "," 
+                << (C_INT32) (*(char *) pout2);
     }
     else
     {
