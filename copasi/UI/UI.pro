@@ -1,94 +1,56 @@
 ######################################################################
-# $Revision: 1.85 $ $Author: ssahle $ $Date: 2005/02/27 20:26:47 $  
+# $Revision: 1.86 $ $Author: shoops $ $Date: 2005/03/01 18:03:16 $  
 ######################################################################
 
-include(../common.pri)
-
 TEMPLATE = app
+
+include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
+COPASI_LIBS = \
+         commandline \
+         copasiDM \
+         copasiXML \
+         elementaryFluxModes \
+         function \
+         mathmodel \
+         mml \
+         model \
+         optimization \
+         plot \
+         randomGenerator \
+         report \
+         sbmlimport \
+         scan \
+         steadystate \
+         trajectory \
+         utilities \
+         wizard
 
 contains(BUILD_OS, WIN32) {
-  COPASI_LIBS += \
-          ../lib/commandline.lib \
-          ../lib/copasiDM.lib \
-          ../lib/copasiXML.lib \
-          ../lib/elementaryFluxModes.lib \
-          ../lib/function.lib \
-          ../lib/mathmodel.lib \
-          ../lib/mml.lib \
-          ../lib/model.lib \
-          ../lib/optimization.lib \
-          ../lib/plot.lib \
-          ../lib/randomGenerator.lib \
-          ../lib/report.lib \
-          ../lib/sbmlimport.lib \
-          ../lib/scan.lib \
-          ../lib/steadystate.lib \
-          ../lib/trajectory.lib \
-          ../lib/utilities.lib \
-          ../lib/wizard.lib
+  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
-  LIBS += $$COPASI_LIBS
-  
-  TARGETDEPS += $$COPASI_LIBS
+  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   release {
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
 } 
-else {
+
+contains(BUILD_OS, Linux) {
   LIBS = -L../lib \
          -Wl,--start-group \
-         -lcommandline \
-         -lcopasiDM \
-         -lcopasiXML \
-         -lelementaryFluxModes \
-         -lfunction \
-         -lmathmodel \
-         -lmml \
-         -lmodel \
-         -loptimization \
-         -lplot \
-         -lrandomGenerator \
-         -lreport \
-         -lsbmlimport \
-         -lscan \
-         -lsteadystate \
-         -ltrajectory \
-         -lutilities \
-         -lwizard \
+         $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
          $${LIBS}
 
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
   }
 
-  TARGETDEPS += ../lib/libcommandline.a \
-                ../lib/libcopasiDM.a \
-                ../lib/libcopasiXML.a \
-                ../lib/libelementaryFluxModes.a \
-                ../lib/libfunction.a \
-                ../lib/libmathmodel.a \
-                ../lib/libmodel.a \
-                ../lib/libmml.a \
-                ../lib/liboptimization.a \
-                ../lib/librandomGenerator.a \
-                ../lib/libreport.a \
-                ../lib/libsbmlimport.a \
-                ../lib/libscan.a \
-                ../lib/libsteadystate.a \
-                ../lib/libtrajectory.a \
-                ../lib/libutilities.a \
-                ../lib/libplot.a \
-                ../lib/libwizard.a
-}
-
-
-contains(BUILD_OS, Linux) {   
   LIBS += -Wl,-lqt-mt \
           -Wl,-lXcursor \
           -Wl,-lXft \
@@ -125,24 +87,23 @@ contains(BUILD_OS, Linux) {
 contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
 
-  LIBS += -lICE -ldl
+  LIBS = -L../lib \
+         $$join(COPASI_LIBS, " -l", -l) \
+         $${LIBS}
 
-  LIBS -= -Wl,--start-group
-  LIBS -= -Wl,--end-group
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+
+  LIBS += -lICE -ldl
 }  
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
-  LIBS -= -Wl,--start-group
-  LIBS -= -Wl,--end-group
-#  LIBS -= -lplot
-#  LIBS += ../lib/libplot.a
-  LIBS -= -lrandomGenerator
-#  LIBS -= -lutilities
-  LIBS += -lrandomGenerator 
-#  LIBS += -lutilities
+  LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
+         $$LIBS
   
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+
 }
 
 # Input
