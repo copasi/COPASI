@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:56 $
+   $Author: ssahle $ 
+   $Date: 2005/02/22 16:00:02 $
    End CVS Header */
 
 /********************************************************
@@ -22,7 +22,7 @@ Comment : ParameterFittingWidget for UI of the param fitting function
 #include "SteadyStateWidget.h" 
 //#include "OptimizationItemWidget.h"
 #include "ParamFittingItemWidget.h"
-#include "ScanWidget.h"
+#include "ScanScrollView.h"
 
 #include <qbuttongroup.h>
 #include <qcombobox.h>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:56 $
+   $Author: ssahle $ 
+   $Date: 2005/02/22 16:00:02 $
    End CVS Header */
 
 /********************************************************
@@ -31,7 +31,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 
-#include "ScanWidget.h"
+//#include "ScanWidget.h"
+#include "ScanScrollView.h"
 #include "ScanItemWidget.h"
 #include "OptimizationItemWidget.h"
 #include "OptimizationWidget.h"
