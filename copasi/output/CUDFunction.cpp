@@ -195,3 +195,23 @@ CNodeO * CUDFunction::parsePrimary()
   return npt;
 }
 
+/**
+ * Calculate the value of this user defined function
+ * return value need to be changed just like CDatum based on the type of CDatum
+ */
+C_FLOAT64 CUDFunction::calcValue()
+{
+	C_FLOAT64 Value;
+	CNodeO npt;
+
+	try
+	{
+		npt = mNodes[0]->getLeft();
+		Value = npt.value();
+	}
+	catch( unsigned int e )
+	{
+		Value = 0;
+	}
+	return Value;
+}

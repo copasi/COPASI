@@ -77,6 +77,11 @@ class CUDFunction: public CBaseFunction
    */
   CCopasiVectorS < CNodeO > & nodes();
 
+  /**
+   * Calculate the value of this user defined function
+   */
+  C_FLOAT64 calcValue();
+
  private:
   /**
    *  This clears all nodes of the function tree
