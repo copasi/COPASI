@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2004/11/04 01:01:42 $  
+# $Revision: 1.4 $ $Author: jpahle $ $Date: 2005/01/11 10:14:30 $  
 ######################################################################
 
 LIB = trajectory
@@ -14,6 +14,7 @@ HEADERS += CHybridMethod.h \
            CStochDirectMethod.h \
            CStochMethod.h \
            CStochNextReactionMethod.h \
+           CTauLeapMethod.h \
            CTimeSeries.h \
            CTrajectoryMethod.h \
            CTrajectoryProblem.h \
@@ -25,6 +26,7 @@ SOURCES += CHybridMethod.cpp \
            CStochDirectMethod.cpp \
            CStochMethod.cpp \
            CStochNextReactionMethod.cpp \
+           CTauLeapMethod.cpp \
            CTimeSeries.cpp \
            CTrajectoryMethod.cpp \
            CTrajectoryProblem.cpp \

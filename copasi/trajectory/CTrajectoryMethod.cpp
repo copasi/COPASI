@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/12/17 14:50:03 $
+   $Date: 2005/01/11 10:14:30 $
    End CVS Header */
 
 /**
@@ -23,13 +23,14 @@
 #include "model/CCompartment.h"
 
 CTrajectoryValidSubTypes::CTrajectoryValidSubTypes():
-    CVector< CCopasiMethod::SubType >(3)
+    CVector< CCopasiMethod::SubType >(4)
 {
   CCopasiMethod::SubType * pSubType = array();
 
   *pSubType++ = CCopasiMethod::deterministic;
   *pSubType++ = CCopasiMethod::stochastic;
   *pSubType++ = CCopasiMethod::hybrid;
+  *pSubType++ = CCopasiMethod::tauLeap;
 }
 
 /**
@@ -41,10 +42,11 @@ const CTrajectoryValidSubTypes CTrajectoryMethod::ValidSubTypes;
 
 #ifdef XXXX
 const CVector< CCopasiMethod::SubType >
-CTrajectoryMethod::ValidSubTypes(3,
+CTrajectoryMethod::ValidSubTypes(4,
                                  CCopasiMethod::deterministic,
                                  CCopasiMethod::stochastic,
-                                 CCopasiMethod::hybrid);
+                                 CCopasiMethod::hybrid.
+                                 CCopasiMethod::tauLeap);
 #endif // XXXX
 
 bool CTrajectoryMethod::isValidSubType(const CCopasiMethod::SubType & subType)
@@ -76,6 +78,10 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
 
     case hybrid:
       pMethod = CHybridMethod::createHybridMethod(pProblem);
+      break;
+
+    case tauLeap:
+      pMethod = CTauLeapMethod::createTauLeapMethod(pProblem);
       break;
 
     default:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/27 03:11:25 $
+   $Author: jpahle $ 
+   $Date: 2005/01/11 10:14:30 $
    End CVS Header */
 
 /**
@@ -152,5 +152,6 @@ class CTrajectoryMethod : public CCopasiMethod
 #include "CLsodaMethod.h"
 #include "CStochMethod.h"
 #include "CHybridMethod.h"
+#include "CTauLeapMethod.h"
 
 #endif // COPASI_CTrajectoryMethod

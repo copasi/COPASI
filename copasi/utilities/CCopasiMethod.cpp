@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/04 17:19:23 $
+   $Author: jpahle $ 
+   $Date: 2005/01/11 10:14:30 $
    End CVS Header */
 
 /**
@@ -32,6 +32,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Deterministic (LSODA)",
     "Stochastic",
     "Hybrid",
+    "tau-Leap",
     "MCA Method (Reder)",
     "Scan Framework",
     ""
@@ -50,6 +51,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "Deterministic(LSODA)",
     "Stochastic",
     "Hybrid",
+    "TauLeap",
     "MCAMethod(Reder)",
     "ScanFramework",
     NULL
