@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 22:22:45 $
+   $Date: 2004/07/02 08:23:34 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -24,7 +24,7 @@ class CopasiUI3Window : public QMainWindow
 
   protected:
     DataModel* dataModel; // to keep track of the data model..
-    QSplitter *splitter; // to hold different views...
+    //QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
 
   protected slots:
