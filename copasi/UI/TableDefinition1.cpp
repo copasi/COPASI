@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/11 13:25:00 $
+   $Author: shoops $ 
+   $Date: 2004/05/29 03:39:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.35 2004/05/11 13:25:00 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.36 2004/05/29 03:39:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -293,6 +293,8 @@ void TableDefinition1::slotBtnConfirmClicked()
 {
   CReportDefinition* pReportDefinition =
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
+
+  if (!pReportDefinition) return;
 
   if (FROM_UTF8(pReportDefinition->getObjectName()) != (const char*)nameEdit->text().utf8())
     {
