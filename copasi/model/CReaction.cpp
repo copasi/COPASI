@@ -849,19 +849,11 @@ unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage) const
     if (!mpFunction) fatalError();
     const CUsageRange * pUsageRange = NULL;
     C_INT32 Size = 0;
+    unsigned C_INT32 Index;
 
-    try
-      {
-        pUsageRange = mMap.getFunctionParameters().getUsageRanges()[usage];
-      }
-
-    catch (CCopasiException Exception)
-      {
-        if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
-          throw Exception;
-
-        pUsageRange = NULL;
-      }
+    Index = mMap.getFunctionParameters().getUsageRanges().getIndex(usage);
+    if (Index != C_INVALID_INDEX)
+      pUsageRange = mMap.getFunctionParameters().getUsageRanges()[Index];
 
     if (pUsageRange)
       Size = std::max(pUsageRange->getLow(), pUsageRange->getHigh());

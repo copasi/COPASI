@@ -171,7 +171,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                      // this is an error
+        case N_NOP:                       // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -514,46 +514,37 @@ void CKinFunction::createParameters()
     {
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
-          try
+          Parameter.setName(mNodes[i]->getName());
+
+          switch (mNodes[i]->getSubtype())
             {
-              Parameter.setName(mNodes[i]->getName());
+            case N_SUBSTRATE:
+              Parameter.setUsage("SUBSTRATE");
+              if (Substrates.getIndex(Parameter.getName()) == C_INVALID_INDEX)
+                Substrates.add(Parameter);
+              break;
 
-              switch (mNodes[i]->getSubtype())
-                {
-                case N_SUBSTRATE:
-                  Parameter.setUsage("SUBSTRATE");
-                  Substrates.add(Parameter);
-                  break;
+            case N_PRODUCT:
+              Parameter.setUsage("PRODUCT");
+              if (Products.getIndex(Parameter.getName()) == C_INVALID_INDEX)
+                Products.add(Parameter);
+              break;
 
-                case N_PRODUCT:
-                  Parameter.setUsage("PRODUCT");
-                  Products.add(Parameter);
-                  break;
+            case N_MODIFIER:
+              Parameter.setUsage("MODIFIER");
+              if (Modifiers.getIndex(Parameter.getName()) == C_INVALID_INDEX)
+                Modifiers.add(Parameter);
+              break;
 
-                case N_MODIFIER:
-                  Parameter.setUsage("MODIFIER");
-                  Modifiers.add(Parameter);
-                  break;
+            case N_KCONSTANT:
+            case N_NOP:
+              Parameter.setUsage("PARAMETER");
+              if (Parameters.getIndex(Parameter.getName()) == C_INVALID_INDEX)
+                Parameters.add(Parameter);
+              break;
 
-                case N_KCONSTANT:
-                  Parameter.setUsage("PARAMETER");
-                  Parameters.add(Parameter);
-                  break;
-
-                case N_NOP:
-                  Parameter.setUsage("PARAMETER");
-                  Parameters.add(Parameter);
-                  break;
-
-                default:
-                  fatalError();
-                }
-            }
-
-          catch (CCopasiException Exception)
-            {
-              if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
-                throw Exception;
+            default:
+              fatalError();
             }
         }
     }
