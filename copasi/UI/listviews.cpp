@@ -711,7 +711,7 @@ void ListViews::loadModelNodes(CModel *model)
       functionSymbols->loadFunctionSymbols(mpMathModel);
       constantSymbols->loadConstantSymbols(mpMathModel);
       compartmentSymbols->loadCompartmentSymbols(mpMathModel);
-      differentialEquations->loadDifferentialEquations();
+      differentialEquations->loadDifferentialEquations(mpMathModel);
 
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);
