@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.7 2003/08/19 16:52:39 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.8 2003/08/19 16:56:46 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -149,4 +149,5 @@ void CReportDefinitionSelect::jumpToEdit()
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   pListView->switchToOtherWidget((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]->getKey());
+  confirmClicked();
 }
