@@ -11,6 +11,7 @@ copasi_LDADD = \
 	./utilities/libutilities.a 
 
 SUBDIRS = \
+	elementaryFluxModes \
 	function \
 	output \
 	model \
@@ -19,7 +20,10 @@ SUBDIRS = \
 	utilities \
 	test 
 
-EXTRA_DIST = main.cpp copasi.h 
+EXTRA_DIST = \
+	main.cpp \
+	copasi.h \
+	FlexLexer.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 

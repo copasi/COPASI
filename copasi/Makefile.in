@@ -192,10 +192,11 @@ copasi_SOURCES = main.cpp
 copasi_LDADD =  	./function/libfunction.a 	./output/liboutput.a 	./model/libmodel.a 	./steadystate/libsteadystate.a 	./trajectory/libtrajectory.a 	./utilities/libutilities.a 
 
 
-SUBDIRS =  	function 	output 	model 	steadystate 	trajectory 	utilities 	test 
+SUBDIRS =  	elementaryFluxModes 	function 	output 	model 	steadystate 	trajectory 	utilities 	test 
 
 
-EXTRA_DIST = main.cpp copasi.h 
+EXTRA_DIST =  	main.cpp 	copasi.h 	FlexLexer.h
+
 
 ####### kdevelop will overwrite this part!!! (end)############
 

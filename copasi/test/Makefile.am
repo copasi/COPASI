@@ -15,6 +15,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
+	-lelementaryFluxModes \
         -lfunction \
         -lmodel \
         -loutput \
@@ -28,6 +29,7 @@ LIBS = \
 
 # the library search path.
 LDFLAGS = -all-static \
+	-L../elementaryFluxModes \
         -L../function \
         -L../model \
         -L../output \
@@ -37,24 +39,25 @@ LDFLAGS = -all-static \
 	$(USER_LDFLAGS)
 
 LDADD = \
+	../elementaryFluxModes/libelementaryFluxModes.a \
         ../function/libfunction.a \
-        ../output/liboutput.a \
         ../model/libmodel.a \
+        ../output/liboutput.a \
 	../steadystate/libsteadystate.a \
         ../trajectory/libtrajectory.a \
         ../utilities/libutilities.a
 
-SUBDIRS = \
-        function \
-        output \
-        model \
-        steadystate \
-        trajectory \
-        utilities
+#SUBDIRS = \
+#        function \
+#        output \
+#        model \
+#        steadystate \
+#        trajectory \
+#        utilities
 
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
+#all-recursive install-data-recursive install-exec-recursive \
+#installdirs-recursive install-recursive uninstall-recursive  \
+#check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
-$(SUBDIRS): ../
-	@test -d $@ || ln -s ../$@ $@
+#$(SUBDIRS): ../
+#	@test -d $@ || ln -s ../$@ $@
