@@ -75,15 +75,18 @@ std::string CMathNodeOperation::getData() const
         if (mData == "+" && tmp[0] == '-')
           {
             tmp = tmp.substr(1);
-            text << "-";
+            text << " - ";
           }
         else if (mData == "-" && tmp[0] == '-')
           {
             tmp = tmp.substr(1);
-            text << "+";
+            text << " + ";
           }
         else
-          text << mData;
+          text << " " << mData << " ";
+
+        if (text.str().substr(text.str().length() - 4) == "1 * ")
+          text.seekp(-4, std::ios::cur);
 
         text << tmp;
       }
@@ -192,7 +195,7 @@ std::string CMathNodeFunction::getData() const
   {
     std::stringstream text;
 
-    text << mData;
+    text << "<emp>" << mData << "</emp>";
 
     CMathNode * pChild = (CMathNode *) getChild();
 
@@ -224,7 +227,7 @@ std::string CMathNodeList::getData() const
         text << pChild->getData();
         pChild = (CMathNode *) pChild->getSibbling();
 
-        if (pChild) text << ",";
+        if (pChild) text << ", ";
       }
 
     text << ")";
