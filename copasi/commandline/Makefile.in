@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -343,7 +343,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -479,20 +479,22 @@ mostlyclean distclean maintainer-clean
 
 
 .cpp.xml:
-	clo++ -o c++ -D cxx_namespace=$* $<
+	-clo++ -o c++ -D cxx_namespace=$* $< && \
 	cat clo.cxx | \
 	sed -e 's/clo.h/'$*'.h/g' \
-	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' > $@
+	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	    > $@ && \
 	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	@rm clo.*
+	-@rm clo.*
 
 %.cpp: %.xml
-	clo++ -o c++ -D cxx_namespace=$* $<
+	-clo++ -o c++ -D cxx_namespace=$* $< && \
 	cat clo.cxx | \
 	sed -e 's/clo.h/'$*'.h/g' \
-	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' > $@
+	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	    > $@ && \
 	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	@rm clo.*
+	@rm -f clo.*
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -13,18 +13,20 @@ EXTRA_DIST = \
 INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
 
 .cpp.xml:
-	clo++ -o c++ -D cxx_namespace=$* $<
+	-clo++ -o c++ -D cxx_namespace=$* $< && \
 	cat clo.cxx | \
 	sed -e 's/clo.h/'$*'.h/g' \
-	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' > $@
+	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	    > $@ && \
 	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	@rm clo.*
+	-@rm clo.*
 
 %.cpp: %.xml
-	clo++ -o c++ -D cxx_namespace=$* $<
+	-clo++ -o c++ -D cxx_namespace=$* $< && \
 	cat clo.cxx | \
 	sed -e 's/clo.h/'$*'.h/g' \
-	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' > $@
+	    -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	    > $@ && \
 	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	@rm clo.*
+	@rm -f clo.*
 
