@@ -31,6 +31,8 @@ class COptFunction: public CKinFunction
     // add a new item inside
     int addItem(CCopasiObject* pObject);
 
+    //remove an item with the existing name
+    bool removeItem(const std::string & name);
   public:
     /**
      * Default constructor

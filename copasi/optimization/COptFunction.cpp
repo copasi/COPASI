@@ -62,3 +62,19 @@ int COptFunction::addItem(CCopasiObject* pObject)
   mMaxList.push_back("+inf");
   return mParaList.size() - 1;
 }
+
+bool COptFunction::removeItem(const std::string & name)
+{
+  int i;
+  for (i = 0; i < mParaList.size(); i++)
+    {
+      if (mParaList[i]->getCN() == name)
+        {
+          mParaList.erase(mParaList.begin() + i);
+          mMinList.erase(mMinList.begin() + i);
+          mMaxList.erase(mMaxList.begin() + i);
+          return true;
+        }
+    }
+  return false;
+}

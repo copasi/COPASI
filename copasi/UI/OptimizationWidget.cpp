@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.9 2003/10/06 00:39:32 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.10 2003/10/06 01:13:54 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -309,13 +309,11 @@ void OptimizationWidget::deleteButtonClicked()
 
   emit hide_me();
 
-  /* Need further work with back end
-  // Here I arrived at !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  CMethodParameterList* pOptimizationObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getOptimizationObject();
   COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
-  if (optFunction->getProblem()->getListSize() > 0)  // for reloading
-    optFunction->getProblem()->removeScanItem(pOptObject->getName().c_str());
-  */
+  CCopasiObject* pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
+  if (optFunction->mParaList.size() > 0)  // for reloading
+    optFunction->removeItem(pOptObject->getCN().c_str());
+
   itemsTable->removeChild(selectedList[2*activeObject]);
   itemsTable->removeChild(selectedList[2*activeObject + 1]);
 
@@ -350,13 +348,12 @@ void OptimizationWidget::deleteButtonClicked()
     }
 
   activeObject--;
-  //  if ((activeObject >= 0) && (optFunction->getProblem()->getListSize() > 0)) need further check the line below
-  if (activeObject >= 0)
+  if ((activeObject >= 0) && (optFunction->mParaList.size() > 0))
     {
-      //      CCopasiObject* pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+      pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getCopasiObject();
       ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
       activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-      //       activeTitle->setText(pOptObject->getCN().c_str());
+      activeTitle->setText(pOptObject->getCN().c_str());
     }
 
   nSelectedObjects--;
