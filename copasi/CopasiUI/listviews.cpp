@@ -1,0 +1,1150 @@
+/****************************************************************************
+ **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
+ **  $ Author  : Ankur Gupta
+ **  $ Author  : Mudita Singhal
+ **  $ Author  : Mrinmayee Kulkarni           Modified on : 17th Sept ,2002
+ **  
+ ** This file contains the defination of the routines declared in listviews.h header
+ ** file. 
+ **
+ ** This file is used to create the visual tree based on the information obtained from the data
+ ** model about the tree
+ **********************************************************************/
+
+#include "CompartmentSymbols.h"
+#include "CompartmentsWidget.h"
+#include "CompartmentsWidget1.h"
+#include "ConstantSymbols.h"
+#include "FixedMetaboliteSymbols.h"
+#include "FunctionSymbols.h"
+#include "FunctionWidget.h"
+#include "FunctionWidget1.h"
+#include "DifferentialEquations.h"
+#include "MetaboliteSymbols.h"
+#include "MetabolitesWidget.h"
+#include "MetabolitesWidget1.h"
+#include "ModelWidget.h"
+#include "ModesWidget.h"
+#include "MoietyWidget.h"
+#include "MoietyWidget1.h"
+#include "ReactionsWidget.h"
+#include "ReactionsWidget1.h"
+#include "SteadyStateWidget.h"
+#include "ScanWidget.h"
+#include "TableDefinition.h"
+#include "TrajectoryWidget.h"
+#include "function/CFunctionDB.h"
+#include "mathmodel/CMathModel.h"
+#include "utilities/CMethodParameter.h"
+#include "model/CModel.h"
+#include "listviews.h"
+
+QPixmap *folderLocked = 0;   // to store the image of locked icon folder
+QPixmap *folderClosed = 0;   // to store the image of closed icon folder
+QPixmap *folderOpen = 0;     // to store the image of open icon folder
+
+#include "./icons/folderclosed.xpm"
+#include "./icons/folderopen.xpm"
+#include "./icons/folderlocked.xpm"
+
+int Folder::mModifier = 0;
+
+//////////////////////////////////////////////////////////////////////
+// Definations of the FolderListItem  class declared in listviews.h
+// -----------------------------------------------------------------
+
+/**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
+ **
+ ** Parameters:- 1. QListView* :- The parameter for the root of the tree
+ **              2. Folder* :- The folder that needs to be created
+ **
+ ** Returns  :- This is constructor so it does not return any thing
+ ** Descripton:- This is a 2 argument constructor with one argument for the base class
+ **             This method creates a QListViewItem which the graphical display of the 
+ **             node of the tree with the name as specified in the name of the Folder
+ **             and icon as per req..i.e whether its closed /locked..depending on 
+ **             whether the node has any childrens or not..
+ *******************************************************************************************/
+FolderListItem::FolderListItem(QListView *parent, Folder *f)
+    : QListViewItem(parent)
+{
+  myFolder = f;
+  setText(0, f->folderName());
+
+  if (myFolder->children())
+    {
+      setPixmap(0, *folderClosed);
+      insertSubFolders(myFolder->children());
+    }
+  else // if i am the last node than put my icon as locked...
+    setPixmap(0, *folderLocked);
+}
+
+/*--------FolderListItem::FolderListItem(FolderListItem *parent, Folder *f)----->
+ **
+ ** Parameters:- 1. FolderListItem* :- The parameter for one of the node of the tree
+ **              2. Folder* :- The folder that needs to be created
+ **
+ ** Returns  :- This is constructor so it does not return any thing
+ ** Descripton:- This is a 2 argument constructor with one argument for the base class
+ **             This method creates a QListViewItem which the graphical display of the 
+ **             node of the tree with the name as specified in the name of the Folder
+ **             and icon as per req..i.e whether its closed /locked..depending on 
+ **             whether the node has any childrens or not..
+ *******************************************************************************************/
+FolderListItem::FolderListItem(FolderListItem *parent, Folder *f)
+    : QListViewItem(parent)
+{
+  myFolder = f;
+  setText(0, f->folderName());
+
+  if (myFolder->children())
+    {
+      setPixmap(0, *folderClosed);
+      insertSubFolders(myFolder->children());
+    }
+  else // if i am the last node than put my icon as locked...
+    setPixmap(0, *folderLocked);
+}
+
+/***************FolderListItem::insertSubFolders(const QObjectList *lst)******
+ **
+ ** Parameters:- 1. QObjectList* :- The list of the object as my childrens
+ **
+ ** Returns  :- void
+ ** Descripton:- This method is used to insert the sub folders of the folders. i.e. if the node
+ **              has any childrens than this method is used to create those child nodes
+ *******************************************************************************************/
+void FolderListItem::insertSubFolders(const QObjectList *lst)
+{
+  if (!lst) return;
+
+  Folder *f;
+
+  for (f = (Folder*)((QObjectList*)lst)->first(); f; f = (Folder*)((QObjectList*)lst)->next())
+    (void)new FolderListItem(this, f);
+}
+
+// -----------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+// Definations of the ListViews class as declared in listviews.h
+/////////////////////////////////////////////////////////////////////////
+
+/*********ListViews::ListViews(QWidget *parent, const char *name)************
+ **
+ ** Parameters:- 1. QWidget* :- The parameter needed by the base class i.e QSplitter
+ **              2. char* :- The name parameter needed by the base class ie QSplitter
+ ** Returns  :-  It does not return anything sice its 2 argument constructor
+ ** Descripton:-  This is the constructor of the ListViews and is used to 
+ **               set up all the requirement and intialization of the 
+ **               components in the code.
+ ************************************************************/
+ListViews::ListViews(QWidget *parent, const char *name):
+    QSplitter(Qt::Horizontal, parent, name),
+    mpMathModel(NULL)
+{
+  // creates the image to be displayed when folder is closed/locked/open
+  folderLocked = new QPixmap((const char**)folderlocked);
+  folderClosed = new QPixmap((const char**)folderclosed);
+  folderOpen = new QPixmap((const char**)folderopen);
+
+  // setting the parameter for the qptrlist...
+  //lstFolders.setAutoDelete(false);
+
+  //  create a new QListview to be displayed on the screen..and set its property
+  folders = new QListView(this);
+  folders->header()->setClickEnabled(false);
+  folders->setRootIsDecorated(true);
+  folders->addColumn("Select");
+  //  folders->setMinimumWidth(160);
+
+  //  int c = folders->columnWidth(col_index);
+  //  folders->setColumnWidth(col_index, c);
+  // folders->setMaximumWidth(c);
+  // folders->resize(180, 0);
+  /*QSize *s = new QSize();
+  *s = folders->baseSize();
+  int w= s->width();
+  int h = s->height(); */ 
+  //s->setWidth(50);
+  //folders->setMaximumSize(w,h);
+  //folders->setFixedWidth(180);
+
+  //  This sections intializes the components used in the display part
+  bigWidget = new QMultiLineEdit(this);
+  // bigWidget->setText("This widget will get all the remaining space");
+  bigWidget->setFrameStyle(QFrame::Panel | QFrame::Plain);
+  bigWidget->setReadOnly(false);
+
+  moveToFirst(folders);
+  moveToLast(bigWidget);
+  setResizeMode(folders, QSplitter::KeepSize);
+  if (!opaqueResize())
+    setOpaqueResize();
+  //  This section defines few of the variables that will be used in the code
+  lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
+  currentWidget = bigWidget; // keeps track of the currentWidget in use
+  lastWidget = bigWidget; // keeps track of the lastWidget that was used
+  lastKey = "";
+
+  // establishes the communication betweent the folders clicked and the routine called....
+  connect(folders, SIGNAL(pressed(QListViewItem*)),
+          this, SLOT(slotFolderChanged(QListViewItem*)));
+
+  attach();
+}
+
+ListViews::~ListViews()
+{
+  detach(); //TODO clean up
+}
+
+/************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
+ **
+ ** Parameters:- DataModel<Folder>* :- pointer to the data model to be used by all the
+ **              views
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is used to set the datamodel to be used by the
+ ** listview class to extract the data from the data-model
+ ************************************************************************************/
+void ListViews::setDataModel(DataModel* dm)
+{
+  dataModel = dm;
+
+  setupFolders();
+
+  // create all the widgets
+  ConstructNodeWidgets();
+
+  //added by Liang Xu
+  loadSteadyStateTaskNodes(dataModel->getSteadyStateTask());
+  loadTrajectoryTaskNodes(dataModel->getTrajectoryTask());
+}
+
+/**
+ * 
+ */
+void ListViews::setupFolders()
+{
+  // first clear up any thing that was present earlier
+  folders->clear();
+
+  // get the node from where u want to load the tree
+  Node<Folder> *next = dataModel->getRoot();
+
+  //skip root node
+  if (next) next = next->child;
+
+  if (next)
+    for (; next != NULL; next = next->sibling)
+      if (next->info->getID()) new FolderListItem(folders, next->info);
+
+  //TODO: could that not be done by calling
+}
+
+/***********ListViews::ConstructNodeWidgets()---------------------------->
+ **
+ ** Parameters:- void(Nothing)
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is used to construct the node widgets to be
+ **              displayed on the screen.....
+ *************************************************************************/
+void ListViews::ConstructNodeWidgets()
+{
+  // create the model widgets
+  modelWidget = new ModelWidget(this);
+  modelWidget->hide();
+
+  compartmentsWidget = new CompartmentsWidget(this);
+  compartmentsWidget->hide();
+
+  metabolitesWidget = new MetabolitesWidget(this);
+  metabolitesWidget->hide();
+
+  reactionsWidget = new ReactionsWidget(this);
+  reactionsWidget->hide();
+
+  moietyWidget = new MoietyWidget(this);
+  moietyWidget->hide();
+
+  functionWidget = new FunctionWidget(this);
+  functionWidget->hide();
+
+  //*
+  compartmentsWidget1 = new CompartmentsWidget1(this);
+  compartmentsWidget1->hide();
+
+  metabolitesWidget1 = new MetabolitesWidget1(this);
+  metabolitesWidget1->hide();
+
+  reactionsWidget1 = new ReactionsWidget1(this);
+  reactionsWidget1->hide();
+
+  moietyWidget1 = new MoietyWidget1(this);
+  moietyWidget1->hide();
+
+  functionWidget1 = new FunctionWidget1(this);
+  functionWidget1->hide();
+
+  //*
+  metaboliteSymbols = new MetaboliteSymbols(this);
+  metaboliteSymbols->hide();
+
+  differentialEquations = new DifferentialEquations(this);
+  differentialEquations->hide();
+
+  fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
+  fixedMetaboliteSymbols->hide();
+
+  compartmentSymbols = new CompartmentSymbols(this);
+  compartmentSymbols->hide();
+
+  constantSymbols = new ConstantSymbols(this);
+  constantSymbols->hide();
+
+  functionSymbols = new FunctionSymbols(this);
+  functionSymbols->hide();
+
+  //*
+  tableDefinition = new TableDefinition(this);
+  tableDefinition->hide();
+
+  steadystateWidget = new SteadyStateWidget(this);
+  steadystateWidget->hide();
+
+  scanWidget = new ScanWidget(this);
+  scanWidget->hide();
+
+  trajectoryWidget = new TrajectoryWidget(this);
+  trajectoryWidget->hide();
+
+  modesWidget = new ModesWidget(this);
+  modesWidget->hide();
+}
+
+/************************ListViews::addItem(QListViewItem* parent,Folder* child)------>
+ **
+ ** Parameters:- 1. QListViewItem* :- pointer to the parent node to which the new
+ **                                    node would be added to.
+ **    2. Folder* :- pointer to new node added to the tree
+ **
+ ** Returns  :-  Void(Nothing)
+ ** Descripton:- This method is used to add new item to the parent list ie
+ **              to add item to the any other level of the tree except the top level
+ ****************************************************************************************/
+void ListViews::addItem(QListViewItem* parent, Folder* child)
+{
+  FolderListItem *item = (FolderListItem*)parent;
+  item->setPixmap(0, *folderClosed);
+  (void)new FolderListItem(item, child);
+}
+
+void ListViews::addItem(Node<Folder>* child)
+{
+  if (child)
+    {
+      if (child->parent->info->getID() == 0)
+        addItem(folders, child->info);
+      else
+        addItem(searchListViewItem(child->parent->info->getID()), child->info);
+    }
+}
+
+/************************ListViews::addItem(QListView* parent,Folder* child)------>
+ **
+ ** Parameters:- 1. QListView* :- pointer to the parent node to which the new
+ **                               node would be added to.(here it is the root node)
+ **    2. Folder* :- pointer to new node added to the tree
+ **
+ ** Returns  :-  Void(Nothing)
+ ** Description:- This method is used to add new item to the parent list ie
+ **               to add item to the top level of the tree
+ **********************************************************************************/
+void ListViews::addItem(QListView* parent, Folder* child)
+{
+  (void)new FolderListItem(parent, child);
+}
+
+/************************ListViews::searchNode(QListViewItem* me)------------->
+ **
+ ** Parameters:- QListViewItem* :- pointer to node of the tree to be searched
+ **
+ ** Returns  :-   int :- 1-> if found; 0 if not found 
+ ** Description:- This method is used to search a particular node in the 
+ ** tree with input parameter as QListViewItem
+ *****************************************************************************/
+bool ListViews::existsListViewItem(QListViewItem* me)
+{
+  QListViewItemIterator it(folders);
+
+  for (; it.current(); ++it)
+    if (it.current() == me)
+      return true;
+
+  return false;
+}
+
+/************************ListViews::searchListViewItem(int id)---------->
+ **
+ ** Parameters:- int :- the id of the object to be searched
+ **
+ ** Returns  :-  QListViewItem* :- Pointer to the node searched for or null if nuthing is found 
+ ** Description:-This method is used to search a particular node in the 
+ **              tree with input parameter as id number
+ ************************************************************/
+QListViewItem* ListViews::searchListViewItem(int id)
+{
+  FolderListItem *item;
+  QListViewItemIterator it(folders);
+
+  for (; it.current(); ++it)
+    {
+      item = (FolderListItem*)it.current();
+
+      if (item->folder()->getID() == id) //found...
+        return it.current();
+    }
+
+  return NULL;
+}
+
+QListViewItem* ListViews::searchListViewItem(const std::string & key)
+{
+  FolderListItem *item;
+  QListViewItemIterator it(folders);
+
+  for (; it.current(); ++it)
+    {
+      item = (FolderListItem*)it.current();
+
+      if (item->folder()->getObjectKey() == key) //found...
+        return it.current();
+    }
+
+  return NULL;
+}
+
+/************************ListViews::searchListViewItem(const char* name)--------------------->
+ **
+ ** Parameters:- int :- the id of the object to be searched
+ **
+ ** Returns  :-  QListViewItem* :- Pointer to the node searched for or null if nuthing is found 
+ ** Description:-This method is used to search a particular node in the 
+ ** tree with input parameter as folder name
+ ********************************************************************************/
+QListViewItem* ListViews::searchListViewItem(const char* name)
+{
+  FolderListItem *item;
+  QListViewItemIterator it(folders);
+
+  for (; it.current(); ++it)
+    {
+      item = (FolderListItem*)it.current();
+      int value = QString::compare(item->folder()->folderName(), name); // returns 0 for matching
+
+      if (!value) //found...
+        return it.current();
+    }
+
+  return NULL;
+}
+
+/************************ListViews::searchListViewItem(Folder* f)---------->
+ **
+ ** Parameters:- Folder* :- pointer to Folder to be searched
+ **
+ ** Returns  :-  QListViewItem* :- Pointer to the node searched for or null if nuthing is found
+ ** Description:-this method is used to search a particular node in the
+ **              tree with input parameter as folder ...
+ ***************************************************************************************/
+QListViewItem* ListViews::searchListViewItem(Folder* f)
+{return searchListViewItem(f->getID());}
+
+/**
+ * tries to find the right hand side widget that belongs to an item of the tree view
+ */
+CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
+  {
+    // first try ID
+    C_INT32 id = item->folder()->getID();
+
+    switch (id)
+      {
+      case 1:
+        return modelWidget;
+        break;
+      case 111:
+        return compartmentsWidget;
+        break;
+      case 112:
+        return metabolitesWidget;
+        break;
+      case 113:
+        return moietyWidget;
+        break;
+      case 114:
+        return reactionsWidget;
+        break;
+      case 121:
+        return compartmentSymbols;
+        break;
+      case 122:
+        return functionSymbols;
+        break;
+      case 123:
+        return constantSymbols;
+        break;
+      case 124:
+        return fixedMetaboliteSymbols;
+        break;
+      case 125:
+        return metaboliteSymbols;
+        break;
+      case 126:
+        return differentialEquations;
+        break;
+      case 21:
+        return steadystateWidget;
+        break;
+      case 221:
+        return modesWidget;
+        break;
+      case 222:
+        return moietyWidget;
+        break;
+      case 23:   //Time course
+        return trajectoryWidget;
+        break;
+      case 32:
+        return scanWidget;
+        break;
+      case 43:  //Report
+        return tableDefinition;
+        break;
+      case 5:
+        return functionWidget;
+        break;
+      }
+
+    // then try parent id:
+    FolderListItem* parent = (FolderListItem*)item->parent();
+    if (!parent) return NULL;
+    id = parent->folder()->getID();
+
+    switch (id)
+      {
+      case 111:
+        return compartmentsWidget1;
+        break;
+      case 112:
+        return metabolitesWidget1;
+        break;
+      case 113:
+        return moietyWidget1;
+        break;
+      case 114:
+        return reactionsWidget1;
+        break;
+      case 5:
+        return functionWidget1;
+        break;
+      }
+
+    //give up
+    return NULL;
+  }
+
+/************************ListViews::slotFolderChanged(QListViewItem *i)----------->
+ **
+ ** Parameters:- QListViewItem* :- pointer to the node that was selected by the user
+ **                                                    
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is called whenever the user clicks on one of the
+ ** tree view items...
+ *************************************************************************************/
+void ListViews::slotFolderChanged(QListViewItem *i)
+{
+  // to show the folders open or close or locked..
+  if (!i) return;
+
+  if (i->childCount() != 0)
+    i->setPixmap(0, *folderOpen);
+
+  // to change the status of the folder (closed/open)
+  //if (lastSelection)
+  //  if (lastSelection->childCount() == 0)
+  //  {} // i was not expandable..than
+  //  else
+  //    lastSelection->setPixmap(0, *folderClosed);
+  //lastSelection = i;
+
+  // get the qlistview item in form of folderlistitem...
+  FolderListItem *item = (FolderListItem*)i;
+
+  //TODO: the fall back widget bifWidget should really be a CopasiWidget to avoid the typecasts that follow
+
+  // find the widget
+  currentWidget = findWidgetFromItem(item);
+  std::string itemKey = item->folder()->getObjectKey();
+
+  if (currentWidget == lastWidget)
+    if (itemKey == lastKey) return;
+
+  // leave old widget
+  if (lastWidget)
+    if (lastWidget != bigWidget)
+      {
+        C_INT32 saveFolderID = item->folder()->getID();
+        ((CopasiWidget*)lastWidget)->leave();
+        item = (FolderListItem*)searchListViewItem(saveFolderID);
+        if (item)
+          folders->setCurrentItem(item);
+        else
+          {
+            item = (FolderListItem*)searchListViewItem(itemKey);
+            if (item)
+              folders->setCurrentItem(item);
+          }
+        //TODO: this might cause an update of datamodel and listviews.
+        //      so the current selection in the listview needs to be restored.
+      }
+
+  // enter new widget
+  if (currentWidget) ((CopasiWidget*)currentWidget)->enter(itemKey);
+
+  // fall back
+  if (!currentWidget)
+    {
+      currentWidget = bigWidget;
+      bigWidget->setText("You Clicked On: " + item->folder()->folderName());
+    }
+
+  if (lastWidget != currentWidget)
+    {
+      if (lastWidget) lastWidget->hide();
+      if (currentWidget) currentWidget->show();
+    }
+
+  lastWidget = currentWidget;
+  lastKey = itemKey;
+}
+
+void ListViews::switchToOtherWidget(const std::string & key)
+{
+  slotFolderChanged(searchListViewItem(key));
+
+  //TODO: update the active selection of the tree
+}
+
+/***********ListViews::clearParentItem(QListViewItem *i)--------------------->
+ **
+ ** Parameters:- 1. QListViewItem* :- The node whose items needs to be removed
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is used to delete the item from the tree
+ ** this one is used for deleting the item if it one of the 
+ ** top level items....
+ *****************************************************************************/
+void ListViews::clearParentItem(QListViewItem *i) // for the top level items to be cleared..
+{
+  QListViewItem * myParent = folders->firstChild();
+  QListViewItem * nextChild = NULL;
+
+  for (nextChild = myParent; myParent != NULL; myParent = myParent->nextSibling(), nextChild = myParent)
+    if (nextChild == i)
+      {
+        FolderListItem * item = (FolderListItem*)i;
+        Folder *f = item->folder();
+
+        if (f->parent())
+          f->parent()->removeChild(f);
+
+        delete nextChild;
+
+        break;
+      }
+
+  //i->setPixmap(0, *folderLocked);  // so i have no childrens now..
+}
+
+/***********ListViews::clearItem(QListViewItem * i)----------->
+ **
+ ** Parameters:- QListViewItem* :- The node whose items needs to be removed
+ ** Returns  :-  void(Nothing)
+ ** Description:-This method is used to delete the item from the tree
+ ** this one is used for deleting the item 
+ ************************************************************/
+void ListViews::clearItem(QListViewItem * i)
+{
+  QListViewItem * myParent = i->parent();
+  QListViewItem * nextChild, *parentStatus;
+  parentStatus = myParent; // to keep track of the folder close/locked icon
+
+  if (myParent != NULL)
+    {
+      myParent = myParent->firstChild();
+
+      for (nextChild = myParent; myParent != NULL; myParent = myParent->nextSibling(), nextChild = myParent)
+        if (nextChild == i)
+          {
+            FolderListItem * item = (FolderListItem*)nextChild;
+            Folder *f = item->folder();
+
+            if (f->parent())
+              f->parent()->removeChild(f);
+
+            delete nextChild;
+
+            break;
+          }
+
+      //myParent->setPixmap(0, *folderLocked);  // so i have no childrens now..
+      if (parentStatus->childCount() != 0)
+        parentStatus->setPixmap(0, *folderClosed);
+      else
+        parentStatus->setPixmap(0, *folderLocked);
+    }
+}
+
+void ListViews::deleteAllMyChildrens(QListViewItem* me)
+{
+  while (me->childCount())
+    delete (FolderListItem*)(me->firstChild());
+}
+
+//**********************************************************************
+
+void ListViews::setTheRightPixmap(QListViewItem* lvi)
+{
+  if (lvi->isSelected())
+    if (lvi->childCount() != 0)
+      lvi->setPixmap(0, *folderOpen);
+}
+
+bool ListViews::updateAllListviews(C_INT32 id) //static
+{
+  bool success = true;
+
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  FolderListItem* item;
+
+  for (; it != ende; ++it)
+    {
+      item = (FolderListItem*)(*it)->searchListViewItem(id);
+
+      (*it)->deleteAllMyChildrens(item);
+
+      if (item) item->insertSubFolders(item->folder()->children());
+      else success = false;
+    }
+
+  return success;
+}
+
+bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key) //static
+{
+  bool success = true;
+
+  if (dataModel->getModel() == NULL) return false;
+
+  //just do everything. TODO: Later we can decide from parameters what really needs to be done
+
+  loadMetabolitesToDataModel();
+  updateAllListviews(112);
+
+  loadReactionsToDataModel();
+  updateAllListviews(114);
+
+  loadCompartmentsToDataModel();
+  updateAllListviews(111);
+
+  loadMoietiesToDataModel();
+  updateAllListviews(113);
+
+  loadFunctionsToDataModel();
+  updateAllListviews(5);
+
+  return success;
+}
+
+//**************************************************************************************+***
+
+void ListViews::loadCompartmentsToDataModel()
+{
+  Folder * parent = dataModel->searchFolderList(111);
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  const CCopasiVectorN< CCompartment > & objects = dataModel->getModel()->getCompartments();
+  C_INT32 j, jmax = objects.size();
+
+  CCompartment *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(obj->getKey());
+      dataModel->addData(parent, f);
+    }
+}
+
+void ListViews::loadMetabolitesToDataModel()
+{
+  Folder * parent = dataModel->searchFolderList(112); //Metabolites
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  const CCopasiVectorN< CMetab > & metabolites = dataModel->getModel()->getMetabolites();
+  C_INT32 noOfMetabolites = metabolites.size();
+
+  CMetab *metab;
+  C_INT32 j;
+  for (j = 0; j < noOfMetabolites; j++)
+    {
+      metab = metabolites[j];
+      f = new Folder(parent, metab->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(metab->getKey());
+      dataModel->addData(parent, f);
+    }
+}
+
+void ListViews::loadReactionsToDataModel()
+{
+  Folder * parent = dataModel->searchFolderList(114); //Reactions
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  const CCopasiVectorN< CReaction > & objects = dataModel->getModel()->getReactions();
+  C_INT32 j, jmax = objects.size();
+
+  CReaction *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(obj->getKey());
+      dataModel->addData(parent, f); // TODO: do we really want to add this to the datamodel here?
+    }
+}
+
+void ListViews::loadMoietiesToDataModel()
+{
+  Folder * parent = dataModel->searchFolderList(113); //Moiety
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  const CCopasiVectorN< CMoiety > & objects = dataModel->getModel()->getMoieties();
+  C_INT32 j, jmax = objects.size();
+
+  CMoiety *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      //f->setObjectKey(obj->getKey()); //TODO: give moieties a key
+      dataModel->addData(parent, f);
+    }
+}
+
+void ListViews::loadFunctionsToDataModel()
+{
+  Folder * parent = dataModel->searchFolderList(5); //Functions
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  const CCopasiVectorN< CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
+  C_INT32 j, jmax = objects.size();
+
+  CFunction *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(obj->getKey());
+      dataModel->addData(parent, f);
+    }
+}
+
+/***********ListViews::showMessage(QString caption,QString text)------------------------>
+ **
+ ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
+ **              2. QString :_ The Text that needs to be displayed in the message box
+ ** Returns  :-  void(Nothing)
+ ** Description:- This method is used to show the message box on the screen
+ ****************************************************************************************/
+
+void ListViews::showMessage(QString title, QString text)
+{
+  QMessageBox::about (this, title, text);
+}
+
+void ListViews::loadSteadyStateTaskNodes(CSteadyStateTask* steadystatetask)
+{
+  if (steadystatetask != NULL)
+    {
+      QListViewItem* loadNode; // to load the tree with that stuff
+
+      // UPDATE THE METABOLITES STUFF..
+      steadystateWidget->loadSteadyStateTask(steadystatetask);
+      loadNode = searchListViewItem("Steady-State");
+
+      if (loadNode)
+        {
+          if (loadNode->isSelected())
+            {
+              currentWidget->hide();
+              steadystateWidget->show();
+              currentWidget = steadystateWidget;
+            }
+          loadNode = NULL;
+        }
+      //dataModel->setSteadyStateTaskUpdate(false);
+    }
+}
+
+void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
+{
+  if (trajectorytask != NULL)
+    {
+      QListViewItem* loadNode; // to load the tree with that stuff
+
+      // UPDATE THE METABOLITES STUFF..
+      //trajectoryWidget->loadTrajectoryTask();
+      loadNode = searchListViewItem("Trajectory");
+
+      if (loadNode)
+        {
+          if (loadNode->isSelected())
+            {
+              currentWidget->hide();
+              trajectoryWidget->show();
+              currentWidget = trajectoryWidget;
+            }
+          loadNode = NULL;
+        }
+      //dataModel->setTrajectoryTaskUpdate(false);
+    }
+}
+
+//static members **************************
+
+std::set<ListViews *> ListViews::mListOfListViews;
+DataModel* ListViews::dataModel;
+
+bool ListViews::attach()
+{
+  return mListOfListViews.insert(this).second;
+}
+
+bool ListViews::detach()
+{
+  return (mListOfListViews.erase(this) > 0);
+}
+
+bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
+{
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  bool success = true;
+
+  //update the datamodel and the listviews tree
+  if (!updateDataModelAndListviews(objectType, action, key)) success = false;
+
+  //tell the listviews to notify the other widgets
+  for (; it != ende; ++it)
+    if (! (*it)->update(objectType, action, key)) success = false;
+
+  return success;
+}
+
+bool ListViews::update(ObjectType objectType, Action action, const std::string & key)
+{
+  bool success = true;
+
+  switch (objectType)
+    {
+    case METABOLITE:
+      scanWidget->update(objectType, action, key);
+      //        steadystateWidget->update(objectType, action, key);
+      //        trajectoryWidget->update(objectType, action, key);
+      metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      compartmentsWidget->update(objectType, action, key);
+      compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      metabolitesWidget1->update(objectType, action, key);
+      metaboliteSymbols->update(objectType, action, key);
+      fixedMetaboliteSymbols->update(objectType, action, key);
+      compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      tableDefinition->update(objectType, action, key);
+      break;
+    case COMPARTMENT:
+      scanWidget->update(objectType, action, key);
+      //        steadystateWidget->update(objectType, action, key);
+      //        trajectoryWidget->update(objectType, action, key);
+      metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      compartmentsWidget->update(objectType, action, key);
+      compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      metabolitesWidget1->update(objectType, action, key);
+      metaboliteSymbols->update(objectType, action, key);
+      fixedMetaboliteSymbols->update(objectType, action, key);
+      compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      tableDefinition->update(objectType, action, key);
+      break;
+    case REACTION:
+      scanWidget->update(objectType, action, key);
+      //        steadystateWidget->update(objectType, action, key);
+      //        trajectoryWidget->update(objectType, action, key);
+      metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      compartmentsWidget->update(objectType, action, key);
+      compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      metabolitesWidget1->update(objectType, action, key);
+      metaboliteSymbols->update(objectType, action, key);
+      //        fixedMetaboliteSymbols->update(objectType, action, key);
+      compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      tableDefinition->update(objectType, action, key);
+      break;
+    case FUNCTION:
+      //        scanWidget->update(objectType, action, key);
+      //        steadystateWidget->update(objectType, action, key);
+      //        trajectoryWidget->update(objectType, action, key);
+      //        metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      //        compartmentsWidget->update(objectType, action, key);
+      //        compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      functionWidget->update(objectType, action, key);
+      functionSymbols->update(objectType, action, key);
+      differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      //        metabolitesWidget1->update(objectType, action, key);
+      //        metaboliteSymbols->update(objectType, action, key);
+      //        fixedMetaboliteSymbols->update(objectType, action, key);
+      //        compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      //        tableDefinition->update(objectType, action, key);
+      break;
+    case MODEL:
+      scanWidget->update(objectType, action, key);
+      steadystateWidget->update(objectType, action, key);
+      trajectoryWidget->update(objectType, action, key);
+      metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      compartmentsWidget->update(objectType, action, key);
+      compartmentSymbols->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
+      functionWidget->update(objectType, action, key);
+      functionSymbols->update(objectType, action, key);
+      differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      metabolitesWidget1->update(objectType, action, key);
+      metaboliteSymbols->update(objectType, action, key);
+      fixedMetaboliteSymbols->update(objectType, action, key);
+      compartmentsWidget1->update(objectType, action, key);
+      constantSymbols->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
+      functionWidget1->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
+      modelWidget->update(objectType, action, key);
+      tableDefinition->update(objectType, action, key);
+      break;
+    case STATE:
+      //        scanWidget->update(objectType, action, key);
+      //        steadystateWidget->update(objectType, action, key);
+      //        trajectoryWidget->update(objectType, action, key);
+      metabolitesWidget->update(objectType, action, key);
+      reactionsWidget->update(objectType, action, key);
+      compartmentsWidget->update(objectType, action, key);
+      compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      //        differentialEquations->update(objectType, action, key);
+      reactionsWidget1->update(objectType, action, key);
+      metabolitesWidget1->update(objectType, action, key);
+      metaboliteSymbols->update(objectType, action, key);
+      fixedMetaboliteSymbols->update(objectType, action, key);
+      compartmentsWidget1->update(objectType, action, key);
+      constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      modelWidget->update(objectType, action, key);
+      //        tableDefinition->update(objectType, action, key);
+      break;
+    case REPORT:
+      scanWidget->update(objectType, action, key);
+      steadystateWidget->update(objectType, action, key);
+      trajectoryWidget->update(objectType, action, key);
+      //        metabolitesWidget->update(objectType, action, key);
+      //        reactionsWidget->update(objectType, action, key);
+      //        compartmentsWidget->update(objectType, action, key);
+      //        compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      //        differentialEquations->update(objectType, action, key);
+      //        reactionsWidget1->update(objectType, action, key);
+      //        metabolitesWidget1->update(objectType, action, key);
+      //        metaboliteSymbols->update(objectType, action, key);
+      //        fixedMetaboliteSymbols->update(objectType, action, key);
+      //        compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      tableDefinition->update(objectType, action, key);
+      break;
+    default:
+      fatalError();
+    }
+  return success;
+}
