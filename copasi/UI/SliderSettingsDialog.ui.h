@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 17:42:33 $
+   $Author: gauges $ 
+   $Date: 2004/12/10 15:07:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -222,9 +222,10 @@ void SliderSettingsDialog::init()
 void SliderSettingsDialog::browseButtonPressed()
 {
   // open a selection dialog with single selection mode
-  SimpleSelectionDialog* browseDialog = new SimpleSelectionDialog(this);
+  CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
   browseDialog->setModel(mpModel);
   browseDialog->setSingleSelection(true);
+  //browseDialog->enableExpertMode(false);
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
   browseDialog->setOutputVector(selection);
   if (browseDialog->exec() == QDialog::Accepted && selection->size() != 0)

@@ -356,7 +356,7 @@
     <include location="local" impldecl="in implementation">qlistbox.h</include>
     <include location="local" impldecl="in implementation">qvalidator.h</include>
     <include location="local" impldecl="in implementation">qregexp.h</include>
-    <include location="local" impldecl="in implementation">SimpleSelectionDialog.h</include>
+    <include location="local" impldecl="in implementation">CCopasiSelectionDialog.h</include>
     <include location="local" impldecl="in implementation">report/CCopasiObject.h</include>
     <include location="local" impldecl="in implementation">report/CCopasiObjectName.h</include>
     <include location="local" impldecl="in implementation">model/CModel.h</include>
