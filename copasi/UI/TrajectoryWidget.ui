@@ -12,6 +12,12 @@
             <height>539</height>
         </rect>
     </property>
+    <property name="font">
+        <font>
+            <family>Times New Roman</family>
+            <pointsize>9</pointsize>
+        </font>
+    </property>
     <property name="caption">
         <string>TrajectoryWidget</string>
     </property>
@@ -58,10 +64,10 @@
                 <cstring>parameterTable</cstring>
             </property>
             <property name="numRows">
-                <number>3</number>
+                <number>0</number>
             </property>
             <property name="numCols">
-                <number>3</number>
+                <number>0</number>
             </property>
         </widget>
         <widget class="QLabel" row="0" column="0">
