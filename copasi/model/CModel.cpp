@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.173 $
+   $Revision: 1.174 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/19 18:37:35 $
+   $Author: ssahle $ 
+   $Date: 2004/05/21 08:59:16 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1570,8 +1570,8 @@ CMetab* CModel::createMetabolite(const std::string & name,
 {
   unsigned C_INT32 Index;
 
-  //if (mCompartments.size() == 0)
-  //  createCompartment("compartment_0");
+  if (mCompartments.size() == 0)
+    return NULL;
 
   if (compartment == "")
     Index = 0;
