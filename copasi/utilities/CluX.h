@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:35:36 $
+   $Author: ssahle $ 
+   $Date: 2004/06/29 09:31:45 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -58,7 +58,7 @@
 //
 
 template <class Matrix, class Subscript>
-      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col)
+      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CCallbackHandler* cb = NULL)
   {
     Subscript M = A.numRows();
     Subscript N = A.numCols();
@@ -83,8 +83,10 @@ template <class Matrix, class Subscript>
 
   Subscript minMN = (M < N ? M : N);        // min(M,N);
 
+    if (cb) cb->reInit(minMN, "LU decomposition...");
     for (j = 0; j < minMN; j++)
       {
+        if (cb) cb->progress(j);
         // find pivot in column j and  test for singularity.
         while (true)
           {

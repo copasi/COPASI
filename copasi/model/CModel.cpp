@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.186 $
+   $Revision: 1.187 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 22:25:59 $
+   $Date: 2004/06/29 09:31:35 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -466,7 +466,7 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
   LU = mStoi;
 
-  LUfactor(LU, rowLU, colLU);
+  LUfactor(LU, rowLU, colLU, mpCompileHandler);
 
   // mMetabolitesX = mMetabolites;
 
