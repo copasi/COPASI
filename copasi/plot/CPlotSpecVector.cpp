@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:17 $
+   $Author: shoops $ 
+   $Date: 2004/05/06 20:38:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -58,43 +58,6 @@ bool CPlotSpecVector::addNewPlotSpec(const std::string name /*, const std::strin
   add(pNewPlotSpec);
   return true;
 }
-
-/*bool CPlotSpecVector::initPlottingFromStream()
-{
-  bool success = true;
-  inputFlag = NO_INPUT;
- 
-  if (size() == 0)
-    {
-      std::cout << "plot: not plots defined" << std::endl;
-      return false;
-    }
- 
-  if (ncols <= 0)
-    {
-      std::cout << "plot: ncols <=0" << std::endl;
-      return false;
-    }
-  data.resize(ncols);
- 
-  if (!pSource)
-    {
-      std::cout << "plot: no input stream" << std::endl;
-      return false;
-    }
-  if (!(*pSource))
-    {
-      std::cout << "plot: input stream not open" << std::endl;
-      return false;
-    }
-  pSource->seekg(0, std::ios::beg);
-  position = pSource->tellg();
-  inputFlag = FROM_STREAM;
- 
-  return initAllPlots();
- 
-  //return success;
-}*/
 
 bool CPlotSpecVector::initPlottingFromObjects()
 {

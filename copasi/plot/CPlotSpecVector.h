@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:17 $
+   $Author: shoops $ 
+   $Date: 2004/05/06 20:38:59 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -71,7 +71,6 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     //void setNumColumns(C_INT32 n) {ncols = n;};
     //C_INT32 getNumColumns() const {return ncols;};
 
-    bool initPlottingFromStream();
     bool initPlottingFromObjects();
     bool doPlotting();
     bool finishPlotting();
