@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.32 $ $Author: shoops $ $Date: 2004/11/18 15:25:04 $  
+# $Revision: 1.33 $ $Author: shoops $ $Date: 2004/12/08 18:36:35 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -44,6 +44,7 @@ debug {
 
 contains(BUILD_OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
+  INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
   LIBS += -framework vecLib
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
