@@ -22,6 +22,8 @@ CNewton::CNewton()
   mSs_h = NULL;
   mSs_jacob = NULL;
   mSs_ipvt = NULL;
+
+  // initialize();
 }
 
 
@@ -34,22 +36,7 @@ CNewton::CNewton(C_INT32 anInt)
   mSs_nfunction = 0;
   mSs_solution = 0;
 
-  initialize();
-}
-
-//Y.H.
-//set up mSs_x and mSs_x's default values
-//they should come from steady state class, though
-void CNewton::init_Ss_x_new(void)
-{
-  // we start with initial concentrations as the guess (modify from Gepasi)
-  for( C_INT32 i=0; i<mModel->getTotMetab(); i++ )
-    //    mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
-    //                         mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
-
-    //YH
-    mSs_x[i+1] = mSs_xnew[i+1] = mModel->getMetabolitesInd()[i]->getInitialNumber();
-
+  //initialize();
 }
 
 
@@ -67,6 +54,44 @@ CNewton::CNewton(const CNewton& source)
   mSs_h = source.mSs_h;
   mSs_jacob = source.mSs_jacob;
   mSs_ipvt = source.mSs_ipvt;
+}
+
+
+// initialize pointers
+void CNewton::initialize()
+{  
+  cleanup();
+
+  mSs_x = new double[mModel->getTotMetab()+1];
+  mSs_xnew = new double[mModel->getTotMetab()+1];
+  mSs_dxdt = new double[mModel->getTotMetab()+1];
+  mSs_h = new double[mModel->getTotMetab()+1];
+  mSs_ipvt = new C_INT32[mModel->getIndMetab()+1];
+  mSs_jacob = new double *[mModel->getTotMetab()+1];
+  for( int i=0; i<mModel->getTotMetab()+1; i++ )
+    mSs_jacob[i] = new double[mModel->getTotMetab()+1];
+
+}
+
+
+
+//Y.H.
+//set up mSs_x and mSs_x's default values
+//they should come from steady state class, though
+void CNewton::init_Ss_x_new(void)
+{
+  // we start with initial concentrations as the guess (modify from Gepasi)
+  for( int i=0; i<mModel->getTotMetab(); i++ )
+    //    mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
+    //                         mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
+
+    //YH
+    {
+      double tmp = mModel->getMetabolitesInd()[i]->getInitialNumber();
+      mSs_x[i+1] = tmp;
+      mSs_xnew[i+1] = tmp;
+    }
+
 }
 
   
@@ -138,26 +163,6 @@ C_FLOAT64 * CNewton::getSs_dxdt() const
   return mSs_dxdt;
 }
 
-// finds out if current state is a valid steady state
-C_INT32 CNewton::isSteadyState( void )
-{
- int i;
- double maxrate;
- mSs_solution = SS_NOT_FOUND;
- for( i=0; i<mModel->getIntMetab(); i++ )
-  if( mSs_x[i+1] < 0.0 ) return SS_NOT_FOUND;
-
- //FEval( 0, 0, mSs_x, ss_dxdt );
- mModel->lSODAEval( 0, 0, mSs_xnew, mSs_dxdt );
- mSs_nfunction++;
- // maxrate = SS_XNorn( ss_dxdt );
- maxrate = xNorm(mModel->getIntMetab(),mSs_dxdt, 1);
- 
- if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
- return mSs_solution;
-}
-
-
 
 // set mDerivFactor
 void CNewton::setDerivFactor(C_FLOAT64 aDouble)
@@ -183,21 +188,28 @@ C_INT32 CNewton::getSs_nfunction() const
   return mSs_nfunction;
 }
 
-// initialize pointers
-void CNewton::initialize()
-{  
-  cleanup();
 
-  mSs_x = new double[mModel->getTotMetab()+1];
-  mSs_xnew = new double[mModel->getTotMetab()+1];
-  mSs_dxdt = new double[mModel->getTotMetab()+1];
-  mSs_h = new double[mModel->getTotMetab()+1];
-  mSs_ipvt = new C_INT32[mModel->getIndMetab()+1];
-  mSs_jacob = new double *[mModel->getTotMetab()+1];
-  for( int i=0; i<mModel->getTotMetab()+1; i++ )
-    mSs_jacob[i] = new double[mModel->getTotMetab()+1];
 
+// finds out if current state is a valid steady state
+C_INT32 CNewton::isSteadyState( void )
+{
+ int i;
+ double maxrate;
+ mSs_solution = SS_NOT_FOUND;
+ for( i=0; i<mModel->getIntMetab(); i++ )
+  if( mSs_x[i+1] < 0.0 ) return SS_NOT_FOUND;
+
+ //FEval( 0, 0, mSs_x, ss_dxdt );
+ mModel->lSODAEval( 0, 0, mSs_xnew, mSs_dxdt );
+ mSs_nfunction++;
+ // maxrate = SS_XNorn( ss_dxdt );
+ maxrate = xNorm(mModel->getIntMetab(),mSs_dxdt, 1);
+ 
+ if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
+ return mSs_solution;
 }
+
+
 
 //similar to SS_Newton() in gepasi except a few modification
 //
