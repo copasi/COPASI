@@ -37,9 +37,9 @@ CFG=CopasiUI - Win32 Build
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
-# PROP Cmd_Line "nmake /f "Makefile""
+# PROP Cmd_Line "nmake -f "Makefile""
 # PROP Rebuild_Opt "/a"
-# PROP Target_File "CopasiUI.exe"
+# PROP Target_File "CopasiUI"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target
@@ -195,6 +195,10 @@ SOURCE=.\Subject.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\TableDefinition.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\TrajectoryWidget.cpp
 # End Source File
 # End Group
@@ -340,6 +344,10 @@ SOURCE=.\StretchTable.h
 # Begin Source File
 
 SOURCE=.\Subject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TableDefinition.h
 # End Source File
 # Begin Source File
 

@@ -49,7 +49,7 @@ class ReactionsWidget;
 class SteadyStateWidget;
 class ScanWidget;
 class TrajectoryWidget;
-
+class TableDefinition;
 class Folder : public QObject
   {
     Q_OBJECT
@@ -181,7 +181,7 @@ class ListViews : public QSplitter, public Observer
     FunctionWidget1 *functionWidget1;
     ModesWidget *modesWidget;
     ModelWidget *modelWidget;
-
+    TableDefinition *tableDefinition;
   protected slots:
     void slotFolderChanged(QListViewItem*);
 

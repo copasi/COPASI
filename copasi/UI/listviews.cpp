@@ -31,6 +31,7 @@
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
+#include "TableDefinition.h"
 #include "TrajectoryWidget.h"
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
@@ -404,6 +405,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     }
   else if (! (value = QString::compare(item->folder()->folderName(), "Metabolite Symbols")))
     currentWidget = metaboliteSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Reports")))
+    currentWidget = tableDefinition;
   else if (! (value = QString::compare(item->folder()->folderName(), "Model")))
     currentWidget = modelWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Differential Equations")))
@@ -889,6 +892,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Compartments Symbols
     compartmentSymbols = new CompartmentSymbols(this);
     compartmentSymbols->hide();
+
+    //Constructing the Compartments Symbols
+    tableDefinition = new TableDefinition(this);
+    tableDefinition->hide();
 
     //Constructing the Constant Symbols
     constantSymbols = new ConstantSymbols(this);
