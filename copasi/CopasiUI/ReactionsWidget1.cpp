@@ -191,9 +191,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
-  //connect(ComboBox1, SIGNAL(textChanged(const QString &)), this, SLOT(slotComboBoxSelectionChanged()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotLineEditChanged(const QString &)));
+  //connect(LineEdit2, SIGNAL(signal_emitted1()), this, SLOT(slotCheckBoxClicked()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -396,48 +396,62 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 }
 
+/*This slot is activated when the cancel button is clicked.It basically cancels any changes that
+  are made.It does this by emiiting a signal whcih si connected to the listviews and it reloads 
+  the widget with the initial values.*/
 void ReactionsWidget1::slotBtnCancelClicked()
 {
   QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Reaction1_Name);
 }
 
+/*This slot is connected to the commit changes button.There is a difference between commit
+  changes and save changes using the icon on the toolbar, but I am not sure  what each one 
+  does and what is the difference between them.Have to ask Dr Hoops about it.*/
 void ReactionsWidget1::slotBtnOKClicked()
 {
   //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Rtn = new CWriteConfig(filename);
-  //CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  //CReaction *reactn2;
-  //reactn2 = reactions[(string)name.latin1()];
-
-  //CChemEq * chem;
-  //chem = & reactn1->getChemEq();
-
-  //chem->setChemicalEquation(chemical_reaction->latin1());
-  //reactn1->setChemEq(chemical_reaction->latin1());
+  /*This code is to save the changes in the reaction*/
+  /*
+  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  CReaction *reactn2;
+  reactn2 = reactions[(string)name.latin1()];
+  CChemEq * chem;
+  chem = & reactn1->getChemEq();
+  chem->setChemicalEquation(chemical_reaction->latin1());
+  reactn1->setChemEq(chemical_reaction->latin1());
+  reactn1->save(*Rtn);
+  Copasi->Model->save(*Rtn);
+  */
   mModel->save(*Rtn);
-
-  //reactn1->save(*Rtn);
-  //Copasi->Model->save(*Rtn);
   delete Rtn;
 }
+
+/*This slot is activated when the check box is clicked.It needs to have functionality to
+  make and update changes in the "Chemical Reaction" Text box and the "Kinetics" Combobox.*/
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   reactn1 = reactions[(string)name.latin1()];
-
+  CChemEq * chemEq1;
   if (checkBox->isChecked() == FALSE)
     {
-      reactn1->setReversible(TriFalse);
+      //reactn1->setReversible(TriFalse);
 
       //for Chemical Reaction
-      QString chemical_reaction = LineEdit2->text();
+      chemEq1 = & reactn1->getChemEq();
+      string chemEq2 = chemEq1->getChemicalEquationConverted();
+      QString chemical_reaction = chemEq2.c_str();
+
       int i = chemical_reaction.find ("=", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
-      //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
-      LineEdit2->setText(chemical_reaction);
+      const string chemEq3 = chemical_reaction.latin1();
+      chemEq1->setChemicalEquation(chemEq3);
+      LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
+      QMessageBox::information(this, chemical_reaction, "getchemEq.......................");
 
       ComboBox1->clear();
       //ComboBox1->insertItem("No Values", -1);
@@ -467,16 +481,28 @@ void ReactionsWidget1::slotCheckBoxClicked()
     //if (reactn1->isReversible() == FALSE && checkBox->isChecked() == FALSE)
     {
       //for Chemical Reaction
-      QString chemical_reaction = LineEdit2->text();
+      /*QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("->", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
-      LineEdit2->setText(chemical_reaction);
+      LineEdit2->setText(chemical_reaction); */
+
+      chemEq1 = & reactn1->getChemEq();
+      string chemEq2 = chemEq1->getChemicalEquationConverted();
+      QString chemical_reaction = chemEq2.c_str();
+
+      int i = chemical_reaction.find ("->", 0, TRUE);
+      chemical_reaction = chemical_reaction.replace(i, 2, "=");
+      const string chemEq3 = chemical_reaction.latin1();
+      chemEq1->setChemicalEquation(chemEq3);
+      LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
+      QMessageBox::information(this, chemical_reaction, "getchemEq.......................");
 
       ComboBox1->clear();
-      /* CFunction *function;
-       int m = -1;
-       function = &reactn1->getFunction();
-       ComboBox1->insertItem(function->getName().c_str(), m); */
+
+      // CFunction *function;
+      //int m = -1;
+      //function = &reactn1->getFunction();
+      //ComboBox1->insertItem(function->getName().c_str(), m);
       const CCopasiVectorN < CFunction > & Functions =
         Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
                                              reactn1->getChemEq().getSubstrates().size(),
@@ -643,15 +669,15 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           line++;
         }
 
-      /*vector < CMetab * > metabolites = mModel->getMetabolites();
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      CMetab *metab;
-      QStringList comboEntries1;
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
-      {
-             metab = metabolites[j];
-       comboEntries1.push_back(metab->getName().c_str());
-      }*/
+      //vector < CMetab * > metabolites = mModel->getMetabolites();
+      //  C_INT32 noOfMetabolitesRows = metabolites.size();
+      //  CMetab *metab;
+      //  QStringList comboEntries1;
+      //  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+      // {
+      //     metab = metabolites[j];
+      // comboEntries1.push_back(metab->getName().c_str());
+      //}
       for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
         {
           table->setText(line, 0, "1");
@@ -677,6 +703,8 @@ void ReactionsWidget1::slotLineEditChanged(const QString & chemreactn)
   chemEq1 = & reactn1->getChemEq();
   bool status;
   status = chemEq1->setChemicalEquation(changed_chemical_reaction);
-  // string info=(string)status;
-  //QMessageBox::information(this, info, "products ");
+  //string info=(string)status;
+  // QMessageBox::information(this, info, "products ");
+  //connect(this, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
+  //emit signal_emitted1();
 }

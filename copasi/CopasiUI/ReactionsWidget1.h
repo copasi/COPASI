@@ -102,6 +102,7 @@ class ReactionsWidget1 : public QWidget
     virtual void slotLineEditChanged(const QString &);
   signals:
     void signal_emitted(QString &);
+    // void signal_emitted1();
   };
 
 #endif
