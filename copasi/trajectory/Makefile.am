@@ -7,8 +7,8 @@ libtrajectory_a_SOURCES = \
 	CTrajectoryMethod.cpp \
 	CLsodaMethod.cpp \
 	CStochMethod.cpp \
-  CStochDirectMethod.cpp \
-  CStochNextReactionMethod.cpp
+	CStochDirectMethod.cpp \
+	CStochNextReactionMethod.cpp
 
 EXTRA_DIST = \
 	trajectory.h \
@@ -19,8 +19,8 @@ EXTRA_DIST = \
 	CTrajectoryMethod.h	CTrajectoryMethod.cpp \
 	CLsodaMethod.h	CLsodaMethod.cpp \
 	CStochMethod.h CStochMethod.cpp \
-  CstochDirectMethod.h CStochDirectMethod.cpp \
-  CstochNextReactionMethod.h CStochNextReactionMethod.cpp
+	CStochDirectMethod.h CStochDirectMethod.cpp \
+	CStochNextReactionMethod.h CStochNextReactionMethod.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 
