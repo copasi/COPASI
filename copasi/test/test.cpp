@@ -21,6 +21,7 @@
 #include "function/function.h"
 #include "trajectory/trajectory.h"
 #include "steadystate/steadystate.h"
+//#include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
@@ -48,7 +49,7 @@ C_INT32  TestTrajectory(void);
 C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
-C_INT32  TestOptimization(void);     //yohe: new
+//C_INT32  TestOptimization(void);     //yohe: new
 
 C_INT32  CovertFunctionDB(void);
 C_INT32  MakeFunctionDB(void);
@@ -96,10 +97,13 @@ C_INT main(C_INT argc, char *argv[])
 //      TestReadSample();
 //      TestNewton();
 //      TestSSSolution();
+//YOHE: new test
+//      TestOptimization();
+      TestEigen();
 
 //       TestTrajectory();
 //       TestMoiety();
-       TestKinFunction();
+//       TestKinFunction();
 //       TestMassAction();
 //       TestFunctionDB();
 //       TestBaseFunction();
@@ -600,38 +604,44 @@ C_INT32  TestEigen(void)
 }
 
 
+/*
 //yohe: test optimization -- 03/27/02
 //
 C_INT32  TestOptimization(void)
 {
+  cout << "TestOptimization() begins --- " << endl;
     C_INT32 size = 0;
     C_INT32 i;
  
     //CReadConfig inbuf("gps/BakkerComp.gps");
-    CReadConfig inbuf("gps/NewtonTest.gps");
-    CModel model;
-    model.load(inbuf);
-    model.compile();
+    //CReadConfig inbuf("gps/NewtonTest.gps");
+    //CModel model;
+    //model.load(inbuf);
+    //model.compile();
  
-    model.getReactions().size();
+    //model.getReactions().size();
+   
+    COptimizer * opt = new COptimizer();
+    opt->Optimise();
 
-    /*   
-    CSS_Solution ss_soln;
-    ss_soln.setModel(&model);
-    //yohe: new added on 03/15/02
-    ss_soln.initialize();
-    ss_soln.process();
-    */
+    //polymorphism, late binding
+    CGA ga;
+    COptimizer * optPtr = &ga;
+    cout << "TestOptimization() begins new test --- " << endl;
+    opt->Optimise();
+    optPtr->Optimise();
 
-    //    COptimizer opt;
-
-
-    // opt.process();
+    //CGA ga;
+    //opt.Set_nparam (100);
+    //opt.Set_mn(-10.0);
+    //opt.Set_mx(10.0);
+    //ga.Optimise();
  
     return 0;
 
 }
 
+*/
 
 
 C_INT32 TestMoiety()
@@ -1651,7 +1661,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
     }
     cout << endl;
     cout << "Testing update node\n";
-    for (i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
         cout << "Reset node at top index: ";
         pq.updateNode(pq.topIndex(), 10000);
