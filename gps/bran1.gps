@@ -1,0 +1,262 @@
+Version=3.00112
+EndTime=5.000000e+003
+Points=50
+TimeUnit=s
+ConcentrationUnit=mM
+VolumeUnit=ml
+Dynamics=1
+SteadyState=1
+Report=1
+DynTitles=1
+SSTitles=1
+DynQuotes=0
+SSQuotes=0
+DynColWidth=12
+SSColWidth=12
+DynSeparator=44
+SSSeparator=44
+SSMCAUnscaled=0
+RepStructAnal=0
+RepMCA=1
+NewtonLimit=50
+SSResoltion=1.000000e-009
+RelativeTolerance=1.000000e-006
+AbsoluteTolerance=1.000000e-012
+AdamsMaxOrder=12
+BDFMaxOrder=5
+DerivationFactor=1.000000e-003
+ReportFile=Z:\Gepasi3\bran1.txt
+DynamicsFile=bran1.dyn.dat
+SSFile=bran1.ss.dat
+Title=A test
+TotalMetabolites=13
+TotalSteps=10
+TotalMoieties=1
+TotalCompartments=1
+Stoichiometry
+-1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+1.000000 -1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 1.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 -1.000000 1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 -1.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 
+Metabolite=a
+Concentration=10.0000000000000000
+Compartment=0
+Type=0
+Metabolite=b
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=c
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=d
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=e
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=f
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=g
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=N
+Concentration=0.5000000000000000
+Compartment=0
+Type=1
+Metabolite=h
+Concentration=0.1000000000000000
+Compartment=0
+Type=1
+Metabolite=NH
+Concentration=0.5000000000000000
+Compartment=0
+Type=2
+Metabolite=k
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=l
+Concentration=0.7000000000000000
+Compartment=0
+Type=0
+Metabolite=m
+Concentration=0.7000000000000000
+Compartment=0
+Type=0
+Metabolite=  N + NH 
+Concentration=1.0000000000000000
+Compartment=0
+Type=7
+Step=R1
+Equation=a = b
+KineticType=Reversible Michaelis-Menten
+Flux=0.2280294823386067
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=4
+Subs0=0
+Prod0=1
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Step=R2
+Equation=b = c
+KineticType=Mixed inhibition (rev)
+Flux=0.1140147404648650
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=1
+Constants=6
+Subs0=1
+Prod0=2
+Modf0=10
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Param4=1.0000000000000000
+Param5=1.0000000000000000
+Step=R3
+Equation=b = d
+KineticType=Mixed inhibition (rev)
+Flux=0.1140147417928932
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=1
+Constants=6
+Subs0=1
+Prod0=3
+Modf0=8
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Param4=0.8000000000000000
+Param5=0.2500000000000000
+Step=R4
+Equation=c = e
+KineticType=Reversible Michaelis-Menten
+Flux=0.1140147406845821
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=4
+Subs0=2
+Prod0=4
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Step=R5
+Equation=e = f
+KineticType=Reversible Michaelis-Menten
+Flux=0.1140147408781996
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=4
+Subs0=4
+Prod0=5
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Step=R6
+Equation=d = g
+KineticType=Reversible Michaelis-Menten
+Flux=0.1140147414217491
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=4
+Subs0=3
+Prod0=6
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Param2=1.0000000000000000
+Param3=1.0000000000000000
+Step=R7
+Equation=g + N = h + NH
+KineticType=Mass action (reversible)
+Flux=0.1140147410971893
+Reversible=1
+Substrates=2
+Products=2
+Modifiers=0
+Constants=2
+Subs0=6
+Subs1=7
+Prod0=8
+Prod1=9
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R8
+Equation=f + NH = k + N
+KineticType=Mass action (reversible)
+Flux=0.1140147410376330
+Reversible=1
+Substrates=2
+Products=2
+Modifiers=0
+Constants=2
+Subs0=5
+Subs1=9
+Prod0=10
+Prod1=7
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R9
+Equation=k = l
+KineticType=Mass action (reversible)
+Flux=0.1140147410389488
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=2
+Subs0=10
+Prod0=11
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R10
+Equation=h = m
+KineticType=Mass action (reversible)
+Flux=0.1140147410995216
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=2
+Subs0=8
+Prod0=12
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Compartment=compartment
+Volume=1.000000
+Comments
+
+EndComments

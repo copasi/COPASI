@@ -1,0 +1,372 @@
+Version=3.00202
+EndTime=5.000000e+000
+Points=1
+RealTime=0
+SleepTime=1
+TimeUnit=s
+ConcentrationUnit=mM
+VolumeUnit=ml
+Dynamics=0
+SteadyState=1
+Report=0
+DynTitles=0
+SSTitles=0
+DynQuotes=0
+SSQuotes=0
+DynColWidth=12
+SSColWidth=12
+DynSeparator=32
+SSSeparator=32
+SSMCAUnscaled=0
+SSStrategy=1
+SSBackIntegration=1
+RepStructuralAnalysis=1
+RepStabilityAnalysis=1
+RepMCA=1
+NewtonLimit=50
+SSResoltion=1.000000e-009
+RelativeTolerance=1.000000e-006
+AbsoluteTolerance=1.000000e-012
+AdamsMaxOrder=12
+BDFMaxOrder=5
+DerivationFactor=1.000000e-003
+ReportFile=C:\WIN32APP\GEPASI\danny2.txt
+DynamicsFile=
+SSFile=danny2.dat
+Title=Untitled
+TotalMetabolites=15
+TotalSteps=12
+TotalMoieties=4
+TotalCompartments=1
+Stoichiometry
+-1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+-1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 -1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 
+0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 -1.000000 1.000000 0.000000 -1.000000 0.000000 1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 1.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 -1.000000 0.000000 -1.000000 0.000000 1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 -1.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 
+TotalUDKinetics=0
+Metabolite=a
+Concentration=100.0000000000000000
+Compartment=0
+Type=0
+Metabolite=e1
+Concentration=10.0000000000000000
+Compartment=0
+Type=1
+Metabolite=e1a
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=b
+Concentration=0.0000100000000000
+Compartment=0
+Type=1
+Metabolite=e2
+Concentration=10.1999999999999990
+Compartment=0
+Type=1
+Metabolite=e2b
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=c
+Concentration=0.0000100000000000
+Compartment=0
+Type=1
+Metabolite=e3
+Concentration=10.1999999999999990
+Compartment=0
+Type=1
+Metabolite=e3c
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=d
+Concentration=0.0000100000000000
+Compartment=0
+Type=1
+Metabolite=e4
+Concentration=10.1999999999999990
+Compartment=0
+Type=1
+Metabolite=e4d
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=f
+Concentration=0.0000100000000000
+Compartment=0
+Type=0
+Metabolite=e2be3
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=e3ce4
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=  e1 + e1a 
+Concentration=10.1999999999999990
+Compartment=0
+Type=7
+Metabolite=  e2 + e2b - e3 - e3c + e4 + e4d 
+Concentration=10.1999999999999990
+Compartment=0
+Type=7
+Metabolite=  e2 + e2b + e2be3 
+Concentration=10.1999999999999990
+Compartment=0
+Type=7
+Metabolite=- e2 - e2b + e3 + e3c + e3ce4 
+Concentration=0.0000000000000000
+Compartment=0
+Type=7
+Step=R1
+Equation=a + e1 = e1a
+KineticType=Mass action (reversible)
+Flux=4.2752196902734756
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=0
+Subs1=1
+Prod0=2
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R2
+Equation=e1a = e1 + b
+KineticType=Mass action (reversible)
+Flux=4.2752196902735227
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=2
+Prod0=1
+Prod1=3
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R3
+Equation=b + e2 = e2b
+KineticType=Mass action (reversible)
+Flux=4.2752196903201032
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=3
+Subs1=4
+Prod0=5
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R4
+Equation=e2b = e2 + c
+KineticType=Mass action (reversible)
+Flux=3.1354657976920715
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=5
+Prod0=4
+Prod1=6
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R5
+Equation=c + e3 = e3c
+KineticType=Mass action (reversible)
+Flux=3.1354657977136307
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=6
+Subs1=7
+Prod0=8
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R6
+Equation=e3c = e3 + d
+KineticType=Mass action (reversible)
+Flux=2.0104083183499739
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=8
+Prod0=7
+Prod1=9
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R7
+Equation=d + e4 = e4d
+KineticType=Mass action (reversible)
+Flux=2.0104083183544699
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=9
+Subs1=10
+Prod0=11
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R9
+Equation=e2b + e3 = e2be3
+KineticType=Mass action (reversible)
+Flux=1.1397538926295865
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=5
+Subs1=7
+Prod0=13
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R11
+Equation=e3c + e4 = e3ce4
+KineticType=Mass action (reversible)
+Flux=2.2648113719941891
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=8
+Subs1=10
+Prod0=14
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R12
+Equation=e3ce4 = e3 + e4d
+KineticType=Mass action (reversible)
+Flux=2.2648113719935745
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=14
+Prod0=7
+Prod1=11
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R8
+Equation=e4d = f + e4
+KineticType=Mass action (reversible)
+Flux=4.2752196903499637
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=11
+Prod0=12
+Prod1=10
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Step=R10
+Equation=e2be3 = e2 + e3c
+KineticType=Mass action (reversible)
+Flux=1.1397538926283530
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=13
+Prod0=4
+Prod1=8
+Param0=1.0000000000000000
+Param1=1.0000000000000000
+Compartment=compartment
+Volume=1.000000e+000
+Comments
+
+EndComments
+PlotType=3
+PlotDyn=0
+Plot3d=0
+PlotGrid=0
+PlotKey=0
+PlotTitles=1
+PlotMultiplot=0
+PlotContour=0
+PlotHidden3d=0
+PlotLogX=0
+PlotLogY=0
+PlotLogZ=0
+PlotXEntry=0
+PlotYTotal=1
+PlotZTotal=1
+PlotY0=1
+PlotZ0=-1
+User-defined functions
+Items=0
+Interactive time course
+Items=0
+Time-course output
+Items=0
+Steady-state output
+Items=2
+Title=[e1]i
+Type=1
+I=e1
+Title=J(R1)
+Type=4
+I=R1
+Scan
+Enabled=1
+Dimension=1
+Title=[e1]i
+Type=1
+I=e1
+Min=9.8000000000000007
+Max=10.1999999999999990
+Density=3
+Log=0
+Independent=1
+Grid=0
+Parameter Links
+Items=3
+Title=[e2]i
+Type=1
+I=e2
+Title=[e1]i
+Type=1
+I=e1
+Const=1.0000000000000000
+Title=[e3]i
+Type=1
+I=e3
+Title=[e1]i
+Type=1
+I=e1
+Const=1.0000000000000000
+Title=[e4]i
+Type=1
+I=e4
+Title=[e1]i
+Type=1
+I=e1
+Const=1.0000000000000000

@@ -1,0 +1,48 @@
+[ODESolver]
+AbsoluteTolerance=1.000000e-012
+AdamsMaxOrder=12			-> [lsoda]
+BDFMaxOrder=5				-> [lsoda]
+RelativeTolerance=1.000000e-006
+
+[???]
+DerivationFactor=1.000000e-003		-> [finite differences]
+NewtonLimit=50				-> [newton]
+OutputTimeZero=1			-> [output][dynamics]
+RealTime=0				-> remove
+SSBackIntegration=1			-> [steadystate]
+SSResoltion=1.000000e-009  -> SSResolution=1.000000e-009 -> [steadystate]
+SleepTime=442				->
+TimeElasticities=0			->
+
+[directives]
+Dynamics=1
+SteadyState=1
+Report=1
+
+[output]
+[dynamics]			[ss]			[report]
+DynColWidth=12			SSColWidth=12
+DynQuotes=0			SSQuotes=0
+DynSeparator=32			SSSeparator=32
+DynTitles=1			SSTitles=1
+DynamicsFile=hmm.dyn.dat	SSFile=hmm.ss.dat	ReportFile=HMM.txt
+							ReportComments=
+							RepStabilityAnalysis=1
+							RepStructuralAnalysis=1
+							RepMCA=1
+				SSStrategy=0 -> [steadystate]
+
+[Trajectory]
+EndTime=1.000000e-002
+Points=100
+
+[mca]
+SSMCAUnscaled=0
+
+[config]
+Version=3.21301
+
+[units]
+ConcentrationUnit=mM
+VolumeUnit=ml
+TimeUnit=s

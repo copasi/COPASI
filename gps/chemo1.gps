@@ -1,0 +1,285 @@
+Version=3.00202
+EndTime=5.000000e+000
+Points=50
+RealTime=-842150451
+SleepTime=1
+TimeUnit=s
+ConcentrationUnit=mM
+VolumeUnit=ml
+Dynamics=1
+SteadyState=1
+Report=0
+DynTitles=0
+SSTitles=0
+DynQuotes=0
+SSQuotes=0
+DynColWidth=12
+SSColWidth=12
+DynSeparator=32
+SSSeparator=32
+SSMCAUnscaled=0
+SSStrategy=0
+SSBackIntegration=1
+RepStructuralAnalysis=0
+RepStabilityAnalysis=0
+RepMCA=1
+NewtonLimit=50
+SSResoltion=1.000000e-009
+RelativeTolerance=1.000000e-006
+AbsoluteTolerance=1.000000e-012
+AdamsMaxOrder=12
+BDFMaxOrder=5
+DerivationFactor=1.000000e-003
+ReportFile=.txt
+DynamicsFile=
+SSFile=
+Title=Untitled
+TotalMetabolites=18
+TotalSteps=8
+TotalMoieties=3
+TotalCompartments=1
+Stoichiometry
+-1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+1.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 -1.000000 0.000000 
+0.000000 -1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 2.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 2.000000 0.000000 -1.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 
+0.000000 -2.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 -1.000000 
+0.000000 2.000000 0.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 
+0.000000 -2.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 
+TotalUDKinetics=0
+Metabolite=GLCr
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=GLCoc
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=GLCi
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=2NAD
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=2ADP
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=2PYR
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=2NADH
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=2ATP
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=PYR
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=NADH
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=LACi
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=NAD
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=LACoc
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=ATP
+Concentration=0.0000000000000000
+Compartment=0
+Type=1
+Metabolite=ADP
+Concentration=0.0000000000000000
+Compartment=0
+Type=2
+Metabolite=P
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=GLCw
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=LACw
+Concentration=0.0000000000000000
+Compartment=0
+Type=0
+Metabolite=- PYR + NADH 
+Concentration=0.0000000000000000
+Compartment=0
+Type=7
+Metabolite=  PYR + NAD 
+Concentration=0.0000000000000000
+Compartment=0
+Type=7
+Metabolite=  ATP + ADP 
+Concentration=0.0000000000000000
+Compartment=0
+Type=7
+Step=IN
+Equation=GLCr -> GLCoc
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=1
+Products=1
+Modifiers=0
+Constants=1
+Subs0=0
+Prod0=1
+Param0=1.0000000000000000
+Step=GLCupG
+Equation=GLCi + NAD + NAD + ADP + ADP -> PYR + PYR + NADH + NADH + ATP + ATP
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=5
+Products=6
+Modifiers=0
+Constants=1
+Subs0=2
+Subs1=11
+Subs2=11
+Subs3=14
+Subs4=14
+Prod0=8
+Prod1=8
+Prod2=9
+Prod3=9
+Prod4=13
+Prod5=13
+Param0=1.0000000000000000
+Step=GLCtrans
+Equation=GLCoc -> GLCi
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=1
+Products=1
+Modifiers=0
+Constants=1
+Subs0=1
+Prod0=2
+Param0=1.0000000000000000
+Step=LDH
+Equation=PYR + NADH = LACi + NAD
+KineticType=Constant flux (reversible)
+Flux=0.0000000000000000
+Reversible=1
+Substrates=2
+Products=2
+Modifiers=0
+Constants=1
+Subs0=8
+Subs1=9
+Prod0=10
+Prod1=11
+Param0=1.0000000000000000
+Step=LACtrans
+Equation=LACi = LACoc
+KineticType=Constant flux (reversible)
+Flux=0.0000000000000000
+Reversible=1
+Substrates=1
+Products=1
+Modifiers=0
+Constants=1
+Subs0=10
+Prod0=12
+Param0=1.0000000000000000
+Step=ATPASE
+Equation=ATP -> ADP + P
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=1
+Products=2
+Modifiers=0
+Constants=1
+Subs0=13
+Prod0=14
+Prod1=15
+Param0=1.0000000000000000
+Step=GLCout
+Equation=GLCoc -> GLCw
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=1
+Products=1
+Modifiers=0
+Constants=1
+Subs0=1
+Prod0=16
+Param0=1.0000000000000000
+Step=LACout
+Equation=LACoc -> LACw
+KineticType=Constant flux (irreversible)
+Flux=0.0000000000000000
+Reversible=0
+Substrates=1
+Products=1
+Modifiers=0
+Constants=1
+Subs0=12
+Prod0=17
+Param0=1.0000000000000000
+Compartment=compartment
+Volume=1.000000e+000
+Comments
+
+EndComments
+PlotType=2
+PlotDyn=1
+Plot3d=0
+PlotGrid=0
+PlotKey=0
+PlotTitles=1
+PlotMultiplot=0
+PlotContour=0
+PlotHidden3d=0
+PlotLogX=0
+PlotLogY=0
+PlotLogZ=0
+PlotXEntry=-1
+PlotYTotal=0
+PlotZTotal=0
+User-defined functions
+Items=0
+Interactive time course
+Items=0
+Time-course output
+Items=0
+Steady-state output
+Items=0
+Scan
+Enabled=0
+Dimension=0
+Parameter Links
+Items=0

@@ -1,0 +1,181 @@
+Version=3.00108
+EndTime=5.000000e+000
+Points=50
+Dynamics=1
+SteadyState=1
+Report=0
+DynTitles=0
+SSTitles=0
+DynQuotes=0
+SSQuotes=0
+DynColWidth=12
+SSColWidth=12
+DynSeparator=44
+SSSeparator=44
+SSMCAUnscaled=0
+RepStructAnal=0
+RepMCA=1
+RepMCAUnscaled=0
+NewtonLimit=50
+SSResoltion=1.000000e-009
+RelativeTolerance=1.000000e-004
+AbsoluteTolerance=1.000000e-010
+AdamsMaxOrder=12
+BDFMaxOrder=5
+ReportFile=
+DynamicsFile=
+SSFile=
+Title=Dynamic channel
+TotalMetabolites=8
+TotalSteps=6
+TotalMoieties=2
+TotalCompartments=1
+Stoichiometry
+-1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+-1.000000 1.000000 0.000000 0.000000 0.000000 1.000000 
+1.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 
+0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 
+0.000000 0.000000 -1.000000 1.000000 -1.000000 0.000000 
+0.000000 0.000000 1.000000 -1.000000 0.000000 1.000000 
+0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 
+Metabolite=a
+Concentration=10.000000
+Rate=0.000000
+Compartment=0
+Type=0
+Metabolite=e1
+Concentration=0.500000
+Rate=0.000000
+Compartment=0
+Type=1
+Metabolite=e1x
+Concentration=0.500000
+Rate=0.000000
+Compartment=0
+Type=1
+Metabolite=b
+Concentration=0.000000
+Rate=0.000000
+Compartment=0
+Type=1
+Metabolite=e2
+Concentration=0.500000
+Rate=0.000000
+Compartment=0
+Type=1
+Metabolite=e2y
+Concentration=0.500000
+Rate=0.000000
+Compartment=0
+Type=2
+Metabolite=c
+Concentration=0.000000
+Rate=0.000000
+Compartment=0
+Type=0
+Metabolite=e1ce2
+Concentration=0.000000
+Rate=0.000000
+Compartment=0
+Type=2
+Metabolite=- e1 - e1x + e2 + e2y 
+Concentration=0.000000
+Rate=0.000000
+Compartment=0
+Type=7
+Metabolite=  e1 + e1x + e1ce2 
+Concentration=1.000000
+Rate=0.000000
+Compartment=0
+Type=7
+Step=R1
+Equation=a + e1 = e1x
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=0
+Subs1=1
+Prod0=2
+Param0=1.000000
+Param1=1.000000
+Step=R2
+Equation=e1x = e1 + b
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=2
+Prod0=1
+Prod1=3
+Param0=1.000000
+Param1=1.000000
+Step=R3
+Equation=b + e2 = e2y
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=3
+Subs1=4
+Prod0=5
+Param0=1.000000
+Param1=1.000000
+Step=R4
+Equation=e2y = e2 + c
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=5
+Prod0=4
+Prod1=6
+Param0=1.000000
+Param1=1.000000
+Step=R5
+Equation=e1x + e2 = e1ce2
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=2
+Subs1=4
+Prod0=7
+Param0=1.000000
+Param1=1.000000
+Step=R6
+Equation=e1ce2 = e1 + e2y
+KineticType=Mass action (reversible)
+Flux=0.000000
+Reversible=1
+Substrates=1
+Products=2
+Modifiers=0
+Constants=2
+Subs0=7
+Prod0=1
+Prod1=5
+Param0=1.000000
+Param1=1.000000
+Compartment=compartment
+Volume=1.000000
+Comments
+a two reaction pathway with a dynamic channel
+between the two enzymes
+EndComments

@@ -1,0 +1,250 @@
+Version=3.21105
+EndTime=3.000000e+001
+Points=100
+RealTime=0
+SleepTime=1
+TimeUnit=s
+ConcentrationUnit=mM
+VolumeUnit=ml
+TimeElasticities=0
+Dynamics=1
+SteadyState=0
+Report=1
+DynTitles=0
+SSTitles=0
+DynQuotes=0
+SSQuotes=0
+DynColWidth=12
+SSColWidth=12
+DynSeparator=32
+SSSeparator=32
+SSMCAUnscaled=0
+SSStrategy=0
+SSBackIntegration=1
+RepStructuralAnalysis=0
+RepStabilityAnalysis=0
+RepMCA=0
+NewtonLimit=50
+SSResoltion=1.000000e-009
+RelativeTolerance=1.000000e-006
+AbsoluteTolerance=1.000000e-012
+AdamsMaxOrder=12
+BDFMaxOrder=5
+DerivationFactor=1.000000e-003
+ReportFile=KinMMspht.txt
+DynamicsFile=KinMMspect.dat
+SSFile=simresults.ss
+Title=Kinetics of a  Michaelian enzyme measured spectrophotometrically
+TotalMetabolites=7
+TotalSteps=2
+TotalMoieties=2
+TotalCompartments=1
+Stoichiometry
+-1.000000 0.000000 
+-1.000000 1.000000 
+1.000000 -1.000000 
+0.000000 1.000000 
+0.000000 0.000000 
+0.000000 0.000000 
+0.000000 0.000000 
+TotalUDKinetics=0
+Metabolite=S
+Concentration=0.1
+Compartment=0
+Type=1
+Metabolite=E
+Concentration=0.01
+Compartment=0
+Type=1
+Metabolite=ES
+Concentration=0
+Compartment=0
+Type=2
+Metabolite=P
+Concentration=0
+Compartment=0
+Type=2
+Metabolite=coeff
+Concentration=0.78
+Compartment=0
+Type=0
+Metabolite=offset
+Concentration=0
+Compartment=0
+Type=0
+Metabolite=noise
+Concentration=0.05
+Compartment=0
+Type=0
+Metabolite=  E + ES 
+Concentration=0.01
+Compartment=0
+Type=7
+Metabolite=  S - E + P 
+Concentration=0.09000000000000001
+Compartment=0
+Type=7
+Step=R1
+Equation=S + E = ES
+KineticType=Mass action (reversible)
+Flux=0
+Reversible=1
+Substrates=2
+Products=1
+Modifiers=0
+Constants=2
+Subs0=0
+Subs1=1
+Prod0=2
+Param0=130
+Param1=4
+Step=R2
+Equation=ES -> E + P
+KineticType=Mass action (irreversible)
+Flux=0
+Reversible=0
+Substrates=1
+Products=2
+Modifiers=0
+Constants=1
+Subs0=2
+Prod0=1
+Prod1=3
+Param0=45
+Compartment=compartment
+Volume=1.000000e+000
+Comments
+- This simulation is for generation of data for testing the fitting procedures
+- Product formation is followed spectrophotometrically. Gaussian noise is 
+  added to the product concentration and the absortivity coefficient and 
+  offset is taken into account.
+- Several progress curves are generated with the Scan facility.
+- Km = 0.3769, V = 0.45
+EndComments
+PlotType=3
+PlotDyn=1
+Plot3d=0
+PlotGrid=0
+PlotKey=0
+PlotTitles=1
+PlotMultiplot=0
+PlotContour=0
+PlotHidden3d=0
+PlotLogX=0
+PlotLogY=0
+PlotLogZ=0
+PlotXEntry=1
+PlotYTotal=1
+PlotZTotal=1
+PlotY0=2
+PlotZ0=-1
+User-defined functions
+Items=1
+Name=signal
+Description=p*c+o+n*gauss(p)
+Nodes=13
+Node=37,64
+Node=73,112
+Title=[P]
+Type=2
+I=P
+Node=79,42
+Node=73,99
+Title=[coeff]i
+Type=1
+I=coeff
+Node=79,43
+Node=73,111
+Title=[offset]i
+Type=1
+I=offset
+Node=79,43
+Node=73,110
+Title=[noise]i
+Type=1
+I=noise
+Node=79,42
+Node=70,71
+Node=79,40
+Node=73,112
+Title=[P]
+Type=2
+I=P
+Node=79,41
+Interactive time course
+Items=3
+Title=[P]t
+Type=3
+I=P
+Title=[ES]t
+Type=3
+I=ES
+Title=signal
+Type=24
+Time-course output
+Items=3
+Title=[S]i
+Type=1
+I=S
+Title=time
+Type=14
+Title=signal
+Type=24
+Steady-state output
+Items=0
+Scan
+Enabled=1
+Dimension=2
+Title=[S]i
+Type=1
+I=S
+Min=0.1000000000000000
+Max=10.0000000000000000
+Density=5
+Log=1
+Independent=1
+Grid=0
+Title=[offset]i
+Type=1
+I=offset
+Min=-0.1000000000000000
+Max=0.1000000000000000
+Density=5
+Log=0
+Independent=0
+Grid=1
+Parameter Links
+Items=0
+Optimisation
+Enabled=0
+SetModel=0
+Sign=1.0
+OptimiseDyn=1
+Constrained=1
+Method=Evolutionary programming
+P0=500
+P1=10
+P2=1
+P3=1
+P4=1
+Title=
+Type=0
+Parameters=0
+Fitting
+Enabled=0
+SetModel=0
+FitDyn=1
+Constrained=1
+FitDataFile=
+FitSeparator=32
+FitLines=0
+Method=
+P0=500
+P1=10
+P2=1
+P3=1
+P4=1
+Parameters=0
+AdjConcentrations=0
+FitXItems=0
+FitYItems=0
