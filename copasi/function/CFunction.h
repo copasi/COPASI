@@ -31,6 +31,11 @@ class CFunction : public CCopasiContainer
       Output
     };
 
+    /**
+     *  The string representation of valid types of a function
+     */
+    static const std::string TypeName[];
+
     // Attributes
   private:
 

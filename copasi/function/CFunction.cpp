@@ -13,6 +13,9 @@
 #include "utilities/utility.h"
 #include "report/CKeyFactory.h"
 
+const std::string CFunction::TypeName[] =
+  {"predefined", "predefined", "predefined", "userdefined", "userdefined", ""};
+
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Function"),
