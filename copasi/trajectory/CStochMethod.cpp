@@ -481,7 +481,7 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
         if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
           {
             retset->insert(balances[i]->getMetabolite().getKey());
-            std::cout << " " << balances[i]->getMetaboliteName() << ":" << balances[i]->getMetabolite().getKey();
+            std::cout << " " << balances[i]->getMetabolite().getName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }
 
