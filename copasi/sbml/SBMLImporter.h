@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/11 08:43:28 $
+   $Date: 2004/06/15 14:49:48 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_HPP
@@ -72,12 +72,12 @@ class SBMLImporter
      * Creates and returns a Copasi CCompartment from the SBML Compartment
      * given as argument.
      */
-    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel);
+    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel) throw(StdException);
 
     /**
      * Creates and returns a Copasi CMetab from the given SBML Species object.
      */
-    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment);
+    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment) throw(StdException);
 
     /**
      * Creates and returns a Copasi CReaction object from the given SBML
