@@ -7,7 +7,6 @@
  */
 
 #include <fstream>
-#include <sstream>
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
@@ -172,6 +171,13 @@ bool CCopasiXMLInterface::freeReportList()
   return true;
 }
 
+bool CCopasiXMLInterface::saveData(const std::string & data)
+{
+  *mpOstream << mIndent << CCopasiXMLInterface::encode(data) << std::endl;
+
+  return true;
+}
+
 bool CCopasiXMLInterface::saveElement(const std::string & name,
                                       CXMLAttributeList & attributeList)
 {
@@ -203,9 +209,9 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 
 bool CCopasiXMLInterface::endSaveElement(const std::string & name)
 {
+  mIndent = mIndent.substr(0, mIndent.length() - 2);
   *mpOstream << mIndent << "</" << name << ">" << std::endl;
 
-  mIndent.substr(0, mIndent.length() - 2);
   return true;
 }
 
@@ -225,14 +231,6 @@ bool CXMLAttributeList::erase()
   return true;
 }
 
-bool CXMLAttributeList::addAttribute(const std::string & name,
-                                     const std::string & value)
-{
-  mAttributeList.push_back(name);
-  mAttributeList.push_back(CCopasiXMLInterface::encode(value));
-
-  return true;
-}
 unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
 
 bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
@@ -244,13 +242,6 @@ bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
 
 const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) const
   {return mAttributeList[2 * index];}
-
-bool CXMLAttributeList::setValue(const unsigned C_INT32 & index,
-                                 const std::string & value)
-{
-  mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(value);
-  return true;
-}
 
 const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
   {return mAttributeList[2 * index + 1];}

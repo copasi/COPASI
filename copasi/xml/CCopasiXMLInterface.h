@@ -11,105 +11,14 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 
 class CModel;
 template <class CType> class CCopasiVectorN;
 class CFunction;
 class CCopasiTask;
 class CCopasiReport;
-
-/**
- * A list of XML attributes used by saveElement and startSaveElement.
- */
-class CXMLAttributeList
-  {
-    // Attributes
-  private:
-    /**
-     * The attribute list
-     */
-    std::vector< std::string > mAttributeList;
-
-    // Operations
-  public:
-    /**
-     * Constructor.
-     */
-    CXMLAttributeList();
-
-    /**
-     * Copy constructor.
-     * @param const CXMLAttributeList & src
-     */
-    CXMLAttributeList(const CXMLAttributeList & src);
-
-    /**
-     * Destructor.
-     */
-    ~CXMLAttributeList();
-
-    /**
-     * Erase the content of the attribute list.
-     * @return bool success
-     */
-    bool erase();
-
-    /**
-     * Add an attribute to the end of the list.
-     * Note: the value will be XML encoded
-     * @param const std::string & name
-     * @param const std::string & value
-     * @return bool success
-     */
-    bool addAttribute(const std::string & name,
-                      const std::string & value);
-
-    /**
-     * Retreive the size of the list.
-     * @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 size();
-
-    /**
-     * Set the name of the indexed attribute
-     * @param const unsigned C_INT32 & index
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool setName(const unsigned C_INT32 & index,
-                 const std::string & name);
-
-    /**
-     * Retreive the name of the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return const std::string & name
-     */
-    const std::string & getName(const unsigned C_INT32 & index) const;
-
-    /**
-     * Set the value of the indexed attribute
-     * Note: the value will be XML encoded
-     * @param const unsigned C_INT32 & index
-     * @param const std::string & value
-     * @return bool success
-     */
-    bool setValue(const unsigned C_INT32 & index,
-                  const std::string & value);
-
-    /**
-     * Retreive the value of the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return const std::string & value
-     */
-    const std::string & getValue(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retreive the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return std::string attribute
-     */
-    std::string getAttribute(const unsigned C_INT32 & index) const;
-  };
+class CXMLAttributeList;
 
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
@@ -320,6 +229,13 @@ class CCopasiXMLInterface
 
   protected:
     /**
+     * Save CDATA  to the ostream
+     * @param const std::string & data
+     * @return bool success
+     */
+    bool saveData(const std::string & data);
+
+    /**
      * Save an XML element to the ostream
      * @param const std::string & name
      * @param CXMLAttributeList & attributeList
@@ -345,4 +261,112 @@ class CCopasiXMLInterface
     bool endSaveElement(const std::string & name);
   };
 
+/**
+ * A list of XML attributes used by saveElement and startSaveElement.
+ */
+class CXMLAttributeList
+  {
+    // Attributes
+  private:
+    /**
+     * The attribute list
+     */
+    std::vector< std::string > mAttributeList;
+
+    // Operations
+  public:
+    /**
+     * Constructor.
+     */
+    CXMLAttributeList();
+
+    /**
+     * Copy constructor.
+     * @param const CXMLAttributeList & src
+     */
+    CXMLAttributeList(const CXMLAttributeList & src);
+
+    /**
+     * Destructor.
+     */
+    ~CXMLAttributeList();
+
+    /**
+     * Erase the content of the attribute list.
+     * @return bool success
+     */
+    bool erase();
+
+    /**
+     * Add an attribute to the end of the list.
+     * Note: the value will be XML encoded
+     * @param const std::string & name
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType>bool add(const std::string & name,
+                                   const CType & value)
+    {
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList.push_back(name);
+      mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str()));
+
+      return true;
+    }
+
+    /**
+     * Retreive the size of the list.
+     * @return unsigned C_INT32 size
+     */
+    unsigned C_INT32 size();
+
+    /**
+     * Set the name of the indexed attribute
+     * @param const unsigned C_INT32 & index
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool setName(const unsigned C_INT32 & index,
+                 const std::string & name);
+
+    /**
+     * Retreive the name of the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return const std::string & name
+     */
+    const std::string & getName(const unsigned C_INT32 & index) const;
+
+    /**
+     * Set the value of the indexed attribute
+     * Note: the value will be XML encoded
+     * @param const unsigned C_INT32 & index
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType> bool setValue(const unsigned C_INT32 & index,
+                                         const CType & value)
+    {
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      return true;
+    }
+
+    /**
+     * Retreive the value of the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return const std::string & value
+     */
+    const std::string & getValue(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retreive the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return std::string attribute
+     */
+    std::string getAttribute(const unsigned C_INT32 & index) const;
+  };
 #endif // COPASI_CCopasiXMLInterface

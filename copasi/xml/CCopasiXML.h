@@ -64,6 +64,12 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool saveReportList();
+
+    /**
+     * Build a list of functions.
+     * @return bool success
+     */
+    bool buildFunctionList();
   };
 
 #endif // COPASI_CCopasiXML
