@@ -502,7 +502,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                          // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                           // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
 
           // ADD DEFINED IN DATAMODEL.H
 
@@ -525,7 +525,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                      // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                       // WHEN ANY DATA IS DELETED FROM THE TREE
 
           if ((node = dataModel->getData()) != NULL)
             // check if the node that is requested to be deleted is present or not
@@ -537,13 +537,18 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                        // new model is loaded.
+        case MODEL:                         // new model is loaded.
 
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
 
           this->loadNodes(mModel);
+          break;
+
+        case STEADYSTATETASK:
+          steadystateWidget->loadSteadyStateTask(dataModel->getSteadyStateTask());
+          break;
         }
     }
   else
