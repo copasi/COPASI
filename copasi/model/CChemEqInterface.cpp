@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/25 21:15:48 $
+   $Date: 2004/05/06 19:42:51 $
    End CVS Header */
 
 #include <math.h>
@@ -28,6 +28,9 @@ std::string CChemEqInterface::getChemEqString(bool expanded) const
   {
     std::string ChemicalEquation;
     unsigned C_INT32 j;
+
+    if ((mSubstrateNames.size() == 0) && (mProductNames.size() == 0) && (mModifierNames.size() == 0))
+      return "";
 
     for (j = 0; j < mSubstrateNames.size(); j++)
       {
@@ -165,6 +168,18 @@ const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(const s
 
     return mSubstrateMult; //never reached
   }
+
+void CChemEqInterface::addModifier(const std::string & name)
+{
+  mModifierNames.push_back(name);
+  mModifierMult.push_back(1.0);
+}
+
+void CChemEqInterface::clearModifiers()
+{
+  mModifierNames.clear();
+  mModifierMult.clear();
+}
 
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:34 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:42:51 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -44,6 +44,10 @@ class CChemEqInterface
 
     const std::vector<std::string> & getListOfNames(const std::string & role) const;
     const std::vector<C_FLOAT64> & getListOfMultiplicities(const std::string & role) const;
+
+    //right now only modifiers can be added to the ChemEq without entering them into the CHemEq string
+    void addModifier(const std::string & name);
+    void clearModifiers();
 
     bool getReversibility() const {return mReversibility;};
     void setReversibility(bool rev) {mReversibility = rev;};
