@@ -15,6 +15,7 @@
 #include "model/CCompartment.h"
 #include "CDatum.h"
 #include "COutputLine.h"
+#include "steadystate/CSS_Solution.h"
 
 using namespace std;
 
