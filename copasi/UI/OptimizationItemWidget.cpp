@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:21 $
+   $Author: ssahle $ 
+   $Date: 2004/05/03 20:29:51 $
    End CVS Header */
 
 /********************************************************
@@ -272,7 +272,7 @@ std::string OptimizationItemWidget::getItemUpperLimit()
   if (checkUpperInf->isChecked())
     return "+inf";
   else
-    return lineUpper->text().utf8();
+    return (const char*)lineUpper->text().utf8();
 }
 
 std::string OptimizationItemWidget::getItemLowerLimit()
@@ -280,7 +280,7 @@ std::string OptimizationItemWidget::getItemLowerLimit()
   if (checkLowerInf->isChecked())
     return "-inf";
   else
-    return lineLower->text().utf8();
+    return (const char*)lineLower->text().utf8();
 }
 
 CCopasiObject* OptimizationItemWidget::getCopasiObject()
@@ -334,12 +334,12 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
 
 std::string OptimizationItemWidget::getItemUpperOper()
 {
-  return comboBoxUpperOp->currentText().utf8();
+  return (const char*)comboBoxUpperOp->currentText().utf8();
 }
 
 std::string OptimizationItemWidget::getItemLowerOper()
 {
-  return comboBoxLowerOp->currentText().utf8();
+  return (const char*)comboBoxLowerOp->currentText().utf8();
 }
 
 void OptimizationItemWidget::setItemUpperOper(std::string oper)

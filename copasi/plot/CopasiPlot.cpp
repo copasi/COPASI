@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:28 $
+   $Author: ssahle $ 
+   $Date: 2004/05/03 20:30:24 $
    End CVS Header */
 
 #include <qarray.h>
@@ -64,7 +64,7 @@ CopasiPlot::CopasiPlot(CPlotSpec* plotspec, QWidget* parent)
   // white background better for printing...
   setCanvasBackground(white);
 
-  setTitle(_toUtf8(ptspec->getTitle()));
+  setTitle(FROM_UTF8(ptspec->getTitle()));
   setCanvasLineWidth(0);
 
   // allocate memory for the plotting data
@@ -91,7 +91,7 @@ CopasiPlot::CopasiPlot(CPlotSpec* plotspec, QWidget* parent)
   for (k = 0; k < ptspec->getCurves().size(); k++)
     {
       // set up the curve
-      long crv = insertCurve(_toUtf8(ptspec->getCurves()[k].title));
+      long crv = insertCurve(FROM_UTF8(ptspec->getCurves()[k].title));
 
       setCurvePen(crv, QPen(curveColours[k]));
       setCurveXAxis(crv, ptspec->getCurves()[k].xAxis);
