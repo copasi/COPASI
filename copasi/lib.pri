@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/05/19 12:45:54 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/06/05 18:49:12 $  
 ######################################################################
 
 include(../common.pri)
@@ -13,4 +13,4 @@ DEPENDPATH += ..
 INCLUDEPATH += ..
 OBJECTS_DIR = .
 DESTDIR = ../lib
-TARGET = $${LIB}
+TARGET = $$LIB
