@@ -137,6 +137,10 @@ SOURCE=.\CSpec2Model.cpp
 
 SOURCE=.\CSpecLine.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CState.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -180,6 +184,10 @@ SOURCE=.\CSpec2Model.h
 # Begin Source File
 
 SOURCE=.\CSpecLine.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CState.h
 # End Source File
 # Begin Source File
 

@@ -107,7 +107,7 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
           table->setText(j, 1,*m1);
            
           //table->setText(j, 1,ms); */
-          table->setText(j, 1, QString::number(*(metab->getConcentration())));
+          table->setText(j, 1, QString::number(metab->getConcentration()));
 
           table->setText(j, 2, QString::number(metab->getNumber()));
 

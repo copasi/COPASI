@@ -25,11 +25,12 @@ class CGlobals
      *
      */
     CFunctionDB FunctionDB;
-    CCompartment Compartmentfile;
+
     /**
      *
      */
     CUDFunctionDB UDFunctionDB;
+    CCompartment Compartmentfile;
 
     /**
      *  This is a hack at the moment to be able to read old configuration files
@@ -40,6 +41,11 @@ class CGlobals
      *
      */
     C_FLOAT64 DefaultConc;
+
+    /**
+     *
+     */
+    C_FLOAT64 DefaultVolume;
 
     /**
      *

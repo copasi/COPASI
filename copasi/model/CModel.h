@@ -17,6 +17,10 @@
 
 class CCompartment;
 
+class CState;
+
+class CStateX;
+
 class CModel
   {
     //Attributes
@@ -62,8 +66,8 @@ class CModel
      *  Vector of fluxes of the reactions.
      *  Note: The fluxes are the order corresponding to mStepX
      */
-    vector < C_FLOAT64 * > mFluxes;
-    vector < C_FLOAT64 * > mFluxesX;
+    vector <const C_FLOAT64 *> mFluxes;
+    vector <const C_FLOAT64 *> mFluxesX;
 
     /**
      *  Transition time 
@@ -107,124 +111,6 @@ class CModel
      */
     TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
     *mpInverseLView;
-
-#ifdef XXXX
-    /**
-     *  number of internal metabolites
-     */
-    C_INT32 mIntMetab;
-
-    /**
-     *  number of independent metabolites
-     */
-    C_INT32 mIndMetab;
-
-    /**
-     *  number of dependent metabolites
-     */
-    C_INT32 mDepMetab;
-
-    /**
-     *  number of external metabolites
-     */
-    C_INT32 mExtMetab;
-
-    // reaction network
-
-    /**
-     * 
-     */
-    vector < vector < C_FLOAT32 > > mStoichiometry;
-
-    /**
-     * 
-     */
-    vector < vector < C_FLOAT32 > > mRedStoi;
-
-    /**
-     * 
-     */ 
-    // to index rows from primary to secondary matrix notation - Stoi notation to RedStoi
-    vector < C_INT32 > mRow;
-
-    /**
-     * 
-     */ 
-    // to index cols from primary to secondary matrix notation
-    vector < C_INT32 > mCol;
-
-    /**
-     * 
-     */ 
-    // to index rows from secondary to primary matrix notation - RedStoi notation to Stoi
-    vector < C_INT32 > mIRow;
-
-    /**
-     * 
-     */ 
-    // to index cols from secondary to primary matrix notation
-    vector < C_INT32 > mICol;
-
-    /**
-     * 
-     */ 
-    // for the reaction structure description vectors
-    vector < vector < C_INT32 > > mReactStruct;
-
-    /**
-     * 
-     */ 
-    // for the array of conservation relations (ptrs to the rows)
-    vector < vector < C_FLOAT32 > > mConsRel;
-
-    /**
-     * 
-     */ 
-    // multipliers of gauss reduction (IntMet x IntMet)
-    vector < vector < C_FLOAT32 > > mML;
-
-    /**
-     * 
-     */ 
-    // for the kernel of the stoichiometry matrix (ptrs for the rows)
-    vector < vector < C_FLOAT32 > > mKernel;
-
-    /**
-     * 
-     */ 
-    // permutation matrix (index of Kernel's rows
-    vector < C_INT32 > mKernelP;
-
-    /**
-     * 
-     */ 
-    // dimensions of the Kernel matrix
-    C_INT32 mKernelI, mKernelJ;
-
-    /**
-     * 
-     */ 
-    // rank of the stoichiometry matrix
-    C_INT32 mRank;
-
-    /**
-     * 
-     */ 
-    // number of reactions in equil at steady state
-    C_INT32 mDetBalance;
-
-    /**
-     * 
-     */ 
-    // inverse of ml (IntMet x IntMet)
-    vector < vector < C_FLOAT32 > > mLM;
-
-    /**
-     * 
-     */ 
-    // temporary file for debugging
-    string mDebugFile;   // temporary file for debugging
-#endif // XXXX
 
   public:
     /**
@@ -379,14 +265,6 @@ class CModel
      */
     void setTransitionTimes();
 
-#ifdef XXXX
-    /**
-     *  Retrieves the transition time of the model.
-     *  @return "const C_FLOAT64 &" transitionTime
-     */
-    const C_FLOAT64 & getTransitionTime();
-#endif // XXXX
-
     // Added by CvG
     /**
      * Return the vector of reactions
@@ -425,7 +303,7 @@ class CModel
      * Return the compartments of this model
      * @return CCopasiVectorNS < CCompartment > *
      */
-    CCopasiVectorNS < CCompartment > & getCompartments();
+    CCopasiVectorNS < CCompartment > & getCompartments() const;
 
     /**
      * Return the metabolites of this model
@@ -493,246 +371,22 @@ class CModel
 
     TNT::Matrix < C_FLOAT64 >& getML();
 
-#ifdef XXXX
-    /**
-     *  Assignement operator. 
-     */
-    CModel &operator=(CModel &);    // overloaded assignment operator
-
-    /**
-     * 
-     */
-    void reset(C_INT32 nstep, C_INT32 nmetab,
-               C_INT32 intmet, C_INT32 nmoiety,
-               C_INT32 ncompart,
-               const string &Tit);   // resets the model
-
-    /**
-     * 
-     */
-    void resetStepMetab(C_INT32 nstep, C_INT32 nmetab, C_INT32 intmet, C_INT32 nmoiety); //resets all nut compartments and title
-
-    /**
-     * 
-     */
-    C_INT32 resetCompartments(C_INT32 ncompart); // clears the compartments array and resizes it
-
-    /**
-     * 
-     */
-    void clearStoi(void);    // zeroes all entries in stoichimetry matxs
-
-    /**
-     * 
-     */
-    void clear(void);     // clears the model (incl resetting to 0)
-
-    /**
-     * 
-     */
-    void countMetabolites(void);   // counts the metabolites in each class
-
-    /**
-     * 
-     */
-    void sortMetabolites(void);   // sorts the metabolite for secondary matrices
-
-    /**
-     * 
-     */
-    void structural(void);    // identifies structural properties
-
-    /**
-     * 
-     */
-    C_INT32 elementaryModes(CWriteConfig &configbuffer); // finds the elementary modes
-
-    /**
-     * 
-     */
-    void addToStoi(C_INT32 StepNo,
-                   C_INT32 MetabNo,
-                   C_INT32 Sign, C_INT32 Value); // adds an entry in Stoi and in the relevant step
-
-    /**
-     * 
-     */
-    void setupMoiety(void);    // sets the description and concentration of moieties
-
-    /**
-     * 
-     */
-    void updateChemEq(void);    // updates the ChemEq equations of all steps
-
-    /**
-     * 
-     */
-    void initDebug(void);    // For debug output
-
-    /**
-     * 
-     */
-    void printSummary(void);    // For debug output
-
-    /**
-     * 
-     */
-    void printMatrices(void);   // For debug output
-
-    /**
-     * 
-     */
-    C_INT32 findMetab(string &Target);  // returns the index of the metab
-
-    /**
-     * 
-     */
-    C_INT32 findStep(string &Target);  // returns the index of the step
-
-    /**
-     * 
-     */
-    C_INT32 findMoiety(string &Target);  // returns the index of the moiety
-
-    /**
-     * 
-     */
-    C_INT32 findCompartment(string &Target); // returns the index of the compartment
-
-    /**
-     * 
-     */
-    void calculateMoieties(void);  // calculates the total masses of the moieties
-
-    /**
-     * 
-     */
-    C_INT32 substrateMolecularity(C_INT32 st); // returns molecularity (substrates)
-
-    /**
-     * 
-     */
-    C_INT32 productMolecularity(C_INT32 st);  // returns molecularity (products)
-
-    /**
-     * 
-     */
-    void updateCompartments(void);  // updates references to compartments
-
-    /**
-     * 
-     */
-    void saveUDKin(CWriteConfig &configbuffer); // saves the user-defined kinetic types in this model
-
-    /**
-     * 
-     */
-    C_INT32 addMetabolite(string &NewName); // adds a new metabolite to the model
-
-    /**
-     * 
-     */
-    void updateMoieties(void);
-
-    /**
-     * 
-     */ 
-    // determine the kernel of the stoichiometry matrix
-    C_INT32 getKernel(void);
+    CState * getInitialState() const;
+    CStateX * getInitialStateX() const;
+    void setInitialState(const CState * state);
+    void setInitialState (const CStateX * state);
+    void getRates(CState * state, C_FLOAT64 * rates);
+    void getRates(CStateX * state, C_FLOAT64 * rates);
+    void getDerivatives(CState * state, C_FLOAT64 * derivatives);
+    void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
+    CStateX * convertState(CState * state);
+    CState * convertState(CStateX * state);
 
   private:
-
-    /**
-     * 
-     */ 
-    // operations
-    // allocate memory and set pointers for a model
-    void allocModel(C_INT32 nstep, C_INT32 nmetab, C_INT32 C_INT32met, C_INT32 nmoiety, C_INT32 ncompart);
-
-    /**
-     * 
-     */ 
-    // deallocate memory and free the pointers
-    void deAlloc(void);
-
-    /**
-     * 
-     */ 
-    // initilizes the indeces to RedStoi
-    void initIndex(void);
-
-    /**
-     * 
-     */ 
-    // copies Stoi into RedStoi
-    void initRedStoi(void);
-
-    /**
-     * 
-     */ 
-    // finds metabolites that must be external
-    void spotExternal(void);
-
-    /**
-     * 
-     */ 
-    // checks if a row in RedStoi is empty
-    C_INT32 emptyRow(C_INT32 r);
-
-    /**
-     * 
-     */ 
-    // switches two rows in the secondary matrices
-    void redStoiRowSwitch(C_INT32 r1, C_INT32 r2);
-
-    /**
-     * 
-     */ 
-    // switches two cols in the secondary matrices
-    void redStoiColSwitch(C_INT32 c1, C_INT32 c2);
-
-    /**
-     * 
-     */ 
-    // allocates space for the ml and lm matrices
-    C_INT32 createLM(void);
-
-    /**
-     * 
-     */ 
-    // deletes the space used by ml and lm matrices
-    void destroyLM(void);
-
-    /**
-     * 
-     */ 
-    // reduces RedStoi
-    C_INT32 gauss(void);
-
-    /**
-     * 
-     */ 
-    // identifies the conseravation relations
-    void spotDependent(void);
-
-    /**
-     * 
-     */ 
-    // Creates the mapping for secondary matrices
-    void mapSecondary(void);
-
-    /**
-     * 
-     */ 
-    // mark the status of internal metabolites
-    void markStatus(void);
-
-    /**
-     * 
-     */ 
-    // rebuild the stoichiometry matrix
-    void rebuildStoi(C_INT32 flag);
-#endif // XXXX
+    void setState(const CState * state);
+    void setState(const CStateX * state);
+    CState * getState() const;
+    CStateX * getStateX() const;
   };
 
 #endif // CModel

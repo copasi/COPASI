@@ -1,9 +1,9 @@
+/////////////////////////////////////////////////////////////////////////////
+// CModel
 // model.cpp : interface of the CModel class
 //
 /////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////
-// CModel
 #include <string>
 #include <vector>
 #include <limits.h>
@@ -11,14 +11,13 @@
 #define DBL_MAX 1.7976931348623158e+308
 #endif //DBL_MAX
 
-//#include "utilities/CCopasiException.h"
-
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "CModel.h"
 #include "CCompartment.h"
+#include "CState.h"
 #include "tnt/luX.h"
 #include "tnt/triang.h"
 #include "tnt/transv.h"
@@ -212,21 +211,25 @@ void CModel::buildStoi()
   mMetabolitesX.resize(imax);
   j = 0;
 
+  // We reorder mMetabolitesX so that the fixed metabolites appear at the end.
+
   for (i = 0; i < imax; i++)
     if (mMetabolites[i]->getStatus() == METAB_FIXED)
       mMetabolitesX[imax - ++j] = mMetabolites[i];
     else
       mMetabolitesX[i - j] = mMetabolites[i];
 
-  /*
-      for (i=0; i<imax; i++)
-      mMetabolites[i] = mMetabolitesX[i];
-  */
+  // Update mMetabolites to reflect the reordering.
+  // We need to to this to allow the use of the full model for simulation.
+  // :TODO: This most definitely breaks output when reading Gepasi files.
+  //        CGlobal::OldMetabolites is still in the expexted order !!!
+  for (i = 0; i < imax; i++)
+    mMetabolites[i] = mMetabolitesX[i];
 
   mFluxes.resize(mSteps.size());
 
   for (i = 0; i < mSteps.size(); i++)
-    mFluxes[i] = (C_FLOAT64 *) mSteps[i]->getFluxAddr();
+    mFluxes[i] = & mSteps[i]->getFlux();
 
   mStoi.newsize(imax - j, mSteps.size());
 
@@ -237,8 +240,8 @@ void CModel::buildStoi()
       for (j = 0; j < (unsigned C_INT32) mStoi.num_rows(); j++)
         {
           mStoi[j][i] = 0.0;
-          // Name = mMetabolites[j]->getName();
-          Name = mMetabolitesX[j]->getName();
+          Name = mMetabolites[j]->getName();
+          // Name = mMetabolitesX[j]->getName();
 
           for (k = 0; k < Structure.size(); k++)
             if (Structure[k]->getMetaboliteName() == Name)
@@ -310,8 +313,8 @@ void CModel::lUDecomposition()
 
   mFluxesX.resize(mStepsX.size());
 
-  for (i = 0; i < mFluxesX.size(); i++)
-    mFluxesX[i] = (C_FLOAT64 *) mStepsX[i]->getFluxAddr();
+  for (i = 0; i < mStepsX.size(); i++)
+    mFluxesX[i] = &mStepsX[i]->getFlux();
 
   return ;
 }
@@ -455,32 +458,6 @@ void CModel::buildL()
   << endl;
 }
 
-#ifdef XXXX
-void CModel::buildConsRel()
-{
-  mConsRel.newsize(mMetabolites.size(), mMetabolitesInd.size());
-
-  C_INT32 i, j;
-
-  C_INT32 imax = (mConsRel.num_rows() > mConsRel.num_cols()) ?
-                 mConsRel.num_cols() : mConsRel.num_rows();
-
-  // wei for compiler for (i=0; i<min(mConsRel.num_rows(), mConsRel.num_cols()); i++)
-
-  for (i = 0; i < imax; i++)
-    mConsRel[i + 1][i] = mLU[i + 1][i];
-
-  for (j = 0; j < mConsRel.num_cols(); j++)
-    for (i = j + 2; i < mConsRel.num_rows(); i++)
-      mConsRel[i][j] = mLU[i][j] + mLU[i][i - 1] * mConsRel[i - 1][j];
-
-  cout << mConsRel << endl;
-
-  return ;
-}
-
-#endif // XXXX
-
 void CModel::buildMoieties()
 {
   unsigned C_INT32 i;
@@ -616,11 +593,6 @@ void CModel::setTransitionTimes()
     }
 }
 
-#ifdef XXXX
-const C_FLOAT64 & CModel::getTransitionTime() { return mTransitionTime; }
-
-#endif // XXXX
-
 CCopasiVectorNS < CReaction > & CModel::getReactions()
 {
   return mSteps;
@@ -738,10 +710,10 @@ string CModel::getTitle() const
  *        Return the comments of this model
  *        @return CCopasiVector < CCompartment > *
  */
-CCopasiVectorNS < CCompartment > & CModel::getCompartments()
-{
-  return mCompartments;
-}
+CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
+  {
+    return (const_cast< CModel * >(this))->mCompartments;
+  }
 
 /**
  *        Return the metabolites of this model
@@ -905,4 +877,321 @@ const TNT::Matrix < C_FLOAT64 >& CModel::getML() const
 TNT::Matrix < C_FLOAT64 >& CModel::getML()
 {
   return mL;
+}
+
+CState * CModel::getInitialState() const
+  {
+    unsigned C_INT32 i, imax;
+    CState * s = new CState(this);
+
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumes());
+
+    for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+      *Dbl = mCompartments[i]->getVolume();
+
+    Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
+
+    for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolites[i]->getInitialConcentration()
+             * mMetabolites[i]->getCompartment()->getVolume();
+
+    C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
+
+    for (i = 0, imax = mMetabolites.size(); i < imax; i++, Int++)
+      *Int = mMetabolites[i]->getInitialNumber();
+
+    return s;
+  }
+
+CStateX * CModel::getInitialStateX() const
+  {
+    unsigned C_INT32 i, imax;
+    CStateX * s = new CStateX(this);
+
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumes());
+
+    for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+      *Dbl = mCompartments[i]->getVolume();
+
+    Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
+
+    for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolitesX[i]->getInitialConcentration()
+             * mMetabolitesX[i]->getCompartment()->getVolume();
+
+    C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
+
+    for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Int++)
+      *Int = mMetabolitesX[i]->getInitialNumber();
+
+    return s;
+  }
+
+void CModel::setInitialState(const CState * state)
+{
+  unsigned C_INT32 i, imax;
+
+  const C_FLOAT64 * Dbl = state->getVolumes();
+
+  for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+    mCompartments[i]->setVolume(*Dbl) ;
+
+  /* We are not using the set method since it automatically updates the
+     numbers which are provided separately in a state */
+  Dbl = state->getNumbersDbl();
+
+  for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
+    static_cast<C_FLOAT64>(mMetabolites[i]->getInitialConcentration())
+    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
+
+  /* We are not using the set method since it automatically updates the
+     concentration which has been already set above */
+  const C_INT32 * Int = state->getNumbersInt();
+
+  for (i = 0; i < imax; i++, Int++)
+    static_cast<C_INT32>(mMetabolites[i]->getInitialNumber()) = *Int;
+
+  /* We need to update the initial values for moieties */
+  for (i = 0, imax = mMoieties.size(); i < imax; i++)
+    mMoieties[i]->setInitialValue();
+
+  return ;
+}
+
+void CModel::setInitialState(const CStateX * state)
+{
+  unsigned C_INT32 i, imax;
+
+  const C_FLOAT64 * Dbl = state->getVolumes();
+
+  for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+    mCompartments[i]->setVolume(*Dbl) ;
+
+  /* We are not using the set method since it automatically updates the
+     numbers which are provided separately in a state */
+  Dbl = state->getNumbersDbl();
+
+  for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
+    static_cast<C_FLOAT64>(mMetabolitesX[i]->getInitialConcentration())
+    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
+
+  /* We are not using the set method since it automatically updates the
+     concentration which has been already set above */
+  const C_INT32 * Int = state->getNumbersInt();
+
+  for (i = 0; i < imax; i++, Int++)
+    static_cast<C_INT32>(mMetabolitesX[i]->getInitialNumber()) = *Int;
+
+  /* We need to update the initial values for moieties */
+  for (i = 0, imax = mMoieties.size(); i < imax; i++)
+    mMoieties[i]->setInitialValue();
+
+  return ;
+}
+
+CState * CModel::getState() const
+  {
+    unsigned C_INT32 i, imax;
+    CState * s = new CState(this);
+
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumes());
+
+    for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+      *Dbl = mCompartments[i]->getVolume();
+
+    Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
+
+    for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolites[i]->getConcentration()
+             * mMetabolites[i]->getCompartment()->getVolume();
+
+    C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
+
+    for (i = 0, imax = mMetabolites.size(); i < imax; i++, Int++)
+      *Int = mMetabolites[i]->getNumber();
+
+    return s;
+  }
+
+CStateX * CModel::getStateX() const
+  {
+    unsigned C_INT32 i, imax;
+    CStateX * s = new CStateX(this);
+
+    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s->getVolumes());
+
+    for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+      *Dbl = mCompartments[i]->getVolume();
+
+    Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
+
+    for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
+      *Dbl = mMetabolitesX[i]->getConcentration()
+             * mMetabolitesX[i]->getCompartment()->getVolume();
+
+    C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
+
+    for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Int++)
+      *Int = mMetabolitesX[i]->getNumber();
+
+    return s;
+  }
+
+void CModel::setState(const CState * state)
+{
+  unsigned C_INT32 i, imax;
+  const C_FLOAT64 * Dbl;
+
+#ifdef XXXX // This gets enabled when we have dynamic volume changes
+
+  Dbl = state->getVolumes();
+
+  for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+    mCompartments[i]->setVolume(*Dbl) ;
+
+#endif // XXXX
+
+  /* We are not using the set method since it automatically updates the
+     numbers which are provided separately in a state */
+  Dbl = state->getNumbersDbl();
+
+  for (i = 0, imax = mMetabolitesInd.size() + mMetabolitesDep.size();
+       i < imax; i++, Dbl++)
+    static_cast<C_FLOAT64>(mMetabolites[i]->getConcentration())
+    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
+
+  /* We are not using the set method since it automatically updates the
+     concentration which has been already set above */
+  const C_INT32 * Int = state->getNumbersInt();
+
+  for (i = 0; i < imax; i++, Int++)
+    static_cast<C_INT32>(mMetabolites[i]->getNumber()) = *Int;
+
+  return ;
+}
+
+void CModel::setState(const CStateX * state)
+{
+  unsigned C_INT32 i, imax;
+  const C_FLOAT64 * Dbl;
+
+#ifdef XXXX // This gets enabled when we have dynamic volume changes
+
+  Dbl = state->getVolumes();
+
+  for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
+    mCompartments[i]->setVolume(*Dbl) ;
+
+#endif // XXXX
+
+  /* We are not using the set method since it automatically updates the
+     numbers which are provided separately in a state */
+  Dbl = state->getNumbersDbl();
+
+  for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Dbl++)
+    static_cast<C_FLOAT64>(mMetabolitesX[i]->getInitialConcentration())
+    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
+
+  /* We are not using the set method since it automatically updates the
+     concentration which has been already set above */
+  const C_INT32 * Int = state->getNumbersInt();
+
+  for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Int++)
+    static_cast<C_INT32>(mMetabolitesX[i]->getInitialNumber()) = *Int;
+
+  /* We need to update the dependent metabolites by using moieties */
+  /* This changes need to be reflected in the current state */
+  C_FLOAT64 NumberDbl;
+
+  unsigned C_INT32 offset = mMetabolitesInd.size();
+
+  for (i = 0, imax = mMoieties.size(); i < imax; i++)
+    {
+      NumberDbl = mMoieties[i]->dependentNumber();
+      mMetabolitesDep[i]->setConcentration(NumberDbl *
+                                           mMetabolitesDep[i]->getCompartment()->getVolumeInv());
+      (const_cast<CStateX *>(state))->setNumber(offset + i, NumberDbl);
+    }
+
+  return ;
+}
+
+void CModel::getRates(CState * state, C_FLOAT64 * rates)
+{
+  setState(state);
+
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mSteps.size(); i < imax; i++)
+    rates[i] = mSteps[i]->calculate();
+
+  return ;
+}
+
+void CModel::getRates(CStateX * state, C_FLOAT64 * rates)
+{
+  setState(state);
+
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mStepsX.size(); i < imax; i++)
+    rates[i] = mStepsX[i]->calculate();
+
+  return ;
+}
+
+void CModel::getDerivatives(CState * state, C_FLOAT64 * derivatives)
+{
+  setState(state);
+
+  unsigned C_INT32 i, imax = mMetabolitesInd.size() + mMetabolitesDep.size();
+  unsigned C_INT32 j, jmax = mSteps.size();
+
+  for (j = 0; j < jmax; j++)
+    mSteps[j]->calculate();
+
+  // Calculate ydot = Stoi * v
+  for (i = 0; i < imax; i++)
+    {
+      derivatives[i] = 0.0;
+
+      for (j = 0; j < jmax; j++)
+        derivatives[i] += mStoi[i][j] * *mFluxes[j];
+    }
+
+  return ;
+}
+
+void CModel::getDerivatives(CStateX * state, C_FLOAT64 * derivatives)
+{
+  setState(state);
+
+  unsigned C_INT32 i, imax = mMetabolitesInd.size();
+  unsigned C_INT32 j, jmax = mStepsX.size();
+
+  for (j = 0; j < jmax; j++)
+    mStepsX[j]->calculate();
+
+  // Calculate ydot = RedStoi * v
+  for (i = 0; i < imax; i++)
+    {
+      derivatives[i] = 0.0;
+
+      for (j = 0; j < jmax; j++)
+        derivatives[i] += mRedStoi[i][j] * *mFluxesX[j];
+    }
+
+  return ;
+}
+
+CStateX * CModel::convertState(CState * state)
+{
+  setState(state);
+  return getStateX();
+}
+
+CState * CModel::convertState(CStateX * state)
+{
+  setState(state);
+  return getState();
 }

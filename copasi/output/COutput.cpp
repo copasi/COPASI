@@ -601,7 +601,7 @@ void COutput::repSS(ofstream &fout)
 
       fout << "] = ";
 
-      fout << setprecision(6) << *model->getMetabolites()[i]->getConcentration();
+      fout << setprecision(6) << model->getMetabolites()[i]->getConcentration();
 
       fout << " " << ConcUnit << ", ";
 
@@ -615,7 +615,7 @@ void COutput::repSS(ofstream &fout)
 
       fout << " " << ConcUnit << "/" << TimeUnit;
 
-      if (*model->getMetabolites()[i]->getConcentration() < 0.0)
+      if (model->getMetabolites()[i]->getConcentration() < 0.0)
         fout << " BOGUS!";
 
       fout << endl;

@@ -261,7 +261,7 @@ void CTempReaction::compile(CModel *model,
 
       if (is_first == false)
         {
-          lhs_desc << "+";
+          lhs_desc << " + ";
         }
 
       is_first = false;
@@ -282,7 +282,7 @@ void CTempReaction::compile(CModel *model,
 
       if (is_first == false)
         {
-          rhs_desc << "+";
+          rhs_desc << " + ";
         }
 
       is_first = false;

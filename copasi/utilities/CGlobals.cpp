@@ -1,4 +1,4 @@
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CGlobals.h"
@@ -8,12 +8,13 @@ CGlobals::CGlobals()
 {
   try
     {
-      ProgramVersion.setVersion(4,0,101);
+      ProgramVersion.setVersion(4, 0, 101);
       FunctionDB.setFilename("FunctionDB.gps");
       FunctionDB.initialize();
       Model = NULL;
-      
+
       DefaultConc = 0.0;
+      DefaultVolume = 1.0;
     }
 
   catch (CCopasiException Exception)
@@ -33,9 +34,8 @@ void CGlobals::setArguments(C_INT argc, char *argv[])
   C_INT i, imax = argc;
   Arguments.resize(imax);
 
-  for (i=0; i<imax; i++)
+  for (i = 0; i < imax; i++)
     Arguments[i] = argv[i];
 }
 
-      
 // CGlobals Copasi;

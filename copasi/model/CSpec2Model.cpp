@@ -220,7 +220,7 @@ void CSpec2Model::processInits()
       for (j = 0 ; j < comp.metabolites().size(); j++)
         {
           CMetab metab = *comp.metabolites()[j];
-          cout << "Metabolite " << metab.getName() << " with initial concentration " << *metab.getInitialConcentration() << endl;
+          cout << "Metabolite " << metab.getName() << " with initial concentration " << metab.getInitialConcentration() << endl;
         }
     }
 }

@@ -398,7 +398,7 @@ void CMca::ScaleMCA(int condition, int res)
 
         if (fabs(Model.getReactions()[i]->getFlux()) >= res)
           {
-            mDxv[i][j] *= *Model.getMetabolites()[j]->getConcentration()
+            mDxv[i][j] *= Model.getMetabolites()[j]->getConcentration()
                           * Model.getMetabolites()[j]->getCompartment()->getVolume()
                           / Model.getReactions()[i]->getFlux();
           }
@@ -410,9 +410,9 @@ void CMca::ScaleMCA(int condition, int res)
   for (i = 0; i < Model.getIndMetab(); i++)
     for (j = 0; j < Model.getTotSteps(); j++)
       {
-        if (fabs(*Model.getMetabolites()[i]->getConcentration()) >= res)
+        if (fabs(Model.getMetabolites()[i]->getConcentration()) >= res)
           mGamma[i][j] *= Model.getReactions()[j]->getFlux()
-                          / (*Model.getMetabolites()[i]->getConcentration()
+                          / (Model.getMetabolites()[i]->getConcentration()
                              *
                              Model.getMetabolites()[j]->getCompartment()->getVolume());
         else
@@ -444,7 +444,7 @@ void CMca::CalculateTimeMCA(int res)
   //copy concentrations to ss_x
 
   for (i = 0; i < Model.getTotMetab(); i++)
-    mSsx[i + 1] = *Model.getMetabolites()[i]->getConcentration() *
+    mSsx[i + 1] = Model.getMetabolites()[i]->getConcentration() *
                   Model.getMetabolites()[i]->getCompartment()->getVolume();
 
   // calculate the elasticites
@@ -457,7 +457,7 @@ void CMca::CalculateTimeMCA(int res)
         for (j = 0; j < Model.getTotMetab(); j++)
           {
             if (fabs(Model.getReactions()[i]->getFlux()) >= res)
-              mDxv[i][j] *= *Model.getMetabolites()[j]->getConcentration() /
+              mDxv[i][j] *= Model.getMetabolites()[j]->getConcentration() /
                             Model.getReactions()[i]->getFlux();
             else
               mDxv[i][j] = DBL_MAX;

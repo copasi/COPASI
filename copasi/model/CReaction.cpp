@@ -18,12 +18,15 @@
 #define min(a , b)  ((a) < (b) ? (a) : (b))
 #endif // WIN32
 
+C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
+
 CReaction::CReaction()
 {
   CONSTRUCTOR_TRACE;
   mFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
+  mScalingFactor = &mDefaultScalingFactor;
 }
 
 CReaction::CReaction(const CReaction & src)
@@ -34,6 +37,7 @@ CReaction::CReaction(const CReaction & src)
   mReversible = src.mReversible;
   mChemEq = src.mChemEq;
   setFunction(src.mFunction->getName());
+  mScalingFactor = src.mScalingFactor;
 
   mId2Substrates = CCopasiVector < CId2Metab > (src.mId2Substrates);
   mId2Products = CCopasiVector < CId2Metab > (src.mId2Products);
@@ -48,6 +52,7 @@ CReaction::CReaction(const string & name)
   mFlux = 0.0;
   mReversible = TRUE;
   mFunction = NULL;
+  mScalingFactor = &mDefaultScalingFactor;
 }
 CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE; }
 
@@ -236,7 +241,7 @@ CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters()
 const string & CReaction::getName() const { return mName; }
 CChemEq & CReaction::getChemEq() { return mChemEq; }
 CFunction & CReaction::getFunction() { return *mFunction; }
-C_FLOAT64 CReaction::getFlux() const { return mFlux; }
+const C_FLOAT64 & CReaction::getFlux() const { return mFlux; }
 C_INT16 CReaction::isReversible() const { return (mReversible == TRUE); }
 void CReaction::setName(const string & name) {mName = name; }
 
@@ -277,6 +282,8 @@ void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
   checkCallParameters();
 
   mChemEq.compile(compartments);
+
+  setScalingFactor();
 }
 
 C_INT32 CReaction::loadNew(CReadConfig & configbuffer)
@@ -564,7 +571,7 @@ void CReaction::old2New(const vector < CMetab* > & metabolites)
 
 C_FLOAT64 CReaction::calculate()
 {
-  return mFlux = mFunction->calcValue(mCallParameters);
+  return mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
 }
 
 void CReaction::CId2Metab::setIdentifierName(const string & identifierName)
@@ -733,10 +740,10 @@ void CReaction::setCallParameters()
 
       if (dataType < CFunctionParameter::VINT16)
         mCallParameters[Index] =
-          mId2Substrates[i]->mpMetabolite->getConcentration();
+          & mId2Substrates[i]->mpMetabolite->getConcentration();
       else
-        ((vector < void * > *) mCallParameters[Index])->
-        push_back(mId2Substrates[i]->mpMetabolite->getConcentration());
+        ((vector <const void *> *) mCallParameters[Index])->
+        push_back(& mId2Substrates[i]->mpMetabolite->getConcentration());
     }
 
   imax = mId2Products.size();
@@ -747,10 +754,10 @@ void CReaction::setCallParameters()
 
       if (dataType < CFunctionParameter::VINT16)
         mCallParameters[Index] =
-          mId2Products[i]->mpMetabolite->getConcentration();
+          & mId2Products[i]->mpMetabolite->getConcentration();
       else
-        ((vector < void * > *) mCallParameters[Index])->
-        push_back(mId2Products[i]->mpMetabolite->getConcentration());
+        ((vector < const void * > *) mCallParameters[Index])->
+        push_back(& mId2Products[i]->mpMetabolite->getConcentration());
     }
 
   imax = mId2Modifiers.size();
@@ -761,10 +768,10 @@ void CReaction::setCallParameters()
 
       if (dataType < CFunctionParameter::VINT16)
         mCallParameters[Index] =
-          mId2Modifiers[i]->mpMetabolite->getConcentration();
+          & mId2Modifiers[i]->mpMetabolite->getConcentration();
       else
-        ((vector < void * > *) mCallParameters[Index])->
-        push_back(mId2Modifiers[i]->mpMetabolite->getConcentration());
+        ((vector < const void * > *) mCallParameters[Index])->
+        push_back(& mId2Modifiers[i]->mpMetabolite->getConcentration());
     }
 
   imax = mId2Parameters.size();
@@ -881,4 +888,38 @@ CMetab * CReaction::findModifier(string ident_name)
 
   // If we get here, we found nutting
   return 0;
+}
+
+unsigned C_INT32 CReaction::getCompartmentNumber()
+{
+  const CCopasiVector < CChemEqElement > & Balances
+  = mChemEq.getBalances();
+  unsigned C_INT32 i, imax = Balances.size();
+  unsigned C_INT32 j, jmax;
+  unsigned C_INT32 Number;
+  vector <CCompartment *> Compartments;
+
+  for (i = 0, Number = 0; i < imax; i++)
+    {
+      for (j = 0, jmax = Compartments.size(); j < jmax; j++)
+        if (Compartments[j] == Balances[i]->getMetabolite().getCompartment())
+          break;
+
+      if (j == jmax)
+        {
+          Number ++;
+          Compartments.push_back(Balances[i]->getMetabolite().getCompartment());
+        }
+    }
+
+  return Number;
+}
+
+void CReaction::setScalingFactor()
+{
+  if (1 == getCompartmentNumber())
+    mScalingFactor =
+      & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+  else
+    mScalingFactor = &mDefaultScalingFactor;
 }

@@ -182,6 +182,11 @@ class CReaction
 
   private:
     /**
+     *  The default scaling factor of a reaction which is 1.
+     */
+    static C_FLOAT64 mDefaultScalingFactor;
+
+    /**
      *  The name of the reaction
      */
     string mName;
@@ -205,6 +210,18 @@ class CReaction
      *  The flux of the reaction
      */
     C_FLOAT64 mFlux;
+
+    /**
+     *  The scaling factor for the flux to calculate the particle number
+     *  changes. For a single compartment reaction this is the volume of
+     *  the compartment
+     */
+    const C_FLOAT64 * mScalingFactor;
+
+    /**
+     *  The number of compartments the reaction takes place in 
+     */
+    C_INT32 mCompartmentNumber;
 
     /**
      *  The reversibility of the reaction
@@ -341,29 +358,6 @@ class CReaction
     // typedef struct ELEMENT {C_FLOAT64 mValue; string mName; };
     // vector < ELEMENT > getChemStructure() const;
 
-#ifdef XXXX
-    /**
-     *  Retrieves a vector of substrates and their multiplicity
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" substrates
-     */
-    vector < CChemEqElement * > & getSubstrates();
-
-    /**
-     *  Retrieves a vector of products and their multiplicity.
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" products
-     */
-    vector < CChemEqElement * > & getProducts();
-
-    /**
-     *  Retrieves a vector of metabolites and their total balance.
-     *  in the chemical reaction.
-     *  @return "vector < CChemEqElement * > &" products
-     */
-    vector < CChemEqElement * > & getBalances();
-#endif // XXXX
-
     /**
      *  Retrieves the rate function of the reaction
      *  @return "CBaseFunction &"
@@ -374,7 +368,7 @@ class CReaction
      *  Retrieves the flux of the reaction
      *  @return C_FLOAT64
      */
-    C_FLOAT64 getFlux() const;
+    const C_FLOAT64 & getFlux() const;
 
     /**
      *  Retrieves whether the reaction is reversible
@@ -455,6 +449,12 @@ class CReaction
      */
     CMetab * findModifier(string ident_name);
 
+    /**
+     *  Retrieves the number of compartments the reaction is acting in.
+     *  @return "unsigned C_INT32" compartmnetNumber
+     */
+    unsigned C_INT32 getCompartmentNumber();
+
   private:
     /**
      *
@@ -499,22 +499,10 @@ class CReaction
      */
     unsigned C_INT32 usageRangeSize(const string & usage);
 
-#ifdef XXXX
     /**
-     *
+     * Set the scaling factor of the for the fluxes
      */
-    void initIdentifiers();
-
-    /**
-     *
-     */
-    void setIdentifiers();
-
-    /**
-     *
-     */
-    void checkIdentifiers();
-#endif // XXXX
+    void setScalingFactor();
   };
 
 #endif // COPASI_CReaction

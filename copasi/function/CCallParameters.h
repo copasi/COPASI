@@ -9,8 +9,9 @@
 #define COPASI_CCallParameters
 #include "CCallParameter.h"
 
-class CCallParameters : public vector < void * > 
-{
-};
+class CCallParameters : public vector < const void * >
+  {}
+
+;
 
 #endif // COPASI_CCallParameters

@@ -305,9 +305,9 @@ void MetabolitesWidget1::loadName(QString setValue)
       LineEdit1->setText(metab->getName().c_str());
       Metabolite1_Name = new QString(metab->getName().c_str());
 
-      LineEdit4->setText(QString::number(*(metab->getInitialConcentration())));
+      LineEdit4->setText(QString::number(metab->getInitialConcentration()));
 
-      LineEdit7->setText(QString::number(*(metab->getConcentration())));
+      LineEdit7->setText(QString::number(metab->getConcentration()));
       LineEdit7->setReadOnly(true);
 
       LineEdit8->setText(QString::number(metab->getNumber()));
