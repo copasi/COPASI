@@ -95,18 +95,6 @@ SOURCE=..\..\copasi\test\test.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=..\utilities\CCopasiVectorN.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\utilities\CRandom.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\utilities\messages.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 

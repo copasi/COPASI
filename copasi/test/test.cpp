@@ -1696,7 +1696,7 @@ C_INT32 TestDependencyGraph()
       j = 0;
       cout << "Node: " << i << " Dependents: ";
       const set <C_INT32> depvec = dg.getDependents(i);
-      set <C_INT32>::iterator jit = depvec.begin();
+      set <C_INT32>::const_iterator jit = depvec.begin();
 
       while (jit != depvec.end())
         {
