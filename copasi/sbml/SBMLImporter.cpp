@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/06 22:37:22 $
+   $Author: shoops $ 
+   $Date: 2004/12/13 17:15:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -853,7 +853,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
 void
 SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map<std::string, std::string > > substMap, bool reversible)
 {
-  if (node->isName())
+  if (node->isName() || node->isConstant() || node->isFunction() || node->isLogical())
     {
       bool set = false;
       std::map<std::string, std::string> substances = substMap["products"];
