@@ -138,6 +138,21 @@ public:
     /**
      *
      */
+    C_FLOAT64 getNumber() const;
+
+    /**
+     *
+     */
+    C_FLOAT64 * getInitialConcentration();
+
+    /**
+     *
+     */
+    C_FLOAT64 getInitialNumber() const;
+
+    /**
+     *
+     */
     CCompartment * getCompartment();
 
     /**
@@ -149,6 +164,16 @@ public:
      *
      */
     void setConcentration(const C_FLOAT64 concentration);
+    
+    /**
+     *
+     */
+    void setInitialConcentration(const C_FLOAT64 initialConcentration);
+    
+    /**
+     *
+     */
+    void setNumber(const C_FLOAT64 number);
     
     /**
      *

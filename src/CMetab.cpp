@@ -151,6 +151,18 @@ string CMetab::getName() const {return mName;}
 
 C_FLOAT64 * CMetab::getConcentration() {return &mConc;}
 
+C_FLOAT64 CMetab::getNumber() const 
+{
+    return mConc * mCompartment->getVolume();
+}
+
+C_FLOAT64 * CMetab::getInitialConcentration() {return &mIConc;}
+
+C_FLOAT64 CMetab::getInitialNumber() const 
+{
+    return mIConc * mCompartment->getVolume();
+}
+
 C_INT16 CMetab::getStatus() const {return mStatus;}
 
 CCompartment * CMetab::getCompartment() {return mCompartment;} 
@@ -160,6 +172,16 @@ void CMetab::setName(const string & name) {mName = name;}
 void CMetab::setConcentration(const C_FLOAT64 concentration)
 {
     mConc = concentration;
+}
+
+void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
+{
+    mConc = initialConcentration;
+}
+
+void CMetab::setNumber(const C_FLOAT64 number)
+{
+    mConc = number / mCompartment->getVolume();
 }
 
 void CMetab::setStatus(const C_INT16 status) {mStatus = status;}
