@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 19:47:25 $
+   $Date: 2003/12/04 17:31:14 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.26 2003/11/21 19:47:25 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.27 2003/12/04 17:31:14 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -311,6 +311,7 @@ void TableDefinition1::slotBtnConfirmClicked()
 {
   //check for the connection int i =0;
   CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
+  pReportDefinition->getHeaderAddr()->clear();
   pReportDefinition->getBodyAddr()->clear();
 
   C_INT32 i;
@@ -319,6 +320,10 @@ void TableDefinition1::slotBtnConfirmClicked()
     Seperator = "\t";
   else
     Seperator = seperatorEdit->text().latin1();
+
+  pReportDefinition->setTitle(titleChecked->isChecked());
+  pReportDefinition->
+  setComment(CCopasiStaticString(commentEdit->text().latin1()).getCN());
 
   CCopasiObjectName SeperatorCN(Seperator.getCN());
   CCopasiObjectName Title;
@@ -359,10 +364,6 @@ void TableDefinition1::slotBtnConfirmClicked()
       pReportDefinition->getHeaderAddr()->pop_back();
       pReportDefinition->getBodyAddr()->pop_back();
     }
-
-  pReportDefinition->setTitle(titleChecked->isChecked());
-  pReportDefinition->
-  setComment(CCopasiStaticString(commentEdit->text().latin1()).getCN());
 
   bUpdated = false;
 }
