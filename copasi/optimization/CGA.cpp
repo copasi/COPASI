@@ -15,13 +15,65 @@
 //default constructor
 CGA::CGA()
 {
+ mPopSize=0;
+ mGener=0;
+ mParamNum=0;
 
  mCrp = NULL;
  mMidX = NULL;
  mIndV = NULL;
  mCandX = NULL;
  mWins = NULL;
- mIndV = NULL;
+ 
+ //initialize();
+
+}
+
+// initialize function
+void CGA::initialize()
+{
+  int i;
+
+  mCandX = new double[2*mPopSize];
+  // create array for tournament
+  mWins = new unsigned int[2*mPopSize];
+  // create array for crossover points
+  mCrp = new unsigned int[mParamNum];
+  // create array for shuffling the population
+  mMidX = new unsigned int[mPopSize];
+  // create the population array
+  mIndV = new double*[2*mPopSize];
+  // create the individuals
+  for( i=0; i<2*mPopSize; i++ )
+    {
+      mIndV[i] = new double[mParamNum];
+    }
+
+  initFirstGeneration();
+}
+
+// initialize the first generation
+void CGA::initFirstGeneration()
+{
+  int i;
+ 
+  for( i=0; i<mParamNum; i++ )
+    mIndV[0][i] =1.1+dr250();
+
+  try
+    {
+      // calculate the fitness
+      mCandX[0] = evaluate(0);
+    }
+  catch( unsigned int e )
+    {
+      mCandX[0] = DBL_MAX;
+    }
+
+  // the others are randomly generated
+  creation( 1, mPopSize);
+  mBest=fittest();
+
 }
 
 //constructor
@@ -30,6 +82,24 @@ CGA::CGA(int psize,int num, int param)
 
  unsigned int i,j;
 
+ mPopSize=psize;
+ mGener=num;
+ mParamNum=param;
+
+ // initialize();
+
+}
+
+
+
+
+#ifdef XXXX
+
+//constructor
+CGA::CGA(int psize,int num, int param)
+{
+
+ unsigned int i,j;
 
  mPopSize=psize;
  mGener=num;
@@ -50,7 +120,6 @@ CGA::CGA(int psize,int num, int param)
   mIndV[i] = new double[param];
  }
 
-
  for( i=0; i<mParamNum; i++ )
   mIndV[0][i] =1.1+dr250();
 
@@ -68,6 +137,60 @@ CGA::CGA(int psize,int num, int param)
  creation( 1, mPopSize);
  mBest=fittest();
 
+}
+#endif // XXXX
+
+
+// Copy constructor
+CGA::CGA(const CGA& source)
+{
+  mGener = source.mGener;	   
+  mPopSize = source.mPopSize;    
+  mCrossNum = source.mCrossNum;	    
+  mMin = source.mMin;
+  mMax = source.mMax;
+  mMutVar = source.mMutVar;	    
+  mMutProb = source.mMutProb;	    
+  mBest = source.mBest;	    
+  mParamNum = source.mParamNum;	    
+  mIndV = source.mIndV;    
+  mCandX = source.mCandX;     
+  mCrp = source.mCrp;	    
+  mMidX = source.mMidX;	   
+  mWins = source.mWins;
+
+}
+
+// Object assignment overloading
+CGA& CGA::operator=(const CGA& source)
+{
+  cleanup();
+    
+  if(this != &source)
+    {
+      mGener = source.mGener;	   
+      mPopSize = source.mPopSize;    
+      mCrossNum = source.mCrossNum;	    
+      mMin = source.mMin;
+      mMax = source.mMax;
+      mMutVar = source.mMutVar;	    
+      mMutProb = source.mMutProb;	    
+      mBest = source.mBest;	    
+      mParamNum = source.mParamNum;	    
+      mIndV = source.mIndV;    
+      mCandX = source.mCandX;     
+      mCrp = source.mCrp;	    
+      mMidX = source.mMidX;	   
+      mWins = source.mWins;
+    }
+    
+  return *this;
+}
+
+
+// clean up 
+void CGA::cleanup()
+{
 }
 
 
@@ -91,7 +214,7 @@ void CGA::setRealProblem(CRealProblem & aProb)
 
 
 //set parameter
-void CGA::setParam (int num)
+void CGA::setParamNum (int num)
 {
 mParamNum=num;
 }
@@ -184,6 +307,30 @@ int CGA::initOptRandom()
 // evaluate the fitness of one individual
 double CGA::evaluate( unsigned int i )
 {
+  int j;
+  double tmp;
+
+  for(j=0;j<mParamNum;j++)
+  {
+    tmp = mIndV[i][j];
+    mRealProblem.setParameter(j, tmp);
+  }
+  
+  //for debugging purpose
+  //cout << "Debug: mRealProblem.getParameterNum() is:"<<mRealProblem.getParameterNum()<<endl;
+
+  mRealProblem.calculate();
+
+  return mRealProblem.getBestValue();
+
+}
+
+
+#ifdef XXXX
+
+// evaluate the fitness of one individual
+double CGA::evaluate( unsigned int i )
+{
  int j;
  //bool outside_range = FALSE;
  double fitness;
@@ -209,6 +356,8 @@ double CGA::evaluate( unsigned int i )
 
  return fitness;
 }
+
+#endif // XXXX
 
 // copy individual o to position d
 void CGA::copy( unsigned int o, unsigned int d )
@@ -487,6 +636,121 @@ void CGA::dumpData( unsigned int i )
 }
 
 
+
+// optimise function, the real function for optimization
+int CGA::optimise()
+{
+
+ unsigned int i, last_update, u100, u300, u500, fr;
+ double bx;
+
+ struct tms before,after;
+ double dTime=0;
+
+ times(&before);
+ dTime=time(NULL);
+
+ mMin = *(mRealProblem.getParameterMin());
+ mMax = *(mRealProblem.getParameterMax());
+
+ cout << "mMin = "<<mMin<<", mMax= "<<mMax<<", mParamNum = "<<mParamNum<<endl;
+ cout << "mRealProblem.getParameterNum() = " << mRealProblem.getParameterNum()<<endl;
+
+ initOptRandom();
+
+ // initialise the variance for mutations
+ setMutVar(0.1);
+
+ // initialise the update registers
+ last_update = 0;
+ u100 = u300 = u500 = 0;
+
+ //Display layout of all MPI processes
+ cout<<endl;
+ cout<<"Initial populaiton has successfully created!!!!!"<<endl;
+
+ // and store that value
+ bx = getBestCandidate();
+
+ cout<<"-----------------------------best result at each generation---------------------"<<endl;
+ cout<<"Generation\t"<<"Best candidate value for object function\t"<<"Display "<<mParamNum<<" parameters"<<endl;
+ cout<<endl;
+
+ int psize = getPopSize();
+
+// ITERATE FOR gener GENERATIONS
+
+for( i=0; i<getGeneration(); i++ )
+{
+  cout<<endl;
+  cout<<"GA is processing at generation "<<i<<endl;
+
+  dumpData( i );
+  // replicate the individuals
+  replicate();
+  // select the most fit
+  select( 2 );
+  // get the index of the fittest
+  // mBest = fittest();
+  setBest(fittest());
+  if(getBestCandidate()!= bx )
+  {
+   last_update = i;
+   bx =getBestCandidate();
+  }
+  if( u100 ) u100--;
+  if( u300 ) u300--;
+  if( u500 ) u500--;
+
+  // perturb the population if we have stalled for a while
+  if( (u500==0) && (i-last_update > 500) )
+  {
+   creation( psize/2, psize );
+   u500 = 500; u300=300; u100=100;
+  }
+
+  else
+  {
+   if( (u300==0) && (i-last_update > 300) )
+   {
+         creation( unsigned(psize*0.7), psize );
+
+	u300=300; u100=100;
+   }
+
+   else
+    if( (u100==0) && (i-last_update > 100) )
+   {
+         creation( unsigned(psize*0.9), psize );
+	u100=100;
+   }
+  }
+
+ }
+
+ times(&after);
+ ofstream tout("time.dat");
+ if(!tout)
+	{ cout<<" tout cannot output!"<<endl;
+	exit(0);
+        }
+ tout<<"CPU's Calculation Time:"<<after.tms_utime-before.tms_utime<<endl;
+ tout<<" It has taken about "<<time(NULL)-dTime<<" seconds!"<<endl;
+ tout.close();
+
+ cout<<endl;
+ cout<<"GA has successfully done!"<<endl;
+ cout<<" It has taken about "<<time(NULL)-dTime<<" seconds!"<<endl;
+ cout<<"and it is ready to exit now!"<<endl;
+
+}
+
+
+
+#ifdef XXXX
+
+//YOHE: old stuff, don't use now
+
 // main.cc changed to optimise function
 //main(int argc, char *argv[])
 //
@@ -650,3 +914,4 @@ for( i=0; i<Ga_10param.getGeneration(); i++ )
 
 }
 
+#endif // XXXX

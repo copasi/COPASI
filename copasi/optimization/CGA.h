@@ -75,9 +75,38 @@ public:
   CGA(int psize,int num,int param); 
 
   /**
+   * Copy constructor
+   * @param source a CGA object for copy
+   */
+  CGA(const CGA& source);
+
+  /**
+   * Object assignment overloading
+   * @param source a CGA object for copy
+   * @return an assigned CGA object
+   */
+  CGA& operator=(const CGA& source);
+
+ 
+  /**
    * destructor
    */
   ~CGA();
+
+  /**
+   * initialize function
+   */
+  void initialize();
+
+  /**
+   * initialize the first generation
+   */
+  void initFirstGeneration();
+
+  /**
+   * clean up 
+   */
+  void cleanup();
 
   /**Declare the prototype of member functions ***/
 
@@ -91,7 +120,7 @@ public:
   /**
    * set parameter
    */
-  void setParam (int num);
+  void setParamNum (int num);
 
   /**
    * set population size

@@ -56,6 +56,7 @@ class CRealProblem : public COptProblem
    ~CRealProblem();
 
 
+
    /**
     * calculate function for optimization
     */

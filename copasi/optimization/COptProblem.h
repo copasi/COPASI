@@ -86,7 +86,7 @@ class COptProblem
    /*
     * set a parameter
     */
-   void setParamter(int aNum, double aDouble);
+   void setParameter(int aNum, double aDouble);
  
    /**
     * get a parameter

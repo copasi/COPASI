@@ -21,6 +21,9 @@ COptProblem::COptProblem()
   mParameterValues = NULL;
   mParameterNum = 0;
   mBestValue = 0.0;
+  mParameterMin = NULL;     // the minimum values of parameters
+  mParameterMax = NULL;     // the maximum values of parameters
+  initialize();
 }
 
    
@@ -32,6 +35,10 @@ COptProblem::~COptProblem()
 COptProblem::COptProblem(const COptProblem& source)
 {
   mParameterValues = source.mParameterValues;
+  mParameterNum = source.mParameterNum;
+  mBestValue =source.mBestValue;
+  mParameterMin = source.mParameterMin;     // the minimum values of parameters
+  mParameterMax = source.mParameterMax;    
 }
 
 // Object assignment overloading,
@@ -43,7 +50,9 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
     {
       mParameterValues = source.mParameterValues; 
       mParameterNum = source.mParameterNum;
-      mBestValue = source.mBestValue;	
+      mBestValue = source.mBestValue;
+      mParameterMin = source.mParameterMin;     // the minimum values of parameters
+      mParameterMax = source.mParameterMax;  	
     }
     
   return *this;
@@ -63,13 +72,14 @@ int COptProblem::cleanup(void)
 int COptProblem::initialize(void)
 {
   mParameterValues = new double[mParameterNum];
+  mParameterMin = new double;
+  mParameterMax = new double;
 }
 
  
 // 
 void COptProblem::calculate() 
-{
-}
+{ }
    
 
 //set the parameter values
@@ -85,7 +95,7 @@ double * COptProblem::getParameterValues()
 }
 
 //set a parameter
-void COptProblem::setParamter(int aNum, double aDouble)
+void COptProblem::setParameter(int aNum, double aDouble)
 {
   mParameterValues[aNum] = aDouble;
 }
