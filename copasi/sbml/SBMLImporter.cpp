@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 14:49:47 $
+   $Date: 2004/06/15 16:35:27 $
    End CVS Header */
 
 #include <iostream>
@@ -414,6 +414,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
+  bool singleCompartment = true;
+  const CCompartment* compartment = NULL;
   for (unsigned int counter = 0; counter < num; counter++)
     {
       SpeciesReference* sr = sbmlReaction->getReactant(counter);
@@ -425,6 +427,17 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
 
           exit(1);
+        }
+      if (compartment == NULL)
+        {
+          compartment = pos->second->getCompartment();
+        }
+      else
+        {
+          if (singleCompartment && compartment != pos->second->getCompartment())
+            {
+              singleCompartment = false;
+            }
         }
       copasiReaction->addSubstrate(pos->second->getKey(), stoich);
     }
@@ -442,6 +455,17 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           exit(1);
         }
+      if (compartment == NULL)
+        {
+          compartment = pos->second->getCompartment();
+        }
+      else
+        {
+          if (singleCompartment && compartment != pos->second->getCompartment())
+            {
+              singleCompartment = false;
+            }
+        }
       copasiReaction->addProduct(pos->second->getKey(), stoich);
     }
 
@@ -456,6 +480,17 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           std::cerr << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
           exit(1);
+        }
+      if (compartment == NULL)
+        {
+          compartment = pos->second->getCompartment();
+        }
+      else
+        {
+          if (singleCompartment && compartment != pos->second->getCompartment())
+            {
+              singleCompartment = false;
+            }
         }
       copasiReaction->addModifier(pos->second->getKey());
     }
@@ -489,6 +524,29 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   ASTNode* node = new ConverterASTNode(*kLawMath);
   node = this->replaceUserDefinedFunctions(node, sbmlModel);
   this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
+  /* if it is a single compartment reaction, we have to devide the whole kinitc
+  ** equation by the volume of the compartment because copasi expects
+  ** kinetic laws that specify concentration/time for single compartment
+  ** reactions.
+  */
+  if (singleCompartment)
+    {
+      if (compartment != NULL)
+        {
+          ConverterASTNode* tmpNode1 = new ConverterASTNode();
+          tmpNode1->setType(AST_DIVIDE);
+          tmpNode1->addChild(node);
+          ConverterASTNode* tmpNode2 = new ConverterASTNode();
+          tmpNode2->setType(AST_REAL);
+          tmpNode2->setValue(compartment->getVolume());
+          tmpNode1->addChild(tmpNode2);
+          node = tmpNode1;
+        }
+      else
+        {
+          throw StdException("Error. Could not determine compartment for single compartment reaction.");
+        }
+    }
 
   /* Create a new user defined CKinFunction */
   std::string functionName = "function_4_" + copasiReaction->getObjectName();
@@ -651,17 +709,38 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
   for (unsigned int counter = 0; counter < reaction->getNumReactants(); counter++)
     {
       std::string name = reaction->getReactant(counter)->getSpecies();
-      substances[name] = "substrate_" + name;
+      if (name.find("substrate_") == 0)
+        {
+          substances[name] = name;
+        }
+      else
+        {
+          substances[name] = "substrate_" + name;
+        }
     }
   for (unsigned int counter = 0; counter < reaction->getNumProducts(); counter++)
     {
       std::string name = reaction->getProduct(counter)->getSpecies();
-      substances[name] = "product_" + name;
+      if (name.find("product_") == 0)
+        {
+          substances[name] = name;
+        }
+      else
+        {
+          substances[name] = "product_" + name;
+        }
     }
   for (unsigned int counter = 0; counter < reaction->getNumModifiers(); counter++)
     {
       std::string name = reaction->getModifier(counter)->getSpecies();
-      substances[name] = "modifier_" + name;
+      if (name.find("modifier_") == 0)
+        {
+          substances[name] = name;
+        }
+      else
+        {
+          substances[name] = "modifier_" + name;
+        }
     }
   this->replaceSubstanceNames(node, substances);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 14:49:46 $
+   $Date: 2004/06/15 16:35:27 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -671,16 +671,39 @@ ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKi
 ASTNode_t* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vect, unsigned int pos)
 {
   ASTNode_t* node = NULL;
+  double multiplicity = vect[pos]->getMultiplicity();
   if (pos == vect.size() - 1)
     {
       node = ASTNode_createWithType(AST_NAME);
       ASTNode_setName(node, vect[pos]->getMetaboliteKey().c_str());
+      /* if the stoichiometry is not 1.0, we have to add it to the exponent */
+      if (multiplicity != 1.0)
+        {
+          ASTNode_t* tmpNode1 = ASTNode_createWithType(AST_POWER);
+          ASTNode_t* tmpNode2 = ASTNode_createWithType(AST_REAL);
+          ASTNode_setReal(tmpNode2, multiplicity);
+          ASTNode_addChild(tmpNode1, node);
+          ASTNode_addChild(tmpNode1, tmpNode2);
+          node = tmpNode1;
+        }
     }
   else
     {
       node = ASTNode_createWithType(AST_TIMES);
       ASTNode_t* child = ASTNode_createWithType(AST_NAME);
       ASTNode_setName(child, vect[pos]->getMetaboliteKey().c_str());
+
+      /* if the stoichiometry is not 1.0, we have to add it to the exponent */
+      if (multiplicity != 1.0)
+        {
+          ASTNode_t* tmpNode1 = ASTNode_createWithType(AST_POWER);
+          ASTNode_t* tmpNode2 = ASTNode_createWithType(AST_REAL);
+          ASTNode_setReal(tmpNode2, multiplicity);
+          ASTNode_addChild(tmpNode1, child);
+          ASTNode_addChild(tmpNode1, tmpNode2);
+          child = tmpNode1;
+        }
+
       ASTNode_addChild(node, child);
       ASTNode_addChild(node, this->createTimesTree(vect, pos + 1));
     }

@@ -1,14 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/11 08:43:27 $
+   $Date: 2004/06/15 16:35:26 $
    End CVS Header */
 
 #include "ConverterASTNode.h"
 #include <string.h>
 #include <iostream>
+
+/**
+ * Standard constructor
+ */
+ConverterASTNode::ConverterASTNode(): ASTNode()
+{};
 
 /**
  * Extension of the ASTNode class from libsbml. This class extends the original
