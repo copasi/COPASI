@@ -55,10 +55,14 @@ class CScanProblem
 
   public:
     // Operations
+    inline bool ifSteadyStateTask() {return mProcessSteadyState;}
+    inline bool ifTrajectoryTask() {return mProcessTrajectory;}
+    inline CSteadyStateTask* getSteadyStateTask() {return mpSteadyState;}
+    inline CTrajectoryTask* getTrajectoryTask() {return mpTrajectory;}
     /**
     check if an object already exists in the list
     */
-    bool bExisted(const std::string & name)
+    inline bool bExisted(const std::string & name)
     {
       return (mScanItemList.getIndex(name) != C_INVALID_INDEX);
     }

@@ -49,7 +49,10 @@ void CScanTask::initializeReporting(std::ostream & out)
 {
   pdelete(mpOutEnd);
   mpOut = & out;
-  mpOutEnd = new COutputEvent();
+  if (mpProblem->ifSteadyStateTask())
+    mpProblem->getSteadyStateTask()->initializeReporting(out);
+  if (mpProblem->ifTrajectoryTask())
+    mpProblem->getTrajectoryTask()->initializeReporting(out);
 }
 
 void CScanTask::load(CReadConfig & configBuffer)
