@@ -72,7 +72,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 
     virtual ~CCopasiVectorReference() {}
 
-    virtual CCopasiObject * getObject(const CCopasiObjectName & C_UNUSED(cn))
+    virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
       return new CCopasiObjectReference< typename CType::elementType >
       (mObjectName + cn,
@@ -112,7 +112,7 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
 
     virtual ~CCopasiMatrixReference() {}
 
-    virtual CCopasiObject * getObject(const CCopasiObjectName & C_UNUSED(cn))
+    virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
       return new CCopasiObjectReference< typename CType::elementType >
       (mObjectName + cn,
