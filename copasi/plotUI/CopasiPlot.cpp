@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:12 $
+   $Date: 2004/08/31 15:51:25 $
    End CVS Header */
 
 #include <qarray.h>
@@ -103,14 +103,14 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
     }
   ndata = 0;
 
-  QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
+  QColor curveColours[5] = {red, blue, green, cyan, magenta}; //TODO
   unsigned C_INT32 k;
   for (k = 0; k < plotspec->getItems().size(); k++)
     {
       // set up the curve
       long crv = insertCurve(FROM_UTF8(plotspec->getItems()[k]->getTitle()));
 
-      setCurvePen(crv, QPen(curveColours[k]));
+      setCurvePen(crv, QPen(curveColours[k % 5]));
       //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
       //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
     }
