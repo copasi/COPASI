@@ -9,8 +9,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Tue Sep 28 23:39:48 2004
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.2   edited Nov 24 13:47 $)
+ ** Created: Thu Sep 30 15:41:50 2004
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,11 +18,12 @@
 #include "TimeSeriesSubwidget.h"
 
 #include <qvariant.h>
+#include <qcombobox.h>
 #include <qpushbutton.h>
-#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include "CTimeSeriesTable.h"
 #include "TimeSeriesSubwidget.ui.h"
 
 /*
@@ -34,32 +35,29 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
 {
   if (!name)
     setName("TimeSeriesSubWidget");
-  TimeSeriesSubWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TimeSeriesSubWidgetLayout");
+  TimeSeriesSubWidgetLayout = new QVBoxLayout(this, 11, 6, "TimeSeriesSubWidgetLayout");
 
-  layout2 = new QHBoxLayout(0, 0, 6, "layout2");
-  spacer1 = new QSpacerItem(110, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout2->addItem(spacer1);
+  toplayout = new QHBoxLayout(0, 0, 6, "toplayout");
 
-  pushButtonToggle = new QPushButton(this, "pushButtonToggle");
-  layout2->addWidget(pushButtonToggle);
+  comboBox = new QComboBox(FALSE, this, "comboBox");
+  toplayout->addWidget(comboBox);
+  spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  toplayout->addItem(spacer);
 
   ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  layout2->addWidget(ButtonSaveData);
+  toplayout->addWidget(ButtonSaveData);
+  TimeSeriesSubWidgetLayout->addLayout(toplayout);
 
-  TimeSeriesSubWidgetLayout->addLayout(layout2, 0, 0);
-
-  dataTable = new QTable(this, "dataTable");
-  dataTable->setNumRows(3);
-  dataTable->setNumCols(3);
-
-  TimeSeriesSubWidgetLayout->addWidget(dataTable, 1, 0);
+  dataTable = new CTimeSeriesTable(this, "dataTable");
+  TimeSeriesSubWidgetLayout->addWidget(dataTable);
   languageChange();
-  resize(QSize(465, 480).expandedTo(minimumSizeHint()));
+  resize(QSize(565, 608).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
-  connect(pushButtonToggle, SIGNAL(clicked()), this, SLOT(toggleView()));
+  connect(comboBox, SIGNAL(activated(const QString&)), this, SLOT(toggleView()));
+  init();
 }
 
 /*
@@ -77,6 +75,8 @@ TimeSeriesSubWidget::~TimeSeriesSubWidget()
 void TimeSeriesSubWidget::languageChange()
 {
   setCaption(tr("Form1"));
-  pushButtonToggle->setText(tr("Show Numbers"));
+  comboBox->clear();
+  comboBox->insertItem(tr("Concentrations"));
+  comboBox->insertItem(tr("Particle Numbers"));
   ButtonSaveData->setText(tr("Save data to file"));
 }
