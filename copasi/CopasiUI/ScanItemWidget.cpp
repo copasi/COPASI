@@ -160,20 +160,24 @@ void ScanItemWidget::InitializeParameterList()
 {
   //name value type
   pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
-  /*
-    pParameter("min", mMin->setText("1.0");
-    pParameter("incr", mDensity->setText("2");
-    pParameter("log", mLogarithmic->setChecked(FALSE);
-    pParameter("Indp", mIndependent->setChecked(TRUE);
-    pParameter("gridType", 
-    pParameter("value", 0, 
-    pParameter(mRegularGridRadio->setChecked(1);
-    pParameter(mGaussianRadio->setChecked(0);
-    pParameter(mUniformRadio->setChecked(0);
-    pParameter(mPosGaussianRadio->setChecked(0);
-   
-   ->add();
-  */
+  pParameter->add("min", mMin->text().toDouble(), CParameter::DOUBLE);
+  pParameter->add("incr", mDensity->text().toDouble(), CParameter::DOUBLE);
+  pParameter->add("log", mLogarithmic->text().toUInt(), CParameter::BOOL);
+  pParameter->add("Indp", mIndependent->text().toUInt(), CParameter::BOOL);
+
+  if (mRegularGridRadio->isChecked())
+    pParameter->add("gridType", SD_REGULAR, CParameter::INT);
+  else
+    if (mGaussianRadio->isChecked())
+      pParameter->add("gridType", SD_GAUSS, CParameter::INT);
+    else
+      if (mUniformRadio->isChecked())
+        pParameter->add("gridType", SD_UNIFORM, CParameter::INT);
+      else
+        if (mPosGaussianRadio->isChecked())
+          pParameter->add("gridType", SD_BOLTZ, CParameter::INT);
+
+  pParameter->add("value", 0, CParameter::DOUBLE);
 }
 
 void ScanItemWidget::loadObject()
