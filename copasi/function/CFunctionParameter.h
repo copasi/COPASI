@@ -26,7 +26,7 @@ class CFunctionParameter : CCopasiContainer
     /**
      *  Valid data type for a function parameter
      */
-    enum DataType {INT32, FLOAT64, VINT32, VFLOAT64};
+    enum DataType {INT32 = 1, FLOAT64 = 5, VINT32 = 7, VFLOAT64 = 11};
 
   private:
     /**
