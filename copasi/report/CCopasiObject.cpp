@@ -40,7 +40,8 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mObjectFlag(flag)
 {
   if (mpObjectParent)
-    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+    if (mpObjectParent->isContainer() ||
+        mpObjectParent->isVector()) mpObjectParent->add(this);
 }
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
@@ -51,13 +52,15 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
     mObjectFlag(src.mObjectFlag)
 {
   if (mpObjectParent)
-    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+    if (mpObjectParent->isContainer() ||
+        mpObjectParent->isVector()) mpObjectParent->add(this);
 }
 
 CCopasiObject::~CCopasiObject()
 {
   if (mpObjectParent)
-    if (mpObjectParent->isContainer()) mpObjectParent->remove(this);
+    if (mpObjectParent->isContainer() ||
+        mpObjectParent->isVector()) mpObjectParent->remove(this);
 }
 
 CCopasiObjectName CCopasiObject::getCN() const

@@ -86,7 +86,9 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
   }
 
 const std::vector< CCopasiObject * > & CCopasiContainer::getObjects() const
-{return mObjects;}
+  {
+    return mObjects;
+  }
 
 void CCopasiContainer::initObjects() {}
 

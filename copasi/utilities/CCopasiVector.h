@@ -154,16 +154,9 @@ template < class CType > class CCopasiVector:
         {return (CCopasiObject *) (*this)[name.getIndex()];}
 
       /**
-       * Retrieve a vector of contained objects.
-       * @return  const std::vector< CCopasiObject * > & mObjects
-       */
-      virtual const std::vector< CCopasiObject * > & getObjects() const
-        {return *(std::vector< CCopasiObject * > *)this;}
-
-      /**
-       *  Retrieves the size of the vector
-       *  @return "unsigned C_INT32" size
-       */
+      *  Retrieves the size of the vector
+      *  @return "unsigned C_INT32" size
+      */
       virtual unsigned C_INT32 size() const
         {return ((std::vector< CType * > *)this)->size();}
 
