@@ -32,8 +32,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout15 = new QHBoxLayout(0, 0, 6, "layout15");
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  layout15->addWidget(TextLabel1);
+  mMinLabel = new QLabel(this, "mMinLabel");
+  layout15->addWidget(mMinLabel);
   QSpacerItem* spacer = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout15->addItem(spacer);
 
@@ -45,8 +45,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout16 = new QHBoxLayout(0, 0, 6, "layout16");
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  layout16->addWidget(TextLabel2);
+  mMaxLabel = new QLabel(this, "mMaxLabel");
+  layout16->addWidget(mMaxLabel);
   QSpacerItem* spacer_2 = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout16->addItem(spacer_2);
 
@@ -56,8 +56,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout17 = new QHBoxLayout(0, 0, 6, "layout17");
 
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  layout17->addWidget(TextLabel3);
+  mDensityLabel = new QLabel(this, "mDensityLabel");
+  layout17->addWidget(mDensityLabel);
   QSpacerItem* spacer_3 = new QSpacerItem(31, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout17->addItem(spacer_3);
 
@@ -145,31 +145,74 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 }
 
 void ScanItemWidget::MaxValueChanged(const QString&)
-{}
+{
+  // if (pParameter->getIndex("max")!=C_INVALID_INDEX)
+  pParameter->setValue("max", mMax->text().toDouble());
+}
 
 void ScanItemWidget::MinValueChanged(const QString&)
-{}
+{
+  // if (pParameter->getIndex("min")!=C_INVALID_INDEX)
+  pParameter->setValue("min", mMin->text().toDouble());
+}
 
 void ScanItemWidget::DensityValueChanged(const QString&)
-{}
+{
+  // if (pParameter->getIndex("incr")!=C_INVALID_INDEX)
+  pParameter->setValue("incr", mDensity->text().toDouble());
+}
 
 void ScanItemWidget::IndependentClicked()
-{}
+{
+  // if (pParameter->getIndex("Indp")!=C_INVALID_INDEX)
+  pParameter->setValue("Indp", mIndependent->text().toUInt());
+}
 
 void ScanItemWidget::LogarithmicClicked()
-{}
+{
+  // if (pParameter->getIndex("log")!=C_INVALID_INDEX)
+  pParameter->setValue("log", mLogarithmic->text().toUInt());
+}
 
 void ScanItemWidget::RegularGridClicked()
-{}
+{
+  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
+  {
+    mMinLabel->setText(tr("Min"));
+    mMaxLabel->setText(tr("Max"));
+    pParameter->setValue("gridType", SD_REGULAR);
+  }
+}
 
 void ScanItemWidget::UniformClicked()
-{}
+{
+  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
+  {
+    mMinLabel->setText(tr("Min"));
+    mMaxLabel->setText(tr("Max"));
+    pParameter->setValue("gridType", SD_UNIFORM);
+  }
+}
 
 void ScanItemWidget::GaussianClicked()
-{}
+{
+  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
+  {
+    mMinLabel->setText(tr("Mean"));
+    mMaxLabel->setText(tr("Std.Dev."));
+    pParameter->setValue("gridType", SD_GAUSS);
+  }
+}
 
 void ScanItemWidget::PosGaussianClicked()
-{}
+{
+  // if (pParameter->getIndex("gridType")!=C_INVALID_INDEX)
+  {
+    mMinLabel->setText(tr("Mean"));
+    mMaxLabel->setText(tr("Std.Dev."));
+    pParameter->setValue("gridType", SD_BOLTZ);
+  }
+}
 
 /*
  *  Destroys the object and frees any allocated resources
@@ -234,9 +277,9 @@ void ScanItemWidget::loadObject()
 void ScanItemWidget::languageChange()
 {
   setCaption(tr("ScanItemWidget"));
-  TextLabel3->setText(tr("Density"));
-  TextLabel2->setText(tr("Max"));
-  TextLabel1->setText(tr("Min"));
+  mDensityLabel->setText(tr("Density"));
+  mMaxLabel->setText(tr("Max"));
+  mMinLabel->setText(tr("Min"));
   mDensity->setText(QString::null);
   mIndependent->setText(tr("          Master"));
   mLogarithmic->setText(tr("          Logarithmic"));

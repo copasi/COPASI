@@ -50,9 +50,9 @@ class ScanItemWidget : public QWidget
     ScanRadioButton* mGaussianRadio;
     ScanRadioButton* mPosGaussianRadio;
 
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
+    QLabel* mMaxLabel;
+    QLabel* mMinLabel;
+    QLabel* mDensityLabel;
     QLabel* randomeLabel;
     QButtonGroup* buttonGroup;
 
