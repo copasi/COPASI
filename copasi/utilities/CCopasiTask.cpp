@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 17:53:16 $
+   $Date: 2004/11/17 08:53:36 $
    End CVS Header */
 
 /**
@@ -50,7 +50,7 @@ const char* CCopasiTask::XMLType[] =
 CCopasiTask::Type CCopasiTask::XMLNameToEnum(const char * xmlTypeName)
 {
   unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
+  while (XMLType[i] && strcmp(xmlTypeName, XMLType[i])) i++;
 
   if (XMLType[i]) return (CCopasiTask::Type) i;
   else return CCopasiTask::unset;
