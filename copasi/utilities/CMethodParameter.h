@@ -79,7 +79,7 @@ class CMethodParameter: public CCopasiContainer
      */
     CMethodParameter(const std::string & name,
                      const C_FLOAT64 & value,
-                     const CMethodParameter::Type & type,
+                     const Type & type,
                      const CCopasiContainer * pParent = NULL,
                      const std::string & objectType = "Method Parameter");
 
