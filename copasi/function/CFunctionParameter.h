@@ -18,6 +18,9 @@
 class CFunctionParameter : CCopasiContainer
   {
   public:
+    /**
+     * A string representation of the data type
+     */
     static const std::string DataTypeName[];
 
     //Attributes
