@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 15:51:25 $
+   $Date: 2004/11/17 13:59:26 $
    End CVS Header */
 
-#include <qarray.h>
+#include <qmemarray.h>
 #include <qevent.h>
 #include <qstring.h>
 #include <qcolor.h>   //might need to go to the header file
@@ -119,6 +119,7 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
 void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
 {
+  if (data.size() == 0) return;
   unsigned C_INT32 i;
   if (ndata >= data[0]->size())
     {
