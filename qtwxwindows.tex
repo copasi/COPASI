@@ -1,0 +1,86 @@
+\documentclass[12pt,a4paper]{article}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\title{Comparison of WxWindows and Qt}
+\date{}
+\maketitle
+
+\thispagestyle{empty}
+
+\section*{Qt}
+\begin{description}
+\item[Portability:]
+X11/Posix, Windows, OS X soon. \\
+MacOS 9 not supported, probably will not be.
+Windows 3.1 not supported.
+\item[Language:] Primarily C++, but C, Perl and Python bindings are
+  available.
+\item[Completeness:]
+Full featured and mature.
+\item[Look and Feel:] Professional looking. Implements widgets on each
+  platform to match native platform widget look.
+\item[Ease of Use:] Very easy, integrates well with C++. Event
+  handling is non-standard, requiring meta-object compiler, but this
+  is easily learned, and probably less work overall than other
+  event-handling mechanisms.
+\item[Documentation:] Very well documented.
+\item[Price:]Expensive (\$2000 to \$3000 per developer). Support and
+  updates after first year must be bought (\$600-\$700 per developer).
+\item[Licence:] Proprietary (no licence required for free software on
+  Unix). GUI part of Windows software cannot be released later as open
+  source.
+\item[Bugginess:]
+Few bugs.
+\item[Updates:]Frequent, in first year.
+\item[Support:]Commercially supported.
+\item[Application Size:]Reimplements widgets on each platform (no use
+  of native widgets), so size is bigger, but not huge.
+\item[Speed:] Fast (Widgets implemented directly, no use of e.g. Xt
+  library).
+
+\end{description}
+
+\section*{wxWindows}
+
+\begin{description}
+\item[Portability:]X11 (Motif, GTK), Win32/16. MacOS port underway but
+  further behind.
+\item[Language:] Primarily C++, but Perl, Python, XLisp, Scheme and
+  CLIPS bindings are available.
+\item[Completeness:] Less mature, some advanced features still lacking.
+\item[Look and Feel:]Uses native widget kit on each platform. Possibly
+  less professional looking.
+\item[Ease of Use:] Similar to MFC, easy to learn and use.
+\item[Documentation:] Well documented.
+\item[Price:]Free.
+\item[Licence:]LGPL, with extra provision that static binaries may be
+  distributed.
+\item[Bugginess:] Has some bugs.
+\item[Updates:] At the whim of developers, but being open source,
+  generally frequent.
+\item[Support:]WWW, newsgroups.
+\item[Application Size:] Smaller, since the native toolkit is used.
+\item[Speed:] Slightly slower.
+
+\end{description}
+
+\section*{Summary}
+
+There are a number of cross-platform widget kits available, among them
+Qt, wxWindows, FLTK, FOX and V. Of these, only the first two provide
+Mac support, and are reasonably full featured and mature.
+
+wxWindows would be a good choice for cross-platform free software,
+where it has an obvious price advantage, or if future support for
+MacOS 9 were important (although at present Mac support is incomplete).
+At the moment, however, wxWindows is less polished than Qt, in terms
+of look and feel, feature completeness and bugginess. I recommend that
+we use Qt as the widget kit for the COPASI front-end. The price is not
+inconsiderable, but I think these are outweighed by Qt's maturity,
+full feature set, professional look and ease of use.
+
+
+\end{document}
