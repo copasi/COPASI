@@ -68,6 +68,9 @@ bool CChemEqInterface::setChemEqString(const std::string & ces)
   // True tells the method to look for " " as separator instead of " + ".
   setElements(mModifierNames, mModifierMult, Modifiers, true);
 
+  //debug
+  std::cout << "CChemEqInterface: " << mSubstrateNames.size() << " " << mProductNames.size() << " " << mModifierNames.size() << " " << std::endl;
+
   return mReversibility;
 }
 
@@ -383,10 +386,16 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
 
     itEnd = metabs.end();
 
+    std::string compName;
     for (it = metabs.begin(); it != itEnd; ++it)
-      model->addMetabolite(CMetabNameInterface::extractCompartmentName(model, *it),
-                           CMetabNameInterface::extractMetabName(model, *it),
-                           0.1, CMetab::METAB_VARIABLE);
+      {
+        compName = CMetabNameInterface::extractCompartmentName(model, *it);
+        if (model->findCompartment(compName) == -1)
+          model->addCompartment(compName, 1);
+        model->addMetabolite(compName,
+                             CMetabNameInterface::extractMetabName(model, *it),
+                             0.1, CMetab::METAB_VARIABLE);
+      }
 
     return ret;
   }
