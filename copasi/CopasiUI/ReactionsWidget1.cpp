@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.153 $
+   $Revision: 1.154 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/22 08:52:08 $
+   $Author: shoops $ 
+   $Date: 2004/11/11 02:16:44 $
    End CVS Header */
 
 /*********************************************************************
@@ -330,15 +330,15 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                    // Yes or Enter
+        case 0:                     // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
                 i--;*/ 
             //unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-            unsigned C_INT32 size = Copasi->pModel->getReactions().size();
+            unsigned C_INT32 size = dataModel->getModel()->getReactions().size();
             //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-            unsigned C_INT32 index = Copasi->pModel->getReactions().getIndex(mRi.getReactionName());
+            unsigned C_INT32 index = dataModel->getModel()->getReactions().getIndex(mRi.getReactionName());
             //dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
             dataModel->getModel()->removeReaction(objKey);
             //enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
@@ -349,7 +349,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             mRi.setFunction("", true);
             if (size > 1)
               {
-                enter(Copasi->pModel->getReactions()[std::min(index, size - 2)]->getKey());
+                enter(dataModel->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
               }
             //dataModel->getModel()->removeReaction(objKey);
             // table->removeRow(ToBeDeleted[i]);
@@ -362,7 +362,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                           // No or Escape
+        default:                            // No or Escape
           break;
         }
       //}
