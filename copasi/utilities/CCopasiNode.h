@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:33 $
+   $Date: 2004/07/22 20:47:32 $
    End CVS Header */
 
 /**
@@ -81,7 +81,12 @@ template < class _Data > class CCopasiNode
        * Destructor.
        * Note: Within a tree the parent of this node has to be corrected.
        */
-      virtual ~CCopasiNode() {deleteChildren();}
+      virtual ~CCopasiNode()
+      {
+        deleteChildren();
+
+        if (mpParent) mpParent->removeChild(this);
+      }
 
       /**
        * Retreive the data of the Node.
@@ -100,7 +105,7 @@ template < class _Data > class CCopasiNode
        * Retreive the parent of a Node.
        * @return CCopasiNode< Data > * pParent
        */
-      CCopasiNode< Data > * getParent() {return mpParent;}
+    CCopasiNode< Data > * getParent() {return mpParent;}
 
       /**
        * Retreive the parent of a Node.
@@ -277,7 +282,6 @@ template < class _Data > class CCopasiNode
       bool deleteChildren()
       {
         while (mpChild) delete mpChild;
-        if (mpParent) mpParent->removeChild(this);
 
         return true;
       }
