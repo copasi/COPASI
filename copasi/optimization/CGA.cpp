@@ -488,7 +488,7 @@ int CGA::Optimise()
 
  
  //CGA Ga_10param(4000,4000, atoi(argv[1]));  //define a object
- CGA Ga_10param(4000,40, atoi(argv[1]));  //define a object
+ CGA Ga_10param(4000,10, atoi(argv[1]));  //define a object
 
  Ga_10param.Set_mn(atoi(argv[2]));
  Ga_10param.Set_mx(atoi(argv[3]));
