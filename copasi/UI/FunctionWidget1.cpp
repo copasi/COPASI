@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/21 16:37:33 $
+   $Date: 2003/11/21 21:02:31 $
    End CVS Header */
 
 /**********************************************************************
@@ -141,6 +141,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table1->setNumRows(3);
   Table1->setNumCols(3);
   Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
+  Table1->setColumnReadOnly (1, true);
 
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
 
@@ -291,6 +292,7 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
       // col. 2
       item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
       item->setText(usage);
+
       if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
       if (usage == "PRODUCT") item->setPixmap(*pProduct);
       if (usage == "MODIFIER") item->setPixmap(*pModifier);
@@ -401,10 +403,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                        // The user clicked the Retry again button or pressed Enter
+            case 0:                         // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                        // The user clicked the Quit or pressed Escape
+            case 1:                         // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
