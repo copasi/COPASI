@@ -211,3 +211,13 @@ void CScanProblem::calculate()
       mpTrajectory->process();
     }
 }
+
+void CScanProblem::setSteadyStateTask(CSteadyStateTask* pSteadyStateTask)
+{
+  mpSteadyState = pSteadyStateTask;
+}
+
+void CScanProblem::setTrajectoryTask(CTrajectoryTask* pTrajectoryTask)
+{
+  mpTrajectory = pTrajectoryTask;
+}

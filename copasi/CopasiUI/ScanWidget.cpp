@@ -233,7 +233,10 @@ void ScanWidget::loadScan(CModel *model)
       taskName->setText(tr("Scan"));
       scanTask = new CScanTask();
       CScanProblem *scanProblem = scanTask->getProblem();
+
       scanProblem->setModel(model);
+      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
+      scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
 
       if (scanTask->isRequested() == true)
         sExecutable->setChecked(true);

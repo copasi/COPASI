@@ -78,6 +78,16 @@ class CScanProblem
 
     void calculate();
 
+    /*
+     * Initialize the pointer for steadystate task 
+    */
+    void setSteadyStateTask(CSteadyStateTask* pSteadyStateTask);
+
+    /*
+     * Initialize the pointer to the trajectory task
+    */
+    void setTrajectoryTask(CTrajectoryTask* pTrajectoryTask);
+
     /**
      *  Size of the scanItem vector
      * @ return unsigned C_INT32 size
