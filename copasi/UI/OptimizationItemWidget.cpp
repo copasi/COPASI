@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/05 15:56:01 $
+   $Date: 2004/05/05 15:59:02 $
    End CVS Header */
 
 /********************************************************
@@ -244,7 +244,7 @@ void OptimizationItemWidget::slotUpperEdit()
         dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
       int nIndex; // this nIndex must exist;
       nIndex = func->Index(mpObject->getCN());
-      func->mMaxList[nIndex] = FROM_UTF8(strFunction);
+      func->mMaxList[nIndex] = strFunction;
       if (!(func->mMaxFunctionList[nIndex]))
         func->mMaxFunctionList[nIndex] = new CKinFunction();
       // dont go through the compile function
