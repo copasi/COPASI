@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/03/13 17:38:43 $
+   $Author: gasingh $ 
+   $Date: 2004/04/14 19:22:05 $
    End CVS Header */
 
 /***********************************************************************
@@ -237,7 +237,7 @@ void MetabolitesWidget::createNewObject()
   {
     std::string name = "metabolite_0";
     int i = 0;
-    while (!dataModel->getModel()->addMetabolite(name))
+    while (!dataModel->getModel()->addMetabolite(name, "", 1.0, CMetab::METAB_FIXED))
       {
         i++;
         name = "metabolite_";
@@ -538,7 +538,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                            // Yes or Enter
+            case 0:                             // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -551,7 +551,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                            // No or Escape
+            case 1:                             // No or Escape
               break;
             }
         }

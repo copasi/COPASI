@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/25 12:41:41 $
+   $Author: gasingh $ 
+   $Date: 2004/04/14 19:22:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -76,7 +76,8 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   mCheckStatus = new QCheckBox(this, "mCheckStatus");
   mCheckStatus->setText("fixed");
-  mCheckStatus->setChecked(false);
+  //mCheckStatus->setChecked(false);
+  mCheckStatus->setChecked(true);
   MetabolitesWidget1Layout->addWidget(mCheckStatus, 3, 1);
 
   mLblStatus = new QLabel(this, "mLblStatus");
