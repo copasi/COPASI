@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.txt.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 18:26:01 $
+   $Author: ssahle $ 
+   $Date: 2004/09/30 09:03:25 $
    End CVS Header */
 
 static char DataModeltxt[] =
@@ -22,10 +22,10 @@ static char DataModeltxt[] =
   "12:126:Differential Equations\n"
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
-  "21:211:Bifurcation\n"
-  "21:212:MCA\n"
-  "21:213:Stability\n"
-  "21:214:State\n"
+  "21:211:Result\n"
+  "21:212:Bifurcation\n"
+  "21:213:MCA\n"
+  "21:214:Stability\n"
   "2:22:Stoichiometry\n"
   "22:221:Elementary Modes\n"
   "22:222:Mass Conservation\n"
