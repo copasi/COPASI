@@ -37,7 +37,7 @@ void CStochSolver::initialize(CModel *model, C_FLOAT64 time)
   mMethod->initMethod(time);
   cout << "Done initializing stochastic method\n";
 }
-CStochSolver::~CStochSolver() {cleanup(); }
+CStochSolver::~CStochSolver() {cleanup();}
 
 void CStochSolver::cleanup()
 {
@@ -70,7 +70,7 @@ CStochMethod::CStochMethod(CModel *model)
 {
   mRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
-CStochMethod::~CStochMethod() {cleanup(); }
+CStochMethod::~CStochMethod() {cleanup();}
 
 void CStochMethod::cleanup()
 {
@@ -141,7 +141,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       number = static_cast<C_INT32> (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
-      substrate_factor = substrate_factor * pow(number, num_ident);
+      substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
       //cout << "Substrate factor = " << substrate_factor << endl;
 
       while (number > lower_bound)
@@ -163,10 +163,11 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   //if (substrates.size() > 0) //check again!!
   if (total_substrates > 1) //check again!!
     {
-      C_FLOAT64 invvolumefactor = pow(
-                                    substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
-                                    * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor(),
-                                    total_substrates - 1);
+      C_FLOAT64 invvolumefactor =
+        pow((double)
+            (substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
+             * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor()),
+            (int) total_substrates - 1);
       amu *= invvolumefactor;
       substrate_factor *= invvolumefactor;
     }
@@ -251,13 +252,13 @@ C_INT32 CStochMethod::generateReactionIndex()
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
   C_FLOAT32 rand2 = mRandomGenerator->getRandomCC();
-  return -1 * log(rand2) / mA0;
+  return - 1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
   C_FLOAT32 rand2 = mRandomGenerator->getRandomCC();
-  return -1 * log(rand2) / mAmu[reaction_index];
+  return - 1 * log(rand2) / mAmu[reaction_index];
 }
 
 void CStochMethod::setupDependencyGraphAndBalances()
@@ -343,60 +344,60 @@ void CStochMethod::setupDependencyGraphAndBalances()
 }
 
 set <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
-  {
-    set <CMetab*> *retset = new set <CMetab*>;
+{
+  set <CMetab*> *retset = new set <CMetab*>;
 
-    CCopasiVector<CReaction::CId2Metab> & subst = mModel->getReactions()[reaction_index]->getId2Substrates();
+  CCopasiVector<CReaction::CId2Metab> & subst = mModel->getReactions()[reaction_index]->getId2Substrates();
 
-    CCopasiVector<CReaction::CId2Metab> & modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
+  CCopasiVector<CReaction::CId2Metab> & modif = mModel->getReactions()[reaction_index]->getId2Modifiers();
 
-    unsigned C_INT32 i;
+  unsigned C_INT32 i;
 
-    CMetab* dummy;
+  CMetab* dummy;
 
-    cout << reaction_index << " depends on ";
+  cout << reaction_index << " depends on ";
 
-    for (i = 0; i < subst.size(); i++)
-      {
-        retset->insert((subst[i]->getMetabolite()));
-        dummy = (subst[i]->getMetabolite());
-        cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
-      }
+  for (i = 0; i < subst.size(); i++)
+    {
+      retset->insert((subst[i]->getMetabolite()));
+      dummy = (subst[i]->getMetabolite());
+      cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
+    }
 
-    for (i = 0; i < modif.size(); i++)
-      {
-        retset->insert((modif[i]->getMetabolite()));
-        dummy = (modif[i]->getMetabolite());
-        cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
-      }
+  for (i = 0; i < modif.size(); i++)
+    {
+      retset->insert((modif[i]->getMetabolite()));
+      dummy = (modif[i]->getMetabolite());
+      cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
+    }
 
-    cout << endl;
-    return retset;
-  }
+  cout << endl;
+  return retset;
+}
 
 set <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
-  {
-    set <CMetab*> *retset = new set <CMetab*>;
+{
+  set <CMetab*> *retset = new set <CMetab*>;
 
-    // Get the balances  associated with the reaction at this index
-    // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
-    const CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+  // Get the balances  associated with the reaction at this index
+  // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
+  const CCopasiVector<CChemEqElement> & balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
 
-    cout << reaction_index << " affects ";
+  cout << reaction_index << " affects ";
 
-    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
-      {
-        if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-          if (balances[i]->getMetaboliteAddr()->getStatus() != METAB_FIXED)
-            {
-              retset->insert(balances[i]->getMetaboliteAddr());
-              cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
-            }
-      }
+  for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+    {
+      if (fabs(balances[i]->getMultiplicity()) >= 0.1)
+        if (balances[i]->getMetaboliteAddr()->getStatus() != METAB_FIXED)
+          {
+            retset->insert(balances[i]->getMetaboliteAddr());
+            cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(balances[i]->getMetaboliteAddr());
+          }
+    }
 
-    cout << endl;
-    return retset;
-  }
+  cout << endl;
+  return retset;
+}
 
 // *************** CStochDirectMethod **********************************
 
@@ -407,7 +408,7 @@ CStochDirectMethod::CStochDirectMethod()
 CStochDirectMethod::CStochDirectMethod(CModel *model)
     : CStochMethod(model)
 {}
-CStochDirectMethod::~CStochDirectMethod() {cleanup(); }
+CStochDirectMethod::~CStochDirectMethod() {cleanup();}
 
 //C_INT32 CStochDirectMethod::initMethod(C_FLOAT64 time)
 //{
@@ -428,7 +429,7 @@ C_FLOAT64 CStochDirectMethod::doStep(C_FLOAT64 initial_time)
 CStochNextReactionMethod::CStochNextReactionMethod(CModel *model)
     : CStochMethod(model)
 {}
-CStochNextReactionMethod::~CStochNextReactionMethod() {cleanup(); }
+CStochNextReactionMethod::~CStochNextReactionMethod() {cleanup();}
 
 C_INT32 CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
 {

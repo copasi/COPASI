@@ -69,7 +69,8 @@ tam@wri.com
 
 #include <stdio.h>
 #include <math.h>
-#include <float.h> 
+#include <float.h>
+#include <algorithm> 
 // #define DBL_EPSILON 2.2204460492503131e-16
 
 #ifndef _ZTC
@@ -168,25 +169,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                     // number of variables
-        mY - 1,                   // the array of current concentrations
+  lsoda(mDim,                      // number of variables
+        mY - 1,                    // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                   // the current time
-        mTime + deltaT,           // the final time
-        1,                        // scalar error control
-        (&mRtol) - 1,             // relative tolerance array
+        &mTime,                    // the current time
+        mTime + deltaT,            // the final time
+        1,                         // scalar error control
+        (&mRtol) - 1,              // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,             // absolute tolerance array
+        (&mAtol) - 1,              // absolute tolerance array
         // fortran style vector !!!
-        1,                        // output by overshoot & interpolatation
-        &mLsodaStatus,            // the state control variable
-        1,                        // optional inputs are being used
-        2,                        // jacobian calculated internally
-        0, 0, 0,                  // options left at default values
-        10000,                    // max iterations for each lsoda call
-        0,                        // another value left at the default
-        mAdams,                   // max order for Adams method
-        mBDF,                     // max order for BDF method
+        1,                         // output by overshoot & interpolatation
+        &mLsodaStatus,             // the state control variable
+        1,                         // optional inputs are being used
+        2,                         // jacobian calculated internally
+        0, 0, 0,                   // options left at default values
+        10000,                     // max iterations for each lsoda call
+        0,                         // another value left at the default
+        mAdams,                    // max order for Adams method
+        mBDF,                      // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -243,7 +244,7 @@ void CLsodaMethod::lsoda_freevectors(void)
   C_INT32 i, lenyh;
   if (yh != (C_FLOAT64**) NULL)
     {
-      lenyh = 1 + max(mxordn, mxords);
+      lenyh = 1 + std::max(mxordn, mxords);
       for (i = 1; i <= lenyh; i++)
         mem_free((void *) yh[i]);
       for (i = 1; i <= nyh; i++)
@@ -577,7 +578,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
                 }
               if (mxordn == 0)
                 mxordn = 100;
-              mxordn = min(mxordn, mord[1]);
+              mxordn = std::min(mxordn, mord[1]);
               mxords = iwork9;
               if (mxords < 0)
                 {
@@ -589,7 +590,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
                 }
               if (mxords == 0)
                 mxords = 100;
-              mxords = min(mxords, mord[2]);
+              mxords = std::min(mxords, mord[2]);
               if ((tout - *t) * h0 < 0.)
                 {
                   if (prfl)
@@ -637,7 +638,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       sqrteta = sqrt(DBL_EPSILON);
       meth = 1;
       nyh = n;
-      lenyh = 1 + max(mxordn, mxords);
+      lenyh = 1 + std::max(mxordn, mxords);
 
       yh = (C_FLOAT64 **) mem_malloc((1 + lenyh) * sizeof(*yh));
       if (yh == NULL)
@@ -852,7 +853,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (h0 == 0.)
         {
           tdist = fabs(tout - *t);
-          w0 = max(fabs(*t), fabs(tout));
+          w0 = std::max(fabs(*t), fabs(tout));
           if (tdist < 2. * DBL_EPSILON * w0)
             {
               if (prfl)
@@ -865,7 +866,7 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           if (itol > 2)
             {
               for (i = 2; i <= n; i++)
-                tol = max(tol, rtol[i]);
+                tol = std::max(tol, rtol[i]);
             }
           if (tol <= 0.)
             {
@@ -876,15 +877,15 @@ void CLsodaMethod::lsoda(C_INT32 neq,
                     atoli = atol[i];
                   ayi = fabs(y[i]);
                   if (ayi != 0.)
-                    tol = max(tol, atoli / ayi);
+                    tol = std::max(tol, atoli / ayi);
                 }
             }
-          tol = max(tol, 100. * DBL_EPSILON);
-          tol = min(tol, 0.001);
+          tol = std::max(tol, 100. * DBL_EPSILON);
+          tol = std::min(tol, 0.001);
           sum = vmnorm(n, yh[2], ewt);
           sum = 1. / (tol * w0 * w0) + tol * sum * sum;
           h0 = 1. / sqrt(sum);
-          h0 = min(h0, tdist);
+          h0 = std::min(h0, tdist);
           h0 = h0 * ((tout - *t >= 0.) ? 1. : -1.);
         }                 /*   end if (h0 == 0.)   */
       /*
@@ -1444,7 +1445,7 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
             break;
           if (corflag == 1)
             {
-              rh = max(rh, hmin / fabs(h));
+              rh = std::max(rh, hmin / fabs(h));
               scaleh(&rh, &pdh);
               continue;
             }
@@ -1499,7 +1500,7 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
               methodswitch(dsm, pnorm, &pdh, &rh);
               if (meth != mused)
                 {
-                  rh = max(rh, hmin / fabs(h));
+                  rh = std::max(rh, hmin / fabs(h));
                   scaleh(&rh, &pdh);
                   rmax = 10.;
                   endstoda();
@@ -1536,7 +1537,7 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
               */
               if (orderflag == 1)
                 {
-                  rh = max(rh, hmin / fabs(h));
+                  rh = std::max(rh, hmin / fabs(h));
                   scaleh(&rh, &pdh);
                   rmax = 10.;
                   endstoda();
@@ -1548,7 +1549,7 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
               if (orderflag == 2)
                 {
                   resetcoeff();
-                  rh = max(rh, hmin / fabs(h));
+                  rh = std::max(rh, hmin / fabs(h));
                   scaleh(&rh, &pdh);
                   rmax = 10.;
                   endstoda();
@@ -1600,14 +1601,14 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
               if (orderflag == 1 || orderflag == 0)
                 {
                   if (orderflag == 0)
-                    rh = min(rh, 0.2);
-                  rh = max(rh, hmin / fabs(h));
+                    rh = std::min(rh, 0.2);
+                  rh = std::max(rh, hmin / fabs(h));
                   scaleh(&rh, &pdh);
                 }
               if (orderflag == 2)
                 {
                   resetcoeff();
-                  rh = max(rh, hmin / fabs(h));
+                  rh = std::max(rh, hmin / fabs(h));
                   scaleh(&rh, &pdh);
                 }
               continue;
@@ -1633,7 +1634,7 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
               else
                 {
                   rh = 0.1;
-                  rh = max(hmin / fabs(h) , rh);
+                  rh = std::max(hmin / fabs(h) , rh);
                   h *= rh;
                   yp1 = yh[1];
                   for (i = 1; i <= n; i++)
@@ -1922,8 +1923,8 @@ void CLsodaMethod::scaleh(C_FLOAT64 * rh,
     l = nq + 1 to prevent a change of h for that many steps, unless
     forced by a convergence or error test failure.
   */
-  *rh = min(*rh, rmax);
-  *rh = *rh / max(1., fabs(h) * hmxi * *rh);
+  *rh = std::min(*rh, rmax);
+  *rh = *rh / std::max(1., fabs(h) * hmxi * *rh);
   /*
     If meth = 1, also restrict the new step size by the stability region.
     If this reduces h, set irflag to 1 so that if there are roundoff
@@ -1932,7 +1933,7 @@ void CLsodaMethod::scaleh(C_FLOAT64 * rh,
   if (meth == 1)
     {
       irflag = 0;
-      *pdh = max(fabs(h) * pdlast, 0.000001);
+      *pdh = std::max(fabs(h) * pdlast, 0.000001);
       if ((*rh * *pdh * 1.00001) >= sm1[nq])
         {
           *rh = sm1[nq] / *pdh;
@@ -1992,7 +1993,7 @@ void CLsodaMethod::prja(C_FLOAT64 *y)
       for (j = 1; j <= n; j++)
         {
           yj = y[j];
-          r = max(sqrteta * fabs(yj), r0 / ewt[j]);
+          r = std::max(sqrteta * fabs(yj), r0 / ewt[j]);
           y[j] += r;
           fac = -hl0 / r;
           eval(tn, y, acor);
@@ -2037,7 +2038,7 @@ C_FLOAT64 CLsodaMethod::vmnorm(C_INT32 n,
 
   vm = 0.;
   for (i = 1; i <= n; i++)
-    vm = max(vm, fabs(v[i]) * w[i]);
+    vm = std::max(vm, fabs(v[i]) * w[i]);
   return vm;
 }                  /*   end vmnorm   */
 
@@ -2063,7 +2064,7 @@ C_FLOAT64 CLsodaMethod::fnorm(C_INT32 n,
       ap1 = a[i];
       for (j = 1; j <= n; j++)
         sum += fabs(ap1[j]) / w[j];
-      an = max(an, sum * w[i]);
+      an = std::max(an, sum * w[i]);
     }
   return an;
 }     /*   end fnorm   */
@@ -2188,13 +2189,13 @@ void CLsodaMethod::correction(C_FLOAT64 *y,
               rm = 1024.0;
               if (*del <= (1024. * *delp))
                 rm = *del / *delp;
-              rate = max(rate, rm);
-              crate = max(0.2 * crate, rm);
+              rate = std::max(rate, rm);
+              crate = std::max(0.2 * crate, rm);
             }
-          dcon = *del * min(1., 1.5 * crate) / (tesco[nq][2] * conit);
+          dcon = *del * std::min(1., 1.5 * crate) / (tesco[nq][2] * conit);
           if (dcon <= 1.)
             {
-              pdest = max(pdest, rate / fabs(h * el[1]));
+              pdest = std::max(pdest, rate / fabs(h * el[1]));
               if (pdest != 0.)
                 pdlast = pdest;
               break;
@@ -2329,7 +2330,7 @@ void CLsodaMethod::methodswitch(C_FLOAT64 dsm,
           if (irflag == 0)
             return;
           rh2 = 2.;
-          nqm2 = min(nq, mxords);
+          nqm2 = std::min(nq, mxords);
         }
       else
         {
@@ -2339,7 +2340,7 @@ void CLsodaMethod::methodswitch(C_FLOAT64 dsm,
           *pdh = pdlast * fabs(h);
           if ((*pdh * rh1) > 0.00001)
             rh1it = sm1[nq] / *pdh;
-          rh1 = min(rh1, rh1it);
+          rh1 = std::min(rh1, rh1it);
           if (nq > mxords)
             {
               nqm2 = mxords;
@@ -2401,11 +2402,11 @@ void CLsodaMethod::methodswitch(C_FLOAT64 dsm,
   *pdh = pdnorm * fabs(h);
   if ((*pdh * rh1) > 0.00001)
     rh1it = sm1[nqm1] / *pdh;
-  rh1 = min(rh1, rh1it);
+  rh1 = std::min(rh1, rh1it);
   rh2 = 1. / (1.2 * pow(dsm, exsm) + 0.0000012);
   if ((rh1 * ratio) < (5. * rh2))
     return;
-  alpha = max(0.001, rh1);
+  alpha = std::max(0.001, rh1);
   dm1 *= pow(alpha, exm1);
   if (dm1 <= 1000. * DBL_EPSILON * pnorm)
     return;
@@ -2478,12 +2479,12 @@ void CLsodaMethod::orderswitch(C_FLOAT64 * rhup,
   */
   if (meth == 1)
     {
-      *pdh = max(fabs(h) * pdlast, 0.000001);
+      *pdh = std::max(fabs(h) * pdlast, 0.000001);
       if (l < lmax)
-        *rhup = min(*rhup, sm1[l] / *pdh);
-      rhsm = min(rhsm, sm1[nq] / *pdh);
+        *rhup = std::min(*rhup, sm1[l] / *pdh);
+      rhsm = std::min(rhsm, sm1[nq] / *pdh);
       if (nq > 1)
-        rhdn = min(rhdn, sm1[nq - 1] / *pdh);
+        rhdn = std::min(rhdn, sm1[nq - 1] / *pdh);
       pdest = 0.;
     }
   if (rhsm >= *rhup)
@@ -2552,7 +2553,7 @@ void CLsodaMethod::orderswitch(C_FLOAT64 * rhup,
         }
     }
   if (kflag <= -2)
-    *rh = min(*rh, 0.2);
+    *rh = std::min(*rh, 0.2);
   /*
     If there is a change of order, reset nq, l, and the coefficients.
     In any case h is reset according to rh and the yh array is rescaled.
@@ -2586,7 +2587,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,      /* Fortran style vector */
+                        C_FLOAT64 * y,       /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

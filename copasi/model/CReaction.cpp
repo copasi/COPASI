@@ -7,6 +7,8 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
+#include <algorithm>
+
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CReaction.h"
@@ -57,7 +59,7 @@ CReaction::CReaction(const string & name)
   mFunction = NULL;
   mScalingFactor = &mDefaultScalingFactor;
 }
-CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE; }
+CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE;}
 
 void CReaction::cleanup()
 {
@@ -395,9 +397,9 @@ CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters()
 }
 
 const string & CReaction::getName() const
-  {
-    return mName;
-  }
+{
+  return mName;
+}
 
 CChemEq & CReaction::getChemEq()
 {
@@ -410,19 +412,19 @@ CFunction & CReaction::getFunction()
 }
 
 const C_FLOAT64 & CReaction::getFlux() const
-  {
-    return mFlux;
-  }
+{
+  return mFlux;
+}
 
 const C_FLOAT64 & CReaction::getScaledFlux() const
-  {
-    return mScaledFlux;
-  }
+{
+  return mScaledFlux;
+}
 
 bool CReaction::isReversible() const
-  {
-    return (mReversible == TRUE);
-  }
+{
+  return (mReversible == TRUE);
+}
 
 void CReaction::setName(const string & name)
 {
@@ -571,16 +573,16 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   CFunctionParameter::DataType Type;
 
   configbuffer.getVariable("Substrates", "C_INT32", &SubstrateSize);
-  mId2Substrates.resize(min(SubstrateSize, usageRangeSize("SUBSTRATE")));
+  mId2Substrates.resize(std::min(SubstrateSize, usageRangeSize("SUBSTRATE")));
 
   configbuffer.getVariable("Products", "C_INT32", &ProductSize);
-  mId2Products.resize(min(ProductSize, usageRangeSize("PRODUCT")));
+  mId2Products.resize(std::min(ProductSize, usageRangeSize("PRODUCT")));
 
   configbuffer.getVariable("Modifiers", "C_INT32", &ModifierSize);
-  mId2Modifiers.resize(min(ModifierSize, usageRangeSize("MODIFIER")));
+  mId2Modifiers.resize(std::min(ModifierSize, usageRangeSize("MODIFIER")));
 
   configbuffer.getVariable("Constants", "C_INT32", &ParameterSize);
-  mId2Parameters.resize(min(ParameterSize, usageRangeSize("PARAMETER")));
+  mId2Parameters.resize(std::min(ParameterSize, usageRangeSize("PARAMETER")));
 
   // Construct Id2Substrate
   imax = mId2Substrates.size();
@@ -782,9 +784,9 @@ void CReaction::CId2Metab::setIdentifierName(const string & identifierName)
 }
 
 const string & CReaction::CId2Metab::getIdentifierName() const
-  {
-    return mIdentifierName;
-  }
+{
+  return mIdentifierName;
+}
 
 void CReaction::CId2Metab::setMetaboliteName(const string & metaboliteName)
 {
@@ -792,9 +794,9 @@ void CReaction::CId2Metab::setMetaboliteName(const string & metaboliteName)
 }
 
 const string & CReaction::CId2Metab::getMetaboliteName() const
-  {
-    return mMetaboliteName;
-  }
+{
+  return mMetaboliteName;
+}
 
 void CReaction::CId2Metab::setCompartmentName(const string & compartmentName)
 {
@@ -802,14 +804,14 @@ void CReaction::CId2Metab::setCompartmentName(const string & compartmentName)
 }
 
 const string & CReaction::CId2Metab::getCompartmentName() const
-  {
-    return mCompartmentName;
-  }
+{
+  return mCompartmentName;
+}
 
 CMetab * CReaction::CId2Metab::getMetabolite() const
-  {
-    return mpMetabolite;
-  }
+{
+  return mpMetabolite;
+}
 
 void CReaction::CId2Param::setIdentifierName(const string & identifierName)
 {
@@ -817,9 +819,9 @@ void CReaction::CId2Param::setIdentifierName(const string & identifierName)
 }
 
 const string & CReaction::CId2Param::getIdentifierName() const
-  {
-    return mIdentifierName;
-  }
+{
+  return mIdentifierName;
+}
 
 void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
 {
@@ -827,9 +829,9 @@ void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
 }
 
 const C_FLOAT64 & CReaction::CId2Param::getValue() const
-  {
-    return mValue;
-  }
+{
+  return mValue;
+}
 
 /**
  * Returns the address of mValue
@@ -1171,7 +1173,7 @@ unsigned C_INT32 CReaction::usageRangeSize(const string & usage)
     }
 
   if (pUsageRange)
-    Size = max(pUsageRange->getLow(), pUsageRange->getHigh());
+    Size = std::max(pUsageRange->getLow(), pUsageRange->getHigh());
 
   return Size;
 }

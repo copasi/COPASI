@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
@@ -218,7 +220,8 @@ CNewtonMethod::processNewton (CStateX & steadyState,
     {
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
-      steadyState.getJacobian(mJacobian, min(mFactor, mMaxrate), mResolution);
+      steadyState.getJacobian(mJacobian, std::min(mFactor, mMaxrate),
+                              mResolution);
 
       for (i = 0; i < mDimension; i++)
         {
@@ -347,7 +350,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,  /* fortran style vector */
+                           mdxdt.array() - 1,   /* fortran style vector */
                            1);
         }
 
@@ -404,7 +407,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,  /* fortran style vector */
+                   mdxdt.array() - 1,   /* fortran style vector */
                    1);
 
   if (mMaxrate > mResolution)
