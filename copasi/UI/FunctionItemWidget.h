@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.3 2003/10/04 16:00:39 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.h,v 1.5 2003/10/04 16:30:24 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -67,6 +67,11 @@ class FunctionItemWidget : public QDialog
     QFrame* line1_3;
     QPushButton* buttonClear;
 
+    /*
+     external interface to initialize the output str point
+    */
+    void setStrFunction(std::string * targetFunctionPtr);
+
   public slots:
     virtual void slotButtonClear();
     virtual void slotRadioDec();
@@ -101,7 +106,7 @@ class FunctionItemWidget : public QDialog
     QGridLayout* FunctionItemWidgetLayout;
     QGridLayout* radioGroupLayout;
     QGridLayout* layout1;
-    std::string strFunction;
+    std::string* strFunction;
 
   protected slots:
     virtual void languageChange();

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.3 2003/10/04 16:00:39 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.4 2003/10/04 16:28:31 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -28,7 +28,7 @@
  */
 FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool modal, WFlags fl)
     : QDialog(parent, name, modal, fl),
-    strFunction("")
+    strFunction(NULL)
 {
   if (!name)
     setName("FunctionItemWidget");
@@ -370,7 +370,8 @@ void FunctionItemWidget::slotButton3()
 
 void FunctionItemWidget::slotButtonConfirm()
 {
-  strFunction = textFunction->text().latin1();
+  *strFunction = textFunction->text().latin1();
+  strFunction = NULL;
   QDialog::done(QDialog::Accepted);
 }
 
@@ -578,5 +579,11 @@ void FunctionItemWidget::slotButton0()
 void FunctionItemWidget::slotButtonCancel()
 {
   //  qWarning("FunctionItemWidget::slotButtonCancel(): Not implemented yet");
+  strFunction = NULL;
   QDialog::done(QDialog::Rejected);
+}
+
+void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
+{
+  strFunction = targetFunctionPtr;
 }
