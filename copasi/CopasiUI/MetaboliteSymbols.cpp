@@ -101,7 +101,7 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
           table->setText(index, 3, QString::number(variableMetab->getInitialParticleNumber()));
           table->setText(index, 4, QString::number(variableMetab->getConcentration()));
           table->setText(index, 5, QString::number(variableMetab->getParticleNumber()));
-          table->setText(index, 6, variableMetab->getCompartment().getName().c_str());
+          //table->setText(index, 6,variableMetab->getCompartment().getName().c_str());
           index++;
         }
 

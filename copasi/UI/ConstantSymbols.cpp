@@ -84,24 +84,27 @@ void ConstantSymbols::loadConstantSymbols(CMathModel *model)
         List.begin();
       std::map< std::string, CMathConstantParameter * >::iterator end =
         List.end();
-      //       std::map< std::string, CCopasiObject * > selection =
-      //         CMathConstantParameter::getSelection();
-      //       std::map<std::string, CCopasiObject * >::iterator it;
-      //       CCopasiObject * constantObject;
-      //       C_INT32 noOfMetaboliteRows = selection.size();
+
       table->setNumRows(List.size());
       int index = 0;
       for (; it != end; ++it)
         {
-          //QMessageBox::information(this, "key",it->first.c_str());
           pConstant = it->second;
-          table->setText(index, 0, pConstant->getName().c_str());
-          table->setText(index, 1, pConstant->getObject()->getName().c_str());
+          table->setText(index, 0, it->first.c_str());
+          std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
+          std::map<std::string, CCopasiObject * >::iterator it1 = selection.begin();;
+          std::map< std::string, CCopasiObject * >::iterator end1 = selection.end();
+          CCopasiObject * cConstant;
+          QStringList comboEntries1;
+          for (; it1 != end1; ++it1)
+            {
+              cConstant = it1->second;
+              comboEntries1.push_back(cConstant->getObjectName().c_str());
+            }
+          QComboTableItem * item1 = new QComboTableItem(table, comboEntries1, false);
+          item1->setCurrentItem(pConstant->getObject()->getName().c_str());
+          table->setItem(index, 1, item1);
           table->setText(index, 2, QString::number(pConstant->getValue()));
-
-          //CCopasiObject *metabObject=constantObject->getObject();
-          //table->setText(index, 1, metabObject->getName().c_str());
-          //table->setText(index, 2, QString::number(constantObject->getValue()));
           index++;
         }
     }
