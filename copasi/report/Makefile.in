@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.3 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -238,14 +238,16 @@ noinst_LIBRARIES = libreport.a
 libreport_a_SOURCES = \
 	CCopasiObjectName.cpp \
 	CCopasiObject.cpp \
-	CCopasiContainer.cpp
+	CCopasiContainer.cpp \
+	CKeyFactory.cpp
 
 
 EXTRA_DIST = \
-	CCopasiObjectName.h	CCopasiObjectName.cpp \
+	CCopasiObjectName.h CCopasiObjectName.cpp \
 	CCopasiObject.h	CCopasiObject.cpp \
 	CCopasiObjectReference.h \
-	CCopasiContainer.h	CCopasiContainer.cpp
+	CCopasiContainer.h CCopasiContainer.cpp \
+	CKeyFactory.h CKeyFactory.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -261,12 +263,14 @@ LIBRARIES = $(noinst_LIBRARIES)
 libreport_a_AR = $(AR) cru
 libreport_a_LIBADD =
 am_libreport_a_OBJECTS = CCopasiObjectName.$(OBJEXT) \
-	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT)
+	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT) \
+	CKeyFactory.$(OBJEXT)
 #>- libreport_a_OBJECTS = $(am_libreport_a_OBJECTS)
-#>+ 5
+#>+ 6
 libreport_a_final_OBJECTS = libreport_a.all_cpp.o 
 libreport_a_nofinal_OBJECTS = CCopasiObjectName.$(OBJEXT) \
-	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT)
+	CCopasiObject.$(OBJEXT) CCopasiContainer.$(OBJEXT) \
+	CKeyFactory.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libreport_a_OBJECTS = $(libreport_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libreport_a_OBJECTS = $(libreport_a_final_OBJECTS)
 
@@ -278,7 +282,8 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CCopasiContainer.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CCopasiObject.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CCopasiObjectName.Po
+	@AMDEP_TRUE@	$(DEPDIR)/CCopasiObjectName.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CKeyFactory.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -355,6 +360,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiObjectName.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CKeyFactory.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -554,11 +560,11 @@ force-reedit:
 
 
 #>+ 11
-libreport_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCopasiObjectName.cpp $(srcdir)/CCopasiObject.cpp $(srcdir)/CCopasiContainer.cpp
+libreport_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCopasiObjectName.cpp $(srcdir)/CCopasiObject.cpp $(srcdir)/CCopasiContainer.cpp $(srcdir)/CKeyFactory.cpp
 	@echo 'creating libreport_a.all_cpp.cpp ...'; \
 	rm -f libreport_a.all_cpp.files libreport_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libreport_a.all_cpp.final; \
-	for file in CCopasiObjectName.cpp CCopasiObject.cpp CCopasiContainer.cpp ; do \
+	for file in CCopasiObjectName.cpp CCopasiObject.cpp CCopasiContainer.cpp CKeyFactory.cpp ; do \
 	  echo "#include \"$$file\"" >> libreport_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libreport_a.all_cpp.final; \
 	done; \
