@@ -431,7 +431,13 @@ bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Actio
     {
     case ListViews::MODEL:
       break;
-
+    case ListViews::REPORT:
+      // check if there is a list of Report Defs
+      CReportDefinitionVector* pReportDefinitionVector;
+      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      if (pReportDefinitionVector->size() > 0)
+        reportDefinitionButton->setEnabled(true);
+      break;
     default:
       break;
     }

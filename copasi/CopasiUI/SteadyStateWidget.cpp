@@ -20,6 +20,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include "DataModel.h"
+
 #include "SteadyStateWidget.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
@@ -27,7 +29,11 @@ Contact: Please contact lixu1@vt.edu.
 #include "listviews.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-#include "CReportDefinitionSelect.h" 
+#include "report/CReportDefinitionVector.h"
+#include "report/CReport.h"
+#include "report/CReportDefinition.h"
+#include "CReportDefinitionSelect.h"
+
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -379,7 +385,13 @@ bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Acti
     case ListViews::FUNCTION:
     case ListViews::MODEL:
       break;
-
+    case ListViews::REPORT:
+      // check if there is a list of Report Defs
+      CReportDefinitionVector* pReportDefinitionVector;
+      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      if (pReportDefinitionVector->size() > 0)
+        reportDefinitionButton->setEnabled(true);
+      break;
     default:
       break;
     }
