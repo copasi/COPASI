@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>589</width>
-            <height>380</height>
+            <width>719</width>
+            <height>539</height>
         </rect>
     </property>
     <property name="font">
@@ -66,20 +66,21 @@
                 <cstring>ComboBox1</cstring>
             </property>
         </widget>
-        <widget class="QLineEdit" row="6" column="1">
+        <widget class="Line" row="11" column="0" rowspan="1" colspan="4">
             <property name="name">
-                <cstring>LineEdit4</cstring>
+                <cstring>Line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="6" column="2">
-            <property name="name">
-                <cstring>TextLabel10</cstring>
-            </property>
-            <property name="text">
-                <string>Transient Concentration</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="10" column="0" rowspan="1" colspan="4">
+        <widget class="QLayoutWidget" row="12" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>Layout7</cstring>
             </property>
@@ -111,95 +112,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLabel" row="7" column="0">
-            <property name="name">
-                <cstring>TextLabel8</cstring>
-            </property>
-            <property name="text">
-                <string>Initial  Number</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="7" column="2">
-            <property name="name">
-                <cstring>TextLabel11</cstring>
-            </property>
-            <property name="text">
-                <string>Transient Number</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="6" column="3">
-            <property name="name">
-                <cstring>LineEdit7</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="8" column="1">
-            <property name="name">
-                <cstring>LineEdit9</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="Line" row="5" column="0" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>Line1_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="7" column="3">
-            <property name="name">
-                <cstring>LineEdit8</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="Line" row="9" column="0" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>Line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="8" column="0">
-            <property name="name">
-                <cstring>TextLabel12</cstring>
-            </property>
-            <property name="text">
-                <string>Transient Time</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="6" column="0">
-            <property name="name">
-                <cstring>TextLabel7</cstring>
-            </property>
-            <property name="text">
-                <string>Initial  Concentration</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="7" column="1">
-            <property name="name">
-                <cstring>LineEdit5</cstring>
-            </property>
-        </widget>
         <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>Line1_3</cstring>
@@ -214,7 +126,23 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QButtonGroup" row="3" column="0" rowspan="1" colspan="4">
+        <widget class="QLabel" row="3" column="2" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Metabolite Status</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="0" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>TextLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Metabolite Status Select</string>
+            </property>
+        </widget>
+        <widget class="QButtonGroup" row="4" column="1" rowspan="2" colspan="1">
             <property name="name">
                 <cstring>ButtonGroup2</cstring>
             </property>
@@ -222,7 +150,7 @@
                 <enum>WinPanel</enum>
             </property>
             <property name="title">
-                <string>&amp;Metabolite Status Selection</string>
+                <string></string>
             </property>
             <property name="exclusive">
                 <bool>true</bool>
@@ -233,10 +161,10 @@
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>30</x>
-                        <y>20</y>
-                        <width>91</width>
-                        <height>20</height>
+                        <x>18</x>
+                        <y>17</y>
+                        <width>88</width>
+                        <height>19</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -249,10 +177,10 @@
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>110</x>
-                        <y>20</y>
-                        <width>91</width>
-                        <height>20</height>
+                        <x>18</x>
+                        <y>45</y>
+                        <width>88</width>
+                        <height>19</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -260,7 +188,41 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QButtonGroup" row="4" column="0" rowspan="1" colspan="4">
+        <spacer row="5" column="2">
+            <property name="name">
+                <cstring>Spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>81</width>
+                    <height>90</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="5" column="0">
+            <property name="name">
+                <cstring>Spacer4_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>100</width>
+                    <height>90</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QButtonGroup" row="3" column="3" rowspan="3" colspan="1">
             <property name="name">
                 <cstring>ButtonGroup3</cstring>
             </property>
@@ -271,69 +233,174 @@
                 <enum>Sunken</enum>
             </property>
             <property name="title">
-                <string>&amp;Metabolite Status</string>
+                <string></string>
             </property>
             <property name="exclusive">
                 <bool>true</bool>
             </property>
-            <widget class="QLayoutWidget">
+            <widget class="QRadioButton">
                 <property name="name">
-                    <cstring>Layout12</cstring>
+                    <cstring>RadioButton5</cstring>
+                </property>
+                <property name="enabled">
+                    <bool>false</bool>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>22</x>
+                        <y>80</y>
+                        <width>148</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Dependent</string>
+                </property>
+            </widget>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>RadioButton4</cstring>
+                </property>
+                <property name="enabled">
+                    <bool>false</bool>
                 </property>
                 <property name="geometry">
                     <rect>
                         <x>21</x>
-                        <y>29</y>
-                        <width>219</width>
-                        <height>22</height>
+                        <y>49</y>
+                        <width>148</width>
+                        <height>19</height>
                     </rect>
                 </property>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <property name="margin">
-                        <number>0</number>
-                    </property>
-                    <property name="spacing">
-                        <number>6</number>
-                    </property>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>RadioButton3</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                        <property name="text">
-                            <string>Fixed</string>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>RadioButton4</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                        <property name="text">
-                            <string>Independent</string>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>RadioButton5</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                        <property name="text">
-                            <string>Dependent</string>
-                        </property>
-                    </widget>
-                </hbox>
+                <property name="text">
+                    <string>Independent</string>
+                </property>
+            </widget>
+            <widget class="QRadioButton">
+                <property name="name">
+                    <cstring>RadioButton3</cstring>
+                </property>
+                <property name="enabled">
+                    <bool>false</bool>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>21</x>
+                        <y>18</y>
+                        <width>148</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Fixed</string>
+                </property>
             </widget>
         </widget>
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Line1_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="8" column="1">
+            <property name="name">
+                <cstring>LineEdit5</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="8" column="3">
+            <property name="name">
+                <cstring>LineEdit8</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="7" column="3">
+            <property name="name">
+                <cstring>LineEdit7</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="7" column="1">
+            <property name="name">
+                <cstring>LineEdit4</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="9" column="1">
+            <property name="name">
+                <cstring>LineEdit9</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QLabel" row="7" column="2">
+            <property name="name">
+                <cstring>TextLabel10</cstring>
+            </property>
+            <property name="text">
+                <string>Transient Concentration</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="9" column="0">
+            <property name="name">
+                <cstring>TextLabel12</cstring>
+            </property>
+            <property name="text">
+                <string>Transient Time</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="0">
+            <property name="name">
+                <cstring>TextLabel8</cstring>
+            </property>
+            <property name="text">
+                <string>Initial  Number</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="8" column="2">
+            <property name="name">
+                <cstring>TextLabel11</cstring>
+            </property>
+            <property name="text">
+                <string>Transient Number</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="7" column="0">
+            <property name="name">
+                <cstring>TextLabel7</cstring>
+            </property>
+            <property name="text">
+                <string>Initial  Concentration</string>
+            </property>
+        </widget>
+        <spacer row="10" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>680</width>
+                    <height>200</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
