@@ -92,9 +92,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                        CReadConfig::LOOP)))
     return Fail;
 
-  if ((Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
-                                       CReadConfig::SEARCH)))
-    return Fail;
+  try 
+    {
+      Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
+				      CReadConfig::SEARCH);
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+	mComments = "";
+      else
+	throw Exception;
+    }
  
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
