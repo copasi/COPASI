@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/19 19:58:20 $
+   $Date: 2005/01/03 13:03:31 $
    End CVS Header */
 
 /**
@@ -227,8 +227,14 @@ bool CCopasiObject::isValueInt() const
 bool CCopasiObject::isValueDbl() const
   {return (0 < (mObjectFlag & ValueDbl));}
 
+bool CCopasiObject::isNonUniqueName() const
+  {return (0 < (mObjectFlag & NonUniqueName));}
+
 bool CCopasiObject::isStaticString() const
   {return (0 < (mObjectFlag & StaticString));}
+
+bool CCopasiObject::isValueString() const
+  {return (0 < (mObjectFlag & ValueString));}
 
 const std::string & CCopasiObject::getKey() const
   {
