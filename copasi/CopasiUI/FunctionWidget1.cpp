@@ -151,15 +151,15 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   ButtonGroup1->setRadioButtonExclusive(TRUE);
 
   RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
-  RadioButton1->setGeometry(QRect(21, 7, 80, 18));
+  RadioButton1->setGeometry(QRect(21, 7, 85, 18));
   RadioButton1->setText(trUtf8("reversible"));
 
   RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
-  RadioButton2->setGeometry(QRect(146, 7, 80, 18));
+  RadioButton2->setGeometry(QRect(146, 7, 90, 18));
   RadioButton2->setText(trUtf8("irreversible"));
 
   RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
-  RadioButton3->setGeometry(QRect(280, 7, 80, 18));
+  RadioButton3->setGeometry(QRect(280, 7, 85, 18));
   RadioButton3->setText(trUtf8("General"));
 
   FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
