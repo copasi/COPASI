@@ -142,10 +142,6 @@ SOURCE=.\MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_TableDefinition1.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ModelWidget.cpp
 # End Source File
 # Begin Source File
@@ -182,6 +178,10 @@ SOURCE=.\ObjectBrowserItem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\objectdebug.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Observer.cpp
 # End Source File
 # Begin Source File
@@ -195,6 +195,10 @@ SOURCE=.\OptimizationWidget.cpp
 # Begin Source File
 
 SOURCE=.\parametertable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlotWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -278,6 +282,10 @@ SOURCE=.\DataModel.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataModel.txt.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\DifferentialEquations.h
 # End Source File
 # Begin Source File
@@ -358,6 +366,14 @@ SOURCE=.\ObjectBrowserItem.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\objectdebug.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectdebug.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Observer.h
 # End Source File
 # Begin Source File
@@ -371,6 +387,10 @@ SOURCE=.\OptimizationWidget.h
 # Begin Source File
 
 SOURCE=.\parametertable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlotWidget.h
 # End Source File
 # Begin Source File
 
@@ -431,7 +451,15 @@ SOURCE=..\common.pri
 # End Source File
 # Begin Source File
 
+SOURCE=..\copasi.pro
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiUI.pro
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib.pri
 # End Source File
 # End Target
 # End Project

@@ -104,6 +104,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name copasiXML
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plot
+    End Project Dependency
 }}}
 
 ###############################################################################
