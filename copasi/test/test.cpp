@@ -59,6 +59,7 @@ C_INT32 TestEigen(void);
 C_INT32 TestOptimization(void);     //yohe: new
 C_INT32 TestElementaryFluxMode(void);
 C_INT32 Testr250(void);
+C_INT32 Testmt19937(void);
 
 C_INT32 ConvertFunctionDB(void);
 C_INT32 MakeFunctionDB(void);
@@ -122,7 +123,9 @@ C_INT main(C_INT argc, char *argv[])
       // ConvertFunctionDB();
 
       //      TestRandom(10000, 100);
-      Testr250();
+      //      Testr250();
+      Testmt19937();
+
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
       //      TestSpec2Model();
@@ -1809,5 +1812,30 @@ C_INT32 Testr250(void)
     }
 
   delete rand;
+  return 0;
+}
+
+C_INT32 Testmt19937(void)
+{
+  CRandom * rand = CRandom::createGenerator();
+
+  int i;
+  unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
+  ((Cmt19937*)rand)->init_by_array(init, length);
+  printf("1000 outputs of getRandomU()\n");
+  for (i = 0; i < 1000; i++)
+    {
+      printf("%10lu ", rand->getRandomU());
+      if (i % 5 == 4)
+        printf("\n");
+    }
+  printf("\n1000 outputs of genrand_real2()\n");
+  for (i = 0; i < 1000; i++)
+    {
+      printf("%10.8f ", rand->getRandomCO());
+      if (i % 5 == 4)
+        printf("\n");
+    }
+
   return 0;
 }
