@@ -22,18 +22,10 @@ COutputEvent::COutputEvent()
  *	time = 0, header
  *	time = 1, any time of simulation exceution
  *  time = 2, the final result
- *  @param list refer to the while output list of this model
  */
-COutputEvent::COutputEvent(CTrajectory &tra, int time, COutputList *list, ofstream &fout)
+COutputEvent::COutputEvent(CTrajectory &tra, int time)
 {
-	// Note: just for Interactive time course and Time-course output
-
-	mInteractiveTime = new COutput;
-
-	mTimeCourse = new COutput;
-
 	mTime = time;
-	copy(tra, list, fout);
 }
 
 /**
@@ -43,38 +35,33 @@ COutputEvent::COutputEvent(CTrajectory &tra, int time, COutputList *list, ofstre
  *	time = 0, header
  *	time = 1, any time of simulation exceution
  *  time = 2, the final result
- *  @param list refer to the while output list of this model
  */
-COutputEvent::COutputEvent(CSS_Solution &ss, int time, COutputList *list, ofstream &fout)
+COutputEvent::COutputEvent(CSS_Solution &ss, int time)
 {
-	// Just for steady state 
-	mSteadyState = new COutput;
-
 	mTime = time;
-	copy(ss, list, fout);
 }
 
 /**
- * Copy output at the specified time 
+ * Print output at the specified time 
  * @param tra refers to the CTrajectory object.
  * @param time refers to the output interval
  * @param list refer to the while output list of this model
  */
-void COutputEvent::copy(CTrajectory &tra, COutputList *list, ofstream &fout)
+void COutputEvent::print(CTrajectory &tra, COutputList list, ofstream &fout)
 {
 
-	list->copasiDyn(fout, mTime);
+	list.copasiDyn(fout, mTime);
 }
 
 /**
- * Copy output at the specified time 
+ * Print output at the specified time 
  * @param tra refers to the CSS_solution object.
  * @param time refers to the output interval
  * @param list refer to the while output list of this model
  */
-void COutputEvent::copy(CSS_Solution &ss, COutputList *list, ofstream &fout)
+void COutputEvent::print(CSS_Solution &ss, COutputList list, ofstream &fout)
 {
-	list->copasiSS(fout, mTime);
+	list.copasiSS(fout, mTime);
 }
 
 
@@ -84,18 +71,6 @@ void COutputEvent::copy(CSS_Solution &ss, COutputList *list, ofstream &fout)
 
 void COutputEvent::cleanup()
 {
-	if (mInteractiveTime)
-		delete mInteractiveTime;
-	mInteractiveTime = NULL;
-
-	if (mTimeCourse)
-		delete mTimeCourse;
-	mTimeCourse = NULL;
-
-	if (mSteadyState)
-		delete mSteadyState;
-	mSteadyState = NULL;
-
 }
 
 /**

@@ -9,20 +9,18 @@
 
 #include <iostream>
 
-#include "COutput.h"
-#include "COutputList.h"
-#include "trajectory/CTrajectory.h"
+#include "output/output.h"
 #include "steadystate/CSS_Solution.h"
+#include "trajectory/CTrajectory.h"
 
+class COutput;
+class COutputList;
 class CSS_Solution;
 
 class COutputEvent
 {
  private:
 	 int mTime;
-	 COutput *mInteractiveTime;
-	 COutput *mTimeCourse;
-	 COutput *mSteadyState;
  public:  	
 	/**
 	 * Default constructor. 
@@ -36,9 +34,8 @@ class COutputEvent
 	 * time = 0, header
 	 * time = 1, any time of simulation exceution
 	 * time = 2, the final result
-	 * @param list refer to the while output list of this model
 	 */
-	COutputEvent(CTrajectory &tra, int time, COutputList *list, ofstream &fout);
+	COutputEvent(CTrajectory &tra, int time);
 
 	/**
 	 * User defined constructor. 
@@ -47,9 +44,8 @@ class COutputEvent
 	 * time = 0, header
 	 * time = 1, any time of simulation exceution
 	 * time = 2, the final result
-     *  @param list refer to the while output list of this model
 	 */
-	COutputEvent(CSS_Solution &ss, int time, COutputList *list, ofstream &fout);
+	COutputEvent(CSS_Solution &ss, int time);
 
 	/**
 	 * Deconstructor
@@ -62,21 +58,16 @@ class COutputEvent
 	void cleanup();
 
 	/**
-	 *	
-	 */
-	void print();
-
-	/**
 	 * Copy output at the specified time 
 	 * @param tra refers to the CTrajectory object.
 	 */
-	void copy(CTrajectory &tra, COutputList *list, ofstream &fout);
+	void print(CTrajectory &tra, COutputList list, ofstream &fout);
 
 	/**
 	 * Copy output at the specified time 
 	 * @param tra refers to the CSS_solution object.
 	 */
-	void copy(CSS_Solution &ss, COutputList *list, ofstream &fout);
+	void print(CSS_Solution &ss, COutputList list, ofstream &fout);
 };
 
 #endif // COutputEvent

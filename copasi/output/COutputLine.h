@@ -13,7 +13,11 @@
 #include <fstream>
 
 #include "CDatum.h"
-#include "utilities/CCopasiVector.h"
+#include "model/model.h"
+#include "utilities/utilities.h"
+#include "trajectory/CTrajectory.h"
+
+template < class CType > class CCopasiVector;
 
 class COutputLine
 {
@@ -139,7 +143,7 @@ class COutputLine
   /**
    *	Assign the pointer to each datum object in the output line
    */
-  void compile(string &name, CModel &model);
+  void compile(string &name, CModel &model, CTrajectory *traj);
 };
 
 #endif // COutputLine

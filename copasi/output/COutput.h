@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include "COutputLine.h"
+#include "trajectory/trajectory.h"
+
 
 #ifdef XXXX
 class CCOutputLine: public CCopasiVector < COutputLine >
@@ -21,6 +23,8 @@ class CCOutputLine: public CCopasiVector < COutputLine >
   C_INT16 isInsertAllowed(const COutputLine & src);
 };
 #endif // XXXX
+
+class COutputLine;
 
 class COutput
 {
@@ -288,7 +292,7 @@ class COutput
   /**
    *	Assign the pointer to each datum object in the list
    */
-  void compile(string &name, CModel &model);
+  void compile(string &name, CModel &model, CTrajectory *traj);
 
   /*
    * print the time course dynamic data file
@@ -304,11 +308,6 @@ class COutput
    * print the reporting data file
    */
   void copasiRep(ofstream &fout, CModel & model);
-
-  /**
-   *	Assigns model in the Outputlist
-   */
-  void setModel(const CModel &model);
 
   /**
    *	Write output control variables from input configburg buffer

@@ -235,12 +235,12 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 /**
  *	Assign the pointer to each datum object in the output
  */
-void COutput::compile(string &name, CModel &model)
+void COutput::compile(string &name, CModel &model, CTrajectory *traj)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      mOutput[i]->compile(name, model);
+      mOutput[i]->compile(name, model, traj);
     }
 }
 
@@ -576,9 +576,9 @@ void COutput::copasiDyn(ofstream &fout, int time)
 
   if (!time) 
   {
-	  if (DynTitles) dynOutputTitles(fout, DynName);
+	  if (DynTitles) dynOutputTitles(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
   }
-  else dynOutputData(fout, DynName);
+  else dynOutputData(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
 }
 
 
@@ -762,14 +762,6 @@ C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
   // Note:: there is no variable controlling comments output
   //		  in current configure file
   return Fail;
-}
-
-/**
- *	Assigns model in the Outputlist
- */
-void COutput::setModel(const CModel &model)
-{
-  Model = model;
 }
 
 #ifdef XXXX

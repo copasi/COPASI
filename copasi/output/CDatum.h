@@ -60,6 +60,8 @@
 #define CFLOAT32	3
 #define CFLOAT64	4
 
+class CTrajectory;
+
 class CDatum
 {
  private:
@@ -227,8 +229,8 @@ class CDatum
 
   /**
    *  Complie the mpValue in each CDatum
-   */
-  void compileDatum(CModel &Model);
+   */	
+  void compileDatum(CModel &Model, CTrajectory *traj);
 
 };
 

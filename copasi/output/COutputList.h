@@ -13,8 +13,9 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
-#include "COutput.h"
+#include "output/output.h"
 #include "model/model.h"
+#include "trajectory/trajectory.h"
 
 #ifdef XXXX
 class CCOutput: public CCopasiVector < COutput >
@@ -31,9 +32,6 @@ class COutputList
 {
  private:
   CCopasiVectorS < COutput > mList;
-
-  /* :TODO: this should be remved SH */
-  CModel Model;			// Temperorary use for testing 
 
  public:
 
@@ -77,16 +75,15 @@ class COutputList
    */
   C_INT32 save(CWriteConfig & configbuffer);
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @param searchName refernece to a the time of seach section,
-   *		   for example: Interactive time course		
-   *  @return mFail
-   *  @see mFail
-   */
-  C_INT32 load(CReadConfig & configbuffer);
+ /**
+  *  Loads an object with data coming from a CReadConfig object.
+  *  (CReadConfig object reads an input stream)
+  *  @param pconfigbuffer reference to a CReadConfig object.
+  *  @param model refernce to the input configbuffer
+  *  @return mFail
+  *  @see mFail
+  */
+  C_INT32 load(CReadConfig & configbuffer, CModel & model);
 
   void init();
 
@@ -108,14 +105,9 @@ class COutputList
   void copasiRep(ofstream &fout, CModel & model);
 
   /**
-   *	Assigns model in the Outputlist
-   */
-  void setModel(const CModel &model);
-
-  /**
    *	Assign the pointer to each datum object in the output
    */
-  void compile(string &name);
+  void compile(string &name, CModel & model, CTrajectory *traj);
 
 };
 

@@ -10,6 +10,7 @@
 #include "copasi.h"
 #include "CDatum.h"
 #include "model/CCompartment.h"
+#include "trajectory/trajectory.h"
 
 /**
  *  Default constructor. 
@@ -402,6 +403,8 @@ string CDatum::transferType(C_INT32 Type)
   switch (Type)
     {
     case D_T:
+			cMemb = "mTime";
+			break;
     case D_RT:
     case D_INTS:
     case D_FEVAL:
@@ -483,6 +486,9 @@ C_INT32 CDatum::getObjectType(string Object)
   StrNum = Object.length() - 1 - Posi;
   TypeStr = Object.substr(Posi, StrNum);
 		
+  if (!TypeStr.compare("mTime"))
+    Type = D_T;
+
   if (!TypeStr.compare("mIConc"))
     Type = D_ICONC;
 
@@ -581,7 +587,7 @@ string CDatum::getObjectJStr(string object)
 /**
  *  Complie the mpValue in each CDatum
  */
-void CDatum::compileDatum(CModel &Model)
+void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
 {
   C_INT32 Type = 0;
   string IStr, JStr;
@@ -593,7 +599,6 @@ void CDatum::compileDatum(CModel &Model)
     {
 #if 0
     case D_UNDEF:   // Fall through as all have no mI and no mJ
-    case D_T:
     case D_RT:
     case D_INTS:
     case D_FEVAL:
@@ -618,6 +623,10 @@ void CDatum::compileDatum(CModel &Model)
     case D_STIFF:   
       break;
 #endif
+    case D_T: // time
+	  mpValue = traj->getTime();
+	  mType = CFLOAT64;	
+	  break;			
     case D_ICONC:   // Fall through as all have mI but no mJ
       IStr = getObjectIStr(mObject, 0);
       Index = Model.findMetab(IStr);
@@ -706,7 +715,7 @@ void CDatum::compileDatum(CModel &Model)
       Index = outputList.Model.FindMetab(IStr);
       Index1 = outputList.Model.FindMetab(JStr);
       if ((Index == -1) || (Index1 == -1))
-	break;
+		break;
       mpValue = &(FCC[outputList.Model.mICol[Index]][outputList.Model.mICol[Index1]] );
       mType = C_FLOAT64;
       break;

@@ -66,19 +66,18 @@ C_INT32 COutputList::save(CWriteConfig & configbuffer)
  *  Loads an object with data coming from a CReadConfig object.
  *  (CReadConfig object reads an input stream)
  *  @param pconfigbuffer reference to a CReadConfig object.
- *  @param searchName refernece to a the time of seach section,
- *		   for example: Interactive time course
+ *  @param model refernce to the input configbuffer
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputList::load(CReadConfig & configbuffer)
+C_INT32 COutputList::load(CReadConfig & configbuffer, CModel & model)
 {
   C_INT32 Fail = 0;
   COutput output;
 
   output.load(configbuffer);
   /* :TODO: We must not set the model here! */
-  // output.setModel(Model);
+  //output.setModel(model);
   addOutput(output);
 
   return Fail;
@@ -105,19 +104,6 @@ void COutputList::addOutput(COutput &newOutput)
   mList.add(newOutput);
 }
 
-/**
- *	Assigns model in the Outputlist
- */
-void COutputList::setModel(const CModel &model)
-{
-  Model = model;
-  // Temporarily use, need consideration???
-  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
-    {
-      mList[i]->setModel(model);
-    }
-
-}
 
 /*
  *	print the reporting data file
@@ -152,12 +138,15 @@ void COutputList::copasiDyn(ofstream &fout, int time)
     }
 }
 
-void COutputList::compile(string &name)
+/**
+ * Assign the mpvalue in CDatum for each type
+ */
+void COutputList::compile(string &name, CModel &model, CTrajectory *traj)
 {
 
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->compile(name, Model);
+      mList[i]->compile(name, model, traj);
     }
 
 }

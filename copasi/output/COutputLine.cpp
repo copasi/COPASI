@@ -146,6 +146,8 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
     return Fail;
 
   // Output each datum in this line
+  //Fail = mLine->save(configbuffer);
+
   mLine.save(configbuffer);
 	
   return Fail;
@@ -388,13 +390,13 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 /**
  *  Complie the mpValue in each output line
  */
-void COutputLine::compile(string &name, CModel &model)
+void COutputLine::compile(string &name, CModel &model, CTrajectory *traj)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
 	{
-	  mLine[i]->compileDatum(model);
+	  mLine[i]->compileDatum(model, traj);
 	}
     }
 }
