@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 21:58:35 $
+   $Date: 2004/10/06 09:45:58 $
    End CVS Header */
 
 /********************************************************
@@ -40,6 +40,8 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CKeyFactory.h"
 #include "CReportDefinitionSelect.h"
 #include "MyLineEdit.h"
+#include "utilities/CCopasiException.h"
+#include "CProgressBar.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -164,9 +166,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
 
-  ExportToFileButton = new QPushButton(this, "ExportToFileButton");
-  ExportToFileButton->setText(trUtf8("Export To File"));
-  Layout2->addWidget(ExportToFileButton);
+  //ExportToFileButton = new QPushButton(this, "ExportToFileButton");
+  //ExportToFileButton->setText(trUtf8("Export To File"));
+  //Layout2->addWidget(ExportToFileButton);
 
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
@@ -192,17 +194,17 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //  setTabOrder(bRunTask, commitChange);
   //  setTabOrder(commitChange, cancelChange);
   setTabOrder(bRunTask, cancelChange);
-  setTabOrder(cancelChange, ExportToFileButton);
-  setTabOrder(ExportToFileButton, reportDefinitionButton);
+  //setTabOrder(cancelChange, ExportToFileButton);
+  //setTabOrder(ExportToFileButton, reportDefinitionButton);
 
   // signals and slots connections
-  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
+  //connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(runTrajectoryTask()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
   //connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
-  connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
+  //connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
 
   connect(nStartTime, SIGNAL(edited()), this, SLOT(StartTimeSlot()));
   connect(nEndTime, SIGNAL(edited()), this, SLOT(EndTimeSlot()));
@@ -313,9 +315,22 @@ void TrajectoryWidget::runTrajectoryTask()
     }
 
   setCursor(Qt::WaitCursor);
+  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  tt->setProgressHandler(tmpBar);
 
-  tt->process();
+  try
+    {
+      tt->process();
+    }
+  catch (CCopasiException Exception)
+    {
+      std::cout << std::endl << "exception in trajectory task" << std::endl;
+      //TODO: message box
+    }
+
   tt->restore();
+
+  pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
                   dataModel->getModel()->getKey());
@@ -483,20 +498,8 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
   if (update) loadMethodParameters();
 }
 
-void TrajectoryWidget::ExportToFile()
-{
-  /*  QString textFile = QFileDialog::getSaveFileName(
-                         QString::null, "TEXT Files (*.txt)",
-                         this, "save file dialog",
-                         "Choose a file");
-   
-    if (textFile)
-      {
-        textFile += ".txt";
-        CWriteConfig outbuf((const char *)textFile.utf8());
-        //      ((CTrajectoryTask*)(CCopasiContainer*)GlobalKeys.get(objKey))->save(outbuf);
-      }*/
-}
+//void TrajectoryWidget::ExportToFile()
+//{}
 
 bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
