@@ -21,7 +21,8 @@ CReport::~CReport()
 void CReport::cleanup()
 {
   //  CKeyFactory::remove(mKey);
-  pdelete(mpReportDef);
+  // mpReportDef pointer shall be dealt outside, where it is created
+  //  pdelete(mpReportDef);
 }
 
 CReportDefinition* CReport::getReportDefinition()
