@@ -171,8 +171,8 @@ class Matrix
 
   public:
 
-    operator T**(){ return  row_; }
-    operator T**() const { return row_; }
+//    operator T**(){ return  row_; }
+//    operator T**() const { return row_; }
 
 
     Subscript size() const { return mn_; }
