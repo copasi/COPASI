@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/06 15:54:18 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 20:03:17 $
    End CVS Header */
 
 /*
@@ -144,9 +144,9 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     mY(NULL)
 {
   addParameter("LSODA.RelativeTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
-  addParameter("LSODA.AbsoluteTolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  addParameter("LSODA.AbsoluteTolerance",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
   addParameter("LSODA.AdamsMaxOrder",
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
   addParameter("LSODA.BDFMaxOrder",
@@ -206,25 +206,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                                   // number of variables
-        mY - 1,                                 // the array of current concentrations
+  lsoda(mDim,                                    // number of variables
+        mY - 1,                                  // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                                 // the current time
-        mTime + deltaT,                         // the final time
-        1,                                      // scalar error control
-        (&mRtol) - 1,                           // relative tolerance array
+        &mTime,                                  // the current time
+        mTime + deltaT,                          // the final time
+        1,                                       // scalar error control
+        (&mRtol) - 1,                            // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                           // absolute tolerance array
+        (&mAtol) - 1,                            // absolute tolerance array
         // fortran style vector !!!
-        1,                                      // output by overshoot & interpolatation
-        &mLsodaStatus,                          // the state control variable
-        1,                                      // optional inputs are being used
-        2,                                      // jacobian calculated internally
-        0, 0, 0,                                // options left at default values
-        mMaxSteps,                              // max iterations for each lsoda call
-        0,                                      // another value left at the default
-        mAdams,                                 // max order for Adams method
-        mBDF,                                   // max order for BDF method
+        1,                                       // output by overshoot & interpolatation
+        &mLsodaStatus,                           // the state control variable
+        1,                                       // optional inputs are being used
+        2,                                       // jacobian calculated internally
+        0, 0, 0,                                 // options left at default values
+        mMaxSteps,                               // max iterations for each lsoda call
+        0,                                       // another value left at the default
+        mAdams,                                  // max order for Adams method
+        mBDF,                                    // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -2631,7 +2631,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,                    /* Fortran style vector */
+                        C_FLOAT64 * y,                     /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

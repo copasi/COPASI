@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 09:36:13 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 20:03:17 $
    End CVS Header */
 
 #include <algorithm>
@@ -44,9 +44,9 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
   addParameter("Newton.Resolution",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
   addParameter("Newton.LSODA.RelativeTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
-  addParameter("Newton.LSODA.AbsoluteTolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  addParameter("Newton.LSODA.AbsoluteTolerance",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
   addParameter("Newton.LSODA.AdamsMaxOrder",
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
   addParameter("Newton.LSODA.BDFMaxOrder",
@@ -453,7 +453,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                             /* fortran style vector */
+                           mdxdt.array() - 1,                              /* fortran style vector */
                            1);
         }
 
@@ -523,7 +523,7 @@ bool CNewtonMethod::isSteadyState()
   if (mDimension == 0) return true;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                             /* fortran style vector */
+                   mdxdt.array() - 1,                              /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
