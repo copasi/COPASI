@@ -8,13 +8,19 @@
 #include <string>
 
 //#define COPASI_TRACE_CONSTRUCTION
+#include "math.h"
 #include "copasi.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "CScanProblem.h"
 #include "CScanMethod.h"
+
+// this will have to be defined somewhere else with the
+// values of other distribution types
+#define SD_REGULAR 1
 
 CScanMethod::CScanMethod()
 {
@@ -24,10 +30,10 @@ CScanMethod::CScanMethod()
  *  The main scan method.
  */
 
-CScanMethod::scan(C_INT32 s, BOOL nl)
+void CScanMethod::scan(C_INT32 s, bool nl)
 {
-  C_INT scanDimension = scanProblem.scanItemSize();
-
+  C_INT scanDimension = scanProblem->scanItemSize();
+  int i, next, top;
   //1.  find the first/last master scan item
 
   if (s > 0)
@@ -48,7 +54,7 @@ CScanMethod::scan(C_INT32 s, BOOL nl)
   if (s < scanDimension - 1)
     {
       for (i = s + 1; i < scanDimension; i++)
-        if (scanitem[i]->indp) break;
+        if (scanProblem->getScanItemParameter(i, "Indp") == 1.0) break;
       top = i;
     }
   else
@@ -61,7 +67,7 @@ CScanMethod::scan(C_INT32 s, BOOL nl)
      this parameter into the vector.
   */ 
   //switch(gridtype[distribution])
-  switch (scanProblem->getScanItemParameter(i, "gridType"))
+  switch ((int)scanProblem->getScanItemParameter(i, "gridType"))
     {
     case SD_REGULAR:
       //start with min value - give 0 as first param in setscanparametervalue
@@ -72,9 +78,10 @@ CScanMethod::scan(C_INT32 s, BOOL nl)
           if (s != 0) scan(next, false);
           else
             {
-              simulate();
+              // some function
+              //simulate();
             }
-          setscanvalue(i, s, top);
+          setScanParameterValue(i, s, top);
         }
       break;
     }
@@ -109,15 +116,15 @@ void CScanMethod::setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last)
       incr = scanProblem->getScanItemParameter(j, "incr");
 
       // switch the grid type and set values accordingly
-      switch (scanProblem->getScanItemParameter(j, "gridType"))
+      switch ((int)scanProblem->getScanItemParameter(j, "gridType"))
         {
         case SD_REGULAR:
           // log scale
           if (scanProblem->getScanItemParameter(j, "log") == 1.0)
-            setScanItemParameter(j, "value", (min*pow(10, incr*i)));
+            scanProblem->setScanItemParameter(j, "value", (min*pow(10, incr*i)));
           // non-log scale
           else
-            setScanItemParameter(j, "value", (min + incr*i));
+            scanProblem->setScanItemParameter(j, "value", (min + incr*i));
           break;
         }
     }

@@ -63,7 +63,7 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(C_INT32 i, BOOL nl);
+    void scan(C_INT32 i, bool nl);
 
     /**
      *  Set the value of the scan parameter based on the distribution
@@ -74,7 +74,5 @@ class CScanMethod
 
     void setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last);
   };
-
-#include "CLsodaMethod.h"
 
 #endif // COPASI_CTrajectoryMethod

@@ -36,7 +36,7 @@ CScanProblem::CScanProblem()
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src
  */
-CScanProblem::CScanProblem(const CScanProblem & src)
+CScanProblem::CScanProblem(const CScanProblem & C_UNUSED(src))
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -48,7 +48,7 @@ CScanProblem::~CScanProblem()
 /**
  *  Size of the scanItem vector
  */
-CScanProblem::C_INT32 scanItemSize()
+C_INT32 CScanProblem::scanItemSize()
 {
   return scanItem.size();
 }
