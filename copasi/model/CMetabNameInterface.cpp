@@ -80,7 +80,7 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 {
   bool unique = true;
   unsigned C_INT32 i;
-  CCopasiVector< CMetab > metabs = model->getMetabolites();
+  const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   std::string metabName;
 
   for (i = 0; i < metabs.size(); i++)
