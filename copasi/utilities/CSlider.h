@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/30 09:26:35 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 14:19:10 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -61,10 +61,10 @@ class CSlider : public CCopasiContainer
     /**
      * Compile, i.e., find the objects pointed to by the CN.
      * @param const std::vector< CCopasiContainer * > & listOfContainer
+     *  (default: CCopasiContainer::EmptyList)
      * @return bool success
      */
-    bool compile(const std::vector< CCopasiContainer * > & listOfContainer =
-                   CCopasiContainer::EmptyList);
+    bool compile(const std::vector< CCopasiContainer * > & listOfContainer = CCopasiContainer::EmptyList);
 
     /**
      * Retrieve the key
