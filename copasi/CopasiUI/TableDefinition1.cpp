@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.2 2003/08/14 03:34:15 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.3 2003/08/14 17:28:46 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -275,6 +275,12 @@ void TableDefinition1::slotBtnCancelClicked()
 void TableDefinition1::slotBtnConfirmClicked()
 {
   //check for the connection int i =0;
+  CReportDefinition* pReportDefinition = (CReportDefinition*)CKeyFactory::get(reportKey);
+  pReportDefinition->getHeaderAddr()->clear();
+
+  C_INT32 i;
+  for (i = 0; i < itemsTable->numRows(); i++)
+    pReportDefinition->getHeaderAddr()->push_back(*(new CCopasiObjectName(std::string(itemsTable->text(i)))));
 }
 
 void TableDefinition1::tabButtonClicked()
