@@ -30,7 +30,7 @@ CSS_Solution::CSS_Solution()
   CONSTRUCTOR_TRACE;
   mNewton = NULL;
   mModel = NULL;
-  //  mEigen = NULL;
+  mEigen = NULL;
   mTraj = NULL;
   mJacob = NULL;
   mUseNewton = 1;
@@ -69,7 +69,7 @@ void CSS_Solution::initialize()
       mTraj->initialize();
     }
 
-  //mEigen = new CEigen();
+  mEigen = new CEigen();
   mJacob = new CJacob();
   mJacob->setModel(mModel);
 
@@ -419,13 +419,13 @@ void CSS_Solution::afterFindSteadyState()
   //CEigen tmp = CEigen(mSSRes,  mJocob,
   //mEigen = tmp;
 
-  /* don't consider Eigen class now, do it later  //yohe
+  //* don't consider Eigen class now, do it later  //yohe
 
-  mEigen->setN(mModel->getIndMetab());
-  mEigen->initialize();
+  //mEigen->setN(mModel->getIndMetab());
+  //mEigen->initialize();
   mEigen->CalcEigenvalues(mSSRes, mJacob->getJacob());
 
-  */
+  //*/
 
   //copy the concentrations back to the model
   //mModel->setConcentrations(mSs_x);
