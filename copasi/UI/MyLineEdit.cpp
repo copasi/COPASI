@@ -15,7 +15,7 @@ MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * 
 
 void MyLineEdit::focusOutEvent(QFocusEvent *fe)
 {
-  QMessageBox::information(this, "got it", "yipeee ");
+  //QMessageBox::information(this, "got it", "yipeee ");
   emit edited();
 }
 
