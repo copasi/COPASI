@@ -6,8 +6,6 @@
  ** function obtained from the functions database.It is the second level 
  ** widget for functions.  
  ***********************************************************************/
-#include "FunctionWidget1.h"
-#include "model/CMetab.h"
 #include <qvariant.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -25,6 +23,10 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qmessagebox.h>
+
+#include "copasi.h"
+#include "FunctionWidget1.h"
+#include "model/CMetab.h"
 #include "listviews.h"
 #include "utilities/CGlobals.h"
 #include "function/function.h"

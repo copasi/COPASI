@@ -6,8 +6,6 @@
  ** obtained from the data model about the Metabolites----It is 
  ** Basically the Second level of Metabolites.
  ***********************************************************************/
-#include "MetabolitesWidget1.h"
-#include "model/CMetab.h"
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -18,9 +16,13 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include "listviews.h"
 #include <qbuttongroup.h>
 #include <qfont.h>
+
+#include "copasi.h"
+#include "MetabolitesWidget1.h"
+#include "model/CMetab.h"
+#include "listviews.h"
 
 /*
  *  Constructs a MetabolitesWidget which is a child of 'parent', with the 
