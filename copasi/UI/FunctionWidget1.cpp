@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/14 17:24:08 $
+   $Date: 2003/11/17 16:02:23 $
    End CVS Header */
 
 /**********************************************************************
@@ -398,10 +398,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                   // The user clicked the Retry again button or pressed Enter
+            case 0:                    // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                   // The user clicked the Quit or pressed Escape
+            case 1:                    // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -666,8 +666,9 @@ bool FunctionWidget1::saveToFunction()
       catch (CCopasiException Exception){}}
 
   if (changed)
-    ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
-
+    {
+      ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
+    }
   return true;
 }
 
@@ -825,8 +826,10 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
 bool FunctionWidget1::leave()
 {
+  // slot commit called to ensure that pFunction has proper values
+  slotCommitButtonClicked();
   //let the user confirm?
-  return saveToFunction();
+  return saveToFunction();  // slotCommit calles saveToFcn, do we want to call it twice??
 }
 
 bool FunctionWidget1::enter(const std::string & key)
