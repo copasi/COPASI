@@ -459,14 +459,14 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 /**
  *  Assign the pointer to each datum object in the output line for time course
  */
-void COutputLine::compile(const string & name, CModel *model, CTrajectory *traj)
+void COutputLine::compile(const string & name, CModel *model, CState *state)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
         {
-          mLine[i]->compileDatum(model, traj, NULL);
+          mLine[i]->compileDatum(model, state, NULL);
         }
     }
 }
@@ -481,7 +481,8 @@ void COutputLine::compile(const string & name, CModel *model, CSS_Solution *soln
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
         {
-          mLine[i]->compileDatum(model, soln->getTrajectory(), soln);
+          fatalError(); // :TODO: we need to fix this !!!
+          // mLine[i]->compileDatum(model, soln->getTrajectory(), soln);
         }
     }
 }

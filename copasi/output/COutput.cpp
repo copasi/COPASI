@@ -246,11 +246,11 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 /**
  * Assign the pointer to each datum object for time course
  */
-void COutput::compile(const string & name, CModel *model, CTrajectory *traj)
+void COutput::compile(const string & name, CModel *model, CState *state)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
-      mOutput[i]->compile(name, model, traj);
+      mOutput[i]->compile(name, model, state);
     }
 }
 

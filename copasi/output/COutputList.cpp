@@ -1,20 +1,20 @@
 /*****************************************************************************
-* PROGRAM NAME: COutputList.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: COutputList Class Implemention
-*****************************************************************************/
+ * PROGRAM NAME: COutputList.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: COutputList Class Implemention
+ *****************************************************************************/
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
-#define  COPASI_TRACE_CONSTRUCTION 
+#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "COutputList.h"
 
 /**
- *	Default constructor.
+ * Default constructor.
  */
 COutputList::COutputList()
 {
@@ -22,19 +22,17 @@ COutputList::COutputList()
 }
 
 COutputList::~COutputList()
-{
-}
+{}
 
 /**
- *	User defined constructor.
- *	Read config variables from input configburg buffer
+ * User defined constructor.
+ * Read config variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
 COutputList::COutputList(CReadConfig &configbuffer)
 {
   init();
 }
-
 
 void COutputList::init()
 {
@@ -91,9 +89,9 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
  *  @see mList
  */
 const CCopasiVectorS < COutput > & COutputList::getList() const
-{
-  return mList;
-}
+  {
+    return mList;
+  }
 
 /**
  *  Add new OutputLine object to a list
@@ -106,9 +104,8 @@ void COutputList::addOutput(COutput &newOutput)
   mList.add(newOutput);
 }
 
-
 /*
- *	print the reporting data file
+ * print the reporting data file
  */
 void COutputList::copasiRep(ofstream &fout)
 {
@@ -143,25 +140,21 @@ void COutputList::copasiDyn(ofstream &fout, int time)
 /**
  * Assign the mpvalue in CDatum for each type
  */
-void COutputList::compile(const string & name, CModel *model, CTrajectory *traj)
+void COutputList::compile(const string & name, CModel *model, CState *state)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->compile(name, model, traj);
+      mList[i]->compile(name, model, state);
     }
-
 }
 
-
 /**
- *	Assign the pointer to each datum object for steady state
+ * Assign the pointer to each datum object for steady state
  */
 void COutputList::compile(const string & name, CModel *model, CSS_Solution *soln)
 {
-
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
       mList[i]->compile(name, model, soln);
     }
-
 }

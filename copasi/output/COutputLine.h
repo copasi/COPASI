@@ -15,11 +15,10 @@
 #include "CDatum.h"
 #include "model/model.h"
 #include "utilities/utilities.h"
-#include "trajectory/CTrajectory.h"
 
 template < class CType >
-
 class CCopasiVector;
+class CState;
 
 using std::ofstream;
 
@@ -149,7 +148,7 @@ class COutputLine
     /**
      *  Assign the pointer to each datum object in the output line for time course
      */
-    void compile(const string & name, CModel *model, CTrajectory *traj);
+    void compile(const string & name, CModel *model, CState *state);
 
     /**
      *  Assign the pointer to each datum object in the output line for steady State

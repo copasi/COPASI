@@ -1,10 +1,10 @@
 /*****************************************************************************
-* PROGRAM NAME: COutputList.h
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Declare the COutputList Class, COutputList decides how to output 
-*          data file and reporting file, it is the main control of Copasi 
-*          output module
-*****************************************************************************/
+ * PROGRAM NAME: COutputList.h
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Declare the COutputList Class, COutputList decides how to output 
+ *          data file and reporting file, it is the main control of Copasi 
+ *          output module
+ *****************************************************************************/
 
 #ifndef COPASI_COutputList
 #define COPASI_COutputList
@@ -15,96 +15,97 @@
 #include "utilities/utilities.h"
 #include "output/output.h"
 #include "model/model.h"
-#include "trajectory/trajectory.h"
+
+class CState;
 
 class COutputList
-{
- private:
+  {
+  private:
 
-  /**
-   * @supplierCardinality 0..* 
-   */
-  CCopasiVectorS < COutput > mList;
+    /**
+     * @supplierCardinality 0..* 
+     */
+    CCopasiVectorS < COutput > mList;
 
- public:
+  public:
 
-  /**
-   *	Default constructor. 
-   */
-  COutputList();
+    /**
+     * Default constructor. 
+     */
+    COutputList();
 
-  /**
-   *	Deconstructor
-   */
-  ~COutputList();
+    /**
+     * Deconstructor
+     */
+    ~COutputList();
 
-  /**
-   *	User defined constructor. 
-   *	Read config variables from input configburg buffer
-   *  @param configbuffer: reference of the config buffer.
-   */
-  COutputList(CReadConfig &configbuffer);
+    /**
+     * User defined constructor. 
+     * Read config variables from input configburg buffer
+     *  @param configbuffer: reference of the config buffer.
+     */
+    COutputList(CReadConfig &configbuffer);
 
-  /**
-   *  Return the pointer of the COutputLine that can be output at the same time. 
-   *  @return mList
-   *  @see mList
-   */
-  const CCopasiVectorS < COutput > & getList() const;
+    /**
+     *  Return the pointer of the COutputLine that can be output at the same time. 
+     *  @return mList
+     *  @see mList
+     */
+    const CCopasiVectorS < COutput > & getList() const;
 
-  /**
-   *  Add new OutputLine object to a list
-   *  @param newLine constant reference to COutputLine .
-   *  @see COutputLine Class
-   */
-  void addOutput(COutput &newOutput);
+    /**
+     *  Add new OutputLine object to a list
+     *  @param newLine constant reference to COutputLine .
+     *  @see COutputLine Class
+     */
+    void addOutput(COutput &newOutput);
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return mFail
-   *  @see mFail
-   */
-  C_INT32 save(CWriteConfig & configbuffer);
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    C_INT32 save(CWriteConfig & configbuffer);
 
- /**
-  *  Loads an object with data coming from a CReadConfig object.
-  *  (CReadConfig object reads an input stream)
-  *  @param pconfigbuffer reference to a CReadConfig object.
-  *  @return mFail
-  *  @see mFail
-  */
-  C_INT32 load(CReadConfig & configbuffer);
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return mFail
+     *  @see mFail
+     */
+    C_INT32 load(CReadConfig & configbuffer);
 
-  void init();
+    void init();
 
-  void cleanup();
+    void cleanup();
 
-  /*
-   * print the time course dynamic data file
-   */		
-  void copasiDyn(ofstream &fout, int time);
+    /*
+     * print the time course dynamic data file
+     */
+    void copasiDyn(ofstream &fout, int time);
 
-  /*
-   * print the steady state data file
-   */		
-  void copasiSS(ofstream &fout, C_INT32 ss_solution);
+    /*
+     * print the steady state data file
+     */
+    void copasiSS(ofstream &fout, C_INT32 ss_solution);
 
-  /*
-   * print the reporting data file
-   */
-  void copasiRep(ofstream &fout);
+    /*
+     * print the reporting data file
+     */
+    void copasiRep(ofstream &fout);
 
-  /**
-   *	Assign the pointer to each datum object for time couse
-   */
-  void compile(const string & name, CModel * model, CTrajectory *traj);
+    /**
+     * Assign the pointer to each datum object for time couse
+     */
+    void compile(const string & name, CModel * model, CState *state);
 
-  /**
-   *	Assign the pointer to each datum object for steady state
-   */
-  void compile(const string & name, CModel *model, CSS_Solution *soln);
-};
+    /**
+     * Assign the pointer to each datum object for steady state
+     */
+    void compile(const string & name, CModel *model, CSS_Solution *soln);
+  };
 
-#endif	//COutputList
+#endif //COutputList

@@ -300,7 +300,7 @@ class COutput
     /**
      * Assign the pointer to each datum object for time course
      */
-    void compile(const string & name, CModel *model, CTrajectory *traj);
+    void compile(const string & name, CModel *model, CState *state);
 
     /**
      * Assign the pointer to each datum object for steady state
