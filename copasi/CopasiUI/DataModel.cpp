@@ -60,6 +60,7 @@ void DataModel::createModel(const char* fileName)
 {
   pdelete(model);
   model = new CModel();
+  searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
@@ -85,6 +86,7 @@ void DataModel::loadModel(const char* fileName)
   CReadConfig inbuf(fileName);
   model = new CModel();
   model->load(inbuf);
+  searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
