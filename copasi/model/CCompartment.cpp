@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:20 $
+   $Date: 2003/11/12 22:15:22 $
    End CVS Header */
 
 // CCompartment
@@ -191,7 +191,6 @@ bool CCompartment::isValidName(const std::string & name) const
 
 void CCompartment::initObjects()
 {
-  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Volume", mVolume, CCopasiObject::ValueDbl);
   //  add(&mMetabolites);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:21 $
+   $Date: 2003/11/12 22:15:22 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -374,7 +374,6 @@ bool CMetab::isValidName(const std::string &name) const
 
 void CMetab::initObjects()
 {
-  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Concentration", mConcDbl, CCopasiObject::ValueDbl);
   addObjectReference("InitialConcentration", mIConcDbl, CCopasiObject::ValueDbl);
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);

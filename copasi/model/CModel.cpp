@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/11 21:15:54 $
+   $Date: 2003/11/12 22:15:23 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1349,7 +1349,6 @@ void CModel::setState(const CState * state)
 
 void CModel::initObjects()
 {
-  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Comments", mComments);
   //  add(&mCompartments);
   //  add(&mMetabolites);
