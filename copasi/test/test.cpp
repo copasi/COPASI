@@ -384,7 +384,7 @@ C_INT32  TestNewton(void)
     model.lUDecomposition();
     model.setMetabolitesStatus();
     model.buildRedStoi();
-    model.buildConsRel();
+    model.buildL();
     model.buildMoieties();
     
 
@@ -427,7 +427,7 @@ C_INT32  TestSSSolution(void)
     model.lUDecomposition();
     model.setMetabolitesStatus();
     model.buildRedStoi();
-    model.buildConsRel();
+    model.buildL();
     model.buildMoieties();
     
     CSS_Solution ss_soln;
