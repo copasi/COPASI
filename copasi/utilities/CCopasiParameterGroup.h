@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/18 20:22:32 $
+   $Date: 2005/01/18 21:39:34 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -348,12 +348,15 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @param const CCopasiParameterGroup & A
      * @return ostream & os
      */
-    friend std::ostream & operator << (std::ostream & os, const CCopasiParameterGroup & A)
+    friend std::ostream & operator << (std::ostream & os,
+                                       const CCopasiParameterGroup & A)
     {
       os << (CCopasiParameter) A;
 
-      index_iterator it = const_cast< parameterGroup * >(A.mpValue)->begin();
-      index_iterator end = const_cast< parameterGroup * >(A.mpValue)->end();
+      parameterGroup::const_iterator it =
+        ((parameterGroup *)(A.mpValue))->begin();
+      parameterGroup::const_iterator end =
+        ((parameterGroup *)(A.mpValue))->end();
 
       for (; it != end; ++it) os << **it;
 
