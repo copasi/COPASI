@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.3 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -239,14 +239,18 @@ libmathmodel_a_SOURCES = \
 	CMathSymbol.cpp \
 	CMathConstant.cpp \
 	CMathVariable.cpp \
-	CMathModel.cpp
+	CMathModel.cpp \
+	CMathNode.cpp \
+	CMathEq.cpp
 
 
 EXTRA_DIST = \
 	CMathSymbol.h CMathSymbol.cpp \
 	CMathConstant.h CMathConstant.cpp \
 	CMathVariable.h CMathVariable.cpp \
-	CMathModel.h CMathModel.cpp
+	CMathModel.h CMathModel.cpp \
+	CMathNode.h CMathNode.cpp \
+	CMathEq.h CMathEq.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -263,13 +267,13 @@ libmathmodel_a_AR = $(AR) cru
 libmathmodel_a_LIBADD =
 am_libmathmodel_a_OBJECTS = CMathSymbol.$(OBJEXT) \
 	CMathConstant.$(OBJEXT) CMathVariable.$(OBJEXT) \
-	CMathModel.$(OBJEXT)
+	CMathModel.$(OBJEXT) CMathNode.$(OBJEXT) CMathEq.$(OBJEXT)
 #>- libmathmodel_a_OBJECTS = $(am_libmathmodel_a_OBJECTS)
 #>+ 6
 libmathmodel_a_final_OBJECTS = libmathmodel_a.all_cpp.o 
 libmathmodel_a_nofinal_OBJECTS = CMathSymbol.$(OBJEXT) \
 	CMathConstant.$(OBJEXT) CMathVariable.$(OBJEXT) \
-	CMathModel.$(OBJEXT)
+	CMathModel.$(OBJEXT) CMathNode.$(OBJEXT) CMathEq.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libmathmodel_a_OBJECTS = $(libmathmodel_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libmathmodel_a_OBJECTS = $(libmathmodel_a_final_OBJECTS)
 
@@ -279,9 +283,9 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CMathConstant.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CMathModel.Po $(DEPDIR)/CMathSymbol.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CMathVariable.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CMathConstant.Po $(DEPDIR)/CMathEq.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CMathModel.Po $(DEPDIR)/CMathNode.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CMathSymbol.Po $(DEPDIR)/CMathVariable.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -356,7 +360,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathConstant.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathEq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathModel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathSymbol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMathVariable.Po@am__quote@
 
@@ -417,7 +423,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=CMathFreeFormDE.cpp CMathMoiety.h CMathDE.h CMathDE.cpp CMathCompartment.h CMathCompartment.cpp CMathEq.cpp CMathStructuredDE.cpp libmathmodel.a CMathFunction.cpp CMathEq.h CMathFunction.h CMathFreeFormDE.h CMathStructuredDE.h CMathMoiety.cpp 
+KDE_DIST=mathmodel.dsp libmathmodel.a 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -558,11 +564,11 @@ force-reedit:
 
 
 #>+ 11
-libmathmodel_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CMathSymbol.cpp $(srcdir)/CMathConstant.cpp $(srcdir)/CMathVariable.cpp $(srcdir)/CMathModel.cpp
+libmathmodel_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CMathSymbol.cpp $(srcdir)/CMathConstant.cpp $(srcdir)/CMathVariable.cpp $(srcdir)/CMathModel.cpp $(srcdir)/CMathNode.cpp $(srcdir)/CMathEq.cpp
 	@echo 'creating libmathmodel_a.all_cpp.cpp ...'; \
 	rm -f libmathmodel_a.all_cpp.files libmathmodel_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libmathmodel_a.all_cpp.final; \
-	for file in CMathSymbol.cpp CMathConstant.cpp CMathVariable.cpp CMathModel.cpp ; do \
+	for file in CMathSymbol.cpp CMathConstant.cpp CMathVariable.cpp CMathModel.cpp CMathNode.cpp CMathEq.cpp ; do \
 	  echo "#include \"$$file\"" >> libmathmodel_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libmathmodel_a.all_cpp.final; \
 	done; \

@@ -5,13 +5,17 @@ libmathmodel_a_SOURCES = \
 	CMathSymbol.cpp \
 	CMathConstant.cpp \
 	CMathVariable.cpp \
-	CMathModel.cpp
+	CMathModel.cpp \
+	CMathNode.cpp \
+	CMathEq.cpp
 
 EXTRA_DIST = \
 	CMathSymbol.h CMathSymbol.cpp \
 	CMathConstant.h CMathConstant.cpp \
 	CMathVariable.h CMathVariable.cpp \
-	CMathModel.h CMathModel.cpp
+	CMathModel.h CMathModel.cpp \
+	CMathNode.h CMathNode.cpp \
+	CMathEq.h CMathEq.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
