@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: stupe $ 
-   $Date: 2005/01/30 16:55:51 $
+   $Date: 2005/02/03 22:25:59 $
    End CVS Header */
 
 /********************************************************
@@ -114,7 +114,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   bExecutable = new QCheckBox(this, "bExecutable");
   setInitialState = new QCheckBox(this, "setInitialState");
   bExecutable->setText(trUtf8("Task Executable"));
-  setInitialState->setText(trUtf8("Set Initial State"));
+  setInitialState->setText(trUtf8("Use result as new initial state"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);
