@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.152 $
+   $Revision: 1.153 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/12 22:20:54 $
+   $Author: lixu1 $ 
+   $Date: 2003/12/16 02:59:58 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,6 +93,12 @@ CModel::CModel():
   initializeMetabolites();
 
   compile();
+
+  /* This following 2 lines added by Liang Xu
+  Becaues of the failure to initialize the parameter when creating a new models
+  */
+  setQuantityUnit(mQuantityUnit); // set the factors
+  setVolumeUnit(mVolumeUnit); // set the factors
 
   CONSTRUCTOR_TRACE;
 }
