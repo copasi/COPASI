@@ -188,12 +188,3 @@ void CFunction::addParameter(const string & name, const CFunctionParameter::Data
 {
   mParameters.add(name, type, usage);
 }
-
-void CFunction::addParametersUsage(const string& usage, C_INT32 low, C_INT32 high)
-{
-  CUsageRange u;
-  u.setUsage(usage);
-  u.setLow(low);
-  u.setHigh(high);
-  mParameters.addUsageRange((const CUsageRange) u);
-}

@@ -97,7 +97,9 @@ CFunctionParameters::operator[](unsigned C_INT32 index) const
  */
 
 CFunctionParameter * CFunctionParameters::operator[](const string &name)
-{ return mParameters[name]; }
+{
+  return mParameters[name];
+}
 unsigned C_INT32 CFunctionParameters::size() const { return mParameters.size(); }
 
 CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges()
@@ -109,7 +111,7 @@ CFunctionParameters::getParameterByUsage(const string & usage,
 {
   unsigned C_INT32 i, imax = mParameters.size();
 
-  for (i = pos; i < imax; i++, pos)
+  for (i = pos; i < imax; i++)
     if (mParameters[i]->getUsage() == usage)
       {
         pos = i + 1;
@@ -183,9 +185,4 @@ void CFunctionParameters::updateUsageRanges()
           pUsageRange->setLow(pUsageRange->getLow() + 1);
         }
     }
-}
-
-void CFunctionParameters::addUsageRange(const CUsageRange &u)
-{
-  mUsageRanges.add(u);
 }

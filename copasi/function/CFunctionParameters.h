@@ -148,12 +148,6 @@ class CFunctionParameters
         unsigned C_INT32 & pos);
 
     /**
-     *  Adds one CUsageRange object to the mUsageRanges member
-     *  @param "const CUsageRange *" u usage object to add
-     */
-    void addUsageRange(const CUsageRange &u);
-
-    /**
      * insert operator
      */
     friend ostream & operator<<(ostream &os, const CFunctionParameters & d)

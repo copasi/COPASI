@@ -199,13 +199,5 @@ class CFunction
      */
     virtual void addParameter(const string & name, const CFunctionParameter::DataType & type,
                               const string & usage);
-
-    /**
-     *  Adds one usage in the mParamters object
-     *  @param "const string &" usage the usage string
-    *  @param "C_INT32" low the lower cardinality
-    *  @param "C_INT32" high the maximum cardinality
-     */
-    void addParametersUsage(const string& usage, C_INT32 low, C_INT32 high);
   };
 #endif // COPASI_CFunction
