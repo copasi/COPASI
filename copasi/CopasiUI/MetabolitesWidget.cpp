@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/03 23:24:49 $
+   $Author: chlee $ 
+   $Date: 2004/02/06 19:29:52 $
    End CVS Header */
 
 /***********************************************************************
@@ -307,7 +307,7 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
           table->setText(row, 4,
                          CMetab::StatusName[CMetab::METAB_VARIABLE].c_str());
         }
-
+      dataModel->getModel()->compile();
       // may have to keep previous checkbox status to make unchecked independent
     }
 }
@@ -535,7 +535,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                       // Yes or Enter
+            case 0:                        // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -548,7 +548,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                       // No or Escape
+            case 1:                        // No or Escape
               break;
             }
         }
