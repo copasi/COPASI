@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49 $ $Author: jpahle $ $Date: 2004/10/06 16:29:19 $  
+# $Revision: 1.50 $ $Author: gauges $ $Date: 2004/10/08 16:46:13 $  
 ######################################################################
 
 include(../common.pri)
@@ -112,6 +112,7 @@ contains(BUILD_OS, SunOS) {
 
 # Input
 HEADERS += \
+           AboutDialog.h \
            ChemEqValidator.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
@@ -181,6 +182,7 @@ HEADERS += \
 #               TrajectoryWidget.ui
 
 SOURCES += \
+           AboutDialog.cpp \
            CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
@@ -228,7 +230,7 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-           simpleselectionwidget.cpp \
+	   simpleselectionwidget.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -243,6 +245,7 @@ SOURCES += \
 #FORMS +=  TimeSeriesSubwidget.ui \
 #          StateSubwidget.ui \
 #          simpleselectionwidget.ui        
+#FORMS += slidersettingsdialog.ui
 
 release {
   distribution.path = .
