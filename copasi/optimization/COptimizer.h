@@ -73,17 +73,17 @@ public:
    BOOL Init( CString &inifile );
 
    /**
-    * 
+    * Return the number of parameters
     */
    int CountParameters( void );
 
    /**
-    * 
+    * Get a parameter value
     */
    double GetParameterValue( int p );
 
    /**
-    * 
+    * Set a parameter value
     */
    void SetParameterValue( int p, double v );
 

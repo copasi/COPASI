@@ -729,3 +729,19 @@ extern "C" __declspec( dllexport ) int OptDLLOptimise( double (*feval) (void) )
  }
  return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
