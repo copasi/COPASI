@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/03 13:00:29 $
+   $Date: 2005/02/17 14:48:32 $
    End CVS Header */
 
 /*******************************************************************
@@ -37,7 +37,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
 
   //here the table is initialized
   table = new QTable(this, "table");
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
+  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
   vBoxLayout->addWidget(table);
 
   //table->sortColumn (0, true, true);
@@ -66,9 +66,9 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       btnClear = new QPushButton("Clear", this);
     }
 
-  vBoxLayout->addSpacing(5);
+  //vBoxLayout->addSpacing(5);
   mExtraLayout = new QHBoxLayout(vBoxLayout, 0);
-  vBoxLayout->addSpacing(5);
+  //vBoxLayout->addSpacing(5);
 
   QHBoxLayout* mHLayout = new QHBoxLayout(vBoxLayout, 0);
   if (!mRO)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:34 $
+   $Author: ssahle $ 
+   $Date: 2005/02/17 14:49:12 $
    End CVS Header */
 
 /*******************************************************************
@@ -42,22 +42,24 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   listView->setSelectionMode(QListView::Single);
   listView->setAllColumnsShowFocus(true);
   listView->setSortColumn(-1);
-  listView->addColumn("Reversible/Irreversible");
+  listView->addColumn("Reversibility");
   listView->addColumn("Reaction Name");
   listView->addColumn("Reaction Equation");
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
+
+  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 6);
   vBoxLayout->addWidget(listView);
 
-  btnCalculate = new QPushButton("&Run", this);
+  btnCalculate = new QPushButton("&Calculate", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
   hBoxLayout->addSpacing(32);
 
-  hBoxLayout->addSpacing(50);
+  //hBoxLayout->addSpacing(50);
+  hBoxLayout->addStretch();
   hBoxLayout->addWidget(btnCalculate);
-  hBoxLayout->addSpacing(50);
+  //hBoxLayout->addSpacing(50);
 
   listView->setFocusPolicy(QWidget::WheelFocus);
 
@@ -112,7 +114,7 @@ void ModesWidget::slotTableSelectionChanged()
       }*/
 }
 
-void ModesWidget::resizeEvent(QResizeEvent * re)
+/*void ModesWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
@@ -134,7 +136,7 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
         }
     }
   CopasiWidget::resizeEvent(re);
-}
+}*/
 
 void ModesWidget::slotBtnCalculateClicked()
 {
