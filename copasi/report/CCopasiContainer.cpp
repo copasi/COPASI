@@ -75,6 +75,8 @@ CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn)
         return pObject->getObject(cn.getRemainder());
     }
 
+  if ((*it)->isReference()) return *it;
+
   return (*it)->getObject(cn.getRemainder());
 }
 
