@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.29 $ $Author: shoops $ $Date: 2004/10/27 17:24:29 $  
+# $Revision: 1.30 $ $Author: shoops $ $Date: 2004/10/28 18:40:04 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -55,9 +55,6 @@ contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE 
   debug {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
-  }
-  release {
-    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"libcmt"
   }
 
   !isEmpty(MKL_PATH) {
