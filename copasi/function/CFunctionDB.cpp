@@ -17,7 +17,9 @@ void CFunctionDB::cleanup() {mLoadedFunctions.cleanup(); }
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
-  CKinFunction * pFunction = NULL;
+  CFunction Function;
+  CFunction * pFunction;
+
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
 
@@ -30,10 +32,28 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 
   for (C_INT32 i = 0; i < Size; i++)
     {
-      // We should really read the function type first before we allocate,
-      // but since we currently have only one type this will do.
-      pFunction = new CKinFunction;
-      pFunction->load(configbuffer);
+      Function.load(configbuffer);
+
+      switch (Function.getType())
+        {
+        case CFunction::Base:
+          pFunction = new CFunction(Function);
+          break;
+
+        case CFunction::MassAction:
+          pFunction = new CMassAction(Function);
+          break;
+
+        case CFunction::PreDefined:
+
+        case CFunction::UserDefined:
+          pFunction = new CKinFunction(Function);
+          break;
+
+        default:
+          fatalError();
+        }
+
       mLoadedFunctions.add(pFunction);
     }
 
