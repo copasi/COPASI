@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:34 $
+   $Author: shoops $ 
+   $Date: 2005/02/16 18:15:25 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -228,7 +228,7 @@ void DataModel::autoSave()
       // Name of the temp file will start from 'tmp_' followed by actual name of the file.
       tmpDir = tmpDir.append("/tmp_");
 
-      fileName = currentFile.copy();
+      fileName = currentFile.copy().utf8();
       // Extract name of the file from current file name. Remove extension of the file.
       i = fileName.find_last_of('/');
       len = fileName.length();
