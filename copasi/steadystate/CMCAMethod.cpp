@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/26 15:15:45 $
+   $Author: shoops $ 
+   $Date: 2004/10/27 18:40:40 $
    End CVS Header */
 
 #include <cmath>
@@ -25,7 +25,9 @@
 /**
  * Default constructor
  */
-CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
+CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
+    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent),
+    mSsipvt(NULL)
 {
   CONSTRUCTOR_TRACE;
   addParameter("MCA.ModulationFactor",
@@ -39,7 +41,9 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTa
  * User defined constructor
  * @param refer to Model and factor
  */
-CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
+CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent):
+    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent),
+    mSsipvt(NULL)
 {
   CONSTRUCTOR_TRACE;
   addParameter("MCA.ModulationFactor",
@@ -324,6 +328,7 @@ int CMCAMethod::CalcGamma()
  */
 void CMCAMethod::initSsipvt()
 {
+  delSsipvt();
   mSsipvt = (C_INT32 *) malloc((mpModel->getIndMetab()) * sizeof(C_INT32));
 }
 
@@ -332,7 +337,7 @@ void CMCAMethod::initSsipvt()
  */
 void CMCAMethod::delSsipvt()
 {
-  free((void *) mSsipvt);
+  pfree(mSsipvt);
 }
 
 /**
