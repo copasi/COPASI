@@ -16,6 +16,7 @@
 #endif
 
 #include <stdlib.h>
+#include <sstream>
 
 #define COPASI_MAIN
 #define COPASI_TRACE_CONSTRUCTION
@@ -30,11 +31,6 @@ C_INT32 TestOptimization(void);
 C_INT main(C_INT argc, char *argv[])
 {
   char PrgName[512];
-  char Cwd[512];
-  char *HOME;
-
-  getcwd(Cwd, 512);
-  HOME = getenv("HOME");
 
 #ifdef WIN32
   GetModuleFileName(NULL, PrgName, 512);

@@ -20,7 +20,6 @@
            mandatory="no"
            strict="yes"
            location="commandline" 
-           default="~/.copasirc"
            hidden="no">
     <name>rc</name> 
     <comment>The configuration file for copasi.</comment>

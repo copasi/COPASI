@@ -43,7 +43,6 @@ namespace copasi
     {
       options(void) :
           Bool(true),
-          ConfigFile("~/.copasirc"),
           Flag(true),
           SystemFunctionDB("FunctionDB.cps"),
           UserFunctionDB("~/FunctionDB.cps")

@@ -21,6 +21,7 @@
 #include <cctype>
 #include <fstream>
 #include <sstream>
+#include <errno.h>
 
 namespace
   {
@@ -72,6 +73,7 @@ void copasi::COptionParser::parse(const char * fileName)
     {
       std::ostringstream error;
       error << "error opening file: '" << fileName << "'";
+      errno = ENOENT;
 
       throw option_error(error.str());
     }
@@ -80,7 +82,11 @@ void copasi::COptionParser::parse(const char * fileName)
     {
       try
         {
-          File.getline(LineBuffer, 1024);
+          /* Take care of dos and unix style line ending */
+          File.getline(LineBuffer, 1024, 0xa);
+          if (LineBuffer[strlen(LineBuffer) - 1] == 0xd)
+            LineBuffer[strlen(LineBuffer) - 1] = '\0';
+
           LineCounter++;
 
           if (File.eof()) break;

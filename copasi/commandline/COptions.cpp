@@ -70,17 +70,27 @@ void COptions::init(C_INT argc, char *argv[])
 
   /* Parse the system wide configuration file */
   std::string ConfigFile(CopasiDir + "/etc/copasi.conf");
-  Parser->parse(ConfigFile.c_str());
-
-  /* Parse the user's configuration file */
-  ConfigFile = Home + ".copasirc";
   try
     {
       Parser->parse(ConfigFile.c_str());
     }
 
   catch (copasi::option_error &e)
-  {}
+    {
+      if (errno != ENOENT) throw(e);
+    }
+
+  /* Parse the user's configuration file */
+  ConfigFile = Home + "/.copasirc";
+  try
+    {
+      Parser->parse(ConfigFile.c_str());
+    }
+
+  catch (copasi::option_error &e)
+    {
+      if (errno != ENOENT) throw(e);
+    }
 
   /* Parse the commandline specified file */
   if (!compareValue("ConfigFile", (std::string) ""))
@@ -157,7 +167,7 @@ std::string COptions::getCopasiDir(void)
 
 std::string COptions::getPWD(void)
 {
-  size_t PWDSize = 1;
+  size_t PWDSize = 256;
   char * PWD = NULL;
 
   while (!(PWD = getcwd(NULL, PWDSize)))
