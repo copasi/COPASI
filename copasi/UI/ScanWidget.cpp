@@ -433,8 +433,8 @@ void ScanWidget::deleteButtonClicked()
 
   emit hide_me();
 
-  CCopasiObject* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
-  scanTask->getProblem()->removeScanItem(pObject->getCN().c_str());
+  CMethodParameterList* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
+  scanTask->getProblem()->removeScanItem(pObject->getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
