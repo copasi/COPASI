@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/02 09:53:02 $
+   $Date: 2005/03/04 09:39:00 $
    End CVS Header */
 
 /**
@@ -134,36 +134,6 @@ bool CScanTask::process()
   if (mpProgressHandler) mpProgressHandler->finish();
   if (mpOutputHandler) mpOutputHandler->finish();
 
-  //pProblem->initialize();
-
-  //mReport.compile();
-  //mReport.printHeader();
-
-  /*  if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
-      {
-        pProblem->getSteadyStateTask()->getProblem()->getModel()->compileIfNecessary();
-      }
-    if ((pProblem->getTrajectoryTask() != NULL) && pProblem->processTrajectory())
-      {
-        pProblem->getTrajectoryTask()->getProblem()->getModel()->compileIfNecessary();
-      }
-   
-    unsigned C_INT32 scanDimension = pProblem->getListSize();
-    int i;
-   
-    // find the last master
-    for (i = scanDimension - 1; i >= 0; i--)
-      if (pProblem->getScanItemParameter(i, "indp")) break;
-   
-    if (i >= 0)
-      // execute many simulations
-      pMethod->scan(i, true, &CReport::printBody, &mReport);
-   
-    //  if (mpOutEnd)
-    //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
-    mReport.printFooter();
-   
-    pProblem->restore();*/
   return success;
 }
 
@@ -202,17 +172,15 @@ bool CScanTask::initSubtask()
   switch (type)
     {
     case CCopasiTask::steadyState:
-      mpSubtask = const_cast<CCopasiTask*>
-                  (dynamic_cast<const CCopasiTask*>
-                   (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Steady-State"))));
+      mpSubtask = dynamic_cast<const CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
       ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
       ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
       break;
 
     case CCopasiTask::timeCourse:
-      mpSubtask = const_cast<CCopasiTask*>
-                  (dynamic_cast<const CCopasiTask*>
-                   (CCopasiContainer::Root->getObject(CCopasiObjectName("Task=Time-Course"))));
+      mpSubtask = dynamic_cast<const CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       trajProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
       trajProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
       break;
