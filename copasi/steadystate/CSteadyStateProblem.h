@@ -82,15 +82,15 @@ class CSteadyStateProblem
 
     /**
      * Set the initial state of the problem.
-     * @param "const CState *" pInitialState
+     * @param const CState & InitialState
      */
-    void setInitialState(CState * pInitialState);
+    void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
-     * @param "const CState X" pInitialState
+     * @param const CStateX & InitialState
      */
-    void setInitialState(CStateX * pInitialState);
+    void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.

@@ -61,17 +61,17 @@ CModel * CSteadyStateProblem::getModel() const {return mpModel;}
 
 /**
  * Set the initial state of the problem.
- * @param "const CState *" pInitialState
+ * @param const CState & initialState
  */
-void CSteadyStateProblem::setInitialState(CState * pInitialState)
-{mInitialState = *pInitialState;}
+void CSteadyStateProblem::setInitialState(const CState & initialState)
+{mInitialState = initialState;}
 
 /**
  * Set the initial state of the problem.
- * @param "const CStateX *" pInitialState
+ * @param const CStateX & InitialState
  */
-void CSteadyStateProblem::setInitialState(CStateX * pInitialState)
-{mInitialState = *pInitialState;}
+void CSteadyStateProblem::setInitialState(const CStateX & initialState)
+{mInitialState = initialState;}
 
 /**
  * Retrieve the initial state of the problem.
