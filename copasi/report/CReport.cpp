@@ -12,7 +12,8 @@
 CReport::CReport():
     CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
     mpReportDef(NULL),
-    mAppend(true)
+    mAppend(true),
+    outputTarget(NULL)
     //,mKey(CKeyFactory::add("Report", this))
 {}
 
@@ -61,16 +62,25 @@ void CReport::setAppend(bool append)
 void CReport::printHeader()
 {
   // for loop print out mpReportDef->getHeader()
+  int i;
+  for (i = 0; i < headerObjectList.size(); i++)
+    headerObjectList[i]->print(*outputTarget);
 }
 
 void CReport::printBody()
 {
   // for loop print out mpReportDef->getBody()
+  int i;
+  for (i = 0; i < bodyObjectList.size(); i++)
+    bodyObjectList[i]->print(*outputTarget);
 }
 
 void CReport::printFooter()
 {
   // for loop print out mpReportDef->getFooter()
+  int i;
+  for (i = 0; i < footerObjectList.size(); i++)
+    footerObjectList[i]->print(*outputTarget);
 }
 
 // Compile the List of Report Objects;

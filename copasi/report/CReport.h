@@ -12,6 +12,7 @@
 #include "CCopasiObject.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 class CReportDefinition;
 class CBody;
@@ -20,6 +21,7 @@ class CReportTable;
 class CReport : public CCopasiObject
   {
   private:
+    std::ostream* outputTarget;
     std::vector<CCopasiObject*> footerObjectList;
     std::vector<CCopasiObject*> bodyObjectList;
     std::vector<CCopasiObject*> headerObjectList;
