@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:16 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 20:25:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -131,7 +131,8 @@ void DifferentialEquations::slotBtnCancelClicked()
   //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
 }
 
-bool DifferentialEquations::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool DifferentialEquations::update(ListViews::ObjectType objectType,
+                                   ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

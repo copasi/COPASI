@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 13:41:42 $
+   $Date: 2004/05/13 20:30:39 $
    End CVS Header */
 
 /**
@@ -197,7 +197,7 @@ const CState & CTrajectoryProblem::getEndState() const
  * @param "CReadConfig &" configBuffer
  */
 void CTrajectoryProblem::load(CReadConfig & configBuffer,
-                              CReadConfig::Mode mode)
+                              CReadConfig::Mode C_UNUSED(mode))
 {
   C_FLOAT64 dbl;
   unsigned C_INT32 uint;

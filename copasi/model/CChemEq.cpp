@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 20:06:56 $
+   $Date: 2004/05/13 20:29:38 $
    End CVS Header */
 
 // CChemEqElement
@@ -187,7 +187,7 @@ void CChemEq::reverse()
 
 C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
   {
-    const CCopasiVector<CChemEqElement> * tmpVector;
+    const CCopasiVector<CChemEqElement> * tmpVector = NULL;
 
     switch (role)
       {

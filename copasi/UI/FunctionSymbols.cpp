@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:46 $
+   $Date: 2004/05/13 20:26:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -120,7 +120,7 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
           table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
           QStringList functionType;
           CFunctionParameters &functParam = metabObject->getParameters();
-          for (int j = 0; j < functParam.size(); j++)
+          for (unsigned C_INT32 j = 0; j < functParam.size(); j++)
             {
               functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));
             }
@@ -177,7 +177,8 @@ void FunctionSymbols::resizeEvent(QResizeEvent * re)
   CopasiWidget::resizeEvent(re);
 }
 
-bool FunctionSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool FunctionSymbols::update(ListViews::ObjectType objectType,
+                             ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   switch (objectType)
     {

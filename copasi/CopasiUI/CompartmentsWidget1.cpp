@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
+   $Date: 2004/05/13 20:25:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -201,7 +201,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   saveToCompartment();
 }
 
-void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)
+void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
 {
   //TODO do not really know what to do here. May be switch to metabolite widget?
 }

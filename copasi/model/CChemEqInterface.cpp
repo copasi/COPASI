@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:42:51 $
+   $Date: 2004/05/13 20:29:38 $
    End CVS Header */
 
 #include <math.h>
@@ -322,7 +322,7 @@ void CChemEqInterface::extractModifier(const std::string & input,
 
 C_INT32 CChemEqInterface::getMolecularity(const std::string & role) const
   {
-    const std::vector<C_FLOAT64> * tmpVector;
+    const std::vector<C_FLOAT64> * tmpVector = NULL;
 
     if (role == "SUBSTRATE")
       tmpVector = &mSubstrateMult;

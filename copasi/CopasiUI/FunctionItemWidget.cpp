@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/07 17:38:22 $
+   $Date: 2004/05/13 20:26:16 $
    End CVS Header */
 
 /********************************************************
@@ -379,7 +379,7 @@ void FunctionItemWidget::slotButtonItems()
       return;
     }
 
-  int i = 0;
+  unsigned C_INT32 i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
       break;
