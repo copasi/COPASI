@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:13:03 $
+   $Date: 2003/11/06 18:43:26 $
    End CVS Header */
 
 /********************************************************
@@ -60,7 +60,7 @@ class TrajectoryWidget : public CopasiWidget
     virtual void EnableRunTask();
     virtual void ExportToFile();
     virtual void runTrajectoryTask();
-    virtual void UpdateMethod();
+    virtual void UpdateMethod(const bool & update = true);
     virtual void ReportDefinitionClicked();
 
   private:

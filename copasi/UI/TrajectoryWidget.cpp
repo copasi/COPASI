@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:38 $
+   $Date: 2003/11/06 18:43:26 $
    End CVS Header */
 
 /********************************************************
@@ -253,22 +253,8 @@ void TrajectoryWidget::CommitChange()
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
-  if (trajectorymethod->getSubType() != (CTrajectoryMethod::Type)ComboBox1->currentItem())
-    {
-      CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-      trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CCopasiMethod::SubType)ComboBox1->currentItem(), trajectoryproblem);
-      if (trajectorymethod != NULL)
-        {
-          trajectorymethod -> setProblem(trajectoryproblem);
-          tt -> setMethod(trajectorymethod);
-          pdelete(ptrTmpMethod);
-        }
-      else
-        {
-          QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
-          trajectorymethod = ptrTmpMethod;
-        }
-    }
+  if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
+      ComboBox1->currentText().latin1()) UpdateMethod(false);
 
   QTableItem * pItem;
   QString substrate;
@@ -427,10 +413,13 @@ void TrajectoryWidget::loadTrajectoryTask()
 
   ComboBox1->clear ();
   //disable Hybrid By Force
-  for (i = 0; (strlen(trajectorymethod->TypeName[i].c_str()) > 0) && (QString::compare(trajectorymethod->TypeName[i].c_str(), "hybrid") != 0); i++)
-    ComboBox1->insertItem(trUtf8(trajectorymethod->TypeName[i].c_str()));
+  std::cout << CTrajectoryMethod::ValidSubTypes << std::endl;
 
-  ComboBox1->setCurrentItem (trajectorymethod->getSubType());
+  for (i = 0; i < CTrajectoryMethod::ValidSubTypes.size(); i++)
+    ComboBox1->
+    insertItem(CCopasiMethod::SubTypeName[CTrajectoryMethod::ValidSubTypes[i]].c_str());
+
+  ComboBox1->setCurrentText(CCopasiMethod::SubTypeName[trajectorymethod->getSubType()].c_str());
 
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
@@ -438,29 +427,37 @@ void TrajectoryWidget::loadTrajectoryTask()
     bRunTask->setEnabled(true);
 }
 
-void TrajectoryWidget::UpdateMethod()
+void TrajectoryWidget::UpdateMethod(const bool & update)
 {
   //if (!mTrajectoryTask)
   //  return;
-  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CTrajectoryTask* tt =
+    (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   CTrajectoryProblem* trajectoryproblem = tt->getProblem();
   CTrajectoryMethod* trajectorymethod = tt->getMethod();
 
-  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CCopasiMethod::SubType)ComboBox1->currentItem(), trajectoryproblem);
-  if (trajectorymethod != NULL)
+  CCopasiMethod::SubType SubType =
+    CCopasiMethod::TypeNameToEnum(ComboBox1->currentText().latin1());
+
+  if (SubType != CCopasiMethod::unset)
     {
-      trajectorymethod -> setProblem(trajectoryproblem);
-      tt -> setMethod(trajectorymethod);
-      pdelete(ptrTmpMethod);
-    }
-  else
-    {
-      QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
-      trajectorymethod = ptrTmpMethod;
+      CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
+      trajectorymethod =
+        CTrajectoryMethod::createTrajectoryMethod(SubType, trajectoryproblem);
+      if (trajectorymethod != NULL)
+        {
+          trajectorymethod->setProblem(trajectoryproblem);
+          tt->setMethod(trajectorymethod);
+          pdelete(ptrTmpMethod);
+        }
+      else
+        {
+          QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
+          trajectorymethod = ptrTmpMethod;
+        }
     }
 
-  loadTrajectoryTask();
+  if (update) loadTrajectoryTask();
 }
 
 void TrajectoryWidget::ExportToFile()
