@@ -67,8 +67,8 @@ std::string CMathNodeOperation::getData() const
         text << pChild->getData();
 
         std::string tmp;
-        if (pChild->getSibbling())
-          tmp = ((CMathNode *) pChild->getSibbling())->getData();
+        if (pChild->getSibling())
+          tmp = ((CMathNode *) pChild->getSibling())->getData();
         else
           tmp = "@@@";
 
@@ -118,8 +118,8 @@ std::string CMathNodeDerivative::getData() const
       {
         text << pChild->getData() << ")(";
 
-        if (pChild->getSibbling())
-          text << ((CMathNode *) pChild->getSibbling())->getData();
+        if (pChild->getSibling())
+          text << ((CMathNode *) pChild->getSibling())->getData();
         else
           text << "@@@";
 
@@ -225,7 +225,7 @@ std::string CMathNodeList::getData() const
     while (pChild)
       {
         text << pChild->getData();
-        pChild = (CMathNode *) pChild->getSibbling();
+        pChild = (CMathNode *) pChild->getSibling();
 
         if (pChild) text << ", ";
       }

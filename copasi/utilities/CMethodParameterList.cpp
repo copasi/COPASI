@@ -13,7 +13,7 @@
 #include "CMethodParameter.h"
 #include "CCopasiMessage.h"
 #include "CCopasiException.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 
 /**
