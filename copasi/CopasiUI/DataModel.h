@@ -216,7 +216,7 @@ void DataModel<T>::saveModel(const char* fileName)
 
   CCopasiXML XML;
 
-  ofstream os(fileName);
+  std::ofstream os(fileName);
 
   XML.setModel(*model);
   XML.save(os);

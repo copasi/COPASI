@@ -213,7 +213,7 @@ const CModel * CState::getModel() const {return mpModel;}
 const CVector< C_FLOAT64 > & CState::getFixedNumberVectorDbl() const
   {return mFixedNumbers.getVectorDbl();}
 
-#ifdef COPASI_DEPRECATED
+#ifndef COPASI_DEPRECATED
 const CVector< C_INT32 > & CState::getFixedNumberVectorInt() const
   {return mFixedNumbers.getVectorInt();}
 #endif // COPASI_DEPRECATED
@@ -221,7 +221,7 @@ const CVector< C_INT32 > & CState::getFixedNumberVectorInt() const
 const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
   {return mFixedNumbers.getDbl(index);}
 
-#ifdef COPASI_DEPRECATED
+#ifndef COPASI_DEPRECATED
 const C_INT32 & CState::getFixedNumberInt(const unsigned C_INT32 & index) const
   {return mFixedNumbers.getInt(index);}
 #endif // COPASI_DEPRECATED
@@ -232,7 +232,7 @@ const unsigned C_INT32 & CState::getFixedNumberSize () const
 const CVector< C_FLOAT64 > & CState::getVariableNumberVectorDbl() const
   {return mVariableNumbers.getVectorDbl();}
 
-#ifdef COPASI_DEPRECATED
+#ifndef COPASI_DEPRECATED
 const CVector< C_INT32 > & CState::getVariableNumberVectorInt() const
   {return mVariableNumbers.getVectorInt();}
 #endif // COPASI_DEPRECATED
@@ -240,7 +240,7 @@ const CVector< C_INT32 > & CState::getVariableNumberVectorInt() const
 const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
   {return mVariableNumbers.getDbl(index);}
 
-#ifdef COPASI_DEPRECATED
+#ifndef COPASI_DEPRECATED
 const C_INT32 & CState::getVariableNumberInt(const unsigned C_INT32 & index) const
   {return mVariableNumbers.getInt(index);}
 #endif // COPASI_DEPRECATED

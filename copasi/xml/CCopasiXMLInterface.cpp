@@ -76,8 +76,8 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
 CCopasiXMLInterface::CCopasiXMLInterface():
     mpModel(NULL),
     mpFunctionList(NULL),
-    mpTaskList(NULL),
-    mpReportList(NULL),
+    //    mpTaskList(NULL),
+    //    mpReportList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
@@ -134,7 +134,7 @@ bool CCopasiXMLInterface::freeFunctionList()
   pdelete(mpFunctionList);
   return true;
 }
-
+#ifdef XXXX
 bool CCopasiXMLInterface::setTaskList(const CCopasiVectorN< CCopasiTask > & taskList)
 {
   mpTaskList = const_cast<CCopasiVectorN< CCopasiTask > *>(&taskList);
@@ -170,6 +170,7 @@ bool CCopasiXMLInterface::freeReportList()
   //  pdelete(mpReportList);
   return true;
 }
+#endif // XXXX
 
 bool CCopasiXMLInterface::saveData(const std::string & data)
 {

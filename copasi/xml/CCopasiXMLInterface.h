@@ -49,14 +49,14 @@ class CCopasiXMLInterface
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */
-    CCopasiVectorN< CCopasiTask > * mpTaskList;
+     */ 
+    // CCopasiVectorN< CCopasiTask > * mpTaskList;
 
     /**
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */
-    CCopasiVectorN< CCopasiReport > * mpReportList;
+     */ 
+    // CCopasiVectorN< CCopasiReport > * mpReportList;
 
     /**
      * A pointer to the input stream

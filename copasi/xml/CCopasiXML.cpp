@@ -7,9 +7,9 @@
  * Copyright Stefan Hoops
  */
 
+#include "copasi.h"
 #include <map>
 
-#include "copasi.h"
 #include "CCopasiXML.h"
 
 #include "utilities/CCopasiVector.h"
@@ -327,7 +327,7 @@ bool CCopasiXML::saveModel()
   startSaveElement("InitialState", Attributes);
   CState InitialState = mpModel->getInitialState();
 
-  stringstream data;
+  std::stringstream data;
   data << InitialState.getTime();
   for (i = 0, imax = InitialState.getVolumeSize(); i < imax; i++)
     data << " " << InitialState.getVolume(i);
