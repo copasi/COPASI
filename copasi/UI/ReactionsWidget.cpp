@@ -129,6 +129,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
+      repaint_table();
       if (binitialized)
         {
           int newWidth = re->size().width();
@@ -205,6 +206,24 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
 void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
   QString x = table->text(row, 0);
+  if (row == table->numRows() - 1)
+    {
+      std::string name = "Reaction";
+      int i = 0;
+      CReaction* newReaction = new CReaction();
+      while (mModel->addReaction(newReaction) == -1)
+        {
+          i++;
+          name = "Reaction";
+          name += "_";
+          name += QString::number(i);
+          newReaction->setName(name);
+        }
+      table->setNumRows(table->numRows());
+      table->setText(row, 0, name.c_str());
+      x = name.c_str();
+      emit updated();
+      emit leaf(mModel);
+    }
   emit name(x);
-  //QMessageBox::information(this, "Compartments Widget",x);
 }
