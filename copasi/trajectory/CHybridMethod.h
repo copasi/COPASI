@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/17 02:52:44 $
+   $Author: jpahle $ 
+   $Date: 2004/12/17 12:31:54 $
    End CVS Header */
 
 /**
@@ -57,6 +57,8 @@
 #define PARTITIONING_INTERVAL        1
 #define OUTPUT_COUNTER               100
 #define DEFAULT_OUTPUT_FILE          "hybrid.output"
+#define SUBTYPE                      1
+#define RANDOM_SEED                  1
 
 /* CLASSES *******************************************************************/
 
@@ -213,11 +215,11 @@ class CHybridMethod : public CTrajectoryMethod
 
     /**
      *   Calculates the derivative of the system and writes it into the vector
-     *   deriv. Length of deriv must be mNumIntMetabolites.
+     *   deriv. Length of deriv must be mNumVariableMetabs.
      *   CAUTION: Only deterministic reactions are taken into account. That is,
      *   this is only the derivative of the deterministic part of the system.  
      *
-     *   @param deriv A vector reference of length mNumIntMetabolites, into
+     *   @param deriv A vector reference of length mNumVariableMetabs, into
      *                which the derivative is written
      */
     void calculateDerivative(std::vector <C_FLOAT64> & deriv);
@@ -225,19 +227,19 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Gathers the state of the system into the array target. Later on CState
      *   should be used for this. Length of the array target must be
-     *   mNumIntMetabolites.
+     *   mNumVariableMetabs.
      *
-     *   @param target A vector reference of length mNumIntMetabolites, into 
+     *   @param target A vector reference of length mNumVariableMetabs, into 
      *                 which the state of the system is written
      */
     void getState(std::vector <C_FLOAT64> & target);
 
     /**
      *   Writes the state specified in the array source into the model.
-     *   Length of the vector source must be mNumIntMetabolites.
+     *   Length of the vector source must be mNumVariableMetabs.
      *   (Number of non-fixed metabolites in the model).
      *
-     *   @param source A vector reference with length mNumIntMetabolites,
+     *   @param source A vector reference with length mNumVariableMetabs,
      *                 holding the state of the system to be set in the model
      */
     void setState(std::vector <C_FLOAT64> & source);
@@ -445,12 +447,17 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Dimension of the system. Total number of metabolites.
      */
-    unsigned C_INT32 mNumIntMetabolites;
+    unsigned C_INT32 mNumVariableMetabs;
 
     /**
      *   Max number of doSingleStep() per step()
      */
     unsigned C_INT32 mMaxSteps;
+
+    /**
+     *  The random seed to use.
+     */
+    unsigned C_INT32 mRandomSeed;
 
     /**
      * maximal increase of a particle number in one step.
@@ -554,7 +561,7 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   The random number generator.
      */
-    CRandom * mRandomGenerator;
+    CRandom * mpRandomGenerator;
 
     /**
      *   The graph of reactions and their dependent reactions. When a reaction is

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/12/16 10:48:03 $
+   $Date: 2004/12/17 12:31:54 $
    End CVS Header */
 
 /**
@@ -57,8 +57,6 @@
 CHybridMethod::~CHybridMethod()
 {
   std::cout << "~CHybridMethod() " << CCopasiParameter::getObjectName() << std::endl;
-  delete mRandomGenerator;
-  mRandomGenerator = NULL;
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -78,16 +76,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:                   // non-integer stoichometry
+    case - 3:                    // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:                   // reversible reaction exists
+    case - 2:                    // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:                   // more than one compartment involved
+    case - 1:                    // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
-      break;
-      // Error: Hybrid simulation impossible
       break;
     case 1:
     default:
@@ -101,7 +97,7 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 const double CHybridMethod::step(const double & deltaT)
 {
   // write the current state to the model
-  mpProblem->getModel()->setState(mpCurrentState); // is that correct?
+  //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?
 
   // check for possible overflows
   unsigned C_INT32 i;
@@ -121,7 +117,7 @@ const double CHybridMethod::step(const double & deltaT)
     {
       time = doSingleStep(time, endTime);
     }
-  mpCurrentState->setTime(time); // is that correct?
+  mpCurrentState->setTime(time);
 
   // get back the particle numbers
 
@@ -158,7 +154,6 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
   /* Set version number */
   mVersion.setVersion(1, 0, 102);
 
-  // Max number of doSingleStep() per step()
   addParameter("HYBRID.MaxSteps",
                CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
   addParameter("HYBRID.LowerStochLimit",
@@ -169,12 +164,12 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
                CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
   addParameter("HYBRID.PartitioningInterval",
                CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
-  addParameter("HYBRID.IntEpsilon",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) INT_EPSILON);
   addParameter("HYBRID.Subtype",
-               CCopasiParameter::UINT, (unsigned C_INT32) 1);
+               CCopasiParameter::UINT, (unsigned C_INT32) SUBTYPE);
+  addParameter("HYBRID.RandomSeed",
+               CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
-  mRandomGenerator = CRandom::createGenerator(CRandom::r250);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::r250, mRandomSeed);
 
   CONSTRUCTOR_TRACE;
 }
@@ -192,21 +187,21 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmuOld.clear();
   mAmuOld.resize(mpReactions->size());
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
-  mNumIntMetabolites = mpMetabolites->size(); // is that correct? maybe substitute with mpModel->getNumVariableMetabs
+  mNumVariableMetabs = mpMetabolites->size(); // is that correct? maybe substitute with mpModel->getNumVariableMetabs
 
   temp.clear();
-  temp.resize(mNumIntMetabolites);
+  temp.resize(mNumVariableMetabs);
   currentState.clear();
-  currentState.resize(mNumIntMetabolites);
+  currentState.resize(mNumVariableMetabs);
 
   k1.clear();
-  k1.resize(mNumIntMetabolites);
+  k1.resize(mNumVariableMetabs);
   k2.clear();
-  k2.resize(mNumIntMetabolites);
+  k2.resize(mNumVariableMetabs);
   k3.clear();
-  k3.resize(mNumIntMetabolites);
+  k3.resize(mNumVariableMetabs);
   k4.clear();
-  k4.resize(mNumIntMetabolites);
+  k4.resize(mNumVariableMetabs);
 
   /* get configuration data */
   mMaxSteps = * (unsigned C_INT32 *) getValue("HYBRID.MaxSteps");
@@ -221,6 +216,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
   mPartitioningInterval = * (unsigned C_INT32 *) getValue("HYBRID.PartitioningInterval");
   std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
+  mRandomSeed = * (unsigned C_INT32 *) getValue("HYBRID.RandomSeed");
+  std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   mStoi = mpModel->getStoi();
   mStepsAfterPartitionSystem = 0;
   mUpdateSet.clear();
@@ -244,6 +241,8 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
  */
 void CHybridMethod::cleanup()
 {
+  delete mpRandomGenerator;
+  mpRandomGenerator = NULL;
   mpModel = NULL;
   return;
 }
@@ -270,7 +269,7 @@ void CHybridMethod::integrateDeterministicPart(C_FLOAT64 dt)
     }
   rungeKutta(dt - integrationTime);
 
-  // find the set union of all reactions, which depend on one of the deterministic reactions. the propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
+  // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
       const std::set <C_INT32> & dependents = mDG.getDependents(react->mIndex);
@@ -296,18 +295,18 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
     {
       getState(currentState);
       calculateDerivative(temp);
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         temp[i] = currentState[i] + (temp[i] * mStepsize);
       setState(temp);
       integrationTime += mStepsize;
     }
   getState(currentState);
   calculateDerivative(temp);
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     temp[i] = currentState[i] + (temp[i] * (dt - integrationTime));
   setState(temp);
 
-  // find the set union of all reactions, which depend on one of the deterministic reactions. the propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
+  // find the set union of all reactions, which depend on one of the deterministic reactions. The propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
   for (react = mFirstReactionFlag; react != NULL; react = react->mpNext)
     {
       const std::set <C_INT32> & dependents = mDG.getDependents(react->mIndex);
@@ -334,49 +333,49 @@ void CHybridMethod::rungeKutta(C_FLOAT64 dt)
 
   /* k1 step: k1 = dt*f(x(n)) */
   calculateDerivative(temp); // systemState == x(n)
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       k1[i] = temp[i] * dt;
     }
 
   /* k2 step: k2 = dt*f(x(n) + k1/2) */
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       temp[i] = k1[i] / 2.0 + currentState[i];
     }
   setState(temp);
   calculateDerivative(temp); // systemState == x(n) + k1/2
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       k2[i] = temp[i] * dt;
     }
 
   /* k3 step: k3 = dt*f(x(n) + k2/2) */
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       temp[i] = k2[i] / 2.0 + currentState[i];
     }
   setState(temp);
   calculateDerivative(temp); // systemState == x(n) + k2/2
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       k3[i] = temp[i] * dt;
     }
 
   /* k4 step: k4 = dt*f(x(n) + k3); */
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       temp[i] = k3[i] + currentState[i];
     }
   setState(temp);
   calculateDerivative(temp); // systemState == x(n) + k3
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       k4[i] = temp[i] * dt;
     }
 
   /* Find next position: x(n+1) = x(n) + 1/6*(k1 + 2*k2 + 2*k3 + k4)  */
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       temp[i] = currentState[i] + (1.0 / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
     }
@@ -388,11 +387,11 @@ void CHybridMethod::rungeKutta(C_FLOAT64 dt)
 
 /**
  *   Calculates the derivative of the system and writes it into the vector
- *   deriv. Length of deriv must be mNumIntMetabolites.
+ *   deriv. Length of deriv must be mNumVariableMetabs.
  *   CAUTION: Only deterministic reactions are taken into account. That is,
  *   this is only the derivative of the deterministic part of the system.  
  *
- *   @param deriv A vector reference of length mNumIntMetabolites, into
+ *   @param deriv A vector reference of length mNumVariableMetabs, into
  *                which the derivative is written
  */
 void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
@@ -409,7 +408,7 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
 
   // For each metabolite add up the contributions of the det. reactions
   // the number of rows in mStoi equals the number of non-fixed metabolites!
-  //  for (i=0; i<mNumIntMetabolites; i++)
+  //  for (i=0; i<mNumVariableMetabs; i++)
   for (i = 0; i < (unsigned C_INT32) mStoi.numRows(); i++)
     {
       deriv[i] = 0.0;
@@ -421,23 +420,23 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
         }
     }
   /*
-    for (; i < mNumIntMetabolites; i++) deriv[i] = 0.0; // important to get a correct deriv vector, because mStoi doesn't cover fixed metabolites
+    for (; i < mNumVariableMetabs; i++) deriv[i] = 0.0; // important to get a correct deriv vector, because mStoi doesn't cover fixed metabolites
   */
   return;
 }
 
 /**
  *   Gathers the state of the system into the array target. Later on CState
- *   should be used for this. Length of the array target must be mNumIntMetabolites.
+ *   should be used for this. Length of the array target must be mNumVariableMetabs.
  *
- *   @param target An array of C_FLOAT64s with length mNumIntMetabolites, into which the
+ *   @param target An array of C_FLOAT64s with length mNumVariableMetabs, into which the
  *                 state of the system is written
  */
 void CHybridMethod::getState(std::vector <C_FLOAT64> & target)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       target[i] = (*mpMetabolites)[i]->getNumber();
     }
@@ -446,17 +445,17 @@ void CHybridMethod::getState(std::vector <C_FLOAT64> & target)
 
 /**
  *   Writes the state specified in the vector source into the model.
- *   Length of the vector source must be mNumIntMetabolites.
+ *   Length of the vector source must be mNumVariableMetabs.
  *   (Number of non-fixed metabolites in the model).
  *
- *   @param source A vector reference with length mNumIntMetabolites,
+ *   @param source A vector reference with length mNumVariableMetabs,
  *                 holding the state of the system to be set in the model
  */
 void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       (*mpMetabolites)[i]->setNumber(source[i]);
     }
@@ -555,7 +554,7 @@ void CHybridMethod::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
 
 C_FLOAT64 CHybridMethod::generateReactionTime(C_INT32 rIndex)
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getRandomOO();
+  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[rIndex];
 }
 
@@ -936,7 +935,7 @@ void CHybridMethod::setupPartition()
 
   // initialize vector mMetabFlags
   mMetabFlags.clear();
-  mMetabFlags.resize(mNumIntMetabolites);
+  mMetabFlags.resize(mNumVariableMetabs);
   for (i = 0; i < mMetabFlags.size(); i++)
     {
       if ((*mpMetabolites)[i]->getNumber() < averageStochLimit)
@@ -1031,7 +1030,7 @@ void CHybridMethod::partitionSystem()
   std::set <C_INT32>::iterator iter, iterEnd;
   C_FLOAT64 key;
 
-  for (i = 0; i < mNumIntMetabolites; i++)
+  for (i = 0; i < mNumVariableMetabs; i++)
     {
       if ((mMetabFlags[i] == LOW) && ((*mpMetabolites)[i]->getNumber() >= mUpperStochLimit))
         {
@@ -1292,11 +1291,11 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                   // Everything !!!
+    case 0:                    // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
-      os << "mNumIntMetabolites: " << mNumIntMetabolites << std::endl;
+      os << "mNumVariableMetabs: " << mNumVariableMetabs << std::endl;
       os << "mMaxSteps: " << mMaxSteps << std::endl;
       os << "mMaxBalance: " << mMaxBalance << std::endl;
       os << "mMaxIntBeforeStep: " << mMaxIntBeforeStep << std::endl;
@@ -1314,27 +1313,27 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
           os << std::endl;
         }
       os << "temp: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << temp[i] << " ";
       os << std::endl;
       os << "curentState: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << currentState[i] << " ";
       os << std::endl;
       os << "k1: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k1[i] << " ";
       os << std::endl;
       os << "k2: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k2[i] << " ";
       os << std::endl;
       os << "k3: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k3[i] << " ";
       os << std::endl;
       os << "k4: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k4[i] << " ";
       os << std::endl;
       os << "mReactionFlags: " << std::endl;
@@ -1391,7 +1390,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       for (iter = mUpdateSet.begin(), iterEnd = mUpdateSet.end(); iter != iterEnd; iter++)
         os << *iter;
       os << std::endl;
-      os << "mRandomGenerator: " << mRandomGenerator << std::endl;
+      os << "mpRandomGenerator: " << mpRandomGenerator << std::endl;
       os << "mDG: " << std::endl << mDG;
       os << "mPQ: " << std::endl << mPQ;
       os << "Particle numbers: " << std::endl;
@@ -1402,7 +1401,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                    // Variable values only
+    case 1:                     // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:
@@ -1424,27 +1423,27 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
         os << increment[i] << " ";
       os << std::endl;*/
       os << "temp: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << temp[i] << " ";
       os << std::endl;
       os << "currentState: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << currentState[i] << " ";
       os << std::endl;
       os << "k1: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k1[i] << " ";
       os << std::endl;
       os << "k2: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k2[i] << " ";
       os << std::endl;
       os << "k3: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k3[i] << " ";
       os << std::endl;
       os << "k4: ";
-      for (i = 0; i < mNumIntMetabolites; i++)
+      for (i = 0; i < mNumVariableMetabs; i++)
         os << k4[i] << " ";
       os << std::endl;
       os << "mReactionFlags: " << std::endl;

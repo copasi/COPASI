@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/12/16 10:48:03 $
+   $Date: 2004/12/17 12:31:54 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@
 #include "CHybridNextReactionRKMethod.h"
 #include "model/CState.h"
 
-CHybridNextReactionRKMethod::CHybridNextReactionRKMethod() : CHybridMethod()
+CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CCopasiContainer * pParent) : CHybridMethod(pParent)
 {}
 
 /**
