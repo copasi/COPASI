@@ -281,6 +281,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   C_INT32 mx, mn;            // YH: n is the 4th parameter, not here
   C_INT32 i;
   C_FLOAT64 distt, maxt, tott;
+  mResolution = resolution;
 
   // sort the eigenvalues
   quicksort(mEigen_r, mEigen_i, 0, mN - 1);

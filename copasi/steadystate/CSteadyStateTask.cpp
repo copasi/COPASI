@@ -130,7 +130,7 @@ void CSteadyStateTask::process()
   mpSteadyState = new CState(*mpProblem->getInitialState());
 
   pdelete(mJacobian);
-  mJacobian = new C_FLOAT64[mpSteadyState->getVariableNumberSize()];
+  mJacobian = new C_FLOAT64[mpSteadyState->getVariableNumberSize() ^ 2];
 
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
@@ -146,4 +146,9 @@ void CSteadyStateTask::process()
                               *mpProblem->getInitialState(),
                               mJacobian,
                               mpEigenValues);
+
+  if (mpOutEnd)
+    Copasi->OutputList.copasiSS(*mpOut);
+
+  //mpOutEnd->print(*this, Copasi->OutputList, *mpOut);
 }

@@ -83,13 +83,13 @@ class CNewtonMethod : private CSteadyStateMethod
      * @param const CState * initialState
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
-    CNewtonMethod::NewtonReturnCode processNewton(CState * steadyState,
-        CState * initialState);
+    CNewtonMethod::NewtonReturnCode processNewton(CStateX & steadyState,
+        CStateX & initialState);
 
     CNewtonMethod::NewtonReturnCode
     returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode,
-                 CState * steadyState,
-                 CState * initialState);
+                 CStateX & steadyState,
+                 CStateX & initialState);
 
     bool isSteadyState();
 
