@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/05 15:09:52 $
+   $Date: 2004/10/05 15:32:26 $
    End CVS Header */
 
 /********************************************************
@@ -147,7 +147,7 @@ void ObjectBrowser::closeEvent (QCloseEvent * e)
     {
       //if not a model dialog, it shall incur this function, when close
       // it shall enable the browser menu
-      mparent->enabled_object_browser_menu();
+      mparent->enable_object_browser_menu();
       mOutputObjectVector = NULL;
       mparent = NULL;
       cleanup();
