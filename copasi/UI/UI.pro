@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.72 $ $Author: shoops $ $Date: 2004/12/29 15:07:44 $  
+# $Revision: 1.73 $ $Author: ssahle $ $Date: 2004/12/30 15:30:15 $  
 ######################################################################
 
 include(../common.pri)
@@ -74,7 +74,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libfunction.a \
                 ../lib/libmathmodel.a \
                 ../lib/libmodel.a \
-                ../lib.libmml.a \
+                ../lib/libmml.a \
                 ../lib/liboptimization.a \
                 ../lib/librandomGenerator.a \
                 ../lib/libreport.a \
