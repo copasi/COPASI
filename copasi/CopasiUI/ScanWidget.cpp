@@ -294,6 +294,7 @@ void ScanWidget::deleteButtonClicked()
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
   ObjectListBox->removeItem (activeObject);
+
   int i = activeObject + 1;
   int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
 
@@ -532,7 +533,11 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   selectedList.push_back(newTitleBar);
 
   parameterTable->setObject(pObject);
-  parameterTable->setFixedWidth(scrollview->visibleWidth());
+  if (scrollview->visibleWidth() >= parameterTable->minimumSizeHint().width())
+    parameterTable->setFixedWidth(scrollview->visibleWidth());
+  else
+    parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   parameterTable->setObject(pObject);
   parameterTable->loadObject();
