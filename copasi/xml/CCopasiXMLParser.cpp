@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/09 13:54:10 $
+   $Author: shoops $ 
+   $Date: 2004/09/30 15:30:14 $
    End CVS Header */
 
 /**
@@ -3042,9 +3042,9 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
-  std::string name;
-  std::string sType;
-  bool active;
+  const char * name;
+  const char * sType;
+  const char * active;
 
   switch (mCurrentElement)
     {
@@ -3059,7 +3059,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       mCommon.pCurrentPlot->setType(CPlotItem::XMLNameToEnum(sType));
       active = mParser.getAttributeValue("active", papszAttrs, "true");
 
-      mCommon.pCurrentPlot->setActive(active);
+      mCommon.pCurrentPlot->setActive(mParser.toBool(active));
       return;
       break;
 
@@ -3710,7 +3710,7 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
           p = mCommon.pCurrentParameterGroup->getParameter(mCommon.pCurrentParameter->getObjectName());
           if (!p)
             {
-              mCommon.pCurrentParameterGroup->addParameter(mCommon.pCurrentParameter->getObjectName(), mCommon.pCurrentParameter->getType());
+              mCommon.pCurrentParameterGroup->addParameter(*mCommon.pCurrentParameter);
               p = mCommon.pCurrentParameterGroup->getParameter(mCommon.pCurrentParameter->getObjectName());
             }
           switch (mCommon.pCurrentParameter->getType())
@@ -3785,7 +3785,9 @@ void CCopasiXMLParser::ParameterGroupElement::end(const XML_Char *pszName)
           fatalError();
           break;
         }
-      mCommon.pCurrentParameterGroup->addParameter(mCommon.pCurrentParameter->getObjectName(), mCommon.pCurrentParameter->getType(), mCommon.pCurrentParameter->getValue());
+
+      mCommon.pCurrentParameterGroup->addParameter(* mCommon.pCurrentParameter);
+
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = ParameterGroup;
       break;
@@ -4734,8 +4736,8 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
 
-  const char* separator;
-  bool printTitle;
+  const char * separator;
+  const char * printTitle;
 
   switch (mCurrentElement)
     {
@@ -4744,7 +4746,7 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
       separator = mParser.getAttributeValue("separator", papszAttrs, " ");
       printTitle = mParser.getAttributeValue("printTitle", papszAttrs, "false");
       mCommon.pReport->setSeparator(CCopasiStaticString(separator));
-      mCommon.pReport->setTitle(printTitle);
+      mCommon.pReport->setTitle(mParser.toBool(printTitle));
       break;
 
     case Object:
