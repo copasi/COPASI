@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 20:38:59 $
+   $Author: ssahle $ 
+   $Date: 2004/05/27 10:37:56 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -58,9 +58,8 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
 
     ~CPlotSpecVector();
 
-    //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
-
-    bool addNewPlotSpec(const std::string name /*, const std::string comment*/);
+    CPlotSpec* createPlotSpec(const std::string & name);
+    bool removePlotSpec(const std::string & key);
 
     //look up on which column in the data stream a specific object is
     C_INT32 getIndexFromCN(const CCopasiObjectName & name);
