@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: lixu1 $ $Date: 2003/09/29 04:34:58 $  
+# $Revision: 1.19 $ $Author: ssahle $ $Date: 2003/10/29 15:22:05 $  
 ######################################################################
 
 include(../common.pri)
@@ -23,7 +23,8 @@ contains(BUILD_OS, WIN32) {
           ../lib/scan.lib \
           ../lib/steadystate.lib \
           ../lib/trajectory.lib \
-          ../lib/utilities.lib
+          ../lib/utilities.lib \
+          ../lib/plot.lib
 
   LIBS += $$COPASI_LIBS
   TARGETDEPS += $$COPASI_LIBS
@@ -45,9 +46,11 @@ contains(BUILD_OS, WIN32) {
               ../lib/liboutput.a \
               ../lib/libreport.a \
               ../lib/libfunction.a \
-              ../lib/libmodel.a
+              ../lib/libmodel.a \
+              ../lib/libplot.a 
 
-  LIBS += -lexpat
+  LIBS += -lexpat \
+          -lqwt
   
   TARGETDEPS += ../lib/libcommandline.a \
                 ../lib/libcopasiXML.a \
@@ -62,7 +65,8 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libscan.a \
                 ../lib/libsteadystate.a \
                 ../lib/libtrajectory.a \
-                ../lib/libutilities.a
+                ../lib/libutilities.a \
+                ../lib/libplot.a
 
 }
 
@@ -98,20 +102,21 @@ HEADERS += CompartmentsWidget.h \
            ObjectBrowser.h \
            ObjectBrowserItem.h \
            parametertable.h \
+           PlotWidget.h \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
            ScanWidget.h \
-		   OptimizationWidget.h \
-		   FunctionItemWidget.h \
-		   OptimizationItemWidget.h \
+           OptimizationWidget.h \
+           FunctionItemWidget.h \
+           OptimizationItemWidget.h \
            SteadyStateWidget.h \
            StretchTable.h \
            TrajectoryWidget.h \
            Tree.h \
            TableDefinition.h \
            TableDefinition1.h \
-		   CReportDefinitionSelect.h \
+           CReportDefinitionSelect.h \
            objectdebug.h
 
 # INTERFACES += CompartmentsWidget.ui \
@@ -152,18 +157,19 @@ SOURCES += CompartmentsWidget.cpp \
            ObjectBrowser.cpp \
            ObjectBrowserItem.cpp \
            parametertable.cpp \
+           PlotWidget.cpp \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
-		   OptimizationWidget.cpp \
-		   FunctionItemWidget.cpp \
-		   OptimizationItemWidget.cpp \
+           OptimizationWidget.cpp \
+           FunctionItemWidget.cpp \
+           OptimizationItemWidget.cpp \
            SteadyStateWidget.cpp \
            StretchTable.cpp \
            TrajectoryWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
-		   CReportDefinitionSelect.cpp \
+           CReportDefinitionSelect.cpp \
            objectdebug.cpp
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2003/10/29 11:08:53 $
+   $Date: 2003/10/29 15:23:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,6 +42,8 @@
 #include "OptimizationWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
+#include "plot/plotwidget1.h"
+#include "PlotWidget.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
 #include "TrajectoryWidget.h"
@@ -331,6 +333,12 @@ void ListViews::ConstructNodeWidgets()
   tableDefinition1 = new TableDefinition1(this);
   tableDefinition1->hide();
 
+  plotWidget = new PlotWidget(this);
+  plotWidget->hide();
+
+  plotWidget1 = new PlotWidget1(this);
+  plotWidget1->hide();
+
   steadystateWidget = new SteadyStateWidget(this);
   steadystateWidget->hide();
 
@@ -537,7 +545,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                          //Time course
+      case 23:                           //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -546,8 +554,11 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                         //Report
+      case 43:                          //Report
         return tableDefinition;
+        break;
+      case 42:                          //Plots
+        return plotWidget;
         break;
       case 5:
         return functionWidget;
@@ -575,6 +586,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       case 43:
         return tableDefinition1;
+        break;
+      case 42:
+        return plotWidget1;
         break;
       case 5:
         return functionWidget1;
@@ -848,7 +862,39 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   loadReportDefinition();
   updateAllListviews2(43);
 
+  updateAllListviews1(42);
+  loadPlotsToDataModel();
+  updateAllListviews2(42);
+
   return success;
+}
+
+//**************************************************************************************+***
+
+void ListViews::loadPlotsToDataModel()   //TODO
+{
+  Folder * parent = dataModel->searchFolderList(42);
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  /*const CCopasiVector< CReportDefinition > * objects =
+    dataModel->getReportDefinitionVectorAddr();
+
+  if (!objects) return;
+
+  C_INT32 j, jmax = objects->size();
+
+  CReportDefinition *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = (*objects)[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(obj->getKey());
+      dataModel->addData(parent, f);
+    }
+  */
 }
 
 void ListViews::loadReportDefinition()
@@ -875,8 +921,6 @@ void ListViews::loadReportDefinition()
       dataModel->addData(parent, f);
     }
 }
-
-//**************************************************************************************+***
 
 void ListViews::loadCompartmentsToDataModel()
 {
@@ -1115,6 +1159,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     case COMPARTMENT:
       //  optimizationWidget->update(objectType, action, key);
@@ -1141,6 +1187,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     case REACTION:
       //  optimizationWidget->update(objectType, action, key);
@@ -1167,6 +1215,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     case FUNCTION:
       //  optimizationWidget->update(objectType, action, key);
@@ -1193,7 +1243,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
       //     tableDefinition1->update(objectType, action, key);
-
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     case MODEL:
       //  optimizationWidget->update(objectType, action, key);
@@ -1220,6 +1271,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       modelWidget->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
 
       // 1 == modelWidget
       //reset active to the Model Widget,
@@ -1253,6 +1306,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
       //  tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     case REPORT:
       //  optimizationWidget->update(objectType, action, key);
@@ -1279,6 +1334,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
       break;
     default:
       fatalError();
