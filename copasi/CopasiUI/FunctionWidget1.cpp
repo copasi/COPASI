@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 12:31:32 $
+   $Date: 2004/12/22 15:50:42 $
    End CVS Header */
 
 /**********************************************************************
@@ -125,6 +125,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table2->setNumRows(3);
   Table2->setNumCols(3);
   Table2->setColumnReadOnly (0, true);  //this restricts users from editing usage description name
+  Table2->verticalHeader()->hide();
+  Table2->setLeftMargin(0);
+  Table2->setColumnStretchable(2, true);
   FunctionWidget1Layout->addMultiCellWidget(Table2, 8, 9, 1, 1);
   QSpacerItem* spacer = new QSpacerItem(71, 80, QSizePolicy::Minimum, QSizePolicy::Expanding);
   FunctionWidget1Layout->addItem(spacer, 9, 0);
@@ -147,6 +150,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table1->setNumCols(3);
   Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
   Table1->setColumnReadOnly (1, true);
+  Table1->verticalHeader()->hide();
+  Table1->setLeftMargin(0);
+  Table1->setColumnStretchable(0, true);
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
 
   //Line1 = new QFrame(this, "Line1");
@@ -844,7 +850,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                 // Yes or Enter
+        case 0:                                  // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -861,7 +867,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                 // No or Escape
+        case 1:                                  // No or Escape
           break;
         }
     }
