@@ -22,20 +22,21 @@ CState::CState(const CModel * pModel):
     mVolumeSize(0),
     mVolumes(NULL)
 {if (pModel)
-  setModel(pModel); }
+  setModel(pModel);}
 
 CState::CState(const CState & state):
     mTime(0),
     mVolumeSize(0),
     mVolumes(NULL)
-{*this = state; }
+{*this = state;}
 
 CState::CState(const CStateX & stateX):
     mTime(0),
     mVolumeSize(0),
     mVolumes(NULL)
-{*this = stateX; }
-CState::~CState() {cleanup(); }
+{*this = stateX;}
+
+CState::~CState() {cleanup();}
 
 CState & CState::operator =(const CStateX & stateX)
 {
@@ -66,7 +67,7 @@ CState & CState::operator =(const CStateX & stateX)
       mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
     }
 
-  return *this;
+  return this;
 }
 
 CState & CState::operator =(const CState & state)
@@ -85,7 +86,7 @@ CState & CState::operator =(const CState & state)
       mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
     }
 
-  return *this;
+  return this;
 }
 
 void CState::load(CReadConfig & configBuffer)
@@ -181,8 +182,10 @@ void CState::save(CWriteConfig & configBuffer)
 
   return;
 }
-void CState::setTime(const C_FLOAT64 & time) {mTime = time; }
-const C_FLOAT64 & CState::getTime() const { return mTime; }
+
+void CState::setTime(const C_FLOAT64 & time) {mTime = time;}
+
+const C_FLOAT64 & CState::getTime() const {return mTime;}
 
 void CState::setModel(const CModel * pModel)
 {
@@ -198,78 +201,80 @@ void CState::setModel(const CModel * pModel)
       mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
     }
 }
-const CModel * CState::getModel() const { return mpModel; }
+
+const CModel * CState::getModel() const {return mpModel;}
 
 const C_FLOAT64 * CState::getFixedNumberArrayDbl() const
-  { return mFixedNumbers.getDblArray(); }
+  {return mFixedNumbers.getDblArray();}
 
 const C_INT32 * CState::getFixedNumberArrayInt() const
-  { return mFixedNumbers.getIntArray(); }
+  {return mFixedNumbers.getIntArray();}
 
 const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
-  { return mFixedNumbers.getDbl(index); }
+  {return mFixedNumbers.getDbl(index);}
 
 const C_INT32 & CState::getFixedNumberInt(const unsigned C_INT32 & index) const
-  { return mFixedNumbers.getInt(index); }
+  {return mFixedNumbers.getInt(index);}
 
 const unsigned C_INT32 & CState::getFixedNumberSize () const
-  { return mFixedNumbers.size(); }
+  {return mFixedNumbers.size();}
 
 const C_FLOAT64 * CState::getVariableNumberArrayDbl() const
-  { return mVariableNumbers.getDblArray(); }
+  {return mVariableNumbers.getDblArray();}
 
 const C_INT32 * CState::getVariableNumberArrayInt() const
-  { return mVariableNumbers.getIntArray(); }
+  {return mVariableNumbers.getIntArray();}
 
 const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
-  { return mVariableNumbers.getDbl(index); }
+  {return mVariableNumbers.getDbl(index);}
 
 const C_INT32 & CState::getVariableNumberInt(const unsigned C_INT32 & index) const
-  { return mVariableNumbers.getInt(index); }
+  {return mVariableNumbers.getInt(index);}
 
 const unsigned C_INT32 & CState::getVariableNumberSize () const
-  { return mVariableNumbers.size(); }
+  {return mVariableNumbers.size();}
 
 const C_FLOAT64 & CState::getVolume(const unsigned C_INT32 & index) const
-  { return mVolumes[index]; }
-const C_FLOAT64 * CState::getVolumeArray() const { return mVolumes; }
+  {return mVolumes[index];}
+
+const C_FLOAT64 * CState::getVolumeArray() const {return mVolumes;}
 
 const unsigned C_INT32 & CState::getVolumeSize() const
-  { return mVolumeSize; }
+  {return mVolumeSize;}
 
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & value)
-{mFixedNumbers.set(index, value); }
+{mFixedNumbers.set(index, value);}
 
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value)
-{mFixedNumbers.set(index, value); }
+{mFixedNumbers.set(index, value);}
 
 void CState::setFixedNumberArray(const C_INT32 * values)
-{mFixedNumbers.setArray(values); }
+{mFixedNumbers.setArray(values);}
 
 void CState::setFixedNumberArray(const C_FLOAT64 * values)
-{mFixedNumbers.setArray(values); }
+{mFixedNumbers.setArray(values);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_INT32 & value)
-{mVariableNumbers.set(index, value); }
+{mVariableNumbers.set(index, value);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_FLOAT64 & value)
-{mVariableNumbers.set(index, value); }
+{mVariableNumbers.set(index, value);}
 
 void CState::setVariableNumberArray(const C_INT32 * values)
-{mVariableNumbers.setArray(values); }
+{mVariableNumbers.setArray(values);}
 
 void CState::setVariableNumberArray(const C_FLOAT64 * values)
-{mVariableNumbers.setArray(values); }
+{mVariableNumbers.setArray(values);}
 
 void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
-{mVolumes[index] = value; }
+{mVolumes[index] = value;}
 
 void CState::setVolumeArray(const C_FLOAT64 * values)
-{memcpy(mVolumes, values, mVolumeSize * sizeof(double)); }
+{memcpy(mVolumes, values, mVolumeSize * sizeof(double));}
 
-void CState::getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+void CState::getJacobian(C_FLOAT64 * jacobian,
                          const C_FLOAT64 & factor,
                          const C_FLOAT64 & resolution) const
   {
@@ -288,16 +293,13 @@ void CState::cleanup()
   mFixedNumbers.resize(0);
 }
 
-void CState::getJacobianProtected(TNT::Matrix < C_FLOAT64 > & jacobian,
+void CState::getJacobianProtected(C_FLOAT64 * jacobian,
                                   const C_FLOAT64 & factor,
                                   const C_FLOAT64 & resolution)
 {
   unsigned C_INT32 i, j, dim = mVariableNumbers.size();
   C_FLOAT64 * x =
     const_cast<C_FLOAT64 *>(mVariableNumbers.getDblArray());
-
-  // resize the jacobian
-  jacobian.newsize(dim, dim);
 
   // constants for differentiation by finite differences
   C_FLOAT64 K1 = 1 + factor;
@@ -329,7 +331,7 @@ void CState::getJacobianProtected(TNT::Matrix < C_FLOAT64 > & jacobian,
       const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
 
       for (j = 0; j < dim; j++)
-        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
+        jacobian[j * dim + i] = (f1[j] - f2[j]) / (temp * K3);
 
       x[i] = store;
     }
@@ -348,16 +350,17 @@ void CState::getJacobianProtected(TNT::Matrix < C_FLOAT64 > & jacobian,
 /**************************/
 CStateX::CStateX(const CModel * pModel):
     CState()
-{setModel(pModel); }
+{setModel(pModel);}
 
 CStateX::CStateX(const CState & state):
     CState()
-{*this = state; }
+{*this = state;}
 
 CStateX::CStateX(const CStateX & stateX):
     CState()
-{*this = stateX; }
-CStateX::~CStateX(){cleanup(); }
+{*this = stateX;}
+
+CStateX::~CStateX(){cleanup();}
 
 CStateX & CStateX::operator =(const CState & state)
 {
@@ -388,7 +391,7 @@ CStateX & CStateX::operator =(const CState & state)
       mFixedNumbers.setArray(state.getFixedNumberArrayDbl());
     }
 
-  return *this;
+  return this;
 }
 
 CStateX & CStateX::operator =(const CStateX & stateX)
@@ -408,7 +411,7 @@ CStateX & CStateX::operator =(const CStateX & stateX)
       mFixedNumbers.setArray(stateX.getFixedNumberArrayDbl());
     }
 
-  return *this;
+  return this;
 }
 
 void CStateX::load(CReadConfig & configBuffer)
@@ -445,35 +448,35 @@ void CStateX::setModel(const CModel * pModel)
 }
 
 const C_FLOAT64 * CStateX::getDependentNumberArrayDbl() const
-  { return mDependentNumbers.getDblArray(); }
+  {return mDependentNumbers.getDblArray();}
 
 const C_INT32 * CStateX::getDependentNumberArrayInt() const
-  { return mDependentNumbers.getIntArray(); }
+  {return mDependentNumbers.getIntArray();}
 
 const C_FLOAT64 & CStateX::getDependentNumberDbl(const unsigned C_INT32 & index) const
-  { return mDependentNumbers.getDbl(index); }
+  {return mDependentNumbers.getDbl(index);}
 
 const C_INT32 & CStateX::getDependentNumberInt(const unsigned C_INT32 & index) const
-  { return mDependentNumbers.getInt(index); }
+  {return mDependentNumbers.getInt(index);}
 
 const unsigned C_INT32 & CStateX::getDependentNumberSize () const
-  { return mDependentNumbers.size(); }
+  {return mDependentNumbers.size();}
 
 void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_INT32 & value)
-{mDependentNumbers.set(index, value); }
+{mDependentNumbers.set(index, value);}
 
 void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_FLOAT64 & value)
-{mDependentNumbers.set(index, value); }
+{mDependentNumbers.set(index, value);}
 
 void CStateX::setDependentNumberArray(const C_INT32 * values)
-{mDependentNumbers.setArray(values); }
+{mDependentNumbers.setArray(values);}
 
 void CStateX::setDependentNumberArray(const C_FLOAT64 * values)
-{mDependentNumbers.setArray(values); }
+{mDependentNumbers.setArray(values);}
 
-void CStateX::getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+void CStateX::getJacobian(C_FLOAT64 * jacobian,
                           const C_FLOAT64 & factor,
                           const C_FLOAT64 & resolution) const
   {
@@ -489,4 +492,4 @@ void CStateX::cleanup()
 }
 
 void CStateX::updateDependentNumbers()
-{mpModel->updateDepMetabNumbers(*this); }
+{mpModel->updateDepMetabNumbers(*this);}
