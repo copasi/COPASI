@@ -21,7 +21,6 @@ class QHBoxLayout;
 class QGridLayout;
 class QButtonGroup;
 class QLabel;
-class ScanWidget;
 class ScanCheckBox;
 class ScanLineEdit;
 class ScanRadioButton;
@@ -54,10 +53,11 @@ class ScanItemWidget : public QWidget
   protected:
     QGridLayout* ScanItemWidgetLayout;
     QVBoxLayout* Layout13;
-    QGridLayout* Layout4;
     QGridLayout* Layout34;
     QGridLayout* Layout7;
     QVBoxLayout* Layout33;
+    QGridLayout* RandomGroupLayout;
+
   public:
     virtual void mousePressEvent (QMouseEvent * e)
     {
