@@ -1,12 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/03 14:58:08 $
+   $Author: shoops $ 
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
-#include "SliderDialog.h"
+#include <iostream>
+#include <sstream>
+#include <mathematics.h>
+
 #include "qhbox.h"
 #include "qlistbox.h"
 #include "qcheckbox.h"
@@ -18,18 +21,16 @@
 #include "qobjectlist.h"
 #include "qtooltip.h"
 #include "qpopupmenu.h"
-#include "report/CCopasiObject.h"
-#include "model/CCompartment.h"
-#include "report/CCopasiObjectName.h"
+
+#include "SliderDialog.h"
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
 #include "slidersettingsdialog.h"
 #include "DataModelGUI.h"
-#include <iostream>
-#include <sstream>
-
-#include "mathematics.h"
-
+#include "qtUtilities.h"
+#include "model/CCompartment.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
 #include "report/CCopasiObjectReference.h"
 
 C_INT32 SliderDialog::numMappings = 2;
@@ -521,7 +522,7 @@ void CopasiSlider::updateLabel()
   labelString += "] {";
   labelString += this->numberToString(this->value());
   labelString += "}";
-  this->label->setText(labelString.c_str());
+  this->label->setText(FROM_UTF8(labelString));
 }
 
 std::string CopasiSlider::numberToString(double number) const

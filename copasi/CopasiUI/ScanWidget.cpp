@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.170 $
+   $Revision: 1.171 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:22 $
+   $Author: shoops $ 
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
 /********************************************************
@@ -524,9 +524,11 @@ void ScanWidget::runScanTask()
   if (scanTask->getReport().getTarget() != "")
     {
       if (scanTask->getReport().append())
-        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+        output.open(FROM_UTF8(scanTask->getReport().getTarget()),
+                    std::ios_base::out | std::ios_base::app);
       else
-        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out);
+        output.open(FROM_UTF8(scanTask->getReport().getTarget()),
+                    std::ios_base::out);
     }
   if (output.is_open())
     scanTask->initializeReporting(output);

@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 09:32:02 $
+   $Author: shoops $ 
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
-#include "copasi.h"
-#include "CProgressBar.h"
 #include <qprogressdialog.h>
 #include <qapplication.h>
+
+#include "copasi.h"
+#include "qtUtilities.h"
+#include "CProgressBar.h"
 #include "DataModelGUI.h"
 
 CProgressBar::CProgressBar(DataModelGUI* dm)
@@ -23,16 +25,16 @@ bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelB
   if (!mpWidget)
     {
       if (cancelButton)
-        mpWidget = new QProgressDialog(text.c_str(), "Stop", maxSteps,
+        mpWidget = new QProgressDialog(FROM_UTF8(text), "Stop", maxSteps,
                                        NULL, "progress_bar", TRUE);
       else
-        mpWidget = new QProgressDialog(text.c_str(), 0, maxSteps,
+        mpWidget = new QProgressDialog(FROM_UTF8(text), 0, maxSteps,
                                        NULL, "progress_bar", TRUE);
     }
   else
     {
       mpWidget->reset();
-      mpWidget->setLabelText(text.c_str());
+      mpWidget->setLabelText(FROM_UTF8(text));
       mpWidget->setTotalSteps(maxSteps);
 
       if (cancelButton)
@@ -52,7 +54,7 @@ bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelB
 
 bool CProgressBar::reInit(C_INT32 maxSteps, const std::string & text)
 {
-  mpWidget->setLabelText(text.c_str());
+  mpWidget->setLabelText(FROM_UTF8(text));
   if (maxSteps) mpWidget->setTotalSteps(maxSteps);
   mDataModel->getQApp()->processEvents();
 

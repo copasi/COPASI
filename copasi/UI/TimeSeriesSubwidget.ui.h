@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/29 16:35:14 $
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,8 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+
+#include "qtUtilities.h"
 
 void TimeSeriesSubWidget::saveDataToFile()
 {
@@ -36,7 +38,7 @@ void TimeSeriesSubWidget::saveDataToFile()
     {
       std::string s = "Could not save data to ";
       s += fileName.utf8();
-      QMessageBox::critical(this, "Save Error", s.c_str(), QMessageBox::Ok, QMessageBox::Cancel);
+      QMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }
 

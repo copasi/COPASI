@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/05 16:14:05 $
+   $Author: shoops $ 
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,6 +15,7 @@
  ** place of a destructor.
  *****************************************************************************/
 
+#include "qtUtilities.h"
 #include "utilities/CGlobals.h" 
 // #include "utilities/CCopasiVector.h"
 #include "report/CCopasiObject.h"
@@ -39,11 +40,11 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
   if (!(testObj == obj)) flags += "EEE";
 
-  element = new QListViewItem((QListViewItem*)parent, obj->getObjectName().c_str(),
-                              obj->getObjectType().c_str(),
+  element = new QListViewItem((QListViewItem*)parent, FROM_UTF8(obj->getObjectName()),
+                              FROM_UTF8(obj->getObjectType()),
                               flags,
-                              obj->getObjectUniqueName().c_str(),
-                              obj->getCN().c_str());
+                              FROM_UTF8(obj->getObjectUniqueName()),
+                              FROM_UTF8(obj->getCN()));
 
   //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 

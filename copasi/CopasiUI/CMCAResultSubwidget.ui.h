@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/28 13:51:12 $
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,8 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+
+#include "qtUtilities.h"
 
 void CMCAResultSubwidget::init()
 {
@@ -58,12 +60,12 @@ void CMCAResultSubwidget::loadElasticities(CMCAMethod * mcaMethod)
   QHeader* header = mTableElasticities->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, QString(model->getReactions()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   header = mTableElasticities->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, QString(model->getMetabolites()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
     }
   CMatrix<C_FLOAT64> elasticities = mcaMethod->getDxv();
   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
@@ -89,12 +91,12 @@ void CMCAResultSubwidget::loadConcentrationCCs(CMCAMethod * mcaMethod)
   QHeader* header = mTableCCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, QString(model->getMetabolitesInd()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getMetabolitesInd()[i]->getObjectName()));
     }
   header = mTableCCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, QString(model->getReactions()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   CMatrix<C_FLOAT64> CCCs = mcaMethod->getGamma();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
@@ -120,12 +122,12 @@ void CMCAResultSubwidget::loadFluxCCs(CMCAMethod * mcaMethod)
   QHeader* header = mTableFCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, QString(model->getReactions()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   header = mTableFCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, QString(model->getReactions()[i]->getObjectName().c_str()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   CMatrix<C_FLOAT64> FCCs = mcaMethod->getFcc();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/19 07:23:33 $
+   $Author: shoops $ 
+   $Date: 2004/11/03 16:15:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -99,7 +99,7 @@ void ModesWidget::loadModes()
               reactionEq += modes->getReactionEquation(j, x, model);
               reactionEq += "\n";
             }
-          item->setText(2, QString(reactionEq.c_str()).stripWhiteSpace() + "\n");
+          item->setText(2, FROM_UTF8(reactionEq).stripWhiteSpace() + "\n");
         }
     }
 }
