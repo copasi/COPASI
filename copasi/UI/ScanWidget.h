@@ -10,7 +10,7 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 #include <qscrollview.h>
 class QVBox;
 class QHBoxLayout;
