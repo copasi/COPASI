@@ -441,18 +441,18 @@ void ReactionsWidget1::slotCheckBoxClicked()
   chemEq1 = & reactn1->getChemEq();
   string chemEq2 = chemEq1->getChemicalEquationConverted();
   QString chemical_reaction = chemEq2.c_str();
-
+  TriLogic reversible;
   if (checkBox->isChecked() == FALSE)
     {
       int i = chemical_reaction.find ("=", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 1, "->");
-      const TriLogic reversible = TriFalse;
+      reversible = TriFalse;
     }
   else
     {
       int i = chemical_reaction.find ("->", 0, TRUE);
       chemical_reaction = chemical_reaction.replace(i, 2, "=");
-      const TriLogic reversible = TriTrue;
+      reversible = TriTrue;
     }
   const string chemEq3 = chemical_reaction.latin1();
   chemEq1->setChemicalEquation(chemEq3);
@@ -463,7 +463,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   ComboBox1->clear();
   const CCopasiVectorN < CFunction > & Functions =
     Copasi->FunctionDB.suitableFunctions(reactn1->getChemEq().getSubstrates().size(),
-                                         reactn1->getChemEq().getSubstrates().size(), TriFalse);
+                                         reactn1->getChemEq().getSubstrates().size(), reversible);
   QStringList comboEntries;
   QString comboEntry;
   unsigned int temp2;
@@ -831,8 +831,6 @@ void ReactionsWidget1::slotLineEditChanged()
   reactn1->setChemEq(changed_chemical_reaction);
 
   //string info=(string)status;
-  // QMessageBox::information(this, info, "products ");
-  //connect(this, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   //emit signal_emitted1();
 
   if (reactn1->isReversible() == TRUE)
