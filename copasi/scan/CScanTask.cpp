@@ -63,4 +63,15 @@ void CScanTask::setMethod(CScanMethod * pMethod)
 {mpMethod = pMethod;}
 
 void CScanTask::process()
-{}
+{
+  if (!mpProblem)
+    fatalError();
+  if (!mpMethod)
+    fatalError();
+
+  mpMethod->setProblem(mpProblem);
+
+  mpMethod->simulate();
+
+  return;
+}
