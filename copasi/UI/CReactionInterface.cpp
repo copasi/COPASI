@@ -1,5 +1,5 @@
 #include "CReactionInterface.h"
-
+#include "qstring.h"
 #include "model/CReaction.h"
 #include "model/CModel.h"
 #include "model/CChemEqElement.h"
@@ -35,17 +35,28 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     else
       reversible = TriTrue;
 
-    const std::vector < CFunction * > Functions =
+    CCopasiVector<CFunction>* pFunctionVector =
       Copasi->pFunctionDB->suitableFunctions(mChemEq.getSubstrates().size(),
                                              mChemEq.getProducts().size(),
                                              reversible);
 
     std::vector<std::string> ret;
     ret.clear();
-    C_INT32 i, imax = Functions.size();
-    for (i = 0; i < imax; ++i)
-    {ret.push_back(Functions[i]->getName());}
+    C_INT32 i, imax = pFunctionVector->size();
 
+    for (i = 0; i < imax; ++i)
+      ret.push_back((*pFunctionVector)[i]->getName());
+    delete pFunctionVector;
+
+    /* //Here is for verification
+     std::vector<std::string>::iterator it = ret.begin();
+     std::vector<std::string>::iterator end = ret.end();
+     while (it<end)
+     {
+      QString verification(it->c_str());
+      it++;
+     }
+    */
     return ret;
   }
 
