@@ -71,7 +71,12 @@ void COptProblem::initialize(void)
 }
 
 // check constraints : unimplemented - always returns true
-bool COptProblem::checkConstraints()
+bool COptProblem::checkParametricConstraints()
+{
+  return true;
+}
+
+bool COptProblem::checkFunctionalConstraints()
 {
   return true;
 }
