@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/02/18 21:35:59 $
+   $Date: 2004/02/20 16:23:36 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -204,6 +204,7 @@ std::string COptions::getCopasiDir(void)
     }
 #endif // WIN32
 
+#ifdef XXXX
   if (CopasiDir == "")
     {
       std::ostringstream error;
@@ -214,6 +215,8 @@ std::string COptions::getCopasiDir(void)
 
       throw copasi::option_error(error.str());
     }
+#endif // XXXX
+
   return CopasiDir;
 }
 
