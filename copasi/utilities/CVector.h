@@ -160,7 +160,7 @@ template <class CType> class CVector
     {
       os << "Vector(" << A.mRows << ")" << endl;
 
-      unsigned C_INT32 i, j;
+      unsigned C_INT32 i;
       CType * tmp = A.mVector;
 
       for (i = 0; i < A.mRows; i++)
