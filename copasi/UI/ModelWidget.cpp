@@ -109,7 +109,7 @@ bool ModelWidget::loadModel(CModel *model)
   QStringList comboEntries;
 
   unsigned int temp1;
-  for (temp1 = 0; model->TimeUnitName[temp1] != ""; temp1++)
+  for (temp1 = 0; model->TimeUnitName[temp1] /*!= ""*/; temp1++)
     {
       comboEntries.push_front(model->TimeUnitName[temp1]);
       //QMessageBox::information(this, "tIME uNIT", model->TimeUnitName[temp1].c_str());
@@ -118,7 +118,7 @@ bool ModelWidget::loadModel(CModel *model)
   ComboBox1->setCurrentText(model->getTimeUnit().c_str());
 
   QStringList comboEntries1;
-  for (temp1 = 0; CModel::VolumeUnitName[temp1] != ""; temp1++)
+  for (temp1 = 0; CModel::VolumeUnitName[temp1]  /*!= ""*/; temp1++)
     {
       comboEntries1.push_front(CModel::VolumeUnitName[temp1]);
       //QMessageBox::information(this, "Volume Unit", model->VolumeUnitName[temp1].c_str());
@@ -127,7 +127,7 @@ bool ModelWidget::loadModel(CModel *model)
   ComboBox2->setCurrentText(model->getVolumeUnit().c_str());
 
   QStringList comboEntries2;
-  for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
+  for (temp1 = 0; CModel::QuantityUnitName[temp1] /*!= ""*/; temp1++)
     {
       comboEntries2.push_front(CModel::QuantityUnitName[temp1]);
       //QMessageBox::information(this, "Volume Unit", model->QuantityUnitName[temp1].c_str());
@@ -292,7 +292,6 @@ bool ModelWidget::update(ListViews::ObjectType objectType, ListViews::Action act
 {
   switch (objectType)
     {
-    case ListViews::STATE:
     case ListViews::MODEL:
       break;
 
