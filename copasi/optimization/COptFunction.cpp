@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 14:55:46 $
+   $Date: 2003/10/18 16:39:46 $
    End CVS Header */
 
 #include <sstream>
@@ -105,27 +105,4 @@ bool COptFunction::removeItem(const std::string & name)
         }
     }
   return false;
-}
-
-void COptFunction::connect()
-{
-  int i;
-  for (i = 0; i < mParaList.size(); i++)
-    {
-      if (mMinList[i] != "-inf")
-        {
-          if (!mMinFunctionList[i])
-            mMinFunctionList[i] = new CKinFunction();
-          mMinFunctionList[i]->setDescription(mMinList[i].c_str());
-          // will automatically call the compile function for CKinFunction
-        }
-
-      if (mMaxList[i] != "+inf")
-        {
-          if (!mMaxFunctionList[i])
-            mMaxFunctionList[i] = new CKinFunction();
-          mMaxFunctionList[i]->setDescription(mMaxList[i].c_str());
-          // will automatically call the compile function for CKinFunction
-        }
-    }
 }
