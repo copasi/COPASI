@@ -8,17 +8,22 @@
  *  Note: Modified from Gepasi and Dingjun Chen's implementation
  */
 
+#include <iostream>
+#include <fstream>
+#include <sys/timeb.h>
+#include <time.h>
 
+#include "copasi.h"
 #include "CGA.h"
 
 //default constructor
 CGA::CGA()
 {
   // this->super();
-  
-  mPopSize=0;
-  mGener=0;
-  mParamNum=0;
+
+  mPopSize = 0;
+  mGener = 0;
+  mParamNum = 0;
 
   mCrp = NULL;
   mMidX = NULL;
@@ -28,7 +33,7 @@ CGA::CGA()
 
   setMethodParameterNumber(3);
   vector <COptAlgorithmParameter> & AlgorithmParameters = getMethodParameters();
- 
+
   AlgorithmParameters.resize(3);
   //#1:
   AlgorithmParameters[0].setName("Population Size");
@@ -41,7 +46,6 @@ CGA::CGA()
   AlgorithmParameters[2].setValue(0.1);  // Set a default value
 
   //initialize();
-
 }
 
 // initialize function
@@ -55,29 +59,28 @@ void CGA::initialize()
 
   vector <COptAlgorithmParameter> &AlgmParams = getMethodParameters();
 
-  for (i=0; i < getMethodParameterNumber(); i++)
+  for (i = 0; i < getMethodParameterNumber(); i++)
     {
       if (AlgmParams[i].getName() == "Population Size")
         mPopSize = unsigned(AlgmParams[i].getValue());
       else if (AlgmParams[i].getName() == "Generation Number")
-        mGener =  unsigned(AlgmParams[i].getValue());
+        mGener = unsigned(AlgmParams[i].getValue());
       else if (AlgmParams[i].getName() == "Mutation Variance")
         mMutVar = AlgmParams[i].getValue();
-    }  
+    }
 
-
-
-  mCandX = new double[2*mPopSize];
+  mCandX = new double[2 * mPopSize];
   // create array for tournament
-  mWins = new unsigned int[2*mPopSize];
+  mWins = new unsigned int[2 * mPopSize];
   // create array for crossover points
   mCrp = new unsigned int[mParamNum];
   // create array for shuffling the population
   mMidX = new unsigned int[mPopSize];
   // create the population array
-  mIndV = new double*[2*mPopSize];
+  mIndV = new double * [2 * mPopSize];
   // create the individuals
-  for (i=0; i<2*mPopSize; i++)
+
+  for (i = 0; i < 2*mPopSize; i++)
     {
       mIndV[i] = new double[mParamNum];
     }
@@ -89,79 +92,74 @@ void CGA::initialize()
 void CGA::initFirstGeneration()
 {
   int i;
- 
-  for (i=0; i<mParamNum; i++)
-    mIndV[0][i] =1.1+dr250();
+
+  for (i = 0; i < mParamNum; i++)
+    mIndV[0][i] = 1.1 + dr250();
 
   try
     {
       // calculate the fitness
       mCandX[0] = evaluate(0);
     }
-  catch(unsigned int e)
+  catch (unsigned int e)
     {
       mCandX[0] = DBL_MAX;
     }
 
   // the others are randomly generated
   creation(1, mPopSize);
-  mBest=fittest();
 
+  mBest = fittest();
 }
-
 
 // Copy constructor
 CGA::CGA(const CGA& source) : COptAlgorithm(source)
 {
-  mGener = source.mGener;	   
-  mPopSize = source.mPopSize;    
-  mCrossNum = source.mCrossNum;	    
+  mGener = source.mGener;
+  mPopSize = source.mPopSize;
+  mCrossNum = source.mCrossNum;
   mMin = source.mMin;
   mMax = source.mMax;
-  mMutVar = source.mMutVar;	    
-  mMutProb = source.mMutProb;	    
-  mBest = source.mBest;	    
-  mParamNum = source.mParamNum;	    
-  mIndV = source.mIndV;    
-  mCandX = source.mCandX;     
-  mCrp = source.mCrp;	    
-  mMidX = source.mMidX;	   
+  mMutVar = source.mMutVar;
+  mMutProb = source.mMutProb;
+  mBest = source.mBest;
+  mParamNum = source.mParamNum;
+  mIndV = source.mIndV;
+  mCandX = source.mCandX;
+  mCrp = source.mCrp;
+  mMidX = source.mMidX;
   mWins = source.mWins;
-
 }
 
 // Object assignment overloading
 CGA& CGA::operator=(const CGA& source)
 {
   cleanup();
-    
+
   if (this != &source)
     {
-      mGener = source.mGener;	   
-      mPopSize = source.mPopSize;    
-      mCrossNum = source.mCrossNum;	    
+      mGener = source.mGener;
+      mPopSize = source.mPopSize;
+      mCrossNum = source.mCrossNum;
       mMin = source.mMin;
       mMax = source.mMax;
-      mMutVar = source.mMutVar;	    
-      mMutProb = source.mMutProb;	    
-      mBest = source.mBest;	    
-      mParamNum = source.mParamNum;	    
-      mIndV = source.mIndV;    
-      mCandX = source.mCandX;     
-      mCrp = source.mCrp;	    
-      mMidX = source.mMidX;	   
+      mMutVar = source.mMutVar;
+      mMutProb = source.mMutProb;
+      mBest = source.mBest;
+      mParamNum = source.mParamNum;
+      mIndV = source.mIndV;
+      mCandX = source.mCandX;
+      mCrp = source.mCrp;
+      mMidX = source.mMidX;
       mWins = source.mWins;
     }
-    
+
   return *this;
 }
 
-
-// clean up 
+// clean up
 void CGA::cleanup()
-{
-}
-
+{}
 
 //destructor
 CGA::~CGA()
@@ -181,61 +179,58 @@ void CGA::setRealProblem(CRealProblem & aProb)
   mRealProblem = aProb;
 }
 
-
 //set parameter
 void CGA::setParamNum (int num)
 {
-  mParamNum=num;
+  mParamNum = num;
 }
 
 //set population size
 void CGA::setPopSize(int num)
 {
-  mPopSize=num;
+  mPopSize = num;
 }
 
 //set generation
 void CGA::setGeneration(int num)
 {
-  mGener=num;
+  mGener = num;
 }
-
 
 //set the mutation variance
 void CGA::setMutVar(double num)
 {
-  mMutVar=num;
+  mMutVar = num;
 }
 
 //set the minimum
 void CGA::setMin(double num)
 {
-  mMin=num;
+  mMin = num;
 }
-
 
 //set maximum
 void CGA::setMax(double num)
 {
-  mMax=num;
+  mMax = num;
 }
 
 //set array of individuals w/ candidate values for the parameters
-void CGA::setIndv(int i,int j,double num)
+void CGA::setIndv(int i, int j, double num)
 {
-  mIndV[i][j]=num;
+  mIndV[i][j] = num;
 }
 
 //set array of values of objective function for individuals
 void CGA::setCandx(int i, double num)
 {
-  mCandX[i]=num;
+  mCandX[i] = num;
 }
 
 //set the best result
 void CGA::setBest(unsigned int num)
 {
-  mBest=num;
+  mBest = num;
 }
 
 //implementation of access functions
@@ -267,9 +262,9 @@ int CGA::getPopSize()
 // init  optimization random numbers
 int CGA::initOptRandom()
 {
-  struct tms init_time;
-  times(&init_time);
-  r250_init(init_time.tms_utime);
+  struct _timeb init_time;
+  _ftime(&init_time);
+  r250_init(init_time.millitm);
   return 0;
 }
 
@@ -279,21 +274,19 @@ double CGA::evaluate(unsigned int i)
   int j;
   double tmp;
 
-  for (j=0;j<mParamNum;j++)
+  for (j = 0; j < mParamNum; j++)
     {
       tmp = mIndV[i][j];
       mRealProblem.setParameter(j, tmp);
     }
-  
+
   //for debugging purpose
   //cout << "Debug: mRealProblem.getParameterNum() is:" << mRealProblem.getParameterNum() << endl;
 
   mRealProblem.calculate();
 
   return mRealProblem.getBestValue();
-
 }
-
 
 #ifdef XXXX
 
@@ -308,17 +301,20 @@ double CGA::evaluate(unsigned int i)
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness
+
   try
     {
-      fitness0=0;
-      for (j=0;j<mParamNum;j++)
+      fitness0 = 0;
+
+      for (j = 0; j < mParamNum; j++)
         {
-          fitness=fitness0+pow(mIndV[i][j],4.0)-16.0*pow(mIndV[i][j],2.0)+5.0*mIndV[i][j];
-          fitness0=fitness;
+          fitness = fitness0 + pow(mIndV[i][j], 4.0) - 16.0 * pow(mIndV[i][j], 2.0) + 5.0 * mIndV[i][j];
+          fitness0 = fitness;
         }
-      fitness=fitness0/2.0;
+
+      fitness = fitness0 / 2.0;
     }
-  catch(unsigned int e)
+  catch (unsigned int e)
     {
       fitness = DBL_MAX;
     }
@@ -332,8 +328,10 @@ double CGA::evaluate(unsigned int i)
 void CGA::copy(unsigned int o, unsigned int d)
 {
   int i;
-  for (i=0; i<mParamNum; i++)
+
+  for (i = 0; i < mParamNum; i++)
     mIndV[d][i] = mIndV[o][i];
+
   mCandX[d] = mCandX[o];
 }
 
@@ -342,12 +340,14 @@ void CGA::swap(unsigned int o, unsigned int d)
 {
   int i;
   double tmp;
-  for (i=0; i<mParamNum; i++)
+
+  for (i = 0; i < mParamNum; i++)
     {
       tmp = mIndV[d][i];
       mIndV[d][i] = mIndV[o][i];
       mIndV[o][i] = tmp;
     }
+
   tmp = mCandX[d];
   mCandX[d] = mCandX[o];
   mCandX[o] = tmp;
@@ -361,32 +361,41 @@ void CGA::mutate(unsigned int i)
 {
   int j;
   //double mMin, mMax, mut;
-  double  mut;
+  double mut;
   // mutate the parameters
 
-  for (j = 0; j < mParamNum; j++) {
-    //YOHE: test
-    //  double indtmp = mIndV[i][j];
-    //  double rnorm = rnormal01();
-    //  mut = indtmp * (1 + mMutVar * rnorm);
+  for (j = 0; j < mParamNum; j++)
+    {
+      //YOHE: test
+      //  double indtmp = mIndV[i][j];
+      //  double rnorm = rnormal01();
+      //  mut = indtmp * (1 + mMutVar * rnorm);
 
-    // calculate the mutatated parameter
-    mut = mIndV[i][j] * (1 + mMutVar * rnormal01());
+      // calculate the mutatated parameter
+      mut = mIndV[i][j] * (1 + mMutVar * rnormal01());
 
-    // force it to be within the bounds
-    if (mut <= mMin) mut = mMin + DBL_EPSILON;
-    else
-      {if (mut < mMin) mut = mMin;}
+      // force it to be within the bounds
 
-    if (mut >= mMax) mut = mMax - DBL_EPSILON;
-    else
-      {if (mut > mMax) mut = mMax;}
-    // store it
-    mIndV[i][j] = mut;
-  }
+      if (mut <= mMin)
+        mut = mMin + DBL_EPSILON;
+      else
+
+        {if (mut < mMin)
+          mut = mMin; }
+
+      if (mut >= mMax)
+        mut = mMax - DBL_EPSILON;
+      else
+
+        {if (mut > mMax)
+          mut = mMax; }
+
+      // store it
+      mIndV[i][j] = mut;
+    }
+
   // evaluate the fitness
   mCandX[i] = evaluate(i);
-
 }
 
 // process crossover
@@ -394,6 +403,7 @@ void CGA::crossover(unsigned int p1, unsigned int p2, unsigned int c1, unsigned 
 {
   int i, j, s, e;
   unsigned int pp1, pp2, tmp, l;
+
   try
     {
       if (mParamNum > 1)
@@ -401,53 +411,73 @@ void CGA::crossover(unsigned int p1, unsigned int p2, unsigned int c1, unsigned 
           // get a random number of crossover points, always less than half the number of genes
           mCrossNum = r250n((unsigned int) mParamNum / 2);
         }
-      else mCrossNum = 0;
+      else
+        mCrossNum = 0;
+
       // if less than 0 just copy parent to child
       if (mCrossNum == 0)
         {
-          for (j=0; j<mParamNum; j++)
+          for (j = 0; j < mParamNum; j++)
             {
               mIndV[c1][j] = mIndV[p1][j];
               mIndV[c2][j] = mIndV[p2][j];
             }
-          return;
+
+          return ;
         }
+
       // chose first point
-      mCrp[0] = 1 + r250n(mParamNum-mCrossNum);
+      mCrp[0] = 1 + r250n(mParamNum - mCrossNum);
+
       // chose the others
-      for (i=1; i<mCrossNum; i++)
+      for (i = 1; i < mCrossNum; i++)
         {
-          l = mParamNum - mCrossNum + i - 1 - mCrp[i-1];
-          mCrp[i] = 1 + mCrp[i-1] + (l==0 ? 0 : r250n(l));
+          l = mParamNum - mCrossNum + i - 1 - mCrp[i - 1];
+          mCrp[i] = 1 + mCrp[i - 1] + (l == 0 ? 0 : r250n(l));
         }
+
       // copy segments
-      pp1 = p2; pp2 = p1;
-      for (i=0; i<=mCrossNum; i++)
+      pp1 = p2;
+
+      pp2 = p1;
+
+      for (i = 0; i <= mCrossNum; i++)
         {
           // swap the indexes
           tmp = pp1;
           pp1 = pp2;
           pp2 = tmp;
-          if (i==0) s = 0; else s = mCrp[i-1];
-          if (i==mCrossNum) e = mParamNum; else e = mCrp[i];
-          for (j=s; j<e; j++)
+
+          if (i == 0)
+            s = 0;
+          else
+            s = mCrp[i - 1];
+
+          if (i == mCrossNum)
+            e = mParamNum;
+          else
+            e = mCrp[i];
+
+          for (j = s; j < e; j++)
             {
               mIndV[c1][j] = mIndV[pp1][j];
               mIndV[c2][j] = mIndV[pp2][j];
             }
         }
     }
-  catch(unsigned int e)
-    {
-    }
+  catch (unsigned int e)
+  {}
 }
 
 // shuffle data
 void CGA::shuffle(void)
 {
   unsigned int i, a, b, tmp;
-  for (i=0; i<mPopSize; i++) mMidX[i] = i;
-  for (i=0; i<mPopSize/2; i++)
+
+  for (i = 0; i < mPopSize; i++)
+    mMidX[i] = i;
+
+  for (i = 0; i < mPopSize / 2; i++)
     {
       a = r250n(mPopSize);
       b = r250n(mPopSize);
@@ -465,48 +495,67 @@ void CGA::replicate(void)
   // generate a random order for the parents
   shuffle();
   // reproduce in consecutive pairs
-  for (i=0; i<mPopSize/2; i++)
-    crossover(mMidX[i*2], mMidX[i*2+1], mPopSize + i*2, mPopSize + i*2+1);
+
+  for (i = 0; i < mPopSize / 2; i++)
+    crossover(mMidX[i*2], mMidX[i*2 + 1], mPopSize + i*2, mPopSize + i*2 + 1);
+
   // check if there is one left over and just copy it
-  if (mPopSize % 2 > 0) copy(mPopSize-1, 2*mPopSize-1);
+  if (mPopSize % 2 > 0)
+    copy(mPopSize - 1, 2*mPopSize - 1);
+
   // mutate the offspring
-  for (i=0; i<mPopSize; i++)
-    mutate(mPopSize+i);
+  for (i = 0; i < mPopSize; i++)
+    mutate(mPopSize + i);
 }
 
 // select mPopSize individuals
 void CGA::select(int method)
 {
   unsigned int i, j, nopp, opp;
-  switch(method)
+
+  switch (method)
     {
-    case 1:  // parent-offspring competition
-      for (i=mPopSize; i<2*mPopSize; i++)
+    case 1:   // parent-offspring competition
+
+      for (i = mPopSize; i < 2*mPopSize; i++)
         {
           // if offspring is fitter keep it
-          if (mCandX[i] < mCandX[j]) copy(i, j);
+
+          if (mCandX[i] < mCandX[j])
+            copy(i, j);
         }
+
       break;
-    case 2:  // tournament competition
+
+    case 2:   // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one
-      if (nopp<1) nopp = 1;
+
+      if (nopp < 1)
+        nopp = 1;
+
       // parents and offspring are all in competition
-      for (i=0; i<2*mPopSize; i++)
+      for (i = 0; i < 2*mPopSize; i++)
         {
           mWins[i] = 0;
-          for (j=0; j<nopp; j++)
+
+          for (j = 0; j < nopp; j++)
             {
               // get random opponent
-              opp = r250n(mPopSize*2);
-              if (mCandX[i] <= mCandX[opp]) mWins[i]++;
+              opp = r250n(mPopSize * 2);
+
+              if (mCandX[i] <= mCandX[opp])
+                mWins[i]++;
             }
         }
+
       // selection of top mPopSize winners
-      for (i=0; i< mPopSize; i++)
-        for (j=i+1; j<2*mPopSize; j++)
-          if (mWins[i] < mWins[j]) swap(i, j);
+      for (i = 0; i < mPopSize; i++)
+        for (j = i + 1; j < 2*mPopSize; j++)
+          if (mWins[i] < mWins[j])
+            swap(i, j);
+
       break;
     }
 }
@@ -514,16 +563,18 @@ void CGA::select(int method)
 // check the best individual at this generation
 unsigned int CGA::fittest(void)
 {
-  unsigned int i,b;
+  unsigned int i, b;
   double f;
   f = mCandX[0];
   b = 0;
-  for (i=1; i<mPopSize; i++)
+
+  for (i = 1; i < mPopSize; i++)
     if (mCandX[i] < f)
       {
         b = i;
         f = mCandX[i];
       }
+
   return b;
 }
 
@@ -538,86 +589,93 @@ void CGA::creation(unsigned int l, unsigned int u)
 
   // BOOL linear;
   bool linear;
-  for (i=l; i<u; i++)
-    {
 
-      for (j=0; j<mParamNum; j++)
+  for (i = l; i < u; i++)
+    {
+      for (j = 0; j < mParamNum; j++)
         {
           try
             {
               // determine if linear or log scale
-              linear = FALSE; la = 1.0;
-              if (mMin==0.0) mMin = DBL_EPSILON;
-              if ((mMax<=0.0) || (mMin<=0.0)) linear = TRUE;
+              linear = FALSE;
+              la = 1.0;
+
+              if (mMin == 0.0)
+                mMin = DBL_EPSILON;
+
+              if ((mMax <= 0.0) || (mMin <= 0.0))
+                linear = TRUE;
               else
                 {
                   la = log10(mMax) - log10(mMin);
-                  if (la < 1.8) linear = TRUE;
+
+                  if (la < 1.8)
+                    linear = TRUE;
                 }
+
               // set it to a random value within the interval
               if (linear)
                 mIndV[i][j] = mMin + dr250() * (mMax - mMin);
               else
-                mIndV[i][j] = mMin *pow(10, la*dr250());
+                mIndV[i][j] = mMin * pow(10, la * dr250());
             }
-          catch(unsigned int e)
+          catch (unsigned int e)
             {
-              mIndV[i][j] = (mMax - mMin)*0.5 + mMin;
+              mIndV[i][j] = (mMax - mMin) * 0.5 + mMin;
             }
         }
+
       try
         {
           // calculate its fitness
           mCandX[i] = evaluate(i);
         }
-      catch(unsigned int e)
+      catch (unsigned int e)
         {
           mCandX[i] = DBL_MAX;
         }
     }
+
   // get the index of the fittest
   mBest = fittest();
 }
 
-
-// dump data 
+// dump data
 void CGA::dumpData(unsigned int i)
 {
   //YOHE: use cout instead
   //ofstream finalout("debugopt.dat",ios::app);
 
   //if (!finalout)
-  // 	{
-  // 	cout << "debugopt.dat cannot be opened!" << endl;
-  //	exit(1);
-  //	}
+  //  {
+  //  cout << "debugopt.dat cannot be opened!" << endl;
+  // exit(1);
+  // }
   //finalout << "#" << i << "\t" << mCandX[mBest] << endl;
   cout << "#" << i << "\t" << mCandX[mBest] << endl;
-  for (int j=0;j<mParamNum;j++)
+
+  for (int j = 0; j < mParamNum; j++)
     {
       //finalout << mIndV[mBest][j] << "\t";
       cout << mIndV[mBest][j] << "\t";
     }
+
   //finalout << endl;
   // finalout << endl;
   //finalout.close();
-
 }
-
-
 
 // optimise function, the real function for optimization
 int CGA::optimise()
 {
-
   unsigned int i, last_update, u100, u300, u500;
   double bx;
 
-  struct tms before,after;
-  double dTime=0;
+  struct _timeb before, after;
+  double dTime = 0;
 
-  times(&before);
-  dTime=time(NULL);
+  _ftime(&before);
+  dTime = time(NULL);
 
   //mMin = *(mRealProblem.getParameterMin());
   //mMax = *(mRealProblem.getParameterMax());
@@ -643,7 +701,7 @@ int CGA::optimise()
   mMutVar = (*AlgmParams)[i].getValue();
   }  
   */
- 
+
   // initialise the variance for mutations
   //setMutVar(0.1);
 
@@ -666,7 +724,7 @@ int CGA::optimise()
 
   // ITERATE FOR gener GENERATIONS
 
-  for (i=0; i<getGeneration(); i++)
+  for (i = 0; i < getGeneration(); i++)
     {
       cout << endl;
       cout << "GA is processing at generation " << i << endl;
@@ -679,50 +737,62 @@ int CGA::optimise()
       // get the index of the fittest
       // mBest = fittest();
       setBest(fittest());
-      if (getBestCandidate()!= bx)
+
+      if (getBestCandidate() != bx)
         {
           last_update = i;
-          bx =getBestCandidate();
+          bx = getBestCandidate();
         }
-      if (u100) u100--;
-      if (u300) u300--;
-      if (u500) u500--;
+
+      if (u100)
+        u100--;
+
+      if (u300)
+        u300--;
+
+      if (u500)
+        u500--;
 
       // perturb the population if we have stalled for a while
-      if ((u500==0) && (i-last_update > 500))
+      if ((u500 == 0) && (i - last_update > 500))
         {
-          creation(psize/2, psize);
-          u500 = 500; u300=300; u100=100;
+          creation(psize / 2, psize);
+          u500 = 500;
+          u300 = 300;
+          u100 = 100;
         }
 
-      else if ((u300==0) && (i-last_update > 300))
+      else if ((u300 == 0) && (i - last_update > 300))
         {
           creation(unsigned(psize*0.7), psize);
-          
-          u300=300; u100=100;
+
+          u300 = 300;
+          u100 = 100;
         }
 
-      else if ((u100==0) && (i-last_update > 100))
+      else if ((u100 == 0) && (i - last_update > 100))
         {
           creation(unsigned(psize*0.9), psize);
-          u100=100;
+          u100 = 100;
         }
     }
 
-  times(&after);
+  _ftime(&after);
   ofstream tout("time.dat");
+
   if (!tout)
-    { 
+    {
       cout << " tout cannot output!" << endl;
       exit(0);
     }
-  tout << "CPU's Calculation Time:" << after.tms_utime-before.tms_utime << endl;
-  tout << " It has taken about " << time(NULL)-dTime << " seconds!" << endl;
+
+  tout << "CPU's Calculation Time [ms]:" << 1000*(after.time - before.time) + (after.millitm - before.millitm) << endl;
+  tout << " It has taken about " << time(NULL) - dTime << " seconds!" << endl;
   tout.close();
 
   cout << endl;
   cout << "GA has successfully done!" << endl;
-  cout << " It has taken about " << time(NULL)-dTime << " seconds!" << endl;
+  cout << " It has taken about " << time(NULL) - dTime << " seconds!" << endl;
   cout << "and it is ready to exit now!" << endl;
 
   return 0;

@@ -9,9 +9,10 @@
  *           and value
  */
 #include <math.h>
+
+#include "copasi.h"
 #include "COptAlgorithmParameter.h"
 
-   
 //Default constructor
 COptAlgorithmParameter::COptAlgorithmParameter()
 {
@@ -38,10 +39,9 @@ COptAlgorithmParameter & COptAlgorithmParameter::operator = (const COptAlgorithm
       mName = source.mName;
       mValue = source.mValue;
     }
-    
+
   return *this;
 }
-
 
 //set name
 //param: aName a string to be set as mName
@@ -63,7 +63,6 @@ void COptAlgorithmParameter::setValue(double aValue)
 {
   mValue = aValue;
 }
-
 
 // get the private member mValue
 //return the mValue, the private member
