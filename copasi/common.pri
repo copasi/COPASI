@@ -20,8 +20,36 @@ win32{
   OS = $$system(uname)
 }
 
+contains(OS, win32) {
+  DEFINES += WIN32
+  DEFINES -= UNICODE
+
+  !isEmpty(MKL_PATH) {
+    INCLUDEPATH += $${MKL_PATH}/include
+    LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
+    LIBS +=  -L$${MKL_PATH}/lib/32
+  } else {
+    !isEmpty(CLAPACK_PATH) {
+      DEFINES += USE_CLAPACK
+      INCLUDEPATH += $${CLAPACK_PATH}/include
+      LIBS += -llapack -lblas -lF77 -lfl
+      LIBS +=  -L$${CLAPACK_PATH}/lib
+    } else {
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+    }
+  }
+
+  !isEmpty(EXPAT_PATH) {
+      INCLUDEPATH += $${EXPAT_PATH}/Source/lib
+      LIBS += -lexpat -L$${EXPAT_PATH}/StaticLibs
+    } else {
+      error( "EXPAT_PATH must be specified )
+    }
+} 
+
 contains(OS, SunOS) {
   !isEmpty(CLAPACK_PATH) {
+    DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
     LIBS += -llapack -lblas -lF77 -lfl
     LIBS +=  $${CLAPACK_PATH}/lib
@@ -34,12 +62,15 @@ contains(OS, Linux) {
   !isEmpty(MKL_PATH) {
     INCLUDEPATH += $${MKL_PATH}/include
     LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
-    LIBS +=  $${MKL_PATH}/lib/32
-  } else !isEmpty(CLAPACK_PATH) {
-    INCLUDEPATH += $${CLAPACK_PATH}/include
-    LIBS += -llapack -lblas -lF77 -lfl
-    LIBS +=  $${CLAPACK_PATH}/lib
+    LIBS +=  -L$${MKL_PATH}/lib/32
   } else {
-    error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+    !isEmpty(CLAPACK_PATH) {
+      DEFINES += USE_CLAPACK
+      INCLUDEPATH += $${CLAPACK_PATH}/include
+      LIBS += -llapack -lblas -lF77 -lfl
+      LIBS +=  -L$${CLAPACK_PATH}/lib
+    } else {
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+    }
   }
 }
