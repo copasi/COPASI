@@ -49,6 +49,12 @@ fi
 
 
 (
+dnl to prevent calling aclocal, automake and configure again
+ touch aclocal.m4 
+ touch configure.in
+ touch Makefile.in
+ touch configure
+
  cd copasi && \
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
