@@ -292,6 +292,13 @@ void ScanWidget::deleteButtonClicked()
     }
 
   activeObject--;
+  if (activeObject >= 0)
+    {
+      CCopasiObject* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
+      ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+      activeTitle->setText(pObject->getCN().c_str());
+    }
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
   emit show_me();
