@@ -19,6 +19,7 @@
 #include "model/CState.h"
 #include "function/CFunction.h"
 #include "utilities/CMethodParameter.h"
+#include "report/CReportDefinition.h"
 
 // class CCopasiTask;
 // class CCopasiReport;
@@ -477,10 +478,121 @@ bool CCopasiXML::saveTaskList()
   return success;
 }
 
+//Mrinmayee
+
 bool CCopasiXML::saveReportList()
 {
   bool success = true;
-  // if (!haveReportList()) return success;
+  if (!haveReportList()) return success;
+
+  CXMLAttributeList Attributes;
+
+  unsigned C_INT32 i, j, imax = mpReportList->size();
+  CReportDefinition * pReport = NULL;
+
+  startSaveElement("ListOfReports");
+
+  for (i = 0; i < imax; i++)
+    {
+      pReport = (*mpReportList)[i];
+
+      Attributes.erase();
+      // *** fill in stuff here
+      Attributes.add("key", pReport->getKey());
+      Attributes.add("name", pReport->getObjectName());
+      //Attributes.add("taskType", pReport->getTaskType());
+      startSaveElement("Report", Attributes);
+
+      startSaveElement("Comment");
+      saveData(pReport->getComment().getStaticString());
+      endSaveElement("Comment");
+
+      startSaveElement("Header");
+      std::vector <CCopasiObjectName> *header = pReport->getHeaderAddr();
+      for (j = 0; j < header->size(); j++)
+        {
+          if ((*header)[j].getObjectType() == "string")
+            {
+              //Write in Text
+              startSaveElement("Text");
+              saveData((*header)[j]);
+              endSaveElement("Text");
+            }
+          else
+            {
+              //Write in Object
+              Attributes.erase();
+              Attributes.add("cn", (*header)[j]);
+              startSaveElement("Object", Attributes);
+              endSaveElement("Object");
+            }
+        }
+
+      //Report is not yet implemented
+      startSaveElement("Report");
+
+      endSaveElement("Report");
+
+      endSaveElement("Header");
+
+      startSaveElement("Body");
+      std::vector <CCopasiObjectName> *body = pReport->getBodyAddr();
+      for (j = 0; j < body->size(); j++)
+        {
+          startSaveElement("Complex");
+          if ((*body)[j].getObjectType() == "string")
+            {
+              //Write in Text
+              startSaveElement("Text");
+              saveData((*body)[j]);
+              endSaveElement("Text");
+            }
+          else
+            {
+              //Write in Object
+              Attributes.erase();
+              Attributes.add("cn", (*body)[j]);
+              startSaveElement("Object", Attributes);
+              endSaveElement("Object");
+            }
+
+          endSaveElement("Complex");
+        }
+
+      //Table is not yet implemented
+      /*Attributes.erase();
+      Attributes.add("seperator",);
+      Attributes.add("printTitle",);
+      startSaveElement("Table",Attributes);
+      //*** Add stuff here
+        Attributes.erase();
+        Attributes.add("cn",);
+           startSaveElement("Object",Attributes);
+        endSaveElement("Object");
+      endSaveElement("Table");*/
+
+      endSaveElement("Body");
+
+      //footer is not yet implented
+
+      /*startSaveElement("Footer");
+      //*** Add stuff here
+       Attributes.erase();
+       Attributes.add("cn",);
+          startSaveElement("Object",Attributes);
+       endSaveElement("Object");
+          startSaveElement("Text");
+        //*** Add here
+       saveData();
+       endSaveElement("Text");
+          startSaveElement("Report");
+            endSaveElement("Report")
+      endSaveElement("Footer");*/
+
+      endSaveElement("Report");
+    }
+
+  endSaveElement("ListOfReports");
 
   return success;
 }
