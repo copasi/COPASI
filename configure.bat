@@ -1,7 +1,7 @@
 rem @echo off 
 
-if "%1" == "--enable-debug"        goto DEBUG
-if "%1" == "--disable-debug"       goto RELEASE
+if '%1' == '--enable-debug'        goto DEBUG
+if '%1' == '--disable-debug'       goto RELEASE
 set cps_release=debug
 goto QMAKE
 
