@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: gauges $ 
+   $Date: 2005/02/16 07:43:44 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -41,6 +41,7 @@ class SliderDialog: public QDialog
 
   protected:
     QPushButton* runTaskButton;
+    QPushButton* newSliderButton;
     QCheckBox* autoRunCheckBox;
     QCheckBox* mpAutoModifyRangesCheckBox;
     QScrollView* scrollView;

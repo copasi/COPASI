@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: gauges $ 
+   $Date: 2005/02/16 07:43:44 $
    End CVS Header */
 
 #include <iostream>
@@ -46,6 +46,7 @@ char* SliderDialog::knownTaskNames[] = {"Time Course"};
 
 SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(parent),
     runTaskButton(NULL),
+    newSliderButton(NULL),
     autoRunCheckBox(NULL),
     mpAutoModifyRangesCheckBox(NULL),
     scrollView(NULL),
@@ -57,6 +58,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     mSliderValueChanged(false)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
+
   this->scrollView = new QScrollView(this);
   this->scrollView->setResizePolicy(QScrollView::AutoOneFit);
   this->scrollView->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -66,6 +68,14 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   ((QVBoxLayout*)this->sliderBox->layout())->addStretch();
   this->scrollView->addChild(this->sliderBox);
   mainLayout->addWidget(this->scrollView);
+  QHBoxLayout* layout2 = new QHBoxLayout(0);
+  layout2->addStretch();
+  this->newSliderButton = new QPushButton(this);
+  this->newSliderButton->setText("new slider");
+  this->newSliderButton->setEnabled(true);
+  layout2->addWidget(this->newSliderButton);
+  layout2->addStretch();
+  mainLayout->addLayout(layout2);
 
   QHBoxLayout* layout1 = new QHBoxLayout(0);
   layout1->addStretch();
@@ -87,7 +97,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   mainLayout->addSpacing(10);
   mainLayout->addLayout(layout1);
 
-  QHBoxLayout* layout2 = new QHBoxLayout(0);
+  layout2 = new QHBoxLayout(0);
   layout2->addStretch();
   this->runTaskButton = new QPushButton(this);
   this->runTaskButton->setText("run task");
@@ -103,6 +113,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
 
   connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
+  connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
   this->taskMap[23] = &SliderDialog::runTimeCourse;
   this->setCurrentFolderId(-1);
