@@ -5,15 +5,25 @@
 //#include "utilities.h"
 
 #include "utilities/CCopasiException.h"
+#include "function/CFunctionDB.h"
+#include "function/CFunction.h"
+#include "output/CUDFunctionDB.h"
+#include "output/CUDFunction.h"
+#include "output/COutputList.h"
+#include "output/COutput.h"
 
-CGlobals::CGlobals()
+CGlobals::CGlobals():
+    pFunctionDB(new CFunctionDB),
+    pUDFunctionDB(new CUDFunctionDB),
+    pOldMetabolites(new CCopasiVectorS < CMetabOld >),
+    pOutputList(new COutputList)
 {
   try
     {
       ProgramVersion.setVersion(4, 0, 101);
-      FunctionDB.setFilename("FunctionDB.gps");
-      FunctionDB.initialize();
-      Model = NULL;
+      pFunctionDB->setFilename("FunctionDB.gps");
+      pFunctionDB->initialize();
+      pModel = NULL;
     }
 
   catch (CCopasiException Exception)
@@ -24,8 +34,12 @@ CGlobals::CGlobals()
 
 CGlobals::~CGlobals()
 {
-  FunctionDB.cleanup();
-  OldMetabolites.cleanup();
+  pFunctionDB->cleanup();
+  pOldMetabolites->cleanup();
+  pdelete(pFunctionDB);
+  pdelete(pUDFunctionDB);
+  pdelete(pOldMetabolites);
+  pdelete(pOutputList);
 }
 
 void CGlobals::setArguments(C_INT argc, char *argv[])

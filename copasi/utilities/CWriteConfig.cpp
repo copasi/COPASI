@@ -15,6 +15,7 @@
 #include "copasi.h"
 #include "CGlobals.h"
 #include "CWriteConfig.h"
+#include "CCopasiMessage.h"
 
 CWriteConfig::CWriteConfig(void)
 {

@@ -63,6 +63,13 @@
 #endif
 #endif
 
+enum TriLogic
+{
+  TriUnspecified = -1,
+  TriFalse = 0,
+  TriTrue = 1
+};
+
 /* Define COPASI_DEBUG */
 #ifndef NDEBUG              // for gcc
 # define COPASI_DEBUG

@@ -11,7 +11,6 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/CGlobals.h"
 #include "utilities/utilities.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
@@ -22,8 +21,8 @@ CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Compartment"),
     mName(mObjectName),
-    mVolume(Copasi->DefaultVolume),
-    mVolumeInv(1 / Copasi->DefaultVolume),
+    mVolume(1.0),
+    mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
 {CONSTRUCTOR_TRACE;}
 

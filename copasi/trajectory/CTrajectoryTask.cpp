@@ -171,9 +171,9 @@ void CTrajectoryTask::process()
   mpState = new CState(*mpProblem->getInitialState());
 
   if (mpOutInit || mpOutPoint || mpOutEnd)
-    Copasi->OutputList.compile("Time-course output",
-                               mpProblem->getModel(),
-                               mpState);
+    Copasi->pOutputList->compile("Time-course output",
+                                 mpProblem->getModel(),
+                                 mpState);
 
   mpMethod->setCurrentState(mpState);
   mpMethod->setProblem(mpProblem);
@@ -184,7 +184,7 @@ void CTrajectoryTask::process()
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutInit->print(Copasi->OutputList, *mpOut);
+      mpOutInit->print(*Copasi->pOutputList, *mpOut);
     }
 
   if (mpOutPoint)
@@ -192,7 +192,7 @@ void CTrajectoryTask::process()
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutPoint->print(Copasi->OutputList, *mpOut);
+      mpOutPoint->print(*Copasi->pOutputList, *mpOut);
     }
 
   C_FLOAT64 StepSize = mpProblem->getStepSize();
@@ -206,7 +206,7 @@ void CTrajectoryTask::process()
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutPoint->print(Copasi->OutputList, *mpOut);
+      mpOutPoint->print(*Copasi->pOutputList, *mpOut);
     }
 
 #ifdef  XXXX_Event
@@ -225,7 +225,7 @@ void CTrajectoryTask::process()
           /* Correct output depends on the model being updated */
           /* We should try to avoid this in the future         */
           mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-          mpOutPoint->print(Copasi->OutputList, *mpOut);
+          mpOutPoint->print(*Copasi->pOutputList, *mpOut);
         }
 
 #ifdef  XXXX_Event
@@ -263,6 +263,6 @@ void CTrajectoryTask::process()
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
       mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutEnd->print(Copasi->OutputList, *mpOut);
+      mpOutEnd->print(*Copasi->pOutputList, *mpOut);
     }
 }

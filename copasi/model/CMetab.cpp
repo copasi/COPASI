@@ -12,6 +12,7 @@
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "CCompartment.h"
+#include "CModel.h"
 #include "CMetab.h"
 
 const CCompartment * CMetab::mpParentCompartment = NULL;
@@ -29,10 +30,10 @@ CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Metabolite"),
     mName(mObjectName),
-    mConcDbl(Copasi->DefaultConc),
-    mIConcDbl(Copasi->DefaultConc),
-    mNumberInt((C_INT32)(Copasi->DefaultConc * Copasi->DefaultVolume)),
-    mINumberInt((C_INT32)(Copasi->DefaultConc * Copasi->DefaultVolume)),
+    mConcDbl(1.0),
+    mIConcDbl(1.0),
+    mNumberInt(1),
+    mINumberInt(1),
     mRate(1.0),
     mTT(0.0),
     mStatus(METAB_VARIABLE)
@@ -84,7 +85,7 @@ void CMetab::cleanup() {}
 void CMetab::initModel()
 {
   mpModel = (CModel *) getObjectAncestor("Model");
-  if (!mpModel) mpModel = Copasi->Model;
+  if (!mpModel) mpModel = Copasi->pModel;
 }
 
 void CMetab::initCompartment(const CCompartment * pCompartment)
@@ -142,7 +143,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
                      "The file specifies a negative concentration "
                      "for '%s'.\nReset to default.",
                      mName.c_str());
-      mIConcDbl = Copasi->DefaultConc;
+      mIConcDbl = 1.0;
     }
 
   return Fail;
@@ -355,7 +356,7 @@ CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Old Metabolite"),
     mName(mObjectName),
-    mIConc(Copasi->DefaultConc),
+    mIConc(1.0),
     mStatus(CMetab::METAB_VARIABLE),
     mCompartment()
 {CONSTRUCTOR_TRACE;}
@@ -420,7 +421,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
                      "The file specifies a negative concentration "
                      "for '%s'.\nReset to default.",
                      mName.c_str());
-      mIConc = Copasi->DefaultConc;
+      mIConc = 1.0;
     }
 
   return Fail;

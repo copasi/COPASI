@@ -27,6 +27,7 @@
 #include "CModel.h"
 #include "CCompartment.h"
 #include "CState.h"
+#include "function/CFunctionDB.h"
 
 #include "clapackwrap.h"
 
@@ -138,7 +139,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
 
-  Copasi->Model = this;
+  Copasi->pModel = this;
 
   // For old Versions we must read the list of Metabolites beforehand
 
@@ -148,7 +149,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                            &Size, CReadConfig::LOOP)))
         return Fail;
 
-      Copasi->OldMetabolites.load(configBuffer, Size);
+      Copasi->pOldMetabolites->load(configBuffer, Size);
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
@@ -204,11 +205,11 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       // Create the correct compartment / metabolite relationships
       CMetab Metabolite;
 
-      for (i = 0; i < Copasi->OldMetabolites.size(); i++)
+      for (i = 0; i < Copasi->pOldMetabolites->size(); i++)
         {
           Metabolite.cleanup();
-          Metabolite = *Copasi->OldMetabolites[i];
-          mCompartments[Copasi->OldMetabolites[i]->getIndex()]->
+          Metabolite = *(*Copasi->pOldMetabolites)[i];
+          mCompartments[(*Copasi->pOldMetabolites)[i]->getIndex()]->
           addMetabolite(Metabolite);
         }
     }
@@ -217,7 +218,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   initializeMetabolites();
 
-  if ((Fail = Copasi->FunctionDB.load(configBuffer)))
+  if ((Fail = Copasi->pFunctionDB->load(configBuffer)))
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
@@ -240,7 +241,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   // std::cout << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
-  Copasi->OldMetabolites.cleanup();
+  Copasi->pOldMetabolites->cleanup();
 
   compile();
   return Fail;
@@ -270,7 +271,7 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
   mCompartments.save(configBuffer);
 
-  if ((Fail = Copasi->FunctionDB.save(configBuffer)))
+  if ((Fail = Copasi->pFunctionDB->save(configBuffer)))
     return Fail;
 
   Size = mSteps.size();
@@ -302,7 +303,7 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
   Size = mCompartments.size();
   if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
     return Fail;
-  if ((Fail = Copasi->FunctionDB.saveOld(configBuffer)))
+  if ((Fail = Copasi->pFunctionDB->saveOld(configBuffer)))
     return Fail;
   Size = mMetabolites.size();
   for (i = 0; i < Size; i++)

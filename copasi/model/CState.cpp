@@ -101,8 +101,8 @@ void CState::load(CReadConfig & configBuffer)
 
   /* Make sure that the state fits the currently loaded model */
   configBuffer.getVariable("State.Model", "string", &Tmp);
-  if (Tmp == Copasi->Model->getTitle())
-    setModel(Copasi->Model);
+  if (Tmp == Copasi->pModel->getTitle())
+    setModel(Copasi->pModel);
   else
     fatalError();
 

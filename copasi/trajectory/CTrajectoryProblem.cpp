@@ -189,7 +189,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = Copasi->Model;
+      mpModel = Copasi->pModel;
       configBuffer.getVariable("EndTime", "C_FLOAT64",
                                (void *) & mEndTime,
                                CReadConfig::LOOP);
@@ -205,8 +205,8 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
       std::string Tmp;
 
       configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
-      if (Tmp == Copasi->Model->getTitle())
-        mpModel = Copasi->Model;
+      if (Tmp == Copasi->pModel->getTitle())
+        mpModel = Copasi->pModel;
       else
         fatalError();
 

@@ -5,7 +5,12 @@
 
 #include "CSpecLine.h"
 #include "CDeTerm.h"
+#include "CReaction.h"
+#include "CModel.h"
+
 #include "utilities/CGlobals.h"
+#include "function/CKinFunction.h"
+#include "function/CFunctionDB.h"
 
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
 
@@ -379,7 +384,7 @@ void CTempReaction::compile(CModel *model,
 
   fun->compile();
   // it is important to call add(fun) instead of add(*fun). Otherwise type information of the polymorphic object would be lost.
-  Copasi->FunctionDB.loadedFunctions().add(fun);
+  Copasi->pFunctionDB->loadedFunctions().add(fun);
   // Associate this kinetic function with the reaction
   reaction->setFunction("function_" + mName);
   // Finally, add the reaction to the model

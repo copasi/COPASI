@@ -12,7 +12,8 @@
 
 #include "utilities/utilities.h"
 #include "utilities/CCopasiVector.h"
-#include "CKinFunction.h"
+
+class CFunction;
 
 /** @dia:pos 106.082,17.0878 */
 class CFunctionDB

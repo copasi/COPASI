@@ -15,13 +15,6 @@
 #include "CCallParameters.h"
 #include "report/CCopasiContainer.h"
 
-enum TriLogic
-{
-  TriUnspecified = -1,
-  TriFalse = 0,
-  TriTrue = 1
-};
-
 /** @dia:pos 58.2,12.15 */
 class CFunction : public CCopasiContainer
   {

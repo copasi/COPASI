@@ -11,6 +11,7 @@
 #include <string>
 
 #include "CChemEqElement.h"
+#include "utilities/CCopasiVector.h"
 
 /** @dia:pos 52.2128,95.1644 */
 class CChemEq : public CCopasiContainer

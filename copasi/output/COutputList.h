@@ -13,8 +13,8 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
-#include "model/model.h"
 
+class CModel;
 class CState;
 class COutput;
 class CSteadyStateTask;

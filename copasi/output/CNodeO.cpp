@@ -134,7 +134,7 @@ C_FLOAT64 CNodeO::value()
       C_FLOAT64 *Value4;
       C_FLOAT64 Value;
 
-      mDatum.compileDatum(Copasi->Model, NULL, NULL);
+      mDatum.compileDatum(Copasi->pModel, NULL, NULL);
       Type = mDatum.getType();
       switch (Type)
         {
@@ -228,11 +228,11 @@ C_INT16 CNodeO::isRightValid() const {return (mRight != NULL);}
  * @return CNodeO
  */
 CNodeO & CNodeO::getLeft() const
-{
-  if (!mLeft)
-  fatalError(); // Call LeftIsValid first to avoid this!
-  return *mLeft;
-}
+  {
+    if (!mLeft)
+      fatalError(); // Call LeftIsValid first to avoid this!
+    return *mLeft;
+  }
 
 /**
  * Retrieving mRight the left branch of a node
@@ -241,18 +241,18 @@ CNodeO & CNodeO::getLeft() const
 CNodeO & CNodeO::getRight() const
   {
     if (!mRight)
-    fatalError(); // Call RightIsValid first to avoid this!
+      fatalError(); // Call RightIsValid first to avoid this!
     return *mRight;
   }
 
-  /**
-   * Setting mLeft the pointer to the left branch
-   * @param CNodeO &left
-   */
-  void CNodeO::setLeft(CNodeO & left)
-    {
-      mLeft = &left;
-    }
+/**
+ * Setting mLeft the pointer to the left branch
+ * @param CNodeO &left
+ */
+void CNodeO::setLeft(CNodeO & left)
+{
+  mLeft = &left;
+}
 
 /**
  * Setting mLeft the pointer to the left branch

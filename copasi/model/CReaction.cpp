@@ -14,10 +14,12 @@
 #include "utilities/CGlobals.h"
 #include "CReaction.h"
 #include "CCompartment.h"
+#include "CModel.h"
 #include "utilities/utilities.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
+#include "function/CFunctionDB.h"
 
 #ifdef WIN32
 #define min _cpp_min
@@ -428,7 +430,7 @@ void CReaction::setReversible(bool reversible)
 
 void CReaction::setFunction(const std::string & functionName)
 {
-  mpFunction = Copasi->FunctionDB.findLoadFunction(functionName);
+  mpFunction = Copasi->pFunctionDB->findLoadFunction(functionName);
   if (!mpFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
 
@@ -584,7 +586,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       configbuffer.getVariable(name, "C_INT32", &index);
 
       mId2Substrates[i]->mMetaboliteName =
-        Copasi->OldMetabolites[index]->getName();
+        (*Copasi->pOldMetabolites)[index]->getName();
 
       if (Type < CFunctionParameter::VINT32)
         Type =
@@ -612,7 +614,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       configbuffer.getVariable(name, "C_INT32", &index);
 
       mId2Products[i]->mMetaboliteName =
-        Copasi->OldMetabolites[index]->getName();
+        (*Copasi->pOldMetabolites)[index]->getName();
 
       if (Type < CFunctionParameter::VINT32)
         Type =
@@ -640,7 +642,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       configbuffer.getVariable(name, "C_INT32", &index);
 
       mId2Modifiers[i]->mMetaboliteName =
-        Copasi->OldMetabolites[index]->getName();
+        (*Copasi->pOldMetabolites)[index]->getName();
 
       if (Type < CFunctionParameter::VINT32)
         Type =

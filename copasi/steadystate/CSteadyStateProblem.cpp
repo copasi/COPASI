@@ -67,7 +67,7 @@ void CSteadyStateProblem::setInitialState(CState * pInitialState)
  * @return "const CState *" pInitialState
  */
 const CState * CSteadyStateProblem::getInitialState() const
-{return mpInitialState;}
+  {return mpInitialState;}
 
 /**
  * Set whether the jacobian is requested.
@@ -81,7 +81,7 @@ void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-{return mJacobianRequested;}
+  {return mJacobianRequested;}
 
 /**
  * Set whether stabilty analysis is requested.
@@ -95,7 +95,7 @@ void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysis
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-{return mStabilityAnalysisRequested;}
+  {return mStabilityAnalysisRequested;}
 
 /**
  * Load a steadystate problem
@@ -106,7 +106,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      mpModel = Copasi->Model;
+      mpModel = Copasi->pModel;
       mpInitialState = mpModel->getInitialState();
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
                                &mStabilityAnalysisRequested,
@@ -118,8 +118,8 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
       std::string Tmp;
 
       configBuffer.getVariable("SteadyStateProblemModel", "string", &Tmp, mode);
-      if (Tmp == Copasi->Model->getTitle())
-        mpModel = Copasi->Model;
+      if (Tmp == Copasi->pModel->getTitle())
+        mpModel = Copasi->pModel;
       else
         fatalError();
 
@@ -138,14 +138,14 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
  * @param "CWriteConfig &" configBuffer
  */
 void CSteadyStateProblem::save(CWriteConfig & configBuffer) const
-{
-  std::string Tmp = mpModel->getTitle();
-  configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
+  {
+    std::string Tmp = mpModel->getTitle();
+    configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
 
-  mpInitialState->save(configBuffer);
+    mpInitialState->save(configBuffer);
 
-  configBuffer.setVariable("JacobianRequested", "bool" ,
-                           &mJacobianRequested);
-  configBuffer.setVariable("StabilityAnalysisRequested", "bool" ,
-                           &mStabilityAnalysisRequested);
-}
+    configBuffer.setVariable("JacobianRequested", "bool" ,
+                             &mJacobianRequested);
+    configBuffer.setVariable("StabilityAnalysisRequested", "bool" ,
+                             &mStabilityAnalysisRequested);
+  }

@@ -14,6 +14,8 @@
 
 #include "copasi.h"
 #include "COutput.h"
+#include "CUDFunction.h"
+#include "CUDFunctionDB.h"
 #include "utilities/utilities.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CCopasiException.h"
@@ -21,7 +23,6 @@
 #include "utilities/CGlobals.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CEigen.h"
-#include "output/CUDFunction.h"
 
 /**
  *  Default constructor. 
@@ -329,7 +330,7 @@ void COutput::compile(const std::string & name, CModel *model, CSteadyStateTask 
  */
 void COutput::repComments(std::ofstream &fout)
 {
-  fout << Copasi->Model->getComments() << std::endl;
+  fout << Copasi->pModel->getComments() << std::endl;
 }
 
 /**
@@ -337,7 +338,7 @@ void COutput::repComments(std::ofstream &fout)
  */
 void COutput::repTitle(std::ofstream &fout)
 {
-  fout << Copasi->Model->getTitle() << std::endl << std::endl;
+  fout << Copasi->pModel->getTitle() << std::endl << std::endl;
 }
 
 /**
@@ -411,7 +412,7 @@ void COutput::repParams(std::ofstream &fout)
 {
   std::string StrOut;
   unsigned C_INT32 i, j;
-  CModel *model = Copasi->Model;
+  CModel *model = Copasi->pModel;
 
   StrOut = "KINETIC PARAMETERS";
   fout << std::endl << StrOut << std::endl;
@@ -454,7 +455,7 @@ void COutput::repParams(std::ofstream &fout)
 void COutput::repStruct(std::ofstream &fout)
 {
   unsigned C_INT32 i, j;
-  CModel *model = Copasi->Model;
+  CModel *model = Copasi->pModel;
 
   // determine the kernel of the stoichiometry matrix
   //model.getKernel();
@@ -613,7 +614,7 @@ void COutput::repSS(std::ofstream &fout)
 {
   unsigned C_INT32 i;
   double rate;
-  CModel *model = Copasi->Model;
+  CModel *model = Copasi->pModel;
 
   fout << *mSolution;
 
@@ -663,7 +664,7 @@ void COutput::repSS(std::ofstream &fout)
     }
 
   // output user-defined functions
-  unsigned C_INT32 size = Copasi->UDFunctionDB.getFunctions().size();
+  unsigned C_INT32 size = Copasi->pUDFunctionDB->getFunctions().size();
 
   CUDFunction pFunct;
 
@@ -674,9 +675,9 @@ void COutput::repSS(std::ofstream &fout)
       for (i = 0; i < size; i++)
         {
           // calculate the flux of this step
-          fout << Copasi->UDFunctionDB.getFunctions()[i]->getName();
+          fout << Copasi->pUDFunctionDB->getFunctions()[i]->getName();
           fout << " =";
-          fout << std::setprecision(6) << Copasi->UDFunctionDB.getFunctions()[i]->getValue();
+          fout << std::setprecision(6) << Copasi->pUDFunctionDB->getFunctions()[i]->getValue();
           fout << std::endl;
         }
     }
@@ -691,7 +692,7 @@ void COutput::repStability(std::ofstream &fout)
   unsigned C_INT32 j, jmax;
 
   const CMatrix< C_FLOAT64 > & Jacobian = mSolution->getJacobian();
-  CModel *model = Copasi->Model;
+  CModel *model = Copasi->pModel;
 
   fout << *mSolution->getEigenValues();
 

@@ -17,6 +17,8 @@
 #include "CSpec2Model.h"
 #include "CSpecLine.h"
 #include "CDeTerm.h"
+#include "function/CKinFunction.h"
+#include "function/CFunctionDB.h"
 
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE;}
 
@@ -534,7 +536,7 @@ void CSpec2Model::processFunctions()
                 }
             }
           std::cout << pFunction->getParameters() << std::endl;
-          Copasi->FunctionDB.add(pFunction);
+          Copasi->pFunctionDB->add(pFunction);
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
         }

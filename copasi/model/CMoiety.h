@@ -13,6 +13,7 @@
 
 #include "CMetab.h"
 #include "CChemEqElement.h"
+#include "utilities/CCopasiVector.h"
 
 /** @dia:pos 52.1566,116.062 */
 class CMoiety : public CCopasiContainer

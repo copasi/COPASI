@@ -6,17 +6,13 @@
 
 #include "copasi.h"
 #include "CVersion.h"
-#include "function/CFunctionDB.h"
-#include "output/CUDFunctionDB.h"
-#include "utilities/CCopasiVector.h"
-#include "model/CMetab.h"
-#include "output/COutputList.h"
 
-//#include "output/output.h"
-//#include "model/CCompartment.h"
-//#include "model/CMoiety.h"
-
+template < class CType > class CCopasiVectorS;
+class CMetabOld;
+class CFunctionDB;
+class CUDFunctionDB;
 class CModel;
+class COutputList;
 
 class CGlobals
   {
@@ -31,23 +27,23 @@ class CGlobals
     /**
      *
      */
-    CFunctionDB FunctionDB;
+    CFunctionDB * pFunctionDB;
 
     /**
      *
      */
-    CUDFunctionDB UDFunctionDB;
+    CUDFunctionDB * pUDFunctionDB;
     // CCompartment Compartmentfile;
 
     /**
      *  This is a hack at the moment to be able to read old configuration files
      */
-    CCopasiVectorS < CMetabOld > OldMetabolites;
+    CCopasiVectorS < CMetabOld > * pOldMetabolites;
 
     /**
      *
      */
-    COutputList OutputList;
+    COutputList * pOutputList;
 
     /**
      *
@@ -57,7 +53,7 @@ class CGlobals
     /**
      *  This a hack to be able to read old configaration files output information
      */
-    CModel * Model;
+    CModel * pModel;
 
   public:
 

@@ -149,9 +149,9 @@ void CSteadyStateTask::process()
   mpEigenValues = new CEigen();
 
   if (mpOutEnd)
-    Copasi->OutputList.compile("Steady-state output",
-                               mpProblem->getModel(),
-                               this);
+    Copasi->pOutputList->compile("Steady-state output",
+                                 mpProblem->getModel(),
+                                 this);
 
   mpMethod->setProblem(mpProblem);
 
@@ -161,7 +161,7 @@ void CSteadyStateTask::process()
                               mpEigenValues);
 
   if (mpOutEnd)
-    mpOutEnd->print(*this, Copasi->OutputList, *mpOut);
+    mpOutEnd->print(*this, *Copasi->pOutputList, *mpOut);
 
   return;
 }
