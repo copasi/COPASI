@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/12/17 12:31:54 $
+   $Date: 2004/12/17 14:50:02 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:                    // non-integer stoichometry
+    case - 3:                     // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:                    // reversible reaction exists
+    case - 2:                     // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:                    // more than one compartment involved
+    case - 1:                     // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
     case 1:
@@ -164,12 +164,13 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
                CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
   addParameter("HYBRID.PartitioningInterval",
                CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
-  addParameter("HYBRID.Subtype",
-               CCopasiParameter::UINT, (unsigned C_INT32) SUBTYPE);
+  addParameter("HYBRID.UseRandomSeed",
+               CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
   addParameter("HYBRID.RandomSeed",
                CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
-  mpRandomGenerator = CRandom::createGenerator(CRandom::r250, mRandomSeed);
+  if ((bool) USE_RANDOM_SEED) mpRandomGenerator = CRandom::createGenerator(CRandom::r250, mRandomSeed);
+  else mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
 
   CONSTRUCTOR_TRACE;
 }
@@ -187,7 +188,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmuOld.clear();
   mAmuOld.resize(mpReactions->size());
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
-  mNumVariableMetabs = mpMetabolites->size(); // is that correct? maybe substitute with mpModel->getNumVariableMetabs
+  mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
 
   temp.clear();
   temp.resize(mNumVariableMetabs);
@@ -216,8 +217,11 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
   mPartitioningInterval = * (unsigned C_INT32 *) getValue("HYBRID.PartitioningInterval");
   std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
+  mUseRandomSeed = * (bool *) getValue("HYBRID.UseRandomSeed");
+  std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * (unsigned C_INT32 *) getValue("HYBRID.RandomSeed");
   std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
+  if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
   mStoi = mpModel->getStoi();
   mStepsAfterPartitionSystem = 0;
   mUpdateSet.clear();
@@ -769,7 +773,7 @@ void CHybridMethod::setupBalances()
         }
     }
 
-  mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
+  mMaxBalance = maxBalance; std::cout << "mMaxBalance: " << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
   mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
 
@@ -988,7 +992,7 @@ void CHybridMethod::setupPartition()
     {
       prevFlag->mpNext = NULL;
     }
-  outputDebug(std::cout, 0);
+  //outputDebug(std::cout, 0);
   return;
 }
 
@@ -1002,6 +1006,7 @@ void CHybridMethod::setupPriorityQueue(C_FLOAT64 startTime)
   unsigned C_INT32 i;
   C_FLOAT64 time;
 
+  mPQ.clear();
   mPQ.initializeIndexPointer(mpReactions->size());
 
   for (i = 0; i < mpReactions->size(); i++)
@@ -1291,7 +1296,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                    // Everything !!!
+    case 0:                     // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << std::endl;
       os << "current time: " << mpCurrentState->getTime() << std::endl;
@@ -1401,7 +1406,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                     // Variable values only
+    case 1:                      // Variable values only
       os << "current time: " << mpCurrentState->getTime() << std::endl;
       /*
       case 1:

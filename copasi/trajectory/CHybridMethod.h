@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/12/17 12:31:54 $
+   $Date: 2004/12/17 14:50:03 $
    End CVS Header */
 
 /**
@@ -58,6 +58,7 @@
 #define OUTPUT_COUNTER               100
 #define DEFAULT_OUTPUT_FILE          "hybrid.output"
 #define SUBTYPE                      1
+#define USE_RANDOM_SEED              1
 #define RANDOM_SEED                  1
 
 /* CLASSES *******************************************************************/
@@ -453,6 +454,12 @@ class CHybridMethod : public CTrajectoryMethod
      *   Max number of doSingleStep() per step()
      */
     unsigned C_INT32 mMaxSteps;
+
+    /**
+     *   Specifies if the mRandomSeed should be used.
+     *   otherwise a randomly chosen seed is used.
+     */
+    bool mUseRandomSeed;
 
     /**
      *  The random seed to use.
