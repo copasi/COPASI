@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/15 13:25:25 $
+   $Date: 2004/06/16 13:42:04 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -363,7 +363,7 @@ void DataModel::importSBML(const char* fileName)
   SBMLImporter* importer = new SBMLImporter();
   try
     {
-      model = importer->readSBML(fileName);
+      model = importer->readSBML(fileName, Copasi->pFunctionDB);
     }
   catch (StdException ex)
   {}
