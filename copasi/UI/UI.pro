@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.45 $ $Author: ssahle $ $Date: 2004/09/30 09:02:55 $  
+# $Revision: 1.46 $ $Author: ssahle $ $Date: 2004/09/30 10:04:54 $  
 ######################################################################
 
 include(../common.pri)
@@ -156,6 +156,7 @@ HEADERS += \
            ScanItemWidget.h \
            ScanWidget.h \
            StateWidget.h \
+           StateSubwidget.h \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
@@ -219,6 +220,7 @@ SOURCES += \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
            StateWidget.cpp \
+           StateSubwidget.cpp \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
@@ -227,8 +229,8 @@ SOURCES += \
            TrajectoryWidget.cpp \
            Tree.cpp
 
-FORMS +=  TimeSeriesSubwidget.ui \
-          StateSubwidget.ui
+#FORMS +=  TimeSeriesSubwidget.ui \
+#          StateSubwidget.ui
            
 release {
   distribution.path = .
