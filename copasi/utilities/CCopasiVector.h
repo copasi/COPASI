@@ -144,8 +144,8 @@ template < class CType > class CCopasiVector:
                 delete *Target;
                 *Target = NULL;
               }
-
-            CCopasiContainer::remove(*Target);
+            else
+              CCopasiContainer::remove(*Target);
           }
 
         erase(Target, Target + 1);
