@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 14:45:27 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,7 @@
 #include <qtable.h>
 #include <qpushbutton.h>
 
-#include "StretchTable.h"
+#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"
 
@@ -34,7 +34,7 @@ class FixedMetaboliteSymbols : public CopasiWidget
   protected:
     CMathModel * mModel;
     CMathConstantMetab *metablist;
-    StretchTable * table;
+    MyTable * table;
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.38 $ $Author: ssahle $ $Date: 2004/07/02 13:47:29 $  
+# $Revision: 1.39 $ $Author: gauges $ $Date: 2004/08/10 14:45:27 $  
 ######################################################################
 
 include(../common.pri)
@@ -150,7 +150,6 @@ HEADERS += \
            ScanItemWidget.h \
            ScanWidget.h \
            SteadyStateWidget.h \
-           StretchTable.h \
            TableDefinition.h \
            TableDefinition1.h \
            TrajectoryWidget.h \
@@ -210,7 +209,6 @@ SOURCES += \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
            SteadyStateWidget.cpp \
-           StretchTable.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
            TrajectoryWidget.cpp
