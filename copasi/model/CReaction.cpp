@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:21:13 $
+   $Date: 2004/11/22 10:09:32 $
    End CVS Header */
 
 // CReaction
@@ -663,7 +663,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
       C_FLOAT64 store = xi;
       C_FLOAT64 f1, f2;
       C_FLOAT64 tmp =
-        (store < resolution) ? resolution * (1.0 + derivationFactor) : store;
+        (store < resolution) ? resolution * (1.0 + derivationFactor) : store; //TODO: why assymmetric?
 
       xi = tmp * (1.0 + derivationFactor);
       f1 = mpFunction->calcValue(mMap.getPointers());
