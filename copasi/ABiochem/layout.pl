@@ -48,18 +48,43 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# read statistics first
 	$statfile = $gfile;
 	$statfile =~ s/\.$GRAPHEXTENSION/\.netstat/;
+	open( STATFILE, "<$statfile" );
+	$vertex = 0;
+	@stats = <STATFILE>;
+	close(STATFILE);
+    foreach $line (@stats) 
+      if( $line =~ /number of vertices\t([0..9]+)/ )
+	  {
+	    $vertex = $1;
+	    last;
+	  }
 
-	# Layout the graph into postscript
 	$psfile = $gfile;
 	$psfile =~ s/\.$GRAPHEXTENSION/\.eps/;
-	system "$NEATO -Tps -G\"page=8.5,11\" -G\"size=7.5,10\" -o$psfile $gfile 2>>layout.log";
-
-	print ".";
-
-	# Layout the graph into a picture (png)
 	$pngfilen = $gfile;
-	$pngfilen =~ s/\.$GRAPHEXTENSION/\.n\.png/;
-	system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen $gfile 2>>layout.log";
+    $pngfilen =~ s/\.$GRAPHEXTENSION/\.n\.png/;
+    # don't bother laying out if more than 500 vertices
+    if( $vertex lt 500 )
+	{
+	  # Layout the graph into postscript
+	  system "$NEATO -Tps -G\"page=8.5,11\" -G\"size=7.5,10\" -o$psfile $gfile 2>>layout.log";
+
+ 	  print ".";
+
+	  # Layout the graph into a picture (png)
+	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen $gfile 2>>layout.log";
+	}
+	else
+	{
+	  # create a replacement graph ...
+	  open( DTFILE, ">tmp.dot" );
+	  print( DTFILE "digraph \"$gfile\" { graph[ label=\"too many nodes to layout, use Pajek!\" ]\nNO -> GRAPH\n}");
+	  close( FTFILE );
+
+ 	  print ".";
+
+	  system "$NEATO -G\"size=8,8\" -Tpng -o$pngfilen tmp.dot 2>>layout.log";
+	} 
 
 	print ".";
 
@@ -77,9 +102,13 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# Layout the graph into a picture (png)
 	$pngfiled = $gfile;
 	$pngfiled =~ s/\.$GRAPHEXTENSION/\.d\.png/;
-	system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled $gfile 2>>layout.log";
+	if( $vertex lt 500 )
+	 system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled $gfile 2>>layout.log";
+	else
+	 system "$DOT -G\"size=8,8\" -Tpng -o$pngfiled tmp.dot 2>>layout.log";
 
-	print ".";
+
+    print ".";
 
 	# convert to PBM, process, and convert back to desired bitmap format
 	$bfile = $gfile;
@@ -99,6 +128,8 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	$pngfileg =~ s/\.$GRAPHEXTENSION/\.distri\.png/;
 	open( GPFILE, ">temp.plt" );
 	print( GPFILE "set terminal png medium color\n");
+	print( GPFILE "set data style points\n");
+	print( GPFILE "set logscale\n");
 	print( GPFILE "set output \'$pngfileg\'\n");
     # copy the contents of the file
 	open( GPFILE2, "<$gplfilei" ) || print "could not open $gplfilei\n";
@@ -118,11 +149,27 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
     # write the HTML header
 	$strtime = localtime();
 	print( HTFILE "<html>\n<!-- Created by A-Biochem, $strtime -->\n");
-	print( HTFILE "<head>\n<title>$gfile</title>\n</head>\n");
+	print( HTFILE "<head>\n<style type=\"text/css\" media=\"all\">@import \"nets.css\";</style>\n");
+	print( HTFILE "<title>$gfile</title>\n</head>\n");
 	# write the HTML body
 	print( HTFILE "<body>\n<center>\n");
-	print( HTFILE "<h1>$gfile</h1>\n[ <a href=\"$lasthfile\">$lastgfile</a> ]\n");
-	print( HTFILE "<p>[ <a href=\"#dot\">hierarchical layout</a> ] ");
+	print( HTFILE "<div id=\"topmenu\">\n<ul>\n");
+	print( HTFILE "<li class=\"first\"><a href=\"http://www.vbi.vt.edu/~mendes\">Biochemical Networks Modeling Group</a></li>\n");
+	print( HTFILE "<li><a href=\"..\">Artificial Gene Networks</a></li>\n");
+	print( HTFILE "</ul></div>\n");
+	print( HTFILE "<h1>Artificial Gene Network $gfile</h1>\n");
+	print( HTFILE "<h2>statistics</h2>\n<table>");
+    foreach $line (@stats)
+	{ 
+      $line =~ s/\t/<\/td><td>/
+      print( HTFILE "<tr><td>$line</td></tr>");
+	}
+	print( HTFILE "</table>\n");
+	print( HTFILE "<div id=\"menu\">\n<ul>\n");
+	print( HTFILE "<li class=\"first\"><a href=\"#neato\">Force field layout</a></li>\n");
+	print( HTFILE "<li><a href=\"#dot\">Hierarchical layout</a></li>\n");
+	print( HTFILE "<li><a href=\"#deg\">Degree distribution</a></li>\n");
+	print( HTFILE "</ul></div>\n");
 	print( HTFILE "[ <a href=\"#deg\">degree distribution</a> ]</p>\n");
 	print( HTFILE "<h2><a name=\"neato\">neato</a></h2>\n<img border=\"0\" src=\"$pngfilen\">\n");
 	print( HTFILE "<h2><a name=\"dot\">dot</a></h2>\n<img border=\"0\" src=\"$pngfiled\">\n");
@@ -144,6 +191,7 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	# cleanup the mess
 	unlink($bfile);
 	unlink($b1file);
+	if( $vertex ge 500 ) unlink("tmp.dot");
 }
 
 unlink("offset.txt");
