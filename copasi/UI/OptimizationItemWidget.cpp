@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.7 2003/10/04 16:37:14 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.8 2003/10/04 16:46:01 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -116,6 +116,15 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   setTabOrder(comboBoxLowerOp, lineLower);
   setTabOrder(lineLower, buttonLowerEdit);
   setTabOrder(buttonLowerEdit, checkLowerInf);
+
+  checkUpperInf->setChecked(true);
+  checkLowerInf->setChecked(true);
+
+  buttonUpperEdit->setEnabled(false);
+  buttonLowerEdit->setEnabled(false);
+
+  lineUpper->setEnabled(false);
+  lineLower->setEnabled(false);
 }
 
 /*
@@ -152,7 +161,8 @@ void OptimizationItemWidget::languageChange()
 
 void OptimizationItemWidget::slotPosInfClicked()
 {
-  qWarning("OptimizationItemWidget::slotPosInfClicked(): Not implemented yet");
+  lineUpper->setEnabled(!checkUpperInf->isChecked());
+  buttonUpperEdit->setEnabled(!checkUpperInf->isChecked());
 }
 
 void OptimizationItemWidget::slotLowerEdit()
@@ -169,7 +179,8 @@ void OptimizationItemWidget::slotLowerEdit()
 
 void OptimizationItemWidget::slotNegInfClicked()
 {
-  qWarning("OptimizationItemWidget::slotNegInfClicked(): Not implemented yet");
+  lineLower->setEnabled(!checkLowerInf->isChecked());
+  buttonLowerEdit->setEnabled(!checkLowerInf->isChecked());
 }
 
 void OptimizationItemWidget::slotUpperEdit()
