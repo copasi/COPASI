@@ -118,7 +118,7 @@ class CStochMethod : private CTrajectoryMethod
      * @param reaction_index The index of the reaction being executed.
      * @return The set of metabolites depended on.
      */
-    std::set<const CMetab*> *getDependsOn(C_INT32 reaction_index);
+    std::set<std::string> *getDependsOn(C_INT32 reaction_index);
 
     /**
      * Get the set of metabolites which change number when a given
@@ -126,7 +126,7 @@ class CStochMethod : private CTrajectoryMethod
      * @param reaction_index The index of the reaction being executed.
      * @return The set of affected metabolites.
      */
-    std::set<const CMetab*> *getAffects(C_INT32 reaction_index);
+    std::set<std::string> *getAffects(C_INT32 reaction_index);
 
     /**
     * max number of single stochastic steps to do in one step()

@@ -35,7 +35,7 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 CStochMethod *
 CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
 {
-  C_INT32 result = 2; // direct method as default
+  C_INT32 result = 1; // direct method as default
   if (pProblem && pProblem->getModel())
     {
       checkModel(pProblem->getModel());
@@ -175,7 +175,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
   C_FLOAT32 amu = 1; // initially
-  C_INT32 total_substrates = 0;
+  //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
   C_INT32 number = 0;
   C_INT32 lower_bound;
@@ -189,25 +189,33 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // Iterate through each substrate in the reaction
   const CCopasiVector < CChemEqElement > & substrates = chemeq->getSubstrates();
 
+  int flag = 0;
+
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //std::cout << "Num ident = " << num_ident << std::endl;
-      total_substrates += num_ident;
-      number =     /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
-      lower_bound = number - num_ident;
-      //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
-      substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
-      //std::cout << "Substrate factor = " << substrate_factor << std::endl;
+      //total_substrates += num_ident;
 
-      while (number > lower_bound)
+      if (num_ident > 1)
         {
-          amu *= number;
-          number--;
+          flag = 1;
+          number =    /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
+          lower_bound = number - num_ident;
+          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
+          substrate_factor = substrate_factor * pow((double) number, (int) (num_ident - 1)); //optimization
+          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
+
+          number--; //optimization
+          while (number > lower_bound)
+            {
+              amu *= number;
+              number--;
+            }
         }
     }
 
-  if (amu == 0)  // at least one substrate particle number is zero
+  if ((amu == 0) || (substrate_factor == 0))  // at least one substrate particle number is zero
     {
       mAmu[index] = 0;
       return 0;
@@ -217,7 +225,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // If there are no substrates, then volume is irrelevant. Otherwise,
   // we can use the volume of the compartment for the first substrate.
   //if (substrates.size() > 0) //check again!!
-  if (total_substrates > 1) //check again!!
+  /*if (total_substrates > 1) //check again!!
     {
       C_FLOAT64 invvolumefactor =
         pow((double)
@@ -226,18 +234,22 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
             (int) total_substrates - 1);
       amu *= invvolumefactor;
       substrate_factor *= invvolumefactor;
-    }
+    }*/
 
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
   mpModel->getReactions()[index]->calculate();
-  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getScaledFlux() / substrate_factor;
 
-  //cout << "Rate factor = " << rate_factor << endl;
-  amu *= rate_factor;
-
-  mAmu[index] = amu;
+  if (flag)
+    {
+      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getScaledFlux() / substrate_factor;
+      //cout << "Rate factor = " << rate_factor << endl;
+      amu *= rate_factor;
+      mAmu[index] = amu;
+    }
+  else
+  {mAmu[index] = mpModel->getReactions()[index]->getScaledFlux();}
 
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;
@@ -254,25 +266,19 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   // multiplicity to calculate a new value for the associated
   // metabolite. Finally, update the metabolite.
 
-  //CStochBalance bal;
-  C_INT32 new_num;
-
   std::vector<CStochBalance> & bals = mLocalBalances[rxn];
-  std::vector<CStochBalance>::const_iterator bi;
 
+  std::vector<CStochBalance>::const_iterator bi;
   for (bi = bals.begin(); bi != bals.end(); bi++)
-    {
-      new_num = bi->mMetabAddr->getNumberInt() + bi->mBalance;
-      bi->mMetabAddr->setNumberInt(new_num);
-    }
+  {bi->mMetabAddr->setNumberInt(bi->mMetabAddr->getNumberInt() + bi->mBalance);}
 
   const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
   std::set<C_INT32>::const_iterator it;
-
+  unsigned int ii;
   for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
     {
-      unsigned int ii = *it;
+      ii = *it;
       mAmuOld[ii] = mAmu[ii];
       calculateAmu(ii);
     }
@@ -287,25 +293,19 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
 C_INT32 CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mRandomGenerator->getRandomCC();
+  C_FLOAT64 rand1 = mRandomGenerator->getRandomCC() * mA0;
   C_FLOAT64 sum = 0;
   unsigned C_INT32 index = 0;
 
-  while (index < mpModel->getReactions().size())
+  while (index < (mpModel->getReactions().size() - 1))
     {
-      sum += mAmu[index] / mA0;
-
+      sum += mAmu[index] /* /mA0 */;
       if (rand1 <= sum)
-        {
-          return index;
-        }
-
+      {return index;}
       index++;
     }
 
-  // shouldn't get here
-  //return mFail;
-  return 0;
+  return index;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime()
@@ -323,10 +323,8 @@ C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 void CStochMethod::setupDependencyGraphAndBalances()
 {
   mDG.clear();
-  std::vector< std::set<const CMetab*>* > DependsOn;
-  std::vector< std::set<const CMetab*>* > Affects;
-  //    std::set<CMetab> *tmpdepends = 0;
-  //    std::set<CMetab> *tmpaffects = 0;
+  std::vector< std::set<std::string>* > DependsOn;
+  std::vector< std::set<std::string>* > Affects;
   unsigned C_INT32 num_reactions = mpModel->getReactions().size();
   unsigned C_INT32 i, j;
   // Do for each reaction:
@@ -353,7 +351,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
 
-          std::set<const CMetab*>::iterator iter = Affects[i]->begin();
+          std::set<std::string>::iterator iter = Affects[i]->begin();
 
           for (; iter != Affects[i]->end(); iter++)
             {
@@ -379,10 +377,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
   for (i = 0; i < num_reactions; i++)
     {
       const CCopasiVector<CChemEqElement> & bbb = mpModel->getReactions()[i]->getChemEq().getBalances();
-
       //std::cout << std::endl << i << " : ";
 
-      for (j = 0; /*(unsigned C_INT32)*/ j < bbb.size(); j++)
+      for (j = 0; j < bbb.size(); j++)
         {
           bb.mMetabAddr = const_cast < CMetab* > (& bbb[j]->getMetabolite());
           bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
@@ -408,41 +405,35 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 }
 
-std::set<const CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 {
-  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
+  std::set<std::string> *retset = new std::set<std::string>;
 
-  CCopasiVector<CReaction::CId2Metab> & subst = mpModel->getReactions()[reaction_index]->getId2Substrates();
+  unsigned C_INT32 i, imax = mpModel->getReactions()[reaction_index]->getFunctionParameters().size();
+  unsigned C_INT32 j, jmax;
 
-  CCopasiVector<CReaction::CId2Metab> & modif = mpModel->getReactions()[reaction_index]->getId2Modifiers();
-
-  unsigned C_INT32 i;
-
-  const CMetab* dummy;
-
+  std::vector <const CMetab*> metablist;
   std::cout << reaction_index << " depends on ";
 
-  for (i = 0; i < subst.size(); i++)
+  for (i = 0; i < imax; ++i)
     {
-      retset->insert((subst[i]->getMetabolite()));
-      dummy = (subst[i]->getMetabolite());
-      std::cout << "  " << subst[i]->getMetaboliteName() << ":" << (int)(subst[i]->getMetabolite());
+      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
+        continue;
+      metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
+      jmax = metablist.size();
+      for (j = 0; j < jmax; ++j)
+        {
+          retset->insert(metablist[j]->getKey());
+          std::cout << "  " << metablist[j]->getName() << ":" << metablist[j]->getKey();
+        }
     }
-
-  for (i = 0; i < modif.size(); i++)
-    {
-      retset->insert((modif[i]->getMetabolite()));
-      dummy = (modif[i]->getMetabolite());
-      std::cout << " " << modif[i]->getMetaboliteName() << ":" << (int)(modif[i]->getMetabolite());
-    }
-
   std::cout << std::endl;
   return retset;
 }
 
-std::set<const CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
+std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
 {
-  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
+  std::set<std::string> *retset = new std::set<std::string>;
 
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
@@ -455,8 +446,8 @@ std::set<const CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
         if (balances[i]->getMetabolite().getStatus() != CMetab::METAB_FIXED)
           {
-            retset->insert(& balances[i]->getMetabolite());
-            std::cout << " " << balances[i]->getMetaboliteName() << ":" << (int)(& balances[i]->getMetabolite());
+            retset->insert(balances[i]->getMetabolite().getKey());
+            std::cout << " " << balances[i]->getMetaboliteName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }
 
