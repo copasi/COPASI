@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.144 $
+   $Revision: 1.145 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:05:11 $
+   $Date: 2003/11/19 21:38:58 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1173,22 +1173,14 @@ void CModel::setInitialState(const CState * state)
     mCompartments[i]->setVolume(*Dbl);
 
   /* Set the variable metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getInitialConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolites[i]->setInitialNumber(*Dbl);
 
   /* Set the fixed metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getFixedNumberVector().array();
   for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getInitialConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolites[i]->setInitialNumber(*Dbl);
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1207,31 +1199,19 @@ void CModel::setInitialState(const CStateX * state)
     mCompartments[i]->setVolume(*Dbl);
 
   /* Set the independent variable metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
-    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolites[i]->setInitialNumber(*Dbl);
 
   /* Set the dependent variable metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getDependentNumberVector().array();
   for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
-    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolites[i]->setInitialNumber(*Dbl);
 
   /* Set the fixed metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getFixedNumberVector().array();
   for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getInitialConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolites[i]->setInitialNumber(*Dbl);
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1257,8 +1237,6 @@ void CModel::setState(const CState * state)
 #endif // XXXX
 
   /* Set the variable metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
     mMetabolitesX[i]->setNumber(*Dbl);
@@ -1316,8 +1294,6 @@ void CModel::setState(const CStateX * state)
 #endif // XXXX
 
   /* Set the independent variable metabolites */
-  /* We are not using the set method since it automatically updates the
-     numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
     mMetabolitesX[i]->setNumber(*Dbl);
