@@ -39,6 +39,7 @@ class CompartmentsWidget : public QWidget
 
   signals:
     void name(QString &);
+    void signal_emitted(QString &);
 
   protected slots:
 
@@ -49,9 +50,6 @@ class CompartmentsWidget : public QWidget
 
   private:
     void showMessage(QString caption, QString text);
-
-  signals:
-    void signal_emitted(QString &);
   };
 
 #endif

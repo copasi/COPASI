@@ -126,6 +126,9 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
 
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(ListBox1, SIGNAL(selected(const QString &)), this, SLOT(slotListBoxCurrentChanged(const QString &)));
+  connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
+
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 }
 
@@ -221,4 +224,8 @@ void CompartmentsWidget1::slotBtnOKClicked()
   delete Com;
 }
 
+void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & m)
+{
+  emit name_changed(m);
+}
 //last function ends

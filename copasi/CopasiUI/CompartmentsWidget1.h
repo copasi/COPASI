@@ -81,10 +81,12 @@ class CompartmentsWidget1 : public QWidget
     QFrame* Frame4_3;
 
   protected slots:
+    virtual void slotListBoxCurrentChanged(const QString &);
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
 
   signals:
+    void name_changed(const QString &);
     void signal_emitted(QString &);
   };
 
