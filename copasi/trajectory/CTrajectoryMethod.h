@@ -54,9 +54,14 @@ class CTrajectoryMethod : public CMethodParameterList
     // Operations
   protected:
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @param "const string &" name (Default = "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Trajectory Method Parameter List")
      */
-    CTrajectoryMethod();
+    CTrajectoryMethod(const std::string & name = "NoName",
+                      const CCopasiContainer * pParent = NULL,
+                      const std::string & type = "Trajectory Method Parameter List");
 
   public:
 
@@ -72,10 +77,12 @@ class CTrajectoryMethod : public CMethodParameterList
                            CTrajectoryProblem * pProblem = NULL);
 
     /**
-     *  Copy constructor.
-     *  @param "const CTrajectoryMethod &" src
+     * Copy constructor.
+     * @param "const CTrajectoryMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryMethod(const CTrajectoryMethod & src);
+    CTrajectoryMethod(const CTrajectoryMethod & src,
+                      const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

@@ -154,16 +154,23 @@ class CLsodaMethod : private CTrajectoryMethod
     // Operations
   private:
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @param "const string &" name (Default = "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const std::string & type (default: "Trajectory Method Parameter List")
      */
-    CLsodaMethod();
+    CLsodaMethod(const std::string & name = "LSODA",
+                 const CCopasiContainer * pParent = NULL,
+                 const std::string & type = "Trajectory Method Parameter List");
 
   public:
     /**
-     *  Copy constructor.
-     *  @param "const CLsodaMethod &" src
+     * Copy constructor.
+     * @param "const CLsodaMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CLsodaMethod(const CLsodaMethod & src);
+    CLsodaMethod(const CLsodaMethod & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.

@@ -52,8 +52,10 @@ CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type,
 /**
  *  Default constructor.
  */
-CTrajectoryMethod::CTrajectoryMethod() :
-    CMethodParameterList(),
+CTrajectoryMethod::CTrajectoryMethod(const std::string & name,
+                                     const CCopasiContainer * pParent,
+                                     const std::string & type) :
+    CMethodParameterList(name, pParent, type),
     mTypeEnum(CTrajectoryMethod::unspecified),
     mpCurrentState(NULL),
     mpProblem(NULL)
@@ -63,8 +65,9 @@ CTrajectoryMethod::CTrajectoryMethod() :
  *  Copy constructor.
  *  @param "const CTrajectoryMethod &" src
  */
-CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
-    CMethodParameterList(src),
+CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
+                                     const CCopasiContainer * pParent):
+    CMethodParameterList(src, pParent),
     mTypeEnum(src.mTypeEnum),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
@@ -77,7 +80,7 @@ CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE;}
 
 const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
-{return mTypeEnum;}
+  {return mTypeEnum;}
 
 void CTrajectoryMethod::setCurrentState(CState * currentState)
 {

@@ -126,8 +126,10 @@ static const C_FLOAT64 sm1[13] =
   meth
  */
 
-CLsodaMethod::CLsodaMethod():
-    CTrajectoryMethod(),
+CLsodaMethod::CLsodaMethod(const std::string & name,
+                           const CCopasiContainer * pParent,
+                           const std::string & type):
+    CTrajectoryMethod(name, pParent, type),
     mpStateX(NULL),
     mY(NULL)
 {
@@ -141,10 +143,33 @@ CLsodaMethod::CLsodaMethod():
   add("LSODA.BDFMaxOrder", 5);
 
 #ifdef COPASI_DEBUG // We only want lsoda to output information while debuging.
-
   prfl = 1;
 #else
+  prfl = 0;
+#endif
 
+  illin = 0;
+  init = 0;
+  ntrep = 0;
+  ixpr = 0;
+  mesflg = 1;
+  yh = NULL;
+  wm = NULL;
+  ewt = NULL;
+  savf = NULL;
+  acor = NULL;
+  ipvt = NULL;
+}
+
+CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
+                           const CCopasiContainer * pParent):
+    CTrajectoryMethod(src, pParent),
+    mpStateX(NULL),
+    mY(NULL)
+{
+#ifdef COPASI_DEBUG // We only want lsoda to output information while debuging.
+  prfl = 1;
+#else
   prfl = 0;
 #endif
 
