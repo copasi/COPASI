@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 15:47:46 $
+   $Date: 2004/11/26 16:53:37 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -25,26 +25,20 @@ class CMCAMethod: public CCopasiMethod
 
     CModel * mpModel;
 
+    /**
+     * MCA Matrices
+     */
     CAnnotatedMatrix mUnscaledElasticities;
 
     CAnnotatedMatrix mUnscaledConcCC;
 
     CAnnotatedMatrix mUnscaledFluxCC;
 
-    /**
-     * MCA Matrix
-     */
+    CAnnotatedMatrix mScaledElasticities;
 
-    CMatrix <C_FLOAT64> mDxv;
+    CAnnotatedMatrix mScaledConcCC;
 
-    CMatrix <C_FLOAT64> mFcc;
-
-    CMatrix <C_FLOAT64> mGamma;
-
-    /**
-     * an n+1 integer vector of pivot indices.
-     */
-    C_INT32 * mSsipvt;
+    CAnnotatedMatrix mScaledFluxCC;
 
     /**
      * 1 if MCA coeffs are to be unscaled
@@ -92,12 +86,26 @@ class CMCAMethod: public CCopasiMethod
     const CAnnotatedMatrix & getUnscaledConcentrationCC() const
       {return mUnscaledConcCC;}
 
-    void calculateUnscaledConcentrationCC();
+    int calculateUnscaledConcentrationCC();
 
     const CAnnotatedMatrix & getUnscaledFluxCC() const
       {return mUnscaledFluxCC;}
 
-    void calculateUnscaledFluxCC();
+    void calculateUnscaledFluxCC(int condition);
+
+    const CAnnotatedMatrix & getScaledElasticities() const
+      {return mScaledElasticities;}
+
+    const CAnnotatedMatrix & getScaledConcentrationCC() const
+      {return mScaledConcCC;}
+
+    const CAnnotatedMatrix & getScaledFluxCC() const
+      {return mScaledFluxCC;}
+
+    /**
+     * Scales the coefficients (i.e. Kacser format, rather than Reder)
+     */
+    void scaleMCA(int condition, C_FLOAT64 res);
 
     /**
      * Set the Model
@@ -110,63 +118,11 @@ class CMCAMethod: public CCopasiMethod
     CModel* getModel();
 
     /**
-     * return the mDxv matrix
-     */
-    CMatrix < C_FLOAT64 > getDxv();
-
-    /**
-     * return the mFCC matrix
-     */
-    CMatrix < C_FLOAT64 > getFcc();
-
-    /**
-     * return the mGamma matrix
-     */
-    CMatrix < C_FLOAT64 > getGamma();
-
-    /**
-     * Clear mDxv with zeros
-     */
-    void clearDxv();
-
-    /**
-     * Initialize mDxv with the unscaled elasticities
-     * @param src is newtown variable, (is ss_x in Gespasi project)
-     * @param res is the resolution of steady state
-     */
-    void calculateDxv(C_FLOAT64 res);
-
-    /**
-     * Calculates the flux-control coefficients
-     *  @param refer to the condition
-     */
-    void CalcFCC(int condition);
-
-    /**
-     * Calculates the concentration-control coefficients
-     */
-    int CalcGamma();
-
-    /**
-     * Initialize ss_ipvt
-     */
-    void initSsipvt();
-
-    /**
-     * Delete ss_ipvt
-     */
-    void delSsipvt();
-    /**
      * the steady state MCA entry point
      * @param ss_solution refer to steady-state solution
      * @param refer to the resolution
      */
     int CalculateMCA(int ss_solution, C_FLOAT64 res);
-
-    /**
-     * Initialize the MCA matrices: mDxv, mFcc, mGamma
-     */
-    void initMatrices();
 
     /**
      * 
@@ -179,22 +135,10 @@ class CMCAMethod: public CCopasiMethod
     C_INT32 load(CReadConfig & configBuffer);
 
     /**
-     * Scales the coefficients (i.e. Kacser format, rather than Reder)
-     * @param refer to the condition
-     * @param refer to the resolution
-     */
-    void ScaleMCA(int condition, C_FLOAT64 res);
-
-    /**
      * the time dependent MCA entry point
      * @param refer to the resolution
      */
     void CalculateTimeMCA(C_FLOAT64 res);
-
-    /**
-     * Return the mSSx vector for calculate time mca
-     */
-    std::vector <C_FLOAT64> getSsx();
 
     void setIsSteadyState(bool isSteadyState);
 
@@ -203,13 +147,5 @@ class CMCAMethod: public CCopasiMethod
     void setFactor(C_FLOAT64 factor);
 
     void setSteadyStateResolution(C_FLOAT64 factor);
-
-    /**
-     *  Saves the SSReder of the object to a CWriteConfig object.
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     *  @see mFail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
   };
 #endif // COPASI_CMca
