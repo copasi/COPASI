@@ -1,76 +1,69 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/01/08 16:20:59 $
+   $Author: ssahle $ 
+   $Date: 2004/05/24 08:21:10 $
    End CVS Header */
 
-/****************************************************************************
- **  $ CopasiUI/MoietyWidget.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Moiety Widget, i.e the First level 
- ** of Moieties.
- *****************************************************************************/ 
-/*
- resizeEvent functions modified 
- Goal: to memorize the user change and expand according
- comments: Liang Xu 
- */
 #ifndef MOIETY_WIDGET_H
 #define MOIETY_WIDGET_H
 
 #include <qtable.h>
-#include <qpushbutton.h>
-#include "MyTable.h"
-#include "copasi.h" 
-//#include "model/model.h"
-#include "copasiWidget.h"
+#include "copasi.h"
+#include "CopasiTableWidget.h"
 
-class CModel;
-
-class MoietyWidget : public CopasiWidget
+class MoietyWidget : public CopasiTableWidget
   {
     Q_OBJECT
 
-  protected:
-    CModel *mModel;
-    QPushButton *btnCalculate;
-    MyTable *table;
-    bool binitialized;
-
-    std::vector<std::string> mKeys; //By G
-
   public:
-    MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadMoieties(CModel *model);
-    void resizeEvent(QResizeEvent * re);
-    void repaint_table();
+    MoietyWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
+        : CopasiTableWidget(parent, true, name, f)
+    {init();}
 
-    virtual bool enter(const std::string & key = "");
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key); //By G
+  protected:
 
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-    virtual void slotBtnCalculateClicked();
+    /**
+     * This initializes the widget 
+     */
+    virtual void init();
 
-  signals:
-    void name(const QString &);
-    void leaf(CModel*);
-    void updated();
+    /**
+     * returns a list of objects that should be displayed
+     */
+    virtual std::vector<const CCopasiObject*> getObjects() const;
 
-  protected slots:
+    /**
+     * fills one table row with the data from one object
+     */
+    virtual void tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row);
 
-    virtual void slotTableSelectionChanged();
+    /**
+     * reads the contents of one row of the table and writes it to the object
+     */
+    virtual void tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj);
 
-  private:
-    void fillTable(); //By G
-    void showMessage(QString caption, QString text);
+    /**
+     * creates a new object
+     */
+    virtual CCopasiObject* createNewObject(const std::string & name);
 
-    int pixelsWide0;
-    int pixelsWide1;
-    int pixelsWide2;
+    /**
+     * deletes objects. Performs all additional tasks, like asking the user, ...
+     */
+    virtual void deleteObjects(const std::vector<std::string> & keys);
+
+    /**
+     * this is used to fill a row of the table when a new object is added to the table.
+     * it fills only the data columns, not the name. It should not fill column exc.
+     */
+    virtual void defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc);
+
+    /**
+     * the prefix that is used to construct new object names
+     */
+    virtual QString defaultObjectName() const;
   };
 
 #endif
