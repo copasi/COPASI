@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.25 2003/09/18 23:06:57 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.27 2003/09/18 23:31:17 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,7 +35,8 @@
 CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, WFlags fl)
     : QDialog(parent, name, fl),
     pListView((ListViews*)parent),
-    mpReport(NULL)
+    mpReport(NULL),
+    bShow(true)
 {
   if (!name)
     setName("CReportDefinitionSelect");
@@ -148,8 +149,8 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
       if (QMessageBox::information (NULL, "No Report Definition Defined",
                                     "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes);
-      jumpToReportDefinitionEdit();
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+        jumpToReportDefinitionEdit();
       return;
     }
 
@@ -211,7 +212,8 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
   pListView->switchToOtherWidget((*pReportDefinitionVector)[row]->getKey());
-  confirmClicked();
+  confirmClicked(); // if shown then close
+  bShow = false; // if not shown then close
 }
 
 void CReportDefinitionSelect::jumpToFileBrowser()
@@ -230,4 +232,12 @@ void CReportDefinitionSelect::jumpToFileBrowser()
 void CReportDefinitionSelect::setReport(CReport* newReport)
 {
   mpReport = newReport;
+}
+
+int CReportDefinitionSelect::exec()
+{
+  if (bShow)
+    return QDialog::exec();
+  else
+    return QDialog::Accepted;
 }

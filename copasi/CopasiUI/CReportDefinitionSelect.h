@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.10 2003/09/18 03:12:54 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.12 2003/09/18 23:31:18 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -61,6 +61,12 @@ class CReportDefinitionSelect : public QDialog
     void confirmClicked();
     void jumpToReportDefinitionEdit();
     void jumpToFileBrowser();
+
+    // defined for cancel before showing
+  private:
+    bool bShow;
+  public slots:
+    int exec();
   };
 
 #endif // CREPORTDEFINITIONSELECT_H
