@@ -1,26 +1,64 @@
-// CKinFunction
-// 
-// CKinFunction.cpp based on UDKType.cpp from
-// (C) Pedro Mendes 1995-2000
-//
-// Created for Copasi by Stefan Hoops
-// (C) Stefan Hoops 2001
+/**
+ * CKinFunction
+ * 
+ * CKinFunction.cpp based on UDKType.cpp from
+ * (C) Pedro Mendes 1995-2000
+ * 
+ * Created for Copasi by Stefan Hoops
+ * (C) Stefan Hoops 2001
+ */
 
 #ifndef COPASI_CKinFunction
 #define COPASI_CKinFunction
 
 #include <string>
+#include <vector>
 
-#include "CReadConfig.h"
-#include "CWriteConfig.h"
 #include "CNodeK.h"
+#include "CCopasiVector.h"
 
-class CModel; // this should not be hear
-
-// a class of kinetic functions
 class CKinFunction
 {
-// Implementation
+// Attributes
+public:
+
+private:
+    /**
+     *  The name of the function
+     */
+    string mName;
+
+    /**
+     *  The description of the function
+     */
+    string mDescription;
+
+    /**
+     *  The vector of nodes of the binary tree of the function
+     */
+    CCopasiVector < CNodeK > mNodes;
+
+    /**
+     *  The vector of pointers to the identifiers to the function
+     */
+    typedef struct IDENTIFIER 
+    {
+        string Name;
+        vector < CNodeK * > Nodes;
+    };
+    vector < IDENTIFIER > mIdentifiers;
+
+    /**
+     *  This indicates whether the function is reversible
+     */
+    short mReversible;
+
+    /**
+     *  Internal variable (We should get rid of this)
+     */
+    long mNidx;
+
+// Operations
 public:
     /**
      *  Default constructor
@@ -32,7 +70,8 @@ public:
      *  @param "const string" &name
      *  @param "const string" &description
      */
-    CKinFunction(const string &name, const string &description);
+    CKinFunction(const string & name,
+                 const string & description);
 
     /**
      *  Destructor
@@ -40,32 +79,12 @@ public:
     ~CKinFunction();
 
     /**
-     * This adds a node to the function tree
-     * @param "const char" type
-     * @param "const char" subtype
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
      */
-    long AddNode(const char type, const char subtype);
-
-    /**
-     * This adds a node of type N_NUMBER to the function tree
-     * @param "const double" constant
-     */
-    long AddNode(const double constant);
-
-    /**
-     * This adds a node of type N_IDENTIFIER to the function tree
-     * @param "const string" &name
-     */
-    long AddNode(const string &name);
-
-    /**
-     *  This calculates the value of the fuction tree
-     *  @param "const CModel" &model
-     *  @param double *s
-     *  @param int r
-     *  @return double
-     */
-    double CalcValue(CModel &model, double *s, long r);
+    long Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -73,201 +92,117 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig &configbuffer);
-
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    long Load(CReadConfig &configbuffer);
-
-    /**
-     *  This parses the function longo a binary tree
-     */
-    long Parse(void);
-
-    /**
-     *  The finds the first occurence of an identifier with the given name
-     *  @param "const string" &name
-     *  @return long index of the identifier or -1 if not found
-     */
-    long FindId(const string &name);
-
-    /**
-     *  This returns the value of mReversible
-     *  @return short
-     */
-    short IsReversible(void);
+    long Save(CWriteConfig & configbuffer);
 
     /**
      *  This retrieves the name of the function
      *  @return string
      */
-    string GetName(void);
+    string GetName();
 
     /**
-     *  This returns the number of substrates in the function
-     *  @return long
-     */
-    long SubstratesNo(void);
-
-    /**
-     *  This returns the number of products in the function
-     *  @return long
-     */
-    long ProductsNo(void);
-
-    /**
-     *  This returns the number of modifiers in the function
-     *  @return long
-     */
-    long ModifiersNo(void);
-
-    /**
-     *  This returns the number of parameters in the function
-     *  @return long
-     */
-    long ParametersNo(void);
-
-    /**
-     *  This retrieves the name of the parameter with the given index
-     *  @param long index
+     *  This retrieves the description of the function
      *  @return string
      */
-    string GetParameterName(long i);
+    string GetDescription();
 
     /**
-     *  This retrieves the name of the modifier with the given index
-     *  @param long index
-     *  @return string
+     *  This retrieves the node tree of the function
+     *  @return "CCopasiVector < CNodeK > &"
      */
-    string GetModifierName(long i);
+    CCopasiVector < CNodeK > & Nodes();
 
     /**
-     *  This sets the name of the parameter with the given index
+     *  This retrieves the identifiers of the function
+     *  @return vector < CNodeK >
+     */
+    vector < IDENTIFIER > & Identifiers();
+
+    /**
+     *  This retrieves the type of an identifier of the function
+     *  @return char 
+     */
+    char GetIdentifierType(const string & name);
+
+    /**
+     *  This sets the name of the function
      *  @param "const string" &name
-     *  @param long index
      */
-    void SetParameterName(const string &name, long index);
+    SetName(const string & name);
 
     /**
-     *  This sets the name of the modifier with the given index
-     *  @param "const string" &name
-     *  @param long index
+     *  This sets the description of the function
+     *  @param "const string" &description
      */
-    void SetModifierName(const string &name, long index);
-    
-    /**
-     *  This returns the vector of substrates of the function
-     *  @return "vector < CNodeK * >"
-     */
-    vector < CNodeK * > *Substrates(void);
-    
-    /**
-     *  This returns the vector of products of the function
-     *  @return "vector < CNodeK * >"
-     */
-    vector < CNodeK * > *Products(void);
-    
-    /**
-     *  This returns the vector of modifiers of the function
-     *  @return "vector < CNodeK * >"
-     */
-    vector < CNodeK * > *Modifiers(void);
-    
-    /**
-     *  This returns the vector of parameters of the function
-     *  @return "vector < CNodeK * >"
-     */
-    vector < CNodeK * > *Parameters(void);
-    
-    /**
-     *  This sets the type of the identifier with the given name
-     *  @param "const string" &name
-     *  @param long type
-     */
-    void SetIdentifierType(const string &name, long type);
+    SetDescription(const string & description);
 
     /**
-     *  This retrieves the type of the identifier with the given name
-     *  @param "const string" &name
-     *  @return long type
+     *  This sets wheter the function is reversible
+     *  @param short reversible
      */
-    long GetIdentifierType(const string &name);
+    SetReversible(short reversible);
 
-private:
+    /**
+     *  This sets the type of an identifier
+     *  @param "const string" &name
+     *  @param char type
+     */
+    SetIdentifierType(const string & name,
+                           char type);
+
+    /**
+     *  This returns the value of mReversible
+     *  @return short
+     */
+    short IsReversible();
+
+    /**
+     *  This parses the function longo a binary tree
+     */
+    long Parse();
+
+    /**
+     *  The finds the identifier with the given name
+     *  @param "const string" &name
+     *  @return long index of the identifier or -1 if not found
+     */
+    long FindIdentifier(const string & name);
+
+    /**
+     *  This calculates the value of this sub-tree (ie with this node as root)
+     *  @param "vector < double * >" &identifiers
+     *  @return double
+     */
+    double CalcValue(vector < double * > &identifiers);
+
+  private:
     /**
      *  This clears all nodes of the function tree
      */
-    void ClearNodes(void);
+    long ClearNodes();
 
     /**
      *  This  connects the nodes to build the binary function tree
      */
-    long ConnectNodes(void);
+    long ConnectNodes();
 
     /**
      *  This function is part of the algorithm that builds the binary tree
      *  @param long priority
      *  @return CNodeK *
      */
-    CNodeK *ParseExpression(long priority);
+    CNodeK * ParseExpression(short priority);
 
     /**
      *  This function is part of the algorithm that builds the binary tree
      *  @return CNodeK *
      */
-    CNodeK *ParsePrimary(void);
+    CNodeK * ParsePrimary();
 
     /**
-     *  The name of the function
+     *
      */
-    string mName;         // a name for the function
-
-    /**
-     *  The description of the function
-     */
-    string mDescription;  // string representation of the function
-
-    /**
-     *  The vector of nodes of the binary tree of the function
-     */
-    CNodeKVector mNodes;  // an array of NodeK (the binary tree)
-
-    /**
-     *  This indicates whether the function is reversible
-     */
-    long mReversible;      // TRUE if this is a reversible type
-
-
-    /**
-     *  Internal variable (We should get rid of this)
-     */
-    long nidx;            
-
-
-    /**
-     *  The vector of substrates
-     */
-    vector < CNodeK * > mSubstrates;  // number of substrates
-
-    /**
-     *  The vector of products
-     */
-    vector < CNodeK * > mProducts;  // number of products
-
-    /**
-     *  The vector of modifiers
-     */
-    vector < CNodeK * > mModifiers;    // number of modifiers
-
-    /**
-     *  The vector of parameters
-     */
-    vector < CNodeK * > mParameters;          // number of parameters
-
+    long InitIdentifiers();
 };
 
 #endif // COPASI_CKinFunction

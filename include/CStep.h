@@ -11,7 +11,7 @@
 
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
-#include "CKinetics.h"
+#include "CKinFunction.h"
 
 class CStep
 {
@@ -46,13 +46,13 @@ private:
     void AllocStep(long subs, long prods);
     string mName;                   // step (enzyme) name
     string mChemEq;                 // chemical equation
-    CKinetics *mKinetics;           // kinetic function of this step
+    CKinFunction *mKinetics;        // kinetic function of this step
     string mKinType;                // name of the kinetic type
     double mFlux;                   // net rate through this step
     short mReversible;              // 1 if reaction is reversible
     vector < long > mSubstrates;    // dynamic array of indexes to substrates
     vector < long > mProducts;      // dynamic array of indexes to products
     vector < long > mModifiers;     // dynamic array of indexes to modifiers
-    vector < double > mParameters; // dynamic array of kinetic parameter values
+    vector < double > mParameters;  // dynamic array of kinetic parameter values
 };
 #endif // COPASI_CSteb

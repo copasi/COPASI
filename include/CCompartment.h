@@ -12,6 +12,8 @@
 
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
+#include "CCopasiVector.h"
+#include "CMetab.h"
 
 class CCompartment
 {
@@ -26,6 +28,11 @@ private:
      *  Volume of the compartment.
      */
     double mVolume;
+
+    /**
+     *  Metabolites located in the compartment.
+     */
+    CCopasiVector < CMetab > mMetabolites;
 
 // Operations
 public:
@@ -88,6 +95,9 @@ public:
      */
     double GetVolume();
 
+    CCopasiVector < CMetab > & GetMetabolites() {return mMetabolites;}
+    
+    
     /**
      *  Sets the name of this compartment.
      *  @param name string with the name of the compartment.

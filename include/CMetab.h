@@ -113,6 +113,10 @@ public:
      *  Retrieve the name of the metabolite.
      */
     string GetName();
+
+    double * GetConcentration() {return &mConc;}
+
+    SetConcentration(double concentration) {mConc = concentration;}
     
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.

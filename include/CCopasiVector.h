@@ -1,8 +1,9 @@
-#ifndef COPASIVECTOR_H
-#define COPASIVECTOR_H
+#ifndef COPASI_CCopasiVector
+#define COPASI_CCopasiVector
 
 #include <vector>
 
+#include "CCopasiMessage.h"
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
 
@@ -15,13 +16,13 @@ private:
      *
      */
     vector < CType > mTypes;
-    
+
 // Operations
 public:
     /**
      *
      */
-    CCopasiVector() {}
+    CCopasiVector() {DefinedInsertAllowed = NULL;}
 
 
     /**
@@ -64,17 +65,28 @@ public:
     
             return Fail;
         }
+    /**
+     *
+     */
+    long Add(CType src)
+        {
+            if ( DefinedInsertAllowed ) 
+            {
+                if ( ! (*DefinedInsertAllowed)(src) ) FatalError();
+            }
+            else 
+            {
+                if ( ! DefaultInsertAllowed(src) ) FatalError();
+            }
+                
+            mTypes.push_back(src);
+        }
 
     /**
      *
      */
-    long Add(CType & metab)
-        {
-            if ( Get(metab.GetName()) ) return 1;
-
-            mTypes.push_back(metab);
-        }
-
+    long Delete() {mTypes.erase(0);}
+    
     /**
      *
      */
@@ -94,42 +106,84 @@ public:
      */
     long Delete(const string & name)
         {
-            long i;
+            long Index = GetIndex(name);
+            if ( Index == -1 ) FatalError();
     
-            for ( i = 0; i < Size(); i++ )
-                if ( name == mTypes[i].GetName() ) 
-                    break;
-
-            return Delete(i);
+            return Delete(Index);
         }
 
     /**
      *
      */
-    CType * Get(long index)
+    SetInsertAllowed(short (*function)(CType src))
         {
-            if ( 0 <= index && index < Size() )
-                return &mTypes[index];
+            DefinedInsertAllowed = function;
+        }
+
+    CType &operator[](long index) 
+        {
+            if ( 0 <= index && index < Size() ) return mTypes[index];
+            FatalError();
+        }   
+    CType operator[](long index) const    
+        {
+            if ( 0 <= index && index < Size() ) return mTypes[index];
+            FatalError();
+        }   
+
+    CType &operator[](const string &name) 
+        {
+            long Index = GetIndex(name);
+            if ( Index == -1 ) FatalError();
             
-            return NULL;
-        }
+            return mTypes[Index];
+        }   
 
-    /**
-     *
-     */
-    CType * Get(const string & name)
+    CType operator[](const string &name) const
         {
-            for (long i = 0; i < Size(); i++ )
-                if ( name == mTypes[i].GetName() ) 
-                    return &mTypes[i];
-        
-            return NULL;
-        }
+            long Index = GetIndex(name);
+            if ( Index == -1 ) FatalError();
+            
+            return mTypes[Index];
+        }   
+
 
     /**
-     *
-     */
+             *
+             */
     long Size() {return mTypes.size();}
+
+private:
+
+            /**
+             *
+             */
+    short DefaultInsertAllowed(CType src) {return ( GetIndex(src.GetName()) == -1 );}
+    
+    /**
+             *
+             */
+    short (*DefinedInsertAllowed)(CType src);
+    
+    /**
+             *
+             */
+    long GetIndex(const string &name)
+        {
+            long i;
+            
+            for (i = 0; i < Size(); i++)
+                if ( name == mTypes[i].GetName() ) 
+                    return i;
+            
+            return -1;
+        }
 };
 
-#endif
+#endif // COPASI_CCopasiVector
+
+
+
+
+
+
