@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:37:56 $
+   $Date: 2004/05/11 13:25:00 $
    End CVS Header */
 
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.8 2004/04/19 08:37:56 ssahle Exp $)
+($Id: TableDefinition1.h,v 1.9 2004/05/11 13:25:00 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -43,7 +43,7 @@ class TableDefinition1 : public CopasiWidget
   {
     Q_OBJECT
   protected slots:
-    virtual void nameTextChanged(const QString&);
+    //virtual void nameTextChanged(const QString&);
     virtual void commentTextChanged(const QString&);
     virtual void seperatorTextChanged(const QString&);
     virtual void tabButtonClicked();
@@ -69,7 +69,6 @@ class TableDefinition1 : public CopasiWidget
     {mModel = pNewModel;}
 
     CReport *mReport;
-    void setReport(CReport* pNewReport);
 
     std::string reportKey;
     inline void setKey(const std::string pNewKey)

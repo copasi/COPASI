@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/10 13:00:05 $
+   $Date: 2004/05/11 13:25:00 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.34 2004/05/10 13:00:05 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.35 2004/05/11 13:25:00 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -114,17 +114,6 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   layout7->addLayout(layout6);
 
   itemsTable = new QListBox(this);
-  //  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
-  //  scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
-  //  pdelete(parameterTable);
-  //  itemsTable->setVScrollBarMode(QScrollView::Auto);
-  //  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
-  //  itemsTable->setSelectedList(&selectedList);
-  //  selectedList.clear();
-
-  //    itemsTable = new QTable(this, "itemsTable");
-  //    itemsTable->setNumRows(0);
-  //    itemsTable->setNumCols(0);
   layout7->addWidget(itemsTable);
 
   TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
@@ -215,7 +204,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
-  connect(nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(nameTextChanged(const QString&)));
+  //connect(nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(nameTextChanged(const QString&)));
   connect(commentEdit, SIGNAL(textChanged(const QString&)), this, SLOT(commentTextChanged(const QString&)));
   connect(seperatorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(seperatorTextChanged(const QString&)));
 
@@ -237,9 +226,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
  *  Destroys the object and frees any allocated resources
  */
 TableDefinition1::~TableDefinition1()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
+{}
 
 /*
  *  Sets the strings of the subwidgets using the current
@@ -297,53 +284,45 @@ void TableDefinition1::loadTableDefinition1()
   bUpdated = false;
 }
 
-void TableDefinition1::setReport(CReport* pNewReport)
-{
-  mReport = pNewReport;
-}
-
-void TableDefinition1::comboTaskChanged(const QString & C_UNUSED(string))
-{bUpdated = true;}
-
 void TableDefinition1::slotBtnCancelClicked()
 {
-  //check for the connection int i =0;
+  loadTableDefinition1();
 }
 
 void TableDefinition1::slotBtnConfirmClicked()
 {
-  //check for the connection int i =0;
   CReportDefinition* pReportDefinition =
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
+
+  if (FROM_UTF8(pReportDefinition->getObjectName()) != (const char*)nameEdit->text().utf8())
+    {
+      pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
+      ListViews::notify(ListViews::REPORT, ListViews::RENAME, reportKey);
+    }
+
+  if (!bUpdated) return;
+
+  pReportDefinition->setComment((const char*)commentEdit->text().utf8());
   pReportDefinition->getHeaderAddr()->clear();
   pReportDefinition->getBodyAddr()->clear();
+  pReportDefinition->setTitle(titleChecked->isChecked());
 
-  //    nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
-  //  commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
-  pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
-  pReportDefinition->setComment((const char*)commentEdit->text().utf8());
-
-  C_INT32 i;
   CCopasiStaticString Seperator;
   if (tabChecked->isChecked())
     Seperator = "\t";
   else
     Seperator = (const char *)seperatorEdit->text().utf8();
 
-  pReportDefinition->setTitle(titleChecked->isChecked());
-  //pReportDefinition->
-  //setComment(CCopasiStaticString((const char *)commentEdit->text().utf8()).getCN());
-
   CCopasiObjectName SeperatorCN(Seperator.getCN());
   CCopasiObjectName Title;
   std::vector< CCopasiContainer * > ListOfContainer;
   CCopasiObject* pSelectedObject;
+  C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
     {
       pSelectedObject =
         CCopasiContainer::ObjectFromName(ListOfContainer,
                                          CCopasiObjectName((const char *)itemsTable->text(i).utf8()));
-
       if (pSelectedObject)
         {
           if (pSelectedObject->getObjectParent())
@@ -374,23 +353,24 @@ void TableDefinition1::slotBtnConfirmClicked()
       pReportDefinition->getBodyAddr()->pop_back();
     }
 
+  ListViews::notify(ListViews::REPORT, ListViews::CHANGE, reportKey);
   bUpdated = false;
 }
 
-void TableDefinition1::nameTextChanged(const QString &)
-{
-  bUpdated = true;
-}
+//void TableDefinition1::nameTextChanged(const QString &)
+//{}
 
 void TableDefinition1::commentTextChanged(const QString &)
-{
-  bUpdated = true;
-}
+{bUpdated = true;}
 
 void TableDefinition1::seperatorTextChanged(const QString &)
-{
-  bUpdated = true;
-}
+{bUpdated = true;}
+
+void TableDefinition1::comboTaskChanged(const QString & C_UNUSED(string))
+{bUpdated = true;}
+
+void TableDefinition1::titleButtonClicked()
+{bUpdated = true;}
 
 void TableDefinition1::tabButtonClicked()
 {
@@ -400,12 +380,6 @@ void TableDefinition1::tabButtonClicked()
       seperatorEdit->setText("");
     }
   seperatorEdit->setEnabled(!tabChecked->isChecked());
-}
-
-void TableDefinition1::titleButtonClicked()
-{
-  //check for the connection int i =0;
-  bUpdated = true;
 }
 
 void TableDefinition1::addButtonClicked()
@@ -437,8 +411,6 @@ void TableDefinition1::addButtonClicked()
         }
 
   pdelete(pSelectedVector);
-  //  if (addNewScanItem((*pSelectedVector)[i]))
-  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName()., nSelectedObjects - 1);
 }
 
 void TableDefinition1::deleteButtonClicked()
@@ -447,9 +419,6 @@ void TableDefinition1::deleteButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if (selectedItem)
     {
-      //      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
-      //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
-      //      int pp = selectedList.size();
       itemsTable->removeItem(selectedIndex);
       bUpdated = true;
     }
@@ -514,12 +483,7 @@ bool TableDefinition1::enter(const std::string & key)
 
 bool TableDefinition1::leave()
 {
-  //let the user confirm?
-  //if (bUpdated && (QMessageBox::warning(NULL, "Report Definition Save", "Do you want to save the change you have made to this Report Definition ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
-  {
-    slotBtnConfirmClicked();
-    bUpdated = false;
-  }
+  slotBtnConfirmClicked();
   return true;
 }
 
