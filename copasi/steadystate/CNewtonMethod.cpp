@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:02 $
+   $Date: 2003/11/07 16:56:31 $
    End CVS Header */
 
 #include <algorithm>
@@ -38,13 +38,13 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
   addParameter("Newton.IterationLimit",
                CCopasiParameter::UINT, (unsigned C_INT32) 50);
   addParameter("Newton.DerivationFactor",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-003);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
   addParameter("Newton.Resolution",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-009);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
   addParameter("Newton.LSODA.RelativeTolerance",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-012);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
   addParameter("Newton.LSODA.AbsoluteTolerance",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0e-006);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   addParameter("Newton.LSODA.AdamsMaxOrder",
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
   addParameter("Newton.LSODA.BDFMaxOrder",
@@ -66,7 +66,7 @@ void CNewtonMethod::cleanup()
 }
 
 void CNewtonMethod::load(CReadConfig & configBuffer,
-                         CReadConfig::Mode mode)
+                         CReadConfig::Mode C_UNUSED(mode))
 {
   if (configBuffer.getVersion() < "4.0")
     {
@@ -432,7 +432,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                  /* fortran style vector */
+                           mdxdt.array() - 1,                   /* fortran style vector */
                            1);
         }
 
@@ -489,7 +489,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                  /* fortran style vector */
+                   mdxdt.array() - 1,                   /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
