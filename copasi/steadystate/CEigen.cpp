@@ -58,18 +58,6 @@ CEigen::CEigen()
 
 
 /**
- * User defined constructor
- * @param rows is the max row number of Matrix
- * @param cols is the max column number of Matrix
- */
-//CEigen::CEigen(int rows, int cols)
-//{
-//  mMatrix.newsize(rows, cols);
-//  initialize();
-//}
-
-
-/**
  * Deconstructor
  */
 CEigen::~CEigen()
@@ -118,6 +106,41 @@ void CEigen::setN(C_INT32  aN)
 }
 
 
+
+
+//Get the max eigenvalue real part
+C_FLOAT64  CEigen::getEigen_maxrealpart()
+{
+  return mEigen_maxrealpart;
+}
+
+
+//Get the max eigenvalue imaginary  part
+C_FLOAT64 CEigen::getEigen_maximagpart()
+{
+  return mEigen_maximagpart;
+}
+
+  
+// Get the number of zero eigenvalues
+C_FLOAT64 CEigen::getEigen_nzero()
+{
+  return mEigen_nzero;
+}
+ 
+//Get the eigenvalue stiffness  
+C_FLOAT64 CEigen::getEigen_stiffness()
+{
+  return mEigen_stiffness;
+}
+  
+//Get the eigenvalue hierarchy  
+C_FLOAT64 CEigen::getEigen_hierarchy()
+{
+  return mEigen_hierarchy;
+}
+
+
 //initialize variables for eigenvalue calculations
 //
 void CEigen::initialize()
@@ -128,7 +151,6 @@ void CEigen::initialize()
   //mEigen_i = new double[Model.TotMetab];
   //mA = new double[Model.TotMetab*Model.TotMetab];
 
-  //????????????????
   //different from the original initialization ????
   mEigen_r = new double[mN];
   mEigen_i = new double[mN];
@@ -142,17 +164,17 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
 { 
 
   //int res;
- //char jobvs = 'N';      //#1
- //char sort = 'N';       //#2
+ //char jobvs = 'N';        //#1
+ //char sort = 'N';         //#2
 
  //long int lda;
- long int mLDA;          //#6
+  long int mLDA;            //#6
  //long int sdim;
- long int mSdim;       //#7
- // int n, pz, mx, mn;        // YH: don't use "long" any more
- int pz, mx, mn;        // YH: n is the 4th parameter, not here
- //long int ldvs = 1;   //#11
- //double *work;         //#12
+  long int mSdim;           //#7
+ // int n, pz, mx, mn;      // YH: don't use "long" any more
+ int pz, mx, mn;            // YH: n is the 4th parameter, not here
+ //long int ldvs = 1;       //#11
+ //double *work;            //#12
  //long int lwork = 4096;   //#13
  //long int info;    //#15
  int i, j;
@@ -161,7 +183,7 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
  // the dimension of the matrix
  //n = Model.IndMetab;
  //lda = n>1 ? n : 1;
- //mN = Model.IndMetab;    //mModel->getIndMetab(); //been set outside
+ //mN = Model.IndMetab;     //mModel->getIndMetab(); //been set outside
  mLDA = mN>1 ? mN : 1;
 
  // create the matrices
@@ -180,19 +202,19 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
  //res = dgees_( &mJobvs,                     
  dgees_( &mJobvs,                 
          &mSort,                      
-          mSelect,          //NULL,   
-	 &mN,              //&n,    
+          mSelect,           //NULL,   
+	 &mN,                //&n,    
           mA,                    
          &(int)mLDA,            
-         &(int)mSdim,           // output
+         &(int)mSdim,        // output
           mEigen_r,         
           mEigen_i,               
           mVS,              
          &(int)mLdvs,       
           mWork,            
          &(int)mLWork,               
-          mBWork,         //NULL
-         &mInfo);          //output
+          mBWork,            //NULL
+         &mInfo);            //output
 
  // release the work array
  delete [] mWork;

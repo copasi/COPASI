@@ -40,21 +40,58 @@ class CEigen {
    * be performed
    */
   //TNT::Matrix <C_FLOAT64> mMatrix;
-
-
+ 
+ // variables for stability analysis
+ 
  /**
-   * variables for stability analysis
-   */
- C_FLOAT64                 mEigen_maxrealpart;
- C_FLOAT64                 mEigen_maximagpart;
- C_FLOAT64                 mEigen_nposreal;
- C_FLOAT64                 mEigen_nnegreal;
- C_FLOAT64                 mEigen_nreal;
- C_FLOAT64                 mEigen_nimag;
- C_FLOAT64                 mEigen_ncplxconj;
- C_FLOAT64                 mEigen_nzero;
- C_FLOAT64                 mEigen_stiffness;
- C_FLOAT64                 mEigen_hierarchy;
+  * the real part of the maximum eigenvalue
+  */
+ C_FLOAT64 mEigen_maxrealpart;
+
+/**
+  * the imaginary part of the maximum eigenvalue
+  */
+ C_FLOAT64  mEigen_maximagpart;
+
+/**
+  * the number of eigenvalues with positive real part
+  */
+ C_FLOAT64  mEigen_nposreal;
+
+/**
+  * the number of eigenvalues with negative real part
+  */
+ C_FLOAT64  mEigen_nnegreal;
+
+/**
+  * the number of real eigenvalues
+  */
+ C_FLOAT64  mEigen_nreal;
+
+/**
+  * the number of imaginary eigenvalue numbers
+  */
+ C_FLOAT64  mEigen_nimag;
+
+/**
+  * 
+  */
+ C_FLOAT64 mEigen_ncplxconj;
+
+/**
+  * the number of eigenvalues with value of zero
+  */
+ C_FLOAT64  mEigen_nzero;
+
+/**
+  * the stiffness of eigenvalues
+  */
+ C_FLOAT64  mEigen_stiffness;
+
+/**
+  * the hierary of the eigenvalues
+  */
+ C_FLOAT64  mEigen_hierarchy;
 
 
   //there are 15 parameters in the dgees() subroutine
@@ -152,7 +189,6 @@ class CEigen {
   /**
    * #14: (workspace) Logical array, dimension (N)
    * Not referenced if mSort = 'N'
-   * ???????????????????????????????????????????
    */
   int * mBWork;
 
@@ -173,10 +209,17 @@ class CEigen {
   int mInfo;
 
 
+  /** 
+   * sorts two arrays using one as the criterion for sorting 
+   */
+  int qs_partition(double *A, double *B, int p, int r);
 
-/* sorts two arrays using one as the criterion for sorting */
-int qs_partition(double *A, double *B, int p, int r);
-void quicksort(double *A, double *B, int p, int r);
+  /** 
+   * Do quicksort with 2 arrays of double. 
+   * One is the array of the real part of the eigenvalues.
+   * another is the array of the imaginary part of the eigenvalues
+   */
+  void quicksort(double *A, double *B, int p, int r);
 
 
  public:
@@ -239,6 +282,34 @@ void quicksort(double *A, double *B, int p, int r);
    * @param SSRes the steady state resolution.
    */
   void CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> ss_jacob);
+
+
+  /**
+   * Get the max eigenvalue real part
+   */
+  C_FLOAT64  getEigen_maxrealpart();
+
+
+  /**
+   * Get the max eigenvalue imaginary  part
+   */
+  C_FLOAT64 getEigen_maximagpart();
+
+
+  /**
+   * Get the number of zero eigenvalues
+   */
+  C_FLOAT64 getEigen_nzero();
+
+  /**
+   * Get the eigenvalue stiffness
+   */
+  C_FLOAT64 getEigen_stiffness();
+
+  /**
+   * Get the eigenvalue hierarchy
+   */
+  C_FLOAT64 getEigen_hierarchy();
 
 
 };
