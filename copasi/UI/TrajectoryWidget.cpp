@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:50 $
+   $Date: 2004/09/22 21:58:35 $
    End CVS Header */
 
 /********************************************************
@@ -39,6 +39,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "DataModelGUI.h"
 #include "report/CKeyFactory.h"
 #include "CReportDefinitionSelect.h"
+#include "MyLineEdit.h"
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -54,10 +55,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
   line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-
   TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
 
   parameterTable = new QTable(this, "parameterTable");
@@ -65,53 +62,42 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   parameterTable->setNumCols(1);
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
-
   TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 7, 8, 1, 3);
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
-
   TrajectoryWidgetLayout->addWidget(taskNameLabel, 0, 0);
 
   line7 = new QFrame(this, "line7");
   line7->setFrameShape(QFrame::HLine);
   line7->setFrameShadow(QFrame::Sunken);
   line7->setFrameShape(QFrame::HLine);
-
   TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 3);
 
   line7_2 = new QFrame(this, "line7_2");
   line7_2->setFrameShape(QFrame::HLine);
   line7_2->setFrameShadow(QFrame::Sunken);
   line7_2->setFrameShape(QFrame::HLine);
-
   TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 4, 4, 0, 3);
 
   taskName = new QLineEdit(this, "taskName");
-
   TrajectoryWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 2);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-
   TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
-
-  bExecutable->setEnabled(parent != NULL);
-  bExecutable->setChecked(parent == NULL);
-
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
 
   TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
   TextLabel1_3_2->setText(trUtf8("Method"));
-
   TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 5, 0);
 
   //*****************************
 
-  nStartTime = new QLineEdit(this, "nStartTime");
-  nStartTime->setText(trUtf8(""));
+  nStartTime = new MyLineEdit(this, "nStartTime");
+  //nStartTime->setText(trUtf8(""));
   nStartTime->setValidator(new QDoubleValidator(nStartTime));
   TrajectoryWidgetLayout->addWidget(nStartTime, 2, 1);
 
@@ -120,8 +106,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(TextLabel1_3, 2, 0);
 
   //****
-  nEndTime = new QLineEdit(this, "nEndTime");
-  nEndTime->setText(trUtf8(""));
+  nEndTime = new MyLineEdit(this, "nEndTime");
+  //nEndTime->setText(trUtf8(""));
   nEndTime->setValidator(new QDoubleValidator(nEndTime));
   TrajectoryWidgetLayout->addWidget(nEndTime, 2, 3);
 
@@ -130,8 +116,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 2, 2);
 
   //****
-  nStepSize = new QLineEdit(this, "nStepSize");
-  nStepSize->setText(trUtf8(""));
+  nStepSize = new MyLineEdit(this, "nStepSize");
+  //nStepSize->setText(trUtf8(""));
   nStepSize->setValidator(new QDoubleValidator(nStepSize));
   TrajectoryWidgetLayout->addWidget(nStepSize, 3, 1);
 
@@ -140,8 +126,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(TextLabel1, 3, 0);
 
   //****
-  nStepNumber = new QLineEdit(this, "nStepNumber");
-  nStepNumber->setText(trUtf8(""));
+  nStepNumber = new MyLineEdit(this, "nStepNumber");
+  //nStepNumber->setText(trUtf8(""));
   nStepNumber->setValidator(new QIntValidator(1, 1000000000, nStepNumber));
   TrajectoryWidgetLayout->addWidget(nStepNumber, 3, 3);
 
@@ -218,17 +204,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
 
-  //connect(nStartTime, SIGNAL(textChanged(const QString&)), this, SLOT(StartTimeSlot()));
-  //connect(nEndTime, SIGNAL(textChanged(const QString&)), this, SLOT(EndTimeSlot()));
-  //connect(nStepSize, SIGNAL(textChanged(const QString&)), this, SLOT(StepsizeSlot()));
-  //connect(nStepNumber, SIGNAL(textChanged(const QString&)), this, SLOT(NumStepsSlot()));
-
-  connect(nStartTime, SIGNAL(lostFocus()), this, SLOT(StartTimeSlot()));
-  connect(nEndTime, SIGNAL(lostFocus()), this, SLOT(EndTimeSlot()));
-  connect(nStepSize, SIGNAL(lostFocus()), this, SLOT(StepsizeSlot()));
-  connect(nStepNumber, SIGNAL(lostFocus()), this, SLOT(NumStepsSlot()));
-
-  //reportDefinitionButton->setEnabled(false);
+  connect(nStartTime, SIGNAL(edited()), this, SLOT(StartTimeSlot()));
+  connect(nEndTime, SIGNAL(edited()), this, SLOT(EndTimeSlot()));
+  connect(nStepSize, SIGNAL(edited()), this, SLOT(StepsizeSlot()));
+  connect(nStepNumber, SIGNAL(edited()), this, SLOT(NumStepsSlot()));
 }
 
 /*
