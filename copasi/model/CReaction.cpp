@@ -932,23 +932,21 @@ void CReaction::initCallParameters()
     {
       mCallParameters[i] = NULL;
 
-      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT32)
-        continue;
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT32)
+        switch (mParameterDescription[i]->getType())
+          {
+          case CFunctionParameter::VINT32:
+            mCallParameters[i] = new std::vector< C_INT32 * >;
+            break;
 
-      switch (mParameterDescription[i]->getType())
-        {
-        case CFunctionParameter::VINT32:
-          mCallParameters[i] = new std::vector< C_INT32 * >;
-          break;
+          case CFunctionParameter::VFLOAT64:
+            mCallParameters[i] = new std::vector< C_FLOAT64 * >;
+            break;
 
-        case CFunctionParameter::VFLOAT64:
-          mCallParameters[i] = new std::vector< C_FLOAT64 * >;
-          break;
-
-        default:
-          fatalError();
-          break;
-        }
+          default:
+            fatalError();
+            break;
+          }
     }
 }
 
