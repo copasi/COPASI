@@ -32,7 +32,6 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
 LIBS = \
-	-Wl,-lrandomGenerator \
 	-Wl,-lutilities \
 	-Wl,-loutput \
 	-Wl,-lreport \
@@ -43,7 +42,8 @@ LIBS = \
 	-Wl,-ltrajectory \
 	-Wl,-lutilities \
 	-Wl,-loutput \
-	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+	-Wl,-lrandomGenerator \
+	-llapack -lblas -lF77 -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
