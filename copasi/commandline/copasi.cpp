@@ -44,7 +44,7 @@ C_INT main(C_INT argc, char *argv[])
 
   std::string line;
   std::ifstream in(".copasirc");
-  getline(in, line);
+  std::getline(in, line);
 
   try
     {
