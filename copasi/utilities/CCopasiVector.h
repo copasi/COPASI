@@ -11,12 +11,14 @@
 #include <assert.h>
 
 #include "CCopasiMessage.h"
+#include "report/CCopasiObjectName.h"
+#include "report/CCopasiContainer.h"
 
 class CReadConfig;
 class CWriteConfig;
 
-template < class CType >
-      class CCopasiVector : protected std::vector< CType * >
+template < class CType > class CCopasiVector:
+        protected std::vector< CType * >, protected CCopasiObject
     {
     public:
       typedef typename std::vector< CType * >::value_type value_type;
@@ -29,16 +31,19 @@ template < class CType >
       /**
        *  Default constructor
        */
-      CCopasiVector() : std::vector< CType * > ()
-      {
-        CONSTRUCTOR_TRACE;
-      }
+      CCopasiVector(const std::string & name = "NoName",
+                    const CCopasiContainer * pParent = &RootContainer,
+                    const unsigned C_INT32 & flag = CCopasiObject::Vector):
+          std::vector< CType * >(),
+          CCopasiObject(name, pParent, "Vector", flag)
+      {CONSTRUCTOR_TRACE;}
 
       /**
        *  Copy constructor
        */
-      CCopasiVector(const CCopasiVector < CType > & src) :
-          std::vector< CType * > (src)
+      CCopasiVector(const CCopasiVector < CType > & src):
+          std::vector< CType * >(src),
+          CCopasiObject(src)
       {
         CONSTRUCTOR_TRACE;
         unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
@@ -78,9 +83,7 @@ template < class CType >
       /**
        *
        */
-
-      virtual void add
-      (const CType & src)
+      virtual void add(const CType & src)
       {
         CType * Element = new CType(src);
 
@@ -139,6 +142,12 @@ template < class CType >
       }
 
       /**
+       *
+       */
+      virtual CCopasiObject * getObject(const CCopasiObjectName &name) const
+      {return (CCopasiObject *) (*this)[name.getIndex()];}
+
+      /**
        *  Retrieves the size of the vector
        *  @return "unsigned C_INT32" size
        */
@@ -179,10 +188,7 @@ template < class CType >
       }
     };
 
-template < class CType >
-
-      class CCopasiVectorS
-        : public CCopasiVector < CType >
+template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
     {
     public:
       typedef typename std::vector< CType * >::value_type value_type;
@@ -195,7 +201,9 @@ template < class CType >
       /**
        *  Default constructor
        */
-      CCopasiVectorS() : CCopasiVector < CType > (){}
+      CCopasiVectorS(const std::string & name = "NoName",
+                     const CCopasiContainer * pParent = &RootContainer):
+      CCopasiVector< CType >(name, pParent){}
 
       /**
        *  Copy constructor
@@ -257,10 +265,7 @@ template < class CType >
       {return ((CCopasiVector <CType>*) this)->operator[](index);}
     };
 
-template < class CType >
-
-      class CCopasiVectorN
-        : public CCopasiVector < CType >
+template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
     {
     public:
       typedef typename std::vector< CType * >::value_type value_type;
@@ -273,7 +278,11 @@ template < class CType >
       /**
        *  Default constructor
        */
-      CCopasiVectorN() : CCopasiVector < CType > (){}
+      CCopasiVectorN(const std::string & name = "NoName",
+                     const CCopasiContainer * pParent = &RootContainer):
+          CCopasiVector< CType >(name, pParent,
+                                 CCopasiObject::Vector
+                             + CCopasiObject::NameVector){}
 
       /**
        *  Copy constructor
@@ -378,30 +387,46 @@ template < class CType >
       /**
        *
        */
-      virtual unsigned C_INT32 getIndex(const std::string &name) const
+      virtual CCopasiObject * getObject(const CCopasiObjectName &name) const
+        {return (CCopasiObject *) (*this)[name.getName()];}
+
+        /**
+         *
+         */
+        virtual unsigned C_INT32 getIndex(const std::string &name) const
         {
           unsigned C_INT32 i, imax = size();
           const_iterator Target = begin();
 
           for (i = 0; i < imax; i++, Target++)
-          if ((*Target)->getName() == name)
-            return i;
+          if ((*Target)->getName() == name) return i;
 
-            return (unsigned C_INT32) - 1;
+            return C_INVALID_INDEX;
           }
 
-private:
           /**
            *
            */
-          virtual bool isInsertAllowed(const CType * src)
-          {return (getIndex(src->getName()) == (unsigned C_INT32) - 1);}
+          virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const
+            {
+              unsigned C_INT32 i, imax = size();
+              const_iterator Target = begin();
+
+              for (i = 0; i < imax; i++, Target++)
+              if (*Target == (void *) pObject) return i;
+
+                return C_INVALID_INDEX;
+              }
+
+private:
+              /**
+               *
+               */
+              virtual bool isInsertAllowed(const CType * src)
+              {return (getIndex(src->getName()) == (unsigned C_INT32) - 1);}
     };
 
-template < class CType >
-
-      class CCopasiVectorNS
-        : public CCopasiVectorN < CType >
+template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
     {
     public:
       typedef typename std::vector< CType * >::value_type value_type;
@@ -414,13 +439,15 @@ template < class CType >
       /**
        *  Default constructor
        */
-      CCopasiVectorNS() : CCopasiVectorN < CType > (){}
+      CCopasiVectorNS(const std::string & name = "NoName",
+                      const CCopasiContainer * pParent = &RootContainer):
+      CCopasiVectorN< CType >(name, pParent) {}
 
       /**
        *  Copy constructor
        */
       CCopasiVectorNS(const CCopasiVectorNS < CType > & src) :
-      CCopasiVectorN < CType > (src) {}
+      CCopasiVectorN< CType >(src) {}
 
       /**
        *  Destructor

@@ -1,0 +1,92 @@
+/**
+ * Class CCopasiObject
+ *
+ * This class is the base class for all global accessible objects in copasi.
+ *
+ * Copyright Stefan Hoops 2002
+ */
+
+#ifndef COPASI_CCopasiObject
+#define COPASI_CCopasiObject
+
+#include <string>
+#include <typeinfo>
+
+class CCopasiObjectName;
+class CCopasiContainer;
+template <class CType> class CCopasiObjectReference;
+
+/** @dia:pos 40.5964,2.55372 */
+class CCopasiObject
+  {
+    typedef CCopasiObject referenceType;
+
+    //Attributes
+  protected:
+    static const unsigned C_INT32 Container;
+
+    static const unsigned C_INT32 Vector;
+
+    static const unsigned C_INT32 Matrix;
+
+    static const unsigned C_INT32 NameVector;
+
+    std::string mObjectName;
+
+  private:
+    std::string mObjectType;
+
+    /** @dia:route 8,0; h,23.7081,53.1343,15.3196,2.55372,40.5964 */
+    CCopasiContainer * mpObjectParent;
+
+    unsigned C_INT32 mObjectFlag;
+
+    //Operations
+  protected:
+    CCopasiObject();
+
+    CCopasiObject(const std::string & name,
+                  const CCopasiContainer * pParent = NULL,
+                  const std::string & type = "CN",
+                  const unsigned C_INT32 & flag = 0);
+
+  public:
+    CCopasiObject(const CCopasiObject & src);
+
+    virtual ~CCopasiObject();
+
+    virtual const std::string & getName() const;
+
+    const std::string & getObjectName() const;
+
+    const std::string & getObjectType() const;
+
+    CCopasiObject * getObjectParent() const;
+
+    virtual CCopasiObjectName getCN() const;
+
+    virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
+
+    virtual CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+
+    template <class CType> CType * getReference(CType * reference)
+    {return reference = (CType *) getReference();}
+
+    template <class CType> CCopasiObjectReference< CType > *
+    createReference(const std::string & name,
+                    const CCopasiContainer * pParent,
+                    CType & reference)
+    {return new CCopasiObjectReference< CType >(name, pParent, reference);}
+
+    bool isContainer();
+
+    bool isVector();
+
+    bool isMatrix();
+
+    bool isNameVector();
+
+  protected:
+    virtual void * getReference();
+  };
+#endif // COPASI_CCopasiObject

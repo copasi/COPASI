@@ -1,0 +1,33 @@
+####### kdevelop will overwrite this part!!! (begin)##########
+noinst_LIBRARIES = libreport.a
+
+libreport_a_SOURCES = \
+	CCopasiObjectName.cpp \
+	CCopasiObject.cpp \
+	CCopasiContainer.cpp \
+	CMetabNew.cpp
+
+EXTRA_DIST = \
+	CCopasiObjectName.h	CCopasiObjectName.cpp \
+	CCopasiObject.h	CCopasiObject.cpp \
+	CCopasiObjectReference.h \
+	CCopasiContainer.h	CCopasiContainer.cpp \
+	CMetabNew.h	CMetabNew.cpp
+
+####### kdevelop will overwrite this part!!! (end)############
+
+# set the include path found by configure
+INCLUDES= $(all_includes) -I$(top_srcdir)/copasi
+
+.lpp.cpp:
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
+
+%.cpp: %.lpp
+	$(LEX) -t $< | \
+	sed -e 's/class istream;/#include "copasi.h"/' \
+	    -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+	    -e 's/#include <unistd.h>/using namespace std;/' > $@
+
