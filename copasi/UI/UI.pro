@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.47 $ $Author: gauges $ $Date: 2004/10/01 14:50:51 $  
+# $Revision: 1.48 $ $Author: gauges $ $Date: 2004/10/04 18:50:55 $  
 ######################################################################
 
 include(../common.pri)
@@ -156,6 +156,8 @@ HEADERS += \
            ScanItemWidget.h \
            ScanWidget.h \
            SliderDialog.h \
+           SimpleSelectionDialog.h \
+           simpleselectionwidget.h \
            StateWidget.h \
            StateSubwidget.h \
            SteadyStateWidget.h \
@@ -221,6 +223,8 @@ SOURCES += \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
            SliderDialog.cpp \
+           SimpleSelectionDialog.cpp \
+           simpleselectionwidget.cpp \
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -231,9 +235,11 @@ SOURCES += \
            TrajectoryWidget.cpp \
            Tree.cpp
 
+
 #FORMS +=  TimeSeriesSubwidget.ui \
-#          StateSubwidget.ui
-           
+#          StateSubwidget.ui \
+#          simpleselectionwidget.ui        
+
 release {
   distribution.path = .
   distribution.file = CopasiUI
