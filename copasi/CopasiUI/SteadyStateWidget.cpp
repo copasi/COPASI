@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:44:19 $
+   $Date: 2004/10/07 09:30:26 $
    End CVS Header */
 
 /********************************************************
@@ -43,6 +43,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CReport.h"
 #include "report/CReportDefinition.h"
 #include "CReportDefinitionSelect.h"
+#include "CProgressBar.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -264,6 +265,8 @@ void SteadyStateWidget::runSteadyStateTask()
     }*/
 
   setCursor(Qt::WaitCursor);
+  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  mSteadyStateTask->setProgressHandler(tmpBar);
 
   try
     {
@@ -280,6 +283,8 @@ void SteadyStateWidget::runSteadyStateTask()
                      QMessageBox::NoButton);
       mb.exec();
     }
+
+  pdelete(tmpBar);
 
   //  emit runFinished(mSteadyStateTask->getProblem()->getModel());
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
