@@ -583,7 +583,7 @@ void CModel::buildRedStoi()
 void CModel::buildL()
 {
   C_INT N = mMetabolitesInd.size();
-  C_INT LDA = std::max(1, N);
+  C_INT LDA = std::max((C_INT) 1, N);
   C_INT Info;
 
   unsigned C_INT32 i, imin, imax;

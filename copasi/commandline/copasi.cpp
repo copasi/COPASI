@@ -30,7 +30,7 @@
 
 C_INT32 TestOptimization(void);
 
-C_INT main(C_INT argc, char *argv[])
+int main(int argc, char *argv[])
 {
   char PrgName[512];
 
