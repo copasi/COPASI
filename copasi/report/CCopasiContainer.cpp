@@ -32,7 +32,7 @@ CCopasiContainer::~CCopasiContainer()
   std::vector< CCopasiObject * >::iterator end = mObjects.end();
 
   for (; it < end; it++)
-    pdelete(*it);
+    if ((*it)->isReference()) pdelete(*it);
 }
 
 CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn)
@@ -85,9 +85,8 @@ void CCopasiContainer::add(CCopasiObject * object)
 
 CCopasiContainer CRootContainer::mRoot("Root");
 
-CRootContainer::CRootContainer(){}
+CRootContainer::CRootContainer() {}
 
 CRootContainer::~CRootContainer() {}
 
-CCopasiContainer & CRootContainer::ref()
-{return mRoot;}
+CCopasiContainer & CRootContainer::ref() {return mRoot;}
