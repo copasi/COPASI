@@ -9,9 +9,9 @@
 #define COPASI_CChemEqElement
 
 #include <string>
-
-#include "utilities/CCopasiVector.h"
 #include "CMetab.h"
+
+template <class CType> class CCopasiVectorN;
 
 /** @dia:pos 12.8337,93.7809 */
 class CChemEqElement : public CCopasiContainer
