@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/05 21:11:22 $
+   $Date: 2005/04/05 16:18:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -34,6 +34,8 @@
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"
+
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -106,7 +108,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       if (sbmlCompartment == NULL)
         {
           //DebugFile << "Error. Expected SBML Compartment, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected SBML Compartment, got NULL pointer.");
+          //throw StdException("Error. Expected SBML Compartment, got NULL pointer.");
+          fatalError();
         }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
       std::string key = sbmlCompartment->getId();
@@ -128,7 +131,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       if (sbmlSpecies == NULL)
         {
           //DebugFile << "Error. Expected SBML species, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected SBML species, got NULL pointer.");
+          //throw StdException("Error. Expected SBML species, got NULL pointer.");
+          fatalError();
         }
       CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
       if (copasiCompartment != NULL)
@@ -148,7 +152,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
       else
         {
           //DebugFile << "Error. Could not find compartment " << sbmlSpecies->getCompartment() << std::endl;
-          throw StdException("Error. Could not find compartment " + sbmlSpecies->getCompartment() + ".");
+          //throw StdException("Error. Could not find compartment " + sbmlSpecies->getCompartment() + ".");
+          fatalError();
         }
     }
 
@@ -175,7 +180,8 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       std::string cU = sbmlCompartment->getUnits();
       if (cU != "volume" && cU != "area" && cU != "length")
         {
-          throw StdException("Error. Compartment unit other than \"volume\", \"area\" or \"length\" are not supported.");
+          //throw StdException("Error. Compartment unit other than \"volume\", \"area\" or \"length\" are not supported.");
+          fatalError();
         }
       else if (cU == "area" || cU == "length")
         {
@@ -213,7 +219,8 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       std::string cU = sbmlSpecies->getSubstanceUnits();
       if (cU != "substance")
         {
-          throw StdException("Error. Compartment unit other than \"substance\" are not supported.");
+          //throw StdException("Error. Compartment unit other than \"substance\" are not supported.");
+          fatalError();
         }
     }
   if (sbmlSpecies->isSetSpatialSizeUnits())
@@ -243,7 +250,8 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (copasiMetabolite == NULL)
     {
       //DebugFile << "Could not create Copasi metabolite." << std::endl;
-      throw StdException("Error. Could not create copasi metabolite.");
+      //throw StdException("Error. Could not create copasi metabolite.");
+      fatalError();
     }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
     {
@@ -276,7 +284,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   if (sbmlReaction == NULL)
     {
       //DebugFile << "createCReactionFromReaction get NULL pointer as first argument." << std::endl;
-      throw StdException("Error. Function createCReactionFromReaction got NULL pointer as first argument.");
+      //throw StdException("Error. Function createCReactionFromReaction got NULL pointer as first argument.");
+      fatalError();
     }
   std::string name = sbmlReaction->getName();
   if (name == "")
@@ -298,7 +307,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   if (copasiReaction == NULL)
     {
       //DebugFile << "Could not create Copasi reaction." << std::endl;
-      throw StdException("Error. Could not create Copasi reaction.");
+      //throw StdException("Error. Could not create Copasi reaction.");
+      fatalError();
     }
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
@@ -310,7 +320,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (sr == NULL)
         {
           //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          fatalError();
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
@@ -318,7 +329,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (pos == this->speciesMap.end())
         {
           //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          fatalError();
 
           //exit(1);
         }
@@ -344,7 +356,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (sr == NULL)
         {
           //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          fatalError();
         }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
@@ -352,7 +365,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (pos == this->speciesMap.end())
         {
           //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          fatalError();
           //exit(1);
         }
       if (compartment == NULL)
@@ -377,14 +391,16 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (sr == NULL)
         {
           //DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          //throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+          fatalError();
         }
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
         {
           //DebugFile << "Error. Could not find CMetab for key " << sr->getSpecies() << "." << std::endl;
-          throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          //throw StdException("Error. Could not find CMetab for key " + sr->getSpecies() + ".");
+          fatalError();
           //exit(1);
         }
       if (compartment == NULL)
@@ -412,7 +428,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getSubstanceUnits();
           if (cU != "substance")
             {
-              throw StdException("Error. KineticLaw substance unit other than \"substance\" are not supported.");
+              //throw StdException("Error. KineticLaw substance unit other than \"substance\" are not supported.");
+              fatalError();
             }
         }
       if (kLaw->isSetTimeUnits())
@@ -420,7 +437,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           std::string cU = kLaw->getTimeUnits();
           if (cU != "time")
             {
-              throw StdException("Error. KineticLaw time unit other than \"time\" are not supported.");
+              //throw StdException("Error. KineticLaw time unit other than \"time\" are not supported.");
+              fatalError();
             }
         }
 
@@ -432,7 +450,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (kLawMath == NULL)
         {
           //DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected ASTNode, got NULL pointer.");
+          //throw StdException("Error. Expected ASTNode, got NULL pointer.");
+          fatalError();
         }
       //ConverterASTNode::printASTNode(kLawMath);
       ASTNode* node = new ConverterASTNode(*kLawMath);
@@ -441,7 +460,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (node == NULL)
         {
           //DebugFile << "Replacing the user defined functions failed." << std::endl;
-          throw StdException("Error. Replacing the user defined functions failed.");
+          //throw StdException("Error. Replacing the user defined functions failed.");
+          fatalError();
         }
       this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
       this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
@@ -499,7 +519,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           else
             {
               //DebugFile << "Error. Could not determine compartment for single compartment reaction." << std::endl;
-              throw StdException("Error. Could not determine compartment for single compartment reaction.");
+              //throw StdException("Error. Could not determine compartment for single compartment reaction.");
+              fatalError();
             }
         }
 
@@ -526,7 +547,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (cFun == NULL)
         {
           //DebugFile << "Could not create function " << functionName << "." << std::endl;
-          throw StdException("Error. Could not create function for name " + functionName + ".");
+          //throw StdException("Error. Could not create function for name " + functionName + ".");
+          fatalError();
         }
       cFun->setDescription(SBML_formulaToString(node));
       cFun->setType(CFunction::UserDefined);
@@ -571,7 +593,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       if (parameter == NULL)
                         {
                           //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                          throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                          //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                          fatalError();
                         }
                       if (parameter->isSetId())
                         {
@@ -605,7 +628,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           if (parameter == NULL)
                             {
                               //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                              throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                              //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                              fatalError();
                             }
                           std::string parameterName;
                           if (parameter->isSetId())
@@ -644,7 +668,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       else
                         {
                           //DebugFile << "Could not find parameter: " << nodeName << std::endl;
-                          throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                          //throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                          fatalError();
                         }
                     }
                 }
@@ -679,7 +704,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     }
                   else
                     {
-                      throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      fatalError();
                     }
                 }
               else if (nodeName.find("product_") == 0)
@@ -692,7 +718,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     }
                   else
                     {
-                      throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      fatalError();
                     }
                 }
               else if (nodeName.find("modifier_") == 0)
@@ -705,7 +732,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     }
                   else
                     {
-                      throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      //throw StdException("Error. Could not find CMetab for key " + speciesKey + ".");
+                      fatalError();
                     }
                 }
               else
@@ -718,7 +746,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       if (parameter == NULL)
                         {
                           //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                          throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                          //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                          fatalError();
                         }
                       std::string parameterName;
                       if (parameter->isSetId())
@@ -745,7 +774,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                           if (parameter == NULL)
                             {
                               //DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
-                              throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                              //throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                              fatalError();
                             }
                           std::string parameterName;
                           if (parameter->isSetId())
@@ -777,7 +807,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       else
                         {
                           //DebugFile << "Could not find parameter: " << nodeName << std::endl;
-                          throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                          //throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                          fatalError();
                         }
                     }
                 }
@@ -920,7 +951,8 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
       ConverterASTNode* newChild = this->replaceUserDefinedFunctions(node->getChild(counter), sbmlModel);
       if (newChild == NULL)
         {
-          throw StdException("Error. Could not replace user defined functions.");
+          //throw StdException("Error. Could not replace user defined functions.");
+          fatalError();
         }
       newNode->addChild(newChild);
     }
@@ -931,7 +963,8 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
       FunctionDefinition* funDef = this->getFunctionDefinitionForName(newNode->getName(), sbmlModel);
       if (funDef == NULL)
         {
-          throw StdException((std::string("Error. Could not find user defined function with name ") + std::string(newNode->getName())).c_str());
+          //throw StdException((std::string("Error. Could not find user defined function with name ") + std::string(newNode->getName())).c_str());
+          fatalError();
         }
       /* make a map that maps every parameter of the function definition to a
       ** node in the actual function call. */
@@ -957,7 +990,8 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
   if (uDefFunction->getNumChildren() != function->getNumChildren() + 1)
     {
       std::string functionName = uDefFunction->getName();
-      throw StdException("Error. The number of parameters to the function call " + functionName + " does not correspond to the number of parameters givven in the definition of the function.");
+      //throw StdException("Error. The number of parameters to the function call " + functionName + " does not correspond to the number of parameters givven in the definition of the function.");
+      fatalError();
     }
   std::map<std::string, ASTNode*> varMap;
   unsigned int counter;
@@ -1069,6 +1103,7 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
 CModel*
 SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
 {
+  CModel* pModel = NULL;
   if (funDB != NULL)
     {
       this->functionDB = funDB;
@@ -1092,14 +1127,15 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
       //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
       //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
 
-      CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
+      pModel = this->createCModelFromSBMLDocument(sbmlDoc);
       delete sbmlDoc;
-      return model;
     }
   else
     {
-      throw StdException("Error. readSBML needs a valid CFunctionDB object.");
+      //throw StdException("Error. readSBML needs a valid CFunctionDB object.");
+      fatalError();
     }
+  return pModel;
 }
 
 /**
@@ -1113,7 +1149,8 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleSubstanceUnit is NULL pointer." << std::endl;
-      throw StdException("Error. Argument to handleSubstanceUnit is NULL pointer.");
+      //throw StdException("Error. Argument to handleSubstanceUnit is NULL pointer.");
+      fatalError();
     }
   if (uDef->getNumUnits() == 1)
     {
@@ -1121,7 +1158,8 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected Unit, got NULL pointer.");
+          //throw StdException("Error. Expected Unit, got NULL pointer.");
+          fatalError();
         }
       if ((u->getKind() == UNIT_KIND_MOLE))
         {
@@ -1155,7 +1193,8 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              throw StdException("Error. Invalid SBML substance unit definition.");
+              //throw StdException("Error. Invalid SBML substance unit definition.");
+              fatalError();
             }
         }
       else if ((u->getKind() == UNIT_KIND_ITEM))
@@ -1166,17 +1205,20 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
             }
           else
             {
-              throw StdException("Error. Invalid SBML substance unit definition.");
+              //throw StdException("Error. Invalid SBML substance unit definition.");
+              fatalError();
             }
         }
       else
         {
-          throw StdException("Error. Invalid SBML volume unit definition.");
+          //throw StdException("Error. Invalid SBML volume unit definition.");
+          fatalError();
         }
     }
   else
     {
-      throw StdException("Error. Invalid SBML substance unit definition.");
+      //throw StdException("Error. Invalid SBML substance unit definition.");
+      fatalError();
     }
   return qUnit;
 }
@@ -1192,7 +1234,8 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleTimeUnit is NULL pointer." << std::endl;
-      throw StdException("Error. Argument to handleTimeUnits is NULL pointer.");
+      //throw StdException("Error. Argument to handleTimeUnits is NULL pointer.");
+      fatalError();
     }
   if (uDef->getNumUnits() == 1)
     {
@@ -1200,7 +1243,8 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected Unit, got NULL pointer.");
+          //throw StdException("Error. Expected Unit, got NULL pointer.");
+          fatalError();
         }
       if ((u->getKind() == UNIT_KIND_SECOND))
         {
@@ -1248,22 +1292,26 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                 }
               else
                 {
-                  throw StdException("Error. Invalid SBML time unit definition.");
+                  //throw StdException("Error. Invalid SBML time unit definition.");
+                  fatalError();
                 }
             }
           else
             {
-              throw StdException("Error. Invalid SBML time unit definition.");
+              //throw StdException("Error. Invalid SBML time unit definition.");
+              fatalError();
             }
         }
       else
         {
-          throw StdException("Error. Invalid SBML time unit definition.");
+          //throw StdException("Error. Invalid SBML time unit definition.");
+          fatalError();
         }
     }
   else
     {
-      throw StdException("Error. Invalid SBML time unit definition.");
+      //throw StdException("Error. Invalid SBML time unit definition.");
+      fatalError();
     }
   return tUnit;
 }
@@ -1279,7 +1327,8 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
   if (uDef == NULL)
     {
       //DebugFile << "Argument to handleVolumeUnit is NULL pointer." << std::endl;
-      throw StdException("Error. Argument to handleVolumeUnit is NULL pointer.");
+      //throw StdException("Error. Argument to handleVolumeUnit is NULL pointer.");
+      fatalError();
     }
   if (uDef->getNumUnits() == 1)
     {
@@ -1287,7 +1336,8 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
       if (u == NULL)
         {
           //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected Unit, got NULL pointer.");
+          //throw StdException("Error. Expected Unit, got NULL pointer.");
+          fatalError();
         }
       if ((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE))
         {
@@ -1321,7 +1371,8 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              throw StdException("Error. Invalid SBML volume unit definition.");
+              //throw StdException("Error. Invalid SBML volume unit definition.");
+              fatalError();
             }
         }
       else if ((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE))
@@ -1332,17 +1383,20 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
           else
             {
-              throw StdException("Error. Invalid SBML volume unit definition.");
+              //throw StdException("Error. Invalid SBML volume unit definition.");
+              fatalError();
             }
         }
       else
         {
-          throw StdException("Error. Invalid SBML volume unit definition.");
+          //throw StdException("Error. Invalid SBML volume unit definition.");
+          fatalError();
         }
     }
   else
     {
-      throw StdException("Error. Invalid SBML volume unit definition.");
+      //throw StdException("Error. Invalid SBML volume unit definition.");
+      fatalError();
     }
   return vUnit;
 }
