@@ -9,8 +9,11 @@
 #ifndef DIFFERENTIAL_EQUATIONS_H
 #define DIFFERENTIAL_EQUATIONS_H
 #include <qpushbutton.h>
-#include "copasi.h"
 #include <qtextbrowser.h>
+
+#include "copasi.h"
+
+class CMathModel;
 
 class DifferentialEquations : public QWidget
   {
@@ -23,7 +26,7 @@ class DifferentialEquations : public QWidget
 
   public:
     DifferentialEquations(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadDifferentialEquations();
+    void loadDifferentialEquations(CMathModel * mathModel);
 
   protected slots:
     virtual void slotBtnOKClicked();

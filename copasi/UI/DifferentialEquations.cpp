@@ -9,10 +9,15 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include "DifferentialEquations.h"
-#include "listviews.h"
 #include <qfont.h>
 #include <qtextbrowser.h>
+#include <qstylesheet.h>
+
+#include "DifferentialEquations.h"
+#include "listviews.h"
+#include "mathmodel/CMathModel.h"
+#include "mathmodel/CMathVariable.h"
+#include "mathmodel/CMathEq.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -35,8 +40,21 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   textBrowser = new QTextBrowser (this, "Text Browser");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(textBrowser);
-  textBrowser->setText("This is the text browser for entering ascii text....enter text...");
-  textBrowser->setReadOnly(false);
+
+  QStyleSheet * Style = new QStyleSheet;
+  QStyleSheetItem * lhs = new QStyleSheetItem(Style, "lhs");
+  lhs->setDisplayMode(QStyleSheetItem::DisplayBlock);
+  QStyleSheetItem * rhs = new QStyleSheetItem(Style, "rhs");
+  rhs->setDisplayMode(QStyleSheetItem::DisplayBlock);
+  rhs->setMargin(QStyleSheetItem::MarginLeft, 20);
+  rhs->setMargin(QStyleSheetItem::MarginBottom, 10);
+  QStyleSheetItem * emp = new QStyleSheetItem(Style, "emp");
+  emp->setDisplayMode(QStyleSheetItem::DisplayInline);
+  emp->setFontItalic(true);
+
+  textBrowser->setStyleSheet(Style);
+  textBrowser->setTextFormat(Qt::RichText);
+
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
 
@@ -55,8 +73,30 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void DifferentialEquations::loadDifferentialEquations()
+void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
 {
+  std::map< std::string, CMathVariableMetab * > & MetabList =
+    mathModel->getMetabList();
+  std::map< std::string, CMathVariableMetab * >::iterator it =
+    MetabList.begin();
+  std::map< std::string, CMathVariableMetab * >::iterator end =
+    MetabList.end();
+
+  QString Text;
+  CMathEq *pMathEq = NULL;
+  for (; it != end; ++it)
+    {
+      pMathEq = it->second->getEq();
+      Text += QString::fromLatin1("<lhs>");
+      Text += QString::fromLatin1(pMathEq->getLeft().getData().c_str());
+      Text += QString::fromLatin1(" =</lhs>");
+
+      Text += QString::fromLatin1("<rhs>");
+      Text += QString::fromLatin1(pMathEq->getRight().getData().c_str());
+      Text += QString::fromLatin1("</rhs>");
+    }
+
+  textBrowser->setText(Text);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>
