@@ -47,10 +47,10 @@ C_INT32  MakeFunctionEntry(const string &name,
                            short reversible,
                            vector < string > modifier,
                            vector < string > parameter,
-                           C_CopasiVectorNS <CKinFunction> &functions);
+                           CCopasiVectorNS <CKinFunction> &functions);
 
 vector < CMetab * >
-InitMetabolites(C_CopasiVector < CCompartment > & compartment);
+InitMetabolites(CCopasiVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
 
 C_INT32 TestOutputEvent(void);
@@ -227,7 +227,7 @@ C_INT32 TestCompartment(void)
 
   CReadConfig Specific((string) "TestCompartment.txt");
     
-  C_CopasiVectorNS < CCompartment > ListOut;
+  CCopasiVectorNS < CCompartment > ListOut;
 
   ListOut.load(Specific,2);
 
@@ -235,7 +235,7 @@ C_INT32 TestCompartment(void)
   ListOut.save(VectorOut);
   VectorOut.flush();
 
-  C_CopasiVectorNS < CCompartment > ListIn;
+  CCopasiVectorNS < CCompartment > ListIn;
 
   CReadConfig VectorIn((string) "TestCompartmentVector.txt");
 
@@ -533,7 +533,7 @@ C_INT32 TestMoiety()
 {
   CMoiety mo("test");
   CCompartment c("comp", 1.0);
-  C_CopasiVectorN < CMetab > mv;
+  CCopasiVectorN < CMetab > mv;
     
   mv = c.metabolites();
     
@@ -607,7 +607,7 @@ C_INT32 TestKinFunction()
 }
 
 vector < CMetab * > 
-InitMetabolites(C_CopasiVectorN < CCompartment > & compartments)
+InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
 
@@ -632,7 +632,7 @@ C_INT32 TestBaseFunction()
 
 C_INT32 MakeFunctionDB()
 {
-  C_CopasiVectorNS <CKinFunction> functions;
+  CCopasiVectorNS <CKinFunction> functions;
   vector <string> modifier;
   vector <string> parameter;
 
@@ -1154,7 +1154,7 @@ C_INT32 MakeFunctionEntry(const string &name,
                           short reversible,
                           vector < string > modifier,
                           vector < string > parameter,
-                          C_CopasiVectorNS <CKinFunction> &functions)
+                          CCopasiVectorNS <CKinFunction> &functions)
 {
   C_INT32 Index = functions.size();
   unsigned C_INT32 i;

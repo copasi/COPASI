@@ -30,7 +30,7 @@ class CCOutput: public CCopasiVector < COutput >
 class COutputList
 {
  private:
-  C_CopasiVectorS < COutput > mList;
+  CCopasiVectorS < COutput > mList;
 
   /* :TODO: this should be remved SH */
   CModel Model;			// Temperorary use for testing 
@@ -59,7 +59,7 @@ class COutputList
    *  @return mList
    *  @see mList
    */
-  const C_CopasiVectorS < COutput > & getList() const;
+  const CCopasiVectorS < COutput > & getList() const;
 
   /**
    *  Add new OutputLine object to a list

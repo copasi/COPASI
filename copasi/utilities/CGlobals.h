@@ -26,7 +26,7 @@ class CGlobals
   /**
    *  This is a hack at the moment to be able to read old configuration files
    */
-  C_CopasiVectorS < CMetabOld > OldMetabolites;
+  CCopasiVectorS < CMetabOld > OldMetabolites;
     
   /**
    *

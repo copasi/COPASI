@@ -32,7 +32,7 @@ class COutputLine
   /**
    *  Datum can be output in the same line.
    */
-  C_CopasiVectorS < CDatum > mLine;
+  CCopasiVectorS < CDatum > mLine;
 
   /**
    *  Note: Temperaly use it 
@@ -70,7 +70,7 @@ class COutputLine
    *  @return mLine
    *  @see mLine
    */
-  const C_CopasiVectorS < CDatum > & getLine() const;
+  const CCopasiVectorS < CDatum > & getLine() const;
 
   /**
    *  Add new data object to a line

@@ -46,7 +46,7 @@ void CKinFunction::copy(const CKinFunction & in)
 {
   CBaseFunction::copy(in);
 
-  mNodes = C_CopasiVectorS < CNodeK > (in.mNodes);
+  mNodes = CCopasiVectorS < CNodeK > (in.mNodes);
   //for (unsigned C_INT32 i = 0; i < in.mNodes.size(); i++)
   //  mNodes.add(in.mNodes[i]);
     
@@ -95,7 +95,7 @@ C_INT32 CKinFunction::save(CWriteConfig & configbuffer)
   return Fail;
 }
 
-C_CopasiVectorS < CNodeK > & CKinFunction::nodes() {return mNodes;}
+CCopasiVectorS < CNodeK > & CKinFunction::nodes() {return mNodes;}
 
 void CKinFunction::setIdentifierType(const string & name,
                                      char identifierType)

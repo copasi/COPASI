@@ -31,7 +31,7 @@ class CFunctionDB
   /**
    *  Vector of the currently loaded functions
    */
-  C_CopasiVectorN < CBaseFunction > mLoadedFunctions;
+  CCopasiVectorN < CBaseFunction > mLoadedFunctions;
 
   // Operations
  public:
@@ -113,9 +113,9 @@ class CFunctionDB
 
   /**
    *  Retrieves the vector of loades functions.
-   *  @return "C_CopasiVectorN < CKinFunction > &" LoadedFunctions
+   *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
    */
-  C_CopasiVectorN < CBaseFunction > & loadedFunctions();
+  CCopasiVectorN < CBaseFunction > & loadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

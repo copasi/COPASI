@@ -112,5 +112,5 @@ CBaseFunction * CFunctionDB::findFunction(const string & functionName)
   return dBLoad(functionName);
 }
 
-C_CopasiVectorN < CBaseFunction > & CFunctionDB::loadedFunctions()
+CCopasiVectorN < CBaseFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}

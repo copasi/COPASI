@@ -38,7 +38,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CCompartment}>
    */
-  C_CopasiVectorNS < CCompartment > mCompartments;
+  CCopasiVectorNS < CCompartment > mCompartments;
 
   /**
    *  for array of metabolites
@@ -53,7 +53,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CReaction}>
    */
-  C_CopasiVectorS < CReaction > mSteps;
+  CCopasiVectorS < CReaction > mSteps;
   vector < CReaction * > mStepsX;
   vector < CReaction * > mStepsInd;
     
@@ -62,7 +62,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CMoiety}>
    */
-  C_CopasiVectorN < CMoiety > mMoieties;
+  CCopasiVectorN < CMoiety > mMoieties;
 
   /**
    *   Stoichiometry Matrix
@@ -356,9 +356,9 @@ class CModel
   // Added by CvG
   /**
    * Return the vector of reactions
-   * @return "C_CopasiVectorS <CReaction> &"
+   * @return "CCopasiVectorS <CReaction> &"
    */
-  C_CopasiVectorS < CReaction > & getReactions();
+  CCopasiVectorS < CReaction > & getReactions();
   vector < CReaction * > & getReactionsX();
 
   // Added by Yongqun He
@@ -388,9 +388,9 @@ class CModel
 
   /**
    *	Return the compartments of this model
-   *	@return C_CopasiVectorNS < CCompartment > *
+   *	@return CCopasiVectorNS < CCompartment > *
    */
-  C_CopasiVectorNS < CCompartment > & getCompartments();
+  CCopasiVectorNS < CCompartment > & getCompartments();
 
   /**
    *	Return the metabolites of this model
@@ -405,9 +405,9 @@ class CModel
 
   /**
    *	Return the mMoieties of this model	
-   *	@return C_CopasiVectorN < CMoiety > & 
+   *	@return CCopasiVectorN < CMoiety > & 
    */
-  C_CopasiVectorN < CMoiety > & getMoieties();
+  CCopasiVectorN < CMoiety > & getMoieties();
 
   /**
    *	Returns the index of the metab

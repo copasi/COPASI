@@ -36,17 +36,17 @@ class CChemEq
   /**
    *  A vector of substrates and their multiplicity in the chemical reaction
    */
-  C_CopasiVector < CChemEqElement > mSubstrates;
+  CCopasiVector < CChemEqElement > mSubstrates;
   
   /**
    *  A vector of products and their multiplicity in the chemical reaction
    */
-  C_CopasiVector < CChemEqElement > mProducts;
+  CCopasiVector < CChemEqElement > mProducts;
 
   /**
    *  A vector of metabolites and their total balance in the chemical reaction
    */
-  C_CopasiVector < CChemEqElement > mBalances;
+  CCopasiVector < CChemEqElement > mBalances;
 
   // Operations
  public:
@@ -95,21 +95,21 @@ class CChemEq
    *  in the chemical reaction.
    *  @return "vector < CChemEqElement * > &" substrates
    */
-  const C_CopasiVector < CChemEqElement > & getSubstrates();
+  const CCopasiVector < CChemEqElement > & getSubstrates();
 
   /**
    *  Retrieves the vector of products and their multiplicity 
    *  in the chemical reaction.
    *  @return "vector < CChemEqElement * > &" products
    */
-  const C_CopasiVector < CChemEqElement > & getProducts();
+  const CCopasiVector < CChemEqElement > & getProducts();
 
   /**
    *  Retrieves the vector of metabolites and their total balance 
    *  in the chemical reaction.
    *  @return "vector < CChemEqElement * > &" balances
    */
-  const C_CopasiVector < CChemEqElement > & getBalances();
+  const CCopasiVector < CChemEqElement > & getBalances();
 
  private:
   /**
@@ -127,22 +127,22 @@ class CChemEq
   /**
    *  Adds an element to the vector given by structure. The element is
    *  either SUBSTRATE or PRODUCT.
-   *  @param "C_CopasiVector < CChemEqElement > &" structure
+   *  @param "CCopasiVector < CChemEqElement > &" structure
    *  @param "const CChemEqElement &" element
    *  @param "CChemEq::MetaboliteRole" role (
    */
-  void addElement(C_CopasiVector < CChemEqElement > & structure,
+  void addElement(CCopasiVector < CChemEqElement > & structure,
 		  const CChemEqElement & element,
 		  CChemEq::MetaboliteRole role = CChemEq::PRODUCT);
 
   /**
    *  This is the called by setSubstrates, setProducts, and setBalances.
    *  It realy does the work.
-   *  @param "C_CopasiVector < CChemEqElement > &" elements
+   *  @param "CCopasiVector < CChemEqElement > &" elements
    *  @param "const string &" reaction
    *  @param "CChemEq::MetaboliteRole" role (default: CChemEq::PRODUCT
    */
-  void setChemEqElements(C_CopasiVector < CChemEqElement > & elements,
+  void setChemEqElements(CCopasiVector < CChemEqElement > & elements,
 			 const string & reaction,
 			 CChemEq::MetaboliteRole role = 
 			 CChemEq::PRODUCT);

@@ -48,7 +48,7 @@ class CKinFunction: public CBaseFunction
   /**
    *  The vector of nodes of the binary tree of the function
    */
-  C_CopasiVectorS < CNodeK > mNodes;
+  CCopasiVectorS < CNodeK > mNodes;
     
   /**
    *  Internal variable
@@ -109,9 +109,9 @@ class CKinFunction: public CBaseFunction
 
   /**
    *  This retrieves the node tree of the function
-   *  @return "C_CopasiVectorS < CNodeK > &"
+   *  @return "CCopasiVectorS < CNodeK > &"
    */
-  C_CopasiVectorS < CNodeK > & nodes();
+  CCopasiVectorS < CNodeK > & nodes();
 
   /**
    *  This sets the type of an identifier

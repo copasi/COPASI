@@ -375,7 +375,7 @@ void CReaction::checkIdentifiers()
     }
 }
 
-void CReaction::compile(C_CopasiVectorNS < CCompartment > & compartments)
+void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
 {
   unsigned C_INT32 i;
     

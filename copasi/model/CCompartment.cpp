@@ -23,7 +23,7 @@ CCompartment::CCompartment(const CCompartment & src)
   mName        = src.mName;
   mVolume      = src.mVolume;
 
-  mMetabolites = C_CopasiVectorNS < CMetab >(src.mMetabolites);
+  mMetabolites = CCopasiVectorNS < CMetab >(src.mMetabolites);
   for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
     mMetabolites[i]->setCompartment(this);
 }
@@ -49,7 +49,7 @@ CCompartment & CCompartment::operator=(const CCompartment & rhs)
   mName        = rhs.mName;
   mVolume      = rhs.mVolume;
 
-  mMetabolites = C_CopasiVectorNS < CMetab >(rhs.mMetabolites);
+  mMetabolites = CCopasiVectorNS < CMetab >(rhs.mMetabolites);
     
   return *this;
 }
@@ -105,7 +105,7 @@ string CCompartment::getName() const {return mName;}
 
 C_FLOAT64 CCompartment::getVolume() const {return mVolume;}
 
-C_CopasiVectorNS < CMetab > & CCompartment::metabolites() 
+CCopasiVectorNS < CMetab > & CCompartment::metabolites() 
 {return mMetabolites;}
 
 void CCompartment::setName(const string & name) 

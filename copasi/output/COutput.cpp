@@ -101,7 +101,7 @@ COutput& COutput::operator=(const COutput &source)
  *  @return mOutput
  *  @see mOutput
  */
-const C_CopasiVectorS < COutputLine > & COutput::getList() const
+const CCopasiVectorS < COutputLine > & COutput::getList() const
 {
   return mOutput;
 }

@@ -186,7 +186,7 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 
 void CModel::buildStoi()
 {
-  C_CopasiVector < CChemEqElement > Structure;
+  CCopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
   string Name;
   
@@ -478,7 +478,7 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   return;
 }
 
-C_CopasiVectorS < CReaction > & CModel::getReactions()
+CCopasiVectorS < CReaction > & CModel::getReactions()
 {
   return mSteps;
 }
@@ -585,7 +585,7 @@ string CModel::getTitle() const
  *        Return the comments of this model
  *        @return CCopasiVector < CCompartment > *
  */
-C_CopasiVectorNS < CCompartment > & CModel::getCompartments()
+CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {
   return mCompartments;
 }
@@ -611,7 +611,7 @@ const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
  *        Return the mMoieties of this model        
  *        @return CCopasiVector < CMoiety > * 
  */
-C_CopasiVectorN < CMoiety > & CModel::getMoieties()
+CCopasiVectorN < CMoiety > & CModel::getMoieties()
 {
   return mMoieties;
 }

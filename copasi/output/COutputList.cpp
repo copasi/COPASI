@@ -89,7 +89,7 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
  *  @return mList
  *  @see mList
  */
-const C_CopasiVectorS < COutput > & COutputList::getList() const
+const CCopasiVectorS < COutput > & COutputList::getList() const
 {
   return mList;
 }

@@ -52,13 +52,13 @@ const string & CChemEq::getChemicalEquation() const
 const string & CChemEq::getChemicalEquationConverted() const
 {return mChemicalEquationConverted;}
 
-const C_CopasiVector < CChemEqElement > & CChemEq::getSubstrates()
+const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates()
 {return mSubstrates;}
 
-const C_CopasiVector < CChemEqElement > & CChemEq::getProducts()
+const CCopasiVector < CChemEqElement > & CChemEq::getProducts()
 {return mProducts;}
 
-const C_CopasiVector < CChemEqElement > & CChemEq::getBalances()
+const CCopasiVector < CChemEqElement > & CChemEq::getBalances()
 {return mBalances;}
 
 CChemEqElement CChemEq::extractElement(const string & input, 
@@ -93,7 +93,7 @@ CChemEqElement CChemEq::extractElement(const string & input,
   return Element;
 }
 
-void CChemEq::addElement(C_CopasiVector < CChemEqElement > & structure,
+void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
 			 const CChemEqElement & element,
 			 CChemEq::MetaboliteRole role)
 {
@@ -116,7 +116,7 @@ void CChemEq::addElement(C_CopasiVector < CChemEqElement > & structure,
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
 
-void CChemEq::setChemEqElements(C_CopasiVector < CChemEqElement > 
+void CChemEq::setChemEqElements(CCopasiVector < CChemEqElement > 
                                 & elements,
 				const string & reaction,
 				CChemEq::MetaboliteRole role)

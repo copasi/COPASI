@@ -1,5 +1,5 @@
-#ifndef COPASI_C_CopasiVector
-#define COPASI_C_CopasiVector
+#ifndef COPASI_CCopasiVector
+#define COPASI_CCopasiVector
 
 #include <vector>
 #include <iostream>
@@ -9,7 +9,7 @@
 #include "CWriteConfig.h"
 
 template < class CType >
-class C_CopasiVector : protected vector < CType * >
+class CCopasiVector : protected vector < CType * >
 {
  public:
   typedef CType* value_type;
@@ -27,12 +27,12 @@ class C_CopasiVector : protected vector < CType * >
   /**
    *  Default constructor
    */
-  C_CopasiVector() : vector < CType * > (){} 
+  CCopasiVector() : vector < CType * > (){} 
 
   /**
    *  Copy constructor
    */
-  C_CopasiVector(const C_CopasiVector < CType > & src) :
+  CCopasiVector(const CCopasiVector < CType > & src) :
     vector < CType * > (src)
     {
       unsigned C_INT32 i, imax = size();
@@ -46,7 +46,7 @@ class C_CopasiVector : protected vector < CType * >
   /**
    *  Destructor
    */
-  virtual ~C_CopasiVector() {cleanup();}
+  virtual ~CCopasiVector() {cleanup();}
 
   /**
    *  Cleanup
@@ -123,26 +123,26 @@ class C_CopasiVector : protected vector < CType * >
     {return vector < CType * >::size();}
 };
 
-template < class CType > class C_CopasiVectorS 
-: public C_CopasiVector < CType >
+template < class CType > class CCopasiVectorS 
+: public CCopasiVector < CType >
 {
   // Operations
  public:
   /**
    *  Default constructor
    */
-  C_CopasiVectorS() : C_CopasiVector < CType > (){} 
+  CCopasiVectorS() : CCopasiVector < CType > (){} 
 
   /**
    *  Copy constructor
    */
-  C_CopasiVectorS(const C_CopasiVectorS < CType > & src) :
-      C_CopasiVector < CType > (src) {}
+  CCopasiVectorS(const CCopasiVectorS < CType > & src) :
+      CCopasiVector < CType > (src) {}
 
   /**
    *  Destructor
    */
-  virtual ~C_CopasiVectorS() {cleanup();}
+  virtual ~CCopasiVectorS() {cleanup();}
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
@@ -157,7 +157,7 @@ template < class CType > class C_CopasiVectorS
       cleanup();
       resize(size);
       
-      C_CopasiVector< CType >::iterator Target = begin();
+      CCopasiVector< CType >::iterator Target = begin();
  
       for (i=0; i<size; i++)
 	{
@@ -174,7 +174,7 @@ template < class CType > class C_CopasiVectorS
   virtual void save(CWriteConfig & configbuffer)
     {
       unsigned C_INT32 i, imax = size();
-      C_CopasiVector< CType >::iterator Target = begin();
+      CCopasiVector< CType >::iterator Target = begin();
       
       for (i=0; i<imax; i++)
 	(*(Target++))->save(configbuffer);
@@ -184,35 +184,35 @@ template < class CType > class C_CopasiVectorS
    *
    */
   CType * & operator[](unsigned C_INT32 index) 
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 
   /**
    *
    */
   const CType * operator[](unsigned C_INT32 index) const
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 };
 
-template < class CType > class C_CopasiVectorN 
-: public C_CopasiVector < CType >
+template < class CType > class CCopasiVectorN 
+: public CCopasiVector < CType >
 {
   // Operations
  public:
   /**
    *  Default constructor
    */
-  C_CopasiVectorN() : C_CopasiVector < CType > (){} 
+  CCopasiVectorN() : CCopasiVector < CType > (){} 
 
   /**
    *  Copy constructor
    */
-  C_CopasiVectorN(const C_CopasiVectorN < CType > & src) :
-      C_CopasiVector < CType > (src) {}
+  CCopasiVectorN(const CCopasiVectorN < CType > & src) :
+      CCopasiVector < CType > (src) {}
 
   /**
    *  Destructor
    */
-  virtual ~C_CopasiVectorN() {cleanup();}
+  virtual ~CCopasiVectorN() {cleanup();}
 
   /**
    *
@@ -241,21 +241,22 @@ template < class CType > class C_CopasiVectorN
     {
       unsigned C_INT32 Index = getIndex(name);
       if ((signed) Index == -1 ) fatalError();
-    
-      return C_CopasiVector< CType >::remove(Index);
+      
+      CCopasiVector< CType >::remove(Index);
+      return;
     }
 
   /**
    *
    */
   CType * & operator[](unsigned C_INT32 index) 
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 
   /**
    *
    */
   const CType * & operator[](unsigned C_INT32 index) const
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 
   /**
    *
@@ -281,7 +282,7 @@ template < class CType > class C_CopasiVectorN
   virtual unsigned C_INT32 getIndex(const string &name) const
     {
       unsigned C_INT32 i,imax = size();
-      C_CopasiVector< CType >::const_iterator Target = begin();
+      CCopasiVector< CType >::const_iterator Target = begin();
       
       for (i=0; i<imax; i++)
         if (name == (*(Target++))->getName()) return i;
@@ -290,26 +291,26 @@ template < class CType > class C_CopasiVectorN
     }
 };
 
-template < class CType > class C_CopasiVectorNS 
-: public C_CopasiVectorN < CType >
+template < class CType > class CCopasiVectorNS 
+: public CCopasiVectorN < CType >
 {
   // Operations
  public:
   /**
    *  Default constructor
    */
-  C_CopasiVectorNS() : C_CopasiVectorN < CType > (){} 
+  CCopasiVectorNS() : CCopasiVectorN < CType > (){} 
 
   /**
    *  Copy constructor
    */
-  C_CopasiVectorNS(const C_CopasiVectorNS < CType > & src) :
-      C_CopasiVectorN < CType > (src) {}
+  CCopasiVectorNS(const CCopasiVectorNS < CType > & src) :
+      CCopasiVectorN < CType > (src) {}
 
   /**
    *  Destructor
    */
-  virtual ~C_CopasiVectorNS() 
+  virtual ~CCopasiVectorNS() 
     {cleanup();}
 
   /**
@@ -325,7 +326,7 @@ template < class CType > class C_CopasiVectorNS
       cleanup();
       resize(size);
       
-      C_CopasiVector< CType >::iterator Target = begin();
+      CCopasiVector< CType >::iterator Target = begin();
  
       for (i=0; i<size; i++)
 	{
@@ -342,7 +343,7 @@ template < class CType > class C_CopasiVectorNS
   virtual void save(CWriteConfig & configbuffer)
     {
       unsigned C_INT32 i, imax = size();
-      C_CopasiVector< CType >::iterator Target = begin();
+      CCopasiVector< CType >::iterator Target = begin();
       
       for (i=0; i<imax; i++)
 	(*(Target++))->save(configbuffer);
@@ -352,18 +353,18 @@ template < class CType > class C_CopasiVectorNS
    *
    */
   CType * & operator[](unsigned C_INT32 index) 
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 
   /**
    *
    */
   const CType * & operator[](unsigned C_INT32 index) const
-    {return ((C_CopasiVector <CType>*) this)->operator [](index);}
+    {return ((CCopasiVector <CType>*) this)->operator [](index);}
 
   /**
    *
    */
   CType * operator[](const string &name) 
-    {return ((C_CopasiVectorN <CType>*) this)->operator [](name);}   
+    {return ((CCopasiVectorN <CType>*) this)->operator [](name);}   
 };
-#endif // COPASI_C_CopasiVector
+#endif // COPASI_CCopasiVector

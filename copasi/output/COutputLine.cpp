@@ -57,7 +57,7 @@ COutputLine& COutputLine::operator=(const COutputLine &source)
  *  @return mLine
  *  @see mLine
  */
-const C_CopasiVectorS < CDatum > & COutputLine::getLine() const
+const CCopasiVectorS < CDatum > & COutputLine::getLine() const
 {
   return mLine;
 }

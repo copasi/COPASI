@@ -28,7 +28,7 @@ class COutput
   /**
    *  Datum lines can be output in the same time.
    */
-  C_CopasiVectorS < COutputLine > mOutput;
+  CCopasiVectorS < COutputLine > mOutput;
 
   /**
    *  The type of output trigger
@@ -160,7 +160,7 @@ class COutput
    *  @return mList
    *  @see mList
    */
-  const C_CopasiVectorS < COutputLine > & getList() const;
+  const CCopasiVectorS < COutputLine > & getList() const;
 
   /**
    *  Add new OutputLine object to a list
