@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.153 $
+   $Revision: 1.154 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/14 21:04:24 $
+   $Date: 2004/10/15 17:16:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -415,7 +415,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:            //Report
+      case 43:             //Report
         return tableDefinition;
         break;
       case 42:
@@ -513,6 +513,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   if (!i) return;
 
   folders->setCurrentItem(i);
+  folders->ensureItemVisible(i);
 
   // get the qlistview item in form of folderlistitem...
   FolderListItem *item = (FolderListItem*)i; //TODO dynamic cast?
