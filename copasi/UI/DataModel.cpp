@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:38 $
+   $Date: 2003/10/16 19:05:48 $
    End CVS Header */
 
 #include "DataModel.h"
+#include "DataModel.txt.h"
 
-DataModel::DataModel(char* fileName)
+DataModel::DataModel()
 {
-  this->populateData(fileName);
+  this->populateData();
   model = NULL;
   trajectorytask = NULL;
   steadystatetask = NULL;
@@ -149,7 +150,7 @@ void DataModel::saveModel(const char* fileName)
   XML.save(os);
 }
 
-void DataModel::populateData(char* fileName)
+void DataModel::populateData()
 {
   QString str = QString("Folder ");
   Folder *f = new Folder(0, str);
@@ -160,7 +161,9 @@ void DataModel::populateData(char* fileName)
   // const int MAX = 80;
   std::string str1;
 
-  std::ifstream in(fileName);
+  std::stringstream in;
+  in.str(DataModeltxt);
+
   std::string delimiter("\x0a\x0d");
   char c;
 
@@ -202,6 +205,4 @@ void DataModel::populateData(char* fileName)
 
       folderList.append(f1);
     }
-
-  in.close();
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:48 $
+   $Date: 2003/10/16 19:05:49 $
    End CVS Header */
 
 /****************************************************************************
@@ -120,9 +120,9 @@ class DataModel
     COptFunction* pOptFunction;
 
   public:
-    DataModel(char* fileName = "DataModel.txt");
+    DataModel();
 
-    void populateData(char* fileName);
+    void populateData();
     Folder* searchFolderList(int id);
 
     Node<Folder> * addData(Folder* parent, Folder* child);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:44 $
+   $Date: 2003/10/16 19:05:48 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -63,31 +63,21 @@ CopasiUI3Window::CopasiUI3Window():
   file->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
 
-  if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
+  if (!dataModel)
     {
-      // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
-      //"Choose a file");
-      QString fileName = "DataModel.txt";
+      // create the data model
+      dataModel = new DataModel();
 
-      if (fileName)
-        {
-          // create the data model
-          dataModel = new DataModel((char *)fileName.latin1());
-
-          splitter = new QSplitter(QSplitter::Vertical, this , "main");
-          splitter->show();
-          this->setCentralWidget(splitter);
-        }
+      splitter = new QSplitter(QSplitter::Vertical, this , "main");
+      splitter->show();
+      this->setCentralWidget(splitter);
     }
 
-  if (dataModel)
-    {
-      listViews = new ListViews(splitter);
-      listViews->setDataModel(dataModel);
-      listViews->show();
+  listViews = new ListViews(splitter);
+  listViews->setDataModel(dataModel);
+  listViews->show();
 
-      ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
-    }
+  ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -154,10 +144,7 @@ void CopasiUI3Window::newDoc()
        }
   */
   if (!dataModel)
-    {
-      QString fileName = "DataModel.txt";
-      dataModel = new DataModel((char *)fileName.latin1()); // create the data model
-    }
+    dataModel = new DataModel(); // create the data model
 
   gpsFile = "temp.gps";
   dataModel->createModel((const char *)gpsFile.utf8());
