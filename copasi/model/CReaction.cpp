@@ -7,10 +7,11 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
+#include "copasi.h"
+
 #include <algorithm>
 #include <stdio.h>
 
-#include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "CReaction.h"
 #include "CCompartment.h"
