@@ -51,7 +51,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
     {
       for (i = s - 1; i > 0; i--)
         //if(scanItem[i]->Indp) break;
-        if (scanProblem->getScanItemParameter(i, "indp") == 1.0) break;
+        if (scanProblem->getScanItemParameter(i, "indp")) break;
 
       next = i;
     }
@@ -65,7 +65,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
   if (s < scanDimension - 1)
     {
       for (i = s + 1; i < scanDimension; i++)
-        if (scanProblem->getScanItemParameter(i, "indp") == 1.0) break;
+        if (scanProblem->getScanItemParameter(i, "indp")) break;
       top = i;
     }
   else
@@ -114,6 +114,15 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
 
 C_FLOAT64 CScanMethod::simulate()
 {
+  InitScan();
+  unsigned C_INT32 scanDimension = scanProblem->getListSize();
+  int i;
+  // find the last master
+  for (i = scanDimension - 1; i >= 0; i--)
+    if (scanProblem->getScanItemParameter(i, "indp")) break;
+  if (i >= 0)
+    // execute many simulations
+    scan(i, true);
   scanProblem->calculate();
   return 0;
 }
