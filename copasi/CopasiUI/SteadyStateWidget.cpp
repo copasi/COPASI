@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\SteadyStateWidget.ui'
  **
- ** Created: Sun Mar 2 13:39:33 2003
+ ** Created: Sun Mar 2 20:14:23 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -9,6 +9,7 @@
 #include "SteadyStateWidget.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
+#include <qfiledialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -31,7 +32,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 {
   if (!name)
     setName("SteadyStateWidget");
-  resize(532, 527);
+  resize(719, 539);
   setMinimumSize(QSize(0, 0));
   QFont f(font());
   f.setFamily("Times New Roman");
@@ -45,50 +46,33 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   line7->setFrameShadow(QFrame::Sunken);
   line7->setFrameShape(QFrame::HLine);
 
-  SteadyStateWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 6);
+  SteadyStateWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 4);
   QSpacerItem* spacer = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer, 7, 7, 0, 6);
+  SteadyStateWidgetLayout->addMultiCell(spacer, 7, 7, 0, 4);
   QSpacerItem* spacer_2 = new QSpacerItem(490, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_2, 5, 5, 0, 6);
+  SteadyStateWidgetLayout->addMultiCell(spacer_2, 5, 5, 0, 4);
   QSpacerItem* spacer_3 = new QSpacerItem(390, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_3, 3, 3, 0, 4);
+  SteadyStateWidgetLayout->addMultiCell(spacer_3, 3, 3, 0, 3);
   QSpacerItem* spacer_4 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_4, 1, 1, 0, 6);
+  SteadyStateWidgetLayout->addMultiCell(spacer_4, 1, 1, 0, 4);
   QSpacerItem* spacer_5 = new QSpacerItem(500, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_5, 11, 11, 0, 6);
-
-  Layout6 = new QHBoxLayout(0, 0, 6, "Layout6");
-
-  bRunButton = new QPushButton(this, "bRunButton");
-  bRunButton->setText(trUtf8("Run"));
-  Layout6->addWidget(bRunButton);
-  bRunButton->setEnabled(false);
-
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
-  Layout6->addWidget(commitChange);
-
-  cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
-  Layout6->addWidget(cancelChange);
-
-  SteadyStateWidgetLayout->addMultiCellLayout(Layout6, 12, 12, 0, 6);
+  SteadyStateWidgetLayout->addMultiCell(spacer_5, 11, 11, 0, 4);
   QSpacerItem* spacer_6 = new QSpacerItem(490, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addMultiCell(spacer_6, 9, 9, 0, 6);
+  SteadyStateWidgetLayout->addMultiCell(spacer_6, 9, 9, 0, 4);
 
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
   line6->setFrameShape(QFrame::HLine);
 
-  SteadyStateWidgetLayout->addMultiCellWidget(line6, 10, 10, 0, 6);
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 10, 10, 0, 4);
 
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
   line8->setFrameShadow(QFrame::Sunken);
   line8->setFrameShape(QFrame::HLine);
 
-  SteadyStateWidgetLayout->addMultiCellWidget(line8, 2, 2, 0, 6);
+  SteadyStateWidgetLayout->addMultiCellWidget(line8, 2, 2, 0, 4);
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
@@ -115,22 +99,22 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   taskStability = new QRadioButton(this, "taskStability");
   taskStability->setText(trUtf8("Stability Analysis"));
 
-  SteadyStateWidgetLayout->addMultiCellWidget(taskStability, 4, 4, 3, 5);
+  SteadyStateWidgetLayout->addWidget(taskStability, 4, 3);
   QSpacerItem* spacer_8 = new QSpacerItem(61, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addItem(spacer_8, 4, 6);
+  SteadyStateWidgetLayout->addItem(spacer_8, 4, 4);
 
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable"));
 
-  SteadyStateWidgetLayout->addMultiCellWidget(bExecutable, 0, 0, 5, 6);
+  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 4);
 
   taskName = new QLineEdit(this, "taskName");
   taskName->setFrameShape(QLineEdit::LineEditPanel);
   taskName->setFrameShadow(QLineEdit::Sunken);
 
-  SteadyStateWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 3);
+  SteadyStateWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 2);
   QSpacerItem* spacer_9 = new QSpacerItem(61, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  SteadyStateWidgetLayout->addItem(spacer_9, 0, 4);
+  SteadyStateWidgetLayout->addItem(spacer_9, 0, 3);
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
@@ -138,7 +122,28 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
-  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 4);
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 3);
+
+  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+
+  bRunButton = new QPushButton(this, "bRunButton");
+  bRunButton->setText(trUtf8("Run"));
+  bRunButton->setEnabled(false);
+  Layout2->addWidget(bRunButton);
+
+  commitChange = new QPushButton(this, "commitChange");
+  commitChange->setText(trUtf8("Commit Change"));
+  Layout2->addWidget(commitChange);
+
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setText(trUtf8("Cancel Change"));
+  Layout2->addWidget(cancelChange);
+
+  ExportFileButton = new QPushButton(this, "ExportFileButton");
+  ExportFileButton->setText(trUtf8("Export To File"));
+  Layout2->addWidget(ExportFileButton);
+
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 12, 12, 0, 4);
 
   // signals and slots connections
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
@@ -146,6 +151,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
+  connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
 
   // tab order
   setTabOrder(taskName, bExecutable);
@@ -283,4 +289,20 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
     bRunButton->setEnabled(false);
   else
     bRunButton->setEnabled(true);
+}
+
+void SteadyStateWidget::ExportToFile()
+{
+  if (!mSteadyStateTask) return;
+  QString textFile = QFileDialog::getSaveFileName(
+                       QString::null, "TEXT Files (*.txt)",
+                       this, "save file dialog",
+                       "Choose a file");
+
+  if (mSteadyStateTask && textFile)
+    {
+      textFile += ".txt";
+      CWriteConfig outbuf((const char *)textFile.utf8());
+      mSteadyStateTask->save(outbuf);
+    }
 }

@@ -1,13 +1,14 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
  **
- ** Created: Sun Mar 2 13:39:33 2003
+ ** Created: Sun Mar 2 20:14:23 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
+
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
@@ -36,9 +37,6 @@ class SteadyStateWidget : public QWidget
     void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
 
     QFrame* line7;
-    QPushButton* bRunButton;
-    QPushButton* commitChange;
-    QPushButton* cancelChange;
     QFrame* line6;
     QFrame* line8;
     QLabel* taskNameLabel;
@@ -49,17 +47,22 @@ class SteadyStateWidget : public QWidget
     QCheckBox* bExecutable;
     QLineEdit* taskName;
     QTable* parameterTable;
+    QPushButton* bRunButton;
+    QPushButton* commitChange;
+    QPushButton* cancelChange;
+    QPushButton* ExportFileButton;
 
   public slots:
     virtual void CancelChange();
     virtual void CommitChange();
-    virtual void RunButtonClicked();
+    virtual void ExportToFile();
     virtual void parameterValueChanged();
+    virtual void RunButtonClicked();
     virtual void RunTask();
 
   protected:
     QGridLayout* SteadyStateWidgetLayout;
-    QHBoxLayout* Layout6;
+    QHBoxLayout* Layout2;
   };
 
 #endif // STEADYSTATEWIDGET_H
