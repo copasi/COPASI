@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/25 01:49:53 $
+   $Date: 2005/03/02 22:08:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -129,7 +129,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           pdelete(mpTaskList);
           mpTaskList = XML.getTaskList();
           mpTaskList->setObjectName("TaskList");
-          mpTaskList->setObjectParent(CCopasiContainer::Root);
+          CCopasiContainer::Root->add(mpTaskList, true);
           addDefaultTasks();
         }
 

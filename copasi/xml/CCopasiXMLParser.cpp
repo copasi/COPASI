@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/28 16:15:41 $
+   $Author: shoops $ 
+   $Date: 2005/03/02 22:08:31 $
    End CVS Header */
 
 /**
@@ -3527,8 +3527,7 @@ void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * pszName)
 
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
-      // add mCommon.pCurrentTask to the listOfTasks and set
-      // mCommon.pCurrentTask to NULL
+
       if (mCommon.pCurrentTask)
         {
           mCommon.pTaskList->add(mCommon.pCurrentTask);
@@ -3584,16 +3583,16 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       switch (type)
         {
         case CCopasiTask::steadyState:
-          mCommon.pCurrentTask = new CSteadyStateTask();
+          mCommon.pCurrentTask = new CSteadyStateTask(mCommon.pTaskList);
           break;
         case CCopasiTask::timeCourse:
-          mCommon.pCurrentTask = new CTrajectoryTask();
+          mCommon.pCurrentTask = new CTrajectoryTask(mCommon.pTaskList);
           break;
         case CCopasiTask::scan:
-          mCommon.pCurrentTask = new CScanTask();
+          mCommon.pCurrentTask = new CScanTask(mCommon.pTaskList);
           break;
         case CCopasiTask::mca:
-          mCommon.pCurrentTask = new CMCATask();
+          mCommon.pCurrentTask = new CMCATask(mCommon.pTaskList);
           break;
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
