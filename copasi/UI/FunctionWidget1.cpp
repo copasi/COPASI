@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/19 17:43:54 $
+   $Date: 2003/11/20 18:43:41 $
    End CVS Header */
 
 /**********************************************************************
@@ -400,10 +400,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                     // The user clicked the Retry again button or pressed Enter
+            case 0:                      // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                     // The user clicked the Quit or pressed Escape
+            case 1:                      // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -612,6 +612,18 @@ bool FunctionWidget1::saveToFunction()
       changed = true;
       func->setReversible(pFunction->isReversible());
     }
+  if (func->getDescription() != pFunction->getDescription())
+    {
+      changed = true;
+      try
+        {
+          func->setDescription(pFunction->getDescription());
+        }
+      catch (CCopasiException Exception)
+        {
+          // handle exception
+        }
+    }
   CFunctionParameters &functParam = func->getParameters();
   CFunctionParameters &pfunctParam = pFunction->getParameters();
   CFunctionParameter::DataType Type;
@@ -658,14 +670,39 @@ bool FunctionWidget1::saveToFunction()
             }
         }
     }
-  if (func->getDescription() != pFunction->getDescription())
+  // Application Table update of function
+  CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
+  CCopasiVectorNS < CUsageRange > & pfunctUsage = pFunction->getUsageDescriptions();
+  /*for (int k = 0; k < pfunctUsage.size(); k++)
     {
-      changed = true;
-      try
+   // Clear funcUsage and replace with pfunctUsage
+   functUsage.cleanup();
+   Application.setUsage(
+      functUsage.add(Application);
+      // check if function parameter exists in pFunctionParameter
+      if ((index = functParam.findParameterByName(pfunctParam[i]->getName(),
+                   Type)) != C_INVALID_INDEX)
+        // match found
         {
-          func->setDescription(pFunction->getDescription());
+          if (functParam[index]->getUsage() != pfunctParam[i]->getUsage())
+            {
+              changed = true;
+              // update usage
+              functParam[index]->setUsage(pfunctParam[i]->getUsage());
+              //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
+            }
+          if (functParam[index]->getType() != pfunctParam[i]->getType())
+            {
+              changed = true;
+              // update type
+              functParam[index]->setType(pfunctParam[i]->getType());
+            }
+        } else
+        {// match not found
+          changed = true;
+          functParam.add(*pfunctParam[i]);
         }
-      catch (CCopasiException Exception){}}
+    }*/
 
   if (changed)
     {
