@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/01 19:35:40 $
+   $Date: 2004/12/02 03:20:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,6 +15,7 @@
 #include "sbml/SBMLWriter.h"
 
 #include "sbml/ModifierSpeciesReference.h"
+#include "xml/CCopasiXMLInterface.h"
 
 const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
 
@@ -106,7 +107,8 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
     }
   if ((copasiModel->getComments().size() != 0) && !(this->isEmptyString(copasiModel->getComments())))
     {
-      sbmlModel->setNotes((SBMLExporter::HTML_HEADER + copasiModel->getComments() + SBMLExporter::HTML_FOOTER).c_str());
+      sbmlModel->setNotes((SBMLExporter::HTML_HEADER +
+                           CCopasiXMLInterface::encode(copasiModel->getComments()) + SBMLExporter::HTML_FOOTER).c_str());
     }
   /* if the copasi volume unit does not correspond to the default SBML volume
   ** unit, we have to create a UnitDefinition and make it the default in the
