@@ -9,6 +9,9 @@
 #include <qptrlist.h>
 #include <qobject.h>
 #include <fstream>
+
+#include "copasi.h"
+
 #include "Tree.h" 
 //#include "listviews.h"
 #include "xml/CCopasiXML.h"
