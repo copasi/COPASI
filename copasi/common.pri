@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.25 $ $Author: gauges $ $Date: 2004/06/11 11:59:56 $  
+# $Revision: 1.26 $ $Author: shoops $ $Date: 2004/06/22 21:04:51 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -86,6 +86,15 @@ contains(BUILD_OS, WIN32) {
   } else {
     error( "EXPAT_PATH must be specified" )
   }
+
+  !isEmpty(SBML_PATH) {
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
+    LIBS += libsbml.lib libexpat-compat.lib
+  } else {
+    error( "SBML_PATH must be specified" )
+  }
 } 
 
 contains(BUILD_OS, SunOS) {
@@ -102,7 +111,12 @@ contains(BUILD_OS, SunOS) {
  
 contains(BUILD_OS, Linux) {
   QMAKE_LFLAGS_RELEASE += -static
+  LIBS += -lsbml
+  release {
+    LIBS += -lexpat_compat
+  }
   LIBS += -lexpat
+
   !isEmpty(QWT_PATH){
       LIBS+=  -L$${QWT_PATH}/lib
       INCLUDEPATH += $${QWT_PATH}/include
