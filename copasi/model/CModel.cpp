@@ -36,11 +36,23 @@
 
 #include "clapackwrap.h"
 
+const std::string CModel::VolumeUnitName[] =
+  {"l", "ml", "microl", "nl", "pl", "fl", ""};
+
+const std::string CModel::TimeUnitName[] =
+  {"s", "m", "h", "d", ""};
+
+const std::string CModel::QuantityUnitName[] =
+  {"Mol", "mMol", "microMol", "nMol", "pMol", "fMol", "#", ""};
+
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),
     mKey(CKeyFactory::add("Model", this)),
     mTitle(mObjectName),
     mComments(),
+    mVolumeUnit("ml"),
+    mTimeUnit("s"),
+    mQuantityUnit("mMol"),
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
@@ -60,7 +72,6 @@ CModel::CModel():
     mRedStoi(),
     mL(),
     mLView(mL, mMetabolitesInd),
-    mQuantityUnitName("unknown"),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0)
 {
@@ -73,6 +84,9 @@ CModel::CModel(const CModel & src):
     mKey(CKeyFactory::add("Model", this)),
     mTitle(mObjectName),
     mComments(src.mComments),
+    mVolumeUnit(src.mVolumeUnit),
+    mTimeUnit(src.mTimeUnit),
+    mQuantityUnit(src.mQuantityUnit),
     mCompartments(src.mCompartments, this),
     mMetabolites(src.mMetabolites, this),
     mMetabolitesX(src.mMetabolitesX, this),
@@ -92,15 +106,10 @@ CModel::CModel(const CModel & src):
     mRedStoi(src.mRedStoi),
     mL(src.mL),
     mLView(mL, mMetabolitesInd),
-    mQuantityUnitName(src.mQuantityUnitName),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor)
 {
   CONSTRUCTOR_TRACE;
-
-  mQuantityUnitName = src.mQuantityUnitName;
-  mNumber2QuantityFactor = src.mNumber2QuantityFactor;
-  mQuantity2NumberFactor = src.mQuantity2NumberFactor;
 
   unsigned C_INT32 i, imax = mSteps.size();
 
@@ -181,18 +190,48 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   try
     {
-      Fail = configBuffer.getVariable("ConcentrationUnit", "string", &mQuantityUnitName,
+      Fail = configBuffer.getVariable("TimeUnit", "string", &mTimeUnit,
                                       CReadConfig::LOOP);
     }
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-        mQuantityUnitName = "unknown";
+        mTimeUnit = "unknown";
       else
         throw Exception;
     }
 
-  setQuantityUnit(mQuantityUnitName); // set the factors
+  setTimeUnit(mTimeUnit); // set the factors
+
+  try
+    {
+      Fail = configBuffer.getVariable("ConcentrationUnit", "string", &mQuantityUnit,
+                                      CReadConfig::LOOP);
+    }
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+        mQuantityUnit = "unknown";
+      else
+        throw Exception;
+    }
+
+  setQuantityUnit(mQuantityUnit); // set the factors
+
+  try
+    {
+      Fail = configBuffer.getVariable("VolumeUnit", "string", &mVolumeUnit,
+                                      CReadConfig::LOOP);
+    }
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+        mVolumeUnit = "unknown";
+      else
+        throw Exception;
+    }
+
+  setVolumeUnit(mVolumeUnit); // set the factors
 
   if (configBuffer.getVersion() < "4")
     mInitialTime = 0;
@@ -267,7 +306,9 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
     return Fail;
 
-  if ((Fail = configBuffer.setVariable("ConcentrationUnit", "string", &mQuantityUnitName)))
+  if ((Fail = configBuffer.setVariable("ConcentrationUnit",
+                                       "string",
+                                       &mQuantityUnit)))
     return Fail;
 
   if ((Fail = configBuffer.setVariable("InitialTime", "C_FLOAT64", &mInitialTime)))
@@ -1290,7 +1331,7 @@ void CModel::initObjects()
   // addVectorReference("Reaction Interchanges", mColLU);
   // addMatrixReference("L", mL);
   addMatrixReference("Link Matrix", mLView);
-  addObjectReference("Quantity Unit", mQuantityUnitName);
+  addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor);
   // addObjectReference("Inverse Quantity Conversion Factor",
   //                    mNumber2QuantityFactor);
@@ -1421,30 +1462,124 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
   return;
 }
 
-void CModel::setQuantityUnit(const std::string & name)
+bool CModel::setVolumeUnit(const std::string & name)
 {
-  mQuantityUnitName = name;
+  bool success = true;
+  unsigned C_INT32 i = 0;
+  CModel::VolumeUnit Unit;
 
-  mQuantity2NumberFactor = 1.0;
+  while (QuantityUnitName[i].substr(0, name.length()) !=
+         name.substr(0, QuantityUnitName[i].length()) &&
+         QuantityUnitName[i] != "") i++;
 
-  if ((name == "mol")
-      || (name == "M")
-      || (name == "Mol"))
-    mQuantity2NumberFactor = 6.020402E23;
+  if (QuantityUnitName[i] == "")
+    {
+      Unit = ml;
+      success = false;
+    }
+  else
+    {
+      Unit = (CModel::VolumeUnit) i;
+      success = true;
+    }
 
-  if ((name == "mmol")
-      || (name == "mM")
-      || (name == "mMol"))
-    mQuantity2NumberFactor = 6.020402E20;
+  mVolumeUnit = VolumeUnitName[Unit];
 
-  if ((name == "nmol")
-      || (name == "nM")
-      || (name == "nMol"))
-    mQuantity2NumberFactor = 6.020402E14;
+  return success;
+}
+
+std::string CModel::getVolumeUnit() const
+  {return mVolumeUnit;}
+
+bool CModel::setTimeUnit(const std::string & name)
+{
+  bool success = true;
+  unsigned C_INT32 i = 0;
+  CModel::TimeUnit Unit;
+
+  while (QuantityUnitName[i].substr(0, name.length()) !=
+         name.substr(0, QuantityUnitName[i].length()) &&
+         QuantityUnitName[i] != "") i++;
+
+  if (QuantityUnitName[i] == "")
+    {
+      Unit = s;
+      success = false;
+    }
+  else
+    {
+      Unit = (CModel::TimeUnit) i;
+      success = true;
+    }
+
+  mTimeUnit = TimeUnitName[Unit];
+
+  return success;
+}
+
+std::string CModel::getTimeUnit() const
+  {return mTimeUnit;}
+
+bool CModel::setQuantityUnit(const std::string & name)
+{
+  bool success = true;
+  unsigned C_INT32 i = 0;
+  CModel::QuantityUnit Unit;
+
+  while (QuantityUnitName[i].substr(0, name.length()) !=
+         name.substr(0, QuantityUnitName[i].length()) &&
+         QuantityUnitName[i] != "") i++;
+  if (QuantityUnitName[i] == "")
+    {
+      Unit = mMol;
+      success = false;
+    }
+  else
+    {
+      Unit = (CModel::QuantityUnit) i;
+      success = true;
+    }
+
+  mQuantityUnit = QuantityUnitName[Unit];
+
+  switch (Unit)
+    {
+    case Mol:
+      mQuantity2NumberFactor = 6.020402E23;
+      break;
+
+    case mMol:
+      mQuantity2NumberFactor = 6.020402E20;
+      break;
+
+    case microMol:
+      mQuantity2NumberFactor = 6.020402E17;
+      break;
+
+    case nMol:
+      mQuantity2NumberFactor = 6.020402E14;
+      break;
+
+    case pMol:
+      mQuantity2NumberFactor = 6.020402E11;
+      break;
+
+    case fMol:
+      mQuantity2NumberFactor = 6.020402E8;
+      break;
+
+    case number:
+    default:
+      mQuantity2NumberFactor = 1.0;
+    }
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
+
+  return success;
 }
-std::string CModel::getQuantityUnit() const {return mQuantityUnitName;}
+
+std::string CModel::getQuantityUnit() const
+{return mQuantityUnit;}
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
   {return mQuantity2NumberFactor;}

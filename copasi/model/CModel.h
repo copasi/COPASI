@@ -21,6 +21,36 @@ class CStateX;
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
   {
+    /**
+     * Enum of valid volume units
+     */
+    enum VolumeUnit {l = 0, ml, microl, nl, pl, fl};
+
+    /**
+     * String representation of valid volume units
+     */
+    static const std::string VolumeUnitName[];
+
+    /**
+     *  Enum of valid time units
+     */
+    enum TimeUnit {s = 0, m, h, d};
+
+    /**
+     * String representation of valid time units
+     */
+    static const std::string TimeUnitName[];
+
+    /**
+     *  Enum of valid quantitye units
+     */
+    enum QuantityUnit {Mol = 0, mMol, microMol, nMol, pMol, fMol, number};
+
+    /**
+     * String representation of valid quantity units
+     */
+    static const std::string QuantityUnitName[];
+
     //Attributes
   public:
     /** @dia:pos 129.758,65.0298 */
@@ -125,7 +155,20 @@ class CModel : public CCopasiContainer
      */
     std::string mComments;
 
-    // metabolites
+    /**
+     * The volume unit used in the Model
+     */
+    std::string mVolumeUnit;
+
+    /**
+     * The time unit used in the Model
+     */
+    std::string mTimeUnit;
+
+    /**
+     * The quantity unit used in the Model
+     */
+    std::string mQuantityUnit;
 
     /**
      *  for array of compartments
@@ -242,11 +285,6 @@ class CModel : public CCopasiContainer
      */
     /** @dia:route 98,2; h,177.081,68.3423,165.341,65.0298,160.278 */
     CLinkMatrixView mLView;
-
-    /**
-     *  Unit for substance quantities
-     */
-    std::string mQuantityUnitName;
 
     /**
      *  Factor to convert from quantity to particle number
@@ -633,14 +671,47 @@ class CModel : public CCopasiContainer
     void getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives);
 
     /**
-     * set the unit for substance quantities. If copasi recognises 
-     * the unit the conversion factors are set accordingly. 
-     * Otherwise they are set to 1.
+     * Set the unit for volumes. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const std::string & name
+     * @return bool success
      */
-    void setQuantityUnit(const std::string & name);
+    bool setVolumeUnit(const std::string & name);
 
     /**
-     *  Get the Name of the unit for substance quantities
+     * Get the unit for volumes
+     * @return std::string volumeUnit
+     */
+    std::string getVolumeUnit() const;
+
+    /**
+     * Set the unit for time. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool setTimeUnit(const std::string & name);
+
+    /**
+     * Get the unit for time
+     * @return std::string timeUnit
+     */
+    std::string getTimeUnit() const;
+
+    /**
+     * Set the unit for quantities. If copasi recognises 
+     * the unit the conversion factors are set accordingly 
+     * and true is returned.
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool setQuantityUnit(const std::string & name);
+
+    /**
+     * Get the unit for quantities
+     * @return std::string quantityUnit
      */
     std::string getQuantityUnit() const;
 
