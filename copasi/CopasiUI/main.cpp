@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/02/24 15:56:39 $
    End CVS Header */
 
 #include <stdexcept>
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   CCopasiContainer::init();
 
   // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel;
+  CCopasiDataModel::Global = new CCopasiDataModel(true);
 
   // Parse the commandline options
   try
