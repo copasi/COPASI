@@ -1,6 +1,6 @@
 #include "ObjectBrowserItem.h"
 
-ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after)
+ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject)
     : QListViewItem(parent, after)
 {
   //here is the ROOT
@@ -9,9 +9,10 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   setChild(NULL);
   if (after != NULL)
     after->setBrother(this);
+  pCopasiObject = mObject;
 }
 
-ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after)
+ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject)
     : QListViewItem(parent, after)
 {
   setParent(parent);
@@ -21,6 +22,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
     parent->setChild(this);
   if (after != NULL)
     after->setBrother(this);
+  pCopasiObject = mObject;
 }
 
 ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
