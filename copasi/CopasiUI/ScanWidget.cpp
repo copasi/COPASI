@@ -41,7 +41,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
-#include "./icons/scanwidget.xpm"
+#include "./icons/scanwidgetbuttonicon.xpm"
 
 int ScanWidget::nSelectedObjects = 0;
 int ScanWidget::nTitleHeight = 16;
