@@ -69,7 +69,7 @@ class CGlobals
   
 };
 
-#ifdef __MAIN
+#ifdef COPASI_MAIN
 CGlobals *Copasi = NULL;
 #else
 extern CGlobals *Copasi;

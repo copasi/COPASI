@@ -151,10 +151,6 @@ SOURCE=.\CCopasiVector.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CCopasiVectorN.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CDependencyGraph.h
 # End Source File
 # Begin Source File

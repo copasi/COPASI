@@ -15,7 +15,7 @@
 #include "messages.h"
 #include "CCopasiException.h"
 
-static string TimeStamp();
+string TimeStamp();
 #define INITIALTEXTSIZE 1024
 
 CCopasiMessage::CCopasiMessage(void)

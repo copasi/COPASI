@@ -1,10 +1,12 @@
-#include "copasiui3window.h"
-#include "MyTreeAndListWidget.h"
-
 #include <qlayout.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
 #include <qfiledialog.h>
+
+#include "copasi.h"
+
+#include "copasiui3window.h"
+#include "MyTreeAndListWidget.h"
 
 
 #include "./icons/fileopen.xpm"

@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 function.lib model.lib output.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept /libpath:"../Debug"
+# ADD LINK32 function.lib model.lib output.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept /libpath:"../Debug"
 # SUBTRACT LINK32 /profile /incremental:no /nodefaultlib
 
 !ENDIF 
@@ -98,6 +98,15 @@ SOURCE=.\copasiui3window.cpp
 # Begin Source File
 
 SOURCE=.\main.cpp
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# ADD CPP /Od
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

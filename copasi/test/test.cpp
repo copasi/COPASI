@@ -9,9 +9,10 @@
 #include <strstream>
 #include <vector>
 
-#define __MAIN
+#define COPASI_MAIN
 
 #include "copasi.h"
+
 #include "utilities/utilities.h"
 #include "model/model.h"
 #include "output/output.h"
