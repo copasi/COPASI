@@ -227,6 +227,8 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
       react->getId2Substrates().add(id2metab);
       model.addReaction(react);
     }
+  // structural analysis (moieties, etc.)
+  model.compile();
 }
 
 void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
@@ -304,11 +306,12 @@ void WriteGepasi(char *Title, CModel &model)
 {
   string linein;
   linein.reserve(100);
-  char strtmp[512];
+  char strtmp[1024], mtitle[512];
   ofstream fout;
+  CWriteConfig *modelBuff;
 
-  sprintf(strtmp, "%s.gps", Title);
-  fout.open(strtmp, ios::out);
+  sprintf(mtitle, "%s.gps", Title);
+  fout.open(mtitle, ios::out | ios::trunc);
   // first part of the file come from a template
   ifstream fin("templategps");
   getline(fin, linein);
@@ -318,12 +321,19 @@ void WriteGepasi(char *Title, CModel &model)
       getline(fin, linein);
     }
   while (linein.find_first_of("----") != 0);
+  sprintf(strtmp, "ReportFile=%s.txt", Title);
+  fout << strtmp << endl;
+  sprintf(strtmp, "DynamicsFile=%s.dyn", Title);
+  fout << strtmp << endl;
+  sprintf(strtmp, "SSFile=%s.ss", Title);
+  fout << strtmp << endl;
   fout.close();
   // output the model
-  CWriteConfig modelBuff(strtmp, ios::app);
-  model.saveOld(modelBuff);
+  modelBuff = new CWriteConfig (mtitle, ios::app);
+  model.saveOld(*modelBuff);
+  delete modelBuff;
   // last part also comes from the template
-  fout.open(strtmp, ios::app);
+  fout.open(mtitle, ios::app);
   getline(fin, linein);
   do
     {
