@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:59:29 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/05 20:09:04 $
    End CVS Header */
 
 /**
@@ -85,7 +85,7 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
 CCopasiXMLInterface::CCopasiXMLInterface():
     mpModel(NULL),
     mpFunctionList(NULL),
-    //    mpTaskList(NULL),
+    mpTaskList(NULL),
     mpReportList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
@@ -143,7 +143,7 @@ bool CCopasiXMLInterface::freeFunctionList()
   pdelete(mpFunctionList);
   return true;
 }
-#ifdef XXXX
+
 bool CCopasiXMLInterface::setTaskList(const CCopasiVectorN< CCopasiTask > & taskList)
 {
   mpTaskList = const_cast<CCopasiVectorN< CCopasiTask > *>(&taskList);
@@ -158,10 +158,9 @@ bool CCopasiXMLInterface::haveTaskList() const
 
 bool CCopasiXMLInterface::freeTaskList()
 {
-  //  pdelete(mpTaskList);
+  pdelete(mpTaskList);
   return true;
 }
-#endif // XXXX
 
 bool CCopasiXMLInterface::setReportList(const CCopasiVectorN< CReportDefinition > & reportList)
 {

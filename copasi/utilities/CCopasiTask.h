@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 21:17:57 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/05 20:09:05 $
    End CVS Header */
 
 /**
@@ -85,14 +85,14 @@ class CCopasiTask : public CCopasiContainer
      */
     CReport mReport;
 
-    // Operations
-  protected:
+  public:
     /**
      * Default constructor
      */
-    CCopasiTask();
+    CCopasiTask(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL,
+                const std::string & type = "Task");
 
-  public:
     /**
      * Specific constructor
      * @param const Type & taskType
@@ -197,6 +197,12 @@ class CCopasiTask : public CCopasiContainer
      * Retrieve the report
      */
     CReport & getReport();
+
+    /**
+     * Cleanup function
+     **/
+
+    void cleanup();
   };
 
 #endif // COPASI_CCopasiTask

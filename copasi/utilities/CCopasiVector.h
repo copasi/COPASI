@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 21:49:12 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/05 20:09:04 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -21,6 +21,7 @@
 #include "CCopasiMessage.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
+#include "utilities/CCopasiTask.h"
 
 class CReadConfig;
 class CWriteConfig;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/04 17:35:08 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/05 20:09:05 $
    End CVS Header */
 
 /**
@@ -44,8 +44,10 @@ const char* CCopasiTask::XMLType[] =
     NULL
   };
 
-CCopasiTask::CCopasiTask():
-    CCopasiContainer("NoName", NULL, "Task"),
+CCopasiTask::CCopasiTask(const std::string & name,
+                         const CCopasiContainer * pParent,
+                         const std::string & type):
+    CCopasiContainer(name, pParent, type),
     mType(CCopasiTask::unset),
     mKey(CKeyFactory::add("Task", this)),
     mScheduled(false),
@@ -118,3 +120,5 @@ bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 
 CReport & CCopasiTask::getReport() {return mReport;}
+
+void CCopasiTask::cleanup() {}

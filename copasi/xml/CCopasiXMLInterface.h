@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:36:26 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/05 20:09:04 $
    End CVS Header */
 
 /**
@@ -57,8 +57,8 @@ class CCopasiXMLInterface
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
      * The ownership is handed to the user.
-     */ 
-    // CCopasiVectorN< CCopasiTask > * mpTaskList;
+     */
+    CCopasiVectorN< CCopasiTask > * mpTaskList;
 
     /**
      * Pointer to a vector of reports which has been loaded or is to be saved.
