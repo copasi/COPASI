@@ -325,7 +325,7 @@ class CCopasiVectorN
         CCopasiVector< CType >::remove
           (Index);
 
-        return ;
+        return;
       }
 
     /**

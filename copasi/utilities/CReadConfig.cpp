@@ -186,7 +186,7 @@ C_INT32 CReadConfig::getVariable(const string& name,
   else if (type == "bool")
     {
       // may be we should check if Value is really a integer
-      *(bool *) pout = atoi(Value.c_str());
+      *(bool *) pout = (atoi(Value.c_str()) != 0);
     }
   else if (type == "multiline")
     {
@@ -320,5 +320,5 @@ void CReadConfig::rewind()
   mBuffer.seekg(0);
   mLineNumber = 0;
 
-  return ;
+  return;
 }
