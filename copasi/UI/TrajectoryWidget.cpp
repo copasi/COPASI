@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/24 16:38:50 $
+   $Author: shoops $ 
+   $Date: 2005/02/25 01:47:52 $
    End CVS Header */
 
 /********************************************************
@@ -507,6 +507,8 @@ void TrajectoryWidget::loadTrajectoryTask()
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
+  bExecutable->setChecked(tt->isScheduled());
+
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
   assert(trajectoryproblem);
@@ -581,8 +583,10 @@ void TrajectoryWidget::saveTrajectoryTask()
 {
   CTrajectoryTask* tt =
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
-
   assert(tt);
+
+  bool bScheduled = bExecutable->isChecked();
+  tt->setScheduled(bScheduled);
 
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());

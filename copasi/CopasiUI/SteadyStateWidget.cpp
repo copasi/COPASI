@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:51 $
+   $Date: 2005/02/25 01:47:52 $
    End CVS Header */
 
 /********************************************************
@@ -233,6 +233,9 @@ void SteadyStateWidget::CommitButtonClicked()
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
 
+  bool bScheduled = bExecutable->isChecked();
+  mSteadyStateTask->setScheduled(bScheduled);
+
   CSteadyStateProblem* steadystateproblem =
     dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
   assert(steadystateproblem);
@@ -243,8 +246,8 @@ void SteadyStateWidget::CommitButtonClicked()
 
   steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-  bool bJacobian = taskJacobian->isChecked ();
-  bool bStatistics = taskStability->isChecked ();
+  bool bJacobian = taskJacobian->isChecked();
+  bool bStatistics = taskStability->isChecked();
 
   steadystateproblem->setJacobianRequested(bJacobian);
   steadystateproblem->setStabilityAnalysisRequested(bStatistics);
@@ -351,6 +354,8 @@ void SteadyStateWidget::loadSteadyStateTask()
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
+
+  bExecutable->setChecked(mSteadyStateTask->isScheduled());
 
   CSteadyStateProblem* steadystateproblem =
     dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
