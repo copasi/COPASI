@@ -66,7 +66,7 @@ class CFunction
   CCopasiVectorNS < CUsageRange > mUsageDescriptions;
 
   /**
-   *  The discribtion of the parameters of the function
+   *  The discription of the parameters of the function
    *  @supplierCardinality 1 
    */
   CFunctionParameters mParameters;
