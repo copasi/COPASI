@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:11 $
+   $Date: 2003/11/18 17:59:23 $
    End CVS Header */
 
 /**
@@ -58,22 +58,22 @@ class CMetab : public CCopasiContainer
     /**
      *  Concentration of the metabolite as double.
      */
-    C_FLOAT64 mConcDbl;
+    C_FLOAT64 mConc;
 
     /**
      *  Initial concentration of the metabolite as double
      */
-    C_FLOAT64 mIConcDbl;
+    C_FLOAT64 mIConc;
 
     /**
      *  Concentration of the metabolite as long.
      */
-    C_INT32 mNumberInt;
+    C_FLOAT64 mNumber;
 
     /**
      * Initial concentration of the metabolite as long.
      */
-    C_INT32 mINumberInt;
+    C_FLOAT64 mINumber;
 
     /**
      *  Rate of production of this metaboLite
@@ -229,12 +229,12 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setNumberDbl(const C_FLOAT64 number);
+    void setNumber(const C_FLOAT64 number);
 
     /**
      *
      */
-    C_FLOAT64 getNumberDbl() const;
+    const C_FLOAT64 & getNumber() const;
 
     /**
      *
@@ -249,12 +249,12 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setInitialNumberDbl(const C_FLOAT64 initialNumber);
+    void setInitialNumber(const C_FLOAT64 initialNumber);
 
     /**
      *
      */
-    C_FLOAT64 getInitialNumberDbl() const;
+    const C_FLOAT64 & getInitialNumber() const;
 
     /**
      *

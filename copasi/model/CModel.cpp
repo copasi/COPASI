@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:11 $
+   $Date: 2003/11/18 17:59:23 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -901,7 +901,7 @@ void CModel::setTransitionTimes()
           if (TotalFlux == 0.0)
             TransitionTime = DBL_MAX;
           else
-            TransitionTime = mMetabolites[i]->getNumberDbl() / TotalFlux;
+            TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
           mMetabolites[i]->setRate(TotalFlux * mNumber2QuantityFactor);
@@ -1108,12 +1108,12 @@ CState CModel::getInitialState() const
     /* Set the variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
     for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolites[i]->getInitialNumberDbl();
+      *Dbl = mMetabolites[i]->getInitialNumber();
 
     /* Set the fixed Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolites[i]->getInitialNumberDbl();
+      *Dbl = mMetabolites[i]->getInitialNumber();
 
     //     DebugFile << "getInitialState " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1139,17 +1139,17 @@ CStateX CModel::getInitialStateX() const
     /* Set the independent variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
     for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
+      *Dbl = mMetabolitesX[i]->getInitialNumber();
 
     /* Set the dependent variable Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getDependentNumberVector().array());
     for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
+      *Dbl = mMetabolitesX[i]->getInitialNumber();
 
     /* Set the fixed Metabolites */
     Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
     for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
+      *Dbl = mMetabolitesX[i]->getInitialNumber();
 
     //     DebugFile << "getInitialStateX " << mInitialTime;
     //     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)

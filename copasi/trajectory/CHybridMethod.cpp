@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:09 $
+   $Date: 2003/11/18 17:59:23 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:             // non-integer stoichometry
+    case - 3:              // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:             // reversible reaction exists
+    case - 2:              // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:             // more than one compartment involved
+    case - 1:              // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -105,7 +105,7 @@ const double CHybridMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumberDbl() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -125,7 +125,7 @@ const double CHybridMethod::step(const double & deltaT)
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
   return deltaT;
 }
@@ -321,9 +321,9 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   while ((dt - integrationTime) > mStepsize)
     {
       for (i = 0; i < mDim; i++)
-        oldState[i] = (*mMetabolites)[i]->getNumberDbl();
+        oldState[i] = (*mMetabolites)[i]->getNumber();
       for (i = 0; i < mDim; i++)
-        x[i] = (*mMetabolites)[i]->getNumberDbl();
+        x[i] = (*mMetabolites)[i]->getNumber();
       calculateDerivative(temp);
       for (i = 0; i < mDim; i++)
         increment[i] = temp[i] * dt;
@@ -332,16 +332,16 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
       for (i = 0; i < mDim; i++)
         {
           if (increment[i] != 0.0)
-            (*mMetabolites)[i]->setNumberDbl(y[i]);
+            (*mMetabolites)[i]->setNumber(y[i]);
           else
-            (*mMetabolites)[i]->setNumberDbl(oldState[i]);
+            (*mMetabolites)[i]->setNumber(oldState[i]);
         }
       integrationTime += mStepsize;
     }
   for (i = 0; i < mDim; i++)
-    oldState[i] = (*mMetabolites)[i]->getNumberDbl();
+    oldState[i] = (*mMetabolites)[i]->getNumber();
   for (i = 0; i < mDim; i++)
-    x[i] = (*mMetabolites)[i]->getNumberDbl();
+    x[i] = (*mMetabolites)[i]->getNumber();
   calculateDerivative(temp);
   for (i = 0; i < mDim; i++)
     increment[i] = temp[i] * (dt - integrationTime);
@@ -350,9 +350,9 @@ void CHybridMethod::integrateDeterministicPartEuler(C_FLOAT64 dt)
   for (i = 0; i < mDim; i++)
     {
       if (increment[i] != 0.0)
-        (*mMetabolites)[i]->setNumberDbl(y[i]);
+        (*mMetabolites)[i]->setNumber(y[i]);
       else
-        (*mMetabolites)[i]->setNumberDbl(oldState[i]);
+        (*mMetabolites)[i]->setNumber(oldState[i]);
     }
 
   // find the set union of all reactions, which depend on one of the deterministic reactions. the propensities of the stochastic reactions in this set union will be updated later in the method updatePriorityQueue().
@@ -490,7 +490,7 @@ void CHybridMethod::getState(C_FLOAT64 * target)
 
   for (i = 0; i < mDim; i++)
     {
-      target[i] = (*mMetabolites)[i]->getNumberDbl();
+      target[i] = (*mMetabolites)[i]->getNumber();
     }
   return;
 }
@@ -508,7 +508,7 @@ void CHybridMethod::getState(C_INT32 * target)
 
   for (i = 0; i < mDim; i++)
     {
-      target[i] = (*mMetabolites)[i]->getNumberDbl();
+      target[i] = (*mMetabolites)[i]->getNumber();
     }
   return;
 }
@@ -527,7 +527,7 @@ void CHybridMethod::setState(C_FLOAT64 * source)
 
   for (i = 0; i < mDim; i++)
     {
-      (*mMetabolites)[i]->setNumberDbl(source[i]);
+      (*mMetabolites)[i]->setNumber(source[i]);
     }
   return;
 }
@@ -556,9 +556,9 @@ void CHybridMethod::changeState(C_FLOAT64 * increment,
   for (i = 0; i < mDim; i++)
     {
       if (increment[i] != 0.0)
-        (*mMetabolites)[i]->setNumberDbl(y[i]);
+        (*mMetabolites)[i]->setNumber(y[i]);
       else
-        (*mMetabolites)[i]->setNumberDbl(oldState[i]);
+        (*mMetabolites)[i]->setNumber(oldState[i]);
     }
   return;
 }
@@ -663,7 +663,7 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
 
   for (i = 0; i < mBalances[rIndex].size(); i++)
     {
-      number = mBalances[rIndex][i].metabolitePointer->getNumberDbl();
+      number = mBalances[rIndex][i].metabolitePointer->getNumber();
       newNumber = number + mBalances[rIndex][i].balance;
       metabIndex = mBalances[rIndex][i].index;
 
@@ -702,7 +702,7 @@ void CHybridMethod::fireReactionAndUpdatePartition(C_INT32 rIndex, C_FLOAT64 tim
       // juergen: if new_num < schwelle, then mark reaction as stochastic; if new_num < schwelle for none of the metabolites, then mark reaction as deterministic
 
       // update particle number
-      (*mMetabolites)[metabIndex]->setNumberDbl(newNumber);
+      (*mMetabolites)[metabIndex]->setNumber(newNumber);
     }
   // insert all dependent reactions into the mUpdateSet
   const std::set <C_INT32> & dependents = mDG.getDependents(rIndex);
@@ -789,7 +789,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       num_ident = static_cast<C_INT32>(floor(substrates[i]->getMultiplicity() + 0.5)); // juergen: +0.5 to get a rounding out of the static_cast !
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number = substrates[i]->getMetabolite().getNumberDbl();
+      number = substrates[i]->getMetabolite().getNumber();
       lower_bound = number - num_ident;
       //cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
       substrate_factor = substrate_factor * pow(number, num_ident);
@@ -1108,7 +1108,7 @@ void CHybridMethod::setupPartition()
       mStochReactionFlags[i].value = 0;
       for (j = 0; j < mBalances[i].size(); j++)
         {
-          if ((mBalances[i][j].metabolitePointer->getNumberDbl()) < averageStochLimit)
+          if ((mBalances[i][j].metabolitePointer->getNumber()) < averageStochLimit)
             {
               mStochReactionFlags[i].value++;
             }
@@ -1370,7 +1370,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
           os << mpCurrentState->getTime() << " : ";
           for (i = 0; i < mMetabolites->size(); i++)
             {
-              os << (*mMetabolites)[i]->getNumberDbl() << " ";
+              os << (*mMetabolites)[i]->getNumber() << " ";
             }
           os << std::endl;
         }
@@ -1379,7 +1379,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
       os << mpCurrentState->getTime() << " : ";
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumberDbl() << " ";
+          os << (*mMetabolites)[i]->getNumber() << " ";
         }
       os << std::endl;
       break;
@@ -1401,7 +1401,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:             // Everything !!!
+    case 0:              // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getName() << " Method: " /* << mMethod */
       << std::endl;
@@ -1503,12 +1503,12 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << "Particle numbers: " << std::endl;
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumberDbl() << " ";
+          os << (*mMetabolites)[i]->getNumber() << " ";
         }
       os << std::endl;
       break;
 
-    case 1:              // Variable values only
+    case 1:               // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)
@@ -1571,7 +1571,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << "Particle numbers: " << std::endl;
       for (i = 0; i < mMetabolites->size(); i++)
         {
-          os << (*mMetabolites)[i]->getNumberDbl() << " ";
+          os << (*mMetabolites)[i]->getNumber() << " ";
         }
       os << std::endl;
       break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:10 $
+   $Date: 2003/11/18 17:59:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -100,7 +100,7 @@ const double CStochMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumberDbl() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -120,7 +120,7 @@ const double CStochMethod::step(const double & deltaT)
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
   return deltaT;
 }
@@ -289,7 +289,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
-      mpModel->getMetabolites()[bi->mIndex]->setNumberDbl(mNumbers[bi->mIndex]);
+      mpModel->getMetabolites()[bi->mIndex]->setNumber(mNumbers[bi->mIndex]);
     }
 
   const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);

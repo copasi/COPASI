@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:34 $
+   $Date: 2003/11/18 17:59:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -264,10 +264,10 @@ bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
   LineEdit7->setText(QString::number(metab->getConcentration()));
   LineEdit7->setReadOnly(true);
 
-  LineEdit8->setText(QString::number(metab->getNumberDbl()));
+  LineEdit8->setText(QString::number(metab->getNumber()));
   LineEdit8->setReadOnly(true);
 
-  LineEdit5->setText(QString::number(metab->getInitialNumberDbl()));
+  LineEdit5->setText(QString::number(metab->getInitialNumber()));
 
   LineEdit9->setText(QString::number(metab->getTransitionTime()));
   LineEdit9->setReadOnly(true);
@@ -353,10 +353,10 @@ bool MetabolitesWidget1::saveToMetabolite()
       QString initialNumber(LineEdit5->text());
       C_FLOAT64 temp2;
       temp2 = initialNumber.toDouble();
-      if (fabs(temp2 - metab->getInitialNumberDbl()) > 1e-3) //TODO: this is extremely ugly
+      if (fabs(temp2 - metab->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
         {
-          metab->setInitialNumberDbl(temp2);
-          metab->setNumberDbl(temp2);
+          metab->setInitialNumber(temp2);
+          metab->setNumber(temp2);
           ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/13 23:52:11 $
+   $Author: shoops $ 
+   $Date: 2003/11/18 17:59:24 $
    End CVS Header */
 
 /***********************************************************************
@@ -129,8 +129,8 @@ void MetabolitesWidget::fillTable()
         }
       else
         {
-          table->setText(j, 1, QString::number(obj->getInitialNumberDbl()));
-          table->setText(j, 2, QString::number(obj->getNumberDbl()));
+          table->setText(j, 1, QString::number(obj->getInitialNumber()));
+          table->setText(j, 2, QString::number(obj->getNumber()));
         }
 
       table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
@@ -241,13 +241,13 @@ void MetabolitesWidget::slotBtnOKClicked()
         {
           QString initialNumber(table->text(j, 1));
           temp2 = initialNumber.toDouble();
-          if (fabs(temp2 - obj->getInitialNumberDbl()) > 1e-3) //TODO: this is extremely ugly
+          if (fabs(temp2 - obj->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
             {
-              obj->setInitialNumberDbl(temp2);
+              obj->setInitialNumber(temp2);
 
               QString Number(table->text(j, 2));
               temp2 = Number.toDouble();
-              obj->setNumberDbl(temp2);
+              obj->setNumber(temp2);
 
               changed[j] = 1;
             }
@@ -316,8 +316,8 @@ void MetabolitesWidget::slotBtnSwitchColsClicked() //By G
       for (j = 0; j < jmax; ++j)
         {
           obj = objects[j];
-          table->setText(j, 1, QString::number(obj->getInitialNumberDbl()));
-          table->setText(j, 2, QString::number(obj->getNumberDbl()));
+          table->setText(j, 1, QString::number(obj->getInitialNumber()));
+          table->setText(j, 2, QString::number(obj->getNumber()));
         }
     }
   else
@@ -354,7 +354,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
                                             "Yes", "No", 0, 0, 1);
           switch (choice)
             {
-            case 0:      // Yes or Enter
+            case 0:       // Yes or Enter
               {
                 //QString name(table->text(j, 0));
 
@@ -388,7 +388,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:      // No or Escape
+            case 1:       // No or Escape
               break;
             }
         }

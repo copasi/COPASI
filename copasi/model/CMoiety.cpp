@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:51 $
+   $Date: 2003/11/18 17:59:23 $
    End CVS Header */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(CKeyFactory::add("Moiety", this)),   //By G
+    mKey(CKeyFactory::add("Moiety", this)),    //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -33,7 +33,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("Moiety", this)),   //By G
+    mKey(CKeyFactory::add("Moiety", this)),    //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -58,7 +58,7 @@ C_FLOAT64 CMoiety::dependentNumber()
 
   for (unsigned C_INT32 i = 1; i < mEquation.size(); i++)
     mNumber -= mEquation[i]->getMultiplicity() *
-               mEquation[i]->getMetabolite().getNumberDbl();
+               mEquation[i]->getMetabolite().getNumber();
 
   return mNumber;
 }
@@ -112,7 +112,7 @@ void CMoiety::setInitialValue()
 
   for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
     mINumber += mEquation[i]->getMultiplicity() *
-                mEquation[i]->getMetabolite().getInitialNumberDbl();
+                mEquation[i]->getMetabolite().getInitialNumber();
   return;
 }
 
