@@ -31,9 +31,12 @@
 #include "math.h"
 #include "float.h"
 #include "r250.h"
+//YOHE
+#include <cstdlib>
 
 #include "COptimizer.h"
 
+using namespace std;
 
 class CGA : public COptimizer {
 //class CGA {

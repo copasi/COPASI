@@ -33,7 +33,110 @@ COptimizer::~COptimizer()
 // Initialization of private variables
 bool COptimizer::Init( string &inifile )
 {
+  /*
+ char buffer[4096];
+ int res, i;
+ CString TmpStr;
+ // check if this object had been initialised before and clear it
+ if( DllLoaded ) FreeLibrary( HLib );
+ DllLoaded = FALSE;
+ if( ArrayCreated && (Param!=NULL) )
+ {
+//  TRACE("deleting Param member of COptModule\n");
+  delete [] Param;
+ }
+ ArrayCreated = FALSE;
+ Param = NULL;
+ // store the name of the ini file
+ Ini = inifile;
+ // get directory of ini filename
+ TmpStr = Ini;
+ res = TmpStr.ReverseFind('\\');
+ TmpStr = TmpStr.Left(res+1);
+ // get the DLL name
+ GetPrivateProfileString( "MODULE", "DLL", "not found", buffer,(DWORD) 4096, LPCTSTR(Ini) );
+ Dll = TmpStr + buffer;
+ // get the Help name
+ GetPrivateProfileString( "MODULE", "Help", "not found", buffer,(DWORD) 4096, LPCTSTR(Ini) );
+ Help = TmpStr + buffer;
+ // load the DLL
+ if( ( HLib = LoadLibrary( LPCTSTR(Dll) ) ) == NULL ) return FALSE;
+ // mark the DLL has been loaded
+ DllLoaded = TRUE;
+ // point to the DLL functions
+ if( (DLLName = ( void (PASCAL *)(char*) ) GetProcAddress(HLib, "OptDLLName") ) == NULL )
+  return FALSE;
+ if( (DLLParameterName = ( char* (PASCAL *)(int,char*) ) GetProcAddress(HLib, "OptDLLParameterName") ) == NULL )
+  return FALSE;
+ if( (DLLParameterNumber = ( int (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLParameterNumber") ) == NULL )
+  return FALSE;
+ if( (DLLSetMethodParam = ( void (PASCAL *)(int, double) ) GetProcAddress(HLib, "OptDLLSetMethodParameter") ) == NULL )
+  return FALSE;
+ if( (DLLCreateArrays = ( int (PASCAL *)(int, int, int) ) GetProcAddress(HLib, "OptDLLCreateArrays") ) == NULL )
+  return FALSE;
+ if( (DLLSetOptParameter = ( void (PASCAL *)(int, COptParam *) ) GetProcAddress(HLib, "OptDLLSetOptParam") ) == NULL )
+  return FALSE;
+ if( (DLLSetConstraint = ( void (PASCAL *)(int, COptParam *) ) GetProcAddress(HLib, "OptDLLSetConstr") ) == NULL )
+  return FALSE;
+ if( (DLLClearMemory = ( void (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLClearMemory") ) == NULL )
+  return FALSE;
+ if( (DLLGetOptParameterValue = ( double (PASCAL *)(int) ) GetProcAddress(HLib, "OptDLLGetOptParameter") ) == NULL )
+  return FALSE;
+ if( (DLLGetObjF = ( double (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLGetObjF") ) == NULL )
+  return FALSE;
+ if( (DLLVersion = ( int (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLVersion") ) == NULL )
+  return FALSE;
+ if( (DLLIsConstrained = ( int (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLIsConstrained") ) == NULL )
+  return FALSE;
+ if( (DLLIsBounded = ( int (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLIsBounded") ) == NULL )
+  return FALSE;
+ if( (DLLRoutines = ( int (PASCAL *)(void) ) GetProcAddress(HLib, "OptDLLRoutines") ) == NULL )
+  return FALSE;
+ if( (DLLSetCallback = ( void (PASCAL *)( void(*)(double) ) ) GetProcAddress(HLib, "OptDLLSetCallback") ) == NULL )
+  return FALSE;
+ if( (DLLInit = ( void (PASCAL *)( void ) ) GetProcAddress(HLib, "OptDLLInit") ) == NULL )
+  return FALSE;
+ if( (DLLOptimise = ( int (PASCAL *)(double(*)(void)) ) GetProcAddress(HLib, "OptDLLOptimise") ) == NULL )
+  return FALSE;
+ if( (DLLSolveLsq = ( int (PASCAL *)(double(*)(double *)) ) GetProcAddress(HLib, "OptDLLSolveLsq") ) == NULL )
+  return FALSE;
 
+ // store the name of this DLL
+ DLLName( buffer );
+ Name = buffer;
+ // the number of parameters
+ nParam = DLLParameterNumber();
+ // does it deal with bounds?
+ if( DLLIsBounded() ) Bounds = TRUE; else Bounds = FALSE;
+ // does it deal with constraints?
+ if( DLLIsConstrained() ) Constraints = TRUE; else Constraints = FALSE;
+ // create the array for the parameter values
+ Param = new double[nParam];
+ if( Param!=NULL ) ArrayCreated = TRUE; 
+ else ArrayCreated = FALSE;
+ // load the default values of the parameters
+ for( i=0; i<nParam; i++ )
+ {
+  // get the default values from the ini file
+  TmpStr.Format( "PARAMETER%1d", i );
+  GetPrivateProfileString( "PARAMETERS", LPCTSTR( TmpStr ), "0.0", buffer,(DWORD) 4096, LPCTSTR(Ini) );
+  sscanf( buffer, "%lf", &(Param[i]) );
+ }
+ // make the version number
+ int nV = DLLVersion();
+ float fDV = (float) (1000.0 * ( nV * 0.001 - floor( nV * 0.001 ) ));
+ float fV = (float) (nV * 0.00001 - 0.01 * ( nV * 0.001 - floor( nV * 0.001 ) ));
+ if( fDV >= 300.0 )
+  Version.Format( "%.2f", fV );
+ else
+ {
+  if( fDV<200 )
+   Version.Format( "%.2f %s %.0f", fV, "alpha", fDV-100.0 );
+  else
+   Version.Format( "%.2f %s %.0f", fV, "beta", fDV-200.0 );
+ }
+ return TRUE;
+  */
 }
 
 //
