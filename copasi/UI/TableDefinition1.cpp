@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.4 2003/08/14 19:09:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.5 2003/08/14 19:12:21 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -253,7 +253,7 @@ void TableDefinition1::loadTableDefinition1()
 
   C_INT32 i;
   for (i = 0; i < pReportDefinition->getHeaderAddr()->size(); i++)
-    itemsTable->insertItem((*(pReportDefinition->getHeaderAddr()))[i].getObjectName().c_str());
+    itemsTable->insertItem((*(pReportDefinition->getHeaderAddr()))[i].c_str());
   comboTask->setEnabled(true);
   seperatorEdit->setEnabled(false);
   tabChecked->setChecked(true);
