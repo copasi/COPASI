@@ -2,12 +2,20 @@
 
 if [ x"$#" = x1 ]; then
   build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' ../copasiversion.h`
-  
-  if [ x"$1" = xWIN32 ]; then
+
+  case x"$1" in 
+  xWIN32)
     zip CopasiUI-$build.zip CopasiUI.exe 
-  else
+    ;;
+
+  xDarwin)
+    tar -czf CopasiUI-$build.tar.gz CopasiUI.app
+    ;;
+
+  xLinux|xSunOS)
     tar -czf CopasiUI-$build.tar.gz CopasiUI
-  fi
+    ;;
+  esac
 
   scp CopasiUI-$build.* calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/$1
 else
