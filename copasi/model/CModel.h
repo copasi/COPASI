@@ -867,6 +867,8 @@ class CModel : public CCopasiContainer
      */
     const CModel::CStateTemplate & getStateTemplate() const;
 
+    bool hasReversibleReaction() const;
+
   private:
     /**
      * Initialize the contained CCopasiObjects

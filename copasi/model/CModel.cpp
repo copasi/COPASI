@@ -1812,3 +1812,11 @@ CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
   {
     return * mList[index];
   }
+
+bool CModel::hasReversibleReaction() const
+  {
+    unsigned C_INT32 i, imax = mSteps.size();
+    for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
+
+    return false;
+  }
