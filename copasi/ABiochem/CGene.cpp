@@ -57,10 +57,17 @@ CGene::CGene()
 }
 
 CGene::~CGene()
+{}
+
+void CGene::setName(const string & name)
 {
+  mName = name;
 }
-void CGene::setName(const string & name) { mName = name; }
-const string & CGene::getName() const { return mName; }
+
+const string & CGene::getName() const
+  {
+    return mName;
+  }
 
 C_INT32 CGene::getModifierNumber()
 {
@@ -70,6 +77,16 @@ C_INT32 CGene::getModifierNumber()
 CGene * CGene::getModifier(C_INT32 n)
 {
   return mModifier[n]->getModifier();
+}
+
+void CGene::setRate(C_FLOAT64 rate)
+{
+  mRate = rate;
+}
+
+C_FLOAT64 CGene::getRate(void)
+{
+  return mRate;
 }
 
 void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K)
@@ -92,4 +109,24 @@ C_FLOAT64 CGene::getK(C_INT32 n)
 void CGene::cleanup()
 {
   mModifier.cleanup();
+}
+
+C_INT32 CGene::getNegativeModifiers(void)
+{
+  C_INT32 i, n, s;
+  s = mModifier.size();
+  for (i = n = 0; i < s; i++)
+    if (mModifier[i]->getType() == 0)
+      n++;
+  return n;
+}
+
+C_INT32 CGene::getPositiveModifiers(void)
+{
+  C_INT32 i, n, s;
+  s = mModifier.size();
+  for (i = n = 0; i < s; i++)
+    if (mModifier[i]->getType() == 1)
+      n++;
+  return n;
 }

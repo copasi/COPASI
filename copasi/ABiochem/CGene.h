@@ -86,6 +86,11 @@ class CGene
     string mName;
 
     /**
+     *  Basal or maximal rate for the transcription
+     */
+    C_FLOAT64 mRate;
+
+    /**
      *  List of other genes that modify transcription of this one
      *  @supplierCardinality 0..*
      *  @associates <{CGene*}>
@@ -125,6 +130,16 @@ class CGene
     CGene * getModifier(C_INT32 n);
 
     /**
+     *  Sets the name of the gene.
+     */
+    void setRate(C_FLOAT64 rate);
+
+    /**
+     *  Retrieves the constant
+     */
+    C_FLOAT64 getRate(void);
+
+    /**
      *  Add a new Modifier to this gene.
      */
     void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K);
@@ -138,6 +153,18 @@ class CGene
      *  Retrieve the constant of Modifier n.
      */
     C_FLOAT64 getK(C_INT32 n);
+
+    /**
+     *  Retrieve the number of negative modifiers
+    *  @return C_INT32 the number of negative modifiers
+     */
+    C_INT32 getNegativeModifiers(void);
+
+    /**
+     *  Retrieve the number of positive modifiers
+    *  @return C_INT32 the number of negative modifiers
+     */
+    C_INT32 getPositiveModifiers(void);
 
     /**
      *  cleanup()
