@@ -820,9 +820,8 @@ void ListViews::loadModelNodes(CModel *model)
       constantSymbols->loadConstantSymbols(mpMathModel);
       compartmentSymbols->loadCompartmentSymbols(mpMathModel);
       differentialEquations->loadDifferentialEquations(mpMathModel);
-
       scanWidget->loadScan(model);
-
+      tableDefinition->loadTableDefinition();
       loadMetabolitesNodes(model);
       // UPDATE THE REACTIONS STUFF..
       loadReactionsNodes(model);
