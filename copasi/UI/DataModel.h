@@ -17,8 +17,10 @@
 #include "Tree.h"
 #include "listviews.h"
 #include "Subject.h"
-
+#include "utilities/CGlobals.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "output/COutputList.h"
+#include "output/COutput.h"
 
 class CTrajectoryTask;
 class CSteadyStateTask;
@@ -183,6 +185,7 @@ void DataModel<T>::loadModel(const char* fileName)
   trajectorytaskUpdate = true;
   notify(TRAJECTORYTASK);
 
+  Copasi->pOutputList->load(inbuf);
   //  steadystatetask->compile();
 }
 
