@@ -308,8 +308,8 @@ void ScanItemWidget::InitializeParameterList()
   pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("min", mMin->text().toDouble(), CParameter::DOUBLE);
   pParameter->add("density", mDensity->text().toDouble(), CParameter::DOUBLE);
-  pParameter->add("log", mLogarithmic->text().toUInt(), CParameter::BOOL);
-  pParameter->add("indp", mIndependent->text().toUInt(), CParameter::BOOL);
+  pParameter->add("log", mLogarithmic->isChecked(), CParameter::BOOL);
+  pParameter->add("indp", mIndependent->isChecked(), CParameter::BOOL);
 
   if (mRegularGridRadio->isChecked())
     pParameter->add("gridType", SD_REGULAR, CParameter::INT);
