@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:15:49 $
+   $Date: 2004/10/04 15:09:22 $
    End CVS Header */
 
 #include <algorithm>
@@ -298,14 +298,14 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
   for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
-      std::cout << "newton: " << k << std::endl << mStateX;
+      //std::cout << "newton: " << k << std::endl << mStateX;
 
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       //      DebugFile << "Iteration: " << k << std::endl;
       mStateX.calculateJacobian(mJacobianX, std::min(mFactor, mMaxrate),
                                 mResolution); //X
-      std::cout << "Jacobian: " << mJacobianX << std::endl;
+      //std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -348,7 +348,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       dgetrf_(&mDimension, &mDimension, mJacobianX.array(),
               &mDimension, mIpiv, &info);
 
-      std::cout << "Jacobian: " << mJacobianX << std::endl;
+      //std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       if (info)
         {
@@ -403,11 +403,11 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
        *  info    (output) INTEGER
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
-       */
-      std::cout << "b: " << mdxdt << std::endl;
+       */ 
+      //std::cout << "b: " << mdxdt << std::endl;
       dgetrs_(&T, &mDimension, &one, mJacobianX.array(),
               &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
-      std::cout << "a: " << mdxdt << std::endl << std::endl;
+      //std::cout << "a: " << mdxdt << std::endl << std::endl;
 
       if (info)
         fatalError();
@@ -428,7 +428,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                       /* fortran style vector */
+                           mdxdt.array() - 1,                        /* fortran style vector */
                            1);
         }
 
@@ -474,9 +474,11 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
     }
   else
     {
-      const_cast<CModel *>(mpProblem->getInitialState().getModel())
-      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
-      *mpSteadyState = mpProblem->getInitialState();
+      const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
+      *mpSteadyState = mStateX; //convert back to CState
+      //      const_cast<CModel *>(mpProblem->getInitialState().getModel())
+      //      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
+      //      *mpSteadyState = mpProblem->getInitialState();
     }
 
   return returnCode;
@@ -487,7 +489,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                       /* fortran style vector */
+                   mdxdt.array() - 1,                        /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
