@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2003/10/29 10:36:37 $
+   $Date: 2003/10/29 11:08:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -51,8 +51,6 @@
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
 #include "listviews.h"
-#include "plot/plotwidget1.h" 
-//#include "plotwidget.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -333,12 +331,6 @@ void ListViews::ConstructNodeWidgets()
   tableDefinition1 = new TableDefinition1(this);
   tableDefinition1->hide();
 
-  plotWidget = new PlotWidget(this);
-  plotWidget->hide();
-
-  //plotWidget1 = new PlotWidget1(this);
-  //plotWidget1->hide();
-
   steadystateWidget = new SteadyStateWidget(this);
   steadystateWidget->hide();
 
@@ -557,9 +549,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 43:                         //Report
         return tableDefinition;
         break;
-      case 42:                         //Plots
-        return plotWidget;
-        break;
       case 5:
         return functionWidget;
         break;
@@ -586,9 +575,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       case 43:
         return tableDefinition1;
-        break;
-      case 42:
-        return plotWidget1;
         break;
       case 5:
         return functionWidget1;
@@ -862,38 +848,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   loadReportDefinition();
   updateAllListviews2(43);
 
-  updateAllListviews1(42);
-  loadPlotsToDataModel();
-  updateAllListviews2(42);
-
   return success;
-}
-
-//**************************************************************************************+***
-
-void ListViews::loadPlotsToDataModel()   //TODO
-{
-  Folder * parent = dataModel->searchFolderList(43);
-  Folder * f;
-
-  dataModel->removeAllChildren(parent);
-
-  const CCopasiVector< CReportDefinition > * objects =
-    dataModel->getReportDefinitionVectorAddr();
-
-  if (!objects) return;
-
-  C_INT32 j, jmax = objects->size();
-
-  CReportDefinition *obj;
-  for (j = 0; j < jmax; j++)
-    {
-      obj = (*objects)[j];
-      f = new Folder(parent, obj->getName().c_str());
-      f->setID(parent->getID());
-      f->setObjectKey(obj->getKey());
-      dataModel->addData(parent, f);
-    }
 }
 
 void ListViews::loadReportDefinition()
@@ -920,6 +875,8 @@ void ListViews::loadReportDefinition()
       dataModel->addData(parent, f);
     }
 }
+
+//**************************************************************************************+***
 
 void ListViews::loadCompartmentsToDataModel()
 {
