@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/30 15:31:54 $
+   $Date: 2005/01/04 17:20:48 $
    End CVS Header */
 
 /**
@@ -29,7 +29,9 @@ class CScanProblem : public CCopasiProblem
       SD_UNIFORM = 0,
       SD_GAUSS,
       SD_BOLTZ,
-      SD_REGULAR
+      SD_REGULAR,
+      SCAN_REPEAT,  //=0
+      SCAN_LINEAR
     };
 
   private:
@@ -38,6 +40,11 @@ class CScanProblem : public CCopasiProblem
      *  The initial state, i.e., the starting conditions of the trajectroy/SS.
      */
     CState mInitialState;
+
+    /**
+     *  The initial state, i.e., the starting conditions of the trajectroy/SS.
+     */
+    CCopasiParameterGroup * mpScanItems;
 
   public:
 
@@ -67,16 +74,34 @@ class CScanProblem : public CCopasiProblem
     virtual bool setModel(CModel * pModel);
 
     /**
-     * Set the number of time steps the trajectory method should integrate.
-     * @param "const unsigned C_INT32 &" stepNumber
+     *  Set the type of the subtask.
      */
-    void setStepNumber(const unsigned C_INT32 & stepNumber);
+    void setSubtask(CCopasiTask::Type type);
 
     /**
-     * Retrieve the number of time steps the trajectory method should integrate.
-     * @return "const unsigned C_INT32 &" stepNumber
+     *  Get the type of the subtask.
      */
-    const unsigned C_INT32 & getStepNumber() const;
+    CCopasiTask::Type getSubtask() const;
+
+    /**
+     *  Set if output should be done after every step of the subtask.
+     */
+    void setOutputInSubtask(bool ois);
+
+    /**
+     *  Ask if output should be done after every step of the subtask.
+     */
+    const bool & getOutputInSubtask() const;
+
+    /**
+     *  Set if initial conditions should be set to the result of the previous run.
+     */
+    void setAdjustInitialConditions(bool aic);
+
+    /**
+     *  Ask if initial conditions should be set to the result of the previous run.
+     */
+    const bool & getAdjustInitialConditions() const;
 
     /**
      * Set the initial state of the problem.
@@ -95,6 +120,19 @@ class CScanProblem : public CCopasiProblem
      * @return "const CState &" pInitialState
      */
     const CState & getInitialState() const;
+
+    unsigned C_INT32 getNumberOfScanItems() const;
+
+    const CCopasiParameterGroup* getScanItem(unsigned C_INT32 index) const;
+    CCopasiParameterGroup* getScanItem(unsigned C_INT32 index);
+
+    CScanProblem::Type getScanItemType(unsigned C_INT32 index);
+
+    CCopasiParameterGroup* createScanItem(CScanProblem::Type type, unsigned C_INT32 steps = 5, const CCopasiObject* obj = NULL);
+
+    void clearScanItems();
+
+    void createDebugScan(CModel* model);
 
     /**
      * Load a scan problem

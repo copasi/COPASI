@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 16:51:07 $
+   $Author: ssahle $ 
+   $Date: 2005/01/04 17:20:48 $
    End CVS Header */
 
 /**
  *  CScanMethod class.
  *  This class describes the method for doing the Scan.
- *
- *  Created for Copasi by Rohan Luktuke 2002
  */
 
 #ifndef COPASI_CScanMethod
@@ -27,28 +25,99 @@ class CScanProblem;
 class CSteadyStateTask;
 class CTrajectory;
 
+class CScanItem
+  {
+  protected:
+    unsigned C_INT32 mNumSteps;
+
+    C_FLOAT64 * mpValue;
+
+    C_FLOAT64 mStoreValue;
+
+    unsigned C_INT32 mIndex;
+
+    bool mFlagFinished;
+
+  public:
+    static
+    CScanItem* createScanItemFromParameterGroup(const CCopasiParameterGroup* si);
+
+    unsigned C_INT32 getNumSteps() const {return mNumSteps;};
+
+    void restoreValue() const
+      {if (mpValue) *mpValue = mStoreValue;};
+
+    void storeValue()
+    {if (mpValue) mStoreValue = *mpValue;};
+
+    virtual
+    void reset();
+
+    virtual
+    void step() = 0;
+
+    virtual
+    bool isFinished() const {return mFlagFinished;};
+
+  protected:
+
+    CScanItem(const CCopasiParameterGroup* si);
+
+    //initObject();
+
+  private:
+    CScanItem() {};
+  };
+
+//***********************************+
+
+class CScanItemRepeat: public CScanItem
+  {
+  public:
+    CScanItemRepeat(const CCopasiParameterGroup* si);
+    void step();
+  };
+
+//***********************************+
+
+class CScanItemLinear: public CScanItem
+  {
+  private:
+    C_FLOAT64 mMin, mMax, mFaktor;
+  public:
+    CScanItemLinear(const CCopasiParameterGroup* si);
+    void step();
+  };
+
+//*******************************************+
+//*******************************************+
+
 class CScanMethod : public CCopasiMethod
   {
   protected:
     /**
      *  A pointer to the trajectory problem.
      */
-    CScanProblem * scanProblem;
+    const CScanProblem * mpProblem;
 
     /**
      * A pointer to the random number generator
      */
     CRandom * mpRandomGenerator;
 
-    /**
-     *
-     */
-    unsigned C_INT32 mVariableSize;
+    std::vector<CScanItem*> mScanItems;
+
+    unsigned C_INT32 mTotalSteps;
 
     /**
      *
-     */
-    C_FLOAT64 * mpVariables;
+     */ 
+    //unsigned C_INT32 mVariableSize;
+
+    /**
+     *
+     */ 
+    //C_FLOAT64 * mpVariables;
 
     // Operations
   private:
@@ -91,23 +160,36 @@ class CScanMethod : public CCopasiMethod
      *  This method is used by CTrajectory
      *  @param "CTrajectoryProblem *" problem
      */
-    void setProblem(CScanProblem * problem);
+    void setProblem(const CScanProblem * problem);
+
+    bool init();
+
+    bool scan();
+
+    unsigned C_INT32 getTotalNumberOfSteps() const {return mTotalSteps;};
 
     /**
      *  The main scan method.
-     */
-    void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+     */ 
+    //void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
 
   private:
+
+    bool cleanupScanItems();
+
+    bool loop(unsigned C_INT32 level);
+
+    bool calculate() const;
+
     /**
      *  Set the value of the scan parameter based on the distribution
      *  @param unsigned C_INT32 i where to start in the distribution
      *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
      *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
-     */
-    void setScanParameterValue(unsigned C_INT32 i,
-                               unsigned C_INT32 first,
-                               unsigned C_INT32 last);
+     */ 
+    //void setScanParameterValue(unsigned C_INT32 i,
+    //                           unsigned C_INT32 first,
+    //                           unsigned C_INT32 last);
   };
 
 #endif // COPASI_CTrajectoryMethod

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/30 15:31:54 $
+   $Date: 2005/01/04 17:20:48 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
+#include "utilities/COutputHandler.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::scan, pParent)
@@ -62,16 +63,21 @@ void CScanTask::cleanup()
   //-pdelete(mReport);
 }
 
-void CScanTask::initializeReporting(std::ostream & out)
+bool CScanTask::initialize(std::ostream * out)
 {
-  //  pdelete(mpOutEnd);
-  mpOut = & out;
-  // added by Liang for Scan Report
-  mReport.open(mpOut);
-  mReport.compile();
-
   CScanProblem* pProblem =
     dynamic_cast<CScanProblem *>(mpProblem);
+
+  bool success = true;
+
+  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+
+  //  pdelete(mpOutEnd);
+  //mpOut = & out;
+  // added by Liang for Scan Report
+  //mReport.open(mpOut);
+  //mReport.compile();
+
   assert(pProblem);
 
   // for Steadystate Report
@@ -81,6 +87,7 @@ void CScanTask::initializeReporting(std::ostream & out)
   // for Trajectory Report
   //  if (pProblem->processTrajectory())
   //    pProblem->getTrajectoryTask()->initialize(mpOut);
+  return success;
 }
 
 void CScanTask::load(CReadConfig & configBuffer)
@@ -89,7 +96,7 @@ void CScanTask::load(CReadConfig & configBuffer)
     dynamic_cast<CScanProblem *>(mpProblem);
   assert(pProblem);
 
-  pProblem->load(configBuffer);
+  //pProblem->load(configBuffer);
 }
 
 bool CScanTask::process()
@@ -99,14 +106,36 @@ bool CScanTask::process()
   if (!mpMethod)
     fatalError();
 
+  bool success = true;
+
   CScanProblem * pProblem = (CScanProblem *) mpProblem;
   CScanMethod * pMethod = (CScanMethod *) mpMethod;
 
   pMethod->setProblem(pProblem);
-  pProblem->initialize();
 
-  mReport.compile();
-  mReport.printHeader();
+  //TODO: reports
+
+  //initialize the method (parsing the ScanItems)
+  if (!pMethod->init()) return false;
+
+  //init progress bar
+  mProgress = 0;
+  if (mpProgressHandler) mpProgressHandler->init(pMethod->getTotalNumberOfSteps(), "performing parameter scan...", true);
+
+  //init output handler (plotting)
+  if (mpOutputHandler) mpOutputHandler->init();
+
+  //calling the scanner, output is done in the callback
+  if (!pMethod->scan()) success = false;
+
+  //finishing progress bar and output
+  if (mpProgressHandler) mpProgressHandler->finish();
+  if (mpOutputHandler) mpOutputHandler->finish();
+
+  //pProblem->initialize();
+
+  //mReport.compile();
+  //mReport.printHeader();
 
   /*  if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
       {
@@ -133,5 +162,19 @@ bool CScanTask::process()
     mReport.printFooter();
    
     pProblem->restore();*/
+  return success;
+}
+
+bool CScanTask::processCallback()
+{
+  //do tasks
+
+  //do output
+  if (mpOutputHandler) mpOutputHandler->doOutput();
+
+  //do progress bar
+  ++mProgress;
+  if (mpProgressHandler) return !mpProgressHandler->progress(mProgress);
+
   return true;
 }

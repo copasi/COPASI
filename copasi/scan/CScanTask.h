@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:10:27 $
+   $Date: 2005/01/04 17:20:48 $
    End CVS Header */
 
 /**
@@ -17,8 +17,7 @@
 #ifndef COPASI_CScanTask
 #define COPASI_CScanTask
 
-#include "utilities/CReadConfig.h" 
-//#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h"
 #include "CScanMethod.h"
 #include "utilities/CVector.h"
 #include "CScanProblem.h"
@@ -26,7 +25,6 @@
 class CScanMethod;
 class CReport;
 
-//-class CScanTask : public CCopasiContainer
 class CScanTask : public CCopasiTask
   {
     //Attributes
@@ -38,23 +36,28 @@ class CScanTask : public CCopasiTask
     std::ostream * mpOut;
 
     /**
-        * Unique Key
-        */
+     * Unique Key
+     */
     std::string mKey;
+
+    /**
+     * for progress bar
+     */
+    unsigned C_INT32 mProgress;
 
     /*
      Output value address
-    */
-    CVector<C_FLOAT64*>* pValueAddrMatrix;
+    */ 
+    //   CVector<C_FLOAT64*>* pValueAddrMatrix;
     //Operations
 
   public:
 
-    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
-    {
-      //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
-      pValueAddrMatrix = pInputValueAddrMatrix;
-    }
+    //    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
+    //    {
+    //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
+    //      pValueAddrMatrix = pInputValueAddrMatrix;
+    //}
 
     /**
      * default constructor
@@ -79,10 +82,10 @@ class CScanTask : public CCopasiTask
     void cleanup();
 
     /**
-     * Initilize the reporting feature
+     * Initilize 
      * @param ofstream & out
      */
-    void initializeReporting(std::ostream & out);
+    bool initialize(std::ostream * out);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -93,8 +96,12 @@ class CScanTask : public CCopasiTask
 
     /**
      * Do the integration
-     */ 
-    //-void process();
+     */
     virtual bool process();
+
+    /**
+     * Do the single tasks and the output
+     */
+    bool processCallback();
   };
 #endif // COPASI_CScanTask
