@@ -189,6 +189,8 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
 
 void MoietyWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
+  if (row >= table->numRows() || row <= 0)
+    return;
   QString x = table->text(row, 0);
   emit name(x);
 }

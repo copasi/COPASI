@@ -205,6 +205,8 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
 
 void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
+  if (row >= table->numRows() || row <= 0)
+    return;
   QString x = table->text(row, 0);
   if (row == table->numRows() - 1)
     {

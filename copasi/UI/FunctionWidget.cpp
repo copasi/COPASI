@@ -124,6 +124,8 @@ void FunctionWidget::slotTableSelectionChanged()
 
 void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
 {
+  if (row >= table->numRows() || row <= 0)
+    return;
   QString x = table->text(row, col);
   if (row == table->numRows() - 1)
     {

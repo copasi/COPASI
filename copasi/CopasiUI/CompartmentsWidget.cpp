@@ -106,6 +106,8 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
     int C_UNUSED(m) ,
     const QPoint & C_UNUSED(n))
 {
+  if (row >= table->numRows() || row <= 0)
+    return;
   QString x = table->text(row, 0);
   if (row == table->numRows() - 1)
     {
