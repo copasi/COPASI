@@ -500,10 +500,17 @@ bool CChemEqInterface::isValidEq(const std::string eq)
               endMetab = sep1;
               sep3 = sep1 - 1; // -1 because of the search at the end of the loop
             }
-          else if (startMetab == sep1)   // no substrates in the equation, and only one product
+          else if (startMetab == sep1)   // no substrates in the equation, and only one product (or none)
             {
               startMetab = eq.find_first_not_of(">", sep1 + 1); // to account for the different lengths of "->" and "="
               startMetab = eq.find_first_not_of(" ", startMetab);  // and then get rid of the white spaces before metabolites
+
+              if ((startMetab < 0) || (startMetab == sep2))   //i.e. an empty equation, though possibly with modifiers
+                {
+                  std::cout << "empty equation\n";
+                  return false;
+                }
+
               endMetab = sep2;
               sep3 = sep2 - 1;   // -1 because of the search at the end of the loop (in order to skip ";")
             }
