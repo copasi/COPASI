@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/06/03 17:23:09 $  
+# $Revision: 1.5 $ $Author: ssahle $ $Date: 2003/10/29 10:35:14 $  
 ######################################################################
 
 include(common.pri)
@@ -14,6 +14,7 @@ SUBDIRS += mathmodel
 SUBDIRS += model
 SUBDIRS += optimization
 SUBDIRS += output
+SUBDIRS += plot
 SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += scan
