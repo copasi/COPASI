@@ -22,7 +22,7 @@ if [ x"$#" = x1 ]; then
     SETFILE=/Developer/Tools/SetFile
 
 # Create temporary package image drive
-    hdiutil create Copasi-tmp.dmg -megabytes 200 -volname Copasi-$build-$1 -fs HFS+ \
+    hdiutil create Copasi-tmp.dmg -megabytes 400 -volname Copasi-$build-$1 -fs HFS+ \
       -layout NONE
 
 # Mount temporary package image drive
@@ -39,7 +39,7 @@ if [ x"$#" = x1 ]; then
 # copy the commandline version if it exists
     if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
       cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
-      strip ${TMPDIR}/CopasiSE
+      strip ${TMPDIR}/copasi/CopasiSE
     fi  
     
 # copy the icon into the Resources directory
