@@ -21,6 +21,7 @@ class CStateX;
 /** @dia:pos 177.081,30.2423 */
 class CModel : public CCopasiContainer
   {
+  public:
     /**
      * Enum of valid volume units
      */
