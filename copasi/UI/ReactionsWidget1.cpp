@@ -528,7 +528,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   QStringList individual_elements1 = QStringList::split (" ", all_elements, false);
 
   unsigned int m, n;
-  for (m = 0; m <= individual_elements1.size() - 1; m++)
+  for (m = 0; m < individual_elements1.size(); m++)
     {
       if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
         {
@@ -542,7 +542,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
     }
 
   // start = 0;
-  for (n = m; n <= individual_elements1.size() - 1; n++)
+  for (n = m; n < individual_elements1.size(); n++)
     {
       if (individual_elements1[m] == "+")
         {
