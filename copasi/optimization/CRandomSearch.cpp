@@ -1,6 +1,6 @@
 /***************************************************************************
-                    CRandomSearch.cpp  -  Random Optimizer
-                       -------------------
+                   CRandomSearch.cpp  -  Random Optimizer
+                      -------------------
 
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
@@ -10,12 +10,6 @@ email                : rluktuke@vt.edu
  * This is the implementation of the Random Algorithm for Optimization.  The
  * class is inherited from the COptAlgorithm class
  ***************************************************************************/
-
-#include<iostream>
-#include<fstream>
-#include<sys/timeb.h>
-#include<time.h>
-#include <vector>
 
 #include "copasi.h"
 #include "COptMethod.h"
@@ -56,7 +50,7 @@ C_INT32 CRandomSearch::optimise()
 
   /* Create a random number generator */
   CRandom::Type Type;
-  Type = (CRandom::Type) getValue("RandomSearch.RandomGenerator.Type");
+  Type = (CRandom::Type) (C_INT32) getValue("RandomSearch.RandomGenerator.Type");
   unsigned C_INT32 Seed;
   Seed = (unsigned C_INT32) getValue("RandomSearch.RandomGenerator.Seed");
   CRandom * pRand = CRandom::createGenerator(Type, Seed);

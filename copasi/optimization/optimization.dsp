@@ -86,19 +86,19 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\COptAlgorithm.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\COptAlgorithmParameter.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\COptAlgorithmRand.cpp
+SOURCE=.\COptMethod.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\COptProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRandomSearch.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRandomSearchMaster.cpp
 # End Source File
 # Begin Source File
 
@@ -110,19 +110,19 @@ SOURCE=.\CRealProblem.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\COptAlgorithm.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\COptAlgorithmParameter.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\COptAlgorithmRand.h
+SOURCE=.\COptMethod.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\COptProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRandomSearch.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRandomSearchMaster.h
 # End Source File
 # Begin Source File
 

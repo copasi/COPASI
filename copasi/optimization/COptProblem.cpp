@@ -7,7 +7,9 @@
  *           It specifies the optimization problem with its own members and
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
+#include <float.h>
 
+#include "copasi.h"
 #include "COptProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
