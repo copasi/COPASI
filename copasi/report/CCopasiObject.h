@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:28:38 $
+   $Date: 2005/03/22 02:31:27 $
    End CVS Header */
 
 /**
@@ -36,13 +36,13 @@ class UpdateMethod
   {
   public:
 
-    virtual bool operator()(const C_FLOAT64 & value)
+    virtual bool operator()(const C_FLOAT64 & C_UNUSED(value))
     {return false;}
 
-    virtual bool operator()(const C_INT32 & value)
+    virtual bool operator()(const C_INT32 & C_UNUSED(value))
     {return false;}
 
-    virtual bool operator()(const bool & value)
+    virtual bool operator()(const bool & C_UNUSED(value))
     {return false;}
   };
 
@@ -237,7 +237,7 @@ class CCopasiObject
     }
 
   private:
-    template <typename VType> bool updateMethod(const VType & value)
+    template <typename VType> bool updateMethod(const VType & C_UNUSED(value))
     {return false;}
   };
 
