@@ -94,10 +94,6 @@ SOURCE=.\CCopasiMessage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CCopasiNode.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
