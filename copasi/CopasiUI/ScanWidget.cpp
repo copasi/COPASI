@@ -502,11 +502,13 @@ void ScanWidget::loadScan(CModel *model)
           scanButton->setEnabled(false);
         }
 
+      steadyState->setEnabled(true);
       if (scanProblem->processTrajectory() == true)
         trajectory->setChecked(true);
       else
         trajectory->setChecked(false);
 
+      trajectory->setEnabled(true);
       if (scanProblem->processSteadyState() == true)
         steadyState->setChecked(true);
       else
