@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.10 2003/08/09 02:40:06 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.11 2003/08/10 03:19:37 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -28,6 +28,7 @@ class QRadioButton;
 //class ScanScrollView;
 class QListBox;
 class CModel;
+class CReport;
 
 class TableDefinition : public CopasiWidget
   {
@@ -37,7 +38,10 @@ class TableDefinition : public CopasiWidget
     TableDefinition(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition();
     CModel *mModel;
+    CReport *mReport;
     QListBox* itemsTable;
+
+    void setReport(CReport* pNewReport);
     void loadTableDefinition();
 
     QFrame* bodyField;

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.13 2003/08/09 02:40:05 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.14 2003/08/10 03:19:36 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,6 +24,7 @@
 #include "ObjectBrowser.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "report/CReportDefinition.h"
 #include "ScanWidget.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -220,6 +221,11 @@ void TableDefinition::languageChange()
 void TableDefinition::loadTableDefinition()
 {}
 
+void TableDefinition::setReport(CReport* pNewReport)
+{
+  mReport = pNewReport;
+}
+
 void TableDefinition::slotBtnCancelClicked()
 {
   //check for the connection int i =0;
@@ -287,6 +293,14 @@ void TableDefinition::addButtonClicked()
 
 void TableDefinition::deleteButtonClicked()
 {
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if (selectedItem)
+    {
+      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
+      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
+      itemsTable->removeItem(selectedIndex);
+    }
   /*  int pp = selectedList.size();
     if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
       return;
