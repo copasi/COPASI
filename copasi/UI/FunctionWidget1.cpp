@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/14 15:20:43 $
+   $Date: 2004/06/15 08:46:45 $
    End CVS Header */
 
 /**********************************************************************
@@ -272,7 +272,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 
       // col. 2
       item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
-      item->setText(usage);
+      item->setText(qUsage);
       if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
       if (usage == "PRODUCT") item->setPixmap(*pProduct);
       if (usage == "MODIFIER") item->setPixmap(*pModifier);
