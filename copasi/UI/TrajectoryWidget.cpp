@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:27 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 13:40:10 $
    End CVS Header */
 
 /********************************************************
@@ -27,6 +27,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qvalidator.h>
 
 #include "TrajectoryWidget.h"
 #include "qtUtilities.h"
@@ -93,11 +94,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
-  nStartTime = new QLineEdit(this, "nStartTime");
-  nStartTime->setText(trUtf8(""));
-
-  TrajectoryWidgetLayout->addWidget(nStartTime, 3, 1);
-
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
 
@@ -106,45 +102,53 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Step Size"));
-
-  TrajectoryWidgetLayout->addWidget(TextLabel1, 2, 0);
-
-  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
-  TextLabel1_3->setText(trUtf8("Start Time"));
-
-  TrajectoryWidgetLayout->addWidget(TextLabel1_3, 3, 0);
-
   TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
   TextLabel1_3_2->setText(trUtf8("Method"));
 
   TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 5, 0);
 
-  nStepSize = new QLineEdit(this, "nStepSize");
-  nStepSize->setText(trUtf8(""));
+  //*****************************
 
-  TrajectoryWidgetLayout->addWidget(nStepSize, 2, 1);
+  nStartTime = new QLineEdit(this, "nStartTime");
+  nStartTime->setText(trUtf8(""));
+  nStartTime->setValidator(new QDoubleValidator(nStartTime));
+  TrajectoryWidgetLayout->addWidget(nStartTime, 2, 1);
+
+  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
+  TextLabel1_3->setText(trUtf8("Start Time"));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_3, 2, 0);
+
+  //****
+  nEndTime = new QLineEdit(this, "nEndTime");
+  nEndTime->setText(trUtf8(""));
+  nEndTime->setValidator(new QDoubleValidator(nEndTime));
+  TrajectoryWidgetLayout->addWidget(nEndTime, 2, 3);
 
   TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
   TextLabel1_2_2->setText(trUtf8("End Time"));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 2, 2);
 
-  TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 3, 2);
+  //****
+  nStepSize = new QLineEdit(this, "nStepSize");
+  nStepSize->setText(trUtf8(""));
+  nStepSize->setValidator(new QDoubleValidator(nStepSize));
+  TrajectoryWidgetLayout->addWidget(nStepSize, 3, 1);
 
-  nEndTime = new QLineEdit(this, "nEndTime");
-  nEndTime->setText(trUtf8(""));
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Step Size"));
+  TrajectoryWidgetLayout->addWidget(TextLabel1, 3, 0);
 
-  TrajectoryWidgetLayout->addWidget(nEndTime, 3, 3);
-
+  //****
   nStepNumber = new QLineEdit(this, "nStepNumber");
   nStepNumber->setText(trUtf8(""));
-
-  TrajectoryWidgetLayout->addWidget(nStepNumber, 2, 3);
+  nStepNumber->setValidator(new QIntValidator(1, 1000000000, nStepNumber));
+  TrajectoryWidgetLayout->addWidget(nStepNumber, 3, 3);
 
   TextLabel1_2 = new QLabel(this, "TextLabel1_2");
   TextLabel1_2->setText(trUtf8("Step Number"));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_2, 3, 2);
 
-  TrajectoryWidgetLayout->addWidget(TextLabel1_2, 2, 2);
+  //******************************
 
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
@@ -162,7 +166,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   else
     bRunTask->setText(trUtf8("Run"));
 
-  bRunTask->setEnabled(parent == NULL);
+  //bRunTask->setEnabled(parent == NULL);
   Layout2->addWidget(bRunTask);
 
   //  commitChange = new QPushButton(this, "commitChange");
@@ -191,11 +195,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(parameterValueLabel, 7, 0);
 
   setTabOrder(taskName, bExecutable);
-  setTabOrder(bExecutable, nStepSize);
-  setTabOrder(nStepSize, nStepNumber);
-  setTabOrder(nStepNumber, nStartTime);
+  setTabOrder(bExecutable, nStartTime);
   setTabOrder(nStartTime, nEndTime);
-  setTabOrder(nEndTime, ComboBox1);
+  setTabOrder(nEndTime, nStepSize);
+  setTabOrder(nStepSize, nStepNumber);
+  setTabOrder(nStepNumber, ComboBox1);
   setTabOrder(ComboBox1, parameterTable);
   setTabOrder(parameterTable, bRunTask);
   //  setTabOrder(bRunTask, commitChange);
@@ -208,12 +212,21 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(runTrajectoryTask()));
-  connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
+  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
   connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
-  //mTrajectoryTask = NULL;
+  //connect(nStartTime, SIGNAL(textChanged(const QString&)), this, SLOT(StartTimeSlot()));
+  //connect(nEndTime, SIGNAL(textChanged(const QString&)), this, SLOT(EndTimeSlot()));
+  //connect(nStepSize, SIGNAL(textChanged(const QString&)), this, SLOT(StepsizeSlot()));
+  //connect(nStepNumber, SIGNAL(textChanged(const QString&)), this, SLOT(NumStepsSlot()));
+
+  connect(nStartTime, SIGNAL(lostFocus()), this, SLOT(StartTimeSlot()));
+  connect(nEndTime, SIGNAL(lostFocus()), this, SLOT(EndTimeSlot()));
+  connect(nStepSize, SIGNAL(lostFocus()), this, SLOT(StepsizeSlot()));
+  connect(nStepNumber, SIGNAL(lostFocus()), this, SLOT(NumStepsSlot()));
+
   reportDefinitionButton->setEnabled(false);
 }
 
@@ -228,18 +241,62 @@ TrajectoryWidget::~TrajectoryWidget()
   pdelete(tt);
 }
 
+void TrajectoryWidget::StartTimeSlot()
+{
+  C_FLOAT64 start = nStartTime->text().toDouble();
+  C_FLOAT64 end = nEndTime->text().toDouble();
+  C_FLOAT64 delta = nStepSize->text().toDouble();
+  C_INT32 steps = nStepNumber->text().toInt();
+
+  if (steps <= 0) return;
+  if (end <= start)
+    {
+      nEndTime->setText(QString::number(start + 1.0));
+      nStepSize->setText(QString::number(1.0 / (C_FLOAT64)steps));
+    }
+  else
+    nStepSize->setText(QString::number((end - start) / steps));
+}
+void TrajectoryWidget::EndTimeSlot()
+{
+  C_FLOAT64 start = nStartTime->text().toDouble();
+  C_FLOAT64 end = nEndTime->text().toDouble();
+  C_FLOAT64 delta = nStepSize->text().toDouble();
+  C_INT32 steps = nStepNumber->text().toInt();
+
+  if (steps <= 0) return;
+  if (end <= start)
+    {
+      nStartTime->setText(QString::number(end - 1.0));
+      nStepSize->setText(QString::number(1.0 / (C_FLOAT64)steps));
+    }
+  else
+    nStepSize->setText(QString::number((end - start) / steps));
+}
+void TrajectoryWidget::StepsizeSlot()
+{
+  C_FLOAT64 start = nStartTime->text().toDouble();
+  C_FLOAT64 end = nEndTime->text().toDouble();
+  C_FLOAT64 delta = nStepSize->text().toDouble();
+  C_INT32 steps = nStepNumber->text().toInt();
+
+  nEndTime->setText(QString::number(start + steps*delta));
+}
+void TrajectoryWidget::NumStepsSlot()
+{
+  C_FLOAT64 start = nStartTime->text().toDouble();
+  C_FLOAT64 end = nEndTime->text().toDouble();
+  C_FLOAT64 delta = nStepSize->text().toDouble();
+  C_INT32 steps = nStepNumber->text().toInt();
+
+  if (steps <= 0) return;
+  nStepSize->setText(QString::number((end - start) / (C_FLOAT64)steps));
+}
+
 void TrajectoryWidget::CancelChange()
 {
   loadTrajectoryTask();
 }
-
-//void TrajectoryWidget::setModel(CModel* newModel)
-//{
-//if (mTrajectoryTask == NULL)
-//  return;
-//  CTrajectoryProblem * trajectoryproblem = dataModel->getTrajectoryTask()->getProblem();
-//  trajectoryproblem->setModel(dataModel->getModel());
-//}
 
 void TrajectoryWidget::CommitChange()
 {
@@ -263,7 +320,8 @@ void TrajectoryWidget::CommitChange()
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
 
   if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
-      (const char *)ComboBox1->currentText().utf8()) UpdateMethod(false);
+      (const char *)ComboBox1->currentText().utf8())
+    UpdateMethod(false);
 
   QTableItem * pItem;
   QString value;
@@ -280,13 +338,13 @@ void TrajectoryWidget::CommitChange()
   loadTrajectoryTask();
 }
 
-void TrajectoryWidget::EnableRunTask()
-{
-  if (!bExecutable->isChecked())
-    bRunTask->setEnabled(false);
-  else
-    bRunTask->setEnabled(true);
-}
+//void TrajectoryWidget::EnableRunTask()
+//{
+//  if (!bExecutable->isChecked())
+//    bRunTask->setEnabled(false);
+//  else
+//    bRunTask->setEnabled(true);
+//}
 
 void TrajectoryWidget::runTrajectoryTask()
 {
@@ -345,6 +403,29 @@ void TrajectoryWidget::loadTrajectoryTask()
   nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
   nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
 
+  loadMethodParameters();
+
+  ComboBox1->clear ();
+  //std::cout << CTrajectoryMethod::ValidSubTypes << std::endl;
+
+  unsigned C_INT32 i;
+  for (i = 0; i < CTrajectoryMethod::ValidSubTypes.size(); i++)
+    ComboBox1->
+    insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[CTrajectoryMethod::ValidSubTypes[i]]));
+
+  ComboBox1->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[trajectorymethod->getSubType()]));
+}
+
+void TrajectoryWidget::loadMethodParameters()
+{
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
+  assert(tt);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
+
   QTableItem * pItem;
   QString value;
   QString strname;
@@ -363,21 +444,6 @@ void TrajectoryWidget::loadTrajectoryTask()
       pItem = new QTableItem (parameterTable, QTableItem::Always, value);
       parameterTable->setItem(i, 0, pItem);
     }
-
-  ComboBox1->clear ();
-  //disable Hybrid By Force
-  std::cout << CTrajectoryMethod::ValidSubTypes << std::endl;
-
-  for (i = 0; i < CTrajectoryMethod::ValidSubTypes.size(); i++)
-    ComboBox1->
-    insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[CTrajectoryMethod::ValidSubTypes[i]]));
-
-  ComboBox1->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[trajectorymethod->getSubType()]));
-
-  if (!bExecutable->isChecked())
-    bRunTask->setEnabled(false);
-  else
-    bRunTask->setEnabled(true);
 }
 
 void TrajectoryWidget::UpdateMethod(const bool & update)
@@ -412,7 +478,7 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
                            QMessageBox::Ok, QMessageBox::Cancel);
     }
 
-  if (update) loadTrajectoryTask();
+  if (update) loadMethodParameters();
 }
 
 void TrajectoryWidget::ExportToFile()

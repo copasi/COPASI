@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/06 18:43:26 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 13:40:11 $
    End CVS Header */
 
 /********************************************************
@@ -57,16 +57,23 @@ class TrajectoryWidget : public CopasiWidget
   protected slots:
     virtual void CancelChange();
     virtual void CommitChange();
-    virtual void EnableRunTask();
+    //virtual void EnableRunTask();
     virtual void ExportToFile();
     virtual void runTrajectoryTask();
     virtual void UpdateMethod(const bool & update = true);
     virtual void ReportDefinitionClicked();
 
+    virtual void StartTimeSlot();
+    virtual void EndTimeSlot();
+    virtual void StepsizeSlot();
+    virtual void NumStepsSlot();
+
   private:
 
     std::string objKey;
     void loadTrajectoryTask();
+    void loadMethodParameters();
+
     QWidget* pParent;
     QGridLayout* TrajectoryWidgetLayout;
     QHBoxLayout* Layout2;
