@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/18 11:34:16 $
+   $Author: shoops $ 
+   $Date: 2004/11/05 01:21:48 $
    End CVS Header */
 
 /**
@@ -48,7 +48,17 @@ class CCopasiMessage
       RAW = 0,
       TRACE,
       WARNING,
+      // In the case that ERROR is defined we have to remove its definition
+      // temporarely.
+#ifdef ERROR
+# define COPASI_ERROR_BACKUP ERROR
+# undef ERROR
+#endif
       ERROR
+#ifdef COPASI_ERROR_BACKUP
+# define ERROR COPASI_ERROR_BACKUP
+# undef COPASI_ERROR_BACKUP
+#endif
     };
 
     // Attributes
