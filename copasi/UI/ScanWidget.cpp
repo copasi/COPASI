@@ -41,6 +41,8 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
+#include "./icons/scanwidget.xpm"
+
 int ScanWidget::nSelectedObjects = 0;
 int ScanWidget::nTitleHeight = 16;
 
@@ -53,6 +55,11 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   if (!name)
     setName("ScanWidget");
+
+  QPixmap image0((const char**) image0_data);
+  QPixmap image1((const char**) image1_data);
+  QPixmap image2((const char**) image2_data);
+  QPixmap image3((const char**) image3_data);
 
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
@@ -145,22 +152,26 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
 
   deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8("(-)"));
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
 
   Layout6->addWidget(deleteButton, 0, 1);
 
   downButton = new QPushButton(this, "downButton");
-  downButton->setText(trUtf8("(v)"));
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
 
   Layout6->addWidget(downButton, 1, 1);
 
   addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8("(+)"));
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
 
   Layout6->addWidget(addButton, 0, 0);
 
   upButton = new QPushButton(this, "upButton");
-  upButton->setText(trUtf8("(^)"));
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
 
   Layout6->addWidget(upButton, 1, 0);
 
