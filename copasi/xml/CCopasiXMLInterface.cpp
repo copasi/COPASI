@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
+   $Author: shoops $ 
+   $Date: 2004/12/02 03:05:23 $
    End CVS Header */
 
 /**
@@ -22,42 +22,109 @@
 #include "report/CReportDefinition.h"
 #include "plot/CPlotSpecification.h"
 
-std::string CCopasiXMLInterface::encode(const std::string & str)
+void encodeSTD(const char & chr, std::ostringstream & xml)
+{
+  switch (chr)
+    {
+    case '&':
+      xml << "&amp;";
+      break;
+
+    case '\'':
+      xml << "&apos;";
+      break;
+
+    case '<':
+      xml << "&lt;";
+      break;
+
+    case '>':
+      xml << "&gt;";
+      break;
+
+    case '\"':
+      xml << "&quot;";
+      break;
+
+    default:
+      xml << chr;
+      break;
+    }
+  return;
+}
+
+void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
+{
+  switch (chr)
+    {
+    case '&':
+      xml << "&amp;";
+      break;
+
+    case '<':
+      xml << "&lt;";
+      break;
+
+    case '\"':
+      xml << "&quot;";
+      break;
+
+    default:
+      xml << chr;
+      break;
+    }
+  return;
+}
+
+void encodeCHARACTER(const char & chr, std::ostringstream & xml)
+{
+  switch (chr)
+    {
+    case '&':
+      xml << "&amp;";
+      break;
+
+    case '<':
+      xml << "&lt;";
+      break;
+
+    default:
+      xml << chr;
+      break;
+    }
+  return;
+}
+
+std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingType & type)
 {
   /* All COPASI std::strings and char are already UTF-8 encoded.*/
   std::string tmp = str;
   std::ostringstream xml;
 
-  unsigned C_INT32 i, imax;
-  for (i = 0, imax = tmp.length(); i < imax; i++)
+  void (*encode)(const char & chr, std::ostringstream & xml);
+  std::string::const_iterator it = str.begin();
+  std::string::const_iterator end = str.end();
+
+  switch (type)
     {
-      switch (tmp[i])
-        {
-        case '&':
-          xml << "&amp;";
-          break;
+    case std:
+      encode = encodeSTD;
+      break;
 
-        case '\'':
-          xml << "&apos;";
-          break;
+    case attribute:
+      encode = encodeATTRIBUTE;
+      break;
 
-        case '<':
-          xml << "&lt;";
-          break;
-
-        case '>':
-          xml << "&gt;";
-          break;
-
-        case '\"':
-          xml << "&quot;";
-          break;
-
-        default:
-          xml << tmp[i];
-          break;
-        }
+    case character:
+      encode = encodeCHARACTER;
+      break;
     }
+
+  for (it; it != end; ++it)
+    if (*it < 0x80)
+      encode(*it, xml);
+    else
+      xml << *it;
 
   return xml.str();
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
+   $Author: shoops $ 
+   $Date: 2004/12/02 03:05:23 $
    End CVS Header */
 
 /**
@@ -42,6 +42,17 @@ class CPlotSpecification;
  */
 class CCopasiXMLInterface
   {
+  public:
+    /**
+     * Enumeration of encoding tyoe.
+     */
+    enum EncodingType
+    {
+      std = 0,
+      attribute,
+      character
+    };
+
     // Attributes
   protected:
     /**
@@ -259,7 +270,7 @@ class CCopasiXMLInterface
      * @param const std::string & str
      * @return std::string encoded
      */
-    static std::string encode(const std::string & str);
+    static std::string encode(const std::string & str, const EncodingType & type = std);
 
     /**
      * Encode a given string to a utf-8 string
