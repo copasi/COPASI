@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/08 09:00:58 $
+   $Author: shoops $ 
+   $Date: 2004/10/08 13:13:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -570,7 +570,7 @@ void SimpleSelectionWidget::selectObjects(std::vector<CCopasiObject * > * object
         {
           lvitem->setEnabled(false);
         }
-      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name);
+      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name.c_str());
       this->selectedItemsBox->setSelected(item, true);
       this->selectedObjects[item] = object;
     }
