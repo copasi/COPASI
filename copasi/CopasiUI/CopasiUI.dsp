@@ -74,6 +74,10 @@ SOURCE=.\ConstantSymbols.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiTableWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\copasiui3window.cpp
 # End Source File
 # Begin Source File
@@ -263,6 +267,10 @@ SOURCE=.\CompartmentSymbols.h
 # Begin Source File
 
 SOURCE=.\ConstantSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiTableWidget.h
 # End Source File
 # Begin Source File
 
