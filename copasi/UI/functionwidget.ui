@@ -1,0 +1,614 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>functionWidget</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>functionWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>368</width>
+            <height>332</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>function</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>textFunction</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="3">
+            <property name="name">
+                <cstring>button7</cstring>
+            </property>
+            <property name="text">
+                <string>7</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="2">
+            <property name="name">
+                <cstring>button0</cstring>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="1">
+            <property name="name">
+                <cstring>button1</cstring>
+            </property>
+            <property name="text">
+                <string>1</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="2">
+            <property name="name">
+                <cstring>button6</cstring>
+            </property>
+            <property name="text">
+                <string>6</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="3">
+            <property name="name">
+                <cstring>button3</cstring>
+            </property>
+            <property name="text">
+                <string>3</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="0">
+            <property name="name">
+                <cstring>button8</cstring>
+            </property>
+            <property name="text">
+                <string>8</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="2">
+            <property name="name">
+                <cstring>button2</cstring>
+            </property>
+            <property name="text">
+                <string>2</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="0">
+            <property name="name">
+                <cstring>buttonItems</cstring>
+            </property>
+            <property name="text">
+                <string>Items</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0">
+            <property name="name">
+                <cstring>button4</cstring>
+            </property>
+            <property name="text">
+                <string>4</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="3">
+            <property name="name">
+                <cstring>buttonSign</cstring>
+            </property>
+            <property name="text">
+                <string>+/-</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="1">
+            <property name="name">
+                <cstring>button5</cstring>
+            </property>
+            <property name="text">
+                <string>5</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="1">
+            <property name="name">
+                <cstring>button9</cstring>
+            </property>
+            <property name="text">
+                <string>9</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="9" column="1">
+            <property name="name">
+                <cstring>buttonRightB</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>)</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="1">
+            <property name="name">
+                <cstring>buttonDiv</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>/</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="9" column="3">
+            <property name="name">
+                <cstring>buttonCos</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>cos</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="0">
+            <property name="name">
+                <cstring>buttonAdd</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>+</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="2">
+            <property name="name">
+                <cstring>buttonLog</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>log</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="9" column="0">
+            <property name="name">
+                <cstring>buttonLeftB</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>(</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="1">
+            <property name="name">
+                <cstring>buttonMul</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>*</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="3">
+            <property name="name">
+                <cstring>buttonExp</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>exp</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="0">
+            <property name="name">
+                <cstring>buttonMin</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>-</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="2">
+            <property name="name">
+                <cstring>buttonLn</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>ln</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="3">
+            <property name="name">
+                <cstring>buttonSin</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>sin</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="9" column="2">
+            <property name="name">
+                <cstring>buttonPower</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>^</string>
+            </property>
+        </widget>
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QButtonGroup" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>radioGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Bin/Oct/Dec/Hex</string>
+            </property>
+            <property name="exclusive">
+                <bool>true</bool>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>radioDec</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>Decimal</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>radioHex</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Hex</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="3">
+                    <property name="name">
+                        <cstring>radioBin</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Bin</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>radioOct</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Octal</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QPushButton" row="1" column="3">
+            <property name="name">
+                <cstring>buttonClear</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>C</string>
+            </property>
+        </widget>
+        <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>radioDec</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotRadioDec()</slot>
+    </connection>
+    <connection>
+        <sender>buttonClear</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonClear()</slot>
+    </connection>
+    <connection>
+        <sender>buttonItems</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonItems()</slot>
+    </connection>
+    <connection>
+        <sender>button0</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton0()</slot>
+    </connection>
+    <connection>
+        <sender>button1</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton1()</slot>
+    </connection>
+    <connection>
+        <sender>button2</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton2()</slot>
+    </connection>
+    <connection>
+        <sender>button3</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton3()</slot>
+    </connection>
+    <connection>
+        <sender>button4</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton4()</slot>
+    </connection>
+    <connection>
+        <sender>button5</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton5()</slot>
+    </connection>
+    <connection>
+        <sender>button6</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton6()</slot>
+    </connection>
+    <connection>
+        <sender>button7</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton7()</slot>
+    </connection>
+    <connection>
+        <sender>button9</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton9()</slot>
+    </connection>
+    <connection>
+        <sender>buttonSign</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonSign()</slot>
+    </connection>
+    <connection>
+        <sender>buttonAdd</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonAdd()</slot>
+    </connection>
+    <connection>
+        <sender>buttonMul</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonMul()</slot>
+    </connection>
+    <connection>
+        <sender>buttonLn</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonLn()</slot>
+    </connection>
+    <connection>
+        <sender>buttonExp</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonExp()</slot>
+    </connection>
+    <connection>
+        <sender>buttonMin</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonMin()</slot>
+    </connection>
+    <connection>
+        <sender>buttonDiv</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonDiv()</slot>
+    </connection>
+    <connection>
+        <sender>buttonLog</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonLog()</slot>
+    </connection>
+    <connection>
+        <sender>buttonSin</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonSin()</slot>
+    </connection>
+    <connection>
+        <sender>buttonLeftB</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonLeftB()</slot>
+    </connection>
+    <connection>
+        <sender>buttonRightB</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonRightB()</slot>
+    </connection>
+    <connection>
+        <sender>buttonPower</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonPower()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCos</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButtonCos()</slot>
+    </connection>
+    <connection>
+        <sender>button8</sender>
+        <signal>clicked()</signal>
+        <receiver>functionWidget</receiver>
+        <slot>slotButton8()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>textFunction</tabstop>
+    <tabstop>radioHex</tabstop>
+    <tabstop>radioDec</tabstop>
+    <tabstop>radioOct</tabstop>
+    <tabstop>radioBin</tabstop>
+    <tabstop>buttonAdd</tabstop>
+    <tabstop>buttonMul</tabstop>
+    <tabstop>buttonLn</tabstop>
+    <tabstop>buttonExp</tabstop>
+    <tabstop>buttonMin</tabstop>
+    <tabstop>buttonDiv</tabstop>
+    <tabstop>buttonLog</tabstop>
+    <tabstop>buttonSin</tabstop>
+    <tabstop>buttonLeftB</tabstop>
+    <tabstop>buttonRightB</tabstop>
+    <tabstop>buttonPower</tabstop>
+    <tabstop>buttonCos</tabstop>
+</tabstops>
+<slots>
+    <slot>slotButtonClear()</slot>
+    <slot>slotRadioDec()</slot>
+    <slot>slotButton1()</slot>
+    <slot>slotButtonItems()</slot>
+    <slot>slotButton2()</slot>
+    <slot>slotButton3()</slot>
+    <slot>slotButton0()</slot>
+    <slot>slotButton5()</slot>
+    <slot>slotButton7()</slot>
+    <slot>slotButton8()</slot>
+    <slot>slotButton9()</slot>
+    <slot>slotButton4()</slot>
+    <slot>slotButton6()</slot>
+    <slot>slotButtonSign()</slot>
+    <slot>slotButtonAdd()</slot>
+    <slot>slotButtonSin()</slot>
+    <slot>slotButtonLn()</slot>
+    <slot>slotButtonMin()</slot>
+    <slot>slotButtonDiv()</slot>
+    <slot>slotButtonLog()</slot>
+    <slot>slotButtonMul()</slot>
+    <slot>slotButtonExp()</slot>
+    <slot>slotButtonLeftB()</slot>
+    <slot>slotButtonRightB()</slot>
+    <slot>slotButtonPower()</slot>
+    <slot>slotButtonCos()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
