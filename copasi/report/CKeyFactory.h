@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:49 $
+   $Date: 2004/01/08 20:19:25 $
    End CVS Header */
 
 /**
@@ -20,27 +20,56 @@
 
 #include <string>
 #include <map>
+#include <stack>
+
+#include "utilities/CVector.h"
 
 class CCopasiObject;
 
 class CKeyFactory
   {
+  private:
+    class HashTable
+      {
+      private:
+        unsigned C_INT32 mBeyond;
+        unsigned C_INT32 mSize;
+        CVector< CCopasiObject * > * mpTable;
+        std::stack< unsigned C_INT32 > mFree;
+
+      public:
+        HashTable();
+        HashTable(const HashTable & src);
+        ~HashTable();
+        unsigned C_INT32 add(CCopasiObject * pObject);
+        CCopasiObject * get(const unsigned C_INT32 & index);
+        bool remove(const unsigned C_INT32 & index);
+      };
+
+  class CDecisionVector : private CVector< bool >
+      {
+      private:
+        CDecisionVector();
+
+      public:
+        CDecisionVector(const std::string & str);
+
+        ~CDecisionVector();
+
+        const bool & operator () (const unsigned char & c) const;
+      };
+
     // Attributes
   protected:
     /**
-     * The map of currently existing keys and the related objects.
+     * A map of hash tables for the prefixes.
      */
-    static std::map< std::string, CCopasiObject * > mKeyMap;
+    static std::map< std::string, HashTable > mKeyTable;
 
     /**
-     * A map of counters for the prefixes.
+     * Fast way to decide whether a character is a digit.
      */
-    static std::map< std::string, unsigned C_INT32 > mCounterMap;
-
-    /**
-     * A map of counter overflows for the prefixes.
-     */
-    static std::map< std::string, bool > mOverflowMap;
+    static CDecisionVector isDigit;
 
     // Operations
   public:

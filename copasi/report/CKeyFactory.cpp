@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:47 $
+   $Date: 2004/01/08 20:19:25 $
    End CVS Header */
 
 /**
@@ -20,50 +20,146 @@
 
 #include "CKeyFactory.h"
 
-std::map< std::string, CCopasiObject * > CKeyFactory::mKeyMap;
+CKeyFactory::CDecisionVector::CDecisionVector():
+    CVector< bool >()
+{}
 
-std::map< std::string, unsigned C_INT32 > CKeyFactory::mCounterMap;
+CKeyFactory::CDecisionVector::CDecisionVector(const std::string & str):
+    CVector< bool >(256)
+{
+  unsigned C_INT32 i, imax;
 
-std::map< std::string, bool > CKeyFactory::mOverflowMap;
+  for (i = 0, imax = size(); i < imax; i++)
+    (* (CVector< bool > *) this)[i] = false;
+
+  for (i = 0, imax = str.length(); i < imax; i++)
+    (* (CVector< bool > *) this)[(unsigned C_INT32) str[i]] = true;
+}
+
+CKeyFactory::CDecisionVector::~CDecisionVector() {}
+
+const bool & CKeyFactory::CDecisionVector::operator () (const unsigned char & c) const
+  {return (* (CVector< bool > *) this)[(unsigned C_INT32) c];}
+
+CKeyFactory::HashTable::HashTable():
+    mBeyond(0),
+    mSize(128),
+    mpTable(new CVector< CCopasiObject * >(128)),
+    mFree()
+{}
+
+CKeyFactory::HashTable::HashTable(const CKeyFactory::HashTable & src):
+    mBeyond(src.mBeyond),
+    mSize(src.mSize),
+    mpTable(new CVector< CCopasiObject * >(* src.mpTable)),
+    mFree(src.mFree)
+{}
+
+CKeyFactory::HashTable::~HashTable() {pdelete(mpTable);}
+
+unsigned C_INT32 CKeyFactory::HashTable::add(CCopasiObject * pObject)
+{
+  unsigned C_INT32 index;
+
+  if (!mFree.empty())
+    {
+      index = mFree.top();
+      mFree.pop();
+    }
+  else
+    {
+      index = mBeyond;
+
+      mBeyond++;
+      if (mBeyond > mSize)
+        {
+          CVector< CCopasiObject * > * pTmp = mpTable;
+          mpTable = new CVector< CCopasiObject * >(mSize * 2);
+          memcpy(mpTable->array(), pTmp->array(),
+                 mSize * sizeof(CCopasiObject *));
+          memset(mpTable->array() + mSize, 0,
+                 mSize * sizeof(CCopasiObject *));
+          mSize *= 2;
+          delete pTmp;
+        }
+    }
+
+  (*mpTable)[index] = pObject;
+  return index;
+}
+
+CCopasiObject * CKeyFactory::HashTable::get(const unsigned C_INT32 & index)
+{
+  if (index < mSize) return (*mpTable)[index];
+
+  return NULL;
+}
+
+bool CKeyFactory::HashTable::remove(const unsigned C_INT32 & index)
+{
+  if (index < mSize)
+    {
+      if (!(*mpTable)[index]) return false;
+
+      (*mpTable)[index] = NULL;
+      mFree.push(index);
+
+      return true;
+    }
+
+  return false;
+}
+
+std::map< std::string, CKeyFactory::HashTable > CKeyFactory::mKeyTable;
+
+CKeyFactory::CDecisionVector CKeyFactory::isDigit("0123456789");
 
 std::string CKeyFactory::add(const std::string & prefix,
                              CCopasiObject * pObject)
 {
-  std::stringstream key;
-
-  key << prefix + "";
-
-  if (mCounterMap.count(prefix) == 0)
+  std::map< std::string, CKeyFactory::HashTable >::iterator it =
+    mKeyTable.find(prefix);
+  if (it == mKeyTable.end())
     {
-      mCounterMap[prefix] = 0;
-      mOverflowMap[prefix] = false;
+      std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
+        mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(prefix, CKeyFactory::HashTable()));
+
+      it = ret.first;
     }
 
-  unsigned C_INT32 * count = & mCounterMap.find(prefix)->second;
-  key << (*count)++;
-
-  if (mOverflowMap[prefix] == true)
-    while (mKeyMap.count(key.str()))
-      {
-        key.str();
-        key << prefix + "_";
-        key << (*count)++;
-      }
-
-  mKeyMap[key.str()] = pObject;
-  if ((*count) == 0) mOverflowMap[prefix] = true;
+  //  mKeyTable[prefix].add(pObject);
+  std::stringstream key;
+  key << prefix + "_" << it->second.add(pObject);
 
   return key.str();
 }
 
 bool CKeyFactory::remove(const std::string & key)
-{return mKeyMap.erase(key) > 0;}
+{
+  unsigned C_INT32 pos = key.length() - 1;
+  while (isDigit(key[pos]) && pos) --pos;
+
+  std::string Prefix = key.substr(0, pos);
+  unsigned C_INT32 index = atoi(key.substr(pos + 1).c_str());
+
+  std::map< std::string, CKeyFactory::HashTable >::iterator it =
+    mKeyTable.find(Prefix);
+  if (it == mKeyTable.end()) return false;
+
+  return it->second.remove(index);
+}
 
 CCopasiObject * CKeyFactory::get(const std::string & key)
 {
-  std::map< std::string, CCopasiObject * >::const_iterator it =
-    mKeyMap.find(key);
+  unsigned C_INT32 pos = key.length() - 1;
+  while (isDigit(key[pos]) && pos) --pos;
 
-  if (it != mKeyMap.end()) return it->second;
-  else return NULL;
+  std::string Prefix = key.substr(0, pos);
+  unsigned C_INT32 index = atoi(key.substr(pos + 1).c_str());
+
+  std::map< std::string, CKeyFactory::HashTable >::iterator it =
+    mKeyTable.find(Prefix);
+  if (it == mKeyTable.end()) return NULL;
+
+  return it->second.get(index);
 }
