@@ -51,6 +51,11 @@ class CMethodParameterList : private CCopasiVectorNS < CMethodParameter >
     ~CMethodParameterList();
 
     /**
+     * cleanup
+     */
+    void cleanup();
+
+    /**
      * Get the size of the parameter list
      * @return "unsigned C_INT32 &" size
      */

@@ -39,6 +39,9 @@ CMethodParameterList::CMethodParameterList(const CMethodParameterList & src):
  */
 CMethodParameterList::~CMethodParameterList() {cleanup();}
 
+void CMethodParameterList::cleanup()
+{CCopasiVectorNS <CMethodParameter>::cleanup();}
+
 /**
  * Get the size of the parameter list
  * @return "unsigned C_INT32" size
