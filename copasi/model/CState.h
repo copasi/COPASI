@@ -245,6 +245,17 @@ class CState
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
 
+    friend std::ostream & operator << (std::ostream & os, const CState & A)
+    {
+      os << "State: " << std::endl;
+      os << "  Time:     " << A.mTime << std::endl;
+      os << "  Volumes:  " << A.mVolumes << std::endl;
+      os << "  Fixed:    " << A.mFixedNumbers << std::endl;
+      os << "  Variable: " << A.mVariableNumbers << std::endl;
+
+      return os;
+    }
+
   protected:
     /**
      * Calculate the jacobian of the state and store it in the provided matrix.
@@ -382,6 +393,18 @@ class CStateX: public CState
     virtual void getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
+
+    friend std::ostream & operator << (std::ostream & os, const CStateX & A)
+    {
+      os << "StateX" << std::endl;
+      os << "  Time:        " << A.mTime << std::endl;
+      os << "  Volumes:     " << A.mVolumes << std::endl;
+      os << "  Fixed:       " << A.mFixedNumbers << std::endl;
+      os << "  Independend: " << A.mVariableNumbers << std::endl;
+      os << "  Dependend:   " << A.mDependentNumbers << std::endl;
+
+      return os;
+    }
 
   protected:
     /**

@@ -113,6 +113,16 @@ class CParticleNumberList
      * @return const CVector< C_INT32 > & vector
      */
     const CVector< C_INT32 > & getVectorInt() const;
+
+    friend std::ostream & operator << (std::ostream & os,
+                                       const CParticleNumberList & A)
+    {
+      os << "Particle List: " << std::endl;
+      os << "  Dbl: " << A.mDbl << std::endl;
+      os << "  Int: " << A.mInt << std::endl;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CParticleNumberList
