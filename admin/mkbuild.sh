@@ -17,7 +17,7 @@ if [ x"$#" = x1 ]; then
     ;;
   esac
 
-  scp CopasiUI-$build-$1.* calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/$1
+  scp CopasiUI-$build-$1.* calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1
 else
   echo usage: mkbuild.sh BUILD_OS
 fi
