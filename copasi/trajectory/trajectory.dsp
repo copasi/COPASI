@@ -90,11 +90,15 @@ SOURCE=.\CLsodaMethod.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CStochSolver.cpp
+SOURCE=.\CStochDirectMethod.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CTrajectory.cpp
+SOURCE=.\CStochMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CStochNextReactionMethod.cpp
 # End Source File
 # Begin Source File
 
@@ -118,11 +122,15 @@ SOURCE=.\CLsodaMethod.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CStochSolver.h
+SOURCE=.\CStochDirectMethod.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CTrajectory.h
+SOURCE=.\CStochMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CStochNextReactionMethod.h
 # End Source File
 # Begin Source File
 
