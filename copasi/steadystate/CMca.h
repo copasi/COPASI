@@ -28,12 +28,12 @@ class CMca
 
     CMatrix <C_FLOAT64> mGamma;
 
-    CModel Model;
+    CModel * mpModel;
 
     /**
      * an n+1 integer vector of pivot indices.
      */
-    C_INT32 *mSsipvt;
+    C_INT32 * mSsipvt;
 
     /**
      * 1 if MCA coeffs are to be unscaled

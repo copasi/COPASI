@@ -31,12 +31,12 @@ CMca::CMca() {CONSTRUCTOR_TRACE;}
 CMca::CMca(CModel model, C_FLOAT64 factor)
 {
   CONSTRUCTOR_TRACE;
-  Model = model;
+  mpModel = &model;
 
-  mDxv.resize(Model.getTotSteps(), Model.getIndMetab());
-  mFcc.resize(Model.getTotSteps(), Model.getTotSteps());
-  mGamma.resize(Model.getIndMetab(), Model.getTotSteps());
-  mSsx.resize(Model.getIndMetab() + 1);
+  mDxv.resize(mpModel->getTotSteps(), mpModel->getIndMetab());
+  mFcc.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
+  mGamma.resize(mpModel->getIndMetab(), mpModel->getTotSteps());
+  mSsx.resize(mpModel->getIndMetab() + 1);
 
   mFactor = factor;
 }
@@ -55,7 +55,7 @@ CMca::~CMca()
  */
 void CMca::setModel(CModel model)
 {
-  Model = model;
+  mpModel = &model;
 }
 
 /**
@@ -138,14 +138,14 @@ void CMca::initDxv(C_FLOAT64 res)
 
       // Calcualte the fluxes
       for (i = 0; i < mDxv.numRows(); i++)
-        f1[i] = Model.getReactions()[i]->calculate();
+        f1[i] = mpModel->getReactions()[i]->calculate();
 
       // now X-dx
       mSsx[j + 1] = temp * K2;
 
       // calculate the fluxes
       for (i = 0; i < mDxv.numRows(); i++)
-        f2[i] = Model.getReactions()[i]->calculate();
+        f2[i] = mpModel->getReactions()[i]->calculate();
 
       // set column j of Dxv
       for (i = 0; i < mDxv.numRows(); i++)
@@ -202,10 +202,10 @@ int CMca::CalcGamma()
 
   // Create auxiliary matrices as big as needed
 
-  if (Model.getIndMetab() > Model.getTotSteps())
-    dim = Model.getIndMetab() + 1;
+  if (mpModel->getIndMetab() > mpModel->getTotSteps())
+    dim = mpModel->getIndMetab() + 1;
   else
-    dim = Model.getTotSteps() + 1;
+    dim = mpModel->getTotSteps() + 1;
 
   // Create aux1 and aux2
   aux1 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux1));
@@ -224,28 +224,28 @@ int CMca::CalcGamma()
       mGamma[i][j] = 0.0;
 
   // aux1 = rstoi * mDxv
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getIndMetab(); j++)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
       {
         aux1[i][j] = 0.0;
 
-        for (k = 0; k < Model.getTotSteps(); k++)
-          aux1[i][j] += (C_FLOAT64) Model.getRedStoi()[i][k] * mDxv[k][j];
+        for (k = 0; k < mpModel->getTotSteps(); k++)
+          aux1[i][j] += (C_FLOAT64) mpModel->getRedStoi()[i][k] * mDxv[k][j];
       }
 
   // aux2 = aux1 * m1 (shifting indices for dgefa)
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getIndMetab(); j++)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
       {
         aux2[i + 1][j + 1] = 0.0;
 
-        for (k = 0; k < Model.getIndMetab(); k++)
-          aux2[i + 1][j + 1] += aux1[i][k] * Model.getL()(k, j); //???
+        for (k = 0; k < mpModel->getIndMetab(); k++)
+          aux2[i + 1][j + 1] += aux1[i][k] * mpModel->getL()(k, j); //???
       }
 
   // LU decomposition if aux2 (for inversion)
   // dgefa -> luX??
-  dgefa(aux2, Model.getIndMetab(), mSsipvt, &info);
+  dgefa(aux2, mpModel->getIndMetab(), mSsipvt, &info);
 
   if (info != 0)
     {
@@ -266,29 +266,29 @@ int CMca::CalcGamma()
     }
 
   // set aux1 to the identity matrix (for inversion with dgesl)
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getIndMetab(); j++)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
       aux1[i + 1][j + 1] = (i == j) ? 1.0 : 0.0;
 
   // now invert aux2 (result in aux1)
-  for (i = 0; i < Model.getIndMetab(); i++)
-    dgesl(aux2, Model.getIndMetab(), mSsipvt, aux1[i + 1], 1);
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    dgesl(aux2, mpModel->getIndMetab(), mSsipvt, aux1[i + 1], 1);
 
   // aux2 = - ml * aux1 (shifting indeces back to 0 again)
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getIndMetab(); j++)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
       {
         aux2[i][j] = 0.0;
 
-        for (k = 0; k < Model.getIndMetab(); k++)
-          aux2[i][j] -= (C_FLOAT64)Model.getmLU()[i][k] * aux1[k + 1][j + 1];
+        for (k = 0; k < mpModel->getIndMetab(); k++)
+          aux2[i][j] -= (C_FLOAT64)mpModel->getmLU()[i][k] * aux1[k + 1][j + 1];
       }
 
   // mGamma = aux2 *RedStoi
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getTotSteps(); j++)
-      for (k = 0; k < Model.getIndMetab(); k++)
-        mGamma[i][j] += aux2[i][k] * (C_FLOAT64) Model.getRedStoi()[k][j];
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getTotSteps(); j++)
+      for (k = 0; k < mpModel->getIndMetab(); k++)
+        mGamma[i][j] += aux2[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
 
   // delete matrices
   for (i = 0; i < dim; i++)
@@ -308,7 +308,7 @@ int CMca::CalcGamma()
  */
 void CMca::initSsipvt()
 {
-  mSsipvt = (C_INT32 *) malloc((Model.getIndMetab()) * sizeof(C_INT32));
+  mSsipvt = (C_INT32 *) malloc((mpModel->getIndMetab()) * sizeof(C_INT32));
 }
 
 /**
@@ -324,10 +324,10 @@ void CMca::delSsipvt()
  */
 void CMca::init()
 {
-  mDxv.resize(Model.getTotSteps(), Model.getTotMetab());
-  mFcc.resize(Model.getTotSteps(), Model.getTotSteps());
-  mGamma.resize(Model.getIndMetab(), Model.getTotSteps());
-  mSsx.resize(Model.getTotMetab() + 1);
+  mDxv.resize(mpModel->getTotSteps(), mpModel->getTotMetab());
+  mFcc.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
+  mGamma.resize(mpModel->getIndMetab(), mpModel->getTotSteps());
+  mSsx.resize(mpModel->getTotMetab() + 1);
 }
 
 /**
@@ -390,42 +390,42 @@ void CMca::ScaleMCA(int condition, int res)
     return;
 
   // Scale Dxv
-  for (i = 0; i < Model.getTotSteps(); i++)
-    for (j = 0; j < Model.getTotMetab(); j++)
+  for (i = 0; i < mpModel->getTotSteps(); i++)
+    for (j = 0; j < mpModel->getTotMetab(); j++)
       {
         // change the use of Col[] and Row[] to mSteps and mMetabolites
         // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
 
-        if (fabs(Model.getReactions()[i]->getFlux()) >= res)
+        if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
           {
-            mDxv[i][j] *= Model.getMetabolites()[j]->getConcentration()
-                          * Model.getMetabolites()[j]->getCompartment()->getVolume()
-                          / Model.getReactions()[i]->getFlux();
+            mDxv[i][j] *= mpModel->getMetabolites()[j]->getConcentration()
+                          * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
+                          / mpModel->getReactions()[i]->getFlux();
           }
         else
           mDxv[i][j] = DBL_MAX;
       }
 
   // Scale Gamma
-  for (i = 0; i < Model.getIndMetab(); i++)
-    for (j = 0; j < Model.getTotSteps(); j++)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        if (fabs(Model.getMetabolites()[i]->getConcentration()) >= res)
-          mGamma[i][j] *= Model.getReactions()[j]->getFlux()
-                          / (Model.getMetabolites()[i]->getConcentration()
+        if (fabs(mpModel->getMetabolites()[i]->getConcentration()) >= res)
+          mGamma[i][j] *= mpModel->getReactions()[j]->getFlux()
+                          / (mpModel->getMetabolites()[i]->getConcentration()
                              *
-                             Model.getMetabolites()[j]->getCompartment()->getVolume());
+                             mpModel->getMetabolites()[j]->getCompartment()->getVolume());
         else
           mGamma[i][j] = DBL_MAX;
       }
 
   // Scale FCC
-  for (i = 0; i < Model.getTotSteps(); i++)
-    for (j = 0; j < Model.getTotSteps(); j++)
+  for (i = 0; i < mpModel->getTotSteps(); i++)
+    for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        if (fabs(Model.getReactions()[i]->getFlux()) >= res)
-          mFcc[i][j] *= Model.getReactions()[j]->getFlux()
-                        / Model.getReactions()[i]->getFlux();
+        if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
+          mFcc[i][j] *= mpModel->getReactions()[j]->getFlux()
+                        / mpModel->getReactions()[i]->getFlux();
         else
           mFcc[i][j] = DBL_MAX;
       }
@@ -439,13 +439,13 @@ void CMca::CalculateTimeMCA(int res)
 {
   unsigned C_INT32 i, j;
 
-  mSsx.resize(Model.getTotMetab());
+  mSsx.resize(mpModel->getTotMetab());
 
   //copy concentrations to ss_x
 
-  for (i = 0; i < Model.getTotMetab(); i++)
-    mSsx[i + 1] = Model.getMetabolites()[i]->getConcentration() *
-                  Model.getMetabolites()[i]->getCompartment()->getVolume();
+  for (i = 0; i < mpModel->getTotMetab(); i++)
+    mSsx[i + 1] = mpModel->getMetabolites()[i]->getConcentration() *
+                  mpModel->getMetabolites()[i]->getCompartment()->getVolume();
 
   // calculate the elasticites
   initDxv(res);
@@ -453,12 +453,12 @@ void CMca::CalculateTimeMCA(int res)
   // scale the elasticities if needed
   if (mSSReder == 0)
     {
-      for (i = 0; i < Model.getTotSteps(); i++)
-        for (j = 0; j < Model.getTotMetab(); j++)
+      for (i = 0; i < mpModel->getTotSteps(); i++)
+        for (j = 0; j < mpModel->getTotMetab(); j++)
           {
-            if (fabs(Model.getReactions()[i]->getFlux()) >= res)
-              mDxv[i][j] *= Model.getMetabolites()[j]->getConcentration() /
-                            Model.getReactions()[i]->getFlux();
+            if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
+              mDxv[i][j] *= mpModel->getMetabolites()[j]->getConcentration() /
+                            mpModel->getReactions()[i]->getFlux();
             else
               mDxv[i][j] = DBL_MAX;
           }
