@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/29 20:27:19 $
+   $Author: gasingh $ 
+   $Date: 2004/01/07 21:41:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,11 +81,6 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
-}
-
-void MetaboliteSymbols::filltable()
-{
-  loadMetaboliteSymbols(dataModel->getMathModel());
 }
 
 void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
@@ -200,13 +195,20 @@ bool MetaboliteSymbols::update(ListViews::ObjectType objectType, ListViews::Acti
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
-      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
-      filltable();
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
+      if (isShown())
+        loadMetaboliteSymbols(dataModel->getMathModel());
       break;
 
     default:
       break;
     }
+  return true;
+}
+
+bool MetaboliteSymbols::enter(const std::string & C_UNUSED(key))
+{
+  loadMetaboliteSymbols(dataModel->getMathModel());
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/29 20:27:19 $
+   $Author: gasingh $ 
+   $Date: 2004/01/07 21:41:25 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,11 +81,6 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void DifferentialEquations::filltable()
-{
-  loadDifferentialEquations(dataModel->getMathModel());
-}
-
 void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
 {
   std::map< std::string, CMathVariableMetab * > & MetabList =
@@ -138,13 +133,20 @@ bool DifferentialEquations::update(ListViews::ObjectType objectType, ListViews::
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
-      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
-      filltable();
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
+      if (isShown())
+        loadDifferentialEquations(dataModel->getMathModel());
       break;
 
     default:
       break;
     }
+  return true;
+}
+
+bool DifferentialEquations::enter(const std::string & C_UNUSED(key))
+{
+  loadDifferentialEquations(dataModel->getMathModel());
   return true;
 }

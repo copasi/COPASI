@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/29 20:27:19 $
+   $Author: gasingh $ 
+   $Date: 2004/01/07 21:41:26 $
    End CVS Header */
 
 /*******************************************************************
@@ -80,11 +80,6 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
-}
-
-void CompartmentSymbols::filltable()
-{
-  loadCompartmentSymbols(dataModel->getMathModel());
 }
 
 void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
@@ -203,13 +198,20 @@ bool CompartmentSymbols::update(ListViews::ObjectType objectType, ListViews::Act
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
-      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
-      filltable();
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
+      if (isShown())
+        loadCompartmentSymbols(dataModel->getMathModel());
       break;
 
     default:
       break;
     }
+  return true;
+}
+
+bool CompartmentSymbols::enter(const std::string & C_UNUSED(key))
+{
+  loadCompartmentSymbols(dataModel->getMathModel());
   return true;
 }

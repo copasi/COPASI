@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/12/22 07:12:03 $
+   $Date: 2004/01/07 21:41:25 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,17 +33,17 @@ class DifferentialEquations : public CopasiWidget
 
   public:
     DifferentialEquations(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadDifferentialEquations(CMathModel * mathModel);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool enter(const std::string & key = "");
 
   protected slots:
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
 
   private:
+    void loadDifferentialEquations(CMathModel * mathModel);
     void showMessage(QString caption, QString text);
-    void filltable();
   };
 
 #endif

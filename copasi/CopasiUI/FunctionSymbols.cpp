@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/29 20:27:19 $
+   $Author: gasingh $ 
+   $Date: 2004/01/07 21:41:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -82,11 +82,6 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
           this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()),
           this, SLOT(slotBtnCancelClicked()));
-}
-
-void FunctionSymbols::filltable()
-{
-  loadFunctionSymbols(dataModel->getMathModel());
 }
 
 void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
@@ -184,13 +179,20 @@ bool FunctionSymbols::update(ListViews::ObjectType objectType, ListViews::Action
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
-      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
-      filltable();
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
+      if (isShown())
+        loadFunctionSymbols(dataModel->getMathModel());
       break;
 
     default:
       break;
     }
+  return true;
+}
+
+bool FunctionSymbols::enter(const std::string & C_UNUSED(key))
+{
+  loadFunctionSymbols(dataModel->getMathModel());
   return true;
 }
