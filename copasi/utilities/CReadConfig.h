@@ -8,11 +8,8 @@
 #ifndef COPASI_CReadConfig
 #define COPASI_CReadConfig
 
-#include <strstream>
+#include <sstream>
 #include <string>
-
-using std::strstream;
-using std::string;
 
 // available operations mode for the configurations buffer
 // #define CReadConfig_SEARCH 0x01
@@ -42,17 +39,17 @@ class CReadConfig
     /**
      *  Look ahead to find the next variable name
      */
-    string lookAhead();
+    std::string lookAhead();
 
     /**
      *  Name of the configuration file.
      */
-    string mFilename;               // Config File Name
+    std::string mFilename;               // Config File Name
 
     /**
      *  Input buffer
      */
-    strstream mBuffer;
+    std::stringstream mBuffer;
 
     /**
      *  Current line number in the configuration file
@@ -74,7 +71,7 @@ class CReadConfig
     /*
      *  The Version of the configuration file.
      */
-    string mVersion;
+    std::string mVersion;
 
   public:
     /**
@@ -90,7 +87,7 @@ class CReadConfig
      *  as the argument.
      *  @param name name of the confguration file. 
      */
-    CReadConfig(const string& name);
+    CReadConfig(const std::string& name);
 
     /**
      *  Destructor. 
@@ -101,7 +98,7 @@ class CReadConfig
     /**
      * Retrieves the version string of the configbuffer
      */
-    string getVersion();
+    std::string getVersion();
 
     /**
      * Load various system wide default values
@@ -124,8 +121,8 @@ class CReadConfig
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 getVariable(const string& name,
-                        const string& type,
+    C_INT32 getVariable(const std::string& name,
+                        const std::string& type,
                         void * pout,
                         CReadConfig::Mode mode = CReadConfig::NEXT);
 
@@ -140,8 +137,8 @@ class CReadConfig
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 getVariable(const string& name,
-                        const string& type,
+    C_INT32 getVariable(const std::string& name,
+                        const std::string& type,
                         void * pout1,
                         void * pout2,
                         CReadConfig::Mode mode = CReadConfig::NEXT);
