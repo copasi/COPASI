@@ -10,17 +10,12 @@
 
 #include "CReaction.h"
 #include "CMoiety.h"
-#include "utilities/CMatrix.h" 
-// #include "tnt/tnt.h"
-// #include "tnt/cmat.h"
-// #include "tnt/triang.h"
-// #include "tnt/transv.h"
+#include "utilities/CMatrix.h"
 
 class CCompartment;
-
 class CState;
-
 class CStateX;
+template <class CType> class CVector;
 
 class CModel
   {
@@ -527,9 +522,9 @@ class CModel
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CState * state (input)
-     * &param C_FLOAT64 * derivatives (output)
+     * &param CVector< C_FLOAT64 > & derivatives (output)
      */
-    void getDerivatives(CState * state, C_FLOAT64 * derivatives);
+    void getDerivatives(CState * state, CVector< C_FLOAT64 > & derivatives);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -537,9 +532,9 @@ class CModel
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CStateX * stateX (input)
-     * &param C_FLOAT64 * derivatives (output)
+     * &param CVector< C_FLOAT64 > & derivatives (output)
      */
-    void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
+    void getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives);
 
     /**
      * set the unit for substance quantities. If copasi recognises 

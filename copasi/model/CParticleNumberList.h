@@ -1,6 +1,8 @@
 #ifndef COPASI_CParticleNumberList
 #define COPASI_CParticleNumberList
 
+#include "utilities/CVector.h"
+
 class CParticleNumberList
   {
   protected:
@@ -8,8 +10,8 @@ class CParticleNumberList
 
     // Attributes
     unsigned C_INT32 mSize;
-    C_FLOAT64 * mDbl;
-    C_INT32 * mInt;
+    CVector< C_FLOAT64 > mDbl;
+    CVector< C_INT32 > mInt;
 
     // Operations
   public:
@@ -17,14 +19,14 @@ class CParticleNumberList
     CParticleNumberList(const CParticleNumberList & src);
     ~CParticleNumberList();
     void resize(const unsigned C_INT32 & size);
-    void set (const unsigned C_INT32 & index, const C_FLOAT64 & value);
+    void set(const unsigned C_INT32 & index, const C_FLOAT64 & value);
     const C_FLOAT64 & getDbl(const unsigned C_INT32 & index) const;
-    void set (const unsigned C_INT32 & index, const C_INT32 & value);
+    void set(const unsigned C_INT32 & index, const C_INT32 & value);
     const C_INT32 & getInt(const unsigned C_INT32 & index) const;
-    void setArray(const C_FLOAT64 * values);
-    const C_FLOAT64 * getDblArray() const;
-    void setArray(const C_INT32 * values);
-    const C_INT32 * getIntArray() const;
+    void setArray(const CVector< C_FLOAT64 > & values);
+    const CVector< C_FLOAT64 > & getDblArray() const;
+    void setArray(const CVector< C_INT32 > & values);
+    const CVector< C_INT32 > & getIntArray() const;
     const unsigned C_INT32 & size() const;
   };
 
