@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 01:41:59 $
+   $Date: 2003/10/17 02:07:13 $
    End CVS Header */
 
 /********************************************************
@@ -189,10 +189,13 @@ void OptimizationItemWidget::slotLowerEdit()
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
   strFunction = lineLower->text().latin1();
   pFuncDlg->setStrFunction(&strFunction);
+
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineLower->setText(strFunction.c_str());
       COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      int nIndex; // this nIndex must exist;
+      nIndex = func->Index(mpObject->getCN());
       func->mMinList[nIndex] = strFunction.c_str();
       if (!(func->mMinFunctionList[nIndex]))
         func->mMinFunctionList[nIndex] = new CKinFunction();
@@ -235,6 +238,8 @@ void OptimizationItemWidget::slotUpperEdit()
     {
       lineUpper->setText(strFunction.c_str());
       COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      int nIndex; // this nIndex must exist;
+      nIndex = func->Index(mpObject->getCN());
       func->mMaxList[nIndex] = strFunction.c_str();
       if (!(func->mMaxFunctionList[nIndex]))
         func->mMaxFunctionList[nIndex] = new CKinFunction();
@@ -341,9 +346,4 @@ void OptimizationItemWidget::setItemUpperOper(std::string oper)
 void OptimizationItemWidget::setItemLowerOper(std::string oper)
 {
   comboBoxLowerOp->setCurrentText (oper.c_str());
-}
-
-void OptimizationItemWidget::setIndex(int i)
-{
-  nIndex = i;
 }
