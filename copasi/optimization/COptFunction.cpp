@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:31 $
+   $Author: ssahle $ 
+   $Date: 2004/05/13 13:17:55 $
    End CVS Header */
 
 #include <sstream>
@@ -30,14 +30,14 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
     : CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("OptFunction", this)),
     mParaList(src.mParaList),
-    mMinFunctionList(src.mMinFunctionList),
-    mMaxFunctionList(src.mMaxFunctionList),
     mMinList(src.mMinList),
     mMaxList(src.mMaxList),
     mMinOperList(src.mMinOperList),
-    mMaxOperList(src.mMaxOperList)
+    mMaxOperList(src.mMaxOperList),
+    mMinFunctionList(src.mMinFunctionList),
+    mMaxFunctionList(src.mMaxFunctionList),
+    mKey(GlobalKeys.add("OptFunction", this))
 {}
 
 COptFunction::~COptFunction()
@@ -61,7 +61,7 @@ void COptFunction::cleanup()
 // check if a parameter already existing inside the mParaList
 int COptFunction::Index(const std::string & name)
 {
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < mParaList.size(); i++)
     if (mParaList[i]->getCN() == name)
       return i;
@@ -84,7 +84,7 @@ int COptFunction::addItem(CCopasiObject* pObject)
 
 bool COptFunction::removeItem(const std::string & name)
 {
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < mParaList.size(); i++)
     {
       if (mParaList[i]->getCN() == name)
