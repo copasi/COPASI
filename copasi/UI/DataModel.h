@@ -21,6 +21,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "scan/CScanTask.h"
+#include "scan/CScanProblem.h"
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"             //TODO sort out the include dependencies
 
