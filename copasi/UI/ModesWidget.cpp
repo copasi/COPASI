@@ -74,6 +74,12 @@ void ModesWidget::loadModes(CModel *model)
     {
       mModel = model;
     }
+  int numberOfRows = table->numRows();
+
+  for (int i = 0; i < numberOfRows; i++)
+    {
+      table->removeRow(0);
+    }
 }
 
 /*void ModesWidget::slotTableCurrentChanged(int row,int col,int C_UNUSED(m) ,const QPoint & C_UNUSED(n))
