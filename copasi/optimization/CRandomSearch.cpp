@@ -23,9 +23,9 @@ CRandomSearch::CRandomSearch():
   mTypeEnum = COptMethod::RandomSearch;
   setType(COptMethod::TypeName[mTypeEnum]);
 
-  add("RandomSearch.Iterations", 100000.0);
-  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937);
-  add("RandomSearch.RandomGenerator.Seed", 0);
+  add("RandomSearch.Iterations", 100000, CMethodParameter::UINT);
+  add("RandomSearch.RandomGenerator.Type", CRandom::mt19937, CMethodParameter::INT);
+  add("RandomSearch.RandomGenerator.Seed", 0, CMethodParameter::INT);
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):
