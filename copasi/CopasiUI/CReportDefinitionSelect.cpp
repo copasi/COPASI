@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.11 2003/08/19 18:32:14 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.12 2003/08/19 20:47:12 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -146,7 +146,7 @@ void CReportDefinitionSelect::confirmClicked()
   row = reportDefinitionNameList->currentItem();
   mpReport->setReportDefinintion((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]);
   mpReport->setAppend(appendChecked->isChecked());
-  mpReport->setTarget(std::string(targetEdit->text()));
+  mpReport->setTarget(targetEdit->text().latin1());
   cleanup();
   close();
 }
