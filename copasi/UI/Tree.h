@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/24 13:28:38 $
+   $Date: 2004/10/08 09:01:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -67,7 +67,7 @@ class IndexedNode
     const std::string & getObjectKey() const {return mObjectKey;};
     void setObjectKey(const std::string & key) {mObjectKey = key;};
 
-    const QString & getSortKey() const {return mSortKey;}; //TODO
+    const QString & getSortKey() const {return mSortKey;};
 
   private:
     int mId;

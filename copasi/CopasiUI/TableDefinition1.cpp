@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:33:13 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 08:59:28 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.42 2004/10/06 16:33:13 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.43 2004/10/08 08:59:28 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -253,7 +253,7 @@ void TableDefinition1::languageChange()
 
 /*This function is to load the model for the table*/
 void TableDefinition1::loadTableDefinition1()
-{//TODO: check if it is really a table
+{
   CReportDefinition* pReportDefinition =
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
 
