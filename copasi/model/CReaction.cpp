@@ -843,7 +843,7 @@ const std::string & CReaction::CId2Metab::getCompartmentName() const
     return mCompartmentName;
   }
 
-CMetab * CReaction::CId2Metab::getMetabolite() const
+const CMetab * CReaction::CId2Metab::getMetabolite() const
   {
     return mpMetabolite;
   }
@@ -870,19 +870,19 @@ const C_FLOAT64 & CReaction::CId2Param::getValue() const
 
 /**
  * Returns the address of mValue
- */
-void* CReaction::CId2Param::getValueAddr()
-{
-  return &mValue;
-}
+ */ 
+//void* CReaction::CId2Param::getValueAddr()
+//{
+//  return &mValue;
+//}
 
 /**
  * Returns the address of mFlux
- */
-void* CReaction::getFluxAddr()
-{
-  return &mFlux;
-}
+ */ 
+//void* CReaction::getFluxAddr()
+//{
+//  return &mFlux;
+//}
 
 /**
  * Returns the index of the parameter
@@ -1196,7 +1196,7 @@ unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage)
 }
 
 // Added by cvg
-CMetab * CReaction::findSubstrate(std::string ident_name)
+const CMetab * CReaction::findSubstrate(std::string ident_name)
 {
   for (unsigned C_INT32 i = 0; i < mId2Substrates.size(); i++)
     {
@@ -1210,7 +1210,7 @@ CMetab * CReaction::findSubstrate(std::string ident_name)
   return NULL;
 }
 
-CMetab * CReaction::findModifier(std::string ident_name)
+const CMetab * CReaction::findModifier(std::string ident_name)
 {
   for (unsigned C_INT32 i = 0; i < mId2Modifiers.size(); i++)
     {
@@ -1232,7 +1232,7 @@ unsigned C_INT32 CReaction::getCompartmentNumber()
   unsigned C_INT32 i, imax = Balances.size();
   unsigned C_INT32 j, jmax;
   unsigned C_INT32 Number;
-  std::vector<CCompartment *> Compartments;
+  std::vector<const CCompartment *> Compartments;
 
   for (i = 0, Number = 0; i < imax; i++)
     {
@@ -1269,8 +1269,8 @@ void CReaction::setReactantsFromChemEq()
 {
   C_INT32 i, nsub, nprod;
   unsigned C_INT32 pos;
-  CCopasiVector < CChemEqElement > sub;
-  CCopasiVector < CChemEqElement > prod;
+  CCopasiVector <CChemEqElement > sub;
+  CCopasiVector <CChemEqElement > prod;
   CFunctionParameter::DataType Type = CFunctionParameter::FLOAT64;
 
   if (mChemEq.initialized())

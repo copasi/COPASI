@@ -9,35 +9,29 @@
 CDependencyGraphNode::CDependencyGraphNode()
 {}
 
-CDependencyGraphNode::CDependencyGraphNode(C_INT32 C_UNUSED(node_number))
-{}
-
 CDependencyGraphNode::~CDependencyGraphNode()
 {}
 
-void CDependencyGraphNode::addDependent(C_INT32 node_num)
+void CDependencyGraphNode::addDependent(const C_INT32 node_num)
 {
   // Ensure that the same node is not added twice
   //  if (find(mDependents.begin(), mDependents.end(), node_num) == mDependents.end())
   //    {
   //      mDependents.push_back(node_num);
   //}
-
   mDependents.insert(node_num);
 }
 
-//const std::vector<C_INT32> & CDependencyGraphNode::getDependents()
-
-const std::set <C_INT32> & CDependencyGraphNode::getDependents()
-{
-  return mDependents;
-}
+const std::set <C_INT32> & CDependencyGraphNode::getDependents() const
+  {
+    return mDependents;
+  }
 
 // dependency graph
 CDependencyGraph::CDependencyGraph() {}
 CDependencyGraph::~CDependencyGraph() {}
 
-void CDependencyGraph::addNode(C_INT32 node)
+void CDependencyGraph::addNode(const C_INT32 node)
 {
   if (node >= mNodes.size())
     mNodes.resize(node + 1);
@@ -45,16 +39,16 @@ void CDependencyGraph::addNode(C_INT32 node)
   //  mNodes.push_back(node);
 }
 
-void CDependencyGraph::addDependent(C_INT32 node, C_INT32 dependent)
+void CDependencyGraph::addDependent(const C_INT32 node, const C_INT32 dependent)
 {
   addNode(node);
   mNodes[node].addDependent(dependent);
 }
 
-const std::set <C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
-{
-  return mNodes[node].getDependents();
-}
+const std::set <C_INT32> & CDependencyGraph::getDependents(C_INT32 node) const
+  {
+    return mNodes[node].getDependents();
+  }
 
 #ifdef TEST_DEPENDENCY_GRAPH
 

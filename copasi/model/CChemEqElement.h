@@ -91,7 +91,7 @@ class CChemEqElement : public CCopasiContainer
      *  Retrieves the metabolite of the element.
      *  @return "CMetab &" metabolite
      */
-    CMetab & getMetabolite() const;
+    const CMetab & getMetabolite() const;
 
     /**
      *  Retrieves the address of the metabolite of the element.
@@ -134,7 +134,7 @@ class CChemEqElement : public CCopasiContainer
      *  is assigned.
      *  @param "vector < CMetab * > &" metabolites
      */
-    void compile(CCopasiVectorN < CCompartment > & compartments);
+    void compile(const CCopasiVectorN < CCompartment > & compartments);
     /**
      *  Write the element in the form mMultiplier * mMetaboliteName
      *  @return "string"

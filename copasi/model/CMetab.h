@@ -93,7 +93,7 @@ class CMetab : public CCopasiContainer
      *  The metab needs to know about volumes.
      */
     /** @dia:route 15,11; h,158.906,38.003,165.545,54.2961,117.263 */
-    CCompartment * mpCompartment;
+    const CCompartment * mpCompartment;
 
     /**
      *  pointer to the model the metabolite is located in.
@@ -146,7 +146,7 @@ class CMetab : public CCopasiContainer
      */
     void cleanup();
     void initModel();
-    void initCompartment(CCompartment * pCompartment);
+    void initCompartment(const CCompartment * pCompartment);
 
     /**
      *  Assignment operator.
@@ -273,12 +273,12 @@ class CMetab : public CCopasiContainer
     /**
      *
      */
-    void setCompartment(CCompartment * compartment);
+    void setCompartment(const CCompartment * compartment);
 
     /**
      *
      */
-    CCompartment * getCompartment();
+    const CCompartment * getCompartment() const;
 
     /**
      *
@@ -320,7 +320,7 @@ class CMetab : public CCopasiContainer
     /**
      * Return rate of production of this metaboLite
      */
-    const C_FLOAT64 & getRate();
+    const C_FLOAT64 & getRate() const;
 
     /**
      *  Set the rate (dmConc/dt)

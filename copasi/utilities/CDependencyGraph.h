@@ -13,15 +13,8 @@ class CDependencyGraphNode
   public:
     /**
      * Constructor
-     * @param react_num The number describing this node (usually corresponds to reaction number)
      */
     CDependencyGraphNode();
-
-    /**
-     * Constructor
-     * @param react_num The number describing this node (usually corresponds to reaction number)
-     */
-    CDependencyGraphNode(C_INT32 num);
 
     /**
      * The destructor
@@ -33,14 +26,14 @@ class CDependencyGraphNode
      * This then represents an edge in the graph.
      * @param node_num The dependency, the node to which the edge connects.
      */
-    void addDependent(C_INT32 node_num);
+    void addDependent(const C_INT32 node_num);
 
     /**
      * Return a vector of the dependents.
      * @return A vector of the dependents.
      */
 
-    const std::set <C_INT32> &getDependents();
+    const std::set <C_INT32> &getDependents() const;
 
     /**
      * insert operator
@@ -83,26 +76,27 @@ class CDependencyGraph
     ~CDependencyGraph();
 
     /**
-     * Add a node with a given number.
-     * @param node The number of the node to add.
-     */
-    void addNode(C_INT32 node);
-
-    /**
      * Add a dependent for a particular node.
      * @param node The number of the node.
      * @param dependent The number of the dependent node.
      */
-    void addDependent(C_INT32 node, C_INT32 dependent);
+    void addDependent(const C_INT32 node, const C_INT32 dependent);
 
     /**
      * Retrieve a vector of dependents for a given node.
      * @param node The number of the node to access.
      * @return A vector of node numbers.
      */
-    const std::set <C_INT32> &getDependents(C_INT32 node);
+    const std::set <C_INT32> &getDependents(const C_INT32 node) const;
 
   private:
+
+    /**
+     * Add a node with a given number.
+     * @param node The number of the node to add.
+     */
+    void addNode(const C_INT32 node);
+
     /**
      * A vector containing the nodes in the graph
      */

@@ -81,13 +81,13 @@ class CIndexedPriorityQueue
      * Get the index associated with the highest priority node
      * @return The index
      */
-    C_INT32 topIndex();
+    C_INT32 topIndex() const;
 
     /**
      * Get the key value associated with the highest priority node
      * @return The key value
      */
-    C_FLOAT64 topKey();
+    C_FLOAT64 topKey() const;
 
     /**
      * Deletes the node in the tree with the given index. The pointer 
@@ -95,7 +95,7 @@ class CIndexedPriorityQueue
      *
      * added by juergen 26 July, 2002
      */
-    C_INT32 removeStochReaction(C_INT32 index);
+    C_INT32 removeStochReaction(const C_INT32 index);
 
     /**
      * Inserts the node with the given index and key into the tree. The index
@@ -103,7 +103,7 @@ class CIndexedPriorityQueue
      *
      * added by juergen 26 July, 2002
      */
-    C_INT32 insertStochReaction(C_INT32 index, C_FLOAT64 key);
+    C_INT32 insertStochReaction(const C_INT32 index, const C_FLOAT64 key);
 
     /**
      * Initializes the vector mIndexPointer. The vector will be
@@ -113,12 +113,12 @@ class CIndexedPriorityQueue
      *
      * added by juergen 26 July, 2002
      */
-    void initializeIndexPointer(C_INT32 numberOfReactions);
+    void initializeIndexPointer(const C_INT32 numberOfReactions);
 
     /**
      * Return the size of the heap
      */
-    C_INT32 size() {return mHeap.size();}
+    C_INT32 size() const {return mHeap.size();}
 
     // Operations
     /**
@@ -126,7 +126,7 @@ class CIndexedPriorityQueue
      * @param index The index used to access the node
      * @param key The key value used to determine the priority
      */
-    C_INT32 pushPair(C_INT32 index, C_FLOAT64 key);
+    C_INT32 pushPair(const C_INT32 index, const C_FLOAT64 key);
 
     /**
      * Build moves entries until the correct ordering is achieved.
@@ -139,22 +139,22 @@ class CIndexedPriorityQueue
      * @param index The index used to access the node
      * @param key The key value used to determine the priority     
      */
-    void updateNode(C_INT32 index, C_FLOAT64 key);
+    void updateNode(const C_INT32 index, const C_FLOAT64 key);
 
     /**
      * Overloads the [] operator. Gives the index´th element on the heap
      * @return Returns the key
      */
-    C_FLOAT64 operator[](C_INT32 pos)
-    {
-      return mHeap[pos].mKey;
-    }
+    C_FLOAT64 operator[](const C_INT32 pos) const
+      {
+        return mHeap[pos].mKey;
+      }
 
     /**
      * gets the key from a given index
      * @return Returns the key
      */
-    C_FLOAT64 getKey(C_INT32 index) const
+    C_FLOAT64 getKey(const C_INT32 index) const
       {
         // does not consider negative IndexPointer
         return mHeap[mIndexPointer[index]].mKey;
@@ -188,18 +188,18 @@ class CIndexedPriorityQueue
     /**
      *  Swap a pair of nodes and update the index structure accordingly.
      */
-    void swapNodes(C_INT32 index1, C_INT32 index2);
+    void swapNodes(const C_INT32 index1, const C_INT32 index2);
 
     /**
      * Make a tree rooted at a given position into a heap
      * @param pos The root position of the tree to heapify
      */
-    void heapify(C_INT32 pos);
+    void heapify(const C_INT32 pos);
 
     /**
      * Used by the updateNode function. Update the node at a given position.
      */
-    void updateAux(C_INT32 position);
+    void updateAux(const C_INT32 position);
 
     /**
      * Provide the position in the heap of the parent to a node.
@@ -208,21 +208,21 @@ class CIndexedPriorityQueue
      * @param pos The current node position
      * @return The parent node position
      */
-  C_INT32 parent(C_INT32 pos) {return (pos + 1) / 2 - 1;}
+  C_INT32 parent(const C_INT32 pos) const {return (pos + 1) / 2 - 1;}
 
     /**
      * Provide the position in the heap of the left child of the current node.
      * @param pos The current node position
      * @return The left child position
      */
-    C_INT32 leftChild(C_INT32 pos) {return 2*pos + 1;}
+    C_INT32 leftChild(const C_INT32 pos) const {return 2*pos + 1;}
 
     /**
      * Provide the position in the heap of the right child of the current node.
      * @param pos The current node position
      * @return The right child position
      */
-    C_INT32 rightChild(C_INT32 pos) {return 2*pos + 2;}
+    C_INT32 rightChild(const C_INT32 pos) const {return 2*pos + 2;}
 
   private:
     // Members

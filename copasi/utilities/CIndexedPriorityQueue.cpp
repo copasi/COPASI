@@ -10,18 +10,18 @@ CIndexedPriorityQueue::CIndexedPriorityQueue()
 CIndexedPriorityQueue::~CIndexedPriorityQueue()
 {}
 
-C_FLOAT64 CIndexedPriorityQueue::topKey()
-{
-  return mHeap[0].mKey;
-}
+C_FLOAT64 CIndexedPriorityQueue::topKey() const
+  {
+    return mHeap[0].mKey;
+  }
 
-C_INT32 CIndexedPriorityQueue::topIndex()
-{
-  return mHeap[0].mIndex;
-}
+C_INT32 CIndexedPriorityQueue::topIndex() const
+  {
+    return mHeap[0].mIndex;
+  }
 
 // juergen: added 26 July, 2002
-C_INT32 CIndexedPriorityQueue::removeStochReaction(C_INT32 index)
+C_INT32 CIndexedPriorityQueue::removeStochReaction(const C_INT32 index)
 {
   C_INT32 t;
 
@@ -44,7 +44,7 @@ C_INT32 CIndexedPriorityQueue::removeStochReaction(C_INT32 index)
 }
 
 // juergen: added 26 July, 2002
-C_INT32 CIndexedPriorityQueue::insertStochReaction(C_INT32 index, C_FLOAT64 key)
+C_INT32 CIndexedPriorityQueue::insertStochReaction(const C_INT32 index, const C_FLOAT64 key)
 {
   C_INT32 pos;
 
@@ -66,7 +66,7 @@ C_INT32 CIndexedPriorityQueue::insertStochReaction(C_INT32 index, C_FLOAT64 key)
 }
 
 // juergen: added 26 July, 2002
-void CIndexedPriorityQueue::initializeIndexPointer(C_INT32 numberOfReactions)
+void CIndexedPriorityQueue::initializeIndexPointer(const C_INT32 numberOfReactions)
 {
   C_INT32 i;
   for (i = 0; i < numberOfReactions; i++)
@@ -75,7 +75,7 @@ void CIndexedPriorityQueue::initializeIndexPointer(C_INT32 numberOfReactions)
     }
 }
 
-C_INT32 CIndexedPriorityQueue::pushPair(C_INT32 index, C_FLOAT64 key)
+C_INT32 CIndexedPriorityQueue::pushPair(const C_INT32 index, const C_FLOAT64 key)
 {
   // Add an element to the priority queue. This merely pushes an item onto
   // the back of the vector corresponding to the heap, and pushes the index
@@ -107,7 +107,7 @@ void CIndexedPriorityQueue::buildHeap()
     }
 }
 
-void CIndexedPriorityQueue::updateNode(C_INT32 index, C_FLOAT64 new_key)
+void CIndexedPriorityQueue::updateNode(const C_INT32 index, const C_FLOAT64 new_key)
 {
   C_INT32 pos = mIndexPointer[index];
   //    cout << "Setting heap at " << pos << " to be " << new_key << endl;
@@ -115,7 +115,7 @@ void CIndexedPriorityQueue::updateNode(C_INT32 index, C_FLOAT64 new_key)
   updateAux(pos);
 }
 
-void CIndexedPriorityQueue::swapNodes(C_INT32 pos1, C_INT32 pos2)
+void CIndexedPriorityQueue::swapNodes(const C_INT32 pos1, const C_INT32 pos2)
 {
   //    cout << "Swapping node " << pos1 << "(" << mHeap[pos1].mKey << ") with node ";
   //    cout << pos2 << "(" << mHeap[pos2].mKey << ")\n";
@@ -133,7 +133,7 @@ void CIndexedPriorityQueue::swapNodes(C_INT32 pos1, C_INT32 pos2)
   mIndexPointer[index2] = pos1;
 }
 
-void CIndexedPriorityQueue::heapify(C_INT32 current)
+void CIndexedPriorityQueue::heapify(const C_INT32 current)
 {
   C_INT32 left = leftChild(current);
   C_INT32 right = rightChild(current);
@@ -154,7 +154,7 @@ void CIndexedPriorityQueue::heapify(C_INT32 current)
     }
 }
 
-void CIndexedPriorityQueue::updateAux(C_INT32 pos)
+void CIndexedPriorityQueue::updateAux(const C_INT32 pos)
 {
   C_INT32 parent_pos = parent(pos);
   C_FLOAT64 keyval = mHeap[pos].mKey;

@@ -39,7 +39,7 @@ void CChemEq::cleanup()
   mBalances.cleanup();
 }
 
-void CChemEq::compile(CCopasiVectorN < CCompartment > & compartments)
+void CChemEq::compile(const CCopasiVectorN < CCompartment > & compartments)
 {
   compileChemEqElements(mSubstrates, compartments);
   compileChemEqElements(mProducts, compartments);
@@ -78,20 +78,20 @@ const std::string & CChemEq::getChemicalEquationConverted() const
     return mChemicalEquationConverted;
   }
 
-const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates()
-{
-  return mSubstrates;
-}
+const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates() const
+  {
+    return mSubstrates;
+  }
 
-const CCopasiVector < CChemEqElement > & CChemEq::getProducts()
-{
-  return mProducts;
-}
+const CCopasiVector < CChemEqElement > & CChemEq::getProducts() const
+  {
+    return mProducts;
+  }
 
-const CCopasiVector < CChemEqElement > & CChemEq::getBalances()
-{
-  return mBalances;
-}
+const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
+  {
+    return mBalances;
+  }
 
 CChemEqElement CChemEq::extractElement(const std::string & input,
                                        std::string::size_type & pos) const
@@ -206,7 +206,7 @@ bool CChemEq::splitChemEq(std::string & left, std::string & right) const
   }
 
 void CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                                    CCopasiVectorN < CCompartment > & compartments)
+                                    const CCopasiVectorN < CCompartment > & compartments)
 {
   unsigned C_INT32 i, imax = elements.size();
 

@@ -92,7 +92,7 @@ class CChemEq : public CCopasiContainer
      *  Compile
      *  @param "CCopasiVectorN < CCompartment > &" compartments
      */
-    void compile(CCopasiVectorN < CCompartment > & compartments);
+    void compile(const CCopasiVectorN < CCompartment > & compartments);
 
     /**
      *  Set the chemical equation
@@ -119,21 +119,21 @@ class CChemEq : public CCopasiContainer
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" substrates
      */
-    const CCopasiVector < CChemEqElement > & getSubstrates();
+    const CCopasiVector < CChemEqElement > & getSubstrates() const;
 
     /**
      *  Retrieves the vector of products and their multiplicity 
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" products
      */
-    const CCopasiVector < CChemEqElement > & getProducts();
+    const CCopasiVector < CChemEqElement > & getProducts() const;
 
     /**
      *  Retrieves the vector of metabolites and their total balance 
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" balances
      */
-    const CCopasiVector < CChemEqElement > & getBalances();
+    const CCopasiVector < CChemEqElement > & getBalances() const;
 
     /**
      *  Returns true if a chemical equation has already been set */
@@ -181,7 +181,7 @@ class CChemEq : public CCopasiContainer
      *  @param "vector < CMetab * > &" metabolites
      */
     void compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                               CCopasiVectorN < CCompartment > & compartments);
+                               const CCopasiVectorN < CCompartment > & compartments);
 
     /**
      *  This function frees a vector of CChemEqElement

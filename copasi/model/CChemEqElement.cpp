@@ -29,6 +29,7 @@ CChemEqElement::CChemEqElement(const CChemEqElement & src,
 {CONSTRUCTOR_TRACE;}
 
 CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
+
 void CChemEqElement::cleanup() {}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
@@ -44,7 +45,7 @@ void CChemEqElement::setMetabolite(CMetab & metabolite)
   mCompartmentName = mpMetabolite->getCompartment()->getName();
 }
 
-CMetab & CChemEqElement::getMetabolite() const
+const CMetab & CChemEqElement::getMetabolite() const
   {
     if (!mpMetabolite)
       fatalError();
@@ -70,7 +71,7 @@ const std::string & CChemEqElement::getCompartmentName() const
 void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
 
-void CChemEqElement::compile(CCopasiVectorN < CCompartment > & compartments)
+void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {
   if (mCompartmentName == "")
     {

@@ -313,8 +313,8 @@ C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 
 void CStochMethod::setupDependencyGraphAndBalances()
 {
-  std::vector< std::set<CMetab*>* > DependsOn;
-  std::vector< std::set<CMetab*>* > Affects;
+  std::vector< std::set<const CMetab*>* > DependsOn;
+  std::vector< std::set<const CMetab*>* > Affects;
   //    std::set<CMetab> *tmpdepends = 0;
   //    std::set<CMetab> *tmpaffects = 0;
   C_INT32 num_reactions = mpModel->getReactions().size();
@@ -343,7 +343,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
 
-          std::set<CMetab*>::iterator iter = Affects[i]->begin();
+          std::set<const CMetab*>::iterator iter = Affects[i]->begin();
 
           for (; iter != Affects[i]->end(); iter++)
             {
@@ -398,9 +398,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 }
 
-std::set<CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+std::set<const CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 {
-  std::set<CMetab*> *retset = new std::set<CMetab*>;
+  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
 
   CCopasiVector<CReaction::CId2Metab> & subst = mpModel->getReactions()[reaction_index]->getId2Substrates();
 
@@ -408,7 +408,7 @@ std::set<CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 
   unsigned C_INT32 i;
 
-  CMetab* dummy;
+  const CMetab* dummy;
 
   std::cout << reaction_index << " depends on ";
 
@@ -430,9 +430,9 @@ std::set<CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   return retset;
 }
 
-std::set<CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
+std::set<const CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
 {
-  std::set<CMetab*> *retset = new std::set<CMetab*>;
+  std::set<const CMetab*> *retset = new std::set<const CMetab*>;
 
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!

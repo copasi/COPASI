@@ -86,12 +86,12 @@ void CMetab::initModel()
   if (!mpModel) mpModel = Copasi->Model;
 }
 
-void CMetab::initCompartment(CCompartment * pCompartment)
+void CMetab::initCompartment(const CCompartment * pCompartment)
 {
-  mpCompartment = (CCompartment *) getObjectAncestor("Compartment");
+  mpCompartment = (const CCompartment *) getObjectAncestor("Compartment");
   if (!mpCompartment) mpCompartment = pCompartment;
   if (!mpCompartment)
-    mpCompartment = const_cast<CCompartment *>(mpParentCompartment);
+    mpCompartment =  /* const_cast<CCompartment *> */(mpParentCompartment);
 }
 
 C_INT32 CMetab::load(CReadConfig &configbuffer)
@@ -252,10 +252,10 @@ const C_INT16 & CMetab::getStatus() const
     return mStatus;
   }
 
-CCompartment * CMetab::getCompartment()
-{
-  return mpCompartment;
-}
+const CCompartment * CMetab::getCompartment() const
+  {
+    return mpCompartment;
+  }
 
 const CModel * CMetab::getModel() const
   {
@@ -328,7 +328,7 @@ void CMetab::setStatus(const C_INT16 status)
   mStatus = status;
 }
 
-void CMetab::setCompartment(CCompartment * compartment)
+void CMetab::setCompartment(const CCompartment * compartment)
 {
   mpCompartment = compartment;
 }
@@ -471,10 +471,10 @@ bool operator<(const CMetab &lhs, const CMetab &rhs)
 /**
  * Return rate of production of this metaboLite
  */
-const C_FLOAT64 & CMetab::getRate()
-{
-  return mRate;
-}
+const C_FLOAT64 & CMetab::getRate() const
+  {
+    return mRate;
+  }
 
 void CMetab::setRate(const C_FLOAT64 & rate)
 {

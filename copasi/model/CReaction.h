@@ -52,7 +52,7 @@ class CReaction : public CCopasiContainer
          *  A pointer to the metabolite
          */
         /** @dia:route 97,2; h,117.263,88.8961,131.334,97.2451,126.108 */
-        CMetab *mpMetabolite;
+        const CMetab *mpMetabolite;
 
       public:
         // Operations
@@ -122,7 +122,7 @@ class CReaction : public CCopasiContainer
          *  Retrieve a pointer to the metabolite
          *  @return "CMetab *" pointer to metabolite
          */
-        CMetab * getMetabolite() const;
+        const CMetab * getMetabolite() const;
 
         /**
          * insert operator
@@ -214,8 +214,8 @@ class CReaction : public CCopasiContainer
 
         /**
          * Returns the address of mValue
-         */
-        void * getValueAddr();
+         */ 
+        //void * getValueAddr();
 
         /**
          * insert operator
@@ -542,8 +542,8 @@ class CReaction : public CCopasiContainer
 
     /**
      * Returns the address of mFlux  Wei Sun
-     */
-    void * getFluxAddr();
+     */ 
+    //void * getFluxAddr();
 
     /**
      * Returns the index of the parameter
@@ -555,20 +555,20 @@ class CReaction : public CCopasiContainer
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    CMetab * findSubstrate(std::string ident_name);
+    const CMetab * findSubstrate(std::string ident_name);
 
     /**
      * Find an pointer to a modifier corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
      * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
-    CMetab * findModifier(std::string ident_name);
+    const CMetab * findModifier(std::string ident_name);
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
      *  @return "unsigned C_INT32" the compartment number
      */
-    unsigned C_INT32 getCompartmentNumber();
+    unsigned C_INT32 getCompartmentNumber() const;
 
     /**
      * insert operator

@@ -56,9 +56,9 @@ class CSpecLine
      * Retrieve the type.
      * @return The type
      */
-    C_INT32 getType() {return mType;}
+    C_INT32 getType() const {return mType;}
 
-    static std::string convertedType(int type);
+    static std::string convertedType(const int type);
 
     /**
      * Retrieve the content string
