@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/02 03:05:23 $
+   $Date: 2004/12/03 02:31:23 $
    End CVS Header */
 
 /**
@@ -48,7 +48,8 @@ class CCopasiXMLInterface
      */
     enum EncodingType
     {
-      std = 0,
+      none = 0,
+      std,
       attribute,
       character
     };

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/02 03:05:23 $
+   $Date: 2004/12/03 02:31:22 $
    End CVS Header */
 
 /**
@@ -21,6 +21,12 @@
 #include "model/CModel.h"
 #include "report/CReportDefinition.h"
 #include "plot/CPlotSpecification.h"
+
+void encodeNONE(const char & chr, std::ostringstream & xml)
+{
+  xml << chr;
+  return;
+}
 
 void encodeSTD(const char & chr, std::ostringstream & xml)
 {
@@ -107,6 +113,10 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 
   switch (type)
     {
+    case none:
+      encode = encodeNONE;
+      break;
+
     case std:
       encode = encodeSTD;
       break;
@@ -121,10 +131,7 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
     }
 
   for (it; it != end; ++it)
-    if (*it < 0x80)
-      encode(*it, xml);
-    else
-      xml << *it;
+    encode(*it, xml);
 
   return xml.str();
 }
