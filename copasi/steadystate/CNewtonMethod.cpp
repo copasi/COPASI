@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/02 20:41:55 $
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 #include <algorithm>
@@ -189,7 +189,7 @@ CNewtonMethod::processInternal()
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      pTrajectory = new CTrajectoryTask();
+      pTrajectory = new CTrajectoryTask(this);
 
       pTrajectoryProblem =
         dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
@@ -538,7 +538,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
     C_INT32 i, imax = metabs.size();
     for (i = 0; i < imax; ++i)
       {
-        tmp = fabs(mdxdt[i] * metabs[i]->getCompartment()->getVolumeInv() * factor);
+        tmp = fabs(/*mdxdt*/particlefluxes[i] * metabs[i]->getCompartment()->getVolumeInv() * factor);
         if (tmp > store)
           store = tmp;
         //std::cout << metabs[i]->getObjectName() << "  " << tmp << std::endl;
