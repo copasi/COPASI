@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.h,v $
-   $Revision: 1.14 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 12:51:10 $
+   $Author: shoops $ 
+   $Date: 2005/02/08 23:14:48 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.75 $ $Author: shoops $ $Date: 2005/02/08 23:08:02 $  
+# $Revision: 1.76 $ $Author: shoops $ $Date: 2005/02/08 23:14:48 $  
 ######################################################################
 
 include(../common.pri)
@@ -143,7 +143,6 @@ HEADERS += \
            CMCAWidget.h \
            CMCAResultSubwidget.h \
            CMCAResultWidget.h \
-           CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
            CompartmentsWidget.h \
@@ -220,7 +219,6 @@ SOURCES += \
            CMCAWidget.cpp \
            CMCAResultSubwidget.cpp \
            CMCAResultWidget.cpp \
-           CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
            CompartmentsWidget.cpp \

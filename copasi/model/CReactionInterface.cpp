@@ -1,19 +1,17 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.40 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
+   $Revision: 1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 11:45:16 $
+   $Author: shoops $ 
+   $Date: 2005/02/08 23:14:48 $
    End CVS Header */
 
 #include <string>
 
-#include "qtUtilities.h"
-#include "CReactionInterface.h" 
-//#include "qstring.h"
-#include "model/CReaction.h"
-#include "model/CModel.h"
-#include "model/CChemEqElement.h"
+#include "CReactionInterface.h"
+#include "CReaction.h"
+#include "CModel.h"
+#include "CChemEqElement.h"
 #include "utilities/CGlobals.h"
 #include "function/CFunctionDB.h"
 #include "report/CKeyFactory.h"
