@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 13:19:30 $
+   $Date: 2004/08/16 13:47:09 $
    End CVS Header */
 
 #include <iostream>
@@ -156,7 +156,14 @@ void MyTable::scaleColumns(double factor)
       w += (int)floor(this->exactColumnWidth[counter]);
     }
   this->exactColumnWidth[this->numCols() - 1] = this->exactColumnWidth[this->numCols() - 1] * factor;
-  this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1]);
+  if (w + this->exactColumnWidth[this->numCols() - 1] > this->width() - this->verticalScrollBar()->width() - this->verticalHeader()->width())
+    {
+      this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1]);
+    }
+  else
+    {
+      this->setColumnWidth(this->numCols() - 1, this->width() - w - this->verticalScrollBar()->width() - this->verticalHeader()->width());
+    }
 }
 
 void MyTable::setNumCols(int count)
