@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:19:19 $
+   $Date: 2004/10/08 09:21:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -167,7 +167,7 @@ bool CPlotSpec2Vector::doPlotting()
     }
   else
     {
-      std::cout << "doPlotting: no input method" << std::endl;
+      //std::cout << "doPlotting: no input method" << std::endl;
       return false;
     }
 
