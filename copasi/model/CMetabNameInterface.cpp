@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:35 $
+   $Date: 2003/11/19 16:14:50 $
    End CVS Header */
 
 //
@@ -139,7 +139,7 @@ bool CMetabNameInterface::doesExist(const CModel* model, const std::string & nam
     }
   else
     //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
-    return (model->findMetabByName(name) + 1);
+    return (model->findMetabByName(name) != C_INVALID_INDEX);
 }
 
 std::string CMetabNameInterface::extractCompartmentName(const CModel* model, const std::string & name)
