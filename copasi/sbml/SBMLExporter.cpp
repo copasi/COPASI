@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 09:54:32 $
+   $Date: 2004/06/23 13:21:22 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -566,7 +566,7 @@ ASTNode_t* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKi
   switch (mType)
     {
     case N_NUMBER:
-      ASTNode_setType(node, AST_REAL);
+      //ASTNode_setType(node, AST_REAL);
       ASTNode_setReal(node, cNodeK.getConstant());
       break;
     case N_IDENTIFIER:

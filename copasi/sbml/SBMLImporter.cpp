@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:32:16 $
+   $Author: gauges $ 
+   $Date: 2004/06/23 13:21:22 $
    End CVS Header */
 
 #include <iostream>
@@ -425,7 +425,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           //DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
           throw StdException("Error. Expected ASTNode, got NULL pointer.");
         }
+      //ConverterASTNode::printASTNode(kLawMath);
       ASTNode* node = new ConverterASTNode(*kLawMath);
+
       node = this->replaceUserDefinedFunctions(node, sbmlModel);
       if (node == NULL)
         {
@@ -435,6 +437,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replaceCompartmentNodes((ConverterASTNode*)node, compartmentMap);
       this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
       this->replacePowerFunctionNodes(node);
+      //ConverterASTNode::printASTNode(node);
       /* if it is a single compartment reaction, we have to devide the whole kinetic
       ** equation by the volume of the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
@@ -450,9 +453,26 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   /* if the whole function has been multiplied by the same volume
                   ** already, drop one level instead of adding one.
                   */
-                  if ((ASTNode_getType(node) == AST_TIMES) && ((ASTNode_getType(ASTNode_getRightChild(node)) == AST_REAL) && (ASTNode_getReal(ASTNode_getRightChild(node)) == compartment->getVolume())))
+                  /*
+                  if(node->getLeftChild()->isReal()){
+                     std::cerr << "isReal: " << node->getLeftChild()->getReal() << std::endl;
+                     if(node->getLeftChild()->getType()==AST_REAL_E){
+                         std::cerr << "Mantissa: " << node->getLeftChild()->getMantissa() << std::endl;
+                         std::cerr << "Exponent: " << node->getLeftChild()->getExponent() << std::endl;
+                     }
+                     else if(node->getLeftChild()->getType()==AST_REAL){
+                         std::cerr << "Real: " << node->getLeftChild()->getReal() << std::endl;                        
+                     }
+                     else if(node->getLeftChild()->getType()==AST_RATIONAL){
+                         std::cerr << "Numerator: " << node->getLeftChild()->getNumerator() << std::endl;
+                         std::cerr << "Denominator: " << node->getLeftChild()->getDenominator() << std::endl;
+                         
+                     }
+                   }*/
+
+                  if ((node->getType() == AST_TIMES) && (node->getLeftChild()->isReal() && (node->getLeftChild()->getReal() == compartment->getInitialVolume())))
                     {
-                      node = node->getLeftChild();
+                      node = node->getRightChild();
                     }
                   else
                     {
@@ -460,8 +480,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       tmpNode1->setType(AST_DIVIDE);
                       tmpNode1->addChild(node);
                       ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                      tmpNode2->setType(AST_REAL);
-                      tmpNode2->setValue(compartment->getVolume());
+                      tmpNode2->setValue(compartment->getInitialVolume());
+                      //std::cerr << "Multiplying with volume: " << compartment->getInitialVolume() << std::endl;
                       tmpNode1->addChild(tmpNode2);
                       node = tmpNode1;
                     }
@@ -493,6 +513,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       CFunction* cFun = this->functionDB->createFunction(functionName + appendix, CFunction::UserDefined);
       //ConverterASTNode::printASTNode(node);
       //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
+      //std::cerr << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
       if (cFun == NULL)
         {
           //DebugFile << "Could not create function " << functionName << "." << std::endl;
@@ -600,8 +621,19 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                    * */
                   if (!found)
                     {
-                      //DebugFile << "Could not find parameter: " << nodeName << std::endl;
-                      throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                      if (nodeName == "Pi")
+                        {
+                          cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                        }
+                      else if (nodeName == "ExponentialE")
+                        {
+                          cFun->addParameter(nodeName, CFunctionParameter::FLOAT64, "PARAMETER");
+                        }
+                      else
+                        {
+                          //DebugFile << "Could not find parameter: " << nodeName << std::endl;
+                          throw StdException("Error. Unknown SBML parameter " + nodeName + ".");
+                        }
                     }
                 }
             }
@@ -863,42 +895,33 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::strin
 ConverterASTNode*
 SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
 {
-  /* copy the original node and make the list of children an empty list. */
   ConverterASTNode* newNode = new ConverterASTNode(*node);
   newNode->setChildren(new List());
+  /* make the replacement recursively, depth first */
   for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
     {
-      ASTNode* child = node->getChild(counter);
-      if (child == NULL)
+      ConverterASTNode* newChild = this->replaceUserDefinedFunctions(node->getChild(counter), sbmlModel);
+      if (newChild == NULL)
         {
-          //DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
-          throw StdException("Error. Expected ASTNode, got NULL pointer.");
+          throw StdException("Error. Could not replace user defined functions.");
         }
-      /* check if the child is a user defined function */
-      if (child->getType() == AST_FUNCTION)
+      newNode->addChild(newChild);
+    }
+  /* if the new node if a user defined function */
+  if (newNode->getType() == AST_FUNCTION)
+    {
+      /* see if there is a corresponding user defined function */
+      FunctionDefinition* funDef = this->getFunctionDefinitionForName(newNode->getName(), sbmlModel);
+      if (funDef == NULL)
         {
-          const std::string functionName = child->getName();
-          /* try to find the actual function definition for that name */
-          FunctionDefinition* uDefFun = this->getFunctionDefinitionForName(functionName, sbmlModel);
-          if (uDefFun != NULL)
-            {
-              const ASTNode* uDefFunMath = uDefFun->getMath();
-              std::map<std::string, ASTNode*> bvarMap = this->createBVarMap(uDefFunMath, child);
-              /* create a new child node where the call to the function
-               * definition and its children have been replaced by the actual
-               * function definition */
-              ConverterASTNode* temp = this->replaceBvars(uDefFunMath, bvarMap);
-              newNode->addChild(temp);
-            }
-          else
-            {
-              throw StdException("Error. Unknown user defined function " + functionName + ".");
-            }
+          throw StdException((std::string("Error. Could not find user defined function with name ") + std::string(newNode->getName())).c_str());
         }
-      else
-        {
-          newNode->addChild(this->replaceUserDefinedFunctions(child, sbmlModel));
-        }
+      /* make a map that maps every parameter of the function definition to a
+      ** node in the actual function call. */
+      std::map<std::string, ASTNode*> map = this->createBVarMap(funDef->getMath()->getRightChild(), newNode);
+      /* make a new node that replaces all call parameters with the actual
+      ** parameters used in the function call. */
+      newNode = this->replaceBvars(funDef->getMath()->getRightChild(), map);
     }
   return newNode;
 }
@@ -914,6 +937,11 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
    * arguments to the function. These correspond to the m=n-1 children of the
    * function call.
    */
+  if (uDefFunction->getNumChildren() != function->getNumChildren() + 1)
+    {
+      std::string functionName = uDefFunction->getName();
+      throw StdException("Error. The number of parameters to the function call " + functionName + " does not correspond to the number of parameters givven in the definition of the function.");
+    }
   std::map<std::string, ASTNode*> varMap;
   for (unsigned int counter = 0; counter < uDefFunction->getNumChildren() - 1; counter++)
     {
@@ -932,7 +960,12 @@ SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* 
   FunctionDefinition* fDef = NULL;
   for (unsigned int counter = 0; counter < sbmlModel->getNumFunctionDefinitions(); counter++)
     {
-      if (sbmlModel->getFunctionDefinition(counter)->getId() == name)
+      std::string functionName = sbmlModel->getFunctionDefinition(counter)->getName();
+      if (sbmlModel->getFunctionDefinition(counter)->isSetId())
+        {
+          functionName = sbmlModel->getFunctionDefinition(counter)->getId();
+        }
+      if (functionName == name)
         {
           fDef = sbmlModel->getFunctionDefinition(counter);
           break;
@@ -949,7 +982,7 @@ SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* 
 ConverterASTNode*
 SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> bvarMap)
 {
-  ConverterASTNode* newNode = new ConverterASTNode(*node);
+  ConverterASTNode* newNode = NULL;
   if (node->isName())
     {
       /* check if name matches any in bvarMap */
@@ -957,11 +990,12 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
       /* node needs to be set to be a deep copy of the replacement */
       if (bvarMap.find(node->getName()) != bvarMap.end())
         {
-          newNode->setName(bvarMap[newNode->getName()]->getName());
+          newNode = new ConverterASTNode(*bvarMap[node->getName()]);
         }
     }
   else
     {
+      newNode = new ConverterASTNode(*node);
       newNode->setChildren(new List());
       for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
         {
