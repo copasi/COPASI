@@ -1,31 +1,24 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.178 $
+   $Revision: 1.179 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 16:22:36 $
+   $Date: 2005/02/22 17:23:31 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
 #include <qfiledialog.h>
-#include <qvbox.h>
 #include <qvariant.h>
 #include <qcheckbox.h>
-#include <qframe.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qscrollview.h>
-#include <qtoolbutton.h>
-#include <qcanvas.h>
-#include <qlistbox.h>
 #include <qmessagebox.h>
+#include <qcombobox.h>
 
 #include "copasi.h"
 
@@ -67,11 +60,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   if (!name)
     setName("ScanWidget");
 
-  /*QPixmap image0((const char**) image0_data);
-  QPixmap image1((const char**) image1_data);
-  QPixmap image2((const char**) image2_data);
-  QPixmap image3((const char**) image3_data);*/
-
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
@@ -79,25 +67,29 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText("<h2>Parameter Scan</h2>");
-  //TextLabel1->setText(trUtf8("Problem"));
-
   ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
-
-  //taskName = new QLineEdit(this, "taskName");
-
-  //ScanWidgetLayout->addWidget(taskName, 0, 1);
 
   //**********************
 
-  buttonNewItem = new QPushButton(this, "buttonNewItem");
-  buttonNewItem->setText("New Item");
-  ScanWidgetLayout->addWidget(buttonNewItem, 1, 2);
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
 
-  /*Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
-  ScanWidgetLayout->addMultiCellWidget(Line2, 5, 5, 0, 2);*/
+  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
+
+  QLabel* tmpLabel = new QLabel(this);
+  tmpLabel->setText("New scan item: ");
+  tmpLayout->addWidget(tmpLabel);
+
+  comboType = new QComboBox(this);
+  comboType->insertItem("Parameter Scan");
+  tmpLayout->addWidget(comboType);
+
+  buttonNewItem = new QPushButton(this, "buttonNewItem");
+  buttonNewItem->setText("... Create!");
+  //ScanWidgetLayout->addWidget(buttonNewItem, 1, 2);
+  tmpLayout->addWidget(buttonNewItem);
+
+  ScanWidgetLayout->addMultiCellLayout(tmpLayout, 1, 1, 0, 2);
 
   //sExecutable = new QCheckBox(this, "sExecutable");
   //sExecutable->setText(trUtf8("Scan Executable"));
@@ -122,12 +114,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
 
   //*****************************
-
-  /*Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
-  ScanWidgetLayout->addMultiCellWidget(Line1, 1, 1, 0, 2);*/
 
   Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
 
