@@ -541,6 +541,8 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
   mTrajectoryTask = dataModel->getTrajectoryTask();
   this->loadSteadyStateTaskNodes(mSteadyStateTask);
   this->loadTrajectoryTaskNodes(mTrajectoryTask);
+
+  this->loadScanNodes(mModel);
 }
 
 /***********ListViews::update(Subject* theChangedSubject,int status)----------->
@@ -616,6 +618,10 @@ void ListViews::update(Subject* theChangedSubject, int status)
         case TRAJECTORYTASK:
           mTrajectoryTask = dataModel->getTrajectoryTask();
           this->loadTrajectoryTaskNodes(mTrajectoryTask);
+          break;
+
+        case SCANTASK:
+          this->loadScanNodes(mModel);
           break;
         }
     }
@@ -760,14 +766,16 @@ void ListViews::loadReactionsNodes(CModel* model)
 
 void ListViews::loadScanNodes(CModel *model)
 {
+  if (!model)
+    return;
   //  (scanWidget->getScanTask())->load(CReadConfig("c:\\YeastGlycolysis.gps"));
   scanWidget->loadScan(model);
-  /*
-    CSteadyStateTask* newTask=new CSteadyStateTask();
-    newTask->load(CReadConfig("c:\\YeastGlycolysis.gps"));
-    newTask->getProblem()->setModel(model);
-    newTask->process();
-  */
+
+  CSteadyStateTask* newTask = new CSteadyStateTask();
+  newTask->load(CReadConfig("D:\\GRA\\copasi_dev\\gps\\YeastGlycolysis.gps"));
+  newTask->getProblem()->setModel(model);
+  loadSteadyStateTaskNodes(newTask);
+  newTask->process();
 }
 
 void ListViews::loadMetabolitesNodes(CModel* model)
@@ -839,8 +847,6 @@ void ListViews::loadModelNodes(CModel *model)
       loadCompartmentsNodes(model);
       // UPDATE THE MOIETIES STUFF..
       loadMoietiesNodes(model);
-
-      loadScanNodes(model);
       // UPDATE THE FUNCTIONS STUFF..
       this->loadFunction();
 

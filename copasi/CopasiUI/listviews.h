@@ -195,7 +195,7 @@ class ListViews : public QSplitter, public Observer
     void addItem(QListViewItem* parent, Folder* child);
     void addItem(QListView* parent, Folder* child);
     void showMessage(QString caption, QString text);
-    void loadModes(QListViewItem*);
+    //    void loadModes(QListViewItem*);
     void loadMetabolites(QListViewItem*);
     void loadReactions(QListViewItem*);
     void loadMoieties(QListViewItem*);

@@ -11,6 +11,7 @@
 #define MODEL 3
 #define STEADYSTATETASK 4
 #define TRAJECTORYTASK 5
+#define SCANTASK 6
 
 #include <qptrlist.h>
 #include <fstream>
@@ -206,6 +207,7 @@ void DataModel<T>::loadModel(const char* fileName)
   trajectorytaskUpdate = true;
   notify(TRAJECTORYTASK);
 
+  notify(SCANTASK);
   Copasi->pOutputList->load(inbuf);
 
   //  steadystatetask->compile();
