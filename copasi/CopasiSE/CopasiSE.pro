@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/08/13 15:39:13 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2003/09/12 18:39:11 $  
 ######################################################################
 
 include(../common.pri)
@@ -28,14 +28,10 @@ contains(BUILD_OS, WIN32) {
   # The order of libs is important 
   tmpLIBS = $${LIBS}
   LIBS = -L../lib \
+         -Wl,-lmodel \
          -Wl,-lcommandline \
          -Wl,-lelementaryFluxModes \
-         -Wl,-lcopasiXML \
          -Wl,-lmathmodel \
-         -Wl,-lmodel \
-         -Wl,-lfunction \
-         -Wl,-loutput \
-         -Wl,-lreport \
          -Wl,-loptimization \
          -Wl,-lscan \
          -Wl,-lsteadystate \
