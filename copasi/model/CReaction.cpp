@@ -122,13 +122,13 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_INT32 CReaction::save(CWriteConfig & configbuffer)
+C_INT32 CReaction::save(CWriteConfig & C_UNUSED(configbuffer))
 {return 0;}
 
 C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
                            const CCopasiVectorN< CMetab > &metabolites)
 {
-  /*C_INT32 Fail = 0;
+  C_INT32 Fail = 0;
   C_INT32 Size = 0;
   C_INT32 i = 0, j = 0, s = 0, c = -1;
   char strtmp[32];
@@ -153,7 +153,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   Size = mChemEq.getProducts().size();
   if ((Fail = configbuffer.setVariable("Products", "C_INT32", &Size)))
     return Fail;
-  Size = mId2Modifiers.size();
+  Size = mChemEq.getModifiers().size();
   if ((Fail = configbuffer.setVariable("Modifiers", "C_INT32", &Size)))
     return Fail;
   Size = mParameters.size();
@@ -191,11 +191,13 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
     }
-  Size = mId2Modifiers.size();
+
+  reactants = mChemEq.getModifiers();
+  Size = reactants.size();
   for (i = 0; i < Size; i++)
     {
       for (j = 0, c = -1; j < s; j++)
-        if (mId2Modifiers[i]->mMetaboliteName == metabolites[j]->getName())
+        if (reactants[i]->getMetabolite().getName() == metabolites[j]->getName())
           {
             c = j;
             break;
@@ -212,7 +214,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
       sprintf(strtmp, "Param%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", (void *) & mParameters[i]->getValue())))
         return Fail;
-    } */
+    }
   return 0;
 }
 
