@@ -89,7 +89,7 @@ class COutputList
   /*
    * print the steady state data file
    */		
-  void copasiSS(ofstream &fout, int time);
+  void copasiSS(ofstream &fout);
 
   /*
    * print the reporting data file
@@ -97,9 +97,14 @@ class COutputList
   void copasiRep(ofstream &fout, CModel & model);
 
   /**
-   *	Assign the pointer to each datum object in the output
+   *	Assign the pointer to each datum object for time couse
    */
-  void compile(string &name, CModel & model, CTrajectory *traj);
+  void compile(string &name, CModel * model, CTrajectory *traj);
+
+  /**
+   *	Assign the pointer to each datum object for steady state
+   */
+  void compile(string &name, CModel *model, CSS_Solution *soln);
 
 };
 

@@ -119,11 +119,11 @@ void COutputList::copasiRep(ofstream &fout, CModel & model)
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(ofstream &fout, int time)
+void COutputList::copasiSS(ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->copasiSS(fout, time);
+      mList[i]->copasiSS(fout);
     }
 }
 
@@ -141,12 +141,26 @@ void COutputList::copasiDyn(ofstream &fout, int time)
 /**
  * Assign the mpvalue in CDatum for each type
  */
-void COutputList::compile(string &name, CModel &model, CTrajectory *traj)
+void COutputList::compile(string &name, CModel *model, CTrajectory *traj)
 {
 
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
       mList[i]->compile(name, model, traj);
+    }
+
+}
+
+
+/**
+ *	Assign the pointer to each datum object for steady state
+ */
+void COutputList::compile(string &name, CModel *model, CSS_Solution *soln)
+{
+
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+    {
+      mList[i]->compile(name, model, soln);
     }
 
 }
