@@ -338,6 +338,14 @@ class CModel
   C_INT32 getDepMetab() const;
 
   /**
+   *  This functions returns a pointer to a vector of the initial particle
+   *  numbers of the independent metabolites. 
+   *  Note: After ussage the memory has to be released with free(y).
+   *  @return C_FLOAT64 * y
+   */
+  C_FLOAT64 * getInitialNumbers();
+  
+  /**
    *  Set the concentration of all metabolites as a result of the particle
    *  number of the independent metabolites
    *  param C_FLOAT64 & y

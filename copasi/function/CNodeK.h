@@ -280,7 +280,7 @@ class CNodeK
    *  @param "vector < C_FLOAT64 * >" &identifiers
    *  @return C_FLOAT64
    */
-  C_FLOAT64 value(vector < void * > &identifiers) const;
+  C_FLOAT64 value(const vector < void * > &identifiers) const;
 };
 
 #endif // COPASI_CNodeK

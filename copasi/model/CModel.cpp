@@ -489,6 +489,16 @@ C_INT32 CModel::getDepMetab() const
   return mMetabolitesDep.size();
 }
 
+C_FLOAT64 * CModel::getInitialNumbers()
+{
+  C_INT32 i, imax = mMetabolitesInd.size();
+  C_FLOAT64 * y = new C_FLOAT64[i];
+
+  for (i=0; i<imax; i++)
+    y[i] = mMetabolitesInd[i]->getInitialNumber();
+  
+  return y;
+}
 
 // Added by Yongqun He
 /**
@@ -512,7 +522,6 @@ string CModel::getComments() const
 {
   return mComments;
 }
-
 
 /**
  *        Return the title of this model

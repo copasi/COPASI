@@ -141,7 +141,7 @@ class CKinFunction: public CBaseFunction
    *  @param "vector < C_FLOAT64 * >" &identifiers
    *  @return C_FLOAT64
    */
-  C_FLOAT64 calcValue(vector < CCallParameter > & callParameters) const;
+  C_FLOAT64 calcValue(const vector < CCallParameter > & callParameters) const;
 
  private:
   /**

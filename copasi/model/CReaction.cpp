@@ -231,7 +231,7 @@ void CReaction::setReversible(C_INT16 reversible) {mReversible = reversible;}
 
 void CReaction::setFunction(const string & functionName)
 {
-  mFunction = &Copasi.FunctionDB.findFunction(functionName);
+  mFunction = Copasi.FunctionDB.findFunction(functionName);
 }
 
 void CReaction::initIdentifiers()

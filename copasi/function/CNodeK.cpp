@@ -235,7 +235,7 @@ C_INT16 CNodeK::rightPrecedence() const
   return 0;
 }
 
-C_FLOAT64 CNodeK::value(vector < void * > & identifiers) const
+C_FLOAT64 CNodeK::value(const vector < void * > & identifiers) const
 {
   // if it is a constant or an identifier just return its value
   if (isNumber()) return mConstant;

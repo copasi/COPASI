@@ -49,7 +49,7 @@ CMassAction::CMassAction(C_INT16 reversible)
 CMassAction::~CMassAction() {cleanup();}
 
 C_FLOAT64 
-CMassAction::calcValue(vector < CCallParameter > & callParameters) const
+CMassAction::calcValue(const vector < CCallParameter > & callParameters) const
 {
   C_FLOAT64 Products = 1.0, Substrates = 1.0;
   unsigned C_INT32 i;

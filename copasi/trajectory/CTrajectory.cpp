@@ -3,6 +3,7 @@
  * copyright            : (C) 2001 by
  */
 
+#include "copasi.h"
 #include "CTrajectory.h"
 
 
@@ -69,7 +70,7 @@ void CTrajectory::initialize(CModel * aModel)
   mModel = aModel;
   mN = mModel->getIndMetab();
     
-  mY = new C_FLOAT64[mN];
+  mY = mModel->getInitialNumbers();
     
   switch (mMethod)
     {
@@ -101,6 +102,37 @@ void CTrajectory::cleanup()
   mODESolver = NULL;
     
   return;
+}
+
+C_INT32 CTrajectory::load(CReadConfig & configbuffer)
+{
+  C_INT32 Fail = 0;
+
+  if((Fail = configbuffer.getVariable("EndTime", "C_FLOAT64",
+				      (void *) &mEndTime,
+				      CReadConfig::LOOP)))
+    return Fail;
+  
+  if((Fail = configbuffer.getVariable("Points", "C_INT32",
+				      (void *) &mPoints)))
+    return Fail;
+  
+  return Fail;
+}
+
+C_INT32 CTrajectory::save(CWriteConfig & configbuffer)
+{
+  C_INT32 Fail = 0;
+
+  if((Fail = configbuffer.setVariable("EndTime", "C_FLOAT64",
+				      (void *) &mEndTime)))
+    return Fail;
+  
+  if((Fail = configbuffer.setVariable("Points", "C_FLOAT64",
+				      (void *) &mPoints)))
+    return Fail;
+
+  return Fail;
 }
 
 void CTrajectory::setModel(CModel * aModel)

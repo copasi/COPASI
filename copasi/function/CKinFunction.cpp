@@ -175,7 +175,7 @@ C_INT32 CKinFunction::parse()
 }
 
 C_FLOAT64 
-CKinFunction::calcValue(vector < CCallParameter > & callParameters) const
+CKinFunction::calcValue(const vector < CCallParameter > & callParameters) const
 {
   return (*mNodes)[0].getLeft().value(callParameters[0].identifiers());
 }

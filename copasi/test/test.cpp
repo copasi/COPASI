@@ -303,8 +303,8 @@ C_INT32 TestMetab(void)
 C_INT32 TestReadSample(void)
 {
   C_INT32 size = 0;
-    
-  CReadConfig inbuf("gps/HMM.gps");
+     
+  CReadConfig inbuf("gps/bakker.gps");
   CModel model;
   model.load(inbuf);
   model.buildStoi();
@@ -352,6 +352,9 @@ C_INT32 TestTrajectory(void)
   model.buildMoieties();
     
   CTrajectory traj(&model, 20, 10.0, 1);
+
+  traj.load(inbuf);
+  traj.getODESolver()->load(inbuf);
   traj.getODESolver()->loadLSODAParameters(inbuf);
   traj.process();
   traj.cleanup();

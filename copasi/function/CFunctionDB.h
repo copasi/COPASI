@@ -84,7 +84,7 @@ class CFunctionDB
    *  @param "const string" &functionName
    *  @return CKinFunction &
    */
-  CBaseFunction & dBLoad(const string & functionName);
+  CBaseFunction * dBLoad(const string & functionName);
 
   /**
    *  Add the function to the database
@@ -107,7 +107,7 @@ class CFunctionDB
    *  @param "const string" &functionName
    *  @return CKinFunction &
    */
-  CBaseFunction & findFunction(const string & functionName);
+  CBaseFunction * findFunction(const string & functionName);
 
   /**
    *  Retrieves the vector of loades functions.

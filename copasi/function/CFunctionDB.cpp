@@ -6,10 +6,10 @@ CFunctionDB::CFunctionDB() {}
 void CFunctionDB::initialize() 
 {
   CMassAction *MassActionReversible   = new CMassAction(TRUE);
-  mBuiltinFunctions.push_back((CBaseFunction *)MassActionReversible);
+  mBuiltinFunctions.push_back(MassActionReversible);
     
   CMassAction *MassActionIrreversible = new CMassAction(FALSE);
-  mBuiltinFunctions.push_back((CBaseFunction *)MassActionIrreversible);
+  mBuiltinFunctions.push_back(MassActionIrreversible);
 }
 
 CFunctionDB::~CFunctionDB() {}
@@ -64,7 +64,7 @@ void CFunctionDB::setFilename(const string & filename) {mFilename = filename;}
     
 string CFunctionDB::getFilename() const {return mFilename;}
 
-CBaseFunction & CFunctionDB::dBLoad(const string & functionName) 
+CBaseFunction * CFunctionDB::dBLoad(const string & functionName) 
 {
   C_INT32 Index = mLoadedFunctions.size();
   C_INT32 Fail = 0;
@@ -80,7 +80,7 @@ CBaseFunction & CFunctionDB::dBLoad(const string & functionName)
       Fail = pFunction->load(inbuf);
     }
 
-  return *mLoadedFunctions[Index];
+  return mLoadedFunctions[Index];
 }
 
 void CFunctionDB::add(CKinFunction & function)
@@ -96,17 +96,17 @@ void CFunctionDB::add(CKinFunction & function)
 // {
 // }
 
-CBaseFunction & CFunctionDB::findFunction(const string & functionName)
+CBaseFunction * CFunctionDB::findFunction(const string & functionName)
 {
   unsigned C_INT32 i;
     
   for (i = 0; i < mLoadedFunctions.size(); i++)
     if (functionName == mLoadedFunctions[i]->getName())
-      return *mLoadedFunctions[i];
+      return mLoadedFunctions[i];
 
   for (i = 0; i < mBuiltinFunctions.size(); i++)
     if (functionName == mBuiltinFunctions[i]->getName())
-      return *mBuiltinFunctions[i];
+      return mBuiltinFunctions[i];
     
   return dBLoad(functionName);
 }

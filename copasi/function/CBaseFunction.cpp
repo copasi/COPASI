@@ -244,8 +244,9 @@ void CCallParameter::setType(enum CCallParameter::Type type) {mType = type;}
 
 enum CCallParameter::Type CCallParameter::getType() const {return mType;}
 
-vector < void * > & CCallParameter::identifiers() {return mIdentifiers;}
+const vector < void * > & CCallParameter::identifiers() const {return mIdentifiers;}
 
+vector < void * > & CCallParameter::identifiers() {return mIdentifiers;}
 
 /*** CRange ***/
 

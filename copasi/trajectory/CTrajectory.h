@@ -7,8 +7,10 @@
 #ifndef CTRAJECTORY_H
 #define CTRAJECTORY_H
 
-#include "model/CModel.h"
+#include "model/model.h"
+#include "utilities/utilities.h"
 #include "CODESolver.h"
+
 // #include "COutputEvent.h"
 
 class CTrajectory
@@ -100,6 +102,25 @@ class CTrajectory
    */
   void cleanup();
         
+
+  /**
+   *  Loads parameters for this solver with data coming from a 
+   *  CReadConfig object. (CReadConfig object reads an input stream)
+   *  @param configbuffer reference to a CReadConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
+
+  /**
+   *  Saves the parameters of the solver to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param configbuffer reference to a CWriteConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
+
   /**
    * Set the CModel member variable
    * @param aModel a CModel pointer to be set as mCModel

@@ -13,7 +13,7 @@
 
 #include "CBaseFunction.h"
 
-class CMassAction: private CBaseFunction
+class CMassAction: public CBaseFunction
 {
   // Attributes
  private:
@@ -39,7 +39,7 @@ class CMassAction: private CBaseFunction
    *  Calculates the value of the function
    *  @param "vector < C_FLOAT64 * >" identifiers
    */
-  C_FLOAT64 calcValue(vector < CCallParameter > & callParameters) const;
+  C_FLOAT64 calcValue(const vector < CCallParameter > & callParameters) const;
 
   /**
    *  Returns the index of an identifier. The index specifies the position in

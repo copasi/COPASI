@@ -142,6 +142,7 @@ class CCallParameter
   /**
    *
    */
+  const vector < void * > &identifiers() const;
   vector < void * > &identifiers();
 };
     
