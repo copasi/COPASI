@@ -113,33 +113,65 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
-  if (pCurrent->isChecked(0) == ALLCHECKED)
+  if (pCurrent->size() == 0)
     {
-      if (pCurrent->isChecked(0))
+      if (pCurrent->isChecked(0) == ALLCHECKED)
+        {
+          if (pCurrent->isChecked(0))
+            pCurrent->reverseChecked(0);
+          setUncheck(pCurrent->child());
+          return;
+        }
+      //else no check or partly checked
+      if (!pCurrent->isChecked(0))
         pCurrent->reverseChecked(0);
-      setUncheck(pCurrent->child());
+      setCheck(pCurrent->child());
       return;
     }
-  //else no check or partly checked
-  if (!pCurrent->isChecked(0))
-    pCurrent->reverseChecked(0);
-  setCheck(pCurrent->child());
-  return;
+
+  int nCheckCount = 0;
+  for (int i = 1; i < pCurrent->size(); i++)
+    {
+      if (pCurrent->isChecked(i))
+        nCheckCount++;
+    }
+
+  for (i = 1; i < pCurrent->size(); i++)
+    {
+      if (nCheckCount > 0) //uncheck all
+        {
+          if (pCurrent->isChecked(i))
+            pCurrent->reverseChecked(i);
+        }
+      else
+        {
+          //else no check or partly checked
+          if (!pCurrent->isChecked(i))
+            pCurrent->reverseChecked(i);
+        }
+    }
 }
 
 void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  if (pCurrent->isChecked(0))
-    pCurrent->reverseChecked(0);
+  for (int i = 0; i <= pCurrent->size(); i++)
+    {
+      if (pCurrent->isChecked(i))
+        pCurrent->reverseChecked(i);
+    }
   if (pCurrent->child() != NULL)
     setUncheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
     setUncheck(pCurrent->sibling());
 
+  if (pCurrent->getObject() == NULL)
+    return;
+
   if (pCurrent->getType() == OBJECTATTR)
-  {}
+    {
+    }
   else if (pCurrent->getType() == FIELDATTR)
   {}
 }
@@ -148,15 +180,29 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  if (!pCurrent->isChecked(0))
-    pCurrent->reverseChecked(0);
+  for (int i = 0; i <= pCurrent->size(); i++)
+    {
+      if (!pCurrent->isChecked(i))
+        pCurrent->reverseChecked(i);
+    }
   if (pCurrent->child() != NULL)
     setCheck(pCurrent->child());
   if (pCurrent->sibling() != NULL)
     setCheck(pCurrent->sibling());
 
+  if (pCurrent->getObject() == NULL)
+    return;
   if (pCurrent->getType() == OBJECTATTR)
-  {}
+    {
+      //   text (int column) const
+      ObjectBrowserItem* pParent = pCurrent->parent();
+      //  while ((pParent->text(0)!="Attribute list") && (pParent->text(0)!="Object list"))
+      //   pParent->text
+
+      ObjectBrowserItem* pParentSibling = pParent->sibling(); //only field or object two fields here
+      if (pParentSibling == NULL)
+        pParentSibling = pParent->parent()->child();
+    }
   else if (pCurrent->getType() == FIELDATTR)
   {}
 }
@@ -174,7 +220,8 @@ void ObjectBrowser::nextClicked()
 void ObjectBrowser::loadData()
 {
   CCopasiContainer* root = &CRootContainer::ref();
-  ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, 0, root, objectItemList);
+  ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
+  itemRoot->setObjectType(CONTAINERATTR);
   itemRoot->setText(0, root->getName().c_str());
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
@@ -282,6 +329,8 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
+          currentItem->ConstructCheckArray(((CCopasiContainer*)current)->getObjects().size());
+
           last = currentItem;
           it++;
         }

@@ -30,11 +30,23 @@ class ObjectBrowserItem : public QListViewItem
 
   public:
 
+    const int size()
+    {
+      return nParam;
+    }
+    const CCopasiObject* getObject()
+    {
+      return pCopasiObject;
+    }
+    void ConstructCheckArray(unsigned int i);
+
     virtual QString key (int column, bool ascending) const
       {
         return mKey;
       }
+
     // inline const QString & getKey() const {return mKey;}
+
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ~ObjectBrowserItem() {}

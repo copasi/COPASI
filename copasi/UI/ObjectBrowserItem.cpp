@@ -70,10 +70,31 @@ int ObjectBrowserItem::nUserChecked()
     }
   else //it has no child
     {
-      if (isChecked(0))
-        condition = ALLCHECKED;
+      if (nParam == 0)
+        {
+          if (isChecked(0))
+            condition = ALLCHECKED;
+          else
+            condition = NOCHECKED;
+        }
       else
-        condition = NOCHECKED;
+        {
+          int nCheck = 0;
+          int nUncheck = 0;
+          for (unsigned int i = 1; i < nParam; i++)
+            {
+              if (isChecked(i))
+                nCheck++;
+              else
+                nUncheck++;
+            }
+          if (nCheck == 0)
+            condition = NOCHECKED;
+          else if (nUncheck == 0)
+            condition = ALLCHECKED;
+          else
+            condition = PARTCHECKED;
+        }
     }
 
   return condition;
@@ -135,6 +156,15 @@ bool ObjectBrowserItem::isChecked(unsigned int i) const
       return mChecked[0];
     return mChecked[i];
   }
+
+void ObjectBrowserItem::ConstructCheckArray(unsigned int i)
+{
+  nParam = i;
+  delete mChecked;
+  mChecked = new bool(nParam + 1);
+  for (int j = 0; j <= nParam; j++)
+    mChecked[j] = false;
+}
 
 void ObjectBrowserItem::reverseChecked(unsigned int i)
 {
