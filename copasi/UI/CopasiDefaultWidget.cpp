@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiDefaultWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/04 15:48:20 $
+   $Date: 2004/09/26 21:49:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -59,7 +59,7 @@ CopasiDefaultWidget::CopasiDefaultWidget(QWidget *parent, const char * name, WFl
 CopasiDefaultWidget::~CopasiDefaultWidget()
 {}
 
-bool CopasiDefaultWidget::update(ListViews::ObjectType objectType,
+bool CopasiDefaultWidget::update(ListViews::ObjectType C_UNUSED(objectType),
                                  ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   return true;
@@ -70,7 +70,7 @@ bool CopasiDefaultWidget::leave()
   return true;
 }
 
-bool CopasiDefaultWidget::enter(const std::string & key)
+bool CopasiDefaultWidget::enter(const std::string & C_UNUSED(key))
 {
   return true;
 }
