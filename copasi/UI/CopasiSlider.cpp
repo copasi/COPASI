@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/12 16:00:25 $
+   $Date: 2005/01/12 23:05:22 $
    End CVS Header */
 
 #include <cmath>
@@ -219,7 +219,7 @@ void CopasiSlider::updateLabel()
   QString labelString = "";
   if (this->mpObject)
     {
-      labelString += FROM_UTF8(this->mpObject->getObjectName());
+      labelString += FROM_UTF8(this->mpObject->getObjectDisplayName(true, true));
     }
   labelString += " : [";
   labelString += QString::number(this->mMinValue);
