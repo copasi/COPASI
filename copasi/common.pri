@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/05/20 14:30:46 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2003/05/20 21:15:16 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -11,6 +11,7 @@ isEmpty(BUILD_OS) {
   }
 }
 DEFINES += $${BUILD_OS}
+message("Configuring for $${BUILD_OS}.")
 
 # Common configuration settings
 CONFIG += exceptions
@@ -42,8 +43,11 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) {
-  DEFINES -= UNICODE
+  DEFINES -= UNICODE 
+  DEFINES += QT_NODLL
   QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
+  LIBS += kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib \
+          shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
