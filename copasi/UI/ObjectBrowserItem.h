@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/02/24 15:24:53 $
+   $Date: 2004/02/25 14:33:44 $
    End CVS Header */
 
 /********************************************************
@@ -93,11 +93,6 @@ class ObjectBrowserItem : public QListViewItem
     CBrowserObject* getObject()
     {
       return pBrowserObject;
-    }
-
-    void setObject(CBrowserObject* pNewObject)
-    {
-      pBrowserObject = pNewObject;
     }
 
     virtual QString key (int column, bool ascending) const
