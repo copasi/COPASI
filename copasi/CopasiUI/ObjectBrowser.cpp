@@ -9,6 +9,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
 
+#include <qmessagebox.h>
 #include <qvariant.h>
 #include <qheader.h>
 #include <qlistview.h>
@@ -208,6 +209,7 @@ void ObjectBrowser::nextClicked()
       rootItem = objectItemList->getRoot()->pItem;
       outputList = new objectList();
       export(rootItem, outputList);
+      QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
       delete outputList;
       currentPage = SELECTEDITEMPAGE;
       break;

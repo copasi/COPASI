@@ -378,5 +378,5 @@ void objectList::destroyBucket()
   delete[] quickIndex;
   delete[] pointerList;
   for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop());
-  quickIndex = 0;
+  index_length = 0;
 }
