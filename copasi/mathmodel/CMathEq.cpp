@@ -41,7 +41,7 @@ std::string CMathEq::getLeftText() const
       (CMathNode *) const_cast< CMathEq * >(this)->mLeft.begin()->getChild();
 
     if (pChild)
-      return pChild->getText();
+      return pChild->getData();
     else
       return "Not defined";
   }
@@ -52,7 +52,7 @@ std::string CMathEq::getRightText() const
       (CMathNode *) const_cast< CMathEq * >(this)->mRight.begin()->getChild();
 
     if (pChild)
-      return pChild->getText();
+      return pChild->getData();
     else
       return "Not defined";
   }
