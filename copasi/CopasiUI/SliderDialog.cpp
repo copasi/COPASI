@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:34 $
+   $Date: 2004/11/05 09:24:55 $
    End CVS Header */
 
 #include <iostream>
@@ -20,30 +20,19 @@
 #include "qlabel.h"
 #include "qobjectlist.h"
 #include "qtooltip.h"
-#include "qpopupmenu.h" 
-<<< <<< < SliderDialog.cpp
-#include "report/CCopasiObject.h" 
-== == == =
+#include "qpopupmenu.h"
 
-#include "SliderDialog.h" 
-  >>> >>> > 1.10
+#include "SliderDialog.h"
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
 #include "slidersettingsdialog.h"
-#include "DataModelGUI.h" 
-  <<< <<< < SliderDialog.cpp
+#include "DataModelGUI.h"
 #include "CopasiSlider.h"
 #include "mathematics.h"
 
-  == == == =
 #include "qtUtilities.h"
-#include "model/CCompartment.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiObjectName.h"
-#include "report/CCopasiObjectReference.h" 
-    >>> >>> > 1.10
 
-    C_INT32 SliderDialog::numMappings = 2;
+C_INT32 SliderDialog::numMappings = 2;
 C_INT32 SliderDialog::folderMappings[][2] = {
       {23, 23}, {231, 23}
     };

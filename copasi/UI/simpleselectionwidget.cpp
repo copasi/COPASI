@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/simpleselectionwidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 13:48:44 $
+   $Date: 2004/11/05 09:24:55 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'simpleselectionwidget.ui'
  **
- ** Created: Thu Oct 28 15:41:35 2004
- **      by: The User Interface Compiler ($Id: simpleselectionwidget.cpp,v 1.5 2004/10/28 13:48:44 gauges Exp $)
+ ** Created: Tue Nov 2 11:27:18 2004
+ **      by: The User Interface Compiler ($Id: simpleselectionwidget.cpp,v 1.6 2004/11/05 09:24:55 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
