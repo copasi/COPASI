@@ -53,28 +53,11 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
     return metaObj;
 
   QMetaObject* parentObject = QWidget::staticMetaObject();
-  static const QUMethod slot_0 = {"commitChangesClicked", 0, 0 };
-
-  static const QMetaData slot_tbl[] =
-    {
-      { "commitChangesClicked()", &slot_0, QMetaData::Public }
-    };
-
-  static const QUParameter param_signal_0[] =
-    {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
-    };
-  static const QUMethod signal_0 = {"folderName", 1, param_signal_0 };
-
-  static const QMetaData signal_tbl[] =
-    {
-      { "folderName(QString)", &signal_0, QMetaData::Public }
-    };
 
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget1", parentObject,
-              slot_tbl, 1,
-              signal_tbl, 1,
+              0, 0,
+              0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
               0, 0,
@@ -94,40 +77,14 @@ void* CompartmentsWidget1::qt_cast(const char* clname)
   return QWidget::qt_cast(clname);
 }
 
-// SIGNAL folderName
-void CompartmentsWidget1::folderName(QString t0)
-{
-  activate_signal(staticMetaObject()->signalOffset() + 0, t0);
-}
-
 bool CompartmentsWidget1::qt_invoke(int _id, QUObject* _o)
 {
-  switch (_id - staticMetaObject()->slotOffset())
-    {
-    case 0:
-      commitChangesClicked();
-      break;
-
-    default:
-      return QWidget::qt_invoke(_id, _o);
-    }
-
-  return TRUE;
+  return QWidget::qt_invoke(_id, _o);
 }
 
 bool CompartmentsWidget1::qt_emit(int _id, QUObject* _o)
 {
-  switch (_id - staticMetaObject()->signalOffset())
-    {
-    case 0:
-      folderName(static_QUType_QString.get(_o + 1));
-      break;
-
-    default:
-      return QWidget::qt_emit(_id, _o);
-    }
-
-  return TRUE;
+  return QWidget::qt_emit(_id, _o);
 }
 
 #ifndef QT_NO_PROPERTIES

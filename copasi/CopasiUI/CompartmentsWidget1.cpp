@@ -120,8 +120,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   hBoxLayout4_1->addWidget(cancelChanges);
 
   connect(ListBox1, SIGNAL(selected(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
-  connect(commitChanges, SIGNAL(clicked ()), this, SLOT(commitChangesClicked()));
-  connect(commitChanges, SIGNAL(folderName((QListViewItem*)QString)), (ListViews*)parent, SLOT(slotFolderChanged(QListViewItem*)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -187,12 +185,6 @@ void CompartmentsWidget1::loadName(QString setValue)
 
   LineEdit4->setText(QString::number(compartn->getVolume()));
   LineEdit4->setReadOnly(true);
-}
-
-void CompartmentsWidget1::commitChangesClicked()
-{
-  QString x = "Compartments";
-  emit folderName(x);
 }
 
 //last function ends
