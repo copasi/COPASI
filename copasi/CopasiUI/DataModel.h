@@ -169,7 +169,6 @@ void DataModel<T>::loadModel(const char* fileName)
   CReadConfig inbuf(fileName);
   model = new CModel();
   model->load(inbuf);
-  model->compile();
   modelUpdate = true;
   notify(MODEL);
 
