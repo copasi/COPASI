@@ -109,12 +109,12 @@ C_FLOAT64 COptProblem::calculate()
 {
   if (steady_state != NULL)
     {
-      cout << "COptProblem: steady_state";
+      // cout << "COptProblem: steady_state";
       steady_state->process(out);
     }
   if (trajectory != NULL)
     {
-      cout << "COptProblem: trajectory";
+      // cout << "COptProblem: trajectory";
       trajectory->process(out);
     }
   return 0;
