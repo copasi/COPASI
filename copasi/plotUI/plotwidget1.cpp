@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/10 02:21:26 $
+   $Author: anuragr $ 
+   $Date: 2005/03/10 21:36:14 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.38 2005/03/10 02:21:26 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.39 2005/03/10 21:36:14 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -391,7 +391,21 @@ void PlotWidget1::deletePlot()
 
   dataModel->getPlotDefinitionList().removePlotSpec(objKey);
 
-  ListViews::notify(ListViews::PLOT, ListViews::DELETE, objKey);
+  C_INT32 size = ((CCopasiDataModel::Global)->getPlotDefinitionList())->size();
+
+  if (size >= 1)
+    {
+      CCopasiVectorN<CPlotSpecification>* obj = ((CCopasiDataModel::Global)->getPlotDefinitionList());
+      enter((*obj)[size - 1]->getKey());
+    }
+
+  else
+    {
+      enter("");
+    }
+
+  //ListViews::
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, objKey);
 }
 
 //-----------------------------------------------------------------------------
