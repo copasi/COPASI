@@ -189,7 +189,10 @@ x_libraries = @x_libraries@
 ####### kdevelop will overwrite this part!!! (end)############
 bin_PROGRAMS = CopasiUI
 
-CopasiUI_SOURCES =  	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp 	CompartmentsWidget.cpp 	moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.cpp	moc_CompartmentsWidget.cpp 	MetabolitesWidget.cpp	moc_MetabolitesWidget.cpp 	MetabolitesWidget1.cpp	moc_MetabolitesWidget1.cpp 	MoietyWidget.cpp	moc_MoietyWidget.cpp 	MoietyWidget1.cpp	moc_MoietyWidget1.cpp 	ReactionsWidget.cpp	moc_ReactionsWidget.cpp 	ReactionsWidget1.cpp	moc_ReactionsWidget1.cpp 	copasiui3window.cpp	moc_copasiui3window.cpp 	listviews.cpp		moc_listviews.cpp
+CopasiUI_MOC_SOURCES =  	CompartmentsWidget1.moc.cpp 	CompartmentsWidget.moc.cpp 	MetabolitesWidget.moc.cpp 	MetabolitesWidget1.moc.cpp 	MoietyWidget.moc.cpp 	MoietyWidget1.moc.cpp 	ReactionsWidget.moc.cpp 	ReactionsWidget1.moc.cpp 	copasiui3window.moc.cpp 	listviews.moc.cpp
+
+
+CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp         CompartmentsWidget.cpp         CompartmentsWidget1.cpp         MetabolitesWidget.cpp         MetabolitesWidget1.cpp         MoietyWidget.cpp         MoietyWidget1.cpp         ReactionsWidget.cpp         ReactionsWidget1.cpp         copasiui3window.cpp         listviews.cpp
 
 
 EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
@@ -226,18 +229,18 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
-CopasiUI_OBJECTS =  main.$(OBJEXT) MyTable.$(OBJEXT) Observer.$(OBJEXT) \
-Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
-moc_CompartmentsWidget1.$(OBJEXT) CompartmentsWidget1.$(OBJEXT) \
-moc_CompartmentsWidget.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
-moc_MetabolitesWidget.$(OBJEXT) MetabolitesWidget1.$(OBJEXT) \
-moc_MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
-moc_MoietyWidget.$(OBJEXT) MoietyWidget1.$(OBJEXT) \
-moc_MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
-moc_ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
-moc_ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
-moc_copasiui3window.$(OBJEXT) listviews.$(OBJEXT) \
-moc_listviews.$(OBJEXT)
+CopasiUI_OBJECTS =  CompartmentsWidget1.moc.$(OBJEXT) \
+CompartmentsWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
+MetabolitesWidget1.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
+MoietyWidget1.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
+ReactionsWidget1.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
+listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
+Observer.$(OBJEXT) Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
+CompartmentsWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
+MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
+MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
+ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
+listviews.$(OBJEXT)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_DEPENDENCIES = 
 CopasiUI_LDFLAGS = 
@@ -253,16 +256,16 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CompartmentsWidget.P .deps/CompartmentsWidget1.P \
-.deps/MetabolitesWidget.P .deps/MetabolitesWidget1.P \
-.deps/MoietyWidget.P .deps/MoietyWidget1.P .deps/MyTable.P \
-.deps/Observer.P .deps/ReactionsWidget.P .deps/ReactionsWidget1.P \
-.deps/Subject.P .deps/copasiui3window.P .deps/listviews.P .deps/main.P \
-.deps/moc_CompartmentsWidget.P .deps/moc_CompartmentsWidget1.P \
-.deps/moc_MetabolitesWidget.P .deps/moc_MetabolitesWidget1.P \
-.deps/moc_MoietyWidget.P .deps/moc_MoietyWidget1.P \
-.deps/moc_ReactionsWidget.P .deps/moc_ReactionsWidget1.P \
-.deps/moc_copasiui3window.P .deps/moc_listviews.P
+DEP_FILES =  .deps/CompartmentsWidget.P .deps/CompartmentsWidget.moc.P \
+.deps/CompartmentsWidget1.P .deps/CompartmentsWidget1.moc.P \
+.deps/MetabolitesWidget.P .deps/MetabolitesWidget.moc.P \
+.deps/MetabolitesWidget1.P .deps/MetabolitesWidget1.moc.P \
+.deps/MoietyWidget.P .deps/MoietyWidget.moc.P .deps/MoietyWidget1.P \
+.deps/MoietyWidget1.moc.P .deps/MyTable.P .deps/Observer.P \
+.deps/ReactionsWidget.P .deps/ReactionsWidget.moc.P \
+.deps/ReactionsWidget1.P .deps/ReactionsWidget1.moc.P .deps/Subject.P \
+.deps/copasiui3window.P .deps/copasiui3window.moc.P .deps/listviews.P \
+.deps/listviews.moc.P .deps/main.P
 SOURCES = $(CopasiUI_SOURCES)
 OBJECTS = $(CopasiUI_OBJECTS)
 
@@ -527,6 +530,9 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+%.moc.cpp: %.h
+	$(MOC) -o $@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

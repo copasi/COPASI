@@ -1,21 +1,33 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = CopasiUI
 
-CopasiUI_SOURCES = \
+CopasiUI_MOC_SOURCES = \
+	CompartmentsWidget1.moc.cpp \
+	CompartmentsWidget.moc.cpp \
+	MetabolitesWidget.moc.cpp \
+	MetabolitesWidget1.moc.cpp \
+	MoietyWidget.moc.cpp \
+	MoietyWidget1.moc.cpp \
+	ReactionsWidget.moc.cpp \
+	ReactionsWidget1.moc.cpp \
+	copasiui3window.moc.cpp \
+	listviews.moc.cpp
+
+CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) \
 	main.cpp \
 	MyTable.cpp \
 	Observer.cpp \
 	Subject.cpp \
-	CompartmentsWidget.cpp 	moc_CompartmentsWidget1.cpp \
-	CompartmentsWidget1.cpp	moc_CompartmentsWidget.cpp \
-	MetabolitesWidget.cpp	moc_MetabolitesWidget.cpp \
-	MetabolitesWidget1.cpp	moc_MetabolitesWidget1.cpp \
-	MoietyWidget.cpp	moc_MoietyWidget.cpp \
-	MoietyWidget1.cpp	moc_MoietyWidget1.cpp \
-	ReactionsWidget.cpp	moc_ReactionsWidget.cpp \
-	ReactionsWidget1.cpp	moc_ReactionsWidget1.cpp \
-	copasiui3window.cpp	moc_copasiui3window.cpp \
-	listviews.cpp		moc_listviews.cpp
+        CompartmentsWidget.cpp \
+        CompartmentsWidget1.cpp \
+        MetabolitesWidget.cpp \
+        MetabolitesWidget1.cpp \
+        MoietyWidget.cpp \
+        MoietyWidget1.cpp \
+        ReactionsWidget.cpp \
+        ReactionsWidget1.cpp \
+        copasiui3window.cpp \
+        listviews.cpp
 
 EXTRA_DIST = \
 	main.cpp \
@@ -78,3 +90,6 @@ LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities
+
+%.moc.cpp: %.h
+	$(MOC) -o $@ $<
