@@ -642,6 +642,15 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           line++;
         }
 
+      /*vector < CMetab * > metabolites = mModel->getMetabolites();
+      C_INT32 noOfMetabolitesRows = metabolites.size();
+      CMetab *metab;
+      QStringList comboEntries1;
+      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+      {
+             metab = metabolites[j];
+       comboEntries1.push_back(metab->getName().c_str());
+      }*/
       for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
         {
           table->setText(line, 0, "1");

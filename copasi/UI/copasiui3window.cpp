@@ -138,9 +138,8 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  QMessageBox::about(this, "Qt Application Example",
-                     "This example demonstrates simple use of "
-                     "QMainWindow,\nQMenuBar and QToolBar.");
+  QMessageBox::about(this, "COPASI HELP",
+                     "It is a Biochemical path simulator for complex pathways");
 }
 
 /***************CopasiUI3Window::aboutQt()******
@@ -151,7 +150,7 @@ void CopasiUI3Window::about()
  *******************************************************************************************/
 void CopasiUI3Window::aboutQt()
 {
-  QMessageBox::aboutQt(this, "Qt Application Example");
+  QMessageBox::aboutQt(this, "Qt");
 }
 
 /***************CopasiUI3Window::createToolBar()******
