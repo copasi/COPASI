@@ -25,6 +25,15 @@ class PQNode
      */
     PQNode(C_INT32 idx, C_FLOAT64 key) : mIndex(idx), mKey(key) {}
 
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const PQNode & d)
+    {
+      os << "  " << d.mIndex << ": " << d.mKey << " ";
+      return os;
+    }
+
   private:
     /**
      * The index value
@@ -120,9 +129,25 @@ class CIndexedPriorityQueue
      * @return Returns the key
      */
     C_FLOAT64 getKey(C_INT32 index) const
+      {
+        // does not consider negative IndexPointer
+        return mHeap[mIndexPointer[index]].mKey;
+      }
+
+    /**
+     * insert operator
+     */
+    friend std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
     {
-      // does not consider negative IndexPointer
-      return mHeap[mIndexPointer[index]].mKey;
+      os << "PQ: " << endl;
+
+      std::vector <PQNode>::const_iterator it;
+      for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
+        os << *it << std::endl;
+
+      os << std::endl;
+
+      return os;
     }
 
   private:
@@ -150,7 +175,7 @@ class CIndexedPriorityQueue
      * @param pos The current node position
      * @return The parent node position
      */
-    C_INT32 parent(C_INT32 pos) {return (pos + 1) / 2 - 1;}
+  C_INT32 parent(C_INT32 pos) {return (pos + 1) / 2 - 1;}
 
     /**
      * Provide the position in the heap of the left child of the current node.

@@ -47,12 +47,11 @@ class CDependencyGraphNode
      */
     friend std::ostream & operator<<(std::ostream &os, const CDependencyGraphNode & d)
     {
-      unsigned int i;
+      std::set <C_INT32>::const_iterator it;
+      for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
+        os << *it << "  ";
 
-      for (i = 0; i < d.mDependents.size(); i++)
-        // os << d.mDependents[i] << "  ";
-
-        os << std::endl;
+      os << std::endl;
 
       return os;
     }
