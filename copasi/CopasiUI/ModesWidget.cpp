@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/06 21:05:25 $
+   $Author: chlee $ 
+   $Date: 2004/01/07 21:46:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -87,12 +87,38 @@ void ModesWidget::loadModes(CModel *model)
     {
       mModel = model;
     }
+
+  //Emptying the table
   int numberOfRows = table->numRows();
   int i;
   for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
     }
+
+  /***CL *** // fill table with new values
+  unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+  table->setNumRows(noOfModesRows);
+  //bool status;
+  C_INT32 j;
+  for (j = 0; j < noOfModesRows; j++)
+    {
+      // status=modes->isFluxModeReversible(j);
+      if (modes->isFluxModeReversible(j) == true)
+        {
+          table->setText(j, 0, "Reversible");
+        }
+      else
+        {
+          table->setText(j, 0, "Irrversible");
+        }
+      //QString y=modes->isFluxModeReversible(j)->c_str();
+      //QString x=modes->getFluxModeDescription(j).c_str();
+      //QMessageBox::information(this, "recahed ",x);
+      //table->setText(j, 0,y);
+      //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
+      table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+    } *** CL ***/
 }
 
 /*void ModesWidget::slotTableCurrentChanged(int row,int col,int C_UNUSED(m) ,const QPoint & C_UNUSED(n))
@@ -194,14 +220,14 @@ void ModesWidget::slotBtnCalculateClicked()
   // emit signal_emitted(*Compartment_Name);
 
   //Emptying the table
-  int numberOfRows = table->numRows();
+  /****CL***int numberOfRows = table->numRows();
   int i;
   for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
-    }
+    }******CL***/
 
-  CElementaryFluxModes *modes = new CElementaryFluxModes();
+  modes = new CElementaryFluxModes();
   modes->calculate(mModel);
   unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
   //QString y=QString::number(noOfModesRows);
