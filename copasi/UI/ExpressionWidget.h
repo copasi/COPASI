@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.8 2003/09/19 21:02:02 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.9 2003/09/22 04:44:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,29 +36,33 @@ class ExpressionWidget : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    //manually added
+    QTextEdit* expressionText;
+    QListBox* itemsTable;
 
-    QFrame* bodyField;
-    QPushButton* confirmButton;
-    QPushButton* cancelButton;
+    QLineEdit* expressionName;
+    QLabel* expressionEditlabel;
+    QLabel* expressionNameLabel;
+    QFrame* bodyField_2;
     QLabel* itemsLabel;
-    QPushButton* upButton;
     QPushButton* downButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
-    //    QTable* itemsTable;
-    QListBox* itemsTable;
-    QFrame* frame5;
-    QLineEdit* expressionName;
-    QLabel* expressionNameLabel;
-    QTextEdit* textEdit2;
-    QLabel* expressionEditlabel;
+    QPushButton* upButton;
+    QListBox* listBoxItems;
+    QFrame* bodyField;
+    QPushButton* confirmButton;
+    QPushButton* cancelButton;
 
   protected:
     QGridLayout* ExpressionWidgetLayout;
-    QHBoxLayout* layout14;
-    QVBoxLayout* layout6;
-    QGridLayout* layout5;
-    QGridLayout* frame5Layout;
+    QVBoxLayout* layout18;
+    QGridLayout* layout17;
+    QHBoxLayout* layout16;
+    QVBoxLayout* layout15;
+    QGridLayout* layout14;
+    QHBoxLayout* layout14_2;
+
     bool loadFromExpression(CFunction*);
     std::string objKey;
     bool bUpdated;

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.9 2003/09/19 21:02:02 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.10 2003/09/22 04:44:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,6 +18,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qtextbrowser.h>
 
 #include "ExpressionWidget.h"
 #include "copasi.h"
@@ -48,93 +49,101 @@ ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
     setName("ExpressionWidget");
   ExpressionWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ExpressionWidgetLayout");
 
+  layout18 = new QVBoxLayout(0, 0, 6, "layout18");
+
+  layout17 = new QGridLayout(0, 1, 1, 0, 6, "layout17");
+
+  //    expressionText = new QTextBrowser(this, "expressionText");
+  //   expressionText = new QLineEdit(this, "expressionText");
+  expressionText = new QTextEdit(this, "expressionText");
+
+  layout17->addWidget(expressionText, 1, 1);
+
+  expressionName = new QLineEdit(this, "expressionName");
+  expressionName->setFrameShape(QLineEdit::LineEditPanel);
+  expressionName->setFrameShadow(QLineEdit::Sunken);
+
+  layout17->addWidget(expressionName, 0, 1);
+
+  expressionEditlabel = new QLabel(this, "expressionEditlabel");
+
+  layout17->addWidget(expressionEditlabel, 1, 0);
+
+  expressionNameLabel = new QLabel(this, "expressionNameLabel");
+
+  layout17->addWidget(expressionNameLabel, 0, 0);
+  layout18->addLayout(layout17);
+
+  bodyField_2 = new QFrame(this, "bodyField_2");
+  bodyField_2->setFrameShape(QFrame::HLine);
+  bodyField_2->setFrameShadow(QFrame::Sunken);
+  bodyField_2->setFrameShape(QFrame::HLine);
+  layout18->addWidget(bodyField_2);
+
+  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
+
+  layout15 = new QVBoxLayout(0, 0, 6, "layout15");
+
+  itemsLabel = new QLabel(this, "itemsLabel");
+  layout15->addWidget(itemsLabel);
+
+  layout14 = new QGridLayout(0, 1, 1, 0, 6, "layout14");
+
+  downButton = new QPushButton(this, "downButton");
+  downButton->setPixmap(image1);
+  layout14->addWidget(downButton, 1, 1);
+
+  deleteButton = new QPushButton(this, "deleteButton");
+  deleteButton->setPixmap(image0);
+  layout14->addWidget(deleteButton, 0, 1);
+
+  addButton = new QPushButton(this, "addButton");
+  addButton->setPixmap(image2);
+  layout14->addWidget(addButton, 0, 0);
+
+  //manually change to add icon for alignment need
+  upButton = new QPushButton(this, "upButton");
+  upButton->setPixmap(image3);
+  layout14->addWidget(upButton, 1, 0);
+  layout15->addLayout(layout14);
+
+  listBoxItems = new QListBox(this, "listBoxItems");
+  layout15->addWidget(listBoxItems);
+  layout16->addLayout(layout15);
+
+  itemsTable = new QListBox(this, "itemsTable");
+  layout16->addWidget(itemsTable);
+  layout18->addLayout(layout16);
+
   bodyField = new QFrame(this, "bodyField");
   bodyField->setFrameShape(QFrame::HLine);
   bodyField->setFrameShadow(QFrame::Sunken);
   bodyField->setFrameShape(QFrame::HLine);
+  layout18->addWidget(bodyField);
 
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
-
-  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
+  layout14_2 = new QHBoxLayout(0, 0, 6, "layout14_2");
 
   confirmButton = new QPushButton(this, "confirmButton");
-  layout14->addWidget(confirmButton);
+  layout14_2->addWidget(confirmButton);
 
   cancelButton = new QPushButton(this, "cancelButton");
-  layout14->addWidget(cancelButton);
+  layout14_2->addWidget(cancelButton);
+  layout18->addLayout(layout14_2);
 
-  ExpressionWidgetLayout->addMultiCellLayout(layout14, 3, 3, 0, 1);
-
-  layout6 = new QVBoxLayout(0, 0, 6, "layout6");
-
-  itemsLabel = new QLabel(this, "itemsLabel");
-  layout6->addWidget(itemsLabel);
-
-  layout5 = new QGridLayout(0, 1, 1, 0, 6, "layout5");
-
-  //manually change to add icon for alignment need
-  upButton = new QPushButton(this, "upButton");
-  upButton->setText(trUtf8(""));
-  upButton->setPixmap(image3);
-  layout5->addWidget(upButton, 1, 0);
-
-  deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8(""));
-  deleteButton->setPixmap(image0);
-  layout5->addWidget(deleteButton, 0, 1);
-
-  downButton = new QPushButton(this, "downButton");
-  downButton->setText(trUtf8(""));
-  downButton->setPixmap(image1);
-  layout5->addWidget(downButton, 1, 1);
-
-  addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8(""));
-  addButton->setPixmap(image2);
-  layout5->addWidget(addButton, 0, 0);
-
-  layout5->addWidget(addButton, 0, 0);
-  layout6->addLayout(layout5);
-  QSpacerItem* spacer = new QSpacerItem(90, 262, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  layout6->addItem(spacer);
-
-  ExpressionWidgetLayout->addLayout(layout6, 1, 0);
-
-  //  itemsTable = new QTable(this, "itemsTable");
-  //  itemsTable->setNumRows(0);
-  //  itemsTable->setNumCols(0);
-  itemsTable = new QListBox(this, "itemsTable");
-
-  ExpressionWidgetLayout->addWidget(itemsTable, 1, 1);
-
-  frame5 = new QFrame(this, "frame5");
-  frame5->setFrameShape(QFrame::Box);
-  frame5->setFrameShadow(QFrame::Sunken);
-  frame5Layout = new QGridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
-
-  expressionName = new QLineEdit(frame5, "expressionName");
-  expressionName->setFrameShape(QLineEdit::LineEditPanel);
-  expressionName->setFrameShadow(QLineEdit::Sunken);
-
-  frame5Layout->addWidget(expressionName, 0, 1);
-
-  expressionNameLabel = new QLabel(frame5, "expressionNameLabel");
-
-  frame5Layout->addWidget(expressionNameLabel, 0, 0);
-
-  textEdit2 = new QTextEdit(frame5, "textEdit2");
-
-  frame5Layout->addMultiCellWidget(textEdit2, 1, 2, 1, 1);
-
-  expressionEditlabel = new QLabel(frame5, "expressionEditlabel");
-
-  frame5Layout->addWidget(expressionEditlabel, 1, 0);
-  QSpacerItem* spacer_2 = new QSpacerItem(60, 31, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  frame5Layout->addItem(spacer_2, 2, 0);
-
-  ExpressionWidgetLayout->addMultiCellWidget(frame5, 0, 0, 0, 1);
+  ExpressionWidgetLayout->addLayout(layout18, 0, 0);
   languageChange();
   clearWState(WState_Polished);
+
+  // tab order
+  setTabOrder(expressionName, expressionText);
+  setTabOrder(expressionText, addButton);
+  setTabOrder(addButton, deleteButton);
+  setTabOrder(deleteButton, upButton);
+  setTabOrder(upButton, downButton);
+  setTabOrder(downButton, listBoxItems);
+  setTabOrder(listBoxItems, itemsTable);
+  setTabOrder(itemsTable, confirmButton);
+  setTabOrder(confirmButton, cancelButton);
 
   connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
@@ -160,15 +169,15 @@ ExpressionWidget::~ExpressionWidget()
 void ExpressionWidget::languageChange()
 {
   setCaption(tr("Expression"));
-  confirmButton->setText(tr("confirm"));
-  cancelButton->setText(tr("cancel"));
-  itemsLabel->setText(tr("Items"));
-  upButton->setText(QString::null);
+  expressionEditlabel->setText(tr("Expression"));
+  expressionNameLabel->setText(tr("Expresion Name"));
+  itemsLabel->setText(tr("Copasi Items"));
   downButton->setText(QString::null);
   deleteButton->setText(QString::null);
   addButton->setText(QString::null);
-  expressionNameLabel->setText(tr("Expresion Name"));
-  expressionEditlabel->setText(tr("Expression"));
+  upButton->setText(QString::null);
+  confirmButton->setText(tr("confirm"));
+  cancelButton->setText(tr("cancel"));
 }
 
 bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
