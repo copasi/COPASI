@@ -6,6 +6,7 @@ DataModel::DataModel(char* fileName)
   model = NULL;
   trajectorytask = NULL;
   steadystatetask = NULL;
+  scantask = NULL;
 }
 
 Folder* DataModel::searchFolderList(int id)
@@ -98,7 +99,7 @@ void DataModel::loadModel(const char* fileName)
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
-  scantask->load(inbuf);
+  // future work  scantask->load(inbuf);
   searchFolderList(32)->setObjectKey(scantask->getKey());
 
   Copasi->pOutputList->load(inbuf);

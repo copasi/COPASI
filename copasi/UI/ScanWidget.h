@@ -66,7 +66,8 @@ class ScanWidget : public CopasiWidget
     //    virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
-    void loadScan(CModel *model);
+    //    void loadScan(CModel *model);
+    void loadScan();
     inline std::string getScanTaskKey() const {return scanTaskKey;};
     bool addNewScanItem(CCopasiObject* pObject);
 
