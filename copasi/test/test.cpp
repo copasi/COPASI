@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
       //      TestFunctionDB();
       //      TestBaseFunction();
       //      TestModel();
-      //   TestMathModel();
+      //      TestMathModel();
       //      TestLU();
       //      TestMCA();
       //      TestOutputEvent();
@@ -529,25 +529,25 @@ C_INT32 TestTrajectoryTask(void)
   model.compile();
   model.save(outbuf);
 
-  //Copasi->OutputList.load(inbuf);
+  Copasi->OutputList.load(inbuf);
 
-  COutput Output;
-  Output.resetConfiguration();
-  Output.setDynConfiguration(1);
-  Output.addDatum("Time-course output", "X(t)", 3, "X");
-  Output.addDatum("Time-course output", "Y(t)", 3, "Y");
-  Output.addDatum("Time-course output", "time", 14);
-  Copasi->OutputList.addOutput(Output);
+  // COutput Output;
+  // Output.resetConfiguration();
+  // Output.setDynConfiguration(1);
+  // Output.addDatum("Time-course output", "X(t)", 3, "X");
+  // Output.addDatum("Time-course output", "Y(t)", 3, "Y");
+  // Output.addDatum("Time-course output", "time", 14);
+  // Copasi->OutputList.addOutput(Output);
 
   Copasi->OutputList.save(outbuf);
 
-  //CTrajectoryTask traj;
-  //traj.load(inbuf);
-  //traj.save(outbuf);
+  CTrajectoryTask traj;
+  traj.load(inbuf);
+  traj.save(outbuf);
 
   // define a task without loading
-  CTrajectoryTask traj(&model, 0, 500, 2000, CTrajectoryMethod::stochastic);
-  traj.save(outbuf);
+  // CTrajectoryTask traj(&model, 0, 1000, 2000, CTrajectoryMethod::stochastic);
+  // traj.save(outbuf);
 
   outbuf.flush();
 
@@ -585,8 +585,11 @@ C_INT32 TestMCA(void)
 // by YH
 C_INT32 TestSSSolution(void)
 {
-  CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
-  inbuf.getDefaults();
+  string InputFile(Copasi->Arguments[1]);
+  string OutputFile(Copasi->Arguments[2]);
+
+  CReadConfig inbuf(InputFile);
+  CWriteConfig outbuf(OutputFile);
 
   CModel model;
   model.load(inbuf);
