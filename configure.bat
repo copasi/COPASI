@@ -43,3 +43,9 @@ echo   qmake "CONFIG+=%cps_release%" %1 %2
 qmake "CONFIG+=%cps_release%" %1 %2
 
 cd ..
+
+echo @echo off > config.status.bat
+echo cd copasi >> config.status.bat
+echo echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
+echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
+echo cd .. >> config.status.bat
