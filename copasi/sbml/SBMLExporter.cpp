@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/09/30 15:26:26 $
+   $Date: 2004/09/30 15:37:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -166,7 +166,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
 UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string u)
 {
   UnitDefinition* uDef = new UnitDefinition("time");
-  uDef->setId("TimeUnitDefinition");
+  uDef->setId("time");
   Unit* unit;
 
   if (u == "d")
@@ -222,7 +222,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(con
 UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string u)
 {
   UnitDefinition* uDef = new UnitDefinition("substance");
-  uDef->setId("SubstanceUnitDefinition");
+  uDef->setId("substance");
   Unit* unit;
   if (u == "mMol")
     {
@@ -264,7 +264,7 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
 UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string u)
 {
   UnitDefinition* uDef = new UnitDefinition("volume");
-  uDef->setId("VolumeUnitDefinition");
+  uDef->setId("volume");
   Unit* unit;
   if (u == "ml")
     {
