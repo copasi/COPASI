@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/05 15:44:41 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:46:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -34,6 +34,7 @@
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"             //TODO sort out the include dependencies
 #include "optimization/COptFunction.h"
+#include "plot/CPlotSpecVector.h"
 
 class CReadConfig;
 class CWriteConfig;
@@ -121,6 +122,7 @@ class DataModel
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
     CReportDefinitionVector* reportdefinitions;
+    CPlotSpecVector* plotspecs;
     COptFunction* pOptFunction;
 
   public:
@@ -146,6 +148,7 @@ class DataModel
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
     inline CReportDefinitionVector* getReportDefinitionVectorAddr(){return reportdefinitions;}
+    inline CPlotSpecVector* getPlotSpecVectorAddr(){return plotspecs;}
     Node<Folder>* getRoot(){return myTree.getRoot();}
     //Node<Folder>* getData(){return last;}
   };

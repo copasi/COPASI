@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/01/09 19:45:39 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:46:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -44,6 +44,8 @@
 #include "TableDefinition1.h"
 #include "plot/plotwidget1.h"
 #include "PlotWidget.h"
+#include "plot/CPlotSpec.h"
+#include "plot/CPlotSpecVector.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
 #include "TrajectoryWidget.h"
@@ -544,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                               //Time course
+      case 23:                                //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -553,10 +555,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                              //Report
+      case 43:                               //Report
         return tableDefinition;
         break;
-      case 42:                              //Plots
+      case 42:                               //Plots
         return plotWidget;
         break;
       case 5:
@@ -878,14 +880,14 @@ void ListViews::loadPlotsToDataModel()   //TODO
 
   dataModel->removeAllChildren(parent);
 
-  /*const CCopasiVector< CReportDefinition > * objects =
-    dataModel->getReportDefinitionVectorAddr();
+  const CCopasiVector< CPlotSpec > * objects =
+    dataModel->getPlotSpecVectorAddr();
 
   if (!objects) return;
 
   C_INT32 j, jmax = objects->size();
 
-  CReportDefinition *obj;
+  CPlotSpec *obj;
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
@@ -894,7 +896,6 @@ void ListViews::loadPlotsToDataModel()   //TODO
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
     }
-  */
 }
 
 void ListViews::loadReportDefinition()
@@ -1335,6 +1336,34 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
+      plotWidget->update(objectType, action, key);
+      plotWidget1->update(objectType, action, key);
+      break;
+    case PLOT:
+      optimizationWidget->update(objectType, action, key);
+      scanWidget->update(objectType, action, key);
+      steadystateWidget->update(objectType, action, key);
+      trajectoryWidget->update(objectType, action, key);
+      //        metabolitesWidget->update(objectType, action, key);
+      //        reactionsWidget->update(objectType, action, key);
+      //        compartmentsWidget->update(objectType, action, key);
+      //        compartmentSymbols->update(objectType, action, key);
+      //        moietyWidget->update(objectType, action, key);
+      //        functionWidget->update(objectType, action, key);
+      //        functionSymbols->update(objectType, action, key);
+      //        differentialEquations->update(objectType, action, key);
+      //        reactionsWidget1->update(objectType, action, key);
+      //        metabolitesWidget1->update(objectType, action, key);
+      //        metaboliteSymbols->update(objectType, action, key);
+      //        fixedMetaboliteSymbols->update(objectType, action, key);
+      //        compartmentsWidget1->update(objectType, action, key);
+      //        constantSymbols->update(objectType, action, key);
+      //        moietyWidget1->update(objectType, action, key);
+      //        functionWidget1->update(objectType, action, key);
+      //        modesWidget->update(objectType, action, key);
+      //        modelWidget->update(objectType, action, key);
+      //  tableDefinition->update(objectType, action, key);
+      //  tableDefinition1->update(objectType, action, key);
       plotWidget->update(objectType, action, key);
       plotWidget1->update(objectType, action, key);
       break;

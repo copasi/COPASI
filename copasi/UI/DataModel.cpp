@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/05 15:44:41 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:46:17 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -21,6 +21,7 @@ DataModel::DataModel()
   steadystatetask = NULL;
   scantask = NULL;
   reportdefinitions = NULL;
+  plotspecs = NULL;
   pOptFunction = NULL;
 }
 
@@ -101,6 +102,10 @@ void DataModel::createModel(const char* fileName)
   reportdefinitions = new CReportDefinitionVector();
   searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
+  pdelete(plotspecs);
+  plotspecs = new CPlotSpecVector();
+  searchFolderList(42)->setObjectKey(plotspecs->getKey());
+
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
   searchFolderList(31)->setObjectKey(pOptFunction->getKey());
@@ -144,6 +149,11 @@ void DataModel::loadModel(const char* fileName)
       //  reportdefinitions->load(inbuf);
       searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
+      pdelete(plotspecs);
+      plotspecs = new CPlotSpecVector();
+      //  plotspecs->load(inbuf);
+      searchFolderList(42)->setObjectKey(plotspecs->getKey());
+
       pdelete(pOptFunction);
       pOptFunction = new COptFunction();
       searchFolderList(31)->setObjectKey(pOptFunction->getKey());
@@ -160,6 +170,9 @@ void DataModel::loadModel(const char* fileName)
       XML.setFunctionList(Copasi->pFunctionDB->loadedFunctions());
       CReportDefinitionVector * pNewReports = new CReportDefinitionVector();
       XML.setReportList(*pNewReports);
+
+      CPlotSpecVector * pNewPlotSpecs = new CPlotSpecVector();
+      //TODO XML.setPlotList(*pNewPlotSpecs);
 
       XML.load(File);
 
@@ -186,6 +199,10 @@ void DataModel::loadModel(const char* fileName)
       pdelete(reportdefinitions);
       reportdefinitions = pNewReports;
       searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+
+      pdelete(plotspecs);
+      plotspecs = pNewPlotSpecs;
+      searchFolderList(42)->setObjectKey(plotspecs->getKey());
     }
 
   pdelete(mpMathModel);
@@ -205,6 +222,7 @@ void DataModel::saveModel(const char* fileName)
 
   XML.setModel(*model);
   XML.setReportList(*reportdefinitions);
+  //TODO XML.setPlotList(*plotspecs);
   XML.save(os);
 }
 

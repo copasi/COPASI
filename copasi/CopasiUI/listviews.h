@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 18:38:04 $
+   $Author: ssahle $ 
+   $Date: 2004/01/14 16:46:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -91,7 +91,7 @@ class ListViews : public QSplitter
 
     // CHANGE does not include RENAME
     enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT};
+    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT};
 
     void setDataModel(DataModel* dm);
     static DataModel* getDataModel() {return dataModel;};
