@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:32 $
+   $Date: 2004/01/09 21:21:31 $
    End CVS Header */
 
 /**
@@ -42,6 +42,7 @@ class CKeyFactory
         HashTable(const HashTable & src);
         ~HashTable();
         unsigned C_INT32 add(CCopasiObject * pObject);
+        bool addFix(const unsigned C_INT32 & index, CCopasiObject * pObject);
         CCopasiObject * get(const unsigned C_INT32 & index);
         bool remove(const unsigned C_INT32 & index);
       };
@@ -91,6 +92,15 @@ class CKeyFactory
      * @return std::string key
      */
     std::string add(const std::string & prefix, CCopasiObject * pObject);
+
+    /**
+     * Add an object with a fix given key.
+     * The return value indicate whether the key was actually inserted.
+     * @param const std::string & key
+     * @param CCopasiObject * pObject
+     * @return bool success
+     */
+    bool addFix(const std::string & key, CCopasiObject * pObject);
 
     /**
      * Remove the key and the related object from the key map.

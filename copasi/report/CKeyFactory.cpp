@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:31 $
+   $Date: 2004/01/09 21:21:31 $
    End CVS Header */
 
 /**
@@ -48,7 +48,7 @@ CKeyFactory::HashTable::HashTable():
     mSize(128),
     mpTable(new CVector< CCopasiObject * >(128)),
     mFree()
-{}
+{memset(mpTable->array(), 0, mSize * sizeof(CCopasiObject *));}
 
 CKeyFactory::HashTable::HashTable(const CKeyFactory::HashTable & src):
     mBeyond(src.mBeyond),
@@ -88,6 +88,27 @@ unsigned C_INT32 CKeyFactory::HashTable::add(CCopasiObject * pObject)
 
   (*mpTable)[index] = pObject;
   return index;
+}
+
+bool CKeyFactory::HashTable::addFix(const unsigned C_INT32 & index,
+                                    CCopasiObject * pObject)
+{
+  while (index >= mSize)
+    {
+      CVector< CCopasiObject * > * pTmp = mpTable;
+      mpTable = new CVector< CCopasiObject * >(mSize * 2);
+      memcpy(mpTable->array(), pTmp->array(),
+             mSize * sizeof(CCopasiObject *));
+      memset(mpTable->array() + mSize, 0,
+             mSize * sizeof(CCopasiObject *));
+      mSize *= 2;
+      delete pTmp;
+    }
+
+  if ((*mpTable)[index]) return false;
+
+  (*mpTable)[index] = pObject;
+  return true;
 }
 
 CCopasiObject * CKeyFactory::HashTable::get(const unsigned C_INT32 & index)
@@ -133,11 +154,31 @@ std::string CKeyFactory::add(const std::string & prefix,
       it = ret.first;
     }
 
-  //  mKeyTable[prefix].add(pObject);
   std::stringstream key;
   key << prefix + "_" << it->second.add(pObject);
 
   return key.str();
+}
+
+bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
+{
+  unsigned C_INT32 pos = key.length() - 1;
+  while (isDigit(key[pos]) && pos) --pos;
+
+  std::string Prefix = key.substr(0, pos);
+  unsigned C_INT32 index = atoi(key.substr(pos + 1).c_str());
+
+  std::map< std::string, CKeyFactory::HashTable >::iterator it =
+    mKeyTable.find(Prefix);
+  if (it == mKeyTable.end())
+    {
+      std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
+        mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(Prefix, CKeyFactory::HashTable()));
+
+      it = ret.first;
+    }
+
+  return it->second.addFix(index, pObject);
 }
 
 bool CKeyFactory::remove(const std::string & key)
