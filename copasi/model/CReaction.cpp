@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:49 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/30 20:40:12 $
    End CVS Header */
 
 // CReaction
@@ -930,8 +930,8 @@ C_INT32 CReaction::getModifierMolecularity() const
 void CReaction::initObjects()
 {
   addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
-  addObjectReference("Flux", mFlux);
-  addObjectReference("ScaledFlux", mScaledFlux);
+  addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
+  addObjectReference("ScaledFlux", mScaledFlux, CCopasiObject::ValueDbl);
   //add(&mParameters);
   //add(&mMap);
 }
