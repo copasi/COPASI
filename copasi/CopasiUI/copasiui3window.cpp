@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/04 21:24:57 $
+   $Author: shoops $ 
+   $Date: 2003/12/05 21:23:53 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -214,7 +214,7 @@ void CopasiUI3Window::slotFileOpen()
         dataModel = new DataModel; //create a new data model
 
       gpsFile = newFile;
-      dataModel->createModel(gpsFile.latin1());
+      //      dataModel->createModel(gpsFile.latin1());
       CCopasiXML parserObject;
       std::ifstream infile;
       infile.open((const char *)gpsFile.utf8());
