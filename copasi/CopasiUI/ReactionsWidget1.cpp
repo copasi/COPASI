@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/25 19:39:04 $
+   $Author: ssahle $ 
+   $Date: 2004/06/23 14:00:33 $
    End CVS Header */
 
 /*********************************************************************
@@ -221,7 +221,7 @@ bool ReactionsWidget1::saveToReaction()
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
 
-  dataModel->getModel()->compile();
+  //dataModel->getModel()->compile();
 
   //this tells the gui what it needs to know.
   if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
@@ -340,7 +340,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:         // Yes or Enter
+        case 0:          // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -364,7 +364,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                // No or Escape
+        default:                 // No or Escape
           break;
         }
       //}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.179 $
+   $Revision: 1.180 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:00 $
+   $Date: 2004/06/23 14:01:34 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ CModel::CModel():
 
   initializeMetabolites();
 
-  compile();
+  compile2();
 
   /* This following 2 lines added by Liang Xu
   Becaues of the failure to initialize the parameter when creating a new models
@@ -144,7 +144,7 @@ CModel::CModel(const CModel & src):
 
   initializeMetabolites();
 
-  compile();
+  compile2();
   initObjects();
 }
 
@@ -324,7 +324,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   Copasi->pOldMetabolites->cleanup();
 
-  compile();
+  compile2();
   return Fail;
 }
 
@@ -467,7 +467,7 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
   fout << "</sbml>" << std::endl;
 }*/
 
-bool CModel::compile()
+bool CModel::compile2()
 {
   CMatrix< C_FLOAT64 > LU;
 
@@ -485,6 +485,9 @@ bool CModel::compile()
 
   return true;
 }
+
+//bool CModel::compile()
+//{}
 
 void CModel::buildStoi()
 {
@@ -1599,7 +1602,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
   if (!mMetabolites.add(pMetab))
     return NULL;
 
-  compile();
+  //compile();
 
   return pMetab;
 }
@@ -1697,7 +1700,7 @@ bool CModel::removeMetabolite(const std::string & key)
 
   pdelete(pMetabolite);
 
-  compile();
+  //compile();
 
   return true;
 }
@@ -1720,7 +1723,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
       return NULL;
     }
 
-  compile();
+  //compile();
 
   return cpt;
 }
@@ -1747,7 +1750,7 @@ bool CModel::removeCompartment(const std::string & key)
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);
 
-  compile();
+  //compile();
 
   return true;
 }
@@ -1765,7 +1768,7 @@ CReaction* CModel::createReaction(const std::string & name)
       return NULL;
     }
 
-  compile();
+  //compile();
   return pReaction;
 }
 
@@ -1776,7 +1779,7 @@ bool CModel::addReaction(const CReaction & reaction)
 
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile(/*mCompartments*/);
-  compile();
+  //compile();
   return true;
 }
 
@@ -1797,7 +1800,7 @@ bool CModel::removeReaction(const std::string & key)
 
   mSteps.CCopasiVector< CReaction >::remove(index);
 
-  compile();
+  //compile();
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:29:29 $
+   $Date: 2004/06/23 14:00:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -315,7 +315,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
         }
     }
-  dataModel->getModel()->compile();
+  //dataModel->getModel()->compile();
   enter(objKey); //this is a hack to update the initial number when the initial concentration has changed and vice versa
 
   return true; //TODO: really check
@@ -408,7 +408,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                  // Yes or Enter
+    case 0:                   // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -424,7 +424,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                  // No or Escape
+    case 1:                   // No or Escape
       break;
     }
 }
