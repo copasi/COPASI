@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.2 2003/09/30 01:34:17 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.3 2003/09/30 04:10:40 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,6 +20,9 @@
 #include <qwhatsthis.h>
 #include <qtextbrowser.h>
 
+#include "ScanWidget.h"
+#include "ScanItemWidget.h"
+#include "OptimizationItemWidget.h"
 #include "OptimizationWidget.h"
 #include "copasi.h"
 #include "listviews.h"
@@ -42,6 +45,11 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
     : CopasiWidget(parent, name, fl),
     bUpdated(false)
 {
+  nSelectedObjects = 0;
+  nTitleHeight = 16;
+  activeObject = -1;
+  selectedList.clear();
+
   QPixmap image0((const char**) image0_data);
   QPixmap image1((const char**) image1_data);
   QPixmap image2((const char**) image2_data);
@@ -113,7 +121,15 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   layout15->addWidget(itemnamesTable);
   layout16->addLayout(layout15);
 
-  itemsTable = new QListBox(this, "itemsTable");
+  itemsTable = new ScanScrollView(this, 0, 0);
+  OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
+  itemsTable->setMinimumWidth(parameterTable->minimumSizeHint().width());
+  pdelete(parameterTable);
+  itemsTable->setVScrollBarMode(QScrollView::Auto);
+  itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+  itemsTable->setSelectedList(&selectedList);
+
+  // itemsTable = new QListBox(this, "itemsTable");
   layout16->addWidget(itemsTable);
   layout18->addLayout(layout16);
 
@@ -160,6 +176,11 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   connect(itemnamesTable, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
   connect(itemnamesTable, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
+
+  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+
+  nTitleHeight = fontMetrics().height() + 6;
 }
 
 /*
@@ -262,76 +283,261 @@ void OptimizationWidget::addButtonClicked()
       return;
     }
 
-  if (itemnamesTable->findItem((*pSelectedVector)[i]->getCN().c_str()) == NULL)
-    {
-      itemnamesTable->insertItem((*pSelectedVector)[i]->getCN().c_str());
-      //      selectedList.push_back((*pSelectedVector)[i]);
-      bUpdated = true;
-    }
+  if (addNewOptItem((*pSelectedVector)[i]))
+    itemnamesTable->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
 
   pdelete(pSelectedVector);
-  //  if (addNewScanItem((*pSelectedVector)[i]))
-  //    ObjectListBox->insertItem ((*pSelectedVector)[i]->getObjectUniqueName().c_str(), nSelectedObjects - 1);
 }
 
 void OptimizationWidget::deleteButtonClicked()
 {
-  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
-  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
-  if (selectedItem)
+  int pp = selectedList.size();
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+    return;
+
+  emit hide_me();
+
+  /* Need further work with back end
+  // Here I arrived at !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  CMethodParameterList* pOptimizationObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getOptimizationObject();
+  COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
+  if (optFunction->getProblem()->getListSize() > 0)  // for reloading
+    optFunction->getProblem()->removeScanItem(pOptObject->getName().c_str());
+  */
+  itemsTable->removeChild(selectedList[2*activeObject]);
+  itemsTable->removeChild(selectedList[2*activeObject + 1]);
+
+  itemnamesTable->removeItem (activeObject);
+
+  int i = activeObject + 1;
+  int offsetY = ((OptimizationItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
+
+  for (; i < selectedList.size() / 2; i++)
     {
-      //      std::vector<CCopasiObject*>::iterator it = selectedList.begin();
-      //      selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
-      //      int pp = selectedList.size();
-      itemnamesTable->removeItem(selectedIndex);
-      bUpdated = true;
+      itemsTable->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
+      itemsTable->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + nTitleHeight);
     }
+
+  std::vector<QWidget*>::iterator it = selectedList.begin();
+  std::vector<QWidget*>::iterator BeginDel;
+  std::vector<QWidget*>::iterator ToDel;
+  while (it < selectedList.end())
+    {
+      if (it - selectedList.begin() == 2*activeObject)
+        {
+          BeginDel = it;
+          pdelete (*it);
+          ToDel = ++it;
+          pdelete (*ToDel);
+          ++ToDel;
+          selectedList.erase(BeginDel, ToDel);
+          break;
+        }
+      it++;
+      it++;
+    }
+
+  activeObject--;
+  //  if ((activeObject >= 0) && (optFunction->getProblem()->getListSize() > 0)) need further check the line below
+  if (activeObject >= 0)
+    {
+      //      CCopasiObject* pOptObject = ((OptimizationItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+      ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+      //       activeTitle->setText(pOptObject->getCN().c_str());
+    }
+
+  nSelectedObjects--;
+  itemsTable->resizeContents(0, offsetY*selectedList.size() / 2);
+
+  emit show_me();
+
+  if (activeObject >= 0)
+    ListBoxClicked(itemnamesTable->item(activeObject));
+
+  // to verify the size of the mparameterlist in ScanProblem
+  // optFunction->getProblem()->paraCount();
 }
 
 void OptimizationWidget::upButtonClicked()
 {
-  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
-  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
-  if ((selectedItem) && (selectedIndex != 0))
-    {
-      //swap in selectedList
-      //      CCopasiObject* pDownObject = selectedList[selectedIndex];
-      // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
-      //     CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
-      //      selectedList[selectedIndex] = pUpperObject;
-      //      selectedList[selectedIndex - 1] = pDownObject;
+  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+    return;
 
-      //swap in ListBox
-      QString pDownItemStr(itemnamesTable->item(selectedIndex)->text());
-      QString pUpperItemStr(itemnamesTable->item(selectedIndex - 1)->text());
-      itemnamesTable->changeItem (pUpperItemStr, selectedIndex);
-      itemnamesTable->changeItem (pDownItemStr, selectedIndex - 1);
-      bUpdated = true;
-    }
+  emit hide_me();
+
+  /* need futher work
+    CMethodParameterList* pScanObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+    CMethodParameterList* pScanObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+    CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject - 1));
+    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject));
+    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+  */
+  activeObject--;
+
+  //deactivate
+  //lower one
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  //  activeTitle->setText(pScanObjectUp->getName().c_str());
+
+  //activate
+  //upper one
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  //  activeTitle->setText(pScanObjectDown->getName().c_str());
+
+  //Update ListBox
+  QString tmp = itemnamesTable->text (activeObject);
+  itemnamesTable->changeItem (NULL, itemnamesTable->text(activeObject + 1) , activeObject);
+  itemnamesTable->changeItem (NULL, tmp, activeObject + 1);
+
+  //  optFunction->getProblem()->swapScanItem(activeObject + 1, activeObject);
+
+  emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(itemnamesTable->item(activeObject));
 }
 
 void OptimizationWidget::downButtonClicked()
 {
-  QListBoxItem* selectedItem = itemnamesTable->selectedItem ();
-  UINT32 selectedIndex = itemnamesTable->index(selectedItem);
-  if ((selectedItem) && (itemnamesTable->item(selectedIndex + 1)))
-    {
-      //swap in selectedList
-      //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
-      // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
-      //      CCopasiObject* pUpperObject = selectedList[selectedIndex];
-      //      selectedList[selectedIndex + 1] = pUpperObject;
-      //      selectedList[selectedIndex] = pDownObject;
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
+    return;
 
-      //swap in ListBox
-      QString pDownItemStr(itemnamesTable->item(selectedIndex + 1)->text());
-      QString pUpperItemStr(itemnamesTable->item(selectedIndex)->text());
-      itemnamesTable->changeItem (pUpperItemStr, selectedIndex + 1);
-      itemnamesTable->changeItem (pDownItemStr, selectedIndex);
-      bUpdated = true;
+  emit hide_me();
+
+  activeObject++;
+
+  /* need future work
+    CMethodParameterList* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+    CMethodParameterList* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+    CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject - 1));
+    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject));
+    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+  */
+
+  //upper one
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  //  activeTitle->setText(pObjectDown->getName().c_str());
+
+  //bottom one
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  //  activeTitle->setText(pObjectUp->getName().c_str());
+
+  //Update ListBox
+  QString tmp = itemnamesTable->text (activeObject);
+  itemnamesTable->changeItem (NULL, itemnamesTable->text(activeObject - 1) , activeObject);
+  itemnamesTable->changeItem (NULL, tmp, activeObject - 1);
+
+  //  optFunction->getProblem()->swapScanItem(activeObject - 1, activeObject);
+
+  emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(itemnamesTable->item(activeObject));
+}
+
+bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
+{
+  if (!pObject)
+    return false;
+
+  CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (optFunction->getProblem()->bExisted(pObject->getCN().c_str()))
+    return false;
+
+  int widgetOffset;
+  int ScanItemWidgetWidth;
+  emit hide_me();
+
+  //by default isFirstWidget is set as false,
+  OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
+  ScanItemWidgetWidth = itemsTable->visibleWidth();
+
+  widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
+
+  ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
+  newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
+  newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
+  newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
+
+  newTitleBar->setText(pObject->getCN().c_str());
+  newTitleBar->setReadOnly(TRUE);
+
+  itemsTable->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
+  selectedList.push_back(newTitleBar);
+
+  parameterTable->setFixedWidth(ScanItemWidgetWidth);
+  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+
+  itemsTable->addChild(parameterTable, 0 , widgetOffset);
+  itemsTable->setVScrollBarMode(QScrollView::Auto);
+  itemsTable->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
+  selectedList.push_back(parameterTable);
+
+  nSelectedObjects++;
+  /* Need future work
+    CMethodParameterList* pNewMethodItem = new CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType());
+    optFunction->getProblem()->addScanItem(*pNewMethodItem);
+    parameterTable->setScanObject(optFunction->getProblem()->getScanItem(nSelectedObjects - 1));
+    parameterTable->setCopasiObject(pObject);
+    parameterTable->loadObject();
+   
+  */
+  emit show_me();
+  return true;
+}
+
+void OptimizationWidget::ListBoxDoubleClicked(QListBoxItem * item)
+{
+  if (itemnamesTable->index(item) >= nSelectedObjects)
+    addButtonClicked();
+}
+
+void OptimizationWidget::ListBoxClicked(QListBoxItem * item)
+{
+  if (nSelectedObjects && itemnamesTable->index(item) >= 0) //select an object
+    {
+      double newActiveObject = itemnamesTable->index(item) + 0.5;
+      QPoint point(0, newActiveObject * (((OptimizationItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight));
+      QMouseEvent e(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
+      itemsTable->center(e.x(), e.y());
+      viewMousePressEvent(&e);
+      //emit itemsTable(&e);
     }
+}
+
+void OptimizationWidget::mouseSelected(OptimizationItemWidget* pSelected)
+{
+  if (selectedList.size() == 0)
+    return;
+
+  int i = 1;
+  for (; (i < selectedList.size()) && (pSelected != selectedList[i]); i += 2)
+;
+  if (pSelected != selectedList[i]) //not find
+    return;
+
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
+
+  activeObject = i / 2;
+
+  itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
+  itemnamesTable->setSelected(activeObject, true);
+
+  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  emit show_me();
 }
 
 void OptimizationWidget::slotBtnCancelClicked()
@@ -339,3 +545,32 @@ void OptimizationWidget::slotBtnCancelClicked()
 
 void OptimizationWidget::slotBtnConfirmClicked()
 {}
+
+void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
+{
+  if (selectedList.size() == 0)
+    return;
+
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
+
+  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
+  if (itemnamesTable->currentItem() != -1)
+    itemnamesTable->setSelected(itemnamesTable->currentItem(), false);
+  itemnamesTable->setSelected(activeObject, true);
+
+  if (activeObject >= selectedList.size() / 2)
+    {
+      emit show_me();
+      activeObject = -1;
+      return;
+    }
+
+  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  emit show_me();
+}

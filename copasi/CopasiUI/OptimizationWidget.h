@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.2 2003/09/30 01:34:17 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.3 2003/09/30 04:10:40 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,6 +24,9 @@ class QListBox;
 class QLineEdit;
 class QTextEdit;
 class COptFunction;
+class ScanScrollView;
+class OptimizationItemWidget;
+class QListBoxItem;
 
 class OptimizationWidget : public CopasiWidget
   {
@@ -38,7 +41,7 @@ class OptimizationWidget : public CopasiWidget
     virtual bool enter(const std::string & key = "");
     //manually added
     QLineEdit* expressionText;
-    QListBox* itemsTable;
+    ScanScrollView* itemsTable;
 
     QLineEdit* expressionName;
     QLabel* expressionEditlabel;
@@ -76,6 +79,20 @@ class OptimizationWidget : public CopasiWidget
     virtual void languageChange();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnConfirmClicked();
+    virtual void ListBoxClicked (QListBoxItem * item);
+    virtual void ListBoxDoubleClicked (QListBoxItem* item);
+
+  signals:
+    void hide_me();
+    void show_me();
+
+  private:
+    void mouseSelected(OptimizationItemWidget* pSelected);
+    void viewMousePressEvent(QMouseEvent* e);
+    int nSelectedObjects;
+    int nTitleHeight;
+    int activeObject;
+    bool addNewOptItem(CCopasiObject* pObject);
   };
 
 #endif // OptimizationWidget_H
