@@ -26,18 +26,6 @@ class CScanMethod
      */
     CScanProblem * scanProblem;
 
-    /**
-     * Pointer to CSteadyStateTask.  To be used in simulate() to select between
-     * trajectory and steady state method
-     */
-    CSteadyStateTask * mpSteadyState;
-
-    /**
-     * Pointer to CTrajectory.  To be used in simulate() to select between
-     * trajectory and steady state method
-     */
-    CTrajectoryTask * mpTrajectory;
-
     // Operations
   protected:
     /**

@@ -25,16 +25,10 @@
 CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 
 CScanMethod::CScanMethod()
-{
-  mpSteadyState = NULL;
-  mpTrajectory = NULL;
-}
+{}
 
 CScanMethod::CScanMethod(const CScanMethod & src)
-{
-  mpSteadyState = src.mpSteadyState;
-  mpTrajectory = src.mpTrajectory;
-}
+{}
 
 CScanMethod::~CScanMethod(){}
 
@@ -97,16 +91,7 @@ void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
 
 C_FLOAT64 CScanMethod::simulate()
 {
-  if (mpSteadyState != NULL)
-    {
-      // std::cout << "COptProblem: mpSteadyState";
-      mpSteadyState->process();
-    }
-  if (mpTrajectory != NULL)
-    {
-      // std::cout << "COptProblem: mpTrajectory";
-      mpTrajectory->process();
-    }
+  scanProblem->calculate();
   return 0;
 }
 

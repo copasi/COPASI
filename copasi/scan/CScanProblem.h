@@ -46,7 +46,7 @@ class CScanProblem
     /**
      *
      */
-    CSteadyStateTask * mpSteaduState;
+    CSteadyStateTask * mpSteadyState;
 
     /**
      *
@@ -71,6 +71,12 @@ class CScanProblem
      *  Destructor.
      */
     ~CScanProblem();
+
+    /*
+     * process the trajectory and steadystate task
+    */
+
+    void calculate();
 
     /**
      *  Size of the scanItem vector

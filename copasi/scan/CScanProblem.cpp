@@ -17,6 +17,10 @@
 #include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "SteadyState/CSteadyStateTask.h"
+#include "SteadyState/CSteadyStateProblem.h" 
 /**
  *  Default constructor.
  *
@@ -26,7 +30,7 @@ CScanProblem::CScanProblem():
     mProcessTrajectory(false),
     mpTrajectory(NULL),
     mProcessSteadyState(false),
-    mpSteaduState(NULL),
+    mpSteadyState(NULL),
     mScanItemList()
 {CONSTRUCTOR_TRACE;}
 
@@ -39,7 +43,7 @@ CScanProblem::CScanProblem(const CScanProblem & src):
     mProcessTrajectory(src.mProcessTrajectory),
     mpTrajectory(src.mpTrajectory),
     mProcessSteadyState(src.mProcessSteadyState),
-    mpSteaduState(src.mpSteaduState),
+    mpSteadyState(src.mpSteadyState),
     mScanItemList(src.mScanItemList)
 {CONSTRUCTOR_TRACE;}
 
@@ -193,3 +197,17 @@ bool CScanProblem::setProcessSteadyState(const bool & processSteadyState)
 void CScanProblem::setModel(CModel * pModel) {mpModel = pModel;}
 
 CModel * CScanProblem::getModel() const {return mpModel;}
+
+void CScanProblem::calculate()
+{
+  if (mpSteadyState != NULL)
+    {
+      // std::cout << "COptProblem: mpSteadyState";
+      mpSteadyState->process();
+    }
+  if (mpTrajectory != NULL)
+    {
+      // std::cout << "COptProblem: mpTrajectory";
+      mpTrajectory->process();
+    }
+}
