@@ -21,7 +21,8 @@
 #include <qcheckbox.h>
 #include "listviews.h"
 #include "model/CChemEqElement.h"
-#include <qfont.h> 
+#include <qfont.h>
+
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -163,7 +164,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4g->addSpacing(250);
 
   //for the commit and cancel buttons
-
   Frame4h = new QFrame(Frame3, "Frame4h");
   gridLayout1->addWidget(Frame4h, 8, 0, 0);
   QHBoxLayout *hBoxLayout4h = new QHBoxLayout(Frame4h, 0);
@@ -179,6 +179,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4h->addWidget(cancelChanges);
   hBoxLayout4h->addSpacing(15);
 
+  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
 }
@@ -224,12 +225,13 @@ void ReactionsWidget1::loadName(QString setValue)
       return ;
     }
 
+  name = setValue;
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   C_INT32 noOfReactionsRows = reactions.size();
 
+  CFunction *function;
   CReaction *reactn;
   CChemEq * chemEq;
-  CFunction *function;
 
   ComboBox1->clear();
   reactn = reactions[(string)setValue];
@@ -391,14 +393,46 @@ void ReactionsWidget1::loadName(QString setValue)
 
 void ReactionsWidget1::slotBtnCancelClicked()
 {
-  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
   emit signal_emitted(*Reaction1_Name);
 }
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
-  // emit signal_emitted(*Compartment1_Name);
-}
+  QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
+  string filename = ((string) name.latin1()) + ".gps";
+  CWriteConfig *Rtn = new CWriteConfig(filename);
 
-///end of all the functions
+  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  CReaction *reactn1;
+  reactn1 = reactions[(string)name.latin1()];
+
+  CChemEq * chem;
+  chem = & reactn1->getChemEq();
+
+  //for Chemical Reaction
+  chemical_reaction = new QString(LineEdit2->text());
+  chem->setChemicalEquation(chemical_reaction->latin1());
+
+  if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
+    {
+      reactn1->setReversible(TriFalse);
+    }
+
+  /*//if (QString::number(metab->getStatus()) == "0")
+
+    if (RadioButton1->isChecked() == TRUE && QString::number(metab->getStatus()) == "0")
+     {
+       metab->setStatus(0);
+     }
+    else
+     {
+    metab->setStatus(1);
+     } */
+
+  mModel->save(*Rtn);
+
+  //reactn1->save(*Rtn);
+  //Copasi->Model->save(*Rtn);
+  delete Rtn;
+}

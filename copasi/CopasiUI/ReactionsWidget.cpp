@@ -12,7 +12,6 @@
 #include <qmessagebox.h>
 #include "listviews.h"
 #include "ReactionsWidget.h"
-
 #include <qfont.h>
 
 /**
@@ -103,14 +102,12 @@ void ReactionsWidget::loadReactions(CModel *model)
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Reactions Widget",
-                           "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())");
+  QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Reactions Widget",
-                           "Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())");
+  QMessageBox::information(this, "Reactions Widget", "Do you really want to cancel changes");
 }
 
 void ReactionsWidget::slotTableSelectionChanged()
@@ -143,17 +140,4 @@ void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QP
   QString x = table->text(row, col);
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
-}
-
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
-void ReactionsWidget::showMessage(QString title, QString text)
-{
-  QMessageBox::about (this, title, text);
 }

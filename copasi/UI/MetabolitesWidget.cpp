@@ -11,7 +11,6 @@
 #include <qmessagebox.h>
 #include "MetabolitesWidget.h"
 #include "model/CMetab.h"
-
 #include "listviews.h"
 #include <qfont.h>
 
@@ -152,11 +151,6 @@ void MetabolitesWidget::slotTableSelectionChanged()
  ** Returns  :-  void(Nothing)
  ** Description:- This method is used to show the message box on the screen
  ****************************************************************************************/
-
-void MetabolitesWidget::showMessage(QString title, QString text)
-{
-  QMessageBox::about (this, title, text);
-}
 
 void MetabolitesWidget::slotBtnOKClicked()
 {

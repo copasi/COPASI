@@ -57,7 +57,8 @@ class ReactionsWidget1 : public QWidget
     int isName(QString setValue);
     void loadReactions(CModel *model);
     QString *Reaction1_Name;
-
+    QString *chemical_reaction;
+    QString name;
     QFrame* Line1;
     QFrame* Line2;
 

@@ -208,7 +208,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   CWriteConfig *Com = new CWriteConfig(filename);
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
-  compartn1 = compartments1[(string)name];
+  compartn1 = compartments1[(string)name.latin1()];
 
   QString volume(LineEdit3->text());
   double m1;
