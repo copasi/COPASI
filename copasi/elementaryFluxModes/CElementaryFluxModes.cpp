@@ -22,8 +22,8 @@ void CElementaryFluxModes::calculate(const CModel * model)
   /* ModelStoi is the transpose of the models stoichiometry matrix */
   const CTransposeView< CMatrix< C_FLOAT64 > > ModelStoi(mModel->getStoi());
 
-  unsigned C_INT32 row, numRows = mModel->getStoi().numRows();
-  unsigned C_INT32 col, numCols = mModel->getStoi().numCols();
+  unsigned C_INT32 row, numRows = ModelStoi.numRows();
+  unsigned C_INT32 col, numCols = ModelStoi.numCols();
 
   /* Size the stoichiometry matrix passed to the algorithm */
   std::vector< std::vector< C_FLOAT64 > > Stoi;
@@ -87,7 +87,7 @@ CElementaryFluxModes::getFluxModeDescription(const unsigned C_INT32 & index) con
 
     for (j = 0; j < jmax; j++)
       {
-        if (j) tmp << " ";
+        if (j) tmp << ", ";
         tmp << mFluxModes[index].getMultiplier(j) << " * "
         << Reaction[mIndex[mFluxModes[index].getReaction(j)]]->getName();
       }
