@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/12/04 21:25:04 $
+   $Author: shoops $ 
+   $Date: 2003/12/04 21:47:23 $
    End CVS Header */
 
 /**
@@ -202,7 +202,7 @@ CCopasiXMLParser::COPASIElement::COPASIElement(CCopasiXMLParser & parser,
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
 {}
 
-CCopasiXMLParser::COPASIElement::~COPASIElement() {}
+CCopasiXMLParser::COPASIElement::~COPASIElement() {pdelete(mpCurrentHandler);}
 
 void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
@@ -216,23 +216,23 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
       return;
 
     case ListOfFunctions:
-      if (strcmp(pszName, "ListOfFunctions")) fatalError();
-      mpCurrentHandler = new ListOfFunctionsElement(mParser, mCommon);
+      if (!strcmp(pszName, "ListOfFunctions"))
+        mpCurrentHandler = new ListOfFunctionsElement(mParser, mCommon);
       break;
 
     case Model:
-      if (strcmp(pszName, "Model")) fatalError();
-      mpCurrentHandler = new ModelElement(mParser, mCommon);
+      if (!strcmp(pszName, "Model"))
+        mpCurrentHandler = new ModelElement(mParser, mCommon);
       break;
 
     case ListOfTasks:
-      if (strcmp(pszName, "ListOfTasks")) fatalError();
-      mpCurrentHandler = new ListOfTasksElement(mParser, mCommon);
+      if (!strcmp(pszName, "ListOfTasks"))
+        mpCurrentHandler = new ListOfTasksElement(mParser, mCommon);
       break;
 
     case ListOfReports:
-      if (strcmp(pszName, "ListOfReports")) fatalError();
-      mpCurrentHandler = new ListOfReportsElement(mParser, mCommon);
+      if (!strcmp(pszName, "ListOfReports"))
+        mpCurrentHandler = new ListOfReportsElement(mParser, mCommon);
       break;
 
     default:
@@ -240,8 +240,10 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
       break;
     }
 
-  mParser.pushElementHandler(mpCurrentHandler);
-  mpCurrentHandler->start(pszName, papszAttrs);
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -253,6 +255,8 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       mParser.popElementHandler();
       mCurrentElement = -1;
     }
+  else
+    pdelete(mpCurrentHandler);
 
   return;
 }
@@ -800,86 +804,51 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       mCommon.pModel->setTimeUnit(TimeUnit);
       mCommon.pModel->setVolumeUnit(VolumeUnit);
       mCommon.pModel->setQuantityUnit(QuantityUnit);
-
+      return;
       break;
 
     case Comment:
-      if (strcmp(pszName, "Comment")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (!strcmp(pszName, "Comment"))
         mpCurrentHandler = new CommentElement(mParser, mCommon);
-
-      /* Push the Comment element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     case ListOfCompartments:
-      if (strcmp(pszName, "ListOfCompartments")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (strcmp(pszName, "ListOfCompartments"))
         mpCurrentHandler = new ListOfCompartmentsElement(mParser, mCommon);
 
-      /* Push the ListOfCompartments element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     case ListOfMetabolites:
-      if (strcmp(pszName, "ListOfMetabolites")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (strcmp(pszName, "ListOfMetabolites"))
         mpCurrentHandler = new ListOfMetabolitesElement(mParser, mCommon);
-
-      /* Push the ListOfMetabolites element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     case ListOfReactions:
-      if (strcmp(pszName, "ListOfReactions")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (strcmp(pszName, "ListOfReactions"))
         mpCurrentHandler = new ListOfReactionsElement(mParser, mCommon);
-
-      /* Push the ListOfReactions element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
 #ifdef XXXX
     case StateTemplate:
-      if (strcmp(pszName, "StateTemplate")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (strcmp(pszName, "StateTemplate"))
         mpCurrentHandler = new StateTemplateElement(mParser, mCommon);
-
-      /* Push the StateTemplate element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     case InitialState:
-      if (strcmp(pszName, "InitialState")) fatalError();
-
-      /* If we do not have a function element handler we create one. */
-      if (!mpCurrentHandler)
+      if (strcmp(pszName, "InitialState"))
         mpCurrentHandler = new InitialStateElement(mParser, mCommon);
-
-      /* Push the InitialState element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 #endif // XXXX
+
     default:
       fatalError();
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -1375,6 +1344,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   std::map< std::string, std::string >::const_iterator CompartmentKey;
 
   mCurrentElement++; /* We should always be on the next element */
+  mpCurrentHandler = NULL;
 
   switch (mCurrentElement)
     {
@@ -1402,77 +1372,73 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
           mCommon.pReaction->setCompartment(pCompartment);
         }
 
+      return;
       break;
 
     case ListOfSubstrates:
-      if (strcmp(pszName, "ListOfSubstrates")) fatalError();
+      if (!strcmp(pszName, "ListOfSubstrates"))
+        {
+          /* If we do not have a function element handler we create one. */
+          if (!mpListOfSubstratesElement)
+            mpListOfSubstratesElement =
+              new ListOfSubstratesElement(mParser, mCommon);
 
-      /* If we do not have a function element handler we create one. */
-      if (!mpListOfSubstratesElement)
-        mpListOfSubstratesElement = new ListOfSubstratesElement(mParser, mCommon);
-
-      /* Push the ListOfSubstrates element handler on the stack and call it. */
-      mpCurrentHandler = mpListOfSubstratesElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpListOfSubstratesElement;
+        }
       break;
 
     case ListOfProducts:
-      if (strcmp(pszName, "ListOfProducts")) fatalError();
+      if (!strcmp(pszName, "ListOfProducts"))
+        {
+          if (!mpListOfProductsElement)
+            mpListOfProductsElement =
+              new ListOfProductsElement(mParser, mCommon);
 
-      /* If we do not have a ListOfProducts element handler we create one. */
-      if (!mpListOfProductsElement)
-        mpListOfProductsElement = new ListOfProductsElement(mParser, mCommon);
-
-      /* Push the ListOfProducts element handler on the stack and call it. */
-      mpCurrentHandler = mpListOfProductsElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpListOfProductsElement;
+        }
       break;
 
     case ListOfModifiers:
-      if (strcmp(pszName, "ListOfModifiers")) fatalError();
+      if (!strcmp(pszName, "ListOfModifiers"))
+        {
+          if (!mpListOfModifiersElement)
+            mpListOfModifiersElement =
+              new ListOfModifiersElement(mParser, mCommon);
 
-      /* If we do not have a ListOfModifiers element handler we create one. */
-      if (!mpListOfModifiersElement)
-        mpListOfModifiersElement = new ListOfModifiersElement(mParser, mCommon);
-
-      /* Push the ListOfModifiers element handler on the stack and call it. */
-      mpCurrentHandler = mpListOfModifiersElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpListOfModifiersElement;
+        }
       break;
 
     case ListOfConstants:
-      if (strcmp(pszName, "ListOfConstants")) fatalError();
+      if (!strcmp(pszName, "ListOfConstants"))
+        {
+          if (!mpListOfConstantsElement)
+            mpListOfConstantsElement =
+              new ListOfConstantsElement(mParser, mCommon);
 
-      /* If we do not have a ListOfConstants element handler we create one. */
-      if (!mpListOfConstantsElement)
-        mpListOfConstantsElement = new ListOfConstantsElement(mParser, mCommon);
-
-      /* Push the ListOfConstants element handler on the stack and call it. */
-      mpCurrentHandler = mpListOfConstantsElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpListOfConstantsElement;
+        }
       break;
 
     case KineticLaw:
-      if (strcmp(pszName, "KineticLaw")) fatalError();
+      if (!strcmp(pszName, "KineticLaw"))
+        {
+          if (!mpKineticLawElement)
+            mpKineticLawElement = new KineticLawElement(mParser, mCommon);
 
-      /* If we do not have a KineticLaw element handler we create one. */
-      if (!mpKineticLawElement)
-        mpKineticLawElement = new KineticLawElement(mParser, mCommon);
-
-      /* Push the KineticLaw element handler on the stack and call it. */
-      mpCurrentHandler = mpKineticLawElement;
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
+          mpCurrentHandler = mpKineticLawElement;
+        }
       break;
 
     default:
       fatalError();
       break;
     }
+
+  if (mpCurrentHandler)
+    mParser.pushElementHandler(mpCurrentHandler);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -1616,11 +1582,9 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      //pMetabolite =
-      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      //mCommon.pReaction->addSubstrate(pMetabolite, atof(Stoichiometry));
-      mCommon.pReaction->addSubstrate(MetaboliteKey->second, atof(Stoichiometry));
+      mCommon.pReaction->addSubstrate(MetaboliteKey->second,
+                                      atof(Stoichiometry));
       break;
 
     default:
@@ -1749,10 +1713,7 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      //pMetabolite =
-      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      //mCommon.pReaction->addProduct(pMetabolite, atof(Stoichiometry));
       mCommon.pReaction->addProduct(MetaboliteKey->second, atof(Stoichiometry));
       break;
 
@@ -1882,11 +1843,9 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
 
       MetaboliteKey = mCommon.KeyMap.find(Metabolite);
       if (MetaboliteKey == mCommon.KeyMap.end()) fatalError();
-      //pMetabolite =
-      //  (CMetab*)(CCopasiContainer*)CKeyFactory::get(MetaboliteKey->second);
 
-      //mCommon.pReaction->addModifier(pMetabolite, atof(Stoichiometry));
-      mCommon.pReaction->addModifier(MetaboliteKey->second, atof(Stoichiometry));
+      mCommon.pReaction->addModifier(MetaboliteKey->second,
+                                     atof(Stoichiometry));
       break;
 
     default:
@@ -2087,7 +2046,6 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       mCommon.pReaction->setFunction(pFunction);
       break;
 
-#ifdef XXXX
     case ListOfCallParameters:
       if (strcmp(pszName, "ListOfCallParameters")) fatalError();
 
@@ -2099,7 +2057,6 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
-#endif // XXXX
 
     default:
       fatalError();
@@ -2235,7 +2192,6 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       mCommon.SourceParameterKeys.clear();
       break;
 
-#ifdef XXXX
     case SourceParameter:
       if (strcmp(pszName, "SourceParameter")) fatalError();
 
@@ -2247,7 +2203,6 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
       mParser.pushElementHandler(mpCurrentHandler);
       mpCurrentHandler->start(pszName, papszAttrs);
       break;
-#endif // XXXX
 
     default:
       fatalError();
@@ -2263,14 +2218,14 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
     {
     case CallParameter:
       if (strcmp(pszName, "CallParameter")) fatalError();
-#ifdef XXXX
       if (mCommon.SourceParameterKeys.size() > 0)
         {
-          mCommon.pReaction->setParameterMappingVector(mpFunctionParameter->getName(),
-              mCommon.SourceParameterKeys);
+          mCommon.pReaction->
+          setParameterMappingVector(mpFunctionParameter->getName(),
+                                    mCommon.SourceParameterKeys);
           mCommon.SourceParameterKeys.clear();
         }
-#endif // XXXX
+
       mParser.popElementHandler();
       mCurrentElement = -1;
 
@@ -2281,6 +2236,66 @@ void CCopasiXMLParser::CallParameterElement::end(const XML_Char *pszName)
     case SourceParameter:
       if (strcmp(pszName, "SourceParameter")) fatalError();
       mCurrentElement = CallParameter;
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+CCopasiXMLParser::SourceParameterElement::SourceParameterElement(CCopasiXMLParser & parser,
+    SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+{}
+
+CCopasiXMLParser::SourceParameterElement::~SourceParameterElement()
+{
+  pdelete(mpCurrentHandler);
+}
+
+void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
+    const XML_Char **papszAttrs)
+{
+  mCurrentElement++; /* We should always be on the next element */
+
+  const char * Reference;
+  std::map< std::string, std::string >::const_iterator ReferenceKey;
+
+  switch (mCurrentElement)
+    {
+    case SourceParameter:
+      if (strcmp(pszName, "SourceParameter")) fatalError();
+
+      Reference =
+        mParser.getAttributeValue("reference", papszAttrs);
+      ReferenceKey = mCommon.KeyMap.find(Reference);
+      if (ReferenceKey == mCommon.KeyMap.end()) fatalError();
+
+      mCommon.SourceParameterKeys.push_back(ReferenceKey->second);
+      break;
+
+    default:
+      fatalError();
+      break;
+    }
+
+  return;
+}
+
+void CCopasiXMLParser::SourceParameterElement::end(const XML_Char *pszName)
+{
+  switch (mCurrentElement)
+    {
+    case SourceParameter:
+      if (strcmp(pszName, "SourceParameter")) fatalError();
+      mParser.popElementHandler();
+      mCurrentElement = -1;
+
+      /* Tell the parent element we are done. */
+      mParser.onEndElement(pszName);
       break;
 
     default:
@@ -2315,7 +2330,8 @@ CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement()
   pdelete(mpCurrentHandler);
 }
 
-void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName, const XML_Char **papszAttrs)
+void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
+    const XML_Char ** C_UNUSED(papszAttrs))
 {
   mCurrentElement++; // We should always be on the next element
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:55 $
+   $Date: 2003/12/04 21:47:23 $
    End CVS Header */
 
 /**
@@ -155,6 +155,47 @@ class CCopasiXMLParser : public CExpat
       };
 
 #endif // COPASI_TEMPLATE
+
+  class SourceParameterElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          SourceParameter = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        SourceParameterElement(CCopasiXMLParser & parser,
+                               SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~SourceParameterElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
 
   class CallParameterElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
