@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.148 $
+   $Revision: 1.149 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/24 19:08:56 $
+   $Date: 2003/11/25 14:32:01 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -11,8 +11,8 @@
 // model.cpp : interface of the CModel class
 //
 /////////////////////////////////////////////////////////////////////////////
-#include "copasi.h" 
-//#include "C:/Qt/3.2.0/include/qstring.h"
+#include "copasi.h"
+
 #include <string>
 #include <vector>
 #include <limits.h>
@@ -39,8 +39,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CVector.h"
 #include "utilities/CluX.h"
-#include "utilities/utility.h" 
-// #include "CopasiUI/CReactionInterface.h"
+#include "utilities/utility.h"
 
 #include "clapackwrap.h"
 
@@ -1201,17 +1200,17 @@ void CModel::setInitialState(const CStateX * state)
   /* Set the independent variable metabolites */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
-    mMetabolites[i]->setInitialNumber(*Dbl);
+    mMetabolitesX[i]->setInitialNumber(*Dbl);
 
   /* Set the dependent variable metabolites */
   Dbl = state->getDependentNumberVector().array();
   for (i = getIndMetab(), imax = getIntMetab(); i < imax; i++, Dbl++)
-    mMetabolites[i]->setInitialNumber(*Dbl);
+    mMetabolitesX[i]->setInitialNumber(*Dbl);
 
   /* Set the fixed metabolites */
   Dbl = state->getFixedNumberVector().array();
   for (i = getIntMetab(), imax = getTotMetab(); i < imax; i++, Dbl++)
-    mMetabolites[i]->setInitialNumber(*Dbl);
+    mMetabolitesX[i]->setInitialNumber(*Dbl);
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1239,7 +1238,7 @@ void CModel::setState(const CState * state)
   /* Set the variable metabolites */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
-    mMetabolitesX[i]->setNumber(*Dbl);
+    mMetabolites[i]->setNumber(*Dbl);
 
   //   DebugFile << "setState " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
