@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/02 20:00:51 $
+   $Date: 2004/12/03 10:04:17 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.26 2004/12/02 20:00:51 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.27 2004/12/03 10:04:17 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -397,7 +397,11 @@ bool PlotWidget1::saveToPlotSpec()
   pspec->cleanup();
 
   //title
-  pspec->setTitle((const char*)titleLineEdit->text().utf8());
+  if (pspec->getTitle() != (const char*)titleLineEdit->text().utf8())
+    {
+      pspec->setTitle((const char*)titleLineEdit->text().utf8());
+      protectedNotify(ListViews::PLOT, ListViews::RENAME, objKey);
+    }
 
   //active?
   pspec->setActive(activeCheckBox->isChecked());
