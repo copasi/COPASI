@@ -70,23 +70,23 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   if (configBuffer.getVersion() < "4")
     {
       if ((Fail = configBuffer.getVariable("TotalMetabolites", "C_INT32", 
-					   &Size, CReadConfig::LOOP)))
-	return Fail;
+                                           &Size, CReadConfig::LOOP)))
+        return Fail;
         
       if ((Fail = Copasi.OldMetabolites.load(configBuffer, Size)))
-	return Fail;
+        return Fail;
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
-				       CReadConfig::LOOP)))
+                                       CReadConfig::LOOP)))
     return Fail;
 
   if ((Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
-				       CReadConfig::SEARCH)))
+                                       CReadConfig::SEARCH)))
     return Fail;
  
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
-				       CReadConfig::LOOP)))
+                                       CReadConfig::LOOP)))
     return Fail;
  
   if ((Fail = mCompartments->load(configBuffer, Size))) return Fail;
@@ -97,10 +97,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       CMetab Metabolite;
       for (i = 0; i < Copasi.OldMetabolites.size(); i++)
         {
-	  Metabolite = Copasi.OldMetabolites[i];
+          Metabolite = Copasi.OldMetabolites[i];
             
-	  (*mCompartments)[Copasi.OldMetabolites[i].getIndex()].
-	    addMetabolite(Metabolite);
+          (*mCompartments)[Copasi.OldMetabolites[i].getIndex()].
+            addMetabolite(Metabolite);
         }
     }
 
@@ -109,7 +109,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   if ((Fail = Copasi.FunctionDB.load(configBuffer))) return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
-				       CReadConfig::LOOP)))
+                                       CReadConfig::LOOP)))
     return Fail;
     
   if ((Fail = mSteps->load(configBuffer, Size))) return Fail;
@@ -167,15 +167,15 @@ void CModel::buildStoi()
         
       for (j=0; j<mMetabolites.size(); j++)
         {
-	  mStoi[j][i] = 0.0;
-	  Name = mMetabolites[j]->getName();
+          mStoi[j][i] = 0.0;
+          Name = mMetabolites[j]->getName();
 
-	  for (k=0; k<Structure.size(); k++)
-	    if (Structure[k].mName == Name)
-	      {
-		mStoi[j][i] = Structure[k].mValue;
-		break;
-	      }
+          for (k=0; k<Structure.size(); k++)
+            if (Structure[k].mName == Name)
+              {
+                mStoi[j][i] = Structure[k].mValue;
+                break;
+              }
         }
     }
   cout << "Stoichiometry Matrix" << endl;
@@ -217,9 +217,9 @@ void CModel::lUDecomposition()
     {
       if (rowLU[i] - 1 > i)
         {
-	  pMetab = mMetabolitesX[i];
-	  mMetabolitesX[i] = mMetabolitesX[rowLU[i]-1];
-	  mMetabolitesX[rowLU[i]-1] = pMetab;
+          pMetab = mMetabolitesX[i];
+          mMetabolitesX[i] = mMetabolitesX[rowLU[i]-1];
+          mMetabolitesX[rowLU[i]-1] = pMetab;
         }
     }
     
@@ -228,9 +228,9 @@ void CModel::lUDecomposition()
     {
       if (colLU[i]-1 < i)
         {
-	  pStep = mStepsX[i];
-	  mStepsX[i] = mStepsX[colLU[i]-1];
-	  mStepsX[colLU[i]-1] = pStep;
+          pStep = mStepsX[i];
+          mStepsX[i] = mStepsX[colLU[i]-1];
+          mStepsX[colLU[i]-1] = pStep;
         }
     }
 
@@ -260,7 +260,7 @@ void CModel::setMetabolitesStatus()
       Sum = 0.0;
         
       for (k=0; k<mLU.num_cols(); k++)
-	Sum += fabs(mLU[j][k]);
+        Sum += fabs(mLU[j][k]);
       if (Sum == 0.0) break;
       mMetabolitesX[j]->setStatus(METAB_DEPENDENT);
     }
@@ -277,7 +277,7 @@ void CModel::buildRedStoi()
 {
   C_INT32 i,j,k;
   C_FLOAT64 Sum;
-  C_INT32 imax, jmax, kmax;		// wei for compiler
+  C_INT32 imax, jmax, kmax;                // wei for compiler
 
   imax = mMetabolitesInd.size();
   jmax = mStepsX.size();
@@ -287,21 +287,21 @@ void CModel::buildRedStoi()
   for (i=0; i<imax; i++)
     for (j=0; j<jmax; j++)
       {
-	Sum = 0.0;
+        Sum = 0.0;
 
-	/* Since L[i,k] = 1 for k = i and L[i,k] = 0 for k > i
-	   we have to avoid L[i,k] where k >= i, i.e.. k < i.
-	   Similarly, since U[k,j] = 0 for k > j
-	   we have to avoid U[k,j] where k > j, i.e., k <= j.
-	   Therefore, kmax = min(i-1, j). */
-	kmax = (i - 1 < j) ? i - 1: j;
-	for (k=0; k<kmax; k++)
-	  Sum += mLU[i][k] * mLU[k][j];
+        /* Since L[i,k] = 1 for k = i and L[i,k] = 0 for k > i
+           we have to avoid L[i,k] where k >= i, i.e.. k < i.
+           Similarly, since U[k,j] = 0 for k > j
+           we have to avoid U[k,j] where k > j, i.e., k <= j.
+           Therefore, kmax = min(i-1, j). */
+        kmax = (i - 1 < j) ? i - 1: j;
+        for (k=0; k<kmax; k++)
+          Sum += mLU[i][k] * mLU[k][j];
 
-	/* For i - 1 < j we are missing a part of the sum: */
-	if (i - 1 < j) Sum += /* mLU[i][i]* */ mLU[i][j]; // since L[i,i] = 1
+        /* For i - 1 < j we are missing a part of the sum: */
+        if (i - 1 < j) Sum += /* mLU[i][i]* */ mLU[i][j]; // since L[i,i] = 1
 
-	mRedStoi[i][j] = Sum;
+        mRedStoi[i][j] = Sum;
       }
   cout << "Reduced Stoichiometry Matrix" << endl;
   cout << mRedStoi << endl;
@@ -401,8 +401,8 @@ void CModel::buildMoieties()
         
       for (j=0; j<jmax; j++)
         {
-	  if (mL[j][i] != 0.0)
-	    Moiety.add(mL[j][i], mMetabolitesX[j]);
+          if (mL[j][i] != 0.0)
+            Moiety.add(mL[j][i], mMetabolitesX[j]);
         }
       Moiety.setInitialValue();
       cout << Moiety.getDescription() << endl;
@@ -457,7 +457,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
     {
       ydot[i] = 0.0;
       for (j=0; j<mSteps->size(); j++)
-	ydot[i] += mRedStoi[i][j] * v[j];
+        ydot[i] += mRedStoi[i][j] * v[j];
     }
     
   delete [] v;
@@ -506,7 +506,7 @@ C_INT32 CModel::getDimension() const
 }
 
 /**
- *	Return the comments of this model	Wei Sun 
+ *        Return the comments of this model        Wei Sun 
  */
 string CModel::getComments() const
 {
@@ -515,8 +515,8 @@ string CModel::getComments() const
 
 
 /**
- *	Return the title of this model
- *	@return string
+ *        Return the title of this model
+ *        @return string
  */
 string CModel::getTitle() const
 {
@@ -524,8 +524,8 @@ string CModel::getTitle() const
 }
 
 /**
- *	Return the comments of this model
- *	@return CCopasiVector < CCompartment > *
+ *        Return the comments of this model
+ *        @return CCopasiVector < CCompartment > *
  */
 CCopasiVector < CCompartment > * CModel::getCompartments()
 {
@@ -533,8 +533,8 @@ CCopasiVector < CCompartment > * CModel::getCompartments()
 }
 
 /**
- *	Return the metabolites of this model
- *	@return vector < CMetab * > 
+ *        Return the metabolites of this model
+ *        @return vector < CMetab * > 
  */
 vector < CMetab * > & CModel::getMetabolites()
 {
@@ -550,8 +550,8 @@ TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi()
 }
 
 /**
- *	Return the mMoieties of this model	
- *	@return CCopasiVector < CMoiety > * 
+ *        Return the mMoieties of this model        
+ *        @return CCopasiVector < CMoiety > * 
  */
 CCopasiVector < CMoiety > * CModel::getMoieties()
 {
@@ -559,7 +559,7 @@ CCopasiVector < CMoiety > * CModel::getMoieties()
 }
 
 /**
- *	Returns the index of the metab
+ *        Returns the index of the metab
  */
 C_INT32 CModel::findMetab(string &Target)
 {
@@ -576,7 +576,7 @@ C_INT32 CModel::findMetab(string &Target)
 }
 
 /**
- *	Returns the index of the step
+ *        Returns the index of the step
  */
 C_INT32 CModel::findStep(string &Target)
 {
@@ -593,7 +593,7 @@ C_INT32 CModel::findStep(string &Target)
 }
 
 /**
- *	Returns the index of the compartment
+ *        Returns the index of the compartment
  */
 C_INT32 CModel::findCompartment(string &Target)
 {
@@ -610,7 +610,7 @@ C_INT32 CModel::findCompartment(string &Target)
 }
 
 /**
- *	Returns the index of the Moiety
+ *        Returns the index of the Moiety
  */
 C_INT32 CModel::findMoiety(string &Target)
 {
