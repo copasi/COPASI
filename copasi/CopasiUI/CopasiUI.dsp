@@ -98,6 +98,10 @@ SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Expression.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ExpressionWidget.cpp
 # End Source File
 # Begin Source File
@@ -267,6 +271,10 @@ SOURCE=.\DataModel.h
 # Begin Source File
 
 SOURCE=.\DifferentialEquations.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Expression.h
 # End Source File
 # Begin Source File
 

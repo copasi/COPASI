@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.10 2003/09/22 11:52:41 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.11 2003/09/23 04:07:43 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +23,7 @@ class QLabel;
 class QListBox;
 class QLineEdit;
 class QTextEdit;
-class CFunction;
+class CExpression;
 
 class ExpressionWidget : public CopasiWidget
   {
@@ -63,7 +63,7 @@ class ExpressionWidget : public CopasiWidget
     QGridLayout* layout14;
     QHBoxLayout* layout14_2;
 
-    bool loadFromExpression(CFunction*);
+    bool loadFromExpression(CExpression*);
     std::string objKey;
     bool bUpdated;
 
