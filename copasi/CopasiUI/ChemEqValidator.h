@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ChemEqValidator.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 18:55:47 $
+   $Date: 2004/10/15 17:12:26 $
    End CVS Header */
 
 #ifndef CHEMEQVAL
@@ -19,7 +19,7 @@ class ChemEqValidator : public QValidator
         : QValidator(parent, name)
     {}
 
-    virtual State validate (QString & input, int & pos) const
+    virtual State validate (QString & input, int & C_UNUSED(pos)) const
       {
         std::string eq = (const char *)input.utf8();
         if (CChemEqInterface::isValidEq(eq))
