@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
  **
- ** Created: Tue Feb 4 16:45:46 2003
+ ** Created: Thu Feb 13 12:57:19 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -9,19 +9,28 @@
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
 
+<<< <<< < SteadyStateWidget.h
+== == == =
 #include <qvariant.h>
-#include <qwidget.h>
-#include "copasi.h"
+#include <qwidget.h> 
+  >>> >>> > 1.3
+#include "copasi.h" 
+  <<< <<< < SteadyStateWidget.h
+#include "Structures.h"
+#include <qvariant.h>
+#include <qwidget.h> 
+  == == == =
+    >>> >>> > 1.3
 
-class QVBoxLayout;
+    class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QCheckBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRadioButton;
-class QSplitter;
 class QTable;
 class CSteadyStateTask;
 class CSteadyStateProblem;
@@ -37,35 +46,33 @@ class SteadyStateWidget : public QWidget
     CSteadyStateTask *mSteadyStateTask;
     void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
 
-    QFrame* line6;
-    QSplitter* splitter3;
-    QPushButton* commitChange;
-    QPushButton* cancelChange;
-    QSplitter* splitter11;
-    QLabel* parameterValueLabel;
-    QTable* parameterTable;
     QFrame* line8;
-    QSplitter* splitter12;
+    QFrame* line7;
     QLabel* taskDescriptionLabel;
     QRadioButton* taskJacobian;
     QRadioButton* taskStability;
-    QFrame* line7;
-    QSplitter* splitter7;
+    QFrame* line6;
     QLabel* taskNameLabel;
+    QPushButton* bRunButton;
+    QPushButton* commitChange;
+    QPushButton* cancelChange;
     QLineEdit* taskName;
-    // QString name;
+    QLabel* parameterValueLabel;
+    QTable* parameterTable;
+    QCheckBox* bExecutable;
+
   public slots:
-    virtual void taskNameChanged();
+    virtual void CancelChange();
+    virtual void CommitChange();
     virtual void methodJacob();
     virtual void methodStability();
+    virtual void RunButtonClicked();
     virtual void parameterValueChanged();
-    virtual void CommitChange();
-    virtual void CancelChange();
+    virtual void RunTask();
+    virtual void taskNameChanged();
 
   protected:
-    QVBoxLayout* layout15;
-    QVBoxLayout* layout14;
-    QHBoxLayout* Layout2;
+    QHBoxLayout* Layout5;
   };
 
 #endif // STEADYSTATEWIDGET_H
