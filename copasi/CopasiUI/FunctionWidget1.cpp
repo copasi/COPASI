@@ -191,7 +191,6 @@ int FunctionWidget1::isName(QString setValue)
     }
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
-  C_INT32 noOfFunctionsRows = Functions.size();
 
   //Now filling the table.
 
@@ -277,7 +276,7 @@ void FunctionWidget1::loadName(QString setValue)
       int numberOfRows1 = Table1->numRows();
       int numberOfRows2 = Table2->numRows();
 
-      for (int i = 0; i < numberOfRows1; i++)
+      for (i = 0; i < numberOfRows1; i++)
         {
           Table1->removeRow(0);
         }
@@ -293,7 +292,9 @@ void FunctionWidget1::loadName(QString setValue)
       Table1->setNumRows(noOffunctParams);
       // for parameters table
 
-      for (int j = 0; j < noOffunctParams; j++)
+      int j;
+
+      for (j = 0; j < noOffunctParams; j++)
         {
           Table1->setText(j, 0, functParam[j]->getName().c_str());
           Table1->setText(j, 1, CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str());
@@ -419,7 +420,9 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   // for parameters table
 
-  for (int j = 0; j < noOffunctParams; j++)
+  int j;
+
+  for (j = 0; j < noOffunctParams; j++)
     {
       //param_Name = new QString(Table1->text(j,0));
       param_Name = &Table1->text(j, 0);
