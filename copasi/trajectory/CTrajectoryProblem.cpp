@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/18 03:50:38 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 13:41:42 $
    End CVS Header */
 
 /**
@@ -33,8 +33,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     mInitialState(),
     mEndState()
 {
-  addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 1);
-  addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+  addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
+  addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
   addParameter("StartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
   addParameter("EndTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
 
