@@ -1,0 +1,16 @@
+PROJECT_NAME     = Client
+OUTPUT_DIRECTORY = ./Client/docs
+INPUT            = 	\
+			./Client/Client.h				./Client/Client.cpp \
+			./Client/ClientNetwork.h		./Client/ClientNetwork.cpp \
+			./Client/ClientSocketReader.h	./Client/ClientSocketReader.cpp \
+			./Client/ClientSocketWriter.h	./Client/ClientSocketWriter.cpp \
+			./Client/Message.h				./Client/Message.cpp \
+			./Client/Mutex.h \
+			./Client/Constants.h
+
+
+
+WARNINGS         = YES
+JAVADOC_AUTOBRIEF = YES
+

@@ -1,0 +1,17 @@
+PROJECT_NAME     = Server
+OUTPUT_DIRECTORY = ./Server/docs
+INPUT            = 	\
+			./Server/Server.h				./Server/Server.cpp \
+			./Server/ServerNetwork.h		./Server/ServerNetwork.cpp \
+			./Server/ServerSocketReader.h	./Server/ServerSocketReader.cpp \
+			./Server/ServerManager.h		./Server/ServerManager.cpp \
+			./Server/ClientConnection.h		./Server/ClientConnection.cpp \
+			./Server/Message.h				./Server/Message.cpp \
+			./Server/Mutex.h \
+			./Server/Constants.h
+
+
+
+WARNINGS         = YES
+JAVADOC_AUTOBRIEF = YES
+
