@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:18:15 $
+   $Date: 2004/11/22 10:10:12 $
    End CVS Header */
 
 #include "copasi.h"
@@ -102,7 +102,7 @@ const double CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
     if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
-        // throw exception or something like that
+        // TODO:throw exception or something like that
       }
 
   // do several steps:
@@ -137,7 +137,7 @@ const double CStochMethod::step(const double & deltaT,
 
   mNumNumbers = mpCurrentState->getVariableNumberSize();
   mNumbers.resize(mNumNumbers);
-  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT32)mpCurrentState->getVariableNumber(i);
+  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_NUMBER)mpCurrentState->getVariableNumber(i);
   //TODO also put fixes variables here
 
   for (i = 0; i < mNumNumbers; ++i)
@@ -192,11 +192,11 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // We need the product of the cmu and hmu for this step.
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
-  C_FLOAT32 amu = 1; // initially
+  C_FLOAT64 amu = 1; // initially
   //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
-  C_INT32 number = 0;
-  C_INT32 lower_bound;
+  C_NUMBER number = 0;
+  C_NUMBER lower_bound;
   // substrate_factor - The substrates, raised to their multiplicities,
   // multiplied with one another. If there are, e.g. m substrates of type m,
   // and n of type N, then substrate_factor = M^m * N^n.
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =  /*INT_MAX*/ LONG_LONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.

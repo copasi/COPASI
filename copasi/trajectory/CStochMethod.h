@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:34:06 $
+   $Date: 2004/11/22 10:10:12 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
+
+#define C_NUMBER long long int
 
 #include <set>
 #include <vector>
@@ -42,6 +44,7 @@ class CStochMethod : public CTrajectoryMethod
      * The propensities for the reactions
      */
     std::vector<C_FLOAT64> mAmu;
+
     /**
      * The sum of the propensities
      */
@@ -51,6 +54,7 @@ class CStochMethod : public CTrajectoryMethod
      * The stored propensities for the reactions before the last update
      */
     std::vector<C_FLOAT64> mAmuOld;
+
     /**
      * The sum of the propensities before the last update
      */ 
@@ -73,12 +77,14 @@ class CStochMethod : public CTrajectoryMethod
      * @see mFail
      */
     C_INT32 updatePropensities();
+
     /**
      * Calculate one of the propensities
      * @return mFail
      * @see mFail
      */
     C_INT32 calculateAmu(C_INT32 reaction_index);
+
     /**
      * Generate the index of a putative reaction.
      * @return The reaction index
@@ -143,10 +149,11 @@ class CStochMethod : public CTrajectoryMethod
     * maximal increase of a particle number in one step.
     */
     C_INT32 mMaxBalance;
+
     /**
     * This is set to maxint - mMaxSteps*mMaxBalance
     */
-    C_INT32 mMaxIntBeforeStep;
+    C_NUMBER mMaxIntBeforeStep;
 
   protected:
     /**
@@ -227,7 +234,7 @@ class CStochMethod : public CTrajectoryMethod
     /**
      * The particle numbers
      */
-    std::vector <C_INT32> mNumbers;
+    std::vector <C_NUMBER> mNumbers;
 
     unsigned C_INT32 mNumReactions;
     unsigned C_INT32 mNumNumbers;
