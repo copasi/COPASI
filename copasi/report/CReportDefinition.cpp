@@ -5,6 +5,8 @@
  *  Created for Copasi by Mudita Singhal
  */
 
+#include "copasi.h"
+
 #include "CKeyFactory.h"
 #include "CReportDefinition.h"
 #include "CReportBody.h"
