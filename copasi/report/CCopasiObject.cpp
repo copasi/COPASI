@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/18 15:35:29 $
+   $Date: 2004/12/19 19:58:20 $
    End CVS Header */
 
 /**
@@ -140,6 +140,7 @@ std::string CCopasiObject::getObjectDisplayName(bool regular /*=true*/, bool ric
       {
         ret = mpObjectParent->getObjectDisplayName(regular, richtext);
         if (ret == "(CN)Root") ret = "";
+        if (ret.substr(0, 7) == "(Model)") ret = "M";
       }
 
     if (ret.length() >= 2)
