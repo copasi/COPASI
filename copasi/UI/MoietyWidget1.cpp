@@ -7,6 +7,7 @@
  ** the Second level of Moieties.
  ********************************************************************/
 #include <qlabel.h>
+#include <qlistbox.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
@@ -14,7 +15,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qfont.h>
-
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "MoietyWidget1.h"
@@ -61,9 +61,15 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel1 = new QLabel("Equation", Frame4a);
   hBoxLayout4a->addWidget(TextLabel1);
   hBoxLayout4a->addSpacing(83);
-  LineEdit1 = new QLineEdit("", Frame4a);
+  //ListBox= new QListBox(Frame4a, "ListBox1");
+  // hBoxLayout4a->addWidget(ListBox);
+  //ListBox->setScrollBar(false);
+  //ListBox->setEnabled(false);
+
+  LineEdit1 = new QLineEdit(" " , Frame4a);
+  LineEdit1->setGeometry(QRect(110, 330, 531, 261));
   hBoxLayout4a->addWidget(LineEdit1);
-  LineEdit1->setEnabled(false);
+
   hBoxLayout4a->addSpacing(20);
 
   //Frame for 2nd Row
@@ -153,6 +159,23 @@ void MoietyWidget1::loadName(QString setValue)
   CMoiety *moiety;
   moiety = moieties[(std::string)setValue];
   LineEdit1->setText(moiety->getDescription().c_str());
+  //ListBox->insertItem(moiety->getDescription().c_str());
+
+  /*  CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
+  C_INT32 noOfMetabolitesRows = Metabs.size();
+  CMetab *mtb;
+  ListBox1->setFixedSize(100, 150);
+  ListBox1->setAutoScrollBar(true);
+  ListBox1->clear();
+
+  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+    {
+      mtb = Metabs[j];
+      ListBox1->insertItem(mtb->getName().c_str());
+    }
+
+  */
+
   LineEdit3->setText(moiety->getName().c_str());
   Moiety1_Name = new QString(moiety->getName().c_str());
 

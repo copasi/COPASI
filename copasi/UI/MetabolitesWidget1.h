@@ -34,8 +34,6 @@ class QLineEdit;
 
 class QComboBox;
 
-class QListBoxItem;
-
 class QButtonGroup;
 
 class QPushButton;

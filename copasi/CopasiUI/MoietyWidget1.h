@@ -27,8 +27,8 @@ class QToolBar;
 class QPopupMenu;
 
 class QLabel;
-
 class QLineEdit;
+#include <qlistbox.h>
 
 class QListBoxItem;
 
@@ -58,6 +58,7 @@ class MoietyWidget1 : public QWidget
     QLabel* TextLabel2;
     QLabel* TextLabel3;
     QLineEdit* LineEdit1;
+    QListBox* ListBox;
     QLineEdit* LineEdit2;
     QLineEdit* LineEdit3;
     QFrame* Frame1;
