@@ -29,6 +29,8 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
+#define INDEXLENGTH 1000
+
 enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class objectList;
@@ -113,8 +115,6 @@ struct objectListItem
     objectListItem* pNext;
     objectListItem* pLast;
   };
-
-#define INDEXLENGTH 100
 
 struct CIndex
   {

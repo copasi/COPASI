@@ -111,7 +111,8 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
   if (pCurrent == NULL)
     return;
   clickToReverseCheck((ObjectBrowserItem*)pCurrent);
-  updateUI();
+  //updateUI();
+  loadUI();
 }
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
@@ -331,8 +332,8 @@ void ObjectBrowser::updateUI()
   //refresh List stores all affected items,
 
   refreshList->sortList();
-  refreshList->delDuplicate();
-  refreshList->createQuickIndex();
+  refreshList->delDuplicate(); //to decrease the compare size
+  refreshList->createQuickIndex(); //construct index to do binary search
   for (objectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
       objectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
@@ -340,8 +341,8 @@ void ObjectBrowser::updateUI()
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
           if (pCurrent != pHead)
-            for (; (pCurrentLevel != NULL) && (refreshList->sortListInsert(pCurrentLevel)); pCurrentLevel = pCurrentLevel->parent())
-;
+            for (; (pCurrentLevel != NULL); pCurrentLevel = pCurrentLevel->parent())
+              refreshList->sortListInsert(pCurrentLevel);
         }
     }
 
