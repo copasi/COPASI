@@ -8,10 +8,10 @@
 class Constants
 {
 public:
-	static const int MESSAGE_START = 1;
-	static const int MESSAGE_STOP = 2;
-	static const int MESSAGE_PAUSE = 3;
-	static const int MESSAGE_CONTINUE = 4;
+    static const int MESSAGE_START = 1;
+    static const int MESSAGE_STOP = 2;
+    static const int MESSAGE_PAUSE = 3;
+    static const int MESSAGE_CONTINUE = 4;
 
 };
 

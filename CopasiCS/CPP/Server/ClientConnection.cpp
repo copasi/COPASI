@@ -1,11 +1,10 @@
-
 #include "ClientConnection.h"
 #include "ServerSocketReader.h"
 
 
 ClientConnection::ClientConnection():serverSocketReader(this)
 {
-	this->update = FALSE;
+    this->update = FALSE;
     this->readerRunning = FALSE;
 }
 
@@ -18,72 +17,71 @@ ClientConnection::ClientConnection():serverSocketReader(this)
 */
 void ClientConnection::setMembersAndStartReader(int clientSocket, ServerManager *m)
 {
- 	this->clientSocket = clientSocket;
-	manager = m;
+    this->clientSocket = clientSocket;
+    manager = m;
 
-    	cerr << "Inside ClientConnection::setMembersAndStartReader: Calling SSR" << endl;
-	//ServerSocketReader *serverSocketReaderPtr;
-        this->startReader();
+    cerr << "Inside ClientConnection::setMembersAndStartReader: Calling SSR" << endl;
+    //ServerSocketReader *serverSocketReaderPtr;
+    this->startReader();
 
 
 }
 
 int ClientConnection::getClientSocketFileDescriptor()
 {
-        return this->clientSocket;
+    return this->clientSocket;
 }
 void ClientConnection::updateConnection(boolean updateTo)
 {
-        this->update = updateTo;
+    this->update = updateTo;
 }
 
 Message ClientConnection::getMessage()
 {
-        return this->message;
+    return this->message;
 }
 
 void ClientConnection::setMessage(Message msg)
 {
-        this->message = msg;
+    this->message = msg;
 }
 
 
 boolean ClientConnection::getUpdateStatus()
 {
-        return this->update;
+    return this->update;
 }
 
 ServerManager* ClientConnection::getManager()
 {
-        return manager;
+    return manager;
 }
 
 string ClientConnection::printMessageDetails()
 {
-        return message.printMessageDetails();
+    return message.printMessageDetails();
 }
 
 
 void ClientConnection::startReader()
 {
-	if(this->readerRunning == FALSE)
-        {
-		serverSocketReader.start();
-        	this->readerRunning = TRUE;
-        }
+    if(this->readerRunning == FALSE)
+    {
+        serverSocketReader.start();
+        this->readerRunning = TRUE;
+    }
 }
 void ClientConnection::stopReader()
 {
- 	if(this->readerRunning)
-        {
-		serverSocketReader.stop();
-                this->readerRunning = FALSE;
+    if(this->readerRunning)
+    {
+        serverSocketReader.stop();
+        this->readerRunning = FALSE;
 
-        }
+    }
 }
 
 ClientConnection::~ClientConnection()
 {
-        this->stopReader();
+    this->stopReader();
 }
-
