@@ -21,22 +21,26 @@
  *  Default constructor.
  *
  */
-CScanProblem::CScanProblem()
-{
-  CONSTRUCTOR_TRACE;
-  //scanItem = new CMethodParameterList*[5];
-
-  //CMethodParameterList *cmpl = new CMethodParameterList();
-  //cmpl->setName("MyParameter");
-
-  //cout<<"\ndone";
-}
+CScanProblem::CScanProblem():
+    mpModel(NULL),
+    mProcessTrajectory(false),
+    mpTrajectory(NULL),
+    mProcessSteadyState(false),
+    mpSteaduState(NULL),
+    mScanItemList()
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src
  */
-CScanProblem::CScanProblem(const CScanProblem & C_UNUSED(src))
+CScanProblem::CScanProblem(const CScanProblem & src):
+    mpModel(src.mpModel),
+    mProcessTrajectory(src.mProcessTrajectory),
+    mpTrajectory(src.mpTrajectory),
+    mProcessSteadyState(src.mProcessSteadyState),
+    mpSteaduState(src.mpSteaduState),
+    mScanItemList(src.mScanItemList)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -48,27 +52,22 @@ CScanProblem::~CScanProblem()
 /**
  *  Size of the scanItem vector
  */
-C_INT32 CScanProblem::scanItemSize()
-{
-  return scanItem.size();
-}
+unsigned C_INT32 CScanProblem::getListSize() const
+  {return mScanItemList.size();}
 
 /**
  *  Add a Scan Item to the vector ScanItem
- * @param "CMethodParameterList *" Item
+ * @param const CMethodParameterList & Item
  */
-void CScanProblem::addScanItem(CMethodParameterList * Item)
-{
-  scanItem.add(Item);
-}
+void CScanProblem::addScanItem(const CMethodParameterList & Item)
+{mScanItemList.add(Item);}
+
 /**
  *  Get a Scan Item from the vector ScanItem
  * @param "C_INT32" itemNumber
  */
 CMethodParameterList * CScanProblem::getScanItem(C_INT32 itemNumber)
-{
-  return scanItem[itemNumber];
-}
+{return mScanItemList[itemNumber];}
 
 /**
  *  Add a parameter to a scan item
@@ -79,9 +78,7 @@ CMethodParameterList * CScanProblem::getScanItem(C_INT32 itemNumber)
 void CScanProblem::addScanItemParameter(const C_INT32 itemNumber,
                                         const std::string & name,
                                         const double & value)
-{
-  scanItem[itemNumber]->add(name, value);
-}
+{mScanItemList[itemNumber]->add(name, value);}
 
 /**
  *  Get a parameter from a scan item
@@ -90,9 +87,7 @@ void CScanProblem::addScanItemParameter(const C_INT32 itemNumber,
  */
 const double & CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
     const std::string & name)
-{
-  return scanItem[itemNumber]->getValue(name);
-}
+{return mScanItemList[itemNumber]->getValue(name);}
 
 /**
  *  Set the value of a parameter in a scan item
@@ -103,9 +98,7 @@ const double & CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
 void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
                                         const std::string & name,
                                         const double & value)
-{
-  scanItem[itemNumber]->setValue(name, value);
-}
+{mScanItemList[itemNumber]->setValue(name, value);}
 
 /**
  * Load a trajectory problem
@@ -180,3 +173,19 @@ void CScanProblem::save(CWriteConfig & configBuffer) const
     mpInitialState->save(configBuffer);
   }
  */
+
+bool CScanProblem::processTrajectory() const {return mProcessTrajectory;}
+
+bool CScanProblem::setProcessTrajectory(const bool & processTrajectory)
+{
+  mProcessTrajectory = processTrajectory;
+  return true;
+}
+
+bool CScanProblem::processSteadyState() const {return mProcessSteadyState;}
+
+bool CScanProblem::setProcessSteadyState(const bool & processSteadyState)
+{
+  mProcessSteadyState = processSteadyState;
+  return true;
+}

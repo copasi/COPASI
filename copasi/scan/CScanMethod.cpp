@@ -22,6 +22,8 @@
 // values of other distribution types
 #define SD_REGULAR 1
 
+CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
+
 CScanMethod::CScanMethod()
 {}
 
@@ -29,10 +31,10 @@ CScanMethod::CScanMethod()
  *  The main scan method.
  */
 
-void CScanMethod::scan(C_INT32 s, bool C_UNUSED(nl))
+void CScanMethod::scan(unsigned C_INT32 s, bool C_UNUSED(nl))
 {
-  C_INT scanDimension = scanProblem->scanItemSize();
-  int i, next, top;
+  unsigned C_INT32 scanDimension = scanProblem->getListSize();
+  unsigned C_INT32 i, next, top;
   //1.  find the first/last master scan item
 
   if (s > 0)
@@ -92,9 +94,7 @@ void CScanMethod::scan(C_INT32 s, bool C_UNUSED(nl))
   *  @param "CTrajectoryProblem *" problem
   */
 void CScanMethod::setProblem(CScanProblem * problem)
-{
-  scanProblem = problem;
-}
+{scanProblem = problem;}
 
 /**
  *  set the values master and all slave parameters
@@ -103,9 +103,11 @@ void CScanMethod::setProblem(CScanProblem * problem)
  * @param "C_INT32 last" last slave parameter
  */
 
-void CScanMethod::setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last)
+void CScanMethod::setScanParameterValue(unsigned C_INT32 i,
+                                        unsigned C_INT32 first,
+                                        unsigned C_INT32 last)
 {
-  int j;
+  unsigned C_INT32 j;
   double min, max, incr;
   for (j = first; j < last; j++)
     {

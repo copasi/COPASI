@@ -6,15 +6,18 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#ifndef COPASI_CTrajectoryProblem
-#define COPASI_CTrajectoryProblem
+#ifndef COPASI_CScanProblem
+#define COPASI_CScanProblem
 
 #include <string>
-#include "model/model.h"
 #include "utilities/CMethodParameterList.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
 #include "utilities/CCopasiVector.h"
+
+class CModel;
+class CWriteConfig;
+class CReadConfig;
+class CTrajectoryTask;
+class CSteadyStateTask;
 
 class CScanProblem
   {
@@ -25,9 +28,30 @@ class CScanProblem
      */
     CModel * mpModel;
 
-    //CMethodParameterList **scanItem;
+    /**
+     *
+     */
+    bool mProcessTrajectory;
 
-    CCopasiVectorNS < CMethodParameterList > scanItem;
+    /**
+     *
+     */
+    CTrajectoryTask * mpTrajectory;
+
+    /**
+     *
+     */
+    bool mProcessSteadyState;
+
+    /**
+     *
+     */
+    CSteadyStateTask * mpSteaduState;
+
+    /**
+     *
+     */
+    CCopasiVectorNS < CMethodParameterList > mScanItemList;
 
   public:
     // Operations
@@ -50,13 +74,14 @@ class CScanProblem
 
     /**
      *  Size of the scanItem vector
+     * @ return unsigned C_INT32 size
      */
-    C_INT32 scanItemSize();
+    unsigned C_INT32 getListSize() const;
 
     /**
      *  Add a Scan Item to the vector ScanItem
      */
-    void addScanItem(CMethodParameterList * Item);
+    void addScanItem(const CMethodParameterList & Item);
 
     /**
      *  Get a Scan Item from the vector ScanItem
@@ -104,25 +129,44 @@ class CScanProblem
     CModel * getModel() const;
 
     /**
+     * Check whether to process a Trajectory task
+     * @return bool processTrajectory
+     */
+    bool processTrajectory() const;
+
+    /**
+     * Set whether to process a Trajectory task
+     * @param const bool & processTrajectory
+     * @return bool success
+     */
+    bool setProcessTrajectory(const bool & processTrajectory);
+
+    /**
+     * Check whether to process a SteadyState task
+     * @return bool processSteadyState
+     */
+    bool processSteadyState() const;
+
+    /**
+     * Set whether to process a SteadyState task
+     * @param const bool & processSteadyState
+     * @return bool success
+     */
+    bool setProcessSteadyState(const bool & processSteadyState);
+
+    /**
      * Load a trajectory problem
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
      */
-
-    /*
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    */
 
     /**
      * Save a trajectory problem
      * @param "CWriteConfig &" configBuffer
      */
-
-    /*
     void save(CWriteConfig & configBuffer) const;
-    */
   };
 
-#endif // COPASI_CTrajectoryProblem
+#endif // COPASI_CScanProblem

@@ -35,12 +35,7 @@ class CScanMethod
      * Note: the returned object has to be released after use with delete
      */
 
-    /*
-    static CTrajectoryMethod *
-    createTrajectoryMethod(CTrajectoryMethod::Type type
-                           = CTrajectoryMethod::deterministic);
-
-    */
+    static CScanMethod * createMethod();
 
     /**
      *  Copy constructor.
@@ -63,16 +58,18 @@ class CScanMethod
     /**
      *  The main scan method.
      */
-    void scan(C_INT32 i, bool nl);
+    void scan(unsigned C_INT32 i, bool nl);
 
     /**
      *  Set the value of the scan parameter based on the distribution
-     *  @param "C_INT32 i" where to start in the distribution
-     *  @param "C_INT32 first" first parameter in the set of Master/Slaves
-     *  @param "C_INT32 last" last parameter in the set of Master/Slaves
+     *  @param unsigned C_INT32 i where to start in the distribution
+     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
+     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
      */
 
-    void setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last);
+    void setScanParameterValue(unsigned C_INT32 i,
+                               unsigned C_INT32 first,
+                               unsigned C_INT32 last);
   };
 
 #endif // COPASI_CTrajectoryMethod

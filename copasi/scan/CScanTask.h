@@ -6,6 +6,9 @@
  *  
  */
 
+#ifndef COPASI_CScanTask
+#define COPASI_CScanTask
+
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 
@@ -20,17 +23,17 @@ class CScanTask
     /**
      * A pointer to the problem to be integrated.
      */
-    CScanProblem *scanProblem;
+    CScanProblem *mpProblem;
 
     /**
      * A pointer to the method choosen for the integration.
      */
-    CScanMethod * scanMethod;
+    CScanMethod * mpMethod;
 
     /**
      * Pointer to the output stream for reporting
      */
-    std::ofstream * mpOut;
+    std::ostream * mpOut;
 
     //Operations
   public:
@@ -59,7 +62,7 @@ class CScanTask
      * Initilize the reporting feature
      * @param ofstream & out
      */
-    void initializeReporting(std::ofstream & out);
+    void initializeReporting(std::ostream & out);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -104,4 +107,4 @@ class CScanTask
      */
     void process();
   };
-#endif // COPASI_CTrajectoryTask
+#endif // COPASI_CScanTask
