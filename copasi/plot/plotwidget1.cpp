@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/15 13:25:34 $
+   $Author: ssahle $ 
+   $Date: 2004/12/16 14:04:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.29 2004/12/15 13:25:34 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.30 2004/12/16 14:04:08 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -248,12 +248,20 @@ void PlotWidget1::addCurveGroupBox()
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
-      {addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectUniqueName() , objects1[0], objects2[i]);}
+        {
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectName()
+                      + "/" + CCopasiContainer::ObjectFromName(objects1[0])->getObjectName(),
+                      objects1[0], objects2[i]);
+        }
     }
   else if (objects2.size() == 1)
     {
       for (i = 0; i < objects1.size(); ++i)
-      {addCurveTab(CCopasiContainer::ObjectFromName(objects1[i])->getObjectUniqueName(), objects1[i], objects2[0]);}
+        {
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[0])->getObjectName()
+                      + "/" + CCopasiContainer::ObjectFromName(objects1[i])->getObjectName(),
+                      objects1[i], objects2[0]);
+        }
     }
   else
     {
@@ -265,8 +273,8 @@ void PlotWidget1::addCurveGroupBox()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectUniqueName()
-                      + " / " + CCopasiContainer::ObjectFromName(objects1[i])->getObjectUniqueName() ,
+          addCurveTab(CCopasiContainer::ObjectFromName(objects2[i])->getObjectName()
+                      + "/" + CCopasiContainer::ObjectFromName(objects1[i])->getObjectName() ,
                       objects1[i], objects2[i]);
         }
     }
