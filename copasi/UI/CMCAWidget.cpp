@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/25 13:23:24 $
+   $Date: 2004/10/26 15:17:35 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -187,41 +187,78 @@ void CMCAWidget::runMCATask()
       hide();
       return;
     }
-  /*
-    CMCATask* mMCATask =
-      dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
-    assert(mMCATask);
-   
-    mMCATask->initialize();
-   
-    setCursor(Qt::WaitCursor);
-    CProgressBar* tmpBar = new CProgressBar(dataModel);
-    mMCATask->setProgressHandler(tmpBar);
-   
-    try
-      {
-        mMCATask->process();
-      }
-   
-    catch (CCopasiException Exception)
-      {
-        QMessageBox mb("Copasi",
-                       "Could not finish metabolic control analysis.",
-                       QMessageBox::NoIcon,
-                       QMessageBox::Ok | QMessageBox::Escape,
-                       QMessageBox::NoButton,
-                       QMessageBox::NoButton);
-        mb.exec();
-      }
-   
-    tmpBar->finish(); pdelete(tmpBar);
-   
-    protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
-   
-    unsetCursor();
-   
-    //pListView->switchToOtherWidget(211, ""); //change to the results window
-    */
+
+  CMCATask* mMCATask =
+    dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
+  assert(mMCATask);
+
+  mMCATask->initialize();
+
+  // if a steady state analysis is needed, run it first
+  // if a steady state was found, set the flag in the mca task
+  // set the resolution of the mca task
+  if (taskSteadyState->isChecked())
+    {
+      CSteadyStateTask* steadyStateTask = dataModel->getSteadyStateTask();
+      assert(steadyStateTask);
+
+      steadyStateTask->initialize();
+
+      setCursor(Qt::WaitCursor);
+      CProgressBar* tmpBar = new CProgressBar(dataModel);
+      steadyStateTask->setProgressHandler(tmpBar);
+
+      try
+        {
+          steadyStateTask->process();
+        }
+
+      catch (CCopasiException Exception)
+        {
+          QMessageBox mb("Copasi",
+                         "Could not find a Steady State",
+                         QMessageBox::NoIcon,
+                         QMessageBox::Ok | QMessageBox::Escape,
+                         QMessageBox::NoButton,
+                         QMessageBox::NoButton);
+          mb.exec();
+        }
+
+      tmpBar->finish(); pdelete(tmpBar);
+
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+
+      unsetCursor();
+      dynamic_cast<CMCAMethod*>(mMCATask->getMethod())->setIsSteadyState(dynamic_cast<CNewtonMethod*>(steadyStateTask->getMethod())->isSteadyState());
+    }
+
+  setCursor(Qt::WaitCursor);
+  //CProgressBar* tmpBar = new CProgressBar(dataModel);
+  //mMCATask->setProgressHandler(tmpBar);
+
+  try
+    {
+      //mMCATask->process();
+    }
+
+  catch (CCopasiException Exception)
+    {
+      QMessageBox mb("Copasi",
+                     "Could not finish metabolic control analysis.",
+                     QMessageBox::NoIcon,
+                     QMessageBox::Ok | QMessageBox::Escape,
+                     QMessageBox::NoButton,
+                     QMessageBox::NoButton);
+      mb.exec();
+    }
+
+  //tmpBar->finish(); pdelete(tmpBar);
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+
+  unsetCursor();
+
+  pListView->switchToOtherWidget(241, ""); //change to the results window
 }
 
 void CMCAWidget::loadMCATask()

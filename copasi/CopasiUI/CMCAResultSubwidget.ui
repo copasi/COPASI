@@ -118,5 +118,11 @@
 <slots>
     <slot access="protected">init()</slot>
 </slots>
+<functions>
+    <function>loadAll( const CMCAMethod * mcaMethod )</function>
+    <function>loadElasticities( const CMCAMethod * mcaMethod )</function>
+    <function>loadConcentrationCCs( const CMCAMethod * mcaMethod )</function>
+    <function>loadFluxCCs( const CMCAMethod * mcaMethod )</function>
+</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
