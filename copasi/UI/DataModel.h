@@ -9,6 +9,7 @@
 #define ADD 1
 #define DELETE 2
 #define MODEL 3
+#define STEADYSTATETASK 4
 
 #include <qptrlist.h>
 #include <fstream>
@@ -30,6 +31,7 @@ template <class T> class DataModel: public Subject
     CModel* model;
     CSteadyStateTask* steadystatetask;
     bool modelUpdate;
+    bool steadystatetaskUpdate;
 
   protected:
     T* searchFolderList(int id);
@@ -47,9 +49,15 @@ template <class T> class DataModel: public Subject
     void removeData(T*);
 
     void loadModel(const char* fileName);
+    void saveModel(const char* fileName);
     inline CModel* getModel(){return model;}
+    inline CSteadyStateTask* getSteadyStateTask(){return steadystatetask;}
     inline void setModelUpdate(bool value){modelUpdate = value;}
     inline bool getModelUpdate(){return modelUpdate;}
+
+    inline void setSteadyStateTaskUpdate(bool value){steadystatetaskUpdate = value;}
+    inline bool getSteadyStateTaskUpdate() {return steadystatetaskUpdate;}
+
     // inline int getStatus(){return STATUS;}
     inline Node<T>* getRoot(){return myTree.getRoot();}
     inline Node<T>* getData(){return last;}
@@ -64,6 +72,7 @@ DataModel<T>::DataModel(char* fileName)
   model = NULL;
   steadystatetask = NULL;
   modelUpdate = false;
+  steadystatetaskUpdate = false;
 }
 
 template <class T>
@@ -154,7 +163,25 @@ void DataModel<T>::loadModel(const char* fileName)
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->load(inbuf);
+  steadystatetaskUpdate = true;
+  notify(STEADYSTATETASK);
   //  steadystatetask->compile();
+}
+
+template <class T>
+void DataModel<T>::saveModel(const char* fileName)
+{
+  if (fileName == NULL) return;
+
+  CWriteConfig outbuf(fileName);
+
+  if (model != NULL)
+    model->save(outbuf);
+
+  if (steadystatetask != NULL)
+    steadystatetask->save(outbuf);
+  pdelete(model);
+  pdelete(steadystatetask);
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)
