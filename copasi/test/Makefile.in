@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.20 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.21 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -248,6 +248,7 @@ test_LIBS = \
 	../output \
 	../optimization \
 	../randomGenerator \
+	../report \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -268,6 +269,7 @@ LIBS = \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
 	-Wl,-loutput \
+	-Wl,-lreport \
 	-Wl,-loptimization \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
@@ -276,24 +278,16 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 
 #  Use this for standard clapack
-#	-llapack \
-	#	-lblas \
-	#	-lF77 \
-	#	-lfl
+#	-llapack -lblas -lF77 -lfl
 
 #  Use this for the intel performance library under linux
-#	-lmkl_lapack \
-	#	-lmkl_p3 \
-	#	-lg2c \
-	#	-lpthread \
-	# the library search path.
+#	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+
+# the library search path.
 LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
@@ -301,6 +295,7 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
 	-L../output \
 	-L../optimization \
 	-L../randomGenerator \
+	-L../report \
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities
@@ -466,7 +461,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=matrix.dsp test.dsp 
+KDE_DIST=matrix.dsp test.dsp test 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -576,7 +571,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
 
 check_LIBS:
-	@for d in $(test_LIBS); do (cd $$d && make); done
+	@for d in $(test_LIBS); do (cd $$d && make || rm *.a); done
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
