@@ -49,6 +49,7 @@ class ObjectBrowser : public QWidget
     QFrame* Line1;
     QTextEdit* ObjectItemText;
 
+    //Each Function calls the output shall be responsible to delete the list
     ObjectList* outputList();
 
     void eXport(ObjectBrowserItem* pCurrent, ObjectList* outputList);

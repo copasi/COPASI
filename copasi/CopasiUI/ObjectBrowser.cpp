@@ -257,7 +257,7 @@ ObjectList* ObjectBrowser::outputList()
   rootItem = objectItemList->getRoot()->pItem;
   outputList = new ObjectList();
   eXport(rootItem, outputList);
-  if (outputList->length <= 0)
+  if (outputList->len() <= 0)
     {
       delete outputList;
       return NULL;

@@ -28,6 +28,7 @@
 #include "listviews.h"
 #include "ScanItemWidget.h"
 #include "ObjectBrowser.h"
+#include "ObjectBrowserItem.h"
 
 #include "SteadyStateWidget.h"
 #include "TrajectoryWidget.h"
@@ -226,120 +227,126 @@ ScanWidget::~ScanWidget()
 
 void ScanWidget::addButtonClicked()
 {
-  if (
+  ObjectBrowser* pSelectedObjects = new ObjectBrowser();
+  ObjectList* pSelectedList = pSelectedObjects->outputList();
+  delete pSelectedObjects;
 
-    addNewScanItem
-  }
+  if (pSelectedList == NULL)
+    return;
 
-  void ScanWidget::deleteButtonClicked()
-  {}
+  addNewScanItem(pSelectedList->pop()->getObject()->pCopasiObject);
+  delete pSelectedList;
+}
 
-  void ScanWidget::upButtonClicked()
-  {}
+void ScanWidget::deleteButtonClicked()
+{}
 
-  void ScanWidget::downButtonClicked()
-  {}
+void ScanWidget::upButtonClicked()
+{}
 
-  void ScanWidget::CancelChangeButton()
-  {}
+void ScanWidget::downButtonClicked()
+{}
 
-  void ScanWidget::CommitChangeButton()
-  {
-    scanTask->process();
-  }
+void ScanWidget::CancelChangeButton()
+{}
 
-  void ScanWidget::ScanButtonClicked()
-  {
-    scanTask->setRequested(sExecutable->isChecked());
-    commitChange->setEnabled(sExecutable->isChecked());
-  }
+void ScanWidget::CommitChangeButton()
+{
+  scanTask->process();
+}
 
-  void ScanWidget::SteadyStateButtonClicked()
-  {
-    CScanProblem *scanProblem = scanTask->getProblem();
-    scanProblem->setProcessSteadyState(steadyState->isChecked());
-    eSteadyState->setEnabled(steadyState->isChecked());
-  }
+void ScanWidget::ScanButtonClicked()
+{
+  scanTask->setRequested(sExecutable->isChecked());
+  commitChange->setEnabled(sExecutable->isChecked());
+}
 
-  void ScanWidget::TrajectoryButtonClicked()
-  {
-    CScanProblem *scanProblem = scanTask->getProblem();
-    scanProblem->setProcessTrajectory(trajectory->isChecked());
-    eTrajectory->setEnabled(trajectory->isChecked());
-    if (trajectory->isChecked())
-      {}}
+void ScanWidget::SteadyStateButtonClicked()
+{
+  CScanProblem *scanProblem = scanTask->getProblem();
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  eSteadyState->setEnabled(steadyState->isChecked());
+}
 
-  void ScanWidget::loadScan(CModel *model)
-  {
-    if (model != NULL)
-      {
-        mModel = model;
-        pSteadyStateWidget->setModel(mModel);
-        pTrajectoryWidget->setModel(mModel);
+void ScanWidget::TrajectoryButtonClicked()
+{
+  CScanProblem *scanProblem = scanTask->getProblem();
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
+  eTrajectory->setEnabled(trajectory->isChecked());
+  if (trajectory->isChecked())
+    {}}
 
-        taskName->setText(tr("Scan"));
-        scanTask = new CScanTask();
-        CScanProblem *scanProblem = scanTask->getProblem();
+void ScanWidget::loadScan(CModel *model)
+{
+  if (model != NULL)
+    {
+      mModel = model;
+      pSteadyStateWidget->setModel(mModel);
+      pTrajectoryWidget->setModel(mModel);
 
-        scanProblem->setModel(model);
-        scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
-        scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
+      taskName->setText(tr("Scan"));
+      scanTask = new CScanTask();
+      CScanProblem *scanProblem = scanTask->getProblem();
 
-        if (scanTask->isRequested() == true)
-          sExecutable->setChecked(true);
-        else
-          sExecutable->setChecked(false);
+      scanProblem->setModel(model);
+      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
+      scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
 
-        if (scanProblem->processTrajectory() == true)
-          trajectory->setChecked(true);
-        else
-          trajectory->setChecked(false);
+      if (scanTask->isRequested() == true)
+        sExecutable->setChecked(true);
+      else
+        sExecutable->setChecked(false);
 
-        if (scanProblem->processSteadyState() == true)
-          steadyState->setChecked(true);
-        else
-          steadyState->setChecked(false);
+      if (scanProblem->processTrajectory() == true)
+        trajectory->setChecked(true);
+      else
+        trajectory->setChecked(false);
 
-        emit hide_me();
-        //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
-        for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
-          {
-            /*
-                      CMethodParameterList *itemList = scanProblem->getScanItem(i);
-                      itemList->getName();
-                      parameterTable = new QTable(scrollview, "parameterTable");
-                      parameterTable->setNumCols(1);
-                      parameterTable->setFocusPolicy(QWidget::WheelFocus);
-                      parameterTable->horizontalHeader()->setLabel(0, "Value");
-             
-                      for (C_INT32 j = 0; j < itemList->size(); j++)
-                        {
-                          parameterTable->setNumRows(itemList->size());
-                          //rowHeader->setLabel(j, itemList(j).c_str());
-             
-                          parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
-                          parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
-                        }
-                      vBox->insertChild(parameterTable);
-                      vBox->setSpacing(15);
-            */
-          }
+      if (scanProblem->processSteadyState() == true)
+        steadyState->setChecked(true);
+      else
+        steadyState->setChecked(false);
 
-        emit show_me();
-        scrollview->addChild(vBox);
-        ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
-        scrollview->setVScrollBarMode(QScrollView::Auto);
-      }
-  }
+      emit hide_me();
+      //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
+      for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
+        {
+          /*
+                    CMethodParameterList *itemList = scanProblem->getScanItem(i);
+                    itemList->getName();
+                    parameterTable = new QTable(scrollview, "parameterTable");
+                    parameterTable->setNumCols(1);
+                    parameterTable->setFocusPolicy(QWidget::WheelFocus);
+                    parameterTable->horizontalHeader()->setLabel(0, "Value");
+           
+                    for (C_INT32 j = 0; j < itemList->size(); j++)
+                      {
+                        parameterTable->setNumRows(itemList->size());
+                        //rowHeader->setLabel(j, itemList(j).c_str());
+           
+                        parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
+                        parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
+                      }
+                    vBox->insertChild(parameterTable);
+                    vBox->setSpacing(15);
+          */
+        }
 
-  void ScanWidget::addNewScanItem(CCopasiObject* pObject)
-  {
-    parameterTable = new ScanItemWidget(this, "parameterTable");
-    parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
-    parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-    vBox->insertChild(parameterTable);
-    Line1 = new QFrame(this, "Line1");
-    Line1->setFrameShape(QFrame::HLine);
-    Line1->setLineWidth (4);
-    vBox->insertChild(Line1);
-  }
+      emit show_me();
+      scrollview->addChild(vBox);
+      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
+      scrollview->setVScrollBarMode(QScrollView::Auto);
+    }
+}
+
+void ScanWidget::addNewScanItem(CCopasiObject* pObject)
+{
+  parameterTable = new ScanItemWidget(this, "parameterTable");
+  parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+  vBox->insertChild(parameterTable);
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setLineWidth (4);
+  vBox->insertChild(Line1);
+}
