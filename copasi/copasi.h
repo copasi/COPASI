@@ -13,17 +13,30 @@
 
 using namespace std ;
 
-#define C_INT32 long
-#define C_INT int
-#define C_INT16 short
-#define C_FLOAT64 double
-#define C_FLOAT32 float
+#ifdef sparc 
+# define C_INT32 long
+# define C_INT int
+# define C_INT16 short
+# define C_FLOAT64 double
+# define C_FLOAT32 float
+#endif
+
+#ifdef i386
+# define C_INT32 int
+# define C_INT int
+# define C_INT16 short
+# define C_FLOAT64 double
+# define C_FLOAT32 float
+#endif
 
 #ifdef WIN32 
+# define C_INT32 int
+# define C_INT int
+# define C_INT16 short
+# define C_FLOAT64 double
+# define C_FLOAT32 float
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
-# undef C_INT32
-# define C_INT32 int
 # undef COPASI_TRACE_CONSTRUCTION
 #endif  // WIN32
 
