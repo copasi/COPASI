@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/02/20 16:23:36 $
+   $Date: 2004/12/08 17:48:38 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -19,6 +19,10 @@
 # endif
 #else
 # include <unistd.h>
+#endif
+
+#if defined(Q_OS_MACX)
+#include "Carbon.h"
 #endif
 
 #include <sstream>
@@ -127,6 +131,21 @@ void COptions::init(C_INT argc, char *argv[])
   const copasi::options &Options = Parser->get_options();
   mDefaults = Options.Default;
 
+  /* The values for ExampleDir and WizardDir are dependent on CopasiDir
+     and on the OS. */
+
+  getValue("CopasiDir", CopasiDir);
+#ifdef Darwin
+  setValue("ExampleDir", CopasiDir + "/Resource/doc/examples");
+  setValue("WizardDir", CopasiDir + "/Resource/doc/html");
+#elif WIN32
+  setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
+  setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
+#else // All unix flavors have the same installation structure.
+  setValue("ExampleDir", CopasiDir + "/share/copasi/examples");
+  setValue("WizardDir", CopasiDir + "/share/copasi/doc/html");
+#endif
+
   /* Create manually for each option except for:
      CopasiDir, ConfigFile, Home, and Default
      setValue("OptionId", Options.OptionID); */
@@ -204,7 +223,17 @@ std::string COptions::getCopasiDir(void)
     }
 #endif // WIN32
 
-#ifdef XXXX
+#ifdef Darwin
+  if (CopasiDir == "")
+    {
+      CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+      CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
+                            kCFURLPOSIXPathStyle);
+      CopasiDir = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+    }
+#endif // Darwin
+
+#ifdef XXXX // :TODO: use CCopasiMessage
   if (CopasiDir == "")
     {
       std::ostringstream error;
@@ -251,14 +280,8 @@ std::string COptions::getHome(void)
 
 #ifdef WIN32
   if (Home == "")
-    {
-      Home = getEnvironmentVariable("APPDATA");
-      if (Home != "")
-        {
-          Home += "\\copasi";
-          CreateDirectory(Home.c_str(), NULL);
-        }
-    }
+    Home = getEnvironmentVariable("HOMEDRIVE")
+           + getEnvironmentVariable("HOMEPATH");
 #endif // WIN32
 
   if (Home == "")
