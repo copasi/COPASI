@@ -1,0 +1,158 @@
+# Microsoft Developer Studio Generated Dependency File, included by CopasiUI-Static.mak
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "CopasiUI Static - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "CopasiUI Static - Win32 Debug"
+
+!ENDIF 
+
