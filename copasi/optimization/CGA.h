@@ -35,6 +35,7 @@
 
 
 #include "COptAlgorithm.h"
+#include "CRealProblem.h"
 
 //using namespace std;
 
@@ -57,6 +58,9 @@ private:
   unsigned int *mMidX;	     // indexes for shuffling the population
   unsigned int *mWins;	     // number of wins of each individual in the tournament
 
+  //YOHE: new: add CRealProblem class for testing purpose 
+  CRealProblem mRealProblem;
+
   //implementations
 public:
 
@@ -78,6 +82,11 @@ public:
   /**Declare the prototype of member functions ***/
 
   // define mutation functions
+
+  /**
+   * set real problem
+   */
+  void setRealProblem(CRealProblem & aProb);
 
   /**
    * set parameter

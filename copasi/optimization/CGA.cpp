@@ -24,7 +24,7 @@ CGA::CGA()
  mIndV = NULL;
 }
 
-//copy constructor
+//constructor
 CGA::CGA(int psize,int num, int param)
 {
 
@@ -82,6 +82,13 @@ delete mCandX;
 }
 
 //implementation of mutation functions
+
+// set real problem
+void CGA::setRealProblem(CRealProblem & aProb)
+{
+  mRealProblem = aProb;
+}
+
 
 //set parameter
 void CGA::setParam (int num)
@@ -509,13 +516,20 @@ int CGA::optimise()
  times(&before);
  dTime=time(NULL);
 
+ double theMin = *(mRealProblem.getParameterMin());
+ double theMax = *(mRealProblem.getParameterMax());
+ int theParamNum = mRealProblem.getParameterNum();
+ CGA Ga_10param(4000,10, theParamNum);  //define a object
+ Ga_10param.setMin(theMin);
+ Ga_10param.setMax(theMax);
 
  //CGA Ga_10param(4000,4000, atoi(argv[1]));  //define a object
+ /*
  CGA Ga_10param(4000,10, atoi(argv[1]));  //define a object
 
  Ga_10param.setMin(atoi(argv[2]));
  Ga_10param.setMax(atoi(argv[3]));
-
+ */
  //int tmp1 = atoi(argv[1]);
  //int tmp2 = atoi(argv[2]);
  //int tmp3 = atoi(argv[3]);

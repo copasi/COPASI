@@ -19,6 +19,8 @@
 COptProblem::COptProblem()
 {
   mParameterValues = NULL;
+  mParameterNum = 0;
+  mBestValue = 0.0;
 }
 
    
@@ -39,7 +41,9 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
     
   if(this != &source)
     {
-      mParameterValues = source.mParameterValues; 	
+      mParameterValues = source.mParameterValues; 
+      mParameterNum = source.mParameterNum;
+      mBestValue = source.mBestValue;	
     }
     
   return *this;
@@ -50,29 +54,93 @@ COptProblem & COptProblem::operator = (const COptProblem& source)
 int COptProblem::cleanup(void)
 {
   mParameterValues = NULL;
+  mParameterNum = 0;
+  mBestValue = 0.0;
 }
 
  
 //  Initialization of private variables
 int COptProblem::initialize(void)
 {
-
+  mParameterValues = new double[mParameterNum];
 }
 
  
-// calculate function for optimization
+// 
 void COptProblem::calculate() 
 {
-
 }
    
-// get parameters
-void COptProblem::getParameters()
+
+//set the parameter values
+void COptProblem::setParamterValues(double * aDouble)
+{
+  mParameterValues = aDouble;
+}
+
+// get parameter values
+double * COptProblem::getParameterValues() 
 {
   return mParameterValues;
 }
- 
 
-
-
+//set a parameter
+void COptProblem::setParamter(int aNum, double aDouble)
+{
+  mParameterValues[aNum] = aDouble;
+}
+   
+// get a parameter 
+double COptProblem::getParameter(int aNum) 
+{
+  return mParameterValues[aNum];
+}
+   
+// set parameter number
+void COptProblem::setParameterNum(int aNum)
+{
+  mParameterNum = aNum;
+}
+   
+// get parameter number
+int COptProblem::getParameterNum()
+{
+  return mParameterNum;
+}
+   
+// set the best value
+void COptProblem::setBestValue(double aDouble)
+{
+  mBestValue = aDouble;
+}
+   
+//get the best value
+double COptProblem::getBestValue()
+{
+  return mBestValue;
+}
   
+// set the minimum value of parameters
+void COptProblem::setParameterMin(double * aDouble)
+{
+  mParameterMin = aDouble;
+}  
+
+// get the minimum value of parameters
+double * COptProblem::getParameterMin()
+{
+  return mParameterMin;
+}
+
+// set the maximum value of the paramters
+void COptProblem::setParameterMax(double * aDouble)
+{
+  mParameterMax = aDouble;
+}
+   
+// get the maximum value of the parameters
+double * COptProblem::getParameterMax()
+{
+  return mParameterMax;
+}
+   

@@ -25,6 +25,7 @@ class COptProblem
   
   double * mParameterValues;        // pointer to parameters
   int mParameterNum;          // the number of parameters
+  double mBestValue;          // the best result of the problem
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
 
@@ -72,11 +73,66 @@ class COptProblem
     */
    virtual void calculate(); 
 
+   /*
+    * set the parameter values
+    */
+   void setParamterValues(double * aDouble);
  
    /**
-    * get parameters
+    * get the parameter values
     */
-   void getParameters(); 
+   double * getParameterValues(); 
+
+   /*
+    * set a parameter
+    */
+   void setParamter(int aNum, double aDouble);
+ 
+   /**
+    * get a parameter
+    */
+   double getParameter(int aNum); 
+
+   /*
+    * set parameter number
+    */
+   void setParameterNum(int aNum);
+
+   /*
+    * get parameter number
+    */
+   int getParameterNum();
+
+   /*
+    * set the best value
+    */
+   void setBestValue(double aDouble);
+
+   /*
+    * get the best value
+    */
+   double getBestValue();
+
+   /*
+    * set the minimum value of parameters
+    */
+   void setParameterMin(double * aDouble);
+
+   /*
+    * get the minimum value of parameters
+    */
+   double * getParameterMin();
+
+   /*
+    * set the maximum value of the paramters
+    */
+   void setParameterMax(double * aDouble);
+
+   /*
+    * get the maximum value of the parameters
+    */
+   double * getParameterMax();
+
 };
 
 

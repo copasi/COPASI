@@ -31,10 +31,15 @@ class COptAlgorithm
  private:
   
   COptProblem * mOptProblem;  // pointer to remote problem
+
+  //These parameters are optimization parameters, not method (algm) parameters
+  //they are for the model or calculation function. 
+  //Their memories are stored in COptProblem. Here are only pointers.
   double * mParameters;       // pointer to parameters
   int mParameterNum;          // the number of parameters
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
+
   vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
   string mMethodVersion;                  // Method Version string, yes

@@ -18,7 +18,7 @@ COptAlgorithm::COptAlgorithm()
 {
   mOptProblem = NULL;
   mParameters = NULL; 
-  mParameterNum = 0;         // the number of parameters
+  mParameterNum = 0;        // the number of parameters
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
   //if (mOptAlgmParams != ; //vector of COptAlgorithmParameter object
