@@ -100,18 +100,18 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   vBox = new QVBox(this, 0);
 
   //Just for test
-  for (int temp = 1; temp <= 7; temp++)
-    {
-      parameterTable = new QTable(this, "parameterTable");
-      parameterTable->setNumRows(5);
-      parameterTable->setNumCols(5);
-      parameterTable->setFocusPolicy(QWidget::WheelFocus);
-      QHeader *colHeader = parameterTable->horizontalHeader();
-      colHeader->setLabel(0, tr("Value"));
-      vBox->insertChild(parameterTable);
-      vBox->setSpacing(25);
-    }
-
+  /*  for (int temp = 1; temp <= 7; temp++)
+       {
+         parameterTable = new QTable(this, "parameterTable");
+         parameterTable->setNumRows(5);
+         parameterTable->setNumCols(5);
+    parameterTable->setFocusPolicy(QWidget::WheelFocus);
+         QHeader *colHeader = parameterTable->horizontalHeader();
+         colHeader->setLabel(0, tr("Value"));
+         vBox->insertChild(parameterTable);
+         vBox->setSpacing(25);
+     }
+  */
   scrollview->addChild(vBox);
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
 
@@ -142,17 +142,22 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
 ScanWidget::~ScanWidget()
 {
+  delete scanTask;
   // no need to delete child widgets, Qt does it all for us
 }
 
 void ScanWidget::CancelChangeButton()
-{}
+{
+}
 
 void ScanWidget::CommitChangeButton()
-{}
+{
+  loadScan(mModel);
+}
 
 void ScanWidget::ScanButtonClicked()
 {
+  scanTask->setRequested(sExecutable->isChecked());
   if (sExecutable->isChecked())
     commitChange->setEnabled(true);
   else
@@ -161,18 +166,18 @@ void ScanWidget::ScanButtonClicked()
 
 void ScanWidget::SteadyStateButtonClicked()
 {
+  CScanProblem *scanProblem = scanTask->getProblem();
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
   if (steadyState->isChecked())
-    {
-      int i = 0;
-    }
+  {}
 }
 
 void ScanWidget::TrajectoryButtonClicked()
 {
+  CScanProblem *scanProblem = scanTask->getProblem();
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
   if (trajectory->isChecked())
-    {
-      int i = 0;
-    }
+  {}
 }
 
 void ScanWidget::loadScan(CModel *model)
