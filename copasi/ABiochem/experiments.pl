@@ -200,7 +200,7 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	    }
 		if( ( $r==1 ) && ( $line =~ /^Enabled=/ ) )
 		{
-		    print( PCTFILE "Enabled=1\n");
+		    print( PTCFILE "Enabled=1\n");
 			# change $r so that we don't also change the degradation rate
 			$r = 0;
 			next;
@@ -212,4 +212,5 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	  system "$GEPASI $ptcfile";
       print ".";
 #	}
+    print "\n";
 }
