@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 08:20:03 $
+   $Author: ssahle $ 
+   $Date: 2004/11/18 15:38:36 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -112,7 +112,7 @@ class CMCAMethod: public CCopasiMethod
      * @param src is newtown variable, (is ss_x in Gespasi project)
      * @param res is the resolution of steady state
      */
-    void initDxv(C_FLOAT64 res);
+    void calculateDxv(C_FLOAT64 res);
 
     /**
      * Calculates the flux-control coefficients
@@ -144,7 +144,7 @@ class CMCAMethod: public CCopasiMethod
     /**
      * Initialize the MCA matrices: mDxv, mFcc, mGamma
      */
-    void init();
+    void initMatrices();
 
     /**
      * 

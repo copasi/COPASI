@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 08:20:04 $
+   $Author: ssahle $ 
+   $Date: 2004/11/18 15:38:36 $
    End CVS Header */
 
 #include <cmath>
@@ -122,7 +122,7 @@ void CMCAMethod::clearDxv()
  * @param src is newtown variable, (is ss_x in Gespasi project)
  * @param res is the resolution of steady state
  */
-void CMCAMethod::initDxv(C_FLOAT64 res)
+void CMCAMethod::calculateDxv(C_FLOAT64 res)
 {
   unsigned C_INT32 i, j;
   C_FLOAT64 store, temp, *f1, *f2;
@@ -344,7 +344,7 @@ void CMCAMethod::delSsipvt()
 /**
  * Initialize the MCA matrices: mDxv, mFcc, mGamma
  */
-void CMCAMethod::init()
+void CMCAMethod::initMatrices()
 {
   mDxv.resize(mpModel->getTotSteps(), mpModel->getTotMetab());
   mFcc.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
@@ -365,12 +365,12 @@ int CMCAMethod::CalculateMCA(int ss_solution, C_FLOAT64 res)
   initSsipvt();
 
   // Create mDxv, mFcc, mGamma
-  init();
+  initMatrices();
 
-  if (!ss_solution)
-    initDxv(res);
-  else
-    clearDxv();
+  //if (!ss_solution)
+  calculateDxv(res);
+  //else
+  //  clearDxv();
 
   ret = CalcGamma();
 
@@ -463,7 +463,7 @@ void CMCAMethod::CalculateTimeMCA(C_FLOAT64 res)
 
   mSsx.resize(mpModel->getTotMetab());
 
-  init();
+  initMatrices();
   //copy concentrations to ss_x
 
   for (i = 0; i < mpModel->getTotMetab(); i++)
@@ -471,7 +471,7 @@ void CMCAMethod::CalculateTimeMCA(C_FLOAT64 res)
                   mpModel->getMetabolites()[i]->getCompartment()->getVolume();
 
   // calculate the elasticites
-  initDxv(res);
+  calculateDxv(res);
 
   // scale the elasticities if needed
   if (mSSReder == 0)
