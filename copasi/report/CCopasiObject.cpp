@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/07 18:34:26 $
+   $Date: 2004/05/07 19:50:27 $
    End CVS Header */
 
 /**
@@ -124,8 +124,8 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
   if (mpObjectParent)
     {
-      mpObjectParent->remove(this);
-      mpObjectParent->add(this, false);
+      mpObjectParent->CCopasiContainer::remove(this);
+      mpObjectParent->CCopasiContainer::add(this, false);
     }
 
   return true;
