@@ -4,7 +4,7 @@
 #include "utilities/utilities.h"
 #include "utilities/CRandom.h"
 #include "model/model.h"
-
+#include <queue>
 /**
  * CStochSolver
  *
@@ -47,25 +47,15 @@ class CStochMethod;
 class CStochSolver
 {
  private:
-  // Private attributes
-  /**
-   * The type of the stochastic solver method
-   */
-  C_INT32 mMethodType;
+    // Private attributes
+    /**
+     * The type of the stochastic solver method
+     */
+    C_INT32 mMethodType;
   /**
    * A pointer to the method used
    */
   CStochMethod *mMethod; 
-#if 0
-  /**
-   * The maximum time for which the simulation should run.
-   */
-  C_FLOAT32 mMaxTime;
-  /**
-   * The maximum number of steps over which to iterate.
-   */
-  C_INT32 mMaxSteps;
-#endif // 0
  public:
   // Lifecycle methods
   /**
@@ -176,8 +166,26 @@ class CStochMethod
   C_INT32 updatePropensities();
   /**
    * Calculate one of the propensities
+   * @return mFail
+   * @see mFail
    */
-  C_INT32 calculateAmu(C_INT32);
+  C_INT32 calculateAmu(C_INT32 reaction_index);
+  /**
+   * Generate the index of a putative reaction.
+   * @return The reaction index
+   */
+  C_INT32 generateReactionIndex();
+  /**
+   * Generate the putative time taken before a reaction
+   * @return The time before the reaction
+   */
+  C_FLOAT64 generateReactionTime();
+  /**
+   * Update the particle numbers according to which reaction ocurred
+   * @return mFail
+   * @see mFail
+   */
+  C_INT32 updateSystemState(C_INT32 reaction_index);
 #if 0
   /**
    * Determine the value of one of the cmu's
@@ -213,6 +221,9 @@ class CStochDirectMethod : public CStochMethod
    * Default constructor
    */
   CStochDirectMethod();
+  /**
+   * Named constructor
+   */
   CStochDirectMethod(CModel *model);
   /** 
    * Destructor
@@ -230,24 +241,6 @@ class CStochDirectMethod : public CStochMethod
    * @return Current simulation time or -1 if error.
    */
   C_FLOAT64 doStep(C_FLOAT64 time);
- private:
-  // Private operations
-  /**
-   * Get the next reaction
-   * @return the index of the reaction which occurs.
-   */
-  C_INT32 getReaction();
-  /**
-   * Get the time taken by the reaction
-   * @return the time taken for this reaction
-   */
-  C_FLOAT64 getTime();
-  /**
-   * Update the particle numbers according to which reaction ocurred
-   * @return mFail
-   * @see mFail
-   */
-  C_INT32 updateSystemState(C_INT32 reaction_idx);
 };
 
 /**
@@ -267,30 +260,61 @@ class CStochDirectMethod : public CStochMethod
 class CStochNextReactionMethod: public CStochMethod
 {
  private:
-  // Private attributes
+    // Private attributes
   /**
-   * The set of putative times at which each reaction occurs.
-   * This is represented as a priority queue, stored in a vector.
+   * The graph of reactions and their dependent reactions. When a reaction is 
+   * executed, the propensities for each of its dependents must be updated.
    */
-    vector<C_FLOAT64> tmu;
+    CDependencyGraph mDG;
+
+  /**
+   * The set of putative reactions and associated times at which each reaction occurs.
+   * This is represented as a priority queue, indexed on the reaction time.
+   */
+    CIndexedPriorityQueue mPQ;
  public:
   // Lifecycle methods
   /**
    * Default constructor
    */
   CStochNextReactionMethod();
+
+  /**
+   * Named constructor
+   */
+  CStochNextReactionMethod(CModel *model);
   /** 
    * Destructor
    */
   ~CStochNextReactionMethod();
   // Operations
   /**
+   * Initialize the method
+   * @param start_time The time at which the simulation starts
+   * @return mFail
+   * @see mFail
+   */
+  C_INT32 initMethod(C_FLOAT64 start_time = 0);
+  /**
    * Do one iteration of the simulation
    * @return Current simulation time or -1 if error.
    */
-  C_FLOAT64 Step();
+  C_FLOAT64 doStep();
  private:
   // Private operations
+  /**
+   * Set up the dependency graph
+   */
+  void setupDependencyGraph();
+  /**
+   * Set up the priority queue.
+   * @param start_time The time at which the simulation starts.
+   */
+  void setupPriorityQueue(C_FLOAT64 start_time = 0);
+  /**
+   * Update the priority queue
+   */
+  void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
 };
 
 #endif // COPASI_CStochSolver
