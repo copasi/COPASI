@@ -32,6 +32,7 @@ class CTrajectoryMethod : public CMethodParameterList
       hybrid
     };
 
+  protected:
     /**
      *  The type of the method
      */
