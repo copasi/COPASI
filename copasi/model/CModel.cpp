@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.174 $
+   $Revision: 1.175 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:59:16 $
+   $Date: 2004/05/24 15:01:49 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1656,6 +1656,23 @@ std::set<std::string> CModel::listReactionsDependentOnCompartment(const std::str
     }
 
   return compReacKeys;
+}
+
+std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string & key)
+{
+  std::set<std::string> reacKeys;
+  std::set<std::string>::iterator it, end;
+
+  const CCopasiVectorN<CReaction> & Reactions = getReactions();
+  C_INT32 j, jmax = Reactions.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      if (key == Reactions[j]->getFunction().getKey())
+        reacKeys.insert(Reactions[j]->getKey());
+    }
+
+  return reacKeys;
 }
 
 bool CModel::removeMetabolite(const std::string & key)
