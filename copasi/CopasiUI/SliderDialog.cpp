@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/14 13:13:45 $
+   $Date: 2005/03/14 14:09:00 $
    End CVS Header */
 
 #include <iostream>
@@ -150,6 +150,10 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
 {
   this->currSlider = pSlider;
+  if (this->currSlider)
+    {
+      this->currSlider->setFocus();
+    }
 }
 
 CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
@@ -284,6 +288,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
   if (!findCopasiSliderForCSlider(pSlider))
     {
       this->setCurrentSlider(new CopasiSlider(pSlider, this->sliderBox));
+      this->currSlider->installEventFilter(this);
       this->currSlider->setHidden(true);
       this->sliderMap[this->currentFolderId].push_back(this->currSlider);
       ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
@@ -383,10 +388,9 @@ void SliderDialog::fillSliderBox()
           if (!found)
             {
               this->setCurrentSlider(new CopasiSlider((*pVector)[i], this->sliderBox));
+              this->currSlider->installEventFilter(this);
               this->currSlider->setHidden(true);
               this->sliderMap[this->currentFolderId].push_back(this->currSlider);
-
-              //this->addSlider((*pVector)[i]);
             }
         }
       // delete CopasiSliders which have no correponding CSlider
@@ -595,4 +599,16 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
   std::vector<CSlider*>* pVector = new std::vector<CSlider*>();
   pVector = this->getCSlidersForObject(object, pVector);
   return pVector;
+}
+
+bool SliderDialog::eventFilter(QObject*, QEvent* event)
+{
+  QMouseEvent* pQME = dynamic_cast<QMouseEvent*>(event);
+  if (pQME && pQME->type() == QEvent::MouseButtonPress && pQME->button() == Qt::LeftButton)
+    {
+      CopasiSlider* pSlider = this->findCopasiSliderAtPosition(this->mapFromGlobal(pQME->globalPos()));
+      assert(pSlider);
+      this->setCurrentSlider(pSlider);
+    }
+  return false;
 }
