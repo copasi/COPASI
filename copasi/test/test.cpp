@@ -17,6 +17,10 @@
 #include "utilities/CWriteConfig.h"
 #include "model/CCompartment.h"
 #include "output/CDatum.h"
+#include "output/COutputLine.h"
+#include "output/COutput.h"
+#include "output/COutputList.h"
+#include "output/COutputEvent.h"
 #include "utilities/CCopasiVector.h"
 #include "model/CMetab.h"
 #include "function/CNodeK.h"
@@ -33,6 +37,7 @@
 #include "tnt/cmat.h"
 #include "tnt/vec.h"
 #include "tnt/subscript.h"
+#include "steadystate/cmca.h"
 
 C_INT32  TestReadConfig(void);
 C_INT32  TestWriteConfig(void);
@@ -62,6 +67,9 @@ C_INT32  MakeFunctionEntry(const string &name,
 
 vector < CMetab * >
 InitMetabolites(CCopasiVector < CCompartment > & compartment);
+C_INT32 TestMCA(void);
+
+C_INT32 TestOutputEvent(void);
 
 C_INT main(void)
 {
@@ -87,19 +95,20 @@ C_INT main(void)
       // TestDatum();
       // TestMetab();
       // TestReadSample();
-
+      // TestTrajectory();
       // by Yongqun He
       // TestNewton();
       // TestSSSolution();
 
-       TestTrajectory();
+      // TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestBaseFunction();
-      // MakeFunctionDB();
+       MakeFunctionDB();
       // TestModel();
       // TestLU();
-
+	  // TestMCA();
+	 TestOutputEvent();	
     }
 
   catch (CCopasiException Exception)
@@ -348,6 +357,59 @@ C_INT32 TestReadSample(void)
   return 0;
 }
 
+C_INT32 TestOutputEvent(void)
+{
+	C_INT32 size = 0;
+
+    cout << "Entering TestOutputEvent." << endl;
+
+	ofstream  fout, fout1, fout2;
+	//fout.open("TestSS.out");
+	fout1.open("TestDyn.out");
+	//fout2.open("TestRep.out");
+
+    CReadConfig inbuf("c:/wsun/copasi_dev/copasi/gps/DANNY.gps");
+
+	CModel model;
+	model.load(inbuf);
+	model.buildStoi();
+	model.lUDecomposition();
+	model.setMetabolitesStatus();
+	model.buildRedStoi();
+	model.buildL();
+	model.buildMoieties();
+    
+	COutputList oList;
+
+	oList.Load(inbuf);
+
+	CWriteConfig outbuf("wei.gps");
+	oList.Save(outbuf);
+
+	oList.setModel(model);
+
+	string SS = "Steady-state output";
+	oList.Compile(SS);
+
+	//oList.CCopasi_SS(fout);
+	//oList.CCopasi_Dyn(fout1);
+	//oList.CCopasi_Rep(fout2);
+
+	CTrajectory traj(&model, 20, 10.0, 1);
+
+	COutputEvent event(traj, 0, &oList, fout1);
+
+	traj.cleanup();
+    cout << "Leaving TestOutputEvent..." << endl;
+
+	//fout.close();
+	fout1.close();
+	//fout2.close();
+
+	return 0;
+}
+
+
 C_INT32 TestTrajectory(void)
 {
   CReadConfig inbuf("gps/HMM.GPS");
@@ -369,6 +431,23 @@ C_INT32 TestTrajectory(void)
   traj.cleanup();
 
   return 0;
+}
+
+C_INT32 TestMCA(void)
+{
+    cout << "Entering TestReport." << endl;
+
+    CReadConfig inbuf("gps/DANNY.gps");
+
+    CModel model;
+    model.load(inbuf);
+    model.buildStoi();
+    model.lUDecomposition();
+    model.setMetabolitesStatus();
+    model.buildRedStoi();	
+
+	CMca MCA(model, 0);
+	return 0;
 }
 
 

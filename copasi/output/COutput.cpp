@@ -420,7 +420,7 @@ void COutput::Rep_Struct(ofstream &fout)
       fout << setw(11) << Model.getMetabolitesInd()[i]->getName() << "|";
 
       for (j = 0; j < Model.getReactions().size(); j++)
-	fout << setprecision(1) << setw(10) << Model.getRedStoi()[i][j];
+		fout << setprecision(1) << setw(10) << Model.getRedStoi()[i][j];
       fout << endl;
     }
 
@@ -557,22 +557,29 @@ void COutput::CCopasi_Rep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutput::CCopasi_SS(ofstream &fout)
+void COutput::CCopasi_SS(ofstream &fout, int time)
 {
   string SSName = "Steady-state output";
 
-  if (SSTitles) SS_OutputTitles(fout, SSName);
-  SS_OutputData(fout, SSName);
+  if (!time)
+  {
+	if (SSTitles) SS_OutputTitles(fout, SSName);
+  }
+  else SS_OutputData(fout, SSName);
 }
 
 /*
  * print the time course dynamic data file
  */
-void COutput::CCopasi_Dyn(ofstream &fout)
+void COutput::CCopasi_Dyn(ofstream &fout, int time)
 {
   string DynName = "Time-course output";
 
-  if (DynTitles) Dyn_OutputTitles(fout, DynName);
+  if (!time) 
+  {
+	  if (DynTitles) Dyn_OutputTitles(fout, DynName);
+  }
+  else Dyn_OutputData(fout, DynName);
 }
 
 

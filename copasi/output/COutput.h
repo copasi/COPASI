@@ -291,12 +291,12 @@ class COutput
   /*
    * print the time course dynamic data file
    */		
-  void CCopasi_Dyn(ofstream &fout);
+  void CCopasi_Dyn(ofstream &fout, int time);
 
   /*
    * print the steady state data file
    */		
-  void CCopasi_SS(ofstream &fout);
+  void CCopasi_SS(ofstream &fout, int time);
 
   /*
    * print the reporting data file

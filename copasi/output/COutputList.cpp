@@ -131,22 +131,22 @@ void COutputList::CCopasi_Rep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutputList::CCopasi_SS(ofstream &fout)
+void COutputList::CCopasi_SS(ofstream &fout, int time)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].CCopasi_SS(fout);
+      (*mList)[i].CCopasi_SS(fout, time);
     }
 }
 
 /*
  * print the time course dynamic data file
  */
-void COutputList::CCopasi_Dyn(ofstream &fout)
+void COutputList::CCopasi_Dyn(ofstream &fout, int time)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].CCopasi_Dyn(fout);
+      (*mList)[i].CCopasi_Dyn(fout, time);
     }
 }
 
@@ -159,7 +159,6 @@ void COutputList::Compile(string &name)
     }
 
 }
-
 
 CCOutput::CCOutput() {}
 
