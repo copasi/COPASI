@@ -586,8 +586,8 @@ class CReaction : public CCopasiContainer
     /**
      *  Retrieves the number of compartments the reaction is acting in.
      *  @return "unsigned C_INT32" the compartment number
-     */ 
-    //unsigned C_INT32 getCompartmentNumber() const;
+     */
+    unsigned C_INT32 getCompartmentNumber() const;
 
     /**
      * insert operator

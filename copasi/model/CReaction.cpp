@@ -713,7 +713,8 @@ CReaction::CId2Metab::CId2Metab(const std::string & name,
     mIdentifierName(mObjectName),
     mMetaboliteName(),
     mCompartmentName(),
-mpMetabolite(NULL) {}
+    mpMetabolite(NULL)
+{}
 
 CReaction::CId2Metab::CId2Metab(const CId2Metab & src,
                                 const CCopasiContainer * pParent):
@@ -721,7 +722,8 @@ CReaction::CId2Metab::CId2Metab(const CId2Metab & src,
     mIdentifierName(mObjectName),
     mMetaboliteName(src.mMetaboliteName),
     mCompartmentName(src.mCompartmentName),
-mpMetabolite(src.mpMetabolite) {}
+    mpMetabolite(src.mpMetabolite)
+{}
 
 CReaction::CId2Metab::~CId2Metab() {}
 
@@ -731,13 +733,15 @@ CReaction::CId2Param::CId2Param(const std::string & name,
                                 const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
     mIdentifierName(mObjectName),
-mValue(0) {}
+    mValue(0)
+{}
 
 CReaction::CId2Param::CId2Param(const CId2Param & src,
                                 const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mIdentifierName(mObjectName),
-mValue(src.mValue) {}
+    mValue(src.mValue)
+{}
 
 CReaction::CId2Param::~CId2Param() {}
 
@@ -1227,33 +1231,17 @@ const CMetab * CReaction::findModifier(std::string ident_name) const
     return 0;
   }
 
-/*unsigned C_INT32 CReaction::getCompartmentNumber() const
-  {
-    const CCopasiVector < CChemEqElement > & Balances
-    = mChemEq.getBalances();
-    unsigned C_INT32 i, imax = Balances.size();
-    unsigned C_INT32 j, jmax;
-    unsigned C_INT32 Number;
-    std::vector<const CCompartment *> Compartments;
- 
-    for (i = 0, Number = 0; i < imax; i++)
-      {
-        for (j = 0, jmax = Compartments.size(); j < jmax; j++)
-          if (Compartments[j] == Balances[i]->getMetabolite().getCompartment())
-            break;
- 
-        if (j == jmax)
-          {
-            Number ++;
-            Compartments.push_back(Balances[i]->getMetabolite().getCompartment());
-          }
-      }
- 
-    return Number;
-  }*/
+unsigned C_INT32 CReaction::getCompartmentNumber() const
+  {return mChemEq.getCompartmentNumber();}
 
 void CReaction::setScalingFactor()
 {
+  if (1 == getCompartmentNumber())
+    mScalingFactor = & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+  else
+    mScalingFactor = &mDefaultScalingFactor;
+
+#ifdef XXXX
   if (mpFunctionCompartment)
     {
       // should propably check if the compartment appears in the chemical equation
@@ -1273,6 +1261,7 @@ void CReaction::setScalingFactor()
           throw;
         }
     }
+#endif // XXXX
 
   mScalingFactor2 =
     & mChemEq.getBalances()[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
@@ -1318,9 +1307,7 @@ void CReaction::setReactantsFromChemEq()
 }
 
 void CReaction::compileChemEq(const CCopasiVectorN < CCompartment > & compartments)
-{
-  mChemEq.compile(compartments);
-}
+{mChemEq.compile(compartments);}
 
 void CReaction::setFunctionCompartment(const CCompartment* comp)
 {mpFunctionCompartment = comp;}

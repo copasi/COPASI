@@ -136,8 +136,15 @@ class CChemEq : public CCopasiContainer
     const CCopasiVector < CChemEqElement > & getBalances() const;
 
     /**
-     *  Returns true if a chemical equation has already been set */
+     *  Returns true if a chemical equation has already been set
+     */
     bool initialized() const;
+
+    /**
+     * Returns the number of comparments the chemical equation is associated
+     * with. 
+     */
+    unsigned C_INT32 getCompartmentNumber() const;
 
     /**
      *  Checks if it is possible to figure out a compartment from the

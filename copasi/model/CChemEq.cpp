@@ -93,6 +93,29 @@ const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
     return mBalances;
   }
 
+unsigned C_INT32 CChemEq::getCompartmentNumber() const
+  {
+    unsigned C_INT32 i, imax = mBalances.size();
+    unsigned C_INT32 j, jmax;
+    unsigned C_INT32 Number;
+    std::vector<const CCompartment *> Compartments;
+
+    for (i = 0, Number = 0; i < imax; i++)
+      {
+        for (j = 0, jmax = Compartments.size(); j < jmax; j++)
+          if (Compartments[j] == mBalances[i]->getMetabolite().getCompartment())
+            break;
+
+        if (j == jmax)
+          {
+            Number ++;
+            Compartments.push_back(mBalances[i]->getMetabolite().getCompartment());
+          }
+      }
+
+    return Number;
+  }
+
 CChemEqElement CChemEq::extractElement(const std::string & input,
                                        std::string::size_type & pos) const
   {
