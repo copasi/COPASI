@@ -20,7 +20,7 @@
  * These may be better to appear somewhere else
  */
 
-#define DefaultNewtonLimit 1
+#define DefaultNewtonLimit 50
 
 //#define SS_NOT_FOUND 1
 //#define SS_FOUND 0
@@ -33,8 +33,8 @@
 #define SS_ITERATION_LIMIT 4
 
 //Note: they may not be 1.0, check where it comes from orignially (Y.H.)
-#define DefaultSSRes 1.0
-#define DefaultDerivFactor 1.0
+#define DefaultSSRes 1.0e-9
+#define DefaultDerivFactor 0.001
 
 class CNewton
   {

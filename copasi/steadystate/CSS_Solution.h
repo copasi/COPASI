@@ -40,14 +40,6 @@ using std::ofstream;
 //#define MCA_OK 0
 //#define MCA_SINGULAR 1              //declare in copasi.h file
 
-/**
- * These are from CNewton.h
- */
-#define DefaultNewtonLimit 1 
-//Note: they may not be 1.0, check where it comes from orignially (Y.H.)
-#define DefaultSSRes 1.0
-#define DefaultDerivFactor 1.0
-
 class CNewton;
 
 class CTrajectory;

@@ -199,7 +199,7 @@ void CNewton::process(void)
     }
 
   if (mSs_solution == SS_FOUND)
-    return ;
+    return;
 
   // Start the iterations
   for (k = 0; k < mNewtonLimit && maxrate > mSSRes; k++)
@@ -219,7 +219,7 @@ void CNewton::process(void)
           // jacobian is singular
           mSs_solution = SS_SINGULAR_JACOBIAN;
 
-          return ;
+          return;
         }
 
       // solve mSs_jacob . x = mSs_h for x (result in mSs_dxdt) ????
@@ -266,7 +266,7 @@ void CNewton::process(void)
               mSs_solution = SS_DAMPING_LIMIT;
             }
 
-          return ;
+          return;
         }
 
       for (i = 0; i < dim; i++)
@@ -292,7 +292,7 @@ void CNewton::process(void)
       mSs_solution = SS_ITERATION_LIMIT;
     }
 
-  return ;
+  return;
 }
 
 // Clean up internal pointer variables
