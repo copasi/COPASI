@@ -7,6 +7,8 @@ class StretchTable: public QTable
   {
   public:
     StretchTable (QWidget * parent = 0, const char * name = 0);
+    StretchTable (int numRows, int numCols, QWidget * parent = 0, const char * name = 0);
+
     void columnWidthChanged (int col);
     void setNumCols (int r);
 
@@ -14,10 +16,9 @@ class StretchTable: public QTable
     int* minColWidth;
     void DisableColWidthUpdate();
     void EnableColWidthUpdate();
-  private:
-    bool systemUpdate;
 
   private:
+    bool systemUpdate;
     bool* binitialized;
   };
 

@@ -10,6 +10,16 @@ StretchTable::StretchTable (QWidget * parent, const char * name)
   systemUpdate = false;
 }
 
+StretchTable::StretchTable(int numRows, int numCols, QWidget * parent, const char * name)
+    : QTable (numRows, numCols, parent, name)
+{
+  numColumn = 0;
+  minColWidth = NULL;
+  binitialized = NULL;
+  systemUpdate = false;
+  setNumCols(numCols);
+}
+
 void StretchTable::DisableColWidthUpdate()
 {
   systemUpdate = true;
@@ -54,6 +64,6 @@ void StretchTable::setNumCols (int r)
   for (i = 0; i < numColumn; i++)
     {
       binitialized[i] = true;
-      minColWidth[i] = 0;
+      minColWidth[i] = 3;
     }
 }

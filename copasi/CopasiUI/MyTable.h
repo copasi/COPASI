@@ -1,9 +1,9 @@
 #ifndef MY_TABLE_H
 #define MY_TABLE_H
 
-#include <qtable.h>
+#include "stretchtable.h"
 
-class MyTable: public QTable
+class MyTable: public StretchTable
   {
   public:
     MyTable (QWidget * parent = 0, const char * name = 0);

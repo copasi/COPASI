@@ -27,7 +27,6 @@ class ReactionsWidget : public QWidget
     MyTable *table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
-    int tableWidth;
     bool binitialized;
 
   public:
