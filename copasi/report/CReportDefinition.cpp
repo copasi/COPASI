@@ -189,7 +189,7 @@ CReport::~CReport()
 
 void CReport::cleanup()
 {
-  CKeyFactory::remove(mKey);
+  CKeyFactory::remove(reportKey);
   pdelete(rReportDef);
 }
 
