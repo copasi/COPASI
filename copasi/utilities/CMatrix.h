@@ -283,6 +283,46 @@ class CLowerTriangularView
   };
 
 template <class Matrix>
+class CUnitUpperTriangularView
+  {
+  public:
+    typedef typename Matrix::elementType elementType;
+
+  private:
+    const Matrix & mA;
+    elementType mZero;
+    elementType mUnit;
+
+  public:
+    CUnitUpperTriangularView(const Matrix & A,
+                             const elementType zero,
+                             const elementType unit):
+        mA(A),
+        mZero(zero),
+        mUnit(unit)
+    {}
+
+    ~CUnitUpperTriangularView() {}
+
+    /**
+     * Retrieve a matrix element using Fortan style indexing.
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return CType element
+     */
+    inline elementType operator()(const unsigned C_INT32 & row,
+                                  const unsigned C_INT32 & col) const
+      {
+        if (row < col)
+          return mA(row, col);
+        else if (row > col)
+          return mZero;
+        else
+          return mUnit;
+      }
+  };
+
+template <class Matrix>
 class CUnitLowerTriangularView
   {
   public:
