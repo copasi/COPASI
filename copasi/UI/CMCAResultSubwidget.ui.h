@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/28 21:04:14 $
+   $Date: 2004/11/30 19:22:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -58,19 +58,19 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
   assert(model);
   unsigned C_INT32 numRows, numCols;
   numRows = model->getTotSteps();
-  numCols = model->getMetabolites().size();
+  numCols = model->getMetabolitesX().size();
   mTableElasticities->setNumRows(numRows);
   mTableElasticities->setNumCols(numCols);
   unsigned C_INT32 i, j;
   QHeader* header = mTableElasticities->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
   header = mTableElasticities->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
     }
   const CAnnotatedMatrix & elasticities = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
@@ -88,7 +88,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
   const CModel* model = mcaMethod->getModel();
   assert(model);
   unsigned C_INT32 numRows, numCols;
-  numRows = model->getIntMetab();
+  numRows = model->getNumVariableMetabs();
   numCols = model->getTotSteps();
   mTableCCC->setNumRows(numRows);
   mTableCCC->setNumCols(numCols);
@@ -96,12 +96,12 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
   QHeader* header = mTableCCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getMetabolites()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
     }
   header = mTableCCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
   const CAnnotatedMatrix & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
@@ -127,12 +127,12 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
   QHeader* header = mTableFCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
   header = mTableFCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
   const CAnnotatedMatrix & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
@@ -146,8 +146,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
 }
 
 void CMCAResultSubwidget::slotSave()
-{
-}
+{}
 
 void CMCAResultSubwidget::slotScaled()
 {
