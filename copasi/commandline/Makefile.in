@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.5 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -233,40 +233,100 @@ qt_libraries = @qt_libraries@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
-noinst_LIBRARIES = libcommandline.a
+bin_PROGRAMS = copasi
 
-libcommandline_a_SOURCES = \
-	CopasiSE.cpp
+copasi_SOURCES = \
+	COptionParser.cpp \
+	copasi.cpp
+
+
+copasi_DEPENDENCIES = $(copasi_LIBS) check_LIBS
+
+copasi_LIBS = \
+	../elementaryFluxModes \
+	../model \
+	../function \
+	../output \
+	../optimization \
+	../randomGenerator \
+	../steadystate \
+	../trajectory \
+	../utilities
 
 
 EXTRA_DIST = \
-	CopasiSE.h	CopasiSE.cpp
+	COptionParser.h	COptionParser.cpp	COptionParser.xml \
+	copasi.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
+
+# the library search path.
+LIBS = \
+	-Wl,-lrandomGenerator \
+	-Wl,-lutilities \
+	-Wl,-loutput \
+	-Wl,-lfunction \
+	-Wl,-lmodel \
+	-Wl,-lutilities \
+	-Wl,-lsteadystate \
+	-Wl,-ltrajectory \
+	-Wl,-lutilities \
+	-Wl,-loutput \
+	-llapack \
+	-lblas \
+	-lF77 \
+	-lfl
+
+
+#  Use this for standard clapack
+#	-llapack \
+	#	-lblas \
+	#	-lF77 \
+	#	-lfl
+
+#  Use this for the intel performance library under linux
+#	-lmkl_lapack \
+	#	-lmkl_p3 \
+	#	-lg2c \
+	#	-lpthread \
+	# the library search path.
+LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
+	-L../elementaryFluxModes \
+	-L../function \
+	-L../model \
+	-L../output \
+	-L../optimization \
+	-L../randomGenerator \
+	-L../steadystate \
+	-L../trajectory \
+	-L../utilities
+
 subdir = copasi/commandline
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LIBRARIES = $(noinst_LIBRARIES)
+bin_PROGRAMS = copasi$(EXEEXT)
+PROGRAMS = $(bin_PROGRAMS)
 
-libcommandline_a_AR = $(AR) cru
-libcommandline_a_LIBADD =
-am_libcommandline_a_OBJECTS = CopasiSE.$(OBJEXT)
-#>- libcommandline_a_OBJECTS = $(am_libcommandline_a_OBJECTS)
-#>+ 1
-libcommandline_a_OBJECTS = CopasiSE.$(OBJEXT)
+am_copasi_OBJECTS = COptionParser.$(OBJEXT) copasi.$(OBJEXT)
+#>- copasi_OBJECTS = $(am_copasi_OBJECTS)
+#>+ 4
+copasi_final_OBJECTS = copasi.all_cpp.o 
+copasi_nofinal_OBJECTS = COptionParser.$(OBJEXT) copasi.$(OBJEXT)
+@KDE_USE_FINAL_FALSE@copasi_OBJECTS = $(copasi_nofinal_OBJECTS)
+@KDE_USE_FINAL_TRUE@copasi_OBJECTS = $(copasi_final_OBJECTS)
+copasi_LDADD = $(LDADD)
+copasi_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CopasiSE.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/COptionParser.Po $(DEPDIR)/copasi.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -286,9 +346,17 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(libcommandline_a_SOURCES)
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES = $(copasi_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libcommandline_a_SOURCES)
+SOURCES = $(copasi_SOURCES)
 
 #>- all: all-am
 #>+ 1
@@ -316,15 +384,33 @@ Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	CONFIG_HEADERS= CONFIG_LINKS= \
 	CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	if test -f $$p \
+	|| test -f $$p1 \
+	; then \
+	f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
+	echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
+	else :; fi; \
+	done
 
-AR = ar
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	rm -f $(DESTDIR)$(bindir)/$$f; \
+	done
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libcommandline.a: $(libcommandline_a_OBJECTS) $(libcommandline_a_DEPENDENCIES) 
-	-rm -f libcommandline.a
-	$(libcommandline_a_AR) libcommandline.a $(libcommandline_a_OBJECTS) $(libcommandline_a_LIBADD)
-	$(RANLIB) libcommandline.a
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+copasi$(EXEEXT): $(copasi_OBJECTS) $(copasi_DEPENDENCIES) 
+	@rm -f copasi$(EXEEXT)
+	$(CXXLINK) $(copasi_LDFLAGS) $(copasi_OBJECTS) $(copasi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -332,7 +418,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CopasiSE.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptionParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copasi.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -391,7 +478,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=libcommandline.a CopasiSE.xml 
+KDE_DIST=options.cpp trace copasi options.cpp.bak options.h 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -417,9 +504,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(PROGRAMS)
 
 installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
 
 install: install-am
 install-exec: install-exec-am
@@ -448,11 +536,9 @@ maintainer-clean-generic:
 #>+ 1
 clean: kde-rpo-clean  clean-am
 
-#>- clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-#>- mostlyclean-am
-#>+ 2
-clean-am: clean-final  clean-generic clean-libtool clean-noinstLIBRARIES \
-	mostlyclean-am
+#>- clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
+#>+ 1
+clean-am: clean-final  clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 
@@ -469,7 +555,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am:
+install-exec-am: install-binPROGRAMS
 
 install-info: install-info-am
 
@@ -486,37 +572,43 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
-.PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES distclean distclean-compile \
+.PHONY: GTAGS all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic clean-libtool distclean distclean-compile \
 	distclean-depend distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am info info-am install \
-	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	tags uninstall uninstall-am uninstall-info-am
+	install-am install-binPROGRAMS install-data install-data-am \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool tags uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-info-am
 
 
-.cpp.xml:
-	-clo++ -o c++ -D cxx_namespace=$* $< && \
-	cat clo.cxx | \
-	sed -e 's/clo.h/'$*'.h/g' \
-	-e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
-	> $@ && \
-	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	-@rm clo.*
+check_LIBS:
+	@for d in $(copasi_LIBS); do (cd $$d && make || rm *.a); done
+
+.xml.cpp:
+	-@rm $@ $*.h
+	-clo++ -o c++ $< && \
+	cat $@ | \
+	sed -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	> $@.tmp && \
+	mv $@.tmp $@
+	../../cvs_admin/c++style $@
+	../../cvs_admin/c++style $*.h
 
 %.cpp: %.xml
-	-clo++ -o c++ -D cxx_namespace=$* $< && \
-	cat clo.cxx | \
-	sed -e 's/clo.h/'$*'.h/g' \
-	-e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
-	> $@ && \
-	cat clo.h | sed -e 's/__clo_h__/COPASI_$*/g' > $*.h
-	@rm -f clo.*
+	-@rm $@ $*.h
+	-clo++ -o c++ $< && \
+	cat $@ | \
+	sed -e 's/compare([^,]*,[^,]*, *\([^,]*\) *,[^)]*)/compare(\1)/g' \
+	> $@.tmp && \
+	mv $@.tmp $@
+	../../cvs_admin/c++style $@
+	../../cvs_admin/c++style $*.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
@@ -538,33 +630,33 @@ force-reedit:
 
 
 #>+ 11
-libcommandline_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CopasiSE.cpp
-	@echo 'creating libcommandline_a.all_cpp.cpp ...'; \
-	rm -f libcommandline_a.all_cpp.files libcommandline_a.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> libcommandline_a.all_cpp.final; \
-	for file in CopasiSE.cpp ; do \
-	  echo "#include \"$$file\"" >> libcommandline_a.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libcommandline_a.all_cpp.final; \
+copasi.all_cpp.cpp: $(srcdir)/Makefile.in COptionParser.cpp $(srcdir)/copasi.cpp
+	@echo 'creating copasi.all_cpp.cpp ...'; \
+	rm -f copasi.all_cpp.files copasi.all_cpp.final; \
+	echo "#define KDE_USE_FINAL 1" >> copasi.all_cpp.final; \
+	for file in COptionParser.cpp copasi.cpp ; do \
+	  echo "#include \"$$file\"" >> copasi.all_cpp.files; \
+	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> copasi.all_cpp.final; \
 	done; \
-	cat libcommandline_a.all_cpp.final libcommandline_a.all_cpp.files > libcommandline_a.all_cpp.cpp; \
-	rm -f libcommandline_a.all_cpp.final libcommandline_a.all_cpp.files
+	cat copasi.all_cpp.final copasi.all_cpp.files > copasi.all_cpp.cpp; \
+	rm -f copasi.all_cpp.final copasi.all_cpp.files
 
 #>+ 3
 clean-final:
-	-rm -f libcommandline_a.all_cpp.cpp
+	-rm -f copasi.all_cpp.cpp
 
 #>+ 2
 final:
-	$(MAKE) all-am
+	$(MAKE) copasi_OBJECTS="$(copasi_final_OBJECTS)" all-am
 #>+ 2
 final-install:
-	$(MAKE) install-am
+	$(MAKE) copasi_OBJECTS="$(copasi_final_OBJECTS)" install-am
 #>+ 2
 no-final:
-	$(MAKE) all-am
+	$(MAKE) copasi_OBJECTS="$(copasi_nofinal_OBJECTS)" all-am
 #>+ 2
 no-final-install:
-	$(MAKE) install-am
+	$(MAKE) copasi_OBJECTS="$(copasi_nofinal_OBJECTS)" install-am
 #>+ 3
 cvs-clean:
 	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean

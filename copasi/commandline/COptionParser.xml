@@ -1,0 +1,69 @@
+<!--
+    This file demostrates how to specify options to clo++
+-->
+<cloxx>
+ <program>
+   <comment>Program comment</comment>
+   <description>Program description</description>
+ </program>
+ <config>
+   <autohelp/>
+   <variable name="cxx_namespace" value="copasi"></variable>
+   <variable name="cxx_header_file" value="COptionParser.h"></variable>
+   <variable name="cxx_header_def" value="COPASI_options"></variable>
+   <variable name="cxx_class" value="COptionParser"></variable>
+   <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
+ </config>
+ <options>
+   <option id="rc" 
+           type="string" 
+           mandatory="no" 
+           strict="yes"
+           location="commandline" 
+           default="~/.copasirc"
+           hidden="no">
+    <name>rc</name> 
+    <comment>The configuration file for copasi.</comment>
+   </option>
+   <option id="CopasiLib" 
+           type="string" 
+           mandatory="no" 
+           strict="yes" 
+           location="both" 
+           default="copasi/lib"
+           hidden="no">
+    <name>lib</name>
+    <comment>The location of suplementary files for copasi.</comment>
+   </option>
+   <option id="SystemFunctionDB" 
+           type="string" 
+           mandatory="no" 
+           strict="yes" 
+           location="both" 
+           default="FunctionDB.cps"
+           hidden="no">
+    <name>systemFunctionDB</name>
+    <comment>A write protected database of kinetic functions.</comment>
+   </option>
+   <option id="UserFunctionDB" 
+           type="string" 
+           mandatory="no" 
+           strict="yes" 
+           location="both" 
+           default="~/FunctionDB.cps"
+           hidden="no">
+    <name>userFunctionDB</name>
+    <comment>The user extensible database of kinetic functions.</comment>
+   </option>
+   <option id="save" 
+           type="string" 
+           mandatory="no" 
+           strict="yes" 
+           location="both" 
+           hidden="no">
+    <name>save</name>
+    <name>s</name> 
+    <comment>The file the model is saved in after work.</comment>
+   </option>
+ </options>
+</cloxx>
