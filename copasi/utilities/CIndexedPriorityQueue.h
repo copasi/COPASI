@@ -12,26 +12,29 @@ class CIndexedPriorityQueue;
  * The heap structure of the indexed priority queue class is implemented as
  * a vector of PQNode.
  */
+
 class PQNode
-{
+  {
     friend CIndexedPriorityQueue;
- public:
+
+  public:
     /**
      * Construct a PQNode with the given index and key
      * @param idx The index
      * @param key The key
      */
     PQNode(C_INT32 idx, C_FLOAT64 key) : mIndex(idx), mKey(key) {}
- private:
+
+  private:
     /**
      * The index value
      */
     C_INT32 mIndex;
-    /** 
+    /**
      * The key value
      */
     C_FLOAT64 mKey;
-};
+  };
 
 /**
  * The CIndexedPriorityQueue class provides an indexed priority queue.
@@ -49,9 +52,10 @@ class PQNode
  * "Efficient Exact Stochastic Simulation of Chemical Systems with Many Species
  * and Many Channels", Gibson and Bruck, J. Phys. Chem. A 104 (2000) 1876-1889
  */
+
 class CIndexedPriorityQueue
-{
- public:
+  {
+  public:
     // Lifecycle methods
     /**
      * Constructor
@@ -79,7 +83,7 @@ class CIndexedPriorityQueue
     /**
      * Return the size of the heap
      */
-    C_INT32 size() {return mHeap.size();}
+    C_INT32 size() { return mHeap.size(); }
 
     // Operations
     /**
@@ -103,14 +107,25 @@ class CIndexedPriorityQueue
     void updateNode(C_INT32 index, C_FLOAT64 key);
 
     /**
-     * Overloads the [] operator
-     * @return Returns the 
+     * Overloads the [] operator. Gives the index´th element on the heap
+     * @return Returns the key
      */
     C_FLOAT64 operator[](C_INT32 pos)
-        {
-            return mHeap[pos].mKey;
-        }
- private:
+    {
+      return mHeap[pos].mKey;
+    }
+
+    /**
+     * gets the key from a given index
+     * @return Returns the key
+     */
+    C_FLOAT64 getKey(C_INT32 index) const
+      {
+        // does not consider negative IndexPointer
+        return mHeap[mIndexPointer[index]].mKey;
+      }
+
+  private:
     // Private operations
     /**
      *  Swap a pair of nodes and update the index structure accordingly.
@@ -123,7 +138,7 @@ class CIndexedPriorityQueue
      */
     void heapify(C_INT32 pos);
 
-    /** 
+    /**
      * Used by the updateNode function. Update the node at a given position.
      */
     void updateAux(C_INT32 position);
@@ -135,23 +150,23 @@ class CIndexedPriorityQueue
      * @param pos The current node position
      * @return The parent node position
      */
-    C_INT32 parent(C_INT32 pos) {return (pos+1)/2 - 1;}
+    C_INT32 parent(C_INT32 pos) { return (pos + 1) / 2 - 1; }
 
     /**
      * Provide the position in the heap of the left child of the current node.
      * @param pos The current node position
      * @return The left child position
      */
-    C_INT32 leftChild(C_INT32 pos) {return 2*pos+1;}
+    C_INT32 leftChild(C_INT32 pos) { return 2*pos + 1; }
 
     /**
      * Provide the position in the heap of the right child of the current node.
      * @param pos The current node position
      * @return The right child position
      */
-    C_INT32 rightChild(C_INT32 pos) {return 2*pos+2;}
+    C_INT32 rightChild(C_INT32 pos) { return 2*pos + 2; }
 
- private:
+  private:
     // Members
     /**
      * The vector which stores the heap
@@ -161,21 +176,6 @@ class CIndexedPriorityQueue
      * The vector which stores a pointer to each indexed node on the heap
      */
     vector<C_INT32> mIndexPointer;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  };
 
 #endif // COPASI_CPriorityQueue
