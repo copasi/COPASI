@@ -308,11 +308,11 @@ void CSpec2Model::processDeTerms()
   for (; it != mDeVector.end(); it++)  //every DE in File
     {
       // Create a stack of terms on the RHS of the DE.
-      std::cout << endl << "Creating term stack\n";
+      std::cout << std::endl << "Creating term stack\n";
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       CMetab *LHSMetab = getLHSMetab(*it);
-      std::cout << endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
+      std::cout << std::endl << "LHS-Name: " << LHSMetab->getName() << std::endl;
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::iterator termit = termstack.begin();
 
@@ -327,7 +327,7 @@ void CSpec2Model::processDeTerms()
 
           if (reaction == 0)
             {
-              std::cout << "new reaction" << endl;
+              std::cout << "new reaction" << std::endl;
               std::string rate = expandRate(*termit);
               reaction = new CTempReaction(rate_constant);
               reaction->setDescription(rate);

@@ -13,6 +13,7 @@
 #include "COptProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
+#include "model/CCompartment.h"
 
 //  Default constructor
 COptProblem::COptProblem():
