@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/04 14:31:07 $
+   $Date: 2005/02/05 19:08:38 $
    End CVS Header */
 
 /**********************************************************************
@@ -64,7 +64,7 @@
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
     CopasiWidget(parent, name, fl),
     objKey(""),
-    pFunction(NULL)
+    mpFunction(NULL)
 {
   if (!name)
     setName("FunctionWidget1");
@@ -276,7 +276,7 @@ FunctionWidget1::~FunctionWidget1()
 {
   //pdelete(mMmlWidget);
   //pdelete(mScrollView);
-  pdelete(pFunction);
+  pdelete(mpFunction);
 }
 
 bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
@@ -373,7 +373,7 @@ bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
         s1 += FROM_UTF8(name);
 
       Table2->setText(j, 0, s1);
-      Table2->adjustColumn(0);
+      //Table2->adjustColumn(0);
 
       switch (usages[j]->getHigh())
         {
@@ -398,6 +398,9 @@ bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
 
       Table2->setText(j, 1, s2);
     }
+
+  Table2->adjustColumn(0);
+  Table2->adjustColumn(1);
   return true;
 
   //TODO: render "MODIFIER" usages differently?
@@ -429,12 +432,15 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 {
   if (func)
     {
-      pdelete(pFunction);
-      pFunction = CFunction::createFunction(func);
+      pdelete(mpFunction);
+      mpFunction = CFunction::createFunction(func);
       flagChanged = false;
     }
-  else if (!pFunction)
+  else if (!mpFunction)
     return false;
+
+  // use a const pointer to work with
+  const CFunction* pFunction = mpFunction;
 
   // make dialogue read only for predefined functions
   if (pFunction->getType() == CFunction::MassAction ||
@@ -616,7 +622,7 @@ bool FunctionWidget1::saveToFunction()
 
   if (flagChanged)
     {
-      copyFunctionContentsToFunction(pFunction, func);
+      copyFunctionContentsToFunction(mpFunction, func);
 
       protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
     }
@@ -630,8 +636,8 @@ void FunctionWidget1::updateParameters()
   // :TODO: this method messes with the sorting of the parameters
   // :TODO: This function should be returning whether the parameters were actually changed. //
 
-  std::vector<CNodeK*> & v = ((CKinFunction*) pFunction)->getNodes();
-  CFunctionParameters & params = pFunction->getParameters();
+  const std::vector<CNodeK*> & v = ((CKinFunction*) mpFunction)->getNodes();
+  CFunctionParameters & params = mpFunction->getParameters();
 
   unsigned C_INT32 index;
   CFunctionParameter::DataType type;
@@ -647,8 +653,8 @@ void FunctionWidget1::updateParameters()
           index = params.findParameterByName(v[i]->getName(), type);
           if (index == C_INVALID_INDEX)
             {
-              pFunction->addParameter(v[i]->getName(),
-                                      CFunctionParameter::FLOAT64, "PARAMETER");
+              mpFunction->addParameter(v[i]->getName(),
+                                       CFunctionParameter::FLOAT64, "PARAMETER");
             }
         }
     }
@@ -679,8 +685,8 @@ void FunctionWidget1::updateApplication()
   // :TODO: This function should be returning whether the application was actually changed //
 
   CUsageRange Application;
-  CFunctionParameters &functParam = pFunction->getParameters();
-  CCopasiVectorNS < CUsageRange > & functUsage = pFunction ->getUsageDescriptions();
+  const CFunctionParameters &functParam = mpFunction->getParameters();
+  CCopasiVectorNS < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
   functUsage.cleanup();
 
   Application.setUsage("SUBSTRATES");
@@ -692,8 +698,8 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(CRange::NoRange, Application.getHigh());
-      functUsage.add(Application);
+      //Application.setRange(CRange::NoRange, Application.getHigh());
+      //functUsage.add(Application);
     }
 
   Application.setUsage("PRODUCTS");
@@ -705,8 +711,8 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(CRange::NoRange, Application.getHigh());
-      functUsage.add(Application);
+      //Application.setRange(CRange::NoRange, Application.getHigh());
+      //functUsage.add(Application);
     }
 
   Application.setUsage("MODIFIERS");
@@ -718,8 +724,8 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(CRange::NoRange, Application.getHigh());
-      functUsage.add(Application);
+      //Application.setRange(CRange::NoRange, Application.getHigh());
+      //functUsage.add(Application);
     }
 }
 
@@ -729,13 +735,13 @@ void FunctionWidget1::updateApplication()
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
   if (flagRO) return;
-  std::cout << "*:" << (const char *)textBrowser->text().utf8() << ":*" << std::endl;
+  //std::cout << "*:" << (const char *)textBrowser->text().utf8() << ":*" << std::endl;
   flagChanged = true;
 
   //just set the description (with implicit compile()) and update parameters.
   try
     {
-      pFunction->setDescription((const char *)textBrowser->text().utf8());
+      mpFunction->setDescription((const char *)textBrowser->text().utf8());
     }
   catch (CCopasiException Exception)
   {}
@@ -746,7 +752,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   isValid = true;
   try
     {
-      pFunction->setDescription((const char *)textBrowser->text().utf8());
+      mpFunction->setDescription((const char *)textBrowser->text().utf8());
     }
   catch (CCopasiException Exception)
     {
@@ -764,11 +770,14 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     }
 
   //parameter table
-  loadParameterTable(pFunction->getParameters());
+  loadParameterTable(mpFunction->getParameters());
 
   // application table
   updateApplication();
-  loadUsageTable(pFunction->getUsageDescriptions());
+  loadUsageTable(mpFunction->getUsageDescriptions());
+
+  //
+  textBrowser->setFocus();
 }
 
 void FunctionWidget1::slotTableValueChanged(int row, int col)
@@ -776,7 +785,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   std::cout << "table changed " << row << " " << col << std::endl;
   flagChanged = true;
 
-  CFunctionParameters &functParam = pFunction->getParameters();
+  CFunctionParameters &functParam = mpFunction->getParameters();
 
   if (col == 2) //Usage
     {
@@ -793,9 +802,9 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
     }
 
   //update tables
-  loadParameterTable(pFunction->getParameters());
+  loadParameterTable(mpFunction->getParameters());
   updateApplication();
-  loadUsageTable(pFunction->getUsageDescriptions());
+  loadUsageTable(mpFunction->getUsageDescriptions());
 }
 
 void FunctionWidget1::slotAppTableValueChanged(int C_UNUSED(row), int C_UNUSED(col))
@@ -843,7 +852,7 @@ void FunctionWidget1::slotCommitButtonClicked()
             {
               msg1.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
               msg1.append(" ---> ");
-              msg1.append(FROM_UTF8(pFunction->getObjectName()));
+              msg1.append(FROM_UTF8(mpFunction->getObjectName()));
               msg1.append("\n");
             }
         }
@@ -877,6 +886,7 @@ void FunctionWidget1::slotCommitButtonClicked()
 
 void FunctionWidget1::slotNewButtonClicked()
 {
+  //TODO: check if a commit is necessary here
   std::string name = "function_0";
   int i = 0;
   CFunction* pFunc;
@@ -919,13 +929,13 @@ void FunctionWidget1::slotDeleteButtonClicked()
         {
           msg1.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
           msg1.append(" ---> ");
-          msg1.append(FROM_UTF8(pFunction->getObjectName()));
+          msg1.append(FROM_UTF8(mpFunction->getObjectName()));
           msg1.append("\n");
         }
     }
   else
     {
-      msg2.append(FROM_UTF8(pFunction->getObjectName()));
+      msg2.append(FROM_UTF8(mpFunction->getObjectName()));
       msg2.append("\n");
       msg2Empty = 0;
     }
@@ -940,12 +950,12 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                        // Yes or Enter
+        case 0:                                         // Yes or Enter
           {
             if (reacFound == 0)
               {
                 unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
-                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+                unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(mpFunction->getObjectName());
 
                 Copasi->pFunctionDB->removeFunction(objKey);
 
@@ -957,7 +967,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                        // No or Escape
+        case 1:                                         // No or Escape
           break;
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/04 13:18:17 $
+   $Date: 2005/02/05 19:08:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -107,7 +107,7 @@ class FunctionWidget1 : public CopasiWidget
     QtMmlWidget* mMmlWidget;
     QScrollView* mScrollView;
 
-    CFunction * pFunction;
+    CFunction * mpFunction;
   };
 
 #endif // FunctionWidget1
