@@ -31,8 +31,13 @@ class ModelWidget : public CopasiWidget
     ~ModelWidget();
     CModel *mModel;
     void loadModel(CModel *model);
-    QString name;
 
+  private:
+    bool convert2NonReversible();
+
+    // Attributes
+  private:
+    QString name;
     QLineEdit* LineEdit;
     QTextBrowser* textBrowser;
     QLabel* TextLabel1;

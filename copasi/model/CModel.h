@@ -872,13 +872,6 @@ class CModel : public CCopasiContainer
      */
     const CModel::CStateTemplate & getStateTemplate() const;
 
-    /**
-     * This converts the model to a model with only non reversible reactions.
-     * This is necessary for stochastic simulation.
-     * It returns true when the conversion was possible for all reactions.
-     */
-    bool convert2NonReversible();
-
   private:
     /**
      * Initialize the contained CCopasiObjects

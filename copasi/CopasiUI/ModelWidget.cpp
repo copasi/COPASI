@@ -17,6 +17,7 @@
 #include "copasi.h"
 #include "ModelWidget.h"
 #include "listviews.h"
+#include "CReactionInterface.h"
 #include "model/CModel.h"
 #include "utilities/CMethodParameter.h"
 
@@ -153,5 +154,82 @@ void ModelWidget::slotBtnOKClicked()
 
 void ModelWidget::slotBtnSplitClicked()
 {
-  mModel->convert2NonReversible();
+  convert2NonReversible();
+}
+
+bool ModelWidget::convert2NonReversible()
+{
+  bool ret = true;
+
+  std::vector<std::string> reactionsToDelete;
+
+  CReaction *reac0, *reac1, *reac2;
+  CReactionInterface ri1, ri2;
+  std::string fn, rn1, rn2;
+  CCopasiVectorN< CReaction > & mSteps = mModel->getReactions();
+
+  unsigned C_INT32 i, imax = mSteps.size();
+  for (i = 0; i < imax; ++i)
+    if (mSteps[i]->isReversible())
+      {
+        ret = false;
+        reac0 = mSteps[i];
+        std::cout << i << "  ";
+
+        //create the two new reactions
+        reac1 = new CReaction(*reac0);
+        rn1 = reac1->getName() + " (forward)";
+        reac1->setName(rn1);
+        mSteps.add(reac1);
+
+        reac2 = new CReaction(*reac0);
+        rn2 = reac2->getName() + " (backward)";
+        reac2->setName(rn2);
+        mSteps.add(reac2);
+
+        ri1.initFromReaction(rn1, *mModel);
+        ri2.initFromReaction(rn2, *mModel);
+
+        //set the new function
+        fn = reac0->getFunction().getName();
+        std::cout << fn << "  ";
+
+        if (fn == "Mass action (reversible)")
+          {
+            ri1.setReversibility(false, "Mass action (irreversible)");
+            ri2.reverse(false, "Mass action (irreversible)");
+          }
+        else if (fn == "Constant flux (reversible)")
+          {
+            ri1.setReversibility(false, "Constant flux (irreversible)");
+            ri2.reverse(false, "Constant flux (irreversible)");
+          }
+        else
+          {
+            ri1.setReversibility(false);
+            ri2.reverse(false);
+          }
+
+        ri1.writeBackToReaction(*mModel);
+        ri2.writeBackToReaction(*mModel);
+
+        //set the kinetic parameters
+
+        if (fn == "Mass action (reversible)")
+          {
+            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            ret = true;
+          }
+
+        //remove the old reaction
+        //mSteps.remove(reac0->getName());
+        reactionsToDelete.push_back(reac0->getName());
+      }
+
+  imax = reactionsToDelete.size();
+  for (i = 0; i < imax; ++i)
+    mSteps.remove(reactionsToDelete[i]);
+
+  return ret;
 }
