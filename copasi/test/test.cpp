@@ -511,7 +511,7 @@ C_INT32 TestTrajectory(void)
 
   //  cout << "Running trajectory\n";
   //  traj.process(output);
-  traj.cleanup();
+  //traj.cleanup();
 
   return 0;
 }
@@ -560,7 +560,7 @@ C_INT32 TestTrajectoryTask(void)
   ofstream output2("output2.txt");
   traj.initializeReporting(output2);
   traj.process();
-  traj.cleanup();
+  //traj.cleanup();
 
   return 0;
 }
@@ -771,7 +771,7 @@ C_INT32 TestKinFunction()
   C_FLOAT64 a = 4;
   C_FLOAT64 b = 1;
 
-  CCallParameters CallParameters;
+  CCallParameterPointers CallParameters;
 
   CallParameters.resize(2);
 
@@ -1867,7 +1867,7 @@ C_INT32 TestSpec2Model()
   ofstream output("output.txt");
   traj.initializeReporting(output);
   traj.process();
-  traj.cleanup();
+  //traj.cleanup();
 
   return 0;
 }
@@ -1911,26 +1911,26 @@ C_INT32 Testr250(void)
 }
 
 C_INT32 Testmt19937(void)
-{
-  CRandom * rand = CRandom::createGenerator();
-
-  int i;
-  unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
-  ((Cmt19937*)rand)->init_by_array(init, length);
-  printf("1000 outputs of getRandomU()\n");
-  for (i = 0; i < 1000; i++)
-    {
-      printf("%10lu ", rand->getRandomU());
-      if (i % 5 == 4)
-        printf("\n");
-    }
-  printf("\n1000 outputs of genrand_real2()\n");
-  for (i = 0; i < 1000; i++)
-    {
-      printf("%10.8f ", rand->getRandomCO());
-      if (i % 5 == 4)
-        printf("\n");
-    }
-
-  return 0;
+{/*
+    CRandom * rand = CRandom::createGenerator();
+   
+    int i;
+    unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
+    ((Cmt19937*)rand)->init_by_array(init, length);
+    printf("1000 outputs of getRandomU()\n");
+    for (i = 0; i < 1000; i++)
+      {
+        printf("%10lu ", rand->getRandomU());
+        if (i % 5 == 4)
+          printf("\n");
+      }
+    printf("\n1000 outputs of genrand_real2()\n");
+    for (i = 0; i < 1000; i++)
+      {
+        printf("%10.8f ", rand->getRandomCO());
+        if (i % 5 == 4)
+          printf("\n");
+      }
+   
+    return 0;*/
 }
