@@ -65,10 +65,11 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
 {
   if (model != NULL)
     {
+      int i;
       mModel = model;
       //Emptying the table
       int numberOfRows = table->numRows();
-      for (int i = 0; i < numberOfRows; i++)
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
