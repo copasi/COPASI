@@ -41,6 +41,7 @@ CopasiUI3Window::CopasiUI3Window():
     msave_button(NULL),
     file(NULL)
 {
+  resize(100, 100); // to resize the screen..to fit this size
   // Set the window caption/title
   setCaption("Copasi ");
   createToolBar(); // creates a tool bar
@@ -50,8 +51,6 @@ CopasiUI3Window::CopasiUI3Window():
   file->setItemEnabled(nsave_menu_id, false);
   file->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
-
-  resize(766, 400); // to resize the screen..to fit this size
 
   if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
     {
