@@ -87,15 +87,27 @@ SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CGlobals.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiTime.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COutputHandler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReadConfig.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSparseMatrix.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSparseVector.cpp
 # End Source File
 # Begin Source File
 
@@ -159,10 +171,6 @@ SOURCE=.\CDependencyGraph.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CGlobals.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CIndexedPriorityQueue.h
 # End Source File
 # Begin Source File
@@ -175,11 +183,23 @@ SOURCE=.\CMatrix.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiTime.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\COutputHandler.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\CReadConfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSparseMatrix.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CSparseVector.h
 # End Source File
 # Begin Source File
 
