@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:20 $
+   $Date: 2004/08/05 12:54:16 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -14,6 +14,8 @@
 #include "plotwindow.h" 
 //#include "plotspec.h"
 #include "CopasiPlot.h" 
+//#include "CPlotSpec2Vector.h"
+
 // #include "plotwidget1.h"
 
 // taken from qwt examples/bode
@@ -32,7 +34,7 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
+PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
@@ -49,7 +51,7 @@ PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
-  plot = new CopasiPlot(ptrSpec, this);
+  plot = new CopasiPlot(psv, ptrSpec, this);
   setCentralWidget(plot);
 
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
@@ -57,9 +59,9 @@ PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
   connect(plot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
 }
 
-bool PlotWindow::initFromSpec(const CPlotSpec* ptrSpec)
+bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
-  return plot->initFromSpec(ptrSpec);
+  return plot->initFromSpec(psv, ptrSpec);
 }
 
 //-----------------------------------------------------------------------------

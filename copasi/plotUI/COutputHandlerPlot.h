@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/25 15:04:00 $
+   $Date: 2004/08/05 12:54:10 $
    End CVS Header */
 
 #if !defined OUTPUT_HANDLER_PLOT
@@ -11,7 +11,7 @@
 
 #include "utilities/COutputHandler.h"
 
-class CPlotSpecVector;
+class CPlotSpec2Vector;
 
 /**
  *  This is used to call the plotting routines from the tasks
@@ -27,10 +27,10 @@ class COutputHandlerPlot : public CCallbackHandler
     virtual bool doOutput();
     virtual bool finish();
 
-    void setPlotSpecVectorAddress(CPlotSpecVector* ppp);
+    void setPlotSpecVectorAddress(CPlotSpec2Vector* ppp);
 
   private:
-    CPlotSpecVector * mpPlotSpecVector;
+    CPlotSpec2Vector * mpPlotSpecVector;
 
     //for testing only
     std::ifstream datafile;

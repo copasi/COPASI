@@ -1,14 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:08 $
+   $Date: 2004/08/05 12:54:10 $
    End CVS Header */
 
 #include "copasi.h"
 #include "COutputHandlerPlot.h"
-#include "plot/CPlotSpecVector.h"
+#include "plot/CPlotSpec2Vector.h"
 
 //COutputHandlerPlot::COutputHandlerPlot():
 //    mpPlotSpecVector(NULL)
@@ -16,16 +16,8 @@
 
 bool COutputHandlerPlot::init()
 {
-  //std::cout << "OutputHandlerPlot: init" << std::endl;
-
-  //if (!mpPlotSpecVector) return false;
-  //datafile.open("datafile", std::ios::in);
-
-  //mpPlotSpecVector->setNumColumns(3);
-  //mpPlotSpecVector->setSourceStream(&datafile);
   if (!mpPlotSpecVector) return false;
   return mpPlotSpecVector->initPlottingFromObjects();
-  //return true;
 }
 
 bool COutputHandlerPlot::doOutput()
@@ -40,18 +32,9 @@ bool COutputHandlerPlot::finish()
 {
   //std::cout << "OutputHandlerPlot: finish" << std::endl;
   if (!mpPlotSpecVector) return false;
-  /*datafile.open("datafile", std::ios::in);
-
-  mpPlotSpecVector->setNumColumns(3);
-  mpPlotSpecVector->setSourceStream(&datafile);
-  mpPlotSpecVector->initPlottingFromStream();*/
-
-  //mpPlotSpecVector->doPlotting();
 
   return mpPlotSpecVector->finishPlotting();
-
-  //return true;
 }
 
-void COutputHandlerPlot::setPlotSpecVectorAddress(CPlotSpecVector* ppp)
+void COutputHandlerPlot::setPlotSpecVectorAddress(CPlotSpec2Vector* ppp)
 {mpPlotSpecVector = ppp;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:30 $
+   $Date: 2004/08/05 12:55:51 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -18,6 +18,7 @@
 #include "scan/CScanTask.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/CPlotSpecVector.h"
+#include "plot/CPlotSpec2Vector.h"
 #include "optimization/COptFunction.h"
 #include "xml/CCopasiXML.h"
 
@@ -73,7 +74,7 @@ void DataModel::createModel()
   //  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
-  plotspecs = new CPlotSpecVector();
+  plotspecs = new CPlotSpec2Vector();
   //  searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
   //  tmpHandler->setPlotSpecVectorAddress(plotspecs);
@@ -126,7 +127,7 @@ void DataModel::loadModel(const char* fileName)
       //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
       pdelete(plotspecs);
-      plotspecs = new CPlotSpecVector();
+      plotspecs = new CPlotSpec2Vector();
       //  plotspecs->load(inbuf);
       //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
@@ -153,7 +154,7 @@ void DataModel::loadModel(const char* fileName)
       CCopasiVectorN< CCopasiTask > TaskList;
       XML.setTaskList(TaskList);
 
-      CPlotSpecVector * pNewPlotSpecs = new CPlotSpecVector();
+      CPlotSpec2Vector * pNewPlotSpecs = new CPlotSpec2Vector();
       //TODO XML.setPlotList(*pNewPlotSpecs);
 
       XML.load(File);
@@ -295,7 +296,7 @@ void DataModel::importSBML(const char* fileName)
   //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
-  plotspecs = new CPlotSpecVector();
+  plotspecs = new CPlotSpec2Vector();
   //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
   //tmpHandler->setPlotSpecVectorAddress(plotspecs);

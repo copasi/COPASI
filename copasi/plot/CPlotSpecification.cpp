@@ -1,82 +1,93 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/13 14:35:42 $
+   $Date: 2004/08/05 12:54:12 $
    End CVS Header */
 
-/**
- *  CCopasiMethod class.
- *  This class is used to describe a task in COPASI. This class is 
- *  intended to be used as the parent class for all tasks whithin COPASI.
- *  
- *  Created for Copasi by Stefan Hoops 2003
- */
+#include "model/CModel.h"
 
-#include "copasi.h"
+#include "CPlotSpecification.h"
 
-#include "CPlotSpecification.h" 
-//#include "CCopasiMessage.h"
-
-const std::string CPlotItem::TypeName[] =
-  {
-    "Not set",
-    "2D Curve",
-    ""
-  };
-
-const char* CPlotItem::XMLType[] =
-  {
-    "NotSet",
-    "Curve2D",
-    NULL
-  };
-
-CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName)
-{
-  unsigned C_INT32 i = 0;
-  while (TypeName[i] != typeName && TypeName[i] != "") i++;
-
-  if (CPlotItem::TypeName[i] != "") return (CPlotItem::Type) i;
-  else return CPlotItem::unset;
-}
-
-CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName)
-{
-  unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
-
-  if (XMLType[i]) return (CPlotItem::Type) i;
-  else return CPlotItem::unset;
-}
-
-CPlotItem::CPlotItem():
-    CCopasiParameterGroup("NoName", NULL, "PlotItem"),
-    mType(CPlotItem::unset)
-{setName(TypeName[mType]);}
-
-CPlotItem::CPlotItem(const CPlotItem::Type & type,
-                     const CCopasiContainer * pParent):
-    CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
-    mType(type)
-{setName(TypeName[mType]);}
-
-CPlotItem::CPlotItem(const CPlotItem & src,
-                     const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mType(src.mType)
+CPlotSpecification::CPlotSpecification(const std::string & name,
+                                       const CCopasiContainer * pParent,
+                                       const CPlotSpecification::Type & type):
+    CPlotItem(name, pParent, type)
 {}
 
-CPlotItem::~CPlotItem() {}
+CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
+                                       const CCopasiContainer * pParent):
+    CPlotItem(src, pParent)
+{}
 
-const CPlotItem::Type & CPlotItem::getType() const
-  {return mType;}
+CPlotSpecification::~CPlotSpecification() {}
 
-void CPlotItem::setType(CPlotItem::Type type)
-{mType = type;}
+void CPlotSpecification::cleanup()
+{
+  items.cleanup();
+  this->CPlotItem::cleanup();
+}
 
-std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels()
-{return channels;}
+void CPlotSpecification::initObjects()
+{}
 
-//**************************************************************
+CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::Type type)
+{
+  // check if there is already a volume with this name
+  //if (items.getIndex(name) != C_INVALID_INDEX)
+  //  return NULL; //it is not a name vector
+
+  CPlotItem * itm = new CPlotItem(name, NULL, type);
+
+  if (!items.add(itm, true))
+    {
+      delete itm;
+      return NULL;
+    }
+
+  return itm;
+}
+
+bool CPlotSpecification::createDefaultPlot(const CModel* model)
+{
+  //title = "Default Data Plot 2D";
+
+  /*axes.resize(4);
+
+  axes[QwtPlot::xBottom].active = true;
+  axes[QwtPlot::xBottom].autoscale = true;
+  axes[QwtPlot::xBottom].title = "X-Achse";
+
+  axes[QwtPlot::yLeft].active = true;
+  axes[QwtPlot::yLeft].autoscale = true;
+  axes[QwtPlot::yLeft].title = "Y-Achse";
+
+  axes[QwtPlot::xTop].active = false;
+  axes[QwtPlot::xTop].autoscale = true;
+  axes[QwtPlot::xTop].title = "X2-Achse";
+
+  axes[QwtPlot::yRight].active = false;
+  axes[QwtPlot::yRight].autoscale = true;
+  axes[QwtPlot::yRight].title = "Y2-Achse";*/
+
+  CPlotItem * plItem;
+  std::string itemTitle;
+  CPlotDataChannelSpec name2;
+
+  CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
+  std::cout << name1 << std::endl;
+
+  unsigned C_INT32 i, imax = model->getMetabolites().size();
+  for (i = 0; i < imax; ++i)
+    {
+      name2 = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN();
+      itemTitle = model->getMetabolites()[i]->getObjectName();
+      std::cout << itemTitle << " : " << name2 << std::endl;
+
+      plItem = this->createItem(itemTitle, CPlotItem::curve2d);
+      plItem->addChannel(name1);
+      plItem->addChannel(name2);
+    }
+  return true; //TODO: really check;
+}

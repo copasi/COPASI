@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:19 $
+   $Date: 2004/08/05 12:54:14 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'curve2dwidget.ui'
  **
- ** Created: Wed May 5 20:22:54 2004
- **      by: The User Interface Compiler ($Id: curve2dwidget.h,v 1.2 2004/05/06 20:03:19 ssahle Exp $)
+ ** Created: Wed Aug 4 15:18:54 2004
+ **      by: The User Interface Compiler ($Id: curve2dwidget.h,v 1.3 2004/08/05 12:54:14 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,15 +20,15 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
-#include "CPlotSpec.h"
+#include "CPlotSpecification.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QLabel;
 class QFrame;
-class QComboBox;
+class QLabel;
 class QLineEdit;
+class QComboBox;
 
 class Curve2DWidget : public QWidget
   {
@@ -38,22 +38,23 @@ class Curve2DWidget : public QWidget
     Curve2DWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~Curve2DWidget();
 
-    QLabel* textLabelTitle;
     QFrame* line;
-    QComboBox* comboXAxis;
-    QComboBox* comboXData;
-    QLabel* textLabelX;
+    QLabel* textLabelTitle;
     QLineEdit* lineEditTitle;
-    QComboBox* comboYData;
-    QComboBox* comboYAxis;
+    QLineEdit* lineEditXName;
+    QLineEdit* lineEditXCN;
+    QLineEdit* lineEditYName;
+    QLineEdit* lineEditYCN;
+    QLabel* textLabelX;
     QLabel* textLabelY;
+    QComboBox* comboXAxis;
+    QComboBox* comboYAxis;
 
-    bool LoadFromCurveSpec(const Curve2DSpec * curve, const QStringList & channels);
-    bool SaveToCurveSpec(Curve2DSpec * curve) const;
+    virtual bool LoadFromCurveSpec(const CPlotItem * curve);
+    virtual bool SaveToCurveSpec(CPlotItem * curve) const;
 
   protected:
     QGridLayout* Curve2DWidgetLayout;
-    QGridLayout* layout1;
 
   protected slots:
     virtual void languageChange();

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:55:06 $
+   $Date: 2004/08/05 12:54:16 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.8 2004/07/02 13:55:06 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.9 2004/08/05 12:54:16 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 #include <qvariant.h>
 
 #include "CopasiUI/copasiWidget.h"
-#include "plot/CPlotSpec.h"
+#include "plot/CPlotSpecification.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -51,11 +51,15 @@ class PlotWidget1 : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected:
-    bool loadFromPlotSpec(const CPlotSpec *);
+    bool loadFromPlotSpec(const CPlotSpecification *);
     bool saveToPlotSpec();
+    void addCurveTab(const std::string & title,
+                     const CPlotDataChannelSpec & x,
+                     const CPlotDataChannelSpec & y);
+
     std::string objKey;
 
-    CPlotSpec mPlotSpec;
+    //CPlotSpecification *mpPlotSpec;
 
     QGridLayout* PlotWidget1Layout;
     QVBoxLayout* layout20;
@@ -121,8 +125,8 @@ class PlotWidget1 : public CopasiWidget
 
   private:
 
-    QStringList channelNames;
-    std::vector<Curve2DWidget*> curveWidgetVector;
+    //QStringList channelNames;
+    //std::vector<Curve2DWidget*> curveWidgetVector;
   };
 
 #endif // PLOTWIDGET1_H

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:25:08 $
+   $Date: 2004/08/05 12:56:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,8 +48,8 @@
 #include "plot/plotwidget1.h"
 #include "PlotWidget.h"
 #include "CopasiDefaultWidget.h"
-#include "plot/CPlotSpec.h"
-#include "plot/CPlotSpecVector.h"
+#include "plot/CPlotSpecification.h"
+#include "plot/CPlotSpec2Vector.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
 #include "TrajectoryWidget.h"
@@ -557,7 +557,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                           //Time course
+      case 23:                                            //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -566,10 +566,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                          //Report
+      case 43:                                           //Report
         return tableDefinition;
         break;
-      case 42:                                          //Plots
+      case 42:                                           //Plots
         return plotWidget;
         break;
       case 5:
@@ -921,20 +921,20 @@ void ListViews::loadPlotsToDataModel()   //TODO
 
   dataModel->removeAllChildren(parent);
 
-  const CCopasiVector< CPlotSpec > * objects =
+  const CCopasiVector< CPlotSpecification > * objects =
     dataModel->getPlotSpecVectorAddr();
 
   if (!objects) return;
 
   C_INT32 j, jmax = objects->size();
 
-  CPlotSpec *obj;
+  CPlotSpecification *obj;
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
       f = new Folder(parent, FROM_UTF8(obj->getObjectName()));
       f->setID(parent->getID());
-      f->setObjectKey(obj->getKey());
+      f->setObjectKey(obj->CCopasiParameter::getKey());
       dataModel->addData(parent, f);
     }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 13:26:07 $
+   $Date: 2004/08/05 12:54:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,27 +17,30 @@
 
 #include "report/CCopasiContainer.h"
 
-bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringList & channels)
+bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
   if (!curve) return false;
 
-  lineEditTitle->setText(curve->title.c_str());
+  if (curve->getType() != CPlotItem::curve2d) return false;
+  //if (curve->getChannels().getSize != 2) return false;
+
+  lineEditTitle->setText(curve->getTitle().c_str());
 
   //set the comboboxes for axis selection
-  if (curve->xAxis == QwtPlot::xTop) comboXAxis->setCurrentItem(0);
+  /*if (curve->xAxis == QwtPlot::xTop) comboXAxis->setCurrentItem(0);
   else comboXAxis->setCurrentItem(1);
 
   if (curve->yAxis == QwtPlot::yRight) comboYAxis->setCurrentItem(1);
-  else comboYAxis->setCurrentItem(0);
+  else comboYAxis->setCurrentItem(0);*/
 
-  std::vector< CCopasiContainer * > ListOfContainer; //dummy
+  std::vector< CCopasiContainer * > LOfC; //dummy
 
   //set the comboboxes for data channel selection
-  comboXData->insertStringList(channels);
-  comboXData->setCurrentText(CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str());
+  lineEditXName->setText(CCopasiContainer::ObjectFromName(LOfC, curve->getChannels()[0])->getObjectUniqueName().c_str());
+  lineEditXCN->setText(CCopasiContainer::ObjectFromName(LOfC, curve->getChannels()[0])->getCN().c_str());
 
-  comboYData->insertStringList(channels);
-  comboYData->setCurrentText(CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[1].object)->getObjectUniqueName().c_str());
+  lineEditYName->setText(CCopasiContainer::ObjectFromName(LOfC, curve->getChannels()[1])->getObjectUniqueName().c_str());
+  lineEditYCN->setText(CCopasiContainer::ObjectFromName(LOfC, curve->getChannels()[1])->getCN().c_str());
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -47,11 +50,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringLi
   //  std::string sss = CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str();
   //  std::cout << "uni : " << sss << " *** " << std::endl;
 
-  return true;
+  return true; //TODO
 }
 
-bool Curve2DWidget::SaveToCurveSpec(Curve2DSpec * curve) const
+bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
+    //title
+    curve->setTitle((const char*)lineEditTitle->text().utf8());
+
+    //channels
+    curve->getChannels().resize(0);
+    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditXCN->text().utf8())));
+    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditYCN->text().utf8())));
     /* if (!curve) return false;
 
      curve->title = lineEditTitle->text().latin1();

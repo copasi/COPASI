@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 09:31:36 $
+   $Date: 2004/08/05 12:54:15 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.13 2004/06/23 09:31:36 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.14 2004/08/05 12:54:15 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -28,7 +28,7 @@
 
 #include "curve2dwidget.h"
 #include "plotwindow.h"
-#include "CPlotSpec.h"
+#include "CPlotSpecification.h"
 #include "report/CKeyFactory.h"
 #include "CopasiUI/ObjectBrowser.h"
 
@@ -124,9 +124,11 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   connect(resetButton, SIGNAL(clicked()), this, SLOT(resetPlot()));
 
   //TODO: this is for debugging only.
-  channelNames += "time";
-  channelNames += "X-Data";
-  channelNames += "Y-Data";
+  //channelNames += "time";
+  //channelNames += "X-Data";
+  //channelNames += "Y-Data";
+
+  //mpPlotSpec = new CPlotSpecification;
 }
 
 //-----------------------------------------------------------------------------
@@ -159,8 +161,25 @@ void PlotWidget1::languageChange()
 
 //-----------------------------------------------------------------------------
 
+void PlotWidget1::addCurveTab(const std::string & title,
+                              const CPlotDataChannelSpec & x,
+                              const CPlotDataChannelSpec & y)
+{
+  CPlotItem* item = new CPlotItem(title, NULL, CPlotItem::curve2d);
+  item->addChannel(x);
+  item->addChannel(y);
+
+  Curve2DWidget * curveWidget = new Curve2DWidget(tabs);
+  curveWidget->LoadFromCurveSpec(item);
+  tabs->addTab(curveWidget, item->getTitle().c_str());
+
+  delete item;
+}
+
 void PlotWidget1::addCurveGroupBox()
 {
+  CPlotSpecification *mpPlotSpec;
+
   ObjectBrowser* pBrowser1 = new ObjectBrowser();
   ObjectBrowser* pBrowser2 = new ObjectBrowser();
 
@@ -204,9 +223,9 @@ void PlotWidget1::addCurveGroupBox()
     }
 
   std::string cn;
-  std::vector<std::string> objects1, objects2;
+  std::vector<CCopasiObjectName> objects1, objects2;
   unsigned C_INT32 i;
-  std::vector<std::string>::const_iterator sit;
+  std::vector<CCopasiObjectName>::const_iterator sit;
 
   for (i = 0; i < pVector1->size(); i++)
     if ((*pVector1)[i])
@@ -237,15 +256,17 @@ void PlotWidget1::addCurveGroupBox()
   //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   //if (!pspec) return;
 
+  CPlotItem * plItem;
+
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
-        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[0], objects2[i])); //TODO title
+      {addCurveTab("***", objects1[0], objects2[i]);}
     }
   else if (objects2.size() == 1)
     {
       for (i = 0; i < objects1.size(); ++i)
-        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[0])); //TODO title
+      {addCurveTab("***", objects1[i], objects2[0]);}
     }
   else
     {
@@ -256,10 +277,9 @@ void PlotWidget1::addCurveGroupBox()
         imax = objects1.size();
 
       for (i = 0; i < imax; ++i)
-        mPlotSpec.getCurves().push_back(Curve2DSpec("***", objects1[i], objects2[i])); //TODO title
+      {addCurveTab("***", objects1[i], objects2[i]);}
     }
 
-  loadFromPlotSpec(&mPlotSpec);
   //pdelete(pBrowser1);
   //pdelete(pBrowser2);
   pdelete(pVector1);
@@ -270,28 +290,7 @@ void PlotWidget1::addCurveGroupBox()
 
 void PlotWidget1::removeCurveGroupBox()
 {
-  //which tab to delete
-  C_INT32 index = tabs->currentPageIndex();
-
-  //erase the curve spec
-  //CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
-  unsigned C_INT32 i;
-  std::vector<Curve2DSpec>::iterator it, itEnd;
-  itEnd = mPlotSpec.getCurves().end();
-  for (it = mPlotSpec.getCurves().begin(), i = 0; (it != itEnd)&(i < index); ++it, ++i);
-  if (it != itEnd) mPlotSpec.getCurves().erase(it);
-
-  //recreate the tabs
-  loadFromPlotSpec(&mPlotSpec);
-
-  /*
-  delete curveWidgetVector[index];
-
-  std::vector<Curve2DWidget*>::iterator it;
-  C_INT32 i;
-  for (it = curveWidgetVector.begin(), i = 0; (it != curveWidgetVector.end())&(i < index); ++it, ++i);
-  if (it != curveWidgetVector.end()) curveWidgetVector.erase(it);
-  */
+  delete tabs->currentPage();
 }
 
 //-----------------------------------------------------------------------------
@@ -324,7 +323,7 @@ void PlotWidget1::addPlot()
 
 void PlotWidget1::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification*>(GlobalKeys.get(objKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -336,34 +335,27 @@ void PlotWidget1::plotFinished()
   // ...and enable all other input fields
 }
 
-bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
+bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 {
   if (!pspec) return false;
 
-  mPlotSpec = *pspec;
+  //title
+  titleLineEdit->setText(pspec->getTitle().c_str());
 
   C_INT32 oldIndex = tabs->currentPageIndex();
 
-  Curve2DWidget* curve;
-  const std::vector<Curve2DSpec> & curves = pspec->getCurves();
-
   //clear tabWidget
-  std::vector<Curve2DWidget*>::const_iterator itw;
-  for (itw = curveWidgetVector.begin(); itw != curveWidgetVector.end(); ++itw)
-    {
-      //tabs->removePage(*itw);  not necessary?
-      delete *itw;
-    }
-  curveWidgetVector.clear();
+  while (tabs->currentPage()) delete tabs->currentPage();
 
   //reconstruct tabWidget from curve specs
-  std::vector<Curve2DSpec>::const_iterator it;
-  for (it = curves.begin(); it != curves.end(); ++it)
+  Curve2DWidget* curve;
+  const CCopasiVector<CPlotItem> & curves = pspec->getItems();
+  unsigned C_INT32 i, imax = curves.size();
+  for (i = 0; i < imax; ++i)
     {
       curve = new Curve2DWidget(tabs);
-      curveWidgetVector.push_back(curve);
-      curve->LoadFromCurveSpec(&*it, channelNames);
-      tabs->addTab(curve, it->title.c_str());
+      curve->LoadFromCurveSpec(curves[i]);
+      tabs->addTab(curve, curves[i]->getTitle().c_str());
     }
 
   tabs->setCurrentPage(oldIndex);
@@ -373,24 +365,27 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey));
   if (!pspec) return false;
 
-  *pspec = mPlotSpec;
+  pspec->cleanup();
 
-  /*
-  //clear curves vector
-  pspec->getCurves().clear();
+  //title
+  pspec->setTitle((const char*)titleLineEdit->text().utf8());
 
-  //reconstruct curves vector from tab widget
-  Curve2DSpec cspec;
-  std::vector<Curve2DWidget*>::const_iterator it;
-  for (it = curveWidgetVector.begin(); it != curveWidgetVector.end(); ++it)
+  //curves
+  CPlotItem* item;
+  unsigned C_INT32 i, imax;
+  imax = tabs->count();
+  for (i = 0; i < imax; ++i)
     {
-      (*it)->SaveToCurveSpec(&cspec);
-      pspec->getCurves().push_back(cspec);
+      item = pspec->createItem("dummyname", CPlotItem::curve2d);
+      dynamic_cast<Curve2DWidget*>(tabs->page(i))->SaveToCurveSpec(item);
     }
-  */return true;
+
+  //TODO: CopasiParameters
+
+  return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -400,8 +395,7 @@ bool PlotWidget1::saveToPlotSpec()
 bool PlotWidget1::enter(const std::string & key)
 {
   objKey = key;
-  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(key));
-  //TODO: check if it really is a plot spec
+  CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(key));
 
   if (!pspec) return false;
 
@@ -420,8 +414,7 @@ bool PlotWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_U
     case ListViews::METABOLITE:
     case ListViews::REPORT:
     case ListViews::PLOT:
-      //TODO: check if it really is a compartment
-      return loadFromPlotSpec(dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey)));
+      return loadFromPlotSpec(dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey)));
       break;
 
     default:

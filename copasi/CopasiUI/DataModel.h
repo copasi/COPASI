@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:30 $
+   $Date: 2004/08/05 12:55:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,7 +22,7 @@ class CSteadyStateTask;
 class CTrajectoryTask;
 class CScanTask;
 class CReportDefinitionVector;
-class CPlotSpecVector;
+class CPlotSpec2Vector;
 class COptFunction;
 
 //******************************************************************************
@@ -37,7 +37,7 @@ class DataModel
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
     CReportDefinitionVector* reportdefinitions;
-    CPlotSpecVector* plotspecs;
+    CPlotSpec2Vector* plotspecs;
     COptFunction* pOptFunction;
 
   public:
@@ -58,7 +58,7 @@ class DataModel
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
     inline CReportDefinitionVector* getReportDefinitionVectorAddr(){return reportdefinitions;}
-    inline CPlotSpecVector* getPlotSpecVectorAddr(){return plotspecs;}
+    inline CPlotSpec2Vector* getPlotSpecVectorAddr(){return plotspecs;}
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/20 19:57:37 $
+   $Date: 2004/08/05 12:54:12 $
    End CVS Header */
 
 // the plot object for copasi
@@ -21,15 +21,16 @@
 #include "zoomplot.h" 
 //#include "plotspec.h"
 
-class CPlotSpec;
+class CPlotSpec2Vector;
+class CPlotSpecification;
 
 class CopasiPlot : public ZoomPlot
   {
     Q_OBJECT
   public:
-    CopasiPlot(const CPlotSpec* plotspec, QWidget* parent = 0);
+    CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent = 0);
 
-    bool initFromSpec(const CPlotSpec* plotspec);
+    bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec);
 
     ~CopasiPlot();
 
@@ -76,7 +77,7 @@ class CopasiPlot : public ZoomPlot
     std::vector<std::vector<C_INT32> > dataIndices;
 
     // populate indexTable and dataIndices
-    void createIndices(const CPlotSpec* pspec);
+    void createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec);
 
     // whether zooming is enabled
     bool zoomOn;

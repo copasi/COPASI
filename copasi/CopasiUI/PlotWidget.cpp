@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:40 $
+   $Date: 2004/08/05 12:56:30 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -22,12 +22,12 @@
 #include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
-#include "plot/CPlotSpecVector.h"
+#include "plot/CPlotSpec2Vector.h"
 #include "DataModelGUI.h"
 
 std::vector<const CCopasiObject*> PlotWidget::getObjects() const
   {
-    CCopasiVector<CPlotSpec>* tmp =
+    CCopasiVector<CPlotSpecification>* tmp =
       dataModel->getPlotSpecVectorAddr();
 
     std::vector<const CCopasiObject*> ret;
@@ -58,15 +58,16 @@ void PlotWidget::init()
 void PlotWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
   if (!obj) return;
-  const CPlotSpec* pPl = (const CPlotSpec*)obj;
+  //const CPlotSpecification* pPl = (const CPlotSpecification*)obj;
+  const CPlotSpecification* pPl = dynamic_cast<const CPlotSpecification*>(obj);
   table->setText(row, 1, FROM_UTF8(pPl->getObjectName()));
-  table->setText(row, 2, QString::number(pPl->getCurves().size()));
+  table->setText(row, 2, QString::number(pPl->getItems().size()));
 }
 
 void PlotWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CPlotSpec* pPl = (CPlotSpec*)obj;
+  CPlotSpecification* pPl = (CPlotSpecification*)obj;
   //pPl->setComment((const char *)table->text(row, 2).utf8());
 }
 
@@ -85,8 +86,8 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
 {
   std::string nname = name;
   int i = 0;
-  CPlotSpec* pPl;
-  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname)))
+  CPlotSpecification* pPl;
+  while (!(pPl = dataModel->getPlotSpecVectorAddr()->createPlotSpec(nname, CPlotItem::plot2d)))
     {
       i++;
       nname = name;
@@ -95,7 +96,7 @@ CCopasiObject* PlotWidget::createNewObject(const std::string & name)
 
   pPl->createDefaultPlot(dataModel->getModel()); //TODO have an extra button for that
 
-  std::cout << " *** created PlotSpec: " << nname << " : " << pPl->getKey() << std::endl;
+  std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
   return pPl;
 }
 

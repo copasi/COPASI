@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 20:03:20 $
+   $Date: 2004/08/05 12:54:17 $
    End CVS Header */
 
 #include <fstream>
@@ -14,7 +14,8 @@
 #include "copasi.h"
 
 class CopasiPlot;
-class CPlotSpec;
+class CPlotSpecification;
+class CPlotSpec2Vector;
 
 class PlotWindow : public QMainWindow
   {
@@ -26,9 +27,9 @@ class PlotWindow : public QMainWindow
     CopasiPlot *plot;
 
   public:
-    PlotWindow(const CPlotSpec* ptrSpec);
+    PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
 
-    bool initFromSpec(const CPlotSpec* ptrSpec);
+    bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
 
     QToolButton * zoomButton;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/20 19:57:36 $
+   $Date: 2004/08/05 12:54:12 $
    End CVS Header */
 
 #include <qarray.h>
@@ -17,27 +17,33 @@
 #include <qwt_scale.h>
 
 #include "CopasiPlot.h"
-#include "CPlotSpec.h"
+#include "CPlotSpec2Vector.h"
+#include "CPlotSpecification.h"
 #include "CopasiUI/qtUtilities.h"
 
 //TODO: put all the stuff to locally store the data in a separate class!
 
-void CopasiPlot::createIndices(const CPlotSpec* pspec)
+void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
 {
-  C_INT32 i, imax = pspec->getCurves().size();
-  C_INT32 jj;
+  indexTable.resize(0);
+
+  C_INT32 jj, jjmax;
   C_INT32 index;
   std::vector<C_INT32>::iterator it; // iterator for indexTable
   C_INT32 iterindex;
-  dataIndices.resize(imax);
 
+  C_INT32 i, imax = pspec->getItems().size();
+  dataIndices.resize(imax);
   for (i = 0; i < imax; ++i) //all curves
     {
-      dataIndices[i].resize(2);
+      jjmax = pspec->getItems()[i]->getNumChannels();
+      dataIndices[i].resize(jjmax);
 
-      for (jj = 0; jj < 2; ++jj) //2D
+      for (jj = 0; jj < jjmax; ++jj) //all Channels (should be 2)
         {
-          index = pspec->getCurves()[i].mChannels[jj].index;
+          //get the index in the data vector
+          index = psv->getIndexFromCN(pspec->getItems()[i]->getChannels()[jj]);
+
           for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
           {if (*it >= index) break;};
           if (it == indexTable.end()) //index is not yet in indexTable
@@ -49,7 +55,7 @@ void CopasiPlot::createIndices(const CPlotSpec* pspec)
     }
 }
 
-CopasiPlot::CopasiPlot(const CPlotSpec* plotspec, QWidget* parent)
+CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent)
     : ZoomPlot(parent), zoomOn(false)
 {
   // set up legend
@@ -57,7 +63,7 @@ CopasiPlot::CopasiPlot(const CPlotSpec* plotspec, QWidget* parent)
   setAutoLegend(TRUE); //curves have to be inserted after this is set
   setLegendPos(Qwt::Bottom);
 
-  initFromSpec(plotspec);
+  initFromSpec(psv, plotspec);
 
   // white background better for printing...
   setCanvasBackground(white);
@@ -74,19 +80,22 @@ CopasiPlot::CopasiPlot(const CPlotSpec* plotspec, QWidget* parent)
           SLOT(toggleCurve(long)));
 }
 
-bool CopasiPlot::initFromSpec(const CPlotSpec* plotspec)
+bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec)
 {
-  createIndices(plotspec);
+  createIndices(psv, plotspec);
+
   setTitle(FROM_UTF8(plotspec->getTitle()));
 
   removeCurves();
 
+  //delete Buffers
   while (data.size() > 0)
     {
       delete data[data.size() - 1];
       data.pop_back();
     }
 
+  //recreate buffers
   for (unsigned int i = 0; i < indexTable.size(); i++)
     {//TODO !!
       QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
@@ -96,14 +105,14 @@ bool CopasiPlot::initFromSpec(const CPlotSpec* plotspec)
 
   QColor curveColours[6] = {red, yellow, blue, green, cyan, magenta};
   unsigned C_INT32 k;
-  for (k = 0; k < plotspec->getCurves().size(); k++)
+  for (k = 0; k < plotspec->getItems().size(); k++)
     {
       // set up the curve
-      long crv = insertCurve(FROM_UTF8(plotspec->getCurves()[k].title));
+      long crv = insertCurve(FROM_UTF8(plotspec->getItems()[k]->getTitle()));
 
       setCurvePen(crv, QPen(curveColours[k]));
-      setCurveXAxis(crv, plotspec->getCurves()[k].xAxis);
-      setCurveYAxis(crv, plotspec->getCurves()[k].yAxis);
+      //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
+      //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
     }
   return true; //TODO really check!
 }

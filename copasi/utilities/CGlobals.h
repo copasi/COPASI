@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 14:18:51 $
+   $Date: 2004/08/05 12:58:22 $
    End CVS Header */
 
 #ifndef COPASI_CGlobals
@@ -21,7 +21,7 @@ class CFunctionDB;
 class CModel;
 //class COutputList;
 class CReportDefinitionVector;
-class CPlotSpecVector;
+//class CPlotSpecVector;
 
 class CGlobals
   {
@@ -65,7 +65,7 @@ class CGlobals
     CModel * pModel;
 
     CReportDefinitionVector * pReportDefinitions;
-    CPlotSpecVector * pPlotSpecs;
+    //    CPlotSpecVector *;
 
   public:
 
