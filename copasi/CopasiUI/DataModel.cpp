@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/29 20:26:48 $
+   $Date: 2004/01/05 15:44:41 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -16,6 +16,7 @@ DataModel::DataModel()
   this->populateData();
   model = NULL;
   mpMathModel = NULL;
+  mMathModelUpdateScheduled = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
   scantask = NULL;
@@ -262,4 +263,18 @@ void DataModel::populateData()
 
       folderList.append(f1);
     }
+}
+
+bool DataModel::updateMathModel()
+{
+  if (mMathModelUpdateScheduled) mpMathModel->setModel(model);
+
+  mMathModelUpdateScheduled = false;
+  return true;
+}
+
+bool DataModel::scheduleMathModelUpdate(const bool & update)
+{
+  mMathModelUpdateScheduled = update;
+  return true;
 }

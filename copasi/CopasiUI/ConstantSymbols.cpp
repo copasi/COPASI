@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/29 20:27:19 $
+   $Date: 2004/01/05 15:44:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -80,13 +80,10 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-void ConstantSymbols::filltable()
+bool ConstantSymbols::loadConstantSymbols(CMathModel *model)
 {
-  loadConstantSymbols(dataModel->getMathModel());
-}
+  dataModel->updateMathModel();
 
-void ConstantSymbols::loadConstantSymbols(CMathModel *model)
-{
   if (model != NULL)
     {
       mModel = model;
@@ -109,21 +106,6 @@ void ConstantSymbols::loadConstantSymbols(CMathModel *model)
         {
           pConstant = it->second;
           table->setText(index, 0, it->first.c_str());
-#ifdef XXXX
-          std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
-          std::map<std::string, CCopasiObject * >::iterator it1 = selection.begin();;
-          std::map< std::string, CCopasiObject * >::iterator end1 = selection.end();
-          CCopasiObject * cConstant;
-          QStringList comboEntries1;
-          for (; it1 != end1; ++it1)
-            {
-              cConstant = it1->second;
-              comboEntries1.push_back(cConstant->getObjectName().c_str());
-            }
-          QComboTableItem * item1 = new QComboTableItem(table, comboEntries1, false);
-          item1->setCurrentItem(pConstant->getObject()->getName().c_str());
-          table->setItem(index, 1, item1);
-#endif // XXXX
           table->setText(index, 1, pConstant->getObject()->getName().c_str());
           table->setText(index, 2, pConstant->getReaction().c_str());
           table->setText(index, 3, QString::number(pConstant->getValue()));
@@ -131,6 +113,8 @@ void ConstantSymbols::loadConstantSymbols(CMathModel *model)
         }
       table->sortColumn(2, true, true);
     }
+
+  return true;
 }
 
 void ConstantSymbols::slotTableSelectionChanged()
@@ -189,13 +173,22 @@ bool ConstantSymbols::update(ListViews::ObjectType objectType, ListViews::Action
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: check if it really is a compartment
-      //if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
-      filltable();
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
+      if (isVisible())
+        loadConstantSymbols(dataModel->getMathModel());
       break;
 
     default:
       break;
     }
+
+  return true;
+}
+
+bool ConstantSymbols::enter(const std::string & C_UNUSED(key))
+{
+  loadConstantSymbols(dataModel->getMathModel());
+
   return true;
 }
