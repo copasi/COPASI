@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 14:43:17 $
+   $Date: 2004/10/21 15:29:57 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -136,6 +136,11 @@ class CMCAMethod: public CCopasiMethod
      * Initialize the MCA matrices: mDxv, mFcc, mGamma
      */
     void init();
+
+    /**
+     * 
+     */
+    virtual bool process();
 
     /**
      * Read SSMCAUnscaled from configuration file

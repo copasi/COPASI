@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 09:37:04 $
+   $Author: gauges $ 
+   $Date: 2004/10/21 15:29:58 $
    End CVS Header */
 
 /**
@@ -50,8 +50,8 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     mpSteadyState(src.mpSteadyState),
     mpSteadyStateX(src.mpSteadyStateX),
     mJacobian(src.mJacobian),
-    mpEigenValues(src.mpEigenValues),
     mJacobianX(src.mJacobianX),
+    mpEigenValues(src.mpEigenValues),
     mpEigenValuesX(src.mpEigenValuesX)
 {
   mpProblem =

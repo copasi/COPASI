@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:10:49 $
+   $Date: 2004/10/21 15:29:57 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@
 #define XXXX_Reporting
 
 CMCATask::CMCATask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::mca, pParent),
+    CCopasiTask(CCopasiTask::mca, pParent)
 {
   mpProblem = new CMCAProblem(this);
   mpMethod = new CMCAMethod(this);
@@ -41,10 +41,8 @@ CMCATask::CMCATask(const CMCATask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem =
-    new CSteadyStateProblem(* (CSteadyStateProblem *) src.mpProblem, this);
-  mpMethod =
-    CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
-  mpMethod->setObjectParent(this);
+    new CMCAProblem(* (CMCAProblem *) src.mpProblem, this);
+  mpMethod = new CMCAMethod(this);
 }
 
 CMCATask::~CMCATask()
@@ -93,7 +91,7 @@ bool CMCATask::process()
   assert(pMethod);
 
   mReport.printHeader();
-  mResult = pMethod->process();
+  pMethod->process();
 
   mReport.printBody();
   mReport.printFooter();
@@ -101,7 +99,7 @@ bool CMCATask::process()
   return 0;
 }
 
-std::ostream &operator<<(std::ostream &os, const CMCATask &A)
+std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))
 {
   os << std::endl;
 

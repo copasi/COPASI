@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 14:43:17 $
+   $Date: 2004/10/21 15:29:57 $
    End CVS Header */
 
 #include <cmath>
@@ -494,3 +494,8 @@ std::vector <C_FLOAT64> CMCAMethod::getSsx()
  
   return Fail;
 }*/
+
+bool CMCAMethod::process()
+{
+  return false;
+}

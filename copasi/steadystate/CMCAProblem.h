@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:10:50 $
+   $Date: 2004/10/21 15:29:57 $
    End CVS Header */
 
 /**
@@ -14,8 +14,8 @@
  *  Created for Copasi by Ralph Gauges 2004
  */
 
-#ifndef COPASI_CMCAProblem
-#define COPASI_CMCAProblem
+#ifndef COPASI_CMCAProblem_H__
+#define COPASI_CMCAProblem_H__
 
 #include <string>
 
@@ -101,3 +101,4 @@ class CMCAProblem: public CCopasiProblem
 
   private:
   };
+#endif /* CMCAProblem_H__ */

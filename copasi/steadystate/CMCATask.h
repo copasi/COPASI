@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:10:49 $
+   $Date: 2004/10/21 15:29:58 $
    End CVS Header */
 
 /**
@@ -16,8 +16,8 @@
  * Created for Copasi by Ralph Gauges 2004
  */
 
-#ifndef COPASI_CMCATask
-#define COPASI_CMCATask
+#ifndef COPASI_CMCATask_H__
+#define COPASI_CMCATask_H__
 
 #include <iostream>
 
@@ -89,7 +89,7 @@ class CMCATask : public CCopasiTask
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os,
-                                    const CSteadyStateTask &A);
+                                    const CMCATask &A);
 
   private:
     /**
@@ -98,4 +98,4 @@ class CMCATask : public CCopasiTask
     void cleanup();
   };
 
-#endif // COPASI_CMCATask
+#endif // COPASI_CMCATask_H__
