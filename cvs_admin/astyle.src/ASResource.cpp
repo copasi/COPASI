@@ -59,8 +59,8 @@ namespace astyle
   const string ASResource::AS_CATCH = string("catch");
   const string ASResource::AS_FINALLY = string("finally");
   const string ASResource::AS_THROWS = string("throws");
-  //  const string ASResource::AS_CONST = string("const");
-  const string ASResource::AS_CONST = string(":const:");
+  const string ASResource::AS_CONST = string("const");
+  // const string ASResource::AS_CONST = string(":const:");
 
   const string ASResource::AS_ASM = string("asm");
 
