@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/10 19:59:23 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/10 20:39:49 $
    End CVS Header */
 
 /**
@@ -2500,32 +2500,29 @@ CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement()
 }
 
 void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
-    const XML_Char ** C_UNUSED(papszAttrs))
+    const XML_Char ** papszAttrs)
 {
   mCurrentElement++; // We should always be on the next element
 
   switch (mCurrentElement)
     {
-    case COPASI:
-      if (strcmp(pszName, "COPASI")) fatalError();
-      break;
-
-    case ListOfFunctions:
-      if (strcmp(pszName, "ListOfFunctions")) fatalError();
-      if (!mCommon.pFunctionList)
-        mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
-      break;
-
-    case Model:
-      break;
-
-    case ListOfTasks:
-      break;
-
     case ListOfReports:
       if (strcmp(pszName, "ListOfReports")) fatalError();
       if (!mCommon.pReportList)
         mCommon.pReportList = new CCopasiVectorN< CReportDefinition >;
+      break;
+
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
+
+      /* If we do not have a report element handler we create one. */
+      if (!mpCurrentHandler)
+        mpCurrentHandler = new ReportElement(mParser, mCommon);
+
+      /* Push the report element handler on the stack and call it. */
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
+
       break;
 
     default:
@@ -2540,29 +2537,15 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 {
   switch (mCurrentElement)
     {
-    case COPASI:
-      break;
-
-    case ListOfFunctions:
-      if (strcmp(pszName, "ListOfFunctions")) fatalError();
-      mParser.popElementHandler();
-      mCurrentElement = -1;
-      //Tell the parent element we are done.
-      mParser.onEndElement(pszName);
-      break;
-
-    case Model:
-      break;
-
-    case ListOfTasks:
-      break;
-
     case ListOfReports:
       if (strcmp(pszName, "ListOfReports")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
       //Tell the parent element we are done.
       mParser.onEndElement(pszName);
+      break;
+
+    case Report:
       break;
 
     default:
