@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 08:59:28 $
+   $Author: gauges $ 
+   $Date: 2005/02/24 13:53:30 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.43 2004/10/08 08:59:28 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.44 2005/02/24 13:53:30 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,7 +32,8 @@
 #include <qmessagebox.h>
 
 #include "TableDefinition1.h"
-#include "ObjectBrowserDialog.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CCopasiSelectionDialog.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
@@ -51,6 +52,7 @@
  */
 TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
+    mModel(NULL),
     pParent(parent)
 {
   QPixmap image0((const char**) image0_data);
@@ -372,11 +374,14 @@ void TableDefinition1::tabButtonClicked()
 
 void TableDefinition1::addButtonClicked()
 {
-  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
+  CModel* pModel = CCopasiDataModel::Global->getModel();
+  if (!pModel) return;
+  CCopasiSelectionDialog* pBrowseDialog = new CCopasiSelectionDialog(this);
+  pBrowseDialog->setModel(pModel);
   std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
-  pSelectedObjects->setOutputVector(pSelectedVector);
+  pBrowseDialog->setOutputVector(pSelectedVector);
 
-  if (pSelectedObjects->exec () == QDialog::Rejected)
+  if (pBrowseDialog->exec () == QDialog::Rejected)
     {
       pdelete(pSelectedVector);
       return;
