@@ -16,6 +16,7 @@ class CBody;
 class CReportObject;
 class CReport;
 class CReportTable;
+#include <vector>
 
 class CReportDefinition
   {
@@ -30,7 +31,9 @@ class CReportDefinition
 
     CComment *rComment;
     CHeaderFooter *rHeader;
+    std::vector<CHeaderFooter*> rHeaderVector;
     CHeaderFooter *rFooter;
+    std::vector<CHeaderFooter*> rFooterVector;
     CBody *rBody;
 
   public:
@@ -58,7 +61,7 @@ class CReportDefinition
     /**
     gets the header in the report tag
     */
-    CHeaderFooter* getHeader();
+    std::vector<CHeaderFooter*> getHeader();
 
     /**
     sets the header in the report tag
@@ -68,7 +71,7 @@ class CReportDefinition
     /**
     gets the footer in the report tag
     */
-    CHeaderFooter* getFooter();
+    std::vector<CHeaderFooter*> getFooter();
 
     /**
     sets the footer in the report tag

@@ -7,6 +7,7 @@
 
 #include <string>
 #include "copasi.h"
+#include <vector>
 #include "model/CModel.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CReadConfig.h"
@@ -43,14 +44,14 @@ CComment* CReportDefinition::getComment()
 void CReportDefinition::setComment(CComment *comment)
 {rComment = comment;}
 
-CHeaderFooter* CReportDefinition::getHeader()
-{return rHeader;}
+std::vector<CHeaderFooter*> CReportDefinition::getHeader()
+{return rHeaderVector;}
 
 void CReportDefinition::setHeader(CHeaderFooter *header)
 {rHeader = header;}
 
-CHeaderFooter* CReportDefinition::getFooter()
-{return rFooter;}
+std::vector<CHeaderFooter*> CReportDefinition::getFooter()
+{return rFooterVector;}
 
 void CReportDefinition::setFooter(CHeaderFooter *footer)
 {rFooter = footer;}
