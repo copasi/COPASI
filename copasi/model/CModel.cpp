@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.165 $
+   $Revision: 1.166 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 18:48:54 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 20:06:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ CModel::CModel():
   unsigned C_INT32 i, imax = mSteps.size();
 
   for (i = 0; i < imax; i++)
-    mSteps[i]->compile(mCompartments);
+    mSteps[i]->compile(/*mCompartments*/);
 
   initializeMetabolites();
 
@@ -140,7 +140,7 @@ CModel::CModel(const CModel & src):
   unsigned C_INT32 i, imax = mSteps.size();
 
   for (i = 0; i < imax; i++)
-    mSteps[i]->compile(mCompartments);
+    mSteps[i]->compile(/*mCompartments*/);
 
   initializeMetabolites();
 
@@ -318,7 +318,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // DebugFile << std::endl << mSteps << std::endl;  //debug
 
   for (i = 0; i < mSteps.size(); i++)
-    mSteps[i]->compile(mCompartments);
+    mSteps[i]->compile(/*mCompartments*/);
 
   // DebugFile << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
@@ -473,7 +473,7 @@ bool CModel::compile()
 
   unsigned C_INT32 i, imax = mSteps.size();
   for (i = 0; i < imax; i++)
-    mSteps[i]->compile(mCompartments);
+    mSteps[i]->compile(/*mCompartments*/);
 
   buildStoi();
   lUDecomposition(LU);
@@ -1859,7 +1859,7 @@ bool CModel::addReaction(const CReaction & reaction)
     return false;
 
   mSteps.add(reaction);
-  mSteps[reaction.getName()]->compile(mCompartments);
+  mSteps[reaction.getName()]->compile(/*mCompartments*/);
   compile();
   return true;
 }

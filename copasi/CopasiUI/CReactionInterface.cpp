@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/06 19:54:59 $
+   $Date: 2004/05/07 20:03:59 $
    End CVS Header */
 
 #include <string>
@@ -141,7 +141,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
           }
       }
 
-    rea->compile(model.getCompartments());
+    rea->compile(/*model.getCompartments()*/);
   }
 
 void CReactionInterface::setFunction(const std::string & fn, bool force)

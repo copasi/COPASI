@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 20:06:56 $
    End CVS Header */
 
 /**
@@ -36,14 +36,6 @@ class CChemEqElement : public CCopasiContainer
      *  The multiplizity of the metabolite
      */
     C_FLOAT64 mMultiplicity;
-
-    /**
-     *  A pointer to the metabolite
-     */
-    /** @dia:route 2,105; h,45.5713,93.7809,123.645,92.0961,117.263 */
-    //CMetab * mpMetabolite;
-
-    // Operations
 
   public:
     /**
@@ -106,23 +98,10 @@ class CChemEqElement : public CCopasiContainer
     const std::string & getMetaboliteKey() const;
 
     /**
-     *  Set the metabolite name.
-     *  @param "const string &" name
-     */ 
-    //void setMetaboliteName(const std::string & metaboliteName);
-
-    /**
      *  Retrieves the metabolite name.
      *  @return "const string &" name
      */
     const std::string & getMetaboliteName() const;
-
-    /**
-     *  compile() tries to set the pointer to the metabolite from the name
-     *  of the metabolite. If that is not possible it tries to set the name
-     *  from the pointer. Else the pointer is set to NULL.
-     */
-    void compile(const CCopasiVectorN < CCompartment > & compartments);
 
     /**
      *  Write the element in the form mMultiplier * mMetaboliteName

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/17 20:57:52 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 20:06:56 $
    End CVS Header */
 
 // CChemEqElement
@@ -49,14 +49,6 @@ void CChemEq::cleanup()
   mProducts.cleanup();
   mModifiers.cleanup();
   mBalances.cleanup();
-}
-
-void CChemEq::compile(const CCopasiVectorN < CCompartment > & compartments)
-{
-  //  compileChemEqElements(mSubstrates, compartments);
-  //  compileChemEqElements(mProducts, compartments);
-  //  compileChemEqElements(mModifiers, compartments);
-  //  compileChemEqElements(mBalances, compartments);
 }
 
 const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates() const
@@ -150,20 +142,6 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
   else
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
-
-/*void CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                                    const CCopasiVectorN < CCompartment > & compartments)
-{
-  unsigned C_INT32 i, imax = elements.size();
- 
-  for (i = 0; i < imax; i++)
-    elements[i]->compile(compartments);
-}*/
-
-/*bool CChemEq::initialized() const
-  {
-    return !mChemicalEquation.empty();
-  }*/
 
 const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 20:30:03 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 20:06:57 $
    End CVS Header */
 
 /**
@@ -395,7 +395,7 @@ class CReaction : public CCopasiContainer
      *  and the reaction only hold the names of the metabolites).
      *  @param "CCopasiVectorNS < CCompartment > &" compartments
      */
-    void compile(const CCopasiVectorNS < CCompartment > & compartments);
+    void compile(/*const CCopasiVectorNS < CCompartment > & compartments*/);
 
     /**
      *  Calculate the kinetic function

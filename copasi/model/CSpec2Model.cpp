@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:50 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 20:06:58 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -91,7 +91,7 @@ CModel *CSpec2Model::createModel()
 
   unsigned int i;    // should that not be in CModel::compile ?
   for (i = 0; i < mModel->getReactions().size(); i++)
-    mModel->getReactions()[i]->compile(mModel->getCompartments());
+    mModel->getReactions()[i]->compile(/*mModel->getCompartments()*/);
 
   return mModel;
 }
