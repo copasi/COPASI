@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:10:36 $
+   $Date: 2004/10/04 15:09:56 $
    End CVS Header */
 
 // CSate.cpp
@@ -172,6 +172,7 @@ void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & factor,
                                const C_FLOAT64 & resolution) const
   {
+    std::cout << "calculateJacobian" << std::endl;
     const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
     unsigned C_INT32 mNo = Stoi.numRows();
     unsigned C_INT32 rNo = Stoi.numCols();
@@ -399,6 +400,7 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                 const C_FLOAT64 & factor,
                                 const C_FLOAT64 & resolution) const
   {
+    std::cout << "calculateJacobianX" << std::endl;
     const CModel::CLinkMatrixView & L = mpModel->getL();
     unsigned C_INT32 mNo = L.numRows();
     unsigned C_INT32 iNo = L.numCols();
