@@ -1,8 +1,6 @@
 /****************************************************************************
  ** Folder meta object code from reading C++ file 'listviews.h'
  **
- ** Created: Tue Jun 4 11:19:21 2002
- **      by: The Qt MOC ($Id: listviews.moc.cpp,v 1.1 2002/06/04 15:57:08 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  *****************************************************************************/
@@ -14,7 +12,7 @@
 
 #include <private/qucomextra_p.h>
 #if !defined(Q_MOC_OUTPUT_REVISION) || (Q_MOC_OUTPUT_REVISION != 19)
-#error "This file was generated using the moc from 3.0.4. It"
+#error "This file was generated using the moc from 3.0.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
