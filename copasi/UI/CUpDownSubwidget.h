@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/04 14:33:18 $
+   $Date: 2005/04/06 13:15:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Mo Apr 4 16:11:58 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.3 2005/04/04 14:33:18 ssahle Exp $)
+ ** Created: Mi Apr 6 00:33:03 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.4 2005/04/06 13:15:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/04 14:33:18 $
+   $Date: 2005/04/06 13:15:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Mo Apr 4 16:12:03 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.cpp,v 1.3 2005/04/04 14:33:18 ssahle Exp $)
+ ** Created: Mi Apr 6 00:33:09 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.cpp,v 1.4 2005/04/06 13:15:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -99,7 +99,7 @@ CUpDownSubwidget::CUpDownSubwidget(QWidget* parent, const char* name, WFlags fl)
   setFocusPolicy(QWidget::WheelFocus);
   CUpDownSubwidgetLayout = new QVBoxLayout(this, 0, 0, "CUpDownSubwidgetLayout");
 
-  layout3 = new QGridLayout(0, 1, 1, 0, 6, "layout3");
+  layout3 = new QGridLayout(0, 1, 1, 5, 3, "layout3");
 
   toolButtonUp = new QToolButton(this, "toolButtonUp");
   toolButtonUp->setMaximumSize(QSize(20, 20));
