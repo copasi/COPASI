@@ -11,8 +11,13 @@
 #include <string>
 
 #include "utilities/CMethodParameterList.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
 
 class CScanProblem;
+class CSteadyStateTask;
+class CTrajectory;
+
 class CScanMethod
   {
   protected:
@@ -20,6 +25,18 @@ class CScanMethod
      *  A pointer to the trajectory problem.
      */
     CScanProblem * scanProblem;
+
+    /**
+     * Pointer to CSteadyStateTask.  To be used in simulate() to select between
+     * trajectory and steady state method
+     */
+    CSteadyStateTask * mpSteadyState;
+
+    /**
+     * Pointer to CTrajectory.  To be used in simulate() to select between
+     * trajectory and steady state method
+     */
+    CTrajectoryTask * mpTrajectory;
 
     // Operations
   protected:
@@ -29,6 +46,13 @@ class CScanMethod
     CScanMethod();
 
   public:
+
+    /**
+       * calculate function for ScanMethod
+       */
+
+    C_FLOAT64 simulate();
+
     /**
      * Create a trajectory method.
      * Note: the returned object has to be released after use with delete
