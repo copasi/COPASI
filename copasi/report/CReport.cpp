@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:45 $
+   $Date: 2003/11/21 16:30:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -153,7 +153,7 @@ std::ostream * CReport::open(std::ostream * pOstream)
         ((std::ofstream *) mpOstream)->
         open(mTarget.c_str(), std::ios_base::out);
 
-      if (((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
+      if (!((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
     }
 
   return mpOstream;
