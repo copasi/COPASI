@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/18 14:59:27 $
+   $Date: 2003/10/21 14:31:24 $
    End CVS Header */
 
 /********************************************************
@@ -203,7 +203,7 @@ void OptimizationItemWidget::slotLowerEdit()
       func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex].c_str());
       try
         {
-          func->mMinFunctionList[nIndex]->preCompile();
+          func->mMinFunctionList[nIndex]->compile();
         }
       catch (CCopasiException Exception)
         {
@@ -247,7 +247,7 @@ void OptimizationItemWidget::slotUpperEdit()
       func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex].c_str());
       try
         {
-          func->mMaxFunctionList[nIndex]->preCompile();
+          func->mMaxFunctionList[nIndex]->compile();
         }
       catch (CCopasiException Exception)
         {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 19:27:49 $
+   $Date: 2003/10/21 14:31:24 $
    End CVS Header */
 
 /**
@@ -22,6 +22,8 @@
 #include "CNodeK.h"
 #include "utilities/readwrite.h"
 
+class CCopasiObject;
+
 /** @dia:pos 61.7476,54.3157 */
 /** @dia:route CFunction; v,58.2,35.55,51.6337,82.8684,54.3157 */
 class CKinFunction : public CFunction
@@ -36,6 +38,7 @@ class CKinFunction : public CFunction
     /** @dia:route 0,2; h,61.7476,54.3157,55.1707,42.4925,46.911 */
     std::vector< CNodeK * > mNodes;
 
+    std::vector<CCopasiObject*> ObjList;
     /**
      *  Internal variable
      */
@@ -146,19 +149,24 @@ class CKinFunction : public CFunction
 
     /*
      pre compile to check if the expression is valid
-    */
-    void preCompile();
+    */ 
+    // void preCompile();
 
     /*
      connect each node with its type or indetify the CCopasiObject from CCopasiName
-    */
-    void connect();
+    */ 
+    // void connect();
 
   private:
 
     /**
-     *  This  connects the nodes to build the binary function tree
-     */
+        *  This function indentify the object from name
+        */
+    bool createObjList();
+
+    /**
+        *  This  connects the nodes to build the binary function tree
+        */
     C_INT32 connectNodes();
 
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 19:27:49 $
+   $Date: 2003/10/21 14:31:24 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@
 #include "CKinFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiObject.h"
 
 CKinFunction::CKinFunction(const std::string & name,
                            const CCopasiContainer * pParent):
@@ -72,6 +73,11 @@ CKinFunction::CKinFunction(const CKinFunction & src,
 
 CKinFunction::~CKinFunction()
 {
+  /*  int i;
+    for (i=0; i<ObjList.size(); i++)
+     ObjList[i] = NULL;
+  */
+  ObjList.clear();
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -122,26 +128,90 @@ std::string CKinFunction::getSBMLString(const std::vector< std::vector< std::str
     return mNodes[0]->getExplicitFunctionString(callParameterNames, r);
   }
 
+bool CKinFunction::createObjList()
+{
+  std::string mDescription = CFunction::getDescription();
+  char buffer[256];
+  std::string mTarget = "";
+  std::string mToken = "";
+  CCopasiObject* mpObj;
+  mpObj = NULL;
+  int i;
+  for (i = 0; i < mDescription.length(); i++)
+    {
+      mTarget += mDescription[i];
+      if (mDescription[i] == '<')
+        {
+          while (++i < mDescription.length())
+            {
+              if (mDescription[i] != '>')
+                mToken += mDescription[i];
+              else
+                try
+                  {
+                    mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(mToken);
+                  }
+                catch (CCopasiException Exception)
+                  {
+                    mpObj = NULL;
+                  }
+              if (mDescription[i] == '>')
+                {
+                  if (mpObj) // find the object
+                    {
+                      mToken = "";
+                      mTarget += itoa(ObjList.size(), buffer, 10);
+                      ObjList.push_back(mpObj);
+                      mpObj = NULL;
+                      mTarget += mDescription[i]; // add '>'
+                      break; //end the inner loop to find token
+                    }
+                  else // not found an obj yet
+                    mToken += mDescription[i]; // continue to add token
+                }
+            }
+        }
+    }
+  if (mToken.length() == 0)
+    {
+      CFunction::setDescription(mTarget);
+      return true;
+    }
+  fatalError(); //thorough exception first
+  return false; //partial match
+}
+
 void CKinFunction::compile()
 {
   cleanupNodes();
-  parse();
-  connectNodes();
-  initIdentifierNodes();
+  if (createObjList())
+    {
+      parse();
+      connectNodes();
+      initIdentifierNodes();
+    }
+  /*
+    int i;
+    for (i=0; i<ObjList.size(); i++)
+     ObjList[i] = NULL;
+  */
+  ObjList.clear();
 }
 
+/*
 void CKinFunction::preCompile()
 {
   cleanupNodes();
   parse();
   connectNodes();
 }
-
+ 
 void CKinFunction::connect()
 {
   // at this time, we need to recognize if we can find if each N_OBJECT has meaning
   initIdentifierNodes();
 }
+ */
 
 C_INT32 CKinFunction::parse()
 {
@@ -193,7 +263,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                            // this is an error
+        case N_NOP:                             // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -607,12 +677,12 @@ void CKinFunction::initIdentifierNodes()
 
   for (j = 0; j < jmax; j++)
     {
-      if (mNodes[j]->getType() != N_OBJECT)
+      if (mNodes[j]->getType() == N_OBJECT)
         {
           //(CCopasiObject*)CCopasiContainer::Root->getObject(objName);
           //if want to support a distributed system refer to report/CReport
           //just a pointer to a object, not to a real node
-          mNodes[j]->setLeft((CNodeK*)CCopasiContainer::Root->getObject(mNodes[j]->getName()));
+          mNodes[j]->setLeft((CNodeK*)ObjList[atoi(mNodes[j]->getName().c_str())]);
           continue;
         }
       else if (mNodes[j]->getType() != N_IDENTIFIER)
@@ -683,6 +753,5 @@ void CKinFunction::cleanupNodes()
     if (mNodes[i]) delete mNodes[i];
 
   mNodes.clear();
-
   return;
 }
