@@ -38,7 +38,7 @@ CWriteConfig::CWriteConfig(const string& name)
     mBuffer.setf(ios::scientific);
     mBuffer.precision(16);
 
-    SetVariable("Version", "string", &Copasi.Version);
+    SetVariable("Version", "string", &Copasi.ProgramVersion.GetVersion());
 }
 
 
@@ -149,3 +149,4 @@ long CWriteConfig::SetVariable(const string name,
 
     return mFail;
 }
+
