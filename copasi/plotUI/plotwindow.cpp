@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:16 $
+   $Date: 2004/10/08 13:27:17 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -13,8 +13,8 @@
 
 #include "plotwindow.h" 
 //#include "plotspec.h"
-#include "CopasiPlot.h" 
-//#include "CPlotSpec2Vector.h"
+#include "CopasiPlot.h"
+#include "CPlotSpecification.h"
 
 // #include "plotwidget1.h"
 
@@ -36,6 +36,9 @@ class PrintFilter: public QwtPlotPrintFilter
 
 PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
+  this->resize(640, 480);
+  this->setCaption("Copasi Plot: " + ptrSpec->getTitle());
+
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
