@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 13:17:15 $
+   $Date: 2004/08/16 13:19:30 $
    End CVS Header */
 
 #include <iostream>
@@ -117,7 +117,7 @@ void MyTable::resizeEvent(QResizeEvent* e)
           }
           */
         }
-      this->scaleColumns(factor, (int)width);
+      this->scaleColumns(factor);
     }
   QTable::resizeEvent(e);
   delete [] optSizes;
