@@ -51,7 +51,7 @@ C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
 //C_INT32  TestOptimization(void);     //yohe: new
 
-C_INT32  CovertFunctionDB(void);
+C_INT32  ConvertFunctionDB(void);
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
                            const string &description,
@@ -88,32 +88,30 @@ C_INT main(C_INT argc, char *argv[])
 //      TestException();
 //      TestMessage();
        
-//       TestWriteConfig();
-//       TestReadConfig();
-        
+//      TestWriteConfig();
+//      TestReadConfig();
 //      TestCompartment();
 //      TestDatum();
 //      TestMetab();
 //      TestReadSample();
 //      TestNewton();
-//      TestSSSolution();
+      TestSSSolution();
 //YOHE: new test
 //      TestOptimization();
-      TestEigen();
+//      TestEigen();
 
-//       TestTrajectory();
-//       TestMoiety();
-//       TestKinFunction();
-//       TestMassAction();
-//       TestFunctionDB();
-//       TestBaseFunction();
-//       TestModel();
-//       TestLU();
-//       TestMCA();
-//       TestOutputEvent();        
-
-//       MakeFunctionDB();
-//       CovertFunctionDB();
+//      TestTrajectory();
+//      TestMoiety();
+//      TestKinFunction();
+//      TestMassAction();
+//      TestFunctionDB();
+//      TestBaseFunction();
+//      TestModel();
+//      TestLU();
+//      TestMCA();
+//      TestOutputEvent();        
+//      MakeFunctionDB();
+//      ConvertFunctionDB();
       
 //      TestRandom(10000, 100);
 //      TestDependencyGraph();
@@ -688,6 +686,7 @@ C_INT32 TestKinFunction()
   f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
   
   f.compile();
+  cout << "f(a,b) = (a-b)*(a+b)/5" << endl;
   
   //  f.setIdentifierType("a", N_SUBSTRATE);
   //  f.setIdentifierType("b", N_PRODUCT);
@@ -703,7 +702,9 @@ C_INT32 TestKinFunction()
   CallParameters[1] = &b;
     
   C_FLOAT64 r = f.calcValue(CallParameters);
-  cout << "Value obtained = " << r << " Should be = " << (a-b)*(a+b)/5 << endl;
+
+  cout << "f(a,b) = " << f.getDescription() << endl;
+  cout << "f(" << a << "," << b << ") = " << r << endl;
     
   CWriteConfig out("TestKinFunction.gps");
   f.save(out);
@@ -718,6 +719,7 @@ C_INT32 TestKinFunction()
     
   a = 5;
   r = g.calcValue(CallParameters);
+  cout << "f(" << a << "," << b << ") = " << r << endl;
 
   return 0;
 }
@@ -1475,7 +1477,7 @@ C_INT32  TestFunctionDB(void)
   return 0;
 }
 
-C_INT32 CovertFunctionDB(void)
+C_INT32 ConvertFunctionDB(void)
 {
   CFunctionDB FunctionDB;
   
