@@ -279,6 +279,11 @@ public:
 
     vector < CMetab * > & GetMetabolitesInd();
     
+    /**
+     *  Set the vector of particle numbers for independent metabolites
+     *  @param C_FLOAT64 & y
+     */
+    void SetParticleNoInd(C_FLOAT64 & y);
     
 #ifdef XXXX
     /**
