@@ -191,7 +191,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   scrollview = new ScanScrollView(this, 0, 0);
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
   scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
-  delete parameterTable;
+  pdelete(parameterTable);
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
   scrollview->setSelectedList(&selectedList);
