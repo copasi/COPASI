@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2003/06/05 18:24:59 $  
+# $Revision: 1.14 $ $Author: msinghal $ $Date: 2003/06/06 19:02:24 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -12,6 +12,8 @@ isEmpty(BUILD_OS) {
 }
 DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
+
+TARGETDEPS = Makefile
 
 # Common configuration settings
 CONFIG += exceptions
