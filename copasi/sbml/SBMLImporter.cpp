@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 16:35:27 $
+   $Date: 2004/06/16 09:25:57 $
    End CVS Header */
 
 #include <iostream>
@@ -705,17 +705,20 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 void
 SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction)
 {
-  std::map<std::string, std::string> substances;
+  std::map< std::string, std::map<std::string, std::string> > substances;
+  substances["substrates"] = std::map< std::string, std::string >();
+  substances["products"] = std::map< std::string, std::string >();
+  substances["modifiers"] = std::map< std::string, std::string >();
   for (unsigned int counter = 0; counter < reaction->getNumReactants(); counter++)
     {
       std::string name = reaction->getReactant(counter)->getSpecies();
       if (name.find("substrate_") == 0)
         {
-          substances[name] = name;
+          substances["substrates"][name] = name;
         }
       else
         {
-          substances[name] = "substrate_" + name;
+          substances["substrates"][name] = "substrate_" + name;
         }
     }
   for (unsigned int counter = 0; counter < reaction->getNumProducts(); counter++)
@@ -723,11 +726,11 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
       std::string name = reaction->getProduct(counter)->getSpecies();
       if (name.find("product_") == 0)
         {
-          substances[name] = name;
+          substances["products"][name] = name;
         }
       else
         {
-          substances[name] = "product_" + name;
+          substances["products"][name] = "product_" + name;
         }
     }
   for (unsigned int counter = 0; counter < reaction->getNumModifiers(); counter++)
@@ -735,14 +738,14 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
       std::string name = reaction->getModifier(counter)->getSpecies();
       if (name.find("modifier_") == 0)
         {
-          substances[name] = name;
+          substances["modifiers"][name] = name;
         }
       else
         {
-          substances[name] = "modifier_" + name;
+          substances["modifiers"][name] = "modifier_" + name;
         }
     }
-  this->replaceSubstanceNames(node, substances);
+  this->replaceSubstanceNames(node, substances, reaction->getReversible());
 }
 
 /**
@@ -750,11 +753,27 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
  * with the ones give in the map.
  */
 void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map<std::string, std::string> substances)
+SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map<std::string, std::string > > substMap, bool reversible)
 {
   if (node->isName())
     {
+      std::map<std::string, std::string> substances = substMap["products"];
+      if (reversible)
+        {
+          std::map<std::string, std::string>::iterator it = substances.find(node->getName());
+          if (it != substances.end())
+            {
+              node->setName(it->second.c_str());
+            }
+        }
+      substances = substMap["substrates"];
       std::map<std::string, std::string>::iterator it = substances.find(node->getName());
+      if (it != substances.end())
+        {
+          node->setName(it->second.c_str());
+        }
+      substances = substMap["modifiers"];
+      it = substances.find(node->getName());
       if (it != substances.end())
         {
           node->setName(it->second.c_str());
@@ -764,13 +783,13 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, std::map<std::string
     {
       for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
         {
-          this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substances);
+          this->replaceSubstanceNames((ConverterASTNode*)node->getChild(counter), substMap, reversible);
         }
     }
 }
 
 /**
- * Replaces SBML user defined functions with the actual funtcion definition.
+ * Replaces SBML user defined functions with the actual function definition.
  */
 ConverterASTNode*
 SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
