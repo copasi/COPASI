@@ -1,10 +1,10 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 02/03 
-  Comment : TrajectoryWidget
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 02/03 
+ Comment : TrajectoryWidget
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -427,6 +427,7 @@ bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 bool TrajectoryWidget::leave()
 {
   //let the user confirm?
+  return true;
 }
 
 bool TrajectoryWidget::enter(const std::string & key)

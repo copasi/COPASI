@@ -205,6 +205,7 @@ bool ReactionsWidget1::saveToReaction()
   ListViews::notify(ListViews::REACTION, ListViews::CHANGE, objKey);
 
   //TODO: detect rename events (mRi.writeBackToReaction has to do this)
+  return true;
 }
 
 void ReactionsWidget1::slotBtnCancelClicked()

@@ -35,23 +35,23 @@ template < class _Node > class CCopasiTree
       /**
        * The root of the tree
        */
-      Node * mpRoot;
+      _Node * mpRoot;
 
       /**
        * The list of all nodes. This is used to keep the tree consistent
        * by avoiding multiple inserts of the same node.
        */
-      std::set<Node *> mList;
+      std::set<_Node *> mList;
 
     public:
       /**
        * A forward iterator used to traverse the tree.
        */
 #if (defined __GNUC__ && __GNUC__ < 3)
-    class iterator: public std::forward_iterator< Node, ptrdiff_t >
+    class iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
     class iterator:
-            public std::iterator< std::forward_iterator_tag, Node, ptrdiff_t >
+            public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
 #endif
 
         {
@@ -59,7 +59,7 @@ template < class _Node > class CCopasiTree
           /**
            * A pointer to the current node.
            */
-          Node * mCurrent;
+          _Node * mCurrent;
 
         public:
           /**
@@ -68,7 +68,7 @@ template < class _Node > class CCopasiTree
            *       the tree.
            * @param Node * begin (default NULL)
            */
-          iterator(Node * begin = NULL):
+          iterator(_Node * begin = NULL):
               mCurrent(begin)
           {}
 
@@ -89,13 +89,13 @@ template < class _Node > class CCopasiTree
            * Dereference operator * returns the node the iterator points to.
            * @return Node &
            */
-          Node & operator*() const {return * mCurrent;}
+          _Node & operator*() const {return * mCurrent;}
 
           /**
            * Dereference operator * returns the node the iterator points to.
            * @return Node &
            */
-          Node * operator->() const {return mCurrent;}
+          _Node * operator->() const {return mCurrent;}
 
           /**
            * Comparison operator !=
@@ -110,7 +110,7 @@ template < class _Node > class CCopasiTree
            * @param Node * pNode
            * @return iterator &
            */
-          iterator & operator=(Node * pNode)
+          iterator & operator=(_Node * pNode)
           {
             mCurrent = pNode;
             return *this;
@@ -121,22 +121,22 @@ template < class _Node > class CCopasiTree
            * This might be a sibling or an ancestor.
            * @return Node * pastChildren
            */
-          Node * pastChildren()
+          _Node * pastChildren()
           {
-            Node * pastChildren = NULL;
+            _Node * pastChildren = NULL;
 
             if (mCurrent->getSibling())
-              pastChildren = (Node *) mCurrent->getSibling();
+              pastChildren = (_Node *) mCurrent->getSibling();
             else
               {
-                Node * pTmp = (Node *) mCurrent->getParent();
+                _Node * pTmp = (_Node *) mCurrent->getParent();
 
                 while (pTmp)
                   {
-                    if ((pastChildren = (Node *) pTmp->getSibling()))
+                    if ((pastChildren = (_Node *) pTmp->getSibling()))
                       break;
 
-                    pTmp = (Node *) pTmp->getParent();
+                    pTmp = (_Node *) pTmp->getParent();
                   }
               }
             return pastChildren;
@@ -149,7 +149,7 @@ template < class _Node > class CCopasiTree
           iterator & operator++()
           {
             if (mCurrent->getChild())
-              mCurrent = (Node *) mCurrent->getChild();
+              mCurrent = (_Node *) mCurrent->getChild();
             else
               mCurrent = pastChildren();
 
@@ -163,7 +163,7 @@ template < class _Node > class CCopasiTree
        * Default constructor
        */
       CCopasiTree():
-          mpRoot(new Node),
+          mpRoot(new _Node),
           mList()
     {mList.insert(mpRoot);}
 
@@ -188,13 +188,13 @@ template < class _Node > class CCopasiTree
        * Retreive the root node of the tree
        * @return Node * root
        */
-      Node * getRoot() {return mpRoot;}
+      _Node * getRoot() {return mpRoot;}
 
       /**
        * Retreive the data of the Tree.
        * @return Data data
        */
-      typename Node::Data getData() const {return mpRoot->getData();}
+      typename _Node::Data getData() const {return mpRoot->getData();}
 
       /**
        * Attach a Node to the tree
@@ -205,9 +205,9 @@ template < class _Node > class CCopasiTree
        * @param Node * pAfterChild (default: NULL at the end of the children)
        * @return bool Success
        */
-      bool attachNode(Node * pNode,
-                      Node * pParent = NULL,
-                      Node * pAfterChild = NULL)
+      bool attachNode(_Node * pNode,
+                      _Node * pParent = NULL,
+                      _Node * pAfterChild = NULL)
       {
         bool Success = true;
 
@@ -243,7 +243,7 @@ template < class _Node > class CCopasiTree
        * @param Node * pNode
        * @return bool Success
        */
-      bool removeNode(Node * pNode)
+      bool removeNode(_Node * pNode)
       {
         if (!pNode) return false;          // Nothing to remove.
         if (pNode == mpRoot) return false; // Root must not be removed.
@@ -268,7 +268,7 @@ template < class _Node > class CCopasiTree
        * @param Node * pAfterChild (default: NULL at the end of the children)
        * @return bool Success
        */
-      bool moveNode(Node * pNode, Node * pParent = NULL, Node * pAfterChild = NULL)
+      bool moveNode(_Node * pNode, _Node * pParent = NULL, _Node * pAfterChild = NULL)
       {
         detachNode(pNode);
         return attachNode(pNode, pParent, pAfterChild);
@@ -280,7 +280,7 @@ template < class _Node > class CCopasiTree
        * @param Node * pNode
        * @return bool Success
        */
-      bool detachNode(Node * pNode)
+      bool detachNode(_Node * pNode)
       {
         if (!pNode) return false;          // Nothing to do.
         if (pNode == mpRoot) return false; // Root must not be detached
@@ -295,10 +295,10 @@ template < class _Node > class CCopasiTree
       }
 
       friend std::ostream & operator<< (std::ostream & os,
-                                        const CCopasiTree< Node > & A)
+                                        const CCopasiTree< _Node > & A)
       {
-        CCopasiTree< Node >::iterator it = A.begin();
-        CCopasiTree< Node >::iterator end = A.end();
+        CCopasiTree< _Node >::iterator it = A.begin();
+        CCopasiTree< _Node >::iterator end = A.end();
 
         for (; it != end && &*it != NULL; ++it)
           os << &*it << ": parent: " << it->getParent()
