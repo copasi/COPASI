@@ -1,0 +1,3243 @@
+Construct: class CCopasiVector<class CFunction>, 	Address: 00F3318C
+Construct: class CFunctionDB, 	Address: 00F3317C
+Construct: class CCopasiVector<class CUDFunction>, 	Address: 00F331B4
+Construct: class CCopasiVector<class CMetabOld>, 	Address: 00F331C8
+Construct: class CCopasiVector<class COutput>, 	Address: 00F331E8
+Construct: class CCopasiVector<class CCompartment>, 	Address: 00F98D20
+Construct: class CCopasiVector<class CReaction>, 	Address: 00F98D74
+Construct: class CCopasiVector<class CMoiety>, 	Address: 00F98DD0
+Construct: class CModel, 	Address: 00F98D00
+Construct: class CMetabOld, 	Address: 00F98B90
+Construct: class CMetabOld, 	Address: 00F98B00
+Construct: class CMetabOld, 	Address: 00F98970
+Construct: class CMetabOld, 	Address: 00F988D0
+Construct: class CMetabOld, 	Address: 00F98830
+Construct: class CMetabOld, 	Address: 00F98790
+Construct: class CMetabOld, 	Address: 00F986F0
+Construct: class CMetabOld, 	Address: 00F98650
+Construct: class CMetabOld, 	Address: 00F985B0
+Construct: class CMetabOld, 	Address: 00F98510
+Construct: class CMetabOld, 	Address: 00F98470
+Construct: class CMetabOld, 	Address: 00F983D0
+Construct: class CMetabOld, 	Address: 00F98330
+Construct: class CMetabOld, 	Address: 00F98290
+Construct: class CMetabOld, 	Address: 00F981F0
+Construct: class CMetabOld, 	Address: 00F98150
+Construct: class CMetabOld, 	Address: 00F98AB0
+Construct: class CMetabOld, 	Address: 00F98A60
+Construct: class CMetabOld, 	Address: 00F99FD0
+Construct: class CMetabOld, 	Address: 00F99F30
+Construct: class CMetabOld, 	Address: 00F99E90
+Construct: class CMetabOld, 	Address: 00F99DF0
+Construct: class CMetabOld, 	Address: 00F99D50
+Construct: class CMetabOld, 	Address: 00F99CB0
+Construct: class CMetabOld, 	Address: 00F99C10
+Construct: class CCopasiVector<class CMetab>, 	Address: 00F980B8
+Construct: class CCompartment, 	Address: 00F980A0
+Construct: class CCopasiVector<class CMetab>, 	Address: 00F998D8
+Construct: class CCompartment, 	Address: 00F998C0
+Construct: class CCopasiVector<class CMetab>, 	Address: 00F996F8
+Construct: class CCompartment, 	Address: 00F996E0
+Construct: class CMetab, 	Address: 0012F1F0
+Construct: class CMetab, 	Address: 00F995E0
+Construct: class CMetab, 	Address: 00F99850
+Construct: class CMetab, 	Address: 00F997B0
+Construct: class CMetab, 	Address: 00F994B0
+Construct: class CMetab, 	Address: 00F99400
+Construct: class CMetab, 	Address: 00F99390
+Construct: class CMetab, 	Address: 00F992D0
+Construct: class CMetab, 	Address: 00F99260
+Construct: class CMetab, 	Address: 00F991F0
+Construct: class CMetab, 	Address: 00F99180
+Construct: class CMetab, 	Address: 00F990A0
+Construct: class CMetab, 	Address: 00F99030
+Construct: class CMetab, 	Address: 00F9AFB0
+Construct: class CMetab, 	Address: 00F9AF40
+Construct: class CMetab, 	Address: 00F9AED0
+Construct: class CMetab, 	Address: 00F9AE60
+Construct: class CMetab, 	Address: 00F9ADF0
+Construct: class CMetab, 	Address: 00F9AD80
+Construct: class CMetab, 	Address: 00F9AD10
+Construct: class CMetab, 	Address: 00F9ACA0
+Construct: class CMetab, 	Address: 00F9AC30
+Construct: class CMetab, 	Address: 00F9ABC0
+Construct: class CMetab, 	Address: 00F9AB50
+Construct: class CMetab, 	Address: 00F9AA90
+Construct: class CMetab, 	Address: 00F9AA20
+Destruct: class CMetab, 	Address: 0012F1F0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9A99C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F9A9B0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9A9C4
+Construct: class CFunctionParameters, 	Address: 00F9A9B0
+Construct: class CFunction, 	Address: 00F9A970
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00F9A9D8
+Construct: class CKinFunction, 	Address: 00F9A970
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00F9A630
+Construct: class CUsageRange, 	Address: 00F9A630
+Construct: class CRange, 	Address: 00F9A590
+Construct: class CUsageRange, 	Address: 00F9A590
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00F9A460
+Construct: class CNodeK, 	Address: 00F9A3C0
+Construct: class CNodeK, 	Address: 00F9A2A0
+Construct: class CNodeK, 	Address: 00F9A240
+Construct: class CNodeK, 	Address: 00F9A1E0
+Construct: class CNodeK, 	Address: 00F9A110
+Construct: class CNodeK, 	Address: 00F9A0B0
+Construct: class CNodeK, 	Address: 00F9A050
+Construct: class CNodeK, 	Address: 00F9BF70
+Construct: class CNodeK, 	Address: 00F9BF10
+Construct: class CNodeK, 	Address: 00F9BE30
+Construct: class CNodeK, 	Address: 00F9BDD0
+Construct: class CNodeK, 	Address: 00F9BD70
+Construct: class CNodeK, 	Address: 00F9BD10
+Construct: class CNodeK, 	Address: 00F9BC40
+Construct: class CNodeK, 	Address: 00F9BBE0
+Construct: class CNodeK, 	Address: 00F9BB00
+Construct: class CNodeK, 	Address: 00F9BAA0
+Construct: class CNodeK, 	Address: 00F9B9C0
+Construct: class CNodeK, 	Address: 00F9B960
+Construct: class CNodeK, 	Address: 00F9B880
+Construct: class CNodeK, 	Address: 00F9B820
+Construct: class CNodeK, 	Address: 00F9B740
+Construct: class CNodeK, 	Address: 00F9B6E0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00F9B4C0
+Construct: class CFunctionParameter, 	Address: 00F9B460
+Construct: class CFunctionParameter, 	Address: 00F9B3B0
+Construct: class CFunctionParameter, 	Address: 00F9B300
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Out' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'In' allready exists.
+Construct: class CFunctionParameter, 	Address: 00F9B210
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Out' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'In' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'KG' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9B0C0
+Construct: class CUsageRange, 	Address: 00F9B0C0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9B0C0
+Destruct: class CRange, 	Address: 00F9B0C0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9B0C0
+Construct: class CUsageRange, 	Address: 00F9B0C0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9CFD0
+Construct: class CUsageRange, 	Address: 00F9CFD0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9B0C0
+Destruct: class CRange, 	Address: 00F9B0C0
+Destruct: class CUsageRange, 	Address: 00F9CFD0
+Destruct: class CRange, 	Address: 00F9CFD0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9B0C0
+Construct: class CUsageRange, 	Address: 00F9B0C0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9CFD0
+Construct: class CUsageRange, 	Address: 00F9CFD0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9CF80
+Construct: class CUsageRange, 	Address: 00F9CF80
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9B0C0
+Destruct: class CRange, 	Address: 00F9B0C0
+Destruct: class CUsageRange, 	Address: 00F9CFD0
+Destruct: class CRange, 	Address: 00F9CFD0
+Destruct: class CUsageRange, 	Address: 00F9CF80
+Destruct: class CRange, 	Address: 00F9CF80
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9CFD0
+Construct: class CUsageRange, 	Address: 00F9CFD0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9CF80
+Construct: class CUsageRange, 	Address: 00F9CF80
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9CF30
+Construct: class CUsageRange, 	Address: 00F9CF30
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9CFD0
+Destruct: class CRange, 	Address: 00F9CFD0
+Destruct: class CUsageRange, 	Address: 00F9CF80
+Destruct: class CRange, 	Address: 00F9CF80
+Destruct: class CUsageRange, 	Address: 00F9CF30
+Destruct: class CRange, 	Address: 00F9CF30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9CFD0
+Construct: class CUsageRange, 	Address: 00F9CFD0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9CF80
+Construct: class CUsageRange, 	Address: 00F9CF80
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9CF30
+Construct: class CUsageRange, 	Address: 00F9CF30
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00F9A460
+Destruct: class CNodeK, 	Address: 00F9A3C0
+Destruct: class CNodeK, 	Address: 00F9A2A0
+Destruct: class CNodeK, 	Address: 00F9A240
+Destruct: class CNodeK, 	Address: 00F9A1E0
+Destruct: class CNodeK, 	Address: 00F9A110
+Destruct: class CNodeK, 	Address: 00F9A0B0
+Destruct: class CNodeK, 	Address: 00F9A050
+Destruct: class CNodeK, 	Address: 00F9BF70
+Destruct: class CNodeK, 	Address: 00F9BF10
+Destruct: class CNodeK, 	Address: 00F9BE30
+Destruct: class CNodeK, 	Address: 00F9BDD0
+Destruct: class CNodeK, 	Address: 00F9BD70
+Destruct: class CNodeK, 	Address: 00F9BD10
+Destruct: class CNodeK, 	Address: 00F9BC40
+Destruct: class CNodeK, 	Address: 00F9BBE0
+Destruct: class CNodeK, 	Address: 00F9BB00
+Destruct: class CNodeK, 	Address: 00F9BAA0
+Destruct: class CNodeK, 	Address: 00F9B9C0
+Destruct: class CNodeK, 	Address: 00F9B960
+Destruct: class CNodeK, 	Address: 00F9B880
+Destruct: class CNodeK, 	Address: 00F9B820
+Destruct: class CNodeK, 	Address: 00F9B740
+Destruct: class CNodeK, 	Address: 00F9B6E0
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00F9A460
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9B060
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9BF70
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9BF10
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9A110
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 00F9A0B0
+Destruct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9A2A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9A240
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9A1E0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9BE30
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9BD80
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9BD20
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9B830
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9B7D0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9B720
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9B6C0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9BC40
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9BBE0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9BB30
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9BAD0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9BA20
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9B9C0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9CED0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9CE70
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9CDEC
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F9CE00
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9CE14
+Construct: class CFunctionParameters, 	Address: 00F9CE00
+Construct: class CFunction, 	Address: 00F9CDC0
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00F9CE28
+Construct: class CKinFunction, 	Address: 00F9CDC0
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00F9B1C0
+Construct: class CUsageRange, 	Address: 00F9B1C0
+Construct: class CRange, 	Address: 00F9CD20
+Construct: class CUsageRange, 	Address: 00F9CD20
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00F9CC00
+Construct: class CNodeK, 	Address: 00F9CA50
+Construct: class CNodeK, 	Address: 00F9C9F0
+Construct: class CNodeK, 	Address: 00F9C990
+Construct: class CNodeK, 	Address: 00F9C8B0
+Construct: class CNodeK, 	Address: 00F9C850
+Construct: class CNodeK, 	Address: 00F9C7F0
+Construct: class CNodeK, 	Address: 00F9C710
+Construct: class CNodeK, 	Address: 00F9C6B0
+Construct: class CNodeK, 	Address: 00F9C5D0
+Construct: class CNodeK, 	Address: 00F9C570
+Construct: class CNodeK, 	Address: 00F9C510
+Construct: class CNodeK, 	Address: 00F9C4B0
+Construct: class CNodeK, 	Address: 00F9C3D0
+Construct: class CNodeK, 	Address: 00F9C370
+Construct: class CNodeK, 	Address: 00F9C290
+Construct: class CNodeK, 	Address: 00F9C230
+Construct: class CNodeK, 	Address: 00F9C1D0
+Construct: class CNodeK, 	Address: 00F9C170
+Construct: class CNodeK, 	Address: 00F9C110
+Construct: class CNodeK, 	Address: 00F9C0B0
+Construct: class CNodeK, 	Address: 00F9C050
+Construct: class CNodeK, 	Address: 00F9DF20
+Construct: class CNodeK, 	Address: 00F9DE30
+Construct: class CNodeK, 	Address: 00F9DDD0
+Construct: class CNodeK, 	Address: 00F9DCE0
+Construct: class CNodeK, 	Address: 00F9DC80
+Construct: class CNodeK, 	Address: 00F9DB90
+Construct: class CNodeK, 	Address: 00F9DB30
+Construct: class CNodeK, 	Address: 00F9DAD0
+Construct: class CNodeK, 	Address: 00F9DA70
+Construct: class CNodeK, 	Address: 00F9DA10
+Construct: class CNodeK, 	Address: 00F9D9B0
+Construct: class CNodeK, 	Address: 00F9D8C0
+Construct: class CNodeK, 	Address: 00F9D860
+Construct: class CNodeK, 	Address: 00F9D770
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00F9D710
+Construct: class CFunctionParameter, 	Address: 00F9D6B0
+Construct: class CFunctionParameter, 	Address: 00F9D600
+Construct: class CFunctionParameter, 	Address: 00F9D550
+Construct: class CFunctionParameter, 	Address: 00F9D4A0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'ATP' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'KATP' allready exists.
+Construct: class CFunctionParameter, 	Address: 00F9D3F0
+Construct: class CFunctionParameter, 	Address: 00F9D340
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'GLC' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'KGLC' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9D250
+Construct: class CUsageRange, 	Address: 00F9D250
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 00F9D250
+Destruct: class CRange, 	Address: 00F9D250
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9D250
+Construct: class CUsageRange, 	Address: 00F9D250
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9D200
+Construct: class CUsageRange, 	Address: 00F9D200
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 00F9D250
+Destruct: class CRange, 	Address: 00F9D250
+Destruct: class CUsageRange, 	Address: 00F9D200
+Destruct: class CRange, 	Address: 00F9D200
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9D160
+Construct: class CUsageRange, 	Address: 00F9D160
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9D110
+Construct: class CUsageRange, 	Address: 00F9D110
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 00F9D160
+Destruct: class CRange, 	Address: 00F9D160
+Destruct: class CUsageRange, 	Address: 00F9D110
+Destruct: class CRange, 	Address: 00F9D110
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9D160
+Construct: class CUsageRange, 	Address: 00F9D160
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9D110
+Construct: class CUsageRange, 	Address: 00F9D110
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9D2F0
+Destruct: class CRange, 	Address: 00F9D2F0
+Destruct: class CUsageRange, 	Address: 00F9D160
+Destruct: class CRange, 	Address: 00F9D160
+Destruct: class CUsageRange, 	Address: 00F9D110
+Destruct: class CRange, 	Address: 00F9D110
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9D2F0
+Construct: class CUsageRange, 	Address: 00F9D2F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F9D160
+Construct: class CUsageRange, 	Address: 00F9D160
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9D110
+Construct: class CUsageRange, 	Address: 00F9D110
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00F9CC00
+Destruct: class CNodeK, 	Address: 00F9CA50
+Destruct: class CNodeK, 	Address: 00F9C9F0
+Destruct: class CNodeK, 	Address: 00F9C990
+Destruct: class CNodeK, 	Address: 00F9C8B0
+Destruct: class CNodeK, 	Address: 00F9C850
+Destruct: class CNodeK, 	Address: 00F9C7F0
+Destruct: class CNodeK, 	Address: 00F9C710
+Destruct: class CNodeK, 	Address: 00F9C6B0
+Destruct: class CNodeK, 	Address: 00F9C5D0
+Destruct: class CNodeK, 	Address: 00F9C570
+Destruct: class CNodeK, 	Address: 00F9C510
+Destruct: class CNodeK, 	Address: 00F9C4B0
+Destruct: class CNodeK, 	Address: 00F9C3D0
+Destruct: class CNodeK, 	Address: 00F9C370
+Destruct: class CNodeK, 	Address: 00F9C290
+Destruct: class CNodeK, 	Address: 00F9C230
+Destruct: class CNodeK, 	Address: 00F9C1D0
+Destruct: class CNodeK, 	Address: 00F9C170
+Destruct: class CNodeK, 	Address: 00F9C110
+Destruct: class CNodeK, 	Address: 00F9C0B0
+Destruct: class CNodeK, 	Address: 00F9C050
+Destruct: class CNodeK, 	Address: 00F9DF20
+Destruct: class CNodeK, 	Address: 00F9DE30
+Destruct: class CNodeK, 	Address: 00F9DDD0
+Destruct: class CNodeK, 	Address: 00F9DCE0
+Destruct: class CNodeK, 	Address: 00F9DC80
+Destruct: class CNodeK, 	Address: 00F9DB90
+Destruct: class CNodeK, 	Address: 00F9DB30
+Destruct: class CNodeK, 	Address: 00F9DAD0
+Destruct: class CNodeK, 	Address: 00F9DA70
+Destruct: class CNodeK, 	Address: 00F9DA10
+Destruct: class CNodeK, 	Address: 00F9D9B0
+Destruct: class CNodeK, 	Address: 00F9D8C0
+Destruct: class CNodeK, 	Address: 00F9D860
+Destruct: class CNodeK, 	Address: 00F9D770
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00F9DF70
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9D050
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9C3D0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9C370
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9C6C0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9D290
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9DCE0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9DC80
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9DE80
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9DE20
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9C8B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9C850
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9CA50
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9C9F0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9C990
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9C5D0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9C570
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F9C510
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9C4B0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9C240
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9C1E0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9C130
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9C0D0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9DB90
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9DB30
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9DAD0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9DA70
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9DA10
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9D9B0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F9D950
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9D8F0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9D840
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9D7E0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9EFC0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9EF60
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9EF00
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9EE7C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F9EE90
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F9EEA4
+Construct: class CFunctionParameters, 	Address: 00F9EE90
+Construct: class CFunction, 	Address: 00F9EE50
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00F9EEB8
+Construct: class CKinFunction, 	Address: 00F9EE50
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00F9CC10
+Construct: class CUsageRange, 	Address: 00F9CC10
+Construct: class CRange, 	Address: 00F9EDB0
+Construct: class CUsageRange, 	Address: 00F9EDB0
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00F9EBA0
+Construct: class CNodeK, 	Address: 00F9EB40
+Construct: class CNodeK, 	Address: 00F9EAE0
+Construct: class CNodeK, 	Address: 00F9EA80
+Construct: class CNodeK, 	Address: 00F9EA20
+Construct: class CNodeK, 	Address: 00F9E950
+Construct: class CNodeK, 	Address: 00F9E8F0
+Construct: class CNodeK, 	Address: 00F9E890
+Construct: class CNodeK, 	Address: 00F9E7C0
+Construct: class CNodeK, 	Address: 00F9E760
+Construct: class CNodeK, 	Address: 00F9E680
+Construct: class CNodeK, 	Address: 00F9E620
+Construct: class CNodeK, 	Address: 00F9E5C0
+Construct: class CNodeK, 	Address: 00F9E4F0
+Construct: class CNodeK, 	Address: 00F9E490
+Construct: class CNodeK, 	Address: 00F9E430
+Construct: class CNodeK, 	Address: 00F9E360
+Construct: class CNodeK, 	Address: 00F9E300
+Construct: class CNodeK, 	Address: 00F9E220
+Construct: class CNodeK, 	Address: 00F9E1C0
+Construct: class CNodeK, 	Address: 00F9E160
+Construct: class CNodeK, 	Address: 00F9E100
+Construct: class CNodeK, 	Address: 00F9E0A0
+Construct: class CNodeK, 	Address: 00F9E040
+Construct: class CNodeK, 	Address: 00F9FFC0
+Construct: class CNodeK, 	Address: 00F9FF60
+Construct: class CNodeK, 	Address: 00F9FE80
+Construct: class CNodeK, 	Address: 00F9FE20
+Construct: class CNodeK, 	Address: 00F9FD40
+Construct: class CNodeK, 	Address: 00F9FCE0
+Construct: class CNodeK, 	Address: 00F9FC80
+Construct: class CNodeK, 	Address: 00F9FBB0
+Construct: class CNodeK, 	Address: 00F9FB50
+Construct: class CNodeK, 	Address: 00F9FAF0
+Construct: class CNodeK, 	Address: 00F9FA90
+Construct: class CNodeK, 	Address: 00F9FA30
+Construct: class CNodeK, 	Address: 00F9F9D0
+Construct: class CNodeK, 	Address: 00F9F900
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00F9F7C0
+Construct: class CFunctionParameter, 	Address: 00F9F710
+Construct: class CFunctionParameter, 	Address: 00F9F660
+Construct: class CFunctionParameter, 	Address: 00F9F5B0
+Construct: class CFunctionParameter, 	Address: 00F9F500
+Construct: class CFunctionParameter, 	Address: 00F9F450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'n' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km2' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F3B0
+Construct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CRange, 	Address: 00F9F3B0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F3B0
+Construct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CRange, 	Address: 00F9F3B0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F3B0
+Construct: class CUsageRange, 	Address: 00F9F3B0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9F360
+Construct: class CUsageRange, 	Address: 00F9F360
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CRange, 	Address: 00F9F3B0
+Destruct: class CUsageRange, 	Address: 00F9F360
+Destruct: class CRange, 	Address: 00F9F360
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F3B0
+Construct: class CUsageRange, 	Address: 00F9F3B0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9F360
+Construct: class CUsageRange, 	Address: 00F9F360
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F3B0
+Destruct: class CRange, 	Address: 00F9F3B0
+Destruct: class CUsageRange, 	Address: 00F9F360
+Destruct: class CRange, 	Address: 00F9F360
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F2C0
+Construct: class CUsageRange, 	Address: 00F9F2C0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9F270
+Construct: class CUsageRange, 	Address: 00F9F270
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F2C0
+Destruct: class CRange, 	Address: 00F9F2C0
+Destruct: class CUsageRange, 	Address: 00F9F270
+Destruct: class CRange, 	Address: 00F9F270
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F2C0
+Construct: class CUsageRange, 	Address: 00F9F2C0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F9F270
+Construct: class CUsageRange, 	Address: 00F9F270
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00F9EBA0
+Destruct: class CNodeK, 	Address: 00F9EB40
+Destruct: class CNodeK, 	Address: 00F9EAE0
+Destruct: class CNodeK, 	Address: 00F9EA80
+Destruct: class CNodeK, 	Address: 00F9EA20
+Destruct: class CNodeK, 	Address: 00F9E950
+Destruct: class CNodeK, 	Address: 00F9E8F0
+Destruct: class CNodeK, 	Address: 00F9E890
+Destruct: class CNodeK, 	Address: 00F9E7C0
+Destruct: class CNodeK, 	Address: 00F9E760
+Destruct: class CNodeK, 	Address: 00F9E680
+Destruct: class CNodeK, 	Address: 00F9E620
+Destruct: class CNodeK, 	Address: 00F9E5C0
+Destruct: class CNodeK, 	Address: 00F9E4F0
+Destruct: class CNodeK, 	Address: 00F9E490
+Destruct: class CNodeK, 	Address: 00F9E430
+Destruct: class CNodeK, 	Address: 00F9E360
+Destruct: class CNodeK, 	Address: 00F9E300
+Destruct: class CNodeK, 	Address: 00F9E220
+Destruct: class CNodeK, 	Address: 00F9E1C0
+Destruct: class CNodeK, 	Address: 00F9E160
+Destruct: class CNodeK, 	Address: 00F9E100
+Destruct: class CNodeK, 	Address: 00F9E0A0
+Destruct: class CNodeK, 	Address: 00F9E040
+Destruct: class CNodeK, 	Address: 00F9FFC0
+Destruct: class CNodeK, 	Address: 00F9FF60
+Destruct: class CNodeK, 	Address: 00F9FE80
+Destruct: class CNodeK, 	Address: 00F9FE20
+Destruct: class CNodeK, 	Address: 00F9FD40
+Destruct: class CNodeK, 	Address: 00F9FCE0
+Destruct: class CNodeK, 	Address: 00F9FC80
+Destruct: class CNodeK, 	Address: 00F9FBB0
+Destruct: class CNodeK, 	Address: 00F9FB50
+Destruct: class CNodeK, 	Address: 00F9FAF0
+Destruct: class CNodeK, 	Address: 00F9FA90
+Destruct: class CNodeK, 	Address: 00F9FA30
+Destruct: class CNodeK, 	Address: 00F9F9D0
+Destruct: class CNodeK, 	Address: 00F9F900
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00F9E360
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9E770
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9F3F0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9F390
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9E4A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9E440
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9E630
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9E5D0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 00F9E950
+Destruct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9E8A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9EBA0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9EB40
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9EA90
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9EA30
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9F1C0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9F160
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9F100
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9F0A0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9F040
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F9E220
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9E1C0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9E160
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9E0B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9E050
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9FF70
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9FF10
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 00F9FEB0
+Destruct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9FE00
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9FDA0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F9FD40
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F9FCE0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F9FC80
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F9FC20
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9FB70
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F9FB10
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F9FA60
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9FA00
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F9F9A0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F5A8EC
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F5A900
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F5A914
+Construct: class CFunctionParameters, 	Address: 00F5A900
+Construct: class CFunction, 	Address: 00F5A8C0
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00F5A928
+Construct: class CKinFunction, 	Address: 00F5A8C0
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00F76AC0
+Construct: class CUsageRange, 	Address: 00F76AC0
+Construct: class CRange, 	Address: 00F77320
+Construct: class CUsageRange, 	Address: 00F77320
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00F7A3F0
+Construct: class CNodeK, 	Address: 00F7BFC0
+Construct: class CNodeK, 	Address: 00F7B050
+Construct: class CNodeK, 	Address: 00F7B6F0
+Construct: class CNodeK, 	Address: 00F797B0
+Construct: class CNodeK, 	Address: 00F7B210
+Construct: class CNodeK, 	Address: 00F78950
+Construct: class CNodeK, 	Address: 00F7D910
+Construct: class CNodeK, 	Address: 00F7C660
+Construct: class CNodeK, 	Address: 00F7B630
+Construct: class CNodeK, 	Address: 00F7B5D0
+Construct: class CNodeK, 	Address: 00F79690
+Construct: class CNodeK, 	Address: 00F79630
+Construct: class CNodeK, 	Address: 00F794F0
+Construct: class CNodeK, 	Address: 00F7CFC0
+Construct: class CNodeK, 	Address: 00F7CF60
+Construct: class CNodeK, 	Address: 00F7CF00
+Construct: class CNodeK, 	Address: 00F7C140
+Construct: class CNodeK, 	Address: 00F7BDA0
+Construct: class CNodeK, 	Address: 00F7BCA0
+Construct: class CNodeK, 	Address: 00F7BC40
+Construct: class CNodeK, 	Address: 00F7C340
+Construct: class CNodeK, 	Address: 00F7C2E0
+Construct: class CNodeK, 	Address: 00F7C230
+Construct: class CNodeK, 	Address: 00F7CAE0
+Construct: class CNodeK, 	Address: 00F7CA80
+Construct: class CNodeK, 	Address: 00F7CA20
+Construct: class CNodeK, 	Address: 00F7C8E0
+Construct: class CNodeK, 	Address: 00F7C880
+Construct: class CNodeK, 	Address: 00F7C820
+Construct: class CNodeK, 	Address: 00F7C7C0
+Construct: class CNodeK, 	Address: 00F7CE40
+Construct: class CNodeK, 	Address: 00F7CDE0
+Construct: class CNodeK, 	Address: 00F7CD80
+Construct: class CNodeK, 	Address: 00F7CD20
+Construct: class CNodeK, 	Address: 00F7B4F0
+Construct: class CNodeK, 	Address: 00F7B490
+Construct: class CNodeK, 	Address: 00F7B430
+Construct: class CNodeK, 	Address: 00F7B380
+Construct: class CNodeK, 	Address: 00F7BBA0
+Construct: class CNodeK, 	Address: 00F7BB40
+Construct: class CNodeK, 	Address: 00F7BAE0
+Construct: class CNodeK, 	Address: 00F7BA80
+Construct: class CNodeK, 	Address: 00F76330
+Construct: class CNodeK, 	Address: 00F762D0
+Construct: class CNodeK, 	Address: 00F76DC0
+Construct: class CNodeK, 	Address: 00F775B0
+Construct: class CNodeK, 	Address: 00F77550
+Construct: class CNodeK, 	Address: 00F751C0
+Construct: class CNodeK, 	Address: 00F75890
+Construct: class CNodeK, 	Address: 00F75830
+Construct: class CNodeK, 	Address: 00F75B70
+Construct: class CNodeK, 	Address: 00F75B10
+Construct: class CNodeK, 	Address: 00F742D0
+Construct: class CNodeK, 	Address: 00F74600
+Construct: class CNodeK, 	Address: 00F745A0
+Construct: class CNodeK, 	Address: 00F77100
+Construct: class CNodeK, 	Address: 00F74880
+Construct: class CNodeK, 	Address: 00F74C40
+Construct: class CNodeK, 	Address: 00F73B00
+Construct: class CNodeK, 	Address: 00F73AA0
+Construct: class CNodeK, 	Address: 00F73E20
+Construct: class CNodeK, 	Address: 00F73DC0
+Construct: class CNodeK, 	Address: 00F72710
+Construct: class CNodeK, 	Address: 00F713C0
+Construct: class CNodeK, 	Address: 00F71360
+Construct: class CNodeK, 	Address: 00F716E0
+Construct: class CNodeK, 	Address: 00F71680
+Construct: class CNodeK, 	Address: 00F71A00
+Construct: class CNodeK, 	Address: 00F70720
+Construct: class CNodeK, 	Address: 00F706C0
+Construct: class CNodeK, 	Address: 00F76A10
+Construct: class CNodeK, 	Address: 00F769B0
+Construct: class CNodeK, 	Address: 00F75540
+Construct: class CNodeK, 	Address: 00F754E0
+Construct: class CNodeK, 	Address: 00F75480
+Construct: class CNodeK, 	Address: 00F75EA0
+Construct: class CNodeK, 	Address: 00F75E40
+Construct: class CNodeK, 	Address: 00F74F30
+Construct: class CNodeK, 	Address: 00F74E80
+Construct: class CNodeK, 	Address: 00F73330
+Construct: class CNodeK, 	Address: 00F732D0
+Construct: class CNodeK, 	Address: 00F73270
+Construct: class CNodeK, 	Address: 00F721D0
+Construct: class CNodeK, 	Address: 00F72120
+Construct: class CNodeK, 	Address: 00F72AD0
+Construct: class CNodeK, 	Address: 00F72A20
+Construct: class CNodeK, 	Address: 00F71D40
+Construct: class CNodeK, 	Address: 00F71C90
+Construct: class CNodeK, 	Address: 00F70190
+Construct: class CNodeK, 	Address: 00F700E0
+Construct: class CNodeK, 	Address: 00F70A90
+Construct: class CNodeK, 	Address: 00F709E0
+Construct: class CNodeK, 	Address: 00F76780
+Construct: class CNodeK, 	Address: 00F766D0
+Construct: class CNodeK, 	Address: 00F5D7F0
+Construct: class CNodeK, 	Address: 00F76670
+Construct: class CNodeK, 	Address: 00F5F520
+Construct: class CNodeK, 	Address: 00F5ED40
+Construct: class CNodeK, 	Address: 00F84C50
+Construct: class CNodeK, 	Address: 00F879A0
+Construct: class CNodeK, 	Address: 00F87D00
+Construct: class CNodeK, 	Address: 00F86090
+Construct: class CNodeK, 	Address: 00F863F0
+Construct: class CNodeK, 	Address: 00F870C0
+Construct: class CNodeK, 	Address: 00F87E60
+Construct: class CNodeK, 	Address: 00F87E00
+Construct: class CNodeK, 	Address: 00F877A0
+Construct: class CNodeK, 	Address: 00F87740
+Construct: class CNodeK, 	Address: 00F86590
+Construct: class CNodeK, 	Address: 00F86530
+Construct: class CNodeK, 	Address: 00F8B550
+Construct: class CNodeK, 	Address: 00F8CB00
+Construct: class CNodeK, 	Address: 00F8BC00
+Construct: class CNodeK, 	Address: 00F8CDC0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00F8EDD0
+Construct: class CFunctionParameter, 	Address: 00F8ED70
+Construct: class CFunctionParameter, 	Address: 00F8CCC0
+Construct: class CFunctionParameter, 	Address: 00F8CC60
+Construct: class CFunctionParameter, 	Address: 00F89BC0
+Construct: class CFunctionParameter, 	Address: 00F8C100
+Construct: class CFunctionParameter, 	Address: 00F8C050
+Construct: class CFunctionParameter, 	Address: 00F882D0
+Construct: class CFunctionParameter, 	Address: 00F8E8C0
+Construct: class CFunctionParameter, 	Address: 00F8E7C0
+Construct: class CFunctionParameter, 	Address: 00F8C960
+Construct: class CFunctionParameter, 	Address: 00F8C8B0
+Construct: class CFunctionParameter, 	Address: 00F8C800
+Construct: class CFunctionParameter, 	Address: 00F88630
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X3' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx3' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X3' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx3' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P1' allready exists.
+Construct: class CFunctionParameter, 	Address: 00F885D0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp2' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F93A30
+Destruct: class CRange, 	Address: 00F93A30
+Destruct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 00F95450
+Destruct: class CRange, 	Address: 00F95450
+Destruct: class CUsageRange, 	Address: 00F93090
+Destruct: class CRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F93A30
+Construct: class CUsageRange, 	Address: 00F93A30
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F93090
+Construct: class CUsageRange, 	Address: 00F93090
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00F95450
+Construct: class CUsageRange, 	Address: 00F95450
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F92CF0
+Construct: class CUsageRange, 	Address: 00F92CF0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00F7A3F0
+Destruct: class CNodeK, 	Address: 00F7BFC0
+Destruct: class CNodeK, 	Address: 00F7B050
+Destruct: class CNodeK, 	Address: 00F7B6F0
+Destruct: class CNodeK, 	Address: 00F797B0
+Destruct: class CNodeK, 	Address: 00F7B210
+Destruct: class CNodeK, 	Address: 00F78950
+Destruct: class CNodeK, 	Address: 00F7D910
+Destruct: class CNodeK, 	Address: 00F7C660
+Destruct: class CNodeK, 	Address: 00F7B630
+Destruct: class CNodeK, 	Address: 00F7B5D0
+Destruct: class CNodeK, 	Address: 00F79690
+Destruct: class CNodeK, 	Address: 00F79630
+Destruct: class CNodeK, 	Address: 00F794F0
+Destruct: class CNodeK, 	Address: 00F7CFC0
+Destruct: class CNodeK, 	Address: 00F7CF60
+Destruct: class CNodeK, 	Address: 00F7CF00
+Destruct: class CNodeK, 	Address: 00F7C140
+Destruct: class CNodeK, 	Address: 00F7BDA0
+Destruct: class CNodeK, 	Address: 00F7BCA0
+Destruct: class CNodeK, 	Address: 00F7BC40
+Destruct: class CNodeK, 	Address: 00F7C340
+Destruct: class CNodeK, 	Address: 00F7C2E0
+Destruct: class CNodeK, 	Address: 00F7C230
+Destruct: class CNodeK, 	Address: 00F7CAE0
+Destruct: class CNodeK, 	Address: 00F7CA80
+Destruct: class CNodeK, 	Address: 00F7CA20
+Destruct: class CNodeK, 	Address: 00F7C8E0
+Destruct: class CNodeK, 	Address: 00F7C880
+Destruct: class CNodeK, 	Address: 00F7C820
+Destruct: class CNodeK, 	Address: 00F7C7C0
+Destruct: class CNodeK, 	Address: 00F7CE40
+Destruct: class CNodeK, 	Address: 00F7CDE0
+Destruct: class CNodeK, 	Address: 00F7CD80
+Destruct: class CNodeK, 	Address: 00F7CD20
+Destruct: class CNodeK, 	Address: 00F7B4F0
+Destruct: class CNodeK, 	Address: 00F7B490
+Destruct: class CNodeK, 	Address: 00F7B430
+Destruct: class CNodeK, 	Address: 00F7B380
+Destruct: class CNodeK, 	Address: 00F7BBA0
+Destruct: class CNodeK, 	Address: 00F7BB40
+Destruct: class CNodeK, 	Address: 00F7BAE0
+Destruct: class CNodeK, 	Address: 00F7BA80
+Destruct: class CNodeK, 	Address: 00F76330
+Destruct: class CNodeK, 	Address: 00F762D0
+Destruct: class CNodeK, 	Address: 00F76DC0
+Destruct: class CNodeK, 	Address: 00F775B0
+Destruct: class CNodeK, 	Address: 00F77550
+Destruct: class CNodeK, 	Address: 00F751C0
+Destruct: class CNodeK, 	Address: 00F75890
+Destruct: class CNodeK, 	Address: 00F75830
+Destruct: class CNodeK, 	Address: 00F75B70
+Destruct: class CNodeK, 	Address: 00F75B10
+Destruct: class CNodeK, 	Address: 00F742D0
+Destruct: class CNodeK, 	Address: 00F74600
+Destruct: class CNodeK, 	Address: 00F745A0
+Destruct: class CNodeK, 	Address: 00F77100
+Destruct: class CNodeK, 	Address: 00F74880
+Destruct: class CNodeK, 	Address: 00F74C40
+Destruct: class CNodeK, 	Address: 00F73B00
+Destruct: class CNodeK, 	Address: 00F73AA0
+Destruct: class CNodeK, 	Address: 00F73E20
+Destruct: class CNodeK, 	Address: 00F73DC0
+Destruct: class CNodeK, 	Address: 00F72710
+Destruct: class CNodeK, 	Address: 00F713C0
+Destruct: class CNodeK, 	Address: 00F71360
+Destruct: class CNodeK, 	Address: 00F716E0
+Destruct: class CNodeK, 	Address: 00F71680
+Destruct: class CNodeK, 	Address: 00F71A00
+Destruct: class CNodeK, 	Address: 00F70720
+Destruct: class CNodeK, 	Address: 00F706C0
+Destruct: class CNodeK, 	Address: 00F76A10
+Destruct: class CNodeK, 	Address: 00F769B0
+Destruct: class CNodeK, 	Address: 00F75540
+Destruct: class CNodeK, 	Address: 00F754E0
+Destruct: class CNodeK, 	Address: 00F75480
+Destruct: class CNodeK, 	Address: 00F75EA0
+Destruct: class CNodeK, 	Address: 00F75E40
+Destruct: class CNodeK, 	Address: 00F74F30
+Destruct: class CNodeK, 	Address: 00F74E80
+Destruct: class CNodeK, 	Address: 00F73330
+Destruct: class CNodeK, 	Address: 00F732D0
+Destruct: class CNodeK, 	Address: 00F73270
+Destruct: class CNodeK, 	Address: 00F721D0
+Destruct: class CNodeK, 	Address: 00F72120
+Destruct: class CNodeK, 	Address: 00F72AD0
+Destruct: class CNodeK, 	Address: 00F72A20
+Destruct: class CNodeK, 	Address: 00F71D40
+Destruct: class CNodeK, 	Address: 00F71C90
+Destruct: class CNodeK, 	Address: 00F70190
+Destruct: class CNodeK, 	Address: 00F700E0
+Destruct: class CNodeK, 	Address: 00F70A90
+Destruct: class CNodeK, 	Address: 00F709E0
+Destruct: class CNodeK, 	Address: 00F76780
+Destruct: class CNodeK, 	Address: 00F766D0
+Destruct: class CNodeK, 	Address: 00F5D7F0
+Destruct: class CNodeK, 	Address: 00F76670
+Destruct: class CNodeK, 	Address: 00F5F520
+Destruct: class CNodeK, 	Address: 00F5ED40
+Destruct: class CNodeK, 	Address: 00F84C50
+Destruct: class CNodeK, 	Address: 00F879A0
+Destruct: class CNodeK, 	Address: 00F87D00
+Destruct: class CNodeK, 	Address: 00F86090
+Destruct: class CNodeK, 	Address: 00F863F0
+Destruct: class CNodeK, 	Address: 00F870C0
+Destruct: class CNodeK, 	Address: 00F87E60
+Destruct: class CNodeK, 	Address: 00F87E00
+Destruct: class CNodeK, 	Address: 00F877A0
+Destruct: class CNodeK, 	Address: 00F87740
+Destruct: class CNodeK, 	Address: 00F86590
+Destruct: class CNodeK, 	Address: 00F86530
+Destruct: class CNodeK, 	Address: 00F8B550
+Destruct: class CNodeK, 	Address: 00F8CB00
+Destruct: class CNodeK, 	Address: 00F8BC00
+Destruct: class CNodeK, 	Address: 00F8CDC0
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00F92A80
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F967E0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F96780
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F96F40
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F940B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F94050
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F95FC0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F92BC0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F92B60
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F90580
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F90520
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F97DC0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97D60
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F97D00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F94F70
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F94F10
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F924F0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F92490
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97990
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F97930
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97100
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F970A0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F96160
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F96100
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F960A0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 00F96040
+Destruct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97300
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F972A0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F97240
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F936A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F93640
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F93590
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F915E0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F91580
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F91520
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F914C0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F91D00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F91C50
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F91BF0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F90E10
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F90DB0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F90D50
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F90CF0
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F97FC0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97F60
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F97F00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F97EA0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F94DF0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F94D90
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F94D30
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F94CD0
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F934A0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F933F0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F93390
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F923C0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F92360
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F922B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F92250
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F91390
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F91330
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F91280
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F90C10
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F90B60
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F90B00
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F90AA0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F977E0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F97730
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F976D0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F91B00
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F91AA0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F919F0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F91990
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F918E0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F95E80
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F95E20
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F95DC0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F95D60
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F95D00
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F95C50
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F5D7F0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F5ED40
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00F5F520
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F76330
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F775B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F77550
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F76E10
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F70720
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F706C0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F71A00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F716E0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F71680
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F74920
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F748C0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F71370
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F72760
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F72700
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F73E20
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F73DC0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F73B00
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F73AA0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F74BF0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00F77150
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F770F0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F74600
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F745A0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F74280
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F75B70
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00F75B10
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00F75890
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F75830
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00F751C0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00F70A90
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F70A30
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F709D0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00F70190
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F7010C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F70120
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F70134
+Construct: class CFunctionParameters, 	Address: 00F70120
+Construct: class CFunction, 	Address: 00F700E0
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00F70148
+Construct: class CKinFunction, 	Address: 00F700E0
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00F71D50
+Construct: class CUsageRange, 	Address: 00F71D50
+Construct: class CRange, 	Address: 00F71CB0
+Construct: class CUsageRange, 	Address: 00F71CB0
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00F71C50
+Construct: class CNodeK, 	Address: 00F73330
+Construct: class CNodeK, 	Address: 00F732D0
+Construct: class CNodeK, 	Address: 00F74E40
+Construct: class CNodeK, 	Address: 00F73270
+Construct: class CNodeK, 	Address: 00F74F30
+Construct: class CNodeK, 	Address: 00F75EF0
+Construct: class CNodeK, 	Address: 00F75E90
+Construct: class CNodeK, 	Address: 00F75540
+Construct: class CNodeK, 	Address: 00F754E0
+Construct: class CNodeK, 	Address: 00F76A10
+Construct: class CNodeK, 	Address: 00F769B0
+Construct: class CNodeK, 	Address: 00F76950
+Construct: class CNodeK, 	Address: 00F7B380
+Construct: class CNodeK, 	Address: 00F7A3F0
+Construct: class CNodeK, 	Address: 00F7C230
+Construct: class CNodeK, 	Address: 00F7B210
+Construct: class CNodeK, 	Address: 00F7B050
+Construct: class CNodeK, 	Address: 00F7B6F0
+Construct: class CNodeK, 	Address: 00F78950
+Construct: class CNodeK, 	Address: 00F7BFC0
+Construct: class CNodeK, 	Address: 00F7D910
+Construct: class CNodeK, 	Address: 00F794F0
+Construct: class CNodeK, 	Address: 00F7C340
+Construct: class CNodeK, 	Address: 00F7C2E0
+Construct: class CNodeK, 	Address: 00F7BCA0
+Construct: class CNodeK, 	Address: 00F79690
+Construct: class CNodeK, 	Address: 00F79630
+Construct: class CNodeK, 	Address: 00F7B5E0
+Construct: class CNodeK, 	Address: 00F7B4F0
+Construct: class CNodeK, 	Address: 00F7B490
+Construct: class CNodeK, 	Address: 00F7B430
+Construct: class CNodeK, 	Address: 00F7CAE0
+Construct: class CNodeK, 	Address: 00F7CA80
+Construct: class CNodeK, 	Address: 00F7CA20
+Construct: class CNodeK, 	Address: 00F7CFC0
+Construct: class CNodeK, 	Address: 00F7CF60
+Construct: class CNodeK, 	Address: 00F7CF00
+Construct: class CNodeK, 	Address: 00F7BB50
+Construct: class CNodeK, 	Address: 00F7BAF0
+Construct: class CNodeK, 	Address: 00F7BA40
+Construct: class CNodeK, 	Address: 00F7CE40
+Construct: class CNodeK, 	Address: 00F7CD90
+Construct: class CNodeK, 	Address: 00F7CD30
+Construct: class CNodeK, 	Address: 00F7CCD0
+Construct: class CNodeK, 	Address: 00F7C8E0
+Construct: class CNodeK, 	Address: 00F7C880
+Construct: class CNodeK, 	Address: 00F7C820
+Construct: class CNodeK, 	Address: 00F7C770
+Construct: class CNodeK, 	Address: 00F76780
+Construct: class CNodeK, 	Address: 00F76690
+Construct: class CNodeK, 	Address: 00F863F0
+Construct: class CNodeK, 	Address: 00F86090
+Construct: class CNodeK, 	Address: 00F87D00
+Construct: class CNodeK, 	Address: 00F879A0
+Construct: class CNodeK, 	Address: 00F87750
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00F870C0
+Construct: class CFunctionParameter, 	Address: 00F861A0
+Construct: class CFunctionParameter, 	Address: 00F87E10
+Construct: class CFunctionParameter, 	Address: 00F87AB0
+Construct: class CFunctionParameter, 	Address: 00F86540
+Construct: class CFunctionParameter, 	Address: 00F8B550
+Construct: class CFunctionParameter, 	Address: 00F8CB00
+Construct: class CFunctionParameter, 	Address: 00F8CDC0
+Construct: class CFunctionParameter, 	Address: 00F88520
+Construct: class CFunctionParameter, 	Address: 00F910E0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Ks1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Ks2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'P2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kp2' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F95C00
+Construct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CRange, 	Address: 00F95C00
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95C00
+Construct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CRange, 	Address: 00F95C00
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F95C00
+Construct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F95C00
+Destruct: class CRange, 	Address: 00F95C00
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F72190
+Construct: class CUsageRange, 	Address: 00F72190
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F7A030
+Construct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F72190
+Destruct: class CRange, 	Address: 00F72190
+Destruct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CRange, 	Address: 00F7A030
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F72190
+Construct: class CUsageRange, 	Address: 00F72190
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F7A030
+Construct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F72190
+Destruct: class CRange, 	Address: 00F72190
+Destruct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CRange, 	Address: 00F7A030
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F72190
+Construct: class CUsageRange, 	Address: 00F72190
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F7A030
+Construct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F72190
+Destruct: class CRange, 	Address: 00F72190
+Destruct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CRange, 	Address: 00F7A030
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00F9F950
+Construct: class CUsageRange, 	Address: 00F9F950
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00F72190
+Construct: class CUsageRange, 	Address: 00F72190
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00F7A030
+Construct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00F9F950
+Destruct: class CRange, 	Address: 00F9F950
+Destruct: class CUsageRange, 	Address: 00F72190
+Destruct: class CRange, 	Address: 00F72190
+Destruct: class CUsageRange, 	Address: 00F7A030
+Destruct: class CRange, 	Address: 00F7A030
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA0F40
+Construct: class CUsageRange, 	Address: 00FA0F40
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00FA0EF0
+Construct: class CUsageRange, 	Address: 00FA0EF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA0EA0
+Construct: class CUsageRange, 	Address: 00FA0EA0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA0F40
+Destruct: class CRange, 	Address: 00FA0F40
+Destruct: class CUsageRange, 	Address: 00FA0EF0
+Destruct: class CRange, 	Address: 00FA0EF0
+Destruct: class CUsageRange, 	Address: 00FA0EA0
+Destruct: class CRange, 	Address: 00FA0EA0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA0FD0
+Construct: class CUsageRange, 	Address: 00FA0FD0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00FA0F80
+Construct: class CUsageRange, 	Address: 00FA0F80
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA0F30
+Construct: class CUsageRange, 	Address: 00FA0F30
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00F71C50
+Destruct: class CNodeK, 	Address: 00F73330
+Destruct: class CNodeK, 	Address: 00F732D0
+Destruct: class CNodeK, 	Address: 00F74E40
+Destruct: class CNodeK, 	Address: 00F73270
+Destruct: class CNodeK, 	Address: 00F74F30
+Destruct: class CNodeK, 	Address: 00F75EF0
+Destruct: class CNodeK, 	Address: 00F75E90
+Destruct: class CNodeK, 	Address: 00F75540
+Destruct: class CNodeK, 	Address: 00F754E0
+Destruct: class CNodeK, 	Address: 00F76A10
+Destruct: class CNodeK, 	Address: 00F769B0
+Destruct: class CNodeK, 	Address: 00F76950
+Destruct: class CNodeK, 	Address: 00F7B380
+Destruct: class CNodeK, 	Address: 00F7A3F0
+Destruct: class CNodeK, 	Address: 00F7C230
+Destruct: class CNodeK, 	Address: 00F7B210
+Destruct: class CNodeK, 	Address: 00F7B050
+Destruct: class CNodeK, 	Address: 00F7B6F0
+Destruct: class CNodeK, 	Address: 00F78950
+Destruct: class CNodeK, 	Address: 00F7BFC0
+Destruct: class CNodeK, 	Address: 00F7D910
+Destruct: class CNodeK, 	Address: 00F794F0
+Destruct: class CNodeK, 	Address: 00F7C340
+Destruct: class CNodeK, 	Address: 00F7C2E0
+Destruct: class CNodeK, 	Address: 00F7BCA0
+Destruct: class CNodeK, 	Address: 00F79690
+Destruct: class CNodeK, 	Address: 00F79630
+Destruct: class CNodeK, 	Address: 00F7B5E0
+Destruct: class CNodeK, 	Address: 00F7B4F0
+Destruct: class CNodeK, 	Address: 00F7B490
+Destruct: class CNodeK, 	Address: 00F7B430
+Destruct: class CNodeK, 	Address: 00F7CAE0
+Destruct: class CNodeK, 	Address: 00F7CA80
+Destruct: class CNodeK, 	Address: 00F7CA20
+Destruct: class CNodeK, 	Address: 00F7CFC0
+Destruct: class CNodeK, 	Address: 00F7CF60
+Destruct: class CNodeK, 	Address: 00F7CF00
+Destruct: class CNodeK, 	Address: 00F7BB50
+Destruct: class CNodeK, 	Address: 00F7BAF0
+Destruct: class CNodeK, 	Address: 00F7BA40
+Destruct: class CNodeK, 	Address: 00F7CE40
+Destruct: class CNodeK, 	Address: 00F7CD90
+Destruct: class CNodeK, 	Address: 00F7CD30
+Destruct: class CNodeK, 	Address: 00F7CCD0
+Destruct: class CNodeK, 	Address: 00F7C8E0
+Destruct: class CNodeK, 	Address: 00F7C880
+Destruct: class CNodeK, 	Address: 00F7C820
+Destruct: class CNodeK, 	Address: 00F7C770
+Destruct: class CNodeK, 	Address: 00F76780
+Destruct: class CNodeK, 	Address: 00F76690
+Destruct: class CNodeK, 	Address: 00F863F0
+Destruct: class CNodeK, 	Address: 00F86090
+Destruct: class CNodeK, 	Address: 00F87D00
+Destruct: class CNodeK, 	Address: 00F879A0
+Destruct: class CNodeK, 	Address: 00F87750
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00FA0E40
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA0D80
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0CD0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA0C70
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA0C10
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0B60
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA0B00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0A50
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA09F0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA0990
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA0930
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0880
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA0820
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0770
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA0710
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 00FA06B0
+Destruct: class CNodeK, 	Address: 0012EC14
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0600
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA05A0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA0540
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0490
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA0430
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA0380
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA0320
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA02C0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA0260
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA01B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA0150
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA00A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA0040
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA1FC0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA1F60
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA1F00
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA1EA0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA1E40
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA1DE0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1D30
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA1CD0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1C20
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA1BC0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1B10
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA1AB0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1A00
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA19A0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA1940
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA18E0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA1880
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA1820
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1770
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA1710
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1660
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA1600
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1550
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA14F0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA1440
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA13E0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA1380
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA12FC
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00FA1310
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA1324
+Construct: class CFunctionParameters, 	Address: 00FA1310
+Construct: class CFunction, 	Address: 00FA12D0
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00FA1338
+Construct: class CKinFunction, 	Address: 00FA12D0
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00FA1280
+Construct: class CUsageRange, 	Address: 00FA1280
+Construct: class CRange, 	Address: 00FA11E0
+Construct: class CUsageRange, 	Address: 00FA11E0
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00FA1140
+Construct: class CNodeK, 	Address: 00FA10E0
+Construct: class CNodeK, 	Address: 00FA2DD0
+Construct: class CNodeK, 	Address: 00FA2D70
+Construct: class CNodeK, 	Address: 00FA2D10
+Construct: class CNodeK, 	Address: 00FA2C40
+Construct: class CNodeK, 	Address: 00FA2BE0
+Construct: class CNodeK, 	Address: 00FA2B80
+Construct: class CNodeK, 	Address: 00FA2B20
+Construct: class CNodeK, 	Address: 00FA2A50
+Construct: class CNodeK, 	Address: 00FA29F0
+Construct: class CNodeK, 	Address: 00FA2990
+Construct: class CNodeK, 	Address: 00FA28C0
+Construct: class CNodeK, 	Address: 00FA2860
+Construct: class CNodeK, 	Address: 00FA2800
+Construct: class CNodeK, 	Address: 00FA27A0
+Construct: class CNodeK, 	Address: 00FA2740
+Construct: class CNodeK, 	Address: 00FA2670
+Construct: class CNodeK, 	Address: 00FA2610
+Construct: class CNodeK, 	Address: 00FA2530
+Construct: class CNodeK, 	Address: 00FA24D0
+Construct: class CNodeK, 	Address: 00FA23F0
+Construct: class CNodeK, 	Address: 00FA2390
+Construct: class CNodeK, 	Address: 00FA22B0
+Construct: class CNodeK, 	Address: 00FA2250
+Construct: class CNodeK, 	Address: 00FA2060
+Construct: class CNodeK, 	Address: 00FA21F0
+Construct: class CNodeK, 	Address: 00FA2190
+Construct: class CNodeK, 	Address: 00FA2130
+Construct: class CNodeK, 	Address: 00FA3FC0
+Construct: class CNodeK, 	Address: 00FA3F60
+Construct: class CNodeK, 	Address: 00FA3F00
+Construct: class CNodeK, 	Address: 00FA3E30
+Construct: class CNodeK, 	Address: 00FA3DD0
+Construct: class CNodeK, 	Address: 00FA3CF0
+Construct: class CNodeK, 	Address: 00FA3C90
+Construct: class CNodeK, 	Address: 00FA3C30
+Construct: class CNodeK, 	Address: 00FA3BD0
+Construct: class CNodeK, 	Address: 00FA3B70
+Construct: class CNodeK, 	Address: 00FA3B10
+Construct: class CNodeK, 	Address: 00FA3AB0
+Construct: class CNodeK, 	Address: 00FA3A50
+Construct: class CNodeK, 	Address: 00FA3980
+Construct: class CNodeK, 	Address: 00FA3920
+Construct: class CNodeK, 	Address: 00FA38C0
+Construct: class CNodeK, 	Address: 00FA37F0
+Construct: class CNodeK, 	Address: 00FA3790
+Construct: class CNodeK, 	Address: 00FA3730
+Construct: class CNodeK, 	Address: 00FA36D0
+Construct: class CNodeK, 	Address: 00FA3670
+Construct: class CNodeK, 	Address: 00FA35A0
+Construct: class CNodeK, 	Address: 00FA3540
+Construct: class CNodeK, 	Address: 00FA3460
+Construct: class CNodeK, 	Address: 00FA3400
+Construct: class CNodeK, 	Address: 00FA3320
+Construct: class CNodeK, 	Address: 00FA32C0
+Construct: class CNodeK, 	Address: 00FA31E0
+Construct: class CNodeK, 	Address: 00FA3180
+Construct: class CNodeK, 	Address: 00FA3120
+Construct: class CNodeK, 	Address: 00FA30C0
+Construct: class CNodeK, 	Address: 00FA3060
+Construct: class CNodeK, 	Address: 00FA4F70
+Construct: class CNodeK, 	Address: 00FA4F10
+Construct: class CNodeK, 	Address: 00FA4EB0
+Construct: class CNodeK, 	Address: 00FA4E50
+Construct: class CNodeK, 	Address: 00FA4DF0
+Construct: class CNodeK, 	Address: 00FA4D90
+Construct: class CNodeK, 	Address: 00FA4CC0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00FA4B80
+Construct: class CFunctionParameter, 	Address: 00FA4AD0
+Construct: class CFunctionParameter, 	Address: 00FA4A20
+Construct: class CFunctionParameter, 	Address: 00FA4970
+Construct: class CFunctionParameter, 	Address: 00FA48C0
+Construct: class CFunctionParameter, 	Address: 00FA4810
+Construct: class CFunctionParameter, 	Address: 00FA4760
+Construct: class CFunctionParameter, 	Address: 00FA46B0
+Construct: class CFunctionParameter, 	Address: 00FA45B0
+Construct: class CFunctionParameter, 	Address: 00FA4500
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx1' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'X2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Kx2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'n' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S2' allready exists.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'Km2' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4460
+Construct: class CUsageRange, 	Address: 00FA4460
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4460
+Destruct: class CRange, 	Address: 00FA4460
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4460
+Construct: class CUsageRange, 	Address: 00FA4460
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4460
+Destruct: class CRange, 	Address: 00FA4460
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA4340
+Construct: class CUsageRange, 	Address: 00FA4340
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 00FA4340
+Destruct: class CRange, 	Address: 00FA4340
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4420
+Construct: class CUsageRange, 	Address: 00FA4420
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4420
+Destruct: class CRange, 	Address: 00FA4420
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4420
+Construct: class CUsageRange, 	Address: 00FA4420
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42A0
+Construct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4420
+Destruct: class CRange, 	Address: 00FA4420
+Destruct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CRange, 	Address: 00FA42A0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42A0
+Construct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CRange, 	Address: 00FA42A0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42A0
+Construct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CRange, 	Address: 00FA42A0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42A0
+Construct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 00FA42A0
+Destruct: class CRange, 	Address: 00FA42A0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA4340
+Construct: class CUsageRange, 	Address: 00FA4340
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA4390
+Destruct: class CRange, 	Address: 00FA4390
+Destruct: class CUsageRange, 	Address: 00FA4340
+Destruct: class CRange, 	Address: 00FA4340
+Destruct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CRange, 	Address: 00FA42F0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA4390
+Construct: class CUsageRange, 	Address: 00FA4390
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CRange, 	Address: 00FA4340
+Construct: class CUsageRange, 	Address: 00FA4340
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA42F0
+Construct: class CUsageRange, 	Address: 00FA42F0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00FA1140
+Destruct: class CNodeK, 	Address: 00FA10E0
+Destruct: class CNodeK, 	Address: 00FA2DD0
+Destruct: class CNodeK, 	Address: 00FA2D70
+Destruct: class CNodeK, 	Address: 00FA2D10
+Destruct: class CNodeK, 	Address: 00FA2C40
+Destruct: class CNodeK, 	Address: 00FA2BE0
+Destruct: class CNodeK, 	Address: 00FA2B80
+Destruct: class CNodeK, 	Address: 00FA2B20
+Destruct: class CNodeK, 	Address: 00FA2A50
+Destruct: class CNodeK, 	Address: 00FA29F0
+Destruct: class CNodeK, 	Address: 00FA2990
+Destruct: class CNodeK, 	Address: 00FA28C0
+Destruct: class CNodeK, 	Address: 00FA2860
+Destruct: class CNodeK, 	Address: 00FA2800
+Destruct: class CNodeK, 	Address: 00FA27A0
+Destruct: class CNodeK, 	Address: 00FA2740
+Destruct: class CNodeK, 	Address: 00FA2670
+Destruct: class CNodeK, 	Address: 00FA2610
+Destruct: class CNodeK, 	Address: 00FA2530
+Destruct: class CNodeK, 	Address: 00FA24D0
+Destruct: class CNodeK, 	Address: 00FA23F0
+Destruct: class CNodeK, 	Address: 00FA2390
+Destruct: class CNodeK, 	Address: 00FA22B0
+Destruct: class CNodeK, 	Address: 00FA2250
+Destruct: class CNodeK, 	Address: 00FA2060
+Destruct: class CNodeK, 	Address: 00FA21F0
+Destruct: class CNodeK, 	Address: 00FA2190
+Destruct: class CNodeK, 	Address: 00FA2130
+Destruct: class CNodeK, 	Address: 00FA3FC0
+Destruct: class CNodeK, 	Address: 00FA3F60
+Destruct: class CNodeK, 	Address: 00FA3F00
+Destruct: class CNodeK, 	Address: 00FA3E30
+Destruct: class CNodeK, 	Address: 00FA3DD0
+Destruct: class CNodeK, 	Address: 00FA3CF0
+Destruct: class CNodeK, 	Address: 00FA3C90
+Destruct: class CNodeK, 	Address: 00FA3C30
+Destruct: class CNodeK, 	Address: 00FA3BD0
+Destruct: class CNodeK, 	Address: 00FA3B70
+Destruct: class CNodeK, 	Address: 00FA3B10
+Destruct: class CNodeK, 	Address: 00FA3AB0
+Destruct: class CNodeK, 	Address: 00FA3A50
+Destruct: class CNodeK, 	Address: 00FA3980
+Destruct: class CNodeK, 	Address: 00FA3920
+Destruct: class CNodeK, 	Address: 00FA38C0
+Destruct: class CNodeK, 	Address: 00FA37F0
+Destruct: class CNodeK, 	Address: 00FA3790
+Destruct: class CNodeK, 	Address: 00FA3730
+Destruct: class CNodeK, 	Address: 00FA36D0
+Destruct: class CNodeK, 	Address: 00FA3670
+Destruct: class CNodeK, 	Address: 00FA35A0
+Destruct: class CNodeK, 	Address: 00FA3540
+Destruct: class CNodeK, 	Address: 00FA3460
+Destruct: class CNodeK, 	Address: 00FA3400
+Destruct: class CNodeK, 	Address: 00FA3320
+Destruct: class CNodeK, 	Address: 00FA32C0
+Destruct: class CNodeK, 	Address: 00FA31E0
+Destruct: class CNodeK, 	Address: 00FA3180
+Destruct: class CNodeK, 	Address: 00FA3120
+Destruct: class CNodeK, 	Address: 00FA30C0
+Destruct: class CNodeK, 	Address: 00FA3060
+Destruct: class CNodeK, 	Address: 00FA4F70
+Destruct: class CNodeK, 	Address: 00FA4F10
+Destruct: class CNodeK, 	Address: 00FA4EB0
+Destruct: class CNodeK, 	Address: 00FA4E50
+Destruct: class CNodeK, 	Address: 00FA4DF0
+Destruct: class CNodeK, 	Address: 00FA4D90
+Destruct: class CNodeK, 	Address: 00FA4CC0
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00FA4C10
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA23F0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA2390
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA2530
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA24D0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA2670
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA2610
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA1140
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA10E0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA3FC0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA3F60
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA3F00
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA2A50
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA29A0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA2DD0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA2D20
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA2C40
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA2B90
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA2B30
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA2260
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA2200
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA21A0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA2140
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 00FA28C0
+Destruct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA2810
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA27B0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA2750
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA4290
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA41E0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA4180
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA40D0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA4070
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA4FC0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA4F60
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA4F00
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA4EA0
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA4E40
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA4DE0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA4D30
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA4CD0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA3CF0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA3C40
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA3BE0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA3B80
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA3B20
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA3AC0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA3A10
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA39B0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA3900
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA38A0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA37F0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA3790
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA36E0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA3680
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA3620
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA35C0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 00FA3560
+Destruct: class CNodeK, 	Address: 0012EB84
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA34B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA3450
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA33F0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA3390
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 00FA3330
+Destruct: class CNodeK, 	Address: 0012EC74
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA32D0
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA3220
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA31C0
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA3110
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA30B0
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA3050
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA5F9C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00FA5FB0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA5FC4
+Construct: class CFunctionParameters, 	Address: 00FA5FB0
+Construct: class CFunction, 	Address: 00FA5F70
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00FA5FD8
+Construct: class CKinFunction, 	Address: 00FA5F70
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00FA3E40
+Construct: class CUsageRange, 	Address: 00FA3E40
+Construct: class CRange, 	Address: 00FA5F20
+Construct: class CUsageRange, 	Address: 00FA5F20
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00FA5E60
+Construct: class CNodeK, 	Address: 00FA5CE0
+Construct: class CNodeK, 	Address: 00FA5C80
+Construct: class CNodeK, 	Address: 00FA5C20
+Construct: class CNodeK, 	Address: 00FA5B40
+Construct: class CNodeK, 	Address: 00FA5AE0
+Construct: class CNodeK, 	Address: 00FA5A00
+Construct: class CNodeK, 	Address: 00FA59A0
+Construct: class CNodeK, 	Address: 00FA5940
+Construct: class CNodeK, 	Address: 00FA5860
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00FA5800
+Construct: class CFunctionParameter, 	Address: 00FA56D0
+Construct: class CFunctionParameter, 	Address: 00FA5620
+>ERROR   2002-05-21 10:59:20< CCopasiVector (2): Object 'S' allready exists.
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA5580
+Construct: class CUsageRange, 	Address: 00FA5580
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA5580
+Destruct: class CRange, 	Address: 00FA5580
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA5580
+Construct: class CUsageRange, 	Address: 00FA5580
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA5530
+Construct: class CUsageRange, 	Address: 00FA5530
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA5580
+Destruct: class CRange, 	Address: 00FA5580
+Destruct: class CUsageRange, 	Address: 00FA5530
+Destruct: class CRange, 	Address: 00FA5530
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA5460
+Construct: class CUsageRange, 	Address: 00FA5460
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA5410
+Construct: class CUsageRange, 	Address: 00FA5410
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00FA5E60
+Destruct: class CNodeK, 	Address: 00FA5CE0
+Destruct: class CNodeK, 	Address: 00FA5C80
+Destruct: class CNodeK, 	Address: 00FA5C20
+Destruct: class CNodeK, 	Address: 00FA5B40
+Destruct: class CNodeK, 	Address: 00FA5AE0
+Destruct: class CNodeK, 	Address: 00FA5A00
+Destruct: class CNodeK, 	Address: 00FA59A0
+Destruct: class CNodeK, 	Address: 00FA5940
+Destruct: class CNodeK, 	Address: 00FA5860
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00FA5860
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA5B40
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA5AE0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA5570
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA5A00
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 00FA59A0
+Destruct: class CNodeK, 	Address: 0012EB54
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA5CE0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 00FA5C80
+Destruct: class CNodeK, 	Address: 0012EC44
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA53B0
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EB24
+Construct: class CNodeK, 	Address: 00FA5350
+Destruct: class CNodeK, 	Address: 0012EB24
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA52CC
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00FA52E0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA52F4
+Construct: class CFunctionParameters, 	Address: 00FA52E0
+Construct: class CFunction, 	Address: 00FA52A0
+Construct: class CCopasiVector<class CNodeK>, 	Address: 00FA5308
+Construct: class CKinFunction, 	Address: 00FA52A0
+Construct: class CRange, 	Address: 0012EE48
+Construct: class CUsageRange, 	Address: 0012EE48
+Construct: class CRange, 	Address: 00FA5250
+Construct: class CUsageRange, 	Address: 00FA5250
+Construct: class CRange, 	Address: 00FA51B0
+Construct: class CUsageRange, 	Address: 00FA51B0
+Destruct: class CUsageRange, 	Address: 0012EE48
+Destruct: class CRange, 	Address: 0012EE48
+Construct: class CNodeK, 	Address: 00FA5100
+Construct: class CNodeK, 	Address: 00FA50A0
+Construct: class CNodeK, 	Address: 00FA5040
+Construct: class CNodeK, 	Address: 00FA6F20
+Construct: class CNodeK, 	Address: 00FA6EC0
+Construct: class CNodeK, 	Address: 00FA6DE0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Construct: class CFunctionParameter, 	Address: 0012EDF0
+Construct: class CFunctionParameter, 	Address: 00FA6CA0
+Construct: class CFunctionParameter, 	Address: 00FA6B60
+Construct: class CFunctionParameter, 	Address: 00FA6AB0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA6A60
+Construct: class CUsageRange, 	Address: 00FA6A60
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA6A60
+Destruct: class CRange, 	Address: 00FA6A60
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA6A60
+Construct: class CUsageRange, 	Address: 00FA6A60
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00FA6A10
+Construct: class CUsageRange, 	Address: 00FA6A10
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Construct: class CRange, 	Address: 0012EBF0
+Construct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CUsageRange, 	Address: 00FA6A60
+Destruct: class CRange, 	Address: 00FA6A60
+Destruct: class CUsageRange, 	Address: 00FA6A10
+Destruct: class CRange, 	Address: 00FA6A10
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'SUBSTRATE' not found.
+Construct: class CRange, 	Address: 00FA6A60
+Construct: class CUsageRange, 	Address: 00FA6A60
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PRODUCT' not found.
+Construct: class CRange, 	Address: 00FA6A10
+Construct: class CUsageRange, 	Address: 00FA6A10
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'PARAMETER' not found.
+Construct: class CRange, 	Address: 00FA69C0
+Construct: class CUsageRange, 	Address: 00FA69C0
+Destruct: class CUsageRange, 	Address: 0012EBF0
+Destruct: class CRange, 	Address: 0012EBF0
+Destruct: class CFunctionParameter, 	Address: 0012EDF0
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE20
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE34
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE48
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EE5C
+Destruct: class CNodeK, 	Address: 00FA5100
+Destruct: class CNodeK, 	Address: 00FA50A0
+Destruct: class CNodeK, 	Address: 00FA5040
+Destruct: class CNodeK, 	Address: 00FA6F20
+Destruct: class CNodeK, 	Address: 00FA6EC0
+Destruct: class CNodeK, 	Address: 00FA6DE0
+Construct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 00FA6DE0
+Destruct: class CNodeK, 	Address: 0012ECE8
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA5100
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 00FA50A0
+Destruct: class CNodeK, 	Address: 0012EBE4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA6960
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 00FA6900
+Destruct: class CNodeK, 	Address: 0012EBB4
+Construct: class CNodeK, 	Address: 0012ECB8
+Construct: class CNodeK, 	Address: 00FA6850
+Destruct: class CNodeK, 	Address: 0012ECB8
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA66C0
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA66D4
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA66E8
+Construct: class CChemEq, 	Address: 00FA66A0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00FA6700
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA6714
+Construct: class CFunctionParameters, 	Address: 00FA6700
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA6734
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA6748
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA675C
+Construct: class CCopasiVector<class CReaction::CId2Param>, 	Address: 00FA6770
+Construct: class CReaction, 	Address: 00FA6690
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA6480
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA6420
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA6370
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA62C0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012ED60
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012ED74
+Construct: class CFunctionParameters, 	Address: 0012ED60
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EC5C
+Construct: class CFunctionParameter, 	Address: 00FA6260
+Construct: class CFunctionParameter, 	Address: 00FA7F20
+Construct: class CFunctionParameter, 	Address: 00FA7EC0
+Construct: class CFunctionParameter, 	Address: 00FA7E60
+Construct: class CFunctionParameter, 	Address: 00FA7E00
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EC5C
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012EC48
+Construct: class CRange, 	Address: 00FA64E0
+Construct: class CUsageRange, 	Address: 00FA64E0
+Construct: class CRange, 	Address: 00FA6060
+Construct: class CUsageRange, 	Address: 00FA6060
+Construct: class CRange, 	Address: 00FA7DB0
+Construct: class CUsageRange, 	Address: 00FA7DB0
+Destruct: class CCopasiVector<class CUsageRange>, 	Address: 0012EC48
+Destruct: class CFunctionParameters, 	Address: 0012ED60
+Destruct: class CCopasiVector<class CUsageRange>, 	Address: 0012ED74
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012ED60
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA7A50
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA7A64
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00FA7A78
+Construct: class CChemEq, 	Address: 00FA7A30
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00FA7A90
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00FA7AA4
+Construct: class CFunctionParameters, 	Address: 00FA7A90
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA7AC4
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA7AD8
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00FA7AEC
+Construct: class CCopasiVector<class CReaction::CId2Param>, 	Address: 00FA7B00
+Construct: class CReaction, 	Address: 00FA7A20
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA78D0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7870
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA77C0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7710
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7620
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7570
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7480
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00FA7390
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012ED60
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012ED74
+Construct: class CFunctionParameters, 	Address: 0012ED60
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EC5C
+Construct: class CFunctionParameter, 	Address: 00FA7330
+Construct: class CFunctionParameter, 	Address: 00FA71A0
+Construct: class CFunctionParameter, 	Address: 00FA7140
+Construct: class CFunctionParameter, 	Address: 00FA70E0
+Construct: class CFunctionParameter, 	Address: 00FA7080
+Construct: class CFunctionParameter, 	Address: 00F74E40
+Construct: class CFunctionParameter, 	Address: 00F71C50
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012EC5C
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012EC48
+Construct: class CRange, 	Address: 00F766A0
+Construct: class CUsageRange, 	Address: 00F766A0
+Construct: class CRange, 	Address: 00F76650
+Construct: class CUsageRange, 	Address: 00F76650
+Construct: class CRange, 	Address: 00F76790
+Construct: class CUsageRange, 	Address: 00F76790
+Destruct: class CCopasiVector<class CUsageRange>, 	Address: 0012EC48
+Destruct: class CFunctionParameters, 	Address: 0012ED60
+Destruct: class CCopasiVector<class CUsageRange>, 	Address: 0012ED74
+Destruct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012ED60
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+>ERROR   2002-05-21 10:59:20< CCopasiVector (1): Object 'MODIFIER' not found.
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00F73280
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00F73294
+Construct: class CCopasiVector<class CChemEqElement>, 	Address: 00F732A8
+Construct: class CChemEq, 	Address: 00F73260
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 00F732C0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 00F732D4
+Construct: class CFunctionParameters, 	Address: 00F732C0
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00F732F4
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00F73308
+Construct: class CCopasiVector<class CReaction::CId2Metab>, 	Address: 00F7331C
+Construct: class CCopasiVector<class CReaction::CId2Param>, 	Address: 00F73330
+Construct: class CReaction, 	Address: 00F73250
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00F7A3F0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00F7B380
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00F7BFC0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 0012ECC0
+Destruct: class CChemEqElement, 	Address: 0012EC14
+Construct: class CChemEqElement, 	Address: 00F7B6F0
+Destruct: class CChemEqElement, 	Address: 0012ECC0
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012ECEC
+Construct: class CCopasiVector<class CFunctionParameter>, 	Address: 0012ED00
+Construct: class CCopasiVector<class CUsageRange>, 	Address: 0012ED14
+Construct: class CFunctionParameters, 	Address: 0012ED00
+Construct: class CFunction, 	Address: 0012ECC0
+>ERROR   2002-05-21 10:59:20< CReadConfig (2): Cannot open file 'FunctionDB.gps'.

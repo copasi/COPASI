@@ -1,0 +1,19 @@
+0:1:Fitting
+0:2:Model
+0:3:Multiple Tasks
+0:4:Output
+0:5:Prefereneces
+1:11:Data File
+1:12:Method
+3:21:BioChem
+21:211:Compartments
+21:212:Metabolites
+21:213:Moieties
+21:214:Reactions
+2:22:Maths
+2:31:Optimization
+2:32:Scan
+4:41:Pathway
+4:42:Plots
+4:43:Reports
+4:44:Metabolites

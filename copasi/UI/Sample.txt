@@ -1,0 +1,31 @@
+0:1:Fitting
+1:11:Data File
+1:12:Method
+0:2:Model
+2:21:BioChem
+21:211:Compartments
+21:212:Metabolites
+21:213:Moieties
+21:214:Reactions
+2:22:Maths
+0:3:Multiple Tasks
+3:31:Optimization
+3:32:Scan
+0:4:Output
+4:41:Pathway
+4:42:Plots
+4:43:Reports
+0:5:Prefereneces
+0:6:Tasks
+6:61:Steady-State
+61:611:Bifurcation
+61:612:MCA
+61:613:Stability
+61:614:State
+6:62:Stoichiometry
+62:621:Elementary Modes
+62:622:Mass Conservation
+6:63:TimeCourse
+63:631:MCA
+63:632:Phase Plane
+63:633:Trajectory
