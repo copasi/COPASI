@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:51 $
+   $Author: shoops $ 
+   $Date: 2004/09/21 22:12:36 $
    End CVS Header */
 
 // copasiWidget.cpp: implementation of the CopasiWidget class.
@@ -88,6 +88,8 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
   mIgnoreUpdates = true;
   ListViews::notify(objectType, action, key);
   mIgnoreUpdates = false;
+
+  return true;
 }
 
 //////////////////////////////////////////////////////////////////////
