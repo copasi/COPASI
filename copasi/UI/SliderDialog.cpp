@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/01/13 15:47:48 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 #include <iostream>
@@ -54,8 +54,7 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     currSlider(NULL),
     currentFolderId(0),
     mpDataModel(dataModel),
-    mSliderValueChanged(false),
-    mModifyRanges(true)
+    mSliderValueChanged(false)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
@@ -102,7 +101,6 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
   this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
 
-  connect(mpAutoModifyRangesCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleAutoModifyRanges(bool)));
   connect(autoRunCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleRunButtonState(bool)));
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   this->sliderMap[23] = std::vector< CopasiSlider* >();
@@ -487,12 +485,7 @@ void SliderDialog::updateAllSliders()
   std::vector<CopasiSlider*>::iterator endIt = sliders.end();
   while (it != endIt)
     {
-      (*it)->updateValue(this->mModifyRanges);
+      (*it)->updateValue(this->mpAutoModifyRangesCheckBox->isChecked());
       ++it;
     }
-}
-
-void SliderDialog::toggleAutoUpdateRanges(bool update)
-{
-  this->mModifyRanges = update;
 }

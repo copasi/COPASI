@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/01/13 15:47:48 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:17 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -57,8 +57,6 @@ class SliderDialog: public QDialog
 
     bool mSliderValueChanged;
 
-    bool mModifyRanges;
-
     void init();
 
     static C_INT32 numMappings;
@@ -80,7 +78,6 @@ class SliderDialog: public QDialog
 
   public slots:
     void toggleRunButtonState(bool);
-    void toggleAutoUpdateRanges(bool);
 
   protected slots:
     void removeSlider();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/01/13 15:47:48 $
+   $Author: shoops $ 
+   $Date: 2005/01/31 14:49:16 $
    End CVS Header */
 
 #include <cmath>
@@ -352,11 +352,11 @@ void CopasiSlider::updateValue(bool modifyRange)
               this->mValueOutOfRange = false;
               if (value < this->mMinValue)
                 {
-                  this->setMinValue(0.0);
+                  this->setMinValue(value / 2.0);
                 }
               else
                 {
-                  this->setMaxValue(value*2);
+                  this->setMaxValue(value*2.0);
                 }
             }
         }
