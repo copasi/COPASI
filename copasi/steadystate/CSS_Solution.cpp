@@ -11,9 +11,12 @@
 
 
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include "CSS_Solution.h"
 #include "model/CModel.h"
+#include "utilities/CGlobals.h"
 
 //don't consider CEigen class now, do it later
 #include "CEigen.h"
@@ -33,6 +36,8 @@ CSS_Solution::CSS_Solution()
   mY_traj = NULL;
   mSs_x = NULL;
   //mSs_dxdt = NULL;
+  mSSOutput = NULL;				// wsun  03/20/02
+
 }
 
 
@@ -49,6 +54,9 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
   mY_traj = source.mY_traj;
   mSs_x = source.mSs_x;
   mSs_dxdt = source.mSs_dxdt;
+
+  mSSOutput = source.mSSOutput;				// wsun  03/20/02
+
 }
 
     
@@ -68,6 +76,7 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
       mSs_x = source.mSs_x;
       mSs_dxdt = source.mSs_dxdt;
 
+	  mSSOutput = source.mSSOutput;				// wsun  03/20/02
     }
   return *this;
 }
@@ -100,6 +109,8 @@ void CSS_Solution::initialize()
   mSs_x = new C_FLOAT64[dim];
   mSs_dxdt.newsize(dim);
   
+  mSSOutput = new COutputEvent(*this);
+
 }
 
 
@@ -297,6 +308,7 @@ C_INT32 CSS_Solution::load(CReadConfig & configbuffer)
   return Fail;
 }
 
+
 C_INT32 CSS_Solution::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
@@ -333,7 +345,7 @@ C_INT32 CSS_Solution::save(CWriteConfig & configbuffer)
 
 
 
-void CSS_Solution::process(void)
+void CSS_Solution::process(ofstream &fout)
 {
   C_FLOAT64 t = 0.1;
 
@@ -386,7 +398,7 @@ void CSS_Solution::process(void)
         {
           t *= 10;
 
-          mTraj -> process();
+          mTraj -> process(fout);
 
 	  // after trajectory process, get trajectory.mY
 	  setY_traj(mTraj->getMY());
@@ -435,7 +447,7 @@ void CSS_Solution::process(void)
           //YH: set up a new trajectory class now
           //set lsoda_incr to -1, and then run it  // ???
 
-          mTraj -> process();
+          mTraj -> process(fout);
 
 	  // after trajectory process, get trajectory.mY
 	  setY_traj(mTraj->getMY());
@@ -462,6 +474,7 @@ void CSS_Solution::process(void)
         }
     }
     cout << "mSSRes is: " <<mSSRes <<endl;
+	mSSOutput->print(*this, Copasi->OutputList, fout);      
 }
 
 
@@ -525,10 +538,11 @@ void CSS_Solution::afterFindSteadyState()
  *  get mSs_solution
  *  @return mSs_solution		WeiSun 03/27/02
  */
-C_INT32 getSolution()
+C_INT32 CSS_Solution::getSolution() const
 {
 	return mSs_solution;
 }
+
 
 /**
  * Get the pointer of SSRes for output		WeiSun 04/02/02

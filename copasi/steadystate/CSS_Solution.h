@@ -51,6 +51,7 @@
 
 class CNewton;
 class CTrajectory;
+class COutputEvent;
 
 class CSS_Solution
 {
@@ -142,6 +143,10 @@ class CSS_Solution
   C_INT32 mOption;
   //same as an int in GepasiDoc: int SSStrategy;
 
+  /**
+   * SteadyState Output Event
+   */
+  COutputEvent *mSSOutput;
 
 
 
@@ -348,7 +353,7 @@ class CSS_Solution
   /**
    *  to process the primary function of this class
    */
-  void process(void);
+  void process(ofstream &fout);
 
 
   /**
