@@ -11,6 +11,7 @@
 
 #include "CCopasiObject.h"
 #include "CCopasiObjectName.h"
+#include "CCopasiStaticString.h"
 #include <string>
 #include <vector>
 
@@ -27,14 +28,14 @@ class CReportDefinition : public CCopasiObject
     // Operations
   private:
     std::string mKey;
-    std::string mComment;
+    CCopasiStaticString mComment;
     std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mFooterVector;
 
     std::vector<CCopasiObjectName> mBodyVector;
 
     CReportBody *mpBody;
-    std::string mSeperator;
+    CCopasiStaticString mSeperator;
     bool mbTitle;
 
   public:
@@ -56,7 +57,7 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    const std::string& getComment()
+    const CCopasiStaticString& getComment()
     {
       return mComment;
     }
@@ -64,7 +65,7 @@ class CReportDefinition : public CCopasiObject
     /**
     sets the comments in the report tag
     */
-    void setComment(const std::string comment)
+    void setComment(const CCopasiStaticString comment)
     {
       mComment = comment;
     }
@@ -94,12 +95,12 @@ class CReportDefinition : public CCopasiObject
     */
     void setReportBody(CReportBody *pNewBody);
 
-    void setSeperator(std::string Seperator)
+    void setSeperator(const CCopasiStaticString Seperator)
     {
       mSeperator = Seperator;
     }
 
-    std::string getSeperator()
+    const CCopasiStaticString getSeperator()
     {
       return mSeperator;
     }

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.15 2003/09/09 21:55:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.16 2003/09/10 01:26:55 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,6 +30,7 @@
 #include "report/CReportDefinition.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiStaticString.h"
 #include "ScanWidget.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -307,12 +308,12 @@ void TableDefinition1::slotBtnConfirmClicked()
     pReportDefinition->getBodyAddr()->push_back(CCopasiObjectName(itemsTable->text(i).latin1()));
 
   if (tabChecked->isChecked())
-    pReportDefinition->setSeperator("/t");
+    pReportDefinition->setSeperator(CCopasiStaticString("/t"));
   else
-    pReportDefinition->setSeperator(seperatorEdit->text().latin1());
+    pReportDefinition->setSeperator(CCopasiStaticString(seperatorEdit->text().latin1()));
 
   pReportDefinition->setTitle(titleChecked->isChecked());
-  pReportDefinition->setComment(commentEdit->text().latin1());
+  pReportDefinition->setComment(CCopasiStaticString(commentEdit->text().latin1()));
 
   bUpdated = false;
 }
