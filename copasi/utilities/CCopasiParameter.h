@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:18 $
+   $Date: 2003/10/30 18:19:03 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -121,7 +121,13 @@ class CCopasiParameter: public CCopasiContainer
      * @param const unsigned C_INT32 & value
      * @return bool is ValidValue
      */
-    template <class CType> bool setValue(const CType & value);
+    template <class CType> bool setValue(const CType & value)
+    {
+      if (!isValidValue(value)) return false;
+
+      * (CType *) mpValue = value;
+      return true;
+    }
 
     /**
      * Retrieve the private value of the parameter.
@@ -146,27 +152,15 @@ class CCopasiParameter: public CCopasiContainer
      * @param const CType & value
      * @return bool isValidValue
      */
-    template <class CType> bool isValidValue(const CType & value) const;
+    template <class CType> bool isValidValue(const CType & value) const
+      {
+        if (mSize != sizeof(CType)) return false;
+        return true;
+      }
 
   private:
     void * createValue(const void * pValue = NULL);
     void deleteValue();
   };
-
-template <class CType>
-bool CCopasiParameter::isValidValue(const CType & C_UNUSED(value)) const
-  {
-    if (mSize != sizeof(CType)) return false;
-    return true;
-  }
-
-template <class CType>
-bool CCopasiParameter::setValue(const CType & value)
-{
-  if (!isValidValue(value)) return false;
-
-  * (CType *) mpValue = value;
-  return true;
-}
 
 #endif // COPASI_CCopasiParameter

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 18:06:07 $
+   $Date: 2003/10/30 18:19:03 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -70,7 +70,38 @@ class CCopasiParameterGroup: public CCopasiParameter
     template < class CType >
           bool addParameter(const std::string & name,
                             const CCopasiParameter::Type type,
-                            const CType & value);
+                            const CType & value)
+      {
+        CCopasiParameter * pParameter;
+
+        if (type == GROUP)
+          {
+            CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
+            if (!pParameter->isValidValue(value))
+              {
+                delete pParameter;
+                return false;
+              }
+
+            tmp->mpValue = const_cast< void * >((const void *) & value);
+            pParameter = new CCopasiParameterGroup(*tmp);
+          }
+        else
+          {
+            pParameter = new CCopasiParameter(name, type);
+            if (!pParameter->isValidValue(value))
+              {
+                delete pParameter;
+                return false;
+              }
+
+            pParameter->setValue(value);
+          }
+
+        addParameter(pParameter);
+
+        return true;
+      }
     bool addGroup(const std::string & name);
 
     bool removeParameter(const std::string & name);
@@ -95,10 +126,26 @@ class CCopasiParameterGroup: public CCopasiParameter
 
     template <class CType>
     bool setValue(const std::string & name,
-                  const CType & value);
+                  const CType & value)
+    {
+      CCopasiParameter * pParameter =
+        const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
+
+      if (pParameter) return pParameter->setValue(value);
+
+      return false;
+    }
     template <class CType>
     bool setValue(const unsigned C_INT32 & index,
-                  const CType & value);
+                  const CType & value)
+    {
+      CCopasiParameter * pParameter =
+        const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
+
+      if (pParameter) return pParameter->setValue(value);
+
+      return false;
+    }
 
     bool swap(const unsigned C_INT32 & iFrom,
               const unsigned C_INT32 & iTo);
@@ -117,65 +164,5 @@ class CCopasiParameterGroup: public CCopasiParameter
     void deleteGroup();
     void addParameter(CCopasiParameter * pParameter);
   };
-
-template < class CType >
-      bool CCopasiParameterGroup::addParameter(const std::string & name,
-          const CCopasiParameter::Type type,
-          const CType & value)
-  {
-    CCopasiParameter * pParameter;
-
-    if (type == GROUP)
-      {
-        CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
-        if (!pParameter->isValidValue(value))
-          {
-            delete pParameter;
-            return false;
-          }
-
-        tmp->mpValue = const_cast< void * >((const void *) & value);
-        pParameter = new CCopasiParameterGroup(*tmp);
-      }
-    else
-      {
-        pParameter = new CCopasiParameter(name, type);
-        if (!pParameter->isValidValue(value))
-          {
-            delete pParameter;
-            return false;
-          }
-
-        pParameter->setValue(value);
-      }
-
-    addParameter(pParameter);
-
-    return true;
-  }
-
-template <class CType>
-bool CCopasiParameterGroup::setValue(const std::string & name,
-                                     const CType & value)
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
-
-  if (pParameter) return pParameter->setValue(value);
-
-  return false;
-}
-
-template <class CType>
-bool CCopasiParameterGroup::setValue(const unsigned C_INT32 & index,
-                                     const CType & value)
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
-
-  if (pParameter) return pParameter->setValue(value);
-
-  return false;
-}
 
 #endif // COPASI_CCopasiParameterGroup
