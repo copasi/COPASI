@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.170 $
+   $Revision: 1.171 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:42:17 $
+   $Author: anuragr $ 
+   $Date: 2005/03/10 21:32:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,6 +48,7 @@
 #include "OptimizationWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
+#include "report/CReportDefinitionVector.h"
 #include "plot/plotwidget1.h"
 #include "PlotWidget.h"
 #include "CopasiDefaultWidget.h"
@@ -478,7 +479,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                             //Report
+      case 43:                              //Report
         return tableDefinition;
         break;
       case 42:
@@ -815,10 +816,49 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
           break;
         }
       break;
+
     case FUNCTION:
-    case REPORT:
+
     case PLOT:
+
+      switch (action)
+        {
+        case DELETE:
+          if (dataModel)
+            {
+              unsigned int numPlots = (CCopasiDataModel::Global->getPlotDefinitionList())->size();
+              if (numPlots == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(42, "");
+                }
+            }
+        }
+
       if (dataModel) CCopasiDataModel::Global->changed();
+
+      break;
+
+    case REPORT:
+      switch (action)
+        {
+        case DELETE:
+
+          if (dataModel)
+
+            {
+              unsigned int numReports = ((CCopasiDataModel::Global)->getReportDefinitionList())->size();
+              if (numReports == 0)
+                {
+                  ListViews::switchAllListViewsToWidget(43, "");
+                }
+            }
+
+          CCopasiDataModel::Global->changed();
+
+          break;
+        default :
+;
+        }
       break;
 
     case MODEL:
