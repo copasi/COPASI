@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:08 $
+   $Date: 2004/05/06 20:03:17 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -14,12 +14,12 @@
 #include <string>
 #include "utilities/CCopasiVector.h"
 #include "report/CReport.h"
-#include "report/CReportDefinition.h" 
-//#include "CPlotSpec.h"
+#include "report/CReportDefinition.h"
 
 #include "CPlotSpec.h"
-;
+
 class PlotWindow;
+class CModel;
 
 class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
   {
@@ -27,7 +27,7 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     std::string mKey;
 
     std::istream* pSource;
-    C_INT32 ncols;
+    //C_INT32 ncols;
 
     CReport mReport;
     CReportDefinition mRepDef;
@@ -62,11 +62,14 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
 
     bool addNewPlotSpec(const std::string name /*, const std::string comment*/);
 
+    //look up on which column in the data stream a specific object is
+    C_INT32 getIndexFromCN(const CCopasiObjectName & name);
+
     void setSourceStream(std::istream* ps) {pSource = ps;};
     std::istream* getSourceStream() const {return pSource;};
 
-    void setNumColumns(C_INT32 n) {ncols = n;};
-    C_INT32 getNumColumns() const {return ncols;};
+    //void setNumColumns(C_INT32 n) {ncols = n;};
+    //C_INT32 getNumColumns() const {return ncols;};
 
     bool initPlottingFromStream();
     bool initPlottingFromObjects();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:01:39 $
+   $Date: 2004/05/06 20:03:19 $
    End CVS Header */
 
 /****************************************************************************
@@ -30,30 +30,35 @@ bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringLi
 
   //set the comboboxes for data channel selection
   comboXData->insertStringList(channels);
-  comboXData->setCurrentItem(curve->xChannel.index);
+  comboXData->setCurrentText(curve->mChannels[0].object.c_str());
 
   comboYData->insertStringList(channels);
-  comboYData->setCurrentItem(curve->yChannel.index);
+  comboYData->setCurrentText(curve->mChannels[1].object.c_str());
+
+  //for debugging:
+  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
+  std::cout << "  title: " << curve->title << std::endl;
+  std::cout << "  " << curve->mChannels.size() << "  " << curve->mChannels[0].object << "  " << curve->mChannels[1].object << std::endl;
 
   return true;
 }
 
 bool Curve2DWidget::SaveToCurveSpec(Curve2DSpec * curve) const
   {
-    if (!curve) return false;
+    /* if (!curve) return false;
 
-    curve->title = lineEditTitle->text().latin1();
+     curve->title = lineEditTitle->text().latin1();
 
-    //read the comboboxes for axis selection
-    if (comboXAxis->currentItem() == 0) curve->xAxis = QwtPlot::xTop;
-    else curve->xAxis = QwtPlot::xBottom;
+     //read the comboboxes for axis selection
+     if (comboXAxis->currentItem() == 0) curve->xAxis = QwtPlot::xTop;
+     else curve->xAxis = QwtPlot::xBottom;
 
-    if (comboYAxis->currentItem() == 1) curve->yAxis = QwtPlot::yRight;
-    else curve->yAxis = QwtPlot::yLeft;
+     if (comboYAxis->currentItem() == 1) curve->yAxis = QwtPlot::yRight;
+     else curve->yAxis = QwtPlot::yLeft;
 
-    //read the comboboxes for data channel selection
-    curve->xChannel.index = comboXData->currentItem();
-    curve->yChannel.index = comboYData->currentItem();
-
+     //read the comboboxes for data channel selection
+     curve->mChannels[0].index = comboXData->currentItem();
+     curve->mChannels[1].index = comboYData->currentItem();
+    */
     return true;
   }

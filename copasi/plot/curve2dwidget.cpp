@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:01:39 $
+   $Date: 2004/05/06 20:03:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'curve2dwidget.ui'
  **
- ** Created: Wed Jan 14 17:54:03 2004
- **      by: The User Interface Compiler ($Id: curve2dwidget.cpp,v 1.1 2004/01/14 17:01:39 ssahle Exp $)
+ ** Created: Wed May 5 20:22:59 2004
+ **      by: The User Interface Compiler ($Id: curve2dwidget.cpp,v 1.2 2004/05/06 20:03:18 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -59,6 +59,7 @@ Curve2DWidget::Curve2DWidget(QWidget* parent, const char* name, WFlags fl)
 
   comboXData = new QComboBox(FALSE, this, "comboXData");
   comboXData->setMinimumSize(QSize(200, 0));
+  comboXData->setEditable(TRUE);
 
   layout1->addWidget(comboXData, 2, 1);
 
@@ -72,6 +73,7 @@ Curve2DWidget::Curve2DWidget(QWidget* parent, const char* name, WFlags fl)
   layout1->addMultiCellWidget(lineEditTitle, 0, 0, 1, 2);
 
   comboYData = new QComboBox(FALSE, this, "comboYData");
+  comboYData->setEditable(TRUE);
 
   layout1->addWidget(comboYData, 3, 1);
 
@@ -85,7 +87,7 @@ Curve2DWidget::Curve2DWidget(QWidget* parent, const char* name, WFlags fl)
 
   Curve2DWidgetLayout->addLayout(layout1, 0, 0);
   languageChange();
-  resize(QSize(600, 318).expandedTo(minimumSizeHint()));
+  resize(QSize(540, 407).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 }
 

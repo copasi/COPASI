@@ -1,17 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:08 $
+   $Date: 2004/05/06 20:03:17 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CPlotSpecVector.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
-#include "model/CModel.h"
-#include "CPlotSpec.h"
+#include "model/CModel.h" 
+//#include "CPlotSpec.h"
 #include "plotwindow.h"
 #include "utilities/CGlobals.h"
 
@@ -20,7 +20,7 @@ CPlotSpecVector::CPlotSpecVector(const std::string & name,
     CCopasiVectorN< CPlotSpec >(name, pParent),
     mKey(GlobalKeys.add("CPlotSpecVector", this)),
     pSource(NULL),
-    ncols(0),
+    //ncols(0),
     mReport(),
     mRepDef(),
     inputFlag(NO_INPUT)
@@ -59,24 +59,24 @@ bool CPlotSpecVector::addNewPlotSpec(const std::string name /*, const std::strin
   return true;
 }
 
-bool CPlotSpecVector::initPlottingFromStream()
+/*bool CPlotSpecVector::initPlottingFromStream()
 {
   bool success = true;
   inputFlag = NO_INPUT;
-
+ 
   if (size() == 0)
     {
       std::cout << "plot: not plots defined" << std::endl;
       return false;
     }
-
+ 
   if (ncols <= 0)
     {
       std::cout << "plot: ncols <=0" << std::endl;
       return false;
     }
   data.resize(ncols);
-
+ 
   if (!pSource)
     {
       std::cout << "plot: no input stream" << std::endl;
@@ -90,17 +90,15 @@ bool CPlotSpecVector::initPlottingFromStream()
   pSource->seekg(0, std::ios::beg);
   position = pSource->tellg();
   inputFlag = FROM_STREAM;
-
+ 
   return initAllPlots();
-
+ 
   //return success;
-}
+}*/
 
 bool CPlotSpecVector::initPlottingFromObjects()
 {
-  createDebugReport(); //for debugging only
-
-  bool success = true;
+  //  createDebugReport(); //for debugging only
   inputFlag = NO_INPUT;
 
   if (size() == 0)
@@ -109,21 +107,21 @@ bool CPlotSpecVector::initPlottingFromObjects()
       return false;
     }
 
-  ncols = mObjectNames.size();
-  if (ncols <= 0)
-    {
-      std::cout << "plot: ncols <=0" << std::endl;
-      return false;
-    }
-  data.resize(ncols);
-
-  inputFlag = FROM_OBJECTS;
-
   if (!compile()) //create mObjects;
     {
       std::cout << "plot: compile not successful" << std::endl;
       return false;
     }
+
+  //ncols = mObjectNames.size();
+  if (mObjectNames.size() <= 0)
+    {
+      std::cout << "plot: number of objects <=0" << std::endl;
+      return false;
+    }
+  data.resize(mObjectNames.size());
+
+  inputFlag = FROM_OBJECTS;
 
   return initAllPlots();
 
@@ -193,7 +191,7 @@ bool CPlotSpecVector::doPlotting()
     }
   else if (inputFlag == FROM_STREAM)
     {
-      pSource->seekg(position);
+      /*pSource->seekg(position);
 
       C_INT32 i;
 
@@ -207,7 +205,7 @@ bool CPlotSpecVector::doPlotting()
             sendDataToAllPlots();
         };
 
-      position = pSource->tellg();
+      position = pSource->tellg();*/
     }
   else
     {
@@ -225,8 +223,27 @@ bool CPlotSpecVector::finishPlotting()
   return updateAllPlots();
 }
 
+C_INT32 CPlotSpecVector::getIndexFromCN(const CCopasiObjectName & name)
+{
+  //first look up the name in the vector
+  std::vector<CCopasiObjectName>::const_iterator it;
+  for (it = mObjectNames.begin(); it != mObjectNames.end(); ++it)
+    if (*it == name) break;
+
+  if (it != mObjectNames.end()) return (it - mObjectNames.begin());
+
+  //the name is not yet in the list
+  mObjectNames.push_back(name);
+  return mObjectNames.size() - 1;
+}
+
 bool CPlotSpecVector::compile()
 {
+  //construct the mObjectNames and the indices
+  CCopasiVectorN<CPlotSpec>::iterator psit;
+  for (psit = begin(); psit != end(); ++psit)
+    (*psit)->compile(this);
+
   bool success = true;
 
   mObjects.clear();
@@ -258,22 +275,22 @@ bool CPlotSpecVector::compile()
   return success;
 }
 
-void CPlotSpecVector::createDebugReport()
+/*void CPlotSpecVector::createDebugReport()
 {
   std::cout << "Create Debug Report for Plot" << std::endl;
-
+ 
   mObjectNames.clear();
-
+ 
   //std::cout << Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN() << std::endl;
   CCopasiObjectName name = Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN();
   std::cout << name << std::endl;
   mObjectNames.push_back(name);
-
+ 
   name = Copasi->pModel->getMetabolites()[0]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN();
   std::cout << name << std::endl;
   mObjectNames.push_back(name);
-
+ 
   //mRepDef.getBodyAddr()->clear();
   //mRepDef.getBodyAddr()->push_bMck(name);
   //mReport.compile();
-}
+}*/

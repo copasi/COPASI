@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:09 $
+   $Date: 2004/05/06 20:03:18 $
    End CVS Header */
 
 // the plot object for copasi
@@ -46,7 +46,7 @@ class CopasiPlot : public ZoomPlot
     void appendPlot();
 
     // adds/removes curves as necessary; otherwise simply display the existing curves
-    void reload2Plot(CPlotSpec* ptspec, std::vector<int> deletedCurveIndices);
+    //void reload2Plot(CPlotSpec* ptspec, std::vector<int> deletedCurveIndices);
 
     void takeData(const std::vector<C_FLOAT64> & dataVector);
     void updatePlot();
@@ -76,15 +76,6 @@ class CopasiPlot : public ZoomPlot
 
     // populate indexTable and dataIndices
     void createIndices(const CPlotSpec* pspec);
-
-    // the starting row in the data file to read data from
-    //int startRow;
-
-    // the current position in the file
-    //std::streampos pos;
-
-    // the spec of this plot
-    //CPlotSpec* ptspec;
 
     // whether zooming is enabled
     bool zoomOn;

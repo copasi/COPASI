@@ -1,19 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 18:06:48 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 20:03:20 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
 
-//#include <fstream>
-//#include <math.h>
-//#include <qmainwindow.h>
-#include <qtoolbar.h> 
-//#include <qtoolbutton.h>
-//#include <qtimer.h>
+#include <qtoolbar.h>
 #include <qprinter.h>
 
 #include "plotwindow.h" 
@@ -43,11 +38,6 @@ PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
 
-  QToolButton * autoUpdateButton = new QToolButton(plotTools, "auto update plot");
-  autoUpdateButton -> setTextLabel("Update plot automatically");
-  autoUpdateButton -> setToggleButton(true);
-  autoUpdateButton -> setText("AutoUpdate");
-
   zoomButton = new QToolButton(plotTools, "zoom");
   zoomButton->setText("Zoom");
   zoomButton->setTextLabel("Zoom");
@@ -62,55 +52,14 @@ PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
   plot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(plot);
 
-  //connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
-  connect(autoUpdateButton, SIGNAL(toggled(bool)), this, SLOT(autoUpdate(bool)));
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(plot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
-  //connect(timer, SIGNAL(timeout()), this, SLOT(append()));
 }
 
 bool PlotWindow::initFromSpec(const CPlotSpec* ptrSpec)
 {
   return plot->initFromSpec(ptrSpec);
-}
-
-//-----------------------------------------------------------------------------
-
-//void PlotWindow::append()
-//{
-//  plot->appendPlot();
-//}
-
-//-----------------------------------------------------------------------------
-
-void PlotWindow::autoUpdate(bool toggled)
-{
-  if (toggled)
-    {
-      // zoom out first
-      plot->zoomOut();
-
-      plot->setAxisAutoScale(QwtPlot::yLeft);
-      plot->setAxisAutoScale(QwtPlot::yRight);
-      plot->setAxisAutoScale(QwtPlot::xBottom);
-      plot->setAxisAutoScale(QwtPlot::xTop);
-
-      // disable zooming
-      zoomButton->setEnabled(false);
-      plot->enableZoom(false);
-
-      // initiate the first update
-      //      append();  //for now
-
-      // NB: timeout is hard-coded for now - maybe add something in the GUI to let the user decide
-      //timer->start(5000);
-    }
-  else
-    {
-      //timer->stop();
-      zoomButton->setEnabled(true);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -151,13 +100,6 @@ void PlotWindow::printPlot()
   if (printer.setup())
     plot->print(printer, PrintFilter());
 }
-
-//-----------------------------------------------------------------------------
-
-//void PlotWindow::reloadPlot(CPlotSpec* plotspec, std::vector<int> deletedCurveKeys)
-//{
-//  plot->reloadPlot(plotspec, deletedCurveKeys);
-//}
 
 //-----------------------------------------------------------------------------
 

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:56:06 $
+   $Date: 2004/05/06 20:03:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.7 2004/04/19 08:56:06 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.8 2004/05/06 20:03:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -247,28 +247,28 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpec *pspec)
       curve = new Curve2DWidget(tabs);
       curveWidgetVector.push_back(curve);
       curve->LoadFromCurveSpec(&*it, channelNames);
-      tabs->addTab(curve, "test");
+      tabs->addTab(curve, it->title.c_str());
     }
   return true; //TODO really check
 }
 
 bool PlotWidget1::saveToPlotSpec()
 {
-  CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
+  /*CPlotSpec* pspec = dynamic_cast< CPlotSpec * >(GlobalKeys.get(objKey));
   if (!pspec) return false;
 
   //clear curves vector
   pspec->getCurves().clear();
 
   //reconstruct curves vector from tab widget
-  Curve2DSpec cspec("");
+  Curve2DSpec cspec;
   std::vector<Curve2DWidget*>::const_iterator it;
   for (it = curveWidgetVector.begin(); it != curveWidgetVector.end(); ++it)
     {
       (*it)->SaveToCurveSpec(&cspec);
       pspec->getCurves().push_back(cspec);
     }
-  return true;
+  */return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:09 $
+   $Date: 2004/05/06 20:03:18 $
    End CVS Header */
 
 #include <qarray.h>
@@ -25,33 +25,27 @@
 void CopasiPlot::createIndices(const CPlotSpec* pspec)
 {
   C_INT32 i, imax = pspec->getCurves().size();
+  C_INT32 jj;
   C_INT32 index;
   std::vector<C_INT32>::iterator it; // iterator for indexTable
   C_INT32 iterindex;
   dataIndices.resize(imax);
 
-  for (i = 0; i < imax; ++i)
+  for (i = 0; i < imax; ++i) //all curves
     {
-      //TODO generalize to N dims.
       dataIndices[i].resize(2);
 
-      index = pspec->getCurves()[i].xChannel.index;
-      for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
-      {if (*it >= index) break;};
-      if (it == indexTable.end()) //index is not yet in indexTable
-        indexTable.insert(it, index);
-      else if (*it != index)
-        indexTable.insert(it, index);
-      dataIndices[i][0] = iterindex;
-
-      index = pspec->getCurves()[i].yChannel.index;
-      for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
-      {if (*it >= index) break;};
-      if (it == indexTable.end()) //index is not yet in indexTable
-        indexTable.insert(it, index);
-      else if (*it != index)
-        indexTable.insert(it, index);
-      dataIndices[i][1] = iterindex;
+      for (jj = 0; jj < 2; ++jj) //2D
+        {
+          index = pspec->getCurves()[i].mChannels[jj].index;
+          for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
+          {if (*it >= index) break;};
+          if (it == indexTable.end()) //index is not yet in indexTable
+            indexTable.insert(it, index);
+          else if (*it != index)
+            indexTable.insert(it, index);
+          dataIndices[i][jj] = iterindex;
+        }
     }
 }
 

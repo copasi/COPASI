@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/01/14 17:01:39 $
+   $Date: 2004/05/06 20:03:19 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'curve2dwidget.ui'
  **
- ** Created: Wed Jan 14 17:53:29 2004
- **      by: The User Interface Compiler ($Id: curve2dwidget.h,v 1.1 2004/01/14 17:01:39 ssahle Exp $)
+ ** Created: Wed May 5 20:22:54 2004
+ **      by: The User Interface Compiler ($Id: curve2dwidget.h,v 1.2 2004/05/06 20:03:19 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
