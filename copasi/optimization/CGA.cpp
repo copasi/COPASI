@@ -15,6 +15,8 @@
 //default constructor
 CGA::CGA()
 {
+  // this->super();
+  
  mPopSize=0;
  mGener=0;
  mParamNum=0;
@@ -24,10 +26,11 @@ CGA::CGA()
  mIndV = NULL;
  mCandX = NULL;
  mWins = NULL;
- 
- vector <COptAlgorithmParameter> *AlgorithmParameters = getMethodParameters();
+
  setMethodParameterNumber(3);
- //AlgorithmParameters->size(3);
+ vector <COptAlgorithmParameter> *AlgorithmParameters = getMethodParameters();
+ 
+ AlgorithmParameters->resize(3);
  //#1:
  (*AlgorithmParameters)[0].setName("Population Size");
  (*AlgorithmParameters)[0].setValue(100);  // Set a default value
@@ -46,6 +49,24 @@ CGA::CGA()
 void CGA::initialize()
 {
   int i;
+
+  mMin = *(mRealProblem.getParameterMin());
+  mMax = *(mRealProblem.getParameterMax());
+  mParamNum = mRealProblem.getParameterNum();
+
+  vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
+
+  for(int i=0; i < (getMethodParameterNumber()); i++)
+   {
+     if ( (*AlgmParams)[i].getName() == "Population Size" )
+         mPopSize = (*AlgmParams)[i].getValue();
+     else if ( (*AlgmParams)[i].getName() == "Generation Number" )
+         mGener =  (*AlgmParams)[i].getValue();
+     else if ( (*AlgmParams)[i].getName() == "Mutation Variance" )
+         mMutVar = (*AlgmParams)[i].getValue();
+   }  
+
+
 
   mCandX = new double[2*mPopSize];
   // create array for tournament
@@ -88,69 +109,6 @@ void CGA::initFirstGeneration()
   mBest=fittest();
 
 }
-
-
-#ifdef XXXX
-
-//constructor
-CGA::CGA(int psize,int num, int param)
-{
-
- unsigned int i,j;
-
- mPopSize=psize;
- mGener=num;
- mParamNum=param;
-
- // initialize();
-
-}
-
-
-//constructor
-CGA::CGA(int psize,int num, int param)
-{
-
- unsigned int i,j;
-
- mPopSize=psize;
- mGener=num;
- mParamNum=param;
-
- mCandX = new double[2*psize];
- // create array for tournament
- mWins = new unsigned int[2*psize];
- // create array for crossover points
- mCrp = new unsigned int[param];
- // create array for shuffling the population
- mMidX = new unsigned int[psize];
- // create the population array
- mIndV = new double*[2*psize];
- // create the individuals
- for( i=0; i<2*psize; i++ )
- {
-  mIndV[i] = new double[param];
- }
-
- for( i=0; i<mParamNum; i++ )
-  mIndV[0][i] =1.1+dr250();
-
- try
- {
-  // calculate the fitness
-  mCandX[0] = evaluate(0);
- }
- catch( unsigned int e )
- {
-  mCandX[0] = DBL_MAX;
- }
-
- // the others are randomly generated
- creation( 1, mPopSize);
- mBest=fittest();
-
-}
-#endif // XXXX
 
 
 // Copy constructor
@@ -662,14 +620,16 @@ int CGA::optimise()
  times(&before);
  dTime=time(NULL);
 
- mMin = *(mRealProblem.getParameterMin());
- mMax = *(mRealProblem.getParameterMax());
+ //mMin = *(mRealProblem.getParameterMin());
+ //mMax = *(mRealProblem.getParameterMax());
+ //mParamNum = mRealProblem.getParameterNum();
 
  cout << "mMin = "<<mMin<<", mMax= "<<mMax<<", mParamNum = "<<mParamNum<<endl;
  cout << "mRealProblem.getParameterNum() = " << mRealProblem.getParameterNum()<<endl;
 
  initOptRandom();
 
+ /*
  //YOHE: new 
 
  vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
@@ -683,7 +643,7 @@ int CGA::optimise()
      else if ( (*AlgmParams)[i].getName() == "Mutation Variance" )
          mMutVar = (*AlgmParams)[i].getValue();
    }  
-  
+ */
  
  // initialise the variance for mutations
  //setMutVar(0.1);
