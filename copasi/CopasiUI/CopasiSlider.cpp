@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/11 13:22:06 $
+   $Author: shoops $ 
+   $Date: 2005/03/20 04:10:04 $
    End CVS Header */
 
 #include <math.h>
@@ -190,7 +190,8 @@ void CopasiSlider::updateLabel()
 
 void CopasiSlider::sliderValueChanged(int value)
 {
-  this->mpCSlider->setSliderValue(this->mpCSlider->getMinValue() + value * this->minorTickInterval());
+  this->mpCSlider->setSliderValue(this->mpCSlider->getMinValue() + value * this->minorTickInterval(),
+                                  false);
 
   this->updateLabel();
 
@@ -235,6 +236,8 @@ void CopasiSlider::updateValue(bool modifyRange)
           this->mpCSlider->resetRange();
         }
     }
+
+  this->mpCSlider->writeToObject();
 }
 
 void CopasiSlider::closeButtonClicked()

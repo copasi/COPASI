@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/09 13:37:20 $
+   $Author: shoops $ 
+   $Date: 2005/03/20 04:10:05 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -117,9 +117,11 @@ class CSlider : public CCopasiContainer
     /**
      * Set the slider value.
      * @param const C_FLOAT64 Value
+     * @param const bool & writeToObject (Default: true)
      * @return bool succes
      */
-    bool setSliderValue(const C_FLOAT64 value);
+    bool setSliderValue(const C_FLOAT64 value,
+                        const bool & writeToObject = true);
 
     /**
      * Retrieve the slider Value.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:58:34 $
+   $Date: 2005/03/20 04:10:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -114,7 +114,8 @@ bool CSlider::setSliderType(const CSlider::Type type)
 const CSlider::Type CSlider::getSliderType() const
   {return mSliderType;}
 
-bool CSlider::setSliderValue(const C_FLOAT64 value)
+bool CSlider::setSliderValue(const C_FLOAT64 value,
+                             const bool & writeToObject)
 {
   mValue = value;
   if (mValue < this->mMinValue)
@@ -126,7 +127,7 @@ bool CSlider::setSliderValue(const C_FLOAT64 value)
       mValue = this->mMaxValue;
     }
 
-  if (this->mSync)
+  if (this->mSync && writeToObject)
     {
       this->writeToObject();
     }
@@ -157,21 +158,11 @@ void CSlider::writeToObject()
 
   if (mpSliderObject->setObjectValue(mValue)) return;
 
-  /* If this code is reached the slider object is not a reference to a double,
-     integer or bool and in addition no update method is known. */
+  if (mpSliderObject->setObjectValue((C_INT32)floor(mValue + 0.5))) return;
 
-  if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
-    {
-      C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getReference());
+  if (mpSliderObject->setObjectValue(mValue != 0.0)) return;
 
-      *reference = (C_INT32)floor(mValue + 0.5);
-    }
-  else if (mSliderType == CSlider::Float || mSliderType == CSlider::UnsignedFloat)
-    {
-      C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)mpSliderObject)->getReference());
-
-      *reference = mValue;
-    }
+  return;
 }
 
 const C_FLOAT64 CSlider::getSliderValue() const
