@@ -101,7 +101,7 @@ class CReportDefinition : public CCopasiObject
       return mbTitle;
     }
 
-    bool setTitle(bool mTitle)
+    void setTitle(bool mTitle)
     {
       mbTitle = mTitle;
     }
