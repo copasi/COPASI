@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/22 02:31:27 $
+   $Date: 2005/03/23 21:16:24 $
    End CVS Header */
 
 /**
@@ -106,12 +106,12 @@ class CCopasiObject
 
     unsigned C_INT32 mObjectFlag;
 
-    UpdateMethod * mpUpdateMethodDbl;
-    UpdateMethod * mpUpdateMethodInt;
-    UpdateMethod * mpUpdateMethodBool;
+    UpdateMethod * mpUpdateMethod;
 
   private:
     static const C_FLOAT64 DummyValue;
+
+    static UpdateMethod mDefaultUpdateMethod;
 
     //Operations
   protected:
@@ -207,8 +207,10 @@ class CCopasiObject
     bool setUpdateMethod(CType * pType,
                          bool (CType::*method)(const C_FLOAT64 &))
     {
-      pdelete(mpUpdateMethodDbl);
-      mpUpdateMethodDbl =
+      if (mpUpdateMethod != &mDefaultUpdateMethod)
+        pdelete(mpUpdateMethod);
+
+      mpUpdateMethod =
         new SpecificUpdateMethod< CType, C_FLOAT64 >(pType, method);
 
       return true;
@@ -218,8 +220,10 @@ class CCopasiObject
     bool setUpdateMethod(CType * pType,
                          bool (CType::*method)(const C_INT32 &))
     {
-      pdelete(mpUpdateMethodDbl);
-      mpUpdateMethodDbl =
+      if (mpUpdateMethod != &mDefaultUpdateMethod)
+        pdelete(mpUpdateMethod);
+
+      mpUpdateMethod =
         new SpecificUpdateMethod< CType, C_INT32 >(pType, method);
 
       return true;
@@ -229,16 +233,14 @@ class CCopasiObject
     bool setUpdateMethod(CType * pType,
                          bool (CType::*method)(const bool &))
     {
-      pdelete(mpUpdateMethodDbl);
-      mpUpdateMethodDbl =
+      if (mpUpdateMethod != &mDefaultUpdateMethod)
+        pdelete(mpUpdateMethod);
+
+      mpUpdateMethod =
         new SpecificUpdateMethod< CType, bool >(pType, method);
 
       return true;
     }
-
-  private:
-    template <typename VType> bool updateMethod(const VType & C_UNUSED(value))
-    {return false;}
   };
 
 template <class CType> CCopasiObjectReference< CType > *

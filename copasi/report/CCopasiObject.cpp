@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:28:38 $
+   $Date: 2005/03/23 21:16:24 $
    End CVS Header */
 
 /**
@@ -23,14 +23,14 @@
 
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 
+UpdateMethod CCopasiObject::mDefaultUpdateMethod;
+
 CCopasiObject::CCopasiObject():
     mObjectName("No Name"),
     mObjectType("Unknown Type"),
     mpObjectParent(NULL),
     mObjectFlag(0),
-    mpUpdateMethodDbl(new SpecificUpdateMethod<CCopasiObject, C_FLOAT64>(this, &CCopasiObject::updateMethod)),
-    mpUpdateMethodInt(new SpecificUpdateMethod<CCopasiObject, C_INT32>(this, &CCopasiObject::updateMethod)),
-    mpUpdateMethodBool(new SpecificUpdateMethod<CCopasiObject, bool>(this, &CCopasiObject::updateMethod))
+    mpUpdateMethod(&this->mDefaultUpdateMethod)
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -41,9 +41,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mObjectType(type),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
     mObjectFlag(flag),
-    mpUpdateMethodDbl(new SpecificUpdateMethod<CCopasiObject, C_FLOAT64>(this, &CCopasiObject::updateMethod)),
-    mpUpdateMethodInt(new SpecificUpdateMethod<CCopasiObject, C_INT32>(this, &CCopasiObject::updateMethod)),
-    mpUpdateMethodBool(new SpecificUpdateMethod<CCopasiObject, bool>(this, &CCopasiObject::updateMethod))
+    mpUpdateMethod(&this->mDefaultUpdateMethod)
 {
   if (mpObjectParent)
     if (mpObjectParent->isContainer()) mpObjectParent->add(this);
@@ -55,18 +53,16 @@ mObjectName(src.mObjectName),
 mObjectType(src.mObjectType),
 mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
 mObjectFlag(src.mObjectFlag),
-mpUpdateMethodDbl(new SpecificUpdateMethod<CCopasiObject, C_FLOAT64>(this, &CCopasiObject::updateMethod)),
-mpUpdateMethodInt(new SpecificUpdateMethod<CCopasiObject, C_INT32>(this, &CCopasiObject::updateMethod)),
-mpUpdateMethodBool(new SpecificUpdateMethod<CCopasiObject, bool>(this, &CCopasiObject::updateMethod))
+mpUpdateMethod(&this->mDefaultUpdateMethod)
 {if (mpObjectParent) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
 {
   if (mpObjectParent)
     mpObjectParent->remove(this);
-  pdelete(mpUpdateMethodDbl);
-  pdelete(mpUpdateMethodInt);
-  pdelete(mpUpdateMethodBool);
+
+  if (mpUpdateMethod != &mDefaultUpdateMethod)
+    pdelete(mpUpdateMethod);
 }
 
 void CCopasiObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
@@ -256,13 +252,13 @@ const std::string & CCopasiObject::getKey() const
   }
 
 bool CCopasiObject::setObjectValue(const C_FLOAT64 & value)
-{return (*mpUpdateMethodDbl)(value);}
+{return (*mpUpdateMethod)(value);}
 
 bool CCopasiObject::setObjectValue(const C_INT32 & value)
-{return (*mpUpdateMethodInt)(value);}
+{return (*mpUpdateMethod)(value);}
 
 bool CCopasiObject::setObjectValue(const bool & value)
-{return (*mpUpdateMethodBool)(value);}
+{return (*mpUpdateMethod)(value);}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
