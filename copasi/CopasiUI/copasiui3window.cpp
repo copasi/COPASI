@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/21 14:08:35 $
+   $Author: mkulkarn $ 
+   $Date: 2003/11/12 20:08:58 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -163,14 +163,14 @@ void CopasiUI3Window::newDoc()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the save as 
+ ** Descripton:- This method is called when the users clicks on Open 
  **              option in the menu File 
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen()
 {
   QString newFile;
 
-  newFile = QFileDialog::getOpenFileName(QString::null, "GPS Files (*.gps)",
+  newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.COPASIxml)",
                                          this, "open file dialog",
                                          "Choose a file");
   // gives the file information to the datamodel to handle it
