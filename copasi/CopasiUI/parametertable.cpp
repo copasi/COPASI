@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/09 01:07:38 $
+   $Author: ssahle $ 
+   $Date: 2005/04/04 12:53:48 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -164,6 +164,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       setRowReadOnly(rowCounter, true);
       setRowHeight(rowCounter++, 8);
 
+      //
+      setRowReadOnly(rowCounter, false);
       mIndex2Line[i] = rowCounter;
 
       // set the stuff that is different for the specific usages
