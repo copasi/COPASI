@@ -25,9 +25,9 @@ CSS_Solution::CSS_Solution()
   mOption = NEWTON;
 
   mSs_nfunction = 0;
-  //  mSs_x = NULL;
-  //mSs_xnew = NULL;
-
+  mSs_x = NULL;
+  mSs_xnew = NULL;
+  //mSs_dxdt = NULL;
 }
 
 
@@ -38,6 +38,9 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
   mModel = source.mModel;
   mTraj = source.mTraj;
   mOption = source.mOption;
+  mSs_x = source.mSs_x;
+  mSs_xnew = source.mSs_xnew;
+  mSs_dxdt = source.mSs_dxdt;
 }
 
     
@@ -50,6 +53,10 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
       mModel = source.mModel;
       mTraj = source.mTraj;
       mOption = source.mOption;
+      mSs_x = source.mSs_x;
+      mSs_xnew = source.mSs_xnew;
+      mSs_dxdt = source.mSs_dxdt;
+
     }
   return *this;
 }
@@ -62,6 +69,39 @@ CSS_Solution::~CSS_Solution()
   cout << "~CSS_Solution " << endl;
 }
   
+
+// initialize pointers
+void CSS_Solution::initialize()
+{  
+  cleanup();
+  unsigned C_INT32 dim = mModel->getIndMetab();
+
+  mNewton = new CNewton();
+  mModel = new CModel();
+  mTraj = new CTrajectory();
+  
+  mSs_xnew = new C_FLOAT64[dim];
+  mSs_dxdt.newsize(dim);
+  
+}
+
+
+// Clean up internal pointer variables
+void CNewton::cleanup(void)
+{
+  if (mSs_x) delete [] mSs_x;
+  mSs_x = NULL;
+
+  if (mSs_xnew) delete [] mSs_xnew;
+  mSs_xnew = NULL;
+
+  // if (mSs_dxdt) delete [] mSs_dxdt;
+  // mSs_dxdt = NULL;
+
+ 
+}
+
+
 //set mOption
 void CSS_Solution::setOption(C_INT32 anOption)
 {
@@ -115,6 +155,26 @@ CTrajectory *  CSS_Solution::getTrajectory() const
 }
 
 
+//set mSs_xnew
+void  CSS_Solution::setSs_xnew(C_FLOAT64 * aXnew)
+{
+  mSs_xnew = aXnew;
+}
+
+// get mSs_xnew
+C_FLOAT64 * CSS_Solution::getSs_xnew() const
+{
+  return mSs_xnew;
+}
+
+   
+// get mSs_dxdt
+const TNT::Vector < C_FLOAT64 > & CSS_Solution::getSs_dxdt() const
+{
+  return mSs_dxdt;
+}
+
+
 
 C_INT32 CSS_Solution::load(CReadConfig & configbuffer)
 {
@@ -154,6 +214,7 @@ C_INT32 CSS_Solution::save(CWriteConfig & configbuffer)
 
 
   return Fail;
+  if(mNewton) delete mNewton;
 
 }
 
@@ -173,6 +234,8 @@ void CSS_Solution::process(void)
   //mNfeval = ftot = 0.0;
   //lsoda_state = 1;                //YH: comment out
   //mSs_njacob = mSs_nfunction = 0;
+
+  initialize();
 
   // use the damped Newton method
   if((mOption==0) || (mOption==2)) 
@@ -310,9 +373,39 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
 }
 
 
+/*
+
+//another version
+// finds out if current state is a valid steady state
+C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT64 * oldY, C_FLOAT64 * newY )
+
+{
+  unsigned C_INT32 i, dim = mModel->getIndMetab();
+  double maxrate;
+
+  mSs_solution = SS_NOT_FOUND;
+  for( i=0; i<dim; i++ )
+    if( newY[i] < 0.0 ) return SS_NOT_FOUND;
+
+  //FEval( 0, 0, mSs_x, ss_dxdt );
+  mModel->lSODAEval(dim, 0, newY, &mSs_dxdt[0] );
+  //mSs_nfunction++;
+  // maxrate = SS_XNorn( ss_dxdt );
+  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
+ 
+  if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
+  return mSs_solution;
+ 
+}
+
+
+*/
+
+
 #ifdef XXXXXX
 
-//Yongqun: change SSStrategy to mOption
+
+//YH: change SSStrategy to mOption
 //
 void CSS_Solution::steadyState( void )
 {
@@ -535,29 +628,6 @@ C_INT32 CSS_Solution::isSteadyState( void )
   return mSs_solution;
 }
 
-
-// YH: move the following function to here from CNewton class
- 
-// finds out if current state is a valid steady state
-C_INT32  CSS_Solution::isSteadyState( void )
-{
-  unsigned C_INT32 i, dim = mModel->getIndMetab();
-  double maxrate;
-
-  mSs_solution = SS_NOT_FOUND;
-  for( i=0; i<dim; i++ )
-    if( mSs_x[i] < 0.0 ) return SS_NOT_FOUND;
-
-  //FEval( 0, 0, mSs_x, ss_dxdt );
-  mModel->lSODAEval(dim, 0, mSs_xnew, &mSs_dxdt[0] );
-  mSs_nfunction++;
-  // maxrate = SS_XNorn( ss_dxdt );
-  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
- 
-  if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
-  return mSs_solution;
- 
-}
 
 
 #endif //XXXXXX

@@ -75,6 +75,10 @@ class CSS_Solution
    */
   C_FLOAT64 * mSs_xnew;
 
+  /**
+   *  variable for steady-state solution
+   */
+  TNT::Vector < C_FLOAT64 > mSs_dxdt;
 
   /**
    * The steady state resolution
@@ -84,8 +88,6 @@ class CSS_Solution
 
   // variables for steady-state solution
   //add more variables here
-
-  TNT::Vector < C_FLOAT64 > mSs_dxdt;
 
   /**
    *  variable for steady-state solution
@@ -150,6 +152,16 @@ class CSS_Solution
    *  destructor
    */
   ~CSS_Solution();
+
+  /**
+   *  initialize()
+   */
+  void initialize();
+
+  /**
+   * Clean up internal pointer variables
+   */
+  void cleanup(void);
 
   /**
    *  Loads parameters for this solver with data coming from a 
@@ -218,6 +230,26 @@ class CSS_Solution
   CTrajectory * getTrajectory() const;
 
   /**
+   *  set mSs_xnew
+   *  @param aXnew is the double to be set as mSs_xnewModel
+   */
+  void setSs_xnew(C_FLOAT64 * aXnew);
+
+  /**
+   *  get mSs_xnew
+   *  @return mSs_xnew
+   */
+  C_FLOAT64 * getSs_xnew() const;
+
+  
+  /**
+   *  get mSs_dxdt
+   *  @return mSs_dxdt
+   */
+  const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
+
+
+  /**
    *  to process the primary function of this class
    */
   void process(void);
@@ -245,7 +277,7 @@ class CSS_Solution
    *  It's based on if (mY[i]-mY_old[i])/delta(t) < mSSRes
    *  @return an int acting like a bool
    */
-  C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 *oldY, C_FLOAT64 * newY);
+  C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 * oldY, C_FLOAT64 * newY);
 
 };
 
