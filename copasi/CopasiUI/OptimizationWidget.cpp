@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.7 2003/10/05 04:54:45 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.8 2003/10/06 00:34:57 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -459,10 +459,10 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   if (!pObject)
     return false;
 
-  CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  COptFunction* optFunction = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   // need further work
-  // if (optFunction->getProblem()->bExisted(pObject->getCN().c_str()))
-  //    return false;
+  if (optFunction->bExisted(pObject->getCN().c_str()))
+    return false;
 
   int widgetOffset;
   int ScanItemWidgetWidth;
@@ -494,14 +494,16 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   selectedList.push_back(parameterTable);
 
   nSelectedObjects++;
-  /* Need future work
-    CMethodParameterList* pNewMethodItem = new CMethodParameterList(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType());
-    optFunction->getProblem()->addScanItem(*pNewMethodItem);
-    parameterTable->setScanObject(optFunction->getProblem()->getScanItem(nSelectedObjects - 1));
-    parameterTable->setCopasiObject(pObject);
-    parameterTable->loadObject();
-   
-  */
+
+  //insert a new item
+
+  unsigned int i;
+  i = optFunction->addItem(pObject); // automatically creat the 3 fields
+
+  parameterTable->setCopasiObjectPtr(pObject);
+  parameterTable->setItemLowerLimit(optFunction->getMin);
+  parameterTable->setItemUpperLimit();
+
   emit show_me();
   return true;
 }
