@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 04:35:35 $
+   $Date: 2003/11/06 18:42:18 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -11,8 +11,6 @@
 
 #include <iostream>
 #include <stdarg.h>
-
-#include "copasi.h"
 
 /**
  * Template class CVector < class CType >
@@ -78,13 +76,17 @@ template <class CType> class CVector
           mVector = new CType[mRows];
           mVector[0] = first;
 
-          va_list value = NULL;
-          va_start(value, first);
+          va_list values = NULL;
+          va_start(values, first);
 
-          for (unsigned C_INT32 i = 1; i < mRows; i++)
-            mVector[i] = va_arg(value, CType);
+          if (sizeof(CType) > sizeof(int))
+            for (unsigned C_INT32 i = 1; i < mRows; i++)
+              mVector[i] = va_arg(values, CType);
+          else
+            for (unsigned C_INT32 i = 1; i < mRows; i++)
+              mVector[i] = (CType) va_arg(values, int);
 
-          va_end(value);
+          va_end(values);
         }
     }
 
