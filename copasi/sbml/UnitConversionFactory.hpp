@@ -3,6 +3,7 @@
 
 #include "sbml/UnitDefinition.hpp"
 #include "sbml/Unit.hpp"
+#include "sbml/ListOf.hpp"
 #include <vector>
 #include <string>
 
@@ -22,7 +23,7 @@ class UnitConversionFactory{
       static bool convertValue(double *value,const UnitDefinition& srcUdef,const UnitDefinition& destUdef);  
       
       LIBSBML_EXTERN
-      static bool containsOnlyCopasiUnits(const UnitDefinition& uDef);
+      static bool containsOnlyGivenUnits(const UnitDefinition& uDef,const ListOf& unitList);
       
       LIBSBML_EXTERN
       static std::string toString(const Unit& unit);
@@ -124,4 +125,4 @@ class UnitConversionFactory{
       
 };
 
-#endif /* ifndef UnitConversionFactory_hpp__ */
+#endif /* UnitConversionFactory_hpp__ */

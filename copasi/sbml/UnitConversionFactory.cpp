@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 09:05:41 $
+   $Date: 2005/02/16 14:44:02 $
    End CVS Header */
 
 class UnitDefinition;
@@ -858,7 +858,7 @@ bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& sr
 }
 
 LIBSBML_EXTERN
-bool UnitConversionFactory::containsOnlyCopasiUnits(const UnitDefinition& uDef)
+bool UnitConversionFactory::containsOnlyGivenUnits(const UnitDefinition& uDef, const ListOf& unitList)
 {
   bool result = true;
   UnitDefinition* pTmpUdef = UnitConversionFactory::convertToSI(uDef);
@@ -870,7 +870,20 @@ bool UnitConversionFactory::containsOnlyCopasiUnits(const UnitDefinition& uDef)
         {
           Unit* pU = pTmpUdef->getUnit(i);
           UnitKind_t kind = pU->getKind();
-          if ((kind != UNIT_KIND_METER) && kind != (UNIT_KIND_SECOND) && (kind != UNIT_KIND_MOLE))
+          unsigned int j;
+          unsigned int maxUnits2 = unitList.getNumItems();
+          bool found = false;
+          for (j = 0; j < maxUnits2;++j)
+            {
+              Unit* pU2 = dynamic_cast<Unit*>(unitList.get(j));
+              if (!pU2) break;
+              if (pU2->getKind() == kind)
+                {
+                  found = true;
+                  break;
+                }
+            }
+          if (!found)
             {
               result = false;
               break;
