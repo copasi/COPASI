@@ -207,12 +207,12 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
               ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
               fieldChild->attachKey();
               fieldChild->setObjectType(FIELDATTR);
-              fieldChild->setText(0, "Attribute");
+              fieldChild->setText(0, "Attribute list");
 
               ObjectBrowserItem* objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
               objectChild->attachKey();
               objectChild->setObjectType(CONTAINERATTR);
-              objectChild->setText(0, "Object List");
+              objectChild->setText(0, "Object list");
 
               loadChild(objectChild, (CCopasiContainer *) current);
             }
