@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:46:27 $
+   $Date: 2004/06/24 18:00:08 $
    End CVS Header */
 
 #include "MoietyWidget.h"
@@ -63,19 +63,19 @@ void MoietyWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT3
   table->setText(row, 3, QString::number(pMoi->getNumber()));
 }
 
-void MoietyWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+void MoietyWidget::tableLineToObject(unsigned C_INT32 C_UNUSED(row), CCopasiObject* C_UNUSED(obj))
 {}
 
-void MoietyWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void MoietyWidget::defaultTableLineContent(unsigned C_INT32 C_UNUSED(row), unsigned C_INT32 C_UNUSED(exc))
 {}
 
 QString MoietyWidget::defaultObjectName() const
   {return "";}
 
-CCopasiObject* MoietyWidget::createNewObject(const std::string & name)
+CCopasiObject* MoietyWidget::createNewObject(const std::string & C_UNUSED(name))
 {return NULL;}
 
-void MoietyWidget::deleteObjects(const std::vector<std::string> & keys)
+void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys))
 {}
 
 void MoietyWidget::slotBtnRunClicked()
