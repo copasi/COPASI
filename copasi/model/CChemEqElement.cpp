@@ -56,7 +56,7 @@ const std::string & CChemEqElement::getMetaboliteName() const
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
 
-void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity = 1.0)
+void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity += multiplicity;}
 
 C_FLOAT64 CChemEqElement::getMultiplicity() const
