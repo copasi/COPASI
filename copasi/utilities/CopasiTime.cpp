@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 18:52:30 $
+   $Date: 2005/01/24 19:01:45 $
    End CVS Header */
 
 #include <sstream>
@@ -101,7 +101,7 @@ std::string CCopasiTimeVariable::isoFormat() const
     std::stringstream Iso;
     bool first = true;
 
-    if (mTime < 0LL)
+    if (mTime < LLONG_CONST(0))
       {
         CCopasiTimeVariable Tmp(-mTime);
         Iso << "-";
@@ -110,17 +110,17 @@ std::string CCopasiTimeVariable::isoFormat() const
         return Iso.str();
       }
 
-    if (mTime >= 86400000000LL)
+    if (mTime >= LLONG_CONST(86400000000))
       {
         Iso << LL2String(getDays()) << ":";
         first = false;
       }
 
-    if (mTime >= 3600000000LL)
+    if (mTime >= LLONG_CONST(3600000000))
       Iso << LL2String(getHours(true), first ? 0 : 2) << ":";
-    if (mTime >= 60000000LL)
+    if (mTime >= LLONG_CONST(60000000))
       Iso << LL2String(getMinutes(true), first ? 0 : 2) << ":";
-    if (mTime >= 1000000LL)
+    if (mTime >= LLONG_CONST(1000000))
       Iso << LL2String(getSeconds(true), first ? 0 : 2) << ".";
     else
       Iso << "0.";
@@ -132,50 +132,50 @@ std::string CCopasiTimeVariable::isoFormat() const
 
 C_INT64 CCopasiTimeVariable::getMicroSeconds(const bool & bounded) const
   {
-    if (bounded) return mTime % 1000;
+    if (bounded) return mTime % LLONG_CONST(1000);
     else return mTime;
   }
 
 C_INT64 CCopasiTimeVariable::getMilliSeconds(const bool & bounded) const
   {
     C_INT64 MilliSeconds =
-      (mTime - (mTime % 1000)) / 1000;
+      (mTime - (mTime % LLONG_CONST(1000))) / LLONG_CONST(1000);
 
-    if (bounded) return MilliSeconds % 1000;
+    if (bounded) return MilliSeconds % LLONG_CONST(1000);
     else return MilliSeconds;
   }
 
 C_INT64 CCopasiTimeVariable::getSeconds(const bool & bounded) const
   {
     C_INT64 Seconds =
-      (mTime - (mTime % 1000000)) / 1000000;
+      (mTime - (mTime % LLONG_CONST(1000000))) / LLONG_CONST(1000000);
 
-    if (bounded) return Seconds % 60;
+    if (bounded) return Seconds % LLONG_CONST(60);
     else return Seconds;
   }
 
 C_INT64 CCopasiTimeVariable::getMinutes(const bool & bounded) const
   {
     C_INT64 Minutes =
-      (mTime - (mTime % 60000000)) / 60000000;
+      (mTime - (mTime % LLONG_CONST(60000000))) / LLONG_CONST(60000000);
 
-    if (bounded) return Minutes % 60;
+    if (bounded) return Minutes % LLONG_CONST(60);
     else return Minutes;
   }
 
 C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
   {
     C_INT64 Hours =
-      (mTime - (mTime % 3600000000LL)) / 3600000000LL;
+      (mTime - (mTime % LLONG_CONST(3600000000))) / LLONG_CONST(3600000000);
 
-    if (bounded) return Hours % 24;
+    if (bounded) return Hours % LLONG_CONST(24);
     else return Hours;
   }
 
 C_INT64 CCopasiTimeVariable::getDays() const
   {
     C_INT64 Days =
-      (mTime - (mTime % 86400000000LL)) / 86400000000LL;
+      (mTime - (mTime % LLONG_CONST(86400000000))) / LLONG_CONST(86400000000);
 
     return Days;
   }
@@ -190,7 +190,7 @@ CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
   timeval ttt;
   gettimeofday(&ttt, 0);
   C_INT64 time;
-  time = ((C_INT64) ttt.tv_sec) * 1000000 + (C_INT64) ttt.tv_usec;
+  time = ((C_INT64) ttt.tv_sec) * LLONG_CONST(1000000) + (C_INT64) ttt.tv_usec;
   return time;
 }
 #else
@@ -204,7 +204,7 @@ CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
   LARGE_INTEGER SystemTime;
   GetSystemTimeAsFileTime((FILETIME *) &SystemTime);
 
-  return SystemTime.QuadPart / 10;
+  return SystemTime.QuadPart / LLONG_CONST(10);
 }
 #endif
 
