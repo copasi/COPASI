@@ -91,7 +91,13 @@ C_INT main(C_INT argc, char *argv[])
 
   try
     {
+#ifdef WIN32
+      cout << "sizeof(long long) = " << sizeof(__int64) << endl;
+#else
+
       cout << "sizeof(long long) = " << sizeof(long long) << endl;
+#endif
+
       cout << "sizeof(long) = " << sizeof(long) << endl;
       cout << "sizeof(int) = " << sizeof(int) << endl;
       cout << "sizeof(short) = " << sizeof(short) << endl;
@@ -684,7 +690,7 @@ C_INT32 TestOptimization(void)
 
   CRand->optimise();
   cout << "result---best values";
-  for (int i = 0; i < 5; i++)
+  for (i = 0; i < 5; i++)
     {
       cout << CReal->getBestValue(i);
       cout << "\n";
