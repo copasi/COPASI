@@ -8,7 +8,9 @@
  ****************************************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
+
 #include "copasi.h"
+
 #include <qvariant.h>
 #include <qwidget.h>
 

@@ -21,12 +21,12 @@
 #include <qwhatsthis.h>
 
 #include "SteadyStateWidget.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
+#include "steadystate/steadystate.h"
 
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
+  mSteadyStateTask = NULL;
   if (!name)
     setName("SteadyStateWidget");
   resize(655, 639);
@@ -176,7 +176,9 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::RunTask()
 {
-  qWarning("SteadyStateWidget::RunTask(): Not implemented yet!");
+  if (mSteadyStateTask == NULL)
+    return;
+  mSteadyStateTask->process();
 }
 
 void SteadyStateWidget::taskNameChanged()

@@ -11,6 +11,8 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include "copasi.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -20,6 +22,10 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTable;
+class CTrajectoryTask;
+
+class CTrajectoryProblem;
+class CTrajectoryMethod;
 
 class TrajectoryWidget : public QWidget
   {
@@ -28,6 +34,7 @@ class TrajectoryWidget : public QWidget
   public:
     TrajectoryWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TrajectoryWidget();
+    CTrajectoryTask* mTrajectoryTask;
 
     QLabel* taskNameLabel;
     QFrame* line7;

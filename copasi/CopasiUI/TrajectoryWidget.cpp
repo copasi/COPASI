@@ -7,6 +7,7 @@
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #include "TrajectoryWidget.h"
+#include "trajectory/trajectory.h"
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -26,6 +27,7 @@
 TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
+  mTrajectoryTask = NULL;
   if (!name)
     setName("TrajectoryWidget");
   resize(719, 539);
@@ -143,5 +145,7 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::RunTask()
 {
-  qWarning("TrajectoryWidget::RunTask(): Not implemented yet!");
+  if (mTrajectoryTask == NULL)
+    return;
+  mTrajectoryTask->process();
 }
