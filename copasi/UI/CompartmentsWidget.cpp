@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:37 $
+   $Author: gasingh $ 
+   $Date: 2003/10/22 22:14:34 $
    End CVS Header */
 
 /*******************************************************************
@@ -85,12 +85,11 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
           SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this,
           SLOT(slotBtnCancelClicked()));
-
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
 
   connect(table, SIGNAL(currentChanged(int, int)),
-          this, SLOT(MyCurrentChanged(int, int)));
+          this, SLOT(CurrentValueChanged(int, int)));
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -156,7 +155,7 @@ void CompartmentsWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
-void CompartmentsWidget::MyCurrentChanged(int row, int col)
+void CompartmentsWidget::CurrentValueChanged(int row, int col)
 {
   //  at this point you know old values !
   prev_row = m_SavedRow;

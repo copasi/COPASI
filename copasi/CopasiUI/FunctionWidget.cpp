@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:38 $
+   $Author: gasingh $ 
+   $Date: 2003/10/16 20:37:53 $
    End CVS Header */
 
 /***********************************************************************
@@ -18,6 +18,7 @@
 
 #include <qlayout.h>
 #include <qwidget.h>
+#include <qpushbutton.h>
 
 #include "MyTable.h"
 #include "model/CModel.h"
@@ -52,10 +53,24 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
+  btnOK = new QPushButton("&OK", this);
+  btnCancel = new QPushButton("&Cancel", this);
+
+  QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
+
+  //To match the Table left Vertical Header Column Width.
+  hBoxLayout->addSpacing(32);
+  hBoxLayout->addSpacing(50);
+  hBoxLayout->addWidget(btnOK);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(50);
+
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Type");
   table->setFocusPolicy(QWidget::WheelFocus);
+  table->setColumnReadOnly(1, TRUE);
 
   // signals and slots connections
   // signals and slots connections
@@ -63,6 +78,12 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
           this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(table, SIGNAL(selectionChanged ()),
           this, SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this,
+          SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this,
+          SLOT(slotBtnCancelClicked()));
+  connect(table, SIGNAL(currentChanged(int, int)),
+          this, SLOT(CurrentValueChanged(int, int)));
 }
 
 void FunctionWidget::fillTable()
@@ -97,6 +118,64 @@ void FunctionWidget::fillTable()
 }
 
 //**************************************************************************
+
+void FunctionWidget::CurrentValueChanged(int row, int col) //By G
+{
+  //Save old values !
+  prev_row = m_SavedRow;
+  prev_col = m_SavedCol;
+
+  //Save for a future use
+  m_SavedCol = col;
+  m_SavedRow = row;
+}
+
+void FunctionWidget::slotBtnOKClicked() //By G
+{
+  CFunction *obj;
+  CCopasiVectorN < CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
+  C_INT32 j, jmax = objects.size();
+
+  int *renamed = new int[jmax];
+
+  table->setCurrentCell(jmax, 0);
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+      renamed[j] = 0;
+
+      //Allow change in name if type is 'user-defined'.
+      QString name(table->text(j, 0));
+      if (name.latin1() != obj->getName())
+        {
+          QString type(table->text(j, 1));
+          if (type == "user-defined")
+            {
+              obj->setName(name.latin1());
+              renamed[j] = 1;
+            }
+          else
+            table->setText(j, 0, obj->getName().c_str());
+        }
+    }
+
+  for (j = 0; j < jmax; ++j)
+    {
+      obj = objects[j];
+
+      if (renamed[j] == 1)
+        ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, obj->getKey());
+    }
+  table->setCurrentCell(prev_row, prev_col);
+
+  delete[] renamed;
+  return; //TODO: really check
+}
+
+void FunctionWidget::slotBtnCancelClicked()
+{
+  fillTable();
+}
 
 void FunctionWidget::createNewObject()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:38 $
+   $Author: gasingh $ 
+   $Date: 2003/10/16 20:37:53 $
    End CVS Header */
 
 /***********************************************************************
@@ -96,7 +96,7 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   connect(btnSwitchCols, SIGNAL(clicked ()),
           this, SLOT(slotBtnSwitchColsClicked())); //By G
   connect(table, SIGNAL(currentChanged(int, int)),
-          this, SLOT(MyCurrentChanged(int, int))); //By G
+          this, SLOT(CurrentValueChanged(int, int))); //By G
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -181,7 +181,7 @@ void MetabolitesWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
-void MetabolitesWidget::MyCurrentChanged(int row, int col)
+void MetabolitesWidget::CurrentValueChanged(int row, int col)
 {
   //  at this point you know old values !
   prev_row = m_SavedRow;

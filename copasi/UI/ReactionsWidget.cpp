@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Author: gasingh $ 
+   $Date: 2003/10/16 20:37:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -91,7 +91,7 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
           this, SLOT(slotBtnCancelClicked()));
 
   connect(table, SIGNAL(currentChanged(int, int)),
-          this, SLOT(MyCurrentChanged(int, int)));
+          this, SLOT(CurrentValueChanged(int, int)));
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -158,7 +158,7 @@ void ReactionsWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
-void ReactionsWidget::MyCurrentChanged(int row, int col)
+void ReactionsWidget::CurrentValueChanged(int row, int col)
 {
   //  at this point you know old values !
   prev_row = m_SavedRow;
@@ -191,7 +191,7 @@ void ReactionsWidget::slotBtnOKClicked()
 
       //name
       QString name(table->text(j, 0));
-      if (name.latin1() != obj->getName())
+      if (name.latin1() != mRi.getReactionName())
         {
           mRi.setReactionName(name.latin1());
           changed[j] = 1;
@@ -199,16 +199,18 @@ void ReactionsWidget::slotBtnOKClicked()
 
       //equation
       QString equation(table->text(j, 1));
-      std::string eq = equation.latin1();
-      if (eq != obj->getChemEq().getName())
+      if (equation.latin1() != mRi.getChemEqString())
         {
           //first check if the string is a valid equation
-          if (!CChemEqInterface::isValidEq(eq))
-            std::cout << "Not a valid equation!\n\n";
+          if (!CChemEqInterface::isValidEq(equation.latin1()))
+            {
+              std::cout << "Not a valid equation!\n\n";
+              table->setText(j, 1, mRi.getChemEqString().c_str());
+            }
           else
             {
-              // tell the reaction interface
-              mRi.setChemEqString(eq);
+              //tell the reaction interface
+              mRi.setChemEqString(equation.latin1());
               changed[j] = 1;
             }
         }
@@ -220,8 +222,8 @@ void ReactionsWidget::slotBtnOKClicked()
       if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
 
       // update the widget
-      table->setText(j, 0, mRi.getReactionName().c_str());
-      table->setText(j, 1, mRi.getChemEqString().c_str());
+      //table->setText(j, 0, mRi.getReactionName().c_str());
+      //table->setText(j, 1, mRi.getChemEqString().c_str());
     }
 
   for (j = 0; j < jmax; ++j)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:47 $
+   $Author: gasingh $ 
+   $Date: 2003/10/16 20:37:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -53,7 +53,7 @@ class CompartmentsWidget : public CopasiWidget
     virtual void slotBtnCancelClicked();
     virtual void tableValueChanged(int, int);
 
-    virtual void MyCurrentChanged(int, int);
+    virtual void CurrentValueChanged(int, int);
 
   private:
     void fillTable();

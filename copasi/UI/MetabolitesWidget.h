@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:52 $
+   $Author: gasingh $ 
+   $Date: 2003/10/16 20:37:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,7 +54,7 @@ class MetabolitesWidget : public CopasiWidget
     virtual void tableValueChanged(int, int);
 
     virtual void slotBtnSwitchColsClicked(); //By G
-    virtual void MyCurrentChanged(int, int); //By G
+    virtual void CurrentValueChanged(int, int); //By G
 
   private:
     void fillTable();
