@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:54:29 $
+   $Date: 2005/01/21 18:54:02 $
    End CVS Header */
 
 /**
@@ -146,17 +146,15 @@ COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
   = (CCopasiParameterGroup *) getValue("OptimizationItemList");
   pOptimizationItemList->addGroup("OptimizationItem");
 
-  CCopasiParameterGroup * pOptItem = (CCopasiParameterGroup *) pOptimizationItemList->getValue(index);
-  pOptItem->addParameter("ObjectCN", CCopasiParameter::STRING, (std::string) objectCN);
-  pOptItem->addParameter("LowerBound", CCopasiParameter::STRING, (std::string) "-inf");
-  pOptItem->addParameter("LowerRelation", CCopasiParameter::STRING, (std::string) "<=");
-  pOptItem->addParameter("UpperBound", CCopasiParameter::STRING, (std::string) "inf");
-  pOptItem->addParameter("UpperRelation", CCopasiParameter::STRING, (std::string) "<=");
+  CCopasiParameterGroup * pOptItem =
+    (CCopasiParameterGroup *) pOptimizationItemList->getValue(index);
 
-  if (!pOptItem || !COptItem::isValid(*pOptItem)) fatalError();
+  assert(pOptItem != NULL);
 
-  COptItem Item(*pOptItem);
-  return Item;
+  COptItem OptItem(*pOptItem);
+  if (!OptItem.initialize(objectCN)) fatalError();
+
+  return OptItem;
 }
 
 bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
