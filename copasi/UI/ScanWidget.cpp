@@ -20,8 +20,9 @@
 #include <qwhatsthis.h>
 #include <qscrollview.h>
 #include "ScanWidget.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
+#include "scan/CScanTask.h"
+#include "scan/CScanProblem.h"
+#include "scan/CScanMethod.h"
 #include "model/CModel.h"
 #include "listviews.h"
 
@@ -110,11 +111,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
       vBox->setSpacing(25);
     }
 
-  //QScrollBar * scrollbar=new QScrollBar(Orientation::Vertical,scrollview,0);
   scrollview->addChild(vBox);
-  //ScanWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
-  //ScanWidgetLayout->addItem(vBoxLayout);
 
   taskStability = new QCheckBox(this, "taskStability");
   taskStability->setText(trUtf8("Trajectory"));
@@ -131,175 +129,26 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
 
-  // signals and slots connections
-  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
-  //connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
-  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
-  //connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  //connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
-  //connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,SLOT(loadModelNodes(CModel*)));
-
   // tab order
   setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, taskJacobian);
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
-  //setTabOrder(parameterTable, bRunButton);
-  //setTabOrder(bRunButton, commitChange);
   setTabOrder(commitChange, cancelChange);
-
-  mSteadyStateTask = NULL;
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 ScanWidget::~ScanWidget()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-void ScanWidget::CancelChange()
+void ScanWidget::loadScan(CModel *model)
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  loadScan(mSteadyStateTask);
-}
-
-void ScanWidget::CommitChange()
-{
-  if (mSteadyStateTask == NULL)
-    return;
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
-
-  bool bJacobian = taskJacobian->isChecked ();
-  bool bStatistics = taskStability->isChecked ();
-
-  steadystateproblem->setJacobianRequested(bJacobian);
-  steadystateproblem->setStabilityAnalysisRequested(bStatistics);
-
-  QTableItem * pItem;
-  QString substrate;
-  QString strname;
-  unsigned C_INT32 i;
-  for (i = 0; i < steadystatemethod->size(); i++)
+  if (model != NULL)
     {
-      pItem = parameterTable->item(i, 0);
-      substrate = pItem->text();
-      strname = (steadystatemethod->getName(i)).c_str();
-      switch (steadystatemethod->getType((const char *)strname.utf8()))
-        {
-        case CMethodParameter::DOUBLE:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      substrate.toDouble());
-          break;
-        case CMethodParameter::INT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (C_INT32) substrate.toInt());
-          break;
-        case CMethodParameter::UINT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (unsigned C_INT32) substrate.toUInt());
-          break;
-        case CMethodParameter::BOOL:;
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (bool) substrate.toUShort());
-          break;
-        }
-    }
-  loadScan(mSteadyStateTask);
-}
-/*void  ScanWidget::RunButtonClicked()
-{
-  if (mSteadyStateTask == NULL)
-    return;
-  if (!bExecutable->isChecked())
-    bRunButton->setEnabled(false);
-  else
-    bRunButton->setEnabled(true);
-}
- 
-void  ScanWidget::parameterValueChanged()
-{
-  qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
-}
- 
-void  ScanWidget::RunTask()
-{
-  if (mSteadyStateTask == NULL)
-    return;
- 
-  mSteadyStateTask->getProblem()->getModel()->compile();
-  mSteadyStateTask->getProblem()->
-  setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
- 
-  std::ofstream output("steadystate.txt");
-  mSteadyStateTask->initializeReporting(output);
- 
-  mSteadyStateTask->process();
- 
-  emit runFinished(mSteadyStateTask->getProblem()->getModel());
-}
- */
-void ScanWidget::loadScan(CSteadyStateTask *steadystatetask)
-{
-  if (steadystatetask == NULL)
-    return;
-  mSteadyStateTask = steadystatetask;
-  CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
-  CSteadyStateMethod* steadystatemethod = steadystatetask->getMethod();
-
-  taskName->setText(tr("Steady State Task"));
-  taskName->setEnabled(false);
-
-  bool bJacobian = steadystateproblem->isJacobianRequested();
-  bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
-  taskJacobian->setChecked(bJacobian);
-  taskStability->setChecked(bStatistics);
-
-  QTableItem * pItem;
-  QString substrate;
-  QString strname;
-
-  parameterTable->setNumRows(steadystatemethod->size());
-  QHeader *rowHeader = parameterTable->verticalHeader();
-
-  int i;
-  for (i = 0; i < steadystatemethod->size(); i++)
-    {
-      strname = (steadystatemethod->getName(i)).c_str();
-      rowHeader->setLabel(i, tr(strname));
-    }
-
-  for (i = 0; i < steadystatemethod->size(); i++)
-    {
-      strname = (steadystatemethod->getName(i)).c_str();
-      substrate = QString::number(steadystatemethod->getValue((const char *)strname.utf8()));
-      pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
-      parameterTable->setItem(i, 0, pItem);
-    }
-
-  /*if (!bExecutable->isChecked())
-    bRunButton->setEnabled(false);
-  else
-    bRunButton->setEnabled(true);*/
-}
-
-/*void  ScanWidget::ExportToFile()
-{
-  if (!mSteadyStateTask) return;
-  QString textFile = QFileDialog::getSaveFileName(
-                       QString::null, "TEXT Files (*.txt)",
-                       this, "save file dialog",
-                       "Choose a file");
- 
-  if (mSteadyStateTask && textFile)
-    {
-      textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
-      mSteadyStateTask->save(outbuf);
+      mModel = model;
+      taskName->setText(tr("Scan"));
+      //scanTask= new CScanTask();
+      //scanTask->getProblem()->setModel(model);
     }
 }
- */

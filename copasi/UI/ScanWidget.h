@@ -19,9 +19,9 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTable;
-class CSteadyStateTask;
-class CSteadyStateProblem;
-class CSteadyStateMethod;
+class CScanTask;
+class CScanProblem;
+class CScanMethod;
 class CModel;
 
 class ScanWidget : public QWidget
@@ -31,8 +31,8 @@ class ScanWidget : public QWidget
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    CSteadyStateTask *mSteadyStateTask;
-    void loadScan(CSteadyStateTask* steadystatetask);
+    CScanTask *scanTask;
+    void loadScan(CModel *model);
 
     QFrame* line7;
     QFrame* line6;
@@ -46,25 +46,16 @@ class ScanWidget : public QWidget
     QCheckBox* bExecutable;
     QLineEdit* taskName;
     QTable* parameterTable, *parameterTable1;
-    QPushButton* bRunButton;
     QPushButton* commitChange;
     QPushButton* cancelChange;
-    QPushButton* ExportFileButton;
-
-  signals:
-    virtual void runFinished(CModel*);
-
-  public slots:
-    virtual void CancelChange();
-    virtual void CommitChange();
-    // virtual void ExportToFile();
-    //virtual void parameterValueChanged();
-    //virtual void RunButtonClicked();
-    //virtual void RunTask();
 
   protected:
     QGridLayout* ScanWidgetLayout;
     QHBoxLayout* Layout2;
+    CModel *mModel;
+
+  signals:
+  public slots:
   };
 
 #endif
