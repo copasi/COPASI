@@ -31,7 +31,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 {
   if (!name)
     setName("MetabolitesWidget1");
-  resize(719, 539);
+  resize(708, 367);
   setCaption(trUtf8("MetabolitesWidget1"));
   MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 
@@ -57,25 +57,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   MetabolitesWidget1Layout->addMultiCellWidget(ComboBox1, 1, 1, 1, 2);
 
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
-
-  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 3);
-
-  Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
-
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit Changes"));
-  Layout7->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Cancel Changes"));
-  Layout7->addWidget(cancelChanges);
-
-  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
-
   Line1_3 = new QFrame(this, "Line1_3");
   Line1_3->setFrameShape(QFrame::HLine);
   Line1_3->setFrameShadow(QFrame::Sunken);
@@ -83,20 +64,19 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   MetabolitesWidget1Layout->addMultiCellWidget(Line1_3, 2, 2, 0, 3);
 
-  ButtonGroup2 = new QButtonGroup(this, "ButtonGroup2");
-  ButtonGroup2->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup2->setTitle(trUtf8(""));
-  ButtonGroup2->setExclusive(TRUE);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Metabolite Status"));
 
-  RadioButton1 = new QRadioButton(ButtonGroup2, "RadioButton1");
-  RadioButton1->setGeometry(QRect(18, 17, 88, 19));
-  RadioButton1->setText(trUtf8("Fixed"));
+  MetabolitesWidget1Layout->addWidget(TextLabel1, 3, 2);
 
-  RadioButton2 = new QRadioButton(ButtonGroup2, "RadioButton2");
-  RadioButton2->setGeometry(QRect(18, 60, 88, 19));
-  RadioButton2->setText(trUtf8("Variable"));
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Metabolite Status Select"));
 
-  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup2, 3, 4, 1, 1);
+  MetabolitesWidget1Layout->addWidget(TextLabel2, 3, 0);
+  QSpacerItem* spacer = new QSpacerItem(81, 90, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  MetabolitesWidget1Layout->addItem(spacer, 4, 2);
+  QSpacerItem* spacer_2 = new QSpacerItem(100, 90, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  MetabolitesWidget1Layout->addItem(spacer_2, 4, 0);
 
   ButtonGroup3 = new QButtonGroup(this, "ButtonGroup3");
   ButtonGroup3->setFrameShape(QButtonGroup::WinPanel);
@@ -104,15 +84,15 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   ButtonGroup3->setTitle(trUtf8(""));
   ButtonGroup3->setExclusive(TRUE);
 
-  RadioButton4 = new QRadioButton(ButtonGroup3, "RadioButton4");
-  RadioButton4->setEnabled(FALSE);
-  RadioButton4->setGeometry(QRect(21, 50, 148, 19));
-  RadioButton4->setText(trUtf8("Independent"));
-
   RadioButton5 = new QRadioButton(ButtonGroup3, "RadioButton5");
   RadioButton5->setEnabled(FALSE);
   RadioButton5->setGeometry(QRect(22, 80, 148, 19));
   RadioButton5->setText(trUtf8("Dependent"));
+
+  RadioButton4 = new QRadioButton(ButtonGroup3, "RadioButton4");
+  RadioButton4->setEnabled(FALSE);
+  RadioButton4->setGeometry(QRect(21, 49, 148, 19));
+  RadioButton4->setText(trUtf8("Independent"));
 
   RadioButton3 = new QRadioButton(ButtonGroup3, "RadioButton3");
   RadioButton3->setEnabled(FALSE);
@@ -175,22 +155,42 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   TextLabel7->setText(trUtf8("Initial  Concentration"));
 
   MetabolitesWidget1Layout->addWidget(TextLabel7, 6, 0);
-  QSpacerItem* spacer = new QSpacerItem(680, 170, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addMultiCell(spacer, 9, 9, 0, 3);
-  QSpacerItem* spacer_2 = new QSpacerItem(81, 110, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addItem(spacer_2, 4, 2);
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Metabolite Status"));
+  ButtonGroup2 = new QButtonGroup(this, "ButtonGroup2");
+  ButtonGroup2->setFrameShape(QButtonGroup::WinPanel);
+  ButtonGroup2->setTitle(trUtf8(""));
+  ButtonGroup2->setExclusive(TRUE);
 
-  MetabolitesWidget1Layout->addWidget(TextLabel1, 3, 2);
-  QSpacerItem* spacer_3 = new QSpacerItem(100, 110, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  MetabolitesWidget1Layout->addItem(spacer_3, 4, 0);
+  RadioButton1 = new QRadioButton(ButtonGroup2, "RadioButton1");
+  RadioButton1->setGeometry(QRect(18, 17, 88, 19));
+  RadioButton1->setText(trUtf8("Fixed"));
 
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Metabolite Status Select"));
+  RadioButton2 = new QRadioButton(ButtonGroup2, "RadioButton2");
+  RadioButton2->setGeometry(QRect(18, 45, 88, 19));
+  RadioButton2->setText(trUtf8("Variable"));
 
-  MetabolitesWidget1Layout->addWidget(TextLabel2, 3, 0);
+  MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup2, 3, 4, 1, 1);
+  QSpacerItem* spacer_3 = new QSpacerItem(680, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  MetabolitesWidget1Layout->addMultiCell(spacer_3, 9, 9, 0, 3);
+
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
+
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 10, 10, 0, 3);
+
+  Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
+
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit Changes"));
+  Layout7->addWidget(commitChanges);
+
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Cancel Changes"));
+  Layout7->addWidget(cancelChanges);
+
+  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 11, 11, 0, 3);
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
