@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Sun Mar 2 19:39:26 2003
+ ** Created: Sun Mar 2 20:34:14 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -9,6 +9,7 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 #include <qmessagebox.h>
+#include <QFileDialog.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -39,19 +40,12 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-
-  TrajectoryWidgetLayout->addMultiCellWidget(line6, 9, 9, 0, 4);
-
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
   line8->setFrameShadow(QFrame::Sunken);
   line8->setFrameShape(QFrame::HLine);
 
-  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 4);
+  TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
 
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
@@ -59,7 +53,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
 
-  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 4);
+  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 8, 8, 1, 3);
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
@@ -71,22 +65,22 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   line7->setFrameShadow(QFrame::Sunken);
   line7->setFrameShape(QFrame::HLine);
 
-  TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 4);
+  TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 3);
 
   line7_2 = new QFrame(this, "line7_2");
   line7_2->setFrameShape(QFrame::HLine);
   line7_2->setFrameShadow(QFrame::Sunken);
   line7_2->setFrameShape(QFrame::HLine);
 
-  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 4, 4, 0, 4);
+  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 4, 4, 0, 3);
 
   taskName = new QLineEdit(this, "taskName");
 
-  TrajectoryWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 3);
+  TrajectoryWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 2);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
 
-  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 3);
+  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
 
   nStartTime = new QLineEdit(this, "nStartTime");
   nStartTime->setText(trUtf8(""));
@@ -96,7 +90,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
 
-  TrajectoryWidgetLayout->addWidget(bExecutable, 0, 4);
+  TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
 
   parameterValueLabel = new QLabel(this, "parameterValueLabel");
   parameterValueLabel->setText(trUtf8("Parameter value"));
@@ -131,17 +125,24 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   nEndTime = new QLineEdit(this, "nEndTime");
   nEndTime->setText(trUtf8(""));
 
-  TrajectoryWidgetLayout->addMultiCellWidget(nEndTime, 3, 3, 3, 4);
+  TrajectoryWidgetLayout->addWidget(nEndTime, 3, 3);
 
   nStepNumber = new QLineEdit(this, "nStepNumber");
   nStepNumber->setText(trUtf8(""));
 
-  TrajectoryWidgetLayout->addMultiCellWidget(nStepNumber, 2, 2, 3, 4);
+  TrajectoryWidgetLayout->addWidget(nStepNumber, 2, 3);
 
   TextLabel1_2 = new QLabel(this, "TextLabel1_2");
   TextLabel1_2->setText(trUtf8("Step Number"));
 
   TrajectoryWidgetLayout->addWidget(TextLabel1_2, 2, 2);
+
+  line6 = new QFrame(this, "line6");
+  line6->setFrameShape(QFrame::HLine);
+  line6->setFrameShadow(QFrame::Sunken);
+  line6->setFrameShape(QFrame::HLine);
+
+  TrajectoryWidgetLayout->addMultiCellWidget(line6, 9, 9, 0, 3);
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
@@ -158,7 +159,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange->setText(trUtf8("Cancel Change"));
   Layout2->addWidget(cancelChange);
 
-  TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 4);
+  ExportToFileButton = new QPushButton(this, "ExportToFileButton");
+  ExportToFileButton->setText(trUtf8("Export To File"));
+  Layout2->addWidget(ExportToFileButton);
+
+  TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 3);
 
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
@@ -166,6 +171,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(RunTask()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
+  connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
 
   mTrajectoryTask = NULL;
 }
@@ -329,4 +335,20 @@ void TrajectoryWidget::UpdateMethod()
     }
 
   loadTrajectoryTask(mTrajectoryTask);
+}
+
+void TrajectoryWidget::ExportToFile()
+{
+  if (!mTrajectoryTask) return;
+  QString textFile = QFileDialog::getSaveFileName(
+                       QString::null, "TEXT Files (*.txt)",
+                       this, "save file dialog",
+                       "Choose a file");
+
+  if (mTrajectoryTask && textFile)
+    {
+      textFile += ".txt";
+      CWriteConfig outbuf((const char *)textFile.utf8());
+      mTrajectoryTask->save(outbuf);
+    }
 }

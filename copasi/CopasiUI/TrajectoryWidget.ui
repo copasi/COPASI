@@ -31,21 +31,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="Line" row="9" column="0" rowspan="1" colspan="5">
-            <property name="name">
-                <cstring>line6</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="Line" row="1" column="0" rowspan="1" colspan="5">
+        <widget class="Line" row="1" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>line8</cstring>
             </property>
@@ -59,7 +45,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QTable" row="8" column="1" rowspan="1" colspan="4">
+        <widget class="QTable" row="8" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>parameterTable</cstring>
             </property>
@@ -78,7 +64,7 @@
                 <string>Task Name</string>
             </property>
         </widget>
-        <widget class="Line" row="6" column="0" rowspan="1" colspan="5">
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>line7</cstring>
             </property>
@@ -92,7 +78,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="Line" row="4" column="0" rowspan="1" colspan="5">
+        <widget class="Line" row="4" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>line7_2</cstring>
             </property>
@@ -106,12 +92,12 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="3">
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>taskName</cstring>
             </property>
         </widget>
-        <widget class="QComboBox" row="5" column="1" rowspan="1" colspan="3">
+        <widget class="QComboBox" row="5" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>ComboBox1</cstring>
             </property>
@@ -124,7 +110,7 @@
                 <string></string>
             </property>
         </widget>
-        <widget class="QCheckBox" row="0" column="4">
+        <widget class="QCheckBox" row="0" column="3">
             <property name="name">
                 <cstring>bExecutable</cstring>
             </property>
@@ -180,7 +166,7 @@
                 <string>End Time</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="3" column="3" rowspan="1" colspan="2">
+        <widget class="QLineEdit" row="3" column="3">
             <property name="name">
                 <cstring>nEndTime</cstring>
             </property>
@@ -188,7 +174,7 @@
                 <string></string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="2" column="3" rowspan="1" colspan="2">
+        <widget class="QLineEdit" row="2" column="3">
             <property name="name">
                 <cstring>nStepNumber</cstring>
             </property>
@@ -204,7 +190,21 @@
                 <string>Step Number</string>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="10" column="0" rowspan="1" colspan="5">
+        <widget class="Line" row="9" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line6</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="10" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>Layout2</cstring>
             </property>
@@ -242,6 +242,14 @@
                         <string>Cancel Change</string>
                     </property>
                 </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ExportToFileButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Export To File</string>
+                    </property>
+                </widget>
             </hbox>
         </widget>
     </grid>
@@ -277,13 +285,20 @@
         <receiver>TrajectoryWidget</receiver>
         <slot>UpdateMethod()</slot>
     </connection>
+    <connection>
+        <sender>ExportToFileButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>ExportToFile()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>CancelChange()</slot>
     <slot>CommitChange()</slot>
     <slot>EnableRunTask()</slot>
-    <slot>UpdateMethod()</slot>
+    <slot>ExportToFile()</slot>
     <slot>RunTask()</slot>
+    <slot>UpdateMethod()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Sun Mar 2 14:02:22 2003
+ ** Created: Sun Mar 2 20:34:14 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -11,7 +11,6 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -22,7 +21,6 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTable;
-
 class CTrajectoryTask;
 class CTrajectoryProblem;
 class CTrajectoryMethod;
@@ -37,7 +35,6 @@ class TrajectoryWidget : public QWidget
     CTrajectoryTask* mTrajectoryTask;
     void loadTrajectoryTask(CTrajectoryTask *trajectorytask);
 
-    QFrame* line6;
     QFrame* line8;
     QTable* parameterTable;
     QLabel* taskNameLabel;
@@ -56,16 +53,19 @@ class TrajectoryWidget : public QWidget
     QLineEdit* nEndTime;
     QLineEdit* nStepNumber;
     QLabel* TextLabel1_2;
+    QFrame* line6;
     QPushButton* bRunTask;
     QPushButton* commitChange;
     QPushButton* cancelChange;
+    QPushButton* ExportToFileButton;
 
   public slots:
     virtual void CancelChange();
     virtual void CommitChange();
     virtual void EnableRunTask();
-    virtual void UpdateMethod();
+    virtual void ExportToFile();
     virtual void RunTask();
+    virtual void UpdateMethod();
 
   protected:
     QGridLayout* TrajectoryWidgetLayout;
