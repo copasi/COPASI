@@ -33,6 +33,11 @@ class CFunctionParameter : public CCopasiContainer
 
   private:
     /**
+     * The key of the function parameter
+     */
+    std::string mKey;
+
+    /**
      *  The name of the parameter. 
      */
     std::string & mName;
@@ -106,6 +111,12 @@ class CFunctionParameter : public CCopasiContainer
      *  @return Fail
      */
     virtual void save(CWriteConfig & configbuffer);
+
+    /**
+     *  Retrieves the key of the function parameter.
+     *  @return std::string name
+     */
+    std::string getKey() const;
 
     /**
      *  Retrieves the name of the parameter

@@ -8,6 +8,7 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionParameter.h"
+#include "report/CKeyFactory.h"
 
 const std::string CFunctionParameter::DataTypeName[] =
   {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
@@ -15,6 +16,7 @@ const std::string CFunctionParameter::DataTypeName[] =
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
+    mKey(CKeyFactory::add("FunctionParameter", this)),
     mName(mObjectName),
     mType((CFunctionParameter::DataType) - 1),
     mUsage("unknown")
@@ -23,6 +25,7 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("FunctionParameter", this)),
     mName(mObjectName),
     mType(src.mType),
     mUsage(src.mUsage)
@@ -33,12 +36,17 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const std::string &usage,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
+    mKey(CKeyFactory::add("FunctionParameter", this)),
     mName(mObjectName),
     mType(type),
     mUsage(usage)
 {CONSTRUCTOR_TRACE;}
 
-CFunctionParameter::~CFunctionParameter() {DESTRUCTOR_TRACE;}
+CFunctionParameter::~CFunctionParameter()
+{
+  CKeyFactory::remove(mKey);
+  DESTRUCTOR_TRACE;
+}
 
 void CFunctionParameter::cleanup() {}
 
@@ -57,30 +65,18 @@ void CFunctionParameter::save(CWriteConfig & configbuffer)
   configbuffer.setVariable("Usage", "string", &mUsage);
 }
 
-void CFunctionParameter::setName(const std::string & name)
-{
-  mName = name;
-}
+void CFunctionParameter::setName(const std::string & name) {mName = name;}
 
-const std::string & CFunctionParameter::getName() const
-  {
-    return mName;
-  }
+std::string CFunctionParameter::getKey() const {return mKey;}
 
-void CFunctionParameter::setUsage(const std::string & usage)
-{
-  mUsage = usage;
-}
+const std::string & CFunctionParameter::getName() const {return mName;}
 
-const std::string & CFunctionParameter::getUsage() const
-  {
-    return mUsage;
-  }
+void CFunctionParameter::setUsage(const std::string & usage) {mUsage = usage;}
+
+const std::string & CFunctionParameter::getUsage() const {return mUsage;}
 
 void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
-{
-  mType = type;
-}
+{mType = type;}
 
 const CFunctionParameter::DataType &
 
