@@ -47,6 +47,7 @@ class ScanScrollView: public QScrollView
     ScanScrollView(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     virtual void contentsMousePressEvent (QMouseEvent * e);
     virtual void resizeEvent (QResizeEvent * e);
+    virtual void viewportResizeEvent (QResizeEvent *e);
   };
 
 class ScanWidget : public CopasiWidget
