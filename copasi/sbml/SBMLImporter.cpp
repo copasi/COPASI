@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/24 21:05:07 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:56:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -24,7 +24,6 @@
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 
-#include "sbml/config.h"
 #include "sbml/SBMLReader.hpp"
 #include "sbml/SBMLDocument.hpp"
 #include "sbml/Compartment.hpp"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/06 12:55:40 $
+   $Author: gauges $ 
+   $Date: 2004/08/06 14:56:40 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -210,6 +210,9 @@ void DataModel::loadModel(const char* fileName)
       //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
       //tmpHandler->setPlotSpecVectorAddress(plotspecs);
+      pdelete(pOptFunction);
+      pOptFunction = new COptFunction();
+      //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
     }
 
   model->setCompileFlag();
@@ -239,7 +242,7 @@ void DataModel::saveModel(const char* fileName)
   //  if (scantask) TaskList.add(scantask);
   XML.setTaskList(TaskList);
 
-  //TODO XML.setPlotList(*plotspecs);
+  XML.setPlotList(*plotspecs);
   XML.save(os);
 }
 
