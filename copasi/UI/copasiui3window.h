@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/10 16:03:06 $
+   $Author: stupe $ 
+   $Date: 2004/12/02 08:02:30 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -37,6 +37,7 @@ class CopasiUI3Window : public QMainWindow
 
   public slots:
     void slotToggleSliders();
+    void slotObjectBrowserDialog();
 
   protected slots:
     void slotFileOpen(QString file = QString::null);
@@ -46,7 +47,6 @@ class CopasiUI3Window : public QMainWindow
     void slotFilePrint();
     void slotImportSBML();
     void slotExportSBML();
-    void slotObjectBrowserDialog();
     void slotTutorialWizard();
     void about();
     void aboutQt();
@@ -61,7 +61,8 @@ class CopasiUI3Window : public QMainWindow
     int newFlag;
     QString gpsFile;
     QToolButton * msave_button;
-    QPopupMenu * mpFileMenu;
+    QPopupMenu * mpFileMenu, * tools;
+
     int nsave_menu_id;
     int nsaveas_menu_id;
     int nexport_menu_SBML;

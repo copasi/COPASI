@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserDialog.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/08 07:11:23 $
+   $Author: stupe $ 
+   $Date: 2004/12/02 08:03:32 $
    End CVS Header */
 
 #include "ObjectBrowserDialog.h"
@@ -11,7 +11,7 @@
 #include "qlayout.h"
 #include "qframe.h" 
 //#include "copasi.h"
-//#include "copasiui3window.h"
+#include "copasiui3window.h"
 #include "report/CCopasiObject.h"
 #include "ObjectBrowserWidget.h" 
 //#include "qtUtilities.h"
@@ -101,6 +101,11 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
 
 ObjectBrowserDialog::~ObjectBrowserDialog()
 {
+  CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
+  if (uiWindowParent)
+    {
+      uiWindowParent->slotObjectBrowserDialog();
+    }
   cleanup();
 }
 
