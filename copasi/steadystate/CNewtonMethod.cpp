@@ -295,10 +295,10 @@ CNewtonMethod::processNewton (CStateX & steadyState,
     {
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
-      DebugFile << "Iteration: " << k << std::endl;
+      //      DebugFile << "Iteration: " << k << std::endl;
       steadyState.getJacobian(mJacobian, std::min(mFactor, mMaxrate),
                               mResolution);
-      DebugFile << "Jacobien: " << mJacobian << std::endl;
+      //      DebugFile << "Jacobien: " << mJacobian << std::endl;
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -395,11 +395,11 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *  info    (output) INTEGER
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
-       */
-      DebugFile << "b: " << mdxdt << std::endl;
+       */ 
+      //      DebugFile << "b: " << mdxdt << std::endl;
       dgetrs_(&T, &mDimension, &one, mJacobian.array(),
               &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
-      DebugFile << "a: " << mdxdt << std::endl << std::endl;
+      //      DebugFile << "a: " << mdxdt << std::endl << std::endl;
 
       if (info)
         fatalError();
@@ -421,7 +421,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,            /* fortran style vector */
+                           mdxdt.array() - 1,             /* fortran style vector */
                            1);
         }
 
@@ -478,7 +478,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,            /* fortran style vector */
+                   mdxdt.array() - 1,             /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

@@ -67,10 +67,6 @@ tam@wri.com
   the time to Sleep.                    Pedro Mendes 15/8/1996
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <float.h>
-#include <algorithm> 
 // #define DBL_EPSILON 2.2204460492503131e-16
 
 #ifndef _ZTC
@@ -84,9 +80,13 @@ tam@wri.com
 #include "mem.h"
 #endif
 
+#include <stdio.h>
+#include <math.h>
+#include <float.h>
+#include <algorithm>
 #include <assert.h>
 
-#define  COPASI_TRACE_CONSTRUCTION
+// #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 #include "CTrajectoryMethod.h"
@@ -194,25 +194,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                        // number of variables
-        mY - 1,                      // the array of current concentrations
+  lsoda(mDim,                         // number of variables
+        mY - 1,                       // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                      // the current time
-        mTime + deltaT,              // the final time
-        1,                           // scalar error control
-        (&mRtol) - 1,                // relative tolerance array
+        &mTime,                       // the current time
+        mTime + deltaT,               // the final time
+        1,                            // scalar error control
+        (&mRtol) - 1,                 // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                // absolute tolerance array
+        (&mAtol) - 1,                 // absolute tolerance array
         // fortran style vector !!!
-        1,                           // output by overshoot & interpolatation
-        &mLsodaStatus,               // the state control variable
-        1,                           // optional inputs are being used
-        2,                           // jacobian calculated internally
-        0, 0, 0,                     // options left at default values
-        10000,                       // max iterations for each lsoda call
-        0,                           // another value left at the default
-        mAdams,                      // max order for Adams method
-        mBDF,                        // max order for BDF method
+        1,                            // output by overshoot & interpolatation
+        &mLsodaStatus,                // the state control variable
+        1,                            // optional inputs are being used
+        2,                            // jacobian calculated internally
+        0, 0, 0,                      // options left at default values
+        10000,                        // max iterations for each lsoda call
+        0,                            // another value left at the default
+        mAdams,                       // max order for Adams method
+        mBDF,                         // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -878,7 +878,11 @@ void CLsodaMethod::lsoda(C_INT32 neq,
       if (h0 == 0.)
         {
           tdist = fabs(tout - *t);
-          w0 = std::max(fabs(*t), fabs(tout));
+          /* :TODO: Visual C++ breaks on the follwing line */
+          // w0 = std::max(fabs(*t), fabs(tout));
+          C_FLOAT64 myHack = fabs(*t);
+          C_FLOAT64 myHack2 = fabs(tout);
+          w0 = std::max(myHack, myHack2);
           if (tdist < 2. * DBL_EPSILON * w0)
             {
               if (prfl)
@@ -2612,7 +2616,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,         /* Fortran style vector */
+                        C_FLOAT64 * y,          /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

@@ -645,6 +645,6 @@ void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
           }
       }
 
-    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
+    //    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
     return;
   }
