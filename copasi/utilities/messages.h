@@ -55,6 +55,9 @@ MESSAGES Messages[] =
     {MCTrajectoryMethod + 3, "CTrajectoryMethod (2): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
 
+    // XML Package
+    {MCXML + 1, "XML (1:) Required attribute '%s' not found (line: '%d')."},
+
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
   };

@@ -25,6 +25,7 @@ Message;
 #define MCParameter           MCopasiBase + 1000
 #define MCChemEq              MCopasiBase + 1100
 #define MCTrajectoryMethod    MCopasiBase + 1200
+#define MCXML                 MCopasiBase + 1300
 
 /**
  *  This throws an exception with information where the error occured.
