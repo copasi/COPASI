@@ -90,9 +90,10 @@ class ScanWidget : public CopasiWidget
     QCheckBox* trajectory;
     QToolButton* eTrajectory;
 
+    std::string SteadyStateKey;
+    std::string TrajectoryKey;
     SteadyStateWidget* pSteadyStateWidget;
     TrajectoryWidget* pTrajectoryWidget;
-
     std::vector<QWidget*> selectedList;
 
   protected:

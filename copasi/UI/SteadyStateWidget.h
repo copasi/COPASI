@@ -34,11 +34,16 @@ class SteadyStateWidget : public CopasiWidget
     Q_OBJECT
 
   public:
+    //    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    //    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
     SteadyStateWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~SteadyStateWidget();
-    CSteadyStateTask *mSteadyStateTask;
-    void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
-    CSteadyStateTask* getSteadyStateTask() const {return mSteadyStateTask;};
+    //    CSteadyStateTask *mSteadyStateTask;
+    //   CSteadyStateTask* getSteadyStateTask() const {return mSteadyStateTask;};
+
+    void loadSteadyStateTask();
     void setModel(CModel* newModel);
 
     QFrame* line7;
@@ -72,6 +77,7 @@ class SteadyStateWidget : public CopasiWidget
   protected:
     QGridLayout* SteadyStateWidgetLayout;
     QHBoxLayout* Layout2;
+    std::string objKey;
   };
 
 #endif // STEADYSTATEWIDGET_H

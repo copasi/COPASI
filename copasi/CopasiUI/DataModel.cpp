@@ -82,6 +82,7 @@ void DataModel::loadModel(const char* fileName)
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->load(inbuf);
+  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();

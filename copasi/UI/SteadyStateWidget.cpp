@@ -1,10 +1,10 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 02/03 
-  Comment : SteadyStateWidget
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 02/03 
+ Comment : SteadyStateWidget
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qfiledialog.h>
 
@@ -26,6 +26,7 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "utilities/CCopasiException.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -156,7 +157,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   //  setTabOrder(bRunButton, commitChange);
   setTabOrder(bRunButton, cancelChange);
 
-  mSteadyStateTask = NULL;
+  //  mSteadyStateTask = NULL;
 }
 
 /*
@@ -169,15 +170,15 @@ SteadyStateWidget::~SteadyStateWidget()
 
 void SteadyStateWidget::CancelChange()
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  loadSteadyStateTask(mSteadyStateTask);
+  loadSteadyStateTask();
 }
 
 void SteadyStateWidget::CommitChange()
 {
-  if (mSteadyStateTask == NULL)
+  if (!CKeyFactory::get(objKey))
     return;
+
+  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
   CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
 
@@ -216,13 +217,14 @@ void SteadyStateWidget::CommitChange()
           break;
         }
     }
-  loadSteadyStateTask(mSteadyStateTask);
+  loadSteadyStateTask();
 }
 
 void SteadyStateWidget::RunButtonClicked()
 {
-  if (mSteadyStateTask == NULL)
+  if (!CKeyFactory::get(objKey))
     return;
+
   if (!bExecutable->isChecked())
     bRunButton->setEnabled(false);
   else
@@ -236,8 +238,9 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::RunTask()
 {
-  if (mSteadyStateTask == NULL)
+  if (!CKeyFactory::get(objKey))
     return;
+
   CommitChange();
 
   if (bRunButton->text() != "Run")
@@ -246,6 +249,7 @@ void SteadyStateWidget::RunTask()
       return;
     }
 
+  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   mSteadyStateTask->getProblem()->getModel()->compile();
   mSteadyStateTask->getProblem()->
   setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
@@ -277,17 +281,17 @@ void SteadyStateWidget::RunTask()
 
 void SteadyStateWidget::setModel(CModel* newModel)
 {
-  if (mSteadyStateTask == NULL)
-    return;
+  if (!CKeyFactory::get(objKey)) return;
+  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
   steadystateproblem->setModel(newModel);
 }
 
-void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
+void SteadyStateWidget::loadSteadyStateTask()
 {
-  if (steadystatetask == NULL)
-    return;
-  mSteadyStateTask = steadystatetask;
+  //  if (steadystatetask == NULL)
+  //   return;
+  CSteadyStateTask* steadystatetask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
   CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
   CSteadyStateMethod* steadystatemethod = steadystatetask->getMethod();
 
@@ -329,16 +333,28 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
 
 void SteadyStateWidget::ExportToFile()
 {
-  if (!mSteadyStateTask) return;
+  if (!CKeyFactory::get(objKey)) return;
   QString textFile = QFileDialog::getSaveFileName(
                        QString::null, "TEXT Files (*.txt)",
                        this, "save file dialog",
                        "Choose a file");
 
-  if (mSteadyStateTask && textFile)
+  if (textFile)
     {
       textFile += ".txt";
       CWriteConfig outbuf((const char *)textFile.utf8());
+      CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
       mSteadyStateTask->save(outbuf);
     }
+}
+
+bool SteadyStateWidget::enter(const std::string & key)
+{
+  if (!CKeyFactory::get(key)) return false;
+
+  objKey = key;
+
+  loadSteadyStateTask();
+
+  return true;
 }

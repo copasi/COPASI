@@ -516,13 +516,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:    //Time course
+      case 23:     //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:   //Report
+      case 43:    //Report
         return tableDefinition;
         break;
       case 5:
@@ -900,7 +900,7 @@ void ListViews::loadSteadyStateTaskNodes(CSteadyStateTask* steadystatetask)
       QListViewItem* loadNode; // to load the tree with that stuff
 
       // UPDATE THE METABOLITES STUFF..
-      steadystateWidget->loadSteadyStateTask(steadystatetask);
+      steadystateWidget->loadSteadyStateTask();
       loadNode = searchListViewItem("Steady-State");
 
       if (loadNode)

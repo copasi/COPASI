@@ -83,6 +83,10 @@ SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File

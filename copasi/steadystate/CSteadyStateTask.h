@@ -23,7 +23,7 @@ class COutputEvent;
 class CEigen;
 class CModel;
 
-class CSteadyStateTask
+class CSteadyStateTask : public CCopasiContainer
   {
     //Attributes
   private:
@@ -32,6 +32,8 @@ class CSteadyStateTask
      * A pointer to the steady state problem.
      */
     CSteadyStateProblem *mpProblem;
+
+    std::string mKey;
 
     /**
      * A pointer to the method choosen for the evaluation.
@@ -159,6 +161,8 @@ class CSteadyStateTask
      * @return const CMatrix< C_FLOAT64 > jacobian
      */
     const CMatrix< C_FLOAT64 > & getJacobian() const;
+
+    inline std::string getKey() const {return mKey;}
 
     /**
      * Retrieves a the eigen values of the steady state.

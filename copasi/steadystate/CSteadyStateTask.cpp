@@ -19,10 +19,13 @@
 #include "output/COutput.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
+#include "report/CKeyFactory.h"
 
 #define XXXX_Reporting
 
 CSteadyStateTask::CSteadyStateTask():
+    CCopasiContainer("SteadyStateTask", NULL, "SteadyStateTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("SteadyStateTask", this)),
     mpProblem(new CSteadyStateProblem),
     mpMethod(CSteadyStateMethod::createSteadyStateMethod()),
     mRequested(false),
@@ -32,6 +35,8 @@ CSteadyStateTask::CSteadyStateTask():
 {}
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src):
+    CCopasiContainer("SteadyStateTask", NULL, "SteadyStateTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("SteadyStateTask", this)),
     mpProblem(src.mpProblem),
     mpMethod(src.mpMethod),
     mRequested(src.mRequested),
@@ -48,6 +53,7 @@ CSteadyStateTask::~CSteadyStateTask()
 
 void CSteadyStateTask::cleanup()
 {
+  CKeyFactory::remove(mKey);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpSteadyState);

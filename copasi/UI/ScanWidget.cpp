@@ -43,6 +43,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
+#include "report/CKeyFactory.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
 
@@ -237,18 +238,21 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   nTitleHeight = fontMetrics().height() + 6;
 
   scanTask = new CScanTask();
+  SteadyStateKey = (new CSteadyStateTask())->getKey();
+  TrajectoryKey = (new CTrajectoryTask())->getKey();
   pSteadyStateWidget = new SteadyStateWidget(NULL);
   pTrajectoryWidget = new TrajectoryWidget(NULL);
   pSteadyStateWidget->hide();
   pTrajectoryWidget->hide();
 
-  pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
+  //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
-  pTrajectoryWidget->enter((new CTrajectoryTask())->getKey());
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
 
   CScanProblem* scanProblem = scanTask->getProblem();
-  scanProblem->setSteadyStateTask(pSteadyStateWidget->getSteadyStateTask());
-  //!!!  scanProblem->setTrajectoryTask(pTrajectoryWidget->getTrajectoryTask());
+  scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
+  scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   scanProblem->setProcessTrajectory(trajectory->isChecked());
 
@@ -511,8 +515,8 @@ void ScanWidget::loadScan(CModel *model)
 
       CScanProblem *scanProblem = scanTask->getProblem();
       scanProblem->setModel(model);
-      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
-      scanProblem->setTrajectoryTask(/*pTrajectoryWidget->mTrajectoryTask*/dataModel->getTrajectoryTask());
+      //scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
+      //scanProblem->setTrajectoryTask(/*pTrajectoryWidget->mTrajectoryTask*/dataModel->getTrajectoryTask());
       //TODO !!!!! does not work right now
 
       sExecutable->setEnabled(true);
