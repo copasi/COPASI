@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:15 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:54:18 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -224,6 +224,8 @@ void DataModel::loadModel(const char* fileName)
 
       if (!trajectorytask) trajectorytask = new CTrajectoryTask();
       trajectorytask->getProblem()->setModel(model);
+      COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
+      trajectorytask->setOutputHandler(tmpHandler);
       searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       if (!scantask) scantask = new CScanTask();
@@ -237,6 +239,8 @@ void DataModel::loadModel(const char* fileName)
       pdelete(plotspecs);
       plotspecs = pNewPlotSpecs;
       searchFolderList(42)->setObjectKey(plotspecs->getKey());
+
+      tmpHandler->setPlotSpecVectorAddress(plotspecs);
     }
 
   pdelete(mpMathModel);
