@@ -1,0 +1,9 @@
+after build 9:
+
+make shure newly created items in CopasiTableWidget are visible
+
+fixed crash when creating metabolites in an empty model  
+
+display different mouse cursor when loading/saving
+
+fixed problem with update of concentrations of fixed metabs
