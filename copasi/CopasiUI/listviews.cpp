@@ -699,6 +699,7 @@ void ListViews::loadModelNodes(CModel *model)
       fixedMetaboliteSymbols->loadFixedMetaboliteSymbols(model);
       metaboliteSymbols->loadMetaboliteSymbols(model);
       functionSymbols->loadFunctionSymbols(model);
+      constantSymbols->loadConstantSymbols(model);
       compartmentSymbols->loadCompartmentSymbols(model);
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);

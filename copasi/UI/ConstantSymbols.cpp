@@ -86,7 +86,6 @@ void ConstantSymbols::loadConstantSymbols(CModel *model)
       std::map< std::string, CCopasiObject * > selection = CMathConstantParameter::getSelection();
       std::map<std::string, CCopasiObject * >::iterator it;
       CCopasiObject * constantObject;
-
       C_INT32 noOfMetaboliteRows = selection.size();
       table->setNumRows(noOfMetaboliteRows);
       int index = 0;
