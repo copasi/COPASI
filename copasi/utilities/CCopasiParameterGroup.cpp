@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:44:57 $
+   $Date: 2003/12/30 15:43:07 $
    End CVS Header */
 
 /**
@@ -79,7 +79,7 @@ void CCopasiParameterGroup::deleteGroup()
 
 void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
 {
-  CCopasiContainer::add(pParameter);
+  CCopasiContainer::add(pParameter, true);
   ((parameterGroup *) mpValue)->push_back(pParameter);
 }
 
@@ -123,7 +123,7 @@ bool CCopasiParameterGroup::removeParameter(const std::string & name)
   if (index != C_INVALID_INDEX)
     {
       index_iterator it =
-        ((parameterGroup *) mpValue)->begin() + getIndex(name);
+        ((parameterGroup *) mpValue)->begin() + index;
 
       ((parameterGroup *) mpValue)->erase(it, it + 1);
       pdelete(*it);
