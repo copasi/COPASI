@@ -70,7 +70,7 @@ class CFluxMode
    *  Retrieves the size of the mode
    *  @return "const unsigned C_INT32 &" size
    */
-  const unsigned C_INT32 & size() const;
+  const unsigned C_INT32 size() const;
 };
 
 #endif // COPASI_CFluxMode

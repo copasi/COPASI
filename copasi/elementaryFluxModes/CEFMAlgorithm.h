@@ -53,7 +53,6 @@ class CEFMAlgorithm
 
  private:
   void calculateNextTableau(const unsigned C_INT32 & step);
-  void buildFluxModes(vector < CFluxMode > & fluxModes,
-                      const unsigned C_INT32 reactionNumber);
+  void buildFluxModes(vector < CFluxMode > & fluxModes);
 };
 #endif // COPASI_CEFMAlgorithm

@@ -47,7 +47,7 @@ const bool & CFluxMode::isReversible() const
   return mReversible;
 }
 
-const unsigned C_INT32 & CFluxMode::size() const
+const unsigned C_INT32 CFluxMode::size() const
 {
   return mReactions.size();
 }

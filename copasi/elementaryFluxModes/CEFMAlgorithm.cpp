@@ -37,7 +37,7 @@ bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
   for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau(Step);
 
   /* Build the elementary flux modes to be returned */
-  buildFluxModes(fluxModes,stoi.size());
+  buildFluxModes(fluxModes);
 
   /* Delete the current / final tableu matrix */
   pdelete(mCurrentTableau);
@@ -118,8 +118,7 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
   mNextTableau = NULL;
 }
 
-void CEFMAlgorithm::buildFluxModes(vector < CFluxMode > & fluxModes,
-                                   const unsigned C_INT32 reactionNumber)
+void CEFMAlgorithm::buildFluxModes(vector < CFluxMode > & fluxModes)
 {
   fluxModes.clear();
 

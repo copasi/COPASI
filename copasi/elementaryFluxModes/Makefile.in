@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libelementaryFluxModes.a
 
-libelementaryFluxModes_a_SOURCES =  	CElementaryFluxModes.cpp 	CEFMAlgorithm.cpp 	CTableauMatrix.cpp 	CTableauLine.cpp 	CFluxScore.cpp
+libelementaryFluxModes_a_SOURCES =  	CElementaryFluxModes.cpp 	CEFMAlgorithm.cpp 	CTableauMatrix.cpp 	CTableauLine.cpp 	CFluxMode.cpp 	CFluxScore.cpp
 
 
-EXTRA_DIST =  	CElementaryFluxModes.h	CElementaryFluxModes.cpp 	CEFMAlgorithm.h		CEFMAlgorithm.cpp 	CTableauMatrix.h	CTableauMatrix.cpp 	CTableauLine.h		CTableauLine.cpp 	CFluxScore.h		CFluxScore.cpp
+EXTRA_DIST =  	CElementaryFluxModes.h	CElementaryFluxModes.cpp 	CEFMAlgorithm.h		CEFMAlgorithm.cpp 	CTableauMatrix.h	CTableauMatrix.cpp 	CTableauLine.h		CTableauLine.cpp 	CFluxMode.h		CFluxMode.cpp 	CFluxScore.h		CFluxScore.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -211,7 +211,7 @@ LIBS = @LIBS@
 libelementaryFluxModes_a_LIBADD = 
 libelementaryFluxModes_a_OBJECTS =  CElementaryFluxModes.$(OBJEXT) \
 CEFMAlgorithm.$(OBJEXT) CTableauMatrix.$(OBJEXT) CTableauLine.$(OBJEXT) \
-CFluxScore.$(OBJEXT)
+CFluxMode.$(OBJEXT) CFluxScore.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -231,7 +231,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CEFMAlgorithm.P .deps/CElementaryFluxModes.P \
-.deps/CFluxScore.P .deps/CTableauLine.P .deps/CTableauMatrix.P
+.deps/CFluxMode.P .deps/CFluxScore.P .deps/CTableauLine.P \
+.deps/CTableauMatrix.P
 SOURCES = $(libelementaryFluxModes_a_SOURCES)
 OBJECTS = $(libelementaryFluxModes_a_OBJECTS)
 

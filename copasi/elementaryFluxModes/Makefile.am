@@ -6,6 +6,7 @@ libelementaryFluxModes_a_SOURCES = \
 	CEFMAlgorithm.cpp \
 	CTableauMatrix.cpp \
 	CTableauLine.cpp \
+	CFluxMode.cpp \
 	CFluxScore.cpp
 
 EXTRA_DIST = \
@@ -13,6 +14,7 @@ EXTRA_DIST = \
 	CEFMAlgorithm.h		CEFMAlgorithm.cpp \
 	CTableauMatrix.h	CTableauMatrix.cpp \
 	CTableauLine.h		CTableauLine.cpp \
+	CFluxMode.h		CFluxMode.cpp \
 	CFluxScore.h		CFluxScore.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
