@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:12:42 $
+   $Date: 2003/11/11 21:17:48 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.20 2003/10/16 16:12:42 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.21 2003/11/11 21:17:48 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -298,10 +298,8 @@ void TableDefinition1::setReport(CReport* pNewReport)
   mReport = pNewReport;
 }
 
-void TableDefinition1::comboTaskChanged(const QString & string)
-{
-  bUpdated = true;
-}
+void TableDefinition1::comboTaskChanged(const QString & C_UNUSED(string))
+{bUpdated = true;}
 
 void TableDefinition1::slotBtnCancelClicked()
 {
@@ -315,6 +313,14 @@ void TableDefinition1::slotBtnConfirmClicked()
   pReportDefinition->getBodyAddr()->clear();
 
   C_INT32 i;
+  CCopasiStaticString Seperator;
+  if (tabChecked->isChecked())
+    Seperator.setObjectName("\t");
+  else
+    Seperator.setObjectName(seperatorEdit->text().latin1());
+
+  CCopasiObjectName SeperatorCN(Seperator.getCN());
+
   for (i = 0; i < itemsTable->numRows(); i++)
     {
       CCopasiObject* pSelectedObject, *pObjectAncestor;
@@ -322,28 +328,29 @@ void TableDefinition1::slotBtnConfirmClicked()
       CReport::getObjectFromName(NULL, pSelectedObject, CCopasiObjectName(itemsTable->text(i).latin1()));
       if (pSelectedObject)
         {
-          pReportDefinition->getHeaderAddr()->push_back(pSelectedObject->getCN());
-          // not sure about the full list of possible ancestor types
-          // future work: see if there is any other objects
-          /*
-                    pObjectAncestor = pSelectedObject->getObjectAncestor("Compartment");
-                    if (!pObjectAncestor)
-                      pObjectAncestor = pSelectedObject->getObjectAncestor("Model");
-          */
-          pObjectAncestor = pSelectedObject->getObjectParent();
-          // Ancestor existing
-          if (!pObjectAncestor)
-            pReportDefinition->getBodyAddr()->push_back(pObjectAncestor->getCN());
+          CCopasiObjectName Title;
+          if (pSelectedObject->getObjectParent())
+            Title = pSelectedObject->getObjectParent()->getCN() + "Reference=Name";
+          else
+            Title = pSelectedObject->getCN();
+
+          pReportDefinition->getHeaderAddr()->push_back(Title);
+          pReportDefinition->getBodyAddr()->push_back(pSelectedObject->getCN());
+
+          pReportDefinition->getHeaderAddr()->push_back(SeperatorCN);
+          pReportDefinition->getBodyAddr()->push_back(SeperatorCN);
         }
     }
 
-  if (tabChecked->isChecked())
-    pReportDefinition->setSeperator(CCopasiStaticString("/t"));
-  else
-    pReportDefinition->setSeperator(CCopasiStaticString(seperatorEdit->text().latin1()));
+  if (itemsTable->numRows() != 0)
+    {
+      pReportDefinition->getHeaderAddr()->pop_back();
+      pReportDefinition->getBodyAddr()->pop_back();
+    }
 
   pReportDefinition->setTitle(titleChecked->isChecked());
-  pReportDefinition->setComment(CCopasiStaticString(commentEdit->text().latin1()));
+  pReportDefinition->
+  setComment(CCopasiStaticString(commentEdit->text().latin1()).getCN());
 
   bUpdated = false;
 }
