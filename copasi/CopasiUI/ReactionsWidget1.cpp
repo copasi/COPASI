@@ -199,10 +199,14 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
+  //first check if new metabolites need to be created
+  bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
+
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
 
   //this tells the gui what it needs to know.
+  if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
   ListViews::notify(ListViews::REACTION, ListViews::CHANGE, objKey);
 
   //TODO: detect rename events (mRi.writeBackToReaction has to do this)
