@@ -82,6 +82,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   LineEdit2 = new QLineEdit("", Frame4b);
   hBoxLayout4b->addWidget(LineEdit2);
+  LineEdit2->setFocusPolicy(QWidget::StrongFocus);
   hBoxLayout4b->addSpacing(50);
 
   //Frame for 3rd Row
@@ -192,7 +193,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotReactionTableChanged(QString &)));
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  connect(LineEdit2, SIGNAL(returnPressed()), this, SLOT(slotLineEditChanged()));
+  connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotGetFocus()));
+  connect(this, SIGNAL(focusChanged()), this, SLOT(slotLineEditChanged()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -680,4 +682,16 @@ void ReactionsWidget1::slotLineEditChanged()
       checkBox->setChecked(FALSE);
     }
   slotCheckBoxClicked();
+}
+
+void ReactionsWidget1::slotGetFocus()
+{
+  if (LineEdit2->isFocusEnabled() == true)
+    {
+      QMessageBox::information(this, "Reactions Widget", "true");
+    }
+  if (LineEdit2->hasFocus() == true)
+    {
+      emit focusChanged();
+    }
 }

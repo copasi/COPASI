@@ -100,9 +100,10 @@ class ReactionsWidget1 : public QWidget
     virtual void slotCheckBoxClicked();
     virtual void slotComboBoxSelectionChanged(const QString &);
     virtual void slotLineEditChanged();
+    virtual void slotGetFocus();
   signals:
     void signal_emitted(QString &);
-    // void signal_emitted1();
+    void focusChanged();
   };
 
 #endif
