@@ -15,6 +15,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"
+#include "output/COutput.h"
 
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
