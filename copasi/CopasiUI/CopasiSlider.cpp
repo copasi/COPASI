@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/27 15:54:11 $
+   $Author: shoops $ 
+   $Date: 2005/03/02 20:47:00 $
    End CVS Header */
 
 #include <math.h>
@@ -57,6 +57,7 @@ void CopasiSlider::updateSliderData()
 {
   if (this->mpCSlider)
     {
+      mpCSlider->compile();
       this->mpQSlider->setMinValue(0);
       this->mpQSlider->setMaxValue(this->mpCSlider->getTickNumber());
       this->mpQSlider->setTickInterval(1);
