@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/31 12:19:19 $
+   $Author: shoops $ 
+   $Date: 2005/01/24 20:42:23 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -36,7 +36,7 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
     //this is a list of active windows for a specific run
     std::vector<PlotWindow*> windows;
 
-    CopasiTimePoint mTime;
+    CCopasiTimeVariable mTime;
 
     bool initAllPlots();
     bool sendDataToAllPlots();

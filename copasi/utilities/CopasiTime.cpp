@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/24 19:01:45 $
+   $Date: 2005/01/24 20:42:23 $
    End CVS Header */
 
 #include <sstream>
@@ -12,6 +12,7 @@
 #include "CopasiTime.h"
 #include "utility.h"
 
+#ifdef XXXX
 CopasiTimePoint::CopasiTimePoint():
     mTime(getCurrentTime_msec())
 {}
@@ -63,6 +64,7 @@ C_INT64 CopasiTimePoint::getCurrentTime_msec()
   return (SystemTime.QuadPart / 10000) & LLONG_MAX;
 }
 #endif
+#endif // XXXX
 
 CCopasiTimeVariable::CCopasiTimeVariable():
     mTime(0)
@@ -95,6 +97,9 @@ CCopasiTimeVariable & CCopasiTimeVariable::operator = (const C_INT64 & value)
   mTime = value;
   return *this;
 }
+
+bool CCopasiTimeVariable::operator < (const CCopasiTimeVariable & value)
+{return (mTime < value.mTime);}
 
 std::string CCopasiTimeVariable::isoFormat() const
   {
