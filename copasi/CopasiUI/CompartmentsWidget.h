@@ -47,7 +47,6 @@ class CompartmentsWidget : public QWidget
     void signal_emitted(QString &);
 
   protected slots:
-
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
