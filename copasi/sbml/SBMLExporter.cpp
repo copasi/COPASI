@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/17 13:48:31 $
+   $Author: shoops $ 
+   $Date: 2004/12/01 19:35:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -16,7 +16,7 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 
-const char* SBMLExporter::HTML_HEADER = "<body>";
+const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
 
 const char* SBMLExporter::HTML_FOOTER = "</body>";
 
