@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/31 14:49:18 $
+   $Date: 2005/02/19 02:00:35 $
    End CVS Header */
 
 /**
@@ -41,7 +41,10 @@ class CCopasiContainer: public CCopasiObject
   public:
     static CCopasiContainer * Root;
 
+    static const std::vector< CCopasiContainer * > EmptyList;
+
     typedef std::multimap< const std::string, CCopasiObject * > objectMap;
+
   protected:
     /** @dia:route 0,8; h,23.7081,50.8343,19.6311,4.45372,40.5964 */
     objectMap mObjects;
