@@ -30,7 +30,15 @@
 #include "utilities/CGlobals.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
-#include "function/CKinFunction.h" 
+#include "function/CKinFunction.h"
+
+#include "./icons/product.xpm"
+#include "./icons/substrate.xpm"
+#include "./icons/modifier.xpm"
+#include "./icons/locked.xpm"
+#include "./icons/unlocked.xpm"
+#include "parametertable.h" // just for the table item widgets
+
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -178,6 +186,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent
   connect(this, SIGNAL(informUpdated()), (ListViews*)parent, SLOT(dataModelUpdated()));
   connect(this, SIGNAL(update()), (ListViews*)parent, SLOT(loadFunction()));
+
+  connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
 }
 
 int FunctionWidget1::isName(QString setValue)
@@ -239,13 +249,28 @@ void FunctionWidget1::loadName(QString setValue)
           }
       }
   */
+
+  QPixmap * pProduct = new QPixmap((const char**)product_xpm);
+  QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
+  QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
+  QPixmap * pLocked = new QPixmap((const char**)locked_xpm);
+  QPixmap * pUnlocked = new QPixmap((const char**)unlocked_xpm);
+
+  QColor subsColor(255, 210, 210);
+  QColor prodColor(210, 255, 210);
+  QColor modiColor(250, 250, 190);
+  QColor paraColor(210, 210, 255);
+  QColor color;
+
   if (funct)
     {
-      QStringList Usage;
-      Usage += "SUBSTRATE";
-      Usage += "PRODUCT";
-      Usage += "MODIFIER";
-      Usage += "PARAMETER";
+      // list of usages for combobox
+      QStringList Usages;
+      Usages += "SUBSTRATE";
+      Usages += "PRODUCT";
+      Usages += "MODIFIER";
+      Usages += "PARAMETER";
+      QString usage, qUsage;
 
       // for Name and Description text boxes
       LineEdit1->setText(funct->getName().c_str());
@@ -273,20 +298,36 @@ void FunctionWidget1::loadName(QString setValue)
 
       //int j;
 
+      //create list of data types (for combobox)
+      QStringList functionType;
+      for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
+        functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
+
       for (j = 0; j < noOffunctParams; j++)
         {
-          Table1->setText(j, 0, functParam[j]->getName().c_str());
-          QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
-          QStringList functionType;
-          for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
-            functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
+          usage = functParam[j]->getUsage().c_str();
+          if (usage == "SUBSTRATE") {qUsage = "Substrate"; color = subsColor;}
+          else if (usage == "PRODUCT") {qUsage = "Product"; color = prodColor;}
+          else if (usage == "MODIFIER") {qUsage = "Modifier"; color = modiColor;}
+          else if (usage == "PARAMETER") {qUsage = "Parameter"; color = paraColor;}
+          else {qUsage = "unknown"; color = QColor(255, 20, 20);}
 
-          QComboTableItem * item = new QComboTableItem(Table1, functionType, true);
+          // col. 0
+          Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+                          functParam[j]->getName().c_str()));
+
+          // col. 1
+          QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
+          ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
           Table1->setItem(j, 1, item);
-          item->setCurrentItem(temp);
-          //Table1->setText(j, 1, CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str());
-          item = new QComboTableItem(Table1, Usage, true);
-          item->setCurrentItem(functParam[j]->getUsage().c_str());
+          item->setText(temp);
+
+          // col. 2
+          item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
+          item->setText(usage);
+          if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
+          if (usage == "PRODUCT") item->setPixmap(*pProduct);
+          if (usage == "MODIFIER") item->setPixmap(*pModifier);
           Table1->setItem(j, 2, item);
         }
 
@@ -543,4 +584,29 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   emit informUpdated();
   emit update();
+}
+
+void FunctionWidget1::slotTableValueChanged(int row, int col)
+{
+  std::cout << "table changed " << row << " " << col << std::endl;
+  if (col == 2)
+    {
+      QColor subsColor(255, 210, 210);
+      QColor prodColor(210, 255, 210);
+      QColor modiColor(250, 250, 190);
+      QColor paraColor(210, 210, 255);
+      QColor color;
+
+      QString usage = Table1->text(row, col);
+      if (usage == "SUBSTRATE") {color = subsColor;}
+      else if (usage == "PRODUCT") {color = prodColor;}
+      else if (usage == "MODIFIER") {color = modiColor;}
+      else if (usage == "PARAMETER") {color = paraColor;}
+      else {color = QColor(255, 20, 20);}
+
+      ((ColorTableItem*)Table1->item(row, 0))->setColor(color);
+      ((ComboItem*)Table1->item(row, 1))->setColor(color);
+      ((ComboItem*)Table1->item(row, 2))->setColor(color);
+      Table1->setRowHeight(row, Table1->rowHeight(row)); //Table1->showRow(row);
+    }
 }

@@ -71,6 +71,7 @@ class FunctionWidget1 : public CopasiWidget
   protected slots:
     virtual void slotCancelButtonClicked();
     virtual void slotCommitButtonClicked();
+    virtual void slotTableValueChanged(int row, int col);
 
   signals:
     void signalCancelButtonClicked(const QString &);
