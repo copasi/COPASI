@@ -189,9 +189,9 @@ void CompartmentsWidget1::loadName(QString setValue)
       ListBox1->insertItem(mtb->getName().c_str());
     }
 
-  LineEdit3->setText(QString::number(compartn->getVolume()));
+  LineEdit3->setText(QString::number(compartn->getInitialVolume()));
 
-  LineEdit4->setText(QString::number(compartn->getVolumeInv()));
+  LineEdit4->setText(QString::number(compartn->getVolume()));
   LineEdit4->setReadOnly(true);
 }
 
