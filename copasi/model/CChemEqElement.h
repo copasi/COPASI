@@ -127,7 +127,7 @@ class CChemEqElement
      *  is assigned.
      *  @param "vector < CMetab * > &" metabolites
      */
-    void compile(CCopasiVectorN < CCompartment > & metabolites);
+    void compile(CCopasiVectorN < CCompartment > & compartments);
     /**
      *  Write the element in the form mMultiplier * mMetaboliteName
      *  @return "string"

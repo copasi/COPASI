@@ -86,6 +86,7 @@ void CModel::cleanup()
   mCompartments.cleanup();
   mSteps.cleanup();
   mMoieties.cleanup();
+  mMetabolites.clear();
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -94,7 +95,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
 
-  // For old Versions we need must read the list of Metabolites beforehand
+  // For old Versions we must read the list of Metabolites beforehand
 
   if (configBuffer.getVersion() < "4")
     {
@@ -155,7 +156,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         {
           Metabolite.cleanup();
           Metabolite = *Copasi->OldMetabolites[i];
-
           mCompartments[Copasi->OldMetabolites[i]->getIndex()]->
           addMetabolite(Metabolite);
         }
@@ -790,17 +790,16 @@ CCopasiVectorN < CMoiety > & CModel::getMoieties()
  */
 C_INT32 CModel::findMetab(string &Target)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, s;
   string name;
 
-  for (i = 0; i < mMetabolites.size(); i++)
+  s = mMetabolites.size();
+  for (i = 0; i < s; i++)
     {
       name = mMetabolites[i]->getName();
-
       if (name == Target)
         return i;
     }
-
   return -1;
 }
 
@@ -809,17 +808,16 @@ C_INT32 CModel::findMetab(string &Target)
  */
 C_INT32 CModel::findStep(string &Target)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, s;
   string name;
 
-  for (i = 0; i < mSteps.size(); i++)
+  s = mSteps.size();
+  for (i = 0; i < s; i++)
     {
       name = mSteps[i]->getName();
-
       if (name == Target)
         return i;
     }
-
   return -1;
 }
 
@@ -828,17 +826,16 @@ C_INT32 CModel::findStep(string &Target)
  */
 C_INT32 CModel::findCompartment(string &Target)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, s;
   string name;
 
-  for (i = 0; i < mCompartments.size(); i++)
+  s = mCompartments.size();
+  for (i = 0; i < s; i++)
     {
       name = mCompartments[i]->getName();
-
       if (name == Target)
         return i;
     }
-
   return -1;
 }
 
@@ -847,17 +844,16 @@ C_INT32 CModel::findCompartment(string &Target)
  */
 C_INT32 CModel::findMoiety(string &Target)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, s;
   string name;
 
-  for (i = 0; i < mMoieties.size(); i++)
+  s = mMoieties.size();
+  for (i = 0; i < s; i++)
     {
       name = mMoieties[i]->getName();
-
       if (name == Target)
         return i;
     }
-
   return -1;
 }
 
@@ -1270,3 +1266,52 @@ void CModel::setQuantityUnit(const string & name)
 string CModel::getQuantityUnit() const { return mQuantityUnitName; }
 C_FLOAT64 CModel::getQuantity2NumberFactor() const { return mQuantity2NumberFactor; }
 C_FLOAT64 CModel::getNumber2QuantityFactor() const { return mNumber2QuantityFactor; }
+
+void CModel::setTitle(const string tit)
+{
+  mTitle = tit;
+}
+
+void CModel::setComments(const string comm)
+{
+  mComments = comm;
+}
+
+C_INT32 CModel::addMetabolite(string &comp, string &name, C_FLOAT64 iconc, C_INT16 status)
+{
+  CMetab metab;
+  C_INT32 c;
+
+  c = findCompartment(comp);
+  if (c == -1)
+    return -1;
+  if (findMetab(name) != -1)
+    return -1;
+  metab.setModel(this);
+  metab.setCompartment(mCompartments[c]);
+  metab.setName(name);
+  metab.setStatus(status);
+  metab.setInitialConcentration(iconc);
+  mCompartments[c]->addMetabolite(metab);
+  return 0;
+}
+
+C_INT32 CModel::addCompartment(string &name, C_FLOAT64 vol)
+{
+  CCompartment *cpt;
+  // check if there is already a volume with this name
+  if (findCompartment(name) == -1)
+    {
+      cpt = new CCompartment(name, vol);
+      mCompartments.add(cpt);
+      return mCompartments.size();
+    }
+  else
+    return -1;
+}
+
+C_INT32 CModel::addReaction(CReaction *r)
+{
+  mSteps.add(r);
+  return mSteps.size();
+}

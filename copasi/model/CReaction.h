@@ -122,7 +122,7 @@ class CReaction
         {
           os << "     CId2Metab: Ident " << d.getIdentifierName()
           << " Metab " << d.getMetaboliteName()
-          << " Compa " << d.getCompartmentName() ;
+          << " Compa " << d.getCompartmentName();
 
           if (d.mpMetabolite)
             os << " *metab " << d.mpMetabolite->getName() << endl;
@@ -476,20 +476,20 @@ class CReaction
     /**
      * Find an pointer to a substrate corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
-     * @return A pointer to the metabolite corresponding to this identifier name
+     * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
     CMetab * findSubstrate(string ident_name);
 
     /**
      * Find an pointer to a modifier corresponding to the given identifier name.
      * @param ident_name The identifier name to search by
-     * @return A pointer to the metabolite corresponding to this identifier name
+     * @return A pointer to the metabolite corresponding to this identifier name or NULL if none found
      */
     CMetab * findModifier(string ident_name);
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
-     *  @return "unsigned C_INT32" compartmnetNumber
+     *  @return "unsigned C_INT32" the compartment number
      */
     unsigned C_INT32 getCompartmentNumber();
 
@@ -508,7 +508,7 @@ class CReaction
       else
         os << "   mFunction == 0 " << endl;
 
-      os << "   mParameterDescription: " << endl << d.mParameterDescription ;
+      os << "   mParameterDescription: " << endl << d.mParameterDescription;
 
       os << "   mFlux: " << d.mFlux << endl;
 
@@ -545,6 +545,18 @@ class CReaction
 
       return os;
     }
+
+    /**
+     *  Sets mId2Substrates and mId2Products from the mChemEq
+    *  can be called after setting reaction name and chemical equation
+    *  needs metabolites to already have been created
+     */
+    void setReactantsFromChemEq();
+
+    /**
+     *  Forces compilation of Chemical equation object
+     */
+    void CReaction::compileChemEq(CCopasiVectorN < CCompartment > & compartments);
 
   private:
     /**
@@ -592,7 +604,7 @@ class CReaction
     unsigned C_INT32 usageRangeSize(const string & usage);
 
     /**
-     * Set the scaling factor of the for the fluxes
+     * Sets the scaling factor of the for the fluxes
      */
     void setScalingFactor();
   };

@@ -317,6 +317,18 @@ class CModel
     string getTitle() const;
 
     /**
+     * Set the title of this model
+     * @param "const string &" tit title for this model
+     */
+    void setTitle(const string tit);
+
+    /**
+     * Set the title of this model
+     * @param "const string &" comm comments for this model
+     */
+    void setComments(const string comm);
+
+    /**
      * Return the compartments of this model
      * @return CCopasiVectorNS < CCompartment > *
      */
@@ -420,10 +432,38 @@ class CModel
      */
     C_FLOAT64 getNumber2QuantityFactor() const;
 
+    /**
+     * Add a metabolite to the model
+    * @param comp name of compartment to own this metabolite
+    * @param name name of metabolite
+    * @param iconc initial concentration of metabolite
+    * @param status metabolite status (see CMetab for valid values)
+     */
+    C_INT32 addMetabolite(string &comp, string &name, C_FLOAT64 iconc, C_INT16 status);
+
+    /**
+     *  Add a compartment to the model
+    *  @param name name of the new compartment
+    *  @param vol volume of the new compartment
+    *  @return C_INT32 number of compartments in the model (after insertion) or -1 if failed
+     */
+    C_INT32 addCompartment(string &name, C_FLOAT64 vol);
+
+    /**
+     *  Add a new rection to the model
+    *  @param r a pointer to the new reaction
+    *  @return C_INT32 number of reactions in the model (after insertion)
+     */
+    C_INT32 addReaction(CReaction *r);
+
   private:
+
     void setState(const CState * state);
+
     void setState(const CStateX * state);
+
     CState * getState() const;
+
     CStateX * getStateX() const;
   };
 

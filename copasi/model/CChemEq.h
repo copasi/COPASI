@@ -125,6 +125,10 @@ class CChemEq
      */
     const CCopasiVector < CChemEqElement > & getBalances();
 
+    /**
+     *  Returns true if a chemical equation has already been set */
+    bool initialized();
+
   private:
     /**
      *  Extracts the next element of the input string starting at position pos.
@@ -167,7 +171,7 @@ class CChemEq
      *  @param "vector < CMetab * > &" metabolites
      */
     void compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                               CCopasiVectorN < CCompartment > & metabolites);
+                               CCopasiVectorN < CCompartment > & compartments);
 
     /**
      *  This function frees a vector of CChemEqElement

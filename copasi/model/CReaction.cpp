@@ -256,7 +256,7 @@ void CReaction::setReversible(bool reversible)
 
 void CReaction::setFunction(const string & functionName)
 {
-  mFunction = Copasi->FunctionDB.findFunction(functionName);
+  mFunction = Copasi->FunctionDB.findLoadFunction(functionName);
   initCallParameters();
 }
 
@@ -510,7 +510,11 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
   return Fail;
 }
-CReaction::CId2Metab::CId2Metab() {mpMetabolite = NULL; }
+
+CReaction::CId2Metab::CId2Metab()
+{
+  mpMetabolite = NULL;
+}
 
 CReaction::CId2Metab::CId2Metab(const CId2Metab & src)
 {
@@ -528,46 +532,48 @@ CReaction::CId2Param::CId2Param(const CId2Param & src)
   mIdentifierName = src.mIdentifierName;
   mValue = src.mValue;
 }
-CReaction::CId2Param::~CId2Param() {}
-void CReaction::CId2Param::cleanup() {}
+
+CReaction::CId2Param::~CId2Param()
+{}
+
+void CReaction::CId2Param::cleanup()
+{}
 
 void CReaction::old2New(const vector < CMetab* > & metabolites)
 {
   string Name;
-  unsigned C_INT32 i, j;
+  unsigned C_INT32 i, j, s, z;
 
-  for (i = 0; i < mId2Substrates.size(); i++)
+  z = metabolites.size();
+  s = mId2Substrates.size();
+  for (i = 0; i < s; i++)
     {
       Name = mId2Substrates[i]->mMetaboliteName;
-
-      for (j = 0; j < metabolites.size(); j++)
+      for (j = 0; j < z; j++)
         if (Name == metabolites[j]->getName())
           break;
-
       mId2Substrates[i]->mCompartmentName =
         metabolites[j]->getCompartment()->getName();
     }
 
-  for (i = 0; i < mId2Products.size(); i++)
+  s = mId2Products.size();
+  for (i = 0; i < s; i++)
     {
       Name = mId2Products[i]->mMetaboliteName;
-
-      for (j = 0; j < metabolites.size(); j++)
+      for (j = 0; j < z; j++)
         if (Name == metabolites[j]->getName())
           break;
-
       mId2Products[i]->mCompartmentName =
         metabolites[j]->getCompartment()->getName();
     }
 
-  for (i = 0; i < mId2Modifiers.size(); i++)
+  s = mId2Modifiers.size();
+  for (i = 0; i < s; i++)
     {
       Name = mId2Modifiers[i]->mMetaboliteName;
-
-      for (j = 0; j < metabolites.size(); j++)
+      for (j = 0; j < z; j++)
         if (Name == metabolites[j]->getName())
           break;
-
       mId2Modifiers[i]->mCompartmentName =
         metabolites[j]->getCompartment()->getName();
     }
@@ -881,8 +887,8 @@ CMetab * CReaction::findSubstrate(string ident_name)
         }
     }
 
-  // If we get here, we found nutting
-  return 0;
+  // If we get here, we found nothing
+  return NULL;
 }
 
 CMetab * CReaction::findModifier(string ident_name)
@@ -938,4 +944,48 @@ void CReaction::setScalingFactor()
       mScalingFactor = &mDefaultScalingFactor;
       mScalingFactor2 = 1;
     }
+}
+
+void CReaction::setReactantsFromChemEq()
+{
+  C_INT32 i, nsub, nprod;
+  unsigned C_INT32 pos;
+  CCopasiVector < CChemEqElement > sub;
+  CCopasiVector < CChemEqElement > prod;
+  CFunctionParameter::DataType Type = CFunctionParameter::FLOAT64;
+
+  if (mChemEq.initialized())
+    {
+      sub = mChemEq.getSubstrates();
+      nsub = sub.size();
+      prod = mChemEq.getProducts();
+      nprod = prod.size();
+      mId2Substrates.resize(nsub);
+      for (i = 0, pos = 0; i < nsub; i++)
+        {
+          mId2Substrates[i]->mMetaboliteName = sub[i]->getMetaboliteName();
+          mId2Substrates[i]->mCompartmentName = sub[i]->getMetabolite().getCompartment()->getName();
+          if (Type < CFunctionParameter::VINT16)
+            Type = mParameterDescription.getParameterByUsage("SUBSTRATE", pos).getType();
+          mId2Substrates[i]->mIdentifierName = mParameterDescription[pos - 1]->getName();
+          if (Type >= CFunctionParameter::VINT16)
+            mId2Substrates[i]->mIdentifierName += StringPrint("_%ld", i);
+        }
+      mId2Products.resize(nprod);
+      for (i = 0, pos = 0; i < nprod; i++)
+        {
+          mId2Products[i]->mMetaboliteName = prod[i]->getMetaboliteName();
+          mId2Products[i]->mCompartmentName = prod[i]->getMetabolite().getCompartment()->getName();
+          if (Type < CFunctionParameter::VINT16)
+            Type = mParameterDescription.getParameterByUsage("PRODUCT", pos).getType();
+          mId2Products[i]->mIdentifierName = mParameterDescription[pos - 1]->getName();
+          if (Type >= CFunctionParameter::VINT16)
+            mId2Products[i]->mIdentifierName += StringPrint("_%ld", i);
+        }
+    }
+}
+
+void CReaction::compileChemEq(CCopasiVectorN < CCompartment > & compartments)
+{
+  mChemEq.compile(compartments);
 }

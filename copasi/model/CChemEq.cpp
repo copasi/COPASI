@@ -9,7 +9,13 @@
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/utilities.h"
-CChemEq::CChemEq(){CONSTRUCTOR_TRACE; }
+
+CChemEq::CChemEq()
+{
+  CONSTRUCTOR_TRACE;
+  mChemicalEquation.erase();
+  mChemicalEquationConverted.erase();
+}
 
 CChemEq::CChemEq(const CChemEq & src)
 {
@@ -116,7 +122,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
   string Name = element.getMetaboliteName();
 
   if (Name == "")
-    return ; // don´t add empty element
+    return; // don´t add empty element
 
   for (i = 0; i < structure.size(); i++)
     if (Name == structure[i]->getMetaboliteName())
@@ -175,12 +181,11 @@ void CChemEq::splitChemEq(string & left, string & right) const
 
     left = mChemicalEquation.substr(0, equal);
 
-    return ;
+    return;
   }
 
-void
-CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
-                               CCopasiVectorN < CCompartment > & compartments)
+void CChemEq::compileChemEqElements(CCopasiVector < CChemEqElement > & elements,
+                                    CCopasiVectorN < CCompartment > & compartments)
 {
   unsigned C_INT32 i, imax = elements.size();
 
@@ -268,4 +273,9 @@ void CChemEq::writeChemicalEquationConverted()
           mChemicalEquationConverted += mProducts[j]->getMetaboliteName();
         }
     }
+}
+
+bool CChemEq::initialized()
+{
+  return !mChemicalEquation.empty();
 }
