@@ -217,10 +217,7 @@ template < class Node > class CCopasiTree
             iterator end = it.pastChildren();
 
             for (; it != end; ++it)
-              {
-                std::cout << "adding: " << &*it << std::endl;
-                mList.insert(&*it);
-              }
+              mList.insert(&*it);
           }
 
         return Success;
@@ -240,10 +237,7 @@ template < class Node > class CCopasiTree
         iterator end = it.pastChildren();
 
         for (; it != end; ++it)
-          {
-            std::cout << "erasing: " << &*it << std::endl;
-            mList.erase(&*it);
-          }
+          mList.erase(&*it);
 
         delete pNode;
 
@@ -280,10 +274,7 @@ template < class Node > class CCopasiTree
         iterator end = it.pastChildren();
 
         for (; it != end; ++it)
-          {
-            std::cout << "erasing: " << &*it << std::endl;
-            mList.erase(&*it);
-          }
+          mList.erase(&*it);
 
         return pNode->getParent()->removeChild(pNode);
       }
