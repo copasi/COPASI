@@ -86,6 +86,19 @@ void CopasiUI3Window::slotFileSaveAs()
     {
       gpsFile += ".gps";
       dataModel->saveModel((const char *)gpsFile.utf8());
+      //the below are to reopen the file and created the relative objects
+      dataModel->loadModel((const char *)gpsFile.utf8());
+      CReadConfig inbuf((const char *)gpsFile.utf8());
+      if (inbuf.getVersion() < "4.0")
+        {
+          msave_button->setEnabled(false);
+          file->setItemEnabled(nsave_menu_id, false);
+        }
+      else
+        {
+          msave_button->setEnabled(true);
+          file->setItemEnabled(nsave_menu_id, true);
+        }
     }
 } //cout<<"it comes in filesave as...";}
 
@@ -170,7 +183,22 @@ void CopasiUI3Window::slotFileOpen()
 void CopasiUI3Window::slotFileSave()
 {
   if (dataModel && gpsFile)
-    dataModel->saveModel((const char *)gpsFile.utf8());
+    {
+      dataModel->saveModel((const char *)gpsFile.utf8());
+      //the below are to reopen the file and created the relative objects
+      dataModel->loadModel((const char *)gpsFile.utf8());
+      CReadConfig inbuf((const char *)gpsFile.utf8());
+      if (inbuf.getVersion() < "4.0")
+        {
+          msave_button->setEnabled(false);
+          file->setItemEnabled(nsave_menu_id, false);
+        }
+      else
+        {
+          msave_button->setEnabled(true);
+          file->setItemEnabled(nsave_menu_id, true);
+        }
+    }
 }
 
 /***************CopasiUI3Window::slotFilePrint()******
