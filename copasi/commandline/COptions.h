@@ -17,11 +17,11 @@ class COptions
     class COptionValue
       {
       public:
-        typedef void optionType;
+        typedef void valueType;
 
         // Attributes
       protected:
-        optionType * mpValue;
+        valueType * mpValue;
 
         //Operations
       protected:
@@ -36,22 +36,22 @@ class COptions
           {*(CType *) mpValue = value;}
 
         template< class CType > void getValue(CType & value) const
-          {
-            if (this && mpValue) value = *(CType *) mpValue;
-            else value = CType();
-          }
+            {
+              if (this && mpValue) value = *(CType *) mpValue;
+              else value = CType();
+            }
 
         template< class CType > bool compareValue(CType & value) const
-          {
-            if (this && mpValue) return (value == *(CType *) mpValue);
-            else return false;
-          }
+            {
+              if (this && mpValue) return (value == *(CType *) mpValue);
+              else return false;
+            }
       };
 
   template< class CType > class COptionValueTemplate : public COptionValue
         {
         public:
-          typedef CType optionType;
+          typedef CType valueType;
 
           //Operations
         private:
@@ -59,21 +59,21 @@ class COptions
               COptionValue()
           {
             CONSTRUCTOR_TRACE;
-            mpValue = new optionType;
+            mpValue = new valueType;
           }
 
         public:
-          COptionValueTemplate(const optionType & value):
+          COptionValueTemplate(const valueType & value):
               COptionValue()
           {
             CONSTRUCTOR_TRACE;
-            mpValue = new optionType;
-            *(optionType *) mpValue = value;
+            mpValue = new valueType;
+            *(valueType *) mpValue = value;
           }
 
           virtual ~COptionValueTemplate()
           {
-            if (mpValue) {delete (optionType *) mpValue; mpValue = NULL;}
+            if (mpValue) {delete (valueType *) mpValue; mpValue = NULL;}
             DESTRUCTOR_TRACE;
           }
         };
