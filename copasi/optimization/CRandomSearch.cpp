@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:17 $
+   $Date: 2005/03/18 02:58:23 $
    End CVS Header */
 
 /***************************************************************************
@@ -67,8 +67,8 @@ C_INT32 CRandomSearch::optimise()
 
   assert(pRand);
 
-  double * Minimum = mOptProblem->getParameterMin().array();
-  double * Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mOptProblem->getParameterMin().array();
+  const double ** Maximum = mOptProblem->getParameterMax().array();
 
   CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
@@ -80,21 +80,18 @@ C_INT32 CRandomSearch::optimise()
           linear = false;
           la = 1.0;
 
-          if (Minimum[j] == 0.0) Minimum[j] = DBL_EPSILON;
-
-          if ((Maximum[j] <= 0.0) || (Minimum[j] <= 0.0)) linear = true;
-
+          if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = true;
           else
             {
-              la = log10(Maximum[j]) - log10(Minimum[j]);
+              la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
               if (la < 1.8) linear = true;
             }
 
           if (linear)
             Parameter[j] =
-              Minimum[j] + pRand->getRandomCC() * (Maximum[j] - Minimum[j]);
+              *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
           else
-            Parameter[j] = Minimum[j] * pow(10, la * pRand->getRandomCC());
+            Parameter[j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
         } // j<..getParameterNum() loop ends
 
       // check parametric constraints

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:16 $
+   $Date: 2005/03/18 02:58:23 $
    End CVS Header */
 
 /* COptMethodSA code */
@@ -101,8 +101,8 @@ C_INT32 COptMethodSA::optimise()
 
   assert(pRand);
 
-  double * Minimum = mOptProblem->getParameterMin().array();
-  double * Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mOptProblem->getParameterMin().array();
+  const double ** Maximum = mOptProblem->getParameterMax().array();
 
   CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
@@ -120,21 +120,18 @@ C_INT32 COptMethodSA::optimise()
       linear = false;
       la = 1.0;
 
-      if (Minimum[j] == 0.0) Minimum[j] = DBL_EPSILON;
-
-      if ((Maximum[j] <= 0.0) || (Minimum[j] <= 0.0)) linear = true;
-
+      if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = true;
       else
         {
-          la = log10(Maximum[j]) - log10(Minimum[j]);
+          la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
           if (la < 1.8) linear = true;
         }
 
       if (linear)
         Parameter[j] =
-          Minimum[j] + pRand->getRandomCC() * (Maximum[j] - Minimum[j]);
+          *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
       else
-        Parameter[j] = Minimum[j] * pow(10, la * pRand->getRandomCC());
+        Parameter[j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
     } //  Initialization ends
 
   for (int kk = 0; kk < NumParameter; kk++)
@@ -173,8 +170,8 @@ C_INT32 COptMethodSA::optimise()
                   ChangeValue = tan(2 * M_PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
                   newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
 
-                  if (newparameter[hh] < Minimum[hh]) newparameter[hh] = Minimum[hh] + pRand->getRandomCC() * (Maximum[hh] - Minimum[hh]);
-                  if (newparameter[hh] > Maximum[hh]) newparameter[hh] = Minimum[hh] + pRand->getRandomCC() * (Maximum[hh] - Minimum[hh]);
+                  if (newparameter[hh] < *Minimum[hh]) newparameter[hh] = *Minimum[hh] + pRand->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
+                  if (newparameter[hh] > *Maximum[hh]) newparameter[hh] = *Minimum[hh] + pRand->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
                   for (int exchange = 0; exchange < NumParameter; exchange++)
                     {
                       Parameter[exchange] = newparameter[exchange];

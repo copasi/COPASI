@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:16 $
+   $Date: 2005/03/18 02:58:23 $
    End CVS Header */
 
 /***************************************************************************
@@ -74,8 +74,8 @@ C_INT32 COptMethodEP2::optimise()
 
   assert(pRand);
 
-  double * Minimum = mOptProblem->getParameterMin().array();
-  double * Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mOptProblem->getParameterMin().array();
+  const double ** Maximum = mOptProblem->getParameterMax().array();
 
   CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
@@ -126,22 +126,21 @@ C_INT32 COptMethodEP2::optimise()
             {
               // determine if linear or log scale
               linear = FALSE; la = 1.0;
-              if (Minimum[j] == 0.0) Minimum[j] = DBL_EPSILON;
-              if ((Maximum[j] <= 0.0) || (Minimum[j] <= 0.0)) linear = TRUE;
+              if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = TRUE;
               else
                 {
-                  la = log10(Maximum[j]) - log10(Minimum[j]);
+                  la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
                   if (la < 1.8) linear = TRUE;
                 }
               // set it to a random value within the interval
               if (linear)
-                individual[i][j] = Minimum[j] + pRand->getRandomCC() * (Maximum[j] - Minimum[j]);
+                individual[i][j] = *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
               else
-                individual[i][j] = Minimum[j] * pow(10, la * pRand->getRandomCC());
+                individual[i][j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
             }
           catch (int)
             {
-              individual[i][j] = (Maximum[j] - Minimum[j]) * 0.5 + Minimum[j];
+              individual[i][j] = (*Maximum[j] - *Minimum[j]) * 0.5 + *Minimum[j];
             }
         }
       try
@@ -259,16 +258,16 @@ C_INT32 COptMethodEP2::optimise()
                     }
                 }
               // check boundary and force it to be within the bounds
-              if (mut <= Minimum[j]) mut = Minimum[j] + DBL_EPSILON;
+              if (mut <= *Minimum[j]) mut = *Minimum[j] + DBL_EPSILON;
               else
                 {
-                  if (mut < Minimum[j]) mut = Minimum[j];
+                  if (mut < *Minimum[j]) mut = *Minimum[j];
                 }
 
-              if (mut >= Maximum[j]) mut = Maximum[j] - DBL_EPSILON;
+              if (mut >= *Maximum[j]) mut = *Maximum[j] - DBL_EPSILON;
               else
                 {
-                  if (mut > Maximum[j]) mut = Maximum[j];
+                  if (mut > *Maximum[j]) mut = *Maximum[j];
                 }
               // store it
               individual[nn][j] = mut;
@@ -306,22 +305,21 @@ C_INT32 COptMethodEP2::optimise()
                     {
                       // determine if linear or log scale
                       linear = FALSE; la = 1.0;
-                      if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                      if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                      if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                       else
                         {
-                          la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                          la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                           if (la < 1.8) linear = TRUE;
                         }
                       // set it to a random value within the interval
                       if (linear)
-                        individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                        individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                       else
-                        individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                        individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                     }
                   catch (int)
                     {
-                      individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                      individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                     }
                 }
               try
@@ -351,22 +349,21 @@ C_INT32 COptMethodEP2::optimise()
                         {
                           // determine if linear or log scale
                           linear = FALSE; la = 1.0;
-                          if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                          if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                          if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                           else
                             {
-                              la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                              la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                               if (la < 1.8) linear = TRUE;
                             }
                           // set it to a random value within the interval
                           if (linear)
-                            individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                            individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                           else
-                            individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                            individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                         }
                       catch (int)
                         {
-                          individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                          individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                         }
                     }
                   try
@@ -396,22 +393,21 @@ C_INT32 COptMethodEP2::optimise()
                             {
                               // determine if linear or log scale
                               linear = FALSE; la = 1.0;
-                              if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                              if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                              if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                               else
                                 {
-                                  la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                                  la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                                   if (la < 1.8) linear = TRUE;
                                 }
                               // set it to a random value within the interval
                               if (linear)
-                                individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                                individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                               else
-                                individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                                individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                             }
                           catch (int)
                             {
-                              individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                              individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                             }
                         }
                       try
@@ -519,7 +515,7 @@ void COptMethodEP2::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:      // parent-offspring competition
+    case 1:       // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -529,7 +525,7 @@ void COptMethodEP2::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:      // tournament competition
+    case 2:       // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 20:41:16 $
+   $Date: 2005/03/18 02:58:23 $
    End CVS Header */
 
 /***************************************************************************
@@ -76,8 +76,8 @@ C_INT32 COptMethodHGASA::optimise()
 
   assert(pRand);
 
-  double * Minimum = mOptProblem->getParameterMin().array();
-  double * Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mOptProblem->getParameterMin().array();
+  const double ** Maximum = mOptProblem->getParameterMax().array();
 
   CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
 
@@ -125,22 +125,21 @@ C_INT32 COptMethodHGASA::optimise()
             {
               // determine if linear or log scale
               linear = FALSE; la = 1.0;
-              if (Minimum[j] == 0.0) Minimum[j] = DBL_EPSILON;
-              if ((Maximum[j] <= 0.0) || (Minimum[j] <= 0.0)) linear = TRUE;
+              if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = TRUE;
               else
                 {
-                  la = log10(Maximum[j]) - log10(Minimum[j]);
+                  la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
                   if (la < 1.8) linear = TRUE;
                 }
               // set it to a random value within the interval
               if (linear)
-                individual[i][j] = Minimum[j] + pRand->getRandomCC() * (Maximum[j] - Minimum[j]);
+                individual[i][j] = *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
               else
-                individual[i][j] = Minimum[j] * pow(10, la * pRand->getRandomCC());
+                individual[i][j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
             }
           catch (int)
             {
-              individual[i][j] = (Maximum[j] - Minimum[j]) * 0.5 + Minimum[j];
+              individual[i][j] = (*Maximum[j] - *Minimum[j]) * 0.5 + *Minimum[j];
             }
         }
       try
@@ -207,14 +206,14 @@ C_INT32 COptMethodHGASA::optimise()
                   if (floor(10*rand() / RAND_MAX) > 5)
                     {
                       //mut = individual[nn][j] + floor(1000000*rand()/RAND_MAX)/1000000;
-                      //   if(i<5000) mut = individual[nn][j] + pRand->getRandomCC()*(Maximum[j]-Minimum[j])/(i*i);
+                      //   if(i<5000) mut = individual[nn][j] + pRand->getRandomCC()*(*Maximum[j]-*Minimum[j])/(i*i);
 
                       // if(i<NumGeneration/2)  mut = individual[nn][j]*(1 + pRand->getRandomCC());
-                      // mut = individual[nn][j]+(Maximum[j]-individual[nn][j])*(1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2)));
+                      // mut = individual[nn][j]+(*Maximum[j]-individual[nn][j])*(1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2)));
                       //  if(i>=NumGeneration/2) mut = individual[nn][j] *(1+ (1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2))));
 
-                      //   if(i>=5000) mut = individual[nn][j] + pRand->getRandomCC()*(Maximum[j]-Minimum[j])/sqrt(i);
-                      //   if(i>=5000) mut = individual[nn][j] + pRand->getRandomCC()*(Maximum[j]-Minimum[j])/sqrt(i);
+                      //   if(i>=5000) mut = individual[nn][j] + pRand->getRandomCC()*(*Maximum[j]-*Minimum[j])/sqrt(i);
+                      //   if(i>=5000) mut = individual[nn][j] + pRand->getRandomCC()*(*Maximum[j]-*Minimum[j])/sqrt(i);
                       //   if(i<5000) mut = individual[nn][j] *(1+ (1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2))));
 
                       //if(i < NumGeneration/16) mut = individual[nn][j]*(1 + pRand->getRandomCC());
@@ -248,10 +247,10 @@ C_INT32 COptMethodHGASA::optimise()
                   else
                     {
                       //mut = individual[nn][j] - floor(1000000*rand()/RAND_MAX)/1000000;
-                      //  if(i<5000) mut = individual[nn][j] - pRand->getRandomCC()*(Maximum[j]-Minimum[j])/(i*i);
-                      //   if(i>=5000) mut = individual[nn][j] - pRand->getRandomCC()*(Maximum[j]-Minimum[j])/sqrt(i);
+                      //  if(i<5000) mut = individual[nn][j] - pRand->getRandomCC()*(*Maximum[j]-*Minimum[j])/(i*i);
+                      //   if(i>=5000) mut = individual[nn][j] - pRand->getRandomCC()*(*Maximum[j]-*Minimum[j])/sqrt(i);
 
-                      // mut = individual[nn][j]+(individual[nn][j]-Minimum[j])*(1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2)));
+                      // mut = individual[nn][j]+(individual[nn][j]-*Minimum[j])*(1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2)));
                       //  if(i< NumGeneration/2)  mut = individual[nn][j]*(1 - pRand->getRandomCC());
                       //  if(i>= NumGeneration/2) mut = individual[nn][j] *(1- (1-pow((pRand->getRandomCC()),pow((1-i/NumGeneration),2))));
 
@@ -286,16 +285,16 @@ C_INT32 COptMethodHGASA::optimise()
                       //mut = individual[nn][j] * (1 + pRand->getRandomCC());
                     }
                   // check boundary and force it to be within the bounds
-                  if (mut <= Minimum[j]) mut = Minimum[j] + DBL_EPSILON;
+                  if (mut <= *Minimum[j]) mut = *Minimum[j] + DBL_EPSILON;
                   else
                     {
-                      if (mut < Minimum[j]) mut = Minimum[j];
+                      if (mut < *Minimum[j]) mut = *Minimum[j];
                     }
 
-                  if (mut >= Maximum[j]) mut = Maximum[j] - DBL_EPSILON;
+                  if (mut >= *Maximum[j]) mut = *Maximum[j] - DBL_EPSILON;
                   else
                     {
-                      if (mut > Maximum[j]) mut = Maximum[j];
+                      if (mut > *Maximum[j]) mut = *Maximum[j];
                     }
                   // store it
                   individual[nn][j] = mut;
@@ -350,22 +349,21 @@ C_INT32 COptMethodHGASA::optimise()
                     {
                       // determine if linear or log scale
                       linear = FALSE; la = 1.0;
-                      if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                      if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                      if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                       else
                         {
-                          la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                          la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                           if (la < 1.8) linear = TRUE;
                         }
                       // set it to a random value within the interval
                       if (linear)
-                        individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                        individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                       else
-                        individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                        individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                     }
                   catch (int)
                     {
-                      individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                      individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                     }
                 }
               try
@@ -397,22 +395,21 @@ C_INT32 COptMethodHGASA::optimise()
                         {
                           // determine if linear or log scale
                           linear = FALSE; la = 1.0;
-                          if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                          if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                          if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                           else
                             {
-                              la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                              la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                               if (la < 1.8) linear = TRUE;
                             }
                           // set it to a random value within the interval
                           if (linear)
-                            individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                            individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                           else
-                            individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                            individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                         }
                       catch (int)
                         {
-                          individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                          individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                         }
                     }
                   try
@@ -444,22 +441,21 @@ C_INT32 COptMethodHGASA::optimise()
                             {
                               // determine if linear or log scale
                               linear = FALSE; la = 1.0;
-                              if (Minimum[jj] == 0.0) Minimum[jj] = DBL_EPSILON;
-                              if ((Maximum[jj] <= 0.0) || (Minimum[jj] <= 0.0)) linear = TRUE;
+                              if ((*Maximum[jj] <= 0.0) || (*Minimum[jj] < 0.0)) linear = TRUE;
                               else
                                 {
-                                  la = log10(Maximum[jj]) - log10(Minimum[jj]);
+                                  la = log10(*Maximum[jj]) - log10(std::min(*Minimum[jj], DBL_EPSILON));
                                   if (la < 1.8) linear = TRUE;
                                 }
                               // set it to a random value within the interval
                               if (linear)
-                                individual[mm][jj] = Minimum[jj] + pRand->getRandomCC() * (Maximum[jj] - Minimum[jj]);
+                                individual[mm][jj] = *Minimum[jj] + pRand->getRandomCC() * (*Maximum[jj] - *Minimum[jj]);
                               else
-                                individual[mm][jj] = Minimum[jj] * pow(10, la * pRand->getRandomCC());
+                                individual[mm][jj] = *Minimum[jj] * pow(10, la * pRand->getRandomCC());
                             }
                           catch (int)
                             {
-                              individual[mm][jj] = (Maximum[jj] - Minimum[jj]) * 0.5 + Minimum[jj];
+                              individual[mm][jj] = (*Maximum[jj] - *Minimum[jj]) * 0.5 + *Minimum[jj];
                             }
                         }
                       try
@@ -669,7 +665,7 @@ void COptMethodHGASA::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:      // parent-offspring competition
+    case 1:       // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -679,7 +675,7 @@ void COptMethodHGASA::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:      // tournament competition
+    case 2:       // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one
@@ -808,8 +804,8 @@ C_INT32 COptMethodHGASA::optimise(int index)
 
   assert(pRandSA);
 
-  double * Minimum = mOptProblem->getParameterMin().array();
-  double * Maximum = mOptProblem->getParameterMax().array();
+  const double ** Minimum = mOptProblem->getParameterMin().array();
+  const double ** Maximum = mOptProblem->getParameterMax().array();
 
   CVector< C_FLOAT64 > & SAParameter = mOptProblem->getCalculateVariables();
 
@@ -830,21 +826,21 @@ C_INT32 COptMethodHGASA::optimise(int index)
       linear = false;
       la = 1.0;
 
-      if (Minimum[j] == 0.0) Minimum[j] = DBL_EPSILON;
+      if (*Minimum[j] == 0.0) *Minimum[j] = DBL_EPSILON;
 
-      if ((Maximum[j] <= 0.0) || (Minimum[j] <= 0.0)) linear = true;
+      if ((*Maximum[j] <= 0.0) || (*Minimum[j] <= 0.0)) linear = true;
 
       else
         {
-          la = log10(Maximum[j]) - log10(Minimum[j]);
+          la = log10(*Maximum[j]) - log10(*Minimum[j]);
           if (la < 1.8) linear = true;
         }
 
       if (linear)
         Parameter[j] =
-          Minimum[j] + pRandSA->getRandomCC() * (Maximum[j] - Minimum[j]);
+          *Minimum[j] + pRandSA->getRandomCC() * (*Maximum[j] - *Minimum[j]);
       else
-        Parameter[j] = Minimum[j] * pow(10, la * pRandSA->getRandomCC());
+        Parameter[j] = *Minimum[j] * pow(10, la * pRandSA->getRandomCC());
     } //  Initialization ends
   */
 
@@ -890,8 +886,8 @@ C_INT32 COptMethodHGASA::optimise(int index)
                   ChangeValue = tan(2 * PI * pRandSA->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
                   newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
 
-                  if (newparameter[hh] < Minimum[hh]) newparameter[hh] = Minimum[hh] + pRandSA->getRandomCC() * (Maximum[hh] - Minimum[hh]);
-                  if (newparameter[hh] > Maximum[hh]) newparameter[hh] = Minimum[hh] + pRandSA->getRandomCC() * (Maximum[hh] - Minimum[hh]);
+                  if (newparameter[hh] < *Minimum[hh]) newparameter[hh] = *Minimum[hh] + pRandSA->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
+                  if (newparameter[hh] > *Maximum[hh]) newparameter[hh] = *Minimum[hh] + pRandSA->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
                   for (int exchange = 0; exchange < NumParameter; exchange++)
                     {
                       SAParameter[exchange] = newparameter[exchange];
