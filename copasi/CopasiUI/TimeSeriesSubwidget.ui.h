@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/22 11:06:49 $
+   $Author: shoops $ 
+   $Date: 2004/10/29 16:35:14 $
    End CVS Header */
 
 /****************************************************************************
@@ -29,13 +29,13 @@ void TimeSeriesSubWidget::saveDataToFile()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      failed = timeSeries->save(fileName.latin1(), !(this->table()->doShowConcentrations()), "\t");
+      failed = timeSeries->save((const char *)fileName.utf8(), !(this->table()->doShowConcentrations()), "\t");
       setCursor(oldCursor);
     }
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += fileName.latin1();
+      s += fileName.utf8();
       QMessageBox::critical(this, "Save Error", s.c_str(), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }
