@@ -128,14 +128,15 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   //Frame for 5th Row
   Frame4e = new QFrame(Frame3, "Frame4e");
   Frame4e->setGeometry(QRect(0, 0, 740, 120));
-  gridLayout1->addMultiCellWidget(Frame4e, 4, 5, 0, 0, 0);
+  gridLayout1->addMultiCellWidget(Frame4e, 4, 7, 0, 0, 0);
 
   TextLabel5 = new QLabel(Frame4e, "Symbol Definition");
-  TextLabel5->setGeometry(QRect(10, 40, 90, 50));
+  TextLabel5->setGeometry(QRect(10, 40, 110, 50));
   TextLabel5->setText(trUtf8("Symbol Definition"));
 
   table = new QTable(Frame4e, "tblsymbol");
   table->setGeometry(QRect(130, 10, 160, 154));
+  //table->setGeometry(QRect());
 
   table->sortColumn (0, TRUE, TRUE);
   table->setFixedSize(300, 150);
@@ -144,7 +145,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   //Frame for 6th Row
   Frame4f = new QFrame(Frame3, "Frame4f");
-  gridLayout1->addWidget(Frame4f, 6, 0, 0);
+  gridLayout1->addWidget(Frame4f, 7, 0, 0);
   QHBoxLayout *hBoxLayout4f = new QHBoxLayout(Frame4f, 0);
   hBoxLayout4f->addSpacing(15);
 
@@ -157,7 +158,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   //Frame for 7th Row
   Frame4g = new QFrame(Frame3, "Frame4g");
-  gridLayout1->addWidget(Frame4g, 7, 0, 0);
+  gridLayout1->addWidget(Frame4g, 8, 0, 0);
   QHBoxLayout *hBoxLayout4g = new QHBoxLayout(Frame4g, 0);
   hBoxLayout4g->addSpacing(15);
 
@@ -172,7 +173,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   //for the commit and cancel buttons
   Frame4h = new QFrame(Frame3, "Frame4h");
-  gridLayout1->addWidget(Frame4h, 8, 0, 0);
+  gridLayout1->addWidget(Frame4h, 9, 0, 0);
   QHBoxLayout *hBoxLayout4h = new QHBoxLayout(Frame4h, 0);
   hBoxLayout4h->addSpacing(15);
 
@@ -264,14 +265,19 @@ void ReactionsWidget1::loadName(QString setValue)
   table->setNumCols(1);
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
-  table->setNumRows(reactn->getId2Substrates().size() +
-                    reactn->getId2Products().size() +
-                    reactn->getId2Modifiers().size() +
-                    reactn->getId2Parameters().size());
+
+  int sidey = reactn->getId2Substrates().size() +
+              reactn->getId2Products().size() +
+              reactn->getId2Modifiers().size() +
+              reactn->getId2Parameters().size();
+
+  table->setNumRows(sidey);
+
   cout << "NumRows: " << reactn->getId2Substrates().size() +
   reactn->getId2Products().size() +
   reactn->getId2Modifiers().size() +
   reactn->getId2Parameters().size() << endl;
+  table->ensureCellVisible(sidey + 1, 0);
 
   tableHeader1->setLabel(0, "Value");
   table->setColumnWidth (0, 200);
