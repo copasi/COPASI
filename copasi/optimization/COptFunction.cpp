@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 20:00:28 $
+   $Date: 2003/10/17 01:40:09 $
    End CVS Header */
 
 #include <sstream>
@@ -109,27 +109,22 @@ bool COptFunction::removeItem(const std::string & name)
 void COptFunction::connect()
 {
   int i;
-  CKinFunction* pMinFunc, * pMaxFunc;
   for (i = 0; i < mParaList.size(); i++)
     {
-      //      pMinFunc = NULL;
-      //      pMaxFunc = NULL;
       if (mMinList[i] != "-inf")
         {
-          //          pMinFunc = new CKinFunction();
-          //          pMinFunc->setDescription(mMinList[i].c_str());
-          //          pMinFunc->compile();
-          mMinFunctionList[i]->connect();
+          if (!mMinFunctionList[i])
+            mMinFunctionList[i] = new CKinFunction();
+          mMinFunctionList[i]->setDescription(mMinList[i].c_str());
+          // will automatically call the compile function for CKinFunction
         }
 
       if (mMaxList[i] != "+inf")
         {
-          //          pMaxFunc = new CKinFunction();
-          //          pMaxFunc->setDescription(mMaxList[i].c_str());
-          //          pMaxFunc->compile();
-          mMaxFunctionList[i]->connect();
+          if (!mMaxFunctionList[i])
+            mMaxFunctionList[i] = new CKinFunction();
+          mMaxFunctionList[i]->setDescription(mMaxList[i].c_str());
+          // will automatically call the compile function for CKinFunction
         }
-      //      mMinFunctionList.push_back(pMinFunc);
-      //      mMaxFunctionList.push_back(pMaxFunc);
     }
 }
