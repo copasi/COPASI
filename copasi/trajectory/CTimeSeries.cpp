@@ -1,9 +1,105 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 21:57:29 $
+   $Date: 2004/09/30 09:06:35 $
    End CVS Header */
 
 #include "CTimeSeries.h"
+#include "model/CMetabNameInterface.h"
+#include "model/CModel.h"
+
+CTimeSeries::CTimeSeries()
+    : mIt(begin()),
+    mpState(NULL)
+{
+}
+
+bool CTimeSeries::init(C_INT32 n, CState * pState)
+{
+  //std::cout << n << std::endl;
+  mpState = pState;
+
+  resize(n + 1);
+  mIt = begin();
+
+  mTitles.resize(mpState->getVariableNumberSize() + 1);
+  mTitles[0] = "Time";
+
+  C_INT32 i, imax = mpState->getVariableNumberSize();
+  for (i = 0; i < imax; ++i)
+    mTitles[i + 1] = CMetabNameInterface::getDisplayName(mpState->getModel(),
+                     *mpState->getModel()->getMetabolites()[i]);
+
+  mFactors.resize(mpState->getVariableNumberSize() + 1);
+  mFactors[0] = 1; //time
+  for (i = 0; i < imax; ++i)
+    mFactors[i + 1] = mpState->getModel()->getNumber2QuantityFactor()
+                      * mpState->getModel()->getMetabolites()[i]->getCompartment()->getVolumeInv();
+}
+
+bool CTimeSeries::add()
+{
+  //std::cout << mpState->getTime() << std::endl;;
+  if (mIt == end())
+    {
+      C_INT32 dummy = mIt - begin();
+      resize(size() + 256);
+      mIt = begin() + dummy;
+      //std::cout << " resize " << dummy << std::endl;
+    }
+
+  *mIt = *mpState;
+
+  ++mIt;
+}
+
+bool CTimeSeries::finish()
+{
+  //std::cout << mCounter << std::endl;
+  erase(mIt, end());
+}
+
+//*** the methods to retrieve data from the CTimeSeries *******
+
+C_INT32 CTimeSeries::getNumSteps() const
+  {return mIt - begin();}
+
+C_INT32 CTimeSeries::getNumVariables() const
+  {
+    if (mpState)
+      return mpState->getVariableNumberSize() + 1;
+
+    return 0;
+  }
+
+const C_FLOAT64 & CTimeSeries::getData(C_INT32 step, C_INT32 var) const
+  {
+    if (step >= getNumSteps()) return mDummyFloat;
+
+    if (var == 0) return (*this)[step].getTime();
+
+    if (var < getNumVariables()) return (*this)[step].getVariableNumber(var - 1);
+
+    return mDummyFloat;
+  }
+
+const C_FLOAT64 & CTimeSeries::getConcentrationData(C_INT32 step, C_INT32 var) const
+  {
+    if (step >= getNumSteps()) return mDummyFloat;
+
+    if (var == 0) return (*this)[step].getTime();
+
+    if (var < getNumVariables()) return (*this)[step].getVariableNumber(var - 1) * mFactors[var];
+
+    return mDummyFloat;
+  }
+
+const std::string & CTimeSeries::getTitle(C_INT32 var) const
+  {
+    if (var < mTitles.size())
+      return mTitles[var];
+    else
+      return mDummyString;
+  }
