@@ -1,19 +1,19 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 04/03 
-   Comment : Copasi Object Browser including:
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 04/03 
+  Comment : Copasi Object Browser including:
 
-  browserObject: A complex structure uiniquely map to a CopasiObject
-  ObjectBrowserItem: A wraper to a broserObject, 
-      there may exist multiply wrappers to one browserObject
-  objectListItem
-  objectList: A queue for all element: 
-     The reason I dont use std:vector is
-     for efficiency requirement for all 
-     object browser item update
-   Contact: Please contact lixu1@vt.edu.
+ browserObject: A complex structure uiniquely map to a CopasiObject
+ ObjectBrowserItem: A wraper to a broserObject, 
+     there may exist multiply wrappers to one browserObject
+ objectListItem
+ objectList: A queue for all element: 
+    The reason I dont use std:vector is
+    for efficiency requirement for all 
+    object browser item update
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #include "ObjectBrowserItem.h"
@@ -23,7 +23,8 @@
 #include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 
-long ObjectBrowserItem::KeySpace = 100000000;
+#define KEYBASE 100000000
+long ObjectBrowserItem::KeySpace = KEYBASE;
 
 browserObject::browserObject()
 {
@@ -306,30 +307,7 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
       return true;
     }
 
-  int begin = 0;
-  int end = index_length;
-  int comp;
-
-  objectListItem* pHead;
-
-  if (pItem->key(0, 0) < quickIndex[begin].mKey)
-    pHead = quickIndex[begin].mIndex;
-  else
-    if (pItem->key(0, 0) > quickIndex[end].mKey)
-      pHead = quickIndex[end].mIndex;
-    else //do binary search
-      {
-        while (end - begin > 1)
-          {
-            comp = (end + begin) / 2;
-            if (pItem->key(0, 0) < quickIndex[comp].mKey) //first half
-              end = comp;
-            else
-              begin = comp;
-          }
-        pHead = quickIndex[begin].mIndex;
-      }
-
+  objectListItem* pHead = getRoot();
   for (; (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
 ;
 
@@ -350,22 +328,61 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
   return true;
 }
 
-void objectList::createQuickIndex()
+void objectList::createBucketIndex(int max)
 {
-  int step_size = int (len() / INDEXLENGTH) + 1;
-  index_length = 0;
-
+  index_length = max;
+  quickIndex = new bool[max];
+  pointerList = new pObjectBrowserItem[max];
+  int i = 0;
+  for (; i < max; i++)
+    quickIndex[i] = false;
+  int tmpIndex;
+  objectListItem* pDel;
   for (objectListItem* pHead = getRoot(); pHead != NULL;)
     {
-      quickIndex[index_length].mIndex = pHead;
-      quickIndex[index_length].mKey = pHead->pItem->key(0, 0);
-      for (int i = 0; i < step_size; i++)
+      tmpIndex = pHead->pItem->key(0, 0).toInt() - KEYBASE;
+      if (quickIndex[tmpIndex]) //delete
         {
-          if (pHead == NULL)
-            break;
+          pDel = pHead;
+          pHead->pLast->pNext = pHead->pNext;
+          if (pHead->pNext)
+            pHead->pNext->pLast = pHead->pLast;
+          pHead = pHead->pNext;
+          delete pDel;
+          length--;
+        }
+      else //
+        {
+          quickIndex[tmpIndex] = true;
+          pointerList[tmpIndex] = pHead->pItem;
           pHead = pHead->pNext;
         }
-      index_length++;
     }
-  index_length--;
+}
+
+void objectList::insertBucket(ObjectBrowserItem* pItem)
+{
+  int tmpIndex = pItem->key(0, 0).toInt() - KEYBASE;
+  quickIndex[tmpIndex] = true;
+  pointerList[tmpIndex] = pItem;
+}
+
+ObjectBrowserItem* objectList::bucketPop(int& cursor)
+{
+  for (; cursor < index_length; cursor++)
+    if (quickIndex[cursor])
+      {
+        cursor++;
+        return pointerList[cursor - 1];
+      }
+  //nothing avaiable in list
+  return NULL;
+}
+
+void objectList::destroyBucket()
+{
+  delete[] quickIndex;
+  delete[] pointerList;
+  for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop());
+  quickIndex = 0;
 }

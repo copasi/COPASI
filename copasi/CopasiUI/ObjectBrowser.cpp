@@ -1,10 +1,10 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 04/03 
-  Comment : Copasi Object Browser: 
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 04/03 
+ Comment : Copasi Object Browser: 
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
@@ -111,8 +111,8 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
   if (pCurrent == NULL)
     return;
   clickToReverseCheck((ObjectBrowserItem*)pCurrent);
-  //updateUI();
-  loadUI();
+  updateUI();
+  //loadUI();
 }
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
@@ -331,9 +331,7 @@ void ObjectBrowser::updateUI()
 {
   //refresh List stores all affected items,
 
-  refreshList->sortList();
-  refreshList->delDuplicate(); //to decrease the compare size
-  refreshList->createQuickIndex(); //construct index to do binary search
+  refreshList->createBucketIndex(objectItemList->len()); //construct index to do binary search
   for (objectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
       objectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
@@ -342,12 +340,15 @@ void ObjectBrowser::updateUI()
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
           if (pCurrent != pHead)
             for (; (pCurrentLevel != NULL); pCurrentLevel = pCurrentLevel->parent())
-              refreshList->sortListInsert(pCurrentLevel);
+              refreshList->insertBucket(pCurrentLevel);
         }
     }
 
-  for (ObjectBrowserItem* pUpdate = refreshList->pop(); pUpdate != NULL; pUpdate = refreshList->pop())
+  int cursor = 0;
+  for (ObjectBrowserItem* pUpdate = refreshList->bucketPop(cursor); pUpdate != NULL; pUpdate = refreshList->bucketPop(cursor))
     setCheckMark(pUpdate);
+
+  refreshList->destroyBucket();
 }
 
 void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)

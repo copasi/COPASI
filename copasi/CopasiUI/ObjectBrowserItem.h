@@ -1,19 +1,19 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 04/03 
-   Comment : Copasi Object Browser including:
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 04/03 
+  Comment : Copasi Object Browser including:
 
-  browserObject: A complex structure uiniquely map to a CopasiObject
-  ObjectBrowserItem: A wraper to a broserObject, 
-      there may exist multiply wrappers to one browserObject
-  objectListItem
-  objectList: A queue for all element: 
-     The reason I dont use std:vector is
-     for efficiency requirement for all 
-     object browser item update
-   Contact: Please contact lixu1@vt.edu.
+ browserObject: A complex structure uiniquely map to a CopasiObject
+ ObjectBrowserItem: A wraper to a broserObject, 
+     there may exist multiply wrappers to one browserObject
+ objectListItem
+ objectList: A queue for all element: 
+    The reason I dont use std:vector is
+    for efficiency requirement for all 
+    object browser item update
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECT_BROWSER_ITEM_H
@@ -29,7 +29,7 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
-#define INDEXLENGTH 1000
+#define INDEXLENGTH 100
 
 enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
@@ -103,6 +103,8 @@ class ObjectBrowserItem : public QListViewItem
     int nUserChecked();
   };
 
+typedef ObjectBrowserItem* pObjectBrowserItem;
+
 struct objectListItem
   {
     objectListItem(ObjectBrowserItem* item, objectListItem* next, objectListItem* last)
@@ -116,16 +118,11 @@ struct objectListItem
     objectListItem* pLast;
   };
 
-struct CIndex
-  {
-    objectListItem* mIndex;
-    QString mKey;
-  };
-
 class objectList
   {
   private:
-    CIndex quickIndex[INDEXLENGTH];
+    bool* quickIndex;
+    ObjectBrowserItem* *pointerList;
     int index_length;
 
     objectListItem* root;
@@ -145,7 +142,11 @@ class objectList
     void sortList();
     void delDuplicate();
     bool sortListInsert(ObjectBrowserItem* pItem); //insert and keep the sort order
-    void createQuickIndex();
+
+    void createBucketIndex(int max);
+    void insertBucket(ObjectBrowserItem* pItem);
+    ObjectBrowserItem* bucketPop(int& cursor);
+    void destroyBucket();
   };
 
 #endif
