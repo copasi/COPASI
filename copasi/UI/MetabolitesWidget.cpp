@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/08 15:18:15 $
+   $Date: 2003/12/08 17:03:53 $
    End CVS Header */
 
 /***********************************************************************
@@ -19,8 +19,8 @@
 #include "MetabolitesWidget.h"
 
 #include <qlayout.h>
-#include <qwidget.h>
-#include <qcombobox.h>
+#include <qwidget.h> 
+//#include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
 
@@ -53,7 +53,7 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 
   table = new MyTable(this, "tblMetabolites");
   //table = new QTable(this, "tblMetabolites");
-  table->setNumCols(5);
+  table->setNumCols(6);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
@@ -62,8 +62,9 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   tableHeader->setLabel(0, "Name");
   tableHeader->setLabel(1, "Initial Concentration");
   tableHeader->setLabel(2, "Concentration");
-  tableHeader->setLabel(3, "Status");
-  tableHeader->setLabel(4, "Compartment");
+  tableHeader->setLabel(3, "Fixed");
+  tableHeader->setLabel(4, "Status");
+  tableHeader->setLabel(5, "Compartment");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -91,6 +92,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 
   //this restricts users from editing concentration values on the table
   table->setColumnReadOnly (2, true);
+  //this restricts users from editing status values on the table
+  table->setColumnReadOnly (4, true);
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
@@ -124,9 +127,9 @@ void MetabolitesWidget::fillTable()
   mKeys.resize(jmax);
 
   // ComboBox options (fixed or variable)
-  QStringList statusType;
+  /*QStringList statusType;
   statusType.push_back("fixed");
-  statusType.push_back("variable");
+  statusType.push_back("variable");*/
 
   // ComboBox options (compartment)
   QStringList compartmentType;
@@ -138,12 +141,14 @@ void MetabolitesWidget::fillTable()
       compartmentType.push_back(compartments[j]->getName().c_str());
     }
 
-  QComboBox * statusComboBox; /* = new QComboBox(NULL , "");
-    //statusComboBox->insertStrList(&statusType);
-    statusComboBox->insertItem("fixed");
-    statusComboBox->insertItem("variable");
-    table->setCellWidget(0,3,statusComboBox);
-    statusComboBox->setCurrentText("ABC");*/
+  /* QComboBox * statusComboBox; //= new QComboBox(NULL , "");
+  //statusComboBox->insertStrList(&statusType);
+  statusComboBox->insertItem("fixed");
+  statusComboBox->insertItem("variable");
+  table->setCellWidget(0,3,statusComboBox);
+  statusComboBox->setCurrentText("ABC");*/
+
+  QCheckTableItem * fixedCB;
 
   for (j = 0; j < jmax; ++j)
     {
@@ -161,14 +166,21 @@ void MetabolitesWidget::fillTable()
           table->setText(j, 2, QString::number(obj->getNumber()));
         }
 
-      table->setText(j, 3, CMetab::StatusName[obj->getStatus()].c_str());
-      statusComboBox = new QComboBox(NULL , "");
+      // col 3 Fixed
+      fixedCB = new QCheckTableItem(table, "");
+      if (CMetab::StatusName[obj->getStatus()].c_str() == "fixed") // not working?
+        fixedCB->setChecked(true);
+      table->setItem(j, 3, fixedCB);
+
+      //col 4 Status
+      table->setText(j, 4, CMetab::StatusName[obj->getStatus()].c_str());
+      /*statusComboBox = new QComboBox(NULL , "");
       //statusComboBox->insertStrList(&statusType);
       //statusComboBox->insertItem("fixed");
       statusComboBox->insertItem("variable");
       statusComboBox->insertItem("fixed");
-      table->setCellWidget(j, 3, statusComboBox);
-      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].c_str());
+      table->setCellWidget(j, 4, statusComboBox);
+      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].c_str());*/
 
       //table->setText(j, 4, obj->getCompartment()->getName().c_str());
 
@@ -191,12 +203,12 @@ void MetabolitesWidget::fillTable()
       //******** uncomment out for setCellWidget at each cell
       //table->setCellWidget(j,3,statusComboBox);
 
-      // col. 4
+      // col. 5
       QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
       //item = new QComboTableItem(table, compartmentType, false);
       //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
-      table->setItem(j, 4, item);
-      table->setText(j, 4, "Test");
+      table->setItem(j, 5, item);
+      //table->setText(j, 5, "Test");
       /*item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
       item->setText(usage);
       if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
@@ -210,6 +222,7 @@ void MetabolitesWidget::fillTable()
   table->setText(jmax, 2, "");
   table->setText(jmax, 3, "");
   table->setText(jmax, 4, "");
+  table->setText(jmax, 5, "");
 }
 
 //**************************************************************************
@@ -323,7 +336,7 @@ void MetabolitesWidget::slotBtnOKClicked()
         }
 
       //fixed?
-      QString status(table->text(j, 3));
+      QString status(table->text(j, 4));
       if (status.latin1() != CMetab::StatusName[obj->getStatus()])
         {
           if (obj->getStatus() != CMetab::METAB_FIXED)
@@ -335,7 +348,7 @@ void MetabolitesWidget::slotBtnOKClicked()
         }
 
       //compartment
-      QString Compartment(table->text(j, 4));
+      QString Compartment(table->text(j, 5));
       if (Compartment.latin1() != obj->getCompartment()->getName())
         {
           dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*obj);
@@ -465,7 +478,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:             // Yes or Enter
+        case 0:              // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -478,7 +491,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:             // No or Escape
+        case 1:              // No or Escape
           break;
         }
     }
