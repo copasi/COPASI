@@ -1,573 +1,573 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Stefan Hoops (Virginia Bioinformatics Institute - 0477) -->
 <xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="COPASI" id="copasi.COPASI">
-		<xs:annotation>
-			<xs:documentation>The root of a COPASI xml file.</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="ListOfFunctions" id="copasi.ListOfFunctions" minOccurs="0">
-					<xs:complexType mixed="true">
-						<xs:sequence>
-							<xs:element name="Function" type="cFUNCTION" maxOccurs="unbounded"/>
-						</xs:sequence>
-					</xs:complexType>
-					<xs:unique name="FunctionName">
-						<xs:selector xpath="Function"/>
-						<xs:field xpath="@name"/>
-					</xs:unique>
-				</xs:element>
-				<xs:element name="Model" id="copasi.Model" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Comment" type="cCOMMENT" id="copasi.Model.Comment" minOccurs="0"/>
-							<xs:element name="ListOfCompartments" id="copasi.Model.ListOfCompartments" minOccurs="0">
-								<xs:complexType mixed="true">
-									<xs:sequence>
-										<xs:element name="Compartment" id="copasi.Model.Compartment" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required" id="copasi.Model.Compartment.key"/>
-												<xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Compartment.name"/>
-												<xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Compartment.stateVariable"/>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-								<xs:unique name="CompartmentName">
-									<xs:selector xpath="Compartment"/>
-									<xs:field xpath="@name"/>
-								</xs:unique>
-							</xs:element>
-							<xs:element name="ListOfMetabolites" id="copasi.Model.ListOfMetabolites" minOccurs="0">
-								<xs:complexType mixed="true">
-									<xs:sequence>
-										<xs:element name="Metabolite" id="copasi.Model.Metabolite" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:attribute name="key" type="cMETABOLITE_KEY" use="required" id="copasi.Model.Metabolite.key"/>
-												<xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Metabolite.name"/>
-												<xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="required" id="copasi.Model.Metabolite.compartment"/>
-												<xs:attribute name="status" use="required">
-													<xs:simpleType>
-														<xs:restriction base="xs:string">
-															<xs:enumeration value="fixed"/>
-															<xs:enumeration value="variable"/>
-														</xs:restriction>
-													</xs:simpleType>
-												</xs:attribute>
-												<xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Metabolite.stateVariable"/>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-								<xs:unique name="MetaboliteName">
-									<xs:selector xpath="Metabolite"/>
-									<xs:field xpath="@name"/>
-									<xs:field xpath="@compartment"/>
-								</xs:unique>
-							</xs:element>
-							<xs:element name="ListOfReactions" id="copasi.Model.ListOfReactions" minOccurs="0">
-								<xs:complexType mixed="true">
-									<xs:sequence>
-										<xs:element name="Reaction" id="copasi.Model.Reaction" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="ListOfSubstrates" minOccurs="0">
-														<xs:complexType mixed="true">
-															<xs:sequence>
-																<xs:element name="Substrate" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Substrate" maxOccurs="unbounded"/>
-															</xs:sequence>
-														</xs:complexType>
-														<xs:unique name="SubstrateName">
-															<xs:selector xpath="Substrate"/>
-															<xs:field xpath="@metabolite"/>
-														</xs:unique>
-													</xs:element>
-													<xs:element name="ListOfProducts" id="copasi.Model.Reaction.ListOfProducts" minOccurs="0">
-														<xs:complexType mixed="true">
-															<xs:sequence>
-																<xs:element name="Product" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Product" maxOccurs="unbounded"/>
-															</xs:sequence>
-														</xs:complexType>
-														<xs:unique name="ProductName">
-															<xs:selector xpath="Product"/>
-															<xs:field xpath="@metabolite"/>
-														</xs:unique>
-													</xs:element>
-													<xs:element name="ListOfModifiers" id="copasi.Model.Reaction.ListOfModifiers" minOccurs="0">
-														<xs:complexType mixed="true">
-															<xs:sequence>
-																<xs:element name="Modifier" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Modifier" maxOccurs="unbounded"/>
-															</xs:sequence>
-														</xs:complexType>
-														<xs:unique name="ModifierName">
-															<xs:selector xpath="Modifier"/>
-															<xs:field xpath="@metabolite"/>
-														</xs:unique>
-													</xs:element>
-													<xs:element name="ListOfConstants" id="copasi.Model.Reaction.ListOfConstants" minOccurs="0">
-														<xs:complexType mixed="true">
-															<xs:sequence>
-																<xs:element name="Constant" type="cCONSTANT" id="copasi.Model.Reaction.Constant" maxOccurs="unbounded"/>
-															</xs:sequence>
-														</xs:complexType>
-														<xs:unique name="ConstantName">
-															<xs:selector xpath="Constant"/>
-															<xs:field xpath="@name"/>
-														</xs:unique>
-													</xs:element>
-													<xs:element name="KineticLaw" type="cFUNCTION_CALL" minOccurs="0"/>
-												</xs:sequence>
-												<xs:attribute name="key" type="cREACTION_KEY" use="required" id="copasi.Model.Reaction.key"/>
-												<xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Reaction.name"/>
-												<xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="optional" default="Compartment_00" id="copasi.Model.Reaction.compartment"/>
-												<xs:attribute name="reversible" type="xs:boolean" use="required" id="copasi.Model.Reaction.reversible"/>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-								<xs:unique name="ReactionName">
-									<xs:selector xpath="Reaction"/>
-									<xs:field xpath="@name"/>
-									<xs:field xpath="@compartment"/>
-								</xs:unique>
-							</xs:element>
-							<xs:element name="StateTemplate" id="copasi.Model.StateTemplate" minOccurs="0">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="StateTemplateVariable" id="copasi.STATE_TEMPLATE.StateTemplateVariable" minOccurs="0" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:attribute name="key" type="cSTATE_VARIABLE_KEY" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.key"/>
-												<xs:attribute name="objectReference" type="cKEYREF" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.objectReference"/>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-								<xs:unique name="StateTemplateVariableObjectReference">
-									<xs:selector xpath="StateTemplateVariable"/>
-									<xs:field xpath="@objectReference"/>
-								</xs:unique>
-							</xs:element>
-							<xs:element name="InitialState" id="copasi.Model.InitialState" minOccurs="0">
-								<xs:complexType>
-									<xs:simpleContent>
-										<xs:extension base="cSTATE_TYPE"/>
-									</xs:simpleContent>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-						<xs:attribute name="key" type="cMODEL_KEY" use="required" id="copasi.Model.key"/>
-						<xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.name"/>
-						<xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
-							<xs:simpleType>
-								<xs:restriction base="xs:string">
-									<xs:enumeration value="s"/>
-									<xs:enumeration value="m"/>
-									<xs:enumeration value="h"/>
-									<xs:enumeration value="d"/>
-								</xs:restriction>
-							</xs:simpleType>
-						</xs:attribute>
-						<xs:attribute name="volumeUnit" use="required" id="copasi.Model.volumeUnit">
-							<xs:simpleType>
-								<xs:restriction base="xs:string">
-									<xs:enumeration value="l"/>
-									<xs:enumeration value="ml"/>
-									<xs:enumeration value="microl"/>
-									<xs:enumeration value="nl"/>
-								</xs:restriction>
-							</xs:simpleType>
-						</xs:attribute>
-						<xs:attribute name="quantityUnit" use="required" id="copasi.Model.quantityUnit">
-							<xs:simpleType>
-								<xs:restriction base="xs:string">
-									<xs:enumeration value="Mol"/>
-									<xs:enumeration value="mMol"/>
-									<xs:enumeration value="microMol"/>
-									<xs:enumeration value="nMol"/>
-									<xs:enumeration value="#"/>
-								</xs:restriction>
-							</xs:simpleType>
-						</xs:attribute>
-						<xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.stateVariable"/>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="ListOfTasks" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Task" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="Report" type="cREPORT_INSTANTIATION" minOccurs="0"/>
-										<xs:element name="Problem">
-											<xs:complexType>
-												<xs:complexContent>
-													<xs:extension base="cPARAMETER_LIST">
-														<xs:sequence>
-															<xs:element name="InitialState" id="copasi.Model.InitialState" minOccurs="0">
-																<xs:complexType>
-																	<xs:simpleContent>
-																		<xs:extension base="cSTATE_TYPE"/>
-																	</xs:simpleContent>
-																</xs:complexType>
-															</xs:element>
-														</xs:sequence>
-													</xs:extension>
-												</xs:complexContent>
-											</xs:complexType>
-											<xs:unique name="ProblemParameterName">
-												<xs:selector xpath="*"/>
-												<xs:field xpath="@name"/>
-											</xs:unique>
-										</xs:element>
-										<xs:element name="Method">
-											<xs:complexType>
-												<xs:complexContent>
-													<xs:extension base="cPARAMETER_LIST">
-														<xs:attribute name="name" type="xs:string" use="required"/>
-														<xs:attribute name="type" type="xs:string" use="optional" default="default"/>
-													</xs:extension>
-												</xs:complexContent>
-											</xs:complexType>
-											<xs:unique name="MethodParameterName">
-												<xs:selector xpath="Parameter"/>
-												<xs:field xpath="@name"/>
-											</xs:unique>
-										</xs:element>
-									</xs:sequence>
-									<xs:attribute name="name" type="xs:string" use="required"/>
-									<xs:attribute name="type" use="required">
-										<xs:simpleType>
-											<xs:restriction base="xs:string">
-												<xs:enumeration value="steadyState"/>
-												<xs:enumeration value="timeCourse"/>
-												<xs:enumeration value="scan"/>
-												<xs:enumeration value="fluxMode"/>
-												<xs:enumeration value="optimization"/>
-												<xs:enumeration value="parameterFitting"/>
-											</xs:restriction>
-										</xs:simpleType>
-									</xs:attribute>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="ListOfReports" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Report" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:choice>
-										<xs:sequence>
-											<xs:element name="Comment" type="cCOMMENT" minOccurs="0"/>
-											<xs:element name="Header" type="cREPORT_SECTION" minOccurs="0"/>
-											<xs:element name="Body" type="cREPORT_SECTION" minOccurs="0"/>
-											<xs:element name="Footer" type="cREPORT_SECTION" minOccurs="0"/>
-										</xs:sequence>
-										<xs:element name="Table">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="Object" type="cOBJECT" maxOccurs="unbounded"/>
-												</xs:sequence>
-												<xs:attribute name="seperator" type="xs:string" use="optional" default=" "/>
-												<xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
-											</xs:complexType>
-										</xs:element>
-									</xs:choice>
-									<xs:attribute name="key" type="cREPORT_KEY" use="required"/>
-									<xs:attribute name="name" type="xs:string" use="required"/>
-									<xs:attribute name="taskType" type="xs:string" use="required"/>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-					<xs:unique name="ReportName">
-						<xs:selector xpath="Rpeort"/>
-						<xs:field xpath="@name"/>
-					</xs:unique>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-		<xs:unique name="ModelStateVariableReference">
-			<xs:selector xpath="Model| Model/*/*"/>
-			<xs:field xpath="@stateVariable"/>
-		</xs:unique>
-	</xs:element>
-	<xs:complexType name="cCOMMENT" id="copasi.COMMENT">
-		<xs:sequence>
-			<xs:any namespace="http://www.w3.org/1999/xhtml" processContents="skip" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="cCONSTANT" id="copasi.CONSTANT">
-		<xs:attribute name="key" type="cCONSTANT_KEY" use="required"/>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="value" type="xs:double" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="cREACTION_ELEMENT" id="copasi.REACTION_ELEMENT">
-		<xs:attribute name="metabolite" type="cMETABOLITE_KEYREF" use="required" id="copasi.REACTION_ELEMENT.metabolite"/>
-		<xs:attribute name="stoichiometry" type="xs:double" use="required" id="copasi.REACTION_ELEMENT.stoichiometry"/>
-	</xs:complexType>
-	<xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
-		<xs:sequence>
-			<xs:element name="MathML" type="cMATH" id="copasi.FUNCTION.MathML"/>
-			<xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
-				<xs:complexType mixed="true">
-					<xs:sequence>
-						<xs:element name="ParameterDescription" type="cFUNCTION_PARAMETER" id="copasi.FUNCTION.ParameterDescription" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-				<xs:unique name="ParameterDescriptionName">
-					<xs:selector xpath="ParameterDescription"/>
-					<xs:field xpath="@name"/>
-				</xs:unique>
-				<xs:unique name="ParameterDescriptionOrder">
-					<xs:selector xpath="ParameterDescription"/>
-					<xs:field xpath="@order"/>
-				</xs:unique>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="key" type="cFUNCTION_KEY" use="required" id="copasi.FUNCTION.key"/>
-		<xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION.name"/>
-		<xs:attribute name="type" use="required" id="copasi.FUNCTION.type">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:enumeration value="MassAction"/>
-					<xs:enumeration value="PreDefined"/>
-					<xs:enumeration value="UserDefined"/>
-					<xs:enumeration value="Expression"/>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-		<xs:attribute name="positive" type="xs:boolean" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="cFUNCTION_PARAMETER" id="copasi.FUNCTION_PARAMETER">
-		<xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>
-		<xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION_PARAMETER.name"/>
-		<xs:attribute name="order" type="xs:nonNegativeInteger" use="required" id="copasi.FUNCTION_PARAMETER.order"/>
-		<xs:attribute name="role" use="required" id="copasi.FUNCTION_PARAMETER.role">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:enumeration value="substrate"/>
-					<xs:enumeration value="product"/>
-					<xs:enumeration value="modifier"/>
-					<xs:enumeration value="constant"/>
-					<xs:enumeration value="other"/>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-		<xs:attribute name="minOccurs" type="xs:nonNegativeInteger" use="optional" default="1" id="copasi.FUNCTION_PARAMETER.minOccurs"/>
-		<xs:attribute name="maxOccurs" use="optional" default="1" id="copasi.FUNCTION_PARAMETER.maxOccurs">
-			<xs:simpleType>
-				<xs:union>
-					<xs:simpleType>
-						<xs:restriction base="xs:string">
-							<xs:enumeration value="unbounded"/>
-						</xs:restriction>
-					</xs:simpleType>
-					<xs:simpleType>
-						<xs:restriction base="xs:nonNegativeInteger"/>
-					</xs:simpleType>
-				</xs:union>
-			</xs:simpleType>
-		</xs:attribute>
-	</xs:complexType>
-	<xs:complexType name="cFUNCTION_CALL" id="copasi.FUNCTION_CALL">
-		<xs:sequence>
-			<xs:element name="ListOfCallParameters" id="copasi.FUNCTION.ListOfCallParameters">
-				<xs:complexType mixed="true">
-					<xs:sequence>
-						<xs:element name="CallParameter" type="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL.ListOfCallParameters.CallParameter" minOccurs="0" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-				<xs:unique name="CallParameterName">
-					<xs:selector xpath="CallParameter"/>
-					<xs:field xpath="@functionParameter"/>
-				</xs:unique>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="function" type="cFUNCTION_KEYREF" use="required" id="copasi.FUNCTION_CALL.function"/>
-	</xs:complexType>
-	<xs:complexType name="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL_PARAMETER">
-		<xs:sequence>
-			<xs:element name="SourceParameter" id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter" maxOccurs="unbounded">
-				<xs:complexType>
-					<xs:attribute name="reference" type="cKEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter.reference"/>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="functionParameter" type="cFUNCTION_PARAMETER_KEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.functionParameter"/>
-	</xs:complexType>
-	<xs:complexType name="cMATH">
-		<xs:choice>
-			<xs:sequence>
-				<xs:any namespace="http://www.w3.org/Math/XMLSchema" processContents="skip" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:element name="Text">
-				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:whiteSpace value="collapse"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:element>
-		</xs:choice>
-	</xs:complexType>
-	<xs:complexType name="cOBJECT">
-		<xs:attribute name="cn" type="xs:string" use="required"/>
-	</xs:complexType>
-	<xs:simpleType name="cSTATE">
-		<xs:list itemType="xs:double"/>
-	</xs:simpleType>
-	<xs:complexType name="cSTATE_TYPE">
-		<xs:simpleContent>
-			<xs:extension base="cSTATE">
-				<xs:attribute name="type" type="xs:string" use="optional" default="initialState"/>
-			</xs:extension>
-		</xs:simpleContent>
-	</xs:complexType>
-	<xs:complexType name="cPARAMETER">
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" use="required">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:enumeration value="float"/>
-					<xs:enumeration value="unsignedFloat"/>
-					<xs:enumeration value="integer"/>
-					<xs:enumeration value="unsignedInteger"/>
-					<xs:enumeration value="bool"/>
-					<xs:enumeration value="group"/>
-					<xs:enumeration value="string"/>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-		<xs:attribute name="value" type="xs:double" use="required"/>
-	</xs:complexType>
-	<xs:complexType name="cPARAMETER_LIST">
-		<xs:sequence>
-			<xs:choice>
-				<xs:element name="ParameterGroup" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:complexContent>
-							<xs:extension base="cPARAMETER_LIST">
-								<xs:attribute name="name" type="xs:string" use="required"/>
-							</xs:extension>
-						</xs:complexContent>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="Parameter" type="cPARAMETER" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="cREPORT_SECTION">
-		<xs:choice maxOccurs="unbounded">
-			<xs:element name="Object" type="cOBJECT"/>
-			<xs:element name="html" type="cCOMMENT"/>
-			<xs:element name="Report" type="cREPORT_KEYREF"/>
-		</xs:choice>
-	</xs:complexType>
-	<xs:complexType name="cREPORT_INSTANTIATION">
-		<xs:attribute name="reference" type="cREPORT_KEYREF" use="required"/>
-		<xs:attribute name="target" type="xs:anyURI" use="required"/>
-		<xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
-	</xs:complexType>
-	<xs:simpleType name="cKEY" id="copasi.KEY">
-		<xs:restriction base="xs:ID">
-			<xs:pattern value="[_a-zA-Z]+_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cMODEL_KEY" id="copasi.MODEL_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Model_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cCOMPARTMENT_KEY" id="copasi.COMPARTMENT_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Compartment_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cMETABOLITE_KEY" id="copasi.METABOLITE_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Metabolite_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cREACTION_KEY" id="copasi.REACTION_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Reaction_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cFUNCTION_KEY" id="copasi.FUNCTION_KEY" final="restriction">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Function_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cFUNCTION_PARAMETER_KEY" id="copasi.FUNCTION_PARAMETER_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="FunctionParameter_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cCONSTANT_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Constant_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cSTATE_VARIABLE_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="StateVariable_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cREPORT_KEY">
-		<xs:restriction base="cKEY">
-			<xs:pattern value="Report_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cKEYREF" id="copasi.KEYREF">
-		<xs:restriction base="xs:IDREF">
-			<xs:pattern value="[_a-zA-Z]+_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cMODEL_KEYREF" id="copasi.MODEL_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Model_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cCOMPARTMENT_KEYREF" id="copasi.COMPARTMENT_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Compartment_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cMETABOLITE_KEYREF" id="copasi.METABOLITE_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Metabolite_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cREACTION_KEYREF" id="copasi.REACTION_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Reaction_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cFUNCTION_KEYREF" id="copasi.FUNCTION_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Function_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cFUNCTION_PARAMETER_KEYREF" id="copasi.FUNCTION_PARAMETER_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="FunctionParameter_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cCONSTANT_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Constant_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cSTATE_VARIABLE_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="StateVariable_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="cREPORT_KEYREF">
-		<xs:restriction base="cKEYREF">
-			<xs:pattern value="Report_\d+"/>
-		</xs:restriction>
-	</xs:simpleType>
+  <xs:element name="COPASI" id="copasi.COPASI">
+    <xs:annotation>
+      <xs:documentation>The root of a COPASI xml file.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ListOfFunctions" id="copasi.ListOfFunctions" minOccurs="0">
+          <xs:complexType mixed="true">
+            <xs:sequence>
+              <xs:element name="Function" type="cFUNCTION" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+          <xs:unique name="FunctionName">
+            <xs:selector xpath="Function"/>
+            <xs:field xpath="@name"/>
+          </xs:unique>
+        </xs:element>
+        <xs:element name="Model" id="copasi.Model" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Comment" type="cCOMMENT" id="copasi.Model.Comment" minOccurs="0"/>
+              <xs:element name="ListOfCompartments" id="copasi.Model.ListOfCompartments" minOccurs="0">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:element name="Compartment" id="copasi.Model.Compartment" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required" id="copasi.Model.Compartment.key"/>
+                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Compartment.name"/>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Compartment.stateVariable"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="CompartmentName">
+                  <xs:selector xpath="Compartment"/>
+                  <xs:field xpath="@name"/>
+                </xs:unique>
+              </xs:element>
+              <xs:element name="ListOfMetabolites" id="copasi.Model.ListOfMetabolites" minOccurs="0">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:element name="Metabolite" id="copasi.Model.Metabolite" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="cMETABOLITE_KEY" use="required" id="copasi.Model.Metabolite.key"/>
+                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Metabolite.name"/>
+                        <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="required" id="copasi.Model.Metabolite.compartment"/>
+                        <xs:attribute name="status" use="required">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                              <xs:enumeration value="fixed"/>
+                              <xs:enumeration value="variable"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Metabolite.stateVariable"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="MetaboliteName">
+                  <xs:selector xpath="Metabolite"/>
+                  <xs:field xpath="@name"/>
+                  <xs:field xpath="@compartment"/>
+                </xs:unique>
+              </xs:element>
+              <xs:element name="ListOfReactions" id="copasi.Model.ListOfReactions" minOccurs="0">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:element name="Reaction" id="copasi.Model.Reaction" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ListOfSubstrates" minOccurs="0">
+                            <xs:complexType mixed="true">
+                              <xs:sequence>
+                                <xs:element name="Substrate" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Substrate" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                            <xs:unique name="SubstrateName">
+                              <xs:selector xpath="Substrate"/>
+                              <xs:field xpath="@metabolite"/>
+                            </xs:unique>
+                          </xs:element>
+                          <xs:element name="ListOfProducts" id="copasi.Model.Reaction.ListOfProducts" minOccurs="0">
+                            <xs:complexType mixed="true">
+                              <xs:sequence>
+                                <xs:element name="Product" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Product" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                            <xs:unique name="ProductName">
+                              <xs:selector xpath="Product"/>
+                              <xs:field xpath="@metabolite"/>
+                            </xs:unique>
+                          </xs:element>
+                          <xs:element name="ListOfModifiers" id="copasi.Model.Reaction.ListOfModifiers" minOccurs="0">
+                            <xs:complexType mixed="true">
+                              <xs:sequence>
+                                <xs:element name="Modifier" type="cREACTION_ELEMENT" id="copasi.Model.Reaction.Modifier" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                            <xs:unique name="ModifierName">
+                              <xs:selector xpath="Modifier"/>
+                              <xs:field xpath="@metabolite"/>
+                            </xs:unique>
+                          </xs:element>
+                          <xs:element name="ListOfConstants" id="copasi.Model.Reaction.ListOfConstants" minOccurs="0">
+                            <xs:complexType mixed="true">
+                              <xs:sequence>
+                                <xs:element name="Constant" type="cCONSTANT" id="copasi.Model.Reaction.Constant" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                            <xs:unique name="ConstantName">
+                              <xs:selector xpath="Constant"/>
+                              <xs:field xpath="@name"/>
+                            </xs:unique>
+                          </xs:element>
+                          <xs:element name="KineticLaw" type="cFUNCTION_CALL" minOccurs="0"/>
+                        </xs:sequence>
+                        <xs:attribute name="key" type="cREACTION_KEY" use="required" id="copasi.Model.Reaction.key"/>
+                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Reaction.name"/>
+                        <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="optional" default="Compartment_00" id="copasi.Model.Reaction.compartment"/>
+                        <xs:attribute name="reversible" type="xs:boolean" use="required" id="copasi.Model.Reaction.reversible"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="ReactionName">
+                  <xs:selector xpath="Reaction"/>
+                  <xs:field xpath="@name"/>
+                  <xs:field xpath="@compartment"/>
+                </xs:unique>
+              </xs:element>
+              <xs:element name="StateTemplate" id="copasi.Model.StateTemplate" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="StateTemplateVariable" id="copasi.STATE_TEMPLATE.StateTemplateVariable" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="cSTATE_VARIABLE_KEY" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.key"/>
+                        <xs:attribute name="objectReference" type="cKEYREF" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.objectReference"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="StateTemplateVariableObjectReference">
+                  <xs:selector xpath="StateTemplateVariable"/>
+                  <xs:field xpath="@objectReference"/>
+                </xs:unique>
+              </xs:element>
+              <xs:element name="InitialState" id="copasi.Model.InitialState" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="cSTATE_TYPE"/>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="key" type="cMODEL_KEY" use="required" id="copasi.Model.key"/>
+            <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.name"/>
+            <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="s"/>
+                  <xs:enumeration value="m"/>
+                  <xs:enumeration value="h"/>
+                  <xs:enumeration value="d"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="volumeUnit" use="required" id="copasi.Model.volumeUnit">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="l"/>
+                  <xs:enumeration value="ml"/>
+                  <xs:enumeration value="microl"/>
+                  <xs:enumeration value="nl"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="quantityUnit" use="required" id="copasi.Model.quantityUnit">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="Mol"/>
+                  <xs:enumeration value="mMol"/>
+                  <xs:enumeration value="microMol"/>
+                  <xs:enumeration value="nMol"/>
+                  <xs:enumeration value="#"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.stateVariable"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ListOfTasks" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Task" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Report" type="cREPORT_INSTANTIATION" minOccurs="0"/>
+                    <xs:element name="Problem">
+                      <xs:complexType>
+                        <xs:complexContent>
+                          <xs:extension base="cPARAMETER_LIST">
+                            <xs:sequence>
+                              <xs:element name="InitialState" id="copasi.Model.InitialState" minOccurs="0">
+                                <xs:complexType>
+                                  <xs:simpleContent>
+                                    <xs:extension base="cSTATE_TYPE"/>
+                                  </xs:simpleContent>
+                                </xs:complexType>
+                              </xs:element>
+                            </xs:sequence>
+                          </xs:extension>
+                        </xs:complexContent>
+                      </xs:complexType>
+                      <xs:unique name="ProblemParameterName">
+                        <xs:selector xpath="*"/>
+                        <xs:field xpath="@name"/>
+                      </xs:unique>
+                    </xs:element>
+                    <xs:element name="Method">
+                      <xs:complexType>
+                        <xs:complexContent>
+                          <xs:extension base="cPARAMETER_LIST">
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                            <xs:attribute name="type" type="xs:string" use="optional" default="default"/>
+                          </xs:extension>
+                        </xs:complexContent>
+                      </xs:complexType>
+                      <xs:unique name="MethodParameterName">
+                        <xs:selector xpath="Parameter"/>
+                        <xs:field xpath="@name"/>
+                      </xs:unique>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="name" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="steadyState"/>
+                        <xs:enumeration value="timeCourse"/>
+                        <xs:enumeration value="scan"/>
+                        <xs:enumeration value="fluxMode"/>
+                        <xs:enumeration value="optimization"/>
+                        <xs:enumeration value="parameterFitting"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ListOfReports" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Report" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:choice>
+                    <xs:sequence>
+                      <xs:element name="Comment" type="cCOMMENT" minOccurs="0"/>
+                      <xs:element name="Header" type="cREPORT_SECTION" minOccurs="0"/>
+                      <xs:element name="Body" type="cREPORT_SECTION" minOccurs="0"/>
+                      <xs:element name="Footer" type="cREPORT_SECTION" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:element name="Table">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Object" type="cOBJECT" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                        <xs:attribute name="seperator" type="xs:string" use="optional" default=" "/>
+                        <xs:attribute name="printTitle" type="xs:boolean" use="optional" default="true"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:choice>
+                  <xs:attribute name="key" type="cREPORT_KEY" use="required"/>
+                  <xs:attribute name="name" type="xs:string" use="required"/>
+                  <xs:attribute name="taskType" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+          <xs:unique name="ReportName">
+            <xs:selector xpath="Rpeort"/>
+            <xs:field xpath="@name"/>
+          </xs:unique>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:unique name="ModelStateVariableReference">
+      <xs:selector xpath="Model| Model/*/*"/>
+      <xs:field xpath="@stateVariable"/>
+    </xs:unique>
+  </xs:element>
+  <xs:complexType name="cCOMMENT" id="copasi.COMMENT">
+    <xs:sequence>
+      <xs:any namespace="http://www.w3.org/1999/xhtml" processContents="skip" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cCONSTANT" id="copasi.CONSTANT">
+    <xs:attribute name="key" type="cCONSTANT_KEY" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="value" type="xs:double" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="cREACTION_ELEMENT" id="copasi.REACTION_ELEMENT">
+    <xs:attribute name="metabolite" type="cMETABOLITE_KEYREF" use="required" id="copasi.REACTION_ELEMENT.metabolite"/>
+    <xs:attribute name="stoichiometry" type="xs:double" use="required" id="copasi.REACTION_ELEMENT.stoichiometry"/>
+  </xs:complexType>
+  <xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
+    <xs:sequence>
+      <xs:element name="MathML" type="cMATH" id="copasi.FUNCTION.MathML"/>
+      <xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:element name="ParameterDescription" type="cFUNCTION_PARAMETER" id="copasi.FUNCTION.ParameterDescription" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="ParameterDescriptionName">
+          <xs:selector xpath="ParameterDescription"/>
+          <xs:field xpath="@name"/>
+        </xs:unique>
+        <xs:unique name="ParameterDescriptionOrder">
+          <xs:selector xpath="ParameterDescription"/>
+          <xs:field xpath="@order"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="key" type="cFUNCTION_KEY" use="required" id="copasi.FUNCTION.key"/>
+    <xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION.name"/>
+    <xs:attribute name="type" use="required" id="copasi.FUNCTION.type">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="MassAction"/>
+          <xs:enumeration value="PreDefined"/>
+          <xs:enumeration value="UserDefined"/>
+          <xs:enumeration value="Expression"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="positive" type="xs:boolean" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="cFUNCTION_PARAMETER" id="copasi.FUNCTION_PARAMETER">
+    <xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>
+    <xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION_PARAMETER.name"/>
+    <xs:attribute name="order" type="xs:nonNegativeInteger" use="required" id="copasi.FUNCTION_PARAMETER.order"/>
+    <xs:attribute name="role" use="required" id="copasi.FUNCTION_PARAMETER.role">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="substrate"/>
+          <xs:enumeration value="product"/>
+          <xs:enumeration value="modifier"/>
+          <xs:enumeration value="constant"/>
+          <xs:enumeration value="other"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="minOccurs" type="xs:nonNegativeInteger" use="optional" default="1" id="copasi.FUNCTION_PARAMETER.minOccurs"/>
+    <xs:attribute name="maxOccurs" use="optional" default="1" id="copasi.FUNCTION_PARAMETER.maxOccurs">
+      <xs:simpleType>
+        <xs:union>
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="unbounded"/>
+            </xs:restriction>
+          </xs:simpleType>
+          <xs:simpleType>
+            <xs:restriction base="xs:nonNegativeInteger"/>
+          </xs:simpleType>
+        </xs:union>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="cFUNCTION_CALL" id="copasi.FUNCTION_CALL">
+    <xs:sequence>
+      <xs:element name="ListOfCallParameters" id="copasi.FUNCTION.ListOfCallParameters">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:element name="CallParameter" type="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL.ListOfCallParameters.CallParameter" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="CallParameterName">
+          <xs:selector xpath="CallParameter"/>
+          <xs:field xpath="@functionParameter"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="function" type="cFUNCTION_KEYREF" use="required" id="copasi.FUNCTION_CALL.function"/>
+  </xs:complexType>
+  <xs:complexType name="cFUNCTION_CALL_PARAMETER" id="copasi.FUNCTION_CALL_PARAMETER">
+    <xs:sequence>
+      <xs:element name="SourceParameter" id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="reference" type="cKEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.SourceParameter.reference"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="functionParameter" type="cFUNCTION_PARAMETER_KEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.functionParameter"/>
+  </xs:complexType>
+  <xs:complexType name="cMATH">
+    <xs:choice>
+      <xs:sequence>
+        <xs:any namespace="http://www.w3.org/Math/XMLSchema" processContents="skip" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:element name="Text">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:whiteSpace value="collapse"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="cOBJECT">
+    <xs:attribute name="cn" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:simpleType name="cSTATE">
+    <xs:list itemType="xs:double"/>
+  </xs:simpleType>
+  <xs:complexType name="cSTATE_TYPE">
+    <xs:simpleContent>
+      <xs:extension base="cSTATE">
+        <xs:attribute name="type" type="xs:string" use="optional" default="initialState"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="cPARAMETER">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="type" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="float"/>
+          <xs:enumeration value="unsignedFloat"/>
+          <xs:enumeration value="integer"/>
+          <xs:enumeration value="unsignedInteger"/>
+          <xs:enumeration value="bool"/>
+          <xs:enumeration value="group"/>
+          <xs:enumeration value="string"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="value" type="xs:double" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="cPARAMETER_LIST">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="ParameterGroup" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="cPARAMETER_LIST">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Parameter" type="cPARAMETER" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cREPORT_SECTION">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="Object" type="cOBJECT"/>
+      <xs:element name="html" type="cCOMMENT"/>
+      <xs:element name="Report" type="cREPORT_KEYREF"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="cREPORT_INSTANTIATION">
+    <xs:attribute name="reference" type="cREPORT_KEYREF" use="required"/>
+    <xs:attribute name="target" type="xs:anyURI" use="required"/>
+    <xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
+  </xs:complexType>
+  <xs:simpleType name="cKEY" id="copasi.KEY">
+    <xs:restriction base="xs:ID">
+      <xs:pattern value="[_a-zA-Z]+_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cMODEL_KEY" id="copasi.MODEL_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Model_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cCOMPARTMENT_KEY" id="copasi.COMPARTMENT_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Compartment_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cMETABOLITE_KEY" id="copasi.METABOLITE_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Metabolite_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cREACTION_KEY" id="copasi.REACTION_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Reaction_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cFUNCTION_KEY" id="copasi.FUNCTION_KEY" final="restriction">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Function_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cFUNCTION_PARAMETER_KEY" id="copasi.FUNCTION_PARAMETER_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="FunctionParameter_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cCONSTANT_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Constant_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSTATE_VARIABLE_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="StateVariable_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cREPORT_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Report_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cKEYREF" id="copasi.KEYREF">
+    <xs:restriction base="xs:IDREF">
+      <xs:pattern value="[_a-zA-Z]+_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cMODEL_KEYREF" id="copasi.MODEL_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Model_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cCOMPARTMENT_KEYREF" id="copasi.COMPARTMENT_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Compartment_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cMETABOLITE_KEYREF" id="copasi.METABOLITE_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Metabolite_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cREACTION_KEYREF" id="copasi.REACTION_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Reaction_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cFUNCTION_KEYREF" id="copasi.FUNCTION_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Function_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cFUNCTION_PARAMETER_KEYREF" id="copasi.FUNCTION_PARAMETER_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="FunctionParameter_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cCONSTANT_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Constant_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSTATE_VARIABLE_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="StateVariable_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cREPORT_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Report_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>
