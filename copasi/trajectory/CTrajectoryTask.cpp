@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 14:45:40 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 /**
@@ -34,66 +34,55 @@
 
 #define XXXX_Reporting
 
-CTrajectoryTask::CTrajectoryTask(const std::string & name,
-                                 const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
-    mReport(new CReport),
-    mKey(CKeyFactory::add("TrajectoryTask", this)),
-    mpProblem(new CTrajectoryProblem),
-    mpMethod(CTrajectoryMethod::createTrajectoryMethod()),
-    mpState(NULL),
-    mpOutInit(NULL),
-    mpOutPoint(NULL),
-    mpOutEnd(NULL)
-{}
+CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL)
+{
+  mpProblem = new CTrajectoryProblem(this);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+}
 
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
                                  const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mReport(new CReport),
-    mKey(CKeyFactory::add("TrajectoryTask", this)),
-    mpProblem(src.mpProblem),
-    mpMethod(src.mpMethod),
-    mpState(src.mpState),
-    mpOutInit(src.mpOutInit),
-    mpOutPoint(src.mpOutPoint),
-    mpOutEnd(src.mpOutEnd)
-{}
+    CCopasiTask(src, pParent),
+    mpState(src.mpState)
+{fatalError();}
 
 CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
                                  CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
-    CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
-    mReport(new CReport),
-    mKey(CKeyFactory::add("TrajectoryTask", this)),
-    mpProblem(pProblem),
-    mpMethod(CTrajectoryMethod::createTrajectoryMethod(subType, pProblem)),
-    mpState(NULL),
-    mpOutInit(NULL),
-    mpOutPoint(NULL),
-    mpOutEnd(NULL)
-{}
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL)
+{
+  mpProblem = pProblem;
+  mpProblem->setObjectParent(this);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(subType,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+}
 
 CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  C_FLOAT64 starttime, C_FLOAT64 endtime,
                                  unsigned C_INT32 stepnumber,
                                  CTrajectoryMethod::SubType subType,
                                  const CCopasiContainer * pParent):
-    CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
-    mReport(new CReport),
-    mKey(CKeyFactory::add("TrajectoryTask", this)),
-    mpProblem(new CTrajectoryProblem(this)),
-    //    mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
-    mpMethod(CTrajectoryMethod::createTrajectoryMethod(subType, mpProblem)),
-    mpState(NULL),
-    mpOutInit(NULL),
-    mpOutPoint(NULL),
-    mpOutEnd(NULL)
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL)
 {
-  mpProblem->setModel(pModel);
-  mpProblem->setStartTime(starttime);
-  mpProblem->setEndTime(endtime);
-  mpProblem->setStepNumber(stepnumber);
+  mpProblem = new CTrajectoryProblem(this);
+  ((CTrajectoryProblem *) mpProblem)->setModel(pModel);
+  ((CTrajectoryProblem *) mpProblem)->setStartTime(starttime);
+  ((CTrajectoryProblem *) mpProblem)->setEndTime(endtime);
+  ((CTrajectoryProblem *) mpProblem)->setStepNumber(stepnumber);
+
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(subType,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
 }
 
 CTrajectoryTask::~CTrajectoryTask()
@@ -102,138 +91,69 @@ CTrajectoryTask::~CTrajectoryTask()
 }
 
 void CTrajectoryTask::cleanup()
-{
-  CKeyFactory::remove(mKey);
-  pdelete(mpProblem);
-  pdelete(mpMethod);
-  pdelete(mpState);
-  pdelete(mpOutInit);
-  pdelete(mpOutPoint);
-  pdelete(mpOutEnd);
-  pdelete(mReport);
-}
-
-std::string CTrajectoryTask::getKey() const {return mKey;}
-
-void CTrajectoryTask::initializeReporting(std::ostream & out)
-{
-  pdelete(mpOutInit);
-  pdelete(mpOutPoint);
-  pdelete(mpOutEnd);
-
-  mpOut = & out;
-  mpOutInit = new COutputEvent(0);
-  mpOutPoint = new COutputEvent(1);
-  mpOutEnd = new COutputEvent(2);
-
-  mReport->open(mpOut);
-}
+{pdelete(mpState);}
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
 {
-  if (configBuffer.getVersion() < "4.0")
-    configBuffer.getVariable("Dynamics", "bool", &mRequested,
-                             CReadConfig::LOOP);
-  else
-    configBuffer.getVariable("RunTrajectory", "bool", &mRequested,
-                             CReadConfig::LOOP);
+  configBuffer.getVariable("Dynamics", "bool", &mScheduled,
+                           CReadConfig::LOOP);
 
   pdelete(mpProblem);
-  mpProblem = new CTrajectoryProblem();
-  mpProblem->load(configBuffer);
+  mpProblem = new CTrajectoryProblem(this);
+  ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
   pdelete(mpMethod);
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpMethod = CTrajectoryMethod::createTrajectoryMethod();
-    }
+  mpMethod = CTrajectoryMethod::createTrajectoryMethod();
+  mpMethod->setObjectParent(this);
+  ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
-
-CTrajectoryProblem * CTrajectoryTask::getProblem()
-{return mpProblem;}
-
-void CTrajectoryTask::setProblem(CTrajectoryProblem * pProblem)
-{mpProblem = pProblem;}
-
-CTrajectoryMethod * CTrajectoryTask::getMethod()
-{return mpMethod;}
-
-void CTrajectoryTask::setMethod(CTrajectoryMethod * pMethod)
-{mpMethod = pMethod;}
 
 CState * CTrajectoryTask::getState()
 {return mpState;}
 
-void CTrajectoryTask::setRequested(const bool & requested)
-{mRequested = requested;}
-
-bool CTrajectoryTask::isRequested() const {return mRequested;}
-
-void CTrajectoryTask::process()
+bool CTrajectoryTask::initialize(std::ostream * pOstream)
 {
-  if (!mpProblem)
-    fatalError();
-  if (!mpMethod)
-    fatalError();
+  assert(mpProblem && mpMethod && mpReport);
+
+  bool success = true;
+
+  if (!mpReport->open(pOstream)) success = false;
+  if (!mpReport->compile()) success = false;
+  if (!mpProblem->getModel()->compile()) success = false;
+
+  return success;
+}
+
+bool CTrajectoryTask::process()
+{
+  assert(mpProblem && mpMethod && mpReport);
+
+  CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
+  CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
 
   pdelete(mpState);
-  mpState = new CState(mpProblem->getInitialState());
+  mpState = new CState(pProblem->getInitialState());
 
-  mReport->compile();
-  /*
-    if (mpOutInit || mpOutPoint || mpOutEnd)
-      Copasi->pOutputList->compile("Time-course output",
-                                   mpProblem->getModel(),
-                                   mpState);
-  */
-
-  mpMethod->setCurrentState(mpState);
-  mpMethod->setProblem(mpProblem);
+  pMethod->setCurrentState(mpState);
+  pMethod->setProblem(pProblem);
 
   CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
 
-  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mReport->printHeader();
-  /* need to be commented off
-  if (mpOutInit)
-    {
-      // Correct output depends on the model being updated 
-      // We should try to avoid this in the future         
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutInit->print(*Copasi->pOutputList, *mpOut);
-    }
-  */
+  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mpReport->printHeader();
 
-  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mReport->printBody();
-  /* need to be commented off
-  if (mpOutPoint)
-    {
-      // Correct output depends on the model being updated 
-      // We should try to avoid this in the future         
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-    }
-  */
+  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mpReport->printBody();
 
-  C_FLOAT64 StepSize = mpProblem->getStepSize();
+  C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
   const C_FLOAT64 & Time = mpState->getTime();
-  C_FLOAT64 EndTime = mpProblem->getEndTime() - StepSize;
+  C_FLOAT64 EndTime = pProblem->getEndTime() - StepSize;
 
-  ActualStepSize = mpMethod->step(StepSize, mpState);
+  ActualStepSize = pMethod->step(StepSize, mpState);
 
-  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mReport->printBody();
-  /*
-  if (mpOutPoint)
-    {
-      // Correct output depends on the model being updated 
-      // We should try to avoid this in the future         
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-    }
-  */
+  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mpReport->printBody();
 
 #ifdef  XXXX_Event
   if (ActualStepSize != StepSize)
@@ -244,19 +164,10 @@ void CTrajectoryTask::process()
 
   while (Time < EndTime)
     {
-      ActualStepSize = mpMethod->step(StepSize);
+      ActualStepSize = pMethod->step(StepSize);
 
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mReport->printBody();
-      /*
-            if (mpOutPoint)
-              {
-                // Correct output depends on the model being updated 
-                // We should try to avoid this in the future         
-                mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-                mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-              }
-      */
+      pProblem->getModel()->getDerivatives(mpState, Derivatives);
+      mpReport->printBody();
 
 #ifdef  XXXX_Event
       if (ActualStepSize != StepSize)
@@ -266,41 +177,41 @@ void CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  while (Time < mpProblem->getEndTime())
+  while (Time < pProblem->getEndTime())
     {
-      ActualStepSize = mpMethod->step(mpProblem->getEndTime() - Time);
+      ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
 #ifdef  XXXX_Event
-      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-      mReport->printBody();
-      /*
-            if (mpOutPoint)
-              {
-                // Correct output depends on the model being updated 
-                // We should try to avoid this in the future         
-                mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-                mpOutPoint->print(*Copasi->pOutputList, *mpOut);
-              }
-      */
+      pProblem->getModel()->getDerivatives(mpState, Derivatives);
+      mpReport->printBody();
 
-      if (ActualStepSize != (mpProblem->getEndTime() - Time))
+      if (ActualStepSize != (pProblem->getEndTime() - Time))
         {
           /* Here we will do conditional event processing */
         }
 #endif // XXXX_Event
     }
 
-  mpProblem->setEndState(new CState(*mpState));
+  pProblem->setEndState(new CState(*mpState));
 
-  mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-  mReport->printFooter();
-  /*
-    if (mpOutEnd)
-      {
-        // Correct output depends on the model being updated 
-        // We should try to avoid this in the future         
-        mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-        mpOutEnd->print(*Copasi->pOutputList, *mpOut);
-      }
-  */
+  pProblem->getModel()->getDerivatives(mpState, Derivatives);
+  mpReport->printFooter();
+
+  return true;
+}
+
+bool CTrajectoryTask::setMethodType(const int & type)
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  if (!CTrajectoryMethod::isValidSubType(Type)) return false;
+  if (mpMethod->getSubType() == Type) return true;
+
+  pdelete (mpMethod);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(Type,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+
+  return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:13:59 $
+   $Date: 2003/11/19 20:11:45 $
    End CVS Header */
 
 /**
@@ -251,12 +251,10 @@ bool CScanProblem::calculate()
 
   if ((mpTrajectory != NULL) && processTrajectory())
     {
-      // std::cout << "COptProblem: mpTrajectory";
-      getTrajectoryTask()->getProblem()->
+      ((CTrajectoryProblem *) getTrajectoryTask()->getProblem())->
       setInitialState(getTrajectoryTask()->getProblem()->getModel()
                       ->getInitialState());
-      getTrajectoryTask()->getProblem()->
-      setStartTime(getTrajectoryTask()->getProblem()->getStartTime());
+
       mpTrajectory->process();
     }
 

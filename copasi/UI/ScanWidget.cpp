@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.158 $
+   $Revision: 1.159 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:07:35 $
+   $Date: 2003/11/19 20:11:46 $
    End CVS Header */
 
 /********************************************************
@@ -568,11 +568,13 @@ void ScanWidget::loadScan()
   mModel = scanProblem->getModel();
 
   CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
-  CSteadyStateProblem * mSteadystateproblem = mSteadyStateTask->getProblem();
+  CSteadyStateProblem * mSteadystateproblem =
+    mSteadyStateTask->getProblem();
   mSteadystateproblem->setModel(mModel);
 
   CTrajectoryTask* mTrajectoryTask = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
-  CTrajectoryProblem * mTrajectoryproblem = mTrajectoryTask->getProblem();
+  CTrajectoryProblem * mTrajectoryproblem =
+    (CTrajectoryProblem *) mTrajectoryTask->getProblem();
   mTrajectoryproblem->setModel(mModel);
 
   scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));

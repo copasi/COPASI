@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 14:45:40 $
+   $Date: 2003/11/19 20:11:45 $
    End CVS Header */
 
 /**
@@ -79,7 +79,7 @@ void CScanTask::initializeReporting(std::ostream & out)
 
   // for Trajectory Report
   if (mpProblem->processTrajectory())
-    mpProblem->getTrajectoryTask()->initializeReporting(out);
+    mpProblem->getTrajectoryTask()->initialize(mpOut);
 }
 
 void CScanTask::load(CReadConfig & configBuffer)

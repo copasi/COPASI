@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:10 $
+   $Date: 2003/11/19 20:11:45 $
    End CVS Header */
 
 #include <algorithm>
@@ -162,12 +162,19 @@ CNewtonMethod::process(CState & steadyState,
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      pTrajectoryProblem = new CTrajectoryProblem();
+      pTrajectory = new CTrajectoryTask();
+
+      pTrajectoryProblem =
+        dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
+      assert(pTrajectoryProblem);
+
+      pTrajectoryMethod =
+        dynamic_cast<CTrajectoryMethod *>(pTrajectory->getMethod());
+      assert(pTrajectoryMethod);
+
       pTrajectoryProblem->setModel(mpProblem->getModel());
       pTrajectoryProblem->setStepNumber(1);
 
-      pTrajectoryMethod = CTrajectoryMethod::
-                          createTrajectoryMethod(CTrajectoryMethod::deterministic);
       pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
                                   * (C_FLOAT64 *) getValue("Newton.LSODA.RelativeTolerance"));
       pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
@@ -177,12 +184,7 @@ CNewtonMethod::process(CState & steadyState,
       pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
                                   * (unsigned C_INT32 *) getValue("Newton.LSODA.BDFMaxOrder"));
 
-      pTrajectory = new CTrajectoryTask();
-      pTrajectory->setProblem(pTrajectoryProblem);
-      pTrajectory->setMethod(pTrajectoryMethod);
-
-      //      output.open("output.txt");
-      //      pTrajectory->initializeReporting(output);
+      pTrajectory->initialize();
     }
 
   // make sure the steady state has the correct allocation
@@ -432,7 +434,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                    /* fortran style vector */
+                           mdxdt.array() - 1,                     /* fortran style vector */
                            1);
         }
 
@@ -489,7 +491,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                    /* fortran style vector */
+                   mdxdt.array() - 1,                     /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

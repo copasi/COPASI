@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 19:00:43 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 /**
@@ -33,13 +33,13 @@ class CCopasiTask : public CCopasiContainer
      */
     enum Type
     {
-      unset = 0,
-      steadyState,
+      steadyState = 0,
       timeCourse,
       scan,
       fluxMode,
       optimization,
-      parameterFitting
+      parameterFitting,
+      unset,
     };
 
     /**
@@ -54,11 +54,21 @@ class CCopasiTask : public CCopasiContainer
     static const char* XMLType[];
 
     // Attributes
-  private:
+  protected:
     /**
      * The type of the task
      */
-    std::string mType;
+    Type mType;
+
+    /**
+     * The key of the task
+     */
+    std::string mKey;
+
+    /**
+     * Tells whether the task is scheduled for execution
+     */
+    bool mScheduled;
 
     /**
      * The problem of the task
@@ -85,7 +95,7 @@ class CCopasiTask : public CCopasiContainer
   public:
     /**
      * Specific constructor
-     * @param "const string &" name (Default = "NoName")
+     * @param const Type & taskType
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & type (default: "Task")
      */
@@ -95,7 +105,7 @@ class CCopasiTask : public CCopasiContainer
 
     /**
      * Copy constructor
-     * @param "const CCopasiTaskr &" src
+     * @param const CCopasiTask & src
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CCopasiTask(const CCopasiTask & src,
@@ -104,37 +114,89 @@ class CCopasiTask : public CCopasiContainer
     /**
      * Destructor
      */
-    ~CCopasiTask();
+    virtual ~CCopasiTask();
 
     /**
-     * Retrieve the name of the method
+     * Retrieve the name of the task
      * @return " const string &" name
      */
     const std::string & getName() const;
 
     /**
-     * Set the name of the method
+     * Set the name of the task
      * @param "const string &" name
      */
     bool setName(const std::string & name);
 
     /**
-     * Retrieve the type of the method
-     * @return " const string &" type
+     * Retrieve the type of the task
+     * @return CCopasiTask::Type type
      */
-    const std::string & getType() const;
+    Type getType() const;
 
     /**
-     * Set the type of the method
-     * @param "const string &" type
+     * Set the type of the task
+     * @param CCopasiTask::Type & type
      */
-    void setType(const std::string & type);
+    void setType(const Type & type);
 
     /**
-     * Retrieve the name of the indexed parameter
-     * @param "const unsigned C_INT32 &" index
-     * @return "const string &" mName
+     * Retrieve the key for the task.
+     * @return std::string key
      */
+    std::string getKey() const;
+
+    /**
+     * Set whether the task is scheduled
+     * @param const bool & scheduled (default: true)
+     */
+    void setScheduled(const bool & scheduled);
+
+    /**
+     * Check whether the task is scheduled
+     * @return const bool & scheduled
+     */
+    const bool & isScheduled() const;
+
+    /**
+     * Initialize the task. If an ostream is given this ostream is used
+     * instead of the target specified in the report. This allows nested 
+     * tasks to share the same output device.
+     * @param std::ostream * pOstream (default: NULL)
+     */
+    virtual bool initialize(std::ostream * pOstream = NULL);
+
+    /**
+     * Process the task
+     */
+    virtual bool process();
+
+    /**
+     * Perform neccessary cleaup procedures
+     */
+    virtual bool restore();
+
+    /**
+     * Retrieve the problem
+     */
+    CCopasiProblem * getProblem();
+
+    /**
+     * Set the method type applied to solve the task
+     * @param const CCopasiMethod::SubType & type
+     * @return bool success
+     */
+    virtual bool setMethodType(const int & type);
+
+    /**
+     * Retrieve the method
+     */
+    CCopasiMethod * getMethod();
+
+    /**
+     * Retrieve the report
+     */
+    CReport * getReport();
   };
 
 #endif // COPASI_CCopasiTask

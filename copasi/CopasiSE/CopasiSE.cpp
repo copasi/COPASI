@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:18:12 $
+   $Date: 2003/11/19 20:11:47 $
    End CVS Header */
 
 // Main
@@ -124,7 +124,7 @@ void processTrajectory(CModel & model, CReadConfig & copasiFile)
   task.getProblem()->setModel(&model);
 
   std::ofstream TrajectoryFile(Copasi->pOutputList->getTrajectoryFile().c_str());
-  task.initializeReporting(TrajectoryFile);
+  task.initialize(&TrajectoryFile);
 
   task.process();
 }

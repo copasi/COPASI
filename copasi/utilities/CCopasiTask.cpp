@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:21 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 /**
@@ -17,10 +17,13 @@
 #include "copasi.h"
 
 #include "CCopasiTask.h"
+#include "CCopasiProblem.h"
+#include "CCopasiMethod.h"
+#include "report/CReport.h"
+#include "report/CKeyFactory.h"
 
 const std::string CCopasiTask::TypeName[] =
   {
-    "Not set",
     "Stead-State",
     "Time-Course",
     "Scan",
@@ -32,7 +35,6 @@ const std::string CCopasiTask::TypeName[] =
 
 const char* CCopasiTask::XMLType[] =
   {
-    "NotSet",
     "SteadyState",
     "TimeCourse",
     "Scan",
@@ -41,3 +43,75 @@ const char* CCopasiTask::XMLType[] =
     "ParameterFitting",
     NULL
   };
+
+CCopasiTask::CCopasiTask():
+    CCopasiContainer("NoName", NULL, "Task"),
+    mType(CCopasiTask::unset),
+    mKey(CKeyFactory::add("Task", this)),
+    mScheduled(false),
+    mpProblem(NULL),
+    mpMethod(NULL),
+    mpReport(new CReport)
+{}
+
+CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
+                         const CCopasiContainer * pParent,
+                         const std::string & type):
+    CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
+    mType(taskType),
+    mKey(CKeyFactory::add("Task", this)),
+    mScheduled(false),
+    mpProblem(NULL),
+    mpMethod(NULL),
+    mpReport(new CReport)
+{}
+
+CCopasiTask::CCopasiTask(const CCopasiTask & src,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mType(src.mType),
+    mKey(CKeyFactory::add("Task", this)),
+    mScheduled(src.mScheduled),
+    mpProblem(NULL),
+    mpMethod(NULL),
+    mpReport(new CReport(*src.mpReport))
+{}
+
+CCopasiTask::~CCopasiTask()
+{
+  CKeyFactory::remove(mKey);
+  pdelete(mpProblem);
+  pdelete(mpMethod);
+  pdelete(mpReport);
+}
+
+const std::string & CCopasiTask::getName() const
+  {return getObjectName();}
+
+bool CCopasiTask::setName(const std::string & name)
+{return setObjectName(name);}
+
+CCopasiTask::Type CCopasiTask::getType() const {return mType;}
+
+void CCopasiTask::setType(const CCopasiTask::Type & type) {mType = type;}
+
+std::string CCopasiTask::getKey() const {return mKey;}
+
+void CCopasiTask::setScheduled(const bool & scheduled) {mScheduled = scheduled;}
+
+const bool & CCopasiTask::isScheduled() const {return mScheduled;}
+
+bool CCopasiTask::initialize(std::ostream * C_UNUSED(pOstream)) {return true;}
+
+bool CCopasiTask::process() {return true;}
+
+bool CCopasiTask::restore() {return true;}
+
+CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
+
+bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
+{return false;}
+
+CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
+
+CReport * CCopasiTask::getReport() {return mpReport;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:07 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 // Main
@@ -581,12 +581,12 @@ C_INT32 TestTrajectoryTask(void)
   outbuf.flush();
 
   ofstream output("output.txt");
-  traj.initializeReporting(output);
+  traj.initialize(&output);
   traj.process();
   //traj.cleanup();
 
   ofstream output2("output2.txt");
-  traj.initializeReporting(output2);
+  traj.initialize(&output2);
   traj.process();
   //traj.cleanup();
 
@@ -1930,7 +1930,7 @@ C_INT32 TestSpec2Model()
   outbuf.flush();
 
   ofstream output("output.txt");
-  traj.initializeReporting(output);
+  traj.initialize(&output);
   traj.process();
   //traj.cleanup();
 

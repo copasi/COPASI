@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:54 $
+   $Date: 2003/11/19 20:11:46 $
    End CVS Header */
 
 /**
@@ -94,20 +94,21 @@ C_FLOAT64 COptProblem::calculate()
 {
   if (mpSteadyState != NULL)
     {
-      // std::cout << "COptProblem: mpSteadyState";
+      /* :TODO: this should be done only once! */
       mpSteadyState->getProblem()->getModel()->compile();
+
       mpSteadyState->getProblem()->
       setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
       mpSteadyState->process();
     }
+
   if (mpTrajectory != NULL)
     {
-      // std::cout << "COptProblem: mpTrajectory";
+      /* :TODO: this should be done only once! */
       mpTrajectory->getProblem()->getModel()->compile();
-      mpTrajectory->getProblem()->
+
+      ((CTrajectoryProblem *) mpTrajectory->getProblem())->
       setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
-      mpTrajectory->getProblem()->
-      setStartTime(mpTrajectory->getProblem()->getStartTime());
       mpTrajectory->process();
     }
   return 0;

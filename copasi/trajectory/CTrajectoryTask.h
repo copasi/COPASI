@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:15 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 /**
@@ -19,41 +19,19 @@
 #ifndef COPASI_CTrajectoryTask
 #define COPASI_CTrajectoryTask
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
 #include "CTrajectoryMethod.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CReadConfig.h"
 
 class CTrajectoryProblem;
-//class CTrajectoryMethod;
+class CTrajectoryMethod;
 class CState;
-class COutputEvent;
 class CReport;
 
-class CTrajectoryTask : public CCopasiContainer
+class CTrajectoryTask : public CCopasiTask
   {
     //Attributes
   private:
-
-    CReport* mReport;
-    /**
-     *  Key 
-     */
-    std::string mKey;
-
-    /**
-     * A pointer to the problem to be integrated.
-     */
-    CTrajectoryProblem *mpProblem;
-
-    /**
-     * A pointer to the method choosen for the integration.
-     */
-    CTrajectoryMethod * mpMethod;
-
-    /**
-     * Flag indicating whether the task shall be executed by CopasiSE
-     */
-    bool mRequested;
 
     /**
      * A pointer to the current state of the integration.
@@ -61,43 +39,21 @@ class CTrajectoryTask : public CCopasiContainer
     CState * mpState;
 
     /**
-     * Initial Output Event
-     */
-    COutputEvent *mpOutInit;
-
-    /**
-     * Any Point Output Event from beginning to end
-     */
-    COutputEvent *mpOutPoint;
-
-    /**
-     * End Phase Output Event
-     */
-    COutputEvent *mpOutEnd;
-
-    /**
-     * Pointer to the output stream for reporting
-     */
-    std::ostream * mpOut;
-
-    /**
      * Produces the output. time=0 for init, time=1 for point, time=2 for end.
-     */
-    void printOutput(const C_INT32 time);
-
-    friend CStochMethod *
-    CStochMethod::createStochMethod(CTrajectoryProblem * pProblem);
+     */ 
+    //    void printOutput(const C_INT32 time);
 
   public:
     /**
-     * default constructor
+     * Default constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryTask(const std::string & name = "TrajectoryTask",
-                    const CCopasiContainer * pParent = NULL);
+    CTrajectoryTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param const CTrajectoryTask & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     CTrajectoryTask(const CTrajectoryTask & src,
                     const CCopasiContainer * pParent = NULL);
@@ -132,16 +88,24 @@ class CTrajectoryTask : public CCopasiContainer
     ~CTrajectoryTask();
 
     /**
-     *  Retrieve the key 
-     * @return std::string key
+     * Initialize the task. If an ostream is given this ostream is used
+     * instead of the target specified in the report. This allows nested 
+     * tasks to share the same output device.
+     * @param std::ostream * pOstream (default: NULL)
      */
-    std::string getKey() const;
+    virtual bool initialize(std::ostream * pOstream = NULL);
 
     /**
-     * Initilize the reporting feature
-     * @param ofstream & out
+     * Process the task
      */
-    void initializeReporting(std::ostream & out);
+    virtual bool process();
+
+    /**
+     * Set the method type applied to solve the task
+     * @param const CCopasiMethod::SubType & type
+     * @return bool success
+     */
+    virtual bool setMethodType(const int & type);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -151,53 +115,10 @@ class CTrajectoryTask : public CCopasiContainer
     void load(CReadConfig & configBuffer);
 
     /**
-     * Retrieve the probel to be integrated.
-     * @return CTrajectoryProblem * pProblem
-     */
-    CTrajectoryProblem * getProblem();
-
-    /**
-     * Set the problem to be integrated.
-     * @param CTrajectoryProblem * pProblem
-     */
-    void setProblem(CTrajectoryProblem * pProblem);
-
-    /**
-     * Retrieve the method choosen for the integration.
-     * @return CTrajectoryMethod * pMethod
-     */
-    CTrajectoryMethod * getMethod();
-
-    /**
-     * Set the method to be used for the integration.
-     * @param CTrajectoryMethod * pMethod
-     */
-    void setMethod(CTrajectoryMethod * pMethod);
-
-    /**
-     * Set wheter the execution of the task is requested.
-     * @param const bool & execute
-     */
-    void setRequested(const bool & requested);
-
-    /**
-     * Retrieve whether the execution of the task is requested
-     * @return bool isRequested
-     */
-    bool isRequested() const;
-
-    /**
      * Retrieves a pointer to current state of the integration.
      * @return CState * pState
      */
     CState * getState();
-
-    /**
-     * Do the integration
-     */
-    void process();
-
-    inline CReport* getReport() {return mReport;};
 
   private:
     /**

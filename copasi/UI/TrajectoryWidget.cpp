@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:15:00 $
+   $Date: 2003/11/19 20:11:46 $
    End CVS Header */
 
 /********************************************************
@@ -222,9 +222,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
  */
 TrajectoryWidget::~TrajectoryWidget()
 {
-  // no need to delete child widgets, Qt does it all for us
-  if (!CKeyFactory::get(objKey)) return;
-  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+
   pdelete(tt);
 }
 
@@ -243,10 +243,17 @@ void TrajectoryWidget::CancelChange()
 
 void TrajectoryWidget::CommitChange()
 {
-  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+  assert(tt);
 
-  CTrajectoryProblem * trajectoryproblem = tt->getProblem();
-  CTrajectoryMethod * trajectorymethod = tt->getMethod();
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
 
   if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
     trajectoryproblem->setStepSize(nStepSize->text().toDouble());
@@ -291,56 +298,55 @@ void TrajectoryWidget::runTrajectoryTask()
       return;
     }
 
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+  assert(tt);
+
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
+
+  trajectoryproblem->getModel()->compile();
+  trajectoryproblem->
+  setInitialState(trajectoryproblem->getModel()->getInitialState());
+
+  tt->initialize();
+
+  if (!tt->getReport()->getStream())
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot create output for you.\n Do you want to continue running trajectory task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
+
   setCursor(Qt::WaitCursor);
-
-  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  tt->getProblem()->getModel()->compile();
-  tt->getProblem()->setInitialState(tt->getProblem()->
-                                    getModel()->getInitialState());
-  tt->getProblem()->
-  setStartTime(tt->getProblem()->getStartTime());
-
-  std::ofstream output;
-  if (tt->getReport()->getTarget() != "")
-    {
-      if (tt->getReport()->append())
-        output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
-      else
-        output.open(tt->getReport()->getTarget().c_str(), std::ios_base::out);
-    }
-
-  if (output.is_open())
-    {
-      output << "# "; // Hack for gnuplot
-      tt->initializeReporting(output);
-    }
-  //ask if user insists on proceeding
-  else if (QMessageBox::information (NULL, "No output specified,",
-                                     "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running trajectory task with no output?",
-                                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-    {
-      unsetCursor();
-      return;
-    }
-
-  // std::ofstream output("trajectory.txt");
-  // tt->initializeReporting(output);
 
   tt->process();
 
-  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
-
-  //emit runFinished(dataModel->getTrajectoryTask()->getProblem()->getModel());
+  ListViews::notify(ListViews::STATE, ListViews::CHANGE,
+                    dataModel->getModel()->getKey());
 
   unsetCursor();
 }
 
 void TrajectoryWidget::loadTrajectoryTask()
 {
-  CTrajectoryTask* tt = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  CTrajectoryTask* tt =
+    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+  assert(tt);
 
-  CTrajectoryProblem* trajectoryproblem = tt->getProblem();
-  CTrajectoryMethod* trajectorymethod = tt->getMethod();
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
 
   taskName->setText(tr("Trajectory Task"));
   taskName->setEnabled(false);
@@ -390,29 +396,31 @@ void TrajectoryWidget::UpdateMethod(const bool & update)
   //if (!mTrajectoryTask)
   //  return;
   CTrajectoryTask* tt =
-    (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  CTrajectoryProblem* trajectoryproblem = tt->getProblem();
-  CTrajectoryMethod* trajectorymethod = tt->getMethod();
+    dynamic_cast<CTrajectoryTask *>(CKeyFactory::get(objKey));
+  assert(tt);
+
+  CTrajectoryProblem* trajectoryproblem =
+    dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
+  assert(trajectoryproblem);
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
 
   CCopasiMethod::SubType SubType =
     CCopasiMethod::TypeNameToEnum(ComboBox1->currentText().latin1());
 
   if (SubType != CCopasiMethod::unset)
     {
-      CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
-      trajectorymethod =
-        CTrajectoryMethod::createTrajectoryMethod(SubType, trajectoryproblem);
-      if (trajectorymethod != NULL)
-        {
-          trajectorymethod->setProblem(trajectoryproblem);
-          tt->setMethod(trajectorymethod);
-          pdelete(ptrTmpMethod);
-        }
-      else
-        {
-          QMessageBox::warning(this, NULL, "New method cannot be created by the paramters!", QMessageBox::Ok, QMessageBox::Cancel);
-          trajectorymethod = ptrTmpMethod;
-        }
+      tt->setMethodType(SubType);
+      trajectorymethod = dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+      assert(trajectorymethod);
+    }
+  else
+    {
+      QMessageBox::warning(this, NULL,
+                           "New method cannot be created by the paramters!",
+                           QMessageBox::Ok, QMessageBox::Cancel);
     }
 
   if (update) loadTrajectoryTask();

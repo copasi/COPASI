@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 14:45:40 $
+   $Date: 2003/11/19 20:11:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,8 +19,8 @@ const std::vector< CCopasiContainer * > CReport::EmptyList;
 //class CReport
 //
 //////////////////////////////////////////////////
-CReport::CReport():
-    CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
+CReport::CReport(const CCopasiContainer * pParent):
+    CCopasiObject("Report", pParent, "Report"),
     mpOstream(NULL),
     mStreamOwner(false),
     mpReportDef(NULL),
@@ -29,22 +29,22 @@ CReport::CReport():
     //,mKey(CKeyFactory::add("Report", this))
 {}
 
+CReport::CReport(const CReport & src,
+                 const CCopasiContainer * pParent):
+    CCopasiObject("Report", pParent, "Report"),
+    mpOstream(src.mpOstream),
+    mStreamOwner(false),
+    mpReportDef(src.mpReportDef),
+    mTarget(src.mTarget),
+    mAppend(src.mAppend)
+    //,mKey(CKeyFactory::add("Report", this))
+{}
+
 CReport::~CReport()
 {cleanup();}
 
 void CReport::cleanup()
 {
-  // Please Dont clear the objectList, as all pointers are also referred swh else
-  unsigned C_INT32 i;
-  for (i = 0; i < headerObjectList.size(); i++)
-    headerObjectList[i] = NULL;
-
-  for (i = 0; i < bodyObjectList.size(); i++)
-    bodyObjectList[i] = NULL;
-
-  for (i = 0; i < footerObjectList.size(); i++)
-    footerObjectList[i] = NULL;
-
   headerObjectList.clear();
   bodyObjectList.clear();
   footerObjectList.clear();
@@ -115,6 +115,10 @@ void CReport::printFooter()
 
 bool CReport::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
+  headerObjectList.clear();
+  bodyObjectList.clear();
+  footerObjectList.clear();
+
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
 
@@ -148,10 +152,14 @@ std::ostream * CReport::open(std::ostream * pOstream)
       else
         ((std::ofstream *) mpOstream)->
         open(mTarget.c_str(), std::ios_base::out);
+
+      if (((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
     }
 
   return mpOstream;
 }
+
+std::ostream * CReport::getStream() const {return mpOstream;}
 
 void CReport::printBody(CReport * pReport)
 {

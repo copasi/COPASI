@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 18:56:57 $
+   $Date: 2003/11/19 20:11:44 $
    End CVS Header */
 
 /**
@@ -28,7 +28,7 @@ CTrajectoryMethod::ValidSubTypes(2,
                                  CCopasiMethod::stochastic,
                                  CCopasiMethod::hybrid);
 
-bool isValidSubType(const CCopasiMethod::SubType & subType)
+bool CTrajectoryMethod::isValidSubType(const CCopasiMethod::SubType & subType)
 {
   unsigned C_INT32 i, imax = CTrajectoryMethod::ValidSubTypes.size();
 

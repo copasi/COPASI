@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 14:45:41 $
+   $Date: 2003/11/19 20:11:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,22 +43,28 @@ class CReport : public CCopasiObject
     std::vector<CCopasiObject*> bodyObjectList;
     std::vector<CCopasiObject*> headerObjectList;
 
-    //    std::string mKey;
-
   public:
     /**
-        *  Default constructor.
-        */
-    CReport();
+     * Default constructor.
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CReport(const CCopasiContainer * pParent = NULL);
 
     /**
-    cleanup
-    */
+     * Copy constructor.
+     * @param const CReport & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CReport(const CReport & src,
+            const CCopasiContainer * pParent);
+    /**
+     * cleanup
+     */
     void cleanup();
 
     /**
-       *  Destructor.
-       */
+     *  Destructor.
+     */
     ~CReport();
 
     /**
@@ -80,6 +86,12 @@ class CReport : public CCopasiObject
      * @return std::ostream * mpOstream
      */
     std::ostream * open(std::ostream * pOstream = NULL);
+
+    /**
+     * Retrieve a pointer to the ostream
+     * @return std::ostream * pOstream
+     */
+    std::ostream * CReport::getStream() const;
 
     /**
      * transfer every individual object list from name vector
