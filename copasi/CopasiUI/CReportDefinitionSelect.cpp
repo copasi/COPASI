@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.8 2003/08/19 16:56:46 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.9 2003/08/19 17:03:00 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -88,7 +88,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
   setTabOrder(confirmButton, cancelButton);
 
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-  connect(cancelButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
+  connect(confirmButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
   connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToEdit()));
 
   loadReportDefinitionVector();
