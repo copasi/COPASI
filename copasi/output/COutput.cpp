@@ -113,9 +113,9 @@ COutput& COutput::operator=(const COutput &source)
  *  @see mOutput
  */
 const CCopasiVectorS < COutputLine > & COutput::getList() const
-  {
-    return mOutput;
-  }
+{
+  return mOutput;
+}
 
 /**
  *  Add new OutputLine object to a list
@@ -635,7 +635,7 @@ void COutput::repStability(ofstream &fout)
   unsigned C_INT32 i, imax;
   unsigned C_INT32 j, jmax;
 
-  const C_FLOAT64 * Jacobian = mSolution->getJacobian();
+  const CMatrix< C_FLOAT64 > & Jacobian = mSolution->getJacobian();
   CModel *model = Copasi->Model;
 
   fout << *mSolution->getEigenValues();
@@ -653,7 +653,7 @@ void COutput::repStability(ofstream &fout)
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        fout << Jacobian[i * jmax + j] << "  ";
+        fout << Jacobian[i][j] << "  ";
 
       fout << endl;
     }
