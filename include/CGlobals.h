@@ -4,15 +4,13 @@
 #include <string>
 
 #include "CFunctionDB.h"
+#include "CVersion.h"
 
 class CGlobals
 {
 // Attributes
 public:
-    long VersionMajor;
-    long VersionMinor;
-    long VersionDevel;
-    string Version;
+    CVersion ProgramVersion(4,0,101);
     
     CFunctionDB FunctionDB;
     double DefaultConc;
