@@ -282,7 +282,8 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
       pFunction = mLoadedFunctions[i];
 
       if (reversible != TriUnspecified &&
-          reversible != pFunction->isReversible())
+          reversible != pFunction->isReversible() &&
+          pFunction->isReversible() != TriUnspecified)
         continue;
 
       for (j = 0, jmax = pFunction->getUsageDescriptions().size();
