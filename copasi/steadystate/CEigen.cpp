@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:55:34 $
+   $Date: 2004/10/07 09:34:45 $
    End CVS Header */
 
 /**
@@ -136,7 +136,7 @@ void CEigen::initialize()
 
 void CEigen::cleanup()
 {
-  pdelete(mWork);
+  if (mWork) delete [] mWork; mWork = NULL;
 }
 
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
@@ -264,18 +264,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,           // mSelect,           //NULL,
-         &mN,                          //&n,
+         NULL,            // mSelect,           //NULL,
+         &mN,                           //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                  // output
+         & mSdim,                   // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,                    //NULL
+         mBWork,                     //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
