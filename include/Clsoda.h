@@ -3,6 +3,7 @@
 
 #include "copasi.h"
 #include "CModel.h"
+#include "utilities.h"
 
 class Clsoda 
 {
