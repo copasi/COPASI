@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:22:20 $
+   $Date: 2004/06/11 14:49:53 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -354,6 +354,10 @@ void DataModel::importSBML(const char* fileName)
 {
   mChanged = false;
 
+  pdelete(pOptFunction);
+  pOptFunction = new COptFunction();
+  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+
   pdelete(model);
   SBMLImporter* importer = new SBMLImporter();
   try
@@ -396,14 +400,6 @@ void DataModel::importSBML(const char* fileName)
   searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
   tmpHandler->setPlotSpecVectorAddress(plotspecs);
-
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
-  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
-
-  pdelete(pOptFunction);
-  pOptFunction = new COptFunction();
-  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
   pdelete(mpMathModel);
   mpMathModel = new CMathModel();
