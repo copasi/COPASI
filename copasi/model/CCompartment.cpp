@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:44 $
+   $Date: 2004/05/19 09:36:45 $
    End CVS Header */
 
 // CCompartment
@@ -133,7 +133,7 @@ void CCompartment::saveSBML(std::ofstream &fout)
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
 
-std::string CCompartment::getKey() const {return mKey;}
+const std::string & CCompartment::getKey() const {return mKey;}
 
 //const std::string & CCompartment::getName() const {return getObjectName();}
 
@@ -197,8 +197,8 @@ bool CCompartment::removeMetabolite(CMetab * pMetabolite)
   return true;
 }
 
-bool CCompartment::isValidName(const std::string & name) const
-{return (name.find_first_of(" ") == std::string::npos);}
+//bool CCompartment::isValidName(const std::string & name) const
+//{return (name.find_first_of(" ") == std::string::npos);}
 
 void CCompartment::initObjects()
 {

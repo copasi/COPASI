@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:44 $
+   $Date: 2004/05/19 09:36:45 $
    End CVS Header */
 
 /**
@@ -132,7 +132,7 @@ class CCompartment : public CCopasiContainer
      *  Returns a string with the name of this compartment.
      *  @return std::string key
      */
-    std::string getKey() const;
+    virtual const std::string & getKey() const;
 
     /**
      *  Returns a string with the name of this compartment.

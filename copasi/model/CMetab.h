@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:45 $
+   $Date: 2004/05/19 09:36:46 $
    End CVS Header */
 
 /**
@@ -204,7 +204,7 @@ class CMetab : public CCopasiContainer
      *  Retrieve the key of the metabolite.
      * @return std::string key
      */
-    std::string getKey() const;
+    virtual const std::string & getKey() const;
 
     /**
      *  Retrieve the name of the metabolite.

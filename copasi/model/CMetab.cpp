@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:45 $
+   $Date: 2004/05/19 09:36:46 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -116,110 +116,7 @@ void CMetab::initCompartment(const CCompartment * pCompartment)
   if (!mpCompartment) mpCompartment = mpParentCompartment;
 }
 
-C_INT32 CMetab::load(CReadConfig &configbuffer)
-{
-  C_INT32 Fail = 0;
-
-  std::string tmp;
-  Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & tmp,
-                                  CReadConfig::SEARCH);
-
-  if (Fail)
-    return Fail;
-  setObjectName(tmp);
-
-  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
-                                  (void *) & mIConc);
-
-  setInitialConcentration(mIConc);
-  setConcentration(mIConc);
-
-  Fail = configbuffer.getVariable("Type", "C_INT16",
-                                  (void *) & mStatus);
-
-  if (Fail)
-    return Fail;
-
-  // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
-    {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a non-existing type "
-                     "for '%s'.\nReset to internal metabolite.",
-                     getObjectName().c_str());
-      mStatus = CMetab::METAB_VARIABLE;
-    }
-
-  // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
-    {
-      CCopasiMessage(CCopasiMessage::WARNING,
-                     "The file specifies a negative concentration "
-                     "for '%s'.\nReset to default.",
-                     getObjectName().c_str());
-      mIConc = 1.0;
-    }
-
-  return Fail;
-}
-
-C_INT32 CMetab::save(CWriteConfig &configbuffer)
-{
-  C_INT32 Fail = 0;
-  std::string tmp = getObjectName();
-  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
-
-  if (Fail)
-    return Fail;
-
-  Fail = configbuffer.setVariable("InitialConcentration", "C_FLOAT64",
-                                  (void *) & mIConc);
-
-  if (Fail)
-    return Fail;
-
-  Fail = configbuffer.setVariable("Type", "C_INT16",
-                                  (void *) & mStatus);
-
-  return Fail;
-}
-
-C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
-{
-  C_INT32 c, Fail = 0;
-  std::string tmp = getObjectName();
-  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
-  if (Fail)
-    return Fail;
-  Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConc);
-  if (Fail)
-    return Fail;
-  c = mpModel->getCompartments().getIndex(mpCompartment->getObjectName());
-  Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
-  if (Fail)
-    return Fail;
-  Fail = configbuffer.setVariable("Type", "C_INT16", (void *) & mStatus);
-  return Fail;
-}
-
-void CMetab::saveSBML(std::ofstream &fout)
-{
-  std::string str;
-  FixSName(getObjectName(), str);
-  fout << "\t\t\t<specie name=\"" << str << "\"";
-  FixSName(getCompartment()->getObjectName(), str);
-  fout << " compartment=\"" + str + "\"";
-  fout << " initialAmount=\"" << mIConc << "\"";
-  fout << " boundaryCondition=\"";
-  if (mStatus == METAB_FIXED)
-    fout << "true";
-  else
-    fout << "false";
-  fout << "\"/>" << std::endl;
-}
-
-std::string CMetab::getKey() const {return mKey;}
+const std::string & CMetab::getKey() const {return mKey;}
 
 //const std::string & CMetab::getName() const {return getObjectName();}
 
@@ -293,8 +190,8 @@ void CMetab::setCompartment(const CCompartment * compartment)
 
 void CMetab::setModel(CModel * model) {mpModel = model;}
 
-bool CMetab::isValidName(const std::string &name) const
-  {return (name.find_first_of("; ") == std::string::npos);}
+//bool CMetab::isValidName(const std::string &name) const
+//  {return (name.find_first_of("; ") == std::string::npos);}
 
 void CMetab::initObjects()
 {
@@ -458,4 +355,107 @@ std::ostream & operator<<(std::ostream &os, const CMetab & d)
   os << "    ----CMetab " << std::endl;
 
   return os;
+}
+
+C_INT32 CMetab::load(CReadConfig &configbuffer)
+{
+  C_INT32 Fail = 0;
+
+  std::string tmp;
+  Fail = configbuffer.getVariable("Metabolite", "string",
+                                  (void *) & tmp,
+                                  CReadConfig::SEARCH);
+
+  if (Fail)
+    return Fail;
+  setObjectName(tmp);
+
+  Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
+                                  (void *) & mIConc);
+
+  setInitialConcentration(mIConc);
+  setConcentration(mIConc);
+
+  Fail = configbuffer.getVariable("Type", "C_INT16",
+                                  (void *) & mStatus);
+
+  if (Fail)
+    return Fail;
+
+  // sanity check
+  if ((mStatus < 0) || (mStatus > 7))
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "The file specifies a non-existing type "
+                     "for '%s'.\nReset to internal metabolite.",
+                     getObjectName().c_str());
+      mStatus = CMetab::METAB_VARIABLE;
+    }
+
+  // sanity check
+  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "The file specifies a negative concentration "
+                     "for '%s'.\nReset to default.",
+                     getObjectName().c_str());
+      mIConc = 1.0;
+    }
+
+  return Fail;
+}
+
+C_INT32 CMetab::save(CWriteConfig &configbuffer)
+{
+  C_INT32 Fail = 0;
+  std::string tmp = getObjectName();
+  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
+
+  if (Fail)
+    return Fail;
+
+  Fail = configbuffer.setVariable("InitialConcentration", "C_FLOAT64",
+                                  (void *) & mIConc);
+
+  if (Fail)
+    return Fail;
+
+  Fail = configbuffer.setVariable("Type", "C_INT16",
+                                  (void *) & mStatus);
+
+  return Fail;
+}
+
+C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
+{
+  C_INT32 c, Fail = 0;
+  std::string tmp = getObjectName();
+  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
+  if (Fail)
+    return Fail;
+  Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConc);
+  if (Fail)
+    return Fail;
+  c = mpModel->getCompartments().getIndex(mpCompartment->getObjectName());
+  Fail = configbuffer.setVariable("Compartment", "C_INT32", (void *) & c);
+  if (Fail)
+    return Fail;
+  Fail = configbuffer.setVariable("Type", "C_INT16", (void *) & mStatus);
+  return Fail;
+}
+
+void CMetab::saveSBML(std::ofstream &fout)
+{
+  std::string str;
+  FixSName(getObjectName(), str);
+  fout << "\t\t\t<specie name=\"" << str << "\"";
+  FixSName(getCompartment()->getObjectName(), str);
+  fout << " compartment=\"" + str + "\"";
+  fout << " initialAmount=\"" << mIConc << "\"";
+  fout << " boundaryCondition=\"";
+  if (mStatus == METAB_FIXED)
+    fout << "true";
+  else
+    fout << "false";
+  fout << "\"/>" << std::endl;
 }

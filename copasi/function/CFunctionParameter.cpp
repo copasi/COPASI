@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:33 $
+   $Date: 2004/05/19 09:32:27 $
    End CVS Header */
 
 /**
@@ -78,7 +78,7 @@ void CFunctionParameter::save(CWriteConfig & configbuffer)
 
 bool CFunctionParameter::setName(const std::string & name) {return setObjectName(name);}
 
-std::string CFunctionParameter::getKey() const {return mKey;}
+const std::string & CFunctionParameter::getKey() const {return mKey;}
 
 //const std::string & CFunctionParameter::getName() const {return getObjectName();}
 

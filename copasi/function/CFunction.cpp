@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:33 $
+   $Date: 2004/05/19 09:32:26 $
    End CVS Header */
 
 /**
@@ -263,7 +263,7 @@ std::string CFunction::getSBMLString(const std::vector< std::vector< std::string
                                      const std::string & C_UNUSED(r)) const
   {return "0";}
 
-std::string CFunction::getKey() const {return mKey;}
+const std::string & CFunction::getKey() const {return mKey;}
 
 bool CFunction::setName(const std::string& name) {return setObjectName(name);}
 

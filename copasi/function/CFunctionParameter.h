@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:18:33 $
+   $Date: 2004/05/19 09:32:27 $
    End CVS Header */
 
 /**
@@ -129,7 +129,7 @@ class CFunctionParameter : public CCopasiContainer
      *  Retrieves the key of the function parameter.
      *  @return std::string name
      */
-    std::string getKey() const;
+    virtual const std::string & getKey() const;
 
     /**
      *  Retrieves the name of the parameter
