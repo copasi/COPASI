@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/03/01 20:48:38 $
+   $Author: ssahle $ 
+   $Date: 2004/04/23 11:35:11 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -496,15 +496,23 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
           C_INT32 Index = getIndex(name.getName());
-
           if (Index == -1) return NULL;
 
           CCopasiObject * pObject = *(begin() + Index);
 
+          std::cout << "getObject: pObject->getObjType " << pObject->getObjectType() << std::endl;
+
           if (name.getObjectType() == pObject->getObjectType())
             return pObject;
 
-          return NULL;
+          std::cout << "Warning: CCopasiVector::getObject can not determine whether the object has the right type" << std::endl;
+          std::cout << "getObject: Index " << Index << std::endl;
+          std::cout << "getObject: name  " << name << std::endl;
+          std::cout << "getObject: name.getName " << name.getName() << std::endl;
+          std::cout << "getObject: name.getObjName " << name.getObjectName() << std::endl;
+          std::cout << "getObject: name.getObjType " << name.getObjectType() << std::endl;
+
+          return pObject;
         }
 
       /**
