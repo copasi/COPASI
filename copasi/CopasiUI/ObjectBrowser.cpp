@@ -1,10 +1,10 @@
 /********************************************************
- Author: Liang Xu
- Version : 1.xx  <first>
- Description: 
- Date: 04/03 
- Comment : Copasi Object Browser: 
- Contact: Please contact lixu1@vt.edu.
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 04/03 
+Comment : Copasi Object Browser: 
+Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
@@ -118,14 +118,14 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
   refreshList->insert(pCurrent);
-  /*
-    ObjectBrowserItem* pTmp = pCurrent;
-    while (pTmp->parent() != NULL)
-      {
-        pTmp = pTmp->parent();
-        refreshList->insert(pTmp);
-      }
-  */
+
+  ObjectBrowserItem* pTmp = pCurrent;
+  while (pTmp->parent() != NULL)
+    {
+      pTmp = pTmp->parent();
+      refreshList->insert(pTmp);
+    }
+
   if (pCurrent->isChecked() == ALLCHECKED)
     {
       if (pCurrent->isChecked())
