@@ -1,4 +1,11 @@
-//This code is for making the second level of the Moieties 
+/*******************************************************************
+**  $ CopasiUI/MoietyWidget1.cpp                 
+**  $ Author  : Mudita Singhal
+**
+** This file is used to create the GUI FrontPage for the  information 
+** obtained from the data model about the Moiety----It is Basically 
+** the Second level of Moieties.
+********************************************************************/
 #include "MoietyWidget1.h"
 #include <qlabel.h>
 #include <qlineedit.h>

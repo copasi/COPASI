@@ -1,3 +1,12 @@
+/*********************************************************************
+**  $ CopasiUI/ReactionsWidget1.cpp                 
+**  $ Author  : Mudita Singhal
+**
+** This file is used to create the GUI FrontPage for the  information 
+** obtained from the data model about the Moiety----It is Basically 
+** the Second level of Reactions.
+**********************************************************************/
+
 #include "ReactionsWidget1.h"
 #include <qgroupbox.h>
 #include <qlabel.h>
@@ -360,6 +369,8 @@ void ReactionsWidget1::loadName(QString setValue)
 	QString overall3=react3[k]->getCompartmentName().c_str();
     QString & overall3_4=overall3.operator+=(overall4) ;
     QString & overall=overall1_2.operator+=(overall3_4) ;
+	
+	
 	//for the combo box
 	QStringList comboEntries3;
     comboEntries3= overall;

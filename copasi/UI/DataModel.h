@@ -1,10 +1,6 @@
 /****************************************************************************
 **  $ CopasiUI/DataModel.h                 Modified on : 28th March, 2002
 **  $ Author  : Ankur Gupta
-**  
-**  
-**   
-**
 *****************************************************************************/
 #ifndef DATAMODEL_H
 #define DATAMODEL_H
@@ -28,7 +24,6 @@ class DataModel: public Subject{
 private:
 	  Tree<T> myTree; // create the  object of the tree
 	  Node<T>* last; // to keep track of the last change done...
-	  //int STATUS;// 1- add, 2- delete
 	  QPtrList<T> folderList;  // to keep track of the number of the object in the tree...
 	  CModel* model;
 	  bool modelUpdate;
@@ -160,8 +155,7 @@ template<class T>
 void DataModel<T>::loadModel(const char* fileName)
 {
     pdelete(model);
-	//model=NULL;
-    CReadConfig inbuf(fileName);
+	CReadConfig inbuf(fileName);
 	model=new CModel();
 	model->load(inbuf);
 	model->compile();

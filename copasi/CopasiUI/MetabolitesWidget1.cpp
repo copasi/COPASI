@@ -1,5 +1,11 @@
+/**********************************************************************
+**  $ CopasiUI/MetabolitesWidget1.cpp                 
+**  $ Author  : Mudita Singhal
 
-//This code is for making the second level of the Metabolites
+** This file is used to create the GUI FrontPage for the  information 
+** obtained from the data model about the Metabolites----It is 
+** Basically the Second level of Metabolites.
+***********************************************************************/
 #include "MetabolitesWidget1.h"
 #include "Model/CMetab.h"
 #include <qgroupbox.h>
@@ -244,8 +250,8 @@ int MetabolitesWidget1::isName(QString setValue)
 		else
 		return 0;
 		}
-return 0;
-}
+		return 0;
+		}
 
 
 

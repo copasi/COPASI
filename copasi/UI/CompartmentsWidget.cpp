@@ -1,3 +1,12 @@
+/*******************************************************************
+**  $ CopasiUI/CompartmentsWidget.cpp                 
+**  $ Author  : Mudita Singhal
+**
+** This file is used to create the GUI FrontPage for the 
+** information obtained from the data model about the 
+** Compartments----It is Basically the First level of Compartments
+********************************************************************/
+
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>

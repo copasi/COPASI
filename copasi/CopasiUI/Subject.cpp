@@ -3,8 +3,6 @@
 **  $ Author  : Ankur Gupta
 **  
 **  This file is a cpp for Subject a part of OBSERVER DESIGN PATTERN.
-**   
-**
 **********************************************************************/
 #include "Subject.h"
 

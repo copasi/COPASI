@@ -1,3 +1,12 @@
+/****************************************************************************
+**  $ CopasiUI/ReactionsWidget.h               
+**  $ Author  : Mudita Singhal
+**  
+** This is the header file for the Reactions Widget, i.e the First level 
+** of Reactions.
+**
+*****************************************************************************/
+
 #ifndef REACTIONS_WIDGET_H
 #define REACTIONS_WIDGET_H
 

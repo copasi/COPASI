@@ -1,4 +1,11 @@
-//This code is for making the second level of the Compartments
+/**********************************************************************
+**  $ CopasiUI/CompartmentsWidget1.cpp                 
+**  $ Author  : Mudita Singhal
+
+** This file is used to create the GUI FrontPage for the  information 
+** obtained from the data model about the Compartments----It is 
+** Basically the Second level of Compartments.
+***********************************************************************/
 #include "CompartmentsWidget1.h"
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -126,8 +133,7 @@ int CompartmentsWidget1::isName(QString setValue)
 	if(	compartments[(string) setValue]  !=NULL)
 	{	
 	loadName(setValue);
-		//compartn1 =NULL;
-		return 1;
+	return 1;
 	}
 	else
 		return 0;

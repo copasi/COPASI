@@ -4,16 +4,13 @@
 **  
 **  This file is a template code for tree generation.
 **  The tree that is generated through this code is a general tree with any numbers of
-**  childerns for a given node at any level.
+**  childrens for a given node at any level.
 ** 
 **
 *****************************************************************************/
 
 #ifndef TREE_H
 #define TREE_H
-
-//#include <iostream.h>
-
 
 /*********************************************************
 ** This class is a template class for the node that will 

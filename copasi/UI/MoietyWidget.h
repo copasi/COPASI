@@ -1,3 +1,11 @@
+/****************************************************************************
+**  $ CopasiUI/MoietyWidget.h               
+**  $ Author  : Mudita Singhal
+**  
+** This is the header file for the Moiety Widget, i.e the First level 
+** of Moieties.
+*****************************************************************************/
+
 #ifndef MOIETY_WIDGET_H
 #define MOIETY_WIDGET_H
 

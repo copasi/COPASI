@@ -1,3 +1,11 @@
+/****************************************************************************
+**  $ CopasiUI/CompartmentsWidget.h               
+**  $ Author  : Mudita Singhal
+**  
+** This is the header file for the Compartments Widget, i.e the First level 
+** of Compartments.
+*****************************************************************************/
+
 #ifndef COMPARTMENTS_WIDGET_H
 #define COMPARTMENTS_WIDGET_H
 

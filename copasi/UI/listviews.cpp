@@ -967,18 +967,7 @@ void ListViews::loadCompartments(QListViewItem* i)
 
 }
 
-
-
-
-
-
-		
-		
-		
-		
 	
-			
-		
 
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

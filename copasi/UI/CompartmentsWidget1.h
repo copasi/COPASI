@@ -1,3 +1,11 @@
+/****************************************************************************
+**  $ CopasiUI/CompartmentsWidget1.h               
+**  $ Author  : Mudita Singhal
+**  
+** This is the header file for the Compartments Widget1, i.e the Second level 
+** of Compartments.
+*****************************************************************************/
+
 #ifndef COMPARTMENTS_WIDGET1_H
 #define COMPARTMENTS_WIDGET1_H
 
@@ -31,8 +39,6 @@ public:
 	void loadCompartments(CModel *model);
 	void loadName(QString setValue);
 	int isName(QString setValue);
-	
-	
 	QLineEdit* LineEdit1;
     QLineEdit* LineEdit3;
     QLineEdit* LineEdit4;

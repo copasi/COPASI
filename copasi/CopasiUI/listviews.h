@@ -1,10 +1,6 @@
 /****************************************************************************
 **  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
 **  $ Author  : Ankur Gupta
-**  
-** 
-**   
-**
 *****************************************************************************/
 #ifndef LISTVIEWS_H
 #define LISTVIEWS_H
@@ -40,7 +36,8 @@
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
-// -----------------------------------------------------------------
+
+
 class Folder : public QObject
 {
     Q_OBJECT
@@ -74,7 +71,7 @@ protected:
 	
 };
 
-// -----------------------------------------------------------------
+
 
 class FolderListItem : public QListViewItem
 {
@@ -91,7 +88,6 @@ protected:
 };
 
 
-// -----------------------------------------------------------------
 
 class ListViews : public QSplitter,public Observer
 {
@@ -102,7 +98,7 @@ public:
     ~ListViews(){dataModel->detach(this);}
     void setDataModel(DataModel<Folder>* dm);
 	void update(Subject*,int status);//overides..the update method...
-	// for loading models...
+
 
 
 protected:
@@ -112,15 +108,13 @@ protected:
 	void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
-//	void clearMyChildrenItem(QListViewItem * i);
 	void clearParentItem(QListViewItem *);// for the top level items to be cleared..
 
     void initFolders();
-//	void initFolders(Node<Folder>*);// default parameter....
+
 
     void setupFolders();
-//	void setupFolders(QListView*);
-//	void setupFolders(QListViewItem*);
+
 	
 	QListViewItem* searchNode(Folder*);
 	QListViewItem* searchNode(int);// search by folder id
@@ -131,9 +125,7 @@ protected:
 	QPtrList<Folder> lstFolders;// to keep the track of the folder items...for creation of the tree...
     QListView *folders;
 	QMultiLineEdit *bigWidget;
-    // all the objects to be displayed...
-	// all the new object widgets information goes here..
-	// create the pointer to the new one here and use it in the code
+   
     MetabolitesWidget *metabolitesWidget;
 	ReactionsWidget *reactionsWidget;
 	CompartmentsWidget *compartmentsWidget;
@@ -142,6 +134,9 @@ protected:
 	MetabolitesWidget1 *metabolitesWidget1;
 	CompartmentsWidget1 *compartmentsWidget1;
 	MoietyWidget1 *moietyWidget1;
+
+
+
 protected slots:
     void slotFolderChanged( QListViewItem*);
 
@@ -155,9 +150,9 @@ private:
 	void addItem(QListViewItem* parent,Folder* child);
 	void addItem(QListView* parent,Folder* child);
 	void loadMetabolites(QListViewItem*);
-void loadReactions(QListViewItem*);
-void loadMoieties(QListViewItem*);
-void loadCompartments(QListViewItem*);
+	void loadReactions(QListViewItem*);
+	void loadMoieties(QListViewItem*);
+	void loadCompartments(QListViewItem*);
 	void showMessage(QString caption,QString text);
 
 	

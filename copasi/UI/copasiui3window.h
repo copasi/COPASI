@@ -1,12 +1,3 @@
-/****************************************************************************
-**  $ CopasiUI/copasiui3window.h                 Modified on : 8th March, 2002
-**  $ Author  : Ankur Gupta
-**  
-**  
-**   
-**
-*****************************************************************************/
-
 #include <qmainwindow.h>
 #include <qtoolbar.h>
 
@@ -41,9 +32,9 @@ protected slots:
 	void slotFileSaveAs();
 	void newDoc();
 	void slotFilePrint();
-	void about();  // added by ankur on 5th feb 2002
-    void aboutQt(); // added by ankur on 5th feb 2002
-private: // added by ankur on 5th feb 2002
+	void about();  
+    void aboutQt(); 
+	private:
 	void createToolBar();
 	void createMenuBar();
 	
