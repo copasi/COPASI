@@ -8,11 +8,14 @@
 #ifndef COPASI_CMca
 #define COPASI_CMca
 
-#include "model/model.h"
+#include <vector>
+#include "copasi.h"
 #include "utilities/CMatrix.h"
 
 #define MCA_OK 0
 #define MCA_SINGULAR 1
+
+class CModel;
 
 class CMca
   {
@@ -28,7 +31,7 @@ class CMca
 
     CMatrix <C_FLOAT64> mGamma;
 
-    CModel * mpModel;
+    const CModel * mpModel;
 
     /**
      * an n+1 integer vector of pivot indices.
@@ -61,7 +64,7 @@ class CMca
      * User defined constructor
      * @param refer to Model and factor
      */
-    CMca(CModel model, C_FLOAT64 factor);
+    CMca(const CModel & model, C_FLOAT64 factor);
 
     /**
      * Deconstructor
@@ -72,7 +75,7 @@ class CMca
     /**
      * Set the Model
      */
-    void setModel(CModel model);
+    void setModel(const CModel & model);
 
     /**
      * return the mDxv matrix

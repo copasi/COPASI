@@ -13,7 +13,7 @@
 #include "copasi.h"
 #include "utilities/readwrite.h"
 #include "utilities/utility.h"
-#include "model/model.h"
+#include "model/CModel.h"
 #include "CMca.h"
 
 #ifndef DBL_MAX
@@ -29,7 +29,7 @@ CMca::CMca() {CONSTRUCTOR_TRACE;}
  * User defined constructor
  * @param refer to Model and factor
  */
-CMca::CMca(CModel model, C_FLOAT64 factor)
+CMca::CMca(const CModel & model, C_FLOAT64 factor)
 {
   CONSTRUCTOR_TRACE;
   mpModel = &model;
@@ -54,7 +54,7 @@ CMca::~CMca()
 /**
  * Set the Model
  */
-void CMca::setModel(CModel model)
+void CMca::setModel(const CModel & model)
 {
   mpModel = &model;
 }
