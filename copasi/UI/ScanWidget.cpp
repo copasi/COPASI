@@ -507,7 +507,8 @@ void ScanWidget::ScanButtonClicked()
   int objectIndex;
   for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
     {
-      valueAddrMatrix[objectIndex] = (C_FLOAT64*)((ScanItemWidget*)selectedList[2 * objectIndex + 1])->getCopasiObject()->getReference();
+      //    valueAddrMatrix[objectIndex]=(C_FLOAT64*)((ScanItemWidget*)selectedList[2*objectIndex+1])->getCopasiObject()->getReference();
+      valueAddrMatrix[objectIndex] = (C_FLOAT64*)((ScanItemWidget*)selectedList[2 * objectIndex + 1])->getCopasiObject()->getObjectValueAddress();
       valueMatrix[objectIndex] = *(valueAddrMatrix[objectIndex]);
     }
 
