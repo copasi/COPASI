@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 15:46:38 $
+   $Date: 2004/10/04 09:53:25 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -55,8 +55,6 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
 TimeSeriesWidget::~TimeSeriesWidget()
 {}
 
-/* This function loads the compartments widget when its name is
-  clicked in the tree   */
 bool TimeSeriesWidget::loadFromBackend()
 {
   mCentralWidget->table()->setTimeSeries(dataModel->getTrajectoryTask()->getTimeSeries());
