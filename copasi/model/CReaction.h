@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:47 $
+   $Date: 2004/05/19 09:28:29 $
    End CVS Header */
 
 /**
@@ -82,11 +82,6 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 * mScalingFactor2;
 
     /**
-     *  The number of compartments the reaction takes place in 
-     */ 
-    //C_INT32 mCompartmentNumber;
-
-    /**
      *  Pointer to the compartment in which the kinetic function is defined.
      *  (the kinetic function gives a rate as concentration/time unit. If there is
      *  more than one compartment involved it must be specified to which volume
@@ -143,8 +138,8 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Assignment operator
-     */
-    CReaction & operator=(const CReaction & rhs);
+     */ 
+    //CReaction & operator=(const CReaction & rhs);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -190,14 +185,7 @@ class CReaction : public CCopasiContainer
     std::string getKey() const;
 
     /**
-     *  Retrieves the name of the reaction
-     *  @return string
-     */ 
-    //    const std::string & getName() const;
-
-    /**
      *  Retrieves the chemical equation of the reaction
-     *  @return string
      */
     const CChemEq & getChemEq() const;
     CChemEq & getChemEq();
@@ -234,39 +222,6 @@ class CReaction : public CCopasiContainer
     bool setName(const std::string & name);
 
     /**
-     *  Sets the chemical equation of the reaction
-     *  @param "const string &" chemEq
-     */
-    void setChemEqFromString(const std::string & chemEq, const CModel & model);
-
-    /**
-     * Add a substrate to the reaction
-     * @param CMetab * pMetab
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addSubstrate(CMetab * pMetab,
-                      const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
-     * Add a product to the reaction
-     * @param CMetab * pMetab
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addProduct(CMetab * pMetab,
-                    const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
-     * Add a modifier to the reaction
-     * @param CMetab * pMetab
-     * @param const C_FLOAT64 & multiplicity (Default 1.0)
-     * @return bool success
-     */
-    bool addModifier(CMetab * pMetab,
-                     const C_FLOAT64 & multiplicity = 1.0);
-
-    /**
      * Add a substrate to the reaction
      * @param std::string & metabKey
      * @param const C_FLOAT64 & multiplicity (Default 1.0)
@@ -294,20 +249,6 @@ class CReaction : public CCopasiContainer
                      const C_FLOAT64 & multiplicity = 1.0);
 
     /**
-     * Add a modifier to the reaction
-     * @param const std::string &name
-     * @return bool success
-     */ 
-    //bool addModifier(const std::string &name);
-
-    /**
-     * Remove a modifier form the reaction
-     * @param const std::string &name
-     * @return bool success
-     */ 
-    //bool deleteModifier(const std::string &name);
-
-    /**
      * Sets the rate function of the reaction
      * @param const string & functionName
      * @return bool success
@@ -332,15 +273,6 @@ class CReaction : public CCopasiContainer
      *  Gets a parameter value
      */
     const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
-
-    /**
-     * Set the parameter keys
-     * @param const std::string & parameterName
-     * @param const std::vetor< std::string > & sourceKeys
-     * @return bool succes
-     */ 
-    //bool setParameterKeys(const std::string & parameterName,
-    //                      const std::vector< std::string > & sourceKeys);
 
     /**
      *  sets a function parameter->metab mapping.
@@ -443,7 +375,9 @@ class CReaction : public CCopasiContainer
 
     /**
      * Retrieve the list of CallParameterObjects()
-     */
+     */ 
+    //
+
     const CCallParameterPointers & getCallParameterObjects() const;
   private:
 
