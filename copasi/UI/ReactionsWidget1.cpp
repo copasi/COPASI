@@ -440,6 +440,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   if (checkBox->isChecked() == FALSE)
     {
       reactn1->setReversible(TriFalse);
+
       //for Chemical Reaction
       QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("=", 0, TRUE);
@@ -517,11 +518,11 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   int count_parameters = 0;
   int count_modifiers = 0;
 
-  string usagetypes[100];
-  string substrate_name[100];
-  string product_name[100];
-  string modifier_name[100];
-  string parameter_name[100];
+  string usagetypes[20];
+  string substrate_name[20];
+  string product_name[20];
+  string modifier_name[20];
+  string parameter_name[20];
   unsigned int count = 0;
 
   //for clearing the values of the table
@@ -536,36 +537,36 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   QStringList substrates;
   QStringList products;
   QString chemical_reaction = LineEdit2->text();
-  //QString chemical_reaction1=chemical_reaction.simplifyWhiteSpace();
-  //int i = chemical_reaction.find ("->", 0, TRUE);
   unsigned int start = 0;
-  QStringList individual_elements = QStringList::split (" ", chemical_reaction, FALSE);
-  for (unsigned int m = 0; m <= individual_elements.size() - 1; m++)
+  QStringList individual_elements = QStringList::split ("+", chemical_reaction, FALSE);
+  QString all_elements = individual_elements.join (" ");
+  QStringList individual_elements1 = QStringList::split (" ", all_elements, FALSE);
+
+  for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
     {
-      substrates[start] = individual_elements[m];
-      //QMessageBox::information(this, individual_elements[m].c_str(), "substrates ");
-      if (individual_elements[m] == "->")
+      substrates[start] = individual_elements1[m];
+
+      if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
         {
           m++;
-          start = 0;
-          products[start] = individual_elements[m];
-          QString try1 = products[start];
-          QMessageBox::information(this, try1, "products ");
+          break;
         }
+      QMessageBox::information(this, individual_elements1[m], "substrates ");
       start++;
     }
 
-  //QStringList individual_products=QStringList::split (" ", chemical_reaction1, FALSE);
-  //QString try1=individual_products[0];
-
-  /* chemical_reaction = chemical_reaction1.replace(i, 2, "=");
-   LineEdit2->setText(chemical_reaction);
-
-  comboEntries1.push_back(overall);
-  QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-  QString temp = comboEntries1[z];
-  item->setCurrentItem(temp);
-  table->setItem(line, 0, item); */
+  start = 0;
+  for (unsigned int n = m; n <= individual_elements1.size() - 1; n++)
+    {
+      if (individual_elements1[m] == "+")
+        {
+          n++;
+          break;
+        }
+      products[start] = individual_elements1[n];
+      QMessageBox::information(this, products[start], "products ");
+      start++;
+    }
 
   for (unsigned int i = 0; i < functionParameters.size(); i++)
     {
@@ -623,5 +624,19 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
         }
+
+      //insert the values of substrates[] and products[] in the combo boxes here...
+
+      //QStringList individual_products=QStringList::split (" ", chemical_reaction1, FALSE);
+      //QString try1=individual_products[0];
+
+      /* chemical_reaction = chemical_reaction1.replace(i, 2, "=");
+       LineEdit2->setText(chemical_reaction);
+
+      comboEntries1.push_back(overall);
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      QString temp = comboEntries1[z];
+      item->setCurrentItem(temp);
+      table->setItem(line, 0, item); */
     }
 }
