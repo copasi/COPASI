@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:23:30 $
+   $Date: 2004/06/11 14:50:37 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -528,7 +528,7 @@ void CopasiUI3Window::slotImportSBML()
   ListViews::commit();
 
   QString SBMLFile = QFileDialog::getOpenFileName(
-                       QString::null, "SBML Files (*.sbml)",
+                       QString::null, "SBML Files (*.sbml *.xml)",
                        this, "import file dialog",
                        "Choose a file");
 
