@@ -2,6 +2,10 @@
 LIB = sbmlimport
 include(../lib.pri)
 
+contains(BUILD_OS, WIN32) {
+  DEFINES += LIBSBML_STATIC
+}
+
 # Input
 HEADERS += StdException.h \
            ConverterASTNode.h \
