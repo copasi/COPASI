@@ -129,7 +129,7 @@ void CScanTask::process()
     if (mpProblem->getScanItemParameter(i, "indp")) break;
   if (i >= 0)
     // execute many simulations
-    mpMethod->scan(i, true, &mReport->printBody, mReport);
+    mpMethod->scan(i, true, &CReport::printBody, mReport);
 
   //  if (mpOutEnd)
   //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
