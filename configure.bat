@@ -21,35 +21,30 @@ set cps_release=release
 :QMAKE
 cd copasi
 
-set subdirs=.
-set subdirs=%subdirs% commandline
-set subdirs=%subdirs% elementaryFluxModes
-set subdirs=%subdirs% function
-set subdirs=%subdirs% mathmodel
-set subdirs=%subdirs% model
-set subdirs=%subdirs% optimization
-set subdirs=%subdirs% output
-set subdirs=%subdirs% randomGenerator
-set subdirs=%subdirs% report
-set subdirs=%subdirs% scan
-set subdirs=%subdirs% steadystate
-set subdirs=%subdirs% trajectory
-set subdirs=%subdirs% utilities
-set subdirs=%subdirs% xml
-set subdirs=%subdirs% CopasiUI
-set subdirs=%subdirs% CopasiSE
-set subdirs=%subdirs% test
+rem set subdirs=.
+rem set subdirs=%subdirs% commandline
+rem set subdirs=%subdirs% elementaryFluxModes
+rem set subdirs=%subdirs% function
+rem set subdirs=%subdirs% mathmodel
+rem set subdirs=%subdirs% model
+rem set subdirs=%subdirs% optimization
+rem set subdirs=%subdirs% output
+rem set subdirs=%subdirs% randomGenerator
+rem set subdirs=%subdirs% report
+rem set subdirs=%subdirs% scan
+rem set subdirs=%subdirs% steadystate
+rem set subdirs=%subdirs% trajectory
+rem set subdirs=%subdirs% utilities
+rem set subdirs=%subdirs% xml
+rem set subdirs=%subdirs% CopasiUI
+rem set subdirs=%subdirs% CopasiSE
+rem set subdirs=%subdirs% test
 
 echo executing in copasi:
-echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
+rem  echo   for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\.qmake.internal.cache
 echo   qmake "CONFIG+=%cps_release%" %1 %2
-qmake "CONFIG+=%cps_release%" %1 %2
+%QTDIR%\bin\qmake "CONFIG+=%cps_release%" %1 %2
 
 cd ..
 
-rem echo @echo off > config.status.bat
-rem echo cd copasi >> config.status.bat
-rem echo echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
-rem echo qmake "CONFIG+=%cps_release%" %1 %2 >> config.status.bat
-rem echo cd .. >> config.status.bat
