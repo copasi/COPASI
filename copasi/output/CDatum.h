@@ -61,6 +61,7 @@
 #define CFLOAT64	4
 
 class CTrajectory;
+class CSS_Solution;
 
 class CDatum
 {
@@ -91,19 +92,13 @@ class CDatum
    *  @param object constant reference to a string specifing the name of the 
    *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
    */
-  void createObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type);
+  void createObject(const string& IStr, const string& JStr, C_INT32 Type);
 
   /**
    *  Transfers the Type to the associated member data in each class
    *  @Type object constant reference to a type of the datum, for example,D_TCONC
    */
   string transferType(C_INT32 Type);
-
-  /**
-   *  Transfers the associated member data to the Type to  in each class
-   *  @Type object constant reference to a type of the datum, for example,D_TCONC
-   */
-  C_INT32 getObjectType(string Object);
 
   /**
    *  Get the object I string part
@@ -230,7 +225,21 @@ class CDatum
   /**
    *  Complie the mpValue in each CDatum
    */	
-  void compileDatum(CModel &Model, CTrajectory *traj);
+  void compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln);
+
+  /**
+   * Returns the index of a user defined function
+   */
+  int FindUDFunct(string title);
+  /**
+   * Dynamically calculate the value of user defined function
+   */
+  void calcFunc();
+  /**
+   *  Transfers the associated member data to the Type to  in each class
+   *  @Type object constant reference to a type of the datum, for example,D_TCONC
+   */
+  C_INT32 getObjectType(string Object);
 
 };
 

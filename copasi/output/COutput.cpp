@@ -233,9 +233,9 @@ void COutput::dynOutputData(ofstream &fout, string &DynName, C_INT16 DynSeparato
 }
 
 /**
- *	Assign the pointer to each datum object in the output
+ *	Assign the pointer to each datum object for time course
  */
-void COutput::compile(string &name, CModel &model, CTrajectory *traj)
+void COutput::compile(string &name, CModel *model, CTrajectory *traj)
 {
 
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
@@ -243,6 +243,19 @@ void COutput::compile(string &name, CModel &model, CTrajectory *traj)
       mOutput[i]->compile(name, model, traj);
     }
 }
+
+/**
+ *	Assign the pointer to each datum object for steady state
+ */
+void COutput::compile(string &name, CModel *model, CSS_Solution *soln)
+{
+
+  for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
+    {
+      mOutput[i]->compile(name, model, soln);
+    }
+}
+
 
 /**
  *	Output the comments to the output reporting file
@@ -471,6 +484,76 @@ void COutput::repStruct(ofstream &fout, CModel & model)
   fout << endl;
 }
 
+#if 0
+/**
+ * print the results of the steady-state simulation
+ */
+void COutput::repSS(ofstream &fout, CModel & model, CSS_Solution &ssSolution)
+{
+	double rate;
+
+	if (ssSolution.getSolution() != 0)  // SS_FOUND = 0 
+	{
+		fout << endl; 
+		fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
+		fout << endl;
+	}
+	else {
+		fout << endl << "STEADY STATE SOLUTION" << endl;
+		if (ssSolution.getEquilibrium())
+			fout << "(chemical equilibrium)" << endl;
+	}
+
+	// Output concentrations
+	for (int i = 0; i < model.getTotMetab(); i++)
+	{
+		if (model.getMetabolites()[i]->getStatus == 0) // METAB_FIXED == 0
+			rate = 0.0
+		else rate = ssSolution.getSsdxdt()[i];			// ??? [Model.IRow[i]+1]
+		
+		// Output Concentration
+		fout << "[" << setw(10) << model.getMetabolites()[i]->getName();
+		fout << "] = ";
+		fout << setprecision(6) << model.getMetabolites()[i]->getConcentration(); 
+		fout << " " << ConcUnit << ", ";
+		// Output Transition time of the metabolite
+		fout << "tt = " << setprecision(6) << model.getMetabolites()[i]->getTT();
+		fout << " " << TimeUnit << " " << ", ";
+		// Output rate
+		fout << "rate = " << setprecision(3) << rate;
+		fout << " " << ConcUnit << "/" << TimeUnit << endl;
+	
+		if (model.getMetabolites()[i]->getConcentration() < 0.0)
+			fout << " BOGUS!";
+		fout << endl;
+	}
+
+	// output fluxes
+	for (int i = 0; i < model.getTotSteps(); i++)
+	{
+		fout << "J(" << model.getReactions()[i]->getName() << ") = ";
+		fout << setprecision(6) << model.getReactions()[i]->getFlux();
+		fout << ConcUnit << "/" << "TimeUnit" << endl;
+	}
+	
+	// output user-defined functions
+	int size = Copasi.UDFunctionDB.getFunctions().size();
+	CUDFunction pFunct;
+	if ( size > 0)
+	{
+		fout << endl;
+		for (int i = 0; i < size; i++)
+		{
+			// calculate the flux of this step
+			fout << Copasi.UDFunctionDB.getFunctions()[i]->getName();
+			fout << " =";
+			fout << setprecision(6) << Copasi.UDFunctionDB.getFunctions()[i]->getValue();
+			fout << endl;
+		}
+	}
+}
+#endif
+
 /**
  *	print the results of the stability analysis
  */
@@ -556,15 +639,15 @@ void COutput::copasiRep(ofstream &fout, CModel & model)
 /*
  * print the steady state data file
  */
-void COutput::copasiSS(ofstream &fout, int time)
+void COutput::copasiSS(ofstream &fout)
 {
   string SSName = "Steady-state output";
 
-  if (!time)
+  if (SS)
   {
 	if (SSTitles) sSOutputTitles(fout, SSName);
+	sSOutputData(fout, SSName);
   }
-  else sSOutputData(fout, SSName);
 }
 
 /*
@@ -574,11 +657,14 @@ void COutput::copasiDyn(ofstream &fout, int time)
 {
   string DynName = "Time-course output";
 
-  if (!time) 
+  if (Dyn)
   {
+	if (!time) 
+	{
 	  if (DynTitles) dynOutputTitles(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
+	}
+	else dynOutputData(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
   }
-  else dynOutputData(fout, DynName, DynSeparator, DynColWidth, DynQuotes);
 }
 
 

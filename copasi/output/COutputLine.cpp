@@ -205,6 +205,7 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSCo
   C_INT32 *Value2;
   C_FLOAT32 *Value3;
   C_FLOAT64 *Value4;
+  CDatum *datum;
 
   // Set Left Justification
   fout.setf(ios::left);
@@ -228,6 +229,12 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSCo
 	    break;
 	  }
       }
+
+	  datum = mLine[i];
+	  // before outputing value of user defined function, need to 
+	  // calculate first
+	  if (datum->getObjectType(datum->getObject()) == D_UFUNC)
+		  datum->calcFunc();
 
       Type = mLine[i]->getType();
 
@@ -322,7 +329,8 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
   C_INT32 *Value2;
   C_FLOAT32 *Value3;
   C_FLOAT64 *Value4;
-
+  CDatum *datum;
+ 	
   // Set Left Justification
   fout.setf(ios::left);
   // Set Float manipulators
@@ -345,6 +353,12 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 	    break;
 	  }
       }
+
+	  datum = mLine[i];
+	  // before outputing value of user defined function, need to 
+	  // calculate first
+	  if (datum->getObjectType(datum->getObject()) == D_UFUNC)
+		  datum->calcFunc();
 
       Type = mLine[i]->getType();
 
@@ -388,18 +402,33 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 Dy
 
 
 /**
- *  Complie the mpValue in each output line
+ *  Assign the pointer to each datum object in the output line for time course
  */
-void COutputLine::compile(string &name, CModel &model, CTrajectory *traj)
+void COutputLine::compile(string &name, CModel *model, CTrajectory *traj)
 {
   if (!mName.compare(name))
     { // ???? Maybe it isnot necessary after finish whole module
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
 	{
-	  mLine[i]->compileDatum(model, traj);
+	  mLine[i]->compileDatum(model, traj, NULL);
 	}
     }
 }
+
+/**
+ *  Assign the pointer to each datum object in the output line for steady state
+ */
+void COutputLine::compile(string &name, CModel *model, CSS_Solution *soln)
+{
+  if (!mName.compare(name))
+    { // ???? Maybe it isnot necessary after finish whole module
+      for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
+	{
+	  mLine[i]->compileDatum(model, soln->getTrajectory(), soln);
+	}
+    }
+}
+
 
 #ifdef XXXX
 COutputLine::CCDatum::CCDatum() {}

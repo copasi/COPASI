@@ -9,6 +9,7 @@
 
 #include "copasi.h"
 #include "CDatum.h"
+#include "utilities/CGlobals.h"
 #include "model/CCompartment.h"
 #include "trajectory/trajectory.h"
 
@@ -21,6 +22,7 @@ CDatum::CDatum()
   mpValue = NULL;
   mType = 0;		//(????)
   mObject = "";
+  //mModel = NULL;
 }
 
 /**
@@ -213,8 +215,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
       break;
     }
 
-  string Model = "Bakker";
-  createObject(Model, IStr, JStr, Type);
+  createObject(IStr, JStr, Type);
 
   return Fail;
 }
@@ -313,13 +314,13 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
  *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
   */
 
-void CDatum::createObject(const string& Model, const string& IStr, const string& JStr, C_INT32 Type)
+void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
 {
   string member;
 
   // Create CModel part
   mObject.append("CModel = \"");
-  mObject.append(Model);
+  mObject.append(Copasi->pModel->getTitle());
   mObject.append("\", ");
 
   // Create CMetab part
@@ -400,6 +401,7 @@ string CDatum::transferType(C_INT32 Type)
   string cMemb;
 
   // find the member for different associated type
+  // find the member for different associated type
   switch (Type)
     {
     case D_T:
@@ -414,6 +416,8 @@ string CDatum::transferType(C_INT32 Type)
     case D_ATOL:
     case D_SSRES:
     case D_UFUNC:
+			cMemb = "mUFUNC";
+			break;
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -436,18 +440,22 @@ string CDatum::transferType(C_INT32 Type)
       cMemb = "mIConc";
       break;
     case D_SCONC:
+	  cMemb = "mSConc";
+	  break;
     case D_TCONC:
-      cMemb = "mConc";
+      cMemb = "mTConc";
       break;
     case D_SFLUX:
+	  cMemb = "mSFlux";
+	  break;
     case D_TFLUX:
-      cMemb = "mFlux";
+      cMemb = "mTFlux";
       break;
     case D_VOL:
       cMemb = "mVolume";
       break;
     case D_MOIT:
-      cMemb = "mIConc";
+      cMemb = "mINumber";
       break;
     case D_TT:
       cMemb = "mTT";
@@ -488,42 +496,32 @@ C_INT32 CDatum::getObjectType(string Object)
 		
   if (!TypeStr.compare("mTime"))
     Type = D_T;
-
-  if (!TypeStr.compare("mIConc"))
+  else if (!TypeStr.compare("mIConc"))
     Type = D_ICONC;
-
-  if (!TypeStr.compare("mConc"))
+  else if (!TypeStr.compare("mSConc"))
     Type = D_SCONC;
-
-  if (!TypeStr.compare("mConc"))
+  else if (!TypeStr.compare("mTConc"))
     Type = D_TCONC;
-
-  if (!TypeStr.compare("mFlux"))
+  else if (!TypeStr.compare("mSFlux"))
     Type = D_SFLUX;
-
-  if (!TypeStr.compare("mFlux"))
+  else if (!TypeStr.compare("mTFlux"))
     Type = D_TFLUX;
-
-  if (!TypeStr.compare("mVolume"))
+  else if (!TypeStr.compare("mVolume"))
     Type = D_VOL;
-
-  if (!TypeStr.compare("mIConc"))
+  else if (!TypeStr.compare("mINumber"))
     Type = D_MOIT;
-
-  if (!TypeStr.compare("mTT"))
+  else if (!TypeStr.compare("mTT"))
     Type = D_TT;
-
-  if (!TypeStr.compare("mParameters"))
+  else if (!TypeStr.compare("mParameters"))
     Type = D_KIN;
-
-  if (!TypeStr.compare("mIColmIRow"))
+  else if (!TypeStr.compare("mIColmIRow"))
     Type = D_ELAST;
-
-  if (!TypeStr.compare("mIRowmICol"))
+  else if (!TypeStr.compare("mIRowmICol"))
     Type = D_CCC;
-
-  if (!TypeStr.compare("mIColmICol"))
+  else if (!TypeStr.compare("mIColmICol"))
     Type = D_FCC;
+  else if (!TypeStr.compare("mUFUNC"))
+    Type = D_UFUNC;
 
   return Type;
 }
@@ -587,11 +585,13 @@ string CDatum::getObjectJStr(string object)
 /**
  *  Complie the mpValue in each CDatum
  */
-void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
+void CDatum::compileDatum(CModel *Model, CTrajectory *traj, CSS_Solution *soln)
 {
   C_INT32 Type = 0;
   string IStr, JStr;
   int Index, Index1;
+  CUDFunction *pFunct;
+
 
   Type = getObjectType(mObject);
 	
@@ -607,7 +607,17 @@ void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
     case D_RTOL:
     case D_ATOL:
     case D_SSRES:
-    case D_UFUNC:	// D_UFUNC has mI
+#endif
+    case D_UFUNC:	// user functions
+	  Index = FindUDFunct(mTitle);
+	  if (Index == -1) break;
+	  pFunct = Copasi->UDFunctionDB.getFunctions()[Index];
+	  //pFunct->calcValue(Model);
+	  mpValue = pFunct->getValueAddr();
+	  mType = CFLOAT64;			
+	  break;						
+
+#if 0
     case D_DERIV:
     case D_ENDT:
     case D_POINT:
@@ -629,46 +639,46 @@ void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
 	  break;			
     case D_ICONC:   // Fall through as all have mI but no mJ
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findMetab(IStr);
+      Index = Model->findMetab(IStr);
       if (Index == -1) break;
-      mpValue = Model.getMetabolites()[Index]->getIConcAddr();
+      mpValue = Model->getMetabolites()[Index]->getIConcAddr();
       mType = CFLOAT64;
       break;
     case D_SCONC:
     case D_TCONC:
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findMetab(IStr);
+      Index = Model->findMetab(IStr);
       if (Index == -1) break;
-      mpValue = Model.getMetabolites()[Index]->getConcAddr();
+      mpValue = Model->getMetabolites()[Index]->getConcAddr();
       mType = CFLOAT64;
       break;
     case D_TT:
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findMetab(IStr);
+      Index = Model->findMetab(IStr);
       if (Index == -1) break;
-      mpValue = Model.getMetabolites()[Index]->getTTAddr();;
+      mpValue = Model->getMetabolites()[Index]->getTTAddr();;
       mType = CFLOAT64;
       break;
     case D_SFLUX:
     case D_TFLUX:
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findStep(IStr);
+      Index = Model->findStep(IStr);
       if (Index == -1) break;
-      mpValue = Model.getReactions()[Index]->getFluxAddr();
+      mpValue = Model->getReactions()[Index]->getFluxAddr();
       mType = CFLOAT64; 
       break;
     case D_VOL:
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findCompartment(IStr);
+      Index = Model->findCompartment(IStr);
       if (Index == -1) break;
-      mpValue = Model.getCompartments()[Index]->getVolumeAddr();
+      mpValue = Model->getCompartments()[Index]->getVolumeAddr();
       mType = CFLOAT64;
       break;						
     case D_MOIT:
       IStr = getObjectIStr(mObject, 0);
-      Index = Model.findMoiety(IStr);
+      Index = Model->findMoiety(IStr);
       if (Index == -1) break;
-      mpValue = Model.getMoieties()[Index]->getNumberAddr();
+      mpValue = Model->getMoieties()[Index]->getNumberAddr();
       mType = CFLOAT64;
       break;	
 #if 0						
@@ -681,11 +691,11 @@ void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
     case D_KIN:     // Fall through as all have mI and mJ
       IStr = getObjectIStr(mObject, 1);
       JStr = getObjectJStr(mObject);
-      Index = Model.findStep(IStr);
+      Index = Model->findStep(IStr);
       if (Index == -1) break;
-      Index1 = Model.getReactions()[Index]->findPara(JStr);
+      Index1 = Model->getReactions()[Index]->findPara(JStr);
       if (Index1 == -1) break;
-      mpValue = (C_FLOAT64 *)Model.getReactions()[Index]->getId2Parameters()[Index1]->getValueAddr();
+      mpValue = (C_FLOAT64 *)Model->getReactions()[Index]->getId2Parameters()[Index1]->getValueAddr();
       mType = CFLOAT64;
       break;
 #if 0
@@ -727,4 +737,33 @@ void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
       break;
 #endif
     }
+}
+
+/**
+ * Returns the index of a user defined function
+ */
+int CDatum::FindUDFunct(string title)
+{
+	int i;
+
+	for (i = 0; i < Copasi->UDFunctionDB.getItems(); i++)
+		if (Copasi->UDFunctionDB.getFunctions()[i]->getName() == title) return i;
+
+	return -1;
+}
+
+/**
+ * Dynamically calculate the value of user defined function
+ */
+void CDatum::calcFunc()
+{
+  CUDFunction *pFunct;
+  int Index;
+  			
+  Index = FindUDFunct(mTitle);
+  if (Index != -1)
+  {
+	pFunct = Copasi->UDFunctionDB.getFunctions()[Index];
+	pFunct->calcValue();
+  }
 }
