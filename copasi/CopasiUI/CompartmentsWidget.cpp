@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/30 06:38:47 $
+   $Author: chlee $ 
+   $Date: 2004/03/04 21:02:17 $
    End CVS Header */
 
 /*******************************************************************
@@ -94,6 +94,8 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
           this, SLOT(tableValueChanged(int, int)));
   connect(table, SIGNAL(currentChanged(int, int)),
           this, SLOT(CurrentValueChanged(int, int)));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -312,7 +314,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:     // Yes or Enter
+            case 0:      // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -325,7 +327,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:     // No or Escape
+            case 1:      // No or Escape
               break;
             }
         }
@@ -384,63 +386,63 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           table->setColumnWidth(1, w1);
           binitialized = false;
         }
-      else
-        {
-          table->DisableColWidthUpdate();
-          int newWidth = re->size().width() - 35;
-          int i;
+      /* else
+         {
+           table->DisableColWidthUpdate();
+           int newWidth = re->size().width() - 35;
+           int i;
 
-          int totalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            totalWidth += table->columnWidth(i);
+           int totalWidth = 0;
+           for (i = 0; i < table->numCols(); i++)
+             totalWidth += table->columnWidth(i);
 
-          int minTotalWidth = 0;
-          for (i = 0; i < table->numCols(); i++)
-            minTotalWidth += table->minColWidth[i];
+           int minTotalWidth = 0;
+           for (i = 0; i < table->numCols(); i++)
+             minTotalWidth += table->minColWidth[i];
 
-          //Zoom in
-          if (newWidth > (re->oldSize().width() - 35))
-            {
-              if (newWidth > totalWidth) // can do expansion
-                {
-                  if (totalWidth < (re->oldSize().width() - 35))
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
-                  else
-                    for (i = 0; i < table->numCols(); i++) // Do expansion
-                      table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));
-                }
-              else
-                for (i = 0; i < table->numCols(); i++) // Do not expand
-                  table->setColumnWidth(i, table->columnWidth(i));
+           //Zoom in
+           if (newWidth > (re->oldSize().width() - 35))
+             {
+               if (newWidth > totalWidth) // can do expansion
+                 {
+                   if (totalWidth < (re->oldSize().width() - 35))
+                     for (i = 0; i < table->numCols(); i++) // Do expansion
+                       table->setColumnWidth(i, newWidth*table->columnWidth(i) / (re->oldSize().width() - 35));
+                   else
+                     for (i = 0; i < table->numCols(); i++) // Do expansion
+                       table->setColumnWidth(i, float(newWidth)*float(table->columnWidth(i)) / float(totalWidth));
+                 }
+               else
+                 for (i = 0; i < table->numCols(); i++) // Do not expand
+                   table->setColumnWidth(i, table->columnWidth(i));
 
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Zoom out
-          //calculate total Width
-          if (newWidth >= totalWidth)    //will not decrease any column width
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->columnWidth(i));
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //will decrease only those larger than the minimum width
-          //Less than the user specified total width
-          if (newWidth <= minTotalWidth)
-            {
-              for (i = 0; i < table->numCols(); i++)
-                table->setColumnWidth(i, table->minColWidth[i]);
-              table->EnableColWidthUpdate();
-              return;
-            }
-          //Bigger than the user specified total width
-          for (i = 0; i < table->numCols(); i++) // Do Expansion
-            table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
-          table->EnableColWidthUpdate();
-          return;
-        }
+               table->EnableColWidthUpdate();
+               return;
+             }
+           //Zoom out
+           //calculate total Width
+           if (newWidth >= totalWidth)    //will not decrease any column width
+             {
+               for (i = 0; i < table->numCols(); i++)
+                 table->setColumnWidth(i, table->columnWidth(i));
+               table->EnableColWidthUpdate();
+               return;
+             }
+           //will decrease only those larger than the minimum width
+           //Less than the user specified total width
+           if (newWidth <= minTotalWidth)
+             {
+               for (i = 0; i < table->numCols(); i++)
+                 table->setColumnWidth(i, table->minColWidth[i]);
+               table->EnableColWidthUpdate();
+               return;
+             }
+           //Bigger than the user specified total width
+           for (i = 0; i < table->numCols(); i++) // Do Expansion
+             table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
+           table->EnableColWidthUpdate();
+           return;
+         }*/
     }
   CopasiWidget::resizeEvent(re);
 }

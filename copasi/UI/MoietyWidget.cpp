@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/02/02 21:48:59 $
+   $Date: 2004/03/04 21:02:06 $
    End CVS Header */
 
 /*******************************************************************
@@ -86,6 +86,8 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 
   connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 
   pixelsWide0 = 2;
   pixelsWide1 = 2;
@@ -206,7 +208,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
           table->setColumnWidth(2, w2);
           binitialized = false;
         }
-      else
+      /*else
         {
           table->DisableColWidthUpdate();
           int newWidth = re->size().width();
@@ -262,7 +264,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
             table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
           table->EnableColWidthUpdate();
           return;
-        }
+        }*/
     }
   CopasiWidget::resizeEvent(re);
 }

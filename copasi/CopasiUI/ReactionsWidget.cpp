@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/30 06:38:47 $
+   $Author: chlee $ 
+   $Date: 2004/03/04 21:02:00 $
    End CVS Header */
 
 /*******************************************************************
@@ -97,6 +97,8 @@ ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
 
   connect(table, SIGNAL(currentChanged(int, int)),
           this, SLOT(CurrentValueChanged(int, int)));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -285,7 +287,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:  // Yes or Enter
+            case 0:   // Yes or Enter
               {
                 for (i = ToBeDeleted.size(); 0 < i;)
                   {
@@ -301,7 +303,7 @@ void ReactionsWidget::slotBtnDeleteClicked()
                 break;
               }
 
-            default:         // No or Escape
+            default:          // No or Escape
               break;
             }
         }
@@ -362,7 +364,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
           table->setColumnWidth(1, w1);
           binitialized = false;
         }
-      else
+      /*else
         {
           table->DisableColWidthUpdate();
           int newWidth = re->size().width();
@@ -418,7 +420,7 @@ void ReactionsWidget::resizeEvent(QResizeEvent * re)
             table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
           table->EnableColWidthUpdate();
           return;
-        }
+        }*/
     }
   CopasiWidget::resizeEvent(re);
 }
