@@ -21,16 +21,10 @@ CUDFunction::CUDFunction() : CKinFunction()
 }
 
 CUDFunction::CUDFunction(const CFunction & src) : CKinFunction(src)
-{
-  CONSTRUCTOR_TRACE;
-  parse();
-}
+{CONSTRUCTOR_TRACE;}
 
 CUDFunction::CUDFunction(const CUDFunction & src) : CKinFunction(src)
-{
-  CONSTRUCTOR_TRACE;
-  parse();
-}
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  This creates a user defined function with a name an description
@@ -101,6 +95,8 @@ void CUDFunction::load(CReadConfig & configbuffer,
   else
     CFunction::load(configbuffer, mode);
 
+  parse();
+  
   if (configbuffer.getVersion() < "4")
     {
       configbuffer.getVariable("Nodes", "C_INT32", &Size);
@@ -110,7 +106,7 @@ void CUDFunction::load(CReadConfig & configbuffer,
       mNodes.cleanup();
     }
   
-  parse();
+  compile();
   return;
 }
 
@@ -129,7 +125,7 @@ void CUDFunction::createParameters()
         {
           try
             {
-              Parameter.setName(mNodes[i]->getName());
+              Parameter.setName(getNodes()[i]->getName());
               Parameter.setUsage(mNodes[i]->getDatum().getObject());
               Data.add(Parameter);
             }

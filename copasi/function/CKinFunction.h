@@ -75,6 +75,11 @@ class CKinFunction : public CFunction
             CReadConfig::Mode mode = CReadConfig::LOOP);
 
   /**
+   *  Compile a function
+   */
+  void compile();
+  
+  /**
    *  This parses the function into a binary tree
    */
   C_INT32 parse();
@@ -87,6 +92,11 @@ class CKinFunction : public CFunction
   virtual C_FLOAT64 
     calcValue(const CCallParameters & callParameters) const;
 
+  /**
+   *  Retreives the nodes of the function
+   */
+  CCopasiVectorS < CNodeK > & getNodes();
+  
  private:
 
   /**

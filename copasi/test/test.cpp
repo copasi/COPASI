@@ -606,7 +606,7 @@ C_INT32 TestKinFunction()
   f.getParameters().add("a", CFunctionParameter::FLOAT64, "UNKNOWN");
   f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
   
-  f.parse();
+  f.compile();
   
   //  f.setIdentifierType("a", N_SUBSTRATE);
   //  f.setIdentifierType("b", N_PRODUCT);

@@ -18,13 +18,13 @@ CKinFunction::CKinFunction() : CFunction()
 CKinFunction::CKinFunction(const CFunction & src) : CFunction(src)
 {
   CONSTRUCTOR_TRACE;
-  parse();
+  compile();
 }
 
 CKinFunction::CKinFunction(const CKinFunction & src) : CFunction(src)
 {
   CONSTRUCTOR_TRACE;
-  parse();
+  compile();
 }
 
 #ifdef XXXX
@@ -64,7 +64,15 @@ void CKinFunction::load(CReadConfig & configBuffer,
       mNodes.cleanup();
     }
 
+  compile();
+}
+
+void CKinFunction::compile()
+{
+  mNodes.cleanup();
   parse();
+  connectNodes();
+  initIdentifierNodes();
 }
 
 C_INT32 CKinFunction::parse()
@@ -112,9 +120,6 @@ C_INT32 CKinFunction::parse()
   delete [] buffer;
   kk_delete_buffer(kkbuff);
 
-  // connect the nodes
-  connectNodes();
-  initIdentifierNodes();
   return 0;
 }
 
@@ -480,3 +485,6 @@ void CKinFunction::initIdentifierNodes()
       if (i == imax) fatalError();
     }
 }
+
+CCopasiVectorS < CNodeK > & CKinFunction::getNodes() {return mNodes;}
+
