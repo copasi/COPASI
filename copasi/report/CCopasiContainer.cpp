@@ -89,8 +89,8 @@ void CCopasiContainer::initObjects() {}
 
 void CCopasiContainer::add(CCopasiObject * pObject)
 {
-  std::cout << getCN() << " adds " << pObject->getObjectType() << "="
-  << pObject->getObjectName() << std::endl;
+  //   std::cout << getCN() << " adds " << pObject->getObjectType() << "="
+  //             << pObject->getObjectName() << std::endl;
   mObjects.push_back(pObject);
 }
 
@@ -103,8 +103,8 @@ void CCopasiContainer::remove(CCopasiObject * pObject)
 
   if (it != end)
     {
-      std::cout << getCN() << " removes " << pObject->getObjectType() << "="
-      << pObject->getObjectName() << std::endl;
+      //       std::cout << getCN() << " removes " << pObject->getObjectType() << "="
+      //             << pObject->getObjectName() << std::endl;
       mObjects.erase(it, it + 1);
     }
 }
