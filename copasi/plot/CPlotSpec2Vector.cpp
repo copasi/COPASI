@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:21:43 $
+   $Date: 2004/10/09 14:42:38 $
    End CVS Header */
 
 #include "copasi.h"
@@ -158,7 +158,10 @@ bool CPlotSpec2Vector::doPlotting()
       std::vector<CCopasiObject*>::const_iterator it = mObjects.begin();
       for (; it != mObjects.end(); ++it, ++i)
         {
-          data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
+          if (*it)
+            data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
+          else
+            data[i] = 0;
           //std::cout << "debug1: " <<  *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference())<< std::endl;
           //std::cout << "debug2: " <<   data[i] << std::endl;
           //(*it)->print(&std::cout);
@@ -213,7 +216,8 @@ bool CPlotSpec2Vector::compile()
       if (!pSelected)
         {
           //std::cout << "Object not found!" << std::endl;
-          return false;
+          mObjects.push_back(NULL);
+          //return false;
         }
       //TODO check hasValue()
       //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
