@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.60 $ $Author: shoops $ $Date: 2004/11/04 16:04:57 $  
+# $Revision: 1.61 $ $Author: shoops $ $Date: 2004/11/04 16:07:44 $  
 ######################################################################
 
 include(../common.pri)
@@ -225,8 +225,8 @@ SOURCES += \
            objectdebug.cpp \
            OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \
-           ParamFittingItemWidget.h \
-           ParamFittingWidget.h \
+           ParamFittingItemWidget.cpp \
+           ParamFittingWidget.cpp \
            parametertable.cpp \
            PlotWidget.cpp \
            qtUtilities.cpp \
