@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:06:48 $
+   $Author: shoops $ 
+   $Date: 2005/01/06 22:04:55 $
    End CVS Header */
 
 /**
@@ -72,17 +72,17 @@ unsigned C_INT32 CCopasiProblem::getVariableSize() const
 unsigned C_INT32 CCopasiProblem::getResultSize() const
   {return mCalculateResults.size();}
 
-C_FLOAT64 * CCopasiProblem::getCalculateVariables()
-{return mCalculateVariables.array();}
+CVector< C_FLOAT64 > & CCopasiProblem::getCalculateVariables()
+{return mCalculateVariables;}
 
-C_FLOAT64 * CCopasiProblem::getCalculateResults()
-{return mCalculateResults.array();}
+CVector< C_FLOAT64 > & CCopasiProblem::getCalculateResults()
+{return mCalculateResults;}
 
-C_FLOAT64 * CCopasiProblem::getSolutionVariables()
-{return mSolutionVariables.array();}
+CVector< C_FLOAT64 > & CCopasiProblem::getSolutionVariables()
+{return mSolutionVariables;}
 
-C_FLOAT64 * CCopasiProblem::getSolutionResults()
-{return mSolutionResults.array();}
+CVector< C_FLOAT64 > & CCopasiProblem::getSolutionResults()
+{return mSolutionResults;}
 
 bool CCopasiProblem::initialize() {return true;}
 

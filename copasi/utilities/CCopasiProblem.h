@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:06:48 $
+   $Author: shoops $ 
+   $Date: 2005/01/06 22:04:55 $
    End CVS Header */
 
 /**
@@ -134,22 +134,22 @@ class CCopasiProblem : public CCopasiParameterGroup
     /**
      * Retrieve the variables for calculation
      */
-    C_FLOAT64 * getCalculateVariables();
+    CVector< C_FLOAT64 > & getCalculateVariables();
 
     /**
      * Retrieve the result of a calculation
      */
-    C_FLOAT64 * getCalculateResults();
+    CVector< C_FLOAT64 > & getCalculateResults();
 
     /**
      * Retrieve the solution variables
      */
-    C_FLOAT64 * getSolutionVariables();
+    CVector< C_FLOAT64 > & getSolutionVariables();
 
     /**
      * Retrieve the results for the solution
      */
-    C_FLOAT64 * getSolutionResults();
+    CVector< C_FLOAT64 > & getSolutionResults();
 
     /**
      * Do all neccessary initialization so that calls to caluclate will 
