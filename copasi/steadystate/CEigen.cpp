@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/07 09:34:45 $
+   $Date: 2004/10/08 09:22:28 $
    End CVS Header */
 
 /**
@@ -67,7 +67,11 @@ CEigen::CEigen()
 /**
  * Deconstructor
  */
-CEigen::~CEigen() {DESTRUCTOR_TRACE;}
+CEigen::~CEigen()
+{
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
 
 /**
  * return the matrix
@@ -264,18 +268,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,            // mSelect,           //NULL,
-         &mN,                           //&n,
+         NULL,             // mSelect,           //NULL,
+         &mN,                            //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                   // output
+         & mSdim,                    // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,                     //NULL
+         mBWork,                      //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
