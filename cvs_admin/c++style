@@ -1,10 +1,10 @@
-ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
-GAWK=gawk
-MV=mv
+# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+# GAWK=gawk
+# MV=mv
 
-# ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
-# GAWK=/usr/bin/gawk
-# MV=/bin/mv
+ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
+GAWK=/usr/bin/gawk
+MV=/bin/mv
 
 $ASTYLE --mode=c \
         --style=gnu \
@@ -47,5 +47,4 @@ $0 !~ "^$" {
   else lastOpenBracket = 0
 }
 ' > $1.tmp && \
-less $1.tmp && rm $1.tmp
-# $MV -f $1.tmp $1
+$MV -f $1.tmp $1
