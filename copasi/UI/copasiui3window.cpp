@@ -69,7 +69,16 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
  ** Descripton:- This method is called when the users clicks on the save as 
  **              option in the menu File 
  *******************************************************************************************/
-void CopasiUI3Window::slotFileSaveAs(){} //cout<<"it comes in filesave as...";}
+void CopasiUI3Window::slotFileSaveAs()
+{
+  gpsFile = QFileDialog::getOpenFileName(
+              QString::null, "GPS Files (*.gps)",
+              this, "open file dialog",
+              "Choose a file");
+
+  if (dataModel && gpsFile)
+    dataModel->saveModel((const char *)gpsFile.utf8());
+} //cout<<"it comes in filesave as...";}
 
 /***************CopasiUI3Window::newDoc()******
  **
@@ -117,10 +126,10 @@ void CopasiUI3Window::newDoc()
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen()
 {
-  QString gpsFile = QFileDialog::getOpenFileName(
-                      QString::null, "GPS Files (*.gps)",
-                      this, "open file dialog",
-                      "Choose a file");
+  gpsFile = QFileDialog::getOpenFileName(
+              QString::null, "GPS Files (*.gps)",
+              this, "open file dialog",
+              "Choose a file");
   // gives the file information to the datamodel to handle it
 
   if (dataModel && gpsFile)
@@ -135,7 +144,10 @@ void CopasiUI3Window::slotFileOpen()
  **              option in the menu File and it is used to save the document information
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSave()
-{}
+{
+  if (dataModel && gpsFile)
+    dataModel->saveModel((const char *)gpsFile.utf8());
+}
 
 /***************CopasiUI3Window::slotFilePrint()******
  **

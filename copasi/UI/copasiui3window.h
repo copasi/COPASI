@@ -30,6 +30,7 @@ class CopasiUI3Window : public QMainWindow
     void aboutQt();
 
   private:
+    QString gpsFile;
     void createToolBar();
     void createMenuBar();
   };
