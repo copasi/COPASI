@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/16 16:20:18 $
+   $Author: gauges $ 
+   $Date: 2004/09/16 18:33:12 $
    End CVS Header */
 
 /**
@@ -99,7 +99,7 @@ CElementaryFluxModes::getFluxModeDescription(unsigned C_INT32 index) const
 
     for (j = 0; j < jmax; j++)
       {
-        if (j) tmp << ", ";
+        if (j) tmp << "\n";
         tmp << mFluxModes[index].getMultiplier(j) << " * "
         << Reaction[mIndex[mFluxModes[index].getReactionIndex(j)]]->getObjectName();
       }

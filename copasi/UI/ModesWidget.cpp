@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/10 13:58:14 $
+   $Date: 2004/09/16 18:33:12 $
    End CVS Header */
 
 /*******************************************************************
@@ -47,16 +47,24 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   mModel = NULL;
   binitialized = true;
 
-  table = new MyTable(this, "tblCompartments");
-  table->setNumCols(2);
-  table->setNumRows(-1);
+  //table = new MyTable(this, "tblCompartments");
+  listView = new QListView(this, "tblCompartments");
+  listView->setSelectionMode(QListView::Single);
+  listView->setAllColumnsShowFocus(true);
+  listView->setSortColumn(-1);
+  //table->setNumCols(2);
+  //table->setNumRows(-1);
+  listView->addColumn("Reversible/Irreversible");
+  listView->addColumn("Reaction Name");
+  listView->addColumn("Reaction Equation");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(table);
+  //vBoxLayout->addWidget(table);
+  vBoxLayout->addWidget(listView);
 
   //Setting table headers
-  QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Reversible/Irreversible");
-  tableHeader->setLabel(1, "Elementary Mode");
+  //QHeader *tableHeader = table->horizontalHeader();
+  //tableHeader->setLabel(0, "Reversible/Irreversible");
+  //tableHeader->setLabel(1, "Elementary Mode");
 
   btnCalculate = new QPushButton("&Run", this);
   modes = NULL; //new CElementaryFluxModes();
@@ -70,20 +78,22 @@ ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
   hBoxLayout->addWidget(btnCalculate);
   hBoxLayout->addSpacing(50);
 
-  table->sortColumn (0, true, true);
-  table->setSorting (true);
-  table->setFocusPolicy(QWidget::WheelFocus);
+  //table->sortColumn (0, true, true);
+  //table->setSorting (true);
+  //table->setFocusPolicy(QWidget::WheelFocus);
+  listView->setFocusPolicy(QWidget::WheelFocus);
   //table->setProtected(true);
 
   // signals and slots connections
   //  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   //  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotModesTableChanged(QString &)));
 
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  //connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  connect(listView, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnCalculate, SIGNAL(clicked ()), this, SLOT(slotBtnCalculateClicked()));
   //  connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
 
-  table -> setVScrollBarMode(QScrollView::AlwaysOn);
+  //table -> setVScrollBarMode(QScrollView::AlwaysOn);
 }
 
 void ModesWidget::loadModes(CModel *model)
@@ -94,18 +104,30 @@ void ModesWidget::loadModes(CModel *model)
     }
 
   //Emptying the table
+  /*
   int numberOfRows = table->numRows();
   int i;
   for (i = 0; i < numberOfRows; i++)
     {
       table->removeRow(0);
     }
+  */ 
+  // Clearing the listview
+  QListViewItem* item = listView->firstChild();
+  QListViewItem* oldItem;
+  while (item)
+    {
+      listView->takeItem(item);
+      oldItem = item;
+      item = item->nextSibling();
+      delete oldItem;
+    }
 
   /***CL ***/ // fill table with new values
   if (modes)
     {
       unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
-      table->setNumRows(noOfModesRows);
+      //table->setNumRows(noOfModesRows);
       //bool status;
       unsigned C_INT32 j;
       for (j = 0; j < noOfModesRows; j++)
@@ -113,18 +135,31 @@ void ModesWidget::loadModes(CModel *model)
           // status=modes->isFluxModeReversible(j);
           if (modes->isFluxModeReversible(j) == true)
             {
-              table->setText(j, 0, "Reversible");
+              //table->setText(j, 0, "Reversible");
+              item = new QListViewItem(listView, "Reversible");
             }
           else
             {
-              table->setText(j, 0, "Irreversible");
+              //table->setText(j, 0, "Irreversible");
+              item = new QListViewItem(listView, "Irreversible");
             }
+          item->setMultiLinesEnabled(true);
           //QString y=modes->isFluxModeReversible(j)->;
           //QString x=modes->getFluxModeDescription(j).;
           //QMessageBox::information(this, "recahed ",x);
           //table->setText(j, 0,y);
           //table->setText(j, 0,modes->getFluxModeDescription(j).);
-          table->setText(j, 1, FROM_UTF8(modes->getFluxModeDescription(j)));
+          //table->setText(j, 1, FROM_UTF8(modes->getFluxModeDescription(j)));
+          item->setText(1, FROM_UTF8(modes->getFluxModeDescription(j)));
+          std::string reactionEq = "";
+          unsigned int x;
+          CFluxMode mode = modes->getFluxMode(j);
+          for (x = 0; x < mode.size(); x++)
+            {
+              reactionEq += mode.getReactionEquation(x, mModel);
+              reactionEq += "\n";
+            }
+          item->setText(2, QString(reactionEq).stripWhiteSpace());
         } /*** CL ***/
     }
 }
@@ -137,10 +172,15 @@ void ModesWidget::loadModes(CModel *model)
 }
  */
 void ModesWidget::slotTableSelectionChanged()
-{
-  if (!table->hasFocus())
+{/*
+    if (!table->hasFocus())
+      {
+        table->setFocus();
+      }
+      */
+  if (!listView->hasFocus())
     {
-      table->setFocus();
+      listView->setFocus();
     }
 }
 
@@ -156,9 +196,12 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
           float weightSum = weight0 + weight1;
           int w0, w1;
           w0 = newWidth * (weight0 / weightSum);
-          w1 = newWidth - w0 - table->verticalScrollBar()->width();
-          table->setColumnWidth(0, w0);
-          table->setColumnWidth(1, w1);
+          //w1 = newWidth - w0 - table->verticalScrollBar()->width();
+          w1 = newWidth - w0 - listView->verticalScrollBar()->width();
+          //table->setColumnWidth(0, w0);
+          //table->setColumnWidth(1, w1);
+          listView->setColumnWidth(0, w0);
+          listView->setColumnWidth(1, w1);
           binitialized = false;
         }
       /* else
