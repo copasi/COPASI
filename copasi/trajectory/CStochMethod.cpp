@@ -85,14 +85,14 @@ CStochMethod::~CStochMethod()
 const double CStochMethod::step(const double & deltaT)
 {
   // write the current state to the model:
-  mpProblem->getModel()->setState(mpCurrentState);
+  //mpProblem->getModel()->setState(mpCurrentState); //?
 
   // check for possible overflows:
   unsigned C_INT32 i;
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumberInt() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getNumberDbl() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -131,11 +131,27 @@ const double CStochMethod::step(const double & deltaT,
 
   *mpCurrentState = *initialState;
 
+  unsigned C_INT32 i, imax;
+
+  mNumNumbers = mpCurrentState->getVariableNumberSize();
+  mNumbers.resize(mNumNumbers);
+  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT32)mpCurrentState->getVariableNumberDbl(i);
+  //TODO also put fixes variables here
+
+  for (i = 0; i < mNumNumbers; ++i)
+    mpCurrentState->setVariableNumber(i, floor(mpCurrentState->getVariableNumberDbl(i)));
+
+  imax = mpCurrentState->getFixedNumberSize();
+  for (i = 0; i < imax; ++i)
+    mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumberDbl(i)));
+
   mpModel = mpProblem->getModel();
   mpProblem->getModel()->setState(mpCurrentState);
 
+  mNumReactions = mpModel->getReactions().size();
+
   mAmu.clear(); mAmuOld.clear();
-  for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
+  for (i = 0; i < mNumReactions; i++)
     {
       mAmu.push_back(0);
       mAmuOld.push_back(0);
@@ -157,7 +173,7 @@ C_INT32 CStochMethod::updatePropensities()
   mA0 = 0;
   //std::cout << "        updatePropensities: ";
 
-  for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
+  for (unsigned C_INT32 i = 0; i < mNumReactions; i++)
     {
       mAmuOld[i] = mAmu[i];
       calculateAmu(i);
@@ -185,22 +201,21 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   C_FLOAT64 substrate_factor = 1;
   // First, find the reaction associated with this index.
   // Keep a pointer to this.
-  const CChemEq *chemeq = & mpModel->getReactions()[index]->getChemEq();
   // Iterate through each substrate in the reaction
-  const CCopasiVector < CChemEqElement > & substrates = chemeq->getSubstrates();
+  const std::vector<CStochBalance> & substrates = mLocalSubstrates[index];
 
   int flag = 0;
 
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
-      num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
+      num_ident = substrates[i].mMultiplicity;
       //std::cout << "Num ident = " << num_ident << std::endl;
       //total_substrates += num_ident;
 
       if (num_ident > 1)
         {
           flag = 1;
-          number =    /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
+          number = mNumbers[substrates[i].mIndex];
           lower_bound = number - num_ident;
           //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
           substrate_factor = substrate_factor * pow((double) number, (int) (num_ident - 1)); //optimization
@@ -266,11 +281,14 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   // multiplicity to calculate a new value for the associated
   // metabolite. Finally, update the metabolite.
 
-  std::vector<CStochBalance> & bals = mLocalBalances[rxn];
+  const std::vector<CStochBalance> & bals = mLocalBalances[rxn];
 
   std::vector<CStochBalance>::const_iterator bi;
   for (bi = bals.begin(); bi != bals.end(); bi++)
-  {bi->mMetabAddr->setNumberInt(bi->mMetabAddr->getNumberInt() + bi->mBalance);}
+    {
+      mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
+      mpModel->getMetabolites()[bi->mIndex]->setNumberDbl(mNumbers[bi->mIndex]);
+    }
 
   const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
@@ -325,11 +343,10 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mDG.clear();
   std::vector< std::set<std::string>* > DependsOn;
   std::vector< std::set<std::string>* > Affects;
-  unsigned C_INT32 num_reactions = mpModel->getReactions().size();
   unsigned C_INT32 i, j;
   // Do for each reaction:
 
-  for (i = 0; i < num_reactions; i++)
+  for (i = 0; i < mNumReactions; i++)
     {
       // Get the set of metabolites  which affect the value of amu for this
       // reaction i.e. the set on which amu depends. This may be  more than
@@ -343,9 +360,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   // For each possible pair of reactions i and j, if the intersection of
   // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
-  for (i = 0; i < num_reactions; i++)
+  for (i = 0; i < mNumReactions; i++)
     {
-      for (j = 0; j < num_reactions; j++)
+      for (j = 0; j < mNumReactions; j++)
         {
           // Determine whether the intersection of these two sets is non-empty
           // Could also do this with set_intersection generic algorithm, but that
@@ -368,26 +385,41 @@ void CStochMethod::setupDependencyGraphAndBalances()
       //mDG.addDependent(i, i);
     }
 
-  // Create local copy of balances
+  // Create local copy of balances and substrates list
   CStochBalance bb;
   C_INT32 maxBalance = 0;
 
-  mLocalBalances.resize(num_reactions);
+  mLocalBalances.resize(mNumReactions);
+  mLocalSubstrates.resize(mNumReactions);
 
-  for (i = 0; i < num_reactions; i++)
+  for (i = 0; i < mNumReactions; i++)
     {
-      const CCopasiVector<CChemEqElement> & bbb = mpModel->getReactions()[i]->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> * bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
+      //std::cout << std::endl << i << " : ";
+      //TODO clear old local balances and substrates
+      for (j = 0; j < bbb->size(); j++)
+        {
+          bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
+
+          if (((*bbb)[j]->getMetabolite().getStatus()) != CMetab::METAB_FIXED)
+            {
+              if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
+              mLocalBalances[i].push_back(bb);
+              //std::cout << bb.mMetabAddr->getName() << "  ";
+            }
+        }
+      bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
       //std::cout << std::endl << i << " : ";
 
-      for (j = 0; j < bbb.size(); j++)
+      for (j = 0; j < bbb->size(); j++)
         {
-          bb.mMetabAddr = const_cast < CMetab* > (& bbb[j]->getMetabolite());
-          bb.mBalance = static_cast<C_INT32>(floor(bbb[j]->getMultiplicity() + 0.5));
+          bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
-          if ((bb.mMetabAddr->getStatus()) != CMetab::METAB_FIXED)
+          if (1)
             {
-              if (bb.mBalance > maxBalance) maxBalance = bb.mBalance;
-              mLocalBalances[i].push_back(bb);
+              mLocalSubstrates[i].push_back(bb);
               //std::cout << bb.mMetabAddr->getName() << "  ";
             }
         }
@@ -398,7 +430,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
-  for (i = 0; i < num_reactions; i++)
+  for (i = 0; i < mNumReactions; i++)
     {
       delete DependsOn[i];
       delete Affects[i];

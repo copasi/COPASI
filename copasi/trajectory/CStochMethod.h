@@ -14,13 +14,11 @@ class CTrajectoryProblem;
 /**
  * Integer Balances  for internal use
  */
-
 class CStochBalance
   {
   public:
-    //CStochBalance();
-    CMetab * mMetabAddr;
-    C_INT32 mBalance;
+    C_INT32 mIndex;
+    C_INT32 mMultiplicity;
   };
 
 class CRandom;
@@ -211,6 +209,19 @@ class CStochMethod : private CTrajectoryMethod
      * The balances of the reactions as integers
      */
     std::vector < std::vector <CStochBalance> > mLocalBalances;
+
+    /**
+     * the substrates of each reaction with their multiplicities
+     */
+    std::vector < std::vector <CStochBalance> > mLocalSubstrates;
+
+    /**
+     * The particle numbers
+     */
+    std::vector <C_INT32> mNumbers;
+
+    C_INT32 mNumReactions;
+    C_INT32 mNumNumbers;
   };
 
 //#include "CStochDirectMethod.h"
