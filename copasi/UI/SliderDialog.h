@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/12 10:00:32 $
+   $Date: 2004/12/17 14:36:15 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -27,6 +27,7 @@ class QLabel;
 class QPopupMenu;
 class DataModelGUI;
 class CopasiSlider;
+class CCopasiTask;
 
 class SliderDialog: public QDialog
   {
@@ -69,6 +70,9 @@ class SliderDialog: public QDialog
     virtual void closeEvent(QCloseEvent* e);
 
     virtual void setDataModel(DataModelGUI* dataModel);
+    virtual void addSliderToTask(CopasiSlider* slider);
+    virtual void deleteSliderFromTask(CopasiSlider* slider);
+    virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
 
   public slots:
     void toggleRunButtonState(bool);

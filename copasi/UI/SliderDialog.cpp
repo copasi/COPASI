@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 17:48:02 $
+   $Author: gauges $ 
+   $Date: 2004/12/17 14:36:15 $
    End CVS Header */
 
 #include <iostream>
@@ -29,8 +29,11 @@
 #include "DataModelGUI.h"
 #include "CopasiSlider.h"
 #include "mathematics.h"
-
+#include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiProblem.h"
+#include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
+#include "trajectory/CTrajectoryTask.h"
 
 C_INT32 SliderDialog::numMappings = 2;
 C_INT32 SliderDialog::folderMappings[][2] = {
@@ -178,6 +181,8 @@ void SliderDialog::removeSlider()
           ++it;
         }
       this->sliderBox->layout()->remove(this->currSlider);
+      // delete the corresponding parameter group from the task
+      this->deleteSliderFromTask(this->currSlider);
       delete this->currSlider;
       this->currSlider = NULL;
     }
@@ -244,6 +249,8 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
   slider->reparent(this->sliderBox, 0, QPoint(0, 0));
   slider->setHidden(true);
   this->sliderMap[folderId].push_back(slider);
+  // add the parameter group to the task
+  this->addSliderToTask(slider);
   if (folderId == this->currentFolderId)
     {
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, slider);
@@ -276,7 +283,39 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
         }
       this->currentFolderId = id;
       // add the new set of sliders to the layout
+
       maxCount = this->sliderMap[this->currentFolderId].size();
+      if (maxCount == 0)
+        {
+          // maybe this is the first time this task has been selected
+          // check if there are slider defined in the tasks problem and if yes
+          // create CopasiSlider objects, add them to the map and reset maxCount
+          CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
+          assert(task);
+          CCopasiProblem* problem = task->getProblem();
+          assert(problem);
+          CCopasiParameterGroup* sliderGroup = (CCopasiParameterGroup*)problem->getParameter("sliders");
+          if (sliderGroup && sliderGroup->size() != 0)
+            {
+              maxCount = sliderGroup->size();
+              for (counter = maxCount - 1; counter != 0;--counter)
+                {
+                  CCopasiParameterGroup* slider = static_cast<CCopasiParameterGroup*>(sliderGroup->getParameter(counter));
+                  CCopasiObjectName cn = CCopasiObjectName(slider->getObjectName());
+                  CCopasiObject* object = CCopasiContainer::ObjectFromName(cn);
+                  if (!object)
+                    {
+                      maxCount--;
+                    }
+                  else
+                    {
+                      CopasiSlider* copasiSlider = new CopasiSlider(object, NULL);
+                      copasiSlider->setParameterGroup(slider);
+                      this->sliderMap[this->currentFolderId].push_back(copasiSlider);
+                    }
+                }
+            }
+        }
       for (counter = 0; counter < maxCount;++counter)
         {
           CopasiSlider* s = this->sliderMap[this->currentFolderId][counter];
@@ -344,4 +383,79 @@ void SliderDialog::closeEvent(QCloseEvent* e)
     {
       p->slotToggleSliders();
     }
+}
+
+CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
+{
+  folderId = mapFolderId2EntryId(folderId);
+  CCopasiTask* task = NULL;
+  switch (folderId)
+    {
+    case 23:
+      task = static_cast<CCopasiTask*>(mpDataModel->getTrajectoryTask());
+      break;
+    default:
+      task = NULL;
+      break;
+    }
+  return task;
+}
+
+void SliderDialog::addSliderToTask(CopasiSlider* slider)
+{
+  // first check if the task has a parameter group for sliders
+  // if not, create it
+  CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
+  assert(task);
+  CCopasiProblem* problem = task->getProblem();
+  assert(problem);
+  CCopasiParameter* parameter = problem->getParameter("sliders");
+  if (!parameter)
+    {
+      problem->addGroup("sliders");
+      parameter = problem->getParameter("sliders");
+    }
+  else
+    {
+      // make sure it is a group, else throw an exception
+      // this should actually be done with a CCopasiMessage, but I have not figured out how to use it
+      assert(parameter->getType() == CCopasiParameter::GROUP);
+    }
+  // delete an exisiting parameter group for this object
+  this->deleteSliderFromTask(slider);
+  // add the new parameter group for the object
+  CCopasiParameterGroup* parameterGroup = static_cast<CCopasiParameterGroup*>(parameter);
+  CCopasiParameterGroup* oldGroup = slider->parameterGroup();
+  std::string groupName = oldGroup->getObjectName();
+  parameterGroup->addParameter(*(slider->parameterGroup()));
+  // reset the pointer to the newly created parameter group and delete the old group
+  delete oldGroup;
+  oldGroup = static_cast<CCopasiParameterGroup*>(parameterGroup->getParameter(groupName));
+  assert(oldGroup);
+  slider->setParameterGroup(oldGroup);
+}
+
+void SliderDialog::deleteSliderFromTask(CopasiSlider* slider)
+{
+  // check if the task has a parameter group for sliders
+  // check if there exists a parameter group for the sliders object
+  // if yes, delete it
+  CCopasiTask* task = this->getTaskForFolderId(this->currentFolderId);
+  assert(task);
+  CCopasiProblem* problem = task->getProblem();
+  assert(problem);
+  CCopasiParameter* parameter = problem->getParameter("sliders");
+  if (!parameter)
+    {
+      return;
+    }
+  else
+    {
+      // make sure it is a group, else throw an exception
+      // this should actually be done with a CCopasiMessage, but I have not figured out how to use it
+      assert(parameter->getType() == CCopasiParameter::GROUP);
+    }
+  // delete an exisiting parameter group for this object
+  CCopasiParameterGroup* parameterGroup = static_cast<CCopasiParameterGroup*>(parameter);
+  parameterGroup->removeParameter(slider->parameterGroup()->getObjectName());
 }

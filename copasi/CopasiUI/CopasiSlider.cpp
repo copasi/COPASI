@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/25 14:33:42 $
+   $Date: 2004/12/17 14:36:15 $
    End CVS Header */
 
 #include <cmath>
@@ -43,18 +43,16 @@ void CopasiSlider::updateSliderData()
     {
       if (!this->mpParameterGroup)
         {
-          this->mpParameterGroup = new CCopasiParameterGroup("slider");
-          this->mpParameterGroup->addParameter("object", CCopasiParameter::STRING, this->mpObject->getCN());
-          this->mpParameterGroup->addParameter("type", CCopasiParameter::STRING, CCopasiParameter::XMLType[CCopasiParameter::INVALID]);
+          this->mpParameterGroup = new CCopasiParameterGroup(this->mpObject->getCN());
           this->mValue = 0.0;
           if (this->mpObject->isValueDbl())
             {
-              this->mpParameterGroup->setValue("type", CCopasiParameter::XMLType[CCopasiParameter::DOUBLE]);
+              this->mpParameterGroup->addParameter("type", CCopasiParameter::STRING, std::string(CCopasiParameter::XMLType[CCopasiParameter::DOUBLE]));
               this->mValue = *(double*)this->mpObject->getReference();
             }
           else if (this->mpObject->isValueInt())
             {
-              this->mpParameterGroup->setValue("type", CCopasiParameter::XMLType[CCopasiParameter::INT]);
+              this->mpParameterGroup->addParameter("type", CCopasiParameter::STRING, std::string(CCopasiParameter::XMLType[CCopasiParameter::INT]));
               this->mValue = (double)(*(int*)this->mpObject->getReference());
             }
           this->mMinValue = 0.0;
@@ -64,7 +62,7 @@ void CopasiSlider::updateSliderData()
           this->mpParameterGroup->addParameter("maxValue", CCopasiParameter::DOUBLE, 2.0*this->mMaxValue);
           this->mNumMinorTicks = 100;
           this->mMinorMajorFactor = 10;
-          this->mpParameterGroup->addParameter("numMinorTicks", CCopasiParameter::UINT, (C_INT32)this->mNumMinorTicks);
+          this->mpParameterGroup->addParameter("numMinorTicks", CCopasiParameter::UINT, this->mNumMinorTicks);
           this->mpParameterGroup->addParameter("minorMajorFactor", CCopasiParameter::UINT, this->mMinorMajorFactor);
         }
       this->mpSlider->setMinValue(0);
@@ -270,4 +268,48 @@ void CopasiSlider::setType(CCopasiParameter::Type type)
 {
   this->mType = type;
   this->mpParameterGroup->setValue("type", CCopasiParameter::XMLType[this->mType]);
+}
+
+CCopasiParameterGroup* CopasiSlider::parameterGroup() const
+  {
+    return this->mpParameterGroup;
+  }
+
+void CopasiSlider::setParameterGroup(CCopasiParameterGroup* parameterGroup)
+{
+  this->mpParameterGroup = parameterGroup;
+  if (this->mpParameterGroup)
+    {
+      // set the values from the parameter group
+      CCopasiParameter* parameter = parameterGroup->getParameter("type");
+      // set mType by mapping the string to the numeric type
+      assert(parameter);
+      if (*(std::string*)parameter->getValue() == "float")
+        {
+          this->mType = CCopasiParameter::DOUBLE;
+        }
+      else if (*(std::string*)parameter->getValue() == "integer")
+        {
+          this->mType = CCopasiParameter::INT;
+        }
+      else
+        {
+          // throw an exception
+        }
+      parameter = parameterGroup->getParameter("minValue"); // double
+      assert(parameter);
+      this->mMinValue = *(C_INT32*)parameter->getValue();
+      parameter = parameterGroup->getParameter("maxValue"); // double
+      assert(parameter);
+      this->mMaxValue = *(C_INT32*)parameter->getValue();
+      parameter = parameterGroup->getParameter("value");    // double
+      assert(parameter);
+      this->mValue = *(C_INT32*)parameter->getValue();
+      parameter = parameterGroup->getParameter("numMinorTicks"); // unsigned int
+      assert(parameter);
+      this->mNumMinorTicks = *(C_INT32*)parameter->getValue();
+      parameter = parameterGroup->getParameter("minorMajorFactor"); // unsigned int
+      assert(parameter);
+      this->mMinorMajorFactor = *(C_INT32*)parameter->getValue();
+    }
 }
