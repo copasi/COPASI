@@ -70,6 +70,12 @@ void COptProblem::initialize(void)
   mParameterMax = new double;
 }
 
+// check constraints : unimplemented - always returns true
+bool COptProblem::checkConstraints()
+{
+  return true;
+}
+
 //
 C_FLOAT64 COptProblem::calculate()
 { return 0; }
