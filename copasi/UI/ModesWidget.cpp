@@ -84,17 +84,23 @@ void ModesWidget::loadModes(CModel *model)
           table->removeRow(0);
         }
 
-      /* CElementaryFluxModes *modes;
-      unsigned C_INT32 noOfModesRows=modes->getFluxModeSize(); 
+      CElementaryFluxModes *modes = new CElementaryFluxModes();
+      modes->calculate(mModel);
+      unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+      //QString y=QString::number(noOfModesRows);
+
+      //QMessageBox::information(this, "recahed ",y);
       table->setNumRows(noOfModesRows);
-      bool status;
-          for (C_INT32 j = 0; j < noOfModesRows; j++)
-          {
-            status=modes->isFluxModeReversible(j);
-            //table->setText(j, 0, QString::String(status));
-      table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
-            table->setText(j, 1,modes->getFluxModeDescription(j).c_str());
-          }*/
+      //bool status;
+      for (C_INT32 j = 0; j < noOfModesRows; j++)
+        {
+          //status=modes->isFluxModeReversible(j);
+          //table->setText(j, 0, QString::String(status));
+          QString x = modes->getFluxModeDescription(j).c_str();
+          QMessageBox::information(this, "recahed ", x);
+          table->setText(j, 0, modes->getFluxModeDescription(j).c_str());
+          table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
+        }
     }
 }
 
