@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/26 13:36:05 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 15:58:32 $
    End CVS Header */
 
 // copasi.h
@@ -92,42 +92,43 @@ enum TriLogic
 
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG
-#include <time.h>
-#include <sys/timeb.h>
-# ifdef COPASI_MAIN
-#  ifndef Darwin
+#  include <time.h>
+#  include <sys/timeb.h>
+#  ifdef COPASI_MAIN
+#    ifndef Darwin
 struct timeb C_init_time;
 unsigned C_INT32 C_last_time = 0;
 unsigned C_INT32 C_this_time;
-#  endif // !Darwin
+#    endif // !Darwin
 std::ofstream DebugFile("trace");
-# else
-#  include <fstream>
-#  ifndef Darwin
+#  else // not COPASI_MAIN
+#    include <fstream>
+#    ifndef Darwin
 extern struct timeb C_init_time;
 extern unsigned C_INT32 C_last_time;
 extern unsigned C_INT32 C_this_time;
-#  endif // !Darwin
+#    endif // !Darwin
 extern std::ofstream DebugFile;
-# endif // COPASI_MAIN
-# ifndef Darwin
-#  include <iostream>
-#  define TIME_TRACE(f, l) {\
-  ftime(&C_init_time); \
-  C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
-  std::cout << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
-  C_last_time = C_this_time;\
-}
-# endif // !Darwin
-# if (defined COPASI_TRACE_CONSTRUCTION)
-#  include <typeinfo>
-#  define CONSTRUCTOR_TRACE \
-  {DebugFile << "Construct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << std::endl;}
-#  define DESTRUCTOR_TRACE \
-  {DebugFile << "Destruct: " << typeid(*this).name() \
-    << ", \tAddress: " << (void *) this << std::endl;}
-# endif // COPASI_TRACE_CONSTRUCTION
+#  endif // COPASI_MAIN
+#  ifndef Darwin
+#    include <iostream>
+#    define TIME_TRACE(f, l) {\
+       ftime(&C_init_time); \
+       C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
+       std::cout << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
+       C_last_time = C_this_time;\
+     }
+#  endif // !Darwin
+#  if (defined COPASI_TRACE_CONSTRUCTION)
+#    include <typeinfo>
+#    define CONSTRUCTOR_TRACE \
+       {DebugFile << "Construct: " << typeid(*this).name() \
+        << ", \tAddress: " << (void *) this << std::endl;}
+#    define DESTRUCTOR_TRACE \
+       {DebugFile << "Destruct: " << typeid(*this).name() \
+        << ", \tAddress: " << (void *) this << std::endl;}
+#  endif // COPASI_TRACE_CONSTRUCTION
+#  define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}
 #endif // COPASI_DEBUG
 
 #ifndef CONSTRUCTOR_TRACE
@@ -140,6 +141,10 @@ extern std::ofstream DebugFile;
 
 #ifndef TIME_TRACE
 # define TIME_TRACE(f, l)
+#endif
+
+#ifndef DEBUG_OUT
+# define DEBUG_OUT(s)
 #endif
 
 // protected free
