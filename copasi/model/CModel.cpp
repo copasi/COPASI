@@ -565,7 +565,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 
   mMetabolitesDep.resize(j - i, false);
   for (k = i; k < j; k++)
-    mMetabolitesDep[k] = mMetabolitesX[k];
+    mMetabolitesDep[k - i] = mMetabolitesX[k];
 
   //  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
 
