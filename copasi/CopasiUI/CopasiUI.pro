@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.36 $ $Author: ssahle $ $Date: 2004/06/28 22:22:45 $  
+# $Revision: 1.37 $ $Author: ssahle $ $Date: 2004/07/02 08:25:50 $  
 ######################################################################
 
 include(../common.pri)
@@ -114,6 +114,7 @@ HEADERS += \
            CompartmentsWidget.h \
            CompartmentsWidget1.h \
            ConstantSymbols.h \
+           CopasiDefaultWidget.h \
            CopasiTableWidget.h \
            copasiWidget.h \
            copasiui3window.h \
@@ -171,6 +172,7 @@ SOURCES += \
            CompartmentsWidget.cpp \
            CompartmentsWidget1.cpp \
            ConstantSymbols.cpp \
+           CopasiDefaultWidget.cpp \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
            copasiui3window.cpp \

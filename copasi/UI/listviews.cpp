@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 13:22:57 $
+   $Date: 2004/07/02 08:25:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -44,6 +44,7 @@
 #include "TableDefinition1.h"
 #include "plot/plotwidget1.h"
 #include "PlotWidget.h"
+#include "CopasiDefaultWidget.h"
 #include "plot/CPlotSpec.h"
 #include "plot/CPlotSpecVector.h"
 #include "report/CReportDefinition.h"
@@ -167,6 +168,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     QSplitter(Qt::Horizontal, parent, name),
     mpMathModel(NULL)
 {
+  setChildrenCollapsible(false);
   // creates the image to be displayed when folder is closed/locked/open
   folderLocked = new QPixmap((const char**)folderlocked);
   folderClosed = new QPixmap((const char**)folderclosed);
@@ -195,19 +197,19 @@ ListViews::ListViews(QWidget *parent, const char *name):
   //folders->setFixedWidth(180);
 
   //  This sections intializes the components used in the display part
-  bigWidget = new QMultiLineEdit(this);
-  // bigWidget->setText("This widget will get all the remaining space");
-  bigWidget->setFrameStyle(QFrame::Panel | QFrame::Plain);
-  bigWidget->setReadOnly(false);
+
+  //ConstructNodeWidgets();
+
+  defaultWidget = new CopasiDefaultWidget(this);
 
   moveToFirst(folders);
-  moveToLast(bigWidget);
+  moveToLast(defaultWidget);
   setResizeMode(folders, QSplitter::KeepSize);
   if (!opaqueResize())
     setOpaqueResize();
   //  This section defines few of the variables that will be used in the code
   lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
-  currentWidget = bigWidget; // keeps track of the currentWidget in use
+  currentWidget = defaultWidget; // keeps track of the currentWidget in use
   lastKey = "";
 
   // establishes the communication betweent the folders clicked and the routine called....
@@ -359,6 +361,9 @@ void ListViews::ConstructNodeWidgets()
 
   modesWidget = new ModesWidget(this);
   modesWidget->hide();
+
+  //defaultWidget = new CopasiDefaultWidget(this);
+  //defaultWidget->hide();
 }
 
 /************************ListViews::addItem(QListViewItem* parent,Folder* child)------>
@@ -551,7 +556,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                         //Time course
+      case 23:                                          //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -560,10 +565,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                        //Report
+      case 43:                                         //Report
         return tableDefinition;
         break;
-      case 42:                                        //Plots
+      case 42:                                         //Plots
         return plotWidget;
         break;
       case 5:
@@ -605,7 +610,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       }
 
     //give up
-    return NULL;
+    return defaultWidget;
   }
 
 /************************ListViews::slotFolderChanged(QListViewItem *i)----------->
@@ -638,7 +643,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   // find the widget
 
-  QWidget* newWidget;
+  CopasiWidget* newWidget;
   newWidget = findWidgetFromItem(item);
   std::string itemKey = item->folder()->getObjectKey();
 
@@ -647,22 +652,19 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   // leave old widget
   if (currentWidget)
-    if (currentWidget != bigWidget)
-      {
-        C_INT32 saveFolderID = item->folder()->getID();
-        ((CopasiWidget*)currentWidget)->leave();
-        item = (FolderListItem*)searchListViewItem(saveFolderID);
-        if (item)
-          folders->setCurrentItem(item);
-        else
-          {
-            item = (FolderListItem*)searchListViewItem(itemKey);
-            if (item)
-              folders->setCurrentItem(item);
-          }
-        //TODO: this might cause an update of datamodel and listviews.
-        //      so the current selection in the listview needs to be restored.
-      }
+    {
+      C_INT32 saveFolderID = item->folder()->getID();
+      currentWidget->leave();
+      item = (FolderListItem*)searchListViewItem(saveFolderID);
+      if (item)
+        folders->setCurrentItem(item);
+      else
+        {
+          item = (FolderListItem*)searchListViewItem(itemKey);
+          if (item)
+            folders->setCurrentItem(item);
+        }
+    }
 
   // enter new widget
   if (newWidget)
@@ -671,8 +673,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   // fall back
   if (!newWidget)
     {
-      newWidget = bigWidget;
-      bigWidget->setText("You Clicked On: " + item->folder()->folderName());
+      newWidget = defaultWidget;
+      //bigWidget->setText("You Clicked On: " + item->folder()->folderName()); //TODO
     }
 
   if (currentWidget != newWidget)
@@ -1175,242 +1177,30 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
   switch (objectType)
     {
-    case METABOLITE:
-      //  optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      //        steadystateWidget->update(objectType, action, key);
-      //        trajectoryWidget->update(objectType, action, key);
-      metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      compartmentsWidget->update(objectType, action, key);
-      compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      metabolitesWidget1->update(objectType, action, key);
-      metaboliteSymbols->update(objectType, action, key);
-      fixedMetaboliteSymbols->update(objectType, action, key);
-      compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      tableDefinition->update(objectType, action, key);
-      tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+    case ListViews::REACTION:
+      dataModel->scheduleMathModelUpdate();
       break;
-    case COMPARTMENT:
-      //  optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      //        steadystateWidget->update(objectType, action, key);
-      //        trajectoryWidget->update(objectType, action, key);
-      metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      compartmentsWidget->update(objectType, action, key);
-      compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      metabolitesWidget1->update(objectType, action, key);
-      metaboliteSymbols->update(objectType, action, key);
-      fixedMetaboliteSymbols->update(objectType, action, key);
-      compartmentsWidget1->update(objectType, action, key);
-      constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      tableDefinition->update(objectType, action, key);
-      tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    case REACTION:
-      //  optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      //        steadystateWidget->update(objectType, action, key);
-      //        trajectoryWidget->update(objectType, action, key);
-      metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      compartmentsWidget->update(objectType, action, key);
-      compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      metabolitesWidget1->update(objectType, action, key);
-      metaboliteSymbols->update(objectType, action, key);
-      //        fixedMetaboliteSymbols->update(objectType, action, key);
-      compartmentsWidget1->update(objectType, action, key);
-      constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      tableDefinition->update(objectType, action, key);
-      tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    case FUNCTION:
-      //  optimizationWidget->update(objectType, action, key);
-      //        scanWidget->update(objectType, action, key);
-      //        steadystateWidget->update(objectType, action, key);
-      //        trajectoryWidget->update(objectType, action, key);
-      //        metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      //        compartmentsWidget->update(objectType, action, key);
-      //        compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      functionWidget->update(objectType, action, key);
-      functionSymbols->update(objectType, action, key);
-      differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      //        metabolitesWidget1->update(objectType, action, key);
-      //        metaboliteSymbols->update(objectType, action, key);
-      //        fixedMetaboliteSymbols->update(objectType, action, key);
-      //        compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      //        tableDefinition->update(objectType, action, key);
-      //     tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    case MODEL:
-      //  optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      steadystateWidget->update(objectType, action, key);
-      trajectoryWidget->update(objectType, action, key);
-      metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      compartmentsWidget->update(objectType, action, key);
-      compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      functionWidget->update(objectType, action, key);
-      functionSymbols->update(objectType, action, key);
-      differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      metabolitesWidget1->update(objectType, action, key);
-      metaboliteSymbols->update(objectType, action, key);
-      fixedMetaboliteSymbols->update(objectType, action, key);
-      compartmentsWidget1->update(objectType, action, key);
-      constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      modelWidget->update(objectType, action, key);
-      tableDefinition1->update(objectType, action, key);
-      tableDefinition->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
+    default:;
+    }
 
-      // 1 == modelWidget
-      //reset active to the Model Widget,
+  if (currentWidget)
+    currentWidget->update(objectType, action, key);
+
+  //TODO: the following is special code to be executed when
+  //a model is created or loaded or imported.
+  //it needs to be reintroduced (?)
+  /*
       if (action == ADD)
         {
           folders->clearSelection();
           folders->setSelected(searchListViewItem(1), true);
           slotFolderChanged(searchListViewItem(1));
         }
-      break;
-    case STATE:
-      //  optimizationWidget->update(objectType, action, key);
-      //        scanWidget->update(objectType, action, key);
-      //        steadystateWidget->update(objectType, action, key);
-      //        trajectoryWidget->update(objectType, action, key);
-      metabolitesWidget->update(objectType, action, key);
-      reactionsWidget->update(objectType, action, key);
-      compartmentsWidget->update(objectType, action, key);
-      compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      //        differentialEquations->update(objectType, action, key);
-      reactionsWidget1->update(objectType, action, key);
-      metabolitesWidget1->update(objectType, action, key);
-      metaboliteSymbols->update(objectType, action, key);
-      fixedMetaboliteSymbols->update(objectType, action, key);
-      compartmentsWidget1->update(objectType, action, key);
-      constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //  modelWidget->update(objectType, action, key);
-      //        tableDefinition->update(objectType, action, key);
-      //  tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    case REPORT:
-      //  optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      steadystateWidget->update(objectType, action, key);
-      trajectoryWidget->update(objectType, action, key);
-      //        metabolitesWidget->update(objectType, action, key);
-      //        reactionsWidget->update(objectType, action, key);
-      //        compartmentsWidget->update(objectType, action, key);
-      //        compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      //        differentialEquations->update(objectType, action, key);
-      //        reactionsWidget1->update(objectType, action, key);
-      //        metabolitesWidget1->update(objectType, action, key);
-      //        metaboliteSymbols->update(objectType, action, key);
-      //        fixedMetaboliteSymbols->update(objectType, action, key);
-      //        compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      tableDefinition->update(objectType, action, key);
-      tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    case PLOT:
-      optimizationWidget->update(objectType, action, key);
-      scanWidget->update(objectType, action, key);
-      steadystateWidget->update(objectType, action, key);
-      trajectoryWidget->update(objectType, action, key);
-      //        metabolitesWidget->update(objectType, action, key);
-      //        reactionsWidget->update(objectType, action, key);
-      //        compartmentsWidget->update(objectType, action, key);
-      //        compartmentSymbols->update(objectType, action, key);
-      moietyWidget->update(objectType, action, key);
-      //        functionWidget->update(objectType, action, key);
-      //        functionSymbols->update(objectType, action, key);
-      //        differentialEquations->update(objectType, action, key);
-      //        reactionsWidget1->update(objectType, action, key);
-      //        metabolitesWidget1->update(objectType, action, key);
-      //        metaboliteSymbols->update(objectType, action, key);
-      //        fixedMetaboliteSymbols->update(objectType, action, key);
-      //        compartmentsWidget1->update(objectType, action, key);
-      //        constantSymbols->update(objectType, action, key);
-      moietyWidget1->update(objectType, action, key);
-      //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
-      //        modelWidget->update(objectType, action, key);
-      //  tableDefinition->update(objectType, action, key);
-      //  tableDefinition1->update(objectType, action, key);
-      plotWidget->update(objectType, action, key);
-      plotWidget1->update(objectType, action, key);
-      break;
-    default:
-      fatalError();
-    }
+  */
   return success;
 }
 
@@ -1423,7 +1213,7 @@ bool ListViews::commit()
 
   for (; it != ende; ++it)
     {
-      tmp = dynamic_cast<CopasiWidget *>((*it)->currentWidget);
+      tmp = (*it)->currentWidget;
       if (tmp && !tmp->leave()) success = false;
     }
 

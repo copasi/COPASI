@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/06 21:08:23 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 08:25:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,6 +60,7 @@ class CopasiWidget;
 class Folder;
 class PlotWidget1;
 class PlotWidget;
+class CopasiDefaultWidget;
 
 //*********************************************************************************
 
@@ -128,7 +129,7 @@ class ListViews : public QSplitter
   private:
     static DataModel* dataModel;
     QListViewItem* lastSelection;
-    QWidget* currentWidget;
+    CopasiWidget* currentWidget;
     std::string lastKey;
 
     static std::set<ListViews *> mListOfListViews;
@@ -156,7 +157,7 @@ class ListViews : public QSplitter
 
     //the widgets
     QListView *folders;
-    QMultiLineEdit *bigWidget;
+    //QMultiLineEdit *bigWidget;
 
     ScanWidget *scanWidget;
     inline ScanWidget* getScanWidget() const
@@ -199,6 +200,7 @@ class ListViews : public QSplitter
     OptimizationWidget *optimizationWidget;
     PlotWidget1 *plotWidget1;
     PlotWidget *plotWidget;
+    CopasiDefaultWidget *defaultWidget;
   };
 
 #endif
