@@ -14,7 +14,7 @@
 class CMathSymbol;
 
 /** @dia:pos -23.1584,-36.8607 */
-class CMathNode: public CCopasiNode
+class CMathNode: public CCopasiNode< CMathSymbol * >
   {
     // Operations:
   public:

@@ -14,118 +14,251 @@
  * implementation of nodes must be dereived from CCopasiNode for the tree 
  * to operate properly.
  */
-class CCopasiNode
-  {
-    // Attributes
-  private:
-    /**
-     * A pointer to the parent of the node.
-     */
-    CCopasiNode * mpParent;
+template < class Data >
+      class CCopasiNode
+    {
+      // Attributes
+    private:
+      /**
+       * The data of the node.
+       */
+      Data mData;
 
-    /**
-     * A pointer to the first child of the node.
-     */
-    CCopasiNode * mpChild;
+      /**
+       * A pointer to the parent of the node.
+       */
+      CCopasiNode< Data > * mpParent;
 
-    /**
-     * A pointer to the first sibbling of the node.
-     */
-    CCopasiNode * mpSibbling;
+      /**
+       * A pointer to the first child of the node.
+       */
+      CCopasiNode< Data > * mpChild;
 
-    // Operations
-  public:
-    /**
-     * Default constructor.
-     * @param CCopasiNode * pParent (default: NULL)
-     */
-    CCopasiNode(CCopasiNode * pParent = NULL);
+      /**
+       * A pointer to the first sibbling of the node.
+       */
+      CCopasiNode< Data > * mpSibbling;
 
-    /**
-     * Copy constructor.
-     * @param const CCopasiNode & src
-     */
-    CCopasiNode(const CCopasiNode & src);
+      // Operations
+    public:
+      /**
+       * Default constructor.
+       * @param CCopasiNode< Data > * pParent (default: NULL)
+       */
+      CCopasiNode(CCopasiNode< Data > * pParent = NULL):
+          mData(),
+          mpParent(pParent),
+          mpChild(NULL),
+          mpSibbling(NULL)
+      {}
 
-    /**
-     * Destructor.
-     * Note: Within a tree the parent of this node has to be corrected.
-     */
-    ~CCopasiNode();
+      /**
+       * Copy constructor.
+       * @param const CCopasiNode & src
+       */
+      CCopasiNode(const CCopasiNode< Data > & src):
+          mData(src.mData),
+          mpParent(src.mpParent),
+          mpChild(src.mpChild),
+          mpSibbling(src.mpSibbling)
+      {}
 
-    /**
-     * Retreive the parent of a Node.
-     * @return CCopasiNode * pParent
-     */
-    CCopasiNode * getParent();
+      /**
+       * Destructor.
+       * Note: Within a tree the parent of this node has to be corrected.
+       */
+      ~CCopasiNode()
+      {
+        CCopasiNode< Data > * pTmp = mpChild;
+        while (NULL)
+          {
+            pTmp = mpChild->getSibbling();
+            mpChild->setParent(NULL);
+            delete mpChild;
+          }
 
-    /**
-     * Add a child to a node.
-     * @param CCopasiNode * pChild
-     * @return bool Success
-     */
-    bool addChild(CCopasiNode * pChild,
-                  CCopasiNode * pAfter = NULL);
+        if (mpParent)
+          mpParent->removeChild(this);
+      }
 
-    /**
-     * Remove a child from a node.
-     * @param CCopasiNode * pChild
-     * @return bool Success
-     */
-    bool removeChild(CCopasiNode * pChild);
+      /**
+       * Retreive the data of the Node.
+       * @return Data & data
+       */
+    Data & getData() {return mData;}
 
-    /**
-     * Retreive the child of a node.
-     * @return CCopasiNode * pChild
-     */
-    CCopasiNode * getChild();
+      /**
+       * Retreive the data of the Node.
+       * @return const Data & data
+       */
+      const Data & getData() const {return mData;}
 
-    /**
-     * Add a sibbling to a node.
-     * If pAfter == this the sibbling will be inserted at the fornt of the list
-     * of sibblings.
-     * @param CCopasiNode * pSibbling
-     * @param CCopasiNode * pAfter 
-     *        (default: NULL appended to the list of sibblings)
-     * @return bool Success
-     */
-    bool addSibbling(CCopasiNode * pSibbling,
-                     CCopasiNode * pAfter = NULL);
+      /**
+       * Set the data of the Node.
+       * @param const Data & data
+       * @return bool success
+       */
+      bool setData(const Data & data)
+      {
+        mData = data;
+        return true;
+      }
 
-    /**
-     * Remove a siblling.
-     * @param CCopasiNode * pSibbling
-     * @return bool Success
-     */
-    bool removeSibbling(CCopasiNode * pSibbling);
+      /**
+       * Retreive the parent of a Node.
+       * @return CCopasiNode< Data > * pParent
+       */
+      CCopasiNode< Data > * getParent() {return mpParent;}
 
-    /**
-     * Retreive the sibbling of a node.
-     * @return CCopasiNode * pSibbling
-     */
-    CCopasiNode * getSibbling();
+      /**
+       * Add a child to a node.
+       * @param CCopasiNode< Data > * pChild
+       * @return bool Success
+       */
+      bool addChild(CCopasiNode< Data > * pChild,
+                    CCopasiNode< Data > * pAfter = NULL)
+      {
+        if (!pChild) return false;           // Nothing to insert.
 
-  protected:
-    /**
-     * Set the parent of a Node.
-     * @param CCopasiNode * pParent
-     * @return bool Success
-     */
-    bool setParent(CCopasiNode * pParent);
+        if (pAfter == this)
+          {
+            pChild->setSibbling(mpChild);
+            mpChild = NULL;
+          }
 
-    /**
-     * Set the child of a node.
-     * @param CCopasiNode * pChild
-     * @return bool Success
-     */
-    bool setChild(CCopasiNode * pChild);
+        if (mpChild)
+          return mpChild->addSibbling(pChild, pAfter);
 
-    /**
-     * Set the sibbling of a node.
-     * @param CCopasiNode * pSibbling
-     * @return bool Success
-     */
-    bool setSibbling(CCopasiNode * pSibbling);
-  };
+        mpChild = pChild;
+        mpChild->setParent(this);
+
+        return true;
+      }
+
+      /**
+       * Remove a child from a node.
+       * @param CCopasiNode< Data > * pChild
+       * @return bool Success
+       */
+      bool removeChild(CCopasiNode< Data > * pChild)
+      {
+        if (!pChild) return false;           // Nothing to remove.
+
+        if (mpChild != pChild)
+          return mpChild->removeSibbling(pChild);
+
+        mpChild = mpChild->getSibbling();
+        return true;
+      }
+
+      /**
+       * Retreive the child of a node.
+       * @return CCopasiNode< Data > * pChild
+       */
+    CCopasiNode< Data > * getChild() {return mpChild;}
+
+      /**
+       * Add a sibbling to a node.
+       * If pAfter == this the sibbling will be inserted at the fornt of the list
+       * of sibblings.
+       * @param CCopasiNode< Data > * pSibbling
+       * @param CCopasiNode< Data > * pAfter 
+       *        (default: NULL appended to the list of sibblings)
+       * @return bool Success
+       */
+      bool addSibbling(CCopasiNode< Data > * pSibbling,
+                       CCopasiNode< Data > * pAfter = NULL)
+      {
+        if (!pSibbling) return false;        // Nothing to insert.
+
+        if (this == pAfter)
+          {
+            pSibbling->setParent(mpParent);
+            pSibbling->setSibbling(mpSibbling);
+            mpSibbling = pSibbling;
+            return true;
+          }
+
+        CCopasiNode * pTmp = this;
+        while (pTmp != pAfter && pTmp->getSibbling())
+          pTmp = pTmp->getSibbling();
+
+        if (pTmp == pAfter || pAfter == NULL)
+          return pTmp->addSibbling(pSibbling, pTmp);
+        else
+          return false;                      // Insertion point no found.
+      }
+
+      /**
+       * Remove a siblling.
+       * @param CCopasiNode< Data > * pSibbling
+       * @return bool Success
+       */
+      bool removeSibbling(CCopasiNode< Data > * pSibbling)
+      {
+        if (!pSibbling) return false;        // Nothing to remove.
+
+        if (this == pSibbling)
+          {
+            if (mpParent)
+              mpParent->removeChild(pSibbling);
+            else
+              return false;                  // Root can not be removed
+          }
+
+        CCopasiNode * pTmp = this;
+        CCopasiNode * pTmpSibbling = this->mpSibbling;
+
+        while (pTmpSibbling != pSibbling && pTmpSibbling != NULL)
+          {
+            pTmp = pTmpSibbling;
+            pTmpSibbling = pTmpSibbling->getSibbling();
+          }
+
+        if (pTmpSibbling)
+          return pTmp->setSibbling(pSibbling->getSibbling());
+        else
+          return false;                      // We did not find pSibbling.
+      }
+
+      /**
+       * Retreive the sibbling of a node.
+       * @return CCopasiNode< Data > * pSibbling
+       */
+    CCopasiNode< Data > * getSibbling() {return mpSibbling;}
+
+    protected:
+      /**
+       * Set the parent of a Node.
+       * @param CCopasiNode< Data > * pParent
+       * @return bool Success
+       */
+      bool setParent(CCopasiNode< Data > * pParent)
+      {
+        mpParent = pParent;
+        return true;
+      }
+
+      /**
+       * Set the child of a node.
+       * @param CCopasiNode< Data > * pChild
+       * @return bool Success
+       */
+      bool setChild(CCopasiNode< Data > * pChild)
+      {
+        mpChild = pChild;
+        return true;
+      }
+      /**
+       * Set the sibbling of a node.
+       * @param CCopasiNode< Data > * pSibbling
+       * @return bool Success
+       */
+      bool setSibbling(CCopasiNode< Data > * pSibbling)
+      {
+        mpSibbling = pSibbling;
+        return true;
+      }
+    };
 
 #endif // COPASI_CCopasiNode

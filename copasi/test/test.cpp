@@ -437,11 +437,11 @@ C_INT32 TestReadSample(void)
 
 C_INT32 TestCopasiTree(void)
 {
-  CCopasiTree< CCopasiNode > * tree = new CCopasiTree< CCopasiNode >;
-  CCopasiTree< CCopasiNode >::iterator it;
-  CCopasiTree< CCopasiNode >::iterator end = tree->end();
+  CCopasiTree< CCopasiNode< void * > > * tree = new CCopasiTree< CCopasiNode< void * > >;
+  CCopasiTree< CCopasiNode< void * > >::iterator it;
+  CCopasiTree< CCopasiNode< void * > >::iterator end = tree->end();
 
-  CCopasiNode * n = new CCopasiNode[5];
+  CCopasiNode< void * > * n = new CCopasiNode< void * >[5];
 
   std::cout << tree->attachNode(&n[0]) << std::endl;
   std::cout << tree->attachNode(&n[1]) << std::endl;

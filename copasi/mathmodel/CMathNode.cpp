@@ -12,11 +12,11 @@
 #include "CMathSymbol.h"
 
 CMathNode::CMathNode():
-    CCopasiNode()
+    CCopasiNode< CMathSymbol * >()
 {}
 
 CMathNode::CMathNode(const CMathNode &src):
-    CCopasiNode(src)
+    CCopasiNode< CMathSymbol * >(src)
 {}
 
 CMathNode::~CMathNode() {}

@@ -123,17 +123,17 @@ template < class Node > class CCopasiTree
             Node * pastChildren = NULL;
 
             if (mCurrent->getSibbling())
-              pastChildren = mCurrent->getSibbling();
+              pastChildren = (Node *) mCurrent->getSibbling();
             else
               {
-                Node * pTmp = mCurrent->getParent();
+                Node * pTmp = (Node *) mCurrent->getParent();
 
                 while (pTmp)
                   {
-                    if ((pastChildren = pTmp->getSibbling()))
+                    if ((pastChildren = (Node *) pTmp->getSibbling()))
                       break;
 
-                    pTmp = pTmp->getParent();
+                    pTmp = (Node *) pTmp->getParent();
                   }
               }
             return pastChildren;
@@ -146,7 +146,7 @@ template < class Node > class CCopasiTree
           iterator & operator++()
           {
             if (mCurrent->getChild())
-              mCurrent = mCurrent->getChild();
+              mCurrent = (Node *) mCurrent->getChild();
             else
               mCurrent = pastChildren();
 
@@ -173,7 +173,7 @@ template < class Node > class CCopasiTree
        * Retreive an iterator pointing to the beginning of the tree
        * @return iterator begin
        */
-      iterator begin() {return iterator(*mList.begin());}
+      iterator begin() {return iterator(mpRoot);}
 
       /**
        * Retreive an iterator pointing beyond the end of the tree
@@ -211,7 +211,17 @@ template < class Node > class CCopasiTree
         else
           Success = mpRoot->addChild(pNode, pAfterChild);
 
-        if (Success) mList.insert(pNode);
+        if (Success)
+          {
+            iterator it = pNode;
+            iterator end = it.pastChildren();
+
+            for (; it != end; ++it)
+              {
+                std::cout << "adding: " << &*it << std::endl;
+                mList.insert(&*it);
+              }
+          }
 
         return Success;
       }
@@ -266,7 +276,14 @@ template < class Node > class CCopasiTree
         if (!pNode) return false;          // Nothing to do.
         if (pNode == mpRoot) return false; // Root must not be detached
 
-        mList.erase(pNode);
+        iterator it = pNode;
+        iterator end = it.pastChildren();
+
+        for (; it != end; ++it)
+          {
+            std::cout << "erasing: " << &*it << std::endl;
+            mList.erase(&*it);
+          }
 
         return pNode->getParent()->removeChild(pNode);
       }
