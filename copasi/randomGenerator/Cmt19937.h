@@ -50,7 +50,7 @@
 #ifndef COPASI_Cmt19937
 #define COPASI_Cmt19937
 
-/*** Class definition for R250 random number generator ***/
+#define Cmt19937_N 624
 
 class Cmt19937 : private CRandom
   {
@@ -59,6 +59,11 @@ class Cmt19937 : private CRandom
 
     // Attributes
   private:
+    unsigned C_INT32 mState[Cmt19937_N]; /* the array for the state vector  */
+
+    C_INT mLeft; // = 1;
+
+    unsigned C_INT32 *mNext;
 
     // Operations
   private:
@@ -69,6 +74,8 @@ class Cmt19937 : private CRandom
      */
     Cmt19937(unsigned C_INT32 seed);
 
+    void next_state();
+
   public:
     /**
      * The destructor.
@@ -78,7 +85,6 @@ class Cmt19937 : private CRandom
     /**
      * Initialize or reinitialize the random number generator with 
      * the given seed.
-     * Note: seed = 12345 gives the default initilization as in W. L. Maier code
      * @param unsigned C_INT32 seed (default system seed)
      */
     void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed());
@@ -99,15 +105,15 @@ class Cmt19937 : private CRandom
      * Get a random number in 0 <= n <= min (max, Modulus)
      * @param const unsigned C_INT32 & max
      * @return const unsigned C_INT32 & random
-     */
-    const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max);
+     */ 
+    // const unsigned C_INT32 & getRandomU(const unsigned C_INT32 & max);
 
     /**
      * Get a random number in 0 <= n <= min (max, (Modulus & 0x7ffffff))
      * @param const C_INT32 & max
      * @return const C_INT32 & random
-     */
-    const C_INT32 & getRandomS(const C_INT32 & max);
+     */ 
+    // const C_INT32 & getRandomS(const C_INT32 & max);
 
     /**
      * Produces a uniformly distributed random number in 0 <= x <= 1.
@@ -128,6 +134,9 @@ class Cmt19937 : private CRandom
      */
     const C_FLOAT64 & getRandomOO();
 
-  private:
+    void init_by_array(unsigned C_INT32 init_key[],
+                       unsigned C_INT32 key_length);
+
+    C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
   };
 #endif // COPASI_Cmt19937

@@ -78,7 +78,7 @@ class CRandom
      * @param const C_INT32 & seed (default system generated seed)
      * @return CRandom * randomGenerator
      */
-    static CRandom * createGenerator(CRandom::Type type,
+    static CRandom * createGenerator(CRandom::Type type = CRandom::mt19937,
                                      unsigned C_INT32 seed = 0);
 
     /**

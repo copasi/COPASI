@@ -26,12 +26,12 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
       break;
 
     case mt19937:
-      //      RandomGenerator = new Cmt19937(seed);
+      RandomGenerator = new Cmt19937(seed);
       RandomGenerator->mType = type;
       break;
 
     default:
-      //      RandomGenerator = new Cmt19937(seed);
+      RandomGenerator = new Cmt19937(seed);
       RandomGenerator->mType = type;
       break;
     }

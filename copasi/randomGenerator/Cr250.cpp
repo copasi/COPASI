@@ -13,7 +13,7 @@
  *  article in DDJ referenced below.)
  *
  * HISTORY...
- *               Sep 02: Converted to c++ class by Stefan Hoops
+ *  Sep 02: Converted to c++ class by Stefan Hoops
  *  Sep 92: Number returned by dr250() is in range [0,1) instead
  *   of [0,1], so for example a random angle in the
  *   interval [0, 2*PI) can be calculated
