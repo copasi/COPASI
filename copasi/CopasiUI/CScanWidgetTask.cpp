@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:50 $
+   $Date: 2005/02/27 20:22:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Di Feb 22 15:03:01 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.1 2005/02/22 15:54:50 ssahle Exp $)
+ ** Created: Do Feb 24 23:35:51 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.2 2005/02/27 20:22:57 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,7 +41,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   CScanWidgetTaskLayout = new QVBoxLayout(this, 5, 6, "CScanWidgetTaskLayout");
 
   frame = new QFrame(this, "frame");
-  frame->setPaletteBackgroundColor(QColor(197, 201, 249));
+  frame->setPaletteBackgroundColor(QColor(191, 236, 183));
   frame->setFrameShape(QFrame::StyledPanel);
   frame->setFrameShadow(QFrame::Raised);
   frameLayout = new QVBoxLayout(frame, 6, 6, "frameLayout");
@@ -57,6 +57,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, WFlags fl)
   layout1->addWidget(comboType);
 
   buttonEdit = new QToolButton(frame, "buttonEdit");
+  buttonEdit->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth()));
   layout1->addWidget(buttonEdit);
   spacer2 = new QSpacerItem(21, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   layout1->addItem(spacer2);

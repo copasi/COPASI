@@ -28,9 +28,9 @@
             </property>
             <property name="paletteBackgroundColor">
                 <color>
-                    <red>197</red>
-                    <green>201</green>
-                    <blue>249</blue>
+                    <red>191</red>
+                    <green>236</green>
+                    <blue>183</blue>
                 </color>
             </property>
             <property name="frameShape">
@@ -102,6 +102,14 @@
                         <widget class="QToolButton">
                             <property name="name">
                                 <cstring>buttonEdit</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="text">
                                 <string>...</string>

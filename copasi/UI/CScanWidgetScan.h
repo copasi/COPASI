@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/24 16:40:11 $
+   $Date: 2005/02/27 20:22:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetScan.ui'
  **
- ** Created: Do Feb 24 12:57:43 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.2 2005/02/24 16:40:11 ssahle Exp $)
+ ** Created: Do Feb 24 23:25:10 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.3 2005/02/27 20:22:57 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

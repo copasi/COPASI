@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetScan.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/24 16:40:11 $
+   $Date: 2005/02/27 20:22:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetScan.ui'
  **
- ** Created: Do Feb 24 12:57:47 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.2 2005/02/24 16:40:11 ssahle Exp $)
+ ** Created: Do Feb 24 23:25:21 2005
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.3 2005/02/27 20:22:57 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,7 +41,7 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent, const char* name, WFlags fl)
   CScanWidgetScanLayout = new QGridLayout(this, 1, 1, 5, 6, "CScanWidgetScanLayout");
 
   frame = new QFrame(this, "frame");
-  frame->setPaletteBackgroundColor(QColor(204, 249, 196));
+  frame->setPaletteBackgroundColor(QColor(207, 206, 249));
   frame->setFrameShape(QFrame::StyledPanel);
   frame->setFrameShadow(QFrame::Raised);
   frameLayout = new QVBoxLayout(frame, 6, 6, "frameLayout");
@@ -55,6 +55,7 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent, const char* name, WFlags fl)
   layout1->addItem(spacer1, 0, 1);
 
   labelTitle = new QLabel(frame, "labelTitle");
+  labelTitle->setAlignment(int(QLabel::WordBreak | QLabel::AlignTop));
 
   layout1->addMultiCellWidget(labelTitle, 0, 1, 0, 0);
 

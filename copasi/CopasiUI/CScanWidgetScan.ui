@@ -28,9 +28,9 @@
             </property>
             <property name="paletteBackgroundColor">
                 <color>
-                    <red>204</red>
-                    <green>249</green>
-                    <blue>196</blue>
+                    <red>207</red>
+                    <green>206</green>
+                    <blue>249</blue>
                 </color>
             </property>
             <property name="frameShape">
@@ -88,6 +88,9 @@
                             </property>
                             <property name="text">
                                 <string>&lt;h2&gt;Scan&lt;/h2&gt;</string>
+                            </property>
+                            <property name="alignment">
+                                <set>WordBreak|AlignTop</set>
                             </property>
                         </widget>
                         <widget class="QLineEdit" row="1" column="2">

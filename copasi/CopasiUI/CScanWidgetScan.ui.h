@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetScan.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/24 16:40:11 $
+   $Date: 2005/02/27 20:22:57 $
    End CVS Header */
 
 /****************************************************************************
@@ -35,6 +35,7 @@ void CScanWidgetScan::init()
 
 void CScanWidgetScan::slotChooseObject()
 {
+  CCopasiObject* tmpObject = mpObject;
   // open a selection dialog with single selection mode
   CCopasiSelectionDialog* browseDialog = new CCopasiSelectionDialog(this);
   browseDialog->setModel(mpModel);
@@ -49,7 +50,20 @@ void CScanWidgetScan::slotChooseObject()
     {
       mpObject = selection->at(0);
       if (mpObject)
-        lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
+        {
+          lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
+
+          if (mpObject != tmpObject)
+            {
+              //TODO: init min and max
+              if (mpObject->isValueDbl())
+                {
+                  C_FLOAT64 value = *(C_FLOAT64*)mpObject->getReference();
+                  lineEditMin->setText(QString::number(value*0.5));
+                  lineEditMax->setText(QString::number(value*2));
+                }
+            }
+        }
       else
         lineEditObject->setText("");
     }
