@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/05 19:55:48 $
+   $Author: gasingh $ 
+   $Date: 2004/02/26 00:37:52 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1778,8 +1778,9 @@ bool CModel::removeMetabolite(const std::string & key)
 
   mMetabolites.remove(index);
 
+  pdelete(pMetabolite);
+
   compile();
-  //pdelete(pMetabolite);
 
   return true;
 }
@@ -1829,8 +1830,8 @@ bool CModel::removeCompartment(const std::string & key)
 
   mCompartments.CCopasiVector< CCompartment >::remove(index);
 
-  //pdelete(pCompartment);
   compile();
+
   return true;
 }
 
@@ -1879,7 +1880,6 @@ bool CModel::removeReaction(const std::string & key)
 
   mSteps.CCopasiVector< CReaction >::remove(index);
 
-  //pdelete(pReaction);
   compile();
 
   return true;

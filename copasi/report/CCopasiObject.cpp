@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/12/04 17:37:00 $
+   $Author: gasingh $ 
+   $Date: 2004/02/26 00:37:53 $
    End CVS Header */
 
 /**
@@ -110,28 +110,19 @@ const std::string CCopasiObject::getObjectUniqueName() const
 
 bool CCopasiObject::setObjectName(const std::string & name)
 {
-  bool success = true;
-  if (name == mObjectName) return success;
+  if (name == mObjectName) return true;
 
-  /* In case something goes wrong. */
-  std::string OldName = mObjectName;
-
-  if (mpObjectParent)
+  if (mpObjectParent && mpObjectParent->isNameVector())
     {
-      mpObjectParent->remove(this);
+      CCopasiObjectName NewObject = getObjectType() + "=" + name;
 
-      mObjectName = name;
-      if (!mpObjectParent->add(this))
-        {
-          mObjectName = OldName;
-          mpObjectParent->add(this);
-          success = false;
-        }
+      if (mpObjectParent->getObject(NewObject))
+        return false;
     }
-  else
-    mObjectName = name;
 
-  return success;
+  mObjectName = name;
+
+  return true;
 }
 
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}

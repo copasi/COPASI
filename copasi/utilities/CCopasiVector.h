@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/02/25 22:31:16 $
+   $Date: 2004/02/26 00:37:53 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -88,6 +88,8 @@ template < class CType > class CCopasiVector:
             if ((*it)->getObjectParent() == this)
               {
                 (*it)->cleanup();
+                CCopasiContainer::remove(*it);
+                (*it)->setObjectParent(NULL);
                 delete(*it);
                 *it = NULL;
               }
@@ -150,13 +152,13 @@ template < class CType > class CCopasiVector:
               {
                 (*Target)->cleanup();
                 delete *Target;
-                *Target = NULL;
               }
             else
-              CCopasiContainer::remove(*Target);
+              {
+                CCopasiContainer::remove(*Target);
+                erase(Target, Target + 1);
+              }
           }
-
-        erase(Target, Target + 1);
       }
 
       virtual bool remove(CCopasiObject * pObject)
@@ -166,16 +168,7 @@ template < class CType > class CCopasiVector:
         assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
-          {
-            if ((*Target)->getObjectParent() == this)
-              {
-                (*Target)->cleanup();
-                delete *Target;
-                *Target = NULL;
-              }
-            else
-              CCopasiContainer::remove(*Target);
-          }
+          CCopasiContainer::remove(*Target);
 
         erase(Target, Target + 1);
 
@@ -206,14 +199,25 @@ template < class CType > class CCopasiVector:
        * @return const CCopasiObject * object
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
-        {return (CCopasiObject *) (*this)[name.getIndex()];}
+        {
+          C_INT32 Index = name.getIndex();
 
+          if (-1 < Index && Index < size())
+            {
+              CCopasiObject * pObject = *(begin() + Index);
+
+              if (name.getObjectType() == pObject->getObjectType())
+                return pObject;
+            }
+
+          return NULL;
+        }
       /**
       *  Retrieves the size of the vector
       *  @return "unsigned C_INT32" size
       */
       virtual unsigned C_INT32 size() const
-        {return ((std::vector< CType * > *)this)->size();}
+      {return ((std::vector< CType * > *)this)->size();}
 
       /**
        *  Resizes the vector
@@ -251,8 +255,9 @@ template < class CType > class CCopasiVector:
                   if ((*Target)->getObjectParent() == this)
                     {
                       (*Target)->cleanup();
+                      CCopasiContainer::remove(*Target);
+                      (*Target)->setObjectParent(NULL);
                       delete *Target;
-                      *Target = NULL;
                     }
                   else
                     CCopasiContainer::remove(*Target);
@@ -327,8 +332,9 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
         ((std::vector< CType * > *)this)->resize(size);
 
         iterator Target = begin();
+        for (i = 0; i < size; i++, Target++)*Target = NULL;
 
-        for (i = 0; i < size; i++, Target++)
+        for (i = 0, Target = begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
@@ -430,8 +436,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       /**
        *
        */
-      virtual void remove
-      (const std::string & name)
+      virtual void remove(const std::string & name)
       {
         unsigned C_INT32 Index = getIndex(name);
 
@@ -488,7 +493,18 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
-      {return (CCopasiObject *) (*this)[name.getName()];}
+        {
+          C_INT32 Index = getIndex(name.getName());
+
+          if (Index == -1) return NULL;
+
+          CCopasiObject * pObject = *(begin() + Index);
+
+          if (name.getObjectType() == pObject->getObjectType())
+            return pObject;
+
+          return NULL;
+        }
 
       /**
        *
@@ -499,7 +515,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           const_iterator Target = begin();
 
           for (i = 0; i < imax; i++, Target++)
-            if ((*Target)->getName() == name) return i;
+            if (*Target && (*Target)->getName() == name) return i;
 
           return C_INVALID_INDEX;
         }
@@ -556,8 +572,9 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
         ((std::vector< CType * >*)this)->resize(size);
 
         iterator Target = begin();
+        for (i = 0; i < size; i++, Target++) *Target = NULL;
 
-        for (i = 0; i < size; i++, Target++)
+        for (i = 0, Target = begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
