@@ -62,8 +62,8 @@ bool CFluxScore::operator <(const CFluxScore & rhs) const
     lhsScore = &mScore[i];
       rhsScore = &rhs.mScore[i];
 
-      if (*lhsScore != (*lhsScore & *rhsScore)) return FALSE;
+      if (*lhsScore != (*lhsScore & *rhsScore)) return false;
     }
 
-  return TRUE;
+  return true;
 }

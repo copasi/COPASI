@@ -101,16 +101,6 @@ extern std::ofstream DebugFile;
 # define DESTRUCTOR_TRACE
 #endif
 
-#ifdef TRUE
-# undef TRUE
-#endif
-#define TRUE 1
-
-#ifdef FALSE
-# undef FALSE
-#endif
-#define FALSE 0
-
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}
 #define pdelete(p) {if (p) {delete p; p = NULL;}}

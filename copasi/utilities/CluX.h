@@ -78,7 +78,7 @@ template <class Matrix, class Subscript>
     for (j = 0; j < minMN; j++)
       {
         // find pivot in column j and  test for singularity.
-        while (TRUE)
+        while (true)
           {
             jp = j;
             t = fabs(A(j, j));

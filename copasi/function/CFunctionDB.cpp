@@ -231,24 +231,24 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
   for (i = 0; i < imax; i++)
     {
-      Suitable = TRUE;
+      Suitable = true;
       pFunction = mLoadedFunctions[i];
 
       if (reversible != TriUnspecified &&
           reversible != pFunction->isReversible())
-        Suitable = FALSE;
+        Suitable = false;
 
       try
         {
           UsageRange = pFunction->getUsageDescriptions()["SUBSTRATES"];
 
           if (!UsageRange->isInRange(noSubstrates))
-            Suitable = FALSE;
+            Suitable = false;
 
           UsageRange = pFunction->getUsageDescriptions()["PRODUCTS"];
 
           if (!UsageRange->isInRange(noProducts))
-            Suitable = FALSE;
+            Suitable = false;
         }
 
       catch (CCopasiException Exception)
@@ -256,7 +256,7 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
           if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
             throw Exception;
           else
-            Suitable = FALSE;
+            Suitable = false;
         }
 
       if (Suitable)

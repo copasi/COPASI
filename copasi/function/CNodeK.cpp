@@ -396,9 +396,9 @@ C_INT16 CNodeK::isIdentifier() const
   case N_PRODUCT:
   case N_MODIFIER:
   case N_KCONSTANT:
-    return TRUE;
+    return true;
   default:
-    return FALSE;
+    return false;
   }
 }
 

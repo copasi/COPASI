@@ -17,8 +17,8 @@
 enum TriLogic
 {
   TriUnspecified = -1,
-  TriFalse = FALSE,
-  TriTrue = TRUE
+  TriFalse = 0,
+  TriTrue = 1
 };
 
 class CFunction

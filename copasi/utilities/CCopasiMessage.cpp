@@ -198,7 +198,7 @@ void CCopasiMessage::lineBreak()
   std::string Replace("\n>                           < ");
   std::string::size_type pos = 0;
 
-  while (TRUE)
+  while (true)
     {
       pos = mText.find(Search, pos);
 

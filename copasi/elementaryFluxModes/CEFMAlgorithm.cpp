@@ -30,7 +30,7 @@ bool CEFMAlgorithm::calculate(const std::vector < std::vector < C_FLOAT64 > > & 
                               const unsigned C_INT32 &reversibleNumber,
                               std::vector < CFluxMode > & fluxModes)
 {
-  bool Success = TRUE;
+  bool Success = true;
   unsigned C_INT32 Step, MaxSteps = stoi[0].size();
 
   /* initialize the current tableu matrix */

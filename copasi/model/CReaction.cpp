@@ -27,7 +27,7 @@ CReaction::CReaction()
   CONSTRUCTOR_TRACE;
   mFlux = 0.0;
   mScaledFlux = 0.0;
-  mReversible = TRUE;
+  mReversible = true;
   mFunction = NULL;
   mScalingFactor = &mDefaultScalingFactor;
 }
@@ -55,7 +55,7 @@ CReaction::CReaction(const std::string & name)
   mName = name;
   mFlux = 0.0;
   mScaledFlux = 0.0;
-  mReversible = TRUE;
+  mReversible = true;
   mFunction = NULL;
   mScalingFactor = &mDefaultScalingFactor;
 }
@@ -423,7 +423,7 @@ const C_FLOAT64 & CReaction::getScaledFlux() const
 
 bool CReaction::isReversible() const
 {
-  return (mReversible == TRUE);
+  return (mReversible == true);
 }
 
 void CReaction::setName(const std::string & name)

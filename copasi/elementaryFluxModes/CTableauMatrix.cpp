@@ -115,7 +115,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
 
   /* Check whether we have already better lines */
   for (i = mLine.begin(); i != mLine.end(); i++)
-    if ((*i)->getScore() < src->getScore()) return FALSE;
+    if ((*i)->getScore() < src->getScore()) return false;
 
   i = mLine.begin();
   /* Check whether the new line scores better than existing lines */
@@ -140,7 +140,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
     else
       i++;
 
-  return TRUE;
+  return true;
 }
 
 #ifdef XXXX

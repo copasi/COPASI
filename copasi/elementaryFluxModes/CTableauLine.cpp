@@ -37,10 +37,10 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
   unsigned C_INT32 i, imax = src1.mReaction.size();
   unsigned C_INT32 j, jmax = src2.mFluxMode.size();
 
-  if (src1.mReversible == FALSE || src2.mReversible == FALSE)
-    mReversible = FALSE;
+  if (src1.mReversible == false || src2.mReversible == false)
+    mReversible = false;
   else
-    mReversible = TRUE;
+    mReversible = true;
 
   for (i = 1, mReaction.resize(imax); i < imax; i++)
     mReaction[i] = m1 * src1.mReaction[i] + m2 * src2.mReaction[i];

@@ -71,14 +71,14 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
 
   // Get the current line
 
-  while (TRUE)
+  while (true)
     {
       Line.erase();
 
       // Read a line form the input buffer
       mLineNumber++;
 
-      while (TRUE)
+      while (true)
         {
           mBuffer.read(c, 1);
 
@@ -182,14 +182,14 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
     {
       Value.erase();
 
-      while (TRUE)
+      while (true)
         {
           Line.erase();
 
           // Read a line form the input buffer
           mLineNumber++;
 
-          while (TRUE)
+          while (true)
             {
               mBuffer.read(c, 1);
 
@@ -268,7 +268,7 @@ C_INT32 CReadConfig::initInputBuffer()
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
                    mFilename.c_str());
 
-  while (TRUE)
+  while (true)
     {
       File.read(c, 1);
 
