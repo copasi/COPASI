@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 19:05:48 $
+   $Date: 2003/10/17 12:57:09 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -166,16 +166,29 @@ void CopasiUI3Window::newDoc()
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen()
 {
-  gpsFile = QFileDialog::getOpenFileName(
-              QString::null, "GPS Files (*.gps)",
-              this, "open file dialog",
-              "Choose a file");
+  QString newFile;
+
+  newFile = QFileDialog::getOpenFileName(QString::null, "GPS Files (*.gps)",
+                                         this, "open file dialog",
+                                         "Choose a file");
   // gives the file information to the datamodel to handle it
 
-  if (dataModel && gpsFile)
+  if (dataModel && newFile)
     {
+      if (dataModel->getModel())
+        {
+          ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+                            dataModel->getModel()->getKey());
+
+          if (gpsFile) slotFileSave();
+          else slotFileSaveAs();
+        }
+
+      gpsFile = newFile;
+
       dataModel->loadModel((const char *)gpsFile.utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
+      ListViews::notify(ListViews::MODEL, ListViews::ADD,
+                        dataModel->getModel()->getKey());
 
       if (!bobject_browser_open)
         file->setItemEnabled(nobject_browser, true);
