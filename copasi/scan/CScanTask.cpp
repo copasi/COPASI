@@ -79,7 +79,6 @@ void CScanTask::process(bool bSteadyStateTask, bool bTrajectoryTask)
   if (i >= 0)
     // execute many simulations
     mpMethod->scan(i, true, bSteadyStateTask, bTrajectoryTask);
-  mpMethod->simulate(bSteadyStateTask, bTrajectoryTask);
 
   return;
 }
