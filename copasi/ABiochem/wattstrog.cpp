@@ -68,12 +68,12 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l2], l2, modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l2], l2, modf, 1.0e-3, 1.0);
         }
       gene[i]->setRate(1.0);
       gene[i]->setDegradationRate(1.0);
@@ -111,7 +111,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l], l, modf, 1.0, 1.0);
+              gene[j]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
             }
           // check if we rewire the l2 link
           if (dr250() < r)
@@ -135,7 +135,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[j]->addModifier(gene[l2], l2, modf, 1.0, 1.0);
+              gene[j]->addModifier(gene[l2], l2, modf, 1.0e-3, 1.0);
             }
         }
     }

@@ -74,7 +74,7 @@ void MakeGeneNetwork(C_INT32 n,
           else
             modf = 0;
           // gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
-          gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
         }
       // gene[i]->setRate(dr250()*9.99 + 1e-2);
       // gene[i]->setDegradationRate(gene[i]->getRate()*(dr250()*5.83 + 0.17));
@@ -100,7 +100,7 @@ void MakeGeneNetwork(C_INT32 n,
       else
         modf = 0;
       // gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
-      gene[j]->addModifier(gene[l], l, modf, 1.0, 1.0);
+      gene[j]->addModifier(gene[l], l, modf, 1.0e-3, 1.0);
     }
   sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld total input connections.\n\nCreated automatically by the A-Biochem system", n, k);
 }
