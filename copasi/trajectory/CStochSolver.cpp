@@ -23,13 +23,14 @@ void CStochSolver::initialize(CModel *model)
 {
     if (mMethodType == CTrajectory::STOCH_NEXTREACTION)
     {
-      //        mMethod = new CStochNextReactionMethod(model);
+//        mMethod = new CStochNextReactionMethod(model);
     }
     else
     {
         mMethod = new CStochDirectMethod(model);
     }
     mMethod->initMethod();
+    cout << "Done initializing stochastic method\n";
 }
 
 CStochSolver::~CStochSolver() {cleanup();}
@@ -105,18 +106,19 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
         const_cast < CCopasiVector < CChemEqElement > & > (chemeq->getSubstrates());
     for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
-      // :TODO: getMultiplicity is not necessarily integer!
         num_ident = static_cast<C_INT32>( substrates[i]->getMultiplicity() );
+        cout << "Num ident = " << num_ident << endl;
         total_substrates += num_ident;
-      // :TODO: getNumber is not necessarily integer!
         number = static_cast<C_INT32> ( substrates[i]->getMetabolite().getNumber() );
         lower_bound = number - num_ident;
+        cout << "Number = " << number << "  Lower bound = " << lower_bound << endl;
+        substrate_factor = substrate_factor * pow(number, num_ident);
+        cout << "Substrate factor = " << substrate_factor << endl;
         while (number > lower_bound)
         {
             amu *= number;
             number--;
         }
-        substrate_factor *= pow(number, num_ident);
     }
     // We assume that all substrates are in the same compartment.
     // If there are no substrates, then volume is irrelevant. Otherwise,
@@ -125,15 +127,16 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
     {
         C_FLOAT64 volume = 
           substrates[0]->getMetabolite().getCompartment()->getVolume();
-        amu /= pow(volume, total_substrates-1);
+        amu = amu/pow(volume, total_substrates-1);
     }
     // rate_factor is the rate function divided by substrate_factor.
     // It would be more efficient if this was generated directly, since in effect we
     // are multiplying and then dividing by the same thing (substrate_factor)!
     C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
-    
+    cout << "Rate factor = " << rate_factor << endl;
     amu *= rate_factor;
     mAmu[index] = amu;
+    cout << "Index = " << index << "  Amu = " << amu << endl;
     return 0;
 }
     
@@ -158,8 +161,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
     }
 
     // Update the model to take into account the new particle numbers
-    /* :TODO: setConcentrations takes an array of particle numbers !!! */
-    // mModel->setConcentrations();
+    mModel->setConcentrations(mModel->getNumbers());
     return 0;
 }
 
@@ -324,15 +326,15 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
 set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
 {
     set<CMetab> *retset = new set<CMetab>;
-#if 0    // New way of doing this; supercedes bit #if'ed out
+//#if 0    // New way of doing this; supercedes bit #if'ed out
     // Get chemical equation balances
-    vector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+    CCopasiVector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
     for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
-        retset->insert(balances[i].getMetabolite());
+        retset->insert(balances[i]->getMetabolite());
     }
-#endif // 0
-//#if 0
+//#endif // 0
+#if 0
     // Get the reaction associated with this index
     CReaction *react = mModel->getReactions()[reaction_index];
     // Get the kinetic function associated with the reaction_index'th reaction in the model.
@@ -376,8 +378,8 @@ set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
             retset->insert(*pmetab);
         }
     }
+#endif // 0
     return retset;
-// #endif // 0
 }
 
 set<CMetab> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)

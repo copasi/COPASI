@@ -58,9 +58,9 @@ class CTrajectory
   C_INT32 mN;
 
   /**
-   * The maximum number of points allowed for stochastic simulations
+   * The maximum number of steps allowed for stochastic simulations
    */
-  C_INT32 mMaxPoints;
+  C_INT32 mMaxSteps;
 
   /**
    *  The start time point
@@ -186,6 +186,12 @@ class CTrajectory
    */
   void setStartingPoint(const C_FLOAT64 & time = 0,
                         const C_FLOAT64 * particleNumbers = NULL);
+
+  /**
+   * Set the maximum number of points for the stochastic simulation.
+   * @param max_points The maximum number of points
+   */
+  void setMaxSteps(C_INT32 max_points);
 
   /*
    * Set the end of time points

@@ -49,16 +49,20 @@ void CTrajectory::initialize()
   mY = mModel->getInitialNumbers();
   mStartTime = 0;
 
+  cout << "Method = " << mMethod << endl;
   switch (mMethod)
     {
-    case 1:
+    case CONTINUOUS_ODE:
       mODESolver = new CODESolver();
       mODESolver->initialize(* mModel, mY, mN, mMethod);
       break;
-    case 2:
+    case STOCH_DIRECT:
       // we're doing a stochastic simulation
+        cout << "In trajectory: performing a stochastic simulation\n";
       mStochSolver = new CStochSolver(mMethod);
+      cout << "Initializing the solver\n";
       mStochSolver->initialize(mModel);
+      break;
     default:
       fatalError();
     }
@@ -66,8 +70,8 @@ void CTrajectory::initialize()
   mOutInit = new COutputEvent(*this, 0);
   mOutPoint = new COutputEvent(*this, 1);
   mOutEnd = new COutputEvent(*this, 2);
-  if (mOutInit || mOutPoint || mOutEnd)
-    Copasi->OutputList.compile("Time-course output",mModel,this);
+//  if (mOutInit || mOutPoint || mOutEnd)
+//      Copasi->OutputList.compile("Time-course output",mModel,this);
 
   return;
 }
@@ -183,6 +187,11 @@ void CTrajectory::setStartingPoint(const C_FLOAT64 & time,
     mY = mModel->getInitialNumbers();
 }
 
+void CTrajectory::setMaxSteps(const C_INT32 max_steps)
+{
+    mMaxSteps = max_steps;
+}
+
 void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
 {
   mEndTime = aDouble;
@@ -241,18 +250,17 @@ void CTrajectory::process(ofstream &fout)
             mOutPoint->print(*this, Copasi->OutputList, fout);
         }
     }
-#ifdef XXXX
   else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
     {
       C_FLOAT64 time = 0;
       C_INT32 step = 0;
       while (step < mMaxSteps && time < mEndTime && time >= 0)
         {
-          time = mStochSolver->GetMethod()->DoStep(time);
+          time = mStochSolver->getStochMethod()->doStep(time);
+          cout << "Step: " << step << "       Time: " << time << endl;
           step++;
         }
     }
-#endif // XXXX
 
   if (mOutEnd &&!mOutPoint) mOutEnd->print(*this, Copasi->OutputList, fout);
 }

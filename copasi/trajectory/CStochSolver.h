@@ -187,7 +187,7 @@ class CStochMethod
    * @see mFail
    */
   C_INT32 updateSystemState(C_INT32 reaction_index);
-#if 0
+#if 0 // Because these are now done in one step
   /**
    * Determine the value of one of the cmu's
    * @param index The position in the vector of this value of Cmu
@@ -255,8 +255,6 @@ class CStochDirectMethod : public CStochMethod
  * reaction, and the priority queue is reordered so that the node
  * associated with this reaction occurs in the proper place.
  */
-
-//--------------NOT COMPLETE YET------------------------------------------------
 
 class CStochNextReactionMethod: public CStochMethod
 {
