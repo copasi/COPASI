@@ -54,7 +54,6 @@ C_INT32 TestLU();
 C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32 TestTrajectory(void);
 C_INT32 TestTrajectoryTask(void);
-C_INT32 TestStochDirectMethod(void);
 C_INT32 TestNewton(void);
 C_INT32 TestSSSolution(void);
 C_INT32 TestEigen(void);
@@ -113,13 +112,12 @@ int main(int argc, char *argv[])
       //      TestMetab();
       //      TestReadSample();
       //      TestNewton();
-      TestSSSolution();
+      // TestSSSolution();
       //YOHE: new test
-      //      TestOptimization();
+      //  TestOptimization();
       //      TestEigen();
       //      TestTrajectory();
-      //      TestTrajectoryTask();
-      //      TestStochDirectMethod();
+      TestTrajectoryTask();
       //      TestMoiety();
       //      TestKinFunction();
       //      TestMassAction();
@@ -134,11 +132,11 @@ int main(int argc, char *argv[])
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
-      //      TestCopasiObject();
+      //  TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
-      //      TestSpec2Model();
+      //     TestSpec2Model();
 
       //      TestElementaryFluxMode();
     }
@@ -454,7 +452,7 @@ C_INT32 TestTrajectory(void)
   Copasi->OutputList.save(outbuf);
 
   CTrajectoryTask traj;
-  // traj.setModel(&model);
+  //traj.setModel(&model);
   traj.load(inbuf);
   traj.save(outbuf);
   //  traj.initialize();
@@ -482,13 +480,27 @@ C_INT32 TestTrajectoryTask(void)
   model.compile();
   model.save(outbuf);
 
-  Copasi->OutputList.load(inbuf);
+  //Copasi->OutputList.load(inbuf);
+
+  COutput Output;
+  Output.resetConfiguration();
+  Output.setDynConfiguration(1);
+  Output.addDatum("Time-course output", "X(t)", 3, "X");
+  Output.addDatum("Time-course output", "Y(t)", 3, "Y");
+  Output.addDatum("Time-course output", "time", 14);
+  Copasi->OutputList.addOutput(Output);
+
   Copasi->OutputList.save(outbuf);
 
-  CTrajectoryTask traj;
+  //CTrajectoryTask traj;
+  //traj.load(inbuf);
+  //traj.save(outbuf);
 
-  traj.load(inbuf);
+  // define a task without loading
+  CTrajectoryTask traj(&model, 0, 1000, 2000, CTrajectoryMethod::stochastic);
   traj.save(outbuf);
+
+  outbuf.flush();
 
   ofstream output("output.txt");
   traj.initializeReporting(output);
@@ -1659,7 +1671,6 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 /* //-- commented out because of error...8/22
 =======
  
->>>>>>> 1.56
  
 C_INT32 TestDependencyGraph()
 {
@@ -1765,11 +1776,39 @@ C_INT32 TestSpec2Model()
   string filename = "./copasi/model/exampleinput";
   CSpec2Model specreader(filename);
   CModel *model;
-  // create a model
+
   model = specreader.createModel();
-  // Test that we read the input file correctly
-  specreader.printInput();
-  cout << "Done testing CSpec2Model\n";
+
+  //specreader.printInput();
+  //cout << "Done testing CSpec2Model\n";
+
+  string InputFile = "specreader_in.gps";
+  string OutputFile = "specreader_out.gps";
+
+  CReadConfig inbuf(InputFile);
+  CWriteConfig outbuf(OutputFile);
+
+  model->compile();
+  model->save(outbuf);
+
+  //Copasi->OutputList.load(inbuf);
+  //Copasi->OutputList.save(outbuf);
+
+  //CTrajectoryTask traj;
+  //traj.load(inbuf);
+  //traj.save(outbuf);
+
+  // define a task without loading
+  CTrajectoryTask traj(model, 0, 1000, 2000, CTrajectoryMethod::stochastic);
+  //traj.save(outbuf);
+
+  outbuf.flush();
+
+  ofstream output("output.txt");
+  traj.initializeReporting(output);
+  traj.process();
+  traj.cleanup();
+
   return 0;
 }
 
