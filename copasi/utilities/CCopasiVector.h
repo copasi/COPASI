@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:01:08 $
+   $Author: shoops $ 
+   $Date: 2004/07/06 17:41:29 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -200,7 +200,7 @@ template < class CType > class CCopasiVector:
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
-          unsigned C_INT32 Index = name.getIndex();
+          unsigned C_INT32 Index = name.getElementIndex();
 
           if (Index < size())
             {
@@ -495,7 +495,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {
-          C_INT32 Index = getIndex(name.getName(0));
+          C_INT32 Index = getIndex(name.getElementName(0));
           if (Index == -1) return NULL;
 
           CCopasiObject * pObject = *(begin() + Index);
@@ -508,7 +508,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
           std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
           std::cout << "  CN            " << name << std::endl;
-          std::cout << "  CN.getName(0) " << name.getName(0) << std::endl;
+          std::cout << "  CN.getName(0) " << name.getElementName(0) << std::endl;
           std::cout << "  Index         " << Index << std::endl;
           std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
           std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:24:58 $
+   $Author: shoops $ 
+   $Date: 2004/07/06 17:41:30 $
    End CVS Header */
 
 /**
@@ -68,9 +68,9 @@ std::string CCopasiObjectName::getObjectName() const
   }
 
 unsigned C_INT32
-CCopasiObjectName::getIndex(const unsigned C_INT32 & pos) const
+CCopasiObjectName::getElementIndex(const unsigned C_INT32 & pos) const
   {
-    std::string Index = getName(pos);
+    std::string Index = getElementName(pos);
     std::stringstream tmp(Index);
 
     unsigned C_INT32 index = C_INVALID_INDEX;
@@ -84,7 +84,8 @@ CCopasiObjectName::getIndex(const unsigned C_INT32 & pos) const
     return index;
   }
 
-std::string CCopasiObjectName::getName(const unsigned C_INT32 & pos) const
+std::string CCopasiObjectName::getElementName(const unsigned C_INT32 & pos,
+    const bool & unescape) const
   {
     CCopasiObjectName Primary = getPrimary();
 
@@ -96,8 +97,11 @@ std::string CCopasiObjectName::getName(const unsigned C_INT32 & pos) const
 
     if (open == std::string::npos || close == std::string::npos) return "";
 
-    return CCopasiObjectName::unescape(Primary.substr(open + 1,
-                                       close - open - 1));
+    if (unescape)
+      return CCopasiObjectName::unescape(Primary.substr(open + 1,
+                                         close - open - 1));
+
+    return Primary.substr(open + 1, close - open - 1);
   }
 
 std::string CCopasiObjectName::escape(const std::string & name)

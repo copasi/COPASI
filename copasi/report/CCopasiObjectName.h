@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:24:58 $
+   $Author: shoops $ 
+   $Date: 2004/07/06 17:41:30 $
    End CVS Header */
 
 /**
@@ -40,9 +40,10 @@ class CCopasiObjectName: public std::string
 
     std::string getObjectName() const;
 
-    unsigned C_INT32 getIndex(const unsigned C_INT32 & pos = 0) const;
+    unsigned C_INT32 getElementIndex(const unsigned C_INT32 & pos = 0) const;
 
-    std::string getName(const unsigned C_INT32 & pos /*= 0*/) const;
+    std::string getElementName(const unsigned C_INT32 & pos /*= 0*/,
+                               const bool & unescape = true) const;
 
     static std::string escape(const std::string & name);
 

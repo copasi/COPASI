@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/03 20:26:42 $
+   $Date: 2004/07/06 17:41:30 $
    End CVS Header */
 
 /**
@@ -98,7 +98,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 #endif
       (getObjectName() + cn,
        getObjectParent(),
-       mReference[cn.getIndex()],
+       mReference[cn.getElementIndex()],
        isValueBool() ? CCopasiObject::ValueBool :
        isValueInt() ? CCopasiObject::ValueInt :
        isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0
@@ -148,8 +148,8 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
 #endif
       (getObjectName() + cn,
        getObjectParent(),
-       mReference(cn.getIndex(),
-                  cn.getIndex(1)),
+       mReference(cn.getElementIndex(),
+                  cn.getElementIndex(1)),
        isValueBool() ? CCopasiObject::ValueBool :
        isValueInt() ? CCopasiObject::ValueInt :
        isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0);
