@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 09:55:52 $
+   $Date: 2004/10/06 09:44:20 $
    End CVS Header */
 
 /********************************************************
@@ -68,7 +68,7 @@ class SteadyStateWidget : public CopasiWidget
     QTable* parameterTable;
     QPushButton* bRunButton;
     QPushButton* cancelChange;
-    QPushButton* ExportFileButton;
+    //QPushButton* ExportFileButton;
     QPushButton* reportDefinitionButton;
 
   signals:
@@ -77,7 +77,7 @@ class SteadyStateWidget : public CopasiWidget
   public slots:
     virtual void CancelButtonClicked();
     virtual void CommitButtonClicked();
-    virtual void ExportToFileButtonClicked();
+    //virtual void ExportToFileButtonClicked();
     virtual void parameterValueChanged();
     //virtual void RunButtonChecked();
     virtual void runSteadyStateTask();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 09:55:52 $
+   $Date: 2004/10/06 09:44:19 $
    End CVS Header */
 
 /********************************************************
@@ -86,9 +86,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
 
-  ExportFileButton = new QPushButton(this, "ExportFileButton");
-  ExportFileButton->setText(trUtf8("Export To File"));
-  Layout2->addWidget(ExportFileButton);
+  //ExportFileButton = new QPushButton(this, "ExportFileButton");
+  //ExportFileButton->setText(trUtf8("Export To File"));
+  //Layout2->addWidget(ExportFileButton);
 
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
@@ -149,7 +149,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   // signals and slots connections
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runSteadyStateTask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
-  connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
+  //connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
   //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
   //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
@@ -162,8 +162,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   setTabOrder(taskStability, parameterTable);
   setTabOrder(parameterTable, bRunButton);
   setTabOrder(bRunButton, cancelChange);
-  setTabOrder(cancelChange, ExportFileButton);
-  setTabOrder(ExportFileButton, reportDefinitionButton);
+  //setTabOrder(cancelChange, ExportFileButton);
+  //setTabOrder(ExportFileButton, reportDefinitionButton);
 
   //  mSteadyStateTask = NULL;
   reportDefinitionButton->setEnabled(false);
@@ -334,23 +334,8 @@ void SteadyStateWidget::loadSteadyStateTask()
     bRunButton->setEnabled(true);*/
 }
 
-void SteadyStateWidget::ExportToFileButtonClicked()
-{
-  /*  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey))) return;
-    QString textFile = QFileDialog::getSaveFileName(
-                         QString::null, "TEXT Files (*.txt)",
-                         this, "save file dialog",
-                         "Choose a file");
-   
-    if (textFile)
-      {
-        textFile += ".txt";
-        CWriteConfig outbuf((const char *)textFile.utf8());
-        CSteadyStateTask* mSteadyStateTask =
-          dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
-        //      mSteadyStateTask->save(outbuf);
-      }*/
-}
+//void SteadyStateWidget::ExportToFileButtonClicked()
+//{}
 
 bool SteadyStateWidget::enter(const std::string & key)
 {
