@@ -11,16 +11,18 @@
 #include "copasi.h"
 #include "CCopasiObjectName.h"
 
+using std::string;
+
 CCopasiObjectName::CCopasiObjectName():
-    std::string()
+    string()
 {}
 
 CCopasiObjectName::CCopasiObjectName(const std::string & name):
-    std::string(name)
+    string(name)
 {}
 
 CCopasiObjectName::CCopasiObjectName(const CCopasiObjectName & src):
-    std::string(src)
+    string(src)
 {}
 
 CCopasiObjectName::~CCopasiObjectName() {}
@@ -59,7 +61,7 @@ std::string CCopasiObjectName::getObjectType() const
   CCopasiObjectName::getIndex(const unsigned C_INT32 & pos) const
     {
       std::string Index = getName(pos);
-      stringstream tmp(Index);
+      std::stringstream tmp(Index);
 
       unsigned C_INT32 index = C_INVALID_INDEX;
 

@@ -12,7 +12,7 @@
 #include <string>
 
 /** @dia:pos 21.4754,29.8662 */
-class CCopasiObjectName: public string
+class CCopasiObjectName: public std::string
   {
     // Operations
   public:
