@@ -19,7 +19,7 @@ class CModel;
  *
  * These are implemented as classes inheriting their common
  * functionality from the abstract CStochMethod base class, and which
- * provide the rest themselves.  The CStochSolver class is initialised
+ * provide the rest themselves.  The CStochSolver class is initialized
  * with a pointer to an instance of a particular concrete class, and
  * uses this class to do each iteration of the simulation.  This is
  * essentially an implementation of the Strategy pattern described in
@@ -31,11 +31,11 @@ class CModel;
  *
  * Prototypical use:
  *
- * CStochSolver solver(method, model, total_time, total_steps);
  * C_INT32 step = 0;
  * C_FLOAT32 time = 0;
  * C_INT32 retval = 0;
- * solver->GetMethod()->InitMethod();
+ * CStochSolver solver();
+ * solver.Initialize(method, model, total_time, total_steps);
  * while (step < total_steps && time < total_time && time >= 0)
  * {
  *     time = solver->GetMethod()->DoStep(time);
@@ -78,27 +78,18 @@ class CStochSolver
      */
     CStochSolver();
     /**
-     * The specified constructor.  This creates an instance of
-     * CStochSolver, initialised with the named method, maximum time
-     * and maximum step number.  
-     * @param method_type The type of the method.
-     * @param model A pointer to an instance of CModel 
-     * @param maxtime The maximum simulation time.
-     * @param maxsteps The maximum number of simulation steps.
-     */
-    CStochSolver(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
-    /**
      * The destructor
      */
     ~CStochSolver();
     /**
-     * This initialises the solver.
+     * This initializes the solver, creates an instance of the method, 
+     * and initializes that with the given model.
      * @param method_type The type of the method to use.
      * @param model A pointer to an instance of CModel 
      * @param maxtime The maximum time the simulation may take.
      * @param maxsteps The maximum number of steps in the simulation.
      */
-    void Initialise(std::string method, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
+    void Initialize(std::string method, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
     // Operations methods
     /**
      * Returns a pointer to the instance of the solver method.
@@ -110,15 +101,16 @@ class CStochSolver
 /**
  * CStochMethod is a parent to concrete solvers derived from it.
  *
- * These solvers do the actual work of the simulation. Each solver
- * maintains a list of propensities, a_mu, one for each reaction. These
- * propensities are dependent on the state of the system. i.e. the
- * numbers of each particle, and some or all must be updated after
- * each reaction. The propensities are then used to determine the next
- * step and the time at which it occurs, after which the particle
- * numbers are updated and the time is incremented. The particulars of
- * how the updating is done, and the determination of the next
- * reaction and its time are left to the inherited classes.
+ * These derived solvers do the actual work of the simulation. Each
+ * solver maintains a list of propensities, a_mu, one for each
+ * reaction. These propensities are dependent on the state of the
+ * system. i.e. the numbers of each particle, and some or all must be
+ * updated after each reaction. The propensities are then used to
+ * determine the next step and the time at which it occurs, after
+ * which the particle numbers are updated and the time is
+ * incremented. The particulars of how the updating is done, and the
+ * determination of the next reaction and its time are left to the
+ * derived classes.
  */
 
 class CStochMethod
