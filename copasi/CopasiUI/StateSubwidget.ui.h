@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:34:14 $
+   $Date: 2004/10/06 10:01:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -109,11 +109,45 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
       tableEigenValues->setText(i, 1, QString::number(eigen_i[i]));
     }
 
+  //JacobianX
+  const CMatrix< C_FLOAT64 > & jacobianX = task->getJacobianReduced();
+
+  tableJacobianX->setNumRows(jacobianX.numRows());
+  tableJacobianX->setNumCols(jacobianX.numCols());
+
+  imax = jacobianX.numRows();
+  jmax = jacobianX.numCols();
+  for (i = 0; i < imax; ++i)
+    for (j = 0; j < jmax; ++j)
+      {
+        tableJacobianX->setText(i, j, QString::number(jacobianX(i, j)));
+      }
+
+  const CCopasiVector<CMetab>& metabsX = task->getProblem()->getModel()->getMetabolitesInd();
+  for (i = 0; i < imax; ++i)
+    {
+      name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *metabsX[i]));
+      tableJacobianX->horizontalHeader()->setLabel(i, name);
+      tableJacobianX->verticalHeader()->setLabel(i, name);
+    }
+
+  //Eigenvalues...
+  const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced()->getEigen_i();
+  const CVector< C_FLOAT64 > & eigen_rX = task->getEigenValuesReduced()->getEigen_r();
+
+  imax = eigen_iX.size();
+  tableEigenValuesX->setNumRows(imax);
+  for (i = 0; i < imax; ++i)
+    {
+      tableEigenValuesX->setText(i, 0, QString::number(eigen_rX[i]));
+      tableEigenValuesX->setText(i, 1, QString::number(eigen_iX[i]));
+    }
+
   //stability report
   stabilityTextEdit->setReadOnly(true);
 
   std::ostringstream ss;
-  ss << *task->getEigenValues();
+  ss << *task->getEigenValuesReduced();
 
   stabilityTextEdit->setText(FROM_UTF8(ss.str()));
 }
@@ -135,11 +169,15 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
       pProblem->isStabilityAnalysisRequested())
     {
       tabWidget->setTabEnabled(tabWidget->page(3), true);
+      tabWidget->setTabEnabled(tabWidget->page(4), true);
+      tabWidget->setTabEnabled(tabWidget->page(5), true);
       loadJacobian(task);
     }
   else
     {
       tabWidget->setTabEnabled(tabWidget->page(3), false);
+      tabWidget->setTabEnabled(tabWidget->page(4), false);
+      tabWidget->setTabEnabled(tabWidget->page(5), false);
     }
 
   return true;

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>503</width>
-            <height>362</height>
+            <width>551</width>
+            <height>422</height>
         </rect>
     </property>
     <property name="caption">
@@ -200,7 +200,7 @@
                                         <cstring>textLabelJacobian</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Jacobian</string>
+                                        <string>Jacobian (complete system)</string>
                                     </property>
                                 </widget>
                                 <spacer row="0" column="1">
@@ -273,7 +273,133 @@
                                         <cstring>textLabelEigenvalues</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Eigenvalues</string>
+                                        <string>Eigenvalues (complete system)</string>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Jacobian (reduced system)</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QSplitter">
+                        <property name="name">
+                            <cstring>splitterJacobianX</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="opaqueResize">
+                            <bool>true</bool>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layoutJacobianX</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTable" row="1" column="0" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>tableJacobianX</cstring>
+                                    </property>
+                                    <property name="numRows">
+                                        <number>3</number>
+                                    </property>
+                                    <property name="numCols">
+                                        <number>3</number>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabelJacobianX</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Jacobian (reduced system)</string>
+                                    </property>
+                                </widget>
+                                <spacer row="0" column="1">
+                                    <property name="name">
+                                        <cstring>spacer3_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>191</width>
+                                            <height>21</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </grid>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layoutEigenvaluesX</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTable" row="1" column="0" rowspan="1" colspan="2">
+                                    <column>
+                                        <property name="text">
+                                            <string>Real</string>
+                                        </property>
+                                    </column>
+                                    <column>
+                                        <property name="text">
+                                            <string>Imaginary</string>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>tableEigenValuesX</cstring>
+                                    </property>
+                                    <property name="numRows">
+                                        <number>3</number>
+                                    </property>
+                                    <property name="numCols">
+                                        <number>2</number>
+                                    </property>
+                                </widget>
+                                <spacer row="0" column="1">
+                                    <property name="name">
+                                        <cstring>spacer4_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>141</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabelEigenvaluesX</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Eigenvalues (reduced system)</string>
                                     </property>
                                 </widget>
                             </grid>

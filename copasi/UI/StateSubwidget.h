@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:34:13 $
+   $Date: 2004/10/06 10:00:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Mon Oct 4 02:19:53 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.2 2004/10/04 13:34:13 ssahle Exp $)
+ ** Created: Tue Oct 5 23:26:00 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.3 2004/10/06 10:00:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -56,6 +56,12 @@ class StateSubwidget : public QWidget
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
     QWidget* TabPage_3;
+    QSplitter* splitterJacobianX;
+    QTable* tableJacobianX;
+    QLabel* textLabelJacobianX;
+    QTable* tableEigenValuesX;
+    QLabel* textLabelEigenvaluesX;
+    QWidget* TabPage_4;
     QTextEdit* stabilityTextEdit;
 
     virtual bool loadMetabolites(const CModel * model);
@@ -76,6 +82,11 @@ class StateSubwidget : public QWidget
     QGridLayout* layoutEigenvalues;
     QSpacerItem* spacer4;
     QVBoxLayout* TabPageLayout_3;
+    QGridLayout* layoutJacobianX;
+    QSpacerItem* spacer3_2;
+    QGridLayout* layoutEigenvaluesX;
+    QSpacerItem* spacer4_2;
+    QVBoxLayout* TabPageLayout_4;
 
   protected slots:
     virtual void languageChange();
