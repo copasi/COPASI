@@ -185,9 +185,11 @@ class CMetab : public CCopasiContainer
     void saveSBML(std::ofstream &fout);
 
     /**
-     *  Sets the name of the metabolite.
+     * Sets the name of the metabolite.
+     * @param const std::string & name
+     * @return bool Success
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      *  Retrieve the name of the metabolite.
