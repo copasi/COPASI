@@ -336,6 +336,9 @@ void ScanWidget::deleteButtonClicked()
 
   if (activeObject >= 0)
     ListBoxClicked(ObjectListBox->item(activeObject));
+
+  // to verify the size of the mparameterlist in ScanProblem
+  // scanTask->getProblem()->paraCount();
 }
 
 void ScanWidget::upButtonClicked()
@@ -509,8 +512,11 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
   if (!pObject)
     return;
-  emit hide_me();
+  if (scanTask->getProblem()->bExisted(pObject->getCN().c_str()))
+    return;
+
   int widgetOffset;
+  emit hide_me();
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
   widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
 

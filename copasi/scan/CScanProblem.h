@@ -55,6 +55,21 @@ class CScanProblem
 
   public:
     // Operations
+    /**
+    check if an object already exists in the list
+    */
+    bool bExisted(const std::string & name)
+    {
+      return (mScanItemList.getIndex(name) != C_INVALID_INDEX);
+    }
+
+    /**
+      count the size of Parameter List
+    */
+    unsigned int paraCount()
+    {
+      return mScanItemList.size();
+    }
 
     /**
      *  Default constructor.
