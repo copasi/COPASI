@@ -735,45 +735,44 @@ void CModel::setTransitionTimes()
 
   mTransitionTime = 0.0;
 
-  for (i = 0, k = 0; i + k < imax; i++)
+  for (i = 0; i < imax; i++)
     {
-      if (METAB_FIXED == mMetabolites[i + k]->getStatus())
-        {
-          i--;
-          k++;
-          continue;
-        }
-
       TotalFlux = 0.0;
 
-      for (j = 0; j < jmax; j++)
+      if (METAB_FIXED == mMetabolites[i]->getStatus())
+        mMetabolites[i]->setTransitionTime(DBL_MAX);
+      else
         {
-          PartialFlux = mStoi[i][j] * *mFluxes[j];
+          for (j = 0; j < jmax; j++)
+            {
+              PartialFlux = mStoi[i][j] * *mScaledFluxes[j];
 
-          if (PartialFlux > 0.0)
-            TotalFlux += PartialFlux;
+              if (PartialFlux > 0.0)
+                TotalFlux += PartialFlux;
+            }
+
+          if (TotalFlux == 0.0)
+            for (j = 0; j < jmax; j++)
+              {
+                PartialFlux = - mStoi[i][j] * *mScaledFluxes[j];
+
+                if (PartialFlux > 0.0)
+                  TotalFlux += PartialFlux;
+              }
+
+          if (TotalFlux == 0.0)
+            TransitionTime = DBL_MAX;
+          else
+            TransitionTime = mMetabolites[i]->getNumberDbl() / TotalFlux;
+
+          mMetabolites[i]->setTransitionTime(TransitionTime);
+          mMetabolites[i]->setRate(TotalFlux * mNumber2QuantityFactor);
+
+          if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
+            mTransitionTime = DBL_MAX;
+          else
+            mTransitionTime += TransitionTime;
         }
-
-      if (TotalFlux == 0.0)
-        for (j = 0; j < jmax; j++)
-          {
-            PartialFlux = - mStoi[i][j] * *mFluxes[j];
-
-            if (PartialFlux > 0.0)
-              TotalFlux += PartialFlux;
-          }
-
-      if (TotalFlux == 0.0)
-        TransitionTime = DBL_MAX;
-      else
-        TransitionTime = mMetabolites[i + k]->getNumberDbl() / TotalFlux;
-
-      mMetabolites[i + k]->setTransitionTime(TransitionTime);
-
-      if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
-        mTransitionTime = DBL_MAX;
-      else
-        mTransitionTime += TransitionTime;
     }
 }
 
@@ -812,9 +811,9 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 C_UNUSED(t), C_FLOAT64 * y, C_FLOAT6
   return;
 }
 #endif // COPASI_DEPRECATED
-vector < CMetab * > & CModel::getMetabolitesInd(){ return mMetabolitesInd; }
-vector < CMetab * > & CModel::getMetabolitesDep(){ return mMetabolitesDep; }
-vector < CMetab * > & CModel::getMetabolitesX(){ return mMetabolitesX; }
+vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd; }
+vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep; }
+vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX; }
 
 unsigned C_INT32 CModel::getTotMetab() const
   {
@@ -954,7 +953,7 @@ C_INT32 CModel::findMetab(const string & Target)
       if (name == Target)
         return i;
     }
-  return -1;
+  return - 1;
 }
 
 /**
@@ -972,7 +971,7 @@ C_INT32 CModel::findStep(const string & Target)
       if (name == Target)
         return i;
     }
-  return -1;
+  return - 1;
 }
 
 /**
@@ -990,7 +989,7 @@ C_INT32 CModel::findCompartment(const string & Target)
       if (name == Target)
         return i;
     }
-  return -1;
+  return - 1;
 }
 
 /**
@@ -1008,7 +1007,7 @@ C_INT32 CModel::findMoiety(string &Target)
       if (name == Target)
         return i;
     }
-  return -1;
+  return - 1;
 }
 
 void CModel::initializeMetabolites()
@@ -1400,13 +1399,13 @@ void CModel::setQuantityUnit(const string & name)
 
   mNumber2QuantityFactor = 1 / mQuantity2NumberFactor;
 }
-string CModel::getQuantityUnit() const { return mQuantityUnitName; }
+string CModel::getQuantityUnit() const {return mQuantityUnitName; }
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
-  { return mQuantity2NumberFactor; }
+  {return mQuantity2NumberFactor; }
 
 const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
-  { return mNumber2QuantityFactor; }
+  {return mNumber2QuantityFactor; }
 
 void CModel::setTitle(const string &title)
 {
@@ -1428,9 +1427,9 @@ C_INT32 CModel::addMetabolite(const string & comp,
 
   c = findCompartment(comp);
   if (c == -1)
-    return -1;
+    return - 1;
   if (findMetab(name) != -1)
-    return -1;
+    return - 1;
   metab.setModel(this);
   metab.setCompartment(mCompartments[c]);
   metab.setName(name);
@@ -1451,7 +1450,7 @@ C_INT32 CModel::addCompartment(string &name, C_FLOAT64 vol)
       return mCompartments.size();
     }
   else
-    return -1;
+    return - 1;
 }
 
 C_INT32 CModel::addReaction(CReaction *r)
@@ -1462,10 +1461,10 @@ C_INT32 CModel::addReaction(CReaction *r)
 }
 
 const vector <unsigned C_INT32> & CModel::getMetabolitePermutation() const
-  { return mRowLU; }
+  {return mRowLU; }
 
 const vector <unsigned C_INT32> & CModel::getReactionPermutation() const
-  { return mColLU; }
+  {return mColLU; }
 
 void CModel::updateDepMetabNumbers(CStateX const & state) const
   {
