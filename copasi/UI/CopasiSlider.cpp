@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 15:48:43 $
+   $Date: 2005/02/27 15:54:11 $
    End CVS Header */
 
 #include <math.h>
@@ -16,11 +16,7 @@
 #include "qvbox.h"
 
 #include "CopasiSlider.h"
-#include "qtUtilities.h" 
-//#include "report/CCopasiObject.h"
-//#include "report/CCopasiObjectReference.h"
-//#include "utilities/CCopasiParameterGroup.h"
-//#include "report/CCopasiObjectName.h"
+#include "qtUtilities.h"
 
 #include "icons/closeSlider.xpm"
 #include "icons/editSlider.xpm"
