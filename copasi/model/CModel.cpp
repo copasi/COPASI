@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.209 $
+   $Revision: 1.210 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/20 18:48:59 $
+   $Date: 2005/01/20 19:16:34 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1441,10 +1441,15 @@ bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
 
   switch (unit)
     {
-    case s:
-    case m:
-    case h:
     case d:
+    case h:
+    case m:
+    case s:
+    case ms:
+    case micros:
+    case ns:
+    case ps:
+    case fs:
       mTimeUnit = TimeUnitName[unit];
       break;
 
