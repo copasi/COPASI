@@ -43,6 +43,10 @@ if test x"${CLAPACK_PATH}" != x""; then
   cps_clapack_path="CLAPACK_PATH=$CLAPACK_PATH"
 fi
 
+if test x"${LAPACK_PATH}" != x""; then
+  cps_clapack_path="LAPACK_PATH=$LAPACK_PATH"
+fi
+
 if test x"${EXPAT_PATH}" != x""; then
   cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
 fi
