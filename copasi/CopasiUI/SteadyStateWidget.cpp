@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/03 22:25:59 $
+   $Author: ssahle $ 
+   $Date: 2005/02/07 18:54:11 $
    End CVS Header */
 
 /********************************************************
@@ -59,19 +59,68 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   if (!name)
     setName("SteadyStateWidget");
   setCaption(trUtf8("SteadyStateWidget"));
+
   SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
 
+  //********** name ********************
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
-
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignRight));
   SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
-  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+  taskName = new QLineEdit(this, "taskName");
+  //taskName->setFrameShape(QLineEdit::LineEditPanel);
+  //taskName->setFrameShadow(QLineEdit::Sunken);
+  SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  setInitialState = new QCheckBox(this, "setInitialState");
+  bExecutable->setText(trUtf8("Task Executable"));
+  setInitialState->setText(trUtf8("Use result as new initial state"));
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
+  setInitialState->setChecked(parent == NULL);
+  setInitialState->setEnabled(parent != NULL);
+  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  SteadyStateWidgetLayout->addWidget(setInitialState, 1, 2);
+
+  //line8 = new QFrame(this, "line8");
+  //line8->setFrameShape(QFrame::HLine);
+  //line8->setFrameShadow(QFrame::Sunken);
+  //line8->setFrameShape(QFrame::HLine);
+  //SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+
+  //************* parameter table ****************
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setText(trUtf8("Method parameters"));
+  parameterValueLabel->setAlignment(int(QLabel::AlignVCenter
+                                        | QLabel::AlignRight));
+  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
   SteadyStateWidgetLayout->addItem(spacer, 5, 0);
 
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Parameter value"));
-  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  parameterTable->setColumnStretchable(0, true);
+  parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
 
+  QSpacerItem* spacer_3 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  SteadyStateWidgetLayout->addMultiCell(spacer_3, 6, 6, 0, 2);
+
+  //************ line ********************
+  line6 = new QFrame(this, "line6");
+  line6->setFrameShape(QFrame::HLine);
+  line6->setFrameShadow(QFrame::Sunken);
+  //line6->setFrameShape(QFrame::HLine);
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 7, 7, 0, 2);
+
+  //*************** buttons ********************
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunButton = new QPushButton(this, "bRunButton");
@@ -98,44 +147,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
 
-  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 2);
 
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  //line6->setFrameShape(QFrame::HLine);
-  SteadyStateWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
-
-  taskName = new QLineEdit(this, "taskName");
-  //taskName->setFrameShape(QLineEdit::LineEditPanel);
-  //taskName->setFrameShadow(QLineEdit::Sunken);
-  SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
-
-  bExecutable = new QCheckBox(this, "bExecutable");
-  setInitialState = new QCheckBox(this, "setInitialState");
-  bExecutable->setText(trUtf8("Task Executable"));
-  setInitialState->setText(trUtf8("Use result as new initial state"));
-  // this is the child widget to edit an steadystatetask
-  bExecutable->setChecked(parent == NULL);
-  bExecutable->setEnabled(parent != NULL);
-  setInitialState->setChecked(parent == NULL);
-  setInitialState->setEnabled(parent != NULL);
-  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
-  SteadyStateWidgetLayout->addWidget(setInitialState, 1, 2);
-
-  //line8 = new QFrame(this, "line8");
-  //line8->setFrameShape(QFrame::HLine);
-  //line8->setFrameShadow(QFrame::Sunken);
-  //line8->setFrameShape(QFrame::HLine);
-  //SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
-
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
-
+  //*********************
   //taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
   //taskDescriptionLabel->setText(trUtf8(""));
   //SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);

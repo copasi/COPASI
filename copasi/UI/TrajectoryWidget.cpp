@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/07 09:32:16 $
+   $Date: 2005/02/07 18:54:46 $
    End CVS Header */
 
 /********************************************************
@@ -178,6 +178,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   parameterTable = new QTable(this, "parameterTable");
   parameterTable->setNumRows(0);
   parameterTable->setNumCols(1);
+  parameterTable->setColumnStretchable(0, true);
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
   parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);

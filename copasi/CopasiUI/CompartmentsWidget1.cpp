@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/01/25 13:28:17 $
+   $Date: 2005/02/07 18:53:12 $
    End CVS Header */
 
 /*******************************************************************
@@ -25,6 +25,7 @@
 #include <qlistbox.h>
 #include <qvalidator.h>
 #include <qmessagebox.h>
+#include <qhbox.h>
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
 #include "CompartmentsWidget1.h"
@@ -46,27 +47,8 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   if (!name)
     setName("CompartmentsWidget1");
   setCaption(trUtf8("CompartmentsWidget1"));
+
   CompartmentsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "CompartmentsWidget1Layout");
-
-  LineEdit4 = new QLineEdit(this, "LineEdit4");
-  LineEdit4->setEnabled(FALSE);
-  LineEdit4->setReadOnly(TRUE);
-  CompartmentsWidget1Layout->addWidget(LineEdit4, 3, 1);
-
-  LineEdit1 = new QLineEdit(this, "LineEdit1");
-  CompartmentsWidget1Layout->addWidget(LineEdit1, 0, 1);
-
-  TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Initial  Volume"));
-  TextLabel2->setAlignment(int(QLabel::AlignVCenter
-                               | QLabel::AlignRight));
-  CompartmentsWidget1Layout->addWidget(TextLabel2, 2, 0);
-
-  TextLabel2_2 = new QLabel(this, "TextLabel2_2");
-  TextLabel2_2->setText(trUtf8("Transient Volume"));
-  TextLabel2_2->setAlignment(int(QLabel::AlignVCenter
-                                 | QLabel::AlignRight));
-  CompartmentsWidget1Layout->addWidget(TextLabel2_2, 3, 0);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Compartment Name"));
@@ -74,17 +56,36 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
                                | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel1, 0, 0);
 
-  Line4 = new QFrame(this, "Line4");
-  CompartmentsWidget1Layout->addMultiCellWidget(Line4, 1, 1, 0, 1);
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  CompartmentsWidget1Layout->addWidget(LineEdit1, 0, 1);
 
-  Line4_2 = new QFrame(this, "Line4_2");
-  CompartmentsWidget1Layout->addMultiCellWidget(Line4_2, 4, 4, 0, 1);
+  //*********************
 
-  ListBox1 = new QListBox(this, "ListBox1");
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Initial  Volume"));
+  TextLabel2->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
+  CompartmentsWidget1Layout->addWidget(TextLabel2, 2, 0);
 
-  CompartmentsWidget1Layout->addMultiCellWidget(ListBox1, 5, 6, 1, 1);
-  QSpacerItem* spacer = new QSpacerItem(131, 270, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  CompartmentsWidget1Layout->addItem(spacer, 6, 0);
+  QHBox* tmp = new QHBox(this);
+  LineEdit3 = new QLineEdit(tmp, "LineEdit3");
+  LineEdit3->setValidator(new QDoubleValidator(LineEdit3));
+  CompartmentsWidget1Layout->addWidget(tmp, 2, 1);
+
+  //*********************
+
+  TextLabel2_2 = new QLabel(this, "TextLabel2_2");
+  TextLabel2_2->setText(trUtf8("Transient Volume"));
+  TextLabel2_2->setAlignment(int(QLabel::AlignVCenter
+                                 | QLabel::AlignRight));
+  CompartmentsWidget1Layout->addWidget(TextLabel2_2, 3, 0);
+
+  LineEdit4 = new QLineEdit(this, "LineEdit4");
+  LineEdit4->setEnabled(FALSE);
+  LineEdit4->setReadOnly(TRUE);
+  CompartmentsWidget1Layout->addWidget(LineEdit4, 3, 1);
+
+  //*********************
 
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Metabolites"));
@@ -92,9 +93,30 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
                                | QLabel::AlignRight));
   CompartmentsWidget1Layout->addWidget(TextLabel3, 5, 0);
 
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setValidator(new QDoubleValidator(LineEdit3));
-  CompartmentsWidget1Layout->addWidget(LineEdit3, 2, 1);
+  QSpacerItem* spacer2 = new QSpacerItem(131, 270, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  CompartmentsWidget1Layout->addItem(spacer2, 6, 0);
+
+  ListBox1 = new QListBox(this, "ListBox1");
+  ListBox1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  CompartmentsWidget1Layout->addMultiCellWidget(ListBox1, 5, 6, 1, 1);
+
+  //QSpacerItem* spacer_2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //CompartmentsWidget1Layout->addMultiCell(spacer_2, 7, 7, 1, 1);
+
+  //*********************
+
+  Line4 = new QFrame(this, "Line4");
+  //Line4->setFrameShape(QFrame::HLine);
+  CompartmentsWidget1Layout->addMultiCellWidget(Line4, 1, 1, 0, 1);
+
+  Line4_2 = new QFrame(this, "Line4_2");
+  Line4_2->setFrameShape(QFrame::HLine);
+  CompartmentsWidget1Layout->addMultiCellWidget(Line4_2, 4, 4, 0, 1);
+
+  //Line4_3 = new QFrame(this, "Line4_3");
+  //CompartmentsWidget1Layout->addMultiCellWidget(Line4_3, 7, 7, 0, 1);
+
+  //*********************
 
   Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
 
@@ -114,9 +136,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   deleteCompartmentBtn->setText(trUtf8("Delete"));
   Layout5->addWidget(deleteCompartmentBtn);
   CompartmentsWidget1Layout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
-
-  Line4_3 = new QFrame(this, "Line4_3");
-  CompartmentsWidget1Layout->addMultiCellWidget(Line4_3, 7, 7, 0, 1);
 
   setTabOrder(LineEdit1, LineEdit3);
   setTabOrder(LineEdit3, LineEdit4);
@@ -159,6 +178,7 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
       mtb = Metabs[j];
       ListBox1->insertItem(FROM_UTF8(mtb->getObjectName()));
     }
+  ListBox1->triggerUpdate(true);
 
   volumeSave = QString::number(compartn->getInitialVolume());
   LineEdit3->setText(volumeSave);
@@ -307,7 +327,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                         // Yes or Enter
+    case 0:                          // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
         unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -325,7 +345,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                         // No or Escape
+    case 1:                          // No or Escape
       break;
     }
 }

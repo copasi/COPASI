@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:35:45 $
+   $Author: ssahle $ 
+   $Date: 2005/02/07 18:52:44 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -59,15 +59,51 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
-
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignRight));
   CMCAWidgetLayout->addWidget(taskNameLabel, 0, 0);
-  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  CMCAWidgetLayout->addItem(spacer, 5, 0);
 
+  taskName = new QLineEdit(this, "taskName");
+  CMCAWidgetLayout->addWidget(taskName, 0, 1);
+
+  taskSteadyState = new QCheckBox(this, "taskSteadyState");
+  taskSteadyState->setText(trUtf8("perform Steady State Analysis"));
+  taskSteadyState->setChecked(true);
+  CMCAWidgetLayout->addWidget(taskSteadyState, 2, 1);
+
+  line8_2 = new QFrame(this, "line8_2");
+  line8_2->setFrameShape(QFrame::HLine);
+  CMCAWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
+
+  //********** paramters table ******************
   parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Parameter value"));
+  parameterValueLabel->setText(trUtf8("Method parameters"));
+  parameterValueLabel->setAlignment(int(QLabel::AlignVCenter
+                                        | QLabel::AlignRight));
   CMCAWidgetLayout->addWidget(parameterValueLabel, 4, 0);
 
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  CMCAWidgetLayout->addItem(spacer, 5, 0);
+
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  parameterTable->setColumnStretchable(0, true);
+  parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  CMCAWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+
+  QSpacerItem* spacer_3 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  CMCAWidgetLayout->addMultiCell(spacer_3, 6, 6, 0, 2);
+
+  //********* line ********************
+  line6 = new QFrame(this, "line6");
+  line6->setFrameShape(QFrame::HLine);
+  line6->setFrameShadow(QFrame::Sunken);
+  CMCAWidgetLayout->addMultiCellWidget(line6, 7, 7, 0, 2);
+
+  //********* buttons *****************
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunButton = new QPushButton(this, "bRunButton");
@@ -81,40 +117,12 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange = new QPushButton(this, "cancelChange");
   cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
-
   /*
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
   */
-
-  CMCAWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
-
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  CMCAWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
-
-  taskName = new QLineEdit(this, "taskName");
-  CMCAWidgetLayout->addWidget(taskName, 0, 1);
-
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-  CMCAWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
-
-  taskSteadyState = new QCheckBox(this, "taskSteadyState");
-  taskSteadyState->setText(trUtf8("perform Steady State Analysis"));
-
-  taskSteadyState->setChecked(true);
-  CMCAWidgetLayout->addWidget(taskSteadyState, 2, 1);
-
-  line8_2 = new QFrame(this, "line8_2");
-  line8_2->setFrameShape(QFrame::HLine);
-
-  CMCAWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
+  CMCAWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 2);
 
   // signals and slots connections
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runMCATask()));

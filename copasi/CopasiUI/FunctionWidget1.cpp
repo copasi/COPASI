@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/07 09:28:18 $
+   $Date: 2005/02/07 18:53:42 $
    End CVS Header */
 
 /**********************************************************************
@@ -198,8 +198,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table2->horizontalHeader()->hide();
   Table2->setTopMargin(0);
   Table2->setShowGrid(false);
-  Table2->setColumnStretchable(1, true);
-  Table2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  //Table2->setColumnStretchable(1, true);
+  Table2->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
   FunctionWidget1Layout->addMultiCellWidget(Table2, 7, 7, 1, 1);
 
   QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -950,7 +950,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                          // Yes or Enter
+        case 0:                                           // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -967,7 +967,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                          // No or Escape
+        case 1:                                           // No or Escape
           break;
         }
     }
