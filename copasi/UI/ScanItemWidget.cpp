@@ -131,8 +131,45 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(mUniformRadio, mGaussianRadio);
   setTabOrder(mGaussianRadio, mPosGaussianRadio);
 
+  connect(mMin, SIGNAL(textChanged(const QString&)), this, SLOT(MaxValueChanged(const QString&)));
+  connect(mMax, SIGNAL(textChanged(const QString&)), this, SLOT(MinValueChanged(const QString&)));
+  connect(mDensity, SIGNAL(textChanged(const QString&)), this, SLOT(DensityValueChanged(const QString&)));
+  connect(mIndependent, SIGNAL(clicked()), this, SLOT(IndependentClicked()));
+  connect(mLogarithmic, SIGNAL(clicked()), this, SLOT(LogarithmicClicked()));
+  connect(mRegularGridRadio, SIGNAL(clicked()), this, SLOT(RegularGridClicked()));
+  connect(mUniformRadio, SIGNAL(clicked()), this, SLOT(UniformClicked()));
+  connect(mGaussianRadio, SIGNAL(clicked()), this, SLOT(GaussianClicked()));
+  connect(mPosGaussianRadio, SIGNAL(clicked()), this, SLOT(PosGaussianClicked()));
+
   pParameter = NULL;
 }
+
+void ScanItemWidget::MaxValueChanged(const QString&)
+{}
+
+void ScanItemWidget::MinValueChanged(const QString&)
+{}
+
+void ScanItemWidget::DensityValueChanged(const QString&)
+{}
+
+void ScanItemWidget::IndependentClicked()
+{}
+
+void ScanItemWidget::LogarithmicClicked()
+{}
+
+void ScanItemWidget::RegularGridClicked()
+{}
+
+void ScanItemWidget::UniformClicked()
+{}
+
+void ScanItemWidget::GaussianClicked()
+{}
+
+void ScanItemWidget::PosGaussianClicked()
+{}
 
 /*
  *  Destroys the object and frees any allocated resources

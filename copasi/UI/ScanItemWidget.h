@@ -84,6 +84,16 @@ class ScanItemWidget : public QWidget
       return pParameter;
     }
     void loadObject();
+
+    void MaxValueChanged(const QString&);
+    void MinValueChanged(const QString&);
+    void DensityValueChanged(const QString&);
+    void IndependentClicked();
+    void LogarithmicClicked();
+    void RegularGridClicked();
+    void UniformClicked();
+    void GaussianClicked();
+    void PosGaussianClicked();
   };
 
 class ScanCheckBox : public QCheckBox
