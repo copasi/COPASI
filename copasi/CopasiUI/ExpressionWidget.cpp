@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.1 2003/09/19 19:41:53 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.2 2003/09/19 19:48:34 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 ExpressionWidget::ExpressionWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("ExpressionWidget");
