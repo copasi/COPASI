@@ -14,6 +14,8 @@
 #include "COutput.h"
 #include "COutputList.h"
 
+class CSS_Solution;
+
 class COutputEvent
 {
  private:

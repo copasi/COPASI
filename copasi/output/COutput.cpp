@@ -246,19 +246,17 @@ void COutput::compile(string &name, CModel &model)
 /**
  *	Output the comments to the output reporting file
  */
-void COutput::repComments(ofstream &fout)
+void COutput::repComments(ofstream &fout, const CModel & model)
 {
-
-  fout << Model.getComments() << endl;
+  fout << model.getComments() << endl;
 }
 
 /**
  *	Output the model title to the output reporting file
  */
-void COutput::repTitle(ofstream &fout)
+void COutput::repTitle(ofstream &fout, const CModel & model)
 {
-
-  fout << Model.getTitle() << endl << endl;
+  fout << model.getTitle() << endl << endl;
 }
 
 /**
@@ -328,7 +326,7 @@ void COutput::repHeader(ofstream &fout)
 /**
  *	print the parameters of the simulation
  */
-void COutput::repParams(ofstream &fout)
+void COutput::repParams(ofstream &fout, CModel & model)
 {
   string StrOut;
   unsigned C_INT32 i, j;
@@ -340,20 +338,20 @@ void COutput::repParams(ofstream &fout)
   fout.setf(ios::scientific, ios::floatfield);
   fout.setf(ios::showpoint);
 	
-  for (i = 0; i < Model.getReactions().size(); i++)
+  for (i = 0; i < model.getReactions().size(); i++)
     {
 	  
-      StrOut = Model.getReactions()[i].getName();
+      StrOut = model.getReactions()[i].getName();
       fout << StrOut << " (";
 
-      StrOut = Model.getReactions()[i].getFunction().getName();
+      StrOut = model.getReactions()[i].getFunction().getName();
       fout << StrOut << ")" << endl;
 
-      for (j = 0; j < Model.getReactions()[i].getId2Parameters().size(); j++)
+      for (j = 0; j < model.getReactions()[i].getId2Parameters().size(); j++)
 	{
 
-	  fout << " " << Model.getReactions()[i].getId2Parameters()[j].getIdentifierName() << " =  ";
-	  fout << setprecision(4) << Model.getReactions()[i].getId2Parameters()[j].getValue();
+	  fout << " " << model.getReactions()[i].getId2Parameters()[j].getIdentifierName() << " =  ";
+	  fout << setprecision(4) << model.getReactions()[i].getId2Parameters()[j].getValue();
 	  fout << endl;
 		
 	}
@@ -361,10 +359,10 @@ void COutput::repParams(ofstream &fout)
 
   fout << endl << "COMPARTMENTS" << endl;
 
-  for( i=0; i< Model.getCompartments()->size(); i++ )
+  for( i=0; i< model.getCompartments()->size(); i++ )
     {
-      fout << "V(" << (*Model.getCompartments())[i].getName() << ") =  ";
-      fout << setprecision(4) << (*Model.getCompartments())[i].getVolume();
+      fout << "V(" << (*model.getCompartments())[i].getName() << ") =  ";
+      fout << setprecision(4) << (*model.getCompartments())[i].getVolume();
       fout << endl;
     }		
 
@@ -374,37 +372,37 @@ void COutput::repParams(ofstream &fout)
 /**
  *	print the structural analysis
  */
-void COutput::repStruct(ofstream &fout)
+void COutput::repStruct(ofstream &fout, CModel & model)
 {
   unsigned C_INT32 i, j;
   // determine the kernel of the stoichiometry matrix
-  //Model.getKernel();
+  //model.getKernel();
 
   fout << endl << "STRUCTURAL ANALYSIS" << endl;
 
-  if (Model.getDimension() > 0)
+  if (model.getDimension() > 0)
     {
-      fout << endl << "Rank of the stoichiometry matrix: " << Model.getDimension() << endl;
+      fout << endl << "Rank of the stoichiometry matrix: " << model.getDimension() << endl;
     }
 
   fout << endl << "key for step (column) numbers: "<< endl;
 
-  for (i = 0; i < Model.getReactions().size(); i++)
+  for (i = 0; i < model.getReactions().size(); i++)
     {
       fout << setw(2) << i << " - ";
-      fout << Model.getReactions()[i].getName();
+      fout << model.getReactions()[i].getName();
       fout << endl;
     }
 
   fout << endl << "REDUCED STOICHIOMETRY MATRIX" << endl;
 
-  for (i = 0; i < Model.getReactions().size(); i++)
+  for (i = 0; i < model.getReactions().size(); i++)
     if (i)	fout << setw(4) << i;
     else fout << setw(16) << i;
 
   fout << endl;
 
-  for (i = 0; i < Model.getReactions().size(); i++)
+  for (i = 0; i < model.getReactions().size(); i++)
     {
       if (i) fout << setw(4) << "----";
       else fout << setw(15) << "----";
@@ -415,12 +413,12 @@ void COutput::repStruct(ofstream &fout)
   // Set Left Justification
   fout.setf(ios::left);
 
-  for (i = 0; i < Model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model.getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << Model.getMetabolitesInd()[i]->getName() << "|";
+      fout << setw(11) << model.getMetabolitesInd()[i]->getName() << "|";
 
-      for (j = 0; j < Model.getReactions().size(); j++)
-		fout << setprecision(1) << setw(10) << Model.getRedStoi()[i][j];
+      for (j = 0; j < model.getReactions().size(); j++)
+		fout << setprecision(1) << setw(10) << model.getRedStoi()[i][j];
       fout << endl;
     }
 
@@ -429,7 +427,7 @@ void COutput::repStruct(ofstream &fout)
   // Restore Justification
   fout.unsetf(ios::left);
 
-  for (i = 0; i < Model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model.getMetabolitesInd().size(); i++)
     {
       if (i)	fout << setw(4) << i;
       else fout << setw(15) << i;
@@ -438,7 +436,7 @@ void COutput::repStruct(ofstream &fout)
   fout << endl;
 
 
-  for (i = 0; i < Model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model.getMetabolitesInd().size(); i++)
     if (i) fout << setw(4) << "----";
     else fout << setw(15) << "----";
 
@@ -447,25 +445,25 @@ void COutput::repStruct(ofstream &fout)
   // Set Left Justification
   fout.setf(ios::left);
 
-  for (i = 0; i < Model.getMetabolitesInd().size(); i++)
+  for (i = 0; i < model.getMetabolitesInd().size(); i++)
     {
-      fout << setw(11) << Model.getMetabolites()[i]->getName() << "|";
+      fout << setw(11) << model.getMetabolites()[i]->getName() << "|";
 
-      //for (j = 0; j < Model.getMetabolitesInd().size(); j++)
-      //		fout << setprecision(1) << setw(10) << Model.getRedStoi()[i][j];
+      //for (j = 0; j < model.getMetabolitesInd().size(); j++)
+      //		fout << setprecision(1) << setw(10) << model.getRedStoi()[i][j];
       fout << endl;
     }
 
   fout << endl;
 
-  if (Model.getMoieties()->size() > 0)
+  if (model.getMoieties()->size() > 0)
     {
       fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
 		
-      for (i = 0; i < Model.getMoieties()->size(); i++)
+      for (i = 0; i < model.getMoieties()->size(); i++)
 	{
-	  fout << (*Model.getMoieties())[i].getDescription() << " = " ;
-	  fout << (*Model.getMoieties())[i].getNumber() << endl;
+	  fout << (*model.getMoieties())[i].getDescription() << " = " ;
+	  fout << (*model.getMoieties())[i].getNumber() << endl;
 
 	}
     }
@@ -538,19 +536,19 @@ void COutput::sSOutputData(ofstream &fout, string &SSName)
 /*
  *	print the reporting data file
  */
-void COutput::copasiRep(ofstream &fout)
+void COutput::copasiRep(ofstream &fout, CModel & model)
 {
   repHeader(fout);
 
-  repTitle(fout);
+  repTitle(fout, model);
 
-  if (RepComments) repComments(fout);
-  if (RepStruct) repStruct(fout);
+  if (RepComments) repComments(fout, model);
+  if (RepStruct) repStruct(fout, model);
 #if 0
   if (RepStab) repStability(fout);
   if (RepMCA)	repMCA(fout);
 #endif
-  repParams(fout);
+  repParams(fout, model);
 
 }
 

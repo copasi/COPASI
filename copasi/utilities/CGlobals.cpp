@@ -8,6 +8,9 @@ CGlobals::CGlobals()
   FunctionDB.initialize();
 
   DefaultConc = 0.0;
+  
+  CReadConfig inbuf("gps/DANNY.GPS");
+  OutputList.load(inbuf);
 }
 
 CGlobals::~CGlobals()

@@ -120,11 +120,11 @@ void COutputList::setModel(const CModel &model)
 /*
  *	print the reporting data file
  */
-void COutputList::copasiRep(ofstream &fout)
+void COutputList::copasiRep(ofstream &fout, CModel & model)
 {
   for (unsigned C_INT32 i = 0; i < mList->size(); i++)
     {
-      (*mList)[i].copasiRep(fout);
+      (*mList)[i].copasiRep(fout, model);
     }
 }
 

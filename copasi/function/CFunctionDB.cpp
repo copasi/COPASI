@@ -69,7 +69,7 @@ CBaseFunction * CFunctionDB::dBLoad(const string & functionName)
   C_INT32 Index = mLoadedFunctions.size();
   C_INT32 Fail = 0;
     
-  CKinFunction *pFunction = new CKinFunction;
+  CBaseFunction *pFunction = new CKinFunction;
   mLoadedFunctions.add(pFunction);
     
   CReadConfig inbuf(mFilename);

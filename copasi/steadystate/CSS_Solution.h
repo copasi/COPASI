@@ -10,15 +10,16 @@
  */
 
 
-#ifndef CSS_Solution_H
-#define CSS_Solution_H
+#ifndef COPASI_CSS_Solution
+#define COPASI_CSS_Solution
 
+#include "copasi.h"
+#include "model/model.h"
 #include "CNewton.h"
+
 #include "trajectory/CTrajectory.h"
 // #include <cmath>
 #include "trajectory/Clsoda.h"
-
-using namespace std;
 
 #define NEWTON 1;
 #define TRAJ 2;
@@ -33,7 +34,8 @@ using namespace std;
 #define MCA_OK 0
 #define MCA_SINGULAR 1
 
-typedef bool BOOL; // this one should be declared somewhere else
+class CNewton;
+class CTrajectory;
 
 class CSS_Solution
 {
@@ -187,4 +189,4 @@ class CSS_Solution
 
 
 
-#endif  //CSS_Solution_H
+#endif // COPASI_CSS_Solution

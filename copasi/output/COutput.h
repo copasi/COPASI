@@ -116,7 +116,8 @@ class COutput
   C_INT16		RepComments;		 
 
   /**
-   * the mathematical model
+   * the mathematical model 
+   * :TODO: this should be removed SH
    */
   CModel		Model;			
 
@@ -236,17 +237,17 @@ class COutput
   /**
    *	Output the comments to the output reporting file
    */
-  void repComments(ofstream &fout);
+  void repComments(ofstream &fout, const CModel & model);
 
   /**
    *	print the parameters of the simulation
    */
-  void repParams(ofstream &fout);
+  void repParams(ofstream &fout, CModel & model);
 	
   /**
    *	print the structural analysis
    */		
-  void repStruct(ofstream &fout); 
+  void repStruct(ofstream &fout, CModel & model); 
 	
   /**
    *	print the results of the stability analysis
@@ -281,7 +282,7 @@ class COutput
   /**
    *	Output the model title to the output reporting file
    */
-  void repTitle(ofstream &fout);
+  void repTitle(ofstream &fout, const CModel & model);
 
   /**
    *	Assign the pointer to each datum object in the list
@@ -301,7 +302,7 @@ class COutput
   /*
    * print the reporting data file
    */
-  void copasiRep(ofstream &fout);
+  void copasiRep(ofstream &fout, CModel & model);
 
   /**
    *	Assigns model in the Outputlist

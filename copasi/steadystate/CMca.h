@@ -5,10 +5,10 @@
 *	       and outputed in Rep_MCA()			
 *****************************************************************************/
 
-#ifndef COPASI_CJacob
-#define COPASI_CJacob
+#ifndef COPASI_CMca
+#define COPASI_CMca
 
-#include "model/CModel.h"
+#include "model/model.h"
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 
@@ -166,4 +166,4 @@ class CMca
   C_INT32 save(CWriteConfig & configbuffer);
 
 };
-#endif
+#endif // COPASI_CMca

@@ -9,8 +9,8 @@
  */
 
 
-#ifndef CNewton_H
-#define CNewton_H
+#ifndef COPASI_CNewton
+#define COPASI_CNewton
 
 #include "copasi.h"
 #include "model/model.h"
@@ -20,6 +20,7 @@
 /**
  * These may be better to appear somewhere else
  */
+
 #define DefaultNewtonLimit 1
 #define SS_NOT_FOUND 1
 #define SS_FOUND 0
@@ -30,7 +31,6 @@
 //Note: they may not be 1.0, check where it comes from orignially (Y.H.)
 #define DefaultSSRes 1.0 
 #define DefaultDerivFactor 1.0
-
 
 class CNewton
 {
@@ -247,4 +247,4 @@ class CNewton
   void initialize();
 
 };
-#endif  //CNewton_H
+#endif // COPASI_CNewton

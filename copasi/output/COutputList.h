@@ -31,6 +31,7 @@ class COutputList
 
   CCOutput *mList;
 
+  /* :TODO: this should be remved SH */
   CModel Model;			// Temperorary use for testing 
 
  public:
@@ -103,7 +104,7 @@ class COutputList
   /*
    * print the reporting data file
    */
-  void copasiRep(ofstream &fout);
+  void copasiRep(ofstream &fout, CModel & model);
 
   /**
    *	Assigns model in the Outputlist
