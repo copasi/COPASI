@@ -170,6 +170,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   pTrajectoryWidget->loadTrajectoryTask(new CTrajectoryTask());
+
+  eSteadyState->setEnabled(steadyState->isChecked());
+  eTrajectory->setEnabled(trajectory->isChecked());
 }
 
 void ScanWidget::SteadyStateEditing()
@@ -202,25 +205,21 @@ void ScanWidget::CommitChangeButton()
 void ScanWidget::ScanButtonClicked()
 {
   scanTask->setRequested(sExecutable->isChecked());
-  if (sExecutable->isChecked())
-    commitChange->setEnabled(true);
-  else
-    commitChange->setEnabled(false);
+  commitChange->setEnabled(sExecutable->isChecked());
 }
 
 void ScanWidget::SteadyStateButtonClicked()
 {
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessSteadyState(steadyState->isChecked());
-
-  if (steadyState->isChecked())
-  {}
+  eSteadyState->setEnabled(steadyState->isChecked());
 }
 
 void ScanWidget::TrajectoryButtonClicked()
 {
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessTrajectory(trajectory->isChecked());
+  eTrajectory->setEnabled(trajectory->isChecked());
   if (trajectory->isChecked())
   {}
 }
