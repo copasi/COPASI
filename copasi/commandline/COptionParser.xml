@@ -15,7 +15,7 @@
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
  <options>
-   <option id="rc" 
+   <option id="configFile" 
            type="string" 
            mandatory="no" 
            strict="yes"
@@ -25,14 +25,15 @@
     <name>rc</name> 
     <comment>The configuration file for copasi.</comment>
    </option>
-   <option id="CopasiLib" 
+   <option id="libdir" 
            type="string" 
            mandatory="no" 
            strict="yes" 
-           location="both" 
+           location="commandline" 
            default="copasi/lib"
            hidden="no">
-    <name>lib</name>
+    <name>libdir</name>
+    <name>l</name>
     <comment>The location of suplementary files for copasi.</comment>
    </option>
    <option id="SystemFunctionDB" 
@@ -65,5 +66,59 @@
     <name>s</name> 
     <comment>The file the model is saved in after work.</comment>
    </option>
+   <option id="ImportSBML" 
+           type="string" 
+           mandatory="no" 
+           strict="yes"
+           location="commandline" 
+           hidden="no">
+    <name>importSBML</name> 
+    <name>i</name> 
+    <comment>A SBML file to import.</comment>
+   </option>
+   <option id="ExportSBML" 
+           type="string" 
+           mandatory="no" 
+           strict="yes"
+           location="commandline" 
+           hidden="no">
+    <name>exportSBML</name> 
+    <name>e</name>
+    <comment>The SBML file to export.</comment>
+   </option>
+   <option id="Default" 
+           type="string" 
+           mandatory="no" 
+           location="both" 
+           modifier="map"
+           hidden="no">
+    <name>default</name> 
+    <name>d</name>
+    <comment>The SBML file to export.</comment>
+   </option>
  </options>
+ <group id="1" type="xor" strict="yes">
+   <option id="Flag"
+           type="flag" 
+           mandatory="no" 
+           strict="no" 
+           location="commandline" 
+           hidden="no"
+           default="true">
+    <name>flag</name>
+    <name>f</name> 
+    <comment>A flag test.</comment>
+   </option>
+   <option id="Bool" 
+           type="bool" 
+           mandatory="no" 
+           strict="yes" 
+           location="both" 
+           hidden="no"
+           default="true">
+    <name>bool</name>
+    <name>b</name> 
+    <comment>A bool test.</comment>
+   </option>
+  </group>
 </cloxx>

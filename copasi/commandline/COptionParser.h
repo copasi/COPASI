@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <map>
 
 /// the namespace can be controlled using the cxx_namespace variable
 namespace copasi
@@ -41,16 +42,23 @@ namespace copasi
   struct options
     {
       options(void) :
-          CopasiLib("copasi/lib"),
+          Bool(true),
+          Flag(true),
           SystemFunctionDB("FunctionDB.cps"),
           UserFunctionDB("~/FunctionDB.cps"),
-          rc("~/.copasirc")
+          configFile("~/.copasirc"),
+          libdir("copasi/lib")
       {}
 
-      std::string CopasiLib;
+      bool Bool;
+      std::map<std::string, std::string> Default;
+      std::string ExportSBML;
+      bool Flag;
+      std::string ImportSBML;
       std::string SystemFunctionDB;
       std::string UserFunctionDB;
-      std::string rc;
+      std::string configFile;
+      std::string libdir;
       std::string save;
     }; // end options struct
 
@@ -61,10 +69,15 @@ namespace copasi
   struct option_locations
     {
       typedef int size_type;
-      size_type CopasiLib;
+      size_type Bool;
+      size_type Default;
+      size_type ExportSBML;
+      size_type Flag;
+      size_type ImportSBML;
       size_type SystemFunctionDB;
       size_type UserFunctionDB;
-      size_type rc;
+      size_type configFile;
+      size_type libdir;
       size_type save;
     }; // end option location struct
 
@@ -140,11 +153,16 @@ namespace copasi
 
       enum options_enum
       {
-        option_rc,
-        option_CopasiLib,
+        option_configFile,
+        option_libdir,
         option_SystemFunctionDB,
         option_UserFunctionDB,
-        option_save
+        option_save,
+        option_ImportSBML,
+        option_ExportSBML,
+        option_Default,
+        option_Flag,
+        option_Bool
       } openum_;
 
       enum parser_state {state_option, state_value, state_consume} state_;
