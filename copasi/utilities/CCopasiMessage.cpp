@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/05 18:03:02 $
+   $Date: 2005/01/06 15:30:35 $
    End CVS Header */
 
 // CCopasiMessage
@@ -185,7 +185,7 @@ void CCopasiMessage::handler()
 }
 
 // overload assignment operator
-CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
+CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage &RHS)
 {
   mText = RHS.mText;
   mType = RHS.mType;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/05 18:03:02 $
+   $Date: 2005/01/06 15:30:34 $
    End CVS Header */
 
 /**
@@ -142,7 +142,7 @@ class CCopasiMessage
     /**
      *  Assignement operator. 
      */
-    CCopasiMessage &operator=(CCopasiMessage &);
+    CCopasiMessage &operator=(const CCopasiMessage & RHS);
 
     /**
      *  Retrieves the text of the message.
