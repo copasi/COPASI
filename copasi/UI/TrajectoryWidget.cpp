@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 09:01:18 $
+   $Date: 2004/10/08 17:34:42 $
    End CVS Header */
 
 /********************************************************
@@ -223,10 +223,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
  */
 TrajectoryWidget::~TrajectoryWidget()
 {
-  CTrajectoryTask* tt =
-    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
-
-  pdelete(tt);
+  //  CTrajectoryTask* tt =
+  //    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
+  //  pdelete(tt);
 }
 
 //**********************************************************
@@ -343,14 +342,28 @@ void TrajectoryWidget::runTrajectoryTask()
   assert(trajectoryproblem);
 
   if ((!tt->getReport().getStream())
-       && (dataModel->getPlotSpecVectorAddr()->size() == 0)
-       && (!trajectoryproblem->timeSeriesRequested())
+      && (dataModel->getPlotSpecVectorAddr()->size() == 0)
+      && (!trajectoryproblem->timeSeriesRequested())
 )
     {
       QMessageBox::information (NULL, "No output specified",
                                 "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
       //                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
       return;
+    }
+
+  CTrajectoryMethod* trajectorymethod =
+    dynamic_cast<CTrajectoryMethod *>(tt->getMethod());
+  assert(trajectorymethod);
+  if (trajectorymethod->getSubType() != CCopasiMethod::deterministic)
+    {
+      std::string message = dataModel->getModel()->suitableForStochasticSimulation();
+      if (message != "")
+        {
+          QMessageBox::information (NULL, "Stochastic simulation not possible",
+                                    FROM_UTF8(message));
+          return;
+        }
     }
 
   setCursor(Qt::WaitCursor);
