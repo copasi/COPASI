@@ -6,17 +6,20 @@
  *  to represent it in a model
  */
 
+#ifdef WIN32
+#pragma warning(disable : 4786)
+#endif  // WIN32
+
+#define  COPASI_TRACE_CONSTRUCTION
 #include <iostream>
 #include <string>
 #include <vector>
 
-#define  COPASI_TRACE_CONSTRUCTION
-
 #include "copasi.h"
 #include "utilities/CGlobals.h"
-#include "CGene.h"
+#include "ABiochem/CGene.h"
 
-CGeneModifier::CGeneModifier()
+CGeneModifier::CGeneModifier(void)
 {
   mModifier = NULL;
   mType = 0;
@@ -122,6 +125,22 @@ void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
   modf->addOutDegree();
 }
 
+void CGene::removeModifier(CGene *modf)
+{
+  int i;
+
+  for (i = 0; i < getModifierNumber(); i++)
+    if (modf == getModifier(i))
+      {
+        // decrement the in-degree of this gene
+        decreaseInDegree();
+        // and the out-degree of the modifier's
+        modf->decreaseOutDegree();
+        mModifier.remove(i);
+        return;
+      }
+}
+
 C_INT32 CGene::getModifierType(C_INT32 n)
 {
   return mModifier[n]->getType();
@@ -172,6 +191,11 @@ void CGene::addInDegree()
   mInDegree++;
 }
 
+void CGene::decreaseInDegree()
+{
+  mInDegree--;
+}
+
 C_INT32 CGene::getOutDegree()
 {
   return mOutDegree;
@@ -180,6 +204,11 @@ C_INT32 CGene::getOutDegree()
 void CGene::addOutDegree()
 {
   mOutDegree++;
+}
+
+void CGene::decreaseOutDegree()
+{
+  mOutDegree--;
 }
 
 C_INT32 CGene::getTotalDegree()

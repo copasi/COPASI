@@ -44,7 +44,7 @@ class CGeneModifier
     /**
      *  Default constructor
      */
-    CGeneModifier();
+    CGeneModifier(void);
 
     /**
      *  Constructor
@@ -180,6 +180,13 @@ class CGene
     void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
 
     /**
+     *  Removes a Modifier from this gene.
+    *
+    *  @param "CGene *" modf pointer to the modifier gene to remove
+     */
+    void removeModifier(CGene *modf);
+
+    /**
      *  Retrieve the type of Modifier n.
      */
     C_INT32 getModifierType(C_INT32 n);
@@ -227,6 +234,16 @@ class CGene
      *  Increment the out-degree of this gene
      */
     void addOutDegree();
+
+    /**
+     *  Decrement the in-degree of this gene
+     */
+    void decreaseInDegree();
+
+    /**
+     *  Decrement the out-degree of this gene
+     */
+    void decreaseOutDegree();
 
     /**
      *  Retrieve the total number of links (incoming and outgoing) of this gene

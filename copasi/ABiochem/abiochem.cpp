@@ -114,7 +114,7 @@ void WriteDistri(char *Title, CCopasiVector < CGene > &gene)
   C_INT32 i, size;
   char strtmp[1024];
   ofstream fout;
-  vector < C_INT32 > idegree, odegree, tdegree;
+  vector <C_INT32> idegree, odegree, tdegree;
 
   size = gene.size();
   // create a vector to count all the degrees
@@ -122,14 +122,16 @@ void WriteDistri(char *Title, CCopasiVector < CGene > &gene)
   // (this could be more efficient on memory done in a different way...)
   idegree.resize(size + 1);
   odegree.resize(size + 1);
-  tdegree.resize(size + 1);
+  tdegree.resize(2*(size + 1));
   for (i = 0; i <= size; i++)
     {
       idegree[i] = 0;
       odegree[i] = 0;
       tdegree[i] = 0;
     }
-  // count!
+  for (i = size; i < 2*(size + 1); i++)
+    tdegree[i] = 0;
+  // count over all genes
   for (i = 0; i < size; i++)
     {
       idegree[gene[i]->getInDegree()]++;
@@ -282,7 +284,9 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
         return;
       funct->setName(kiname);
       funct->setReversible(TriFalse);
-      equation = "V/(";
+      equation = "V";
+      if ((p != 0) || (k != 0))
+        equation += "/(";
       for (i = 0, j = 1; i < p; i++, j++)
         {
           if (i == 0)
@@ -299,7 +303,8 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
             sprintf(tmpstr, "*(1+I%ld/Ki%ld)^ni%ld", j, j, j);
           equation += tmpstr;
         }
-      equation += ")";
+      if ((p != 0) || (k != 0))
+        equation += ")";
       funct->setDescription(equation);
       funct->addUsage("SUBSTRATES", 0, CRange::NoRange);
       funct->addUsage("PRODUCTS", 1, CRange::NoRange);
@@ -439,12 +444,15 @@ void WriteGepasi(char *Title, CModel &model)
 
 C_INT main(C_INT argc, char *argv[])
 {
-  C_INT32 n, k, i, tot, seed;
+  C_INT32 n, k, i, j, tot, seed;
   CCopasiVector < CGene > GeneList;
   string prefix;
   CModel model;
-  C_FLOAT64 positive;
+  C_FLOAT64 positive, rewiring;
   char NetTitle[512], comments[2048];
+
+  CGeneModifier *test;
+  test = new CGeneModifier;
 
   // parse command line
   try
@@ -460,6 +468,7 @@ C_INT main(C_INT argc, char *argv[])
       k = options.inputs;
       prefix = options.prefix;
       positive = options.positive;
+      rewiring = 0.03; // this needs to come from cmd line
     }
   catch (clo::autoexcept &e)
     {
@@ -477,23 +486,22 @@ C_INT main(C_INT argc, char *argv[])
       return 1;
     }
 
-  Copasi = new CGlobals;
-
   if (seed)
     r250_init(seed);
   else
     r250_init(((int) time(NULL)) | 12783579);
 
-  // create appropriate kinetic types, including
-  // all combinations of activators and inhibitors
-  for (i = 0; i <= k; i++)
-    MakeKinType(Copasi->FunctionDB, k, i);
   // generate tot networks of n genes with k random outputs each
   for (i = 0; i < tot; i++)
     {
+      Copasi = new CGlobals;
       // build the gene network
-      MakeGeneNetwork(n, k, positive, GeneList, comments);
+      MakeGeneNetwork(n, k, positive, rewiring, GeneList, comments);
       sprintf(NetTitle, "%s%03ld", prefix.data(), i + 1);
+      // create appropriate kinetic types, only those
+      // that are really needed for this model
+      for (j = 0; j < n; j++)
+        MakeKinType(Copasi->FunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
       // create graph files
       WriteDot(NetTitle, GeneList);
       WritePajek(NetTitle, GeneList);
@@ -506,6 +514,7 @@ C_INT main(C_INT argc, char *argv[])
       // cleanup model and vectors
       model.cleanup();
       GeneList.cleanup();
+      delete Copasi;
     }
 
   return 0;

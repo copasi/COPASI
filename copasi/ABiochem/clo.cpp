@@ -19,7 +19,7 @@ namespace
   {
   const char const_usage[] =
     "  -g, -n, --genes int    the total number of genes\n"
-    "  -i, -k, --inputs int   the number of inputs per gene\n"
+    "  -i, -k, --inputs int   the total number of inputs links\n"
     "  -p, --positive double  the probability of inputs being positive\n"
     "  -s, --seed int         a seed for the random number generator\n"
     "  -t, --total int        the total number of networks to generate\n"

@@ -9,6 +9,7 @@
  *  Virginia Bioinformatics Institute
  */
 
+#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include <stdio.h>
 #include "model/model.h"
@@ -20,11 +21,32 @@ extern "C" double dr250();
 
 using namespace std;
 
-void MakeGeneNetwork(C_INT32 n, C_INT32 k, C_FLOAT64 p, CCopasiVector < CGene > &gene, char *comments)
+/**
+ *  Creates a gene network using a Erdos-Renyi topology
+ *
+ *  @param C_INT32 n the total number of genes
+ *  @param C_INT32 k the total number of links
+ *  @param C_FLOAT64 p the probability that a link is positive
+ *  @param C_FLOAT64 r the probability of rewiring a gene
+ *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
+ *  @param "char *" comments a string to write comments on the network
+ */
+
+void MakeGeneNetwork(C_INT32 n,
+                      C_INT32 k,
+                      C_FLOAT64 p,
+                      C_FLOAT64 r,
+                      CCopasiVector < CGene > &gene,
+                      char *comments)
+
 {
   C_INT32 i, j, l, m, modf;
   char gn[1024];
+  C_INT32 ipg; // number of inputs per gene
+  C_INT32 rem; // remainder of inputs extra (total%n)
 
+  ipg = k / n;
+  rem = k % n;
   // create and name genes
   gene.resize(n);
   for (i = 0; i < n; i++)
@@ -32,9 +54,10 @@ void MakeGeneNetwork(C_INT32 n, C_INT32 k, C_FLOAT64 p, CCopasiVector < CGene > 
       sprintf(gn, "G%ld", i + 1);
       gene[i]->setName(gn);
     }
+  // add all the regular number of links
   for (i = 0; i < n; i++)
     {
-      for (j = 0; j < k; j++)
+      for (j = 0; j < ipg; j++)
         {
           for (l = -1; l < 0; )
             {
@@ -58,5 +81,26 @@ void MakeGeneNetwork(C_INT32 n, C_INT32 k, C_FLOAT64 p, CCopasiVector < CGene > 
       gene[i]->setRate(1.0);
       gene[i]->setDegradationRate(1.0);
     }
-  sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld input connections each.\n\nCreated automatically by the A-Biochem system", n, k);
+  // add the remainder of links to make up k
+  for (i = 0; i < rem; i++)
+    {
+      j = r250n(n);
+      for (l = -1; l < 0; )
+        {
+          l = r250n(n);
+          for (m = 0; m < gene[j]->getModifierNumber(); m++)
+            if (gene[l] == gene[j]->getModifier(m))
+              {
+                l = -1;
+                break;
+              }
+        }
+      if (dr250() < p)
+        modf = 1;
+      else
+        modf = 0;
+      // gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
+      gene[j]->addModifier(gene[l], modf, 1.0, 1.0);
+    }
+  sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld total input connections.\n\nCreated automatically by the A-Biochem system", n, k);
 }
