@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:59:52 $
+   $Author: shoops $ 
+   $Date: 2005/01/06 22:05:46 $
    End CVS Header */
 
 /**
@@ -125,6 +125,6 @@ class CRootContainer
   };
 #endif // XXXX
 
-#define RootContainer *CCopasiContainer::Root
+#define RootContainer (*CCopasiContainer::Root)
 
 #endif // COPASI_CCopasiConateiner
