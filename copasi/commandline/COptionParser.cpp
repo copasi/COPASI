@@ -80,7 +80,7 @@ void copasi::COptionParser::parse(const char * fileName)
     {
       try
         {
-          getline(File, Line);
+          std::getline(File, Line);
           LineCounter++;
 
           if (File.eof()) break;
@@ -431,18 +431,19 @@ void copasi::COptionParser::parse_value (const char *value)
             throw option_error("invalid key=value pair for the 'default' option");
           }
 
-        std::string k(svalue.substr(0, svalue.find_last_not_of(' ', pos - 1) + 1));
+        std::string k(svalue.substr(0, pos));
+        k.erase(0, k.find_first_not_of(' '));
+        k.erase(k.find_last_not_of(' ') + 1);
 
         std::string v;
-        pos = svalue.find_first_not_of(' ', pos + 1);
-        if (pos == std::string::npos)
-          v = "";
-        else
+        if (pos != std::string::npos) // We have a '='
           {
-            v = svalue.substr(svalue.find_first_not_of(' ', pos + 1));
-            v = v.substr(0, v.find_last_not_of(' ') + 1);
+            v = svalue.substr(pos + 1);
+            v.erase(0, v.find_first_not_of(' '));
+            v.erase(v.find_last_not_of(' ') + 1);
           }
-        value = v.c_str();
+        else
+          v = "";
 
         options_.Default[k] = v;
       }
