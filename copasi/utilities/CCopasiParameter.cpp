@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 18:15:36 $
+   $Date: 2003/11/12 16:44:26 $
    End CVS Header */
 
 /**
@@ -67,9 +67,10 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const std::string & objectType):
     CCopasiContainer(name, pParent, objectType,
                      CCopasiObject::Container |
-                     (type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
-                     (type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                     (type == BOOL) ? CCopasiObject::ValueBool : 0),
+                     ((type == DOUBLE || type == UDOUBLE) ?
+                      CCopasiObject::ValueDbl :
+                      ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
+                       (type == BOOL) ? CCopasiObject::ValueBool : 0))),
     mKey(CKeyFactory::add(objectType, this)),
     mType(type),
     mSize(0),
