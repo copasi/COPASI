@@ -8,7 +8,7 @@
 #ifndef COPASI_CJacob
 #define COPASI_CJacob
 
-#include "model/CModel.h"
+#include "model/model.h"
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 

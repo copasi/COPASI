@@ -8,13 +8,15 @@
  *
  */
 
+#include "copasi.h"
 #include "CNewton.h"
-
+#include "tnt/lu.h"
 
 //default constructor
 CNewton::CNewton()
 {
   mModel = NULL;
+  
   mNewtonLimit = DefaultNewtonLimit;
   mSs_nfunction=0;
 
@@ -24,7 +26,6 @@ CNewton::CNewton()
   mSs_xnew = NULL;
   mSs_dxdt = NULL;
   mSs_h = NULL;
-  mSs_jacob = NULL;
   mSs_ipvt = NULL;
 
   // initialize();
@@ -65,16 +66,15 @@ CNewton::CNewton(const CNewton& source)
 void CNewton::initialize()
 {  
   cleanup();
+  unsigned C_INT32 dim = mModel->getIndMetab();
+  
+  mSs_x = new C_FLOAT64[dim];
+  // mSs_xnew = new C_FLOAT64[dim];
+  mSs_dxdt.newsize(dim);
+  mSs_h = new C_FLOAT64[dim];
+  mSs_ipvt = new C_INT32[dim];
 
-  mSs_x = new double[mModel->getTotMetab()+1];
-  mSs_xnew = new double[mModel->getTotMetab()+1];
-  mSs_dxdt = new double[mModel->getTotMetab()+1];
-  mSs_h = new double[mModel->getTotMetab()+1];
-  mSs_ipvt = new C_INT32[mModel->getIndMetab()+1];
-  mSs_jacob = new double *[mModel->getTotMetab()+1];
-  for( int i=0; i<mModel->getTotMetab()+1; i++ )
-    mSs_jacob[i] = new double[mModel->getTotMetab()+1];
-
+  mSs_jacob.setModel(*mModel);
 }
 
 
@@ -83,20 +83,7 @@ void CNewton::initialize()
 //set up mSs_x and mSs_x's default values
 //they should come from steady state class, though
 void CNewton::init_Ss_x_new(void)
-{
-  // we start with initial concentrations as the guess (modify from Gepasi)
-  for( int i=0; i<mModel->getTotMetab(); i++ )
-    //    mSs_x[i+1] = mSs_xnew[i+1] = mModel->Metabolite[mModel.Row[i]].IConc *
-    //                         mModel->Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
-
-    //YH
-    {
-      double tmp = mModel->getMetabolitesInd()[i]->getInitialNumber();
-      mSs_x[i+1] = tmp;
-      mSs_xnew[i+1] = tmp;
-    }
-
-}
+{mSs_xnew = mModel->getInitialNumbers();}
 
   
 //Object assignment overloading
@@ -131,6 +118,8 @@ CNewton::~CNewton()
 void CNewton::setModel(CModel * aModel)
 {
   mModel = aModel;
+
+  initialize();
 }
 
 
@@ -162,7 +151,7 @@ C_FLOAT64 * CNewton::getSs_xnew() const
 
    
 // get mSs_dxdt
-C_FLOAT64 * CNewton::getSs_dxdt() const
+const TNT::Vector < C_FLOAT64 > & CNewton::getSs_dxdt() const
 {
   return mSs_dxdt;
 }
@@ -197,17 +186,18 @@ C_INT32 CNewton::getSs_nfunction() const
 // finds out if current state is a valid steady state
 C_INT32 CNewton::isSteadyState( void )
 {
-  int i;
+  unsigned C_INT32 i, dim = mModel->getIndMetab();
   double maxrate;
+
   mSs_solution = SS_NOT_FOUND;
-  for( i=0; i<mModel->getIntMetab(); i++ )
-    if( mSs_x[i+1] < 0.0 ) return SS_NOT_FOUND;
+  for( i=0; i<dim; i++ )
+    if( mSs_x[i] < 0.0 ) return SS_NOT_FOUND;
 
   //FEval( 0, 0, mSs_x, ss_dxdt );
-  mModel->lSODAEval( 0, 0, mSs_xnew, mSs_dxdt );
+  mModel->lSODAEval(dim, 0, mSs_xnew, &mSs_dxdt[0] );
   mSs_nfunction++;
   // maxrate = SS_XNorn( ss_dxdt );
-  maxrate = xNorm(mModel->getIntMetab(),mSs_dxdt, 1);
+  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
  
   if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
   return mSs_solution;
@@ -233,16 +223,16 @@ void CNewton::process(void)
   // {
   //  mModel->lSODAEval(0, 0, mSs_x, mSs_dxdt );
   //changed by Yongqun He
-  mModel->lSODAEval(dim, 0, mSs_x, mSs_dxdt );
+  mModel->lSODAEval(dim, 0, mSs_x, &mSs_dxdt[0] );
 
   mSs_nfunction++;
-  maxrate =xNorm(mModel->getIntMetab(), mSs_dxdt,1);
+  maxrate =xNorm(dim, &mSs_dxdt[0] - 1, 1);
   if( maxrate < mSSRes )
     mSs_solution = SS_FOUND;
   if( mSs_solution == SS_FOUND )
     {
-      for( i=0; i<mModel->getIntMetab(); i++ )
-	if( mSs_x[i+1] < 0.0 )
+      for( i=0; i<dim; i++ )
+	if( mSs_x[i] < 0.0 )
 	  {
 	    mSs_solution = SS_NOT_FOUND;
 	    break;
@@ -257,10 +247,16 @@ void CNewton::process(void)
     {
       //  try
       //{
-      JEval( mSs_x, mSs_jacob );
-
+      //JEval( mSs_x, mSs_jacob );
+      mSs_jacob.jacobEval(mSs_x, mDerivFactor, mSSRes);
+      
+      /* :TODO: We have to check whether LU is really needed? */
+      TNT::Matrix < C_FLOAT64 > LU = mSs_jacob.getJacob();
+      TNT::Vector < unsigned C_INT32 > rowLU(dim);
+      
       // LU decomposition of Jacobian
-      dgefa( mSs_jacob, mModel->getIndMetab(), mSs_ipvt, &info);
+      info = TNT::LU_factor(LU, rowLU);
+      // dgefa( mSs_jacob, dim, mSs_ipvt, &info);
 
       if( info!=0 )
 	{
@@ -270,17 +266,19 @@ void CNewton::process(void)
 	  return;
 	}
       // solve mSs_jacob . x = mSs_h for x (result in mSs_dxdt)
-      dgesl( mSs_jacob, mModel->getIndMetab(), mSs_ipvt, mSs_dxdt, 0 );
+      TNT::LU_solve(LU, rowLU, mSs_dxdt);
+      
+      // dgesl( mSs_jacob, mModel->getIndMetab(), mSs_ipvt, mSs_dxdt, 0 );
       // }
       //finally
       //{
       //}
       nmaxrate = maxrate * 1.001;
       // copy values of increment to mSs_h
-      for(i=0;i<mModel->getIndMetab();i++) mSs_h[i+1] = mSs_dxdt[i+1];
+      for(i=0;i<dim;i++) mSs_h[i+1] = mSs_dxdt[i+1];
       for( i=0; (i<32) && (nmaxrate>maxrate) ; i++ )
 	{
-	  for( j=0; j<mModel->getIndMetab(); j++ )
+	  for( j=0; j<dim; j++ )
 	    {
 	      mSs_xnew[j+1] = mSs_x[j+1] - mSs_h[j+1];
 	      mSs_h[j+1] /= 2;
@@ -290,9 +288,9 @@ void CNewton::process(void)
 	  //  try
 	  //{
 	  //FEval( 0, 0, mSs_xnew, mSs_dxdt );
-	  mModel->lSODAEval( 0, 0, mSs_xnew, mSs_dxdt );
+	  mModel->lSODAEval(dim, 0, mSs_xnew, &mSs_dxdt[0] );
 	  mSs_nfunction++;
-	  nmaxrate = xNorm(mModel->getIntMetab(), mSs_dxdt,1);
+	  nmaxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
 	  //}
 	  //finally
 	  //{
@@ -327,7 +325,7 @@ void CNewton::process(void)
     {
       mSs_solution = SS_FOUND;
       // check if solution is valid
-      for( i=0; i<mModel->getIntMetab(); i++ )
+      for( i=0; i<dim; i++ )
 	if( mSs_x[i+1] < 0.0 )
 	  {
 	    mSs_solution = SS_NOT_FOUND; 
@@ -349,18 +347,23 @@ void CNewton::process(void)
 // Clean up internal pointer variables
 void CNewton::cleanup(void)
 {
-  if(mSs_jacob) delete [] mSs_jacob;
-  mSs_jacob = NULL;
-
+  if (mSs_x) delete [] mSs_x;
   mSs_x = NULL;
-  mSs_xnew = NULL;
-  mSs_dxdt = NULL;
-  mSs_h = NULL;
-  mSs_ipvt = NULL;
 
+  if (mSs_xnew) delete [] mSs_xnew;
+  mSs_xnew = NULL;
+
+  // if (mSs_dxdt) delete [] mSs_dxdt;
+  // mSs_dxdt = NULL;
+
+  if (mSs_h) delete [] mSs_h;
+  mSs_h = NULL;
+
+  if (mSs_ipvt) delete [] mSs_ipvt;
+  mSs_ipvt = NULL;
 }
 
-
+#ifdef XXXX
 // evaluates the Jacobian matrix
 void CNewton::JEval( double *y, double **ydot )
 {
@@ -401,3 +404,4 @@ void CNewton::JEval( double *y, double **ydot )
   //Yongqun He: no plan to count the JEval() yet. Maybe later. 
   //ss_njacob++;
 }
+#endif // XXXX

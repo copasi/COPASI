@@ -5,6 +5,7 @@
 *	       and output in Rep_Stability()			
 *****************************************************************************/
 
+#include "copasi.h"
 #include "CJacob.h"
 
 /**
@@ -146,5 +147,9 @@ void CJacob::setNjacob(C_INT32 jacob)
  */
 void CJacob::setModel(CModel model)
 {
+  /* :TODO: we need a copy constructor here */
   mModel = model;
+
+  unsigned C_INT32 dim = mModel.getIndMetab();
+  mJacob.newsize(dim,dim);
 }

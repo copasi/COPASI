@@ -12,8 +12,10 @@
 #ifndef CNewton_H
 #define CNewton_H
 
-#include "model/CModel.h"
+#include "copasi.h"
+#include "model/model.h"
 #include "utilities/utilities.h"
+#include "CJacob.h"
 
 /**
  * These may be better to appear somewhere else
@@ -69,11 +71,11 @@ class CNewton
   // variables for steady-state solution
   //add more variables here
 
-  C_FLOAT64 * mSs_dxdt;
+  TNT::Vector < C_FLOAT64 > mSs_dxdt;
 
   C_FLOAT64 * mSs_h;
 
-  C_FLOAT64 ** mSs_jacob;
+  CJacob mSs_jacob;
 
   C_INT32 * mSs_ipvt;
 
@@ -152,12 +154,6 @@ class CNewton
    */
   ~CNewton();
 
-
-  /**
-   *  initialize()
-   */
-  void initialize();
-
   /**
    * initialize mSs_x and mSs_xnew
    * it may be changed later and got directly from steady state class
@@ -212,7 +208,7 @@ class CNewton
    *  get mSs_dxdt
    *  @return mSs_dxdt, the private mSs_dxdt double pointer
    */
-  C_FLOAT64 * getSs_dxdt() const;
+  const TNT::Vector < C_FLOAT64 > & getSs_dxdt() const;
 
   /**
    *  set mDerivFactor
@@ -244,6 +240,11 @@ class CNewton
    */
   C_INT32 isSteadyState( void );
 
+ private:
+  /**
+   *  initialize()
+   */
+  void initialize();
 
 };
 #endif  //CNewton_H
