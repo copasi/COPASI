@@ -100,11 +100,14 @@ void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const 
   QString x = table->text(row, 0);
   if (row == table->numRows() - 1)
     {
-      const CCompartment *compartn;
       const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
       C_INT32 noOfCompartmentsRows = compartments.size();
+
       if (noOfCompartmentsRows <= 0) //You have to create a Compartment first,
         return;
+
+      CCopasiVectorN< CMetab > & metabolites = mModel->getMetabolites();
+      C_INT32 noOfMetabolitesRows = metabolites.size();
 
       std::string name = "Metabolites";
       int i = 0;
@@ -115,6 +118,8 @@ void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const 
           name += "_";
           name += QString::number(i);
         }
+      mModel->initializeMetabolites();
+      metabolites = mModel->getMetabolites();
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
@@ -154,6 +159,7 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
 {
   if (isVisible())
     {
+      repaint_table();
       if (binitialized)
         {
           int newWidth = re->size().width();
