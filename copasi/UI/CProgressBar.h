@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:46:33 $
+   $Date: 2004/10/07 09:32:02 $
    End CVS Header */
 
 #if !defined HANDLER_PROGRESS_BAR
@@ -30,6 +30,7 @@ class CProgressBar : public CCallbackHandler
 
   private:
     QProgressDialog * mpWidget;
+    C_INT32 mProgress;
     DataModelGUI* mDataModel;
   };
 

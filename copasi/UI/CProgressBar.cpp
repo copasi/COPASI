@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:46:33 $
+   $Date: 2004/10/07 09:32:02 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,10 +13,10 @@
 #include "DataModelGUI.h"
 
 CProgressBar::CProgressBar(DataModelGUI* dm)
-{
-  mDataModel = dm;
-  mpWidget = NULL;
-}
+    : mpWidget(NULL),
+    mProgress(0),
+    mDataModel(dm)
+{}
 
 bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelButton)
 {
@@ -43,6 +43,7 @@ bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelB
 
   mpWidget->setMinimumDuration(0); //
   mpWidget->setProgress(0);
+  mProgress = 0;
   mDataModel->getQApp()->processEvents();
 
   //std::cout << "ProgressBar: init" << std::endl;
@@ -52,7 +53,7 @@ bool CProgressBar::init(C_INT32 maxSteps, const std::string & text, bool cancelB
 bool CProgressBar::reInit(C_INT32 maxSteps, const std::string & text)
 {
   mpWidget->setLabelText(text.c_str());
-  mpWidget->setTotalSteps(maxSteps);
+  if (maxSteps) mpWidget->setTotalSteps(maxSteps);
   mDataModel->getQApp()->processEvents();
 
   //std::cout << "ProgressBar: reInit" << std::endl;
@@ -61,7 +62,16 @@ bool CProgressBar::reInit(C_INT32 maxSteps, const std::string & text)
 
 bool CProgressBar::progress(C_INT32 steps)
 {
-  mpWidget->setProgress(steps);
+  if (steps == -1)
+    {
+      mpWidget->setProgress(++mProgress);
+    }
+  else
+    {
+      mpWidget->setProgress(steps);
+      mProgress = steps;
+    }
+
   mDataModel->getQApp()->processEvents();
   //std::cout << "ProgressBar: progress... " << steps << std::endl;
   return mpWidget->wasCanceled();
