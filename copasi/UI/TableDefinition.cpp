@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.9 2003/08/08 15:32:03 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.10 2003/08/08 15:36:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -172,7 +172,9 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
-  connect(tabChecked, SIGNAL(clicked()), this, SLOT(radioButtonClicked()));
+  connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
+  connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
+  connect(appendChecked, SIGNAL(clicked()), this, SLOT(appendButtonClicked()));
 }
 
 /*
@@ -214,7 +216,13 @@ void TableDefinition::slotBtnCancelClicked()
 void TableDefinition::slotBtnOKClicked()
 {}
 
-void TableDefinition::radioButtonClicked()
+void TableDefinition::tabButtonClicked()
 {
   seperatorEdit->setEnabled(!tabChecked->isChecked());
 }
+
+void TableDefinition::titleButtonClicked()
+{}
+
+void TableDefinition::appendButtonClicked()
+{}

@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.7 2003/08/08 15:32:03 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.8 2003/08/08 15:36:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -71,7 +71,9 @@ class TableDefinition : public CopasiWidget
     std::vector<QWidget*> selectedList;
 
   protected slots:
-    virtual void radioButtonClicked();
+    virtual void tabButtonClicked();
+    virtual void titleButtonClicked();
+    virtual void appendButtonClicked();
 
     virtual void languageChange();
     virtual void slotBtnCancelClicked();
