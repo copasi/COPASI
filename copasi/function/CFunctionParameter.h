@@ -15,7 +15,7 @@
 #include "report/CCopasiContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */
-class CFunctionParameter : CCopasiContainer
+class CFunctionParameter : public CCopasiContainer
   {
   public:
     /**
