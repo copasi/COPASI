@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.92 $
+   $Revision: 1.94 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 21:16:26 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:42:39 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -265,7 +265,13 @@ class CModel : public CCopasiContainer
      *  Vector of reference to dependent metabolites
      */
     /** @dia:route 25,44; h,108.729,59.8961,172.66,46.7423,177.081 */
-    CCopasiVector< CMetab > mMetabolitesDep;
+    //CCopasiVector< CMetab > mMetabolitesDep;
+
+    /**
+     *  Vector of reference to dependent metabolites
+     */
+    /** @dia:route 25,44; h,108.729,59.8961,172.66,46.7423,177.081 */
+    CCopasiVector< CMetab > mMetabolitesVar;
 
     /**
      *  for array of steps
@@ -283,7 +289,7 @@ class CModel : public CCopasiContainer
      *  Vector of reference to independend reactions.
      */
     /** @dia:route 154,37; h,177.081,90.7423,168.084,89.6337,159.088 */
-    CCopasiVectorN< CReaction > mStepsInd;
+    //CCopasiVectorN< CReaction > mStepsInd;
 
     /**
      *  Vectors of fluxes of the reactions.
@@ -480,46 +486,54 @@ class CModel : public CCopasiContainer
     CCopasiVector< CMetab > & getMetabolites();
 
     /**
-     * Retrieves the vector of independent metabolites.
-     * @return vector < CMetab * > metabolites
-     */
-    CCopasiVector< CMetab > & getMetabolitesInd();
-
-    /**
-     * Retrieves the vector of dependent metabolites.
-     * @return vector < CMetab * > metabolites
-     */
-    CCopasiVector< CMetab > & getMetabolitesDep();
-
-    /**
      * Retrieves the vector of metabolites at it is used in the reduced model.
      * @return const CCopasiVectorN< CMetab > &metabolites
      */
     const CCopasiVector< CMetab > & getMetabolitesX() const;
+    CCopasiVector< CMetab > & getMetabolitesX();
+
+    /**
+     * Retrieves the vector of independent metabolites.
+     * @return vector < CMetab * > metabolites
+     */
+    const CCopasiVector< CMetab > & getMetabolitesInd() const;
+
+    /**
+     * Retrieves the vector of dependent metabolites.
+     * @return vector < CMetab * > metabolites
+     */ 
+    //CCopasiVector< CMetab > & getMetabolitesDep();
+
+    /**
+     * Retrieves the vector of variable metabolites.
+     * This is a subset of MetabolitesX
+     * @return vector < CMetab * > metabolites
+     */
+    const CCopasiVector< CMetab > & getVariableMetabolites() const;
 
     /**
      *  Get the number of total metabolites
      *  @return C_INT32 totMetab
      */
-    unsigned C_INT32 getTotMetab() const;
+    unsigned C_INT32 getNumMetabs() const;
 
     /**
-     *  Get the number of total metabolites
+     *  Get the number of variable metabolites
      *  @return unsigned C_INT32 totMetab
      */
-    unsigned C_INT32 getIntMetab() const;
+    unsigned C_INT32 getNumVariableMetabs() const;
 
     /**
      *  Get the number of internal metabolites
      *  @return unsigned C_INT32 dimension
      */
-    unsigned C_INT32 getIndMetab() const;
+    unsigned C_INT32 getNumIndependentMetabs() const;
 
     /**
      *  Get the number of dependent metabolites
      *  @return unsigned C_INT32 dimension
      */
-    unsigned C_INT32 getDepMetab() const;
+    unsigned C_INT32 getNumDependentMetabs() const;
 
     /**
      *  Set the transition times for all internal metabolites and the
@@ -544,6 +558,7 @@ class CModel : public CCopasiContainer
      * @return const CCopasiVectorN< CReaction > &
      */
     const CCopasiVectorN< CReaction > & getReactionsX() const;
+    CCopasiVectorN< CReaction > & getReactionsX();
 
     // Added by Yongqun He
     /**
