@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.195 $
+   $Revision: 1.196 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 12:50:38 $
+   $Date: 2004/10/08 17:35:31 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1914,6 +1914,40 @@ CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
     return * mList[index];
   }
 
-C_INT32 CModel::suitableForStochasticSimulation() const
+std::string CModel::suitableForStochasticSimulation() const
   {
+    C_INT32 i, multInt, reactSize = mSteps.size();
+    unsigned C_INT32 j;
+    C_FLOAT64 multFloat;
+    //  C_INT32 metabSize = mMetabolites->size();
+
+    for (i = 0; i < reactSize; i++) // for every reaction
+      {
+        // TEST getCompartmentNumber() == 1
+        //if (mSteps[i]->getCompartmentNumber() != 1) return - 1;
+
+        // TEST isReversible() == 0
+        if (mSteps[i]->isReversible() != 0)
+          return "At least one reaction is reversible. That means stochastic simulation is not possible. \nYou can try \"Tools|Convert to irreversible\" which will split the reversible reactions \n into two irreversible reactions. However you will have to fix the kinetics afterwards.";
+
+        // TEST integer stoichometry
+        // Iterate through each the metabolites
+        // juergen: the number of rows of mStoi equals the number of non-fixed metabs!
+        //  for (j=0; i<metabSize; j++)
+        for (j = 0; j < mStoi.numRows(); j++)
+          {
+            multFloat = mStoi[j][i];
+            multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
+            if ((multFloat - multInt) > 0.01)
+              return "Not all stoichiometries are integer numbers. \nThat means that discrete simulation is not possible.";
+          }
+      }
+
+    for (i = 0; i < mMetabolites.size(); ++i)
+      {
+        if (mMetabolites[i]->getInitialNumber() > INT_MAX)
+          return "At least one particle number in the inial state is too big.";
+      }
+
+    return ""; // Model is appropriate for hybrid simulation
   }
