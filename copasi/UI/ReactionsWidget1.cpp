@@ -346,7 +346,11 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     }
   else
     {
-      //if (sub==0)
+      if (sub == 0)
+        {
+          mRi.setMetab(index, table->text(table->mIndex2Line[index], 2).latin1());
+        }
+      //      if (mRi.isVector(index))
     }
 
   // update the widget
