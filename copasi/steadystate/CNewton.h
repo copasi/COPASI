@@ -240,7 +240,7 @@ class CNewton
    */
   C_INT32 isSteadyState( void );
 
- private:
+  //private:   //YH: set as public now because my testSSSolution() is using it.
   /**
    *  initialize()
    */
@@ -248,3 +248,5 @@ class CNewton
 
 };
 #endif // COPASI_CNewton
+
+

@@ -24,7 +24,7 @@ CNewton::CNewton()
 
   mSs_x = NULL;
   mSs_xnew = NULL;
-  mSs_dxdt = NULL;
+  //  mSs_dxdt = NULL;
   mSs_h = NULL;
   mSs_ipvt = NULL;
 
