@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 15:53:59 $
+   $Date: 2004/05/19 16:01:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,11 +20,6 @@
 #include <qtable.h>
 #include "copasi.h"
 #include "CopasiTableWidget.h"
-
-class QPushButton;
-class QGridLayout;
-class QTable;
-class MyTable;
 
 class CompartmentsWidget : public CopasiTableWidget
   {
