@@ -97,6 +97,8 @@ void CModel::cleanup()
 
   mFluxes.clear();
   mFluxesX.clear();
+  mScaledFluxes.clear();
+  mScaledFluxesX.clear();
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -104,6 +106,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
+
+  Copasi->Model = this;
 
   // For old Versions we must read the list of Metabolites beforehand
 
@@ -114,8 +118,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         return Fail;
 
       Copasi->OldMetabolites.load(configBuffer, Size);
-
-      Copasi->Model = this;
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
@@ -369,9 +371,13 @@ void CModel::buildStoi()
     mMetabolites[i] = mMetabolitesX[i];
 
   mFluxes.resize(mSteps.size());
+  mScaledFluxes.resize(mSteps.size());
 
   for (i = 0; i < mSteps.size(); i++)
-    mFluxes[i] = & mSteps[i]->getFlux();
+    {
+      mFluxes[i] = & mSteps[i]->getFlux();
+      mScaledFluxes[i] = & mSteps[i]->getScaledFlux();
+    }
 
   mStoi.newsize(imax - j, mSteps.size());
 
@@ -479,9 +485,13 @@ void CModel::lUDecomposition()
     }
 
   mFluxesX.resize(mStepsX.size());
+  mScaledFluxesX.resize(mStepsX.size());
 
   for (i = 0; i < mStepsX.size(); i++)
-    mFluxesX[i] = &mStepsX[i]->getFlux();
+    {
+      mFluxesX[i] = &mStepsX[i]->getFlux();
+      mScaledFluxesX[i] = &mStepsX[i]->getScaledFlux();
+    }
 
   return;
 }
@@ -1328,7 +1338,7 @@ void CModel::getDerivatives(CState * state, C_FLOAT64 * derivatives)
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mStoi[i][j] * *mFluxes[j];
+        derivatives[i] += mStoi[i][j] * *mScaledFluxes[j];
     }
 
   return;
@@ -1350,7 +1360,7 @@ void CModel::getDerivatives(CStateX * state, C_FLOAT64 * derivatives)
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mRedStoi[i][j] * *mFluxesX[j];
+        derivatives[i] += mRedStoi[i][j] * *mScaledFluxesX[j];
     }
 
   return;
@@ -1381,10 +1391,10 @@ void CModel::setQuantityUnit(const string & name)
 }
 string CModel::getQuantityUnit() const { return mQuantityUnitName; }
 
-C_FLOAT64 CModel::getQuantity2NumberFactor() const
+const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
   { return mQuantity2NumberFactor; }
 
-C_FLOAT64 CModel::getNumber2QuantityFactor() const
+const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
   { return mNumber2QuantityFactor; }
 
 void CModel::setTitle(const string &title)

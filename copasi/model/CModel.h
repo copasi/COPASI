@@ -88,6 +88,8 @@ class CModel
      */
     vector <const C_FLOAT64 *> mFluxes;
     vector <const C_FLOAT64 *> mFluxesX;
+    vector <const C_FLOAT64 *> mScaledFluxes;
+    vector <const C_FLOAT64 *> mScaledFluxesX;
 
     /**
      *  Transition time 
@@ -514,9 +516,9 @@ class CModel
      * Calculate the changes of particles numbers of the metabolites 
      * in the given state.
      * The parameter derivatives must at least provide space for
-     * mMetabolites.size() double
+     * state->getVariableNumberSize() double
      * &param CState * state (input)
-     * &param  C_FLOAT64 * derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
     void getDerivatives(CState * state, C_FLOAT64 * derivatives);
 
@@ -524,9 +526,9 @@ class CModel
      * Calculate the changes of particles numbers of the metabolites 
      * in the given state in reduced model representation.
      * The parameter derivatives must at least provide space for
-     * mMetabolitesX.size() double
+     * state->getVariableNumberSize() double
      * &param CStateX * stateX (input)
-     * &param  C_FLOAT64 * derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
     void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
 
@@ -545,12 +547,12 @@ class CModel
     /**
      *  Get the conversion factor quantity -> number
      */
-    C_FLOAT64 getQuantity2NumberFactor() const;
+    const C_FLOAT64 & getQuantity2NumberFactor() const;
 
     /**
      *  Get the conversion factor number -> quantity
      */
-    C_FLOAT64 getNumber2QuantityFactor() const;
+    const C_FLOAT64 & getNumber2QuantityFactor() const;
 
     /**
      * Add a metabolite to the model
