@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.165 $
+   $Revision: 1.166 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/30 03:03:54 $
+   $Author: anuragr $ 
+   $Date: 2004/11/30 22:03:27 $
    End CVS Header */
 
 /****************************************************************************
@@ -481,7 +481,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                        //Report
+      case 43:                         //Report
         return tableDefinition;
         break;
       case 42:
@@ -616,11 +616,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   if (currentWidget != newWidget)
     {
       if (currentWidget) currentWidget->hide();
-      if (newWidget)
-        {
-          newWidget->show();
-          newWidget->setFocus();
-        }
+      if (newWidget) newWidget->show();
     }
 
   currentWidget = newWidget;
