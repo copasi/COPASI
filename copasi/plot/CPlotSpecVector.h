@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/26 15:26:05 $
+   $Date: 2004/04/27 15:36:30 $
    End CVS Header */
 
 #if !defined PLOTSPEC_VECTOR
@@ -32,10 +32,13 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     CReport mReport;
     CReportDefinition mRepDef;
 
+    std::vector<CCopasiObjectName> mObjectNames;
+    std::vector<CCopasiObject*> mObjects;
+
     std::vector<C_FLOAT64> data;
     std::streampos position;
 
-    enum inputType {NO_INPUT, FROM_STREAM};
+    enum inputType {NO_INPUT, FROM_STREAM, FROM_OBJECTS};
     inputType inputFlag;
 
     std::vector<PlotWindow*> windows;
@@ -43,6 +46,9 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     bool initAllPlots();
     bool sendDataToAllPlots();
     bool updateAllPlots();
+
+    //this generates mObjects from mObjectNames
+    bool compile();
 
     void createDebugReport();
 
@@ -63,6 +69,7 @@ class CPlotSpecVector: public CCopasiVectorN<CPlotSpec>
     C_INT32 getNumColumns() const {return ncols;};
 
     bool initPlottingFromStream();
+    bool initPlottingFromObjects();
     bool doPlotting();
 
     void cleanup();

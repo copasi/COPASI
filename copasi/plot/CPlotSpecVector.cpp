@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/26 15:26:04 $
+   $Date: 2004/04/27 15:36:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -95,6 +95,38 @@ bool CPlotSpecVector::initPlottingFromStream()
   return success;
 }
 
+bool CPlotSpecVector::initPlottingFromObjects()
+{
+  bool success = true;
+  inputFlag = NO_INPUT;
+
+  if (size() == 0)
+    {
+      std::cout << "plot: not plots defined" << std::endl;
+      return false;
+    }
+
+  ncols = mObjectNames.size();
+  if (ncols <= 0)
+    {
+      std::cout << "plot: ncols <=0" << std::endl;
+      return false;
+    }
+  data.resize(ncols);
+
+  inputFlag = FROM_OBJECTS;
+
+  if (!compile()) //create mObjects;
+    {
+      std::cout << "plot: compile not successful" << std::endl;
+      return false;
+    }
+
+  initAllPlots();
+
+  return success;
+}
+
 bool CPlotSpecVector::sendDataToAllPlots()
 {
   //C_INT32 i;
@@ -142,29 +174,65 @@ bool CPlotSpecVector::initAllPlots()
 bool CPlotSpecVector::doPlotting()
 {
   bool success = true;
-  if (!inputFlag == FROM_STREAM)
+
+  if (inputFlag == FROM_OBJECTS)
+  {}
+  else if (inputFlag == FROM_STREAM)
     {
-      std::cout << "doPlotting: no input stream" << std::endl;
+      pSource->seekg(position);
+
+      C_INT32 i;
+
+      while (!(pSource->eof()))
+        {
+          for (i = 0; i < ncols; ++i)
+            {
+              if (!(*pSource >> data[i])) break;
+            }
+          if (i == ncols) //line was read completely
+            sendDataToAllPlots();
+        };
+
+      position = pSource->tellg();
+    }
+  else
+    {
+      std::cout << "doPlotting: no input method" << std::endl;
       return false;
     }
 
-  pSource->seekg(position);
-
-  C_INT32 i;
-
-  while (!(pSource->eof()))
-    {
-      for (i = 0; i < ncols; ++i)
-        {
-          if (!(*pSource >> data[i])) break;
-        }
-      if (i == ncols) //line was read completely
-        sendDataToAllPlots();
-    };
-
-  position = pSource->tellg();
-
   updateAllPlots();
+
+  return success;
+}
+
+bool CPlotSpecVector::compile()
+{
+  bool success = true;
+
+  mObjects.clear();
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+  CCopasiObject* pSelected;
+
+  std::vector<CCopasiObjectName>::const_iterator it = mObjectNames.begin();
+  for (; it != mObjectNames.end(); ++it)
+    {
+      std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
+
+      pSelected = CCopasiContainer::ObjectFromName(ListOfContainer, *it);
+      if (!pSelected)
+        {
+          std::cout << "Object not found!" << std::endl;
+          return false;
+        }
+
+      //add(pSelected); //what's this?
+
+      //TODO check hasValue()
+
+      mObjects.push_back(pSelected);
+    }
 
   return success;
 }
@@ -173,13 +241,15 @@ void CPlotSpecVector::createDebugReport()
 {
   std::cout << "Create Debug Report for Plot" << std::endl;
 
-  mRepDef.getBodyAddr()->clear();
+  mObjectNames.clear();
 
   //std::cout << Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN() << std::endl;
   CCopasiObjectName name = Copasi->pModel->getObject(CCopasiObjectName("Reference=Time"))->getCN();
   std::cout << name << std::endl;
 
-  mRepDef.getBodyAddr()->push_back(name);
+  mObjectNames.push_back(name);
 
-  mReport.compile();
+  //mRepDef.getBodyAddr()->clear();
+  //mRepDef.getBodyAddr()->push_back(name);
+  //mReport.compile();
 }
