@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.1 2003/09/29 04:13:28 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.2 2003/09/30 04:10:09 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -17,10 +17,10 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QLabel;
-class QLineEdit;
+class ScanLineEdit;
 class QPushButton;
 class QComboBox;
-class QCheckBox;
+class ScanCheckBox;
 class QFrame;
 
 class OptimizationItemWidget : public QWidget
@@ -32,19 +32,19 @@ class OptimizationItemWidget : public QWidget
     ~OptimizationItemWidget();
 
     QLabel* textLabel2;
-    QLineEdit* lineLower;
+    ScanLineEdit* lineLower;
     QPushButton* buttonLowerEdit;
     QComboBox* comboBoxUpperOp;
     QLabel* textLabel3;
     QComboBox* comboBoxLowerOp;
-    QCheckBox* checkLowerInf;
-    QLineEdit* lineUpper;
+    ScanCheckBox* checkLowerInf;
+    ScanLineEdit* lineUpper;
     QPushButton* buttonUpperEdit;
     QLabel* textLabel4;
     QFrame* line10;
-    QCheckBox* checkUpperInf;
+    ScanCheckBox* checkUpperInf;
     QFrame* line11;
-    QLineEdit* ObjectName;
+    ScanLineEdit* ObjectName;
 
   public slots:
     virtual void slotPosInfClicked();

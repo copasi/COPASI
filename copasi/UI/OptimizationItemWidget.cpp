@@ -2,19 +2,17 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.1 2003/09/29 04:13:28 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.2 2003/09/30 04:10:09 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #include "OptimizationItemWidget.h"
-
+#include "ScanItemWidget.h"
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qcombobox.h>
-#include <qcheckbox.h>
 #include <qframe.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -37,7 +35,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   layout13 = new QHBoxLayout(0, 0, 6, "layout13");
 
-  lineLower = new QLineEdit(this, "lineLower");
+  lineLower = new ScanLineEdit(this, "lineLower");
   layout13->addWidget(lineLower);
 
   buttonLowerEdit = new QPushButton(this, "buttonLowerEdit");
@@ -57,13 +55,13 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addWidget(comboBoxLowerOp, 5, 1);
 
-  checkLowerInf = new QCheckBox(this, "checkLowerInf");
+  checkLowerInf = new ScanCheckBox(this, "checkLowerInf");
 
   OptimizationItemWidgetLayout->addWidget(checkLowerInf, 6, 2);
 
   layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
-  lineUpper = new QLineEdit(this, "lineUpper");
+  lineUpper = new ScanLineEdit(this, "lineUpper");
   layout14->addWidget(lineUpper);
 
   buttonUpperEdit = new QPushButton(this, "buttonUpperEdit");
@@ -82,7 +80,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addMultiCellWidget(line10, 4, 4, 0, 2);
 
-  checkUpperInf = new QCheckBox(this, "checkUpperInf");
+  checkUpperInf = new ScanCheckBox(this, "checkUpperInf");
 
   OptimizationItemWidgetLayout->addWidget(checkUpperInf, 3, 2);
 
@@ -93,7 +91,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addMultiCellWidget(line11, 1, 1, 0, 2);
 
-  ObjectName = new QLineEdit(this, "ObjectName");
+  ObjectName = new ScanLineEdit(this, "ObjectName");
   ObjectName->setEnabled(FALSE);
 
   OptimizationItemWidgetLayout->addMultiCellWidget(ObjectName, 0, 0, 1, 2);
