@@ -109,6 +109,14 @@ SOURCE=.\CStochSolver.cpp
 
 SOURCE=.\CTrajectory.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryProblem.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -128,6 +136,14 @@ SOURCE=.\CStochSolver.h
 # Begin Source File
 
 SOURCE=.\CTrajectory.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTrajectoryProblem.h
 # End Source File
 # Begin Source File
 
