@@ -72,8 +72,11 @@ CReaction::CReaction(const CReaction & src,
     mCallParameterObjects(src.mCallParameterObjects)
 {
   CONSTRUCTOR_TRACE;
-  initCallParameters();
-  initCallParameterObjects();
+  if (mpFunction)
+    {
+      initCallParameters();
+      initCallParameterObjects();
+    }
 }
 
 CReaction::~CReaction() {cleanup(); DESTRUCTOR_TRACE;}
@@ -457,13 +460,16 @@ void CReaction::compile(const CCopasiVectorNS < CCompartment > & compartments)
       compartments[mId2Modifiers[i]->mCompartmentName]->
       getMetabolites()[mId2Modifiers[i]->mMetaboliteName];
 
-  initCallParameters();
-  setCallParameters();
-  checkCallParameters();
+  if (mpFunction)
+    {
+      initCallParameters();
+      setCallParameters();
+      checkCallParameters();
 
-  initCallParameterObjects();
-  setCallParameterObjects();
-  checkCallParameterObjects();
+      initCallParameterObjects();
+      setCallParameterObjects();
+      checkCallParameterObjects();
+    }
 
   mChemEq.compile(compartments);
   setScalingFactor();
@@ -1243,8 +1249,11 @@ void CReaction::setScalingFactor()
     }
 #endif // XXXX
 
-  mScalingFactor2 =
-    & mChemEq.getBalances()[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
+  CModel * pModel = (CModel *) getObjectAncestor("Model");
+  if (pModel)
+    mScalingFactor2 = & pModel->getQuantity2NumberFactor();
+  else
+    mScalingFactor2 = & mDefaultScalingFactor;
 }
 
 void CReaction::setReactantsFromChemEq()

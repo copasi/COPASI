@@ -223,7 +223,7 @@ bool CMathModel::buildFunctionList()
   for (i = 0; i < imax; i++)
     {
       pFunction = &List[i]->getFunction();
-      if (!CMathSymbol::find(pFunction))
+      if (pFunction && !CMathSymbol::find(pFunction))
         {
           p = new CMathSymbol(pFunction);
           mFunctionList[p->getName()] = p;
