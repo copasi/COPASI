@@ -6,10 +6,7 @@
 
 #include "utilities/CCopasiException.h"
 
-CGlobals::CGlobals():
-    DefaultConc(0.0),
-    DefaultVolume(1.0)
-
+CGlobals::CGlobals()
 {
   try
     {

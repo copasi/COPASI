@@ -47,16 +47,6 @@ class CGlobals
     /**
      *
      */
-    C_FLOAT64 DefaultConc;
-
-    /**
-     *
-     */
-    C_FLOAT64 DefaultVolume;
-
-    /**
-     *
-     */
     COutputList OutputList;
 
     /**
