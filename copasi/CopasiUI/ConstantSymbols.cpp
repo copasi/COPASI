@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/05 19:21:46 $
+   $Author: gasingh $ 
+   $Date: 2004/01/08 20:41:53 $
    End CVS Header */
 
 /*******************************************************************
@@ -55,18 +55,17 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   tableHeader->setLabel(2, "Reaction");
   tableHeader->setLabel(3, "Value");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  //btnOK = new QPushButton("&OK", this);
+  //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
   hBoxLayout->addSpacing(32);
-
   hBoxLayout->addSpacing(50);
-  hBoxLayout->addWidget(btnOK);
+  //hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
-  hBoxLayout->addWidget(btnCancel);
+  //hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn(2, true, true);
@@ -76,8 +75,8 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 bool ConstantSymbols::loadConstantSymbols(CMathModel *model)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/07 21:41:25 $
+   $Date: 2004/01/08 20:41:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -28,8 +28,8 @@ class DifferentialEquations : public CopasiWidget
 
   protected:
     QTextBrowser *textBrowser;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    //QPushButton *btnOK;
+    //QPushButton *btnCancel;
 
   public:
     DifferentialEquations(QWidget *parent, const char * name = 0, WFlags f = 0);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/07 21:41:25 $
+   $Date: 2004/01/08 20:41:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,8 +31,8 @@ class CompartmentSymbols : public CopasiWidget
   protected:
     CMathModel * mModel;
     MyTable * table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    //QPushButton *btnOK;
+    //QPushButton *btnCancel;
 
   signals:
     void name(const QString &);

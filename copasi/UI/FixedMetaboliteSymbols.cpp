@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/07 21:41:25 $
+   $Date: 2004/01/08 20:41:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -57,19 +57,19 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
   tableHeader->setLabel(3, "Concentration");
   tableHeader->setLabel(4, "Particle No.");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  //btnOK = new QPushButton("&OK", this);
+  //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
   hBoxLayout->addSpacing(32);
 
-  hBoxLayout->addSpacing(50);
+  /*hBoxLayout->addSpacing(50);
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
+  hBoxLayout->addSpacing(50);*/
 
   table->sortColumn (0, true, true);
   table->setSorting (true);
@@ -78,8 +78,8 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)

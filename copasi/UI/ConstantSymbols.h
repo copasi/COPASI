@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/05 15:44:41 $
+   $Author: gasingh $ 
+   $Date: 2004/01/08 20:41:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -31,8 +31,8 @@ class ConstantSymbols : public CopasiWidget
   protected:
     CMathModel * mModel;
     MyTable * table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    //QPushButton *btnOK;
+    //QPushButton *btnCancel;
 
   signals:
     void name(const QString &);
