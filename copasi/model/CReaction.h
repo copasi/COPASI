@@ -156,12 +156,17 @@ class CReaction : public CCopasiContainer
 
       private:
         /**
-         *  The name of the parameter as defined by the called function
+         * The key of the Parameter
+         */
+        std::string mKey;
+
+        /**
+         * The name of the parameter as defined by the called function
          */
         std::string & mIdentifierName;
 
         /**
-         *  The value of the parameter
+         * The value of the parameter
          */
         C_FLOAT64 mValue;
 
@@ -191,8 +196,13 @@ class CReaction : public CCopasiContainer
         /**
          *  cleanup();
          */
-
         void cleanup();
+
+        /**
+         *  Retrieves the key of the parameter.
+         *  @return std::string key
+         */
+        std::string getKey() const;
 
         /**
          *  Set the identifier name
@@ -303,7 +313,7 @@ class CReaction : public CCopasiContainer
      *  more than one compartment involved it must be specified to which volume
      *  the concentration change refers)
      */
-    const CCompartment * mpFunctionCompartment;
+    const CCompartment * mpCompartment;
 
     /**
      *  The reversibility of the reaction
@@ -353,11 +363,6 @@ class CReaction : public CCopasiContainer
      *  This describes the mapping of the Metabs and Params to the function parameters
      */
     CFunctionParameterMap mMap;
-
-    /**
-     *  This is a list of parameter objects.
-     */
-    CCopasiVectorNS <CParameter> mParameters;
 
     /**
      *
@@ -612,12 +617,12 @@ class CReaction : public CCopasiContainer
     /**
      * Sets the Compartment related to the kinetic function
      */
-    void setFunctionCompartment(const CCompartment* comp);
+    void setCompartment(const CCompartment* comp);
 
     /**
      * Gets the Compartment related to the kinetic function
      */
-    const CCompartment* getFunctionCompartment() const;
+    const CCompartment* getCompartment() const;
 
     /**
      *  Retrieves the number of compartments the reaction is acting in.
@@ -650,10 +655,10 @@ class CReaction : public CCopasiContainer
 
       os << "   mScalingFactor2: " << d.mScalingFactor2 << std::endl;
       //os << "   mCompartmentNumber: " << d.mCompartmentNumber << std::endl;
-      if (d.mpFunctionCompartment)
-        os << "   *mpFunctionCompartment " << d.mpFunctionCompartment->getName() << std::endl;
+      if (d.mpCompartment)
+        os << "   *mpCompartment " << d.mpCompartment->getName() << std::endl;
       else
-        os << "   mpFunctionCompartment == 0 " << std::endl;
+        os << "   mpCompartment == 0 " << std::endl;
       //os << "   mReversible: " << d.mReversible << std::endl;
       os << "   mId2Substrates" << std::endl;
       os << d.mId2Substrates;
@@ -680,6 +685,11 @@ class CReaction : public CCopasiContainer
      *  Forces compilation of Chemical equation object
      */
     void compileChemEq(const CCopasiVectorN < CCompartment > & compartments);
+
+    /**
+     * Retrieve the map of function parameters
+     */
+    const CFunctionParameterMap & getFunctionParameterMap() const;
 
     /**
      * Retrieve the list of CallParameterObjects()

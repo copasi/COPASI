@@ -38,15 +38,14 @@ CReaction::CReaction(const std::string & name,
     mScaledFlux(0),
     mScalingFactor(&mDefaultScalingFactor),
     mScalingFactor2(&mDefaultScalingFactor),
-    mpFunctionCompartment(NULL),
+    mpCompartment(NULL),
     //mCompartmentNumber(1),
     //mReversible(true),
     mId2Substrates("Substrates", this),
     mId2Products("Products", this),
     mId2Modifiers("Modifiers", this),
     mId2Parameters("Parameters", this),
-    mMap(),
-    mParameters("CallParameters", this)
+    mMap()
     //mCallParameters(),
     //mCallParameterObjects()
 {
@@ -66,15 +65,14 @@ CReaction::CReaction(const CReaction & src,
     mScaledFlux(src.mScaledFlux),
     mScalingFactor(src.mScalingFactor),
     mScalingFactor2(src.mScalingFactor2),
-    mpFunctionCompartment(src.mpFunctionCompartment),
+    mpCompartment(src.mpCompartment),
     //mCompartmentNumber(src.mCompartmentNumber),
     //mReversible(src.mReversible),
     mId2Substrates(src.mId2Substrates, this),
     mId2Products(src.mId2Products, this),
     mId2Modifiers(src.mId2Modifiers, this),
     mId2Parameters(src.mId2Parameters, this),
-    mMap(src.mMap),
-    mParameters(src.mParameters, this)
+    mMap(src.mMap)
     //mCallParameters(src.mCallParameters),
     //mCallParameterObjects(src.mCallParameterObjects)
 {
@@ -422,26 +420,19 @@ const CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters() con
 CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters()
 {return mId2Parameters;}
 
-std::string CReaction::getKey() const
-  {return mKey;}
+std::string CReaction::getKey() const {return mKey;}
 
-const std::string & CReaction::getName() const
-  {return mName;}
+const std::string & CReaction::getName() const {return mName;}
 
-const CChemEq & CReaction::getChemEq() const
-  {return mChemEq;}
+const CChemEq & CReaction::getChemEq() const {return mChemEq;}
 
-const CFunction & CReaction::getFunction() const
-  {return *mpFunction;}
+const CFunction & CReaction::getFunction() const {return *mpFunction;}
 
-const C_FLOAT64 & CReaction::getFlux() const
-  {return mFlux;}
+const C_FLOAT64 & CReaction::getFlux() const {return mFlux;}
 
-const C_FLOAT64 & CReaction::getScaledFlux() const
-  {return mScaledFlux;}
+const C_FLOAT64 & CReaction::getScaledFlux() const {return mScaledFlux;}
 
-bool CReaction::isReversible() const
-  {return mChemEq.getReversibility();}
+bool CReaction::isReversible() const {return mChemEq.getReversibility();}
 
 bool CReaction::setName(const std::string & name)
 {
@@ -473,11 +464,6 @@ void CReaction::setFunction(const std::string & functionName)
   //initCallParameterObjects();
 }
 
-void CReaction::setParameter(const std::string & parameterName, C_FLOAT64 value)
-{
-  mParameters[parameterName]->setValue(value);
-}
-
 void CReaction::initializeParameters()
 {
   unsigned C_INT32 i;
@@ -494,7 +480,6 @@ void CReaction::initializeParameters()
     {
       name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getName();
       param.setName(name);
-      mParameters.add(param);
     }
 }
 
@@ -760,7 +745,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
 CReaction::CId2Metab::CId2Metab(const std::string & name,
                                 const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Reaction"),
+    CCopasiContainer(name, pParent, "Id2Metab"),
     mIdentifierName(mObjectName),
     mMetaboliteName(),
     mCompartmentName(),
@@ -782,7 +767,8 @@ void CReaction::CId2Metab::cleanup() {}
 
 CReaction::CId2Param::CId2Param(const std::string & name,
                                 const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Reaction"),
+    CCopasiContainer(name, pParent, "Id2Param"),
+    mKey(CKeyFactory::add("Constant", this)),
     mIdentifierName(mObjectName),
     mValue(0)
 {}
@@ -790,11 +776,12 @@ CReaction::CId2Param::CId2Param(const std::string & name,
 CReaction::CId2Param::CId2Param(const CId2Param & src,
                                 const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("Constant", this)),
     mIdentifierName(mObjectName),
     mValue(src.mValue)
 {}
 
-CReaction::CId2Param::~CId2Param() {}
+CReaction::CId2Param::~CId2Param() {CKeyFactory::remove(mKey);}
 
 void CReaction::CId2Param::cleanup() {}
 
@@ -904,6 +891,8 @@ const CMetab * CReaction::CId2Metab::getMetabolite() const
   {
     return mpMetabolite;
   }
+
+std::string CReaction::CId2Param::getKey() const {return mKey;}
 
 void CReaction::CId2Param::setIdentifierName(const std::string & identifierName)
 {
@@ -1142,15 +1131,15 @@ void CReaction::setScalingFactor()
     mScalingFactor = &mDefaultScalingFactor;
 
 #ifdef XXXX
-  if (mpFunctionCompartment)
+  if (mpCompartment)
     {
       // should propably check if the compartment appears in the chemical equation
-      mScalingFactor = & mpFunctionCompartment->getVolume();
+      mScalingFactor = & mpCompartment->getVolume();
     }
   else
     {
       try
-      {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
+      {mScalingFactor = & mChemEq.CheckAndGetCompartment()->getVolume();}
       catch (CCopasiException Exc)
         {
           unsigned C_INT32 nr = Exc.getMessage().getNumber();
@@ -1212,11 +1201,14 @@ void CReaction::setReactantsFromChemEq()
 void CReaction::compileChemEq(const CCopasiVectorN < CCompartment > & compartments)
 {mChemEq.compile(compartments);}
 
-void CReaction::setFunctionCompartment(const CCompartment* comp)
-{mpFunctionCompartment = comp;}
+void CReaction::setCompartment(const CCompartment* comp)
+{mpCompartment = comp;}
 
-const CCompartment* CReaction::getFunctionCompartment() const
-  {return mpFunctionCompartment;}
+const CCompartment* CReaction::getCompartment() const
+  {return mpCompartment;}
+
+const CFunctionParameterMap & CReaction::getFunctionParameterMap() const
+  {return mMap;}
 
 const CCallParameterPointers & CReaction::getCallParameterObjects() const
   {return mMap.getObjects();}
@@ -1233,7 +1225,6 @@ void CReaction::initObjects()
   //  add(&mId2Products);
   //  add(&mId2Modifiers);
   //add(&mId2Parameters);
-  //  add(&mParameters);
   //addObjectReference("CallParameters", mCallParameters);
   //addObjectReference("CallParameterObjects", mCallParameterObjects);
   //add(&mMap);
