@@ -11,9 +11,10 @@
 //////////////////////////////////////////////////
 CReport::CReport():
     CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
+    ostream(NULL),
     mpReportDef(NULL),
-    mAppend(true),
-    ostream(NULL)
+    mTarget(""),
+    mAppend(true)
     //,mKey(CKeyFactory::add("Report", this))
 {}
 
@@ -23,7 +24,7 @@ CReport::~CReport()
 void CReport::cleanup()
 {
   // Please Dont clear the objectList, as all pointers are also referred swh else
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < headerObjectList.size(); i++)
     headerObjectList[i] = NULL;
 
@@ -62,7 +63,7 @@ void CReport::setAppend(bool append)
 void CReport::printHeader()
 {
   // for loop print out mpReportDef->getHeader()
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < headerObjectList.size(); i++)
     headerObjectList[i]->print(*ostream);
 }
@@ -70,7 +71,7 @@ void CReport::printHeader()
 void CReport::printBody()
 {
   // for loop print out mpReportDef->getBody()
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < bodyObjectList.size(); i++)
     bodyObjectList[i]->print(*ostream);
 }
@@ -78,7 +79,7 @@ void CReport::printBody()
 void CReport::printFooter()
 {
   // for loop print out mpReportDef->getFooter()
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < footerObjectList.size(); i++)
     footerObjectList[i]->print(*ostream);
 }
@@ -104,7 +105,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
                                       std::vector<CCopasiObject*> & objectList,
                                       std::vector<CCopasiObjectName>* nameVector)
 {
-  int i;
+  unsigned C_INT32 i;
   CCopasiObject* pSelected;
 
   // if no specified container list
@@ -120,7 +121,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
   else
     {
       CCopasiContainer* pCopasiObject;
-      int containerIndex;
+      unsigned C_INT32 containerIndex;
       for (i = 0; i < nameVector->size(); i++)
         {
           //favor to search the list of container first
@@ -164,7 +165,7 @@ void CReport::getObjectFromName(
   else
     {
       CCopasiContainer* pCopasiObject;
-      int containerIndex;
+      unsigned C_INT32 containerIndex;
       //favor to search the list of container first
       pObject = NULL;
       for (containerIndex = 0; containerIndex < pListOfContainer->size(); containerIndex++)

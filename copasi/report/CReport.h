@@ -22,13 +22,14 @@ class CReport : public CCopasiObject
   {
   private:
     std::ostream * ostream;
+    CReportDefinition *mpReportDef;
+    std::string mTarget;
+    bool mAppend;
+
     std::vector<CCopasiObject*> footerObjectList;
     std::vector<CCopasiObject*> bodyObjectList;
     std::vector<CCopasiObject*> headerObjectList;
 
-    CReportDefinition *mpReportDef;
-    std::string mTarget;
-    bool mAppend;
     //    std::string mKey;
 
   public:
