@@ -262,6 +262,7 @@
     <function access="protected" returnType="const std::vector&lt;int&gt;*">getSelectedIndicesFromList()</function>
     <function access="protected">updateMoveButtons()</function>
     <function access="protected">updateOutputVector()</function>
+    <function access="protected">selectObjects( std::vector&lt;CCopasiObject *&gt; * objects )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
