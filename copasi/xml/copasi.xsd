@@ -304,6 +304,7 @@
                         </xs:complexType>
                       </xs:element>      I   
                     </xs:sequence>  
+                    <xs:attribute name="active" type="xs:boolean" use="optional" default="true"/>
                   </xs:extension>
                 </xs:complexType>
               </xs:element>
@@ -504,7 +505,6 @@
                   <xs:extension base="cOBJECT">
                     <xs:attribute name="min" type="xs:double" use="optional"/>
                     <xs:attribute name="max" type="xs:double" use="optional"/>
-                    <xs:attribute name="autoscale" type="xs:boolean" use="optional" default="true"/>
                   </xs:extension>
                 </xs:complexType>
               </xs:element>
@@ -514,10 +514,10 @@
       </xs:sequence>
       <xs:attribute name="type" use="required">
         <xs:restriction base="xs:string">
-          <xs:enumeration value="unset"/>
-          <xs:enumeration value="curve2d"/>
-          <xs:enumeration value="plot2d"/>
-          <xs:enumeration value="simWiz"/>
+          <xs:enumeration value="Unset"/>
+          <xs:enumeration value="Curve2d"/>
+          <xs:enumeration value="Plot2d"/>
+          <xs:enumeration value="SimWiz"/>
         </xs:restriction>
       </xs:attribute> 
     </xs:extension>  
