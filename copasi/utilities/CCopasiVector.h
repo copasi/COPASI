@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/09 02:02:26 $
+   $Date: 2005/03/09 15:46:25 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -207,7 +207,10 @@ template < class CType > class CCopasiVector:
               CCopasiObject * pObject = *(begin() + Index);
 
               if (name.getObjectType() == pObject->getObjectType())
-                return pObject;
+                return pObject; //exact match of type and name
+
+              if (name.getObjectName() == "")
+                return pObject; //cn contains no "="; type cannot be checked
             }
 
           return NULL;
