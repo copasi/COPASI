@@ -17,7 +17,6 @@
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathVariable.h"
 #include "mathmodel/CMathEq.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /**

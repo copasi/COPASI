@@ -15,7 +15,6 @@
 #include <qfont.h>
 #include "model/CModel.h"
 #include "model/CReaction.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree.

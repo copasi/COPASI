@@ -27,7 +27,6 @@
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 

@@ -14,7 +14,6 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Default constructor.

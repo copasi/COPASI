@@ -14,7 +14,6 @@
 #include "copasi.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "copasiWidget.h"
-#include "utilities/CMethodParameter.h"
 
 class CModel;
 

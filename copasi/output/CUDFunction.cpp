@@ -20,7 +20,6 @@
 #include "CUDFunction.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CCopasiException.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Default constructor
@@ -573,7 +572,7 @@ C_INT32 CUDFunction::parse()
           mNodes.push_back(new CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:               // this is an error
+        case N_NOP:                // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

@@ -17,7 +17,6 @@
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "model/CMoiety.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Constructs a Widget for the Moiety subsection of the tree.

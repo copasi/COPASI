@@ -14,8 +14,8 @@
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
 #include "CEigen.h"
-
-#include "output/output.h"
+#include "output/COutputEvent.h"
+#include "output/COutputList.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
 

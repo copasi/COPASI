@@ -19,7 +19,6 @@
 #include "MoietyWidget1.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /*

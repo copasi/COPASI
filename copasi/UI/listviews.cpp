@@ -34,7 +34,6 @@
 #include "TrajectoryWidget.h"
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
-#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder

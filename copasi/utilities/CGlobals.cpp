@@ -8,7 +8,6 @@
 #include "output/CUDFunction.h"
 #include "output/COutputList.h"
 #include "output/COutput.h"
-#include "utilities/CMethodParameter.h"
 
 CGlobals::CGlobals():
     pFunctionDB(new CFunctionDB),

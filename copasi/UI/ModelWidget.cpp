@@ -18,7 +18,6 @@
 #include "ModelWidget.h"
 #include "listviews.h"
 #include "model/CModel.h"
-#include "utilities/CMethodParameter.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 
@@ -102,9 +101,7 @@ void ModelWidget::loadModel(CModel *model)
 }
 
 void ModelWidget::slotBtnCancelClicked()
-{
-}
+{}
 
 void ModelWidget::slotBtnOKClicked()
-{
-}
+{}

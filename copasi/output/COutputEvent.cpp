@@ -6,9 +6,9 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "output.h"
-
+#include "COutputEvent.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "COutputList.h"
 
 /**
  * Default constructor. 

@@ -15,7 +15,6 @@
 #include "mathmodel/CMathConstant.h"
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
-#include "utilities/CMethodParameter.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
