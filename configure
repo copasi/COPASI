@@ -16710,10 +16710,6 @@ echo "${ECHO_T}found xgettext programs is not GNU xgettext; ignore it" >&6
 
 
 if test "${enable_CopasiUI}" != no; then
-  enable_CopasiUI=yes
-fi;
-
-if test $enable_CopasiUI = yes; then
 
 if test -z "3"; then
   kde_qtver=3
@@ -21295,7 +21291,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 21298: $i/$j" >&5
+    echo "configure: 21294: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -21530,7 +21526,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 21533: $i/$j" >&5
+    echo "configure: 21529: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i

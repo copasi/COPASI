@@ -77,10 +77,6 @@ dnl WITH_NLS is for the po files
 AM_KDE_WITH_NLS
 
 if test "${enable_CopasiUI}" != no; then
-  enable_CopasiUI=yes
-fi;
-
-if test $enable_CopasiUI = yes; then
 KDE_USE_QT(3)
 AC_PATH_QT
 fi;
