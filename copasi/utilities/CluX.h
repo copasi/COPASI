@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/29 09:31:45 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:20 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -56,6 +56,7 @@
 // int      (0 if successful, 1 otherwise)
 //
 //
+#include "COutputHandler.h"
 
 template <class Matrix, class Subscript>
       int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CCallbackHandler* cb = NULL)

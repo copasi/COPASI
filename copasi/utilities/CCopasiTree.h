@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 15:22:37 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:20 $
    End CVS Header */
 
 /**
@@ -18,6 +18,11 @@
 
 #include <iterator>
 #include <set>
+
+template < class _Node > class CCopasiTree;
+
+template <class _Node>
+std::ostream & operator<< (std::ostream & os, const CCopasiTree< _Node > & A);
 
 /**
  * The template class CCopasiTree takes as template argument a class

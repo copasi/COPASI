@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:18 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:19 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 #define COPASI_CCopasiObjectReference
 
 #include "CCopasiObject.h"
+#include "CCopasiObjectName.h"
 
 /** @dia:pos 64.092,27.0418 */
 /** @dia:route CCopasiObject; v,60.054,22.7537,25.1206,81.8072,27.0418 */

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/09 15:46:25 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:20 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -25,6 +25,11 @@
 
 class CReadConfig;
 //class CWriteConfig;
+
+template <class CType> class CCopasiVector;
+
+template <class CType>
+std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d);
 
 template < class CType > class CCopasiVector:
         protected std::vector< CType * >, public CCopasiContainer
@@ -59,7 +64,7 @@ template < class CType > class CCopasiVector:
         CONSTRUCTOR_TRACE;
 
         unsigned C_INT32 i, imax = ((std::vector< CType * > *)this)->size();
-        iterator Target = begin();
+        iterator Target = this->begin();
         const_iterator Source = src.begin();
 
         for (i = 0; i < imax; i++, Target++, Source++)
@@ -71,7 +76,7 @@ template < class CType > class CCopasiVector:
        */
       virtual ~CCopasiVector()
       {
-        cleanup();
+        this->cleanup();
         DESTRUCTOR_TRACE;
       }
 
@@ -80,8 +85,8 @@ template < class CType > class CCopasiVector:
        */
       virtual void cleanup()
       {
-        iterator it = begin();
-        iterator End = end();
+        iterator it = this->begin();
+        iterator End = this->end();
 
         for (; it != End; it++)
           if (*it)
@@ -94,7 +99,7 @@ template < class CType > class CCopasiVector:
                 *it = NULL;
               }
 
-        clear();
+        this->clear();
       }
 
       /**
@@ -118,8 +123,8 @@ template < class CType > class CCopasiVector:
         assert(indexFrom < ((std::vector< CType * > *)this)->size());
         assert(indexTo < ((std::vector< CType * > *)this)->size());
 
-        iterator from = begin() + indexFrom;
-        iterator to = begin() + indexTo;
+        iterator from = this->begin() + indexFrom;
+        iterator to = this->begin() + indexTo;
 
         value_type tmp = *from;
         *from = *to;
@@ -143,7 +148,7 @@ template < class CType > class CCopasiVector:
        */
       virtual void remove(const unsigned C_INT32 & index)
       {
-        iterator Target = begin() + index;
+        iterator Target = this->begin() + index;
         assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
@@ -164,7 +169,7 @@ template < class CType > class CCopasiVector:
       virtual bool remove(CCopasiObject * pObject)
       {
         const unsigned C_INT32 & index = getIndex(pObject);
-        iterator Target = begin() + index;
+        iterator Target = this->begin() + index;
         assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
@@ -181,7 +186,7 @@ template < class CType > class CCopasiVector:
       const value_type operator[](unsigned C_INT32 index) const
         {
           assert(index < ((std::vector< CType * > *)this)->size());
-          return *(begin() + index);
+          return *(this->begin() + index);
         }
 
       /**
@@ -190,7 +195,7 @@ template < class CType > class CCopasiVector:
       value_type & operator[](unsigned C_INT32 index)
       {
         assert(index < ((std::vector< CType * > *)this)->size());
-        return *(begin() + index);
+        return *(this->begin() + index);
       }
 
       /**
@@ -204,7 +209,7 @@ template < class CType > class CCopasiVector:
 
           if (Index < size())
             {
-              CCopasiObject * pObject = *(begin() + Index);
+              CCopasiObject * pObject = *(this->begin() + Index);
 
               if (name.getObjectType() == pObject->getObjectType())
                 return pObject; //exact match of type and name
@@ -239,7 +244,7 @@ template < class CType > class CCopasiVector:
           {
             ((std::vector< CType * > *)this)->resize(size);
             unsigned C_INT32 i;
-            iterator Target = begin() + OldSize;
+            iterator Target = this->begin() + OldSize;
 
             if (allocate)
               for (i = OldSize; i < size; i++, Target++)
@@ -250,8 +255,8 @@ template < class CType > class CCopasiVector:
           }
         else
           {
-            iterator Target = begin() + size;
-            iterator End = end();
+            iterator Target = this->begin() + size;
+            iterator End = this->end();
 
             for (; Target != End; Target++)
               if (*Target)
@@ -277,7 +282,7 @@ template < class CType > class CCopasiVector:
       virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const
         {
           unsigned C_INT32 i, imax = size();
-          const_iterator Target = begin();
+          const_iterator Target = this->begin();
 
           for (i = 0; i < imax; i++, Target++)
             if (*Target == (void *) pObject) return i;
@@ -332,13 +337,13 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       {
         unsigned C_INT32 i;
 
-        cleanup();
+        this->cleanup();
         ((std::vector< CType * > *)this)->resize(size);
 
-        iterator Target = begin();
+        iterator Target = this->begin();
         for (i = 0; i < size; i++, Target++)*Target = NULL;
 
-        for (i = 0, Target = begin(); i < size; i++, Target++)
+        for (i = 0, Target = this->begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);
@@ -353,7 +358,7 @@ template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
       /*virtual void save(CWriteConfig & configbuffer)
       {
         unsigned C_INT32 i, imax = size();
-        iterator Target = begin();
+        iterator Target = this->begin();
 
         for (i = 0; i < imax; i++, Target++)
           (*Target)->save(configbuffer);
@@ -476,7 +481,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCCopasiVector + 1, name.c_str());
 
-        return *(begin() + Index);
+        return *(this->begin() + Index);
       }
 
       /**
@@ -490,7 +495,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
             CCopasiMessage(CCopasiMessage::ERROR,
                            MCCopasiVector + 1, name.c_str());
 
-          return *(begin() + Index);
+          return *(this->begin() + Index);
         }
 
       /**
@@ -501,7 +506,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           C_INT32 Index = getIndex(name.getElementName(0));
           if (Index == -1) return NULL;
 
-          CCopasiObject * pObject = *(begin() + Index);
+          CCopasiObject * pObject = *(this->begin() + Index);
 
           if (name.getObjectType() == pObject->getObjectType())
             return pObject; //exact match of type and name
@@ -524,8 +529,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        */
       virtual unsigned C_INT32 getIndex(const std::string &name) const
         {
-          unsigned C_INT32 i, imax = size();
-          const_iterator Target = begin();
+          unsigned C_INT32 i, imax = this->size();
+          const_iterator Target = this->begin();
 
           for (i = 0; i < imax; i++, Target++)
             if (*Target && (*Target)->getObjectName() == name) return i;
@@ -581,13 +586,13 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       {
         unsigned C_INT32 i;
 
-        cleanup();
+        this->cleanup();
         ((std::vector< CType * >*)this)->resize(size);
 
-        iterator Target = begin();
+        iterator Target = this->begin();
         for (i = 0; i < size; i++, Target++) *Target = NULL;
 
-        for (i = 0, Target = begin(); i < size; i++, Target++)
+        for (i = 0, Target = this->begin(); i < size; i++, Target++)
           {
             *Target = new CType("NoName", this);
             (*Target)->load(configbuffer);

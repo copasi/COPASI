@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:24:29 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:19 $
    End CVS Header */
 
 /**
@@ -81,17 +81,17 @@ class CMathVariable: public CMathSymbol
     /**
      *
      */
-    virtual bool setInitialValue(const C_FLOAT64 & value) = NULL;
+    virtual bool setInitialValue(const C_FLOAT64 & value) = 0;
 
     /**
      *
      */
-    virtual const C_FLOAT64 & getInitialValue() const = NULL;
+    virtual const C_FLOAT64 & getInitialValue() const = 0;
 
     /**
      *
      */
-    virtual const C_FLOAT64 & getValue() const = NULL;
+    virtual const C_FLOAT64 & getValue() const = 0;
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/07/22 20:47:32 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:19 $
    End CVS Header */
 
 /**
@@ -92,14 +92,14 @@ template < class _Data > class CCopasiNode
        * Retreive the data of the Node.
        * @return Data data
        */
-      virtual Data getData() const = NULL;
+      virtual Data getData() const = 0;
 
       /**
        * Set the data of the Node.
        * @param const Data & data
        * @return bool success
        */
-      virtual bool setData(const Data & data) = NULL;
+      virtual bool setData(const Data & data) = 0;
 
       /**
        * Retreive the parent of a Node.

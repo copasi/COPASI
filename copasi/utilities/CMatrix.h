@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/18 02:49:12 $
+   $Author: gauges $ 
+   $Date: 2005/03/17 08:56:20 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -13,6 +13,36 @@
 #include <assert.h>
 
 #include "copasi.h"
+
+template<typename CType> class CMatrix;
+
+template <class CType>
+std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A);
+
+template <class Matrix> class CTransposeView;
+
+template <class Matrix>
+std::ostream &operator << (std::ostream &os, const CTransposeView< Matrix > & A);
+
+template <class Matrix> class CLowerTriangularView;
+
+template <class Matrix>
+std::ostream &operator<<(std::ostream &os, const CLowerTriangularView< Matrix > & A);
+
+template <class Matrix> class CUpperTriangularView;
+
+template <class Matrix>
+std::ostream &operator<<(std::ostream &os, const CUpperTriangularView< Matrix > & A);
+
+template <class Matrix> class CUnitUpperTriangularView;
+
+template <class Matrix>
+std::ostream &operator << (std::ostream &os, const CUnitUpperTriangularView< Matrix > & A);
+
+template <class Matrix> class CUnitLowerTriangularView;
+
+template <class Matrix>
+std::ostream &operator << (std::ostream &os, const CUnitLowerTriangularView< Matrix > & A);
 
 /**
  * Template class CMatrix < class CType >
