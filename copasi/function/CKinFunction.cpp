@@ -26,12 +26,6 @@ CKinFunction::CKinFunction(const string & name,
   setDescription(description);
 }
 
-void CKinFunction::initialize() 
-{
-  cleanup();
-  // mNodes = new CKinNodes;
-}
-
 CKinFunction::~CKinFunction() {}
 
 void CKinFunction::cleanup() 
@@ -64,8 +58,6 @@ C_INT32 CKinFunction::load(CReadConfig & configbuffer,
   C_INT32 Fail = 0;
     
   if ((Fail = CBaseFunction::load(configbuffer,mode))) return Fail;
-    
-  initialize();
     
   if ((Fail = configbuffer.getVariable("Nodes", "C_INT32", &Size)))
     return Fail;

@@ -71,11 +71,6 @@ class CKinFunction: public CBaseFunction
 	       const string & description);
 
   /**
-   *  Init
-   */
-  void initialize();
-    
-  /**
    *  Destructor
    */
   ~CKinFunction();

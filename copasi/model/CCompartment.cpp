@@ -118,8 +118,10 @@ void CCompartment::setVolume(C_FLOAT64 volume) {mVolume = volume;}
 
 void CCompartment::addMetabolite(CMetab &metabolite)
 {
-  metabolite.setCompartment(this);
-  mMetabolites.add(metabolite);
+  CMetab *pMetabolite = new CMetab(metabolite);
+  
+  pMetabolite->setCompartment(this);
+  mMetabolites.add(pMetabolite);
 }
 
 C_INT16 CCompartment::isValidName() const

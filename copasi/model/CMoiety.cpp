@@ -75,13 +75,13 @@ void CMoiety::change(const string & name,
 
 C_FLOAT64 CMoiety::dependentNumber()
 {
-  C_FLOAT64 Number = mINumber;
+  mNumber = mINumber;
     
   for(unsigned C_INT32 i=1; i < mEquation.size(); i++)
-    Number -= mEquation[i]->getMultiplicity() * 
+    mNumber -= mEquation[i]->getMultiplicity() * 
       mEquation[i]->getMetabolite().getNumber();
     
-  return Number;
+  return mNumber;
 }
 
 string CMoiety::getName() const {return mName;}
@@ -126,7 +126,7 @@ void CMoiety::setInitialValue()
  */
 C_FLOAT64 CMoiety::getNumber() const
 {
-  return mNumber;
+  return mINumber;
 }
 
 /**
@@ -134,6 +134,6 @@ C_FLOAT64 CMoiety::getNumber() const
  */
 void * CMoiety::getNumberAddr()
 {
-  return &mNumber;
+  return &mINumber;
 }
 

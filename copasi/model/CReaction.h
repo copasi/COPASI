@@ -52,9 +52,15 @@ class CReaction
     public:
       // Operations
       /**
-       *  Default Constructor
+       *  Default constructor
        */
       CId2Metab();
+
+      /**
+       *  Copy constructor
+       *  @param "const CId2Metab &" src
+       */
+      CId2Metab(const CId2Metab & src);
 
       /**
        *  Destructor
@@ -85,9 +91,15 @@ class CReaction
     public:
       // Operations
       /**
-       *  Default Constructor
+       *  Default constructor
        */
       CId2Param();
+
+      /**
+       *  Copy constructor
+       *  @param "const CId2Param &" src
+       */
+      CId2Param(const CId2Param & src);
 
       /**
        *  Destructor

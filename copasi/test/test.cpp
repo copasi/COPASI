@@ -80,10 +80,10 @@ C_INT main(void)
       // TestReadSample();
       // TestTrajectory();
       // by Yongqun He
-      TestNewton();
+      // TestNewton();
       // TestSSSolution();
 
-      // TestTrajectory();
+      TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestBaseFunction();
@@ -369,10 +369,10 @@ C_INT32 TestOutputEvent(void)
   CWriteConfig outbuf("wei.gps");
   oList.save(outbuf);
 
-  oList.setModel(model);
+  //  oList.setModel(model);
 
   string SS = "Steady-state output";
-  oList.compile(SS);
+  //  oList.compile(SS);
 
   //oList.CCopasi_SS(fout);
   //oList.CCopasi_Dyn(fout1);
@@ -380,7 +380,7 @@ C_INT32 TestOutputEvent(void)
 
   CTrajectory traj(&model, 20, 10.0, 1);
 
-  COutputEvent event(traj, 0, &oList, fout1);
+  //  COutputEvent event(traj, 0, &oList, fout1);
 
   traj.cleanup();
   cout << "Leaving TestOutputEvent..." << endl;
@@ -395,7 +395,7 @@ C_INT32 TestOutputEvent(void)
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/NewtonTest.gps");
+  CReadConfig inbuf("gps/dchan1.gps");
   CModel model;
 
   // COutput output;
@@ -445,20 +445,16 @@ C_INT32  TestNewton(void)
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/NewtonTest.gps");
+    CReadConfig inbuf("gps/dchan1.gps");
     CModel model;
     model.load(inbuf);
-    model.buildStoi();
-    model.lUDecomposition();
-    model.setMetabolitesStatus();
-    model.buildRedStoi();
-    model.buildL();
-    model.buildMoieties();
+    model.compile();
+ 
     model.getReactions().size();
     
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
-    newton.setModel(&model);
+    newton.setModel(model);
     // newton.initialize();
  
     //get mDerivFactor, mSSRes, and mNewtonLimit,
@@ -502,7 +498,7 @@ C_INT32  TestSSSolution(void)
 
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
-    newton.setModel(&model);
+    newton.setModel(model);
     // newton.initialize();
     newton.setDerivFactor(1.0);
     newton.setSSRes(1.0);
@@ -564,7 +560,6 @@ C_INT32 TestMoiety()
 C_INT32 TestKinFunction()
 {
   CKinFunction f;
-  f.initialize();
     
   f.setName("test");
   f.setDescription("(a-b)*(a+b)/5");
@@ -1159,8 +1154,7 @@ C_INT32 MakeFunctionEntry(const string &name,
   unsigned C_INT32 i;
     
   CKinFunction f;
-  f.initialize();
-    
+
   functions.add(f);
 
   functions[Index]->setName(name);

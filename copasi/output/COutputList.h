@@ -79,11 +79,10 @@ class COutputList
   *  Loads an object with data coming from a CReadConfig object.
   *  (CReadConfig object reads an input stream)
   *  @param pconfigbuffer reference to a CReadConfig object.
-  *  @param model refernce to the input configbuffer
   *  @return mFail
   *  @see mFail
   */
-  C_INT32 load(CReadConfig & configbuffer, CModel & model);
+  C_INT32 load(CReadConfig & configbuffer);
 
   void init();
 

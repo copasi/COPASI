@@ -70,7 +70,7 @@ C_INT32 COutputList::save(CWriteConfig & configbuffer)
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputList::load(CReadConfig & configbuffer, CModel & model)
+C_INT32 COutputList::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   COutput output;

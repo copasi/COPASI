@@ -29,11 +29,30 @@ CModel::CModel()
   mpInverseLView = new
     TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
     (mL);
-  
-  initialize();
 }
 
-void CModel::initialize() {}
+CModel::CModel(const CModel & src)
+{
+  mpLView = new
+    TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  
+  mpInverseLView = new
+    TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
+    (mL);
+
+  mTitle = src.mTitle;
+  mComments = src.mComments;
+
+  mCompartments = CCopasiVectorNS < CCompartment >(src.mCompartments);
+  mSteps = CCopasiVectorS < CReaction >(src.mSteps);
+
+  unsigned C_INT32 i, imax = mSteps.size();
+  for (i = 0; i < imax; i++)
+    mSteps[i]->compile(mCompartments);
+
+  initializeMetabolites();
+  compile();
+}
 
 CModel::~CModel()
 {
@@ -56,8 +75,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
 
-  initialize();
-    
   // For old Versions we need must read the list of Metabolites beforehand
   if (configBuffer.getVersion() < "4")
     {
@@ -95,14 +112,14 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   if (configBuffer.getVersion() < "4")
     {
       // Create the correct compartment / metabolite relationships
-      CMetab * pMetabolite;
+      CMetab Metabolite;
       for (i = 0; i < Copasi.OldMetabolites.size(); i++)
         {
-		  pMetabolite = new CMetab;
-          *pMetabolite = *Copasi.OldMetabolites[i];
+	  Metabolite.cleanup();
+          Metabolite = *Copasi.OldMetabolites[i];
             
           mCompartments[Copasi.OldMetabolites[i]->getIndex()]->
-            addMetabolite(pMetabolite);
+            addMetabolite(Metabolite);
         }
     }
 
@@ -155,6 +172,16 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   return Fail;
 }
 
+void CModel::compile()
+{
+   buildStoi();
+   lUDecomposition();
+   setMetabolitesStatus();
+   buildRedStoi();
+   buildL();
+   buildMoieties();
+}
+
 void CModel::buildStoi()
 {
   CCopasiVector < CChemEqElement > Structure;
@@ -174,7 +201,7 @@ void CModel::buildStoi()
   for (i=0; i<imax; i++)
 	cout << mMetabolitesX[i]->getName() << ": " << mMetabolitesX[i]->getStatus() << endl;
 
-  mStoi.newsize(imax, mSteps.size());
+  mStoi.newsize(imax-j, mSteps.size());
     
   for (i=0; i<(unsigned C_INT32) mStoi.num_cols(); i++)
     {
@@ -302,19 +329,25 @@ void CModel::buildRedStoi()
   for (i=0; i<imax; i++)
     for (j=0; j<jmax; j++)
       {
-        Sum = 0.0;
-
         /* Since L[i,k] = 1 for k = i and L[i,k] = 0 for k > i
            we have to avoid L[i,k] where k >= i, i.e.. k < i.
            Similarly, since U[k,j] = 0 for k > j
-           we have to avoid U[k,j] where k > j, i.e., k <= j.
-           Therefore, kmax = min(i-1, j). */
-        kmax = (i - 1 < j) ? i - 1: j;
+           we have to avoid U[k,j] where k > j, i.e., k <= j. */
+        if (j<i)
+          {    
+            Sum = 0.0;
+            kmax = j+1;
+          }
+        else
+          {
+            /* For j < i we are missing a part of the sum: */
+            /* Sum +=  mLU[i][j]; since L[i,i] = 1 */
+            Sum = mLU[i][j];
+            kmax = i;
+          }
+
         for (k=0; k<kmax; k++)
           Sum += mLU[i][k] * mLU[k][j];
-
-        /* For i - 1 < j we are missing a part of the sum: */
-        if (i - 1 < j) Sum += /* mLU[i][i]* */ mLU[i][j]; // since L[i,i] = 1
 
         mRedStoi[i][j] = Sum;
       }
@@ -356,7 +389,7 @@ void CModel::buildL()
     {
         sum = &mL[j][i];
         *sum = - mL[i][j];
-        for (k=j+1; k<i-1; k++)
+        for (k=j+1; k<i; k++)
             // I[i][j] -= mL[i][k] * I[k][j]
             *sum -= mL[i][k] * mL[j][k];
     }
@@ -400,30 +433,31 @@ void CModel::buildMoieties()
 {
   unsigned C_INT32 i;
   unsigned C_INT32 imin = mMetabolitesInd.size();
-  unsigned C_INT32 imax = mMetabolites.size();
+  unsigned C_INT32 imax = imin + mMetabolitesDep.size();
   unsigned C_INT32 j;
   unsigned C_INT32 jmax = imin;
   
-  CMoiety Moiety;
+  CMoiety *pMoiety;
   
   mMoieties.cleanup();
 
   for (i=imin; i<imax; i++)
     {
-      Moiety.cleanup();
+      pMoiety = new CMoiety;
     
-      Moiety.setName(mMetabolitesX[i]->getName());
-      Moiety.add(1.0, mMetabolitesX[i]);
+      pMoiety->setName(mMetabolitesX[i]->getName());
+      pMoiety->add(1.0, mMetabolitesX[i]);
         
       for (j=0; j<jmax; j++)
         {
           if (mL[j][i] != 0.0)
-            Moiety.add(mL[j][i], mMetabolitesX[j]);
+            pMoiety->add(mL[j][i], mMetabolitesX[j]);
         }
-      Moiety.setInitialValue();
-      cout << Moiety.getDescription() << endl;
+      pMoiety->setInitialValue();
+      cout << pMoiety->getDescription() << " = " 
+	   << pMoiety->getNumber() << endl;
       
-      mMoieties.add(Moiety);
+      mMoieties.add(pMoiety);
     }
     
   return;
@@ -470,8 +504,8 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
   setConcentrations(y);
     
   // Calculate the velocity vector depending on the step kinetics
-  for (i=0; i<mSteps.size(); i++)
-    v[i] = mSteps[i]->calculate();
+  for (i=0; i<mStepsX.size(); i++)
+    v[i] = mStepsX[i]->calculate();
 
   // Calculate ydot = RedStoi * v
   for (i=0; i<(unsigned C_INT32) n; i++)

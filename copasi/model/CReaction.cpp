@@ -26,6 +26,11 @@ CReaction::CReaction(const CReaction & src)
   mReversible = src.mReversible;
   mFunction = src.mFunction;
 
+  mId2Substrates = CCopasiVector < CId2Metab > (src.mId2Substrates);
+  mId2Products = CCopasiVector < CId2Metab > (src.mId2Products);
+  mId2Modifiers = CCopasiVector < CId2Metab > (src.mId2Modifiers);
+  mId2Parameters = CCopasiVector < CId2Param > (src.mId2Parameters);
+  
   initIdentifiers();
 }
 
@@ -48,6 +53,7 @@ void CReaction::cleanup()
   mCallParameters.cleanup();
 }
 
+#ifdef XXXX
 CReaction & CReaction::operator=(const CReaction & rhs)
 {
   mName        = rhs.mName;
@@ -63,6 +69,7 @@ CReaction & CReaction::operator=(const CReaction & rhs)
 
   return *this;
 }
+#endif // XXXX
 
 C_INT32 CReaction::load(CReadConfig & configbuffer)
 {
@@ -554,13 +561,27 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   return Fail;
 }
 
-CReaction::CId2Metab::CId2Metab() {}
+CReaction::CId2Metab::CId2Metab() {mpMetabolite = NULL;}
+
+CReaction::CId2Metab::CId2Metab(const CId2Metab & src)
+{
+  mIdentifierName = src.mIdentifierName;
+  mMetaboliteName = src.mMetaboliteName;
+  mCompartmentName = src.mCompartmentName;
+  mpMetabolite = NULL;
+}
 
 CReaction::CId2Metab::~CId2Metab() {}
 
 void CReaction::CId2Metab::cleanup() {}
 
 CReaction::CId2Param::CId2Param() {}
+
+CReaction::CId2Param::CId2Param(const CId2Param & src)
+{
+  mIdentifierName = src.mIdentifierName;
+  mValue = src.mValue;
+}
 
 CReaction::CId2Param::~CId2Param() {}
 

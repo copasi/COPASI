@@ -624,7 +624,7 @@ void CDatum::compileDatum(CModel &Model, CTrajectory *traj)
       break;
 #endif
     case D_T: // time
-	  mpValue = traj->getTime();
+	  mpValue = &traj->getTime();
 	  mType = CFLOAT64;	
 	  break;			
     case D_ICONC:   // Fall through as all have mI but no mJ

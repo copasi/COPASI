@@ -87,7 +87,6 @@ CBaseFunction * CFunctionDB::dBLoad(const string & functionName)
 void CFunctionDB::add(CKinFunction & function)
 {
   CKinFunction *Function = new CKinFunction;
-  Function->initialize();
   Function->copy(function);
         
   mLoadedFunctions.add(Function);

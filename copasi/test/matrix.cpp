@@ -102,8 +102,6 @@ C_INT main2(void)
   try
     {
       CModel model;
-      model.initialize();
-  
       CCompartment compartment;
       // compartment.initialize();
       

@@ -224,9 +224,15 @@ class CModel
 
  public:
   /**
-   * 
+   *  Default constructor
    */
-  CModel();        // constructor
+  CModel();
+
+  /**
+   *  Copy construnctor
+   *  @param "const CModel &" src
+   */
+  CModel(const CModel & src);
 
   /**
    * 
@@ -264,7 +270,12 @@ class CModel
    *  after finishing adding metabolites to compartments.
    */
   void initializeMetabolites();
-    
+  
+  /**
+   *  Compile the model
+   */
+  void compile();
+  
   /**
    *  Build the Stoichiometry Matrix from the chemical equations of the steps
    */

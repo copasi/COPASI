@@ -168,9 +168,9 @@ class CNewton
 
   /**
    *  set CModel
-   *  @param aModel is the CModel set as mModel
+   *  @param "const CModel &" model
    */
-  void setModel(CModel * aModel);
+  void setModel(const CModel & model);
 
   /**
    *  get CModel

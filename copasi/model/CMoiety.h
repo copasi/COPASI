@@ -35,6 +35,7 @@ class CMoiety
 
   /**
    *  Vector of linear dependent CChemEqElement
+   * @supplierCardinality 0..*
    */
   CCopasiVector < CChemEqElement > mEquation;
     

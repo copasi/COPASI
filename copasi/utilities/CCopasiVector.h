@@ -35,7 +35,7 @@ class CCopasiVector : protected vector < CType * >
   CCopasiVector(const CCopasiVector < CType > & src) :
     vector < CType * > (src)
     {
-      unsigned C_INT32 i, imax = size();
+      unsigned C_INT32 i, imax = vector < CType * >::size();
       iterator Target = begin();
       const_iterator Source = src.begin();
       
@@ -46,19 +46,22 @@ class CCopasiVector : protected vector < CType * >
   /**
    *  Destructor
    */
-  virtual ~CCopasiVector() {cleanup();}
+  virtual ~CCopasiVector() {}
 
   /**
    *  Cleanup
    */
   virtual void cleanup()
     {
-      unsigned C_INT32 i, imax = size();
+      unsigned C_INT32 i, imax = vector < CType * >::size();
       iterator Target = begin();
       
       for (i=0; i<imax; i++)
-	(*(Target++))->cleanup();
-  
+        {
+          (*Target)->cleanup();
+          delete *(Target++);
+        }
+      
       clear();
     }
   
@@ -91,7 +94,7 @@ class CCopasiVector : protected vector < CType * >
   virtual void remove(const unsigned C_INT32 & index)
     {
       iterator Target = begin() + index;
-      assert(index < size());
+      assert(index < vector < CType * >::size());
 
       (*Target)->cleanup();
       delete *Target;
@@ -103,7 +106,7 @@ class CCopasiVector : protected vector < CType * >
    */
   const CType * operator[](unsigned C_INT32 index) const
     {
-      assert(index < size());
+      assert(index < vector < CType * >::size());
       return *(begin() + index);
     }   
 
@@ -112,7 +115,7 @@ class CCopasiVector : protected vector < CType * >
    */
   CType * & operator[](unsigned C_INT32 index) 
     {
-      assert(index < size());
+      assert(index < vector < CType * >::size());
       return *(begin() + index);
     }   
 
@@ -159,7 +162,7 @@ template < class CType > class CCopasiVectorS
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorS() {cleanup();}
+  virtual ~CCopasiVectorS() {}
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
@@ -229,7 +232,7 @@ template < class CType > class CCopasiVectorN
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorN() {cleanup();}
+  virtual ~CCopasiVectorN() {}
 
   /**
    *
@@ -327,8 +330,7 @@ template < class CType > class CCopasiVectorNS
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorNS() 
-    {cleanup();}
+  virtual ~CCopasiVectorNS() {}
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
