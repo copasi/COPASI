@@ -820,22 +820,21 @@ void ListViews::loadReportDefinition()
 
   dataModel->removeAllChildren(parent);
 
-  CReportDefinitionVector* obj = dataModel->getReportDefinitionVectorAddr();
+  const std::vector<CReportDefinition*>* objects =
+    dataModel->getReportDefinitionVectorAddr()
+    ->getReportDefinitionsAddr();
 
-  std::vector<CReportDefinition*>* objects = obj->getReportDefinitionsAddr();
-  /*
-  C_INT32 j, jmax = objects.size();
+  C_INT32 j, jmax = objects->size();
 
-  CReportDefintion *obj;
+  CReportDefinition *obj;
   for (j = 0; j < jmax; j++)
     {
-      obj = objects[j];
+      obj = (*objects)[j];
       f = new Folder(parent, obj->getName().c_str());
       f->setID(parent->getID());
       f->setObjectKey(obj->getKey());
       dataModel->addData(parent, f);
     }
-  */
 }
 
 //**************************************************************************************+***
