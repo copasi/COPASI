@@ -19,21 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>line</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
+        <widget class="QLabel" row="2" column="0">
             <property name="name">
                 <cstring>textLabelTitle</cstring>
             </property>
@@ -44,45 +30,7 @@
                 <set>AlignVCenter|AlignRight</set>
             </property>
         </widget>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>lineEditTitle</cstring>
-            </property>
-        </widget>
-        <spacer row="6" column="1">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>130</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLineEdit" row="3" column="1">
-            <property name="name">
-                <cstring>lineEditXName</cstring>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QToolButton" row="3" column="2">
-            <property name="name">
-                <cstring>buttonX</cstring>
-            </property>
-            <property name="text">
-                <string>...</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
+        <widget class="QLabel" row="4" column="0">
             <property name="name">
                 <cstring>textLabelX</cstring>
             </property>
@@ -101,6 +49,14 @@
                 <set>AlignVCenter|AlignRight</set>
             </property>
         </widget>
+        <widget class="QToolButton" row="4" column="2">
+            <property name="name">
+                <cstring>buttonX</cstring>
+            </property>
+            <property name="text">
+                <string>...</string>
+            </property>
+        </widget>
         <widget class="QToolButton" row="5" column="2">
             <property name="name">
                 <cstring>buttonY</cstring>
@@ -109,12 +65,39 @@
                 <string>...</string>
             </property>
         </widget>
+        <widget class="QLineEdit" row="4" column="1">
+            <property name="name">
+                <cstring>lineEditXName</cstring>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="Line" row="3" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>line</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QLineEdit" row="5" column="1">
             <property name="name">
                 <cstring>lineEditYName</cstring>
             </property>
             <property name="readOnly">
                 <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>lineEditTitle</cstring>
             </property>
         </widget>
         <widget class="QLabel" row="5" column="0">
@@ -128,7 +111,32 @@
                 <set>AlignVCenter|AlignRight</set>
             </property>
         </widget>
-        <spacer row="2" column="1">
+        <spacer row="6" column="1">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>0</width>
+                    <height>0</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="0" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;h3&gt;2D curve&lt;/h3&gt;</string>
+            </property>
+        </widget>
+        <spacer row="1" column="1">
             <property name="name">
                 <cstring>spacer2</cstring>
             </property>
@@ -141,24 +149,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>10</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="4" column="1">
-            <property name="name">
-                <cstring>spacer2_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>10</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
