@@ -9,11 +9,9 @@ using namespace std;
 // node
 
 CDependencyGraphNode::CDependencyGraphNode()
-    : mNodeNumber(0)
 {}
 
 CDependencyGraphNode::CDependencyGraphNode(C_INT32 node_number)
-    : mNodeNumber(node_number)
 {}
 
 CDependencyGraphNode::~CDependencyGraphNode()

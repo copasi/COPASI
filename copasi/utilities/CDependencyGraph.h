@@ -60,10 +60,6 @@ class CDependencyGraphNode
 
   private:
     /**
-     * The number of this node.
-     */
-    C_INT32 mNodeNumber;
-    /**
      * A vector containing the edges for this node. An edge is 
      * specified by the remote node to which it connects.
      */
