@@ -33,6 +33,17 @@ CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) \
         copasiui3window.cpp \
         listviews.cpp
 
+CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
+
+CopasiUI_LIBS = \
+	../elementaryFluxModes \
+	../model \
+	../function \
+	../output \
+	../steadystate \
+	../trajectory \
+	../utilities
+
 EXTRA_DIST = \
 	main.cpp \
 	Tree.h \
@@ -99,3 +110,6 @@ LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
+
+check_LIBS:
+	@for d in $(CopasiUI_LIBS); do (cd $$d && make); done

@@ -195,6 +195,11 @@ CopasiUI_MOC_SOURCES =  	CompartmentsWidget1.moc.cpp 	CompartmentsWidget.moc.cpp
 CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp         CompartmentsWidget.cpp         CompartmentsWidget1.cpp         FunctionWidget.cpp         FunctionWidget1.cpp         MetabolitesWidget.cpp         MetabolitesWidget1.cpp         MoietyWidget.cpp         MoietyWidget1.cpp         ReactionsWidget.cpp         ReactionsWidget1.cpp         copasiui3window.cpp         listviews.cpp
 
 
+CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
+
+CopasiUI_LIBS =  	../elementaryFluxModes 	../model 	../function 	../output 	../steadystate 	../trajectory 	../utilities
+
+
 EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
 
 
@@ -244,7 +249,6 @@ MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
 ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
 listviews.$(OBJEXT)
 CopasiUI_LDADD = $(LDADD)
-CopasiUI_DEPENDENCIES = 
 CopasiUI_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -537,6 +541,9 @@ mostlyclean distclean maintainer-clean
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
+
+check_LIBS:
+	@for d in $(CopasiUI_LIBS); do (cd $$d && make); done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
