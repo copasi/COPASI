@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/03/04 21:02:06 $
+   $Date: 2004/03/13 17:38:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -202,7 +202,7 @@ void MoietyWidget::resizeEvent(QResizeEvent * re)
           int w0, w1, w2;
           w0 = newWidth * (weight0 / weightSum);
           w1 = newWidth * (weight1 / weightSum);
-          w2 = newWidth - w0 - w1;
+          w2 = newWidth - w0 - w1 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           table->setColumnWidth(2, w2);

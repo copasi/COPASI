@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/03/04 21:02:11 $
+   $Date: 2004/03/13 17:38:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -154,7 +154,7 @@ void ModesWidget::resizeEvent(QResizeEvent * re)
           float weightSum = weight0 + weight1;
           int w0, w1;
           w0 = newWidth * (weight0 / weightSum);
-          w1 = newWidth - w0;
+          w1 = newWidth - w0 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           binitialized = false;

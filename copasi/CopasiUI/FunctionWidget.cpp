@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:21 $
+   $Author: chlee $ 
+   $Date: 2004/03/13 17:38:43 $
    End CVS Header */
 
 /***********************************************************************
@@ -260,7 +260,7 @@ void FunctionWidget::slotBtnDeleteClicked()
           /* Check if user chooses to deleted Functions */
           switch (choice)
             {
-            case 0:      // Yes or Enter
+            case 0:       // Yes or Enter
               {
                 /* Delete the Functions on which no Reactions are dependent */
                 for (i = 0; i < imax; i++)
@@ -280,7 +280,7 @@ void FunctionWidget::slotBtnDeleteClicked()
                   }
                 break;
               }
-            case 1:      // No or Escape
+            case 1:       // No or Escape
               break;
             }
         }
@@ -386,7 +386,7 @@ void FunctionWidget::resizeEvent(QResizeEvent * re)
           float weightSum = weight0 + weight1;
           int w0, w1;
           w0 = newWidth * (weight0 / weightSum);
-          w1 = newWidth - w0;
+          w1 = newWidth - w0 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           binitialized = false;

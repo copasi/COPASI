@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/03/04 21:02:17 $
+   $Date: 2004/03/13 17:38:43 $
    End CVS Header */
 
 /*******************************************************************
@@ -314,7 +314,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:      // Yes or Enter
+            case 0:       // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -327,7 +327,7 @@ void CompartmentsWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:      // No or Escape
+            case 1:       // No or Escape
               break;
             }
         }
@@ -381,7 +381,7 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           float weightSum = weight0 + weight1;
           int w0, w1;
           w0 = newWidth * (weight0 / weightSum);
-          w1 = newWidth - w0;
+          w1 = newWidth - w0 - table->verticalScrollBar()->width();
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           binitialized = false;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/03/04 20:47:48 $
+   $Date: 2004/03/13 17:38:43 $
    End CVS Header */
 
 /*******************************************************************
@@ -181,7 +181,7 @@ void FixedMetaboliteSymbols::resizeEvent(QResizeEvent * re)
       w1 = newWidth * (weight1 / weightSum);
       w2 = newWidth * (weight2 / weightSum);
       w3 = newWidth * (weight3 / weightSum);
-      w4 = newWidth - w0 - w1 - w2 - w3;
+      w4 = newWidth - w0 - w1 - w2 - w3 - table->verticalScrollBar()->width();
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);
       table->setColumnWidth(2, w2);

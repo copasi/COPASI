@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/03/01 19:11:07 $
+   $Date: 2004/03/13 17:38:43 $
    End CVS Header */
 
 /***********************************************************************
@@ -538,7 +538,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                           // Yes or Enter
+            case 0:                            // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -551,7 +551,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                           // No or Escape
+            case 1:                            // No or Escape
               break;
             }
         }
@@ -613,7 +613,7 @@ void MetabolitesWidget::resizeEvent(QResizeEvent * re)
           w3 = newWidth * (weight3 / weightSum);
           //w4 = newWidth - w0 - w1 - w2 - w3;
           w4 = newWidth * (weight4 / weightSum);
-          w5 = newWidth - w0 - w1 - w2 - w3 - w4;
+          w5 = newWidth - w0 - w1 - w2 - w3 - w4 - table->verticalScrollBar()->width();
 
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
