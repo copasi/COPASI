@@ -23,6 +23,7 @@ CTrajectory::CTrajectory()
   mY = NULL;
   mModel = NULL;
   mODESolver = NULL;
+  mStochSolver = 0;
 }
 	
 
@@ -39,9 +40,18 @@ CTrajectory::CTrajectory(CModel * aModel, C_INT32 aPoints,
   mY = NULL;
   mModel = NULL;
   mODESolver = NULL;
+  mStochSolver = 0;
     
   initialize(aModel);
 }
+
+CTrajectory::CTrajectory(CModel *model, C_INT32 maxPoints, C_FLOAT64 maxTime, C_INT32 method)
+    : mMaxPoints(maxPoints),
+      mEndTime(maxTime),
+      mMethod(method),
+      mODESolver(0),
+      mStochSolver(0)
+{}
 
 // Object assignment overloading,
 CTrajectory & CTrajectory::operator = (const CTrajectory& source)
@@ -83,6 +93,10 @@ void CTrajectory::initialize(CModel * aModel)
       mODESolver = new CODESolver();
       mODESolver->initialize(* mModel, mY, mN, mMethod);
       break;
+    case 2:
+        // we're doing a stochastic simulation
+        mStochSolver = new CStochSolver(mMethod);
+        mStochSolver->initialize(mModel);
     default:
       fatalError();
     }
@@ -103,9 +117,13 @@ void CTrajectory::cleanup()
       mODESolver->cleanup();
       delete mODESolver;
     }
-    
   mODESolver = NULL;
-    
+  if (mStochSolver)
+  {
+      mStochSolver->cleanup();
+      delete mStochSolver;
+  }
+  mStochSolver = 0;
   return;
 }
 
@@ -163,7 +181,6 @@ CODESolver * CTrajectory::getODESolver() const
   return mODESolver;
 }
 
-
 void CTrajectory::setPoints(const C_INT32 anInt)
 {
   mPoints = anInt;	
@@ -187,7 +204,7 @@ C_INT32 CTrajectory::getArrSize() const
 }
 
 
-//calculate the time lenghth
+//calculate the time length
 C_FLOAT64 CTrajectory::calcTimeLength()
 {
   return mEndTime/mPoints;
@@ -235,31 +252,45 @@ void CTrajectory::process()
   // mOutPoint = COutputEvent(TIME_POINT, this);		
   // mOutEnd = COutputEvent(TIME_END, this);
 
-
-  //calculates number of iterations and time intervals
-  C_FLOAT64 length = mEndTime/mPoints;
-  mTime = 0.0;
-
-  // print for the initial time point	
-  // if (mOutInit) mOutInit->Print();
-  // if (mOutPoint) mOutPoint->Print();
-        
-  for(C_INT32 i = 0; i < mPoints; i++)
+    // The trajectory can be calculated using the ODE solver, 
+    // one of the stochastic solver, or a hybrid method (as yet unimplemented)
+    if (mMethod == CONTINUOUS_ODE)
     {
-      //update the CODESolver from current time to end time
-      cout << mTime << "  ";
+        //calculates number of iterations and time intervals
+        C_FLOAT64 length = mEndTime/mPoints;
+        mTime = 0.0;
+
+        // print for the initial time point	
+        // if (mOutInit) mOutInit->Print();
+        // if (mOutPoint) mOutPoint->Print();
+        
+        for(C_INT32 i = 0; i < mPoints; i++)
+        {
+            //update the CODESolver from current time to end time
+            cout << mTime << "  ";
       
-      mODESolver->step(mTime, mTime+length);
+            mODESolver->step(mTime, mTime+length);
 
-      //update CModel
-      mModel->setConcentrations(mY);
+            //update CModel
+            mModel->setConcentrations(mY);
 
-      //print for current time point in the outputEvent
-      // if (OutPoint) OutPoint.Print();
+            //print for current time point in the outputEvent
+            // if (OutPoint) OutPoint.Print();
 
-      mTime += length;
+            mTime += length;
+        }
     }
-	
+    else if (mMethod == STOCH_DIRECT || mMethod == STOCH_NEXTREACTION)
+    {
+        C_FLOAT64 time = 0;
+        C_INT32 step = 0;
+         while (step < mMaxSteps && time < mEndTime && time >= 0)
+         {
+             time = mStochSolver->GetMethod()->DoStep(time);
+             step++;
+         }
+    }
+
   // if (OutEnd) OutEnd.Print();
 
   // delete OutInit; -> to cleanup

@@ -7,7 +7,6 @@
  *           It is to solve the trajectory time course problem of copasi
  */
 
-
 #ifndef CTRAJECTORY_H
 #define CTRAJECTORY_H
 
@@ -19,6 +18,13 @@
 
 class CTrajectory
 {
+ public:
+    /**
+     * The types of method used to calculate the trajectory. 
+     * This may be done by a continuous method, a stochastic method, 
+     * or a hybrid of the two. XXX The latter is still to be implemented.
+     */
+    enum MethodType {CONTINUOUS_ODE=1, STOCH_DIRECT, STOCH_NEXTREACTION, MIXED)
   //Attributes
  private:
 
@@ -33,6 +39,10 @@ class CTrajectory
   CODESolver * mODESolver;
 
   /**
+   * The stochastic solver
+   */
+  CStochSolver *mStochSolver;
+  /**
    *  The time points
    */
   C_INT32 mPoints;
@@ -42,6 +52,10 @@ class CTrajectory
    */
   C_INT32 mN;
 
+  /**
+   * The maximum number of points allowed for stochastic simulations
+   */
+  C_INT32 mMaxPoints;
   /**
    *  The end time point
    */
