@@ -95,6 +95,7 @@ void ModelWidget::loadModel(CModel *model)
       mModel = model;
       LineEdit->setText(mModel->getTitle().c_str());
       textBrowser->setText(mModel->getComments().c_str());
+      textBrowser->setReadOnly(FALSE);
       ComboBox1->clear();
       ComboBox2->clear();
       ComboBox3->clear();
@@ -117,6 +118,7 @@ void ModelWidget::loadModel(CModel *model)
         }
       ComboBox2->insertStringList(comboEntries1, -1);
       ComboBox2->setCurrentText(mModel->getVolumeUnit().c_str());
+
       QStringList comboEntries2;
       for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
         {
@@ -124,7 +126,7 @@ void ModelWidget::loadModel(CModel *model)
           //QMessageBox::information(this, "Volume Unit", mModel->QuantityUnitName[temp1].c_str());
         }
       ComboBox3->insertStringList(comboEntries2, -1);
-      ComboBox1->setCurrentText(mModel->getQuantityUnit().c_str());
+      ComboBox3->setCurrentText(mModel->getQuantityUnit().c_str());
     }
 }
 
@@ -133,48 +135,12 @@ void ModelWidget::slotBtnCancelClicked()
 
 void ModelWidget::slotBtnOKClicked()
 {
-  /*
-  if (model != NULL)
-      {
-    CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-    CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
-   
-    bool bJacobian = taskJacobian->isChecked ();
-    bool bStatistics = taskStability->isChecked ();
-   
-    steadystateproblem->setJacobianRequested(bJacobian);
-    steadystateproblem->setStabilityAnalysisRequested(bStatistics);
-   
-    QTableItem * pItem;
-    QString substrate;
-    QString strname;
-    unsigned C_INT32 i;
-    for (i = 0; i < steadystatemethod->size(); i++)
-      {
-        pItem = parameterTable->item(i, 0);
-        substrate = pItem->text();
-        strname = (steadystatemethod->getName(i)).c_str();
-        switch (steadystatemethod->getType((const char *)strname.utf8()))
-          {
-          case CParameter::DOUBLE:
-            steadystatemethod->setValue((const char *)strname.utf8(),
-                                        substrate.toDouble());
-            break;
-          case CParameter::INT:
-            steadystatemethod->setValue((const char *)strname.utf8(),
-                                        (C_INT32) substrate.toInt());
-            break;
-          case CParameter::UINT:
-            steadystatemethod->setValue((const char *)strname.utf8(),
-                                        (unsigned C_INT32) substrate.toUInt());
-            break;
-          case CParameter::BOOL:;
-            steadystatemethod->setValue((const char *)strname.utf8(),
-                                        (bool) substrate.toUShort());
-            break;
-          }
-      }
-    loadSteadyStateTask(mSteadyStateTask);
-  }
-  */
+  if (mModel != NULL)
+    {
+      mModel->setTitle(LineEdit->text().latin1());
+      mModel->setComments(textBrowser->text().latin1());
+      mModel->setTimeUnit(ComboBox1->currentText().latin1());
+      mModel->setVolumeUnit(ComboBox2->currentText().latin1());
+      mModel->setQuantityUnit(ComboBox3->currentText().latin1());
+    }
 }
