@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 14:18:15 $
+   $Date: 2004/05/24 15:00:42 $
    End CVS Header */
 
 /**
@@ -219,10 +219,10 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   return pFunction;
 }
 
-bool CFunctionDB::addFunction(const std::string & name, const CFunction::Type & type)
+CFunction * CFunctionDB::createFunction(const std::string & name, const CFunction::Type & type)
 {
   if (mLoadedFunctions.getIndex(name) != C_INVALID_INDEX)
-    return false;
+    return NULL;
 
   //CFunction * pFunction = new CFunction(name);
 
@@ -250,9 +250,9 @@ bool CFunctionDB::addFunction(const std::string & name, const CFunction::Type & 
   if (!mLoadedFunctions.add(pFunction, true))
     {
       delete pFunction;
-      return false;
+      return NULL;
     }
-  return true;
+  return pFunction;
 }
 
 CFunction * CFunctionDB::add(const CFunction & function)
