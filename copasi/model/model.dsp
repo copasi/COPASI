@@ -24,7 +24,7 @@ CFG=model - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=model - Win32 Build
 # PROP BASE Target_File "../lib/model.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -63,6 +63,10 @@ SOURCE=.\CChemEqElement.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CChemEqInterface.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCompartment.cpp
 # End Source File
 # Begin Source File
@@ -72,6 +76,10 @@ SOURCE=.\CDeTerm.cpp
 # Begin Source File
 
 SOURCE=.\CMetab.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMetabNameInterface.cpp
 # End Source File
 # Begin Source File
 
@@ -88,6 +96,10 @@ SOURCE=.\CParticleNumberList.cpp
 # Begin Source File
 
 SOURCE=.\CReaction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
 
@@ -119,6 +131,10 @@ SOURCE=.\CChemEqElement.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CChemEqInterface.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCompartment.h
 # End Source File
 # Begin Source File
@@ -128,6 +144,10 @@ SOURCE=.\CDeTerm.h
 # Begin Source File
 
 SOURCE=.\CMetab.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CMetabNameInterface.h
 # End Source File
 # Begin Source File
 
@@ -144,6 +164,10 @@ SOURCE=.\CParticleNumberList.h
 # Begin Source File
 
 SOURCE=.\CReaction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
 
