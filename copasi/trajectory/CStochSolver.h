@@ -1,9 +1,7 @@
 #ifndef COPASI_CStochSolver
 #define COPASI_CStochSolver
 
-#include "CReadConfig.h"
-#include "CWriteConfig.h"
-#include "CVersion.h"
+#include "utilities/utilities.h"
 
 class CModel;
 

@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "utilities.h"
+#include "utility.h"
 
 string StringPrint( const char * format, ... )
 {

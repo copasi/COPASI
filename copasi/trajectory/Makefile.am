@@ -7,6 +7,7 @@ libtrajectory_a_SOURCES = \
 	CTrajectory.cpp
 
 EXTRA_DIST = \
+	trajectory.h \
 	Clsoda.h	Clsoda.cpp \
 	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \

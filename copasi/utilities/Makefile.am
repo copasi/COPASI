@@ -8,9 +8,10 @@ libutilities_a_SOURCES = \
 	CReadConfig.cpp \
 	CVersion.cpp \
 	CWriteConfig.cpp \
-	utilities.cpp
+	utility.cpp
 
 EXTRA_DIST = \
+	utilities.h \
 	CCopasiException.h	CCopasiException.cpp \
 	CCopasiMessage.h	CCopasiMessage.cpp \
 	CCopasiVector.h \
@@ -19,7 +20,7 @@ EXTRA_DIST = \
 	CVersion.h		CVersion.cpp \
 	CWriteConfig.h		CWriteConfig.cpp \
 	messages.h \
-	utilities.h		utilities.cpp
+	utility.h		utility.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

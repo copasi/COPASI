@@ -9,6 +9,7 @@ libmodel_a_SOURCES = \
 	CReaction.cpp      
 
 EXTRA_DIST = \
+	model.h \
 	CCompartment.h	CCompartment.cpp \
 	CMetab.h	CMetab.cpp \
 	CModel.h	CModel.cpp \

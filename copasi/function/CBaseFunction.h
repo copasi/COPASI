@@ -14,6 +14,7 @@
 #include "copasi.h"
 
 #include "CBaseIdentifier.h"
+#include "utilities/CVersion.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 

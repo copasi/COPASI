@@ -7,6 +7,7 @@ libsteadystate_a_SOURCES = \
 	CSS_Solution.cpp 
 
 EXTRA_DIST = \
+	steadystate.h \
 	CJacob.h CJacob.cpp \
 	CNewton.h CNewton.cpp \
 	CSS_Solution.h	CSS_Solution.cpp 

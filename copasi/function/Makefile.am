@@ -10,7 +10,8 @@ libfunction_a_SOURCES = \
 	CNodeK.cpp \
 	lexkk.cpp
 
-EXTRA_DIST = \
+EXTRA_DIST = 
+	function.h \
 	CBaseFunction.h		CBaseFunction.cpp \
 	CBaseIdentifier.h	CBaseIdentifier.cpp \
 	CFunctionDB.h		CFunctionDB.cpp \

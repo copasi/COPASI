@@ -10,6 +10,7 @@ liboutput_a_SOURCES = \
 
 
 EXTRA_DIST = \
+	output.h \
 	CDatum.h CDatum.cpp \
 	COutput.h COutput.cpp \
 	COutputEvent.h COutputEvent.cpp \
