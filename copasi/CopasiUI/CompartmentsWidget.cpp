@@ -115,6 +115,14 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
     const QPoint & C_UNUSED(n))
 {
   QString x = table->text(row, 0);
+  if (row == table->numRows() - 1)
+    {
+      std::string name = "unknown";
+      CCompartment* newCompartment = new CCompartment();
+      mModel->addCompartment(name, 1);
+      table->setNumRows(table->numRows());
+      table->setText(row, 0, name.c_str());
+    }
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
 }
