@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:08:56 $
+   $Date: 2003/12/04 17:37:00 $
    End CVS Header */
 
 /**
@@ -123,6 +123,7 @@ class CCopasiObject
     bool isValueBool() const;
     bool isValueInt() const;
     bool isValueDbl() const;
+    bool isStaticString() const;
 
     virtual void * getReference() const;
 
