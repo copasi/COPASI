@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 14:00:25 $
+   $Date: 2004/09/20 21:58:34 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.17 2004/09/17 14:00:25 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.18 2004/09/20 21:58:34 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -91,6 +91,7 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
   layout18->addLayout(layout17);
 
   tabs = new QTabWidget(this, "tabs");
+  //tabs = new MyQTabWidget(this, "tabs");
   layout18->addWidget(tabs);
   layout19->addLayout(layout18);
 
