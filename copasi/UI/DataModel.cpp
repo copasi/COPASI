@@ -1,19 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/12 04:17:06 $
+   $Date: 2003/12/29 20:26:48 $
    End CVS Header */
 
 #include "DataModel.h"
 #include "DataModel.txt.h"
 #include "function/CFunctionDB.h"
+#include "mathmodel/CMathModel.h"
 
 DataModel::DataModel()
 {
   this->populateData();
   model = NULL;
+  mpMathModel = NULL;
   trajectorytask = NULL;
   steadystatetask = NULL;
   scantask = NULL;
@@ -74,6 +76,10 @@ void DataModel::createModel(const char* fileName)
   model = new CModel();
   Copasi->pModel = model;
   searchFolderList(1)->setObjectKey(model->getKey());
+
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel();
+  mpMathModel->setModel(model);
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
@@ -180,6 +186,10 @@ void DataModel::loadModel(const char* fileName)
       reportdefinitions = pNewReports;
       searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
     }
+
+  pdelete(mpMathModel);
+  mpMathModel = new CMathModel();
+  mpMathModel->setModel(model);
 
   //  steadystatetask->compile();
 }

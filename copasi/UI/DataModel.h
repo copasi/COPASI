@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 19:05:49 $
+   $Date: 2003/12/29 20:26:48 $
    End CVS Header */
 
 /****************************************************************************
@@ -37,6 +37,7 @@
 
 class CReadConfig;
 class CWriteConfig;
+class CMathModel;
 
 //**********************************************************************
 
@@ -112,7 +113,8 @@ class DataModel
     Tree<Folder> myTree; // create the  object of the tree
     QPtrList<Folder> folderList;  // to keep track of the number of the object in the tree...
 
-    CModel* model;
+    CModel * model;
+    CMathModel * mpMathModel;
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
@@ -134,6 +136,8 @@ class DataModel
     void saveModel(const char* fileName);
 
     CModel* getModel() {return model;}
+    CMathModel * getMathModel() {return mpMathModel;}
+
     inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
     inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
     inline CReportDefinitionVector* getReportDefinitionVectorAddr(){return reportdefinitions;}
