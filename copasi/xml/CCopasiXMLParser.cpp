@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/11 16:00:02 $
+   $Date: 2003/12/11 16:15:20 $
    End CVS Header */
 
 /**
@@ -546,10 +546,7 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      mCommon.Comment = mParser.getCharacterData("\n\t ", "");
-      //mCommon.FunctionDescription = mParser.getCharacterData("\n\t ", "");
-
-      mParser.enableCharacterDataHandler(false);
+      mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", "");
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -2501,7 +2498,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
     case InitialState:
       if (strcmp(pszName, "InitialState")) fatalError();
 
-      Values.str(mParser.getCharacterData("\n\t ", " "));
+      Values.str(mParser.getCharacterData("\x0a\x0d\t ", " "));
 
       it = mCommon.StateVariableList.begin();
       end = mCommon.StateVariableList.end();
@@ -2982,10 +2979,7 @@ void CCopasiXMLParser::ObjectElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Object")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = -1;
-      //mCommon.FunctionDescription = mParser.getCharacterData("\n\t ", "");
-
-      mParser.enableCharacterDataHandler(false);
-      //    mParser.enableCdataSectionHandler(false);
+      //mCommon.FunctionDescription = mParser.getCharacterData("\x0a\x0d\t ", "");
 
       // Tell the parent element we are done.
       mParser.onEndElement(pszName);
