@@ -32,32 +32,22 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
 int ObjectBrowserItem::nUserChecked()
 {
   int condition;
-  if (isChecked())
-    condition = ALLCHECKED;
-  else
-    condition = NOCHECKED;
+
+  if (child())
+    {
+      condition = child()->nUserChecked();
+    }
+  else //it has no child
+    {
+      if (isChecked())
+        condition = ALLCHECKED;
+      else
+        condition = NOCHECKED;
+    }
 
   if (sibling() != NULL)
     {
       switch (sibling()->nUserChecked())
-        {
-        case ALLCHECKED:
-          if (condition == NOCHECKED)
-            condition = PARTCHECKED;
-          break;
-        case PARTCHECKED:
-          if (condition == NOCHECKED)
-            condition = PARTCHECKED;
-          break;
-        case NOCHECKED:
-          if (condition == ALLCHECKED)
-            condition = PARTCHECKED;
-          break;
-        }
-    }
-  if (child() != NULL)
-    {
-      switch (child()->nUserChecked())
         {
         case ALLCHECKED:
           if (condition == NOCHECKED)

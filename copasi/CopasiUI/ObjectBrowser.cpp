@@ -100,6 +100,8 @@ void ObjectBrowser::cancelClicked()
 
 void ObjectBrowser::listviewChecked(ObjectBrowserItem* pCurrent)
 {
+  if (pCurrent == NULL)
+    return;
   clickToReverseCheck(pCurrent);
   updateUI();
 }
@@ -156,36 +158,20 @@ void ObjectBrowser::nextClicked()
 
 void ObjectBrowser::loadData()
 {
-  ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
-  item_2->setOpen(TRUE);
-  item_2->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item_1 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
+  ObjectBrowserItem * item_2 = new ObjectBrowserItem(item_1, 0, NULL, objectItemList);
   ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
-  item_3->setOpen(TRUE);
-  item_3->setPixmap(0, *pObjectAll);
   ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0, NULL, objectItemList);
-  item_4->setOpen(TRUE);
-  item_4->setPixmap(0, *pObjectAll);
   ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0, NULL, objectItemList);
-  item_5->setOpen(TRUE);
-  item_5->setPixmap(0, *pObjectAll);
   ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0, NULL, objectItemList);
-  item_6->setOpen(TRUE);
-  item_6->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0, NULL, objectItemList);
-  item->setPixmap(0, *pObjectAll);
-  item->setText(0, trUtf8("Subitem"));
 
-  item_6->setText(0, trUtf8("Subitem"));
-  item_5->setText(0, trUtf8("Subitem"));
-  item_4->setText(0, trUtf8("Subitem"));
+  item_1->setText(0, trUtf8("Subitem"));
+  item_2->setText(0, trUtf8("Subitem"));
   item_3->setText(0, trUtf8("Subitem"));
-  item_2->setText(0, trUtf8("Item"));
-  item = new ObjectBrowserItem(ObjectListView, item_2, NULL, objectItemList);
-  item->setPixmap(0, *pObjectAll);
-  item->setText(0, trUtf8("Item"));
-  item = new ObjectBrowserItem(ObjectListView, item, NULL, objectItemList);
-  item->setPixmap(0, *pObjectAll);
-  item->setText(0, trUtf8("Item"));
+  item_4->setText(0, trUtf8("Subitem"));
+  item_5->setText(0, trUtf8("Item"));
+  item_6->setText(0, trUtf8("Item"));
+
   updateUI();
 }
 
