@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/02 20:37:36 $
+   $Date: 2005/01/03 13:02:46 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -27,7 +27,7 @@ class PrintFilter: public QwtPlotPrintFilter
     virtual QFont font(const QFont &f, Item, int) const
       {
         QFont f2 = f;
-        f2.setPointSize(f.pointSize() * 0.75);
+        f2.setPointSize((int)(f.pointSize() * 0.75));
         return f2;
       }
   };

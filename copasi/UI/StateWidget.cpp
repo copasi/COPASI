@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/22 10:40:00 $
+   $Date: 2005/01/03 13:01:02 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -78,7 +78,7 @@ bool StateWidget::saveToBackend()
   saveToCompartment();
 }*/
 
-bool StateWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool StateWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   return true;
 }

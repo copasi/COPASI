@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/02 13:36:31 $
+   $Date: 2005/01/03 13:00:29 $
    End CVS Header */
 
 /*******************************************************************
@@ -281,7 +281,7 @@ void CopasiTableWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
-void CopasiTableWidget::slotCurrentChanged(int row, int col)
+void CopasiTableWidget::slotCurrentChanged(int C_UNUSED(row), int C_UNUSED(col))
 {
   //std::cout << "Table..currentChanged " << row << "  " << col << std::endl;
 }

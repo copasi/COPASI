@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2005/01/03 13:04:09 $
    End CVS Header */
 
 #include <cmath>
@@ -404,26 +404,14 @@ void CMCAMethod::setModel(CModel* model)
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
  */
-int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode status, C_FLOAT64 res)
+int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_FLOAT64 res)
 {
   int ret;
 
-  // Initialize the ss_ipvt vector
-  //initSsipvt();
-
-  // Create mDxv, mFcc, mGamma
-  //initMatrices();
-
-  //if (!ss_solution)
-  //calculateDxv(res);
   calculateUnscaledElasticities(res);
-  //else
-  //  clearDxv();
 
-  //ret = CalcGamma();
   ret = calculateUnscaledConcentrationCC();
 
-  //CalcFCC(ret);
   calculateUnscaledFluxCC(ret);
 
   scaleMCA(ret, res);
@@ -450,7 +438,7 @@ C_INT32 CMCAMethod::load(CReadConfig & configBuffer)
  * the time dependent MCA entry point
  * @param refer to the resolution
  */
-void CMCAMethod::CalculateTimeMCA(C_FLOAT64 res)
+void CMCAMethod::CalculateTimeMCA(C_FLOAT64 C_UNUSED(res))
 {
   /*  unsigned C_INT32 i, j;
    

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.206 $
+   $Revision: 1.207 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/29 16:22:34 $
+   $Author: ssahle $ 
+   $Date: 2005/01/03 13:02:15 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1970,7 +1970,8 @@ CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
 
 std::string CModel::suitableForStochasticSimulation() const
   {
-    C_INT32 i, multInt, reactSize = mSteps.size();
+    unsigned C_INT32 i, reactSize = mSteps.size();
+    C_INT32 multInt;
     unsigned C_INT32 j;
     C_FLOAT64 multFloat;
     //  C_INT32 metabSize = mMetabolites->size();
