@@ -38,10 +38,35 @@ private:
      */
      CModel * mModel;
 
+
+     //ss_x = new double[Model.TotMetab+1]; 
+     //ss_xnew = new double[Model.TotMetab+1];    
     /**
      *  The CNewton to work with
      */
      CNewton * mNewton;
+
+    /**
+     *  variable for steady-state solution
+     */
+     C_FLOAT64 * mSs_x;
+
+    /**
+     *  variable for steady-state solution
+     */
+     C_FLOAT64 * mSs_xnew;
+
+    /**
+     *  variable for steady-state solution
+     */
+     C_INT32 mSs_nfunction; 
+
+     //more variables
+     C_FLOAT64 mNjeval;
+
+     C_FLOAT64 mNfeval;
+  
+     C_INT32 mSs_njacob;
 
     /**
      *  The CTrajectory to work with

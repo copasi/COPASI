@@ -50,6 +50,16 @@ private:
      C_FLOAT64 mDerivFactor;
 
     /**
+     *  variable for steady-state solution
+     */
+     C_FLOAT64 * mSs_x;
+
+    /**
+     *  variable for steady-state solution
+     */
+     C_FLOAT64 * mSs_xnew;
+
+    /**
      * The number counter of FVal() function
      */
      //  C_INT32 mFunctionCounter;
@@ -67,9 +77,9 @@ private:
 
    /*
       // variables for steady-state solution
- double			*ss_x;
+// double			*ss_x;
  double			*ss_dxdt;
- double			*ss_xnew;
+ //double			*ss_xnew;
  double			*ss_h;
  int			*ss_ipvt;
  int			ss_solution;
@@ -78,8 +88,8 @@ private:
      // copy from GepasiDoc.cpp void CGepasiDoc::InitialiseEngine( void ).
      //
      // Newton variables
- ss_x = new double[Model.TotMetab+1];
- ss_xnew = new double[Model.TotMetab+1];
+ mSs_x = new double[Model.TotMetab+1];
+ mSs_xnew = new double[Model.TotMetab+1];
  ss_dxdt = new double[Model.TotMetab+1];
  ss_h = new double[Model.TotMetab+1];
  ss_ipvt = new int[Model.IndMetab+1];
@@ -89,8 +99,8 @@ private:
 
   //copy from void CGepasiDoc::CleanupEngine( void )
   // Newton variables
- delete [] ss_x;
- delete [] ss_xnew;
+// delete [] mSs_x;
+// delete [] mSs_xnew;
  delete [] ss_dxdt;
  delete [] ss_h;
  delete [] ss_ipvt;
@@ -199,8 +209,8 @@ public:
     /**
      * Clean up internal pointer variables
      */
-     void Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt, 
-                   double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob);
+     void Cleanup(double * ss_dxdt, 
+                       double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob);
 
      /**
       * returns the largest value in a vector

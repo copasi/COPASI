@@ -5,12 +5,6 @@
 
 #include "CNewton.h"
 
- // BLAS
-//these 3 functions can be found from "Clsoda.h" but are private. How????
-//extern "C" int idamax( int n, double *dx, int incx );
-//extern "C" int dgefa( double **a, int n, int *ipvt, int *info );
-//extern "C" int dgesl( double **a, int n, int *ipvt, double *b, int job );
-//extern "C" int invertm( double **A, int npar );
 
 //default constructor
 CNewton::CNewton()
@@ -18,6 +12,9 @@ CNewton::CNewton()
   mModel = NULL;
   mNewtonLimit = DefaultNewtonLimit;
   ss_nfunction=0;
+
+  mSs_x = NULL;
+  mSs_xnew = NULL;
 }
 
 
@@ -120,9 +117,9 @@ void CNewton::ProcessNewton(void)
 {
   //new from Yongqun
   // variables for steady-state solution
-  double        *ss_x;
+  double        *mSs_x;
   double        *ss_dxdt;
-  double        *ss_xnew;
+  double        *mSs_xnew;
   double        *ss_h;
   double        **ss_jacob;
   C_INT32        *ss_ipvt;
@@ -131,8 +128,8 @@ void CNewton::ProcessNewton(void)
 
   //new from Yongqun
   // Newton variables
-  ss_x = new double[mModel->getTotMetab()+1];
-  ss_xnew = new double[mModel->getTotMetab()+1];
+  mSs_x = new double[mModel->getTotMetab()+1];
+  mSs_xnew = new double[mModel->getTotMetab()+1];
   ss_dxdt = new double[mModel->getTotMetab()+1];
   ss_h = new double[mModel->getTotMetab()+1];
   ss_ipvt = new C_INT32[mModel->getIndMetab()+1];
@@ -148,8 +145,8 @@ void CNewton::ProcessNewton(void)
   //  try
   // {
     //note from Yongqun: this fn should be from CModel::ls...
-  //FEval( 0, 0, ss_x, ss_dxdt );
-    mModel->lSODAEval(0, 0, ss_x, ss_dxdt );
+  //FEval( 0, 0, mSs_x, ss_dxdt );
+    mModel->lSODAEval(0, 0, mSs_x, ss_dxdt );
 
     ss_nfunction++;
     maxrate =xNorm(mModel->getIntMetab(), ss_dxdt,1);
@@ -158,7 +155,7 @@ void CNewton::ProcessNewton(void)
     if( ss_solution == SS_FOUND )
     {
       for( i=0; i<mModel->getIntMetab(); i++ )
-      if( ss_x[i+1] < 0.0 )
+      if( mSs_x[i+1] < 0.0 )
       {
         ss_solution = SS_NOT_FOUND;
         break;
@@ -173,7 +170,7 @@ void CNewton::ProcessNewton(void)
   {
     //  try
     //{
-    JEval( ss_x, ss_jacob );
+    JEval( mSs_x, ss_jacob );
 
     // LU decomposition of Jacobian
     //Yongqun: dgefa() is a extern fn, find it out...........
@@ -185,7 +182,7 @@ void CNewton::ProcessNewton(void)
       ss_solution = SS_SINGULAR_JACOBIAN;
 
       // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 
       return;
     }
@@ -203,15 +200,15 @@ void CNewton::ProcessNewton(void)
   {
    for( j=0; j<mModel->getIndMetab(); j++ )
    {
-    ss_xnew[j+1] = ss_x[j+1] - ss_h[j+1];
+    mSs_xnew[j+1] = mSs_x[j+1] - ss_h[j+1];
     ss_h[j+1] /= 2;
    }
-   mModel->setConcentrations(ss_xnew);
+   mModel->setConcentrations(mSs_xnew);
    // update the dependent metabolites
    //  try
    //{
-   //FEval( 0, 0, ss_xnew, ss_dxdt );
-    mModel->lSODAEval( 0, 0, ss_xnew, ss_dxdt );
+   //FEval( 0, 0, mSs_xnew, ss_dxdt );
+    mModel->lSODAEval( 0, 0, mSs_xnew, ss_dxdt );
     ss_nfunction++;
     nmaxrate = xNorm(mModel->getIntMetab(), ss_dxdt,1);
     //}
@@ -226,14 +223,14 @@ void CNewton::ProcessNewton(void)
     ss_solution = SS_FOUND;
         // check if solution is valid
     for( i=0; i<mModel->getIntMetab(); i++ )
-     if( ss_x[i+1] < 0.0 )
+     if( mSs_x[i+1] < 0.0 )
      {
       ss_solution = SS_NOT_FOUND;
            break;
      }
 
      // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 
      return;
     }
@@ -242,12 +239,12 @@ void CNewton::ProcessNewton(void)
      ss_solution = SS_DAMPING_LIMIT;
 
      // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 
      return;
     }
    }
-   for(i=0;i<mModel->getIntMetab();i++) ss_x[i+1] = ss_xnew[i+1];
+   for(i=0;i<mModel->getIntMetab();i++) mSs_x[i+1] = mSs_xnew[i+1];
    maxrate = nmaxrate;
   }
   if( maxrate < mSSRes )
@@ -255,14 +252,14 @@ void CNewton::ProcessNewton(void)
   ss_solution = SS_FOUND;
   // check if solution is valid
   for( i=0; i<mModel->getIntMetab(); i++ )
-   if( ss_x[i+1] < 0.0 )
+   if( mSs_x[i+1] < 0.0 )
    {
     ss_solution = SS_NOT_FOUND; 
     break;
    }
 
    // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 
    return;
   }
@@ -271,25 +268,25 @@ void CNewton::ProcessNewton(void)
     ss_solution = SS_ITERATION_LIMIT;
 
     // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 
     return;
   }
 
   // from Yongqun
-    Cleanup(ss_x,ss_xnew,ss_dxdt,ss_h,ss_ipvt,ss_jacob);
+    Cleanup(ss_dxdt,ss_h,ss_ipvt,ss_jacob);
 }
 
 
 
 // Clean up internal pointer variables
-void CNewton::Cleanup(double * ss_x, double * ss_xnew, double * ss_dxdt, 
+void CNewton::Cleanup(double * ss_dxdt, 
                        double * ss_h, C_INT32 * ss_ipvt, double ** ss_jacob)
 {
   //copy from void CGepasiDoc::CleanupEngine( void )
   // Newton variables
-  delete [] ss_x;
-  delete [] ss_xnew;
+  delete [] mSs_x;
+  delete [] mSs_xnew;
   delete [] ss_dxdt;
   delete [] ss_h;
   delete [] ss_ipvt;
