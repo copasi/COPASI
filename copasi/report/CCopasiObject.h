@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:12:48 $
+   $Date: 2003/11/14 22:08:56 $
    End CVS Header */
 
 /**
@@ -85,8 +85,6 @@ class CCopasiObject
 
     virtual const std::string & getName() const;
 
-    virtual const void * getObjectValueAddress() const;
-
     bool setObjectName(const std::string & name);
 
     const std::string & getObjectName() const;
@@ -126,7 +124,7 @@ class CCopasiObject
     bool isValueInt() const;
     bool isValueDbl() const;
 
-    virtual void * getReference();
+    virtual void * getReference() const;
 
     friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
   };

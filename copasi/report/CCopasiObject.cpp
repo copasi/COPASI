@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:12:48 $
+   $Date: 2003/11/14 22:08:55 $
    End CVS Header */
 
 /**
@@ -108,8 +108,6 @@ CCopasiObject::getObjectUniqueNameEx(const bool & isParent) const
 const std::string CCopasiObject::getObjectUniqueName() const
 {return getObjectUniqueNameEx(false);}
 
-const void * CCopasiObject::getObjectValueAddress() const {return &DummyValue; /*TODO or throw exception? */}
-
 bool CCopasiObject::setObjectName(const std::string & name)
 {
   bool success = true;
@@ -171,7 +169,8 @@ unsigned C_INT32
 CCopasiObject::getIndex(const std::string & C_UNUSED(name)) const
   {return C_INVALID_INDEX;}
 
-void * CCopasiObject::getReference() {return this;}
+void * CCopasiObject::getReference() const
+  {return const_cast<CCopasiObject *>(this);}
 
 bool CCopasiObject::isContainer() const
   {return (0 < (mObjectFlag & Container));}
