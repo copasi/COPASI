@@ -7,6 +7,7 @@
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #include "ObjectBrowser.h"
+#include "ObjectBrowserItem.h"
 
 #include <qvariant.h>
 #include <qheader.h>
@@ -17,7 +18,6 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include "ObjectBrowserItem.h"
 
 #include "./icons/objectAll.xpm"
 #include "./icons/objectParts.xpm"
@@ -81,6 +81,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(backButton, nextButton);
   setTabOrder(nextButton, cancelButton);
 
+  // objectItemList=new objectList();
   loadData();
 }
 

@@ -17,12 +17,14 @@ class QGridLayout;
 class QPushButton;
 class QListView;
 class ObjectBrowserItem;
+class objectList;
 
 class ObjectBrowser : public QWidget
   {
     Q_OBJECT
 
   public:
+    objectList* objectItemList;
 
     ObjectBrowserItem** objectList;
 

@@ -55,11 +55,12 @@ struct objectListItem
 class objectList
   {
   private:
-    static objectListItem* root;
+    objectListItem* root;
     int length;
   public:
     objectList()
     {
+      root = NULL;
       length = 0;
     }
     void insert(ObjectBrowserItem* pItem)
@@ -80,5 +81,4 @@ class objectList
     }
   };
 
-objectListItem* objectList::root = NULL;
 #endif
