@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.19 2003/09/18 02:51:54 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.20 2003/09/18 03:12:54 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -97,7 +97,7 @@ CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* na
 
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(confirmClicked()));
-  connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToEdit()));
+  connect(jumpButton, SIGNAL(clicked()), this, SLOT(jumpToReportDefinitionEdit()));
 }
 
 /*
@@ -149,7 +149,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
           if (QMessageBox::information (NULL, "No Report Definition Defined",
                                         "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
                                         QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-            jumpToEdit();
+            jumpToReportDefinitionEdit();
         }
       catch (CCopasiException Exception)
       {}
@@ -163,7 +163,7 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(targetEdit->text().latin1());
-      jumpToEdit();
+      jumpToReportDefinitionEdit();
       return;
     }
   else
@@ -206,7 +206,7 @@ void CReportDefinitionSelect::cleanup()
   mpReport = NULL;
 }
 
-void CReportDefinitionSelect::jumpToEdit()
+void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 {
   DataModel* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
@@ -215,6 +215,9 @@ void CReportDefinitionSelect::jumpToEdit()
   pListView->switchToOtherWidget((*(pReportDefinitionVector))[row]->getKey());
   confirmClicked();
 }
+
+void CReportDefinitionSelect::jumpToFileBrowser()
+{}
 
 void CReportDefinitionSelect::setReport(CReport* newReport)
 {

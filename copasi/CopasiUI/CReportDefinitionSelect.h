@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.9 2003/09/18 02:51:54 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.10 2003/09/18 03:12:54 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -57,9 +57,10 @@ class CReportDefinitionSelect : public QDialog
 
   protected slots:
     virtual void languageChange();
-    virtual void cancelClicked();
-    virtual void confirmClicked();
-    virtual void jumpToEdit();
+    void cancelClicked();
+    void confirmClicked();
+    void jumpToReportDefinitionEdit();
+    void jumpToFileBrowser();
   };
 
 #endif // CREPORTDEFINITIONSELECT_H
