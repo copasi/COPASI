@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/05 09:02:11 $
+   $Date: 2004/10/05 11:16:49 $
    End CVS Header */
 
 /********************************************************
@@ -485,6 +485,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
             loadChild(currentItem, (CCopasiContainer*) current, nField);
           else
             {
+              currentItem->setText(0, currentItem->text(0) + "[]");
               ObjectBrowserItem* objectChild = currentItem;
               if (nField) // divide into attribute and object lists
                 {
