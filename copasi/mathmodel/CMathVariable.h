@@ -35,7 +35,7 @@ class CMathVariable: public CMathSymbol
     static const std::string TypeName[];
 
     // Attributes
-  private:
+  protected:
     /**
      ** The type of the associated equation
      */

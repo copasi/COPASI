@@ -25,19 +25,17 @@ CMathVariable::CMathVariable(const CCopasiObject * pObject):
     mpEq(NULL)
 {}
 
-CMathVariable::~CMathVariable() {pdelete(mpEq);}
+CMathVariable::~CMathVariable() {}
 
 bool CMathVariable::setEq(CMathEq * eq, const CMathVariable::Type & type)
 {
-  pdelete(mpEq);
-
   mType = type;
   mpEq = eq;
 
   return true;
 }
 
-CMathEq *CMathVariable:: getEq() {return mpEq;}
+CMathEq * CMathVariable:: getEq() {return mpEq;}
 
 CMathVariable::Type CMathVariable::getType() const {return mType;}
 
