@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/14 05:24:25 $
+   $Date: 2005/03/14 05:28:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -421,7 +421,7 @@ void MetabolitesWidget1::slotReactionTableCurrentChanged(int mRow, int mCol, int
   std::string s1, s2;
   C_INT32 i;
   std::set<std::string>::const_iterator it, itEnd = reactions.end();
-  s1 = mReactionsTable->text(mReactionsTable->currentRow(), 0);
+  s1 = mReactionsTable->text(mReactionsTable->currentRow(), 0).utf8();
   s1 = s1.substr(0, s1.length() - 2);
   for (it = reactions.begin(), i = 0; it != itEnd; ++it, ++i)
     {
@@ -522,7 +522,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                           // Yes or Enter
+    case 0:                                            // Yes or Enter
       {
         unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -545,7 +545,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                           // No or Escape
+    case 1:                                            // No or Escape
       break;
     }
 }
