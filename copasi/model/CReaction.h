@@ -331,7 +331,7 @@ class CReaction
    *  rate function.
    *  @param "CCopasiVector < CMetab * > &" metabolites
    */
-  void compile(const CCopasiVector < CCompartment > * compartments);
+  void compile(CCopasiVectorN < CCompartment > & compartments);
 
   /**
    *  Calculate the kinetic function

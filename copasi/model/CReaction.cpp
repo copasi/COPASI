@@ -375,23 +375,23 @@ void CReaction::checkIdentifiers()
     }
 }
 
-void CReaction::compile(const CCopasiVector < CCompartment > * compartments)
+void CReaction::compile(CCopasiVectorN < CCompartment > & compartments)
 {
   unsigned C_INT32 i;
     
   for (i = 0; i < mId2Substrates->size(); i++)
     (*mId2Substrates)[i].mpMetabolite = 
-      (*compartments)[(*mId2Substrates)[i].mCompartmentName].
+      compartments[(*mId2Substrates)[i].mCompartmentName]->
       metabolites()[(*mId2Substrates)[i].mMetaboliteName];
     
   for (i = 0; i < mId2Products->size(); i++)
     (*mId2Products)[i].mpMetabolite = 
-      (*compartments)[(*mId2Products)[i].mCompartmentName].
+      compartments[(*mId2Products)[i].mCompartmentName]->
       metabolites()[(*mId2Products)[i].mMetaboliteName];
     
   for (i = 0; i < mId2Modifiers->size(); i++)
     (*mId2Modifiers)[i].mpMetabolite = 
-      (*compartments)[(*mId2Modifiers)[i].mCompartmentName].
+      compartments[(*mId2Modifiers)[i].mCompartmentName]->
       metabolites()[(*mId2Modifiers)[i].mMetaboliteName];
     
   initIdentifiers();

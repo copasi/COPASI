@@ -11,7 +11,7 @@
 
 
 template < class CType >
-class CCopasiVectorN : public vector < CType * >
+class CCopasiVectorN : protected vector < CType * >
 {
  public:
   typedef CType* value_type;
@@ -37,13 +37,12 @@ class CCopasiVectorN : public vector < CType * >
   CCopasiVectorN(const CCopasiVectorN < CType > & src) :
     vector < CType * > (src)
     {
-      unsigned C_INT32 i, imax = src.size();
-      
-      resize(imax);
+      unsigned C_INT32 i, imax = size();
+      iterator Target = begin();
+      const_iterator Source = src.begin();
       
       for (i=0; i<imax; i++)
-	((vector < CType * >) (*this))[i] 
-	  = new CType(*((vector < CType * >) src)[i]);
+	*(Target++) = new CType(**(Source++));
     }
 
   /**
@@ -57,9 +56,10 @@ class CCopasiVectorN : public vector < CType * >
   virtual void cleanup()
     {
       unsigned C_INT32 i, imax = size();
+      iterator Target = begin();
       
       for (i=0; i<imax; i++)
-	((vector < CType * >) (*this))[i]->cleanup();
+	(*(Target++))->cleanup();
   
       clear();
     }
@@ -77,13 +77,12 @@ class CCopasiVectorN : public vector < CType * >
       cleanup();
       resize(size);
       
-      ((vector < CType * >) (*this))[0] = new CType;
-      ((vector < CType * >) (*this))[0]->load(configbuffer);
-      
-      for (i=1; i<size; i++)
+      iterator Target = begin();
+ 
+      for (i=0; i<size; i++)
 	{
-	  ((vector < CType * >) (*this))[i] = new CType;
-	  ((vector < CType * >) (*this))[i]->load(configbuffer);
+	  *Target = new CType;
+	  (*(Target++))->load(configbuffer);
 	}
     }
   
@@ -95,9 +94,10 @@ class CCopasiVectorN : public vector < CType * >
   virtual void save(CWriteConfig & configbuffer)
     {
       unsigned C_INT32 i, imax = size();
+      iterator Target = begin();
       
       for (i=0; i<imax; i++)
-	((vector < CType * >) (*this))[i]->save(configbuffer);
+	(*(Target++))->save(configbuffer);
     }
 
   /**
@@ -119,13 +119,12 @@ class CCopasiVectorN : public vector < CType * >
    */
   virtual void remove(const unsigned C_INT32 & index)
     {
+      iterator Target = begin() + index;
       assert(index < size());
 
-      ((vector < CType * >) (*this))[index]->cleanup();
-      delete ((vector < CType * >) (*this))[index];
-      
-      erase(&((vector < CType * >) (*this))[index],
-	    &((vector < CType * >) (*this))[index+1]);
+      (*Target)->cleanup();
+      delete *Target;
+      erase(Target, Target + 1);
     }
 
   /**
@@ -180,10 +179,10 @@ class CCopasiVectorN : public vector < CType * >
   unsigned C_INT32 getIndex(const string &name) const
     {
       unsigned C_INT32 i,imax = size();
+      const_iterator Target = begin();
       
       for (i=0; i<imax; i++)
-	if (name == ((vector < CType * >) (*this))[i]->getName() ) 
-	  return i;
+	if (name == (*(Target++))->getName()) return i;
             
       return -1;
     }

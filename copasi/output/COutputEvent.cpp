@@ -4,7 +4,8 @@
 * PURPOSE: COutputEvent Class Implemention
 *****************************************************************************/
 #include "copasi.h"
-#include "COutputEvent.h"
+#include "output.h"
+// #include "COutputEvent.h"
 
 /**
  *	Default constructor. 

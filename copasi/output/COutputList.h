@@ -13,8 +13,9 @@
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
+#include "utilities/CCopasiVectorN.h"
 #include "COutput.h"
-#include "model/CModel.h"
+#include "model/model.h"
 
 class CCOutput: public CCopasiVector < COutput >
 {

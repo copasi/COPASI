@@ -21,7 +21,7 @@
 CModel::CModel()
 {
   
-  mCompartments = NULL;
+  //  mCompartments = NULL;
   mSteps        = NULL;
   mMoieties     = NULL;
   mComments = "";
@@ -38,7 +38,7 @@ CModel::CModel()
 
 void CModel::initialize()
 {
-  if ( !mCompartments ) mCompartments = new CCopasiVector < CCompartment >;
+  // if ( !mCompartments ) mCompartments = new CCopasiVector < CCompartment >;
   if ( !mSteps )        mSteps        = new CCopasiVector < CReaction >;
   if ( !mMoieties )     mMoieties     = new CCopasiVector < CMoiety >;
 }
@@ -53,12 +53,13 @@ CModel::~CModel()
 
 void CModel::cleanup()
 {
+  /*
   if ( mCompartments ) 
     {
       mCompartments->cleanup();
       mCompartments = NULL;
     }
-    
+  */ 
   if ( mSteps )
     {
       mSteps->cleanup();
@@ -113,8 +114,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                        CReadConfig::LOOP)))
     return Fail;
  
-  if ((Fail = mCompartments->load(configBuffer, Size))) return Fail;
-    
+  // if ((Fail = mCompartments->load(configBuffer, Size))) return Fail;
+  mCompartments.load(configBuffer, Size);
+  
   if (configBuffer.getVersion() < "4")
     {
       // Create the correct compartment / metabolite relationships
@@ -123,7 +125,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         {
           Metabolite = Copasi.OldMetabolites[i];
             
-          (*mCompartments)[Copasi.OldMetabolites[i].getIndex()].
+          mCompartments[Copasi.OldMetabolites[i].getIndex()]->
             addMetabolite(Metabolite);
         }
     }
@@ -160,12 +162,13 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
     return Fail;
  
-  Size = mCompartments->size();
+  Size = mCompartments.size();
   if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
     return Fail;
  
-  if ((Fail = mCompartments->save(configBuffer))) return Fail;
-    
+  // if ((Fail = mCompartments->save(configBuffer))) return Fail;
+  mCompartments.save(configBuffer);
+  
   if ((Fail = Copasi.FunctionDB.save(configBuffer))) return Fail;
 
   Size = mSteps->size();
@@ -578,7 +581,7 @@ string CModel::getTitle() const
  *        Return the comments of this model
  *        @return CCopasiVector < CCompartment > *
  */
-CCopasiVector < CCompartment > * CModel::getCompartments()
+CCopasiVectorN < CCompartment > & CModel::getCompartments()
 {
   return mCompartments;
 }
@@ -651,9 +654,9 @@ C_INT32 CModel::findCompartment(string &Target)
   unsigned C_INT32 i;
   string name;
 
-  for(i = 0; i < mCompartments->size(); i++ )
+  for(i = 0; i < mCompartments.size(); i++ )
     {
-      name = (*mCompartments)[i].getName();
+      name = mCompartments[i]->getName();
       if( name == Target) return i;
     }
 
@@ -682,9 +685,9 @@ void CModel::initializeMetabolites()
 
   // Create a vector of pointers to all metabolites.
   // Note, the metabolites physically exist in the compartments.
-  for (i = 0; i < mCompartments->size(); i++)
-    for (j = 0; j < (*mCompartments)[i].metabolites().size(); j++)
-      mMetabolites.push_back((*mCompartments)[i].metabolites()[j]);
+  for (i = 0; i < mCompartments.size(); i++)
+    for (j = 0; j < mCompartments[i]->metabolites().size(); j++)
+      mMetabolites.push_back(mCompartments[i]->metabolites()[j]);
 }
 
 /**

@@ -40,7 +40,7 @@ C_INT main(void)
       metabolite.setName("m_3");
       compartment.addMetabolite(metabolite);
   
-      model.getCompartments()->add(compartment);
+      model.getCompartments().add(compartment);
       model.initializeMetabolites();
       
       CReaction reaction;

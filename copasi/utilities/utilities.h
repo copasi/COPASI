@@ -2,6 +2,7 @@
 
 #include "CCopasiException.h"
 #include "CCopasiMessage.h"
+#include "CCopasiVectorN.h"
 #include "CCopasiVector.h"
 #include "CGlobals.h"
 #include "CReadConfig.h"

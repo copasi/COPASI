@@ -9,10 +9,10 @@
 
 #include <iostream>
 
-#include "trajectory/CTrajectory.h"
-#include "steadystate/CSS_Solution.h"
 #include "COutput.h"
 #include "COutputList.h"
+#include "trajectory/CTrajectory.h"
+#include "steadystate/CSS_Solution.h"
 
 class CSS_Solution;
 
@@ -79,4 +79,4 @@ class COutputEvent
 	void copy(CSS_Solution &ss, COutputList *list, ofstream &fout);
 };
 
-#endif //COutputEvent
+#endif // COutputEvent

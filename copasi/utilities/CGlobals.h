@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "output/COutputList.h"
 #include "model/CMetab.h"
 #include "function/CFunctionDB.h"
 #include "CVersion.h"

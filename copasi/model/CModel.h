@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-
+#include "utilities/CCopasiVectorN.h"
 #include "CReaction.h"
 #include "CMoiety.h"
 #include "tnt/tnt.h"
@@ -40,7 +40,7 @@ class CModel
    *  @supplierCardinality 0..*
    *  @associates <{CCompartment}>
    */
-  CCopasiVector < CCompartment > * mCompartments;
+  CCopasiVectorN < CCompartment > mCompartments;
 
   /**
    *  for array of metabolites
@@ -392,7 +392,7 @@ class CModel
    *	Return the compartments of this model
    *	@return CCopasiVector < CCompartment > *
    */
-  CCopasiVector < CCompartment > *getCompartments();
+  CCopasiVectorN < CCompartment > & getCompartments();
 
   /**
    *	Return the metabolites of this model

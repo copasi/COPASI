@@ -11,10 +11,10 @@
 
 #include <string>
 
-#include "utilities/utilities.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CWriteConfig.h"
 #include "utilities/CCopasiVectorN.h"
 #include "CMetab.h"
-#include "CModel.h"
 
 class CCompartment {
   // Attributes

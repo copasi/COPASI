@@ -25,6 +25,8 @@ CCompartment::CCompartment(const CCompartment & src)
   mVolume      = src.mVolume;
 
   mMetabolites = CCopasiVectorN < CMetab >(src.mMetabolites);
+  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
+    mMetabolites[i]->setCompartment(this);
 }
 
 
