@@ -10,10 +10,9 @@
  *           optimization algorithms.
  */
 #include <math.h>
+
 #include "COptAlgorithm.h"
 #include "COptProblem.h"
-#include "utilities/CMethodParameter.cpp"
-#include "utilities/CMethodParameterList.cpp"
 
 using namespace std;
 
