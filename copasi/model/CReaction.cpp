@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/30 15:48:14 $
+   $Date: 2003/12/30 17:21:25 $
    End CVS Header */
 
 // CReaction
@@ -633,16 +633,17 @@ void CReaction::initializeParameters()
     }
 
   /* Remove parameters not fitting current function */
-  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
+  CCopasiParameterGroup::index_iterator begin = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator it = mParameters.endIndex();
   CFunctionParameter::DataType Type;
 
-  for (; it != end; ++it)
+  while (it != begin)
     {
+      --it;
       name = (*it)->getName();
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
         {
-          --it;
+          if (it != begin) ++it;
           mParameters.removeParameter(name);
         }
     }
