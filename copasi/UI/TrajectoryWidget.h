@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Tue Feb 11 14:01:14 2003
+ ** Created: Thu Feb 13 12:32:58 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -14,11 +14,11 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QCheckBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QSplitter;
 class QTable;
 
 class TrajectoryWidget : public QWidget
@@ -29,36 +29,33 @@ class TrajectoryWidget : public QWidget
     TrajectoryWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TrajectoryWidget();
 
-    QFrame* line6;
-    QSplitter* splitter3;
-    QPushButton* commitChange;
-    QPushButton* cancelChange;
-    QFrame* line8;
     QLabel* taskNameLabel;
     QFrame* line7;
-    QSplitter* splitter11;
-    QLabel* parameterValueLabel;
-    QTable* parameterTable;
-    QLabel* TextLabel1;
-    QLabel* TextLabel1_3;
-    QLineEdit* nStepSize;
-    QLineEdit* taskName;
-    QLineEdit* nStepSize_2;
-    QLabel* TextLabel1_2;
-    QLabel* TextLabel1_2_2;
-    QLineEdit* nStepNumber;
     QLineEdit* nStepNumber_2;
+    QTable* parameterTable;
+    QFrame* line8;
+    QLabel* TextLabel1_2;
+    QLabel* parameterValueLabel;
+    QLabel* TextLabel1_3;
+    QLabel* TextLabel1_2_2;
+    QLineEdit* nStepSize;
+    QLineEdit* nStepNumber;
+    QLabel* TextLabel1;
+    QLineEdit* nStepSize_2;
+    QCheckBox* bExecutable;
+    QLineEdit* taskName;
+    QFrame* line6;
+    QPushButton* bRunTask;
+    QPushButton* commitChange;
+    QPushButton* cancelChange;
 
   public slots:
-    virtual void taskNameChanged();
-    virtual void methodJacob();
-    virtual void methodStability();
-    virtual void parameterValueChanged();
-    virtual void CommitChange();
     virtual void CancelChange();
+    virtual void CommitChange();
+    virtual void RunTask();
 
   protected:
-    QVBoxLayout* layout15;
+    QHBoxLayout* Layout7;
   };
 
 #endif // TRAJECTORYWIDGET_H
