@@ -140,11 +140,17 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 
 	print ".";
 
-    # get map coordinates, create coordinate file and HTML with imagemap
+    # create HTML
 	$hfile = $gfile;
 	$hfile =~ s/\.$GRAPHEXTENSION/\.html/;
 	$gfile =~ s/\.$GRAPHEXTENSION//;
 	open( HTFILE, ">$hfile" );
+    # file with cmd line
+	$cfile = $gfile . ".cmd";
+	open( CFILE, "$cfile" );
+	$cline = <CFILE>;
+	chop( $cline );
+	close( CFILE );
     # write the HTML header
 	$strtime = localtime();
 	print( HTFILE "<html>\n<!-- Created by A-Biochem, $strtime -->\n");
@@ -152,13 +158,14 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print( HTFILE "<title>$gfile</title>\n</head>\n");
 	# write the HTML body
 	print( HTFILE "<body>\n");
-	print( HTFILE "<div id=\"topmenu\">\n");
+	print( HTFILE "<div id=\"topmenu\">\n<center>\n");
 	print( HTFILE "<a href=\"http://www.vbi.vt.edu/~mendes\">Biochemical Networks Modeling Group</a> |\n");
 	print( HTFILE "<a href=\"..\..\">Artificial Gene Networks Home</a> |\n");
 	print( HTFILE "<a href=\"..\">Data set index</a> |\n");
-	print( HTFILE "</div>\n");
+	print( HTFILE "</center></div>\n");
 	print( HTFILE "<div id=\"main\">\n<center>\n");
 	print( HTFILE "<h1>Artificial Gene Network $gfile</h1>\n");
+	print( HTFILE "<p>Generated with: <code>$cline</code></p>\n");
 	print( HTFILE "<div id=\"menu\">\n");
 	print( HTFILE "<a href=\"#neato\">Force field layout</a> |\n");
 	print( HTFILE "<a href=\"#dot\">Hierarchical layout</a> |\n");
