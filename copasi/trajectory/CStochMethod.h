@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/19 08:59:51 $
+   $Date: 2004/10/07 09:34:06 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -53,8 +53,8 @@ class CStochMethod : public CTrajectoryMethod
     std::vector<C_FLOAT64> mAmuOld;
     /**
      * The sum of the propensities before the last update
-     */
-    C_FLOAT64 mA0Old;
+     */ 
+    //C_FLOAT64 mA0Old;
 
     /**
      * Initialization.

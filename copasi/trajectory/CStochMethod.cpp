@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:16:30 $
+   $Date: 2004/10/07 09:34:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -171,7 +171,7 @@ const double CStochMethod::step(const double & deltaT,
 
 C_INT32 CStochMethod::updatePropensities()
 {
-  mA0Old = mA0;
+  //mA0Old = mA0;
   mA0 = 0;
   //std::cout << "        updatePropensities: ";
 
@@ -303,7 +303,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       calculateAmu(ii);
     }
 
-  mA0Old = mA0;
+  //mA0Old = mA0;
 
   mA0 = 0;
   mA0 = std::accumulate(mAmu.begin(), mAmu.end(), mA0);
