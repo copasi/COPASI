@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 18:43:26 $
+   $Date: 2003/11/07 17:00:41 $
    End CVS Header */
 
 /********************************************************
@@ -29,6 +29,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qwhatsthis.h>
 
 #include "TrajectoryWidget.h"
+#include "qtUtilities.h"
+
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "model/CModel.h"
@@ -257,32 +259,15 @@ void TrajectoryWidget::CommitChange()
       ComboBox1->currentText().latin1()) UpdateMethod(false);
 
   QTableItem * pItem;
-  QString substrate;
+  QString value;
   QString strname;
+
   unsigned C_INT32 i;
   for (i = 0; i < trajectorymethod->size(); i++)
     {
       pItem = parameterTable->item(i, 0);
-      substrate = pItem->text();
-      strname = (trajectorymethod->getName(i)).c_str();
-      switch (trajectorymethod->CCopasiParameterGroup::getType(i))
-        {
-        case CCopasiParameter::DOUBLE:
-          trajectorymethod->setValue(i, (C_FLOAT64) substrate.toDouble());
-          break;
-        case CCopasiParameter::INT:
-          trajectorymethod->setValue(i, (C_INT32) substrate.toInt());
-          break;
-        case CCopasiParameter::UINT:
-          trajectorymethod->setValue(i, (unsigned C_INT32) substrate.toUInt());
-          break;
-        case CCopasiParameter::BOOL:;
-          trajectorymethod->setValue(i, (bool) substrate.toUShort());
-          break;
-
-        default:
-          fatalError();
-        }
+      value = pItem->text();
+      setParameterValue(trajectorymethod, i, value);
     }
 
   loadTrajectoryTask();
@@ -364,50 +349,21 @@ void TrajectoryWidget::loadTrajectoryTask()
   nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
 
   QTableItem * pItem;
-  QString substrate;
+  QString value;
   QString strname;
 
   parameterTable->setNumRows(trajectorymethod->size());
   QHeader *rowHeader = parameterTable->verticalHeader();
 
   unsigned C_INT32 i;
-  for (i = 0; i < trajectorymethod->size(); i++)
-    {
-      strname = (trajectorymethod->getName(i)).c_str();
-      rowHeader->setLabel(i, tr(strname));
-    }
-
   CCopasiParameter::Type Type;
   for (i = 0; i < trajectorymethod->size(); i++)
     {
       strname = (trajectorymethod->getName(i)).c_str();
-      Type = trajectorymethod->CCopasiParameterGroup::getType(i);
-      switch (Type)
-        {
-        case CCopasiParameter::DOUBLE:
-          substrate =
-            QString::number(* (C_FLOAT64 *) trajectorymethod->getValue(i));
-          break;
+      rowHeader->setLabel(i, tr(strname));
 
-        case CCopasiParameter::INT:
-          substrate =
-            QString::number(* (C_INT32 *) trajectorymethod->getValue(i));
-          break;
-
-        case CCopasiParameter::UINT:
-          substrate = QString::number(* (unsigned C_INT32 *) trajectorymethod
-                                      ->getValue(i));
-          break;
-
-        case CCopasiParameter::BOOL:
-          substrate =
-            QString::number(* (bool *) trajectorymethod ->getValue(i));
-          break;
-
-        default:
-          fatalError();
-        }
-      pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
+      value = getParameterValue(trajectorymethod, i, &Type);
+      pItem = new QTableItem (parameterTable, QTableItem::Always, value);
       parameterTable->setItem(i, 0, pItem);
     }
 

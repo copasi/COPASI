@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:57:38 $
+   $Date: 2003/11/07 17:00:41 $
    End CVS Header */
 
 /********************************************************
@@ -29,6 +29,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qwhatsthis.h>
 
 #include "DataModel.h"
+#include "qtUtilities.h"
 
 #include "SteadyStateWidget.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -42,7 +43,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CReportDefinition.h"
 #include "CReportDefinitionSelect.h"
 
-/*
+/**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
@@ -215,32 +216,16 @@ void SteadyStateWidget::CommitButtonClicked()
   steadystateproblem->setStabilityAnalysisRequested(bStatistics);
 
   QTableItem * pItem;
-  QString substrate;
+  QString value;
   QString strname;
+
   unsigned C_INT32 i;
+
   for (i = 0; i < steadystatemethod->size(); i++)
     {
       pItem = parameterTable->item(i, 0);
-      substrate = pItem->text();
-      strname = (steadystatemethod->getName(i)).c_str();
-      switch (steadystatemethod->CCopasiParameterGroup::getType(i))
-        {
-        case CCopasiParameter::DOUBLE:
-          steadystatemethod->setValue(i, (C_FLOAT64) substrate.toDouble());
-          break;
-        case CCopasiParameter::INT:
-          steadystatemethod->setValue(i, (C_INT32) substrate.toInt());
-          break;
-        case CCopasiParameter::UINT:
-          steadystatemethod->setValue(i, (unsigned C_INT32) substrate.toUInt());
-          break;
-        case CCopasiParameter::BOOL:;
-          steadystatemethod->setValue(i, (bool) substrate.toUShort());
-          break;
-
-        default:
-          fatalError();
-        }
+      value = pItem->text();
+      setParameterValue(steadystatemethod, i, value);
     }
   loadSteadyStateTask();
 }
@@ -348,50 +333,21 @@ void SteadyStateWidget::loadSteadyStateTask()
   taskStability->setChecked(bStatistics);
 
   QTableItem * pItem;
-  QString substrate;
+  QString value;
   QString strname;
 
   parameterTable->setNumRows(steadystatemethod->size());
   QHeader *rowHeader = parameterTable->verticalHeader();
 
-  int i;
-  for (i = 0; i < steadystatemethod->size(); i++)
-    {
-      strname = (steadystatemethod->getName(i)).c_str();
-      rowHeader->setLabel(i, tr(strname));
-    }
-
+  unsigned C_INT32 i;
   CCopasiParameter::Type Type;
   for (i = 0; i < steadystatemethod->size(); i++)
     {
       strname = (steadystatemethod->getName(i)).c_str();
-      Type = steadystatemethod->CCopasiParameterGroup::getType(i);
-      switch (Type)
-        {
-        case CCopasiParameter::DOUBLE:
-          substrate =
-            QString::number(* (C_FLOAT64 *) steadystatemethod->getValue(i));
-          break;
+      rowHeader->setLabel(i, tr(strname));
 
-        case CCopasiParameter::INT:
-          substrate =
-            QString::number(* (C_INT32 *) steadystatemethod->getValue(i));
-          break;
-
-        case CCopasiParameter::UINT:
-          substrate = QString::number(* (unsigned C_INT32 *) steadystatemethod
-                                      ->getValue(i));
-          break;
-
-        case CCopasiParameter::BOOL:
-          substrate =
-            QString::number(* (bool *) steadystatemethod->getValue(i));
-          break;
-
-        default:
-          fatalError();
-        }
-      pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
+      value = getParameterValue(steadystatemethod, i, &Type);
+      pItem = new QTableItem (parameterTable, QTableItem::Always, value);
       parameterTable->setItem(i, 0, pItem);
     }
 
