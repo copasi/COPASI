@@ -144,9 +144,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bRunTask->setEnabled(false);
   Layout2->addWidget(bRunTask);
 
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit"));
-  Layout2->addWidget(commitChange);
+  //  commitChange = new QPushButton(this, "commitChange");
+  //  commitChange->setText(trUtf8("Commit"));
+  //  Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
   cancelChange->setText(trUtf8("Cancel"));
@@ -173,12 +173,13 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(nEndTime, ComboBox1);
   setTabOrder(ComboBox1, parameterTable);
   setTabOrder(parameterTable, bRunTask);
-  setTabOrder(bRunTask, commitChange);
-  setTabOrder(commitChange, cancelChange);
+  //  setTabOrder(bRunTask, commitChange);
+  //  setTabOrder(commitChange, cancelChange);
+  setTabOrder(bRunTask, cancelChange);
   setTabOrder(cancelChange, ExportToFileButton);
 
   // signals and slots connections
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
+  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(bRunTask, SIGNAL(clicked()), this, SLOT(RunTask()));
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
@@ -291,6 +292,7 @@ void TrajectoryWidget::RunTask()
   if (mTrajectoryTask == NULL)
     return;
 
+  CommitChange();
   setCursor(Qt::WaitCursor);
 
   mTrajectoryTask->getProblem()->getModel()->compile();

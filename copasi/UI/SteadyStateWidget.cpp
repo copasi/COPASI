@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 02/03 
-   Comment : SteadyStateWidget
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 02/03 
+  Comment : SteadyStateWidget
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qfiledialog.h>
 
@@ -58,9 +58,9 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   bRunButton->setEnabled(false);
   Layout2->addWidget(bRunButton);
 
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit"));
-  Layout2->addWidget(commitChange);
+  //  commitChange = new QPushButton(this, "commitChange");
+  //  commitChange->setText(trUtf8("Commit"));
+  //  Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "cancelChange");
   cancelChange->setText(trUtf8("Cancel"));
@@ -130,7 +130,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   // signals and slots connections
   connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
+  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
   connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
@@ -143,8 +143,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
   setTabOrder(parameterTable, bRunButton);
-  setTabOrder(bRunButton, commitChange);
-  setTabOrder(commitChange, cancelChange);
+  //  setTabOrder(bRunButton, commitChange);
+  setTabOrder(bRunButton, cancelChange);
 
   mSteadyStateTask = NULL;
 }
@@ -228,6 +228,7 @@ void SteadyStateWidget::RunTask()
 {
   if (mSteadyStateTask == NULL)
     return;
+  CommitChange();
 
   mSteadyStateTask->getProblem()->getModel()->compile();
   mSteadyStateTask->getProblem()->

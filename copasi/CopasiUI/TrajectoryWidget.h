@@ -59,7 +59,7 @@ class TrajectoryWidget : public CopasiWidget
     QLabel* TextLabel1_2;
     QFrame* line6;
     QPushButton* bRunTask;
-    QPushButton* commitChange;
+    //    QPushButton* commitChange;
     QPushButton* cancelChange;
     QPushButton* ExportToFileButton;
 
