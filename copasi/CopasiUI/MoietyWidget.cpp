@@ -31,7 +31,7 @@
  *  for more information about these flags.
  */
 MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
   binitialized = true;

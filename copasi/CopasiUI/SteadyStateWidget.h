@@ -12,6 +12,8 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
+#include "copasiwidget.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -27,7 +29,7 @@ class CSteadyStateProblem;
 class CSteadyStateMethod;
 class CModel;
 
-class SteadyStateWidget : public QWidget
+class SteadyStateWidget : public CopasiWidget
   {
     Q_OBJECT
 

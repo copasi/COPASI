@@ -13,7 +13,8 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
-#include "utilities/CGlobals.h" 
+#include "utilities/CGlobals.h"
+#include "copasiwidget.h" 
 //#include "function/function.h"
 class QVBoxLayout;
 class QHBoxLayout;
@@ -22,7 +23,7 @@ class QTable;
 class CModel;
 class CGlobals;
 
-class FunctionWidget : public QWidget
+class FunctionWidget : public CopasiWidget
   {
     Q_OBJECT
   protected:

@@ -34,7 +34,7 @@
  *  for more information about these flags.
  */
 CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 
 {
   mModel = NULL;

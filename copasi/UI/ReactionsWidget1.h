@@ -16,6 +16,7 @@
 #include "qtable.h"
 #include "MyTable.h"
 #include "MyLineEdit.h"
+#include "copasiwidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -30,7 +31,7 @@ class QTable;
 class CModel;
 class CReaction;
 
-class ReactionsWidget1 : public QWidget
+class ReactionsWidget1 : public CopasiWidget
   {
     Q_OBJECT
 

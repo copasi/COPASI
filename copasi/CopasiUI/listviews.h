@@ -16,7 +16,7 @@
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qmultilineedit.h>
-
+#include "copasiwidget.h"
 #include "copasi.h"
 #include "DataModel.h"
 #include "Observer.h"

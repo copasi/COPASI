@@ -26,7 +26,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("CompartmentsWidget1");

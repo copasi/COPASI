@@ -13,10 +13,11 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
+#include "copasiwidget.h"
 
 class CModel;
 
-class ModesWidget : public QWidget
+class ModesWidget : public CopasiWidget
   {
     Q_OBJECT
 

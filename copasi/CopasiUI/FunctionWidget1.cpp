@@ -36,7 +36,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("FunctionWidget1");

@@ -26,7 +26,7 @@
  */
 
 MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 
 {
   if (!name)

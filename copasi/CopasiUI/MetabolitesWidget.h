@@ -14,8 +14,9 @@
 #include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
+#include "copasiwidget.h"
 
-class MetabolitesWidget : public QWidget
+class MetabolitesWidget : public CopasiWidget
   {
     Q_OBJECT
 

@@ -13,6 +13,7 @@
 //#include <qpushbutton.h>
 //#include "MyTable.h"
 #include "copasi.h"
+#include "copasiwidget.h"
 
 class CModel;
 class QPushButton;
@@ -20,7 +21,7 @@ class QGridLayout;
 class QTable;
 class MyTable;
 
-class CompartmentsWidget : public QWidget
+class CompartmentsWidget : public CopasiWidget
   {
     Q_OBJECT
 

@@ -37,7 +37,7 @@
  */
 
 FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl)
 {
   binitialized = true;
 

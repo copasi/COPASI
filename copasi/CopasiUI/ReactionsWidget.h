@@ -15,10 +15,11 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
+#include "copasiwidget.h"
 
 class CModel;
 
-class ReactionsWidget : public QWidget
+class ReactionsWidget : public CopasiWidget
   {
     Q_OBJECT
 

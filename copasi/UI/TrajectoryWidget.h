@@ -11,6 +11,8 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
+#include "copasiwidget.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -26,7 +28,7 @@ class CTrajectoryProblem;
 class CTrajectoryMethod;
 class CModel;
 
-class TrajectoryWidget : public QWidget
+class TrajectoryWidget : public CopasiWidget
   {
     Q_OBJECT
 

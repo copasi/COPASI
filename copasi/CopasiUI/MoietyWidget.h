@@ -14,10 +14,11 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
+#include "copasiwidget.h"
 
 class CModel;
 
-class MoietyWidget : public QWidget
+class MoietyWidget : public CopasiWidget
   {
     Q_OBJECT
 

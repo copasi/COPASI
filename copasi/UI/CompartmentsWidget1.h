@@ -10,6 +10,8 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include "copasiwidget.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -21,7 +23,7 @@ class QListBoxItem;
 class QPushButton;
 class CModel;
 
-class CompartmentsWidget1 : public QWidget
+class CompartmentsWidget1 : public CopasiWidget
   {
     Q_OBJECT
 

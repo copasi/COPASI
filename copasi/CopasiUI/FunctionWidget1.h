@@ -12,6 +12,7 @@
 #include <qvariant.h>
 #include <qtable.h>
 #include "MyTable.h"
+#include "copasiwidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -24,7 +25,7 @@ class QPushButton;
 class QRadioButton;
 class QTable;
 
-class FunctionWidget1 : public QWidget
+class FunctionWidget1 : public CopasiWidget
   {
     Q_OBJECT
 

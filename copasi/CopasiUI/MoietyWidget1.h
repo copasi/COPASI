@@ -10,13 +10,15 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include "copasiwidget.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QLabel;
 class QLineEdit;
 class CModel;
-class MoietyWidget1 : public QWidget
+class MoietyWidget1 : public CopasiWidget
   {
     Q_OBJECT
 
