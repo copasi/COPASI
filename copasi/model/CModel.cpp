@@ -16,10 +16,13 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiException.h"
+#include "utilities/CCopasiVector.h"
 #include "utilities/CGlobals.h"
 #include "utilities/CluX.h"
 #include "utilities/CVector.h"
+#include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "CModel.h"
 #include "CCompartment.h"

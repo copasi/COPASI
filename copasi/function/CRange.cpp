@@ -11,6 +11,7 @@
 #include "copasi.h"
 #include "CRange.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiMessage.h"
 
 CRange::CRange(const std::string & name,
                const CCopasiContainer * pParent,

@@ -9,6 +9,7 @@
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 
 CChemEq::CChemEq(const std::string & name,
                  const CCopasiContainer * pParent):

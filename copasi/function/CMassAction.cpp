@@ -7,6 +7,7 @@
 
 #include "copasi.h"
 #include "CMassAction.h"
+#include "utilities/utility.h"
 
 #define COPASI_TRACE_CONSTRUCTION
 CMassAction::CMassAction(const std::string & name,

@@ -13,6 +13,8 @@
 #include "copasi.h"
 #include "utilities/CGlobals.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
 #include "CCompartment.h"
 

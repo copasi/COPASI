@@ -15,7 +15,7 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "MoietyWidget1.h"
 #include "model/model.h"
 #include "listviews.h" 

@@ -8,6 +8,8 @@
 #include "CMoiety.h"
 #include "CCompartment.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/utility.h"
 
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):

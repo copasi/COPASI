@@ -11,8 +11,8 @@
 #define COPASI_CElementaryFluxModes
 
 #include <iostream>
+#include <vector>
 
-#include "utilities/utilities.h"
 #include "model/model.h"
 
 // #include "CEFMAlgorithm.h"

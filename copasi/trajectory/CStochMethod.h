@@ -1,9 +1,10 @@
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
 
-#include "utilities/CVector.h"
+#include "set"
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
+#include "utilities/CDependencyGraph.h"
 
 /**
  * Integer Balances  for internal use

@@ -12,6 +12,7 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
+#include "utilities/utility.h"
 #include "model/model.h"
 #include "CMca.h"
 

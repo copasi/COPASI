@@ -8,6 +8,7 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionParameters.h"
+#include "utilities/CCopasiException.h"
 
 CFunctionParameters::CFunctionParameters(const std::string & name,
     const CCopasiContainer * pParent):

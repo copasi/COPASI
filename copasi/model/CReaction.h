@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h" 
+//#include "utilities/utilities.h"
 #include "function/function.h"
 #include "CMetab.h"
 #include "CChemEq.h"
@@ -19,6 +20,8 @@
 #include "CCompartment.h"
 
 template < class CType > class CVector;
+class CWriteConfig;
+class CReadConfig;
 
 /** @dia:pos 135.488,75.5337 */
 class CReaction : public CCopasiContainer

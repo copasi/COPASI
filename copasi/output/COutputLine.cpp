@@ -12,6 +12,7 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "model/CCompartment.h"
 #include "CDatum.h"
 #include "COutputLine.h"

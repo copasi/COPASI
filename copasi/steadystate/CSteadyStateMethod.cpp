@@ -10,7 +10,7 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
 #include "CEigen.h"

@@ -1,11 +1,4 @@
-/* include files for the package utilities */
+/* include files read and write config files */
 
-#include "CCopasiException.h"
-#include "CCopasiMessage.h"
-#include "CCopasiVector.h"
-#include "CDependencyGraph.h"
-#include "CIndexedPriorityQueue.h"
 #include "CReadConfig.h"
-#include "CVersion.h"
 #include "CWriteConfig.h"
-#include "utility.h"

@@ -1,7 +1,7 @@
 #include "copasi.h"
-
-#include "utilities/utilities.h"
 #include "CDeTerm.h"
+
+#include "utilities/CCopasiMessage.h"
 
 CDeTerm::CDeTerm()
     : mSign(1),
@@ -54,17 +54,17 @@ std::string CDeTerm::operator[](unsigned C_INT32 index)
 }
 
 std::string CDeTerm::getDescription() const
-{
-  std::string retval;
-  std::vector< std::pair< Type, std::string>* >::const_iterator it = mTokenStack.begin();
-
-  for (; it != mTokenStack.end(); it++)
   {
-    retval += (*it)->second;
-    }
+    std::string retval;
+    std::vector< std::pair< Type, std::string>* >::const_iterator it = mTokenStack.begin();
 
-  return retval;
-}
+    for (; it != mTokenStack.end(); it++)
+      {
+        retval += (*it)->second;
+      }
+
+    return retval;
+  }
 
 void CDeTerm::compile(std::vector<CNameVal> &rates)
 {
@@ -212,16 +212,16 @@ void CDeTerm::compile(std::vector<CNameVal> &rates)
 }
 
 std::string CDeTerm::getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity) const
-{
-  std::string retstring;
-
-  if (pos < mTopLevelMetabolites.size())
   {
-    multiplicity = mTopLevelMetabolites[pos]->second;
-      retstring = mTopLevelMetabolites[pos]->first;
-    }
-  else
-    retstring = "";
+    std::string retstring;
+
+    if (pos < mTopLevelMetabolites.size())
+      {
+        multiplicity = mTopLevelMetabolites[pos]->second;
+        retstring = mTopLevelMetabolites[pos]->first;
+      }
+    else
+      retstring = "";
 
     return retstring;
   }

@@ -11,8 +11,8 @@
 
 #include <string>
 
-#include "utilities/CCopasiVector.h"
 #include "report/CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
 #include "CMetab.h"
 
 class CReadConfig;

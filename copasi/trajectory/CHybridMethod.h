@@ -22,6 +22,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include "utilities/CVersion.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS              1000

@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "output/output.h"
 #include "model/model.h"
 

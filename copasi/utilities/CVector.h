@@ -3,6 +3,8 @@
 #ifndef COPASI_CVector
 #define COPASI_CVector
 
+#include "copasi.h"
+
 /**
  * Template class CVector < class CType >
  * This template class is a simple vector class  allowing standard
@@ -115,7 +117,7 @@ template <class CType> class CVector
      * @return const CType & element
      */
     inline const CType & operator[](const unsigned C_INT32 & row) const
-    {return * (mVector + row);}
+      {return * (mVector + row);}
 
     /**
      * Retrieve a vector element using Fortan style indexing.
@@ -131,7 +133,7 @@ template <class CType> class CVector
      * @return const CType & element
      */
     inline const CType & operator()(const unsigned C_INT32 & row) const
-    {return * (mVector + (row - 1));}
+      {return * (mVector + (row - 1));}
 
     /**
      * Retrieve the array of the vector elements. This is suitable

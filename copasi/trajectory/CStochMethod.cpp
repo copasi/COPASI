@@ -7,7 +7,7 @@
 #include <set>
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "function/function.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"

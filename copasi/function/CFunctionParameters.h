@@ -9,6 +9,7 @@
 #define COPASI_CFunctionParameters
 
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "CFunctionParameter.h"
 #include "CUsageRange.h"
 #include "report/CCopasiContainer.h"

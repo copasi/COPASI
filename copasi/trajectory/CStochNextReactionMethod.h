@@ -2,6 +2,7 @@
 #define COPASI_CStochNextReactionMethod
 
 #include "CStochMethod.h"
+#include "utilities/CIndexedPriorityQueue.h"
 
 class CStochNextReactionMethod: public CStochMethod
   {

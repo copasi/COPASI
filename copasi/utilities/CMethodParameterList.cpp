@@ -14,6 +14,7 @@
 #include "CCopasiMessage.h"
 #include "CCopasiException.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 
 /**
  * Default constructor

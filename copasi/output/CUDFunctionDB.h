@@ -11,7 +11,10 @@
 
 #include "copasi.h"
 #include "output/output.h"
-#include "utilities/utilities.h"
+
+class CReadConfig;
+class CWriteConfig;
+template < class CType > class CCopasiVectorN;
 
 class CUDFunctionDB
   {

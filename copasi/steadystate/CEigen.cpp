@@ -13,12 +13,14 @@
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "utilities/utilities.h"
+#include "utilities/CCopasiMessage.h"
+
 #include "CEigen.h"
 
 #include "clapackwrap.h"        //use CLAPACK
 
 /**
- * Defaulut constructor
+ * Default constructor
  */
 CEigen::CEigen()
 {
@@ -252,18 +254,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,     // mSelect,           //NULL,
-         &mN,                    //&n,
+         NULL,      // mSelect,           //NULL,
+         &mN,                     //&n,
          mA.array(),
          & mLDA,
-         & mSdim,            // output
+         & mSdim,             // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,              //NULL
+         mBWork,               //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();

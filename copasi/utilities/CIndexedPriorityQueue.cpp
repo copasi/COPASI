@@ -1,7 +1,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities.h"
+#include "CCopasiMessage.h"
 #include "CIndexedPriorityQueue.h"
 
 CIndexedPriorityQueue::CIndexedPriorityQueue()

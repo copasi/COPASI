@@ -11,6 +11,7 @@
 #include <string>
 
 #include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "CKinFunction.h"
 
 /** @dia:pos 106.082,17.0878 */

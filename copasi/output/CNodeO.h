@@ -7,13 +7,13 @@
 #define COPASI_CNodeO
 
 #include <string>
-#include <vector>
 
 #include "copasi.h"
 #include "model/model.h"
-#include "utilities/utilities.h"
 #include "function/function.h"
 #include "CDatum.h"
+
+class CReadConfig;
 
 class CNodeO: public CNodeK
   {

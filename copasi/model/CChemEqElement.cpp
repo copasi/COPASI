@@ -7,9 +7,12 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/CCopasiException.h"
+#include "utilities/utility.h"
 #include "CChemEqElement.h"
 #include "CCompartment.h"
+
 CChemEqElement::CChemEqElement(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Chemical Equation Element"),

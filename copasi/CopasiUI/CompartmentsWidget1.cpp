@@ -16,7 +16,7 @@
 #include <qframe.h>
 #include <qlistbox.h>
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "CompartmentsWidget1.h"
 #include "model/model.h"
 #include "listviews.h"

@@ -19,7 +19,7 @@
 #include <qcheckbox.h>
 #include <qlineedit.h>
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
 #include "model/model.h"

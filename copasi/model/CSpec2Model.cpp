@@ -9,7 +9,8 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiException.h"
 #include "FlexLexer.h"
 #include "model.h"
 #include "utilities/CGlobals.h"

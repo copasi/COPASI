@@ -10,6 +10,7 @@
 #include "CFunctionParameter.h"
 #include "CFunctionParameters.h"
 #include "CFunction.h"
+#include "utilities/utility.h"
 
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent):

@@ -9,6 +9,8 @@
 #include "copasi.h"
 #include "utilities/utilities.h"
 #include "utilities/CCopasiMessage.h"
+#include "utilities/utility.h"
+
 #include "CNodeK.h"
 
 CNodeK::CNodeK()
@@ -118,64 +120,64 @@ C_INT32 CNodeK::load(CReadConfig & configbuffer)
 }
 
 C_INT32 CNodeK::save(CWriteConfig & C_UNUSED(configbuffer)) const
-{
-  C_INT32 Fail = 0;
+  {
+    C_INT32 Fail = 0;
 #ifdef XXXX
 
-  // the file has already been opened
-  // we don't care about exceptions here.
-  // They should be caught by the calling function
-  // First the Type and subtype
-  if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
-  return Fail;
+    // the file has already been opened
+    // we don't care about exceptions here.
+    // They should be caught by the calling function
+    // First the Type and subtype
+    if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
+      return Fail;
 
-  // leave the Left & Right pointers out
-  // value of the constant if one
-  if (mType == N_NUMBER)
-    {
-      if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
+    // leave the Left & Right pointers out
+    // value of the constant if one
+    if (mType == N_NUMBER)
+      {
+        if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
           return Fail;
       }
     else if (isIdentifier())
-    {
-      if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex)))
+      {
+        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex)))
           return Fail;
         if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
           return Fail;
       }
 #endif // XXXX
-  return Fail;
-}
+    return Fail;
+  }
 
 C_INT32 CNodeK::saveOld(CWriteConfig & configbuffer) const
-{
-  C_INT32 Fail = 0;
-  char dummy = N_NOP;
+  {
+    C_INT32 Fail = 0;
+    char dummy = N_NOP;
 
-  if (isIdentifier())
-  {
-    if ((Fail = configbuffer.setVariable("Node", "node", &mSubtype, &dummy)))
-        return Fail;
-    }
-  else
-    {
-      if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
-        return Fail;
-    }
-  if (mType == N_NUMBER)
-  {
-    if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
-        return Fail;
-    }
-  else if (isIdentifier())
-  {
-    if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mOldIndex)))
-        return Fail;
-      if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
-        return Fail;
-    }
-  return Fail;
-}
+    if (isIdentifier())
+      {
+        if ((Fail = configbuffer.setVariable("Node", "node", &mSubtype, &dummy)))
+          return Fail;
+      }
+    else
+      {
+        if ((Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype)))
+          return Fail;
+      }
+    if (mType == N_NUMBER)
+      {
+        if ((Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant)))
+          return Fail;
+      }
+    else if (isIdentifier())
+      {
+        if ((Fail = configbuffer.setVariable("Index", "C_INT32", &mOldIndex)))
+          return Fail;
+        if ((Fail = configbuffer.setVariable("Name", "string", &mName)))
+          return Fail;
+      }
+    return Fail;
+  }
 
 std::string CNodeK::getExplicitFunctionString(const CCallParameters & callParameterNames, const std::string &r)
 {
@@ -271,55 +273,55 @@ std::string CNodeK::getExplicitFunctionString(const CCallParameters & callParame
 }
 
 char CNodeK::getType() const
-{
-  return mType;
-}
+  {
+    return mType;
+  }
 
 char CNodeK::getSubtype() const
-{
-  return mSubtype;
-}
+  {
+    return mSubtype;
+  }
 
 CNodeK & CNodeK::getLeft() const
-{
-  if (!mLeft)
-  fatalError(); // Call LeftIsValid first to avoid this!
-  return *mLeft;
-}
+  {
+    if (!mLeft)
+      fatalError(); // Call LeftIsValid first to avoid this!
+    return *mLeft;
+  }
 
 CNodeK & CNodeK::getRight() const
   {
     if (!mRight)
-    fatalError(); // Call RightIsValid first to avoid this!
+      fatalError(); // Call RightIsValid first to avoid this!
     return *mRight;
   }
 
-  std::string CNodeK::getName() const
-    {
-      return mName;
+std::string CNodeK::getName() const
+  {
+    return mName;
 #ifdef XXXX
 
-      static unsigned C_INT ctr = 0;
-      char name[9];
-      if (isIdentifier())
+    static unsigned C_INT ctr = 0;
+    char name[9];
+    if (isIdentifier())
       return mName;
-      else
-        {
-          sprintf(name, "%X", ctr++);
-            return name;
-          }
+    else
+      {
+        sprintf(name, "%X", ctr++);
+        return name;
+      }
 #endif // XXXX
-}
+  }
 
 C_FLOAT64 CNodeK::getConstant() const
-{
-  return mConstant;
-}
+  {
+    return mConstant;
+  }
 
 C_INT32 CNodeK::getIndex() const
-{
-  return mIndex;
-}
+  {
+    return mIndex;
+  }
 
 void CNodeK::setType(char type)
 {
@@ -372,114 +374,114 @@ void CNodeK::setOldIndex(C_INT32 oldindex)
 }
 
 C_INT16 CNodeK::isLeftValid() const
-{
-  return (mLeft != NULL);
-}
+  {
+    return (mLeft != NULL);
+  }
 
 C_INT16 CNodeK::isRightValid() const
-{
-  return (mRight != NULL);
-}
+  {
+    return (mRight != NULL);
+  }
 
 C_INT16 CNodeK::isNumber() const
-{
-  return (mType == N_NUMBER);
-}
+  {
+    return (mType == N_NUMBER);
+  }
 
 C_INT16 CNodeK::isIdentifier() const
-{
-  switch (mType)
   {
-  case N_OBJECT:
-  case N_IDENTIFIER:
-  case N_SUBSTRATE:
-  case N_PRODUCT:
-  case N_MODIFIER:
-  case N_KCONSTANT:
-    return true;
-  default:
-    return false;
+    switch (mType)
+      {
+      case N_OBJECT:
+      case N_IDENTIFIER:
+      case N_SUBSTRATE:
+      case N_PRODUCT:
+      case N_MODIFIER:
+      case N_KCONSTANT:
+        return true;
+      default:
+        return false;
+      }
   }
-}
 
 C_INT16 CNodeK::isOperator() const
-{
-  return mType == N_OPERATOR;
-}
+  {
+    return mType == N_OPERATOR;
+  }
 
 C_INT16 CNodeK::leftPrecedence() const
-{
-  switch (mType)
   {
-  case N_OBJECT:
-  case N_NUMBER:
-  case N_IDENTIFIER:
-  case N_FUNCTION:
-    return 5;
-  }
-  // if we got here then it is an operator
-  switch (mSubtype)
-  {
-  case '+':
-  case '-':
-    return 1;
-  case '*':
-  case '/':
-    return 3;
-  case '(':
-    return 6;
-  case '^':
-    return 5;
-  case ')':
-  case '%':
+    switch (mType)
+      {
+      case N_OBJECT:
+      case N_NUMBER:
+      case N_IDENTIFIER:
+      case N_FUNCTION:
+        return 5;
+      }
+    // if we got here then it is an operator
+    switch (mSubtype)
+      {
+      case '+':
+      case '-':
+        return 1;
+      case '*':
+      case '/':
+        return 3;
+      case '(':
+        return 6;
+      case '^':
+        return 5;
+      case ')':
+      case '%':
+        return 0;
+      }
     return 0;
   }
-  return 0;
-}
 
 C_INT16 CNodeK::rightPrecedence() const
-{
-  switch (mType)
   {
-  case N_OBJECT:
-  case N_NUMBER:
-  case N_IDENTIFIER:
-    return 6;
-  case N_FUNCTION:
-    return 4;
-  }
-  // if we got here then it is an operator
-  switch (mSubtype)
-  {
-  case '+':
-  case '-':
-    return 2;
-  case '*':
-  case '/':
-    return 4;
-  case ')':
-    return 6;
-  case '^':
-    return 4;
-  case '(':
-  case '%':
+    switch (mType)
+      {
+      case N_OBJECT:
+      case N_NUMBER:
+      case N_IDENTIFIER:
+        return 6;
+      case N_FUNCTION:
+        return 4;
+      }
+    // if we got here then it is an operator
+    switch (mSubtype)
+      {
+      case '+':
+      case '-':
+        return 2;
+      case '*':
+      case '/':
+        return 4;
+      case ')':
+        return 6;
+      case '^':
+        return 4;
+      case '(':
+      case '%':
+        return 0;
+      }
     return 0;
   }
-  return 0;
-}
 
 C_FLOAT64 CNodeK::value(const CCallParameters & callParameters) const
-{
-  // if it is a constant or an identifier just return its value
-  if (isNumber())
-  return mConstant;
-  switch (mType)
-    {
-    case N_OBJECT:
-      return 1;
-      break;
-    case N_IDENTIFIER :
-      return * (C_FLOAT64 *) callParameters[mIndex];
+  {
+    // if it is a constant or an identifier just return its value
+    if (isNumber())
+      return mConstant;
+    switch (mType)
+      {
+      case N_OBJECT:
+        return 1;
+        break;
+      case N_IDENTIFIER :
+        return * (C_FLOAT64 *) callParameters[mIndex];
         break;
       case N_OPERATOR:
         switch (mSubtype)
@@ -525,6 +527,6 @@ C_FLOAT64 CNodeK::value(const CCallParameters & callParameters) const
         fatalError();   // THROW EXCEPTION
         return 0.0;
       }
-  fatalError();   // THROW EXCEPTION
-  return 0.0;
-}
+    fatalError();   // THROW EXCEPTION
+    return 0.0;
+  }

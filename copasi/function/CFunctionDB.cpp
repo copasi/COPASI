@@ -10,6 +10,7 @@
 #include "CFunctionDB.h"
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
+#include "utilities/CCopasiException.h"
 
 CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE;}
 
