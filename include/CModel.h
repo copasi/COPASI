@@ -291,8 +291,14 @@ public:
      */
     C_INT32 getTotMetab() const;
 
-     /**
-     *  Get the number of independent metabolites
+    /**
+     *  Get the number of total metabolites
+     *  @return C_INT32 totMetab
+     */
+    C_INT32 getIntMetab() const;
+
+    /**
+     *  Get the number of internal metabolites
      *  @return C_INT32 dimension
      */
     C_INT32 getIndMetab() const;

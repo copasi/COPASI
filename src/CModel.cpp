@@ -375,6 +375,11 @@ C_INT32 CModel::getTotMetab() const
     return mMetabolites.size();
 }
 
+C_INT32 CModel::getIntMetab() const
+{
+    return mMetabolitesInd.size() + mMetabolitesDep.size();
+}
+
 C_INT32 CModel::getIndMetab() const
 {
     return mMetabolitesInd.size();
