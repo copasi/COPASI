@@ -1,10 +1,10 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 04/03 
-  Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 04/03 
+ Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #if !defined COPASI_WIDGET_H
@@ -13,6 +13,7 @@
 #include "listviews.h"
 
 class DataModel;
+class QResizeEvent;
 
 class CopasiWidget : public QWidget
   {
@@ -25,6 +26,7 @@ class CopasiWidget : public QWidget
 
   public slots:
     virtual void resize (int w, int h);
+
   private:
     static int realMinWidth;
     static int realMinHeight;
@@ -35,6 +37,13 @@ class CopasiWidget : public QWidget
   protected:
     static DataModel* dataModel;
     ListViews* pListView;
+  };
+
+class CopasiParametersWidget : public CopasiWidget
+  {
+  public:
+    CopasiParametersWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0);
+    virtual void viewMousePressEvent(QMouseEvent * e) = 0;
   };
 
 #endif // !defined(COPASI_WIDGET_H)

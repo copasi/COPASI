@@ -6,7 +6,7 @@
 #include "listviews.h"
 #include "qvaluelist.h" 
 //////////////////////////////////////////////////////////////////////
-// Construction/Destruction
+// Construction/Destruction of CopasiWidget
 //////////////////////////////////////////////////////////////////////
 int CopasiWidget::realMinHeight = 0;
 int CopasiWidget::realMinWidth = 0;
@@ -73,3 +73,10 @@ bool CopasiWidget::leave()
 
 bool CopasiWidget::enter(const std::string & C_UNUSED(key))
 {return true;}
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction of CopasiParametersWidget
+//////////////////////////////////////////////////////////////////////
+CopasiParametersWidget::CopasiParametersWidget(QWidget * parent, const char * name, WFlags f)
+    : CopasiWidget (parent, name, f)
+{}
