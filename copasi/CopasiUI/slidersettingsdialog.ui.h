@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 14:48:40 $
+   $Date: 2004/11/05 14:51:42 $
    End CVS Header */
 
 /****************************************************************************
@@ -233,8 +233,8 @@ void SliderSettingsDialog::browseButtonPressed()
       if (this->mpSlider && this->mpSlider->object() == object) return;
       unsigned C_INT32 i;
       unsigned C_INT32 iMax = this->mDefinedSliders.size();
-      C_INT32 found = iMax;
-      C_INT32 sliderFound = iMax;
+      unsigned C_INT32 found = iMax;
+      unsigned C_INT32 sliderFound = iMax;
       for (i = 0; i < iMax;++i)
         {
           if (this->mDefinedSliders[i]->object() == object)
