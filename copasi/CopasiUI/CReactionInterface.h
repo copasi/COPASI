@@ -33,7 +33,7 @@ class CReactionInterface
     /**
      * A copy of the chemical equation of the reaction
      */
-    CChemEq mChemEq;
+    CChemEq *mpChemEq;
 
     /**
      * A pointer to the kinetic function of the reaction
@@ -72,9 +72,9 @@ class CReactionInterface
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
     void setChemEqString(const std::string & eq, const std::string & newFunction = "");
-    std::string getChemEqString() const {return mChemEq.getChemicalEquation();};
+    std::string getChemEqString() const {return mpChemEq->getChemicalEquation();};
 
-    bool isReversible() const {return mChemEq.getReversibility();};
+    bool isReversible() const {return mpChemEq->getReversibility();};
 
     /**
      * set the reversibility.
