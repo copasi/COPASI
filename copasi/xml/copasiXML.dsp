@@ -69,10 +69,6 @@ SOURCE=.\CCopasiXMLParser.cpp
 
 SOURCE=.\CExpat.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\CXMLHandler.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
