@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 02:58:08 $
+   $Date: 2005/02/21 13:20:33 $
    End CVS Header */
 
 /**
@@ -171,6 +171,7 @@ CCopasiXMLInterface::CCopasiXMLInterface():
     mpFunctionList(NULL),
     mpTaskList(NULL),
     mpReportList(NULL),
+    mpGUI(NULL),
     mpPlotList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
