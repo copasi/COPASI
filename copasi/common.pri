@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.35 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.36 $ $Author: shoops $ $Date: 2005/02/09 01:25:28 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -62,6 +62,7 @@ contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE 
   debug {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
+    QMAKE_LFLAGS_CONSOLE += /NODEFAULTLIB:"msvcrt.lib"
   }
 
   !isEmpty(MKL_PATH) {
@@ -69,6 +70,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
     QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
+    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\ia32\lib"
     LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
@@ -76,6 +78,7 @@ contains(BUILD_OS, WIN32) {
       QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
       QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
       QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${CLAPACK_PATH}\lib"
       LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
@@ -86,6 +89,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
     LIBS += libexpatMT.lib
   } else {
     error( "EXPAT_PATH must be specified" )
@@ -95,6 +99,7 @@ contains(BUILD_OS, WIN32) {
     QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
     QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
     QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
+    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${SBML_PATH}\lib"
     LIBS += libsbml.lib
   } else {
     error( "SBML_PATH must be specified" )
