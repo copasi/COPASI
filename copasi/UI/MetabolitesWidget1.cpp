@@ -31,7 +31,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 {
   if (!name)
     setName("MetabolitesWidget1");
-  // resize(708, 367);
+  resize(708, 367);
   setCaption(trUtf8("MetabolitesWidget1"));
   MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 
@@ -81,23 +81,22 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   ButtonGroup3 = new QButtonGroup(this, "ButtonGroup3");
   ButtonGroup3->setFrameShape(QButtonGroup::WinPanel);
   ButtonGroup3->setFrameShadow(QButtonGroup::Sunken);
-  ButtonGroup3->setMinimumWidth(148);
   ButtonGroup3->setTitle(trUtf8(""));
   ButtonGroup3->setExclusive(TRUE);
 
   RadioButton5 = new QRadioButton(ButtonGroup3, "RadioButton5");
   RadioButton5->setEnabled(FALSE);
-  RadioButton5->setGeometry(QRect(21, 80, 120, 19));
+  RadioButton5->setGeometry(QRect(22, 80, 148, 19));
   RadioButton5->setText(trUtf8("Dependent"));
 
   RadioButton4 = new QRadioButton(ButtonGroup3, "RadioButton4");
   RadioButton4->setEnabled(FALSE);
-  RadioButton4->setGeometry(QRect(21, 49, 120, 19));
+  RadioButton4->setGeometry(QRect(21, 49, 148, 19));
   RadioButton4->setText(trUtf8("Independent"));
 
   RadioButton3 = new QRadioButton(ButtonGroup3, "RadioButton3");
   RadioButton3->setEnabled(FALSE);
-  RadioButton3->setGeometry(QRect(21, 18, 120, 19));
+  RadioButton3->setGeometry(QRect(21, 18, 148, 19));
   RadioButton3->setText(trUtf8("Fixed"));
 
   MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup3, 3, 4, 3, 3);
@@ -159,8 +158,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   ButtonGroup2 = new QButtonGroup(this, "ButtonGroup2");
   ButtonGroup2->setFrameShape(QButtonGroup::WinPanel);
-  ButtonGroup2->setFrameShadow(QButtonGroup::Sunken);
-  ButtonGroup2->setMinimumWidth(148);
   ButtonGroup2->setTitle(trUtf8(""));
   ButtonGroup2->setExclusive(TRUE);
 
@@ -173,8 +170,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   RadioButton2->setText(trUtf8("Variable"));
 
   MetabolitesWidget1Layout->addMultiCellWidget(ButtonGroup2, 3, 4, 1, 1);
-  //  QSpacerItem* spacer_3 = new QSpacerItem(680, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  QSpacerItem* spacer_3 = new QSpacerItem(5, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  QSpacerItem* spacer_3 = new QSpacerItem(680, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
   MetabolitesWidget1Layout->addMultiCell(spacer_3, 9, 9, 0, 3);
 
   Line1 = new QFrame(this, "Line1");
