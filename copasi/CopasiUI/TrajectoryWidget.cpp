@@ -88,6 +88,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
 
+  bExecutable->setEnabled(parent != NULL);
+  bExecutable->setChecked(parent == NULL);
+
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
@@ -141,7 +144,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   bRunTask = new QPushButton(this, "bRunTask");
   bRunTask->setText(trUtf8("Run"));
-  bRunTask->setEnabled(false);
+  bRunTask->setEnabled(parent == NULL);
   Layout2->addWidget(bRunTask);
 
   //  commitChange = new QPushButton(this, "commitChange");

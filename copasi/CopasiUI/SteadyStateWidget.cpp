@@ -55,7 +55,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   bRunButton = new QPushButton(this, "bRunButton");
   bRunButton->setText(trUtf8("Run"));
-  bRunButton->setEnabled(false);
+  bRunButton->setEnabled((parent == NULL));
   Layout2->addWidget(bRunButton);
 
   //  commitChange = new QPushButton(this, "commitChange");
@@ -87,6 +87,10 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable"));
+
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
 
   SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
 
