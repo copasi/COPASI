@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 09:41:19 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -43,8 +43,8 @@ class DataModelGUI
     void updateReportDefinitions();
     void updatePlots();
 
-    const IndexedNode & getRootNode() const;
-    const IndexedNode & getNode(const int & id) const;
+    const IndexedNode * getRootNode() const;
+    const IndexedNode * getNode(const int & id) const;
 
     bool loadModel(const char* fileName);
     bool createModel();

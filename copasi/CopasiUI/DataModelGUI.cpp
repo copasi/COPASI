@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 09:41:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -61,19 +61,19 @@ void DataModelGUI::linkDataModelToGUI()
   mpMathModel->setModel(CCopasiDataModel::Global->getModel());
 
   //connect the folder tree with the backend objects
-  mTree.findNodeFromId(1).setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
-  mTree.findNodeFromId(21).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
-  mTree.findNodeFromId(23).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
-  mTree.findNodeFromId(24).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
+  mTree.findNodeFromId(1)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
+  mTree.findNodeFromId(21)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
+  mTree.findNodeFromId(23)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+  mTree.findNodeFromId(24)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]->getKey());
 
 #ifdef COPASI_DEBUG
-  mTree.findNodeFromId(31).setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
+  mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
   //  mTree.findNodeFromId(32).setObjectKey(pOptFunction->getKey());
-  mTree.findNodeFromId(115).setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
+  mTree.findNodeFromId(115)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
 #endif // COPASI_DEBUG
 
-  mTree.findNodeFromId(43).setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
-  mTree.findNodeFromId(42).setObjectKey(mPlotDefinitionList.getKey());
+  mTree.findNodeFromId(43)->setObjectKey(CCopasiDataModel::Global->getReportDefinitionList()->getKey());
+  mTree.findNodeFromId(42)->setObjectKey(mPlotDefinitionList.getKey());
 
   ListViews::setDataModel(this);
 }
@@ -113,9 +113,9 @@ void DataModelGUI::populateData()
 
 void DataModelGUI::updateCompartments()
 {
-  IndexedNode & parent = mTree.findNodeFromId(111);
+  IndexedNode * parent = mTree.findNodeFromId(111);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   if (CCopasiDataModel::Global->getModel() == NULL) return;
   const CCopasiVectorN< CCompartment > & objects = CCopasiDataModel::Global->getModel()->getCompartments();
@@ -124,17 +124,17 @@ void DataModelGUI::updateCompartments()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
 void DataModelGUI::updateMetabolites()
 {
-  IndexedNode & parent = mTree.findNodeFromId(112);
+  IndexedNode * parent = mTree.findNodeFromId(112);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   const CCopasiVector< CMetab > & objects = CCopasiDataModel::Global->getModel()->getMetabolites();
   C_INT32 j, jmax = objects.size();
@@ -142,17 +142,17 @@ void DataModelGUI::updateMetabolites()
   for (j = 0; j < jmax; j++)
     {
       metab = objects[j];
-      parent.addChild(-1,
-                       FROM_UTF8(CMetabNameInterface::getDisplayName(CCopasiDataModel::Global->getModel(), *metab)),
-                       metab->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(CMetabNameInterface::getDisplayName(CCopasiDataModel::Global->getModel(), *metab)),
+                        metab->getKey());
     }
 }
 
 void DataModelGUI::updateReactions()
 {
-  IndexedNode & parent = mTree.findNodeFromId(114);
+  IndexedNode * parent = mTree.findNodeFromId(114);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   const CCopasiVectorN< CReaction > & objects = CCopasiDataModel::Global->getModel()->getReactions();
   C_INT32 j, jmax = objects.size();
@@ -160,17 +160,17 @@ void DataModelGUI::updateReactions()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
 void DataModelGUI::updateMoieties()
 {
-  IndexedNode & parent = mTree.findNodeFromId(222);
+  IndexedNode * parent = mTree.findNodeFromId(222);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   const CCopasiVectorN< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
 
@@ -179,17 +179,17 @@ void DataModelGUI::updateMoieties()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
 void DataModelGUI::updateFunctions()
 {
-  IndexedNode & parent = mTree.findNodeFromId(5);
+  IndexedNode * parent = mTree.findNodeFromId(5);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   const CCopasiVectorN< CFunction > & objects = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
   C_INT32 j, jmax = objects.size();
@@ -197,17 +197,17 @@ void DataModelGUI::updateFunctions()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
 void DataModelGUI::updateReportDefinitions()
 {
-  IndexedNode & parent = mTree.findNodeFromId(43);
+  IndexedNode * parent = mTree.findNodeFromId(43);
 
-  parent.removeChildren();
+  parent->removeChildren();
 
   const CCopasiVector< CReportDefinition >* objects = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 j, jmax = objects->size();
@@ -215,17 +215,20 @@ void DataModelGUI::updateReportDefinitions()
   for (j = 0; j < jmax; j++)
     {
       obj = (*objects)[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->getKey());
     }
 }
 
 void DataModelGUI::updatePlots()
 {
-  IndexedNode & parent = mTree.findNodeFromId(42);
+  IndexedNode * parent = mTree.findNodeFromId(42);
 
-  parent.removeChildren();
+  //if (parent.children().size())
+  // {std::cout << " updatePlots() " << parent.children()[0]->getSortKey() << std::endl;
+  //  std::cout << " updatePlots() " << parent.children()[0]->getName() << std::endl;}
+  parent->removeChildren();
 
   //  const CCopasiVector< CPlotSpecification >* objects = mPlotDefinitionList;
   C_INT32 j, jmax = mPlotDefinitionList.size();
@@ -233,19 +236,20 @@ void DataModelGUI::updatePlots()
   for (j = 0; j < jmax; j++)
     {
       obj = mPlotDefinitionList[j];
-      parent.addChild(-1,
-                       FROM_UTF8(obj->getObjectName()),
-                       obj->CCopasiParameter::getKey());
+      parent->addChild(-1,
+                        FROM_UTF8(obj->getObjectName()),
+                        obj->CCopasiParameter::getKey());
     }
 }
 
 //*****************************************************************
 
-const IndexedNode & DataModelGUI::getRootNode() const
+const IndexedNode * DataModelGUI::getRootNode() const
   {return mTree.getRoot();}
 
-const IndexedNode & DataModelGUI::getNode(const int & id) const
-  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
+const IndexedNode * DataModelGUI::getNode(const int & id) const
+  {return mTree.findNodeFromId(id);}
+//  {return const_cast<IndexedTree *>(&mTree)->findNodeFromId(id);}
 
 //*****************************************************************
 

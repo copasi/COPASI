@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.169 $
+   $Revision: 1.170 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 09:42:17 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,13 +60,13 @@
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
 
-QPixmap *folderLocked = 0;   // to store the image of locked icon folder
-QPixmap *folderClosed = 0;   // to store the image of closed icon folder
-QPixmap *folderOpen = 0;     // to store the image of open icon folder
+//QPixmap *folderLocked = 0;   // to store the image of locked icon folder
+//QPixmap *folderClosed = 0;   // to store the image of closed icon folder
+//QPixmap *folderOpen = 0;     // to store the image of open icon folder
 
-#include "./icons/folderclosed.xpm"
-#include "./icons/folderopen.xpm"
-#include "./icons/folderlocked.xpm"
+//#include "./icons/folderclosed.xpm"
+//#include "./icons/folderopen.xpm"
+//#include "./icons/folderlocked.xpm"
 
 /**------FolderListItem::FolderListItem(QListView *parent, Folder *f)---->
  **
@@ -82,20 +82,13 @@ QPixmap *folderOpen = 0;     // to store the image of open icon folder
  *******************************************************************************************/
 FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool recurs):
     QListViewItem(parent),
-    mFolder(*f)
+    mpFolder(f),
+    mSortKey(f->getSortKey())
 {
   setText(0, f->getName());
 
   if (recurs)
     createSubFolders();
-
-  /*if (mFolder.children())
-    {
-      setPixmap(0, *folderClosed);
-      insertSubFolders(mFolder.children());
-    }
-  else // if i am the last node than put my icon as locked...
-    setPixmap(0, *folderLocked);*/
 }
 
 /**--------FolderListItem::FolderListItem(FolderListItem *parent, Folder *f)----->
@@ -112,23 +105,13 @@ FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool rec
  *******************************************************************************************/
 FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs):
     QListViewItem(parent),
-    mFolder(*f)
+    mpFolder(f),
+    mSortKey(f->getSortKey())
 {
   setText(0, f->getName());
 
   if (recurs)
     createSubFolders();
-
-  /*if (mFolder.hasChildren())
-    {
-      setPixmap(0, *folderClosed);
-      insertSubFolders(mFolder.children());
-    }
-  else // if i am the last node than put my icon as locked...
-    {
-      parent->setPixmap(0, *folderClosed);
-      setPixmap(0, *folderLocked);
-    }*/
 }
 
 /** **************FolderListItem::insertSubFolders(const QObjectList *lst)******
@@ -141,12 +124,12 @@ FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, boo
  *******************************************************************************************/
 void FolderListItem::createSubFolders()
 {
-  const std::vector<IndexedNode> & children = mFolder.children();
+  const std::vector<IndexedNode*> & children = mpFolder->children();
 
-  std::vector<IndexedNode>::const_iterator it, itEnd = children.end();
+  std::vector<IndexedNode*>::const_iterator it, itEnd = children.end();
   for (it = children.begin(); it != itEnd; ++it)
     {
-      new FolderListItem(this, &(*it), true);
+      new FolderListItem(this, *it, true);
     }
 }
 
@@ -159,18 +142,23 @@ void FolderListItem::deleteSubFolders()
     }
 }
 
-bool FolderListItem::setFolder(const IndexedNode & folder)
+bool FolderListItem::setFolder(const IndexedNode * folder)
 {
-  mFolder = folder;
+  mpFolder = folder;
+  mSortKey = mpFolder->getSortKey();
   return true;
 }
 
-const IndexedNode & FolderListItem::getFolder() const
-  {return mFolder;}
+const IndexedNode * FolderListItem::getFolder() const
+  {return mpFolder;}
 
 QString FolderListItem::key(int, bool) const
   {
-    return mFolder.getSortKey();
+    /*    if (mpFolder)
+          return mpFolder->getSortKey();
+        else 
+          return "";*/
+    return mSortKey;
   }
 
 // -----------------------------------------------------------------
@@ -228,9 +216,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
   setChildrenCollapsible(false);
 
   // creates the image to be displayed when folder is closed/locked/open
-  folderLocked = new QPixmap((const char**)folderlocked);
-  folderClosed = new QPixmap((const char**)folderclosed);
-  folderOpen = new QPixmap((const char**)folderopen);
+  //folderLocked = new QPixmap((const char**)folderlocked);
+  //folderClosed = new QPixmap((const char**)folderclosed);
+  //folderOpen = new QPixmap((const char**)folderopen);
 
   // create a new QListview to be displayed on the screen..and set its property
   folders = new QListView(this);
@@ -298,7 +286,7 @@ void ListViews::setupFolders()
   // first clear up any thing that was present earlier
   folders->clear();
 
-  FolderListItem* tmp = new FolderListItem(folders, &dataModel->getRootNode(), true);
+  FolderListItem* tmp = new FolderListItem(folders, dataModel->getRootNode(), true);
   tmp->setText(0, "Copasi");
   tmp->setOpen(true);
 }
@@ -412,7 +400,7 @@ void ListViews::ConstructNodeWidgets()
 CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
   {
     // first try ID
-    C_INT32 id = item->getFolder().getId();
+    C_INT32 id = item->getFolder()->getId();
 
     switch (id)
       {
@@ -490,7 +478,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 33:
         return paramFittingWidget;
         break;
-      case 43:                            //Report
+      case 43:                             //Report
         return tableDefinition;
         break;
       case 42:
@@ -504,7 +492,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
     // then try parent id:
     FolderListItem* parent = (FolderListItem*)item->parent();
     if (!parent) return NULL;
-    id = parent->getFolder().getId();
+    id = parent->getFolder()->getId();
 
     switch (id)
       {
@@ -546,7 +534,7 @@ FolderListItem* ListViews::findListViewItem(int id, std::string key) //should al
   for (; *it; ++it)
     {
       item = (FolderListItem*) * it;
-      if (item->getFolder().getId() == id)
+      if (item->getFolder()->getId() == id)
         break;
     }
 
@@ -555,7 +543,7 @@ FolderListItem* ListViews::findListViewItem(int id, std::string key) //should al
 
   if (key == "") return item;
 
-  if (key == item->getFolder().getObjectKey()) return item; //found right key already
+  if (key == item->getFolder()->getObjectKey()) return item; //found right key already
 
   //now look for the right key
   FolderListItem * item2;
@@ -564,7 +552,7 @@ FolderListItem* ListViews::findListViewItem(int id, std::string key) //should al
   for (; *it2 && (*it2 != itemEnd); ++it2)
     {
       item2 = (FolderListItem*) * it2;
-      if (item2->getFolder().getObjectKey() == key)
+      if (item2->getFolder()->getObjectKey() == key)
         break;
       //if (item2 == itemEnd) //not found
       //  break;
@@ -596,7 +584,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   // find the widget
   CopasiWidget* newWidget = findWidgetFromItem(item);
   if (!newWidget) return; //do nothing
-  std::string itemKey = item->getFolder().getObjectKey();
+  std::string itemKey = item->getFolder()->getObjectKey();
 
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
@@ -612,7 +600,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   // find the widget again (it may have changed)
   newWidget = findWidgetFromItem(item);
   if (!newWidget) newWidget = defaultWidget; //should never happen
-  itemKey = item->getFolder().getObjectKey();
+  itemKey = item->getFolder()->getObjectKey();
 
   // enter new widget
   if (newWidget)
@@ -659,12 +647,12 @@ void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
 
 //**********************************************************************
 
-void ListViews::setTheRightPixmap(QListViewItem* lvi)
+/*void ListViews::setTheRightPixmap(QListViewItem* lvi)
 {
   if (lvi->isSelected())
     if (lvi->childCount() != 0)
       lvi->setPixmap(0, *folderOpen);
-}
+}*/
 
 // this reconstructs the childrens of the listViewItems in all listviews
 bool ListViews::updateAllListviews(C_INT32 id) //static
@@ -692,12 +680,12 @@ void ListViews::storeCurrentItem()
 {
   //save the id and object key of the current ListViewItem
   FolderListItem* item = (FolderListItem*)folders->currentItem();
-  mSaveObjectKey = item->getFolder().getObjectKey();
-  mSaveFolderID = item->getFolder().getId();
+  mSaveObjectKey = item->getFolder()->getObjectKey();
+  mSaveFolderID = item->getFolder()->getId();
   while (mSaveFolderID == -1)
     {
       item = (FolderListItem*)item->parent();
-      mSaveFolderID = item->getFolder().getId();
+      mSaveFolderID = item->getFolder()->getId();
     }
 }
 
@@ -732,6 +720,8 @@ void ListViews::restoreCurrentItemInAllListViews()
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
+  std::cout << "ListViews::updateDataModelAndListviews " << std::endl;
+
   bool success = true;
 
   //update math model

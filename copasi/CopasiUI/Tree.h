@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/Tree.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/10 16:03:06 $
+   $Author: ssahle $ 
+   $Date: 2005/03/02 09:42:56 $
    End CVS Header */
 
 /****************************************************************************
@@ -43,7 +43,7 @@ class IndexedNode
 
     ~IndexedNode(); // destructor
 
-    const std::vector<IndexedNode>& children() const;
+    const std::vector<IndexedNode*>& children() const;
 
     void removeChildren();
 
@@ -59,14 +59,14 @@ class IndexedNode
 
     const QString & getSortKey() const;
 
-    const std::vector<IndexedNode> & children();
+    //const std::vector<IndexedNode> & children();
 
   private:
     int mId;
 
     QString mSortKey;
 
-    std::vector< IndexedNode > mChildren;
+    std::vector<IndexedNode*> mChildren;
 
     //contents
     QString mName;
@@ -91,10 +91,11 @@ class IndexedTree
 
     void add(int parentId, int newId, const QString & name, const std::string & key);
 
-    IndexedNode & findNodeFromId(int id);
+    IndexedNode * findNodeFromId(int id);
+    const IndexedNode * findNodeFromId(int id) const;
 
-    IndexedNode & getRoot() {return root;};
-    const IndexedNode & getRoot() const {return root;};
+    IndexedNode * getRoot() {return &root;};
+    const IndexedNode * getRoot() const {return &root;};
   };
 
 #endif
