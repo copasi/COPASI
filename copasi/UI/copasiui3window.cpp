@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/10 13:00:25 $
+   $Author: shoops $ 
+   $Date: 2004/05/29 02:52:14 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -93,7 +93,7 @@ CopasiUI3Window::CopasiUI3Window():
   else
     newDoc();
 
-  ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
+  // ListViews::notify(ListViews::FUNCTION, ListViews::ADD, "");
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******
@@ -107,18 +107,23 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 {
   ListViews::commit();
 
-  QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.gps)",
+  QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.cps)",
                 this, "save file dialog",
-                "Choose a file");
+                "Choose a filename to save under.");
 
   if (dataModel && tmp)
     {
-      if (!tmp.endsWith(".gps")) tmp += ".gps";
+      if (!tmp.endsWith(".cps") &&
+          !tmp.endsWith(".")) tmp += ".cps";
+
+      tmp = tmp.remove(QRegExp("\\.$"));
 
       dataModel->saveModel(tmp.utf8());
+      dataModel->changed(false);
+
       gpsFile = tmp;
     }
-} //cout<<"it comes in filesave as...";}
+}
 
 /***************CopasiUI3Window::newDoc()******
  **
@@ -130,68 +135,34 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
  *******************************************************************************************/
 void CopasiUI3Window::newDoc()
 {
-  // this one creates one more view of the same code
-  // and assigns only one dataModel to all the views
-  // hence maintaning doc/view architecture
+  if (newFlag == 0) newFlag = 1;
+  else ListViews::commit();
 
-  /*   if (!dataModel) // if the datamodel doesnot exist than this is done for the first time only
-       {
-         // QString fileName = QFileDialog::getOpenFileName(QString::null, "*.txt",this, "open file dialog",
-         //"Choose a file");
-         QString fileName = "DataModel.txt";
-   
-         if (fileName)
-           {
-             dataModel = new DataModel<Folder>((char *)fileName.utf8()); // create the data model
-             splitter = new QSplitter(QSplitter::Vertical, this , "main");
-             splitter->show();
-             this->setCentralWidget(splitter);
-           }
-       }
-   
-     if (dataModel)
-       {
-       gpsFile="temp.gps";
-       dataModel->loadModel((const char *)gpsFile.utf8());
-    mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
-    mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-    msave_button->setEnabled(true);
-    mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  //       listViews = new ListViews(splitter);
-  //       listViews->setDataModel(dataModel);
-  //       listViews->show();
-       }
-  */
-
-  //newFlag is set first time the application runs.
-  if (newFlag == 1)
+  if (dataModel && dataModel->isChanged())
     {
-      int choice = 0;
-      if (gpsFile)
+      switch (QMessageBox::information(this, "COPASI",
+                                       "The document contains unsaved changes\n"
+                                       "Do you want to save the changes before exiting?",
+                                       "&Save", "&Discard", "Cancel", 0, 2))
         {
-          if (gpsFile != "untitled.gps")
-            {
-              choice =
-                QMessageBox::warning(this,
-                                     "Confirm File Changes Update",
-                                     "Do you want to save the changes you made to previous model ?",
-                                     "Yes", "No", 0, 0, 1);
+        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+          slotFileSave();
+          break;
 
-              if (!(choice))
-                slotFileSave();
-            }
-          else slotFileSave();
+        case 1:  // Discard clicked or Alt+D pressed
+          break;
+
+        case 2:  // Cancel clicked or Escape pressed
+          return;
+          break;
         }
-      else slotFileSaveAs();
     }
-  if (newFlag == 0)
-    newFlag = 1;
 
   if (!dataModel)
     dataModel = new DataModel(); // create the data model
 
-  gpsFile = "untitled.gps";
-  dataModel->createModel(gpsFile.utf8());
+  gpsFile = "";
+  dataModel->createModel();
   ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
     mpFileMenu->setItemEnabled(nobject_browser, true);
@@ -210,11 +181,13 @@ void CopasiUI3Window::newDoc()
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen(QString file)
 {
+  ListViews::commit();
+
   QString newFile;
   int choice = 0;
 
   if (file == "")
-    newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps)",
+    newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.cps)",
                                            this, "open file dialog",
                                            "Choose a file");
   else
@@ -224,34 +197,22 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (newFile)
     {
-      if (!dataModel)
-        dataModel = new DataModel; // create a new data model
-
-      if (dataModel->getModel())
+      if (dataModel && dataModel->isChanged())
         {
+          choice =
+            QMessageBox::warning(this,
+                                 "Confirm File Changes Update",
+                                 "Do you want to save the changes you made to previous model ?",
+                                 "Yes", "No", 0, 0, 1);
+
+          if (!(choice)) slotFileSave();
+
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
                             dataModel->getModel()->getKey());
-
-          if (gpsFile)
-            {
-              if (gpsFile != "untitled.gps")
-                {
-                  choice =
-                    QMessageBox::warning(this,
-                                         "Confirm File Changes Update",
-                                         "Do you want to save the changes you made to previous model ?",
-                                         "Yes", "No", 0, 0, 1);
-
-                  if (!(choice))
-                    slotFileSave();
-                }
-              else slotFileSave();
-            }
-          else slotFileSaveAs();
-
-          /*if (gpsFile) slotFileSave();
-                else slotFileSaveAs();*/
         }
+
+      if (!dataModel)
+        dataModel = new DataModel; // create a new data model
 
       gpsFile = newFile;
 
@@ -279,6 +240,12 @@ void CopasiUI3Window::slotFileSave()
 {
   ListViews::commit();
 
+  if (gpsFile.isEmpty())
+    {
+      slotFileSaveAs();
+      return;
+    }
+
   std::ifstream File(gpsFile.utf8());
   std::string Line;
   File >> Line;
@@ -286,7 +253,7 @@ void CopasiUI3Window::slotFileSave()
 
   int choice = 0;
 
-  if (!Line.compare(0, 8, "Version="))
+  if (!Line.compare(0, 8, "Version=") || gpsFile.endsWith(".gps"))
     {
       /* Ask for permision to overwrite write? */
       /* If no call slotFileSaveAs */
@@ -295,11 +262,20 @@ void CopasiUI3Window::slotFileSave()
                              "Confirm File Version Update",
                              "You are to overwrite an existing Gepasi File.\n"
                              "This will render the file unreadable for Gepasi",
-                             "Continue", "Save As", 0, 0, 1);
+                             "Overwrite", "Save As", 0, 0, 1);
+
+      if (choice)
+        {
+          slotFileSaveAs(gpsFile.replace(QRegExp("\\.gps$"), ".cps"));
+          return;
+        }
     }
 
-  if (choice) slotFileSaveAs();
-  else if (dataModel) dataModel->saveModel(gpsFile.utf8());
+  if (dataModel)
+    {
+      dataModel->saveModel(gpsFile.utf8());
+      dataModel->changed(false);
+    }
 }
 
 void CopasiUI3Window::slotQuit()
@@ -308,22 +284,25 @@ void CopasiUI3Window::slotQuit()
 
   int choice = 0;
 
-  if (gpsFile)
+  if (dataModel && dataModel->isChanged())
     {
-      if (gpsFile != "untitled.gps")
+      switch (QMessageBox::information(this, "COPASI",
+                                       "The document contains unsaved changes\n"
+                                       "Do you want to save the changes before exiting?",
+                                       "&Save", "&Discard", "Cancel", 0, 2))
         {
-          choice =
-            QMessageBox::warning(this,
-                                 "Confirm File Changes Update",
-                                 "Do you want to save the changes you made to previous model ?",
-                                 "Yes", "No", 0, 0, 1);
+        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+          slotFileSave();
+          break;
 
-          if (!(choice))
-            slotFileSave();
+        case 1:  // Discard clicked or Alt+D pressed
+          break;
+
+        case 2:  // Cancel clicked or Escape pressed
+          return;
+          break;
         }
-      else slotFileSave();
     }
-  else slotFileSaveAs();
 
   closeFlag = 1;
 
@@ -334,25 +313,25 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
   if (closeFlag == 0)
     {
-      int choice = 0;
-
-      if (gpsFile)
+      if (dataModel && dataModel->isChanged())
         {
-          if (gpsFile != "untitled.gps")
+          switch (QMessageBox::information(this, "COPASI",
+                                           "The document contains unsaved changes\n"
+                                           "Do you want to save the changes before exiting?",
+                                           "&Save", "&Discard", "Cancel", 0, 2))
             {
-              choice =
-                QMessageBox::warning(this,
-                                     "Confirm File Changes Update",
-                                     "Do you want to save the changes you made to previous model ?",
-                                     "Yes", "No", 0, 0, 1);
+            case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+              slotFileSave();
+              break;
 
-              if (!(choice))
-                slotFileSave();
+            case 1:  // Discard clicked or Alt+D pressed
+              break;
+
+            case 2:  // Cancel clicked or Escape pressed
+              return;
+              break;
             }
-          else slotFileSave();
         }
-      else slotFileSaveAs();
-
       qApp->quit();
     }
 }
