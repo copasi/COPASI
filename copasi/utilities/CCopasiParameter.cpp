@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 18:00:26 $
+   $Date: 2003/11/07 18:15:36 $
    End CVS Header */
 
 /**
@@ -129,7 +129,7 @@ bool CCopasiParameter::isValidValue(const std::string & C_UNUSED(value)) const
     return true;
   }
 
-bool CCopasiParameter::isValidValue(const CCopasiParameterGroup & C_UNUSED(value)) const
+bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup & C_UNUSED(value)) const
   {
     if (mType != CCopasiParameter::GROUP) return false;
     return true;
@@ -137,8 +137,6 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup & C_UNUSED(value
 
 void * CCopasiParameter::createValue(const void * pValue)
 {
-  if (pValue) assert(isValidValue(pValue));
-
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:

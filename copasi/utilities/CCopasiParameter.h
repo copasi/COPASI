@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/07 18:00:27 $
+   $Date: 2003/11/07 18:15:36 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
 #define COPASI_CCopasiParameter
 
 #include <string>
+#include <vector>
 
 #include "report/CCopasiContainer.h"
 
@@ -196,10 +197,10 @@ class CCopasiParameter: public CCopasiContainer
 
     /**
      * Check whether the value corresponds to the type
-     * @param const CCopasiParameterGroup & value
+     * @param const CCopasiParameterGroup::parameterGroup & value
      * @return bool isValidValue
      */
-    bool isValidValue(const CCopasiParameterGroup & value) const;
+    bool isValidValue(const std::vector< CCopasiParameter * > & value) const;
 
   private:
     /**
