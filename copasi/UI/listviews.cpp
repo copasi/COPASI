@@ -750,6 +750,12 @@ void ListViews::loadReactionsNodes(CModel* model)
       loadNode = NULL;
     }
 }
+
+void ListViews::loadScanNodes(CModel *model)
+{
+  scanWidget->loadScan(model);
+}
+
 void ListViews::loadMetabolitesNodes(CModel* model)
 {
   metabolitesWidget->loadMetabolites(model);
@@ -822,6 +828,7 @@ void ListViews::loadModelNodes(CModel *model)
       // UPDATE THE MOIETIES STUFF..
       loadMoietiesNodes(model);
 
+      loadScanNodes(model);
       // UPDATE THE FUNCTIONS STUFF..
       this->loadFunction();
 

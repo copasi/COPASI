@@ -200,9 +200,10 @@ class ListViews : public QSplitter, public Observer
     void loadReactions(QListViewItem*);
     void loadMoieties(QListViewItem*);
     void loadCompartments(QListViewItem*);
+
   public slots:
     void loadModelNodes(CModel *model);
-
+    void loadScanNodes(CModel *model);
     void loadCompartmentsNodes(CModel *model);
     void loadReactionsNodes(CModel* model);
     void loadMetabolitesNodes(CModel* model);

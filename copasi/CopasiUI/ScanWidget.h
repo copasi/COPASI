@@ -33,7 +33,7 @@ class ScanWidget : public CopasiWidget
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    //CScanTask *scanTask;
+    CScanTask *scanTask;
     void loadScan(CModel *model);
 
     QFrame* line7;
