@@ -77,19 +77,19 @@ class CMatrix
      * The number of elements stored in the matrix.
      * @return unsigned C_INT32 size
      */
-  unsigned C_INT32 size() {return mRows * mCols;}
+  unsigned C_INT32 size() const {return mRows * mCols;}
 
     /**
      * The number of rows of the matrix.
      * @return unsigned C_INT32 rows
      */
-    unsigned C_INT32 numRows() {return mRows;}
+    unsigned C_INT32 numRows() const {return mRows;}
 
     /**
      * The number of columns of the matrix
      * @return unsigned C_INT32 cols
      */
-    unsigned C_INT32 numCols() {return mCols;}
+    unsigned C_INT32 numCols() const {return mCols;}
 
     /**
      * Resize the matrix. The previous content is lost
