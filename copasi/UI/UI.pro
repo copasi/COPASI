@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: ssahle $ $Date: 2003/07/03 09:19:37 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2003/08/05 14:33:27 $  
 ######################################################################
 
 include(../common.pri)
@@ -66,6 +66,10 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libutilities.a
 
 }
+
+contains(BUILD_OS, SunOS) {
+  LIBS += -lICE -ldl
+}  
 
 # Input
 HEADERS += CompartmentsWidget.h \
