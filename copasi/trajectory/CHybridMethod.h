@@ -57,18 +57,18 @@ class StochFlag
     StochFlag * next;
 
     // insert operator
-    friend ostream & operator<<(ostream &os, const StochFlag & d)
+    friend std::ostream & operator<<(std::ostream & os, const StochFlag & d)
     {
-      os << "StochFlag " << endl;
-      os << "  index: " << d.index << " value: " << d.value << endl;
+      os << "StochFlag " << std::endl;
+      os << "  index: " << d.index << " value: " << d.value << std::endl;
       if (d.prev != NULL)
-        os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << endl;
+        os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
       else
-        os << "  prevPointer: NULL" << endl;
+        os << "  prevPointer: NULL" << std::endl;
       if (d.next != NULL)
-        os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << endl;
+        os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
       else
-        os << "  nextPointer: NULL" << endl;
+        os << "  nextPointer: NULL" << std::endl;
       return os;
     }
   };
@@ -85,10 +85,11 @@ class Balance
     CMetab * metabolitePointer;
 
     // insert operator
-    friend ostream & operator<<(ostream &os, const Balance & d)
+    friend std::ostream & operator<<(std::ostream & os, const Balance & d)
     {
-      os << "Balance" << endl;
-      os << "  index: " << d.index << " balance: " << d.balance << " metabPointer: " << d.metabolitePointer << endl;
+      os << "Balance" << std::endl;
+      os << "  index: " << d.index << " balance: " << d.balance
+      << " metabPointer: " << d.metabolitePointer << std::endl;
       return os;
     }
   };
@@ -452,12 +453,12 @@ class CHybridMethod : private CTrajectoryMethod
     /**
      *   Prints out data on standard output.
      */
-    void outputData(ostream & os, C_INT32 mode);
+    void outputData(std::ostream & os, C_INT32 mode);
 
     /**
      *   Prints out various data on standard output for debugging purposes.
      */
-    void outputDebug(ostream & os, C_INT32 level);
+    void outputDebug(std::ostream & os, C_INT32 level);
 
     /* PRIVATE METHODS *********************************************************/
 
@@ -618,7 +619,7 @@ class CHybridMethod : private CTrajectoryMethod
     /**
      *   File output stream to write data.
      */
-    ofstream mOutputFile;
+    std::ofstream mOutputFile;
 
     /**
      *   Output filename.
