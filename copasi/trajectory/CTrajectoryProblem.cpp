@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:25:27 $
+   $Author: ssahle $ 
+   $Date: 2005/02/23 10:31:52 $
    End CVS Header */
 
 /**
@@ -170,6 +170,7 @@ void CTrajectoryProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
   setStartTime(mInitialState.getTime());
+  mpModel = const_cast<CModel*>(mInitialState.getModel());
 }
 
 /**
