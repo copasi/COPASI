@@ -173,7 +173,7 @@ class ListViews : public QSplitter
     TableDefinition *tableDefinition;
 
   signals:
-    resetWidget(QListViewItem*);
+    void resetWidget(QListViewItem*);
   };
 
 #endif
