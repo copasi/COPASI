@@ -9,6 +9,7 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
+# pragma warning (disable: 4243)
 #endif  // WIN32
 
 #include <assert.h>
