@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/20 23:25:42 $
+   $Date: 2003/10/22 18:13:01 $
    End CVS Header */
 
 /****************************************************************************
@@ -537,7 +537,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                       //Time course
+      case 23:                        //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -546,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                      //Report
+      case 43:                       //Report
         return tableDefinition;
         break;
       case 5:
@@ -596,25 +596,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
 void ListViews::slotFolderChanged(QListViewItem *i)
 {
   if (!i) return;
-
-  //To show the folders open or close or locked.
-  QListViewItemIterator it(folders);
-  for (; it.current(); ++it)
-    {
-      QPixmap *icon = (QPixmap *)it.current()->pixmap(0);
-      QImage image1 = icon->convertToImage ();
-      QImage image2 = folderOpen->convertToImage ();
-
-      if (image1 == image2)
-        it.current()->setPixmap(0, *folderClosed);
-    }
-
-  QPixmap *icon = (QPixmap *)i->pixmap(0);
-  QImage image1 = icon->convertToImage ();
-  QImage image2 = folderLocked->convertToImage ();
-
-  if (image1 != image2)
-    i->setPixmap(0, *folderOpen);
 
   //if (i->childCount() != 0)
   //  i->setPixmap(0, *folderOpen);
@@ -679,6 +660,25 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   currentWidget = newWidget;
   lastKey = itemKey;
+
+  //To show the folders open or close or locked -- By G
+  QListViewItemIterator it(folders);
+  for (; it.current(); ++it)
+    {
+      QPixmap *icon = (QPixmap *)it.current()->pixmap(0);
+      QImage image1 = icon->convertToImage ();
+      QImage image2 = folderOpen->convertToImage ();
+
+      if (image1 == image2)
+        it.current()->setPixmap(0, *folderClosed);
+    }
+
+  QPixmap *icon = (QPixmap *)i->pixmap(0);
+  QImage image1 = icon->convertToImage ();
+  QImage image2 = folderLocked->convertToImage ();
+
+  if (image1 != image2)
+    i->setPixmap(0, *folderOpen);
 }
 
 void ListViews::switchToOtherWidget(const std::string & key)
