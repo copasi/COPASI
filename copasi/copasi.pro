@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/02/09 01:26:02 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/02/10 19:39:14 $  
 ######################################################################
 
 include(common.pri)
@@ -28,6 +28,6 @@ SUBDIRS += xml
 SUBDIRS += wizard
 
 # Now the excecutables
-SUBDIRS += CopasiUI
 SUBDIRS += CopasiSE
+SUBDIRS += CopasiUI
 #SUBDIRS += test
