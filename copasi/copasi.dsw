@@ -122,6 +122,21 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wizard
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MathML
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MathML"=.\mml\MathML.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
