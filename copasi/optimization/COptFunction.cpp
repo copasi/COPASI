@@ -94,3 +94,29 @@ bool COptFunction::removeItem(const std::string & name)
     }
   return false;
 }
+
+void COptFunction::compile()
+{
+  int i;
+  CKinFunction* pMinFunc, * pMaxFunc;
+  for (i = 0; i < mParaList.size(); i++)
+    {
+      pMinFunc = NULL;
+      pMaxFunc = NULL;
+      if (mMinList[i] != "-inf")
+        {
+          pMinFunc = new CKinFunction();
+          pMinFunc->setDescription(mMinList[i].c_str());
+          pMinFunc->compile();
+        }
+
+      if (mMaxList[i] != "+inf")
+        {
+          pMaxFunc = new CKinFunction();
+          pMaxFunc->setDescription(mMaxList[i].c_str());
+          pMaxFunc->compile();
+        }
+      mMinFunctionList.push_back(pMinFunc);
+      mMaxFunctionList.push_back(pMaxFunc);
+    }
+}
