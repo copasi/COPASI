@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.12 2003/10/06 00:38:02 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.13 2003/10/06 01:33:35 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -208,7 +208,7 @@ std::string OptimizationItemWidget::getItemUpperLimit()
 std::string OptimizationItemWidget::getItemLowerLimit()
 {
   if (checkUpperInf->isChecked())
-    return "+inf";
+    return "-inf";
   else
     return lineUpper->text().latin1();
 }
