@@ -223,13 +223,8 @@ void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
   return;
 }
 
-void CTempReaction::compile(CModel *model,
-                            const std::vector<CNameVal> & rates,
-                            const std::vector<CNameVal> & constants)
+void CTempReaction::create_substrates_and_products_lists()
 {
-  // Create the reaction
-  CReaction *reaction = new CReaction(mName); // XXX TODO: add the bits necessary
-  // Determine the substrates and products of the reaction
   CTempMetab *tmp_metab = 0;
   C_INT32 substrate_mult, product_mult, num_change;
   unsigned C_INT32 i;
@@ -253,59 +248,76 @@ void CTempReaction::compile(CModel *model,
           mProducts.push_back(*tmp_metab);
         }
     }
+}
 
-  // Create strings describing the chemical equation
-  std::ostringstream lhs_desc;
+std::string CTempReaction::getChemEquation() const
+{
+  //std::ostringstream lhs_desc;
+  //std::ostringstream rhs_desc;
 
-  std::ostringstream rhs_desc;
-
+  std::ostringstream chemeqn;
   C_INT32 mult = 0;
-
   bool is_first;
 
-  is_first = true;
+  unsigned C_INT32 i;
 
+  is_first = true;
   for (i = 0; i < mSubstrates.size(); i++)
-    {
-      mult = mSubstrates[i].getMultiplicity();
+  {
+    mult = mSubstrates[i].getMultiplicity();
 
       if (is_first == false)
         {
-          lhs_desc << " + ";
+          chemeqn << " + ";
         }
 
       is_first = false;
 
       if (mult > 1)
         {
-          lhs_desc << substrate_mult << "*";
+          chemeqn << mult << "*";
         }
 
-      lhs_desc << mSubstrates[i].getMetab()->getName();
+      chemeqn << mSubstrates[i].getMetab()->getName();
     }
+
+  chemeqn << " -> ";
 
   is_first = true;
-
   for (i = 0; i < mProducts.size(); i++)
-    {
-      mult = mProducts[i].getMultiplicity();
+  {
+    mult = mProducts[i].getMultiplicity();
 
       if (is_first == false)
         {
-          rhs_desc << " + ";
+          chemeqn << " + ";
         }
 
       is_first = false;
 
       if (mult > 1)
         {
-          rhs_desc << mult + "*";
+          chemeqn << mult << "*";
         }
 
-      rhs_desc << mProducts[i].getMetab()->getName();
+      chemeqn << mProducts[i].getMetab()->getName();
     }
 
-  std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
+  //std::string chemeqdesc = lhs_desc.str() + "->" + rhs_desc.str();
+  return chemeqn.str();
+}
+
+void CTempReaction::compile(CModel *model,
+                            const std::vector<CNameVal> & rates,
+                            const std::vector<CNameVal> & constants)
+{
+  create_substrates_and_products_lists();
+
+  std::string chemeqdesc = getChemEquation();
+  std::cout << chemeqdesc << std::endl;
+
+  // Create the reaction
+  CReaction *reaction = new CReaction(mName); // XXX TODO: add the bits necessary
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
   // and constructs the chemical equations.
@@ -323,6 +335,7 @@ void CTempReaction::compile(CModel *model,
   CReaction::CId2Param *id2Param;
   CReaction::CId2Metab *id2Metab;
 
+  unsigned C_INT32 i;
   for (i = 0; i < mIdentifiers.size(); i++)
     {
       name = &mIdentifiers[i];
@@ -334,6 +347,7 @@ void CTempReaction::compile(CModel *model,
           id2Param->setIdentifierName(*name);
           id2Param->setValue(getParameterValue(*name, rates, constants));
           Parameters.add(*name, CFunctionParameter::FLOAT64, "PARAMETER");
+          // was ist mit id2param ?
         }
       else
         {
@@ -356,7 +370,7 @@ void CTempReaction::compile(CModel *model,
             {
               Parameters.add(*name, CFunctionParameter::FLOAT64, "MODIFIER");
               reaction->getId2Modifiers().add(id2Metab);
-            }
+            }  //todo: Fehler, wenn ein metab 2 mal eingefügt wird
         }
     }
 

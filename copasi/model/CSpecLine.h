@@ -25,14 +25,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,      // Comments
-      DE,       // Differential equations
-      EQN,      // Moiety specification equations
-      INIT,      // Initializations
-      CNST,      // Constant assignments
-      VOL,      // Volume assignment
-      CPT,      // Compartment volume assignments
-      RATE,      // Rate constant assignments
+      CMNT,       // Comments
+      DE,        // Differential equations
+      EQN,       // Moiety specification equations
+      INIT,       // Initializations
+      CNST,       // Constant assignments
+      VOL,       // Volume assignment
+      CPT,       // Compartment volume assignments
+      RATE,       // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -236,16 +236,19 @@ class CTempReaction
   public:
     CTempReaction(std::string name) : mName(name) {}
     CTempReaction(const CDeTerm *deTerm);
-    std::string getName() {return mName;}
+    std::string getName() const {return mName;}
     void setDescription(std::string desc) {mRateDescription = desc;}
-    std::string getDescription() {return mRateDescription;}
+    std::string getDescription() const {return mRateDescription;}
 
     CTempMetab *addMetabolite(const CMetab *metab);
-    std::vector< CTempMetab> &getMetabs() {return mMetabs;}
+    //std::vector<CTempMetab> &getMetabs() {return mMetabs;}
 
     void compile(CModel *model,
                  const std::vector< CNameVal> & rates,
                  const std::vector< CNameVal> & constants);
+
+    void create_substrates_and_products_lists();
+    std::string getChemEquation() const;
     void setIdentifiers(const CDeTerm *deTerm);
 
   private:
