@@ -132,7 +132,7 @@ C_INT32 CWriteConfig::setVariable(const string & name,
         }
       else if (type == "bool")
         {
-          mBuffer << *(bool *) pout;
+          mBuffer << (*(bool *) pout) ? 1 : 0;
         }
       else if (type == "multiline")
         {
