@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/28 21:02:11 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -13,6 +13,7 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
+#include "CSteadyStateMethod.h"
 
 #define MCA_OK 0
 #define MCA_SINGULAR 1
@@ -58,7 +59,7 @@ class CMCAMethod: public CCopasiMethod
 
     C_FLOAT64 mSteadyStateResolution;
 
-    bool mIsSteadyState;
+    CSteadyStateMethod::ReturnCode mSSStatus;
 
   public:
     /**
@@ -122,7 +123,7 @@ class CMCAMethod: public CCopasiMethod
      * @param ss_solution refer to steady-state solution
      * @param refer to the resolution
      */
-    int CalculateMCA(int ss_solution, C_FLOAT64 res);
+    int CalculateMCA(CSteadyStateMethod::ReturnCode status, C_FLOAT64 res);
 
     /**
      * 
@@ -140,9 +141,10 @@ class CMCAMethod: public CCopasiMethod
      */
     void CalculateTimeMCA(C_FLOAT64 res);
 
-    void setIsSteadyState(bool isSteadyState);
+    void setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus);
 
-    bool isSteadyState() const;
+    const CSteadyStateMethod::ReturnCode & getSteadyStateStatus() const
+      {return mSSStatus;}
 
     void setFactor(C_FLOAT64 factor);
 

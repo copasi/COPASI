@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/01 22:28:28 $
+   $Date: 2004/12/02 17:25:51 $
    End CVS Header */
 
 #include <cmath>
@@ -33,7 +33,7 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
   addParameter("MCA.ModulationFactor",
                CCopasiParameter::UDOUBLE, 1.0e-009);
   mFactor = 1.0e-9;
-  mIsSteadyState = false;
+  mSSStatus = CSteadyStateMethod::notFound;
   mSteadyStateResolution = mFactor;
 }
 
@@ -57,7 +57,7 @@ CMCAMethod::CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer*
   //mSsx.resize(mpModel->getNumIndependentMetabs() + 1);
 
   mFactor = factor;
-  mIsSteadyState = false;
+  mSSStatus = CSteadyStateMethod::notFound;
   mSteadyStateResolution = mFactor;
 }
 
@@ -412,7 +412,7 @@ void CMCAMethod::setModel(CModel* model)
  * @param ss_solution refer to steady-state solution
  * @param refer to the resolution
  */
-int CMCAMethod::CalculateMCA(int ss_solution, C_FLOAT64 res)
+int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode status, C_FLOAT64 res)
 {
   int ret;
 
@@ -496,7 +496,7 @@ bool CMCAMethod::process()
   // if not, calculate TimeMCA only
   if (1 /*mIsSteadyState*/)
     {
-      CalculateMCA(mIsSteadyState, mSteadyStateResolution);
+      CalculateMCA(mSSStatus, mSteadyStateResolution);
     }
   else
     {
@@ -505,14 +505,14 @@ bool CMCAMethod::process()
   return true;
 }
 
-bool CMCAMethod::isSteadyState() const
+/*bool CMCAMethod::isSteadyState() const
   {
     return this->mIsSteadyState;
-  }
+  }*/
 
-void CMCAMethod::setIsSteadyState(bool isSteadyState)
+void CMCAMethod::setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus)
 {
-  this->mIsSteadyState = isSteadyState;
+  mSSStatus = SSStatus;
 }
 
 void CMCAMethod::setFactor(C_FLOAT64 factor)
