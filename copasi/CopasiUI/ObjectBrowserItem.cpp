@@ -113,30 +113,30 @@ int ObjectBrowserItem::nUserChecked()
     {
       ObjectBrowserItem* pChild = child();
       condition = pChild->nUserChecked();
-      if ((getType() == FIELDATTR) && (getObject()->pCopasiObject) && (QString("Usage Descriptions") == (getObject()->pCopasiObject->getName().c_str())))
+      if ((pChild->getType() == FIELDATTR) && (pChild->getObject()->pCopasiObject) && (QString("compartment") == (pChild->getObject()->pCopasiObject->getName().c_str())))
         {
           int i = 0;
         }
 
-      if (!((pChild->getObject()->nRefer > 1) && (pChild->getType() == FIELDATTR)))
-        for (; pChild != NULL; pChild = pChild->sibling())
-          {
-            switch (pChild->nUserChecked())
-              {
-              case ALLCHECKED:
-                if (condition == NOCHECKED)
-                  condition = PARTCHECKED;
-                break;
-              case PARTCHECKED:
-                if (condition == NOCHECKED || condition == ALLCHECKED)
-                  condition = PARTCHECKED;
-                break;
-              case NOCHECKED:
-                if (condition == ALLCHECKED)
-                  condition = PARTCHECKED;
-                break;
-              }
-          }
+      /*   if (!((pChild->getObject()->nRefer>1) && (pChild->getType()==FIELDATTR)))
+      */    for  (; pChild !=  NULL; pChild =  pChild->sibling())
+        {
+          switch (pChild->nUserChecked())
+            {
+            case ALLCHECKED:
+              if (condition == NOCHECKED)
+                condition = PARTCHECKED;
+              break;
+            case PARTCHECKED:
+              if (condition == NOCHECKED || condition == ALLCHECKED)
+                condition = PARTCHECKED;
+              break;
+            case NOCHECKED:
+              if (condition == ALLCHECKED)
+                condition = PARTCHECKED;
+              break;
+            }
+        }
     }
   else //it has no child
     {

@@ -42,8 +42,8 @@ class ObjectBrowser : public QWidget
      0: overlook sibling
      else: n>0 or n<0, includign sibling
     */
-    void setCheck(ObjectBrowserItem* pCurrent, int isSibling);
-    void setUncheck(ObjectBrowserItem* pCurrent, int isSibling);
+    void setCheck(ObjectBrowserItem* pCurrent);
+    void setUncheck(ObjectBrowserItem* pCurrent);
     void clickToReverseCheck(ObjectBrowserItem* pCurrent);
     void setCheckMark(ObjectBrowserItem* pCurrent);
 

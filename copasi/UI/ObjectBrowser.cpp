@@ -128,56 +128,46 @@ void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
     {
       if (pCurrent->isChecked())
         pCurrent->reverseChecked();
-      if (pCurrent->getType() == FIELDATTR)
-        setUncheck(pCurrent->child(), -1);
-      else // container or objects
-        setUncheck(pCurrent->child(), -1);
+      setUncheck(pCurrent->child());
       return;
     }
   //else no check or partly checked
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
-  if (pCurrent->getType() == FIELDATTR)
-    setCheck(pCurrent->child(), -1);
-  else
-    setCheck(pCurrent->child(), -1);
+  setCheck(pCurrent->child());
   return;
 }
 
-void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent, int isSibling)
+void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
   //  refreshList->insert(pCurrent);
-  if (isSibling >= 0)
-    isSibling--;
 
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
 
   if (pCurrent->child() != NULL)
-    setUncheck(pCurrent->child(), isSibling);
+    setUncheck(pCurrent->child());
 
-  if ((pCurrent->sibling() != NULL) && (isSibling != 0))
-    setUncheck(pCurrent->sibling(), isSibling);
+  if (pCurrent->sibling() != NULL)
+    setUncheck(pCurrent->sibling());
 }
 
-void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent, int isSibling)
+void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
   //  refreshList->insert(pCurrent);
-  if (isSibling >= 0)
-    isSibling--;
 
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
 
   if (pCurrent->child() != NULL)
-    setCheck(pCurrent->child(), isSibling);
+    setCheck(pCurrent->child());
 
-  if ((pCurrent->sibling() != NULL) && isSibling != 0)
-    setCheck(pCurrent->sibling(), isSibling);
+  if (pCurrent->sibling() != NULL)
+    setCheck(pCurrent->sibling());
 }
 
 void ObjectBrowser::backClicked()
@@ -198,7 +188,6 @@ void ObjectBrowser::loadData()
   itemRoot->setText(0, root->getName().c_str());
   itemRoot->setOpen(true);
   loadChild(itemRoot, root, true);
-
   loadUI();
 }
 
@@ -299,11 +288,11 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       currentItemField->setText(0, currentField->getObjectName().c_str());
       lastField = currentItemField;
       it = pFirstObject;
+      last = NULL;
       while (it < end)
         {
           current = *it;
           CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
-
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
           //          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
 
