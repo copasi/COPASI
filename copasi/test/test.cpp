@@ -578,6 +578,10 @@ C_INT32  TestSSSolution(void)
 // 
 C_INT32  TestEigen(void)
 {
+  cout<<endl<<"Begin to TestEigen ..."<<endl<<endl;
+  cout<<"Note: Testing Sample: matrix[-1 4 -2; -3 4 0; -3 1 3]"<<endl;
+  cout<<"Note: According MatLab, the result for the sample: eig(A)=[1.0 2.0 3.0]"<<endl;
+  cout<<"--- The results from my program are  shown below:"<<endl;
   
   CEigen myEigen;
 
@@ -595,9 +599,15 @@ C_INT32  TestEigen(void)
   myEigen.initialize();
   myEigen.CalcEigenvalues(ssRes, matrix);
 
-  cout << "!!! YH: the max eigenvalue real part is: "<<myEigen.getEigen_maxrealpart() << endl<<endl;
+  cout << "!!! Yongqun Testing: the max eigenvalue real part is: "<<myEigen.getEigen_maxrealpart()<<endl;
+  cout << "!!! Yongqun Testing: the max eigenvalue imag part is: "<<myEigen.getEigen_maximagpart()<<endl;
+  cout << "!!! Yongqun Testing: the stiffness  is: "<<myEigen.getEigen_stiffness() << endl;
+  cout << "!!! Yongqun Testing: the eigen hierarchy is: "<<myEigen.getEigen_hierarchy() << endl;
+  cout << "!!! Yongqun Testing: the number of positive real  is: "<<myEigen.getEigen_nposreal()<<endl;
+  cout << "!!! Yongqun Testing: the num of negative real is: "<<myEigen.getEigen_nnegreal()<<endl<<endl;
 
-  
+  cout<<"Leaving TestEigen() function ..."<<endl<<endl;
+
   return 0;
 }
 
