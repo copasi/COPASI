@@ -91,13 +91,14 @@ bool CMathModel::compile()
 
   if (!buildEqList()) Success = false;
 
+#ifdef XXXX
   unsigned C_INT32 i, imax;
   for (i = 0, imax = mEqList.size(); i < imax; i++)
     {
       std::cout << mEqList[i]->getLeft().getRoot()->getData() << " = ";
       std::cout << mEqList[i]->getRight().getRoot()->getData() << std::endl << std::endl;
     }
-
+#endif // XXXX
   return Success;
 }
 
@@ -259,7 +260,7 @@ bool CMathModel::buildConstantsList()
 
       for (j = 0; j < jmax; j++)
         {
-          p = new CMathConstantParameter(*(*ParamList)[j]);
+          p = new CMathConstantParameter(*(*ParamList)[j], List[i]->getName());
           mConstantsList[p->getName()] = p;
         }
     }
