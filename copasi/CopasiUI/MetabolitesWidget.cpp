@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/12/08 17:03:53 $
+   $Date: 2003/12/16 16:34:59 $
    End CVS Header */
 
 /***********************************************************************
@@ -168,7 +168,7 @@ void MetabolitesWidget::fillTable()
 
       // col 3 Fixed
       fixedCB = new QCheckTableItem(table, "");
-      if (CMetab::StatusName[obj->getStatus()].c_str() == "fixed") // not working?
+      if (CMetab::StatusName[obj->getStatus()] == "fixed") // not working?
         fixedCB->setChecked(true);
       table->setItem(j, 3, fixedCB);
 
@@ -478,7 +478,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:              // Yes or Enter
+        case 0:               // Yes or Enter
           {
             for (i = 0; i < imax; i++)
               {
@@ -491,7 +491,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
             break;
           }
-        case 1:              // No or Escape
+        case 1:               // No or Escape
           break;
         }
     }
