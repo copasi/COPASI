@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:26:30 $
+   $Date: 2005/02/22 16:17:27 $
    End CVS Header */
 
 #ifndef CCONTAINERWIDGET_H
@@ -33,7 +33,7 @@ class CScanContainerWidget : public QTable
     Q_OBJECT
 
   public:
-    CScanContainerWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    CScanContainerWidget(QWidget* parent = 0, const char* name = 0 /*, WFlags fl = 0*/);
     ~CScanContainerWidget();
 
     std::vector<QWidget*> getWidgetList() const;

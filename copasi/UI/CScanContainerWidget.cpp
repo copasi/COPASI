@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:26:29 $
+   $Date: 2005/02/22 16:17:27 $
    End CVS Header */
 
 #include "CScanContainerWidget.h"
@@ -12,7 +12,7 @@
 
 #include "CUpDownSubwidget.h"
 
-CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name, WFlags fl)
+CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
     : QTable(parent, name)
 {
   if (!name)
