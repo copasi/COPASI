@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.14 2003/08/10 03:19:36 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.15 2003/08/11 00:53:56 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -299,166 +299,49 @@ void TableDefinition::deleteButtonClicked()
     {
       std::vector<CCopasiObject*>::iterator it = selectedList.begin();
       selectedList.erase(selectedIndex + it, selectedIndex + it + 1);
+      int pp = selectedList.size();
       itemsTable->removeItem(selectedIndex);
     }
-  /*  int pp = selectedList.size();
-    if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
-      return;
-   
-    emit hide_me();
-   
-    ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-   
-    CMethodParameterList* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
-    //  if (!CKeyFactory::get(scanTaskKey))
-    //   return;
-    CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-    if (scanTask->getProblem()->getListSize() > 0)  // for reloading
-      scanTask->getProblem()->removeScanItem(pScanObject->getName().c_str());
-    scrollview->removeChild(selectedList[2*activeObject]);
-    scrollview->removeChild(selectedList[2*activeObject + 1]);
-   
-    ObjectListBox->removeItem (activeObject);
-   
-    int i = activeObject + 1;
-    int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
-   
-    for (; i < selectedList.size() / 2; i++)
-      {
-        scrollview->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
-        scrollview->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + nTitleHeight);
-      }
-   
-    std::vector<QWidget*>::iterator it = selectedList.begin();
-    std::vector<QWidget*>::iterator BeginDel;
-    std::vector<QWidget*>::iterator ToDel;
-    while (it < selectedList.end())
-      {
-        if (it - selectedList.begin() == 2*activeObject)
-          {
-            BeginDel = it;
-            pdelete (*it);
-            ToDel = ++it;
-            pdelete (*ToDel);
-            ++ToDel;
-            selectedList.erase(BeginDel, ToDel);
-            break;
-          }
-        it++;
-        it++;
-      }
-   
-    activeObject--;
-    if ((activeObject >= 0) && (scanTask->getProblem()->getListSize() > 0))
-      {
-        CCopasiObject* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
-        ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-        activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-        //      activeTitle->setText(pObject->getObjectUniqueName().c_str());
-        activeTitle->setText(pScanObject->getCN().c_str());
-      }
-    nSelectedObjects--;
-    scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
-   
-    if ((selectedList.size() > 0) && (scanTask->getProblem()->getListSize() > 0))
-      {
-        ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-      }
-   
-    emit show_me();
-   
-    if (activeObject >= 0)
-      ListBoxClicked(ObjectListBox->item(activeObject));
-   
-    // to verify the size of the mparameterlist in ScanProblem
-    // scanTask->getProblem()->paraCount();
-  */
 }
 
 void TableDefinition::upButtonClicked()
 {
-  /*
-    if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
-      return;
-   
-    emit hide_me();
-    ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-   
-    CMethodParameterList* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-    CMethodParameterList* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-    CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-    ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
-    ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
-    ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
-    ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
-    activeObject--;
-   
-    //deactivate
-    //lower one
-    ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
-    activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-    activeTitle->setText(pScanObjectUp->getName().c_str());
-   
-    //activate
-    //upper one
-    activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-    activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-    activeTitle->setText(pScanObjectDown->getName().c_str());
-   
-    //Update ListBox
-    QString tmp = ObjectListBox->text (activeObject);
-    ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
-    ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
-   
-    scanTask->getProblem()->swapScanItem(activeObject + 1, activeObject);
-   
-    ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-    emit show_me();
-    if (activeObject >= 0)
-      ListBoxClicked(ObjectListBox->item(activeObject));
-  */
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if ((selectedItem) && (selectedIndex != 0))
+    {
+      //swap in selectedList
+      CCopasiObject* pDownObject = selectedList[selectedIndex];
+      // check for valid of the update object pointer array
+      // QString pDownItemStr1(pDownObject->getObjectUniqueName().c_str());
+      CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
+      selectedList[selectedIndex] = pUpperObject;
+      selectedList[selectedIndex - 1] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex);
+      itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
+    }
 }
 
 void TableDefinition::downButtonClicked()
 {
-  /*
-    if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
-      return;
-   
-    emit hide_me();
-   
-    ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
-   
-    activeObject++;
-    CMethodParameterList* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-    CMethodParameterList* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-    CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
-    ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
-    ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
-    ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
-    ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
-   
-    //upper one
-    ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
-    activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-    activeTitle->setText(pObjectDown->getName().c_str());
-   
-    //bottom one
-    activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
-    activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-    activeTitle->setText(pObjectUp->getName().c_str());
-   
-    //Update ListBox
-    QString tmp = ObjectListBox->text (activeObject);
-    ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
-    ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
-   
-    scanTask->getProblem()->swapScanItem(activeObject - 1, activeObject);
-   
-    ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
-   
-    emit show_me();
-    if (activeObject >= 0)
-      ListBoxClicked(ObjectListBox->item(activeObject));
-  */
+  QListBoxItem* selectedItem = itemsTable->selectedItem ();
+  UINT32 selectedIndex = itemsTable->index(selectedItem);
+  if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
+    {
+      //swap in selectedList
+      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
+      CCopasiObject* pUpperObject = selectedList[selectedIndex];
+      selectedList[selectedIndex + 1] = pUpperObject;
+      selectedList[selectedIndex] = pDownObject;
+
+      //swap in ListBox
+      QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
+      QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
+      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
+      itemsTable->changeItem (pDownItemStr, selectedIndex);
+    }
 }
