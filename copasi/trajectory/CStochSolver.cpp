@@ -156,6 +156,8 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
         new_num = bal->getMetabolite().getNumber() + bal->getMultiplicity();
         bal->getMetabolite().setNumber(new_num);
     }
+    // Update the model to take into account the new particle numbers
+    mModel->setConcentrations();
     return 0;
 }
 
@@ -320,6 +322,15 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
 set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
 {
     set<CMetab> *retset = new set<CMetab>;
+#if 0    // New way of doing this; supercedes bit #if'ed out
+    // Get chemical equation balances
+    vector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+    {
+        retset->insert(balances[i].getMetabolite());
+    }
+#endif 0
+//#if 0
     // Get the reaction associated with this index
     CReaction *react = mModel->getReactions()[reaction_index];
     // Get the kinetic function associated with the reaction_index'th reaction in the model.
@@ -335,8 +346,8 @@ set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
     CNodeK *tmpnode;
     char subtype;
     CMetab *pmetab = 0;
-    // Step through the nodes. If the node is an identifier and this
-    // is a substrate, product or modifier, then add this to the set.
+    // Step through the nodes. If the node is an identifier and corresponds
+    // to a substrate or modifier, then add it to the set.
     
     for (unsigned C_INT32 i = 0; i < node_vec.size(); i++)
     {
@@ -364,6 +375,7 @@ set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
         }
     }
     return retset;
+// #endif // 0
 }
 
 set<CMetab> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)

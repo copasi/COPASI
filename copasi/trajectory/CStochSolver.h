@@ -14,7 +14,7 @@
  * is assumed if this is not given.
  *
  * The available algorithms at the moment are Gillespie's Direct
- * method, and Gibson and Bruck's Next Reaction method. // TODO: implement the latter
+ * method, and Gibson and Bruck's Next Reaction method.
  *
  * These are implemented as classes inheriting their common
  * functionality from the abstract CStochMethod base class, and which
