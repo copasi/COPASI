@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StretchTable.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:41 $
+   $Author: chlee $ 
+   $Date: 2004/03/19 21:38:06 $
    End CVS Header */
 
 /********************************************************
@@ -93,7 +93,7 @@ void StretchTable::setNumRows(int r)
     {
       QTable::setNumRows(r + 1);
       if (r >= 0)
-        QTable::setText(r, 0, "Click to add new item");
+        QTable::setText(r, 0, "Double click to add new item");
     }
 }
 
