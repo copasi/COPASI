@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:46 $
+   $Date: 2004/05/26 15:51:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -44,7 +44,7 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblMetaboliteSymbols");
+  table = new StretchTable(this, "tblMetaboliteSymbols");
   table->setNumCols(7);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -76,7 +76,7 @@ MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags 
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  table->setProtected(true);
+  //table->setProtected(true);
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));

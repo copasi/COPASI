@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:31 $
+   $Date: 2004/05/26 15:51:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -44,7 +44,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblConstantSymbols");
+  table = new StretchTable(this, "tblConstantSymbols");
   table->setNumCols(4);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -72,7 +72,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   table->sortColumn(2, true, true);
   table->setSorting(true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  table->setProtected(true);
+  //table->setProtected(true);
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));

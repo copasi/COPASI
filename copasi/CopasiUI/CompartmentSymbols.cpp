@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 12:58:30 $
+   $Date: 2004/05/26 15:51:22 $
    End CVS Header */
 
 /*******************************************************************
@@ -45,7 +45,7 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
     : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(this, "tblComapartmentSymbols");
+  table = new QTable(this, "tblComapartmentSymbols");
   table->setNumCols(5);
   table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -75,7 +75,7 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
-  table->setProtected(true);
+  //table->setProtected(true);
 
   // signals and slots connections
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
