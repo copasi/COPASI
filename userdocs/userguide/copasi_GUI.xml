@@ -256,7 +256,8 @@ First of all in order to add a new species or metabolite, as it is called in Cop
 </screenshot>
 </para>
 <para>
-  Editing the parameters of a metabolite also works exactly the way it does for compartments. Either you double click on a metabolite entry in the table, or you use the object tree to navigate to the metabolite leave you intend to edit. Some of the parameters of a metabolite like the <guilabel>Model Status</guilabel> are calculated automatically and can not be changed by the user. The parameters that you can change are the <guilabel>Name</guilabel> of the metabolite, the <guilabel>Compartment</guilabel> it belongs to, wether it is a fixed metabolite and its <guilabel>initial concentration</guilabel>. Instead of changing the <guilabel>initial concentration</guilabel>, you can also change the <guilabel>initial particle number</guilabel>. If you change one of those two, the other will be updated automatically. The volume to calculate particle numbers from concentration and vice versa comes from the compartment associated with the metabolite.
+    Editing the parameters of a metabolite also works exactly the way it does for compartments. Either you double click on a metabolite entry in the table, or you use the object tree to navigate to the metabolite leaf you intend to edit. Some of the parameters of a metabolite like the <guilabel>Model Status</guilabel> are calculated automatically and can not be changed by the user. The parameters that you can change are the <guilabel>Name</guilabel> of the metabolite, the <guilabel>Compartment</guilabel> it belongs to, wether it is a fixed metabolite and its <guilabel>initial concentration</guilabel>. Instead of changing the <guilabel>initial concentration</guilabel>, you can also change the <guilabel>initial particle number</guilabel>. If you change one of those two, the other will be updated automatically. The volume to calculate particle numbers from concentration and vice versa comes from the compartment associated with the metabolite.
+The list at the bottom of the metabolite widget shows the reactions in which this metabolite participates.
 </para>
 </sect1>
 <sect1 id="addingReactions" xreflabel="Adding and Editing Reactions">
@@ -320,6 +321,36 @@ First of all in order to add a new species or metabolite, as it is called in Cop
 <listitem><para>Metabolite A is irreversibly converted into Metabolite B. The chemical equation you would type is "A -&gt; B".</para></listitem>
 <listitem><para>Metabolite A and B are reversibly converted to Metabolite C, the reaction has to modifiers C and D. The chemical equation for this in Copasi would be: "A + B = C; C,D"</para><para>Note that one of the modifiers is the product!</para></listitem>  
 </orderedlist>   
+</para>
+</sect1>
+<sect1 id="parameterView" xreflabel="Parameter View">
+<title>Parameter View</title>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Parameters_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <!-- <imageobject>
+  <imagedata fileref="images/Parameters_01.gif" format="GIF">
+ </imageobject> -->
+ <textobject>
+   <phrase>Parameter View</phrase>
+ </textobject>
+ <caption>
+  <para>Parameter View</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+    Starting with Copasi Build 13, there is a new leaf called Parameters on the Model branch right underneath the Reactions leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterwards parameters of one or more reactions.
+    The view shows you the initial concentrations for the metabolites at the top followed by the kinetic parameters of all reactions and at the bottom the volumes of all the compartments.
+    In order to change some value, you double click on which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character apperas in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
 </para>
 </sect1>
 <sect1 id="outputDefinitions" xreflabel="Defining Output">
@@ -555,6 +586,8 @@ In order to select objects in the multi selection tree, you select them in the t
 Copasi now creates a curve object for each object you selected for the y axis and adds it to the plot. Each curve is represented as a tab in the plot definition dialog. <caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
 <para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify wether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
 <para>Another way to specify wether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
+</para>
+<para>In addition to curves, you can also tell Copasi to draw a histogram of the data generated during a time course simulation (see <xref linkend="" />) or a parameter scan (see <xref linkend="" />). A histogram draws a bar graph that shows how often the parameter took a certain value. To define a histogram instead of a curve you click on the <guibutton>New Histogram...</guibutton> button in the plot definition dialog. For the new histogram you can specifiy a title, the variable for which the histogram should be drawn and the increment of the value. The increment parameter tells Copasi how wide the individual bars of the histogram are going to be. Let's say the value of the parameter was in the range of 3 to 8 and you set the increment to 0.1, Copasi will draw a histogram with 50 bars, each bar representing a value range of 0.1 units.
 </para>
 </sect2>
 </sect1>
