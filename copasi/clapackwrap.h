@@ -1,5 +1,17 @@
+#ifdef min
+# undef min
+#endif // min
+
+#ifdef max
+# undef max
+#endif // max
+
 extern "C"
   {
+#ifdef USE_CLAPACK
+# include "f2c.h"
+#endif
+
 #include "clapack.h"        //use CLAPACK
   }
 
