@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/31 14:49:17 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:13:44 $
    End CVS Header */
 
 /**
@@ -232,8 +232,8 @@ class CMetab : public CCopasiContainer
 
     /**
      *
-     */
-    void setCompartment(const CCompartment * compartment);
+     */ 
+    //void setCompartment(const CCompartment * compartment);
 
     /**
      *
@@ -242,8 +242,8 @@ class CMetab : public CCopasiContainer
 
     /**
      *
-     */
-    void setModel(CModel * model);
+     */ 
+    //void setModel(CModel * model);
 
     /**
      *

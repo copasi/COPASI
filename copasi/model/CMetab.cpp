@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/16 18:36:51 $
+   $Author: ssahle $ 
+   $Date: 2005/03/17 10:13:43 $
    End CVS Header */
 
 #include <iostream>
@@ -50,7 +50,9 @@ CMetab::CMetab(const std::string & name,
     mINumber(1.0),
     mRate(0.0),
     mTT(0.0),
-    mStatus(METAB_VARIABLE)
+    mStatus(METAB_VARIABLE),
+    mpCompartment(NULL),
+    mpModel(NULL)
 {
   if (getObjectParent())
     {
@@ -76,7 +78,9 @@ CMetab::CMetab(const CMetab & src,
     mINumber(src.mINumber),
     mRate(src.mRate),
     mTT(src.mTT),
-    mStatus(src.mStatus)
+    mStatus(src.mStatus),
+    mpCompartment(NULL),
+    mpModel(NULL)
 {
   initModel();
   initCompartment(src.mpCompartment);
@@ -172,6 +176,9 @@ void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
 
   if (mStatus == METAB_FIXED)
     setConcentration(initialConcentration);
+
+  if (mpModel)
+    const_cast<CModel*>(mpModel)->updateMoietyValues();
 }
 
 void CMetab::setNumber(const C_FLOAT64 number)
@@ -194,6 +201,9 @@ void CMetab::setInitialNumber(const C_FLOAT64 initialNumber)
 
   if (mStatus == METAB_FIXED)
     setNumber(initialNumber);
+
+  if (mpModel)
+    const_cast<CModel*>(mpModel)->updateMoietyValues();
 }
 
 //  ******************
@@ -208,10 +218,10 @@ void CMetab::setStatus(const CMetab::Status & status)
     }
 }
 
-void CMetab::setCompartment(const CCompartment * compartment)
-{mpCompartment = compartment;}
+//void CMetab::setCompartment(const CCompartment * compartment)
+//{mpCompartment = compartment;}
 
-void CMetab::setModel(CModel * model) {mpModel = model;}
+//void CMetab::setModel(CModel * model) {mpModel = model;}
 
 void CMetab::initObjects()
 {
