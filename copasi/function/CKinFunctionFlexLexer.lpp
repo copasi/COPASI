@@ -42,7 +42,7 @@ COS   return N_COS;
 
 {ID}  return N_IDENTIFIER;
 
-\<.*\>  return N_OBJECT;
+\<[0-9]*\>  return N_OBJECT;
      
 [ \t\r\n]+ /* eat up whitespace */
      
