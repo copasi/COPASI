@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 15:48:43 $
+   $Date: 2005/03/11 08:17:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -105,7 +105,7 @@ void SliderSettingsDialog::updateInputFields()
 
 void SliderSettingsDialog::okButtonPressed()
 {
-  // only noew change underlying slider
+  // only now change underlying slider
   this->updateSlider();
   // close dialog with positive feedback
   done(QDialog::Accepted);
@@ -136,6 +136,7 @@ void SliderSettingsDialog::minorTickSizeChanged()
       this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
     }
   this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
@@ -149,6 +150,7 @@ void SliderSettingsDialog::numMinorTicksChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::minValueChanged()
@@ -163,6 +165,7 @@ void SliderSettingsDialog::minValueChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::maxValueChanged()
@@ -177,6 +180,7 @@ void SliderSettingsDialog::maxValueChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::objectValueChanged()
@@ -195,17 +199,20 @@ void SliderSettingsDialog::objectValueChanged()
       this->mValue = this->mMinValue;
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::minorMajorFactorChanged()
 {
   // get the value and set it in the current slider
   this->mMinorMajorFactor = this->mpMinorMajorFactorEdit->text().toUInt();
+  this->mChanged = false;
 }
 
 void SliderSettingsDialog::init()
 {
   this->mpSlider = NULL;
+  this->mChanged = false;
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
@@ -295,6 +302,15 @@ void SliderSettingsDialog::disableObjectChoosing(bool disableChoosing)
 
 void SliderSettingsDialog::updateSlider()
 {
+  if (this->mChanged)
+    {
+      objectValueChanged();
+      minValueChanged();
+      maxValueChanged();
+      minorMajorFactorChanged();
+      minorTickSizeChanged();
+      numMinorTicksChanged();
+    }
   if (this->mpSlider)
     {
       if (this->mMinValue < this->mpSlider->getMaxValue())
@@ -311,4 +327,9 @@ void SliderSettingsDialog::updateSlider()
       this->mpSlider->setTickNumber(this->mNumMinorTicks);
       this->mpSlider->setTickFactor(this->mMinorMajorFactor);
     }
+}
+
+void SliderSettingsDialog::lineEditChanged()
+{
+  this->mChanged = true;
 }

@@ -335,6 +335,42 @@
         <receiver>SliderSettingsDialog</receiver>
         <slot>browseButtonPressed()</slot>
     </connection>
+    <connection>
+        <sender>mpObjectValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinorTickSizeEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinorMajorFactorEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMaxValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpNumMinorTicksEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>mpOkButton</tabstop>
@@ -366,16 +402,17 @@
     <forward>class CModel;</forward>
 </forwards>
 <variables>
-    <variable>CModel* mpModel;</variable>
-    <variable>C_INT32 mCurrentTaskId;</variable>
-    <variable>CSlider* mpSlider;</variable>
+    <variable>bool mChanged;</variable>
+    <variable>double mMinorTickSize;</variable>
+    <variable>double mMaxValue;</variable>
+    <variable>double mMinValue;</variable>
+    <variable>double mValue;</variable>
+    <variable>unsigned int mMinorMajorFactor;</variable>
+    <variable>unsigned int mNumMinorTicks;</variable>
     <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
-    <variable>unsigned int mNumMinorTicks</variable>
-    <variable>unsigned int mMinorMajorFactor</variable>
-    <variable>double mValue</variable>
-    <variable>double mMinValue</variable>
-    <variable>double mMaxValue</variable>
-    <variable>double mMinorTickSize</variable>
+    <variable>CSlider* mpSlider;</variable>
+    <variable>C_INT32 mCurrentTaskId;</variable>
+    <variable>CModel* mpModel;</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CSlider* slider)</signal>
@@ -390,11 +427,12 @@
     <slot access="protected">objectValueChanged()</slot>
     <slot access="protected">minorMajorFactorChanged()</slot>
     <slot access="protected">browseButtonPressed()</slot>
+    <slot>lineEditChanged()</slot>
 </slots>
 <functions>
-    <function returnType="CSlider*">getSlider()</function>
-    <function>setSlider(CSlider * slider )</function>
-    <function>setDefinedSliders(std::vector&lt; CSlider * &gt; sliderVect )</function>
+    <function returnType="CSlider *">getSlider()</function>
+    <function>setSlider( CSlider * slider )</function>
+    <function>setDefinedSliders( std::vector&lt;CSlider *&gt; sliderVect )</function>
     <function access="protected">updateInputFieldsValues()</function>
     <function access="protected">updateInputFields()</function>
     <function access="protected">init()</function>

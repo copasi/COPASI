@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/03/11 08:17:52 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Fri Feb 25 13:10:50 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.3 2005/02/25 15:15:58 gauges Exp $)
+ ** Created: Fri Mar 11 10:15:32 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.4 2005/03/11 08:17:52 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -153,6 +153,12 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   connect(mpMinorTickSizeEdit, SIGNAL(lostFocus()), this, SLOT(minorTickSizeChanged()));
   connect(mpNumMinorTicksEdit, SIGNAL(lostFocus()), this, SLOT(numMinorTicksChanged()));
   connect(mpObjectBrowseButton, SIGNAL(clicked()), this, SLOT(browseButtonPressed()));
+  connect(mpObjectValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMinValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMinorTickSizeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMinorMajorFactorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpMaxValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpNumMinorTicksEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
 
   // tab order
   setTabOrder(mpOkButton, mpCancelButton);

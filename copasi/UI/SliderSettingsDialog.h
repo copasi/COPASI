@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/25 15:15:58 $
+   $Date: 2005/03/11 08:17:52 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Fri Feb 25 13:09:28 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.3 2005/02/25 15:15:58 gauges Exp $)
+ ** Created: Fri Mar 11 10:15:27 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.4 2005/03/11 08:17:52 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -60,27 +60,31 @@ class SliderSettingsDialog : public QDialog
     QPushButton* mpOkButton;
     QPushButton* mpCancelButton;
 
-    virtual CSlider* getSlider();
+    virtual CSlider * getSlider();
     virtual void setSlider(CSlider * slider);
-    virtual void setDefinedSliders(std::vector< CSlider * > sliderVect);
+    virtual void setDefinedSliders(std::vector<CSlider *> sliderVect);
     virtual void setModel(CModel * model);
     virtual void disableObjectChoosing(bool disableChoosing);
     virtual void updateSlider();
+
+  public slots:
+    virtual void lineEditChanged();
 
   signals:
     void sliderChanged(CSlider* slider);
 
   protected:
-    CModel* mpModel;
-    C_INT32 mCurrentTaskId;
-    CSlider* mpSlider;
-    std::vector< CSlider* > mDefinedSliders;
-    unsigned int mNumMinorTicks;
-    unsigned int mMinorMajorFactor;
-    double mValue;
-    double mMinValue;
-    double mMaxValue;
+    bool mChanged;
     double mMinorTickSize;
+    double mMaxValue;
+    double mMinValue;
+    double mValue;
+    unsigned int mMinorMajorFactor;
+    unsigned int mNumMinorTicks;
+    std::vector< CSlider* > mDefinedSliders;
+    CSlider* mpSlider;
+    C_INT32 mCurrentTaskId;
+    CModel* mpModel;
 
     virtual void updateInputFieldsValues();
     virtual void updateInputFields();
