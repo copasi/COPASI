@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/18 13:26:02 $
+   $Author: shoops $ 
+   $Date: 2004/06/10 20:58:47 $
    End CVS Header */
 
 /**
@@ -363,6 +363,29 @@ class CXMLAttributeList
      * @return const std::string & name
      */
     const std::string & getName(const unsigned C_INT32 & index) const;
+
+    /**
+     * Set the name and value of the indexed attribute
+     * Note: the value will be XML encoded
+     * @param const unsigned C_INT32 & index
+     * @param const std::string & name
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType> bool set(const unsigned C_INT32 & index,
+                                    const std::string & name,
+                                    const CType & value)
+    {
+      mAttributeList[2 * index] = name;
+
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mSaveList[index] = true;
+
+      return true;
+    }
 
     /**
      * Set the value of the indexed attribute
