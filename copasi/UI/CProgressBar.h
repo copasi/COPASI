@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Date: 2004/10/06 09:46:33 $
    End CVS Header */
 
 #if !defined HANDLER_PROGRESS_BAR
@@ -23,7 +23,7 @@ class CProgressBar : public CCallbackHandler
     CProgressBar(DataModelGUI* dm);
     virtual ~CProgressBar() {};
 
-    virtual bool init(C_INT32 maxSteps, const std::string & text);
+    virtual bool init(C_INT32 maxSteps, const std::string & text, bool cancelButton = false);
     virtual bool reInit(C_INT32 maxSteps, const std::string & text);
     virtual bool progress(C_INT32 steps);
     virtual bool finish();
