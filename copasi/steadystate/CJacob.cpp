@@ -146,10 +146,10 @@ void CJacob::setNjacob(C_INT32 jacob)
 /**
  * Set the Model
  */
-void CJacob::setModel(CModel & model)
+void CJacob::setModel(CModel * model)		// wsun  03/19/02
 {
   /* :TODO: we need a copy constructor here */
-  mModel = &model;
+  mModel = model;
 
   unsigned C_INT32 dim = mModel->getIndMetab();
   mJacob.newsize(dim,dim);
