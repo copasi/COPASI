@@ -86,8 +86,7 @@ C_INT main(C_INT argc, char *argv[])
       // TestDatum();
       // TestMetab();
       // TestReadSample();
-      // TestTrajctory();
-      TestNewton();
+      //TestNewton();
       TestSSSolution();
 
       //TestTrajectory();
@@ -477,10 +476,16 @@ C_INT32  TestNewton(void)
  
     //get mDerivFactor, mSSRes, and mNewtonLimit,
     //or may use their default values
-    newton.setDerivFactor(0.1);
+    //YOHE: new test 03/22/02
+    //newton.setDerivFactor(0.1);
+    newton.setDerivFactor(0.003);
+    cout << "setDerivFactor(0.003)" <<endl;
     newton.setSSRes(1.0e-9);
     newton.setNewtonLimit(50);
-   
+    //cout << "newton DerivFactor, SSRes, and NewtonLimit are: " 
+    //     << newton.getDerivFactor()<<", "<<newton.getSSRes()<<", "
+    //     << newton.getNewtonLimit()<<endl;
+
     //how to get ss_nfunction?
     newton.setSs_nfunction(0);
  
@@ -528,11 +533,17 @@ C_INT32  TestSSSolution(void)
 
     ss_soln.setModel(&model);
 
+    //Yohe: new change 03/22/02 
+    ss_soln.setSSRes(1.0e-9);  //I cannot get it from load, I don't know why
+
+
     //yohe: new added on 03/15/02
     ss_soln.initialize();
 
     ss_soln.setNewton(&newton);
     ss_soln.setTrajectory(&traj);
+ 
+    //do we need set ss_soln.mJacob model here????
  
     ss_soln.process();
  

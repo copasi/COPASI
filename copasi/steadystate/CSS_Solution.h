@@ -212,6 +212,20 @@ class CSS_Solution
    */
   C_INT32 getOption() const;
 
+
+  /**
+   * set mSSRes
+   * @param aDouble a double value 
+   */
+  void setSSRes(C_FLOAT64 aDouble);
+
+  /**
+   * get mSSRes
+   * @return int mOption 
+   */
+  C_FLOAT64 getSSRes() const;
+
+
   /**
    *  Sets the flux of the reaction
    *  @param C_FLOAT64 flux

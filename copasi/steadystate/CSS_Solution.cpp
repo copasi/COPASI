@@ -131,6 +131,20 @@ C_INT32 CSS_Solution::getOption() const
   return mOption;
 }
 
+//Yohe: 03/22/02
+//set mSSRes
+void CSS_Solution::setSSRes(C_FLOAT64 aDouble)
+{
+  mSSRes = aDouble;
+}
+
+//Yohe: 03/22/02
+//get mSSRes
+C_FLOAT64 CSS_Solution::getSSRes() const
+{
+  return mSSRes;
+}
+
 
 //set mNewton
 void CSS_Solution::setNewton(CNewton * aNewton)
@@ -165,6 +179,8 @@ CEigen * CSS_Solution::getEigen() const
 void CSS_Solution:: setModel(CModel * aModel)
 {
   mModel = aModel;
+  //yohe: changed on 3/22/02
+  //mJacob->setModel(*mModel);
 }
 
 
@@ -256,16 +272,18 @@ C_INT32 CSS_Solution::load(CReadConfig & configbuffer)
     return Fail;
   
 
-  //YH: to allow both "SSResoltion" and "SSResolution" formats
+  //YH: to allow either "SSResoltion" or "SSResolution" format
+  //"SSResoltion" is the default for use
   if((Fail = configbuffer.getVariable("SSResoltion", "C_FLOAT64",
                                       (void *) &mSSRes,
                                       CReadConfig::LOOP)))
     return Fail;
 
-  if((Fail = configbuffer.getVariable("SSResolution", "C_FLOAT64",
-                                      (void *) &mSSRes,
-                                      CReadConfig::LOOP)))
-    return Fail;
+  //YH: maybe changed to "SSResolution" later on, leave it here -- 03/22/02
+  //if((Fail = configbuffer.getVariable("SSResolution", "C_FLOAT64",
+  //                                     (void *) &mSSRes,
+  //                                   CReadConfig::LOOP)))
+  // return Fail;
 
 
   if((Fail = configbuffer.getVariable("DerivationFactor", "C_FLOAT64",
@@ -333,18 +351,29 @@ void CSS_Solution::process(void)
   //yohe: comment it out on 3/15/02
   //initialize();
 
+  //cout << "mSSRes is: " <<mSSRes <<endl;
+
   // use the damped Newton method
   if((mOption==0) || (mOption==2)) 
     {
       mNewton->process();
- 
+      cout << "CSS_Solution.cpp (process() first if): end newton->process()." <<endl;
       //ftot += (double) mSs_nfunction;     // ??
       //jtot += (double) mSs_njacob;        // ??
 
       mSs_x = mNewton->getSs_xnew();
 
-      if(mNewton->isSteadyState())
-        afterFindSteadyState();
+      mSs_solution = mNewton->getSs_solution();   //yohe: update here 3/22/02
+
+      // if(mNewton->isSteadyState())
+      if(mSs_solution==SS_FOUND)
+	{
+	  cout << "CSS_Solution.cpp (process() first if): Newton got steadyState." <<endl;
+	  return;
+          afterFindSteadyState();
+	}
+      else
+	cout << "CSS_Solution (process() first if: Newton method didn't get steadyState." <<endl;
     }
 
   // use forward integration, or trajectory
@@ -365,7 +394,11 @@ void CSS_Solution::process(void)
 
           //compare old and new mY and check isSteadyState()
           if( isSteadyStateAfterTrajectory() )
+	    {
+	      cout<<" OK! got steadyState! process remaining things later." <<endl;
+	      return;
                 afterFindSteadyState();
+	    }
 
           // newton+integration (we use newton before recycling)
           if( mOption==0 ) 
@@ -412,9 +445,23 @@ void CSS_Solution::process(void)
           if( isSteadyStateAfterTrajectory() )
                 afterFindSteadyState();
 
+          if( mOption==0 ) 
+            {
+              //mSs_njacob = mSs_nfunction = 0;
+
+              mNewton->process();
+
+              // update count of function and jacobian evaluations
+	      // is it needed, anyway?
+              //ftot += (double) mSs_nfunction;
+              //jtot += (double) mSs_njacob;
+
+              if(mNewton->isSteadyState())
+                afterFindSteadyState();
+            }
         }
     }
-
+    cout << "mSSRes is: " <<mSSRes <<endl;
 }
 
 
