@@ -220,7 +220,7 @@ const double CLsodaMethod::step(const double & deltaT,
   mpStateX = new CStateX(*initialState);
 
   mDim = mpStateX->getVariableNumberSize();
-  mY = const_cast< C_FLOAT64 * >(mpStateX->getVariableNumberArrayDbl().array());
+  mY = const_cast< C_FLOAT64 * >(mpStateX->getVariableNumberVectorDbl().array());
   mTime = mpStateX->getTime();
   mYdot.resize(mDim);
 
@@ -1282,7 +1282,6 @@ void CLsodaMethod::lsoda(C_INT32 neq,
           return;
         }     /*   end if (kflag == -1 || kflag == -2)   */
     }   /*   end while   */
-
 }     /*   end lsoda   */
 
 void CLsodaMethod::stoda(C_FLOAT64 *y)
@@ -1658,7 +1657,6 @@ void CLsodaMethod::stoda(C_FLOAT64 *y)
             }     /*   end else -- kflag <= -3 */
         }     /*   end error failure handling   */
     }      /*   end outer while   */
-
 }           /*   end stoda   */
 
 void CLsodaMethod::ewset(C_INT32 itol,
@@ -1687,7 +1685,6 @@ void CLsodaMethod::ewset(C_INT32 itol,
         ewt[i] = rtol[i] * fabs(ycur[i]) + atol[i];
       break;
     }
-
 }           /*   end ewset   */
 
 /*
@@ -1778,7 +1775,6 @@ void CLsodaMethod::intdy(C_FLOAT64 t,
   r = pow(h, (C_FLOAT64) (-k));
   for (i = 1; i <= n; i++)
     dky[i] *= r;
-
 }      /*   end intdy   */
 
 void CLsodaMethod::cfode(C_INT32 meth)
@@ -1913,7 +1909,6 @@ void CLsodaMethod::cfode(C_INT32 meth)
       rq1fac /= fnq;
     }
   return;
-
 }       /*   end cfode   */
 
 void CLsodaMethod::scaleh(C_FLOAT64 * rh,
@@ -1955,7 +1950,6 @@ void CLsodaMethod::scaleh(C_FLOAT64 * rh,
   h *= *rh;
   rc *= *rh;
   ialth = l;
-
 }     /*   end scaleh   */
 
 void CLsodaMethod::prja(C_FLOAT64 *y)
@@ -2025,7 +2019,6 @@ void CLsodaMethod::prja(C_FLOAT64 *y)
         ierpj = 1;
       return;
     }
-
 }      /*   end prja   */
 
 C_FLOAT64 CLsodaMethod::vmnorm(C_INT32 n,
@@ -2046,7 +2039,6 @@ C_FLOAT64 CLsodaMethod::vmnorm(C_INT32 n,
   for (i = 1; i <= n; i++)
     vm = max(vm, fabs(v[i]) * w[i]);
   return vm;
-
 }                  /*   end vmnorm   */
 
 C_FLOAT64 CLsodaMethod::fnorm(C_INT32 n,
@@ -2074,7 +2066,6 @@ C_FLOAT64 CLsodaMethod::fnorm(C_INT32 n,
       an = max(an, sum * w[i]);
     }
   return an;
-
 }     /*   end fnorm   */
 
 void CLsodaMethod::correction(C_FLOAT64 *y,
@@ -2277,7 +2268,6 @@ void CLsodaMethod::corfailure(C_FLOAT64 * told,
   *corflag = 1;
   *rh = 0.25;
   ipup = miter;
-
 }              /*   end corfailure   */
 
 void CLsodaMethod::solsy(C_FLOAT64 * y)
@@ -2302,7 +2292,6 @@ void CLsodaMethod::solsy(C_FLOAT64 * y)
   if (miter == 2)
     dgesl(wm, n, ipvt, y, 0);
   return;
-
 }          /*   end solsy   */
 
 void CLsodaMethod::methodswitch(C_FLOAT64 dsm,
@@ -2430,7 +2419,6 @@ void CLsodaMethod::methodswitch(C_FLOAT64 dsm,
   pdlast = 0.;
   nq = nqm1;
   l = nq + 1;
-
 }     /*   end methodswitch   */
 
 /*
@@ -2448,7 +2436,6 @@ void CLsodaMethod::endstoda(void)
     acor[i] *= r;
   hold = h;
   jstart = 1;
-
 }      /*   end endstoda   */
 
 void CLsodaMethod::orderswitch(C_FLOAT64 * rhup,
@@ -2579,7 +2566,6 @@ void CLsodaMethod::orderswitch(C_FLOAT64 * rhup,
   nq = newq;
   l = nq + 1;
   *orderflag = 2;
-
 }      /*   end orderswitch   */
 
 void CLsodaMethod::resetcoeff(void)

@@ -103,7 +103,7 @@ CNewtonMethod::process(CState & steadyState,
 
   mDimension = SteadyState.getVariableNumberSize();
 
-  mX = const_cast< C_FLOAT64 * >(SteadyState.getVariableNumberArrayDbl().array());
+  mX = const_cast< C_FLOAT64 * >(SteadyState.getVariableNumberVectorDbl().array());
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
