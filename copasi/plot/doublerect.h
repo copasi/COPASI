@@ -1,6 +1,8 @@
 #ifndef DBLRECT_H
 #define DBLRECT_H
 
+// from qwt examples/realtime_plot
+
 class DoublePoint
   {
   public:
