@@ -34,9 +34,9 @@ template < class CType > class CCopasiVector:
       CCopasiVector(const std::string & name = "NoName",
                     const CCopasiContainer * pParent = NULL,
                     const unsigned C_INT32 &
-                    flag = CCopasiObject::Vector + CCopasiObject::Container):
+                    flag = CCopasiObject::Vector):
           std::vector< CType * >(),
-          CCopasiContainer(name, pParent, "Vector", flag)
+          CCopasiContainer(name, pParent, "Vector", flag | CCopasiObject::Vector)
       {CONSTRUCTOR_TRACE;}
 
       /**
@@ -96,6 +96,7 @@ template < class CType > class CCopasiVector:
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(Element);
+        CCopasiContainer::add(Element);
       }
 
       /**
@@ -117,11 +118,13 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual void add(CType * src)
+      virtual void add(CType * src, bool adopt = false)
       {
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
+        CCopasiContainer::add(src);
+        if (adopt) src->setObjectParent(this);
       }
 
       /**
@@ -134,12 +137,16 @@ template < class CType > class CCopasiVector:
         assert(index < ((std::vector< CType * > *)this)->size());
 
         if (*Target)
-          if ((*Target)->getObjectParent() == this)
-            {
-              (*Target)->cleanup();
-              delete *Target;
-              *Target = NULL;
-            }
+          {
+            if ((*Target)->getObjectParent() == this)
+              {
+                (*Target)->cleanup();
+                delete *Target;
+                *Target = NULL;
+              }
+
+            CCopasiContainer::remove(*Target);
+          }
 
         erase(Target, Target + 1);
       }
@@ -356,13 +363,13 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         CType * Element = new CType(src, this);
 
         push_back(Element);
+        CCopasiContainer::add(Element);
       }
 
       /**
        *
        */
-      virtual void add
-      (CType * src)
+      virtual void add(CType * src, bool adopt = false)
       {
         if (!isInsertAllowed(src))
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -371,6 +378,8 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
         // This is not very efficient !!!
         // It results in a lot of resizing of the vector !!!
         push_back(src);
+        CCopasiContainer::add(src);
+        if (adopt) src->setObjectParent(this);
       }
 
       /**
@@ -385,8 +394,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCCopasiVector + 1, name.c_str());
 
-        CCopasiVector< CType >::remove
-        (Index);
+        CCopasiVector< CType >::remove(Index);
 
         return;
       }

@@ -10,7 +10,7 @@
 #ifndef COPASI_CCopasiContainer
 #define COPASI_CCopasiContainer
 
-#include <vector>
+#include <map>
 #include "CCopasiObject.h"
 
 /** @dia:pos 23.7081,50.8343 */
@@ -28,9 +28,12 @@ class CCopasiContainer: public CCopasiObject
     friend CCopasiObject::~CCopasiObject();
 
     //Attributes
+  public:
+    static CCopasiContainer * Root;
+
   protected:
     /** @dia:route 0,8; h,23.7081,50.8343,19.6311,4.45372,40.5964 */
-    std::vector< CCopasiObject * > mObjects;
+    std::map< const std::string, CCopasiObject * > mObjects;
 
     // Operations
   private:
@@ -47,13 +50,15 @@ class CCopasiContainer: public CCopasiObject
 
     virtual ~CCopasiContainer();
 
+    static void init();
+
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
-    virtual const std::vector< CCopasiObject * > & getObjects() const;
+    virtual const std::map< const std::string, CCopasiObject * > & getObjects() const;
 
-    void add(CCopasiObject * pObject);
+    bool add(CCopasiObject * pObject);
 
-    void remove(CCopasiObject * pObject);
+    bool remove(CCopasiObject * pObject);
 
     const std::string getObjectUniqueName() const;
 
@@ -73,6 +78,7 @@ class CCopasiContainer: public CCopasiObject
     {createMatrixReference(name, this, reference);}
   };
 
+#ifdef XXXX 
 /** @dia:pos 33.0468,37.5833 */
 class CRootContainer
       /** @dia:pos 23.7081,60.7007 */
@@ -91,7 +97,8 @@ class CRootContainer
 
     static CCopasiContainer & ref();
   };
+#endif // XXXX
 
-#define RootContainer CRootContainer::ref()
+#define RootContainer *CCopasiContainer::Root
 
 #endif // COPASI_CCopasiConateiner

@@ -40,6 +40,7 @@ class CCopasiObject
 
     static const unsigned C_INT32 ValueDbl;
 
+  private:
     std::string mObjectName;
 
     std::string mObjectType;
@@ -73,11 +74,15 @@ class CCopasiObject
 
     virtual const void * getObjectValueAddress() const;
 
+    bool setObjectName(const std::string & name);
+
     const std::string & getObjectName() const;
 
     virtual const std::string getObjectUniqueName() const;
 
     const std::string & getObjectType() const;
+
+    bool setObjectParent(const CCopasiContainer * pParent);
 
     CCopasiContainer * getObjectParent() const;
 

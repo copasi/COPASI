@@ -32,7 +32,6 @@ CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Metabolite", CCopasiObject::Container | CCopasiObject::ValueDbl),
     mKey(CKeyFactory::add("Metabolite", this)),
-    mName(mObjectName),
     mConcDbl(1.0),
     mIConcDbl(1.0),
     mNumberInt(1),
@@ -51,7 +50,6 @@ CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CKeyFactory::add("Metabolite", this)),
-    mName(CCopasiContainer::mObjectName),
     mConcDbl(src.mConcDbl),
     mIConcDbl(src.mIConcDbl),
     mNumberInt(src.mNumberInt),
@@ -68,7 +66,7 @@ CMetab::CMetab(const CMetab & src,
 
 CMetab &CMetab::operator=(const CMetabOld &RHS)
 {
-  mName = RHS.mName;
+  setObjectName(RHS.getObjectName());
   mConcDbl = RHS.mIConc;
   mIConcDbl = RHS.mIConc;
   mNumberInt = -1;
@@ -107,12 +105,14 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
 {
   C_INT32 Fail = 0;
 
+  std::string tmp;
   Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & mName,
+                                  (void *) & tmp,
                                   CReadConfig::SEARCH);
 
   if (Fail)
     return Fail;
+  setObjectName(tmp);
 
   Fail = configbuffer.getVariable("InitialConcentration", "C_FLOAT64",
                                   (void *) & mIConcDbl);
@@ -140,7 +140,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
-                     mName.c_str());
+                     getObjectName().c_str());
       mStatus = 1;
     }
 
@@ -150,7 +150,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "
                      "for '%s'.\nReset to default.",
-                     mName.c_str());
+                     getObjectName().c_str());
       mIConcDbl = 1.0;
     }
 
@@ -160,9 +160,8 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
 C_INT32 CMetab::save(CWriteConfig &configbuffer)
 {
   C_INT32 Fail = 0;
-
-  Fail = configbuffer.setVariable("Metabolite", "string",
-                                  (void *) & mName);
+  std::string tmp = getObjectName();
+  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
 
   if (Fail)
     return Fail;
@@ -188,8 +187,8 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
 C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
 {
   C_INT32 c, Fail = 0;
-
-  Fail = configbuffer.setVariable("Metabolite", "string", (void *) & mName);
+  std::string tmp = getObjectName();
+  Fail = configbuffer.setVariable("Metabolite", "string", &tmp);
   if (Fail)
     return Fail;
   Fail = configbuffer.setVariable("Concentration", "C_FLOAT64", (void *) & mIConcDbl);
@@ -206,7 +205,7 @@ C_INT32 CMetab::saveOld(CWriteConfig &configbuffer)
 void CMetab::saveSBML(std::ofstream &fout)
 {
   std::string str;
-  FixSName(mName, str);
+  FixSName(getObjectName(), str);
   fout << "\t\t\t<specie name=\"" << str << "\"";
   FixSName(getCompartment()->getName(), str);
   fout << " compartment=\"" + str + "\"";
@@ -221,7 +220,7 @@ void CMetab::saveSBML(std::ofstream &fout)
 
 std::string CMetab::getKey() const {return mKey;}
 
-const std::string & CMetab::getName() const {return mName;}
+const std::string & CMetab::getName() const {return getObjectName();}
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConcDbl;}
 
@@ -278,14 +277,7 @@ const C_FLOAT64 & CMetab::getTransitionTime()
 
 bool CMetab::setName(const std::string & name)
 {
-  CCopasiContainer * pParent = getObjectParent();
-  if (pParent)
-    if (pParent->isNameVector())
-      if (pParent->getIndex(name) != C_INVALID_INDEX)
-        return false;
-
-  mName = name;
-  return true;
+  return setObjectName(name);
 }
 
 // ***** set quantities ********
@@ -358,7 +350,7 @@ bool CMetab::isValidName(const std::string &name) const
 
 void CMetab::initObjects()
 {
-  addObjectReference("Name", mName);
+  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Concentration", mConcDbl);
   addObjectReference("InitialConcentration", mIConcDbl);
   addObjectReference("TransitionTime", mTT);
@@ -367,7 +359,6 @@ void CMetab::initObjects()
 CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Old Metabolite"),
-    mName(mObjectName),
     mIConc(1.0),
     mStatus(CMetab::METAB_VARIABLE),
     mCompartment()
@@ -376,7 +367,6 @@ CMetabOld::CMetabOld(const std::string & name,
 CMetabOld::CMetabOld(const CMetabOld & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mName(mObjectName),
     mIConc(src.mIConc),
     mStatus(src.mStatus),
     mCompartment(src.mCompartment)
@@ -389,13 +379,14 @@ void CMetabOld::cleanup(){}
 C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 {
   C_INT32 Fail = 0;
-
+  std::string tmp;
   Fail = configbuffer.getVariable("Metabolite", "string",
-                                  (void *) & mName,
+                                  (void *) & tmp,
                                   CReadConfig::SEARCH);
 
   if (Fail)
     return Fail;
+  setObjectName(tmp);
 
   Fail = configbuffer.getVariable("Concentration", "C_FLOAT64",
                                   (void *) & mIConc);
@@ -422,7 +413,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
-                     mName.c_str());
+                     getObjectName().c_str());
       mStatus = 1;
     }
 
@@ -432,7 +423,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "
                      "for '%s'.\nReset to default.",
-                     mName.c_str());
+                     getObjectName().c_str());
       mIConc = 1.0;
     }
 
@@ -440,7 +431,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 }
 C_INT32 CMetabOld::save(CWriteConfig & C_UNUSED(configbuffer)){return 0;}
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
-const std::string & CMetabOld::getName() const {return mName;}
+const std::string & CMetabOld::getName() const {return getObjectName();}
 
 /**
  * Returns the address of mIConcDbl  Wei Sun

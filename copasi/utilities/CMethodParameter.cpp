@@ -13,6 +13,7 @@
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
 #include "CCopasiMessage.h"
+#include "report/CKeyFactory.h"
 
 const std::string CParameter::TypeName[] =
   {
@@ -26,7 +27,7 @@ CParameter::CParameter(const std::string & name,
                        const CCopasiContainer * pParent,
                        const std::string & objectType):
     CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
-    mName(mObjectName),
+    mKey(CKeyFactory::add("Constant", this)),
     mValue(0),
     mType(CParameter::DOUBLE)
 {}
@@ -34,7 +35,7 @@ CParameter::CParameter(const std::string & name,
 CParameter::CParameter(const CParameter & src,
                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mName(mObjectName),
+    mKey(CKeyFactory::add("Constant", this)),
     mValue(src.mValue),
     mType(src.mType)
 {}
@@ -45,16 +46,21 @@ CParameter::CParameter(const std::string & name,
                        const CCopasiContainer * pParent,
                        const std::string & objectType):
     CCopasiContainer(name, pParent, objectType, CCopasiObject::Container | CCopasiObject::ValueDbl),
-    mName(mObjectName),
+    mKey(CKeyFactory::add("Constant", this)),
     mValue(value),
     mType(type)
 {assert(isValidValue(value));}
 
-CParameter::~CParameter() {}
+CParameter::~CParameter()
+{
+  CKeyFactory::remove(mKey);
+}
 
-void CParameter::setName(const std::string & name) {mName = name;}
+std::string CParameter::getKey() const {return mKey;}
 
-const std::string & CParameter::getName() const {return mName;}
+bool CParameter::setName(const std::string & name) {return setObjectName(name);}
+
+const std::string & CParameter::getName() const {return getObjectName();}
 
 bool CParameter::setValue(const double & value)
 {
@@ -143,19 +149,23 @@ bool CParameter::isValidValue(const C_FLOAT64 & value) const
 
 void CParameter::load(CReadConfig & configBuffer)
 {
-  configBuffer.getVariable("MethodParameterName", "string", &mName);
+  std::string tmp;
+  configBuffer.getVariable("MethodParameterName", "string", &tmp);
+  setObjectName(tmp);
+
   configBuffer.getVariable("MethodParameterValue", "C_FLOAT64", &mValue);
 
   if (!isValidValue(mValue))
     CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 1,
-                   mValue, mName.c_str(), TypeName[mType].c_str());
+                   mValue, getObjectName().c_str(), TypeName[mType].c_str());
 
   return;
 }
 
 void CParameter::save(CWriteConfig & configBuffer) const
   {
-    configBuffer.setVariable("MethodParameterName", "string", &mName);
+    std::string tmp = getObjectName();
+    configBuffer.setVariable("MethodParameterName", "string", &tmp);
     configBuffer.setVariable("MethodParameterValue", "C_FLOAT64", &mValue);
 
     return;

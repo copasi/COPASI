@@ -19,13 +19,6 @@ class CUsageRange : public CRange
   {
   private:
 
-    /**
-     * The usage or meaning of this range. This has no functional implication 
-     * for CFunction but it might be used in derived classes. Possible
-     * usages are SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER 
-     */
-    std::string & mUsage;
-
   public:
     /**
      * Default constructor
@@ -88,7 +81,7 @@ class CUsageRange : public CRange
      *  Set the usage of the range
      *  @param "const string &" usage
      */
-    void setUsage(const std::string & usage);
+    bool setUsage(const std::string & usage);
 
     /**
     * insert operator
@@ -98,7 +91,7 @@ class CUsageRange : public CRange
       os << "CUsageRange: "
       << " mLow " << d.getLow()
       << " mHigh " << d.getHigh()
-      << " mUsage " << d.mUsage << std::endl;
+      << " mUsage " << d.getObjectName() << std::endl;
 
       return os;
     }

@@ -24,15 +24,13 @@
 COutputLine::COutputLine(const std::string & name,
                          const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Output Line"),
-    mLine("Data", this),
-    mName(mObjectName)
+    mLine("Data", this)
 {}
 
 COutputLine::COutputLine(const COutputLine & src,
                          const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mLine(src.mLine, this),
-    mName(mObjectName)
+    mLine(src.mLine, this)
 {}
 
 void COutputLine::init() {}
@@ -66,9 +64,9 @@ const CCopasiVectorS < CDatum > & COutputLine::getLine() const
  *  Sets the name of this line, (For example: Interactive time course)
  *  @param title constant reference to a string.
  */
-void COutputLine::setName(std::string LineName)
+bool COutputLine::setName(std::string LineName)
 {
-  mName = LineName;
+  return setObjectName(LineName);
 }
 
 /**
@@ -97,11 +95,12 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
   C_INT32 Size = 0;
 
   // Search string searchName from configure variable
-
+  std::string tmp;
   if ((Fail = configbuffer.getVariable(searchName, "string",
-                                       &mName,
+                                       &tmp,
                                        CReadConfig::SEARCH)))
     return Fail;
+  setObjectName(tmp);
 
   // now pout points the end of search string
   // Read the number of items in this section
@@ -123,6 +122,8 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
   return Fail;
 }
 
+const std::string & COutputLine::getName() const {return getObjectName();}
+
 /**
  *  Saves the contents of the object to a CWriteConfig object.
  *  (Which usually has a file attached but may also have socket)
@@ -136,8 +137,8 @@ C_INT32 COutputLine::save(CWriteConfig & configbuffer)
   C_INT32 Size = 0;
 
   Size = mLine.size();
-
-  if ((Fail = configbuffer.setVariable(mName, "string", NULL)))
+  std::string tmp = getObjectName();
+  if ((Fail = configbuffer.setVariable(tmp, "string", NULL)))
     return Fail;
 
   if ((Fail = configbuffer.setVariable("Items", "C_INT32", &Size)))
@@ -456,7 +457,7 @@ void COutputLine::dynOutputData(std::ofstream &fout, C_INT16 DynSeparator,
  */
 void COutputLine::compile(const std::string & name, CModel *model, CState *state)
 {
-  if (!mName.compare(name))
+  if (!getObjectName().compare(name))
     {// ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
@@ -472,7 +473,7 @@ void COutputLine::compile(const std::string & name, CModel *model, CState *state
 void COutputLine::compile(const std::string & name, CModel * model,
                           CSteadyStateTask * soln)
 {
-  if (!mName.compare(name))
+  if (!getObjectName().compare(name))
     {// ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)

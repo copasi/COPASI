@@ -31,11 +31,10 @@ class CParameter: public CCopasiContainer
     };
 
   private:
-
     /**
-     *  The name of the attribute
+     *  key of the model
      */
-    std::string & mName;
+    std::string mKey;
 
     /**
      *  The value of the attribute
@@ -89,10 +88,16 @@ class CParameter: public CCopasiContainer
     ~CParameter();
 
     /**
+     * Return the key of this model
+     * @return string key
+     */
+    std::string getKey() const;
+
+    /**
      * Set name of the parameter
      * @param "const string &" name
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      * Retrieve the name of the parameter

@@ -7,8 +7,8 @@
  ** place of a destructor.
  *****************************************************************************/
 
-#include "utilities/CGlobals.h"
-#include "utilities/CCopasiVector.h"
+#include "utilities/CGlobals.h" 
+// #include "utilities/CCopasiVector.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
@@ -39,14 +39,15 @@ else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
       CCopasiContainer* container;
       container = (CCopasiContainer*)obj;
 
-      std::vector<CCopasiObject*>::const_iterator it = container->getObjects().begin();
+      std::map< const std::string, CCopasiObject *>::const_iterator it = container->getObjects().begin();
       int cnt = container->getObjects().size();
 
       for (; it != container->getObjects().end(); ++it)
-      {addObjectRecursive((QWidget*)element, (void*)(*it));}
+      {addObjectRecursive((QWidget*)element, (void*)it->second);}
       return;
     }
 
+#ifdef XXXX
   if (obj->isVector())
     {
       CCopasiVector <CCopasiObject> * vect;
@@ -59,6 +60,7 @@ else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
       for (i = 0; i != cnt; ++i)
       {addObjectRecursive((QWidget*)element, (void*)(*vect)[i]);}
     }
+#endif // XXXX
 }
 
 void ObjectDebug::update()

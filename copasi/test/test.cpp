@@ -145,11 +145,11 @@ int main(int argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      ConvertFunctionDB();
+      //      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
-      //      TestCopasiObject();
+      TestCopasiObject();
 
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
@@ -271,6 +271,12 @@ C_INT32 TestWriteConfig(void)
 
 C_INT32 TestCopasiObject(void)
 {
+  std::map< const std::string, CMetab * > myMap;
+  CMetab m1, m2;
+  myMap[m1.getName()] = &m1;
+  myMap[m1.getName()] = &m1;
+  myMap[m2.getName()] = &m2;
+
   CCopasiObjectName Name("CN=Root,Vector=Metabolites\\[ADH\\],Metabolite=ADH");
   cout << Name << endl;
   cout << CCopasiObjectName::unescape(Name) << endl;

@@ -41,11 +41,6 @@ class CReaction : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  The name of the reaction
-     */
-    std::string & mName;
-
-    /**
      *  The chemical equation
      */
     /** @dia:route 2,5; h,88.6464,95.1644,91.3136,127.734,135.488 */

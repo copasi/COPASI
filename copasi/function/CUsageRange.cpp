@@ -12,14 +12,12 @@
 CUsageRange::CUsageRange(const std::string & name,
                          const CCopasiContainer * pParent,
                          const std::string & type):
-    CRange(name, pParent, type),
-    mUsage(mObjectName)
+    CRange(name, pParent, type)
 {CONSTRUCTOR_TRACE;}
 
 CUsageRange::CUsageRange(const CUsageRange & src,
                          const CCopasiContainer * pParent):
-    CRange(src, pParent),
-    mUsage(mObjectName)
+    CRange(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
 CUsageRange::~CUsageRange() {DESTRUCTOR_TRACE;}
@@ -29,27 +27,30 @@ void CUsageRange::cleanup() {}
 void CUsageRange::load(CReadConfig & configBuffer,
                        CReadConfig::Mode mode)
 {
-  configBuffer.getVariable("Usage", "string", &mUsage, mode);
+  std::string tmp;
+  configBuffer.getVariable("Usage", "string", &tmp, mode);
+  setObjectName(tmp);
   CRange::load(configBuffer);
 }
 
 void CUsageRange::save(CWriteConfig & configBuffer)
 {
-  configBuffer.setVariable("Usage", "string", &mUsage);
+  std::string tmp = getObjectName();
+  configBuffer.setVariable("Usage", "string", &tmp);
   CRange::save(configBuffer);
 }
 
-void CUsageRange::setUsage(const std::string & usage)
+bool CUsageRange::setUsage(const std::string & usage)
 {
-  mUsage = usage;
+  return setObjectName(usage);
 }
 
 const std::string & CUsageRange::getUsage() const
   {
-    return mUsage;
+    return getObjectName();
   }
 
 const std::string & CUsageRange::getName() const
   {
-    return mUsage;
+    return getObjectName();
   }

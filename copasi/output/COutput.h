@@ -237,7 +237,7 @@ class COutput : public CCopasiContainer
     /**
      *  Dummy method.
      */
-    const std::string & getName() const {return mObjectName;}
+    const std::string & getName() const;
 
     /**
      * print the titles of the steady-state data file

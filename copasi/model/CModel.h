@@ -221,11 +221,6 @@ class CModel : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  title of the model
-     */
-    std::string & mTitle;
-
-    /**
      *  Comments
      */
     std::string mComments;
@@ -587,7 +582,7 @@ class CModel : public CCopasiContainer
      * Set the title of this model
      * @param "const string &" title title for this model
      */
-    void setTitle(const std::string &title);
+    bool setTitle(const std::string &title);
 
     /**
      * Set the title of this model

@@ -25,7 +25,7 @@ class CRange : public CCopasiContainer
      */
     enum Constants
     {
-      Infinity = -1,
+      Infinity = -1,  // 0xFFFF
       NoRange = 0
     };
 

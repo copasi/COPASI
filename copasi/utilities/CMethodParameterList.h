@@ -24,11 +24,6 @@ class CMethodParameterList : public CCopasiContainer
     // Attributes
   private:
     /**
-     *  The name of the Method
-     */
-    std::string & mName;
-
-    /**
      *  The type of the Method
      */
     std::string mType;
@@ -91,7 +86,7 @@ class CMethodParameterList : public CCopasiContainer
      * Set the name of the method
      * @param "const string &" name
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      * Retrieve the type of the method

@@ -22,7 +22,6 @@ CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Compartment"),
     mKey(CKeyFactory::add("Compartment", this)),
-    mName(mObjectName),
     mInitialVolume(1.0),
     mVolume(1.0),
     mVolumeInv(1.0),
@@ -36,7 +35,6 @@ CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CKeyFactory::add("Compartment", this)),
-    mName(CCopasiContainer::mObjectName),
     mInitialVolume(src.mInitialVolume),
     mVolume(src.mVolume),
     mVolumeInv(src.mVolumeInv),
@@ -59,11 +57,12 @@ void CCompartment::cleanup() {mMetabolites.cleanup();}
 C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
+  std::string tmp;
   if ((Fail = configbuffer.getVariable("Compartment", "string",
-                                       (void *) & mName,
+                                       (void *) & tmp,
                                        CReadConfig::SEARCH)))
     return Fail;
+  setObjectName(tmp);
 
   if ((Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
                                        (void *) & mInitialVolume)))
@@ -89,9 +88,9 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
 C_INT32 CCompartment::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
+  std::string tmp = getObjectName();
   if ((Fail = configbuffer.setVariable("Compartment", "string",
-                                       (void *) & mName)))
+                                       (void *) & tmp)))
     return Fail;
   if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
                                        (void *) & mVolume)))
@@ -108,8 +107,9 @@ C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
+  std::string tmp = getObjectName();
   if ((Fail = configbuffer.setVariable("Compartment", "string",
-                                       (void *) & mName)))
+                                       (void *) & tmp)))
     return Fail;
   if ((Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
                                        (void *) & mVolume)))
@@ -120,14 +120,14 @@ C_INT32 CCompartment::saveOld(CWriteConfig & configbuffer)
 void CCompartment::saveSBML(std::ofstream &fout)
 {
   std::string str;
-  FixSName(mName, str);
+  FixSName(getObjectName(), str);
   fout << "\t\t\t<compartment name=\"" << str << "\"";
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
 
 std::string CCompartment::getKey() const {return mKey;}
 
-const std::string & CCompartment::getName() const {return mName;}
+const std::string & CCompartment::getName() const {return getObjectName();}
 
 const C_FLOAT64 & CCompartment::getInitialVolume() const
   {return mInitialVolume;}
@@ -142,10 +142,9 @@ CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
   {return mMetabolites;}
 
-void CCompartment::setName(const std::string & name)
+bool CCompartment::setName(const std::string & name)
 {
-  mName = name;
-  //if (!isValidName()) fatalError();
+  return setObjectName(name);
 }
 
 void CCompartment::setInitialVolume(C_FLOAT64 volume)
@@ -188,7 +187,7 @@ bool CCompartment::isValidName(const std::string & name) const
 
 void CCompartment::initObjects()
 {
-  addObjectReference("Name", mName);
+  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Volume", mVolume);
   //  add(&mMetabolites);
 }

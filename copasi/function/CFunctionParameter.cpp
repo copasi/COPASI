@@ -17,7 +17,6 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
     mKey(CKeyFactory::add("FunctionParameter", this)),
-    mName(mObjectName),
     mType((CFunctionParameter::DataType) - 1),
     mUsage("unknown")
 {CONSTRUCTOR_TRACE;}
@@ -26,7 +25,6 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CKeyFactory::add("FunctionParameter", this)),
-    mName(mObjectName),
     mType(src.mType),
     mUsage(src.mUsage)
 {CONSTRUCTOR_TRACE;}
@@ -37,7 +35,6 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
     mKey(CKeyFactory::add("FunctionParameter", this)),
-    mName(mObjectName),
     mType(type),
     mUsage(usage)
 {CONSTRUCTOR_TRACE;}
@@ -53,23 +50,26 @@ void CFunctionParameter::cleanup() {}
 void CFunctionParameter::load(CReadConfig & configbuffer,
                               CReadConfig::Mode mode)
 {
-  configbuffer.getVariable("FunctionParameter", "string", &mName, mode);
+  std::string tmp;
+  configbuffer.getVariable("FunctionParameter", "string", &tmp, mode);
+  setObjectName(tmp);
   configbuffer.getVariable("DataType", "C_INT32", &mType);
   configbuffer.getVariable("Usage", "string", &mUsage);
 }
 
 void CFunctionParameter::save(CWriteConfig & configbuffer)
 {
-  configbuffer.setVariable("FunctionParameter", "string", &mName);
+  std::string tmp = getObjectName();
+  configbuffer.setVariable("FunctionParameter", "string", &tmp);
   configbuffer.setVariable("DataType", "C_INT32", &mType);
   configbuffer.setVariable("Usage", "string", &mUsage);
 }
 
-void CFunctionParameter::setName(const std::string & name) {mName = name;}
+bool CFunctionParameter::setName(const std::string & name) {return setObjectName(name);}
 
 std::string CFunctionParameter::getKey() const {return mKey;}
 
-const std::string & CFunctionParameter::getName() const {return mName;}
+const std::string & CFunctionParameter::getName() const {return getObjectName();}
 
 void CFunctionParameter::setUsage(const std::string & usage) {mUsage = usage;}
 

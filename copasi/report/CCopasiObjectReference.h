@@ -82,7 +82,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 #else
       return new CCopasiObjectReference< typename referenceType::elementType >
 #endif
-      (mObjectName + cn,
+      (getObjectName() + cn,
        getObjectParent(),
        mReference[cn.getIndex()]);
     }
@@ -126,7 +126,7 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
 #else
       return new CCopasiObjectReference< typename referenceType::elementType >
 #endif
-      (mObjectName + cn,
+      (getObjectName() + cn,
        getObjectParent(),
        mReference(cn.getIndex(),
                   cn.getIndex(1)));

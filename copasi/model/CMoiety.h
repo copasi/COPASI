@@ -21,11 +21,6 @@ class CMoiety : public CCopasiContainer
     // Attributes
   private:
     /**
-     *
-     */
-    std::string & mName;
-
-    /**
      *  Number of Particles of Moietiy.
      */
     C_FLOAT64 mNumber;
@@ -115,7 +110,7 @@ class CMoiety : public CCopasiContainer
     /**
      *
      */
-    void setName(const std::string name);
+    bool setName(const std::string name);
 
     /**
      *

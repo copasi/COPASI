@@ -50,7 +50,6 @@ const std::string CModel::QuantityUnitName[] =
 CModel::CModel():
     CCopasiContainer("NoName", &RootContainer, "Model"),
     mKey(CKeyFactory::add("Model", this)),
-    mTitle(mObjectName),
     mComments(),
     mVolumeUnit("ml"),
     mTimeUnit("s"),
@@ -96,7 +95,6 @@ CModel::CModel():
 CModel::CModel(const CModel & src):
     CCopasiContainer(src),
     mKey(CKeyFactory::add("Model", this)),
-    mTitle(mObjectName),
     mComments(src.mComments),
     mVolumeUnit(src.mVolumeUnit),
     mTimeUnit(src.mTimeUnit),
@@ -173,7 +171,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
   unsigned C_INT32 i;
-
+  std::string tmp;
   Copasi->pModel = this;
 
   // For old Versions we must read the list of Metabolites beforehand
@@ -187,9 +185,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Copasi->pOldMetabolites->load(configBuffer, Size);
     }
 
-  if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
+  if ((Fail = configBuffer.getVariable("Title", "string", &tmp,
                                        CReadConfig::LOOP)))
     return Fail;
+  setObjectName(tmp);
 
   try
     {
@@ -255,7 +254,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   else
     {
       if ((Fail = configBuffer.getVariable("InitialTime", "C_FLOAT64",
-                                           &mInitialTime)))
+                                           &mInitialTime, CReadConfig::LOOP)))
         return Fail;
     }
 
@@ -309,8 +308,9 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
 {
   C_INT32 Size;
   C_INT32 Fail = 0;
+  std::string tmp = getObjectName();
 
-  if ((Fail = configBuffer.setVariable("Title", "string", &mTitle)))
+  if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
     return Fail;
 
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
@@ -348,8 +348,9 @@ C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
 {
   C_INT32 i, Size;
   C_INT32 Fail = 0;
+  std::string tmp = getObjectName();
 
-  if ((Fail = configBuffer.setVariable("Title", "string", &mTitle)))
+  if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
     return Fail;
   Size = mMetabolites.size();
   if ((Fail = configBuffer.setVariable("TotalMetabolites", "C_INT32", &Size)))
@@ -392,7 +393,7 @@ void CModel::saveSBML(std::ofstream &fout)
   fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << std::endl;
   // TODO: add time stamp to the comment string
   fout << "<sbml xmlns=\"http://www.sbml.org/sbml/level1\" level=\"1\" version=\"1\">" << std::endl;
-  FixSName(mTitle, tmpstr);
+  FixSName(getObjectName(), tmpstr);
   fout << "\t<model name=\"" + tmpstr + "\">" << std::endl;
   // model notes
   if (! mComments.empty())
@@ -953,7 +954,7 @@ std::string CModel::getKey() const {return mKey;}
  *        Return the title of this model
  *        @return string
  */
-std::string CModel::getTitle() const {return mTitle;}
+std::string CModel::getTitle() const {return getObjectName();}
 
 CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}
@@ -1365,7 +1366,7 @@ void CModel::setState(const CState * state)
 
 void CModel::initObjects()
 {
-  addObjectReference("Name", mTitle);
+  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Comments", mComments);
   //  add(&mCompartments);
   //  add(&mMetabolites);
@@ -1646,9 +1647,9 @@ const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
 const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
   {return mNumber2QuantityFactor;}
 
-void CModel::setTitle(const std::string &title)
+bool CModel::setTitle(const std::string &title)
 {
-  mTitle = title;
+  return setObjectName(title);
 }
 
 void CModel::setComments(const std::string &comments)

@@ -237,6 +237,8 @@ C_INT32 COutput::load(CReadConfig & configbuffer)
   return Fail;
 }
 
+const std::string & COutput::getName() const {return getObjectName();}
+
 /**
  * print the titles of the steady-state data file
  */

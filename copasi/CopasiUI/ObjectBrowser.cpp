@@ -350,7 +350,7 @@ void ObjectBrowser::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObjec
 
 void ObjectBrowser::loadData()
 {
-  CCopasiContainer* root = &CRootContainer::ref();
+  CCopasiContainer * root = CCopasiContainer::Root;
   ObjectBrowserItem * itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
@@ -367,13 +367,13 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
 
   ObjectList* childStack = new ObjectList();
 
-  std::vector<CCopasiObject *> pObjectList = copaParent->getObjects();
-  std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
-  std::vector<CCopasiObject *>::iterator end = pObjectList.end();
+  const std::map< const std::string, CCopasiObject *> * pObjectList = & copaParent->getObjects();
+  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
+  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
 
-  while (it < end)
+  while (it != end)
     {
-      current = *it;
+      current = it->second;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
       if (current->isContainer() && !current->isVector())
@@ -434,21 +434,21 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
-  std::vector<CCopasiObject *> pObjectList = copaParent->getObjects();
-  std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
-  std::vector<CCopasiObject *>::iterator end = pObjectList.end();
-  std::vector<CCopasiObject *>::iterator pFirstObject = it;
+  const std::map< const std::string, CCopasiObject *> * pObjectList = &copaParent->getObjects();
+  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
+  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
+  std::map< const std::string, CCopasiObject *>::const_iterator pFirstObject = it;
 
   if (it == end)
     return;
 
-  std::vector<CCopasiObject *> fieldList = ((CCopasiContainer*) * it)->getObjects();
-  std::vector<CCopasiObject *>::iterator fieldIt = fieldList.begin();
-  std::vector<CCopasiObject *>::iterator fieldEnd = fieldList.end();
+  const std::map< const std::string, CCopasiObject *> *pFieldList = & ((CCopasiContainer*) it->second)->getObjects();
+  std::map< const std::string, CCopasiObject *>::const_iterator fieldIt = pFieldList->begin();
+  std::map< const std::string, CCopasiObject *>::const_iterator fieldEnd = pFieldList->end();
 
-  while (fieldIt < fieldEnd)
+  while (fieldIt != fieldEnd)
     {
-      currentField = *fieldIt;
+      currentField = fieldIt->second;
       ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, NULL, objectItemList);
       currentItemField->attachKey();
       currentItemField->setObjectType(FIELDATTR);
@@ -456,9 +456,9 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       lastField = currentItemField;
       it = pFirstObject;
       last = NULL;
-      while (it < end)
+      while (it != end)
         {
-          current = *it;
+          current = it->second;
           CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
           currentItem->setText(0, current->getObjectName().c_str());
@@ -521,15 +521,24 @@ void ObjectBrowser::loadUI()
 
 CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiObject* pCurrent, const char* name)
 {
-  std::vector<CCopasiObject *> pObjectList = ((CCopasiContainer*)pCurrent)->getObjects();
-  std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
-  std::vector<CCopasiObject *>::iterator end = pObjectList.end();
+  const std::map< const std::string, CCopasiObject *> * pObjectList = & ((CCopasiContainer*)pCurrent)->getObjects();
+  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->find(name);
+  if (it != pObjectList->end())
+    return it->second;
+  else
+    return NULL;
 
-  while (it < end)
+#ifdef XXXX
+  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
+  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
+
+  while (it != end)
     {
-      if (QString((*it)->getObjectName().c_str()) == name)
-        return *it;
+      if (QString(it - second->getObjectName().c_str()) == name)
+        return it->second;
       it++;
     }
+
   return NULL;
+#endif // XXXX
 }

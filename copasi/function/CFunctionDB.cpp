@@ -159,7 +159,7 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
       pFunction = new CKinFunction(Function, &inbuf);
       break;
 
-    case CFunction::Output:
+    case CFunction::Expression:
       pFunction = new CUDFunction(Function);
       break;
 

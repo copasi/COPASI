@@ -23,7 +23,6 @@ CMethodParameterList::CMethodParameterList(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & type):
     CCopasiContainer(name, pParent, type),
-    mName(mObjectName),
     mType("No Type"),
     mMethodParameters("Method Parameters", this)
 {}
@@ -35,7 +34,6 @@ CMethodParameterList::CMethodParameterList(const std::string & name,
 CMethodParameterList::CMethodParameterList(const CMethodParameterList & src,
     const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mName(mObjectName),
     mType(src.mType),
     mMethodParameters(src.mMethodParameters, this)
 {}
@@ -59,13 +57,13 @@ unsigned C_INT32 CMethodParameterList::size() const
  * Retrieve the name of the method
  * @return " const string &" name
  */
-const std::string & CMethodParameterList::getName() const {return mName;}
+const std::string & CMethodParameterList::getName() const {return getObjectName();}
 
 /**
  * Set the name of the method
  * @param "const string &" name
  */
-void CMethodParameterList::setName(const std::string & name) {mName = name;}
+bool CMethodParameterList::setName(const std::string & name) {return setObjectName(name);}
 
 /**
  * Retrieve the type of the method
@@ -222,7 +220,9 @@ void CMethodParameterList::swap(unsigned C_INT32 indexFrom, unsigned C_INT32 ind
 void CMethodParameterList::load(CReadConfig & configBuffer,
                                 CReadConfig::Mode mode)
 {
-  configBuffer.getVariable("MethodParameterListName", "string", &mName, mode);
+  std::string tmp;
+  configBuffer.getVariable("MethodParameterListName", "string", &tmp, mode);
+  setObjectName(tmp);
   configBuffer.getVariable("MethodParameterListType", "string", &mType);
 
   C_INT32 Size = 0;
@@ -246,7 +246,7 @@ void CMethodParameterList::loadSpecific(CReadConfig & configBuffer,
           configBuffer.getVariable("MethodParameterListType", "string", &tmpType);
         }
       // we found it
-      mName = tmpName;
+      setObjectName(tmpName);
       mType = tmpType;
       C_INT32 Size = 0;
       configBuffer.getVariable("MethodParameterListSize", "C_INT32", &Size);
@@ -269,7 +269,8 @@ void CMethodParameterList::loadSpecific(CReadConfig & configBuffer,
  */
 void CMethodParameterList::save(CWriteConfig & configBuffer)
 {
-  configBuffer.setVariable("MethodParameterListName", "string", &mName);
+  std::string tmp = getObjectName();
+  configBuffer.setVariable("MethodParameterListName", "string", &tmp);
   configBuffer.setVariable("MethodParameterListType", "string", &mType);
 
   C_INT32 Size = size();
@@ -303,7 +304,7 @@ CMethodParameterList::search(CReadConfig & configBuffer,
         {
           list = new CMethodParameterList();
           list->load(configBuffer, mode);
-          if (name == list->mName && type == list->mType)
+          if (name == list->getObjectName() && type == list->mType)
             break;
           pdelete(list);
         }

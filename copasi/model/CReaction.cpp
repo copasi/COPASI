@@ -30,7 +30,6 @@ CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Reaction"),
     mKey(CKeyFactory::add("Reaction", this)),
-    mName(mObjectName),
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
     mFlux(0),
@@ -49,7 +48,6 @@ CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(CKeyFactory::add("Reaction", this)),
-    mName(mObjectName),
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
     mFlux(src.mFlux),
@@ -87,11 +85,12 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
 
-  std::string KinType;
+  std::string tmp;
 
-  if ((Fail = configbuffer.getVariable("Step", "string", &mName,
+  if ((Fail = configbuffer.getVariable("Step", "string", &tmp,
                                        CReadConfig::SEARCH)))
     return Fail;
+  setObjectName(tmp);
 
   std::string ChemEq;
 
@@ -100,10 +99,10 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
 
   setChemEq(ChemEq);
 
-  if ((Fail = configbuffer.getVariable("KineticType", "string", &KinType)))
+  if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
     return Fail;
 
-  setFunction(KinType);
+  setFunction(tmp);
 
   if (mpFunction == NULL)
     return Fail = 1;
@@ -136,7 +135,8 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
   char strtmp[32];
   CCopasiVector < CChemEqElement > reactants;
   s = metabolites.size();
-  if ((Fail = configbuffer.setVariable("Step", "string", &mName)))
+  tmp = getObjectName();
+  if ((Fail = configbuffer.setVariable("Step", "string", &tmp)))
     return Fail;
   tmp = mChemEq.getChemicalEquation();
   tmp = tmp.substr(0, tmp.find(';'));
@@ -239,7 +239,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
   unsigned C_INT32 i;
   CCopasiVector < CChemEqElement > rr;
 
-  FixSName(mName, tmpstr);
+  FixSName(getObjectName(), tmpstr);
   fout << "\t\t\t<reaction name=\"" << tmpstr << "\"";
   fout << " reversible=\"";
   if (mChemEq.getReversibility())
@@ -309,7 +309,7 @@ std::string CReaction::getKey() const
   {return mKey;}
 
 const std::string & CReaction::getName() const
-  {return mName;}
+  {return getObjectName();}
 
 const CChemEq & CReaction::getChemEq() const
   {return mChemEq;}
@@ -328,14 +328,7 @@ bool CReaction::isReversible() const
 
 bool CReaction::setName(const std::string & name)
 {
-  CCopasiContainer * pParent = getObjectParent();
-  if (pParent)
-    if (pParent->isNameVector())
-      if (pParent->getIndex(name) != C_INVALID_INDEX)
-        return false;
-
-  mName = name;
-  return true;
+  return setObjectName(name);
 }
 
 void CReaction::setChemEq(const std::string & chemEq)
@@ -845,7 +838,7 @@ C_INT32 CReaction::getModifierMolecularity() const
 
 void CReaction::initObjects()
 {
-  addObjectReference("Name", mName);
+  addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));
   addObjectReference("Flux", mFlux);
   addObjectReference("ScaledFlux", mScaledFlux);
   //add(&mParameters);

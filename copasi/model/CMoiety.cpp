@@ -14,7 +14,6 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mName(mObjectName),
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -23,7 +22,6 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mName(mObjectName),
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -68,7 +66,7 @@ C_FLOAT64 CMoiety::dependentRate()
   return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
 }
 
-const std::string & CMoiety::getName() const {return mName;}
+const std::string & CMoiety::getName() const {return getObjectName();}
 
 std::string CMoiety::getDescription() const
   {
@@ -92,9 +90,9 @@ std::string CMoiety::getDescription() const
     return Description;
   }
 
-void CMoiety::setName(const std::string name)
+bool CMoiety::setName(const std::string name)
 {
-  mName = name;
+  return setObjectName(name);
 }
 
 void CMoiety::setInitialValue()

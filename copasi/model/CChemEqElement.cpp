@@ -85,5 +85,5 @@ std::string CChemEqElement::writeElement() const
     if (mMultiplicity == 1.0)
       return mMetaboliteName;
     else
-      return StringPrint("%.0lf * %s", mMultiplicity, mMetaboliteName.c_str());
+      return StringPrint("%g * %s", mMultiplicity, mMetaboliteName.c_str());
   }

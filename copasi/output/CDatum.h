@@ -89,7 +89,7 @@ class CDatum : public CCopasiContainer
     /**
      *  Name of the object.
      */
-    std::string & mObject;
+    std::string mObjectName;
 
     /**
      *  Transfers the Type to the associated member data in each class
@@ -232,7 +232,7 @@ class CDatum : public CCopasiContainer
     /**
      *  Dummy method.
      */
-    const std::string & getName() const {return mObjectName;}
+    const std::string & getName() const;
 
     /**
      *  Complie the mpValue in each CDatum

@@ -43,7 +43,7 @@ class CFunctionDB : public CCopasiContainer
      * @param const CCopasiContainer * pParent (default: RootContainer)
      */
     CFunctionDB(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = &RootContainer);
+                const CCopasiContainer * pParent = CCopasiContainer::Root);
 
     /**
      * Destructor

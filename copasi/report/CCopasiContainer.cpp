@@ -12,28 +12,36 @@
 #include "CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 
+CCopasiContainer * CCopasiContainer::Root = NULL;
+
+void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
+
 CCopasiContainer::CCopasiContainer() {}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    const std::string & type,
                                    const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, type, flag)
+    CCopasiObject(name, pParent, type, flag | CCopasiObject::Container)
 {}
 
 CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
                                    const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent)
+    CCopasiObject(src, pParent),
+    mObjects()
 {}
 
 CCopasiContainer::~CCopasiContainer()
 {
-  std::vector< CCopasiObject * > Objects(mObjects);
-  std::vector< CCopasiObject * >::iterator it = Objects.begin();
-  std::vector< CCopasiObject * >::iterator end = Objects.end();
+  std::map< const std::string, CCopasiObject * >::iterator it = mObjects.begin();
+  std::map< const std::string, CCopasiObject * >::iterator end = mObjects.end();
 
-  for (; it < end; it++)
-    if ((*it)->isReference()) pdelete(*it);
+  for (; it != end; it++)
+    if (it->second->getObjectParent() == this)
+      {
+        it->second->setObjectParent(NULL);
+        pdelete(it->second);
+      }
 }
 
 const std::string CCopasiContainer::getObjectUniqueName() const
@@ -49,77 +57,71 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     std::string Name = cn.getObjectName();
     std::string Type = cn.getObjectType();
 
-    if (mObjectName == Name && mObjectType == Type)
+    if (getObjectName() == Name && getObjectType() == Type)
       return getObject(cn.getRemainder());
 
-    std::vector< CCopasiObject * >::const_iterator it = mObjects.begin();
-    std::vector< CCopasiObject * >::const_iterator end = mObjects.end();
+    std::map< const std::string, CCopasiObject * >::const_iterator it =
+      mObjects.find(Name);
 
-    while (it != end &&
-           (*it)->getObjectName() != Name &&
-           (*it)->getObjectType() != Type) it++;
-
-    if (it == end) return NULL;
-
-    if ((*it)->isContainer()) return (*it)->getObject(cn.getRemainder());
+    if (it == mObjects.end()) return NULL;
+    if (it->second->getObjectType() != Type) return NULL;
 
     const CCopasiObject * pObject = NULL;
 
-    if ((*it)->isNameVector() || (*it)->isVector())
+    if (it->second->isNameVector() || it->second->isVector())
       {
-        pObject = (*it)->getObject("[" + cn.getName() + "]");
+        pObject = it->second->getObject("[" + cn.getName() + "]");
 
-        if ((*it)->getObjectType() == "Reference" || !pObject)
+        if (it->second->getObjectType() == "Reference" || !pObject)
           return pObject;
         else
           return pObject->getObject(cn.getRemainder());
       }
 
-    if ((*it)->isMatrix())
-      {
-        pObject = (*it)->getObject("[" + cn.getName() + "]" +
-                                   "[" + cn.getName(1) + "]");
+    if (it->second->isContainer()) return it->second->getObject(cn.getRemainder());
 
-        if ((*it)->getObjectType() == "Reference" || !pObject)
+    if (it->second->isMatrix())
+      {
+        pObject = it->second->getObject("[" + cn.getName() + "]" +
+                                        "[" + cn.getName(1) + "]");
+
+        if (it->second->getObjectType() == "Reference" || !pObject)
           return pObject;
         else
           return pObject->getObject(cn.getRemainder());
       }
 
-    if ((*it)->isReference()) return *it;
+    if (it->second->isReference()) return it->second;
 
-    return (*it)->getObject(cn.getRemainder());
+    return it->second->getObject(cn.getRemainder());
   }
 
-const std::vector< CCopasiObject * > & CCopasiContainer::getObjects() const
+const std::map< const std::string, CCopasiObject * > & CCopasiContainer::getObjects() const
   {
     return mObjects;
   }
 
 void CCopasiContainer::initObjects() {}
 
-void CCopasiContainer::add(CCopasiObject * pObject)
+bool CCopasiContainer::add(CCopasiObject * pObject)
 {
-  //   std::cout << getCN() << " adds " << pObject->getObjectType() << "="
-  //             << pObject->getObjectName() << std::endl;
-  mObjects.push_back(pObject);
+  if (mObjects.find(pObject->getObjectName()) != mObjects.end()) return false;
+
+  mObjects[pObject->getObjectName()] = pObject;
+  return true;
 }
 
-void CCopasiContainer::remove(CCopasiObject * pObject)
+bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
-  std::vector< CCopasiObject * >::iterator it = mObjects.begin();
-  std::vector< CCopasiObject * >::iterator end = mObjects.end();
+  std::map< const std::string, CCopasiObject * >::iterator it =
+    mObjects.find(pObject->getObjectName());
+  if (it == mObjects.end()) return false;
 
-  while (it < end && *it != pObject) it++;
-
-  if (it != end)
-    {
-      //       std::cout << getCN() << " removes " << pObject->getObjectType() << "="
-      //             << pObject->getObjectName() << std::endl;
-      mObjects.erase(it, it + 1);
-    }
+  mObjects.erase(it);
+  return false;
 }
 
+#ifdef XXXX
 CCopasiContainer CRootContainer::mRoot("Root");
 
 CRootContainer::CRootContainer() {}
@@ -127,3 +129,4 @@ CRootContainer::CRootContainer() {}
 CRootContainer::~CRootContainer() {}
 
 CCopasiContainer & CRootContainer::ref() {return mRoot;}
+#endif // XXXX

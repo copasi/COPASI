@@ -28,13 +28,18 @@ class CFunction : public CCopasiContainer
       MassAction,
       PreDefined,
       UserDefined,
-      Output
+      Expression
     };
 
     /**
      *  The string representation of valid types of a function
      */
     static const std::string TypeName[];
+
+    /**
+     *  The string representation of valid types of a function
+     */
+    static const std::string XMLType[];
 
     // Attributes
   private:
@@ -48,11 +53,6 @@ class CFunction : public CCopasiContainer
      * The key of the function
      */
     std::string mKey;
-
-    /**
-     * The name of the function
-     */
-    std::string & mName;
 
     /**
      *  The mathematical formula
@@ -83,6 +83,13 @@ class CFunction : public CCopasiContainer
 
     // Operations
   public:
+
+    /**
+     * Create a function of the specified type.
+     * Note: the returned object has to be released after use with delete.
+     */
+    static CFunction *
+    createFunction(CFunction::Type type = CFunction::Base);
 
     /**
      * Default constructor
@@ -159,7 +166,7 @@ class CFunction : public CCopasiContainer
      *  Set the name of the function
      *  @param "const string &" name
      */
-    virtual void setName(const std::string& name);
+    virtual bool setName(const std::string& name);
 
     /**
      *  Retrieves the description of the function
@@ -240,11 +247,15 @@ class CFunction : public CCopasiContainer
     /**
      *  Adds the description of one parameter 
      *  @param "const string &" name the name of the parameter
-    *  @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
-    *  @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
+     *  @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
+     *  @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
      */
     virtual void addParameter(const std::string & name,
                               const CFunctionParameter::DataType & type,
                               const std::string & usage);
   };
+
+#include "CMassAction.h"
+#include "CKinFunction.h"
+
 #endif // COPASI_CFunction

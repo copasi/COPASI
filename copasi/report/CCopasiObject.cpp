@@ -47,17 +47,15 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
     mObjectName(src.mObjectName),
     mObjectType(src.mObjectType),
-    mpObjectParent(const_cast<CCopasiContainer *>(pParent ? pParent : src.mpObjectParent)),
+    mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
     mObjectFlag(src.mObjectFlag)
 {
-  if (mpObjectParent)
-    if (mpObjectParent->isContainer()) mpObjectParent->add(this);
+  if (mpObjectParent) mpObjectParent->add(this);
 }
 
 CCopasiObject::~CCopasiObject()
 {
-  if (mpObjectParent)
-    if (mpObjectParent->isContainer()) mpObjectParent->remove(this);
+  if (mpObjectParent) mpObjectParent->remove(this);
 }
 
 CCopasiObjectName CCopasiObject::getCN() const
@@ -102,7 +100,7 @@ const std::string CCopasiObject::getObjectUniqueName() const
      else
       mUniqueName(mObjectName);
      return mUniqueName;
-    */ if  (mpObjectParent) 
+    */ if   (mpObjectParent) 
       //  return mObjectName+'{'+mpObjectParent->getObjectUniqueName()+'}';
       return mObjectName + " {" + mpObjectParent->getObjectName() + "}";
     else
@@ -111,9 +109,42 @@ const std::string CCopasiObject::getObjectUniqueName() const
 
 const void * CCopasiObject::getObjectValueAddress() const {return &DummyValue; /*TODO or throw exception? */}
 
+bool CCopasiObject::setObjectName(const std::string & name)
+{
+  bool success = true;
+  if (name == mObjectName) return success;
+
+  /* In case something goes wrong. */
+  std::string OldName = mObjectName;
+
+  if (mpObjectParent)
+    {
+      mpObjectParent->remove(this);
+
+      mObjectName = name;
+      if (!mpObjectParent->add(this))
+        {
+          mObjectName = OldName;
+          mpObjectParent->add(this);
+          success = false;
+        }
+    }
+  else
+    mObjectName = name;
+
+  return success;
+}
+
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}
 
 const std::string & CCopasiObject::getObjectType() const {return mObjectType;}
+
+bool CCopasiObject::setObjectParent(const CCopasiContainer * pParent)
+{
+  mpObjectParent = const_cast<CCopasiContainer *>(pParent);
+
+  return true;
+}
 
 CCopasiContainer * CCopasiObject::getObjectParent() const {return mpObjectParent;}
 

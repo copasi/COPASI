@@ -30,11 +30,6 @@ class CCompartment : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  Name of the compartment.
-     */
-    std::string & mName;
-
-    /**
      *  The initial volume of the compartment.
      */
     C_FLOAT64 mInitialVolume;
@@ -177,7 +172,7 @@ class CCompartment : public CCopasiContainer
      *  @param name string with the name of the compartment.
      *  @see mName
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      *  Sets the initial volume of this compartment.
@@ -200,7 +195,7 @@ class CCompartment : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os, const CCompartment & d)
     {
-      os << "++++CCompartment: " << d.mName << " mVolume " << d.mVolume
+      os << "++++CCompartment: " << d.getObjectName() << " mVolume " << d.mVolume
       << " mVolumeInv " << d.mVolumeInv << std::endl;
       os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
       os << "----CCompartment " << std::endl;

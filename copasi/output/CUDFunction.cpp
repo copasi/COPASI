@@ -30,7 +30,7 @@ CUDFunction::CUDFunction(const std::string & name,
     CKinFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
-  setType(CFunction::Output);
+  setType(CFunction::Expression);
 }
 
 CUDFunction::CUDFunction(const CFunction & src,
@@ -54,7 +54,7 @@ CUDFunction::CUDFunction(const std::string & name,
     CKinFunction(name, pParent)
 {
   CONSTRUCTOR_TRACE;
-  setType(CFunction::Output);
+  setType(CFunction::Expression);
   setName(name);
   setDescription(description);
 }
@@ -111,7 +111,7 @@ void CUDFunction::load(CReadConfig & configbuffer,
       configbuffer.getVariable("Description", "string", &Description);
       setDescription(Description);
 
-      setType(CFunction::Output);
+      setType(CFunction::Expression);
     }
   else
     CFunction::load(configbuffer, mode);
@@ -573,7 +573,7 @@ C_INT32 CUDFunction::parse()
           mNodes.push_back(new CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:                 // this is an error
+        case N_NOP:                  // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

@@ -16,12 +16,43 @@
 const std::string CFunction::TypeName[] =
   {"predefined", "predefined", "predefined", "userdefined", "userdefined", ""};
 
+const std::string CFunction::XMLType[] =
+  {"Base", "MassAction", "PreDefined", "UserDefined", "Expression", ""};
+
+CFunction * CFunction::createFunction(enum CFunction::Type type)
+{
+  CFunction * pFunction = NULL;
+
+  switch (type)
+    {
+    case Base:
+      pFunction = new CFunction();
+      break;
+
+    case MassAction:
+      pFunction = new CMassAction();
+      break;
+
+    case PreDefined:
+    case UserDefined:
+      pFunction = new CKinFunction();
+      break;
+
+    case Expression:
+      //      pFunction = new
+      //      break;
+
+    default:
+      fatalError();
+    }
+  return pFunction;
+}
+
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Function"),
     mType(CFunction::Base),
     mKey(CKeyFactory::add("Function", this)),
-    mName(mObjectName),
     mDescription(),
     mReversible(TriUnspecified),
     mUsageDescriptions("Usage Descriptions", this),
@@ -33,7 +64,6 @@ CFunction::CFunction(const CFunction & src,
     CCopasiContainer(src, pParent),
     mType(src.mType),
     mKey(CKeyFactory::add("Function", this)),
-    mName(mObjectName),
     mDescription(src.mDescription),
     mReversible(src.mReversible),
     mUsageDescriptions(src.mUsageDescriptions, this),
@@ -102,7 +132,10 @@ void CFunction::load(CReadConfig & configBuffer,
       mode = CReadConfig::NEXT;
     }
 
-  configBuffer.getVariable("FunctionName", "string", &mName, mode);
+  std::string tmp;
+  configBuffer.getVariable("FunctionName", "string", &tmp, mode);
+  setObjectName(tmp);
+
   configBuffer.getVariable("Description", "string", &mDescription);
 
   if (configBuffer.getVersion() >= "4")
@@ -121,8 +154,10 @@ void CFunction::load(CReadConfig & configBuffer,
 
 void CFunction::save(CWriteConfig & configBuffer)
 {
+  std::string tmp;
   configBuffer.setVariable("FunctionType", "C_INT32", &mType);
-  configBuffer.setVariable("FunctionName", "string", &mName);
+  tmp = getObjectName();
+  configBuffer.setVariable("FunctionName", "string", &tmp);
   configBuffer.setVariable("Description", "string", &mDescription);
   configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
 
@@ -143,7 +178,8 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
     dummy = 1;
   else
     dummy = 0;
-  configBuffer.setVariable("UDKType", "string", &mName);
+  tmpstr1 = getObjectName();
+  configBuffer.setVariable("UDKType", "string", &tmpstr1);
   configBuffer.setVariable("User-defined", "C_INT32", &dummy);
   configBuffer.setVariable("Reversible", "C_INT32", &mReversible);
   dummy = mUsageDescriptions["SUBSTRATES"]->getLow();
@@ -171,7 +207,8 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
       tmpstr2 = StringPrint("Parameter%d", i);
       configBuffer.setVariable(tmpstr2, "string", &tmpstr1);
     }
-  configBuffer.setVariable("FunctionName", "string", &mName);
+  tmpstr1 = getObjectName();
+  configBuffer.setVariable("FunctionName", "string", &tmpstr1);
   configBuffer.setVariable("Description", "string", &mDescription);
 }
 
@@ -181,9 +218,9 @@ std::string CFunction::getSBMLString(const std::vector< std::vector< std::string
 
 std::string CFunction::getKey() const {return mKey;}
 
-void CFunction::setName(const std::string& name) {mName = name;}
+bool CFunction::setName(const std::string& name) {return setObjectName(name);}
 
-const std::string & CFunction::getName() const {return mName;}
+const std::string & CFunction::getName() const {return getObjectName();}
 
 void CFunction::setDescription(const std::string & description) {mDescription = description;}
 

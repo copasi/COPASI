@@ -27,31 +27,11 @@ class CSteadyStateTask;
 class COutputLine : public CCopasiContainer
   {
   private:
-#ifdef XXXX
-
-  class CCDatum: public CCopasiVector < CDatum >
-      {
-      public:
-        CCDatum();
-        ~CCDatum();
-
-      private:
-        C_INT16 isInsertAllowed(const CDatum & src);
-      };
-
-#endif // XXXX
     /**
      *  Datum can be output in the same line.
      * @supplierCardinality 0..*
      */
     CCopasiVectorS < CDatum > mLine;
-
-    /**
-     *  Note: Temperaly use it 
-     * The name of outputline from configuration file, 
-     *  such as "Interactive time course"
-     */
-    std::string & mName;
 
   public:
 
@@ -118,7 +98,7 @@ class COutputLine : public CCopasiContainer
     /**
      *  Dummy method.
      */
-    const std::string & getName() const {return mName;}
+    const std::string & getName() const;
 
     /**
      *  Complie the mpValue in each output line
@@ -149,7 +129,7 @@ class COutputLine : public CCopasiContainer
      *  Sets the name of this line, (For example: Interactive time course)
      *  @param title constant reference to a string.
      */
-    void setName(std::string LineName);
+    bool setName(std::string LineName);
 
     /**
      *  Assign the pointer to each datum object in the output line for time course

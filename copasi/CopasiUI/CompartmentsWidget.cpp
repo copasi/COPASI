@@ -72,14 +72,15 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
           this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
-          SLOT(slotCompartmentTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()), this,
           SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this,
           SLOT(slotBtnOKClicked()));
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
+
+  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
+          SLOT(slotCompartmentTableChanged(const QString &)));
   connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
           SLOT(loadCompartmentsNodes(CModel*)));
   connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));

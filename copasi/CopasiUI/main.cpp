@@ -9,8 +9,9 @@
 
 int main(int argc, char **argv)
 {
-  Copasi = new CGlobals;
+  CCopasiContainer::init();
 
+  Copasi = new CGlobals;
   CReadConfig * pFunctionDB = new CReadConfig("FunctionDB.gps");
   Copasi->pFunctionDB->load(*pFunctionDB);
   delete pFunctionDB;
@@ -26,5 +27,10 @@ int main(int argc, char **argv)
   //ObjectDebug objwindow;
   //objwindow.show();
 
-  return a.exec();
+  a.exec();
+
+  pdelete(Copasi);
+  pdelete(CCopasiContainer::Root);
+
+  return 0;
 }

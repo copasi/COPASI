@@ -6,19 +6,19 @@
 CFunctionParameterMap::CFunctionParameterMap():
     mPointers(),
     mObjects(),
-    mFunctionParameters()
+    mpFunctionParameters(NULL)
 {};
 
 CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
     mPointers(src.mPointers),
     mObjects(src.mObjects),
-    mFunctionParameters(src.mFunctionParameters)
+    mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
 {
   std::vector<const void*> * pDummy;
 
-  C_INT32 i, imax = mFunctionParameters.size();
+  C_INT32 i, imax = mpFunctionParameters->size();
   for (i = 0; i < imax; ++i)
-    if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
+    if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
       {
         pDummy = new std::vector<const void*>(*(std::vector<const void*>*)(mPointers[i]));
         mPointers[i] = pDummy;
@@ -27,30 +27,37 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
       }
 }
 
-CFunctionParameterMap::~CFunctionParameterMap() {};
+CFunctionParameterMap::~CFunctionParameterMap()
+{
+  pdelete(mpFunctionParameters)
+};
 
 void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionParameters & src)
 {
   clearCallParameters();
 
-  mFunctionParameters = src;
+  pdelete(mpFunctionParameters)
+  mpFunctionParameters = new CFunctionParameters(src);
 
   initCallParameters();
 }
 
 void CFunctionParameterMap::clearCallParameters()
 {
-  unsigned C_INT32 i, imax = mFunctionParameters.size();
-
-  for (i = 0; i < imax; i++)
+  if (mpFunctionParameters)
     {
-      if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
-        {
-          if (mObjects[i])
-            delete (std::vector< CCopasiObject * > *) mObjects[i];
+      unsigned C_INT32 i, imax = mpFunctionParameters->size();
 
-          if (mPointers[i])
-            delete (std::vector< void * > *) mPointers[i];
+      for (i = 0; i < imax; i++)
+        {
+          if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+            {
+              if (mObjects[i])
+                delete (std::vector< CCopasiObject * > *) mObjects[i];
+
+              if (mPointers[i])
+                delete (std::vector< void * > *) mPointers[i];
+            }
         }
     }
   mPointers.clear();
@@ -59,14 +66,14 @@ void CFunctionParameterMap::clearCallParameters()
 
 void CFunctionParameterMap::initCallParameters()
 {
-  unsigned C_INT32 i, imax = mFunctionParameters.size();
+  unsigned C_INT32 i, imax = mpFunctionParameters->size();
 
   mPointers.resize(imax);
   mObjects.resize(imax);
 
   for (i = 0; i < imax; i++)
     {
-      if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
+      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
         {
           if (mObjects[i])
             delete (std::vector< CCopasiObject * > *) mObjects[i];
@@ -77,7 +84,7 @@ void CFunctionParameterMap::initCallParameters()
             delete (std::vector< void * > *) mPointers[i];
           mPointers[i] = NULL;
 
-          switch (mFunctionParameters[i]->getType())
+          switch ((*mpFunctionParameters)[i]->getType())
             {
             case CFunctionParameter::VINT32:
               mPointers[i] = new std::vector< C_INT32 * >;
@@ -102,7 +109,7 @@ void CFunctionParameterMap::initCallParameters()
 
 void CFunctionParameterMap::checkCallParameters() const
   {
-    unsigned C_INT32 i, imax = mFunctionParameters.size();
+    unsigned C_INT32 i, imax = mpFunctionParameters->size();
     unsigned C_INT32 j, jmax;
     const std::vector< const void * > * pVector;
 
@@ -113,7 +120,7 @@ void CFunctionParameterMap::checkCallParameters() const
         if (mObjects[i] == NULL)
           fatalError();
 
-        if (mFunctionParameters[i]->getType() < CFunctionParameter::VINT32)
+        if ((*mpFunctionParameters)[i]->getType() < CFunctionParameter::VINT32)
           continue;
 
         pVector = (const std::vector<const void * > *) mPointers[i];
@@ -174,7 +181,7 @@ void CFunctionParameterMap::clearCallParameter(const std::string paramName)
 unsigned C_INT32 CFunctionParameterMap::findParameterByName(const std::string & name,
     CFunctionParameter::DataType & dataType) const
   {
-    return mFunctionParameters.findParameterByName(name, dataType);
+    return mpFunctionParameters->findParameterByName(name, dataType);
   }
 
 CCallParameterPointers & CFunctionParameterMap::getPointers()
@@ -186,7 +193,7 @@ std::vector< const CCopasiObject * > CFunctionParameterMap::getObjects(const uns
 
     if (index != C_INVALID_INDEX)
       {
-        if (mFunctionParameters[index]->getType() < CFunctionParameter::VINT32)
+        if ((*mpFunctionParameters)[index]->getType() < CFunctionParameter::VINT32)
           Objects.push_back((const CCopasiObject *) mObjects[index]);
         else
           {
@@ -208,4 +215,4 @@ const CCallParameterPointers & CFunctionParameterMap::getObjects() const
   {return mObjects;};
 
 const CFunctionParameters & CFunctionParameterMap::getFunctionParameters() const
-  {return mFunctionParameters;};
+  {return * mpFunctionParameters;};

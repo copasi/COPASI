@@ -102,7 +102,7 @@ class CFunctionParameterMap
     /**
      * The CFunctionParameters object provides the data types of the call parameters
      */
-    CFunctionParameters mFunctionParameters;
+    CFunctionParameters * mpFunctionParameters;
 
     // these are preliminary
   public:

@@ -38,11 +38,6 @@ class CFunctionParameter : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  The name of the parameter. 
-     */
-    std::string & mName;
-
-    /**
      *  The data type of the parameter this may be one of INT16, INT32, 
      *  UINT16, UINT32, FLOAT32, FLOAT64, VINT16, VINT32, VUINT16, VUINT32,
      *  VFLOAT32, VFLOAT64
@@ -128,7 +123,7 @@ class CFunctionParameter : public CCopasiContainer
      *  Sets the name of the parameter
      *  @param "const string" & name
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      *  Retrieves the data type of the parameter
@@ -160,7 +155,7 @@ class CFunctionParameter : public CCopasiContainer
     friend std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
     {
       os << "CFunctionParameter: "
-      << d.mName
+      << d.getObjectName()
       << " mType " << d.mType
       << " mUsage " << d.mUsage << std::endl;
 

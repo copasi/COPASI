@@ -52,11 +52,6 @@ class CMetab : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  Name of the metabolite
-     */
-    std::string & mName;
-
-    /**
      *  Concentration of the metabolite as double.
      */
     C_FLOAT64 mConcDbl;
@@ -349,7 +344,7 @@ class CMetab : public CCopasiContainer
      */
     friend std::ostream & operator<<(std::ostream &os, const CMetab & d)
     {
-      os << "    ++++CMetab: " << d.mName << std::endl;
+      os << "    ++++CMetab: " << d.getObjectName() << std::endl;
       os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << std::endl;
       os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << std::endl;
       os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
@@ -400,11 +395,6 @@ class CMetabOld : public CCopasiContainer
     // Attributes
 
   private:
-    /**
-     *  Name of the metabolite
-     */
-    std::string & mName;
-
     /**
      *  Concentration of the metabolite.
      */
