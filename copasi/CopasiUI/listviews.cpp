@@ -772,7 +772,7 @@ void ListViews::loadScanNodes(CModel *model)
   scanWidget->loadScan(model);
 
   CSteadyStateTask* newTask = new CSteadyStateTask();
-  newTask->load(CReadConfig("D:\\GRA\\copasi_dev\\gps\\YeastGlycolysis.gps"));
+  //  newTask->load(CReadConfig("D:\\GRA\\copasi_dev\\gps\\YeastGlycolysis.gps"));
   newTask->getProblem()->setModel(model);
   loadSteadyStateTaskNodes(newTask);
   newTask->process();
