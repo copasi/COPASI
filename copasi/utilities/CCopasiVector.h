@@ -428,7 +428,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
        *
        */
       virtual bool isInsertAllowed(const CType * src)
-    {return (getIndex(src->getName()) == (unsigned C_INT32) - 1);}
+    {return (getIndex(src->getName()) == C_INVALID_INDEX);}
     };
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
