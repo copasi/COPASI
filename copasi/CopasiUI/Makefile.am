@@ -58,6 +58,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
 	ObjectBrowser.cpp \
+	ObjectBrowserItem.cpp \
         copasiui3window.cpp \
 	copasiWidget.cpp \
         listviews.cpp \
@@ -110,6 +111,7 @@ EXTRA_DIST = \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	ObjectBrowser.h ObjectBrowser.cpp ObjectBrowser.moc.cpp \
+	ObjectBrowserItem.h ObjectBrowserItem.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp

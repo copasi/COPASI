@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.23 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.24 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -293,6 +293,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
 	ObjectBrowser.cpp \
+	ObjectBrowserItem.cpp \
 	copasiui3window.cpp \
 	copasiWidget.cpp \
 	listviews.cpp \
@@ -347,6 +348,7 @@ EXTRA_DIST = \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	ObjectBrowser.h ObjectBrowser.cpp ObjectBrowser.moc.cpp \
+	ObjectBrowserItem.h ObjectBrowserItem.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
 	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
@@ -434,9 +436,9 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
 	ScanWidget.$(OBJEXT) SteadyStateWidget.$(OBJEXT) \
 	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
-	ObjectBrowser.$(OBJEXT) copasiui3window.$(OBJEXT) \
-	copasiWidget.$(OBJEXT) listviews.$(OBJEXT) \
-	objectdebug.$(OBJEXT)
+	ObjectBrowser.$(OBJEXT) ObjectBrowserItem.$(OBJEXT) \
+	copasiui3window.$(OBJEXT) copasiWidget.$(OBJEXT) \
+	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
 #>- CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 #>+ 32
 CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
@@ -468,9 +470,9 @@ CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	ReactionsWidget.$(OBJEXT) ReactionsWidget1.$(OBJEXT) \
 	ScanWidget.$(OBJEXT) SteadyStateWidget.$(OBJEXT) \
 	StretchTable.$(OBJEXT) TrajectoryWidget.$(OBJEXT) \
-	ObjectBrowser.$(OBJEXT) copasiui3window.$(OBJEXT) \
-	copasiWidget.$(OBJEXT) listviews.$(OBJEXT) \
-	objectdebug.$(OBJEXT)
+	ObjectBrowser.$(OBJEXT) ObjectBrowserItem.$(OBJEXT) \
+	copasiui3window.$(OBJEXT) copasiWidget.$(OBJEXT) \
+	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
 
@@ -513,6 +515,7 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 	@AMDEP_TRUE@	$(DEPDIR)/MyLineEdit.Po $(DEPDIR)/MyLineEdit.moc.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/MyTable.Po $(DEPDIR)/ObjectBrowser.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowser.moc.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/ObjectBrowserItem.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/Observer.Po $(DEPDIR)/ReactionsWidget.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget.moc.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/ReactionsWidget1.Po \
@@ -649,6 +652,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/MyTable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ObjectBrowser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ObjectBrowser.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ObjectBrowserItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Observer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReactionsWidget.moc.Po@am__quote@
@@ -728,7 +732,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=SteadyStateWidget.ui moc_ModelWidget.cpp objectdebug.ui DataModel.h FunctionWidget1.ui TrajectoryWidget.ui trace Sample2.txt CompartmentsWidget.ui MoietiesWidget.cpp MoietiesWidget.h Sample.txt MetabolitesWidget1.ui objectdebug.ui.h ObjectBrowser.ui MoietyWidget1.ui objectdebug.h CopasiUI.dsp ReactionsWidget1.ui 
+KDE_DIST=SteadyStateWidget.ui objectdebug.ui DataModel.h FunctionWidget1.ui TrajectoryWidget.ui trace Sample2.txt CompartmentsWidget.ui MoietiesWidget.cpp MoietiesWidget.h Sample.txt MetabolitesWidget1.ui objectdebug.ui.h ObjectBrowser.ui MoietyWidget1.ui objectdebug.h CopasiUI.dsp ReactionsWidget1.ui 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
