@@ -354,6 +354,40 @@ C_INT main(C_INT argc, char *argv[])
   CCopasiVector < CGene > GeneList;
   char NetTitle[512];
   CModel model;
+  Clo::Parser clo;
+
+  // parse command line
+  try
+    {
+      clo.parse(argc, argv);
+    }
+  catch (Clo::Exception e)
+    {
+      // autohelp will be true if the user typed --help or -h
+      if (e.autohelp)
+        {
+          printf("Usage: %s [options] command\n", argv[0]);
+          printf("%s", e.fancy());
+          return 0;
+        }
+      else if (e.autoversion)
+        { // autoversion is like autohelp but with --version and -v
+          printf("bnetlay v 1.0, automatic layout of biochemical networks\n");
+          return 0;
+        }
+      else
+        { // otherwise the user gave a bad option or something like that
+          fprintf(stderr, e.fancy());
+          return 1;
+        }
+    }
+
+  // get the random option
+  rndstart = clo.get_flag_option("random");
+  // get the invisible edges option
+  iedges = clo.get_flag_option("iedges");
+  // get the invisible nodes option
+  inodes = clo.get_flag_option("inodes");
 
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
