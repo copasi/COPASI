@@ -208,6 +208,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
               fieldChild->attachKey();
               fieldChild->setObjectType(FIELDATTR);
               fieldChild->setText(0, "Attribute list");
+              loadFields(fieldChild, (CCopasiContainer*) current, 0);
 
               ObjectBrowserItem* objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
               objectChild->attachKey();
@@ -233,61 +234,9 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
     }
 }
 
-/*
-void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
+void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent, int nAttr)
 {
-  ObjectBrowserItem* last = NULL;
-  CCopasiObject* current = NULL;
- 
-  objectList* vectorStack= new objectList();
-  
-  const std::vector<CCopasiObject *> * pObjectList = & copaParent->getObjects();
-  std::vector<CCopasiObject *>::const_iterator it = pObjectList->begin();
-  std::vector<CCopasiObject *>::const_iterator end = pObjectList->end();
- 
-  while (it < end)
-    {
-      current = *it;
-      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
-      last = currentItem;
-   QString st1(current->getObjectName().c_str());
-      if (current->isContainer() && !current->isVector())
-        {
-          currentItem->setText(0, current->getObjectName().c_str());
-          currentItem->setObjectType(OBJECTATTR);
-    currentItem->attachKey();
-          loadChild(currentItem, (CCopasiContainer*)current);
-        }
-      else
-        {
-          currentItem->setText(0, current->getObjectName().c_str());
-          currentItem->setObjectType(OBJECTATTR);
-          if (current->isVector())
-    {
-   currentItem->attachKey();
-            loadVectors(currentItem, (CCopasiContainer *) current);
-    }
-    else
-    vectorStack->insert(currentItem);
-          QString st1(current->getObjectName().c_str());
-          bool test = current->isVector();
-          test = current->isMatrix();
-          test = current->isNameVector();
-          test = current->isReference();
- 
-          //   loadChild(currentItem, current);
-        }
-      it++;
-    }
- 
-    ObjectBrowserItem* pCurrent;
-    while(vectorStack->len()>0)
- {
-  pCurrent=vectorStack->pop();
-  pCurrent->attachKey();
- }
 }
- */
 
 void ObjectBrowser::updateUI()
 {
