@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/01/08 20:41:52 $
+   $Date: 2004/01/08 20:53:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -83,28 +83,31 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
 
 void DifferentialEquations::loadDifferentialEquations(CMathModel * mathModel)
 {
-  std::map< std::string, CMathVariableMetab * > & MetabList =
-    mathModel->getMetabList();
-  std::map< std::string, CMathVariableMetab * >::iterator it =
-    MetabList.begin();
-  std::map< std::string, CMathVariableMetab * >::iterator end =
-    MetabList.end();
-
-  QString Text;
-  CMathEq *pMathEq = NULL;
-  for (; it != end; ++it)
+  if (mathModel != NULL)
     {
-      pMathEq = it->second->getEq();
-      Text += QString::fromLatin1("<lhs>");
-      Text += QString::fromLatin1(pMathEq->getLeft().getData().c_str());
-      Text += QString::fromLatin1(" =</lhs>");
+      std::map< std::string, CMathVariableMetab * > & MetabList =
+        mathModel->getMetabList();
+      std::map< std::string, CMathVariableMetab * >::iterator it =
+        MetabList.begin();
+      std::map< std::string, CMathVariableMetab * >::iterator end =
+        MetabList.end();
 
-      Text += QString::fromLatin1("<rhs>");
-      Text += QString::fromLatin1(pMathEq->getRight().getData().c_str());
-      Text += QString::fromLatin1("</rhs>");
+      QString Text;
+      CMathEq *pMathEq = NULL;
+      for (; it != end; ++it)
+        {
+          pMathEq = it->second->getEq();
+          Text += QString::fromLatin1("<lhs>");
+          Text += QString::fromLatin1(pMathEq->getLeft().getData().c_str());
+          Text += QString::fromLatin1(" =</lhs>");
+
+          Text += QString::fromLatin1("<rhs>");
+          Text += QString::fromLatin1(pMathEq->getRight().getData().c_str());
+          Text += QString::fromLatin1("</rhs>");
+        }
+
+      textBrowser->setText(Text);
     }
-
-  textBrowser->setText(Text);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>
