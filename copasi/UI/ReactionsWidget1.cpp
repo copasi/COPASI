@@ -611,7 +611,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
         }
-      //---------------------------------------------
+
       unsigned int z = 0;
       unsigned int k;
       unsigned int line = 0;
@@ -663,7 +663,6 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  //const QString & chemreactn
   const QString & chemreactn = LineEdit2->text();
   const string & changed_chemical_reaction = chemreactn.latin1();
   CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();

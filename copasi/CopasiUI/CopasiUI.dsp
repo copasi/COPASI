@@ -748,5 +748,38 @@ InputName=ReactionsWidget1
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget1.moc.moc
+
+!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ReactionsWidget1.moc.cpp...
+InputDir=.
+InputPath=.\ReactionsWidget1.moc.moc
+InputName=ReactionsWidget1.moc
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing ReactionsWidget1.moc.cpp...
+InputDir=.
+InputPath=.\ReactionsWidget1.moc.moc
+InputName=ReactionsWidget1.moc
+
+"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
