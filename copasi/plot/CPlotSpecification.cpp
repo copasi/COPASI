@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/06 11:59:43 $
+   $Author: gauges $ 
+   $Date: 2004/08/10 10:58:56 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -20,6 +20,7 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
                                        const CCopasiContainer * pParent):
     CPlotItem(src, pParent),
+    items(src.getItems()),
     mActive(true)
 {}
 

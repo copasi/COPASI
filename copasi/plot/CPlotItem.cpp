@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
+   $Date: 2004/08/10 10:58:57 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -56,8 +56,21 @@ CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     //    mKey(GlobalKeys.add("PlotItem", this)),
-    mType(src.mType)
-{}
+    mType(src.mType),
+    channels(src.getChannels())
+{
+  /*
+  std::cout << "Creating new PlotItem from Template: " << this << std::endl;
+  for(unsigned int counter=0; counter < src.getChannels().size(); counter++)
+  {
+     std::cout << "Channel " << counter << ": " << src.getChannels()[counter] << std::endl;
+  } 
+  for(unsigned int counter=0; counter < this->getChannels().size(); counter++)
+  {
+     std::cout << "New Channel " << counter << ": " << this->getChannels()[counter] << std::endl;
+  } 
+  */
+}
 
 CPlotItem::~CPlotItem()
 {

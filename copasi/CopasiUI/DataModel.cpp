@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/09 15:39:59 $
+   $Date: 2004/08/10 10:58:56 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -207,6 +207,24 @@ void DataModel::loadModel(const char* fileName)
 
       pdelete(plotspecs);
       plotspecs = pNewPlotSpecs;
+      /*
+      std::cout << "Number of Plots: " << pNewPlotSpecs->size() << std::endl;
+      unsigned int counter1;
+      for(counter1=0; counter1<pNewPlotSpecs->size(); counter1++){
+          CPlotSpecification* plotSpec=(*pNewPlotSpecs)[counter1];
+          std::cout << "Number of PlotItems for Plot " << counter1 << ": " << plotSpec->getItems().size() << std::endl;
+          unsigned int counter2;
+          for(counter2=0; counter2 <plotSpec->getItems().size(); counter2++){
+              CPlotItem* plotItem=plotSpec->getItems()[counter2];
+            
+              std::cout << "Number of Channels for PlotItem " << plotItem << ": " << plotItem->getChannels().size() << std::endl;
+              unsigned int counter3;
+              for(counter3=0; counter3<plotItem->getChannels().size(); counter3++){
+                  std::cout << "Channel " << counter3 << ": " << plotItem->getChannels()[counter3] << std::endl;
+              }
+          } 
+      }
+      */ 
       //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
       //tmpHandler->setPlotSpecVectorAddress(plotspecs);

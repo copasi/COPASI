@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/09 15:40:00 $
+   $Date: 2004/08/10 10:58:57 $
    End CVS Header */
 
 /**
@@ -2705,6 +2705,11 @@ void CCopasiXMLParser::ListOfPlotItemsElement::end(const XML_Char * pszName)
       break;
     case PlotItem:
       if (strcmp(pszName, "PlotItem")) fatalError();
+      /*std::cout << "Number of Channels in current plot item: " << mCommon.pCurrentPlotItem->getChannels().size() << std::endl;
+      unsigned int counter;
+      for(counter=0; counter <  mCommon.pCurrentPlotItem->getChannels().size(); counter++){
+        std::cout << "Channel " << counter << ": " << mCommon.pCurrentPlotItem->getChannels()[counter] << std::endl;
+      }*/
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
       mCurrentElement = ListOfPlotItems;
       break;
@@ -2763,7 +2768,8 @@ void CCopasiXMLParser::ListOfChannelsElement::end(const XML_Char * pszName)
       break;
     case ChannelSpec:
       if (strcmp(pszName, "ChannelSpec")) fatalError();
-      mCommon.pCurrentPlotItem->getChannels().push_back(*mCommon.pCurrentChannelSpec);
+      mCommon.pCurrentPlotItem->getChannels().push_back(*(mCommon.pCurrentChannelSpec));
+      //std::cout << "Adding new Channel to PlotItem: " << mCommon.pCurrentChannelSpec << std::endl;
       delete mCommon.pCurrentChannelSpec;
       mCommon.pCurrentChannelSpec = NULL;
       mCurrentElement = ListOfChannels;
@@ -2864,8 +2870,8 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
     case ChannelSpec:
       if (strcmp(pszName, "ChannelSpec")) fatalError();
       // create a new CPlotSpecification element depending on the type
-      mCommon.pCurrentChannelSpec = new CPlotDataChannelSpec();
       name = mParser.getAttributeValue("cn", papszAttrs);
+      //std::cout << "Creating new DataChannelSpec with name: " << name << std::endl;
       mCommon.pCurrentChannelSpec = new CPlotDataChannelSpec(name);
       sMin = mParser.getAttributeValue("min", papszAttrs, false);
       if (sMin == NULL)
@@ -2941,7 +2947,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
       mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, CPlotItem::TypeNameToEnum(sType));
-      std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
+      //std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
       return;
       break;
 

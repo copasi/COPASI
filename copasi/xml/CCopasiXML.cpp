@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/09 15:39:59 $
+   $Date: 2004/08/10 10:58:57 $
    End CVS Header */
 
 /**
@@ -112,11 +112,11 @@ bool CCopasiXML::load(std::istream & is)
   mpPlotList = Parser.getPlotList();
   if (mpPlotList)
     {
-      std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
+      //std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
       unsigned int count;
       for (count = 0; count < mpPlotList->size(); count++)
         {
-          std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
+          //std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
         }
     }
   return success;
