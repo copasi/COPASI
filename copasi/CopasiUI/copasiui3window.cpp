@@ -109,7 +109,38 @@ QString gpsFile = QFileDialog::getOpenFileName(
 	if(dataModel && gpsFile)
 		 dataModel->loadModel((const char *)gpsFile.utf8());
 
+	
+
+
+
+
 }
+
+/*void CopasiUI3Window::slotFileOpen()
+{
+	QString gpsFile = QFileDialog::getOpenFileName(
+                   QString::null, "GPS Files (*.gps)",
+                    this, "open file dialog",
+                    "Choose a file" );
+	try
+	{
+		CReadConfig inbuf((const char *)gpsFile.utf8());
+	mModel.load(inbuf);
+	   mModel.compile();
+	}
+
+	catch (CCopasiException Exception)
+    {
+      cout << Exception.getMessage().getText() << endl;
+    }
+  // gives the file information to the datamodel to handle it
+	if(dataModel && gpsFile)
+		 dataModel->loadModel((const char *)gpsFile.utf8());
+}
+*/
+
+
+
 
 /***************CopasiUI3Window::slotFileSave()*****************
 **

@@ -5,7 +5,7 @@
 2:21:BioChem
 21:211:Compartments
 21:212:Metabolites
-21:213:Moieties
+21:213:Moiety
 21:214:Reactions
 2:22:Maths
 0:3:Multiple Tasks

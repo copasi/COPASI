@@ -25,14 +25,16 @@
 #include "DataModel.h"
 #include "Observer.h"
 #include "Tree.h"
-
+#include "copasi.h"
+#include "model/model.h"
 
 #include "copasi.h"
+
 #include "MetabolitesWidget.h"
-//#include "ReactionsWidget.h"
-
-
-
+#include "ReactionsWidget.h"
+#include "CompartmentsWidget.h"
+#include "MoietyWidget.h"
+#include "ReactionsWidget1.h"
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
@@ -66,7 +68,7 @@ protected:
 //	QString fCaption;
     QString fName;
 	int id;
-
+	
 };
 
 // -----------------------------------------------------------------
@@ -130,8 +132,10 @@ protected:
 	// all the new object widgets information goes here..
 	// create the pointer to the new one here and use it in the code
     MetabolitesWidget *metabolitesWidget;
-
-
+	ReactionsWidget *reactionsWidget;
+	CompartmentsWidget *compartmentsWidget;
+	MoietyWidget *moietyWidget;
+	ReactionsWidget1 *reactionsWidget1;
 protected slots:
     void slotFolderChanged( QListViewItem*);
 
@@ -145,6 +149,9 @@ private:
 	void addItem(QListViewItem* parent,Folder* child);
 	void addItem(QListView* parent,Folder* child);
 	void loadMetabolites(QListViewItem*);
+void loadReactions(QListViewItem*);
+void loadMoieties(QListViewItem*);
+void loadCompartments(QListViewItem*);
 	void showMessage(QString caption,QString text);
 
 	

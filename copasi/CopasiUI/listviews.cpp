@@ -168,26 +168,8 @@ void ListViews::initFolders()
 	
 }
 
-/***********************************************************
-**no need of this function any more..because its been 
-**replaced by 
-**********************************************************
-void ListViews::initFolders(Node<Folder> *node)
-{
 
-  this->lstFolders.clear();
-  Node<Folder> *next=node;
 
-  if(next)
-  	  next=next->child;
-
-  if(next)
-  	  for(;next!=NULL;next=next->sibling)
-		  lstFolders.append(next->info);
-	     
-
-}
-**/
 
 /************************ListViews::setupFolders()*****************************
 ** Parameters:- Void(Nothing)
@@ -203,32 +185,6 @@ void ListViews::setupFolders()
 	 
 }
 
-/***********************************************************
-** these 2 methods r not used rite now , they r substituted by
-** additem..stuff....
-***********************************************************
-void ListViews::setupFolders(QListView* fl)
-{
-      fl->clear();
-	  for ( Folder* f = lstFolders.first(); f; f = lstFolders.next() )
-	  (void)new FolderListItem( fl, f );
-
-
-}
-/***********************************************************
-**
-**
-***********************************************************
-void ListViews::setupFolders(QListViewItem* fl)
-{
-	
-	 this->clearMyChildrenItem(fl);
-	 FolderListItem *item=(FolderListItem*)fl;
-	 for ( Folder* f = lstFolders.first(); f; f = lstFolders.next() )
-	 (void)new FolderListItem( item, f );
-
-}
-*/
 
 
 /************************ListViews::addItem(QListViewItem* parent,Folder* child)------>
@@ -384,11 +340,39 @@ void ListViews::slotFolderChanged( QListViewItem *i )
 	// get the qlistview item in form of folderlistitem...
 	FolderListItem *item=( FolderListItem* )i;
 	bigWidget->setText("You Clicked On: " + item->folder()->folderName());	
+	//char * fName=item->folder()->folderName();
+
       
 	int value=QString::compare(item->folder()->folderName(),"Metabolites");
 
 	if(!value)
 			currentWidget=metabolitesWidget;
+
+	else if(! (value=QString::compare(item->folder()->folderName(),"Reactions")))
+		{
+
+		int value1;
+		currentWidget=reactionsWidget; 
+showMessage("Mudita","it is outside the second level");
+		if(! (value1=QString::compare(item->folder()->folderName(),"Aldolase")))
+			{
+				reactionsWidget1->loadName("Aldolase");
+				currentWidget=reactionsWidget1;
+			showMessage("Mudita","it enters Aldolase");
+			}
+		
+			else if(! (value1=QString::compare(item->folder()->folderName(),"Respiration")))
+			{
+				showMessage("Mudita","it enters respiration");
+				reactionsWidget1->loadName("Respiration");
+				currentWidget=reactionsWidget1;
+			
+			};
+		}
+	else if(! (value=QString::compare(item->folder()->folderName(),"Compartments")))
+	  currentWidget=compartmentsWidget; 
+	else if(! (value=QString::compare(item->folder()->folderName(),"Moiety")))
+	  currentWidget=moietyWidget; 
 	else
 	{
 	    		
@@ -619,29 +603,6 @@ void ListViews::clearItem(QListViewItem * i)
 
 }
 
-/***********************************************************
-**
-**
-***********************************************************
-void ListViews::clearMyChildrenItem(QListViewItem * i)
-{
-
-	  QListViewItem * myChild = i->firstChild();
-      QListViewItem * nextChild=myChild;
-	  
-      while( myChild ) {
-	    nextChild=myChild;
-        myChild = myChild->nextSibling();
-
-	  //  FolderListItem* item= ( FolderListItem* )nextChild;
-	//	Folder *f=item->folder();
-	//	if(f->parent()) f->parent()->removeChild(f);
-				 
-		delete nextChild;
-	  }
-
-}
-*/
 
 
 
@@ -696,11 +657,43 @@ void ListViews::loadNodes(CModel *model)
 			loadNode=NULL;
 		}
 
-	    // DO THE SAME FOR OTHER STUFF...
-		//reactionsWidget->loadReactions(model);
+	  // UPDATE THE REACTIONS STUFF..
+		reactionsWidget->loadReactions(model);
+		loadNode=searchNode("Reactions");
+		if(loadNode)
+		{
+			this->loadReactions(loadNode);
+			if(loadNode->isSelected() )
+				if(loadNode->childCount()!=0) 
+					loadNode->setPixmap( 0, *folderOpen );
+			loadNode=NULL;
+		}
+
+		// UPDATE THE COMPARTMENTS STUFF..
+		compartmentsWidget->loadCompartments(model);
+		loadNode=searchNode("Compartments");
+		if(loadNode)
+		{
+			this->loadCompartments(loadNode);
+			if(loadNode->isSelected() )
+				if(loadNode->childCount()!=0) 
+					loadNode->setPixmap( 0, *folderOpen );
+			loadNode=NULL;
+		}
 
 
 
+	// UPDATE THE MOIETIES STUFF..
+		//moietyWidget->loadMoieties(model);
+		loadNode=searchNode("Moiety");
+		if(loadNode)
+		{
+			//this->loadMoieties(loadNode);
+			if(loadNode->isSelected() )
+				if(loadNode->childCount()!=0) 
+					loadNode->setPixmap( 0, *folderOpen );
+			loadNode=NULL;
+		}
 		// AT THE END... SET THE UPDATE FALSE SO THAT NO OTHER VIEW IS ABLE TO REPEAT THE 
 		// SAME STUFF AGAIN..
 		dataModel->setModelUpdate(false);
@@ -719,14 +712,37 @@ void ListViews::ConstructNodeWidgets()
 {
 //	if (mModel != NULL)
 	{
+		//Constructing the Reactions Widget
+		reactionsWidget = new ReactionsWidget( this );
+		reactionsWidget->hide();
+		
 		//Constructing the Metabolites Widget
 		metabolitesWidget = new MetabolitesWidget( this );
 		metabolitesWidget->hide();
 
+		//Constructing the Compartments Widget
+		compartmentsWidget = new CompartmentsWidget( this );
+		compartmentsWidget->hide();
 
-		//Constructing the Reactions Widget
-		//reactionsWidget = new ReactionsWidget( this );
-		//reactionsWidget->hide();
+		//Constructing the Moieties Widget
+		moietyWidget = new MoietyWidget( this );
+		moietyWidget->hide();
+
+
+
+	//Constructing the Reactions Widget1
+		reactionsWidget1 = new ReactionsWidget1( this );
+		reactionsWidget1->hide();
+
+
+
+
+
+
+
+
+
+		
 	}
 }
 
@@ -772,6 +788,122 @@ void ListViews::loadMetabolites(QListViewItem* i)
 		}
 
 }
+
+
+
+void ListViews::loadReactions(QListViewItem* i)
+{
+
+	if(mModel ==NULL) return;
+	if(!dataModel->getModelUpdate()) return;// if the model is not updated than return
+
+	 //   showMessage("Ankur","This is duplicate call");
+        FolderListItem *item=( FolderListItem* )i;
+
+		if(i->childCount()!= 0)
+          deleteAllMyChildrens(i);// is used if u want to delete all mychildrens
+
+		Folder* p,*f;
+		p=item->folder();
+        int myId=item->folder()->getID();
+
+		// multiply myId by 10 and than add these items with seq nu..of that id..
+		myId=10*myId;
+
+		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
+		C_INT32 noOfReactionsRows = reactions.size();
+	    
+			//Now filling the table.
+		CReaction *reactn;
+		for (C_INT32  j = 0; j < noOfReactionsRows; j++)
+		{
+			reactn = reactions[j];
+            f=new Folder(p,reactn->getName().c_str());
+			f->setID(myId+j+1);
+			dataModel->addData(p,f);
+			
+		}
+
+}
+
+
+void ListViews::loadCompartments(QListViewItem* i)
+{
+
+	if(mModel ==NULL) return;
+	if(!dataModel->getModelUpdate()) return;// if the model is not updated than return
+
+	 //   showMessage("Ankur","This is duplicate call");
+        FolderListItem *item=( FolderListItem* )i;
+
+		if(i->childCount()!= 0)
+          deleteAllMyChildrens(i);// is used if u want to delete all mychildrens
+
+		Folder* p,*f;
+		p=item->folder();
+        int myId=item->folder()->getID();
+
+		// multiply myId by 10 and than add these items with seq nu..of that id..
+		myId=10*myId;
+
+		CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+		C_INT32 noOfCompartmentsRows = compartments.size();
+		
+			//Now filling the table.
+		CCompartment *compartn;
+		for (C_INT32  j = 0; j < noOfCompartmentsRows; j++)
+		{
+			compartn = compartments[j];
+            f=new Folder(p,compartn->getName().c_str());
+			f->setID(myId+j+1);
+			dataModel->addData(p,f);
+			
+		}
+
+}
+
+
+
+
+
+/*void ListViews::loadMoieties(QListViewItem* i)
+{
+
+	if(mModel ==NULL) return;
+	if(!dataModel->getModelUpdate()) return;// if the model is not updated than return
+
+	 //   showMessage("Ankur","This is duplicate call");
+        FolderListItem *item=( FolderListItem* )i;
+
+		if(i->childCount()!= 0)
+          deleteAllMyChildrens(i);// is used if u want to delete all mychildrens
+
+		Folder* p,*f;
+		p=item->folder();
+        int myId=item->folder()->getID();
+
+		// multiply myId by 10 and than add these items with seq nu..of that id..
+		myId=10*myId;
+
+	
+	CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
+	
+		C_INT32 noOfMoietyRows = moieties.size();
+
+		
+			//Now filling the table.
+		CMoiety *moiety;
+		for (C_INT32  j = 0; j < noOfMoietyRows; j++)
+		{
+			moiety = moieties[j];
+            f=new Folder(p,moiety->getName().c_str());
+			f->setID(myId+j+1);
+			dataModel->addData(p,f);
+			
+		}
+
+}
+*/
 
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

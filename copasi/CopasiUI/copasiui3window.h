@@ -34,7 +34,7 @@ protected:
 	DataModel<Folder>* dataModel; // to keep track of the data model..
     QSplitter *splitter;// to hold different views...
 	ListViews *listViews; // to create different list views...
-
+	CModel mModel;
 protected slots:
 	void slotFileOpen();
 	void slotFileSave();
