@@ -25,6 +25,7 @@
 #include "scan/CScanProblem.h"
 #include "utilities/CGlobals.h"
 #include "output/COutputList.h"             //TODO sort out the include dependencies
+#include "optimization/COptFunction.h"
 
 class CReadConfig;
 class CWriteConfig;
@@ -108,6 +109,7 @@ class DataModel
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
     CReportDefinitionVector* reportdefinitions;
+    COptFunction* pOptFunction;
 
   public:
     DataModel(char* fileName = "DataModel.txt");

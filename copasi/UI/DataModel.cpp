@@ -83,6 +83,10 @@ void DataModel::createModel(const char* fileName)
   reportdefinitions = new CReportDefinitionVector();
   searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
+  pdelete(pOptFunction);
+  pOptFunction = new COptFunction();
+  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
+
   saveModel(fileName);
 }
 
@@ -114,6 +118,10 @@ void DataModel::loadModel(const char* fileName)
   reportdefinitions = new CReportDefinitionVector();
   //  reportdefinitions->load(inbuf);
   searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
+
+  pdelete(pOptFunction);
+  pOptFunction = new COptFunction();
+  searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
   Copasi->pOutputList->load(inbuf);
 
