@@ -23,6 +23,7 @@
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
+#include "CMetabNameInterface.h"
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
@@ -98,7 +99,8 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Equation", "string", &ChemEq)))
     return Fail;
 
-  setChemEq(ChemEq);
+  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  setChemEqFromString(ChemEq, *pModel);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
     return Fail;
@@ -258,7 +260,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
       // write them out
       for (i = 0; i < rr.size(); i++)
         {
-          tmpstr2 = rr[i]->getMetaboliteName();
+          tmpstr2 = rr[i]->getMetabolite().getName(); //TODO: this name is not unique
           FixSName(tmpstr2, tmpstr);
           fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
           fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << std::endl;
@@ -275,7 +277,7 @@ void CReaction::saveSBML(std::ofstream &fout, C_INT32 r)
       // write them out
       for (i = 0; i < rr.size(); i++)
         {
-          tmpstr2 = rr[i]->getMetaboliteName();
+          tmpstr2 = rr[i]->getMetabolite().getName(); //TODO: this name is not unique
           FixSName(tmpstr2, tmpstr);
           fout << "\t\t\t\t\t<specieReference specie=\"" << tmpstr << "\"";
           fout << " stoichiometry=\"" << rr[i]->getMultiplicity() << "\"/>" << std::endl;
@@ -332,26 +334,33 @@ bool CReaction::setName(const std::string & name)
   return setObjectName(name);
 }
 
-void CReaction::setChemEq(const std::string & chemEq)
-{/*mReversible = */mChemEq.setChemicalEquation(chemEq);}
+void CReaction::setChemEqFromString(const std::string & chemEq, const CModel & model)
+{mChemEq.setChemicalEquation(chemEq, model);}
 
-//bool CReaction::addModifier(const std::string &name)
-//{
-//  mChemEq.addMetaboliteByName(name, 1.0, CChemEq::MODIFIER);
-//  return true;
-//}
-
-bool CReaction::addSubstrate(CMetab * pMetab,
+/*bool CReaction::addSubstrate(CMetab * pMetab,
                              const C_FLOAT64 & multiplicity)
 {return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::SUBSTRATE);}
-
+ 
 bool CReaction::addProduct(CMetab * pMetab,
                            const C_FLOAT64 & multiplicity)
 {return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::PRODUCT);}
-
+ 
 bool CReaction::addModifier(CMetab * pMetab,
                             const C_FLOAT64 & multiplicity)
 {return mChemEq.addMetabolite(pMetab, multiplicity, CChemEq::MODIFIER);}
+ */
+
+bool CReaction::addSubstrate(const std::string & metabKey,
+                             const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(metabKey, multiplicity, CChemEq::SUBSTRATE);}
+
+bool CReaction::addProduct(const std::string & metabKey,
+                           const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(metabKey, multiplicity, CChemEq::PRODUCT);}
+
+bool CReaction::addModifier(const std::string & metabKey,
+                            const C_FLOAT64 & multiplicity)
+{return mChemEq.addMetabolite(metabKey, multiplicity, CChemEq::MODIFIER);}
 
 //bool CReaction::deleteModifier(const std::string &name)
 //{return false;} /* :TODO: this needs to be implemented on CChemEq first. */
@@ -525,24 +534,30 @@ const std::vector< std::vector<std::string> > CReaction::getParameterMappingName
     std::vector<std::string> SubList;
     std::vector<std::string>::const_iterator jt;
     std::vector<std::string>::const_iterator jEnd;
-    CMetab * pMetab;
+    //CMetab * pMetab;
+    std::string metabName;
 
     for (; it != iEnd; ++it)
       {
         SubList.clear();
         for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
           {
-            pMetab = ((CMetab*)(CCopasiContainer*)(CKeyFactory::get(*jt)));
-            if (pMetab)
-              SubList.push_back(pMetab->getName());
+            metabName = CMetabNameInterface::getDisplayName(*jt);
+            if (metabName != "")
+              SubList.push_back(metabName);
             else
               SubList.push_back(*jt);
+            //pMetab = ((CMetab*)(CCopasiContainer*)(CKeyFactory::get(*jt)));
+            //if (pMetab)
+            //  SubList.push_back(pMetab->getName());
+            //else
+            //  SubList.push_back(*jt);
           }
         ParameterNames.push_back(SubList);
       }
 
     return ParameterNames;
-  }
+  } //TODO: this functionality should be in CReactionInterface
 
 std::vector<const CMetab *> CReaction::getParameterMappingMetab(C_INT32 index) const
   {
@@ -757,7 +772,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
       // in the old files the chemical equation does not contain
       // information about modifiers. This has to be extracted from here.
-      mChemEq.addMetaboliteByName(metabName, 1, CChemEq::MODIFIER);
+      mChemEq.addMetabolite(Metabolites[metabName]->getKey(), 1, CChemEq::MODIFIER);
     }
 
   for (i = imax; i < ModifierSize; i++)

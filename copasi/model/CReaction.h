@@ -227,7 +227,7 @@ class CReaction : public CCopasiContainer
      *  Sets the chemical equation of the reaction
      *  @param "const string &" chemEq
      */
-    void setChemEq(const std::string & chemEq);
+    void setChemEqFromString(const std::string & chemEq, const CModel & model);
 
     /**
      * Add a substrate to the reaction
@@ -254,6 +254,33 @@ class CReaction : public CCopasiContainer
      * @return bool success
      */
     bool addModifier(CMetab * pMetab,
+                     const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
+     * Add a substrate to the reaction
+     * @param std::string & metabKey
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addSubstrate(const std::string & metabKey,
+                      const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
+     * Add a product to the reaction
+     * @param std::string & metabKey
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addProduct(const std::string & metabKey,
+                    const C_FLOAT64 & multiplicity = 1.0);
+
+    /**
+     * Add a modifier to the reaction
+     * @param std::string & metabKey
+     * @param const C_FLOAT64 & multiplicity (Default 1.0)
+     * @return bool success
+     */
+    bool addModifier(const std::string & metabKey,
                      const C_FLOAT64 & multiplicity = 1.0);
 
     /**

@@ -33,7 +33,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
   CChemEqElement element;
   element.setMultiplicity(value);
-  element.setMetabolite(pMetabolite);
+  element.setMetabolite(pMetabolite->getKey());
 
   mEquation.add(element);
 }
@@ -80,7 +80,7 @@ std::string CMoiety::getDescription() const
         if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
           Description += StringPrint("%3.1f * ",
                                      fabs(mEquation[i]->getMultiplicity()));
-        Description += mEquation[i]->getMetaboliteName();
+        Description += mEquation[i]->getMetabolite().getName();
         //Description += "{" + mEquation[i]->getCompartmentName() + "}";
         Description += "{" + mEquation[i]->getMetabolite().getCompartment()->getName() + "}";
       }
