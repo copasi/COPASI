@@ -22,8 +22,13 @@
  */
 
 #define DefaultNewtonLimit 1
-#define SS_NOT_FOUND 1
-#define SS_FOUND 0
+
+//#define SS_NOT_FOUND 1
+//#define SS_FOUND 0
+//YH: change the #define value for easy condition evalution
+#define SS_FOUND 1
+#define SS_NOT_FOUND 0
+
 #define SS_SINGULAR_JACOBIAN 2
 #define SS_DAMPING_LIMIT 3
 #define SS_ITERATION_LIMIT 4
