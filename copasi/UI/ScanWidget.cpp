@@ -334,7 +334,8 @@ void ScanWidget::deleteButtonClicked()
       CCopasiObject* pObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getObject();
       ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
       activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-      activeTitle->setText(pObject->getObjectUniqueName().c_str());
+      //      activeTitle->setText(pObject->getObjectUniqueName().c_str());
+      activeTitle->setText(pObject->getCN().c_str());
     }
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
@@ -366,13 +367,15 @@ void ScanWidget::upButtonClicked()
   //lower one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
+  //  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
+  activeTitle->setText(pObjectUp->getCN().c_str());
 
   //activate
   //upper one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
+  //  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
+  activeTitle->setText(pObjectDown->getCN().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -403,12 +406,14 @@ void ScanWidget::downButtonClicked()
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
+  //  activeTitle->setText(pObjectDown->getObjectUniqueName().c_str());
+  activeTitle->setText(pObjectDown->getCN().c_str());
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
+  //  activeTitle->setText(pObjectUp->getObjectUniqueName().c_str());
+  activeTitle->setText(pObjectUp->getCN().c_str());
 
   //Update ListBox
   QString tmp = ObjectListBox->text (activeObject);
@@ -538,8 +543,9 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
-  pObject->getObjectUniqueName();
-  newTitleBar->setText(pObject->getObjectUniqueName().c_str());
+  //  pObject->getObjectUniqueName();
+  //  newTitleBar->setText(pObject->getObjectUniqueName().c_str());
+  newTitleBar->setText(pObject->getCN().c_str());
   newTitleBar->setReadOnly(TRUE);
 
   scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
