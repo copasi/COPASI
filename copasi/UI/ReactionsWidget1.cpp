@@ -410,23 +410,21 @@ void ReactionsWidget1::slotBtnCancelClicked()
   does and what is the difference between them.Have to ask Dr Hoops about it.*/
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
-  std::string filename = ((std::string) name.latin1()) + ".gps";
-  CWriteConfig *Rtn = new CWriteConfig(filename);
   /*This code is to save the changes in the reaction*/
-  /*
-   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-   CReaction *reactn2;
-   reactn2 = reactions[(std::string)name.latin1()];
-   CChemEq * chem;
-   chem = & reactn1->getChemEq();
-   chem->setChemicalEquation(chemical_reaction->latin1());
-   reactn1->setChemEq(chemical_reaction->latin1());
-   reactn1->save(*Rtn);
-   Copasi->Model->save(*Rtn);
-  */
-  mModel->save(*Rtn);
-  delete Rtn;
+  CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  CReaction *reactn2;
+  reactn2 = reactions[(std::string)name.latin1()];
+  reactn2->setName(std::string(LineEdit1->text()));
+  name = LineEdit1->text();
+  emit signal_emitted(*Reaction1_Name);
+  emit updated();
+  emit leaf(mModel);
+  //   CChemEq * chem;
+  //   chem = & reactn1->getChemEq();
+  //   chem->setChemicalEquation(chemical_reaction->latin1());
+  //   reactn1->setChemEq(chemical_reaction->latin1());
+  //   reactn1->save(*Rtn);
+  //   Copasi->Model->save(*Rtn);
 }
 
 /*This slot is activated when the check box is clicked.It needs to have functionality to
