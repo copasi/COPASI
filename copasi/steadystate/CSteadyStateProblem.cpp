@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:16 $
+   $Date: 2004/10/05 12:31:06 $
    End CVS Header */
 
 /**
@@ -67,22 +67,28 @@ bool CSteadyStateProblem::setModel(CModel * pModel)
 /**
  * Retrieve the model the problem is dealing with.
  * @return "CModel *" pModel
- */
-CModel * CSteadyStateProblem::getModel() const {return mpModel;}
+ */ 
+//CModel * CSteadyStateProblem::getModel() const {return mpModel;}
 
 /**
  * Set the initial state of the problem.
  * @param const CState & initialState
  */
 void CSteadyStateProblem::setInitialState(const CState & initialState)
-{mInitialState = initialState;}
+{
+  mInitialState = initialState;
+  mpModel = const_cast<CModel *>(mInitialState.getModel());
+}
 
 /**
  * Set the initial state of the problem.
  * @param const CStateX & InitialState
  */
 void CSteadyStateProblem::setInitialState(const CStateX & initialState)
-{mInitialState = initialState;}
+{
+  mInitialState = initialState;
+  mpModel = const_cast<CModel *>(mInitialState.getModel());
+}
 
 /**
  * Retrieve the initial state of the problem.

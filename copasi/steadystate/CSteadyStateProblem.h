@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:16 $
+   $Date: 2004/10/05 12:31:06 $
    End CVS Header */
 
 /**
@@ -65,8 +65,8 @@ class CSteadyStateProblem: public CCopasiProblem
     /**
      * Retrieve the model the problem is dealing with.
      * @return "CModel *" pModel
-     */
-    CModel * getModel() const;
+     */ 
+    //CModel * getModel() const;
 
     /**
      * Set the initial state of the problem.
