@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2004/05/25 19:37:34 $
+   $Author: ssahle $ 
+   $Date: 2004/06/14 15:20:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -56,6 +56,8 @@ class FunctionWidget1 : public CopasiWidget
 
   protected:
     bool loadFromFunction(CFunction* = NULL);
+    bool loadParameterTable(const CFunctionParameters & params);
+    bool loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages);
     void updateParameters();
     void updateApplication();
     bool saveToFunction();
@@ -88,22 +90,22 @@ class FunctionWidget1 : public CopasiWidget
     QLabel* TextLabel3;
     QFrame* Line1;
 
-    void loadName(QString setValue);
-    int isName(QString setValue);
+    //void loadName(QString setValue);
+    //int isName(QString setValue);
 
-    QString mName;
+    //QString mName;
 
-    QString *Function_Name;
-    QString *new_Name;
-    QString *new_Description;
-    QString param_Type;
-    QString param_Name;
-    QString param_Usage;
-    QString app_Desc;
-    QString app_Low;
-    QString app_High;
-    int int_Low;
-    int int_High;
+    //QString *Function_Name;
+    //QString *new_Name;
+    //QString *new_Description;
+    //QString param_Type;
+    //QString param_Name;
+    //QString param_Usage;
+    //QString app_Desc;
+    //QString app_Low;
+    //QString app_High;
+    //int int_Low;
+    //int int_High;
 
     CFunction * pFunction;
   };
