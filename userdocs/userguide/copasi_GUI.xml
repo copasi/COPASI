@@ -1170,8 +1170,9 @@ Once you have made all the settings, you confirm the slider definfinition with t
 </screenshot>
 </para>
 <para>
-Each slider shows the name of the object, the current value and the range in its label.
+Each slider shows the name of the object, the current value and the range in its label. If the current value of the slider is outside of the defined range, a corresponding warning will be shown.
 The slider dialog has a checkbox called <guilabel>update automaticaly</guilabel> if this box is checked, Copasi will run the corresponding task each time you release a slider handle after moving it. If you don't want Copasi to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
+If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the checkbox called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the nem value falls below the old minumum value, the new minimum will be set to half the current value.
 <para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connceted to. In order to do that, you have to delete the slider and define a new slider for the new object.
 </para>
 </sect1>
