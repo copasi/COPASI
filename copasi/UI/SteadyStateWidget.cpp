@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/19 07:23:34 $
+   $Author: ssahle $ 
+   $Date: 2004/12/22 10:40:31 $
    End CVS Header */
 
 /********************************************************
@@ -391,7 +391,7 @@ bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Acti
 
 bool SteadyStateWidget::leave()
 {
-  //let the user confirm?
+  CommitButtonClicked();
   return true;
 }
 
