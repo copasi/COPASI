@@ -188,11 +188,21 @@ C_INT32 CNewton::getSs_nfunction() const
 }
 
 
+// finds out if current state is a valid steady state
+C_INT32 CNewton::getSs_solution( void ) const
+{
+  if (mSs_solution == SS_FOUND)
+    return SS_FOUND;
+  else
+    return SS_NOT_FOUND;
+}
+
+
 
 // finds out if current state is a valid steady state
 C_INT32 CNewton::isSteadyState( void )
 {
-  return mSs_solution;
+  return mSs_solution == SS_FOUND;
 }
 
 

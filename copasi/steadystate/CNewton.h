@@ -240,6 +240,13 @@ class CNewton
   C_INT32 getNewtonLimit() const;
   
   /**
+   *  retrieve the mSs_solution
+   *  @return C_INT32
+   */
+  C_INT32 CNewton::getSs_solution( void ) const;
+
+
+  /**
    *  to process the primary function of this class
    */
   void process(void);
