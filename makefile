@@ -18,6 +18,7 @@ all: 	test
 
 OBJS	= $(OBJDIR)/CCompartment.o \
 	  $(OBJDIR)/CReadConfig.o  \
+	  $(OBJDIR)/CDatum.o \
           $(OBJDIR)/main.o
 
 test: 	dependencies mkdir $(OBJS)
@@ -25,6 +26,7 @@ test: 	dependencies mkdir $(OBJS)
 
 SRCS =  $(SRCDIR)/main.cpp \
 	$(SRCDIR)/CCompartment.cpp \
+        $(SRCDIR)/CDatum.cpp \
 	$(SRCDIR)/CReadConfig.cpp
 
 dependencies: $(SRCS) $(INCDIR)/*.h
@@ -44,3 +46,7 @@ clean:
 	rm -r -f $(OBJDIR)
 
 include ./dependencies
+
+
+
+
