@@ -7,6 +7,10 @@ class QListViewItem;
 class QListView;
 class CCopasiObject;
 
+#define NOCHECKED -1
+#define ALLCHECKED 1
+#define PARTCHECKED 0
+
 class ObjectBrowserItem : public QListViewItem
   {
   private:
@@ -14,7 +18,7 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
     ObjectBrowserItem* pBrother;
-
+    bool mchecked;
   public:
     ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
@@ -27,6 +31,14 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* parent() const;
     ObjectBrowserItem* child() const;
     ObjectBrowserItem* brother() const;
+
+    void reverseChecked();
+    bool isChecked() const;
+
+    //-1 if this is no user checked
+    //0 if this is only partly checked
+    //1 if this is full checked
+    int UserChecked(ObjectBrowserItem* pCurrent);
   };
 
 #endif

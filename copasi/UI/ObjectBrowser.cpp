@@ -58,32 +58,6 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   ObjectListView = new QListView(this, "ObjectListView");
   ObjectListView->addColumn(trUtf8("Object Browser"));
   ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-  /*
-      QListViewItem * item_2 = new QListViewItem(ObjectListView, 0);
-      item_2->setOpen(TRUE);
-      QListViewItem * item_3 = new QListViewItem(item_2, 0);
-      item_3->setOpen(TRUE);
-      QListViewItem * item_4 = new QListViewItem(item_3, 0);
-      item_4->setOpen(TRUE);
-      QListViewItem * item_5 = new QListViewItem(item_4, 0);
-      item_5->setOpen(TRUE);
-      QListViewItem * item_6 = new QListViewItem(item_5, 0);
-      item_6->setOpen(TRUE);
-      QListViewItem * item = new QListViewItem(item_6, 0);
-      item->setText(0, trUtf8("Subitem"));
-      item_6->setText(0, trUtf8("Subitem"));
-      item_5->setText(0, trUtf8("Subitem"));
-      item_4->setText(0, trUtf8("Subitem"));
-      item_4->setPixmap(0, image2);
-      item_3->setText(0, trUtf8("Subitem"));
-      item_3->setPixmap(0, image1);
-      item_2->setText(0, trUtf8("Item"));
-      item_2->setPixmap(0, image0);
-      item = new QListViewItem(ObjectListView, item_2);
-      item->setText(0, trUtf8("Item"));
-      item = new QListViewItem(ObjectListView, item);
-      item->setText(0, trUtf8("Item"));
-  */
 
   ObjectListView->setAcceptDrops(FALSE);
   ObjectListView->setResizeMode(QListView::LastColumn);
@@ -106,6 +80,8 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(ObjectListView, backButton);
   setTabOrder(backButton, nextButton);
   setTabOrder(nextButton, cancelButton);
+
+  loadData();
 }
 
 /*
@@ -123,7 +99,6 @@ void ObjectBrowser::cancelClicked()
 
 void ObjectBrowser::listviewChecked(ObjectBrowserItem*)
 {
-  qWarning("ObjectBrowser::listviewChecked(QListViewItem*): Not implemented yet!");
 }
 
 void ObjectBrowser::backClicked()
@@ -134,4 +109,38 @@ void ObjectBrowser::backClicked()
 void ObjectBrowser::nextClicked()
 {
   qWarning("ObjectBrowser::nextClicked(): Not implemented yet!");
+}
+
+void ObjectBrowser::loadData()
+{
+  ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0, NULL);
+  item_2->setOpen(TRUE);
+  item_2->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0, NULL);
+  item_3->setOpen(TRUE);
+  item_3->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0, NULL);
+  item_4->setOpen(TRUE);
+  item_4->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0, NULL);
+  item_5->setOpen(TRUE);
+  item_5->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0, NULL);
+  item_6->setOpen(TRUE);
+  item_6->setPixmap(0, *pObjectAll);
+  ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0, NULL);
+  item->setPixmap(0, *pObjectAll);
+  item->setText(0, trUtf8("Subitem"));
+
+  item_6->setText(0, trUtf8("Subitem"));
+  item_5->setText(0, trUtf8("Subitem"));
+  item_4->setText(0, trUtf8("Subitem"));
+  item_3->setText(0, trUtf8("Subitem"));
+  item_2->setText(0, trUtf8("Item"));
+  item = new ObjectBrowserItem(ObjectListView, item_2, NULL);
+  item->setPixmap(0, *pObjectAll);
+  item->setText(0, trUtf8("Item"));
+  item = new ObjectBrowserItem(ObjectListView, item, NULL);
+  item->setPixmap(0, *pObjectAll);
+  item->setText(0, trUtf8("Item"));
 }

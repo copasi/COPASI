@@ -30,6 +30,7 @@ class ObjectBrowser : public QWidget
     QPushButton* nextButton;
     QPushButton* backButton;
     QListView* ObjectListView;
+    void loadData();
 
   public slots:
     virtual void cancelClicked();

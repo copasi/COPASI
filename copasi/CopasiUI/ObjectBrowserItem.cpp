@@ -10,6 +10,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   if (after != NULL)
     after->setBrother(this);
   pCopasiObject = mObject;
+  mchecked = true;
 }
 
 ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject)
@@ -23,6 +24,54 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
   if (after != NULL)
     after->setBrother(this);
   pCopasiObject = mObject;
+  mchecked = true;
+}
+
+int ObjectBrowserItem::UserChecked(ObjectBrowserItem* pCurrent)
+{
+  int condition;
+  if (pCurrent->isChecked())
+    condition = ALLCHECKED;
+  else
+    condition = NOCHECKED;
+
+  if (pCurrent->brother() != NULL)
+    {
+      switch (UserChecked(pCurrent->brother()))
+        {
+        case ALLCHECKED:
+          if (condition == NOCHECKED)
+            condition = PARTCHECKED;
+          break;
+        case PARTCHECKED:
+          if (condition == NOCHECKED)
+            condition = PARTCHECKED;
+          break;
+        case NOCHECKED:
+          if (condition == ALLCHECKED)
+            condition = PARTCHECKED;
+          break;
+        }
+    }
+  if (pCurrent->child() != NULL)
+    {
+      switch (UserChecked(pCurrent->child()))
+        {
+        case ALLCHECKED:
+          if (condition == NOCHECKED)
+            condition = PARTCHECKED;
+          break;
+        case PARTCHECKED:
+          if (condition == NOCHECKED)
+            condition = PARTCHECKED;
+          break;
+        case NOCHECKED:
+          if (condition == ALLCHECKED)
+            condition = PARTCHECKED;
+          break;
+        }
+    }
+  return condition;
 }
 
 ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
@@ -54,3 +103,13 @@ ObjectBrowserItem* ObjectBrowserItem::brother() const
   {
     return pBrother;
   }
+
+bool ObjectBrowserItem::isChecked() const
+  {
+    return mchecked;
+  }
+
+void ObjectBrowserItem::reverseChecked()
+{
+  mchecked = !mchecked;
+}
