@@ -72,7 +72,7 @@ class ScanWidget : public CopasiWidget
 
     ScanScrollView* scrollview;
     QCheckBox* sExecutable;
-    QPushButton* commitChange;
+    QPushButton* scanButton;
     QPushButton* cancelChange;
     QPushButton* downButton;
     QPushButton* upButton;
@@ -110,7 +110,7 @@ class ScanWidget : public CopasiWidget
 
   public slots:
     virtual void CancelChangeButton();
-    virtual void CommitChangeButton();
+    virtual void ScanCheckBoxClicked();
     virtual void addButtonClicked();
     virtual void deleteButtonClicked();
     virtual void upButtonClicked();

@@ -120,9 +120,9 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Scan"));
-  Layout2->addWidget(commitChange);
+  scanButton = new QPushButton(this, "scanButton");
+  scanButton->setText(trUtf8("Scan"));
+  Layout2->addWidget(scanButton);
 
   cancelChange = new QPushButton(this, "cancelChange");
   cancelChange->setText(trUtf8("cancelChange"));
@@ -206,8 +206,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   setTabOrder(upButton, downButton);
   setTabOrder(downButton, ObjectListBox);
   setTabOrder(ObjectListBox, scrollview);
-  setTabOrder(scrollview, commitChange);
-  setTabOrder(commitChange, cancelChange);
+  setTabOrder(scrollview, sExecutable);
+  setTabOrder(scanButton, cancelChange);
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
@@ -217,12 +217,12 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
   connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
 
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChangeButton()));
+  connect(scanButton, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
 
   connect(steadyState, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
   connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
-  connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanButtonClicked()));
+  connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanCheckBoxClicked()));
 
   connect(ObjectListBox, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
   connect(ObjectListBox, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
@@ -246,6 +246,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   eSteadyState->setEnabled(steadyState->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
+  scanButton->setEnabled(false);
 }
 
 void ScanWidget::SteadyStateEditing()
@@ -441,15 +442,15 @@ void ScanWidget::downButtonClicked()
 void ScanWidget::CancelChangeButton()
 {}
 
-void ScanWidget::CommitChangeButton()
+void ScanWidget::ScanCheckBoxClicked()
 {
-  scanTask->process();
+  scanTask->setRequested(sExecutable->isChecked());
+  scanButton->setEnabled(sExecutable->isChecked());
 }
 
 void ScanWidget::ScanButtonClicked()
 {
-  scanTask->setRequested(sExecutable->isChecked());
-  commitChange->setEnabled(sExecutable->isChecked());
+  scanTask->process();
 }
 
 void ScanWidget::SteadyStateButtonClicked()
