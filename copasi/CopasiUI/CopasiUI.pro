@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.53 $ $Author: shoops $ $Date: 2004/10/24 02:42:42 $  
+# $Revision: 1.54 $ $Author: gauges $ $Date: 2004/10/25 13:24:02 $  
 ######################################################################
 
 include(../common.pri)
@@ -109,6 +109,7 @@ contains(BUILD_OS, SunOS) {
 HEADERS += \
            AboutDialog.h \
            ChemEqValidator.h \
+           CMCAWidget.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \
@@ -129,7 +130,6 @@ HEADERS += \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
-           MCAWidget.h \
            MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
@@ -179,6 +179,7 @@ HEADERS += \
 
 SOURCES += \
            AboutDialog.cpp \
+           CMCAWidget.cpp \
            CReactionInterface.cpp \
            CReportDefinitionSelect.cpp \
            CompartmentSymbols.cpp \
@@ -201,7 +202,6 @@ SOURCES += \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
-           MCAWidget.cpp \
            MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
