@@ -13,6 +13,9 @@ COptFunction::COptFunction(const std::string & name, const CCopasiContainer * pP
     mpProblem(new COptProblem)
 {
   mpMethod->setProblem(mpProblem);
+  mParaList.clear();
+  mMinList.clear();
+  mMaxList.clear();
 }
 
 COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer, const CCopasiContainer * pParent)
@@ -21,6 +24,9 @@ COptFunction::COptFunction(const COptFunction & src, CReadConfig * configBuffer,
     mpProblem(src.mpProblem)
 {
   mpMethod->setProblem(mpProblem);
+  mParaList.clear();
+  mMinList.clear();
+  mMaxList.clear();
 }
 
 COptFunction::~COptFunction()
@@ -29,4 +35,9 @@ COptFunction::~COptFunction()
 }
 
 void COptFunction::cleanup()
-{}
+{
+  //static members will be deleted during the deconstruction of COptFunction
+  mParaList.clear();
+  mMinList.clear();
+  mMaxList.clear();
+}

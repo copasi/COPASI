@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiVector.h"
 
 class COptProblem;
 template < class CType > class CVector;

@@ -12,12 +12,19 @@ Contact: Please contact lixu1@vt.edu.
 
 #include "function/CKinFunction.h"
 #include "utilities/readwrite.h"
+#include "utilities/CCopasiVector.h"
+#include "report/CCopasiObject.h"
 
 class COptMethod;
 class COptProblem;
 
 class COptFunction: public CKinFunction
   {
+  public:
+    std::vector<CCopasiObject*> mParaList;
+    std::vector<std::string> mMinList;
+    std::vector<std::string> mMaxList;
+
   public:
     /**
      * Default constructor
