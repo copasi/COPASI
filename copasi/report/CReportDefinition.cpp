@@ -19,7 +19,8 @@ CReportDefinition::CReportDefinition():
     CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
     mKey(CKeyFactory::add("CReportDefinition", this)),
     mComment(""),
-    mpBody(new CReportBody)
+    mpBody(new CReportBody),
+    mSeperator("/t")
 {}
 
 CReportDefinition::~CReportDefinition()

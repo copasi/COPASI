@@ -31,6 +31,7 @@ class CReportDefinition : public CCopasiObject
     std::vector<CCopasiObjectName> mHeaderVector;
     std::vector<CCopasiObjectName> mFooterVector;
     CReportBody *mpBody;
+    std::string mSeperator;
 
   public:
     /**
@@ -83,6 +84,16 @@ class CReportDefinition : public CCopasiObject
     sets the Body in the report tag
     */
     void setReportBody(CReportBody *pNewBody);
+
+    void setSeperator(std::string Seperator)
+    {
+      mSeperator = Seperator;
+    }
+
+    std::string getSeperator()
+    {
+      return mSeperator;
+    }
 
     inline std::string & getKey()
     {

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.6 2003/08/14 19:16:35 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.7 2003/08/14 19:30:37 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -256,8 +256,18 @@ void TableDefinition1::loadTableDefinition1()
   for (i = 0; i < pReportDefinition->getHeaderAddr()->size(); i++)
     itemsTable->insertItem((*(pReportDefinition->getHeaderAddr()))[i].c_str());
   comboTask->setEnabled(true);
-  seperatorEdit->setEnabled(false);
-  tabChecked->setChecked(true);
+
+  if (pReportDefinition->getSeperator() == "/t")
+    {
+      seperatorEdit->setEnabled(false);
+      tabChecked->setChecked(true);
+    }
+  else
+    {
+      seperatorEdit->setEnabled(true);
+      tabChecked->setChecked(false);
+      seperatorEdit->setText(pReportDefinition->getSeperator().c_str());
+    }
 }
 
 void TableDefinition1::setReport(CReport* pNewReport)
@@ -285,6 +295,11 @@ void TableDefinition1::slotBtnConfirmClicked()
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
     pReportDefinition->getHeaderAddr()->push_back(*(new CCopasiObjectName(std::string(itemsTable->text(i)))));
+
+  if (tabChecked->isChecked())
+    pReportDefinition->setSeperator("/t");
+  else
+    pReportDefinition->setSeperator(std::string(seperatorEdit->text()));
 }
 
 void TableDefinition1::tabButtonClicked()
