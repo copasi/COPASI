@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/14 20:57:32 $
+   $Date: 2004/10/15 17:13:35 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -56,6 +56,7 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(2, "Initial Concentration");
   tableHeader->setLabel(3, "Concentration");
   tableHeader->setLabel(4, "Fixed");
+  table->setColumnWidth(4, 40);
   tableHeader->setLabel(5, "Status");
   tableHeader->setLabel(6, "Compartment");
   tableHeader->setLabel(7, "Rate");
@@ -142,7 +143,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   //6: compartment
   QString Compartment(table->text(row, 6));
   if (((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName()) //has changed
-       && (Compartment != ""))
+      && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
       dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
@@ -297,7 +298,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                         // Yes or Enter
+    case 0:                          // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -309,7 +310,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                         // No or Escape
+    case 1:                          // No or Escape
       break;
     }
 }
