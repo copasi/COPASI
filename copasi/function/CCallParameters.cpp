@@ -146,10 +146,3 @@ C_INT32 CCallParameters::findParameterByName(const std::string & name,
     fatalError()
     return - 1;
   }
-
-ich arbeite gerade an den Aenderungen fuer CReaction, die wir uns ueberlegt hatten.
-Dabei ist mir was aufgefallen:
-
-Ich hatte Dich doch gefragt, warum CReaction sich eine Kopie von CFunctionParameters anlegt. Das habe ich jetzt verstanden. Falls sich die Funktion aendert braucht CReaction noch die Information, wo vorher ein Vektor in den Parametern war, um das CCallParameters Objekt aufraeumen zu koennen.
-
-Jetzt die Frage: Wenn sich die Funktion aendert, geraet auch die Reaktion in Schwierigkeiten. Die Callparameter sind dann zwar in sich konsistent (siehe oben), passen aber nicht mehr zu der geaenderten Funktion. Sollte daher die Reaktion auch eine Kopie der Funktion anlegen ? Vermutlich nicht, denn dieses Problem laesst sich abfangen (Bevor eine Berechnung gestartet wird muss ueberprueft werden, ob die CallParameter zur Funktion passen). Das weiter oben erwaehnte Problem laesst sich hingegen nicht umgehen, da eine Freigabe des Speichers von CCallParameters gar nicht mehr moeglich ist, wenn die Information ueber die Typen der CallParameter nicht gesichert wurde.
