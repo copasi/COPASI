@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/16 16:14:51 $
+   $Date: 2004/06/17 15:04:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -67,6 +67,7 @@ class FunctionWidget1 : public CopasiWidget
     std::string objKey;
     bool flagRO;
     bool flagChanged;
+    bool isValid;
 
     //Widgets
     QGridLayout* FunctionWidget1Layout;

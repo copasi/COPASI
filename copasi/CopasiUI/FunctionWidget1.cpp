@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/17 09:35:44 $
+   $Date: 2004/06/17 15:04:44 $
    End CVS Header */
 
 /**********************************************************************
@@ -406,6 +406,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   // application table
   loadUsageTable(pFunction->getUsageDescriptions());
 
+  isValid = true;
   return true;
 }
 
@@ -466,7 +467,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
               functParam.remove(functParam[j]->getObjectName());
             }
         }
-    }
+    } //TODO: this is propably much too complicated
 
   //Usages of the function
   CCopasiVectorNS < CUsageRange > & tarU = target->getUsageDescriptions();
@@ -625,7 +626,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 
   //try again (to see if the description is valid)
   //the first call to setDescription would have thrown an exc. even if a param name has changed
-  bool isValid = true;
+  isValid = true;
   try
     {
       pFunction->setDescription((const char *)textBrowser->text().utf8());
@@ -694,7 +695,8 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
-  saveToFunction();
+  if (isValid)
+    saveToFunction();
   //update pFunction values
 
   /* Remove line breaks from the function description */
@@ -721,10 +723,6 @@ void FunctionWidget1::slotNewButtonClicked()
       name = "function_";
       name += QString::number(i).utf8();
     }
-  //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
-  //table->setNumRows(table->numRows());
-  //emit updated();
-  //emit leaf(mModel);
   ListViews::notify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
 }
@@ -751,8 +749,8 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
 bool FunctionWidget1::leave()
 {
-  //slotCommitButtonClicked();
-  saveToFunction();
+  if (isValid)
+    saveToFunction();
   return true;
 }
 
