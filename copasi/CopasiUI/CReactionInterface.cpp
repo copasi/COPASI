@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:20 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:28:41 $
    End CVS Header */
 
 #include <string>
@@ -48,7 +48,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
 
     std::vector<std::string> ret;
     ret.clear();
-    C_INT32 i, imax = pFunctionVector->size();
+    unsigned C_INT32 i, imax = pFunctionVector->size();
 
     for (i = 0; i < imax; ++i)
       ret.push_back((*pFunctionVector)[i]->getName());
@@ -115,8 +115,8 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
     // TODO. check if function has changed since it was set in the R.I.
     rea->setFunction(mpFunction->getName());
 
-    C_INT32 j, jmax;
-    C_INT32 i, imax = size();
+    unsigned C_INT32 j, jmax;
+    unsigned C_INT32 i, imax = size();
 
     for (i = 0; i < imax; ++i)
       {
@@ -159,8 +159,8 @@ if (fn == "") {clearFunction(); return;}
   //initialize mValues[]
   //try to keep old values if the name is the same
   std::vector<C_FLOAT64> oldValues = mValues;
-  C_INT32 j, jmax = oldValues.size();
-  C_INT32 i, imax = size();
+  unsigned C_INT32 j, jmax = oldValues.size();
+  unsigned C_INT32 i, imax = size();
   mValues.resize(imax);
   for (i = 0; i < imax; ++i)
     {
@@ -229,7 +229,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
   // or the newFunction is in it.
   std::vector<std::string> fl = getListOfPossibleFunctions();
 
-  C_INT32 i, imax = fl.size();
+  unsigned C_INT32 i, imax = fl.size();
   std::string currentFunction = getFunctionName(), s = "";
   C_INT32 findresult = -1;
 
@@ -298,7 +298,6 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
 
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 {
-  unsigned C_INT32 j, jmax;
   unsigned C_INT32 i, imax = mpParameters->getNumberOfParametersByUsage(role);
   if (!imax) return;
 
@@ -335,7 +334,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
   else fatalError();
 }
 
-bool CReactionInterface::isLocked(C_INT32 index) const
+bool CReactionInterface::isLocked(unsigned C_INT32 index) const
 {return isLocked(getUsage(index));}
 
 bool CReactionInterface::isLocked(std::string usage) const
@@ -366,10 +365,10 @@ bool CReactionInterface::isLocked(std::string usage) const
       }
   }
 
-void CReactionInterface::setMetab(C_INT32 index, std::string mn)
+void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
 {
   std::string usage = getUsage(index);
-  C_INT32 listSize;
+  unsigned C_INT32 listSize;
   if (usage == "PARAMETER")
     return;
   else

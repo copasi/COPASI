@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReactionInterface.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:46 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:28:41 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -119,31 +119,31 @@ class CReactionInterface
     C_INT32 size() const
     {if (mpFunction) return mpParameters->size(); else return 0;};
 
-    bool isVector(C_INT32 index) const
+    bool isVector(unsigned C_INT32 index) const
       {
         if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
         else return (false);
       }
 
-    std::string getUsage(C_INT32 index) const
+    std::string getUsage(unsigned C_INT32 index) const
       {
         if (mpFunction) return (*mpParameters)[index]->getUsage();
         else return emptyString;
       }
 
-    std::string getParameterName(C_INT32 index) const
+    std::string getParameterName(unsigned C_INT32 index) const
       {
         if (mpFunction) return (*mpParameters)[index]->getName();
         else return emptyString;
       }
 
-    void setMetab(C_INT32 index, std::string mn);
-    void removeMetab(C_INT32 index, std::string mn);
-    const std::vector< std::string > & getMetabs(C_INT32 index) const
+    void setMetab(unsigned C_INT32 index, std::string mn);
+    void removeMetab(unsigned C_INT32 index, std::string mn);
+    const std::vector< std::string > & getMetabs(unsigned C_INT32 index) const
     {return mNameMap[index];}
 
-    void setValue(C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
-    const C_FLOAT64 & getValue(C_INT32 index) const {return mValues[index];}
+    void setValue(unsigned C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
+    const C_FLOAT64 & getValue(unsigned C_INT32 index) const {return mValues[index];}
 
     void initFromReaction(const CModel & model, const std::string & key);
 
@@ -156,7 +156,7 @@ class CReactionInterface
     /**
      * is the mapping of this parameter locked?
      */
-    bool isLocked(C_INT32 index) const;
+    bool isLocked(unsigned C_INT32 index) const;
     bool isLocked(std::string usage) const;
 
   private:
