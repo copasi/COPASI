@@ -153,6 +153,10 @@ std::string CMetabNameInterface::extractCompartmentName(const CModel* model, con
       if (index < 0)  // the metabolite doesn't exist, so return the first compartment of the model
         {
           CCopasiVectorNS< CCompartment > comps = model->getCompartments();
+
+          if (comps.size() == 0)
+            return "compartment";  // default compartment name if none existed
+
           comp = comps[0];
           return comp->getName();
         }
