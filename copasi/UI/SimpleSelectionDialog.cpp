@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/18 20:31:32 $
+   $Date: 2004/10/28 13:48:45 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -21,8 +21,6 @@ SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * nam
   this->mainLayout = new QVBoxLayout(this);
   this->mainLayout->setAutoAdd(false);
   this->simpleSelectionWidget = new SimpleSelectionWidget(this);
-  //this->objectBrowserWidget = new ObjectBrowserWidget(this);
-  //this->objectBrowserWidget->setHidden(true);
   this->mainWidget = this->simpleSelectionWidget;
   this->buttonBox = new QHBoxLayout(0);
   ((QBoxLayout*)this->buttonBox->layout())->addStretch();
@@ -57,9 +55,10 @@ SimpleSelectionDialog::~SimpleSelectionDialog()
   delete this->cancelButton;
   delete this->modeButton;
   delete this->buttonBox;
-  delete this->mainWidget;
   delete this->mainLayout;
   delete this->tmpVector;
+  delete this->simpleSelectionWidget;
+  delete this->objectBrowserWidget;
 }
 
 void SimpleSelectionDialog::setModel(CModel* model)
@@ -81,6 +80,14 @@ void SimpleSelectionDialog::okButton_clicked()
         {
           this->tmpVector->clear();
           this->objectBrowserWidget->commitClicked();
+        }
+      else
+        {
+          if (this->simpleSelectionWidget->isSingleSelection())
+            {
+              this->tmpVector->clear();
+              this->simpleSelectionWidget->addButtonClicked();
+            }
         }
       unsigned int counter;
       unsigned int maxCount = this->tmpVector->size();

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 12:42:39 $
+   $Date: 2004/10/28 13:48:45 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'simpleselectionwidget.ui'
  **
- ** Created: Thu Oct 28 14:09:00 2004
- **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.4 2004/10/28 12:42:39 gauges Exp $)
+ ** Created: Thu Oct 28 15:41:33 2004
+ **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.5 2004/10/28 13:48:45 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -57,22 +57,27 @@ class SimpleSelectionWidget : public QWidget
 
     virtual void populateTree(CModel * model);
     virtual void setOutputVector(std::vector<CCopasiObject *> * outputVector);
+    virtual void setSingleSelection(bool singleSelection);
+    virtual bool isSingleSelection();
+
+  public slots:
+    virtual void addButtonClicked();
 
   protected:
-    QListViewItem* metaboliteSubtree;
-    QListViewItem* reactionSubtree;
-    QListViewItem* concentrationFluxSubtree;
-    std::map<QListBoxItem*, CCopasiObject*> selectedObjects;
-    std::map<QListViewItem*, CCopasiObject*> treeItems;
-    std::vector<CCopasiObject*>* outputVector;
-    QListViewItem* initialParticleNumberSubtree;
-    QListViewItem* initialConcentrationSubtree;
-    QListViewItem* transientParticleNumberSubtree;
-    QListViewItem* transientConcentrationSubtree;
-    QListViewItem* particleFluxSubtree;
-    QListViewItem* timeSubtree;
-    bool singleSelect;
     QListViewItem* reactionParameterSubtree;
+    bool mSingleSelect;
+    QListViewItem* timeSubtree;
+    QListViewItem* particleFluxSubtree;
+    QListViewItem* transientConcentrationSubtree;
+    QListViewItem* transientParticleNumberSubtree;
+    QListViewItem* initialConcentrationSubtree;
+    QListViewItem* initialParticleNumberSubtree;
+    std::vector<CCopasiObject*>* outputVector;
+    std::map<QListViewItem*, CCopasiObject*> treeItems;
+    std::map<QListBoxItem*, CCopasiObject*> selectedObjects;
+    QListViewItem* concentrationFluxSubtree;
+    QListViewItem* reactionSubtree;
+    QListViewItem* metaboliteSubtree;
 
     virtual void init();
     virtual bool treeHasSelection();
@@ -98,7 +103,6 @@ class SimpleSelectionWidget : public QWidget
   protected slots:
     virtual void languageChange();
 
-    virtual void addButtonClicked();
     virtual void deleteButtonClicked();
     virtual void selectionChangedInTree();
     virtual void selectionChangedInList();

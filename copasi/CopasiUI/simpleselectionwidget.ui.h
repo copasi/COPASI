@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/28 12:42:39 $
+   $Date: 2004/10/28 13:48:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,7 +17,7 @@
 
 void SimpleSelectionWidget::init()
 {
-  this->singleSelect = true;
+  this->mSingleSelect = false;
   this->itemTree->setSortColumn(-1);
   this->itemTree->setRootIsDecorated(true);
 
@@ -65,7 +65,7 @@ void SimpleSelectionWidget::addButtonClicked()
 
       this->selectedItemsBox->setSelected(item, true);
       this->selectedObjects[item] = object;
-      if (this->singleSelect)
+      if (this->mSingleSelect)
         {
           lvitem->setEnabled(false);
         }
@@ -89,7 +89,7 @@ void SimpleSelectionWidget::deleteButtonClicked()
           CCopasiObject* object = this->selectedObjects[item];
           this->selectedObjects.erase(this->selectedObjects.find(item));
           this->selectedItemsBox->removeItem(counter - 1);
-          if (this->singleSelect)
+          if (this->mSingleSelect)
             {
               QListViewItem* lvitem = this->findListViewItem(object);
               if (lvitem)
@@ -529,4 +529,51 @@ void SimpleSelectionWidget::selectObjects(std::vector<CCopasiObject * > * object
       this->selectedItemsBox->setSelected(item, true);
       this->selectedObjects[item] = object;
     }
+}
+
+void SimpleSelectionWidget::setSingleSelection(bool singleSelection)
+{
+  if (singleSelection && !mSingleSelect)
+    {
+      // clear all items from the list
+      // select the topmost list item in the tree
+      if (this->selectedItemsBox->count() != 0)
+        {
+          QListBoxText* item = (QListBoxText*)this->selectedItemsBox->item(0);
+          CCopasiObject* object = this->selectedObjects[item];
+          std::vector<CCopasiObject*>* v = new std::vector<CCopasiObject*>();
+          v->push_back(object);
+          this->selectObjects(v);
+          delete v;
+        }
+    }
+  if (!singleSelection && mSingleSelect)
+    {
+      // add the selected tree item to the list
+      this->addButtonClicked();
+    }
+  this->mSingleSelect = singleSelection;
+  if (this->mSingleSelect)
+    {
+      this->itemTree->setSelectionMode(QListView::Single);
+      this->selectedItemsBox->setHidden(true);
+      this->addButton->setHidden(true);
+      this->deleteButton->setHidden(true);
+      this->moveUpButton->setHidden(true);
+      this->moveDownButton->setHidden(true);
+    }
+  else
+    {
+      this->itemTree->setSelectionMode(QListView::Extended);
+      this->selectedItemsBox->setHidden(false);
+      this->addButton->setHidden(false);
+      this->deleteButton->setHidden(false);
+      this->moveUpButton->setHidden(false);
+      this->moveDownButton->setHidden(false);
+    }
+}
+
+bool SimpleSelectionWidget::isSingleSelection()
+{
+  return this->mSingleSelect;
 }

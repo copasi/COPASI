@@ -225,23 +225,23 @@
     <forward>class CModel</forward>
 </forwards>
 <variables>
-    <variable>QListViewItem* metaboliteSubtree;</variable>
-    <variable>QListViewItem* reactionSubtree;</variable>
-    <variable>QListViewItem* concentrationFluxSubtree;</variable>
-    <variable>std::map&lt;QListBoxItem*,CCopasiObject*&gt; selectedObjects;</variable>
-    <variable>std::map&lt;QListViewItem*,CCopasiObject*&gt; treeItems;</variable>
-    <variable>std::vector&lt;CCopasiObject*&gt;* outputVector;</variable>
-    <variable>QListViewItem* initialParticleNumberSubtree;</variable>
-    <variable>QListViewItem* initialConcentrationSubtree;</variable>
-    <variable>QListViewItem* transientParticleNumberSubtree;</variable>
-    <variable>QListViewItem* transientConcentrationSubtree;</variable>
-    <variable>QListViewItem* particleFluxSubtree;</variable>
-    <variable>QListViewItem* timeSubtree;</variable>
-    <variable>bool singleSelect;</variable>
     <variable>QListViewItem* reactionParameterSubtree;</variable>
+    <variable>bool mSingleSelect;</variable>
+    <variable>QListViewItem* timeSubtree;</variable>
+    <variable>QListViewItem* particleFluxSubtree;</variable>
+    <variable>QListViewItem* transientConcentrationSubtree;</variable>
+    <variable>QListViewItem* transientParticleNumberSubtree;</variable>
+    <variable>QListViewItem* initialConcentrationSubtree;</variable>
+    <variable>QListViewItem* initialParticleNumberSubtree;</variable>
+    <variable>std::vector&lt;CCopasiObject*&gt;* outputVector;</variable>
+    <variable>std::map&lt;QListViewItem*,CCopasiObject*&gt; treeItems;</variable>
+    <variable>std::map&lt;QListBoxItem*,CCopasiObject*&gt; selectedObjects;</variable>
+    <variable>QListViewItem* concentrationFluxSubtree;</variable>
+    <variable>QListViewItem* reactionSubtree;</variable>
+    <variable>QListViewItem* metaboliteSubtree;</variable>
 </variables>
 <slots>
-    <slot access="protected">addButtonClicked()</slot>
+    <slot>addButtonClicked()</slot>
     <slot access="protected">deleteButtonClicked()</slot>
     <slot access="protected">selectionChangedInTree()</slot>
     <slot access="protected">selectionChangedInList()</slot>
@@ -264,6 +264,8 @@
     <function access="protected">updateMoveButtons()</function>
     <function access="protected">updateOutputVector()</function>
     <function access="protected">selectObjects( std::vector&lt;CCopasiObject *&gt; * objects )</function>
+    <function>setSingleSelection( bool singleSelection )</function>
+    <function returnType="bool">isSingleSelection()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
