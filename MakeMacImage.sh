@@ -9,13 +9,14 @@ SED=/usr/bin/sed
 CUT=/usr/bin/cut
 GREP=/usr/bin/grep
 STRIP=/usr/bin/strip
+OTOOL=/usr/bin/otool
 
-EXAMPLES="brusselator.cps"
+EXAMPLES="brusselator.cps YeastGlycolysis.gps CircadianClock.cps Metabolism-2000Poo.xml"
 
 # check if the binary is there
 if test -e ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI ; then
 # test if the binary is statically linked agains libqt
-    if otool -L ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI | grep libqt 2>&1 > /dev/null ;then
+    if ${OTOOL} -L ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI | grep libqt 2>&1 > /dev/null ;then
         echo ""
         echo "CopasiUI is dynamicall linked against Qt."
         echo "Please link the binary statically before making an image."
@@ -50,10 +51,10 @@ echo "Set the icon in the Info.plist file."
 
 # copy the examples into the Resources directory
     echo "Make example directory."
-    mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/EXAMPLES
+    mkdir -p ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples
     echo "Copy examples to example directory."
     for EXAMPLE in $EXAMPLES;do
-        cp ./gps/${EXAMPLE} ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/EXAMPLES/
+        cp ./TestSuite/distribution/${EXAMPLE} ${TMPDIR}/copasi/CopasiUI.app/Contents/Resources/examples/
     done
 
 # copy the files for the wizard into the Resources directory
@@ -65,7 +66,7 @@ echo "Set the icon in the Info.plist file."
 
 # add the readme to the image
     echo "Copying readme file."
-    cp README_MAC.rtf ${TMPDIR}/copasi/
+    cp README_MAC.rtf ${TMPDIR}/copasi/COPASI-README.rtf
 
 # set the bundles flag with SetFile
     echo "Setting the bundle flag."
@@ -73,7 +74,7 @@ echo "Set the icon in the Info.plist file."
 
 # make an image with hdiutil from the folder
     echo "Creating compressed image."
-    ${HDIUTIL} create -srcfolder ${TMPDIR}/copasi  -uid 99 -gid 99 -scrub -volname Copasi-${RELEASE} ${TMPDIR}/Copasi-${RELEASE}-Mac.dmg 
+    ${HDIUTIL} create -srcfolder ${TMPDIR}/copasi  -uid 99 -gid 99 -scrub -volname Copasi-${RELEASE} ${TMPDIR}/Copasi-${RELEASE}-Darwin.dmg 
 
 # move the image to this directory and delete the temporary diretory
     echo "Cleaning up in temporary directory."
