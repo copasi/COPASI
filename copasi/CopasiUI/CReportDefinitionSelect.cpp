@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.4 2003/08/19 16:22:56 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.5 2003/08/19 16:24:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -129,13 +129,13 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
 void CReportDefinitionSelect::cancelClicked()
 {
   cleanup();
-  QWidget::closeEvent(e);
+  close();
 }
 
-void CReportDefinitionSelect::confirmButton()
+void CReportDefinitionSelect::cancelClicked()
 {
   cleanup();
-  QWidget::closeEvent(e);
+  close();
 }
 
 void CReportDefinitionSelect::cleanup()
