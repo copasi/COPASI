@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.20 2003/08/12 16:36:18 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.21 2003/08/12 19:40:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,6 +20,7 @@
 #include <qwhatsthis.h>
 #include <qlistbox.h>
 #include <qcombobox.h>
+#include <qstring.h>
 
 #include "TableDefinition.h"
 #include "ObjectBrowser.h"
@@ -195,7 +196,6 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
-  connect(comboTask, SIGNAL(highlighted(const QString &)), this, SLOT(comboTaskChanged(const QString&)));
   connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
   connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
   connect(appendChecked, SIGNAL(clicked()), this, SLOT(appendButtonClicked()));
@@ -207,6 +207,8 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
 
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotBtnConfirmClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+
+  connect(comboTask, SIGNAL(activated(const QString & string)), this, SLOT(comboTaskChanged(const QString & string)));
 }
 
 /*
@@ -252,8 +254,10 @@ void TableDefinition::setReport(CReport* pNewReport)
   mReport = pNewReport;
 }
 
-void TableDefinition::comboTaskChanged(QString & selectedStr)
-{}
+void TableDefinition::comboTaskChanged(const QString & string)
+{
+  int i = 0;
+}
 
 void TableDefinition::slotBtnCancelClicked()
 {

@@ -2,7 +2,7 @@
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-  ($Id: TableDefinition.h,v 1.15 2003/08/12 18:44:58 lixu1 Exp $)
+ ($Id: TableDefinition.h,v 1.16 2003/08/12 19:40:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -29,6 +29,7 @@ class QComboBox;
 class QListBox;
 class CModel;
 class CReport;
+class QString;
 
 class TableDefinition : public CopasiWidget
   {
@@ -90,7 +91,7 @@ class TableDefinition : public CopasiWidget
     std::vector<CCopasiObject*> selectedList;
 
   protected slots:
-    virtual void comboTaskChanged(QString & selectedStr);
+    virtual void comboTaskChanged(const QString & string);
     virtual void tabButtonClicked();
     virtual void titleButtonClicked();
     virtual void appendButtonClicked();
