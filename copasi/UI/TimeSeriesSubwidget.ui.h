@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/19 09:38:13 $
+   $Date: 2004/10/22 11:06:49 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,20 +20,22 @@
 
 void TimeSeriesSubWidget::saveDataToFile()
 {
-  const std::string& fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to").latin1();
+  QString fileName = QFileDialog::getSaveFileName(QString::null, QString::null, this, 0, "Save to");
+  std::cout << "fileName: " << fileName << std::endl;
+  if (fileName.isEmpty()) return;
   const CTimeSeries* timeSeries = this->table()->getTimeSeries();
   int failed = 0;
   if (timeSeries)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      failed = timeSeries->save(fileName, !(this->table()->doShowConcentrations()), "\t");
+      failed = timeSeries->save(fileName.latin1(), !(this->table()->doShowConcentrations()), "\t");
       setCursor(oldCursor);
     }
   if (failed)
     {
       std::string s = "Could not save data to ";
-      s += fileName;
+      s += fileName.latin1();
       QMessageBox::critical(this, "Save Error", s.c_str(), QMessageBox::Ok, QMessageBox::Cancel);
     }
 }
