@@ -84,7 +84,7 @@ LIBS = \
 	-lXinerama \
 	-lXext \
 	-lX11 \
-	-lc
+	-ldl
 
 # the library search path.
 LDFLAGS = -all-static \
