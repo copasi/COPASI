@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:39 $
+   $Author: chlee $ 
+   $Date: 2004/11/15 00:03:40 $
    End CVS Header */
 
 /********************************************************
@@ -22,11 +22,13 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include "copasiWidget.h"
 
+class QButtonGroup;
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
 class QPushButton;
+class QRadioButton;
 class QLabel;
 class QComboBox;
 class QListBox;
@@ -57,17 +59,25 @@ class OptimizationWidget : public CopasiParametersWidget
     //manually added
     QLineEdit* expressionText;
     ScanScrollView* itemsTable;
+    ScanScrollView* itemsTable2;
     std::vector<QWidget*> selectedList;
     QListBox* itemnamesTable;
+    QListBox* itemnamesTable2;
 
     QFrame* bodyField;
+    QFrame* copasiItemsDivider; // added for division line between copasi items tables
     QPushButton* confirmButton;
     QPushButton* cancelButton;
     QPushButton* addButton;
     QPushButton* deleteButton;
     QPushButton* downButton;
+    QPushButton* addButton2;
+    QPushButton* deleteButton2;
+    QPushButton* downButton2;
     QLabel* itemsLabel;
+    QLabel* itemsLabel2;
     QPushButton* upButton;
+    QPushButton* upButton2;
     QFrame* bodyField_2;
     QCheckBox* steadystateCheck;
     QPushButton* steadystateEditButton;
@@ -80,11 +90,18 @@ class OptimizationWidget : public CopasiParametersWidget
     QLabel* expressionEditlabel;
     QLabel* expressionNameLabel;
 
+    //next three added for minimize/maximize radio buttons
+    QButtonGroup* qbuttongroup;
+    QRadioButton* maximizeRadio;
+    QRadioButton* minimizeRadio;
+
   protected:
     QGridLayout* ExpressionWidgetLayout;
     QHBoxLayout* layout14;
     QGridLayout* layout8;
+    QGridLayout* copasiItemsTableLayout;
     QHBoxLayout* layout7;
+    QHBoxLayout* radioButtonLayout;  //added for minimize/maximize radio buttons
 
     bool loadFromExpression(COptFunction*);
     bool bUpdated;

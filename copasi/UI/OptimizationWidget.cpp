@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 08:52:57 $
+   $Author: chlee $ 
+   $Date: 2004/11/15 00:03:41 $
    End CVS Header */
 
 /********************************************************
@@ -28,6 +28,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qwhatsthis.h>
 #include <qtextbrowser.h>
 #include <qmessagebox.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
 
 #include "ScanWidget.h"
 #include "ScanItemWidget.h"
@@ -182,7 +184,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   bodyField->setFrameShadow(QFrame::Sunken);
   bodyField->setFrameShape(QFrame::HLine);
 
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField, 7, 7, 0, 2);
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField, 10, 10, 0, 2);
 
   layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
@@ -192,7 +194,60 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   cancelButton = new QPushButton(this, "cancelButton");
   layout14->addWidget(cancelButton);
 
-  ExpressionWidgetLayout->addMultiCellLayout(layout14, 8, 8, 0, 2);
+  ExpressionWidgetLayout->addMultiCellLayout(layout14, 11, 11, 0, 2);
+
+  //******* 2nd set of copasi items added
+  itemsTable2 = new ScanScrollView(this, 0, 0);
+  OptimizationItemWidget* parameterTable2 = new OptimizationItemWidget(this, "parameterTable2");
+  itemsTable2->setMinimumWidth(parameterTable2->minimumSizeHint().width());
+  pdelete(parameterTable2);
+  itemsTable2->setVScrollBarMode(QScrollView::Auto);
+  itemsTable2->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+  itemsTable2->setSelectedList(&selectedList);
+
+  ExpressionWidgetLayout->addWidget(itemsTable2, 9, 2);
+
+  copasiItemsTableLayout = new QGridLayout(0, 1, 1, 0, 6, "copasiItemsTableLayout");
+
+  downButton2 = new QPushButton(this, "downButton2");
+  downButton2->setText(trUtf8(""));
+  downButton2->setPixmap(image1);
+  copasiItemsTableLayout->addWidget(downButton2, 2, 1);  //was layout 8
+
+  deleteButton2 = new QPushButton(this, "deleteButton2");
+  deleteButton2->setText(trUtf8(""));
+  deleteButton2->setPixmap(image0);
+  copasiItemsTableLayout->addWidget(deleteButton2, 1, 1);
+
+  addButton2 = new QPushButton(this, "addButton2");
+  addButton2->setText(trUtf8(""));
+  addButton2->setPixmap(image2);
+  copasiItemsTableLayout->addWidget(addButton2, 1, 0);
+
+  //manually change to add icon for alignment need
+  upButton2 = new QPushButton(this, "upButton2");
+  upButton2->setText(trUtf8(""));
+  upButton2->setPixmap(image3);
+  copasiItemsTableLayout->addWidget(upButton2, 2, 0);
+
+  itemnamesTable2 = new QListBox(this, "itemnamesTable2");
+  copasiItemsTableLayout->addMultiCellWidget(itemnamesTable2, 3, 3, 0, 1);
+
+  itemsLabel2 = new QLabel(this, "itemsLabel2");
+  itemsLabel2->setText("Copasi Items");
+
+  copasiItemsTableLayout->addMultiCellWidget(itemsLabel2, 0, 0, 0, 1);
+
+  ExpressionWidgetLayout->addMultiCellLayout(copasiItemsTableLayout, 9, 9, 0, 1);
+
+  // below is the code for the division line between the two items tables sections
+  copasiItemsDivider = new QFrame(this, "copasiItemsDivider");
+  copasiItemsDivider->setFrameShape(QFrame::HLine);
+  copasiItemsDivider->setFrameShadow(QFrame::Sunken);
+  copasiItemsDivider->setFrameShape(QFrame::HLine);
+
+  ExpressionWidgetLayout->addMultiCellWidget(copasiItemsDivider, 8, 8, 0, 2);
+  //********
 
   itemsTable = new ScanScrollView(this, 0, 0);
   OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
@@ -202,7 +257,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
   itemsTable->setSelectedList(&selectedList);
 
-  ExpressionWidgetLayout->addWidget(itemsTable, 6, 2);
+  ExpressionWidgetLayout->addWidget(itemsTable, 7, 2);
 
   layout8 = new QGridLayout(0, 1, 1, 0, 6, "layout8");
 
@@ -234,14 +289,14 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   layout8->addMultiCellWidget(itemsLabel, 0, 0, 0, 1);
 
-  ExpressionWidgetLayout->addMultiCellLayout(layout8, 6, 6, 0, 1);
+  ExpressionWidgetLayout->addMultiCellLayout(layout8, 7, 7, 0, 1);
 
   bodyField_2 = new QFrame(this, "bodyField_2");
   bodyField_2->setFrameShape(QFrame::HLine);
   bodyField_2->setFrameShadow(QFrame::Sunken);
   bodyField_2->setFrameShape(QFrame::HLine);
 
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2, 5, 5, 0, 2);
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2, 6, 6, 0, 2);
 
   layout7 = new QHBoxLayout(0, 0, 6, "layout7");
 
@@ -259,14 +314,14 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   timeEditButton = new QPushButton(this, "timeEditButton");
   layout7->addWidget(timeEditButton);
 
-  ExpressionWidgetLayout->addMultiCellLayout(layout7, 4, 4, 0, 2);
+  ExpressionWidgetLayout->addMultiCellLayout(layout7, 5, 5, 0, 2);
 
   bodyField_2_2 = new QFrame(this, "bodyField_2_2");
   bodyField_2_2->setFrameShape(QFrame::HLine);
   bodyField_2_2->setFrameShadow(QFrame::Sunken);
   bodyField_2_2->setFrameShape(QFrame::HLine);
 
-  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2_2, 3, 3, 0, 2);
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2_2, 4, 4, 0, 2);
 
   expressionName = new QLineEdit(this, "expressionName");
   expressionName->setFrameShape(QLineEdit::LineEditPanel);
@@ -278,21 +333,31 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   methodCombo->insertItem("Genetic algorithms(SA--)");
   methodCombo->insertItem("Random Search");
 
-  ExpressionWidgetLayout->addMultiCellWidget(methodCombo, 1, 1, 1, 2);
+  ExpressionWidgetLayout->addMultiCellWidget(methodCombo, 2, 2, 1, 2);
 
   optimizationLabel = new QLabel(this, "optimizationLabel");
 
-  ExpressionWidgetLayout->addWidget(optimizationLabel, 1, 0);
+  ExpressionWidgetLayout->addWidget(optimizationLabel, 2, 0);
 
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
 
-  ExpressionWidgetLayout->addWidget(expressionEditlabel, 2, 0);
+  ExpressionWidgetLayout->addWidget(expressionEditlabel, 3, 0);
 
   expressionText = new QLineEdit(this, "expressionText");
   expressionText->setFrameShape(QLineEdit::LineEditPanel);
   expressionText->setFrameShadow(QLineEdit::Sunken);
 
-  ExpressionWidgetLayout->addMultiCellWidget(expressionText, 2, 2, 1, 2);
+  ExpressionWidgetLayout->addMultiCellWidget(expressionText, 3, 3, 1, 2);
+
+  // added by Christine below used to indicate minimize or maximize optimization type
+  qbuttongroup = new QButtonGroup(this, "buttonGroup");
+  radioButtonLayout = new QHBoxLayout(qbuttongroup, 0, 6, "radioButtonLayout");
+  maximizeRadio = new QRadioButton("Maximize", qbuttongroup, "maximizeRadio");
+  maximizeRadio->setChecked(true);
+  minimizeRadio = new QRadioButton("Minimize", qbuttongroup, "minimizeRadio");
+  radioButtonLayout->addWidget(maximizeRadio);
+  radioButtonLayout->addWidget(minimizeRadio);
+  ExpressionWidgetLayout->addMultiCellWidget(qbuttongroup, 1, 1, 0, 2);
 
   expressionNameLabel = new QLabel(this, "expressionNameLabel");
 
