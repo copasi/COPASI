@@ -337,51 +337,51 @@ void CTempReaction::compile(CModel *model,
 
   // Parse the identifiers to specify the function parameters and the
   // Id2... stuff of the reaction
-  std::string name;
-  CFunctionParameters & Parameters = fun->getParameters();
-  int index;
-  CReaction::CId2Param *id2Param;
-  CReaction::CId2Metab *id2Metab;
-
-  std::set<std::string>::const_iterator it = mIdentifiers.begin();
-  for (; it != mIdentifiers.end(); it++)
-    {
-      //pName = &mIdentifiers[i];
-      name = *it;
-      index = model->findMetab(name);
-
-      if (-1 == index) // A parameter
-        {
-          id2Param = new CReaction::CId2Param();
-          id2Param->setIdentifierName(name);
-          id2Param->setValue(getParameterValue(name, rates, constants));
-          Parameters.add(name, CFunctionParameter::FLOAT64, "PARAMETER");
-          reaction->getId2Parameters().add(id2Param);
-        }
-      else
-        {
-          id2Metab = new CReaction::CId2Metab();
-          id2Metab->setIdentifierName(name);
-          id2Metab->setMetaboliteName(model->getMetabolites()[index]->getName());
-          id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getName());
-
-          if (isIn(mSubstrates, name))
-            {
-              Parameters.add(name, CFunctionParameter::FLOAT64, "SUBSTRATE");
-              reaction->getId2Substrates().add(id2Metab);
-            }
-          else if (isIn(mProducts, name))
-            {
-              Parameters.add(name, CFunctionParameter::FLOAT64, "PRODUCT");
-              reaction->getId2Products().add(id2Metab);
-            }
-          else // is Modifier
-            {
-              Parameters.add(name, CFunctionParameter::FLOAT64, "MODIFIER");
-              reaction->getId2Modifiers().add(id2Metab);
-            }
-        }
-    }
+  /*  std::string name;
+    CFunctionParameters & Parameters = fun->getParameters();
+    int index;
+    //CReaction::CId2Param *id2Param;
+    CReaction::CId2Metab *id2Metab;
+   
+    std::set<std::string>::const_iterator it = mIdentifiers.begin();
+    for (; it != mIdentifiers.end(); it++)
+      {
+        //pName = &mIdentifiers[i];
+        name = *it;
+        index = model->findMetab(name);
+   
+        if (-1 == index) // A parameter
+          {
+            //id2Param = new CReaction::CId2Param();
+            //id2Param->setIdentifierName(name);
+            //id2Param->setValue(getParameterValue(name, rates, constants));
+            Parameters.add(name, CFunctionParameter::FLOAT64, "PARAMETER");
+            //reaction->getId2Parameters().add(id2Param);
+          }
+        else
+          {
+            id2Metab = new CReaction::CId2Metab();
+            id2Metab->setIdentifierName(name);
+            id2Metab->setMetaboliteName(model->getMetabolites()[index]->getName());
+            id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getName());
+   
+            if (isIn(mSubstrates, name))
+              {
+                Parameters.add(name, CFunctionParameter::FLOAT64, "SUBSTRATE");
+                reaction->getId2Substrates().add(id2Metab);
+              }
+            else if (isIn(mProducts, name))
+              {
+                Parameters.add(name, CFunctionParameter::FLOAT64, "PRODUCT");
+                reaction->getId2Products().add(id2Metab);
+              }
+            else // is Modifier
+              {
+                Parameters.add(name, CFunctionParameter::FLOAT64, "MODIFIER");
+                reaction->getId2Modifiers().add(id2Metab);
+              }
+          }
+      } */ //TODO reac
 
   fun->compile();
   // it is important to call add(fun) instead of add(*fun). Otherwise type information of the polymorphic object would be lost.
