@@ -1,7 +1,7 @@
 #ifndef MY_TABLE_H
 #define MY_TABLE_H
 
-#include "stretchtable.h"
+#include "StretchTable.h"
 
 class MyTable: public StretchTable
   {
