@@ -17,6 +17,7 @@
 #include "Tree.h"
 #include "listviews.h"
 #include "Subject.h"
+#include "xml/CCopasiXML.h"
 
 class CTrajectoryTask;
 class CSteadyStateTask;
@@ -213,18 +214,24 @@ void DataModel<T>::saveModel(const char* fileName)
 {
   if (fileName == NULL) return;
 
-  CWriteConfig outbuf(fileName);
+  CCopasiXML XML;
 
-  if (model != NULL)
-    model->save(outbuf);
+  ofstream os(fileName);
 
-  if (steadystatetask != NULL)
-    steadystatetask->save(outbuf);
+  XML.setModel(*model);
+  XML.save(os);
+  /*   CWriteConfig outbuf(fileName); */
 
-  if (trajectorytask != NULL)
-    trajectorytask->save(outbuf);
+  /*   if (model != NULL) */
+  /*     model->save(outbuf); */
 
-  Copasi->pOutputList->save(outbuf);
+  /*   if (steadystatetask != NULL) */
+  /*     steadystatetask->save(outbuf); */
+
+  /*   if (trajectorytask != NULL) */
+  /*     trajectorytask->save(outbuf); */
+
+  /*   Copasi->pOutputList->save(outbuf); */
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)

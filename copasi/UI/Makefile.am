@@ -78,7 +78,8 @@ CopasiUI_LIBS = \
 	../report \
 	../steadystate \
 	../trajectory \
-	../utilities
+	../utilities \
+	../xml
 
 EXTRA_DIST = \
 	main.cpp \
@@ -124,6 +125,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 # the library search path.
 LIBS = $(LIB_QT) \
 	-Wl,-lelementaryFluxModes \
+	-Wl,-lcopasiXML \
 	-Wl,-lmathmodel \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
@@ -159,7 +161,8 @@ LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../report \
 	-L../steadystate \
 	-L../trajectory \
-	-L../utilities
+	-L../utilities \
+	-L../xml
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.24 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.25 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -314,7 +314,8 @@ CopasiUI_LIBS = \
 	../report \
 	../steadystate \
 	../trajectory \
-	../utilities
+	../utilities \
+	../xml
 
 
 EXTRA_DIST = \
@@ -362,6 +363,7 @@ INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 # the library search path.
 LIBS = $(LIB_QT) \
 	-Wl,-lelementaryFluxModes \
+	-Wl,-lcopasiXML \
 	-Wl,-lmathmodel \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
@@ -398,7 +400,8 @@ LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../report \
 	-L../steadystate \
 	-L../trajectory \
-	-L../utilities
+	-L../utilities \
+	-L../xml
 
 subdir = copasi/CopasiUI
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
@@ -732,7 +735,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=SteadyStateWidget.ui objectdebug.ui DataModel.h FunctionWidget1.ui TrajectoryWidget.ui trace Sample2.txt CompartmentsWidget.ui MoietiesWidget.cpp MoietiesWidget.h Sample.txt MetabolitesWidget1.ui objectdebug.ui.h ObjectBrowser.ui MoietyWidget1.ui objectdebug.h CopasiUI.dsp ReactionsWidget1.ui 
+KDE_DIST=SteadyStateWidget.ui objectdebug.ui DataModel.h FunctionWidget1.ui TrajectoryWidget.ui trace Sample2.txt CompartmentsWidget.ui CopasiUI-Static.dsp MoietiesWidget.cpp MoietiesWidget.h Sample.txt MetabolitesWidget1.ui objectdebug.ui.h ObjectBrowser.ui MoietyWidget1.ui objectdebug.h CopasiUI.dsp ReactionsWidget1.ui 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
