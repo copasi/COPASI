@@ -29,7 +29,8 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    objKey("")
 {
   if (!name)
     setName("CompartmentsWidget1");
@@ -203,7 +204,8 @@ bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Ac
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: we have to decide how to handle this
+      //TODO: check if it really is a compartment
+      if (CKeyFactory::get(objKey)) return loadFromCompartment((CCompartment*)(CCopasiContainer*)CKeyFactory::get(objKey));
       break;
 
     default:

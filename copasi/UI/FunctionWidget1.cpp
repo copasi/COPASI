@@ -46,7 +46,8 @@
  *  name 'name' and widget flags set to 'f'.
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    objKey("")
 {
   if (!name)
     setName("FunctionWidget1");
@@ -562,6 +563,8 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
   switch (objectType)
     {
     case ListViews::MODEL:
+      //TODO: check if it really is a compartment
+      if (CKeyFactory::get(objKey)) return loadFromFunction((CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey));
       break;
 
     default:

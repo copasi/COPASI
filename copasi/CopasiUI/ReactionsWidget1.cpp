@@ -39,7 +39,8 @@
  */
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
-    : CopasiWidget(parent, name, f)
+    : CopasiWidget(parent, name, f),
+    objKey("")
 
 {
   if (!name)
@@ -316,6 +317,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType, ListViews::Actio
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
       //TODO: we have to decide how to handle this
+      if (CKeyFactory::get(objKey)) return loadFromReaction((CReaction*)(CCopasiContainer*)CKeyFactory::get(objKey));
       break;
 
     default:

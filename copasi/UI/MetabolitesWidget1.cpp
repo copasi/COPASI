@@ -32,7 +32,8 @@
  *  name 'name' and widget flags set to 'f'.
  */
 MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    objKey("")
 {
   if (!name)
     setName("MetabolitesWidget1");
@@ -391,6 +392,8 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType, ListViews::Act
     {
     case ListViews::STATE:
     case ListViews::MODEL:
+      //TODO: check if it really is a compartment
+      if (CKeyFactory::get(objKey)) return loadFromMetabolite((CMetab*)(CCopasiContainer*)CKeyFactory::get(objKey));
       break;
 
     default:
