@@ -14,6 +14,7 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
+#include "steadystate/steadystate.h"
 
 class Structures
   {
@@ -22,7 +23,7 @@ class Structures
     //struct compartment_struct {
     QString cmpt_name;
     QString cmpt_volume;
-    //QString[] cmpt_listbox ;
+    //QString[] cmpt_listbox;
     //};
   };
 

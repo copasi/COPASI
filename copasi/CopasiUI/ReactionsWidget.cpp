@@ -99,7 +99,7 @@ void ReactionsWidget::loadReactions(CModel *model)
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
+  int i = 0; //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
 }
 
 void ReactionsWidget::slotBtnCancelClicked()

@@ -3,8 +3,8 @@
  **  $ Author  : Ankur Gupta
  *****************************************************************************/
 #ifndef LISTVIEWS_H
-#define LISTVIEWS_H 
-//public QLineEdit:
+#define LISTVIEWS_H
+
 #include <qsplitter.h>
 #include <qstring.h>
 #include <qobject.h>
@@ -16,13 +16,16 @@
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qmultilineedit.h>
-
 #include "DataModel.h"
 #include "Observer.h"
 #include "Tree.h"
+#include "copasi.h"
 
-#include "copasi.h" 
+//public QLineEdit:
 // #include "model/model.h"
+class CSteadyStateTask;
+
+class SteadyStateWidget;
 
 class MetabolitesWidget;
 
@@ -116,7 +119,7 @@ class ListViews : public QSplitter, public Observer
     virtual void slotNewReaction();
   protected:
     CModel *mModel;  // the re to the model...
-
+    CSteadyStateTask *mSteadyStateTask;
     void loadNodes(CModel *model);
     void ConstructNodeWidgets();
 
@@ -137,6 +140,7 @@ class ListViews : public QSplitter, public Observer
     QListView *folders;
     QMultiLineEdit *bigWidget;
 
+    SteadyStateWidget *steadystateWidget;
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;

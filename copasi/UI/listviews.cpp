@@ -23,6 +23,8 @@
 #include "MoietyWidget1.h"
 #include "FunctionWidget1.h"
 
+#include "SteadyStateWidget.h"
+
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
 QPixmap *folderOpen = 0;     // to store the image of open icon folder
@@ -184,6 +186,8 @@ void ListViews::initFolders()
 
   // get the node from where u want to load the tree
   Node<Folder> *next = dataModel->getRoot();
+
+  //  dataModel->g
 
   //this is needed because when the tree is created the root is not needed in this
   // visual display
@@ -388,6 +392,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = moietyWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Functions")))
     currentWidget = functionWidget;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Steady-State")))
+    currentWidget = steadystateWidget;
 
   else if (item1)
     {
@@ -428,6 +434,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
               currentWidget = functionWidget1;
             }
         }
+
       else if (! (value = QString::compare(item->folder()->folderName(), "Mass Conservation")))
         {
           currentWidget = moietyWidget;
@@ -464,6 +471,7 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
 
   // get the model information and than construct the nodes and load them
   mModel = dataModel->getModel();
+  //  mTask = dataModel->_observers
   this->ConstructNodeWidgets();
   this->loadNodes(mModel);
 }
@@ -491,7 +499,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                       // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                        // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -513,7 +521,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                     // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:                      // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -526,7 +534,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                       // new model is loaded.
+        case MODEL:                        // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -768,6 +776,9 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Function Widget
     functionWidget = new FunctionWidget(this);
     functionWidget->hide();
+
+    steadystateWidget = new SteadyStateWidget(this);
+    steadystateWidget->hide();
 
     //Constructing the Reactions Widget1
     reactionsWidget1 = new ReactionsWidget1(this);

@@ -3,19 +3,20 @@
  **  $ Author  : Ankur Gupta
  *****************************************************************************/
 #ifndef DATAMODEL_H
+
 #define DATAMODEL_H
-
-#include <qptrlist.h>
-#include <fstream>
-
-#include "Tree.h"
-#include "listviews.h"
-#include "Subject.h"
 
 #define ADD 1
 #define DELETE 2
 #define MODEL 3
 
+#include <qptrlist.h>
+#include <fstream>
+#include "Tree.h"
+#include "listviews.h"
+#include "Subject.h"
+
+class CSteadyStateTask;
 class CModel;
 class CReadConfig;
 class Folder;
@@ -27,6 +28,7 @@ template <class T> class DataModel: public Subject
     Node<T>* last; // to keep track of the last change done...
     QPtrList<T> folderList;  // to keep track of the number of the object in the tree...
     CModel* model;
+    CSteadyStateTask* steadystatetask;
     bool modelUpdate;
 
   protected:
@@ -60,6 +62,7 @@ DataModel<T>::DataModel(char* fileName)
   // this->STATUS=0;
   last = NULL;
   model = NULL;
+  steadystatetask = NULL;
   modelUpdate = false;
 }
 
@@ -147,6 +150,11 @@ void DataModel<T>::loadModel(const char* fileName)
   model->compile();
   modelUpdate = true;
   notify(MODEL);
+
+  pdelete(steadystatetask);
+  steadystatetask = new CSteadyStateTask();
+  steadystatetask->load(inbuf);
+  //  steadystatetask->compile();
 }
 
 /*void DataModel<T>::saveModel(const char* fileName)

@@ -4,7 +4,7 @@
 #include "copasi.h"
 #include "listviews.h"
 #include "model/model.h"
-
+#include "steadystate/steadystate.h"
 class ListViews;
 
 class CopasiUI3Window : public QMainWindow
@@ -19,7 +19,6 @@ class CopasiUI3Window : public QMainWindow
     DataModel<Folder>* dataModel; // to keep track of the data model..
     QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
-    CModel mModel;
 
   protected slots:
     void slotFileOpen();
