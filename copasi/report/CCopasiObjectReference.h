@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:19 $
+   $Author: shoops $ 
+   $Date: 2005/03/17 19:54:37 $
    End CVS Header */
 
 /**
@@ -44,7 +44,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
                       CCopasiObject::NonUniqueName |
                       flag),
         mReference(reference)
-    {}
+    {assert(pParent != NULL);}
 
     CCopasiObjectReference(const CCopasiObjectReference< referenceType > & src):
         CCopasiObject(src),
@@ -57,6 +57,18 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
 
     virtual void print(std::ostream * ostream) const
       {(*ostream) << mReference;};
+
+    virtual bool setObjectValue(const C_FLOAT64 & value)
+    {
+      if (getObjectParent()->setChildValue(this, value)) return true;
+
+      if (isValueDbl() || isValueInt() || isValueBool())
+        mReference = * (CType *) & value;
+      else
+        return false;
+
+      return true;
+    }
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const
       {
@@ -120,7 +132,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
                       CCopasiObject::NonUniqueName |
                       flag),
         mReference(reference)
-    {}
+    {assert(pParent != NULL);}
 
     CCopasiVectorReference(const CCopasiVectorReference< referenceType > & src):
         CCopasiObject(src),
@@ -172,7 +184,7 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
                       CCopasiObject::NonUniqueName |
                       flag),
         mReference(reference)
-    {}
+    {assert(pParent != NULL);}
 
     CCopasiMatrixReference(const CCopasiMatrixReference< referenceType > & src):
         CCopasiObject(src),

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/31 14:49:18 $
+   $Date: 2005/03/17 19:54:26 $
    End CVS Header */
 
 /**
@@ -244,6 +244,14 @@ const std::string & CCopasiObject::getKey() const
     std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
     return DefaultKey;
   }
+
+bool CCopasiObject::setObjectValue(const C_FLOAT64 & value)
+{
+  if (mpObjectParent)
+    return mpObjectParent->setChildValue(this, value);
+  else
+    return false;
+}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
