@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.15 $ $Author: lixu1 $ $Date: 2003/09/19 19:41:12 $  
+# $Revision: 1.16 $ $Author: lixu1 $ $Date: 2003/09/29 04:11:58 $  
 ######################################################################
 
 include(../common.pri)
@@ -103,6 +103,8 @@ HEADERS += CompartmentsWidget.h \
            ScanItemWidget.h \
            ScanWidget.h \
 		   ExpressionWidget.h \
+		   FunctionItemWidget.h \
+		   OptimizationItemWidget.h \
            SteadyStateWidget.h \
            StretchTable.h \
            TrajectoryWidget.h \
@@ -155,6 +157,8 @@ SOURCES += CompartmentsWidget.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
 		   ExpressionWidget.cpp \
+		   FunctionItemWidget.cpp \
+		   OptimizationItemWidget.cpp \
            SteadyStateWidget.cpp \
            StretchTable.cpp \
            TrajectoryWidget.cpp \
