@@ -242,7 +242,7 @@ void ScanItemWidget::ResetData()
 void ScanItemWidget::updateObject()
 {
   mMax->setText(QString::number(pParameter->getValue("max")));
-  mMin->setText(QString::number(pParameter->getValue("max")));
+  mMin->setText(QString::number(pParameter->getValue("min")));
   mDensity->setText(QString::number(pParameter->getValue("incr")));
   mLogarithmic->setChecked(pParameter->getValue("log"));
   mIndependent->setChecked(pParameter->getValue("Indp"));
