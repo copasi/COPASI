@@ -12,9 +12,7 @@ int main(int argc, char **argv)
   CCopasiContainer::init();
 
   Copasi = new CGlobals;
-  CReadConfig * pFunctionDB = new CReadConfig("FunctionDB.gps");
-  Copasi->pFunctionDB->load(*pFunctionDB);
-  delete pFunctionDB;
+  Copasi->pFunctionDB->load();
 
   QApplication a(argc, argv);
 
