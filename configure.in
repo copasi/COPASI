@@ -54,8 +54,11 @@ fi
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
  echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
- qmake $cps_release $cps_thread $cps_mkl_path $cps_clapack_path $cps_expat_path && \
- cat Makefile | sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' > $$.tmp && \
+ $QTDIR/bin/qmake $cps_release $cps_thread \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path && \
+ cat Makefile | \
+ sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
  mv $$.tmp Makefile \
 )
 
