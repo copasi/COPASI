@@ -17,12 +17,15 @@ class CBaseFunction
 {
 // Attributes
 public:
+    /**
+     *  The valid types of a function
+     */
     enum Type
-    {
-        BASIC = 0,
-        USERDIFINED,
-        BUILTIN
-    };
+        {
+            BASIC = 0,
+            USERDIFINED,
+            BUILTIN
+        };
   
 private:
     /**
@@ -45,45 +48,105 @@ private:
      */
     short mReversible;
 
-    class CCallParameter
-        {
-            friend class CBaseFunction;
-            friend class CKinFunction;
+    class CBaseCallParameter
+    {
+        friend class CBaseFunction;
+//        friend class CKinFunction;
         // Attributes
-        private:
-            long mType; // currently we only have double
-            long mCount;
-            vector < char > mIdentifierTypes;
-            /**
-             *  Vector of identifiers of the function
-             */
-            vector< CBaseIdentifier > mIdentifiers;
+    public:
+        /**
+         *  The valid types of a parameter.
+         */
+        enum Type
+        {
+            DOUBLE = 0,
+            VECTOR_DOUBLE,
+            LONG,
+            VECTOR_LONG
+        };
+        
+    private:
+        /**
+         *  The type of the parameter.
+         */
+        long mType;
+
+        /**
+         *  The count of objects for parameters of type VECTOR_xxx else
+         *  this is meaningless.
+         *  A value of 0 (zero) means an arbitrary count.
+         */
+        long mCount;
+
+        /**
+         *  The valid identifier types
+         */
+        vector < char > * mIdentifierTypes;
+
+        /**
+         *  Vector of identifiers of the function
+         */
+        vector< CBaseIdentifier > * mIdentifiers;
 
         // Operations
-        public:
-            virtual long GetType();
-            virtual long GetCount();
-            virtual vector < char > IdentifierTypes();
-            /**
-             *  Retrieves the number of identifiers of a specific type
-             *  @param char identifierType Default = 0 (all identifiers)
-             *  @return long
-             */
-            virtual long NoIdentifiers(char identifierType = 0);
+    public:
+        /**
+         *
+         */
+        CBaseCallParameter();
+        
+        /**
+         *
+         */
+        ~CBaseCallParameter();
+
+        /**
+         *
+         */
+        void SetType(enum Type type);
+        
+        /**
+         *
+         */
+        void SetCount(long count);
+
+        /**
+         *  Retrieves the type of the the call parameter
+         *  @return enum Type
+         */
+        long GetType();
+
+        /**
+         *  Retrieves the type of the function
+         *  @return long Count
+         */
+        long GetCount();
+
+        /**
+         *  Retrieves the valis identifier types
+         */
+        vector < char > IdentifierTypes();
+
+        /**
+         *  Retrieves the number of identifiers of a specific type
+         *  @param char identifierType Default = 0 (all identifiers)
+         *  @return long
+         */
+        virtual long NoIdentifiers(char identifierType = 0);
             
-            /**
-             *  Retrieves the vector of identifiers of a specific type
-             *  @param char identifierType Default = 0 (all identifiers)
-             *  @return "vector < char > &"
-             */
-            virtual vector< CBaseIdentifier * > 
-                Identifiers(char identifierType = 0);
-        };
+        /**
+         *  Retrieves the vector of identifiers of a specific type
+         *  @param char identifierType Default = 0 (all identifiers)
+         *  @return "vector < char > &"
+         */
+        virtual vector< CBaseIdentifier * >
+        Identifiers(char identifierType = 0);
+    };
 
     /**
      *  Vector of call parameter specificying their structure
      */
-    vector < CCallParameter > mCallParameters;
+    vector < CBaseCallParameter > * mCallParameters;
     
 // Operations
 public:
@@ -128,7 +191,7 @@ public:
     virtual string GetName();
     
     /**
-     *  Retrieves the name of the function
+     *  Retrieves the type of the function
      *  @return enum Type
      */
     virtual long GetType();
@@ -149,7 +212,7 @@ public:
      *  Retrieves the vector of allowed identifiers
      *  @return "vector < char > &"
      */
-    vector < CCallParameter > & CallParameters();
+    vector < CBaseCallParameter > & CallParameters();
 
     /**
      *  Calculates the value of the function
@@ -163,7 +226,7 @@ public:
      *  @param "const string" &name
      *  @return long
      */
-    virtual long FindIdentifier(const string & name);
+    virtual pair < long, long > FindIdentifier(const string & name);
 };
 
 #endif // COPASI_CBaseFunction
