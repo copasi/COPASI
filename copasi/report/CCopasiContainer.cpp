@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 02:00:35 $
+   $Date: 2005/03/09 15:07:30 $
    End CVS Header */
 
 /**
@@ -140,6 +140,9 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isNameVector() || it->second->isVector())
       {
+        if (cn.getElementName(0, false) == "")
+          return it->second;
+
         pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
@@ -153,7 +156,10 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isMatrix())
       {
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +         //TODO really?
+        if (cn.getElementName(0, false) == "")
+          return it->second;
+
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +          //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
