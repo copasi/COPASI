@@ -56,7 +56,7 @@ class CCopasiObject
     static const C_FLOAT64 DummyValue;
 
     //Operations
-  public:
+  protected:
     CCopasiObject();
 
     CCopasiObject(const std::string & name,
@@ -71,8 +71,6 @@ class CCopasiObject
                   const CCopasiContainer * pParent = NULL);
 
     virtual ~CCopasiObject();
-
-    virtual void cleanup();
 
     //  pure virtual function,
     virtual void print(std::ostream& ostream) {ostream << (*this);};
