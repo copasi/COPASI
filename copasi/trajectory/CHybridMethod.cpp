@@ -188,7 +188,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mReactions = &mpModel->getReactions();
   mAmu.resize(mReactions->size());
   mAmuOld.resize(mReactions->size());
-  mMetabolites = &(const_cast < CCopasiVectorN < CMetab > & > (mpModel->getMetabolites()));
+  mMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
   //  mDim = static_cast<C_INT32>mpModel->getTotMetab();
   mDim = mMetabolites->size();
   delete[] x;

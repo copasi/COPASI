@@ -83,7 +83,7 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 void MetabolitesWidget::fillTable()
 {
   const CMetab *obj;
-  const CCopasiVectorN < CMetab > & objects = dataModel->getModel()->getMetabolites();
+  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
   C_INT32 j, jmax = objects.size();
   table->setNumRows(jmax);
   mKeys.resize(jmax);

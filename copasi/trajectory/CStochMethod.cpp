@@ -396,12 +396,15 @@ void CStochMethod::setupDependencyGraphAndBalances()
 
   for (i = 0; i < mNumReactions; i++)
     {
-      const CCopasiVector<CChemEqElement> * bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
+      const CCopasiVector<CChemEqElement> * bbb;
+
+      bbb = &mpModel->getReactions()[i]->getChemEq().getBalances();
       //std::cout << std::endl << i << " : ";
       //TODO clear old local balances and substrates
       for (j = 0; j < bbb->size(); j++)
         {
-          bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (((*bbb)[j]->getMetabolite().getStatus()) != CMetab::METAB_FIXED)
@@ -411,12 +414,13 @@ void CStochMethod::setupDependencyGraphAndBalances()
               //std::cout << bb.mMetabAddr->getName() << "  ";
             }
         }
+
       bbb = &mpModel->getReactions()[i]->getChemEq().getSubstrates();
       //std::cout << std::endl << i << " : ";
-
       for (j = 0; j < bbb->size(); j++)
         {
-          bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
+          bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (1)

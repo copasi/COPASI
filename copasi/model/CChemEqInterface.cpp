@@ -232,8 +232,11 @@ void CChemEqInterface::setElements(std::vector<std::string> & names,
       else
       {extractModifier(reaction, pos, name); mult = 1.0;}
 
-      names.push_back(name);
-      mults.push_back(mult);
+      if (name != "")
+        {
+          names.push_back(name);
+          mults.push_back(mult);
+        }
     }
 }
 
@@ -373,6 +376,8 @@ std::set<std::string> CChemEqInterface::listOfNonExistingMetabNames(const CModel
 bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
   {
     std::set<std::string> metabs = listOfNonExistingMetabNames(model);
+    bool ret;
+    if (metabs.size() == 0) ret = false; else ret = true;
 
     std::set<std::string>::const_iterator it, itEnd;
 
@@ -383,7 +388,7 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
                            CMetabNameInterface::extractMetabName(model, *it),
                            0.1, CMetab::METAB_VARIABLE);
 
-    return true; //TODO: really check
+    return ret;
   }
 
 /*static*/

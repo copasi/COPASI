@@ -164,7 +164,7 @@ class CReaction : public CCopasiContainer
      *  @see mFail
      */
     C_INT32 saveOld(CWriteConfig & configbuffer,
-                    const CCopasiVectorN< CMetab > & metabolites);
+                    const CCopasiVector< CMetab > & metabolites);
 
     /**
      *  Saves the contents of the object to a ofstream object.

@@ -129,7 +129,7 @@ C_INT32 CReaction::save(CWriteConfig & C_UNUSED(configbuffer))
 {return 0;}
 
 C_INT32 CReaction::saveOld(CWriteConfig & configbuffer,
-                           const CCopasiVectorN< CMetab > &metabolites)
+                           const CCopasiVector< CMetab > &metabolites)
 {
   std::string tmp;
   C_INT32 Fail = 0;
@@ -696,7 +696,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   imax = std::min(SubstrateSize, usageRangeSize("SUBSTRATE")); //some checks?
 
   CModel * pModel = (CModel*) getObjectAncestor("Model");
-  const CCopasiVectorN< CMetab > & Metabolites = pModel->getMetabolites();
+  const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
     {
@@ -714,9 +714,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[metabName]->getKey());
+        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
       else
-        setParameterMapping(parName, Metabolites[metabName]->getKey());
+        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
     }
 
   for (i = imax; i < SubstrateSize; i++)
@@ -744,9 +744,9 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[metabName]->getKey());
+        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
       else
-        setParameterMapping(parName, Metabolites[metabName]->getKey());
+        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
     }
 
   for (i = imax; i < ProductSize; i++)
@@ -774,13 +774,13 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
         }
 
       if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[metabName]->getKey());
+        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
       else
-        setParameterMapping(parName, Metabolites[metabName]->getKey());
+        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
 
       // in the old files the chemical equation does not contain
       // information about modifiers. This has to be extracted from here.
-      mChemEq.addMetabolite(Metabolites[metabName]->getKey(), 1, CChemEq::MODIFIER);
+      mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)]->getKey(), 1, CChemEq::MODIFIER);
     }
 
   for (i = imax; i < ModifierSize; i++)

@@ -47,7 +47,7 @@ std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std
 
 CMetab * CMetabNameInterface::getMetabolite(const CModel* model, const std::string & name)
 {
-  C_INT32 index = model->findMetab(name);
+  C_INT32 index = model->findMetabByName(name);
   if (index == -1)
     return NULL;
   else
@@ -58,7 +58,7 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 {
   bool found = false;
   unsigned C_INT32 i;
-  CCopasiVectorN< CMetab > metabs = model->getMetabolites();
+  CCopasiVector< CMetab > metabs = model->getMetabolites();
   std::string metabName;
 
   for (i = 0; i < metabs.size(); i++)
@@ -79,7 +79,7 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
 bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)
 {
   //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
-  return (model->findMetab(name) + 1);
+  return (model->findMetabByName(name) + 1);
 }
 
 std::string CMetabNameInterface::extractCompartmentName(const CModel* model, const std::string & name)

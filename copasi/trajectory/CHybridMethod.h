@@ -516,7 +516,7 @@ class CHybridMethod : private CTrajectoryMethod
     /**
      *   A pointer to the metabolites of the model.
      */
-    CCopasiVectorN <CMetab> * mMetabolites;
+    CCopasiVector <CMetab> * mMetabolites;
 
     /**
      *   The stoichometry matrix of the model.
