@@ -55,13 +55,13 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   table = new StretchTable(this, "table");
   table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Name"));
   table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Volume"));
-  table->setFrameShadow(QTable::Sunken);
-  table->setResizePolicy(QTable::Manual);
+  //    table->setFrameShadow(QTable::Sunken);
+  //    table->setResizePolicy(QTable::Manual);
   table->setNumRows(0);
   table->setNumCols(2);
   table->setRowMovingEnabled(FALSE);
   table->setSorting(TRUE);
-  table->setFocusPolicy(QWidget::WheelFocus);
+  //    table->setFocusPolicy(QWidget::WheelFocus);
   table->sortColumn (0, true, true);
 
   CompartmentsWidgetLayout->addMultiCellWidget(table, 0, 0, 0, 1);
@@ -151,7 +151,6 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           table->setColumnWidth(0, w0);
           table->setColumnWidth(1, w1);
           binitialized = false;
-          tableWidth = newWidth;
         }
       else
         {
@@ -168,18 +167,23 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
             minTotalWidth += table->minColWidth[i];
 
           //Zoom in
-          if (newWidth > tableWidth)
+          if (newWidth > re->oldSize().width())
             {
-              int i = table->columnWidth(0);
-              i = table->columnWidth(1);
+              //     int i= table->columnWidth(0);
+              //     i= table->columnWidth(1);
               if (newWidth > totalWidth) // can do expansion
-                for (i = 0; i < table->numCols(); i++) // Do expansion
-                  table->setColumnWidth(i, newWidth*table->columnWidth(i) / totalWidth);
+                {
+                  if (totalWidth < re->oldSize().width())
+                    for (i = 0; i < table->numCols(); i++) // Do expansion
+                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / re->oldSize().width());
+                  else
+                    for (i = 0; i < table->numCols(); i++) // Do expansion
+                      table->setColumnWidth(i, newWidth*table->columnWidth(i) / totalWidth);
+                }
               else
                 for (i = 0; i < table->numCols(); i++) // Do not expand
                   table->setColumnWidth(i, table->columnWidth(i));
 
-              tableWidth = newWidth;
               table->EnableColWidthUpdate();
               return;
             }
@@ -189,7 +193,6 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
             {
               for (i = 0; i < table->numCols(); i++)
                 table->setColumnWidth(i, table->columnWidth(i));
-              tableWidth = newWidth;
               table->EnableColWidthUpdate();
               return;
             }
@@ -199,14 +202,13 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
             {
               for (i = 0; i < table->numCols(); i++)
                 table->setColumnWidth(i, table->minColWidth[i]);
-              tableWidth = newWidth;
+              resize (minTotalWidth, re->size().height());
               table->EnableColWidthUpdate();
               return;
             }
           //Bigger than the user specified total width
           for (i = 0; i < table->numCols(); i++) // Do Expansion
             table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
-          tableWidth = newWidth;
           table->EnableColWidthUpdate();
           return;
         }

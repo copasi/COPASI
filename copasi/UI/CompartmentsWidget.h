@@ -31,7 +31,6 @@ class CompartmentsWidget : public QWidget
     QPushButton* btnCancel;
     QGridLayout* CompartmentsWidgetLayout;
     bool binitialized;
-    int tableWidth;
 
   public:
     CompartmentsWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
