@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:49 $
+   $Date: 2003/11/19 20:58:58 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -30,7 +30,7 @@ class CStochBalance
 
 class CRandom;
 
-class CStochMethod : private CTrajectoryMethod
+class CStochMethod : public CTrajectoryMethod
   {
     friend CTrajectoryMethod *
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,

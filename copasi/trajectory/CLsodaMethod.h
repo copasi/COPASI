@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:09 $
+   $Date: 2003/11/19 20:58:58 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
@@ -13,7 +13,7 @@
 
 class CStateX;
 
-class CLsodaMethod : private CTrajectoryMethod
+class CLsodaMethod : public CTrajectoryMethod
   {
     friend CTrajectoryMethod *
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,

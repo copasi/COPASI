@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:49 $
+   $Date: 2003/11/19 20:58:58 $
    End CVS Header */
 
 /**
@@ -87,7 +87,7 @@ class Balance
     friend std::ostream & operator<<(std::ostream & os, const Balance & d);
   };
 
-class CHybridMethod : private CTrajectoryMethod
+class CHybridMethod : public CTrajectoryMethod
   {
     friend CTrajectoryMethod *
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
