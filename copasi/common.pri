@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2003/05/21 20:36:32 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2003/05/27 14:18:10 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -85,6 +85,7 @@ contains(BUILD_OS, SunOS) {
   } else {
     error( "CLAPACK_PATH must be specified" )
   }
+  LIBS += -lSM
 }
  
 contains(BUILD_OS, Linux) {
