@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/10 17:53:34 $
+   $Author: ssahle $ 
+   $Date: 2005/01/12 16:00:25 $
    End CVS Header */
 
 #include <cmath>
@@ -245,9 +245,17 @@ void CopasiSlider::sliderValueChanged(int value)
     }
   else if (this->mType == CCopasiParameter::DOUBLE)
     {
-      C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
+      if (mpObject->isReference() && mpObject->getObjectParent())
+        {
+          mpObject->getObjectParent()
+          ->setValueOfNamedReference(mpObject->getObjectName() , mValue);
+        }
+      else
+        {
+          C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)this->mpObject)->getReference());
 
-      *reference = this->mValue;
+          *reference = this->mValue;
+        }
     }
   this->updateLabel();
 
