@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/07/06 17:41:30 $
+   $Author: ssahle $ 
+   $Date: 2004/08/05 12:59:51 $
    End CVS Header */
 
 /**
@@ -25,6 +25,13 @@
 CCopasiContainer * CCopasiContainer::Root = NULL;
 
 void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
+
+CCopasiObject * CCopasiContainer::ObjectFromName(const CCopasiObjectName & objName)
+{
+  std::vector< CCopasiContainer * > dummy;
+  return CCopasiContainer::ObjectFromName(dummy, objName);
+  //TODO: more effective
+}
 
 CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
     const CCopasiObjectName & objName)
@@ -148,7 +155,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
     if (it->second->isMatrix())
       {
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +   //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +    //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)

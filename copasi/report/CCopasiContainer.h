@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/02/25 22:31:16 $
+   $Author: ssahle $ 
+   $Date: 2004/08/05 12:59:52 $
    End CVS Header */
 
 /**
@@ -59,6 +59,9 @@ class CCopasiContainer: public CCopasiObject
     static
     CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
                                    const CCopasiObjectName & objName);
+
+    static
+    CCopasiObject * ObjectFromName(const CCopasiObjectName & objName);
 
     CCopasiContainer(const std::string & name,
                      const CCopasiContainer * pParent = NULL,
