@@ -54,17 +54,17 @@ QMetaObject* CompartmentsWidget1::staticMetaObject()
   static const QUMethod slot_1 = {"slotBtnOKClicked", 0, 0 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
-      { "slotBtnOKClicked()", &slot_1, QMetaData::Protected }
+      {"slotBtnCancelClicked()", &slot_0, QMetaData::Protected },
+      {"slotBtnOKClicked()", &slot_1, QMetaData::Protected }
     };
   static const QUParameter param_signal_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_0 = {"signal_emitted", 1, param_signal_0 };
   static const QMetaData signal_tbl[] =
     {
-      { "signal_emitted(QString&)", &signal_0, QMetaData::Protected }
+      {"signal_emitted(QString&)", &signal_0, QMetaData::Protected }
     };
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget1", parentObject,

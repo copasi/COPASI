@@ -99,6 +99,7 @@ class ReactionsWidget1 : public QWidget
     virtual void slotBtnOKClicked();
     virtual void slotCheckBoxClicked();
     virtual void slotComboBoxSelectionChanged(const QString &);
+    virtual void slotLineEditChanged(const QString &);
   signals:
     void signal_emitted(QString &);
   };

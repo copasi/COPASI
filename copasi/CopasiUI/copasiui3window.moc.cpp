@@ -59,13 +59,13 @@ QMetaObject* CopasiUI3Window::staticMetaObject()
   static const QUMethod slot_6 = {"aboutQt", 0, 0 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotFileOpen()", &slot_0, QMetaData::Protected },
-      { "slotFileSave()", &slot_1, QMetaData::Protected },
-      { "slotFileSaveAs()", &slot_2, QMetaData::Protected },
-      { "newDoc()", &slot_3, QMetaData::Protected },
-      { "slotFilePrint()", &slot_4, QMetaData::Protected },
-      { "about()", &slot_5, QMetaData::Protected },
-      { "aboutQt()", &slot_6, QMetaData::Protected }
+      {"slotFileOpen()", &slot_0, QMetaData::Protected },
+      {"slotFileSave()", &slot_1, QMetaData::Protected },
+      {"slotFileSaveAs()", &slot_2, QMetaData::Protected },
+      {"newDoc()", &slot_3, QMetaData::Protected },
+      {"slotFilePrint()", &slot_4, QMetaData::Protected },
+      {"about()", &slot_5, QMetaData::Protected },
+      {"aboutQt()", &slot_6, QMetaData::Protected }
     };
   metaObj = QMetaObject::new_metaobject(
               "CopasiUI3Window", parentObject,

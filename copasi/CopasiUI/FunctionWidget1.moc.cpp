@@ -54,17 +54,17 @@ QMetaObject* FunctionWidget1::staticMetaObject()
   static const QUMethod slot_1 = {"slotCommitButtonClicked", 0, 0 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotCancelButtonClicked()", &slot_0, QMetaData::Protected },
-      { "slotCommitButtonClicked()", &slot_1, QMetaData::Protected }
+      {"slotCancelButtonClicked()", &slot_0, QMetaData::Protected },
+      {"slotCommitButtonClicked()", &slot_1, QMetaData::Protected }
     };
   static const QUParameter param_signal_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_0 = {"signalCancelButtonClicked", 1, param_signal_0 };
   static const QMetaData signal_tbl[] =
     {
-      { "signalCancelButtonClicked(QString&)", &signal_0, QMetaData::Protected }
+      {"signalCancelButtonClicked(QString&)", &signal_0, QMetaData::Protected }
     };
   metaObj = QMetaObject::new_metaobject(
               "FunctionWidget1", parentObject,

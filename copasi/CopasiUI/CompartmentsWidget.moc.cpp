@@ -52,10 +52,10 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
   QMetaObject* parentObject = QWidget::staticMetaObject();
   static const QUParameter param_slot_0[] =
     {
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
     };
   static const QUMethod slot_0 = {"slotTableCurrentChanged", 4, param_slot_0 };
   static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
@@ -63,32 +63,32 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
   static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0 };
   static const QUParameter param_slot_4[] =
     {
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_int, 0, QUParameter::In }
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_int, 0, QUParameter::In }
     };
   static const QUMethod slot_4 = {"tableValueChanged", 2, param_slot_4 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
-      { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
-      { "slotBtnOKClicked()", &slot_2, QMetaData::Protected },
-      { "slotBtnCancelClicked()", &slot_3, QMetaData::Protected },
-      { "tableValueChanged(int,int)", &slot_4, QMetaData::Protected }
+      {"slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
+      {"slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
+      {"slotBtnOKClicked()", &slot_2, QMetaData::Protected },
+      {"slotBtnCancelClicked()", &slot_3, QMetaData::Protected },
+      {"tableValueChanged(int,int)", &slot_4, QMetaData::Protected }
     };
   static const QUParameter param_signal_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_0 = {"name", 1, param_signal_0 };
   static const QUParameter param_signal_1[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_1 = {"signal_emitted", 1, param_signal_1 };
   static const QMetaData signal_tbl[] =
     {
-      { "name(QString&)", &signal_0, QMetaData::Public },
-      { "signal_emitted(QString&)", &signal_1, QMetaData::Private }
+      {"name(QString&)", &signal_0, QMetaData::Public },
+      {"signal_emitted(QString&)", &signal_1, QMetaData::Private }
     };
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget", parentObject,

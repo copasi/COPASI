@@ -52,26 +52,26 @@ QMetaObject* FunctionWidget::staticMetaObject()
   QMetaObject* parentObject = QWidget::staticMetaObject();
   static const QUParameter param_slot_0[] =
     {
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_int, 0, QUParameter::In },
-      { 0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_int, 0, QUParameter::In },
+      {0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
     };
   static const QUMethod slot_0 = {"slotTableCurrentChanged", 4, param_slot_0 };
   static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
-      { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected }
+      {"slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
+      {"slotTableSelectionChanged()", &slot_1, QMetaData::Protected }
     };
   static const QUParameter param_signal_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_0 = {"name", 1, param_signal_0 };
   static const QMetaData signal_tbl[] =
     {
-      { "name(QString&)", &signal_0, QMetaData::Protected }
+      {"name(QString&)", &signal_0, QMetaData::Protected }
     };
   metaObj = QMetaObject::new_metaobject(
               "FunctionWidget", parentObject,

@@ -193,6 +193,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   //connect(ComboBox1, SIGNAL(textChanged(const QString &)), this, SLOT(slotComboBoxSelectionChanged()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
+  connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotLineEditChanged(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -663,4 +664,19 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           line++;
         }
     }
+}
+
+/*This function is called when the "Chemical Reaction" LineEdit is changed.*/
+void ReactionsWidget1::slotLineEditChanged(const QString & chemreactn)
+{
+  const string & changed_chemical_reaction = chemreactn.latin1();
+  CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
+  CReaction *reactn1;
+  reactn1 = reactions1[(string)name];
+  CChemEq * chemEq1;
+  chemEq1 = & reactn1->getChemEq();
+  bool status;
+  status = chemEq1->setChemicalEquation(changed_chemical_reaction);
+  // string info=(string)status;
+  //QMessageBox::information(this, info, "products ");
 }

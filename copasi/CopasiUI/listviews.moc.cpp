@@ -122,42 +122,42 @@ QMetaObject* ListViews::staticMetaObject()
   QMetaObject* parentObject = QSplitter::staticMetaObject();
   static const QUParameter param_slot_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_0 = {"slotFunctionTableChanged", 1, param_slot_0 };
   static const QUParameter param_slot_1[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_1 = {"slotCompartmentTableChanged", 1, param_slot_1 };
   static const QUParameter param_slot_2[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_2 = {"slotMetaboliteTableChanged", 1, param_slot_2 };
   static const QUParameter param_slot_3[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_3 = {"slotMoietyTableChanged", 1, param_slot_3 };
   static const QUParameter param_slot_4[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+      {0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_4 = {"slotReactionTableChanged", 1, param_slot_4 };
   static const QUParameter param_slot_5[] =
     {
-      { 0, &static_QUType_ptr, "QListViewItem", QUParameter::In }
+      {0, &static_QUType_ptr, "QListViewItem", QUParameter::In }
     };
   static const QUMethod slot_5 = {"slotFolderChanged", 1, param_slot_5 };
   static const QMetaData slot_tbl[] =
     {
-      { "slotFunctionTableChanged(QString&)", &slot_0, QMetaData::Public },
-      { "slotCompartmentTableChanged(QString&)", &slot_1, QMetaData::Public },
-      { "slotMetaboliteTableChanged(QString&)", &slot_2, QMetaData::Public },
-      { "slotMoietyTableChanged(QString&)", &slot_3, QMetaData::Public },
-      { "slotReactionTableChanged(QString&)", &slot_4, QMetaData::Public },
-      { "slotFolderChanged(QListViewItem*)", &slot_5, QMetaData::Protected }
+      {"slotFunctionTableChanged(QString&)", &slot_0, QMetaData::Public },
+      {"slotCompartmentTableChanged(QString&)", &slot_1, QMetaData::Public },
+      {"slotMetaboliteTableChanged(QString&)", &slot_2, QMetaData::Public },
+      {"slotMoietyTableChanged(QString&)", &slot_3, QMetaData::Public },
+      {"slotReactionTableChanged(QString&)", &slot_4, QMetaData::Public },
+      {"slotFolderChanged(QListViewItem*)", &slot_5, QMetaData::Protected }
     };
   metaObj = QMetaObject::new_metaobject(
               "ListViews", parentObject,
