@@ -12,46 +12,49 @@
 #include "utilities/utility.h"
 #include "CChemEqElement.h"
 #include "CCompartment.h"
+#include "report/CKeyFactory.h"
+#include "CMetabNameInterface.h"
 
 CChemEqElement::CChemEqElement(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Chemical Equation Element"),
-    mMetaboliteName(),
-    mMultiplicity(0),
-    mpMetabolite(NULL)
+    mMetaboliteKey(),
+    mMultiplicity(0)
+    //mpMetabolite(NULL)
 {CONSTRUCTOR_TRACE;}
 
 CChemEqElement::CChemEqElement(const CChemEqElement & src,
                                const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mMetaboliteName(src.mMetaboliteName),
-    mMultiplicity(src.mMultiplicity),
-    mpMetabolite(src.mpMetabolite)
+    mMetaboliteKey(src.mMetaboliteKey),
+    mMultiplicity(src.mMultiplicity)
+    //mpMetabolite(src.mpMetabolite)
 {CONSTRUCTOR_TRACE;}
 
 CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 
 void CChemEqElement::cleanup() {}
 
-void CChemEqElement::setMetabolite(CMetab * pMetabolite)
-{
-  mpMetabolite = pMetabolite;
-  mMetaboliteName = mpMetabolite->getName();
-}
+//void CChemEqElement::setMetabolite(CMetab * pMetabolite)
+//{
+//  mpMetabolite = pMetabolite;
+//  mMetaboliteName = mpMetabolite->getName();
+//}
+
+void CChemEqElement::setMetabolite(const std::string & key)
+{mMetaboliteKey = key;}
+
+const std::string & CChemEqElement::getMetaboliteKey() const
+  {return mMetaboliteKey;}
 
 const CMetab & CChemEqElement::getMetabolite() const
-  {
-    if (!mpMetabolite)
-      fatalError();
+  {return *(CMetab*)(CCopasiContainer*)CKeyFactory::get(mMetaboliteKey);}
 
-    return *mpMetabolite;
-  }
+//void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
+//{mMetaboliteName = metaboliteName;}
 
-void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
-{mMetaboliteName = metaboliteName;}
-
-const std::string & CChemEqElement::getMetaboliteName() const
-  {return mMetaboliteName;}
+//const std::string & CChemEqElement::getMetaboliteName() const
+//  {return mMetaboliteName;}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}
@@ -65,25 +68,26 @@ C_FLOAT64 CChemEqElement::getMultiplicity() const
   }
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
-{
-  unsigned C_INT32 i, imax = compartments.size();
-
-  for (i = 0; i < imax; i++)
-    if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
-      break;
-
-  if (i < imax)
-    mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
-  else if (mpMetabolite)
-    mMetaboliteName = mpMetabolite->getName();
-  else
-    mpMetabolite = NULL;
+{/*
+    unsigned C_INT32 i, imax = compartments.size();
+   
+    for (i = 0; i < imax; i++)
+      if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
+        break;
+   
+    if (i < imax)
+      mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
+    else if (mpMetabolite)
+      mMetaboliteName = mpMetabolite->getName();
+    else
+      mpMetabolite = NULL;*/
 }
 
 std::string CChemEqElement::writeElement() const
   {
+    std::string name = CMetabNameInterface::getDisplayName(mMetaboliteKey);
     if (mMultiplicity == 1.0)
-      return mMetaboliteName;
+      return name;
     else
-      return StringPrint("%g * %s", mMultiplicity, mMetaboliteName.c_str());
+      return StringPrint("%g * %s", mMultiplicity, name.c_str());
   }

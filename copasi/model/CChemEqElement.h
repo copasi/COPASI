@@ -22,7 +22,7 @@ class CChemEqElement : public CCopasiContainer
     /**
      *  The name of the metabolite the element
      */
-    std::string mMetaboliteName;
+    std::string mMetaboliteKey;
 
     /**
      *  The multiplizity of the metabolite
@@ -33,7 +33,7 @@ class CChemEqElement : public CCopasiContainer
      *  A pointer to the metabolite
      */
     /** @dia:route 2,105; h,45.5713,93.7809,123.645,92.0961,117.263 */
-    CMetab * mpMetabolite;
+    //CMetab * mpMetabolite;
 
     // Operations
 
@@ -85,8 +85,9 @@ class CChemEqElement : public CCopasiContainer
     /**
      *  Set the metabolite of the element.
      *  @param CMetab * metabolite
-     */
-    void setMetabolite(CMetab * metabolite);
+     */ 
+    //void setMetabolite(CMetab * metabolite);
+    void setMetabolite(const std::string & key);
 
     /**
      *  Retrieves the metabolite of the element.
@@ -94,11 +95,13 @@ class CChemEqElement : public CCopasiContainer
      */
     const CMetab & getMetabolite() const;
 
+    const std::string & getMetaboliteKey() const;
+
     /**
      *  Set the metabolite name.
      *  @param "const string &" name
-     */
-    void setMetaboliteName(const std::string & metaboliteName);
+     */ 
+    //void setMetaboliteName(const std::string & metaboliteName);
 
     /**
      *  Retrieves the metabolite name.
@@ -121,12 +124,12 @@ class CChemEqElement : public CCopasiContainer
 
     friend std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
     {
-      os << "CChemEqElement: " << d.mMultiplicity << " * " << d.mMetaboliteName << std::endl;
+      os << "CChemEqElement: " << d.mMultiplicity << " * " << d.mMetaboliteKey << std::endl;
 
-      if (d.mpMetabolite)
-        os << "      mpMetabolite " << d.mpMetabolite->getName() << std::endl;
-      else
-        os << "      mpMetabolite == 0 " << std::endl;
+      //if (d.mpMetabolite)
+      //  os << "      mpMetabolite " << d.mpMetabolite->getName() << std::endl;
+      //else
+      //  os << "      mpMetabolite == 0 " << std::endl;
 
       return os;
     }
