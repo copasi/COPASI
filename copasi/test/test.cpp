@@ -23,6 +23,7 @@
 #include "steadystate/steadystate.h"
 //#include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
+#include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
@@ -50,6 +51,7 @@ C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
 //C_INT32  TestOptimization(void);     //yohe: new
+C_INT32  TestElementaryFluxMode(void);
 
 C_INT32  ConvertFunctionDB(void);
 C_INT32  MakeFunctionDB(void);
@@ -95,7 +97,7 @@ C_INT main(C_INT argc, char *argv[])
 //      TestMetab();
 //      TestReadSample();
 //      TestNewton();
-      TestSSSolution();
+//      TestSSSolution();
 //YOHE: new test
 //      TestOptimization();
 //      TestEigen();
@@ -116,6 +118,8 @@ C_INT main(C_INT argc, char *argv[])
 //      TestDependencyGraph();
 //      TestIndexedPriorityQueue(7);
 //      TestSpec2Model();
+    
+      TestElementaryFluxMode();
     }
 
   catch (CCopasiException Exception)
@@ -519,7 +523,7 @@ C_INT32  TestNewton(void)
 // by YH
 C_INT32  TestSSSolution(void)
 {
-    CReadConfig inbuf("gps/NewtonTest.gps");
+    CReadConfig inbuf("gps/TestKinetics/MassAction.gps");
     inbuf.getDefaults();
 
     CModel model;
@@ -1663,3 +1667,23 @@ C_INT32 TestSpec2Model()
     cout << "Done testing CSpec2Model\n";
     return 0;
 }
+
+C_INT32 TestElementaryFluxMode(void)
+{
+    CReadConfig inbuf("gps/TestKinetics/ElementaryFluxModes.gps");
+    inbuf.getDefaults();
+  
+    CModel Model;
+    Model.load(inbuf);
+    Model.compile();
+
+    CElementaryFluxModes FluxModes;
+    
+    FluxModes.calculate(&Model);
+
+    ofstream output("ElementaryFluxModes.txt");
+    FluxModes.write(output);
+    
+  return 0;
+}
+

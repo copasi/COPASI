@@ -240,7 +240,7 @@ class CEigen {
    * Eigenvalue calculations
    * @param SSRes the steady state resolution.
    */
-  void CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob);
+  void CalcEigenvalues(C_FLOAT64 & SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob);
 
   /**
    * Get the max eigenvalue real part

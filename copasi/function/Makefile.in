@@ -191,7 +191,7 @@ noinst_LIBRARIES = libfunction.a
 libfunction_a_SOURCES =  	CRange.cpp 	CUsageRange.cpp 	CFunction.cpp 	CFunctionParameter.cpp 	CFunctionParameters.cpp 	CKinFunction.cpp 	CKinFunctionFlexLexer.cpp 	CMassAction.cpp 	CFunctionDB.cpp 	CNodeK.cpp
 
 
-EXTRA_DIST =  	CRange.h		CRange.cpp 	CUsageRange.h		CUsageRange.cpp 	CFunction.h		CFunction.cpp 	CFunctionParameter.h	CFunctionParameter.cpp 	CFunctionParameters.h	CFunctionParameters.cpp 	CMassAction.h 		CMassAction.cpp 	CKinFunction.h		CKinFunction.cpp 	CKinFunctionFlexLexer.cpp 	CKinFunctionFlexLexer.lpp 	FlexLexer.h 	CFunctionDB.h		CFunctionDB.cpp 	CNodeK.h		CNodeK.cpp 	CCallParameter.h 	CCallParameters.h
+EXTRA_DIST =  	CRange.h		CRange.cpp 	CUsageRange.h		CUsageRange.cpp 	CFunction.h		CFunction.cpp 	CFunctionParameter.h	CFunctionParameter.cpp 	CFunctionParameters.h	CFunctionParameters.cpp 	CMassAction.h 		CMassAction.cpp 	CKinFunction.h		CKinFunction.cpp 	CKinFunctionFlexLexer.cpp 	CKinFunctionFlexLexer.lpp 	CFunctionDB.h		CFunctionDB.cpp 	CNodeK.h		CNodeK.cpp 	CCallParameter.h 	CCallParameters.h 	function.h
 
 
 ####### kdevelop will overwrite this part!!! (end)############

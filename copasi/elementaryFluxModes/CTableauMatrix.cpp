@@ -86,7 +86,7 @@ void CTableauMatrix::removeLine(const list < const CTableauLine * >::iterator li
   else if (line == mFirstIrreversible)
     {
       mFirstIrreversible--;
-      mLine.erase(mFirstIrreversible);
+      mLine.erase(line);
       mFirstIrreversible++;
     }
   else
@@ -97,17 +97,17 @@ void CTableauMatrix::removeLine(const list < const CTableauLine * >::iterator li
 
 bool CTableauMatrix::isValid(const CTableauLine * src)
 {
-  list < const CTableauLine * >::iterator i = mLine.begin();
+  list < const CTableauLine * >::iterator i;
   list < const CTableauLine * >::iterator tmp;
   
   /* Check whether we have already better lines */
-  while (i != mLine.end())
+  for (i = mLine.begin(); i != mLine.end(); i++)
     if ((*i)->getScore() < src->getScore()) return FALSE;
   
   i = mLine.begin();
   /* Check whether the new line scores better than existing lines */
   /* If so the existing lines are removed */
-  while (i != mLine.end())
+  for (i = mLine.begin(); i != mLine.end();)
     if ((*i)->getScore() > src->getScore()) 
       {
         if (i == mLine.begin())
@@ -128,4 +128,13 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
       i++;
     
   return TRUE;
+}
+
+void CTableauMatrix::print(void)
+{
+  cout << "Tableau Matrix: Number of Lines = " << mLine.size() << endl;
+  list < const CTableauLine * >::iterator i;
+
+  for (i=mLine.begin(); i!=mLine.end(); i++)
+    (*i)->print();
 }

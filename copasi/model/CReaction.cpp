@@ -106,7 +106,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
     
-  if ((Fail = configbuffer.getVariable("Reversible", "C_INT32", &mReversible)))
+  if ((Fail = configbuffer.getVariable("Reversible", "C_INT16", &mReversible)))
     return Fail;
     
   if (configbuffer.getVersion() < "4")

@@ -30,7 +30,7 @@ CFluxScore::CFluxScore(const vector < C_FLOAT64 > & fluxMode)
       
       for (k=8*sizeof(int)-1; k>(unsigned C_INT32)-1; k--)
         {
-          fluxMode[j++] ? *Score += 1 << k : 0;
+          fluxMode[j++] ? (*Score) += 1 << k : 0;
         }
     }
   
@@ -42,7 +42,7 @@ CFluxScore::CFluxScore(const vector < C_FLOAT64 > & fluxMode)
 
       for (k=8*sizeof(int)-1; k>=8*sizeof(int)-Remainder; k--)
         {
-          fluxMode[j++] ? *Score += 1 << k : 0;
+          fluxMode[j++] ? (*Score) += 1 << k : 0;
         }
     }
 }

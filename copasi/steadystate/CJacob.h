@@ -67,7 +67,7 @@ class CJacob {
   /**
    * return the Jacobian matrix
    */
-  TNT::Matrix < C_FLOAT64 > getJacob();
+  TNT::Matrix < C_FLOAT64 > & getJacob();
 
   /**
    * Set the Jacobian Matrix

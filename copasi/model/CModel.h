@@ -317,10 +317,9 @@ class CModel
   void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   vector < CMetab * > & getMetabolitesInd();
+  vector < CMetab * > & getMetabolitesDep();
   vector < CMetab * > & getMetabolitesX();
 
-  vector < CMetab * > & getMetabolitesDep();
-  
   /**
    *  Get the number of total metabolites
    *  @return C_INT32 totMetab
@@ -395,6 +394,7 @@ class CModel
    * @return "CCopasiVectorS <CReaction> &"
    */
   CCopasiVectorS < CReaction > & getReactions();
+  const CCopasiVectorS < CReaction > & getReactions() const;
   vector < CReaction * > & getReactionsX();
 
   // Added by Yongqun He
@@ -433,6 +433,11 @@ class CModel
    *	@return vector < CMetab * > 
    */
   vector < CMetab * > & getMetabolites();
+
+  /**
+   *  Get the Stoichiometry Matrix of this Model
+   */
+  const TNT::Matrix < C_FLOAT64 > & getStoi() const;
 
   /**
    *  Get the Reduced Stoichiometry Matrix of this Model

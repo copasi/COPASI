@@ -23,11 +23,11 @@ EXTRA_DIST = \
 	CKinFunction.h		CKinFunction.cpp \
 	CKinFunctionFlexLexer.cpp \
 	CKinFunctionFlexLexer.lpp \
-	FlexLexer.h \
 	CFunctionDB.h		CFunctionDB.cpp \
 	CNodeK.h		CNodeK.cpp \
 	CCallParameter.h \
-	CCallParameters.h
+	CCallParameters.h \
+	function.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 

@@ -84,5 +84,7 @@ public:
    *  @return "bool" isReversible
    */
   bool isReversible() const;
+
+  void print(void) const;
 };
 #endif // COPASI_CTableauLine

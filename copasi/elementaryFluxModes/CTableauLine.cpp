@@ -41,7 +41,7 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m,
     mReaction[i] = m * src1.mReaction[i] + src2.mReaction[i];
   
   for (j=0, mFluxMode.resize(jmax); j<jmax; j++)
-    mFluxMode[i] = m * src1.mFluxMode[i] + src2.mFluxMode[i];
+    mFluxMode[j] = m * src1.mFluxMode[j] + src2.mFluxMode[j];
 
   mFluxScore = new CFluxScore(mFluxMode);
 }
@@ -68,5 +68,26 @@ CTableauLine::getFluxMode(const unsigned C_INT32 & index) const
 bool CTableauLine::isReversible() const
 {
   return mReversible;
+}
+
+void CTableauLine::print(void) const
+{
+  unsigned C_INT32 i, imax = mReaction.size();
+  unsigned C_INT32 j, jmax = mFluxMode.size();
+  
+  if (isReversible())
+    cout << "reversible:  ";
+  else
+    cout << "irreversible:";
+
+  for (i=0; i<imax; i++)
+    cout << "  "<< mReaction[i];
+  
+  cout << "\t";
+  
+  for (j=0; j<jmax; j++)
+    cout << "  "<< mFluxMode[j];
+  
+  cout << endl;
 }
 

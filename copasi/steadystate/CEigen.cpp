@@ -23,7 +23,7 @@ CEigen::CEigen()
   CONSTRUCTOR_TRACE;
   // initialise variables
   mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-    mEigen_nzero = mEigen_ncplxconj = 0.0;
+    mEigen_nzero = mEigen_ncplxconj = 0;
 
   // 15 parameters for DGEES_()
   // #1: (input) characer*1
@@ -140,7 +140,8 @@ void CEigen::cleanup()
 }
 
 // eigenvalue calculatiosn
-void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob)
+void CEigen::CalcEigenvalues(C_FLOAT64 & SSRes,
+                             TNT::Matrix<C_FLOAT64> & ss_jacob)
 {
   C_INT32 i, j;
 
@@ -177,7 +178,7 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64> & ss_jacob)
 void CEigen::statistics(C_FLOAT64 SSRes)
 {
   C_INT32 mx, mn;            // YH: n is the 4th parameter, not here
-  C_INT32 i, j;
+  C_INT32 i;
   C_FLOAT64 distt, maxt, tott;
 
   // sort the eigenvalues

@@ -77,6 +77,7 @@ void CElementaryFluxModes::write(ostream & output) const
   /* Get the reactions from the model */
   const CCopasiVectorS < CReaction > & Reaction = mModel->getReactions();
 
+  string Reversible;
   unsigned C_INT32 i, imax = mFluxModes.size();
   unsigned C_INT32 j, jmax;
 
@@ -87,10 +88,16 @@ void CElementaryFluxModes::write(ostream & output) const
     {
       output << i << ".\t";
       jmax = mFluxModes[i].size();
+      Reversible = "reversible";
       
       for (j=0; j<jmax; j++)
-        output << Reaction[mIndex[mFluxModes[i][j]]]->getName() << ", ";
+        {
+          if (!Reaction[mIndex[mFluxModes[i][j]]]->isReversible())
+              Reversible = "irreversible";
+              
+          output << Reaction[mIndex[mFluxModes[i][j]]]->getName() << ", ";
+        }
           
-      output << endl;
+      output << "\t" << Reversible << endl;
     }
 }

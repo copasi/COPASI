@@ -107,7 +107,7 @@ void CJacob::jacobEval(const C_FLOAT64 *src, C_FLOAT64 factor, C_FLOAT64 res)
 /**
  * return the Jacobian matrix
  */
-TNT::Matrix < C_FLOAT64 > CJacob::getJacob()
+TNT::Matrix < C_FLOAT64 > & CJacob::getJacob()
 {
   return mJacob;
 }

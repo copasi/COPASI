@@ -1,4 +1,5 @@
 SUBDIRS = \
+	elementaryFluxModes \
 	function \
 	output \
 	model \
@@ -15,7 +16,8 @@ dist:
 	autoheader
 # use --include-deps, if you want to release the stuff. Don't use it for
 # yourself
-	automake --include-deps
+#	automake --include-deps
+	automake
 	autoconf
 	touch stamp-h.in
 	LIST=`find ./po -name "*.po"`; \

@@ -580,6 +580,11 @@ CCopasiVectorS < CReaction > & CModel::getReactions()
   return mSteps;
 }
 
+const CCopasiVectorS < CReaction > & CModel::getReactions() const
+{
+  return mSteps;
+}
+
 vector < CReaction * > & CModel::getReactionsX()
 {
   return mStepsX;
@@ -708,6 +713,14 @@ vector < CMetab * > & CModel::getMetabolites()
 const TNT::Matrix < C_FLOAT64 >& CModel::getRedStoi() const
 {
   return mRedStoi;
+}
+
+/**
+ *  Get the Stoichiometry Matrix of this Model
+ */
+const TNT::Matrix < C_FLOAT64 >& CModel::getStoi() const
+{
+  return mStoi;
 }
 
 /**

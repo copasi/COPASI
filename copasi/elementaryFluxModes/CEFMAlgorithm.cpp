@@ -32,6 +32,8 @@ bool CEFMAlgorithm::calculate(const vector < vector < C_FLOAT64 > > & stoi,
   /* initialize the current tableu matrix */
   mCurrentTableau = new CTableauMatrix(stoi, reversibleNumber);
   
+  mCurrentTableau->print();
+  
   /* Do the iteration */
   for (Step = 0; Step < MaxSteps; Step++) calculateNextTableau(Step);
 
@@ -55,29 +57,31 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
   /* Move all lines with zeros in the step column to the new tableu matrix */
   /* and remove them from the current tableau matrix */
   a = mCurrentTableau->getFirst();
+  
   while (a != mCurrentTableau->getEnd())
     if ((*a)->getReaction(step) == 0.0)
       {
         /* We have to make sure that "a" points to the next element in the */
-        /* list after the remember the previous element so that a++ points to */
-        /* past the removed one */
+        /* list after the removal of itself */
         if (a == mCurrentTableau->getFirst())
           {
             mNextTableau->addLine(*a);
             mCurrentTableau->removeLine(a);
-            a == mCurrentTableau->getFirst();
+            a = mCurrentTableau->getFirst();
           }
         else
           {
             /* We have to remember the previous element so that a++ points to */
             /* past the removed one */
             b = a--;
-            mNextTableau->addLine(*a);
-            mCurrentTableau->removeLine(a);
-            a = b++;
+            mNextTableau->addLine(*b);
+            mCurrentTableau->removeLine(b);
+            a++;
           }
       }
-
+    else
+      a++;
+  
   /* Now we create all linear combinations of the remaining lines in the */
   /* current tableau */
   a = mCurrentTableau->getFirst();
@@ -102,6 +106,8 @@ void CEFMAlgorithm::calculateNextTableau(const unsigned C_INT32 & step)
   /* Assigne the next tableau to the current tableau and cleanup */
   pdelete(mCurrentTableau);
   mCurrentTableau = mNextTableau;
+
+  mCurrentTableau->print();
   mNextTableau = NULL;
 }
 
