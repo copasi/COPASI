@@ -45,7 +45,7 @@ using namespace std;
 
 C_INT32 Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
 {
-  C_INT i, j, l;
+  C_INT32 i, j, l, m;
   char gn[1024];
 
   // create and name genes
@@ -58,13 +58,22 @@ C_INT32 Erdos(C_INT32 n, C_INT32 k, CCopasiVector < CGene > &gene)
   for (i = 0; i < n; i++)
     for (j = 0; j < k; j++)
       {
-        l = r250n(n);
+        for (l = -1; l < 0; )
+          {
+            l = r250n(n);
+            for (m = 0; m < gene[i]->getModifierNumber(); m++)
+              if (gene[l] == gene[i]->getModifier(m))
+                {
+                  l = -1;
+                  break;
+                }
+          }
         gene[i]->addModifier(gene[l], r250n(2), dr250()*10.0 + 1e-5);
       }
   return 0;
 }
 
-void WriteDot(ofstream &fout, string &Title, CCopasiVector < CGene > &gene)
+void WriteDot(ofstream &fout, char *Title, CCopasiVector < CGene > &gene)
 {
   unsigned C_INT32 i;
   C_INT32 j;
@@ -72,37 +81,42 @@ void WriteDot(ofstream &fout, string &Title, CCopasiVector < CGene > &gene)
   // dot file header
   fout << "digraph \"" << Title << "\" {\n";
   fout << "\tgraph\n\t[\n";
-  fout << "\t\tpage=\"8,11\"\n";
   fout << "\t\tcenter=\"true\"\n";
   fout << "\t\toverlap=\"false\"\n";
   fout << "\t\tDamping=0.999\n";
-  fout << "\t\tfontsize=14\n";
   fout << "\t\tfontname=\"Helvetica\"\n";
   fout << "\t\tmaxiter=1000000\n";
-  // fprintf(fo, "\t\tsplines=\"true\"\n");
+  fout << "\t\tsplines=\"true\"\n";
+  fout << "\t\tsep=0.8\n";
   // if(rndstart)
-  fout << "\t\tstart=\"random\"\n";
+  //  fout << "\t\tstart=\"random\"\n";
   // else
   //  fprintf(fo, "\t\tstart=\"regular\"\n");
   fout << "\t\tepsilon=0.0000001\n";
-  fout << "\t\tsep=0.5\n";
-  // fprintf(fo, "\t\tlabel=\"%s\"", title.c_str());
+  fout << "\t\tlabel=\"" << Title << "\"";
+  fout << "\t\tratio=\"auto\"\n";
   fout << "\t]\n\n";
   fout << "\tnode\n\t[\n";
-  fout << "\t\tfontsize=10\n";
-  fout << "\t\tfontname=\"Times-Roman\"\n";
+  fout << "\t\tfontsize=9\n";
+  fout << "\t\tfontname=\"Helvetica-bold\"\n";
   fout << "\t\tshape=\"circle\"\n";
-  fout << "\t\tlabel=\"\"\n";
+  fout << "\t\tstyle=\"bold\"\n";
   fout << "\t]\n\n";
   fout << "\tedge\n\t[\n";
-  fout << "\t\tfontsize=11\n";
-  fout << "\t\tfontname=\"Times-Roman\"\n";
+  fout << "\t\tfontsize=9\n";
+  fout << "\t\tfontname=\"Helvetica\"\n";
+  fout << "\t\tcolor=\"blue\"\n";
+  fout << "\t\tarrowhead=\"normal\"\n";
+  fout << "\t\tstyle=\"bold\"\n";
+  fout << "\t\tlen=2.5\n";
   fout << "\t]\n\n";
 
   for (i = 0; i < gene.size(); i++)
     for (j = 0; j < gene[i]->getModifierNumber(); j++)
       {
         fout << "\t" << gene[i]->getModifier(j)->getName() << " -> " << gene[i]->getName() << endl;
+        if (gene[i]->getModifierType(j) == 0)
+          fout << "\t\t[arrowhead=\"tee\"\n\t\tcolor=\"red\"]" << endl;
       }
 
   // end the file
@@ -111,27 +125,31 @@ void WriteDot(ofstream &fout, string &Title, CCopasiVector < CGene > &gene)
 
 C_INT main(C_INT argc, char *argv[])
 {
-  C_INT32 n, k;
+  C_INT32 n, k, i, tot;
   CCopasiVector < CGene > GeneList;
-  string NetworkTitle = "FirstNet";
+  char NetTitle[256] = "FirstNet";
   char strtmp[1024];
 
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
 
-  r250_init((int) time(NULL));
+  r250_init(((int) time(NULL)) | 12780000);
 
-  // generate a network of n genes with k random outputs each
-  n = 20;
+  tot = 10;
+  // generate tot networks of n genes with k random outputs each
+  n = 10;
   k = 2;
-  Erdos(n, k, GeneList);
-  sprintf(strtmp, "%s.dot", NetworkTitle.data());
-  ofstream fo(strtmp);
-  WriteDot(fo, NetworkTitle, GeneList);
-  fo.close();
-
-  GeneList.cleanup();
+  for (i = 0; i < tot; i++)
+    {
+      sprintf(NetTitle, "Net%03d", i + 1);
+      Erdos(n, k, GeneList);
+      sprintf(strtmp, "%s.dot", NetTitle);
+      ofstream fo(strtmp);
+      WriteDot(fo, NetTitle, GeneList);
+      fo.close();
+      GeneList.cleanup();
+    }
 
   return 0;
 }
