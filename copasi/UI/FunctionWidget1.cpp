@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/16 16:14:50 $
+   $Date: 2004/06/17 09:35:44 $
    End CVS Header */
 
 /**********************************************************************
@@ -469,7 +469,6 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
     }
 
   //Usages of the function
-
   CCopasiVectorNS < CUsageRange > & tarU = target->getUsageDescriptions();
   const CCopasiVectorNS < CUsageRange > & srcU = src->getUsageDescriptions();
 
@@ -479,51 +478,6 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
       tarU.add(*srcU[i]);
     }
 
-  /*
-  CCopasiVectorNS < CUsageRange > & functUsage = target->getUsageDescriptions();
-  const CCopasiVectorNS < CUsageRange > & pfunctUsage = src->getUsageDescriptions();
-
-  for (i = 0; i < pfunctUsage.size(); i++)
-    {
-      // check if function usage exists in pFunctionUsage
-      if ((index = functUsage.getIndex(pfunctUsage[i]->getObjectName())) != C_INVALID_INDEX)
-        // match found
-        {
-          // update min and max values for corresponding usage descriptions
-          if (pfunctUsage[i]->getLow() != functUsage[pfunctUsage[i]->getObjectName()]->getLow())
-            {
-              //changed = true;
-              functUsage[pfunctUsage[i]->getObjectName()]->setLow(pfunctUsage[i]->getLow());
-              // same as
-              // functUsage[index]->setLow(pfunctUsage[i]->getLow());
-            }
-          if (pfunctUsage[i]->getHigh() != functUsage[pfunctUsage[i]->getObjectName()]->getHigh())
-            {
-              //changed = true;
-              functUsage[pfunctUsage[i]->getObjectName()]->setHigh(pfunctUsage[i]->getHigh());
-              // same as
-              // functUsage[index]->setHigh(pfunctUsage[i]->getHigh());
-            }
-        } else
-        {// match not found
-          //changed = true;
-          functUsage.add(*pfunctUsage[i]);
-        }
-    }
-  // remove extra usage existing in functUsage, compare functUsage to pfunctUsage
-  if (pfunctUsage.size() != functUsage.size())
-    {
-      for (j = 0; j < functUsage.size(); j++)
-        {
-          if ((index = pfunctUsage.getIndex(functUsage[j]->getObjectName())) == C_INVALID_INDEX)
-            // the lines below occurs if new functionParameter does not exist in pfunctParam
-            {
-              //changed = true;
-              // remove the extra parameter in functParam
-              functUsage.CCopasiVector<CUsageRange>::remove(index);
-            }
-        }
-    }*/
   return true;
 }
 
@@ -562,10 +516,6 @@ bool FunctionWidget1::saveToFunction()
   if (flagChanged)
     {
       copyFunctionContentsToFunction(pFunction, func);
-
-      //func->setDescription(pFunction->getDescription());
-      //func->getParameters() = pFunction->getParameters();
-      //func->getUsageDescriptions() = pFunction->getUsageDescriptions();
 
       ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
     }
@@ -618,6 +568,7 @@ void FunctionWidget1::updateParameters()
           params.remove(name);
         }
     }
+  params.updateUsageRanges();
 }
 
 void FunctionWidget1::updateApplication()
