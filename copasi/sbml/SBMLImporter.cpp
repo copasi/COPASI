@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 15:28:34 $
+   $Date: 2004/06/14 12:22:15 $
    End CVS Header */
 
 #include <iostream>
@@ -244,10 +244,12 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   /* Create a new user defined CKinFunction */
   std::string functionName = "function_4_" + copasiReaction->getObjectName();
   CFunction* cFun = Copasi->pFunctionDB->createFunction(functionName, CFunction::UserDefined);
-  //CFunction* cFun = new CKinFunction();
+
   cFun->setDescription(SBML_formulaToString(node));
   cFun->setType(CFunction::UserDefined);
   cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
+
+  //create parameters
   std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
   for (unsigned int counter = 0; counter < v.size(); counter++)
     {
@@ -311,6 +313,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             }
         }
     }
+
+  //for internal structures in the function that can only be set after defining the parameters
+  static_cast<CKinFunction*>(cFun)->compile();
 
   /* create a unique function name by adding the unique reaction name to some
    * prefix */
