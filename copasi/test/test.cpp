@@ -52,7 +52,6 @@ C_INT32  MakeFunctionEntry(const string &name,
 vector < CMetab * >
 InitMetabolites(CCopasiVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
-
 C_INT32 TestOutputEvent(void);
 
 C_INT main(void)
@@ -78,10 +77,9 @@ C_INT main(void)
       // TestDatum();
       // TestMetab();
       // TestReadSample();
-      // TestTrajectory();
-      // by Yongqun He
+      // TestTrajctory();
       // TestNewton();
-      // TestSSSolution();
+      TestSSSolution();
 
       TestTrajectory();
       // TestMoiety();
@@ -340,6 +338,7 @@ C_INT32 TestReadSample(void)
   return 0;
 }
 
+/*
 C_INT32 TestOutputEvent(void)
 {
   C_INT32 size = 0;
@@ -391,7 +390,7 @@ C_INT32 TestOutputEvent(void)
 
   return 0;
 }
-
+*/
 
 C_INT32 TestTrajectory(void)
 {
@@ -420,6 +419,7 @@ C_INT32 TestTrajectory(void)
   return 0;
 }
 
+/*
 C_INT32 TestMCA(void)
 {
     cout << "Entering TestReport." << endl;
@@ -436,16 +436,15 @@ C_INT32 TestMCA(void)
     CMca mMCA();
     return 0;
 }
+*/
 
-
-// by Yongqun He
-//
+// by YH
 C_INT32  TestNewton(void)
 {
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/NewtonTest.gps");
+    CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
     CModel model;
     model.load(inbuf);
     model.compile();
@@ -462,10 +461,7 @@ C_INT32  TestNewton(void)
     newton.setDerivFactor(0.1);
     newton.setSSRes(1.0e-9);
     newton.setNewtonLimit(50);
-    
-    // newton.setNewtonLimit(1);
- 
- 
+   
     //how to get ss_nfunction?
     newton.setSs_nfunction(0);
  
@@ -479,14 +475,14 @@ C_INT32  TestNewton(void)
 }
  
  
-// by Yongqun He
-//
+// by YH
 C_INT32  TestSSSolution(void)
 {
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/BakkerComp.gps");
+    //CReadConfig inbuf("gps/BakkerComp.gps");
+    CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
     CModel model;
     model.load(inbuf);
     model.buildStoi();
@@ -500,8 +496,9 @@ C_INT32  TestSSSolution(void)
     CNewton newton;
     newton.setModel(model);
     // newton.initialize();
-    newton.setDerivFactor(1.0);
-    newton.setSSRes(1.0);
+    newton.setDerivFactor(0.1);
+    newton.setSSRes(1.0e-9);
+    newton.setNewtonLimit(50);
     newton.setSs_nfunction(0);
     newton.init_Ss_x();
 
@@ -522,7 +519,7 @@ C_INT32  TestSSSolution(void)
 
 
 
-
+/*
 
 C_INT32 TestMoiety()
 {
@@ -556,6 +553,8 @@ C_INT32 TestMoiety()
     
   return 0;
 }
+
+*/
 
 C_INT32 TestKinFunction()
 {
@@ -600,6 +599,7 @@ C_INT32 TestKinFunction()
   return 0;
 }
 
+/*
 vector < CMetab * > 
 InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
 {
@@ -612,6 +612,7 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
     
   return Metabolites;
 }
+*/
 
 C_INT32 TestBaseFunction()
 {
