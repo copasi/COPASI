@@ -193,7 +193,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(checkBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(returnPressed()), this, SLOT(slotLineEditChanged()));
-  //connect(LineEdit2, SIGNAL(signal_emitted1()), this, SLOT(slotCheckBoxClicked()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -492,170 +491,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
-  const string & p1 = p2.latin1();
-  CFunction * function = Copasi->FunctionDB.findLoadFunction(p1);
-  CFunctionParameters &functionParameters = function->getParameters();
-
-  int count_substrates = 0;
-  int count_products = 0;
-  int count_parameters = 0;
-  int count_modifiers = 0;
-
-  string usagetypes[20];
-  string substrate_name[20];
-  string product_name[20];
-  string modifier_name[20];
-  string parameter_name[20];
-  unsigned int count = 0;
-
-  //for clearing the values of the table
-  for (count = 0; count <= numrows; count++)
-    {
-      table->clearCell(count, 0);
-    }
-
-  unsigned int z = 0;
-  unsigned int line = 0;
-  QStringList comboEntries1;
-  QStringList substrates;
-  QStringList products;
-  QString chemical_reaction = LineEdit2->text();
-  //unsigned int start = 0;
-  QStringList individual_elements = QStringList::split ("+", chemical_reaction, FALSE);
-  QString all_elements = individual_elements.join (" ");
-  QStringList individual_elements1 = QStringList::split (" ", all_elements, FALSE);
-
-  for (unsigned int m = 0; m <= individual_elements1.size() - 1; m++)
-    {
-      if ((individual_elements1[m] == "->") || (individual_elements1[m] == "="))
-        {
-          m++;
-          break;
-        }
-      substrates.push_back(individual_elements1[m]);
-      //substrates[start] = individual_elements1[m];
-      // QMessageBox::information(this, substrates[start], "substrates ");
-      //start++;
-    }
-
-  // start = 0;
-  for (unsigned int n = m; n <= individual_elements1.size() - 1; n++)
-    {
-      if (individual_elements1[m] == "+")
-        {
-          n++;
-          break;
-        }
-      products.push_back(individual_elements1[n]);
-      //products[start] = individual_elements1[n];
-      //QMessageBox::information(this, products[start], "products ");
-      //start++;
-    }
-
-  for (unsigned int i = 0; i < functionParameters.size(); i++)
-    {
-      string p4 = functionParameters[i]->getUsage();
-      usagetypes[i] = p4;
-
-      if (p4 == "SUBSTRATE")
-        {
-          substrate_name[count_substrates] = functionParameters[i]->getName();
-          count_substrates++;
-        }
-      else if (p4 == "PRODUCT")
-        {
-          product_name[count_products] = functionParameters[i]->getName();
-          count_products++;
-        }
-      else if (p4 == "MODIFIER")
-        {
-          modifier_name[count_modifiers] = functionParameters[i]->getName();
-          count_modifiers++;
-        }
-
-      else if (p4 == "PARAMETER")
-        {
-          parameter_name[count_parameters] = functionParameters[i]->getName();
-          count_parameters++;
-        }
-
-      count = 0;
-      unsigned int index = count_substrates;
-      unsigned int countofsubstrates = count_substrates;
-      unsigned int countofproducts = count_products;
-      QHeader *tableHeader2 = table->verticalHeader();
-
-      for (int index1 = 0; index1 <= (count_products - 1); index1++)
-        {
-          substrate_name[index] = product_name[index1];
-          index++;
-        }
-
-      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
-        {
-          substrate_name[index] = modifier_name[index1];
-          index++;
-        }
-
-      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
-        {
-          substrate_name[index] = parameter_name[index1];
-          index++;
-        }
-
-      unsigned int length = index - 1;
-      table->setNumRows(index);
-      for (; count <= length; count++)
-        {
-          tableHeader2->setLabel(count, substrate_name[count].c_str());
-        }
-      //---------------------------------------------
-      unsigned int z = 0;
-      unsigned int k;
-      unsigned int line = 0;
-      QString temp;
-      for (k = 1; k <= countofsubstrates; k++)
-        {
-          QComboTableItem * item1 = new QComboTableItem(table, substrates, TRUE);
-          table->setItem(line, 0, item1);
-          temp = substrates[z];
-          item1->setCurrentItem(temp);
-          z++;
-          line++;
-        }
-
-      z = 0;
-      for (k = 1; k <= countofproducts; k++)
-        {
-          QComboTableItem * item1 = new QComboTableItem(table, products, TRUE);
-          table->setItem(line, 0, item1);
-          temp = products[z];
-          item1->setCurrentItem(temp);
-          z++;
-          line++;
-        }
-
-      //vector < CMetab * > metabolites = mModel->getMetabolites();
-      //  C_INT32 noOfMetabolitesRows = metabolites.size();
-      //  CMetab *metab;
-      //  QStringList comboEntries1;
-      //  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
-      // {
-      //     metab = metabolites[j];
-      // comboEntries1.push_back(metab->getName().c_str());
-      //}
-      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
-        {
-          table->setText(line, 0, "1");
-          line++;
-        }
-
-      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
-        {
-          table->setText(line, 0, "1");
-          line++;
-        }
-    }
+  comboUpdate(p2);
 }
 
 void ReactionsWidget1::comboUpdate(QString p2)
@@ -840,10 +676,6 @@ void ReactionsWidget1::slotLineEditChanged()
   bool status;
   status = chemEq1->setChemicalEquation(changed_chemical_reaction);
   reactn1->setChemEq(changed_chemical_reaction);
-
-  //string info=(string)status;
-  //emit signal_emitted1();
-
   if (reactn1->isReversible() == TRUE)
     {
       checkBox->setChecked(TRUE);
