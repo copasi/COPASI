@@ -202,6 +202,10 @@ SOURCE=.\PlotWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\qtUtilities.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ReactionsWidget.cpp
 # End Source File
 # Begin Source File
@@ -395,6 +399,10 @@ SOURCE=.\parametertable.h
 # Begin Source File
 
 SOURCE=.\PlotWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\qtUtilities.h
 # End Source File
 # Begin Source File
 
