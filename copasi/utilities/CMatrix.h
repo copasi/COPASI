@@ -144,21 +144,22 @@ class CMatrix
 
     /**
      * Retrieve a matrix element using Fortan style indexing.
-     * @param unsigned C_INT32 row
-     * @param unsigned C_INT32 col
-     * @return const CType * element
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return const CType & element
      */
-    inline CType * operator()(unsigned C_INT32 row, unsigned C_INT32 col)
+    inline CType & operator()(const unsigned C_INT32 & row,
+                              const unsigned C_INT32 & col)
     {return *(mArray + (row - 1) * mCols + col - 1);}
 
     /**
      * Retrieve a matrix element using Fortan style indexing.
-     * @param unsigned C_INT32 row
-     * @param unsigned C_INT32 col
-     * @return const CType * element
+     * @param const unsigned C_INT32 & row
+     * @param const unsigned C_INT32 & col
+     * @return const CType & element
      */
-    inline const CType * operator()(unsigned C_INT32 row,
-                                    unsigned C_INT32 col) const
+    inline const CType & operator()(const unsigned C_INT32 & row,
+                                    const unsigned C_INT32 & col) const
       {return *(mArray + (row - 1) * mCols + col - 1);}
 
     /**
