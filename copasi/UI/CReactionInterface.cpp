@@ -12,7 +12,7 @@
 #include "model/CMetabNameInterface.h"
 
 CReactionInterface::CReactionInterface():
-    //mpChemEq(NULL),
+    mpFunction(NULL),
     mpParameters(NULL)
 {emptyString = "";}
 CReactionInterface::~CReactionInterface()
