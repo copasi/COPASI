@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/13 13:27:16 $
+   $Date: 2004/12/15 14:37:29 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -118,7 +118,7 @@ void CCopasiSimpleSelectionTree::populateTree(CModel * model)
           QListViewItem* parameterItem =
             new QListViewItem(item,
                               FROM_UTF8(parameter->getObjectName()));
-          treeItems[parameterItem] = (CCopasiObject*)parameter;
+          treeItems[parameterItem] = (CCopasiObject*)(parameter->getObject(CCopasiObjectName("Reference=Value")));
         }
     }
   if (this->selectionMode() == QListView::NoSelection)
