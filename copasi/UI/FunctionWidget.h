@@ -14,7 +14,7 @@
 #include "copasi.h"
 #include "model/model.h"
 #include "utilities/CGlobals.h"
-#include "copasiwidget.h" 
+#include "copasiWidget.h" 
 //#include "function/function.h"
 class QVBoxLayout;
 class QHBoxLayout;

@@ -289,6 +289,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
         copasiui3window.cpp \
+	copasiWidget.cpp \
         listviews.cpp \
 	objectdebug.cpp
 
@@ -340,6 +341,7 @@ EXTRA_DIST = \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
+	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
 
 
@@ -424,7 +426,8 @@ am_CopasiUI_OBJECTS = CompartmentsWidget1.moc.$(OBJEXT) \
 	ReactionsWidget1.$(OBJEXT) ScanWidget.$(OBJEXT) \
 	SteadyStateWidget.$(OBJEXT) StretchTable.$(OBJEXT) \
 	TrajectoryWidget.$(OBJEXT) copasiui3window.$(OBJEXT) \
-	listviews.$(OBJEXT) objectdebug.$(OBJEXT)
+	copasiWidget.$(OBJEXT) listviews.$(OBJEXT) \
+	objectdebug.$(OBJEXT)
 CopasiUI_OBJECTS = $(am_CopasiUI_OBJECTS)
 CopasiUI_LDADD = $(LDADD)
 CopasiUI_LDFLAGS =
@@ -475,6 +478,7 @@ depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/StretchTable.Po $(DEPDIR)/Subject.Po \
 @AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/TrajectoryWidget.moc.Po \
+@AMDEP_TRUE@	$(DEPDIR)/copasiWidget.Po \
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.Po \
 @AMDEP_TRUE@	$(DEPDIR)/copasiui3window.moc.Po \
 @AMDEP_TRUE@	$(DEPDIR)/listviews.Po $(DEPDIR)/listviews.moc.Po \
@@ -593,6 +597,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Subject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/TrajectoryWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/TrajectoryWidget.moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copasiWidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copasiui3window.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copasiui3window.moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/listviews.Po@am__quote@

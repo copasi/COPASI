@@ -21,7 +21,7 @@ class QLineEdit;
 class QPushButton;
 class QRadioButton;
 class CModel;
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class MetabolitesWidget1 : public CopasiWidget
   {

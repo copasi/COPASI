@@ -12,7 +12,7 @@
 #include <qvariant.h>
 #include <qtable.h>
 #include "MyTable.h"
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

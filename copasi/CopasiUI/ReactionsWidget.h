@@ -15,7 +15,7 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class CModel;
 

@@ -13,7 +13,7 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class CModel;
 

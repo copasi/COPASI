@@ -11,7 +11,7 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

@@ -16,7 +16,7 @@
 #include "qtable.h"
 #include "MyTable.h"
 #include "MyLineEdit.h"
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

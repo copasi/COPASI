@@ -13,7 +13,7 @@
 //#include <qpushbutton.h>
 //#include "MyTable.h"
 #include "copasi.h"
-#include "copasiwidget.h"
+#include "copasiWidget.h"
 
 class CModel;
 class QPushButton;

@@ -55,6 +55,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
 	StretchTable.cpp \
 	TrajectoryWidget.cpp \
         copasiui3window.cpp \
+	copasiWidget.cpp \
         listviews.cpp \
 	objectdebug.cpp
 
@@ -104,6 +105,7 @@ EXTRA_DIST = \
 	StretchTable.h StretchTable.cpp \
 	TrajectoryWidget.h TrajectoryWidget.cpp TrajectoryWidget.moc.cpp \
 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp \
+	copasiWidget.h copasiWidget.cpp \
 	listviews.h listviews.cpp moc_listviews.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
