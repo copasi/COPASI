@@ -690,4 +690,54 @@ C_FLOAT64 CStep::calculate()
     return mFunction->calcValue(*mCallParameters);
 }
 
+/**
+ *	Return Identifier Name		Wei Sun
+ */
+string CStep::CId2Param::getIdentifierName() const
+{
+	return mIdentifierName;
+}
+
+/**
+ *	Retun the value of the pararmeter
+ */
+C_FLOAT64 CStep::CId2Param::getValue() const
+{
+	return mValue;
+}
+
+/**
+ *	Returns the address of mValue
+ */
+void* CStep::CId2Param::getValueAddr()
+{
+	return &mValue;
+}
+
+/**
+ *	Returns the address of mFlux
+ */
+void* CStep::getFluxAddr()
+{
+	return &mFlux;
+}
+
+/**
+ *	Returns the index of the parameter
+ */
+C_INT32 CStep::findPara(string &Target)
+{
+	int i;
+	string name;
+
+	for(i = 0; i < mParameters->size(); i++ )
+	{
+		name = (*mParameters)[i].getIdentifierName();
+		if( name == Target) return i;
+	}
+
+	return -1;
+	
+}
+
 
