@@ -13,6 +13,8 @@
 
 #include "CRange.h"
 
+/** @dia:pos -24.0564,25.0674 */
+/** @dia:route CRange; v,-18.6548,19.2872,21.8489,-11.3836,25.0674 */
 class CUsageRange : public CRange
   {
   private:

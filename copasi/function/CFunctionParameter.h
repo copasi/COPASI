@@ -13,6 +13,7 @@
 
 #include "utilities/utilities.h"
 
+/** @dia:pos 15.1888,24.6765 */
 class CFunctionParameter
   {
   public:

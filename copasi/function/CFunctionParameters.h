@@ -12,6 +12,7 @@
 #include "CFunctionParameter.h"
 #include "CUsageRange.h"
 
+/** @dia:pos 10.7176,6.51973 */
 class CFunctionParameters
   {
     // Attributes
@@ -22,6 +23,7 @@ class CFunctionParameters
      *  @supplierCardinality 0..*
      *  @associates <{CFunctionParameter}>
      */
+    /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
     CCopasiVectorNS < CFunctionParameter > mParameters;
 
     /**
@@ -29,6 +31,7 @@ class CFunctionParameters
      *  a specific usage
      * @supplierCardinality 0..*
      */
+    /** @dia:route 0,2; h,10.7176,6.51973,7.07775,25.0674,1.28919 */
     CCopasiVectorNS < CUsageRange > mUsageRanges;
 
     // Operations

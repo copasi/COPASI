@@ -12,6 +12,8 @@
 #include "CNodeK.h"
 #include "utilities/utilities.h"
 
+/** @dia:pos 61.7476,54.3157 */
+/** @dia:route CFunction; v,58.2,35.55,51.6337,82.8684,54.3157 */
 class CKinFunction : public CFunction
   {
     // Attributes
@@ -21,6 +23,7 @@ class CKinFunction : public CFunction
      *  @supplierCardinality 0..*
      *  @associates <{CNodeK}>
      */
+    /** @dia:route 0,2; h,61.7476,54.3157,55.1707,42.4925,46.911 */
     CCopasiVectorS < CNodeK > mNodes;
 
     /**

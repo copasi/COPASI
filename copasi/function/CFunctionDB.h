@@ -13,6 +13,7 @@
 #include "utilities/utilities.h"
 #include "CKinFunction.h"
 
+/** @dia:pos 106.082,17.0878 */
 class CFunctionDB
   {
     // Attributes
@@ -27,6 +28,7 @@ class CFunctionDB
      *  Vector of the currently loaded functions
      *  @supplierCardinality 0..*
      */
+    /** @dia:route 2,0; h,98.6992,12.15,102.581,17.0878,106.082 */
     CCopasiVectorNS < CFunction > mLoadedFunctions;
 
     // Operations

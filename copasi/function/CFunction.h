@@ -21,6 +21,7 @@ enum TriLogic
   TriTrue = 1
 };
 
+/** @dia:pos 58.2,12.15 */
 class CFunction
   {
   public:
@@ -69,6 +70,7 @@ class CFunction
      *  The discription of the parameters of the function
      *  @supplierCardinality 1 
      */
+    /** @dia:route 3,2; h,58.2,12.85,56.537,6.51973,52.9592 */
     CFunctionParameters mParameters;
 
     // Operations

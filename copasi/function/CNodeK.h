@@ -43,6 +43,7 @@
 #define N_MODIFIER 'm'
 #define N_KCONSTANT 'k'
 
+/** @dia:pos 12.7478,42.4925 */
 class CNodeK
   {
     // Attributes

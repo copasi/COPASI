@@ -13,7 +13,8 @@
 
 /**
  *
- */
+ */ 
+/** @dia:pos -40.594,3.88725 */
 class CRange
   {
     //Attributes

@@ -10,6 +10,8 @@
 
 #include "CFunction.h"
 
+/** @dia:pos 62.0314,41.4407 */
+/** @dia:route CFunction; v,58.2,35.55,39.4413,82.281,41.4407 */
 class CMassAction : public CFunction
   {
     // Attributes

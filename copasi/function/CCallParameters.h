@@ -11,6 +11,7 @@
 #include <vector>
 #include "CCallParameter.h"
 
+/** @dia:pos 75.7193,2.7581 */
 class CCallParameters : public std::vector< const void * >
   {};
 

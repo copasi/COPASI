@@ -8,7 +8,8 @@
 #ifndef COPASI_CCallParameter
 #define COPASI_CCallParameter
 
-class CCallParameter 
-{};
+/** @dia:pos 63.794,2.63715 */
+class CCallParameter
+  {};
 
 #endif // COPASI_CCallParameter
