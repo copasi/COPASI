@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/08 16:57:03 $
+   $Author: gauges $ 
+   $Date: 2004/12/10 15:06:42 $
    End CVS Header */
 
 /********************************************************
@@ -298,6 +298,7 @@ void ObjectBrowserWidget::commitClicked()
 {
   ObjectBrowserItem* rootItem;
   rootItem = objectItemList->getRoot()->pItem;
+  mOutputObjectVector->clear();
   eXport(rootItem, mOutputObjectVector);
   return;
 }
