@@ -527,16 +527,22 @@ void ScanWidget::loadScan()
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(scanTaskKey);
   CScanProblem *scanProblem = scanTask->getProblem();
   mModel = scanProblem->getModel();
-  pSteadyStateWidget->setModel(mModel);
-  // pTrajectoryWidget->setModel(mModel);
-  //  scanProblem->setModel(mModel);
+
+  CSteadyStateTask* mSteadyStateTask = (CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey);
+  CSteadyStateProblem * mSteadystateproblem = mSteadyStateTask->getProblem();
+  mSteadystateproblem->setModel(mModel);
+
+  CTrajectoryTask* mTrajectoryTask = (CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey);
+  CTrajectoryProblem * mTrajectoryproblem = mTrajectoryTask->getProblem();
+  mTrajectoryproblem->setModel(mModel);
+
+  //  pSteadyStateWidget->setModel(mModel);
+  //  pTrajectoryWidget->setModel(mModel);
+
   scanProblem->setSteadyStateTask((CSteadyStateTask*)(CCopasiContainer*)CKeyFactory::get(SteadyStateKey));
   scanProblem->setTrajectoryTask((CTrajectoryTask*)(CCopasiContainer*)CKeyFactory::get(TrajectoryKey));
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   scanProblem->setProcessTrajectory(trajectory->isChecked());
-  //scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
-  //scanProblem->setTrajectoryTask(/*pTrajectoryWidget->mTrajectoryTask*/dataModel->getTrajectoryTask());
-  //TODO !!!!! does not work right now
 
   sExecutable->setEnabled(true);
   if (scanTask->isRequested() == true)
@@ -550,13 +556,13 @@ void ScanWidget::loadScan()
       scanButton->setEnabled(false);
     }
   steadyState->setEnabled(true);
-  if (scanProblem->processTrajectory() == true)
+  if (scanProblem->processTrajectory())
     trajectory->setChecked(true);
   else
     trajectory->setChecked(false);
 
   trajectory->setEnabled(true);
-  if (scanProblem->processSteadyState() == true)
+  if (scanProblem->processSteadyState())
     steadyState->setChecked(true);
   else
     steadyState->setChecked(false);
