@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.9 2003/08/19 17:03:00 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.10 2003/08/19 18:15:36 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,7 @@
 #include "listviews.h"
 #include "DataModel.h"
 #include "report/CReportDefinitionVector.h"
+#include "report/CReport.h"
 
 /*
  *  Constructs a CReportDefinitionSelect as a child of 'parent', with the 
@@ -31,7 +32,8 @@
 
 CReportDefinitionSelect::CReportDefinitionSelect(QWidget* parent, const char* name, WFlags fl)
     : QDialog(parent, name, fl),
-    pListView((ListViews*)parent)
+    pListView((ListViews*)parent),
+    mpReport(NULL)
 {
   if (!name)
     setName("CReportDefinitionSelect");
@@ -150,4 +152,9 @@ void CReportDefinitionSelect::jumpToEdit()
   row = reportDefinitionNameList->currentItem();
   pListView->switchToOtherWidget((*(pReportDefinitionVector->getReportDefinitionsAddr()))[row]->getKey());
   confirmClicked();
+}
+
+void CReportDefinitionSelect::setReport(CReport* newReport)
+{
+  mpReport = newReport;
 }

@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.4 2003/08/19 16:52:39 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.h,v 1.5 2003/08/19 18:15:36 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,7 @@ class QComboBox;
 class QLineEdit;
 class QCheckBox;
 class ListViews;
+class CReport;
 
 class CReportDefinitionSelect : public QDialog
   {
@@ -32,6 +33,9 @@ class CReportDefinitionSelect : public QDialog
     CReportDefinitionSelect(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CReportDefinitionSelect();
     ListViews* pListView;
+
+    void setReport(CReport* newReport);
+    CReport* mpReport;
 
     QPushButton* confirmButton;
     QPushButton* cancelButton;
