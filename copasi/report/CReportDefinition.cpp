@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////
 CReportDefinition::CReportDefinition():
     CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
-    mKey(CKeyFactory::add("SteadyStateTask", this)),
+    mKey(CKeyFactory::add("CReportDefinition", this)),
     mComment(""),
     mpBody(new CReportBody)
 {}
