@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:17 $
+   $Date: 2005/03/16 14:51:29 $
    End CVS Header */
 
 #include <fstream>
@@ -24,7 +24,7 @@ class PlotWindow : public QMainWindow
   private:
 
     // points to the plot instance inside this window
-    CopasiPlot *plot;
+    CopasiPlot *mpPlot;
 
   public:
     PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
@@ -32,6 +32,8 @@ class PlotWindow : public QMainWindow
     bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
 
     QToolButton * zoomButton;
+    QToolButton * printButton;
+    QToolButton * saveButton;
 
     ~PlotWindow();
 
@@ -45,4 +47,6 @@ class PlotWindow : public QMainWindow
 
     // prints the plot (to printer or file)
     void printPlot();
+
+    void slotSaveData();
   };

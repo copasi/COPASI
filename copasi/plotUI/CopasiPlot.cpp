@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/02 17:25:52 $
+   $Date: 2005/03/16 14:51:29 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -144,6 +144,7 @@ void MyQwtPlotCurve::myDrawLines(QPainter *painter,
 void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
 {
   indexTable.clear();
+  indexTableNames.clear();
 
   C_INT32 jj, jjmax;
   C_INT32 index;
@@ -172,7 +173,11 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
               for (it = indexTable.begin(), iterindex = 0; it != indexTable.end(); ++it, ++iterindex)
               {if (*it == index) break;};
               if (it == indexTable.end()) //index is not yet in indexTable
-                indexTable.push_back(index);
+                {
+                  indexTable.push_back(index);
+
+                  indexTableNames.push_back("+"); //TODO: get display names from somewhere
+                }
               dataIndices[i][jj] = iterindex;
             }
           break;
@@ -204,6 +209,8 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
 
   //the indexTable now has a list of all the indices of the channels that need to be stored
   //internally in the copasiPlot (the channels that are needed for curves, not histograms).
+
+  //indexTableNames contains the corresponding display names (not yet implemented)
 
   //the meaning of the dataIndices[][] differs for curves/histograms:
   //  curves: points to an entry in indexTable (stored channels)
@@ -298,13 +305,13 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
             tmpType = *(const unsigned C_INT32*)tmp;
           switch (tmpType)
             {
-            case 0:   //curve
+            case 0:    //curve
               setCurveStyle(crv, QwtCurve::Lines);
               break;
-            case 1:   //points
+            case 1:    //points
               setCurveStyle(crv, QwtCurve::Dots);
               break;
-            case 2:   //symbols
+            case 2:    //symbols
               setCurveStyle(crv, QwtCurve::NoCurve);
               const QColor &c = curveColours[k % 5];
               setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
@@ -485,4 +492,58 @@ CopasiPlot::~CopasiPlot()
       delete data[data.size() - 1];
       data.pop_back();
     }
+}
+
+bool CopasiPlot::saveData(const std::string & filename)
+{
+  std::ofstream fs(filename.c_str());
+  if (!fs.good()) return false;
+
+  if (indexTable.size() && ndata) //we have curves
+    {
+      //first the names
+      fs << "# ";
+      unsigned C_INT32 i, imax = indexTable.size();
+      for (i = 0; i < imax; ++i)
+        fs << indexTableNames[i] << " ";
+      fs << "\n";
+
+      //now the data
+      unsigned j, jmax = ndata;
+      for (j = 0; j < jmax; ++j)
+        {
+          if (data[0]->at(j) == data[0]->at(j)) // not NaN
+            {
+              for (i = 0; i < imax; ++i)
+                fs << data[i]->at(j) << " ";
+            }
+          fs << "\n";
+        }
+    }
+
+  if (mHistograms.size())
+    {
+      fs << "\n# The histograms: \n";
+
+      C_INT32 i, imax;
+
+      C_INT32 j, jmax = mHistograms.size();
+      for (j = 0; j < jmax; ++j)
+        {
+          fs << "\n";
+
+          imax = mHistograms[j].size();
+          const double* x = mHistograms[j].getXArray();
+          const double* y = mHistograms[j].getYArray();
+          for (i = 0; i < imax; ++i)
+            {
+              fs << *x++ << " " << *y++ << "\n";
+            }
+        }
+    }
+
+  fs.close();
+  if (!fs.good()) return false;
+
+  return true;
 }

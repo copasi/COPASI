@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:16:38 $
+   $Date: 2005/03/16 14:51:29 $
    End CVS Header */
 
 // the plot object for copasi
@@ -105,6 +105,8 @@ class CopasiPlot : public ZoomPlot
     void takeData(const std::vector<C_FLOAT64> & dataVector);
     void updatePlot();
 
+    bool saveData(const std::string & filename);
+
   private slots:
     void mousePressed(const QMouseEvent &e);
 
@@ -123,6 +125,9 @@ class CopasiPlot : public ZoomPlot
 
     // holds column indices
     std::vector<C_INT32> indexTable;
+
+    // holds the corresponding display names
+    std::vector<std::string> indexTableNames;
 
     // for each channel in each curve tells where the data is stored
     std::vector<std::vector<C_INT32> > dataIndices;
