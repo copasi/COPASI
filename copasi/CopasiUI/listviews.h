@@ -89,6 +89,7 @@ class ListViews : public QSplitter
     void setDataModel(DataModel* dm);
     static DataModel* getDataModel() {return dataModel;};
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
+
     void switchToOtherWidget(const std::string & key);
   private:
     CMathModel *mpMathModel;
@@ -100,6 +101,7 @@ class ListViews : public QSplitter
     void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
+    void resetCurrentWidgetToModel();
     void clearParentItem(QListViewItem *); // for the top level items to be cleared..
 
     void setupFolders();

@@ -516,13 +516,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:       //Time course
+      case 23:        //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:      //Report
+      case 43:       //Report
         return tableDefinition;
         break;
       case 5:
@@ -1125,6 +1125,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       modesWidget->update(objectType, action, key);
       modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+
+      resetCurrentWidgetToModel();
       break;
     case STATE:
       //        scanWidget->update(objectType, action, key);
@@ -1188,4 +1190,25 @@ void ListViews::slotHideWidget()
 void ListViews::slotShowWidget()
 {
   currentWidget->show();
+}
+
+void ListViews::resetCurrentWidgetToModel()
+{
+  QListViewItem* modelItem = searchListViewItem(1); // 1 == modelWidget
+  if (modelItem->childCount() != 0)
+    modelItem->setPixmap(0, *folderOpen);
+  FolderListItem *item = (FolderListItem*)modelItem;
+  currentWidget = findWidgetFromItem(item);
+  std::string itemKey = item->folder()->getObjectKey();
+
+  if (currentWidget) ((CopasiWidget*)currentWidget)->enter(itemKey);
+
+  if (lastWidget != currentWidget)
+    {
+      if (lastWidget) lastWidget->hide();
+      if (currentWidget) currentWidget->show();
+    }
+
+  lastWidget = currentWidget;
+  lastKey = itemKey;
 }
