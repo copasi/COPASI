@@ -246,12 +246,12 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
-std::vector< CFunction * >
+CCopasiVector <CFunction>*
 CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
                                const unsigned C_INT32 noProducts,
                                const TriLogic reversible)
 {
-  std::vector< CFunction * > Functions;
+  CCopasiVector< CFunction >* pFunctionVector = new CCopasiVector< CFunction >();
   unsigned C_INT32 i, imax;
   unsigned C_INT32 j, jmax;
   CFunction *pFunction;
@@ -277,8 +277,8 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
             if (!pRange->isInRange(noProducts)) break;
         }
 
-      if (j == jmax) Functions.push_back(pFunction);
+      if (j == jmax) pFunctionVector->add(pFunction);
     }
 
-  return Functions;
+  return pFunctionVector;
 }
