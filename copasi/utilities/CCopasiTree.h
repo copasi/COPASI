@@ -38,13 +38,13 @@ template < class Node > class CCopasiTree
        * The list of all nodes. This is used to keep the tree consistent
        * by avoiding multiple inserts of the same node.
        */
-      set<Node *> mList;
+      std::set<Node *> mList;
 
     public:
       /**
        * A forward iterator used to traverse the tree.
        */
-    class iterator: public std::forward_iterator<Node, ptrdiff_t>
+    class iterator: public std::iterator<Node, ptrdiff_t>
         {
         private:
           /**
