@@ -38,9 +38,9 @@ class CFunctionParameterMap
     CFunctionParameterMap(const CFunctionParameterMap & src);
 
     /**
-     * Creates a CallParameters object.
+     * Destructor();
      */
-    CFunctionParameterMap(const CFunctionParameters & src);  //calls initializeFromFunctionParameters()
+    ~CFunctionParameterMap();
 
     /**
      * Sets a specific parameter. Works only if the parameter is no vector
@@ -72,7 +72,7 @@ class CFunctionParameterMap
      */
     void clearCallParameters();
 
-  public:   // TODO preliminary
+  public:    // TODO preliminary
     /**
      * Create the mPointers and mObjects vectors with
      * type information from the CFunctionParameters object.
