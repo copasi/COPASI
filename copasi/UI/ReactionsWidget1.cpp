@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 13:13:19 $
+   $Date: 2004/10/15 17:14:53 $
    End CVS Header */
 
 /*********************************************************************
@@ -44,6 +44,7 @@
 #include "MyLineEdit.h"
 #include "qtUtilities.h"
 #include "ChemEqValidator.h"
+#include "FunctionWidget1.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -173,6 +174,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
   connect(deleteReaction, SIGNAL(clicked()), this, SLOT(slotBtnDeleteClicked()));
+
+  connect(newKinetics, SIGNAL(clicked()), this, SLOT(slotNewFunction()));
 
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
@@ -327,7 +330,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                  // Yes or Enter
+        case 0:                   // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -351,7 +354,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                         // No or Escape
+        default:                          // No or Escape
           break;
         }
       //}
@@ -420,6 +423,28 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 
   // update the widget
   FillWidgetFromRI();
+}
+
+void ReactionsWidget1::slotNewFunction()
+{
+  // FunctionWidget1 * fw = new FunctionWidget1(NULL);
+  // fw->show();
+  // TODO: we could think about calling the function widget as a dialogue here...
+
+  std::string name = std::string("Kinetics_for_") + (const char *)LineEdit1->text().utf8();
+  std::string nname = name;
+  int i = 0;
+  CFunction* pFunc;
+  while (!(pFunc = Copasi->pFunctionDB->createFunction(nname, CFunction::UserDefined)))
+    {
+      i++;
+      nname = name;
+      nname += (const char *)QString::number(i).utf8();
+    }
+  std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
+
+  pListView->switchToOtherWidget(0, pFunc->getKey());
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
