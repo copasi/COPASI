@@ -1,10 +1,12 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/09/12 19:10:36 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/02/08 23:21:22 $  
 ######################################################################
+
+TEMPLATE = app
 
 include(../common.pri)
 
-TEMPLATE = app
+CONFIG -= qt
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
@@ -17,7 +19,7 @@ contains(BUILD_OS, WIN32) {
           ../lib/mathmodel.lib \
           ../lib/model.lib \
           ../lib/optimization.lib \
-          ../lib/output.lib \
+          ../lib/plot.lib \
           ../lib/randomGenerator.lib \
           ../lib/report.lib \
           ../lib/scan.lib \
