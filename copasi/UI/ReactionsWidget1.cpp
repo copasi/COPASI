@@ -9,7 +9,6 @@
 
 #include <qgroupbox.h>
 #include <qlabel.h>
-
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>

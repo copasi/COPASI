@@ -133,7 +133,7 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   Table1->setNumRows(3);
   Table1->setNumCols(3);
   Table1->sortColumn (0, TRUE, TRUE);
-  Table1->setFixedSize(335, 104);
+  Table1->setFixedSize(375, 104);
   Table1->setFocusPolicy(QWidget::WheelFocus);
   TextLabel3 = new QLabel(Frame5, "TextLabel3");
   TextLabel3->setGeometry(QRect(20, 90, 56, 20));
@@ -300,7 +300,17 @@ void FunctionWidget1::loadName(QString setValue)
       for (j = 0; j < noOffunctParams; j++)
         {
           Table1->setText(j, 0, functParam[j]->getName().c_str());
-          Table1->setText(j, 1, CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str());
+          QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
+          QStringList functionType;
+          functionType.push_back(temp);
+          QString overall = "DOUBLE";
+          functionType.push_back(overall);
+
+          QComboTableItem * item = new QComboTableItem(Table1, functionType, TRUE);
+
+          Table1->setItem(j, 1, item);
+          item->setCurrentItem(temp);
+          //Table1->setText(j, 1, CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str());
           Table1->setText(j, 2, functParam[j]->getUsage().c_str());
         }
 
