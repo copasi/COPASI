@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/02/06 02:26:10 $
+   $Date: 2004/03/10 10:42:56 $
    End CVS Header */
 
 /**********************************************************************
@@ -240,8 +240,28 @@ bool FunctionWidget1::loadFromFunction(CFunction* func) //TODO: func should be c
   //LineEdit1->setText(func->getName().c_str());
   LineEdit1->setText(pFunction->getName().c_str());
   //textBrowser->setText(func->getDescription().c_str());
-  textBrowser->setText(pFunction->getDescription().c_str());
   //  Function_Name = new QString(funct->getName().c_str());
+
+  /* Insert line breaks in the function description */
+  std::string desc = pFunction->getDescription();
+  int l = 0;
+  int n = 0;
+  int len = desc.length();
+  while (len - l > 65)
+    {
+      n = l;
+      l = l + 65;
+      while (l > n)
+        {
+          char ch = desc.at(l);
+          if ((ch == '+') || (ch == '-') || (ch == '*') || (ch == '/'))
+            break;
+          l--;
+        }
+      desc.insert(l, 1, '\n');
+    }
+  textBrowser->setText(desc.c_str());
+  //textBrowser->setText(pFunction->getDescription().c_str());
 
   //TODO: the following is unnecessary
   //Emptying the tables
@@ -404,10 +424,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                             // The user clicked the Retry again button or pressed Enter
+            case 0:                              // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                             // The user clicked the Quit or pressed Escape
+            case 1:                              // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -797,6 +817,19 @@ void FunctionWidget1::slotCommitButtonClicked()
     {
       pFunction->setReversible(TriUnspecified);
     }
+
+  /* Remove line breaks from the function description */
+  std::string desc = textBrowser->text().latin1();
+  unsigned int loc = 0;
+  while (1)
+    {
+      loc = desc.find('\n', loc);
+      if (loc == std::string::npos)
+        break;
+      desc.erase(loc, 1);
+    }
+  textBrowser->setText(desc.c_str());
+
   if (pFunction->getDescription() != textBrowser->text().latin1())
     {
       pFunction->setDescription(textBrowser->text().latin1());
