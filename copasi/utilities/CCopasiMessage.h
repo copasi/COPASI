@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:50 $
+   $Author: ssahle $ 
+   $Date: 2004/05/18 11:34:16 $
    End CVS Header */
 
 /**
@@ -15,6 +15,7 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
+#include "copasi.h"
 
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
 Message;
