@@ -13,16 +13,19 @@
 #define BESTFOUNDSOFAR 2
 #define NumDirection 10
 #define TRUE 1
-#define FALSE 0
-#define PI 3.1415926
+#define FALSE 0 
+// #define PI 3.1415926
 
 #include <vector>
+#include <math.h>
 
 #include "copasi.h"
 #include "COptMethod.h"
 #include "COptMethodSA.h"
 #include "CRealProblem.h"
 #include "randomGenerator/CRandom.h"
+
+static double PI = 4.0 * atan(1.0);
 
 COptMethodSA::COptMethodSA():
     COptMethod()
