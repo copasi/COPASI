@@ -12,6 +12,8 @@ class CopasiUI3Window : public QMainWindow
 
   public:
     CopasiUI3Window();
+    void enabled_object_browser_menu();
+    void disable_object_browser_menu();
 
   protected:
 
@@ -39,6 +41,7 @@ class CopasiUI3Window : public QMainWindow
     int nsaveas_menu_id;
     int nexport_menu_SBML;
     int nobject_browser;
+    bool bobject_browser_open;
     void createToolBar();
     void createMenuBar();
   };

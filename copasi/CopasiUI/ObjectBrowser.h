@@ -1,10 +1,10 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 04/03 
-  Comment : Copasi Object Browser: 
-  Contact: Please contact lixu1@vt.edu.
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 04/03 
+ Comment : Copasi Object Browser: 
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECTBROWSER_H
@@ -25,6 +25,7 @@ class QListViewItem;
 class QFrame;
 class CCopasiContainer;
 class CCopasiObject;
+class CopasiUI3Window;
 
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 
@@ -33,6 +34,8 @@ class ObjectBrowser : public QWidget
     Q_OBJECT
   private:
     pageIndex currentPage;
+    CopasiUI3Window* mparent;
+
   public:
     ObjectList* objectItemList;
     ObjectList* refreshList;

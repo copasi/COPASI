@@ -8,6 +8,7 @@ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
+#include "CopasiUI3Window.h"
 
 #include <qmessagebox.h>
 #include <qvariant.h>
@@ -41,7 +42,7 @@ QPixmap *pObjectNone = 0;     // to store the image of open icon folder
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(NULL, name, fl)
 {
   if (!name)
     setName("ObjectBrowser");
@@ -133,6 +134,9 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
   connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
 
+  mparent = (CopasiUI3Window*)parent;
+  mparent->disable_object_browser_menu();
+
   objectItemList = new ObjectList();
   refreshList = new ObjectList();
   ObjectBrowserItem::resetKeySpace();
@@ -154,6 +158,7 @@ ObjectBrowser::~ObjectBrowser()
   delete objectItemList;
   delete refreshList;
   // no need to delete child widgets, Qt does it all for us
+  mparent->enabled_object_browser_menu();
 }
 
 void ObjectBrowser::cancelClicked()

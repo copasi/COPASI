@@ -49,6 +49,7 @@ CopasiUI3Window::CopasiUI3Window():
   createMenuBar();  // creates a menu bar
   //  file = new QPopupMenu;
   file->setItemEnabled(nobject_browser, false);
+  bobject_browser_open = false;
   file->setItemEnabled(nexport_menu_SBML, false);
   file->setItemEnabled(nsave_menu_id, false);
   file->setItemEnabled(nsaveas_menu_id, false);
@@ -150,7 +151,8 @@ void CopasiUI3Window::newDoc()
 
   gpsFile = "temp.gps";
   dataModel->createModel((const char *)gpsFile.utf8());
-  file->setItemEnabled(nobject_browser, true);
+  if (!bobject_browser_open)
+    file->setItemEnabled(nobject_browser, true);
   file->setItemEnabled(nexport_menu_SBML, true);
   file->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
@@ -175,7 +177,8 @@ void CopasiUI3Window::slotFileOpen()
   if (dataModel && gpsFile)
     {
       dataModel->loadModel((const char *)gpsFile.utf8());
-      file->setItemEnabled(nobject_browser, true);
+      if (!bobject_browser_open)
+        file->setItemEnabled(nobject_browser, true);
       file->setItemEnabled(nexport_menu_SBML, true);
       file->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
@@ -383,7 +386,7 @@ void CopasiUI3Window::createMenuBar()
 
 void CopasiUI3Window::slotObjectBrowser()
 {
-  ObjectBrowser* objectBrowser = new ObjectBrowser();
+  ObjectBrowser* objectBrowser = new ObjectBrowser(this);
   objectBrowser->show();
 }
 
@@ -411,4 +414,16 @@ void CopasiUI3Window::slotExportSBML()
       std::ofstream outputfile((const char *)SBMLFile.utf8());
       dataModel->getModel()->saveSBML(outputfile);
     }
+}
+
+void CopasiUI3Window::enabled_object_browser_menu()
+{
+  file->setItemEnabled(nobject_browser, true);
+  bobject_browser_open = false;
+}
+
+void CopasiUI3Window::disable_object_browser_menu()
+{
+  file->setItemEnabled(nobject_browser, false);
+  bobject_browser_open = true;
 }
