@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 13:51:35 $
+   $Date: 2004/12/16 14:57:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -40,12 +40,19 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
   if (!(testObj == obj)) flags += "EEE";
 
+  QString value;
+  if (obj->isValueDbl())
+    value = QString::number(*(C_FLOAT64*)obj->getReference());
+  else
+    value = "";
+
   element = new QListViewItem((QListViewItem*)parent, FROM_UTF8(obj->getObjectName()),
                               FROM_UTF8(obj->getObjectType()),
                               flags,
+                              value,
                               FROM_UTF8(obj->getObjectDisplayName()),
-                              FROM_UTF8(obj->getObjectUniqueName()),
-                              FROM_UTF8(obj->getCN()));
+                              FROM_UTF8(obj->getCN()),
+                              FROM_UTF8(obj->getObjectUniqueName()));
 
   //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 
@@ -55,7 +62,7 @@ else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
       container = (CCopasiContainer*)obj;
 
       CCopasiContainer::objectMap::const_iterator it = container->getObjects().begin();
-      int cnt = container->getObjects().size();
+      // int cnt = container->getObjects().size();
 
       for (; it != container->getObjects().end(); ++it)
         {
@@ -120,12 +127,18 @@ void ObjectDebug::init()
   ListOfObjects->clear();
   ListOfObjects->addColumn("Type", -1);
   ListOfObjects->addColumn("Flags", -1);
-  ListOfObjects->addColumn("Display name", -1);
-  ListOfObjects->addColumn("Unique name", -1);
+  ListOfObjects->addColumn("Value", -1);
+  ListOfObjects->addColumn("Display Name", -1);
   ListOfObjects->addColumn("CN", -1);
+  ListOfObjects->addColumn("Unique name", -1);
 }
 
 void ObjectDebug::action(QListViewItem * item, const QPoint & pnt, int col)
 {
-  std::cout << "action! " << std::endl;
+  CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
+
+  if (!testObj) return;
+
+  std::cout << testObj->getObjectDisplayName() << std::endl;
+  std::cout << *testObj << std::endl;
 }
