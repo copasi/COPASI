@@ -31,9 +31,10 @@ CGlobals::CGlobals():
 
 CGlobals::~CGlobals()
 {
-  pFunctionDB->cleanup();
-  pOldMetabolites->cleanup();
   pdelete(pFunctionDB);
+  //  already be called inside CFunctionDB deconstructor
+  //  pFunctionDB->cleanup();
+  pOldMetabolites->cleanup();
   pdelete(pUDFunctionDB);
   pdelete(pOldMetabolites);
   pdelete(pOutputList);
