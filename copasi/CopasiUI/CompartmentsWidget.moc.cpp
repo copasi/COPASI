@@ -71,10 +71,21 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
       { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected }
     };
 
+  static const QUParameter param_signal_0[] =
+    {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod signal_0 = {"name", 1, param_signal_0 };
+
+  static const QMetaData signal_tbl[] =
+    {
+      { "name(QString&)", &signal_0, QMetaData::Public }
+    };
+
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget", parentObject,
               slot_tbl, 2,
-              0, 0,
+              signal_tbl, 1,
 #ifndef QT_NO_PROPERTIES
               0, 0,
               0, 0,
@@ -92,6 +103,29 @@ void* CompartmentsWidget::qt_cast(const char* clname)
     return (CompartmentsWidget*)this;
 
   return QWidget::qt_cast(clname);
+}
+
+#include <qobjectdefs.h>
+#include <qsignalslotimp.h>
+
+// SIGNAL name
+void CompartmentsWidget::name(QString& t0)
+{
+  if (signalsBlocked())
+    return ;
+
+  QConnectionList *clist = receivers(staticMetaObject()->signalOffset() + 0);
+
+  if (!clist)
+    return ;
+
+  QUObject o[2];
+
+  static_QUType_QString.set(o + 1, t0);
+
+  activate_signal(clist, o);
+
+  t0 = static_QUType_QString.get(o + 1);
 }
 
 bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
@@ -115,7 +149,17 @@ bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
 
 bool CompartmentsWidget::qt_emit(int _id, QUObject* _o)
 {
-  return QWidget::qt_emit(_id, _o);
+  switch (_id - staticMetaObject()->signalOffset())
+    {
+    case 0:
+      name(static_QUType_QString.get(_o + 1));
+      break;
+
+    default:
+      return QWidget::qt_emit(_id, _o);
+    }
+
+  return TRUE;
 }
 
 #ifndef QT_NO_PROPERTIES

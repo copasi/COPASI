@@ -147,7 +147,7 @@ QMetaObject* ListViews::staticMetaObject()
 
   static const QUParameter param_slot_2[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod slot_2 = {"slotCompartmentTableChanged", 1, param_slot_2 };
 
@@ -162,7 +162,7 @@ QMetaObject* ListViews::staticMetaObject()
       { "slotCompartmentSelected(const QString&)", &slot_0, QMetaData::Public },
 
       { "slotMetaboliteSelected(const QString&)", &slot_1, QMetaData::Public },
-      { "slotCompartmentTableChanged(const QString&)", &slot_2, QMetaData::Public },
+      { "slotCompartmentTableChanged(QString&)", &slot_2, QMetaData::Public },
       { "slotFolderChanged(QListViewItem*)", &slot_3, QMetaData::Protected }
     };
 

@@ -5,9 +5,6 @@
 
 class MyTable: public QTable
   {
-  protected:
-    bool deleteConfirmation;
-
   public:
     MyTable (QWidget * parent = 0, const char * name = 0);
     MyTable (int numRows, int numCols, QWidget * parent = 0, const char * name = 0);
@@ -19,6 +16,9 @@ class MyTable: public QTable
     //void insertRows(long, long) {}
 
     //virtual void setSorting (bool b, bool wholeRows = TRUE);
+
+  protected:
+    bool deleteConfirmation;
   };
 
 #endif

@@ -295,7 +295,6 @@ void ReactionsWidget1::loadName(QString setValue)
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
       //table->setItem(0, 0, item);
     }
-  // }
 }
 
 ///end of all the functions

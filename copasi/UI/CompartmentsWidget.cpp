@@ -59,8 +59,14 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
+
+  //connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged()));
+
+  /*connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(table, SIGNAL(name1(int)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(int))); */
+
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
+  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
@@ -102,6 +108,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row, int col, int m , const
 {
   QString &x = table->text(row, col);
   emit name(x);
+  //QMessageBox::information(this, "Compartments Widget",x);
 }
 
 void CompartmentsWidget::slotTableSelectionChanged()
@@ -127,4 +134,17 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);
     }
+}
+
+/***********ListViews::showMessage(QString caption,QString text)------------------------>
+ **
+ ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
+ **              2. QString :_ The Text that needs to be displayed in the message box
+ ** Returns  :-  void(Nothing)
+ ** Description:- This method is used to show the message box on the screen
+ ****************************************************************************************/
+
+void CompartmentsWidget::showMessage(QString title, QString text)
+{
+  QMessageBox::about (this, title, text);
 }

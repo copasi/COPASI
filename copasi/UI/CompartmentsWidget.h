@@ -36,12 +36,18 @@ class CompartmentsWidget : public QWidget
   public slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
+  signals:
+    void name(QString &);
+
   protected slots:
     //virtual void slotTableClicked(int row, int col, int button, const QPoint & mousePos);
 
     virtual void slotTableSelectionChanged();
     //virtual void slotBtnOKClicked();
     //virtual void slotBtnCancelClicked();
+
+  private:
+    void showMessage(QString caption, QString text);
   };
 
 #endif
