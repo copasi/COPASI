@@ -10,12 +10,12 @@
 #include <qvariant.h>
 #include <qwidget.h>
 #include "copasiWidget.h"
+#include <qtextbrowser.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
-#include <qtextbrowser.h>
 class QLineEdit;
 class QLabel;
 class QComboBox;
@@ -29,15 +29,24 @@ class ModelWidget : public CopasiWidget
   public:
     ModelWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ModelWidget();
-    CModel *mModel;
-    void loadModel(CModel *model);
 
-  private:
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+    virtual void slotBtnSplitClicked();
+
+  protected:
+    bool loadModel(CModel *model);
+    bool saveToModel();
     bool convert2NonReversible();
+    std::string objKey;
 
-    // Attributes
-  private:
-    QString name;
+    QGridLayout* ModelWidgetLayout;
+    QHBoxLayout* Layout5;
     QLineEdit* LineEdit;
     QTextBrowser* textBrowser;
     QLabel* TextLabel1;
@@ -52,18 +61,6 @@ class ModelWidget : public CopasiWidget
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
     QPushButton* splitModel;
-    //QFrame* Line4_3;
-
-  public slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnSplitClicked();
-
-  signals:
-
-  protected:
-    QGridLayout* ModelWidgetLayout;
-    QHBoxLayout* Layout5;
   };
 
 #endif // MODELWIDGET_H

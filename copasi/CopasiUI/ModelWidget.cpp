@@ -20,6 +20,7 @@
 #include "CReactionInterface.h"
 #include "model/CModel.h"
 #include "utilities/CMethodParameter.h"
+#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 
@@ -95,61 +96,99 @@ ModelWidget::~ModelWidget()
 }
 
 /*This function is to load the model for the compartments*/
-void ModelWidget::loadModel(CModel *model)
+bool ModelWidget::loadModel(CModel *model)
 {
-  if (model != NULL)
+  bool ret = true;
+
+  LineEdit->setText(model->getTitle().c_str());
+  textBrowser->setText(model->getComments().c_str());
+  textBrowser->setReadOnly(FALSE);
+  ComboBox1->clear();
+  ComboBox2->clear();
+  ComboBox3->clear();
+  QStringList comboEntries;
+
+  unsigned int temp1;
+  for (temp1 = 0; model->TimeUnitName[temp1] != ""; temp1++)
     {
-      mModel = model;
-      LineEdit->setText(mModel->getTitle().c_str());
-      textBrowser->setText(mModel->getComments().c_str());
-      textBrowser->setReadOnly(FALSE);
-      ComboBox1->clear();
-      ComboBox2->clear();
-      ComboBox3->clear();
-      QStringList comboEntries;
-
-      unsigned int temp1;
-      for (temp1 = 0; mModel->TimeUnitName[temp1] != ""; temp1++)
-        {
-          comboEntries.push_front(mModel->TimeUnitName[temp1].c_str());
-          //QMessageBox::information(this, "tIME uNIT", mModel->TimeUnitName[temp1].c_str());
-        }
-      ComboBox1->insertStringList(comboEntries, -1);
-      ComboBox1->setCurrentText(mModel->getTimeUnit().c_str());
-
-      QStringList comboEntries1;
-      for (temp1 = 0; CModel::VolumeUnitName[temp1] != ""; temp1++)
-        {
-          comboEntries1.push_front(CModel::VolumeUnitName[temp1].c_str());
-          //QMessageBox::information(this, "Volume Unit", mModel->VolumeUnitName[temp1].c_str());
-        }
-      ComboBox2->insertStringList(comboEntries1, -1);
-      ComboBox2->setCurrentText(mModel->getVolumeUnit().c_str());
-
-      QStringList comboEntries2;
-      for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
-        {
-          comboEntries2.push_front(CModel::QuantityUnitName[temp1].c_str());
-          //QMessageBox::information(this, "Volume Unit", mModel->QuantityUnitName[temp1].c_str());
-        }
-      ComboBox3->insertStringList(comboEntries2, -1);
-      ComboBox3->setCurrentText(mModel->getQuantityUnit().c_str());
+      comboEntries.push_front(model->TimeUnitName[temp1].c_str());
+      //QMessageBox::information(this, "tIME uNIT", model->TimeUnitName[temp1].c_str());
     }
+  ComboBox1->insertStringList(comboEntries, -1);
+  ComboBox1->setCurrentText(model->getTimeUnit().c_str());
+
+  QStringList comboEntries1;
+  for (temp1 = 0; CModel::VolumeUnitName[temp1] != ""; temp1++)
+    {
+      comboEntries1.push_front(CModel::VolumeUnitName[temp1].c_str());
+      //QMessageBox::information(this, "Volume Unit", model->VolumeUnitName[temp1].c_str());
+    }
+  ComboBox2->insertStringList(comboEntries1, -1);
+  ComboBox2->setCurrentText(model->getVolumeUnit().c_str());
+
+  QStringList comboEntries2;
+  for (temp1 = 0; CModel::QuantityUnitName[temp1] != ""; temp1++)
+    {
+      comboEntries2.push_front(CModel::QuantityUnitName[temp1].c_str());
+      //QMessageBox::information(this, "Volume Unit", model->QuantityUnitName[temp1].c_str());
+    }
+  ComboBox3->insertStringList(comboEntries2, -1);
+  ComboBox3->setCurrentText(model->getQuantityUnit().c_str());
+
+  return ret;
+}
+
+bool ModelWidget::saveToModel()
+{
+  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(objKey);
+
+  if (!model) return false;
+
+  bool success = true;
+
+  if (LineEdit->text().latin1() != model->getTitle())
+    {
+      model->setTitle(LineEdit->text().latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::RENAME, objKey);
+    }
+
+  if (textBrowser->text().latin1() != model->getComments())
+    {
+      model->setComments(textBrowser->text().latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+    }
+
+  if (ComboBox1->currentText().latin1() != model->getTimeUnit())
+    {
+      model->setTimeUnit(ComboBox1->currentText().latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+    }
+
+  if (ComboBox2->currentText().latin1() != model->getVolumeUnit())
+    {
+      model->setVolumeUnit(ComboBox2->currentText().latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+    }
+
+  if (ComboBox3->currentText().latin1() != model->getQuantityUnit())
+    {
+      model->setQuantityUnit(ComboBox3->currentText().latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+    }
+
+  return success;
 }
 
 void ModelWidget::slotBtnCancelClicked()
-{}
+{
+  //TOD: let the user confirm
+  enter(objKey); // reload
+}
 
 void ModelWidget::slotBtnOKClicked()
 {
-  if (mModel != NULL)
-    {
-      mModel->setTitle(LineEdit->text().latin1());
-      mModel->setComments(textBrowser->text().latin1());
-      mModel->setTimeUnit(ComboBox1->currentText().latin1());
-      mModel->setVolumeUnit(ComboBox2->currentText().latin1());
-      mModel->setQuantityUnit(ComboBox3->currentText().latin1());
-    }
+  //let the user confirm?
+  saveToModel();
 }
 
 void ModelWidget::slotBtnSplitClicked()
@@ -159,6 +198,11 @@ void ModelWidget::slotBtnSplitClicked()
 
 bool ModelWidget::convert2NonReversible()
 {
+  //TODO check if there are any reversible reactions
+  //TODO warn the user
+  //TODO tell the gui about changes
+  //TODO generate report ?
+
   bool ret = true;
 
   std::vector<std::string> reactionsToDelete;
@@ -166,33 +210,37 @@ bool ModelWidget::convert2NonReversible()
   CReaction *reac0, *reac1, *reac2;
   CReactionInterface ri1, ri2;
   std::string fn, rn1, rn2;
-  CCopasiVectorN< CReaction > & mSteps = mModel->getReactions();
 
-  unsigned C_INT32 i, imax = mSteps.size();
+  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(objKey);
+  if (!model) return false;
+
+  CCopasiVectorN< CReaction > & steps = model->getReactions();
+
+  unsigned C_INT32 i, imax = steps.size();
   for (i = 0; i < imax; ++i)
-    if (mSteps[i]->isReversible())
+    if (steps[i]->isReversible())
       {
         ret = false;
-        reac0 = mSteps[i];
+        reac0 = steps[i];
         std::cout << i << "  ";
 
         //create the two new reactions
         reac1 = new CReaction(*reac0);
         rn1 = reac1->getName() + " (forward)";
         reac1->setName(rn1);
-        mSteps.add(reac1);
+        steps.add(reac1);
 
         reac2 = new CReaction(*reac0);
         rn2 = reac2->getName() + " (backward)";
         reac2->setName(rn2);
-        mSteps.add(reac2);
+        steps.add(reac2);
 
-        ri1.initFromReaction(rn1, *mModel);
-        ri2.initFromReaction(rn2, *mModel);
+        ri1.initFromReaction(rn1, *model);
+        ri2.initFromReaction(rn2, *model);
 
         //set the new function
         fn = reac0->getFunction().getName();
-        std::cout << fn << "  ";
+        std::cout << fn << "  " << std::endl;
 
         if (fn == "Mass action (reversible)")
           {
@@ -206,12 +254,12 @@ bool ModelWidget::convert2NonReversible()
           }
         else
           {
-            ri1.setReversibility(false);
-            ri2.reverse(false);
+            //ri1.setReversibility(false);
+            ri2.reverse(false, "Mass action (irreversible)");
           }
 
-        ri1.writeBackToReaction(*mModel);
-        ri2.writeBackToReaction(*mModel);
+        ri1.writeBackToReaction(*model);
+        ri2.writeBackToReaction(*model);
 
         //set the kinetic parameters
 
@@ -221,6 +269,10 @@ bool ModelWidget::convert2NonReversible()
             reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
             ret = true;
           }
+        else
+          {
+            reac2->setParameterValue("k1", 0);
+          }
 
         //remove the old reaction
         //mSteps.remove(reac0->getName());
@@ -229,7 +281,38 @@ bool ModelWidget::convert2NonReversible()
 
   imax = reactionsToDelete.size();
   for (i = 0; i < imax; ++i)
-    mSteps.remove(reactionsToDelete[i]);
+    steps.remove(reactionsToDelete[i]);
+
+  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
 
   return ret;
+}
+
+bool ModelWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool ModelWidget::leave()
+{
+  //let the user confirm?
+  return saveToModel();
+}
+
+bool ModelWidget::enter(const std::string & key)
+{
+  objKey = key;
+  CModel* model = (CModel*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a model
+
+  if (model) return loadModel(model);
+  else return false;
 }
