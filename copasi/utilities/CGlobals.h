@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:52 $
+   $Author: ssahle $ 
+   $Date: 2004/04/19 08:26:44 $
    End CVS Header */
 
 #ifndef COPASI_CGlobals
@@ -20,6 +20,8 @@ class CFunctionDB;
 class CUDFunctionDB;
 class CModel;
 class COutputList;
+class CReportDefinitionVector;
+class CPlotSpecVector;
 
 class CGlobals
   {
@@ -61,6 +63,9 @@ class CGlobals
      *  This a hack to be able to read old configaration files output information
      */
     CModel * pModel;
+
+    CReportDefinitionVector * pReportDefinitions;
+    CPlotSpecVector * pPlotSpecs;
 
   public:
 
