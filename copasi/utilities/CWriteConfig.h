@@ -27,7 +27,8 @@ class CWriteConfig
      *  @param name name of the confguration file. 
      *  @param mode output mode, defaults to creating a new file. 
      */
-    CWriteConfig(const std::string& name, std::ios::openmode mode = std::ios::out);
+    CWriteConfig(const std::string& name,
+                 std::ios_base::openmode mode = std::ios_base::out);
 
     /**
      *  Destructor. 
@@ -102,7 +103,7 @@ class CWriteConfig
     /**
      *  Open mode
      */
-    std::ios::openmode mOpenMode;
+    std::ios_base::openmode mOpenMode;
 
     /**
      *  Failure status:

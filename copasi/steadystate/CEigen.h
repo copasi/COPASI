@@ -323,8 +323,8 @@ class CEigen
       os << " Largest absolute imaginary part:  ";
       os << std::setprecision(6) << A.mEigen_maximagpart << std::endl;
       // Output Eigen-nreal
-      os.unsetf(std::ios::scientific);
-      os.unsetf(std::ios::showpoint);
+      os.unsetf(std::ios_base::scientific);
+      os.unsetf(std::ios_base::showpoint);
       os << " " << A.mEigen_nreal;
       os << " are purely real" << std::endl;
       // Output Eigen-nimage
@@ -344,7 +344,7 @@ class CEigen
       os << " have negative real part" << std::endl;
 
       // Set point manipulators
-      os.setf(std::ios::showpoint);
+      os.setf(std::ios_base::showpoint);
       // Output Eigne-stiffness
       os << " stiffness = " << A.mEigen_stiffness << std::endl;
       os << " time hierarchy = " << A.mEigen_hierarchy << std::endl;

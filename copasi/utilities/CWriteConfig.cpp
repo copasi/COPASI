@@ -21,15 +21,15 @@ CWriteConfig::CWriteConfig(void)
 {
   // initialize everything
   mFileName = "";
-  mOpenMode = std::ios::out;
+  mOpenMode = std::ios_base::out;
   mLineNumber = 0;
   mFail = 0;
 
-  mBuffer.setf(std::ios::scientific);
+  mBuffer.setf(std::ios_base::scientific);
   mBuffer.precision(16);
 }
 
-CWriteConfig::CWriteConfig(const std::string& name, std::ios::openmode mode)
+CWriteConfig::CWriteConfig(const std::string& name, std::ios_base::openmode mode)
 {
   // initialize everything
   mFileName = name;
@@ -37,10 +37,10 @@ CWriteConfig::CWriteConfig(const std::string& name, std::ios::openmode mode)
   mLineNumber = 0;
   mFail = 0;
 
-  mBuffer.setf(std::ios::scientific);
+  mBuffer.setf(std::ios_base::scientific);
   mBuffer.precision(16);
 
-  if (mOpenMode & std::ios::out)
+  if (mOpenMode & std::ios_base::out)
     writeVersion();
 }
 
@@ -65,7 +65,7 @@ C_INT32 CWriteConfig::flush(void)
 C_INT32 CWriteConfig::commit(void)
 {
 #ifdef WIN32
-  mOpenMode |= std::ios::binary;
+  mOpenMode |= std::ios_base::binary;
 #endif
 
   std::ofstream ConfigFile(mFileName.c_str(), mOpenMode);
@@ -84,7 +84,7 @@ C_INT32 CWriteConfig::commit(void)
       return mFail = 1;
     }
 
-  mOpenMode |= std::ios::app;
+  mOpenMode |= std::ios_base::app;
   return mFail;
 }
 

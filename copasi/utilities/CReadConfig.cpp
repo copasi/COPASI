@@ -298,7 +298,7 @@ std::string CReadConfig::lookAhead()
   std::string Line;
   mBuffer >> Line;
 
-  mBuffer.seekg(pos - mBuffer.tellg(), std::ios::cur);
+  mBuffer.seekg(pos - mBuffer.tellg(), std::ios_base::cur);
 
   return Line.substr(0, Line.find("="));
 }
@@ -306,7 +306,7 @@ std::string CReadConfig::lookAhead()
 void CReadConfig::rewind()
 {
   mBuffer.clear();
-  mBuffer.seekg(0, std::ios::beg);
+  mBuffer.seekg(0, std::ios_base::beg);
   mLineNumber = 0;
 
   return;
