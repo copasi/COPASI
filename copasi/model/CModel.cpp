@@ -336,8 +336,10 @@ void CModel::buildStoi()
         }
     }
 
+#ifdef DEBUG_MATRIX
   cout << "Stoichiometry Matrix" << endl;
   cout << mStoi << endl;
+#endif
 
   return;
 }
@@ -356,10 +358,13 @@ void CModel::lUDecomposition()
   TNT::UpperTriangularView < TNT::Matrix < C_FLOAT64 > > U(mLU);
   TNT::UnitLowerTriangularView < TNT::Matrix < C_FLOAT64 > > L(mLU);
 
+#ifdef DEBUG_MATRIX
+
   cout << "U" << endl;
   cout << U << endl;
   cout << "L" << endl;
   cout << L << endl;
+#endif
 
   // mMetabolitesX = mMetabolites;
 
@@ -485,8 +490,10 @@ void CModel::buildRedStoi()
         mRedStoi[i][j] = Sum;
       }
 
+#ifdef DEBUG_MATRIX
   cout << "Reduced Stoichiometry Matrix" << endl;
   cout << mRedStoi << endl;
+#endif
 
   return;
 }
@@ -532,14 +539,14 @@ void CModel::buildL()
           *sum -= mL[i][k] * mL[j][k];
       }
 
+#ifdef DEBUG_MATRIX
   cout << "L" << endl;
-  cout <<
-  TNT::LowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL)
+  cout << TNT::LowerTriangularView< TNT::Matrix< C_FLOAT64 > >(mL)
   << endl;
   cout << "L inverse" << endl;
-  cout <<
-  TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(mL)
+  cout << TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >(mL)
   << endl;
+#endif
 }
 
 void CModel::buildMoieties()
