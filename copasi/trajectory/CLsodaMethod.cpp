@@ -207,20 +207,10 @@ const double CLsodaMethod::step(const double & deltaT,
   mLsodaStatus = 1;
 
   /* Configure lsoda */
-  unsigned C_INT32 i, imax = size();
-  string name;
-  for (i = 0; i < imax; i++)
-    {
-      name = getName(i);
-      if (name == "LSODA.RelativeTolerance")
-        mRtol = getValue(i);
-      else if (name == "LSODA.AbsoluteTolerance")
-        mAtol = getValue(i);
-      else if (name == "LSODA.AdamsMaxOrder")
-        mAdams = (C_INT32) getValue(i);
-      else if (name == "LSODA.BDFMaxOrder")
-        mBDF = (C_INT32) getValue(i);
-    }
+  mRtol = getValue("LSODA.RelativeTolerance");
+  mAtol = getValue("LSODA.AbsoluteTolerance");
+  mAdams = (C_INT32) getValue("LSODA.AdamsMaxOrder");
+  mBDF = (C_INT32) getValue("LSODA.BDFMaxOrder");
 
   /* Release previous state and make the initialState the current */
   pdelete(mpStateX);
