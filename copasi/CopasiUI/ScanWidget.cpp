@@ -53,8 +53,39 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   if (!name)
     setName("ScanWidget");
+
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+
+  Layout4 = new QHBoxLayout(0, 0, 6, "Layout4");
+
+  Layout3 = new QHBoxLayout(0, 0, 6, "Layout3");
+
+  steadyState = new QCheckBox(this, "steadyState");
+  steadyState->setText(trUtf8("Steady State"));
+  Layout3->addWidget(steadyState);
+
+  eSteadyState = new QToolButton(this, "eSteadyState");
+  eSteadyState->setText(trUtf8("Edit Steady"));
+  Layout3->addWidget(eSteadyState);
+  Layout4->addLayout(Layout3);
+
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8(""));
+  Layout4->addWidget(TextLabel3);
+
+  Layout4_2 = new QHBoxLayout(0, 0, 6, "Layout4_2");
+
+  trajectory = new QCheckBox(this, "trajectory");
+  trajectory->setText(trUtf8("Trajectory"));
+  Layout4_2->addWidget(trajectory);
+
+  eTrajectory = new QToolButton(this, "eTrajectory");
+  eTrajectory->setText(trUtf8("Edit Trajectory"));
+  Layout4_2->addWidget(eTrajectory);
+  Layout4->addLayout(Layout4_2);
+
+  ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 0, 2);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Problem"));
@@ -103,37 +134,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 2);
 
-  Layout4 = new QHBoxLayout(0, 0, 6, "Layout4");
-
-  Layout3 = new QHBoxLayout(0, 0, 6, "Layout3");
-
-  steadyState = new QCheckBox(this, "steadyState");
-  steadyState->setText(trUtf8("Steady State"));
-  Layout3->addWidget(steadyState);
-
-  eSteadyState = new QToolButton(this, "eSteadyState");
-  eSteadyState->setText(trUtf8("Edit Steady"));
-  Layout3->addWidget(eSteadyState);
-  Layout4->addLayout(Layout3);
-
-  TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8(""));
-  Layout4->addWidget(TextLabel3);
-
-  Layout4_2 = new QHBoxLayout(0, 0, 6, "Layout4_2");
-
-  trajectory = new QCheckBox(this, "trajectory");
-  trajectory->setText(trUtf8("Trajectory"));
-  Layout4_2->addWidget(trajectory);
-
-  eTrajectory = new QToolButton(this, "eTrajectory");
-  eTrajectory->setText(trUtf8("Edit Trajectory"));
-  Layout4_2->addWidget(eTrajectory);
-  Layout4->addLayout(Layout4_2);
-
-  ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 0, 2);
-
-  Layout8 = new QHBoxLayout(0, 0, 6, "Layout8");
+  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
 
   Layout7 = new QVBoxLayout(0, 0, 6, "Layout7");
 
@@ -144,7 +145,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
 
   deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8("Del"));
+  deleteButton->setText(trUtf8("(-)"));
 
   Layout6->addWidget(deleteButton, 0, 1);
 
@@ -154,7 +155,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout6->addWidget(downButton, 1, 1);
 
   addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8("Add"));
+  addButton->setText(trUtf8("(+)"));
 
   Layout6->addWidget(addButton, 0, 0);
 
@@ -168,7 +169,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   Layout6->addMultiCellWidget(ObjectListBox, 2, 2, 0, 1);
   Layout7->addLayout(Layout6);
-  Layout8->addLayout(Layout7);
+  Layout24->addLayout(Layout7);
 
   scrollview = new ScanScrollView(this, 0, 0);
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
@@ -177,9 +178,138 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   scrollview->setVScrollBarMode(QScrollView::Auto);
   scrollview->setHScrollBarMode(QScrollView::Auto);
   scrollview->setSelectedList(&selectedList);
-  Layout8->addWidget(scrollview);
 
-  ScanWidgetLayout->addMultiCellLayout(Layout8, 4, 4, 0, 2);
+  Layout24->addWidget(scrollview);
+
+  ScanWidgetLayout->addMultiCellLayout(Layout24, 4, 4, 0, 2);
+  /*
+    ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
+   
+    TextLabel1 = new QLabel(this, "TextLabel1");
+    TextLabel1->setText(trUtf8("Problem"));
+   
+    ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
+   
+    taskName = new QLineEdit(this, "taskName");
+   
+    ScanWidgetLayout->addWidget(taskName, 0, 1);
+   
+    Line2 = new QFrame(this, "Line2");
+    Line2->setFrameShape(QFrame::HLine);
+    Line2->setFrameShadow(QFrame::Sunken);
+    Line2->setFrameShape(QFrame::HLine);
+   
+    ScanWidgetLayout->addMultiCellWidget(Line2, 5, 5, 0, 2);
+   
+    sExecutable = new QCheckBox(this, "sExecutable");
+    sExecutable->setText(trUtf8("Scan Executable"));
+   
+    ScanWidgetLayout->addWidget(sExecutable, 0, 2);
+   
+    Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+   
+    commitChange = new QPushButton(this, "commitChange");
+    commitChange->setText(trUtf8("Scan"));
+    Layout2->addWidget(commitChange);
+   
+    cancelChange = new QPushButton(this, "cancelChange");
+    cancelChange->setText(trUtf8("Cancel"));
+    Layout2->addWidget(cancelChange);
+   
+    ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
+   
+    Line1 = new QFrame(this, "Line1");
+    Line1->setFrameShape(QFrame::HLine);
+    Line1->setFrameShadow(QFrame::Sunken);
+    Line1->setFrameShape(QFrame::HLine);
+   
+    ScanWidgetLayout->addMultiCellWidget(Line1, 1, 1, 0, 2);
+   
+    Line1_2 = new QFrame(this, "Line1_2");
+    Line1_2->setFrameShape(QFrame::HLine);
+    Line1_2->setFrameShadow(QFrame::Sunken);
+    Line1_2->setFrameShape(QFrame::HLine);
+   
+    ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 2);
+   
+    Layout4 = new QHBoxLayout(0, 0, 6, "Layout4");
+   
+    Layout3 = new QHBoxLayout(0, 0, 6, "Layout3");
+   
+    steadyState = new QCheckBox(this, "steadyState");
+    steadyState->setText(trUtf8("Steady State"));
+    Layout3->addWidget(steadyState);
+   
+    eSteadyState = new QToolButton(this, "eSteadyState");
+    eSteadyState->setText(trUtf8("Edit Steady"));
+    Layout3->addWidget(eSteadyState);
+    Layout4->addLayout(Layout3);
+   
+    TextLabel3 = new QLabel(this, "TextLabel3");
+    TextLabel3->setText(trUtf8(""));
+    Layout4->addWidget(TextLabel3);
+   
+    Layout4_2 = new QHBoxLayout(0, 0, 6, "Layout4_2");
+   
+    trajectory = new QCheckBox(this, "trajectory");
+    trajectory->setText(trUtf8("Trajectory"));
+    Layout4_2->addWidget(trajectory);
+   
+    eTrajectory = new QToolButton(this, "eTrajectory");
+    eTrajectory->setText(trUtf8("Edit Trajectory"));
+    Layout4_2->addWidget(eTrajectory);
+    Layout4->addLayout(Layout4_2);
+   
+    ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 0, 2);
+   
+    Layout8 = new QHBoxLayout(0, 0, 6, "Layout8");
+   
+    Layout7 = new QVBoxLayout(0, 0, 6, "Layout7");
+   
+    TextLabel2 = new QLabel(this, "TextLabel2");
+    TextLabel2->setText(trUtf8("Scan Items"));
+    Layout7->addWidget(TextLabel2);
+   
+    Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
+   
+    deleteButton = new QPushButton(this, "deleteButton");
+    deleteButton->setText(trUtf8("Del"));
+   
+    Layout6->addWidget(deleteButton, 0, 1);
+   
+    downButton = new QPushButton(this, "downButton");
+    downButton->setText(trUtf8("(v)"));
+   
+    Layout6->addWidget(downButton, 1, 1);
+   
+    addButton = new QPushButton(this, "addButton");
+    addButton->setText(trUtf8("Add"));
+   
+    Layout6->addWidget(addButton, 0, 0);
+   
+    upButton = new QPushButton(this, "upButton");
+    upButton->setText(trUtf8("(^)"));
+   
+    Layout6->addWidget(upButton, 1, 0);
+   
+    ObjectListBox = new QListBox(this, "ObjectListBox");
+    ObjectListBox->insertItem(trUtf8(""));
+   
+    Layout6->addMultiCellWidget(ObjectListBox, 2, 2, 0, 1);
+    Layout7->addLayout(Layout6);
+    Layout8->addLayout(Layout7);
+   
+    scrollview = new ScanScrollView(this, 0, 0);
+    ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+    scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width() + 8);
+    delete parameterTable;
+    scrollview->setVScrollBarMode(QScrollView::Auto);
+    scrollview->setHScrollBarMode(QScrollView::Auto);
+    scrollview->setSelectedList(&selectedList);
+    Layout8->addWidget(scrollview);
+   
+    ScanWidgetLayout->addMultiCellLayout(Layout8, 4, 4, 0, 2);
+  */
 
   // tab order
   setTabOrder(taskName, sExecutable);

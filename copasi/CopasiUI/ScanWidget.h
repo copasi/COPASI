@@ -95,11 +95,11 @@ class ScanWidget : public CopasiWidget
 
   protected:
     QGridLayout* ScanWidgetLayout;
-    QHBoxLayout* Layout2;
     QHBoxLayout* Layout4;
     QHBoxLayout* Layout3;
     QHBoxLayout* Layout4_2;
-    QHBoxLayout* Layout8;
+    QHBoxLayout* Layout2;
+    QHBoxLayout* Layout24;
     QVBoxLayout* Layout7;
     QGridLayout* Layout6;
     CModel *mModel;
