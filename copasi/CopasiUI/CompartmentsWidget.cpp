@@ -117,11 +117,19 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
   QString x = table->text(row, 0);
   if (row == table->numRows() - 1)
     {
-      std::string name = "unknown";
+      std::string name = "compartment";
       CCompartment* newCompartment = new CCompartment();
-      mModel->addCompartment(name, 1);
+      int i = 0;
+      while (mModel->addCompartment(name, 1) == -1)
+        {
+          i++;
+          name = "compartment";
+          name += "_";
+          name += QString::number(i);
+        }
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
+      x = name.c_str();
     }
   emit name(x);
   //QMessageBox::information(this, "Compartments Widget",x);
