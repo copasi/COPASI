@@ -356,6 +356,14 @@ void MetabolitesWidget1::slotBtnOKClicked()
   if (name.latin1() != metab->getName())
     metab->setName(name.latin1());
 
+  QString Compartment = ComboBox1->currentText();
+  if (Compartment.latin1() != metab->getCompartment()->getName())
+    {
+      mModel->getCompartments()[Compartment.latin1()]->addMetabolite(*metab);
+      mModel->getCompartments()[metab->getCompartment()->getName()]->getMetabolites().remove(metab->getName());
+      mModel->initializeMetabolites();
+    }
+
   //for Initial Concentration and Initial Number
   QString initialConcentration(LineEdit4->text());
   double temp1;
