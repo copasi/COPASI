@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:09:41 $
+   $Date: 2004/09/09 12:27:58 $
    End CVS Header */
 
 // CReaction
@@ -855,16 +855,14 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
         (store < resolution) ? resolution * (1.0 + derivationFactor) : store;
 
       xi = tmp * (1.0 + derivationFactor);
-      //f1 = calculate();
-      f1 = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
+      f1 = mpFunction->calcValue(mMap.getPointers());
 
       xi = tmp * (1.0 - derivationFactor);
-      //f2 = calculate();
-      f2 = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
+      f2 = mpFunction->calcValue(mMap.getPointers());
 
       xi = store;
 
-      return (f1 - f2) / (2.0 * tmp * derivationFactor);
+      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
       //this is d(flow)/d(concentration)
     }
   else
