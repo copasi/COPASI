@@ -145,7 +145,7 @@ template < class CType > class CCopasiVector:
       /**
        *
        */
-      virtual CCopasiObject * getObject(const CCopasiObjectName &name) const
+      virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
         {return (CCopasiObject *) (*this)[name.getIndex()];}
 
       /**
@@ -406,7 +406,7 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       /**
        *
        */
-      virtual CCopasiObject * getObject(const CCopasiObjectName &name) const
+      virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const
       {return (CCopasiObject *) (*this)[name.getName()];}
 
       /**

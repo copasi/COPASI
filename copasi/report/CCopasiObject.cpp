@@ -78,7 +78,7 @@ CCopasiObjectName CCopasiObject::getCN() const
     return CN;
   }
 
-CCopasiObject *
+const CCopasiObject *
 CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
   {return NULL;}
 

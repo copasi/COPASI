@@ -35,50 +35,50 @@ CCopasiContainer::~CCopasiContainer()
     if ((*it)->isReference()) pdelete(*it);
 }
 
-CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn)
-{
-  if (cn == "") return this;
+const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
+  {
+    if (cn == "") return this;
 
-  std::vector< CCopasiObject * >::iterator it = mObjects.begin();
-  std::vector< CCopasiObject * >::iterator end = mObjects.end();
+    std::vector< CCopasiObject * >::const_iterator it = mObjects.begin();
+    std::vector< CCopasiObject * >::const_iterator end = mObjects.end();
 
-  std::string Name = cn.getObjectName();
-  std::string Type = cn.getObjectType();
+    std::string Name = cn.getObjectName();
+    std::string Type = cn.getObjectType();
 
-  for (; it < end; it++)
-    if ((*it)->getObjectName() == Name && (*it)->getObjectType() == Type) break;
+    for (; it < end; it++)
+      if ((*it)->getObjectName() == Name && (*it)->getObjectType() == Type) break;
 
-  if (it == end) return NULL;
+    if (it == end) return NULL;
 
-  if ((*it)->isContainer()) return (*it)->getObject(cn.getRemainder());
+    if ((*it)->isContainer()) return (*it)->getObject(cn.getRemainder());
 
-  CCopasiObject * pObject = NULL;
+    const CCopasiObject * pObject = NULL;
 
-  if ((*it)->isNameVector() || (*it)->isVector())
-    {
-      pObject = (*it)->getObject("[" + cn.getName() + "]");
+    if ((*it)->isNameVector() || (*it)->isVector())
+      {
+        pObject = (*it)->getObject("[" + cn.getName() + "]");
 
-      if ((*it)->getObjectType() == "Reference" || !pObject)
-        return pObject;
-      else
-        return pObject->getObject(cn.getRemainder());
-    }
+        if ((*it)->getObjectType() == "Reference" || !pObject)
+          return pObject;
+        else
+          return pObject->getObject(cn.getRemainder());
+      }
 
-  if ((*it)->isMatrix())
-    {
-      pObject = (*it)->getObject("[" + cn.getName() + "]" +
-                                 "[" + cn.getName(1) + "]");
+    if ((*it)->isMatrix())
+      {
+        pObject = (*it)->getObject("[" + cn.getName() + "]" +
+                                   "[" + cn.getName(1) + "]");
 
-      if ((*it)->getObjectType() == "Reference" || !pObject)
-        return pObject;
-      else
-        return pObject->getObject(cn.getRemainder());
-    }
+        if ((*it)->getObjectType() == "Reference" || !pObject)
+          return pObject;
+        else
+          return pObject->getObject(cn.getRemainder());
+      }
 
-  if ((*it)->isReference()) return *it;
+    if ((*it)->isReference()) return *it;
 
-  return (*it)->getObject(cn.getRemainder());
-}
+    return (*it)->getObject(cn.getRemainder());
+  }
 
 void CCopasiContainer::initObjects() {}
 

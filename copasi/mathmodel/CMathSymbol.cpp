@@ -96,7 +96,7 @@ bool CMathSymbol::setCN(const CCopasiObjectName & cn,
                         const CCopasiContainer * pContainer)
 {
   mCN = cn;
-  mpObject = const_cast<CCopasiContainer *>(pContainer)->getObject(mCN);
+  mpObject = const_cast<CCopasiObject *>(const_cast<CCopasiContainer *>(pContainer)->getObject(mCN));
   if (mpObject)
     return true;
   else
