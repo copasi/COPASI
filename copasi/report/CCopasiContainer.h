@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/16 21:14:03 $
+   $Date: 2005/03/17 19:56:00 $
    End CVS Header */
 
 /**
@@ -35,9 +35,14 @@ class CCopasiContainer: public CCopasiObject
 
     typedef std::multimap< const std::string, CCopasiObject * > objectMap;
 
+    typedef std::map < const CCopasiObject *,
+    bool (CCopasiContainer::*)(const C_FLOAT64 & value) > updateMap;
+
   protected:
     /** @dia:route 0,8; h,23.7081,50.8343,19.6311,4.45372,40.5964 */
     objectMap mObjects;
+
+    updateMap mUpdates;
 
     // Operations
   private:
@@ -76,31 +81,31 @@ class CCopasiContainer: public CCopasiObject
 
     virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
+    virtual bool addUpdateMethod(const CCopasiObject * pObject,
+                                 bool (CCopasiContainer::*updateMethod)(const C_FLOAT64 & value));
+
     virtual bool remove(CCopasiObject * pObject);
 
-    /**
-     * if there is a CCopasiObjectReference with a double value it is set.
-     * otherwise false is returned
-     */
-    virtual bool setValueOfNamedReference(std::string name, C_FLOAT64 value);
+    virtual bool setChildValue(const CCopasiObject * pChild,
+                               const C_FLOAT64 & value);
 
   protected:
     virtual void initObjects();
 
-    template <class CType> void addObjectReference(const std::string & name,
+    template <class CType> CCopasiObject * addObjectReference(const std::string & name,
         CType & reference,
         const unsigned C_INT32 & flag = 0)
-    {createReference(name, this, reference, flag);}
+    {return createReference(name, this, reference, flag);}
 
-    template <class CType> void addVectorReference(const std::string & name,
+    template <class CType> CCopasiObject * addVectorReference(const std::string & name,
         CType & reference,
         const unsigned C_INT32 & flag = 0)
-    {createVectorReference(name, this, reference, flag);}
+    {return createVectorReference(name, this, reference, flag);}
 
-    template <class CType> void addMatrixReference(const std::string & name,
+    template <class CType> CCopasiObject * addMatrixReference(const std::string & name,
         CType & reference,
         const unsigned C_INT32 & flag = 0)
-    {createMatrixReference(name, this, reference, flag);}
+    {return createMatrixReference(name, this, reference, flag);}
   };
 
 #ifdef XXXX 

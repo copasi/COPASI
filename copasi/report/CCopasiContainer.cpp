@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/09 15:07:30 $
+   $Date: 2005/03/17 19:56:00 $
    End CVS Header */
 
 /**
@@ -63,7 +63,8 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
 
 CCopasiContainer::CCopasiContainer() :
     CCopasiObject("Root", NULL, "CN", CCopasiObject::Container),
-    mObjects()
+    mObjects(),
+    mUpdates()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
@@ -71,13 +72,15 @@ CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const std::string & type,
                                    const unsigned C_INT32 & flag):
     CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
-    mObjects()
+    mObjects(),
+    mUpdates()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
                                    const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
-    mObjects()
+    mObjects(),
+    mUpdates()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CCopasiContainer::~CCopasiContainer()
@@ -159,7 +162,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +          //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +           //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
@@ -201,6 +204,13 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
   return true;
 }
 
+bool CCopasiContainer::addUpdateMethod(const CCopasiObject * pObject,
+                                       bool (CCopasiContainer::*updateMethod)(const C_FLOAT64 & value))
+{
+  mUpdates[pObject] = updateMethod;
+  return true;
+}
+
 bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
   objectMap::iterator it = mObjects.begin();
@@ -220,18 +230,11 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
   return true;
 }
 
-bool CCopasiContainer::setValueOfNamedReference(std::string name, C_FLOAT64 value)
+bool CCopasiContainer::setChildValue(const CCopasiObject * pChild,
+                                     const C_FLOAT64 & value)
 {
-  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
-    mObjects.equal_range(name);
+  updateMap::iterator it = mUpdates.find(pChild);
+  if (it == mUpdates.end()) return false;
 
-  //assume unique names...
-  const CCopasiObject* tmp = range.first->second;
-
-  if (!tmp) return false;
-  if (!tmp->isReference()) return false;
-  if (!tmp->isValueDbl()) return false;
-
-  *((C_FLOAT64*)(tmp->getReference())) = value;
-  return true;
+  return (*this.*it->second)(value);
 }
