@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.62 $ $Author: gauges $ $Date: 2004/11/05 09:14:34 $  
+# $Revision: 1.63 $ $Author: shoops $ $Date: 2004/11/12 14:26:34 $  
 ######################################################################
 
 include(../common.pri)
@@ -141,7 +141,6 @@ HEADERS += \
            MoietyWidget.h \
            MoietyWidget1.h \
            MyLineEdit.h \
-           MyTable.h \
            listviews.h \
 #           ObjectBrowser.h \
            ObjectBrowserDialog.h \
@@ -219,7 +218,6 @@ SOURCES += \
            MoietyWidget.cpp \
            MoietyWidget1.cpp \
            MyLineEdit.cpp \
-           MyTable.cpp \
 #           ObjectBrowser.cpp \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
