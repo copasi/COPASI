@@ -35,6 +35,7 @@ COptimizer::~COptimizer()
 // Initialization of private variables
 BOOL COptimizer::Init( CString &inifile )
 {
+
 }
 
 //
@@ -59,6 +60,12 @@ void COptimizer::SetParameterValue( int p, double v )
 //
 char * COptimizer:: GetParameterName( int p )
 {
+  // old code:
+  //  statbuffer[0] = '\0';
+  //return DLLParameterName( p, statbuffer );
+
+  //new:  
+  return mStatBuffer[p];             // ???????????????????
 }
 
 // Execute the optimization algorithm calling simulation routine (passed as argument)
@@ -86,20 +93,34 @@ int COptimizer::SolveLsq( double (*func) (double *) )
 // constraints, False otherwise
 BOOL COptimizer::IsBounded( void )
 {
+  return mBounds;
+
 }
 
 // Return True if the method is capable of handling general constraints, 
 // False otherwise
 BOOL COptimizer::IsConstrained( void )
 {
+  return mConstraints;
 }
 
+
+// return TRUE if method can do general optimisation
 BOOL COptimizer::CanOptimise( void )
 {
+
+switch( DLLRoutines() )
+ {
+ case 1:
+ case 3:  return TRUE;
+ case 2:  return FALSE;
+ default: return FALSE;
+ }
 }
 
 BOOL COptimizer::SpecialisedLsq( void )
 {
+
 }
 
 

@@ -126,12 +126,12 @@ public:
    BOOL IsConstrained( void );
 
    /**
-    * 
+    *  return TRUE if method can do general optimisation
     */
    BOOL CanOptimise( void );
 
    /**
-    * 
+    * return TRUE if method has specialised least-squares solver
     */
    BOOL SpecialisedLsq( void );
 

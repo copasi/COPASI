@@ -1,3 +1,17 @@
+/**
+ *  File name: CGA.cpp
+ *
+ *  Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the implementation (.cpp file) of the CGA class. 
+ *           It is to implement the genetic algorithm for COPASI optimization
+ */
+
+
+#include "CGA.h"
+
+
+
 // ga.cpp : Genetic algorithm optimisation.
 //
 
