@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/04/29 19:28:39 $
+   $Date: 2004/05/25 19:37:34 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,6 +48,7 @@ class FunctionWidget1 : public CopasiWidget
   protected slots:
     virtual void slotCancelButtonClicked();
     virtual void slotCommitButtonClicked();
+    virtual void slotNewButtonClicked();
     virtual void slotDeleteButtonClicked();
     virtual void slotTableValueChanged(int row, int col);
     virtual void slotAppTableValueChanged(int row, int col);
@@ -71,6 +72,7 @@ class FunctionWidget1 : public CopasiWidget
     QFrame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
+    QPushButton* newFcn;
     QPushButton* deleteFcn;
     QButtonGroup* ButtonGroup1;
     QRadioButton* RadioButton1;

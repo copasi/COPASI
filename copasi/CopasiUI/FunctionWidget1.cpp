@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/05/22 22:25:49 $
+   $Date: 2004/05/25 19:37:34 $
    End CVS Header */
 
 /**********************************************************************
@@ -92,6 +92,10 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   cancelChanges = new QPushButton(this, "cancelChanges");
   cancelChanges->setText(trUtf8("Revert"));
   Layout1->addWidget(cancelChanges);
+
+  newFcn = new QPushButton(this, "newFcn");
+  newFcn->setText(trUtf8("New"));
+  Layout1->addWidget(newFcn);
 
   deleteFcn = new QPushButton(this, "deleteFcn");
   deleteFcn->setText(trUtf8("Delete"));
@@ -199,11 +203,13 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   setTabOrder(Table1, Table2);
   setTabOrder(Table2, commitChanges);
   setTabOrder(commitChanges, cancelChanges);
-  setTabOrder(cancelChanges, deleteFcn);
+  setTabOrder(cancelChanges, newFcn);
+  setTabOrder(newFcn, deleteFcn);
 
   // signals and slots connections
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
+  connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
   connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
   connect(Table2, SIGNAL(valueChanged(int, int)), this, SLOT(slotAppTableValueChanged(int, int)));
@@ -434,10 +440,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                                       // The user clicked the Retry again button or pressed Enter
+            case 0:                                        // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                                       // The user clicked the Quit or pressed Escape
+            case 1:                                        // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -853,6 +859,25 @@ void FunctionWidget1::slotCommitButtonClicked()
   saveToFunction();
 }
 
+void FunctionWidget1::slotNewButtonClicked()
+{
+  std::string name = "function_0";
+  int i = 0;
+  CFunction* pFunc;
+  while (!(pFunc = Copasi->pFunctionDB->createFunction(name, CFunction::UserDefined)))
+    {
+      i++;
+      name = "function_";
+      name += QString::number(i).utf8();
+    }
+  //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
+  //table->setNumRows(table->numRows());
+  //emit updated();
+  //emit leaf(mModel);
+  ListViews::notify(ListViews::FUNCTION, ListViews::ADD);
+  enter(pFunc->getKey());
+}
+
 void FunctionWidget1::slotDeleteButtonClicked()
 {
   //TODO: let the user confirm
@@ -924,7 +949,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:               // Yes or Enter
+        case 0:                // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -956,7 +981,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:               // No or Escape
+        case 1:                // No or Escape
           break;
         }
     }
