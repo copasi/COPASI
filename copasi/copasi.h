@@ -24,6 +24,14 @@
 #define MCA_OK 0
 #define MCA_SINGULAR 1
 
+#ifdef min
+#undef min
+#endif
+
+#ifdef max
+#undef max
+#endif
+
 #if (defined sparc || defined __CYGWIN__)
 # define C_INT32 long
 # define C_INT int
@@ -41,9 +49,9 @@
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define timeb _timeb         // they just have a different name for this guy
 # define ftime _ftime         // they just have a different name for this guy
-# define strcasecmp _stricmp  // they just have a different name for this guy 
-// # define min _cpp_min
-// # define max _cpp_max
+# define strcasecmp _stricmp  // they just have a different name for this guy
+# define min _cpp_min
+# define max _cpp_max
 #else
 # define C_INT32 int
 # define C_INT int
