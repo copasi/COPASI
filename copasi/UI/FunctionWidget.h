@@ -42,7 +42,7 @@ class FunctionWidget : public QWidget
     virtual void slotTableSelectionChanged();
 
   signals:
-    void name(QString &);
+    void name(const QString &);
   };
 
 #endif

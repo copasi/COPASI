@@ -66,7 +66,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   MoietyWidget1Layout->addWidget(LineEdit3, 2, 1);
   QSpacerItem* spacer = new QSpacerItem(430, 171, QSizePolicy::Expanding, QSizePolicy::Minimum);
   MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
-  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(QString &)));
+  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
 }
 
 MoietyWidget1::~MoietyWidget1()

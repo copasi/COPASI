@@ -30,7 +30,7 @@ class MetabolitesWidget : public QWidget
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void name(QString &);
+    void name(const QString &);
 
   public:
     MetabolitesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);

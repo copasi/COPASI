@@ -32,7 +32,7 @@ class ModesWidget : public QWidget
     void resizeEvent(QResizeEvent * re);
 
   signals:
-    void signal_emitted(QString &);
+    void signal_emitted(const QString &);
 
   protected slots:
 

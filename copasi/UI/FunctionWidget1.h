@@ -73,7 +73,7 @@ class FunctionWidget1 : public QWidget
     virtual void slotCommitButtonClicked();
 
   signals:
-    void signalCancelButtonClicked(QString &);
+    void signalCancelButtonClicked(const QString &);
 
   protected:
     QGridLayout* FunctionWidget1Layout;

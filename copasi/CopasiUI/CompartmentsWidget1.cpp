@@ -113,8 +113,8 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(ListBox1, SIGNAL(selected(const QString&)), this, SLOT(slotListBoxCurrentChanged(const QString&)));
-  connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
-  connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
+  connect(this, SIGNAL(name_changed(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
+  connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
 }
 
 /*

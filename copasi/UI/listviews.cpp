@@ -349,7 +349,7 @@ QListViewItem* ListViews::searchNode(const char* name)
 /************************ListViews::slotFolderChanged(QListViewItem *i)----------->
  **
  ** Parameters:- QListViewItem* :- pointer to the node that was selected by the user
- **
+ **                                                    
  ** Returns  :-  void(Nothing)
  ** Description:-This method is called whenever the user clicks on one of the
  ** tree view items...
@@ -1099,7 +1099,7 @@ void ListViews::showMessage(QString title, QString text)
   QMessageBox::about (this, title, text);
 }
 
-void ListViews::slotCompartmentTableChanged(QString &s)
+void ListViews::slotCompartmentTableChanged(const QString &s)
 {
   compartmentsWidget1->isName(s);
   //QMessageBox::information(this, "Compartments Widget","kk");
@@ -1114,7 +1114,7 @@ void ListViews::slotCompartmentTableChanged(QString &s)
   lastWidget = currentWidget;
 }
 
-void ListViews::slotMetaboliteTableChanged(QString &s)
+void ListViews::slotMetaboliteTableChanged(const QString &s)
 {
   metabolitesWidget1->isName(s);
   //QMessageBox::information(this, "Metabolites Widget","kk");
@@ -1129,7 +1129,7 @@ void ListViews::slotMetaboliteTableChanged(QString &s)
   lastWidget = currentWidget;
 }
 
-void ListViews::slotMoietyTableChanged(QString &s)
+void ListViews::slotMoietyTableChanged(const QString &s)
 {
   moietyWidget1->isName(s);
   //QMessageBox::information(this, "Metabolites Widget","kk");
@@ -1144,7 +1144,7 @@ void ListViews::slotMoietyTableChanged(QString &s)
   lastWidget = currentWidget;
 }
 
-void ListViews::slotReactionTableChanged(QString &s)
+void ListViews::slotReactionTableChanged(const QString &s)
 {
   reactionsWidget1->isName(s);
   //QMessageBox::information(this, "Metabolites Widget","kk");
@@ -1159,7 +1159,7 @@ void ListViews::slotReactionTableChanged(QString &s)
   lastWidget = currentWidget;
 }
 
-void ListViews::slotFunctionTableChanged(QString &s)
+void ListViews::slotFunctionTableChanged(const QString &s)
 {
   functionWidget1->isName(s);
   currentWidget = functionWidget1;

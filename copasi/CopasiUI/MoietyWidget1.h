@@ -42,7 +42,7 @@ class MoietyWidget1 : public QWidget
     virtual void slotBtnOKClicked();
 
   signals:
-    void signal_emitted(QString &);
+    void signal_emitted(const QString &);
   protected:
     QGridLayout* MoietyWidget1Layout;
   };

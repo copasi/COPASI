@@ -43,8 +43,8 @@ class CompartmentsWidget : public QWidget
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void name(QString &);
-    void signal_emitted(QString &);
+    void name(const QString &);
+    void signal_emitted(const QString &);
 
   protected slots:
     virtual void slotTableSelectionChanged();

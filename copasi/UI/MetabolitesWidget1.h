@@ -73,7 +73,7 @@ class MetabolitesWidget1 : public QWidget
     virtual void slotBtnOKClicked();
 
   signals:
-    void signal_emitted(QString &);
+    void signal_emitted(const QString &);
 
   private:
     void showMessage(QString caption, QString text);

@@ -161,7 +161,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   // signals and slots connections
   /*** For Cancel Button Clicked ***/
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
-  connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
+  connect(this, SIGNAL(signalCancelButtonClicked(const QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(const QString &)));
   /*** For Commit Button Clicked ***/
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent

@@ -35,7 +35,7 @@ class MoietyWidget : public QWidget
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
 
   signals:
-    void name(QString &);
+    void name(const QString &);
 
   protected slots:
 

@@ -26,7 +26,7 @@ class CompartmentSymbols : public QWidget
     QPushButton *btnCancel;
 
   signals:
-    void name(QString &);
+    void name(const QString &);
 
   public:
     CompartmentSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
