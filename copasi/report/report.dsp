@@ -24,7 +24,7 @@ CFG=report - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=report - Win32 Build
 # PROP BASE Target_File "../lib/report.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -71,6 +71,14 @@ SOURCE=.\CKeyFactory.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CReport.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportBody.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReportDefinition.cpp
 # End Source File
 # End Group
@@ -96,6 +104,14 @@ SOURCE=.\CCopasiObjectReference.h
 # Begin Source File
 
 SOURCE=.\CKeyFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReport.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportBody.h
 # End Source File
 # Begin Source File
 
