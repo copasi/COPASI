@@ -350,14 +350,14 @@ C_INT main(C_INT argc, char *argv[])
       // create GraphViz file
       sprintf(NetTitle, "Net%03ld", i + 1);
       sprintf(strtmp, "%s.dot", NetTitle);
-      fo.open(strtmp, ios_base::out);
+      fo.open(strtmp, ios::out);
       WriteDot(fo, NetTitle, GeneList);
       fo.close();
       // create COPASI model
       MakeModel(NetTitle, GeneList, n, k, model);
       // save Gepasi model
       sprintf(strtmp, "%s.gps", NetTitle);
-      fo.open(strtmp, ios_base::out);
+      fo.open(strtmp, ios::out);
       WriteGepasi(fo, NetTitle, model);
       fo.close();
       // cleanup model and vectors
