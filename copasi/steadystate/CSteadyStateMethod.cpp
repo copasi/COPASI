@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:59:03 $
+   $Author: ssahle $ 
+   $Date: 2004/09/03 09:56:46 $
    End CVS Header */
 
 /**
@@ -119,7 +119,7 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
 
   if (mpProblem->isJacobianRequested() ||
       mpProblem->isStabilityAnalysisRequested())
-    mpSteadyState->getJacobian(*mpJacobian, factor, resolution);
+    mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
 
   /* hack to force the model to reflect the solution */
   CVector< C_FLOAT64 > Derivatives(mpSteadyState->getVariableNumberSize());

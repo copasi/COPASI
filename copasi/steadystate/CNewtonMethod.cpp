@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/19 20:11:45 $
+   $Author: ssahle $ 
+   $Date: 2004/09/03 09:56:46 $
    End CVS Header */
 
 #include <algorithm>
@@ -309,8 +309,8 @@ CNewtonMethod::processNewton (CStateX & steadyState,
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       //      DebugFile << "Iteration: " << k << std::endl;
-      steadyState.getJacobian(mJacobian, std::min(mFactor, mMaxrate),
-                              mResolution);
+      steadyState.calculateJacobian(mJacobian, std::min(mFactor, mMaxrate),
+                                    mResolution); //X
       //      DebugFile << "Jacobien: " << mJacobian << std::endl;
 
       /* We use dgetrf_ and dgetrs_ to solve
@@ -434,7 +434,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,                     /* fortran style vector */
+                           mdxdt.array() - 1,                      /* fortran style vector */
                            1);
         }
 
@@ -491,7 +491,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,                     /* fortran style vector */
+                   mdxdt.array() - 1,                      /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

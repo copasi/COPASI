@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:17:21 $
+   $Date: 2004/09/03 09:56:11 $
    End CVS Header */
 
 /**
@@ -197,9 +197,9 @@ class CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                             const C_FLOAT64 & factor,
-                             const C_FLOAT64 & resolution) const;
+    virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                                   const C_FLOAT64 & factor,
+                                   const C_FLOAT64 & resolution) const;
 
     /**
      * Calculates the elasticity Matrix of the state and stores it in the 
@@ -208,9 +208,9 @@ class CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                     const C_FLOAT64 & factor,
-                                     const C_FLOAT64 & resolution) const;
+    virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                           const C_FLOAT64 & factor,
+                                           const C_FLOAT64 & resolution) const;
 
     friend std::ostream & operator << (std::ostream & os, const CState & A);
 
@@ -316,9 +316,9 @@ class CStateX: public CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                             const C_FLOAT64 & factor,
-                             const C_FLOAT64 & resolution) const;
+    virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                                   const C_FLOAT64 & factor,
+                                   const C_FLOAT64 & resolution) const;
 
     /**
      * Calculates the elasticity Matrix of the state and stores it in the 
@@ -327,9 +327,9 @@ class CStateX: public CState
      * @param const C_FLOAT64 & factor,
      * @param const C_FLOAT64 & resolution
      */
-    virtual void getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                     const C_FLOAT64 & factor,
-                                     const C_FLOAT64 & resolution) const;
+    virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                           const C_FLOAT64 & factor,
+                                           const C_FLOAT64 & resolution) const;
 
     friend std::ostream & operator << (std::ostream & os, const CStateX & A);
 

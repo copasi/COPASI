@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:17:21 $
+   $Date: 2004/09/03 09:56:11 $
    End CVS Header */
 
 // CSate.cpp
@@ -168,16 +168,16 @@ void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 void CState::setVolumeVector(const CVector< C_FLOAT64 > & vektor)
 {mVolumes = vektor;}
 
-void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                         const C_FLOAT64 & factor,
-                         const C_FLOAT64 & resolution) const
+void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                               const C_FLOAT64 & factor,
+                               const C_FLOAT64 & resolution) const
   {
     const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
     unsigned C_INT32 mNo = Stoi.numRows();
     unsigned C_INT32 rNo = Stoi.numCols();
 
     CMatrix< C_FLOAT64 > E(rNo, mNo);
-    getElasticityMatrix(E, factor, resolution);
+    calculateElasticityMatrix(E, factor, resolution);
 
     unsigned C_INT32 i, j, k;
     C_FLOAT64 * sum;
@@ -242,9 +242,9 @@ void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
   return;
 }*/
 
-void CState::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                 const C_FLOAT64 & factor,
-                                 const C_FLOAT64 & resolution) const
+void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                       const C_FLOAT64 & factor,
+                                       const C_FLOAT64 & resolution) const
   {
     const_cast<CModel *>(mpModel)->setState(this);
     const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
@@ -393,9 +393,9 @@ void CStateX::setDependentNumber(const unsigned C_INT32 & index,
 void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vektor)
 {mDependentNumbers = vektor;}
 
-void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                          const C_FLOAT64 & factor,
-                          const C_FLOAT64 & resolution) const
+void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                                const C_FLOAT64 & factor,
+                                const C_FLOAT64 & resolution) const
   {
     const CModel::CLinkMatrixView & L = mpModel->getL();
     unsigned C_INT32 mNo = L.numRows();
@@ -405,7 +405,7 @@ void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
     unsigned C_INT32 rNo = redStoi.numCols();
 
     CMatrix< C_FLOAT64 > E(rNo, mNo);
-    getElasticityMatrix(E, factor, resolution);
+    calculateElasticityMatrix(E, factor, resolution);
 
     CMatrix< C_FLOAT64 > tmp(rNo, iNo);
 
@@ -484,9 +484,9 @@ void CStateX::updateDependentNumbers()
   return;
 }*/
 
-void CStateX::getElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                  const C_FLOAT64 & factor,
-                                  const C_FLOAT64 & resolution) const
+void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                        const C_FLOAT64 & factor,
+                                        const C_FLOAT64 & resolution) const
   {
     const_cast<CModel *>(mpModel)->setState(this);
     const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
