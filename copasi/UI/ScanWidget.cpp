@@ -501,7 +501,9 @@ void ScanWidget::ScanButtonClicked()
   scanTask->initializeReporting(output);
 
   //prepare for the output value addr
+  valueAddrMatrix.resize(nSelectedObjects);
   valueMatrix.resize(nSelectedObjects);
+
   int objectIndex;
   for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
     {
@@ -509,11 +511,15 @@ void ScanWidget::ScanButtonClicked()
       valueMatrix[objectIndex] = *(valueAddrMatrix[objectIndex]);
     }
 
+  scanTask->setValueMatrixAddr(&valueAddrMatrix);
   scanTask->process();
 
   //restore the object value
   for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
     *(valueAddrMatrix[objectIndex]) = valueMatrix[objectIndex];
+
+  valueAddrMatrix.resize(0);
+  valueMatrix.resize(0);
 
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
   unsetCursor();
