@@ -50,6 +50,8 @@ class ReactionsWidget1 : public QWidget
   protected:
     QPushButton* cancelChanges;
     QPushButton* commitChanges;
+    QPushButton* newReaction;
+    QPushButton* deleteReaction;
     QPushButton* newKinetics;
     CModel *mModel;
     QTable *table;
@@ -98,11 +100,13 @@ class ReactionsWidget1 : public QWidget
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void slotBtnNewClicked();
     virtual void slotCheckBoxClicked();
     virtual void slotComboBoxSelectionChanged(const QString &);
     virtual void slotLineEditChanged();
   signals:
     void signal_emitted(QString &);
+    void new_reaction();
   };
 
 #endif

@@ -178,10 +178,18 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4h->addSpacing(15);
 
   commitChanges = new QPushButton("&Commit Changes", Frame4h);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
   commitChanges->setFont(QFont("Times", 10, QFont::Bold));
+  cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
   cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
+  newReaction = new QPushButton("&New", Frame4h);
+  newReaction->setFont(QFont("Times", 10, QFont::Bold));
+  deleteReaction = new QPushButton("&Delete", Frame4h);
+  deleteReaction->setFont(QFont("Times", 10, QFont::Bold));
 
+  hBoxLayout4h->addWidget(newReaction);
+  hBoxLayout4h->addSpacing(15);
+  hBoxLayout4h->addWidget(deleteReaction);
+  hBoxLayout4h->addSpacing(15);
   hBoxLayout4h->addWidget(commitChanges);
   hBoxLayout4h->addSpacing(15);
   hBoxLayout4h->addWidget(cancelChanges);
@@ -194,6 +202,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   //connect(LineEdit2, SIGNAL(sideySignal()), this, SLOT(slotGetFocus()));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
+
+  connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+  connect(this, SIGNAL(new_reaction()), (ListViews*)parent, SLOT(slotNewReaction()));
 }
 
 /*This function is used to connect this class to the listviews
@@ -682,4 +693,10 @@ void ReactionsWidget1::slotLineEditChanged()
       checkBox->setChecked(FALSE);
     }
   slotCheckBoxClicked();
+}
+
+void ReactionsWidget1::slotBtnNewClicked()
+{
+  QMessageBox::information(this, "Reactions Widget", "adding a new reaction");
+  emit new_reaction();
 }

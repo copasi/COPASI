@@ -3,7 +3,7 @@
  **  $ Author  : Ankur Gupta
  *****************************************************************************/
 #ifndef LISTVIEWS_H
-#define LISTVIEWS_H
+#define LISTVIEWS_H 
 //public QLineEdit:
 #include <qsplitter.h>
 #include <qstring.h>
@@ -106,7 +106,7 @@ class ListViews : public QSplitter, public Observer
     virtual void slotMetaboliteTableChanged(QString &);
     virtual void slotMoietyTableChanged(QString &);
     virtual void slotReactionTableChanged(QString &);
-
+    virtual void slotNewReaction();
   protected:
     CModel *mModel;  // the re to the model...
 
