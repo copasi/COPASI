@@ -1,7 +1,7 @@
 // the window containing the plot and buttons for supported operations
 
 //#include <fstream>
-#include <math.h> 
+//#include <math.h>
 //#include <qmainwindow.h>
 #include <qtoolbar.h> 
 //#include <qtoolbutton.h>
@@ -28,16 +28,11 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(std::string filename)
+PlotWindow::PlotWindow(std::istream& targetfile)
 {
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
-
-  // this button is for testing only
-  QToolButton * appendPlot = new QToolButton(plotTools, "append plot");
-  appendPlot -> setTextLabel("Append curves");
-  appendPlot -> setText("Append");
 
   QToolButton * autoUpdateButton = new QToolButton(plotTools, "auto update plot");
   autoUpdateButton -> setTextLabel("Update plot automatically");
@@ -54,20 +49,6 @@ PlotWindow::PlotWindow(std::string filename)
   printButton -> setText("Print");
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
-
-  // prepare the data file - 'simulates' what happens in copasi
-  targetfile.open(filename.c_str(), std::ios::in | std::ios::out | std::ios::trunc);
-
-  stepSize = 100;  // also the initial number of points
-  count = 0;
-
-  for (int i = 1; i <= stepSize; i++)
-    {
-      double temp = 0.05 * double(i);
-      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
-    }
-
-  pos = targetfile.tellp();
 
   CurveSpec* cs1 = new CurveSpec("sin", 0, 1);
   CurveSpec* cs2 = new CurveSpec("cos", 0, 2);
@@ -91,7 +72,7 @@ PlotWindow::PlotWindow(std::string filename)
 
   timer = new QTimer();
 
-  connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
+  //connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
   connect(autoUpdateButton, SIGNAL(toggled(bool)), this, SLOT(autoUpdate(bool)));
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
@@ -103,11 +84,7 @@ PlotWindow::PlotWindow(std::string filename)
 
 void PlotWindow::append()
 {
-  writeFile(count);
-
-  plot->appendPlot();  // only this line is the proper code
-
-  count++;
+  plot->appendPlot();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,20 +164,5 @@ void PlotWindow::reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurv
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::writeFile(int step)
-{
-  targetfile.seekp(pos);
-  for (int i = 1 + (step + 1) * stepSize; i <= stepSize * (step + 2); i++)
-    {
-      double temp = 0.05 * double(i);
-      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
-    }
-  pos = targetfile.tellp();
-}
-
-//-----------------------------------------------------------------------------
-
 PlotWindow::~PlotWindow()
-{
-  targetfile.close();
-}
+{}
