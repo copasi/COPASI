@@ -45,6 +45,7 @@ void CTrajectoryTask::cleanup()
 {
   pdelete(mpProblem);
   pdelete(mpMethod);
+  pdelete(mpState);
   pdelete(mpOutInit);
   pdelete(mpOutPoint);
   pdelete(mpOutEnd);
@@ -95,19 +96,19 @@ void CTrajectoryTask::save(CWriteConfig & configBuffer)
 }
 
 CTrajectoryProblem * CTrajectoryTask::getProblem()
-{ return mpProblem; }
+{return mpProblem; }
 
 void CTrajectoryTask::setProblem(CTrajectoryProblem * pProblem)
 {mpProblem = pProblem; }
 
 CTrajectoryMethod * CTrajectoryTask::getMethod()
-{ return mpMethod; }
+{return mpMethod; }
 
 void CTrajectoryTask::setMethod(CTrajectoryMethod * pMethod)
 {mpMethod = pMethod; }
 
 CState * CTrajectoryTask::getState()
-{ return mpState; }
+{return mpState; }
 
 void CTrajectoryTask::process()
 {
