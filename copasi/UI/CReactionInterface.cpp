@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:15 $
+   $Author: ssahle $ 
+   $Date: 2004/05/06 19:54:59 $
    End CVS Header */
 
 #include <string>
@@ -79,6 +79,8 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   //pdelete(mpChemEq);
   mChemEqI.loadFromChemEq(&model, rea->getChemEq());
 
+  //mNameMap.clear();
+
   if (&(rea->getFunction()))
     {
       mpFunction = &(rea->getFunction());
@@ -144,10 +146,10 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
 
 void CReactionInterface::setFunction(const std::string & fn, bool force)
 {
+  if (fn == "") {clearFunction(); return;}
+
   //do nothing if the function is the same as before
   if ((getFunctionName() == fn) && (!force)) return;
-
-if (fn == "") {clearFunction(); return;}
 
   // save the old parameter names
   CFunctionParameters *oldParameters = mpParameters;
@@ -320,7 +322,8 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
       if (el.size() > 0)
         mNameMap[pos - 1][0] = el[0];
-    else {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
+      else
+      {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
 
       for (i = 1; i < imax; ++i)
         {
@@ -342,8 +345,8 @@ bool CReactionInterface::isLocked(std::string usage) const
   {
     // get number of metabs in chemEq
     unsigned C_INT32 listSize;
-    if (usage == "PARAMETER")
-      return false;
+    if ((usage == "PARAMETER") || (usage == "MODIFIER"))
+      return false; //modifiers are never locked!
     else
       listSize = mChemEqI.getListOfNames(usage).size();
 
@@ -380,6 +383,25 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
     {
       mNameMap[index][0] = mn;
 
+      //check if the new modifier is already in the ChemEq
+      if (usage == "MODIFIER")
+        {
+          mChemEqI.clearModifiers();
+          unsigned C_INT j, jmax = size();
+          for (j = 0; j < jmax; ++j)
+            if (getUsage(j) == "MODIFIER") //all the modifiers in the table
+              {
+                std::vector<std::string> ml = getListOfMetabs(usage);
+                std::vector<std::string>::const_iterator it;
+                for (it = ml.begin(); it != ml.end(); ++it) //search in the ChemEqI
+                  if (getMetabs(j)[0] == *it) break;
+                if (it == ml.end()) //the modifier is not in the ChemEqI
+                  {
+                    mChemEqI.addModifier(getMetabs(j)[0]);
+                  }
+              }
+        } // this adds the modifier to the ChemEq if necessary. TODO: remove modifier from ChemEq if it is replaced by this one!
+
       // if we have two parameters of this usage change the other one.
       if ((listSize == 2) && (mpParameters->getNumberOfParametersByUsage(usage) == 2))
         {
@@ -398,6 +420,13 @@ void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
           mNameMap[pos][0] = otherMetab;
         }
     }
+
+  //check for validity. A reaction is invalid if it has a metab "unknown"
+  mValid = true;
+  unsigned C_INT j, jmax = size();
+  for (j = 0; j < jmax; ++j)
+    if ((getUsage(j) != "PARAMETER") && (getMetabs(j)[0] == "unknown"))
+      mValid = false;
 }
 
 std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::string & role) const
