@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/29 23:34:55 $
+   $Author: shoops $ 
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,8 +15,7 @@
 
 #include <set>
 #include <qsplitter.h>
-#include <qstring.h> 
-//#include <qobject.h>
+#include <qstring.h>
 #include <qptrlist.h>
 #include <qlistview.h>
 #include <vector>
@@ -25,15 +24,10 @@
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qmultilineedit.h>
-#include <qimage.h> 
-//#include "copasiWidget.h"
-#include "copasi.h"
-#include "DataModel.h"
-#include "Tree.h" 
-//#include "copasiWidget.h"
+#include <qimage.h>
 
-//public QLineEdit:
-// #include "model/model.h"
+#include "DataModel.h"
+#include "Tree.h"
 
 class CSteadyStateTask;
 class CTrajectoryTask;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:25 $
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 /**********************************************************************
@@ -383,34 +383,11 @@ void FunctionWidget1::updateParameters()
 {
   if (textBrowser->text().latin1() != pFunction->getDescription())
     {
-      // ************
-      //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
+      pFunction->getParameters().cleanup();
 
-      // next step place the text area contents into the function description
-      //***************
-      //func->setDescription(textBrowser->text().latin1());
-      //if (pFunction->getDescription() != textBrowser->text().latin1())
-      //{
-      pFunction->setDescription(textBrowser->text().latin1());
-
-      // compile and retrieve nodes
-      //CKinFunction* kinFunc = (CKinFunction*) func;
-      CKinFunction* kinFunc = (CKinFunction*) pFunction;
       try
         {
-          kinFunc->compile();
-          std::vector<CNodeK *> v = kinFunc->getNodes();
-
-          // go through nodes and determine if identifier, if so, then add to parameters
-          //func->getParameters().cleanup();
-          pFunction->getParameters().cleanup();
-          for (int i = 0; i < v.size(); i++)
-            {
-              if (((CNodeK*)v[i])->isIdentifier())
-                pFunction->addParameter(((CNodeK*)v[i])->getName(), CFunctionParameter::FLOAT64, "PARAMETER");
-            }
-          // Call loadFromFunction to display the table
-          loadFromFunction();
+          pFunction->setDescription(textBrowser->text().latin1());
         }
       catch (CCopasiException Exception)
         {
@@ -421,16 +398,25 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:               // The user clicked the Retry again button or pressed Enter
+            case 0:                // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:               // The user clicked the Quit or pressed Escape
+            case 1:                // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
         }
+
+      std::vector<CNodeK *> & v = ((CKinFunction*) pFunction)->getNodes();
+
+      for (int i = 0; i < v.size(); i++)
+        {
+          if (v[i]->isIdentifier())
+            pFunction->addParameter(v[i]->getName(),
+                                    CFunctionParameter::FLOAT64, "PARAMETER");
+        }
     }
-} //end of function
+}
 
 bool FunctionWidget1::saveToFunction()
 {
@@ -647,6 +633,8 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   updateParameters();
   // update the application widget
   updateApplication();
+
+  loadFromFunction();
 }
 
 void FunctionWidget1::slotCancelButtonClicked()

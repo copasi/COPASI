@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Author: shoops $ 
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,7 @@
 #define REACTIONS_WIDGET_H
 
 #include <qtable.h>
-#include "copasi.h"
+
 #include "copasiWidget.h"
 
 #include "CReactionInterface.h"

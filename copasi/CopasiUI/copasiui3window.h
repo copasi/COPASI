@@ -1,17 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/21 14:16:13 $
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 #include <qmainwindow.h>
 #include <qtoolbar.h>
 
-#include "copasi.h"
-#include "listviews.h" 
-//#include "model/model.h"
+#include "listviews.h"
 
 class QToolButton;
 class CopasiUI3Window : public QMainWindow

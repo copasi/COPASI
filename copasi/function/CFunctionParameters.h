@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:50 $
+   $Date: 2003/11/05 18:38:04 $
    End CVS Header */
 
 /**
@@ -111,17 +111,15 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "const CFunctionParameter::DataType &" type
      *  @param "const string &" usage
      */
-    void add
-    (const std::string & name,
-     const CFunctionParameter::DataType & type,
-     const std::string & usage);
+    bool add(const std::string & name,
+             const CFunctionParameter::DataType & type,
+             const std::string & usage);
 
     /**
      *  Remove a parameter from the parameter list
      *  @param "const CFunctionParameter &" parameter
      */
-    void remove
-    (const std::string & name);
+    void remove(const std::string & name);
 
     /**
      *  Retrieves the vector of function parameters
