@@ -16,7 +16,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
-#include "utilities/cmethodparameterlist.h" 
+#include "utilities/CMethodParameterList.h" 
 /*
  *  Constructs a ScanItemWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
