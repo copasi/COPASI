@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/08 17:48:38 $
+   $Date: 2004/12/08 18:38:48 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -21,8 +21,8 @@
 # include <unistd.h>
 #endif
 
-#if defined(Q_OS_MACX)
-#include "Carbon.h"
+#ifdef Darwin
+# include "Carbon.h"
 #endif
 
 #include <sstream>
