@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/19 13:16:53 $
+   $Date: 2005/02/19 13:30:41 $
    End CVS Header */
 
 /**
@@ -3568,16 +3568,19 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
   const char * Key;
   std::string sType;
   CCopasiTask::Type type;
+  bool Scheduled = false;
 
   switch (mCurrentElement)
     {
     case Task:
       if (strcmp(pszName, "Task")) fatalError();
 
+      mCommon.pCurrentTask = NULL;
+
       Key = mParser.getAttributeValue("key", papszAttrs, false);
       sType = mParser.getAttributeValue("type", papszAttrs);
       type = CCopasiTask::XMLNameToEnum(sType.c_str());
-      mCommon.pCurrentTask = NULL;
+      Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
 
       // create a new CCopasiTask element depending on the type
       switch (type)
@@ -3599,7 +3602,12 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           mParser.onStartElement(pszName, papszAttrs);
           break;
         }
-      if (Key && mCommon.pCurrentTask) mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+
+      if (Key && mCommon.pCurrentTask)
+        {
+          mCommon.pCurrentTask->setScheduled(Scheduled);
+          mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+        }
 
       return;
       break;
