@@ -19,7 +19,9 @@ CXMLElementHandler::CXMLElementHandler(std::stack< CXMLElementHandler * > & stac
 
 CXMLElementHandler::~CXMLElementHandler() {}
 
-void CXMLElementHandler::start(const XML_Char *pszName,
-                               const XML_Char **papszAttrs) {}
+void CXMLElementHandler::start(const XML_Char * C_UNUSED(pszName),
+                               const XML_Char ** C_UNUSED(papszAttrs)) {}
 
-void CXMLElementHandler::end(const XML_Char *pszName) {}
+void CXMLElementHandler::end(const XML_Char * C_UNUSED(pszName)) {}
+
+void CXMLElementHandler::reset() {}

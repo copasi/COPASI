@@ -22,11 +22,11 @@ CCopasiXMLParser::ModelElement::ModelElement(SCopasiXMLParserCommon & common) :
 
 CCopasiXMLParser::ModelElement::~ModelElement() {}
 
-void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
-    const XML_Char **papszAttrs)
+void CCopasiXMLParser::ModelElement::start(const XML_Char * C_UNUSED(pszName),
+    const XML_Char ** C_UNUSED(papszAttrs))
 {}
 
-void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName) {}
+void CCopasiXMLParser::ModelElement::end(const XML_Char * C_UNUSED(pszName)) {}
 
 CCopasiXMLParser::ListOfTasksElement::ListOfTasksElement(SCopasiXMLParserCommon & common) :
     CXMLElementHandler(common.ElementHandlerStack),
@@ -35,11 +35,11 @@ CCopasiXMLParser::ListOfTasksElement::ListOfTasksElement(SCopasiXMLParserCommon 
 
 CCopasiXMLParser::ListOfTasksElement::~ListOfTasksElement() {}
 
-void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char *pszName,
-    const XML_Char **papszAttrs)
+void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * C_UNUSED(pszName),
+    const XML_Char ** C_UNUSED(papszAttrs))
 {}
 
-void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char *pszName) {}
+void CCopasiXMLParser::ListOfTasksElement::end(const XML_Char * C_UNUSED(pszName)) {}
 
 CCopasiXMLParser::ListOfReportsElement::ListOfReportsElement(SCopasiXMLParserCommon & common) :
     CXMLElementHandler(common.ElementHandlerStack),
@@ -48,11 +48,11 @@ CCopasiXMLParser::ListOfReportsElement::ListOfReportsElement(SCopasiXMLParserCom
 
 CCopasiXMLParser::ListOfReportsElement::~ListOfReportsElement() {}
 
-void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
-    const XML_Char **papszAttrs)
+void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char * C_UNUSED(pszName),
+    const XML_Char ** C_UNUSED(papszAttrs))
 {}
 
-void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName) {}
+void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char * C_UNUSED(pszName)) {}
 
 CCopasiXMLParser::COPASIElement::COPASIElement(SCopasiXMLParserCommon & common) :
     CXMLElementHandler(common.ElementHandlerStack),
@@ -70,7 +70,6 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     {
     case COPASI:
       if (strcmp(pszName, "COPASI")) fatalError();
-      mCurrentElement = -1;
       return;
 
     case ListOfFunctions:
@@ -104,10 +103,22 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
   return;
 }
 
-void CCopasiXMLParser::COPASIElement::end(const XML_Char *pszName)
+void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
 {
-  mStack.pop();
-  pdelete(mpCurrentHandler);
+  switch (mCurrentElement)
+    {
+    case COPASI:
+      if (strcmp(pszName, "COPASI")) fatalError();
+      mStack.pop();
+      mCurrentElement = -1;
+
+      break;
+
+    default:
+      break;
+    }
+
+  return;
 }
 
 CCopasiXMLParser::ListOfFunctionsElement::ListOfFunctionsElement(SCopasiXMLParserCommon & common) :
@@ -155,12 +166,12 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
   switch (mCurrentElement)
     {
     case ListOfFunctions:
       if (strcmp(pszName, "ListOfFunctions")) fatalError();
+      mStack.pop();
+      mCurrentElement = -1;
 
       /* Tell the parent element we are done. */
       mStack.top()->end(pszName);
@@ -168,14 +179,13 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
 
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
+      mCurrentElement = ListOfFunctions;
       break;
 
     default:
       fatalError();
       break;
     }
-
-  mCurrentElement--;
 
   return;
 }
@@ -213,7 +223,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Type = CCopasiXMLInterface::getAttributeValue("type", papszAttrs);
 
       while (CFunction::XMLType[i] != "" &&
-             CFunction::XMLType[i] == Type) i++;
+             CFunction::XMLType[i] != Type) i++;
       if (CFunction::XMLType[i] == "") fatalError();
 
       mCommon.pFunction = CFunction::createFunction((enum CFunction::Type) i);
@@ -221,7 +231,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
       /* We have a new function and add it to the list */
       mCommon.pFunctionList->add(mCommon.pFunction, true);
-      mCommon.FunctionKeyMap[Key] = & mCommon.pFunction->getKey();
+      mCommon.KeyMap[Key] = mCommon.pFunction->getKey();
 
       break;
 
@@ -261,13 +271,12 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
   switch (mCurrentElement)
     {
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
       mCurrentElement = -1;
+      mStack.pop();
 
       /* Tell the parent element we are done. */
       mStack.top()->end(pszName);
@@ -279,6 +288,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      mCurrentElement = Function;
       break;
 
     default:
@@ -330,12 +340,11 @@ void CCopasiXMLParser::MathMLElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
   switch (mCurrentElement)
     {
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
+      mStack.pop();
       mCurrentElement = -1;
 
       /* Tell the parent element we are done. */
@@ -344,6 +353,8 @@ void CCopasiXMLParser::MathMLElement::end(const XML_Char *pszName)
 
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
+      mCurrentElement = MathML;
+
       break;
 
     default:
@@ -361,7 +372,7 @@ CCopasiXMLParser::TextElement::~TextElement()
 {}
 
 void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
-    const XML_Char **papszAttrs)
+    const XML_Char ** C_UNUSED(papszAttrs))
 {
   mCurrentElement++; /* We should always be on the next element */
 
@@ -369,6 +380,9 @@ void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
     {
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
+
+      mCommon.pParser->enableCharacterDataHandler(true);
+      //    mCommon.pParser->enableCdataSectionHandler(true);
       break;
 
     default:
@@ -381,14 +395,16 @@ void CCopasiXMLParser::TextElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
   switch (mCurrentElement)
     {
     case Text:
       if (strcmp(pszName, "Text")) fatalError();
-      mCommon.pFunction->setDescription(mCommon.CharacterData);
+      mStack.pop();
       mCurrentElement = -1;
+      mCommon.pFunction->setDescription(mCommon.CharacterData);
+
+      mCommon.pParser->enableCharacterDataHandler(false);
+      //    mCommon.pParser->enableCdataSectionHandler(false);
 
       /* Tell the parent element we are done. */
       mStack.top()->end(pszName);
@@ -419,6 +435,8 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
     {
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      if (mpCurrentHandler) mpCurrentHandler->reset();
+
       break;
 
     case ParameterDescription:
@@ -438,18 +456,17 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
       break;
     }
 
-  mCurrentElement++;
   return;
 }
 
 void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
   switch (mCurrentElement)
     {
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
+      mStack.pop();
+      mCurrentElement = -1;
 
       /* Tell the parent element we are done. */
       mStack.top()->end(pszName);
@@ -457,6 +474,7 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
 
     case ParameterDescription:
       if (strcmp(pszName, "ParameterDescription")) fatalError();
+      mCurrentElement = ListOfParameterDescriptions;
       break;
 
     default:
@@ -464,14 +482,13 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
       break;
     }
 
-  mCurrentElement--;
-
   return;
 }
 
 CCopasiXMLParser::ParameterDescriptionElement::ParameterDescriptionElement(SCopasiXMLParserCommon & common) :
     CXMLElementHandler(common.ElementHandlerStack),
-    mCommon(common)
+    mCommon(common),
+    mOrder(0)
 {}
 
 CCopasiXMLParser::ParameterDescriptionElement::~ParameterDescriptionElement()
@@ -482,12 +499,55 @@ CCopasiXMLParser::ParameterDescriptionElement::~ParameterDescriptionElement()
 void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
+  const char * Key;
+  const char * Name;
+  const char * Order;
+  const char * role; /*substrate, product, modifier, constant, other*/
+  unsigned C_INT32 Role = 0;
+  const char * minOccurs;
+  unsigned C_INT32 MinOccurs;
+  const char * maxOccurs;
+  unsigned C_INT32 MaxOccurs;
+
+  std::string Usage[] = {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER"};
+  CFunctionParameter * pParm = NULL;
+
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
     {
     case ParameterDescription:
       if (strcmp(pszName, "ParameterDescription")) fatalError();
+      Key = CCopasiXMLInterface::getAttributeValue("key", papszAttrs);
+      Name = CCopasiXMLInterface::getAttributeValue("name", papszAttrs);
+      Order = CCopasiXMLInterface::getAttributeValue("order", papszAttrs);
+      if (atoi(Order) != mOrder) fatalError();
+      mOrder++;
+      role = CCopasiXMLInterface::getAttributeValue("role", papszAttrs);
+      while (CFunctionParameter::XMLRole[Role] != "" &&
+             CFunctionParameter::XMLRole[Role] != role) Role++;
+      if (CFunctionParameter::XMLRole[Role] == "") fatalError();
+
+      minOccurs = CCopasiXMLInterface::getAttributeValue("minOccurs",
+                  papszAttrs);
+      if (minOccurs) MinOccurs = atoi(minOccurs);
+      else MinOccurs = 1;
+
+      maxOccurs = CCopasiXMLInterface::getAttributeValue("maxOccurs",
+                  papszAttrs);
+      if (!maxOccurs) MaxOccurs = 1;
+      else if ("unbounded" == maxOccurs) MaxOccurs = (unsigned C_INT32) - 1;
+      else MaxOccurs = atoi(maxOccurs);
+
+      pParm = new CFunctionParameter();
+      pParm->setName(Name);
+      mCommon.KeyMap[Key] = pParm->getKey();
+      pParm->setUsage(Usage[Role]);
+      if (MaxOccurs == 1 && MinOccurs == 1)
+        pParm->setType(CFunctionParameter::FLOAT64);
+      else
+        pParm->setType(CFunctionParameter::VFLOAT64);
+      mCommon.pFunction->getParameters().add(pParm, true);
       break;
 
     default:
@@ -495,19 +555,18 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       break;
     }
 
-  mCurrentElement++;
   return;
 }
 
 void CCopasiXMLParser::ParameterDescriptionElement::end(const XML_Char *pszName)
 {
-  mStack.pop();
-
-  switch (--mCurrentElement)
+  switch (mCurrentElement)
     {
     case ParameterDescription:
       if (strcmp(pszName, "ParameterDescription")) fatalError();
+      mStack.pop();
       mCurrentElement = -1;
+
       /* Tell the parent element we are done. */
       mStack.top()->end(pszName);
       break;
@@ -520,6 +579,9 @@ void CCopasiXMLParser::ParameterDescriptionElement::end(const XML_Char *pszName)
   return;
 }
 
+void CCopasiXMLParser::ParameterDescriptionElement::reset()
+{mOrder = 0;}
+
 CCopasiXMLParser::CCopasiXMLParser() :
     CExpat(),
     mCommon()
@@ -527,8 +589,12 @@ CCopasiXMLParser::CCopasiXMLParser() :
   create();
 
   mCommon.ElementHandlerStack.push(new COPASIElement(mCommon));
+  mCommon.pParser = this;
+  mCommon.pModel = NULL;
+  mCommon.pFunctionList = NULL;
+  mCommon.pFunction = NULL;
+
   enableElementHandler(true);
-  enableCharacterDataHandler(true);
 }
 
 CCopasiXMLParser::~CCopasiXMLParser() {}
@@ -546,8 +612,21 @@ void CCopasiXMLParser::onEndElement(const XML_Char *pszName)
   mCommon.ElementHandlerStack.top()->end(pszName);
 }
 
+#ifdef XXXX
+void CCopasiXMLParser::onStartCdataSection()
+{
+  long i = mCommon.pParser->getCurrentByteIndex();
+}
+
+void CCopasiXMLParser::onEndCdataSection()
+{
+  long i = mCommon.pParser->getCurrentByteIndex();
+}
+#endif // XXXX
+
 void CCopasiXMLParser::onCharacterData(const XML_Char *pszData,
                                        int nLength)
 {
   mCommon.CharacterData.assign(pszData, nLength);
+  std::cout << "\"" << mCommon.CharacterData << "\"" << std::endl;
 }

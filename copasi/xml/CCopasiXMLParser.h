@@ -25,6 +25,8 @@ struct SCopasiXMLParserCommon
 
     std::string CharacterData;
 
+    CExpat * pParser;
+
     CModel * pModel;
 
     /**
@@ -41,7 +43,7 @@ struct SCopasiXMLParserCommon
     /**
      * A map relating CopasiXML function keys with internal keys
      */
-    std::map< std::string, std::string * > FunctionKeyMap;
+    std::map< std::string, std::string > KeyMap;
 
     /**
      * Pointer to a vector of tasks which has been loaded or is to be saved.
@@ -314,8 +316,7 @@ class CCopasiXMLParser : public CExpat
          */
         enum Element
         {
-          MathML = 0,
-          Text
+          Text = 0
         };
 
         /**
@@ -412,6 +413,11 @@ class CCopasiXMLParser : public CExpat
          */
         SCopasiXMLParserCommon & mCommon;
 
+        /**
+         * Order
+         */
+        unsigned C_INT32 mOrder;
+
         // Operations
       public:
         /**
@@ -437,6 +443,11 @@ class CCopasiXMLParser : public CExpat
          * @param const XML_Char *pszName
          */
         virtual void end(const XML_Char *pszName);
+
+        /**
+         * Reset the element handler to start values.
+         */
+        virtual void reset();
       };
 
   class ListOfParameterDescriptionsElement : public CXMLElementHandler
@@ -565,6 +576,18 @@ class CCopasiXMLParser : public CExpat
      * @param const XML_Char *pszName
      */
     virtual void onEndElement(const XML_Char *pszName);
+
+#ifdef XXXX
+    /**
+     * Start CDATA section handler
+     */
+    virtual void onStartCdataSection();
+
+    /**
+     * End CDATA section handler
+     */
+    virtual void onEndCdataSection();
+#endif // XXXX
 
     /**
      * Character data handler

@@ -11,6 +11,7 @@
 #include <map>
 
 #include "CCopasiXML.h"
+#include "CCopasiXMLParser.h"
 
 #include "utilities/CCopasiVector.h"
 #include "utilities/CMethodParameter.h"
@@ -66,7 +67,25 @@ bool CCopasiXML::load(std::istream & is)
 {
   mpIstream = &is;
   bool success = true;
+  bool done = false;
 
+  CCopasiXMLParser Parser;
+
+#define BUFFER_SIZE 512
+  char * pBuffer = new char[BUFFER_SIZE + 1];
+
+  while (!done)
+    {
+      mpIstream->get(pBuffer, BUFFER_SIZE, 0);
+      if (mpIstream->fail() &&
+          !mpIstream->eof()) fatalError();
+
+      if (mpIstream->eof()) done = true;
+      Parser.parse(pBuffer, -1, done);
+    }
+#undef BUFFER_SIZE
+
+  delete [] pBuffer;
   return success;
 }
 

@@ -11,7 +11,7 @@
 
 #include <stack>
 
-#include "CExpat.h"
+#include "expat.h"
 
 class CXMLElementHandler
   {
@@ -57,5 +57,44 @@ class CXMLElementHandler
      * @param const XML_Char *pszName
      */
     virtual void end(const XML_Char *pszName);
+
+    /**
+     * Reset the element handler to start values.
+     */
+    virtual void reset();
   };
+
+class CXMLCharacterDataHandler()
+  {
+    // Attributes
+  protected:
+    /**
+     * The character data
+     */
+    std::string mData;
+
+    /**
+     * The character to be stripped.
+     */
+    std::string mToBeStripped;
+
+    /**
+     * The characters used to replace new lines.
+     */
+    std::string mJoin;
+
+    // Operations
+  public:
+
+    /**
+     * Constructor
+     */
+    CXMLCharacterDataHandler(const std::string & toBeStripped = "\t\n ",
+                             const std::string & join = " ");
+
+    /**
+     * Destructor
+     */
+    virtual ~CXMLCharacterDataHandler();
+  }
 #endif // COPASI_CXMLHandler
