@@ -1434,7 +1434,7 @@ void CModel::setQuantityUnit(const std::string & name)
       || (name == "nMol"))
     mQuantity2NumberFactor = 6.020402E14;
 
-  mNumber2QuantityFactor = 1 / mQuantity2NumberFactor;
+  mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 }
 std::string CModel::getQuantityUnit() const {return mQuantityUnitName;}
 
