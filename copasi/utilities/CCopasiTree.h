@@ -173,13 +173,19 @@ template < class Node > class CCopasiTree
        * Retreive an iterator pointing to the beginning of the tree
        * @return iterator begin
        */
-      iterator begin() {return iterator(mpRoot);}
+      iterator begin() const {return iterator(mpRoot);}
 
       /**
        * Retreive an iterator pointing beyond the end of the tree
        * @return iterator end
        */
-      iterator end() {return iterator(NULL);}
+      iterator end() const {return iterator(NULL);}
+
+      /**
+       * Retreive the root node of the tree
+       * @return Node * root
+       */
+      Node * getRoot() {return mpRoot;}
 
       /**
        * Attach a Node to the tree
@@ -277,6 +283,21 @@ template < class Node > class CCopasiTree
           mList.erase(&*it);
 
         return pNode->getParent()->removeChild(pNode);
+      }
+
+      friend std::ostream & operator<< (std::ostream & os,
+                                        const CCopasiTree< Node > & A)
+      {
+        CCopasiTree< Node >::iterator it = A.begin();
+        CCopasiTree< Node >::iterator end = A.end();
+
+        for (; it != end && &*it != NULL; ++it)
+          os << &*it << ": parent: " << it->getParent()
+          << ", child: " << it->getChild()
+          << ", sibbling: " << it->getSibbling() << std::endl;
+
+        os << std::endl;
+        return os;
       }
     };
 
