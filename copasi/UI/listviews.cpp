@@ -154,8 +154,8 @@ ListViews::ListViews(QWidget *parent, const char *name)
   bigWidget->setReadOnly(false);
   QSize *s = new QSize();
   *s = bigWidget->size();
-  int w = s->width();
-  int h = s->height();
+  //  int w = s->width();
+  //  int h = s->height();
   //bigWidget->setFixedWidth(620);
   this->moveToFirst(folders);
   this->moveToLast(bigWidget);
@@ -811,7 +811,7 @@ void ListViews::loadMetabolites(QListViewItem* i)
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   myId = 1000000 * myId;
 
-  std::vector < CMetab * > metabolites = mModel->getMetabolites();
+  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
 
   C_INT32 noOfMetabolitesRows = metabolites.size();
 

@@ -216,7 +216,7 @@ int MetabolitesWidget1::isName(QString setValue)
       return 0;
     }
 
-  std::vector < CMetab * > metabolites = mModel->getMetabolites();
+  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
 
   //Now filling the table.
   CMetab *metab1;
@@ -272,7 +272,7 @@ void MetabolitesWidget1::loadName(QString setValue)
       return;
     }
 
-  std::vector < CMetab * > metabolites = mModel->getMetabolites();
+  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
 
   name = setValue;
   CMetab *metab;
@@ -371,7 +371,7 @@ void MetabolitesWidget1::slotBtnOKClicked()
   std::string filename = ((std::string) name.latin1()) + ".gps";
   CWriteConfig *Met = new CWriteConfig(filename);
 
-  std::vector < CMetab * > metabolites = mModel->getMetabolites();
+  CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
   CMetab *metab;
   metab = metabolites[myValue];
 

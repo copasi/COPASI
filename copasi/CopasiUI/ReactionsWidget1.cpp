@@ -388,7 +388,7 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
-  std::vector < CMetab * > & Metabolites = mModel->getMetabolites();
+  CCopasiVectorN< CMetab > & Metabolites = mModel->getMetabolites();
   CMetab * Metabolite;
   z = 0;
 
