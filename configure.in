@@ -18,6 +18,37 @@ AM_INIT_AUTOMAKE(copasi,0.1)
 dnl make /usr/local the default for the installation
 AC_PREFIX_DEFAULT(/usr/local)
 
+AC_ARG_WITH([expat],
+  AC_HELP_STRING([--with-expat=PATH],
+                 [Path to Expat XML Library ]),
+  [EXPAT_PATH=$withval])
+
+AC_ARG_WITH([sbml],
+  AC_HELP_STRING([--with-sbml=PATH],
+                 [Path to SBML Library ]),
+  [SBML_PATH=$withval])
+
+
+AC_ARG_WITH([clapack],
+  AC_HELP_STRING([--with-clapack=PATH],
+                 [Path to CLAPACK Library ]),
+  [CLAPACK_PATH=$withval])
+
+
+AC_ARG_WITH([mkl],
+  AC_HELP_STRING([--with-mkl=PATH],
+                 [Path to MKL Library ]),
+  [MKL_PATH=$withval])
+
+AC_ARG_WITH([qwt],
+  AC_HELP_STRING([--with-qwt=PATH],
+                 [Path to QWT Library ]),
+  [QWT_PATH=$withval])
+
+
+
+
+
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
@@ -51,6 +82,14 @@ if test x"${EXPAT_PATH}" != x""; then
   cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
 fi
 
+if test x"${QWT_PATH}" != x""; then
+  cps_qwt_path="QWT_PATH=$QWT_PATH"
+fi
+
+if test x"${SBML_PATH}" != x""; then
+  cps_sbml_path="SBML_PATH=$SBML_PATH"
+fi
+
 
 (
 dnl to prevent calling aclocal, automake and configure again
@@ -66,7 +105,7 @@ dnl to prevent calling aclocal, automake and configure again
  rm Makefile */Makefile; \
  echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path && \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.31 $ $Author: ssahle $ $Date: 2004/05/26 09:47:42 $  
+# $Revision: 1.32 $ $Author: gauges $ $Date: 2004/06/11 11:59:56 $  
 ######################################################################
 
 include(../common.pri)
@@ -56,8 +56,8 @@ contains(BUILD_OS, WIN32) {
               ../lib/libfunction.a \
               ../lib/libmodel.a
 
-  LIBS += -lexpat \
-          -lqwt
+  LIBS += -lqwt \
+          -lsbml
   
   release {
     distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}

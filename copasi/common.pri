@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.24 $ $Author: shoops $ $Date: 2004/05/19 19:01:10 $  
+# $Revision: 1.25 $ $Author: gauges $ $Date: 2004/06/11 11:59:56 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -102,7 +102,22 @@ contains(BUILD_OS, SunOS) {
  
 contains(BUILD_OS, Linux) {
   QMAKE_LFLAGS_RELEASE += -static
-
+  LIBS += -lexpat
+  !isEmpty(QWT_PATH){
+      LIBS+=  -L$${QWT_PATH}/lib
+      INCLUDEPATH += $${QWT_PATH}/include
+  }
+#  else {
+#      error( "QWT_PATH must be specified" )
+#  }
+  !isEmpty(EXPAT_PATH){
+      LIBS+=  -L$${EXPAT_PATH}/lib
+      INCLUDEPATH += $${EXPAT_PATH}/include
+  }
+  !isEmpty(SBML_PATH){
+      LIBS+=  -L$${SBML_PATH}/lib
+      INCLUDEPATH += $${SBML_PATH}/include
+  }
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
@@ -112,8 +127,9 @@ contains(BUILD_OS, Linux) {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
       INCLUDEPATH += $${CLAPACK_PATH}/include
+      INCLUDEPATH += /usr/include/qt3
       LIBS += -llapack -lblas -lF77 -lfl
-      LIBS += -L$${CLAPACK_PATH}/lib
+      LIBS += -L$${CLAPACK_PATH}/lib 
     } else {
       !isEmpty(LAPACK_PATH) {
         message("Using lapack.")
