@@ -11,15 +11,15 @@
 
 #include <string>
 
-class CReadConfig;
+#include "utilities/CCopasiVector.h"
+#include "report/CCopasiContainer.h"
+#include "CMetab.h"
 
+class CReadConfig;
 class CWriteConfig;
 
-#include "CMetab.h"
-#include "utilities/CCopasiVector.h"
-
 /** @dia:pos 128.756,33.503 */
-class CCompartment
+class CCompartment : public CCopasiContainer
   {
     // Attributes
 
@@ -27,7 +27,7 @@ class CCompartment
     /**
      *  Name of the compartment.
      */
-    std::string mName;
+    std::string & mName;
 
     /**
      *  Volume of the compartment.
@@ -62,14 +62,6 @@ class CCompartment
     CCompartment(const CCompartment & src);
 
     /**
-     *  Specified constructor. 
-     *  Creates an object with contents passed as arguments
-     *  @param name name of the comnpartment.
-     *  @param volume volume of the compartment.
-     */
-    CCompartment(const std::string & name, C_FLOAT64 volume);
-
-    /**
      *  Init
      */ 
     // void initialize();
@@ -84,13 +76,6 @@ class CCompartment
      *  Cleanup
      */
     void cleanup();
-
-    /**
-     *  Assignement operator. 
-     *  Copies the contents from one CCompartment object to another.
-     *  @param ptRHS reference to the recipient object.
-     */
-    CCompartment & operator=(const CCompartment & rhs);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -131,7 +116,7 @@ class CCompartment
      *  @return mName
      *  @see mName
      */
-    std::string getName() const;
+    const std::string & getName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
@@ -190,14 +175,15 @@ class CCompartment
 
   private:
 
-    /*
-     *
+    /**
+     *  Check whether the name is valid.
      */
-    C_INT16 isValidName() const;
+    bool isValidName(const std::string & name) const;
 
     /**
-     * insert operator
+     * Initialize the contained CCopasiObjects
      */
+    void initObjects();
   };
 
 #endif // COPASI_CCompartment

@@ -11,63 +11,38 @@
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
-#include "CCompartment.h"
 #include "utilities/utilities.h"
+#include "report/CCopasiObjectReference.h"
+#include "CCompartment.h"
 
-CCompartment::CCompartment()
+CCompartment::CCompartment():
+    CCopasiContainer("NoName", NULL, "Compartment"),
+    mName(mObjectName),
+    mVolume(Copasi->DefaultVolume),
+    mVolumeInv(1 / Copasi->DefaultVolume),
+    mMetabolites("Metabolites", this)
+{CONSTRUCTOR_TRACE;}
+
+CCompartment::CCompartment(const CCompartment & src):
+    CCopasiContainer(src),
+    mName(CCopasiContainer::mObjectName),
+    mVolume(src.mVolume),
+    mVolumeInv(src.mVolumeInv),
+    mMetabolites(src.mMetabolites, this)
 {
   CONSTRUCTOR_TRACE;
-  // initialize everything
-  mName = "compartment";
-  mVolume = Copasi->DefaultVolume;
-  mVolumeInv = 1 / Copasi->DefaultVolume;
-}
-
-CCompartment::CCompartment(const CCompartment & src)
-{
-  CONSTRUCTOR_TRACE;
-  mName = src.mName;
-  mVolume = src.mVolume;
-  mVolumeInv = src.mVolumeInv;
-  mMetabolites = CCopasiVectorNS < CMetab >(src.mMetabolites);
 
   for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
     mMetabolites[i]->setCompartment(this);
 }
 
-CCompartment::CCompartment(const std::string & name,
-                           C_FLOAT64 volume)
-{
-  CONSTRUCTOR_TRACE;
-  // initialize everything
-  mName = name;
-
-  if (!isValidName())
-    fatalError();
-
-  mVolume = volume;
-
-  mVolumeInv = 1 / volume;
-}
 CCompartment::~CCompartment() {DESTRUCTOR_TRACE;}
-// void CCompartment::initialize() {}
+
 void CCompartment::cleanup() {mMetabolites.cleanup();}
-
-CCompartment & CCompartment::operator=(const CCompartment & rhs)
-{
-  mName = rhs.mName;
-  mVolume = rhs.mVolume;
-  mVolumeInv = rhs.mVolumeInv;
-
-  mMetabolites = CCopasiVectorNS < CMetab >(rhs.mMetabolites);
-
-  return *this;
-}
 
 C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-  // initialize();
 
   if ((Fail = configbuffer.getVariable("Compartment", "string",
                                        (void *) & mName,
@@ -135,20 +110,20 @@ void CCompartment::saveSBML(std::ofstream &fout)
   fout << " volume=\"" << mVolume << "\"/>" << std::endl;
 }
 
-std::string CCompartment::getName() const
-{
-  return mName;
-}
+const std::string & CCompartment::getName() const
+  {
+    return mName;
+  }
 
 const C_FLOAT64 & CCompartment::getVolume() const
-{
-  return mVolume;
-}
+  {
+    return mVolume;
+  }
 
 const C_FLOAT64 & CCompartment::getVolumeInv() const
-{
-  return mVolumeInv;
-}
+  {
+    return mVolumeInv;
+  }
 
 CCopasiVectorNS < CMetab > & CCompartment::metabolites()
 {
@@ -179,9 +154,14 @@ void CCompartment::addMetabolite(CMetab &metabolite)
   mMetabolites.add(pMetabolite);
 }
 
-C_INT16 CCompartment::isValidName() const
+bool CCompartment::isValidName(const std::string & name) const
+  {return (name.find_first_of(" ") == std::string::npos);}
+
+void CCompartment::initObjects()
 {
-  return (mName.find_first_of(" ") == std::string::npos);
+  addObjectReference("Name", mName);
+  addObjectReference("Volume", mVolume);
+  add((CCopasiContainer *) &mMetabolites);
 }
 
 void * CCompartment::getVolumeAddr()
