@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: shoops $ $Date: 2003/05/27 14:18:10 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2003/05/30 18:07:07 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -12,6 +12,7 @@ isEmpty(BUILD_OS) {
 }
 DEFINES += $${BUILD_OS}
 message("Configuring for $${BUILD_OS}.")
+QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
 # Common configuration settings
 CONFIG += exceptions
