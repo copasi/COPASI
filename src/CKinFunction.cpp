@@ -8,35 +8,31 @@
 
 short DefinedInsertAllowed(CNodeK src);
 
-CKinFunction::CKinFunction() 
-{
-    mReversible = FALSE;
-    //    mNodes.SetInsertAllowed(DefinedInsertAllowed);
-}
+CKinFunction::CKinFunction() {SetReversible(FALSE);}
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
-    mName = name;
-    mDescription = description;
-    mReversible = FALSE;
-    //    mNodes.SetInsertAllowed(DefinedInsertAllowed);
+    SetName(name);
+    SetDescription(description);
+    SetReversible(FALSE);
 }
-
-CKinFunction::~CKinFunction() {}
 
 long CKinFunction::Load(CReadConfig & configbuffer)
 {
+    string TmpString;
     long Size = 0;
     long Index = 0;
     long Fail = 0;
     
-    if (Fail = configbuffer.GetVariable("FunctionName", "string", &mName,
+    if (Fail = configbuffer.GetVariable("FunctionName", "string", &TmpString,
                                         CReadConfig::LOOP))
         return Fail;
-
-    if (Fail = configbuffer.GetVariable("Description", "string", &mDescription))
+    SetName(TmpString);
+    
+    if (Fail = configbuffer.GetVariable("Description", "string", &TmpString))
         return Fail;
+    SetDescription(TmpString);
 
     if (Fail = configbuffer.GetVariable("Nodes", "long", &Size))
         return Fail;
@@ -52,16 +48,20 @@ long CKinFunction::Load(CReadConfig & configbuffer)
 
 long CKinFunction::Save(CWriteConfig & configbuffer)
 {
-    long Size = mNodes.Size();
+    string TmpString;
+    long TmpLong;
     long Fail = 0;
     
-    if (Fail = configbuffer.SetVariable("FunctionName", "string", &mName))
+    TmpString = GetName();
+    if (Fail = configbuffer.SetVariable("FunctionName", "string", &TmpString))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("Description", "string", &mDescription))
+    TmpString = GetDescription();
+    if (Fail = configbuffer.SetVariable("Description", "string", &TmpString))
         return Fail;
 
-    if (Fail = configbuffer.SetVariable("Nodes", "long", &Size))
+    TmpLong = mNodes.Size();
+    if (Fail = configbuffer.SetVariable("Nodes", "long", &TmpLong))
         return Fail;
 
     if (Fail = mNodes.Save(configbuffer))
@@ -70,51 +70,7 @@ long CKinFunction::Save(CWriteConfig & configbuffer)
     return Fail;
 }
 
-string CKinFunction::GetName() {return mName;}
-
-string CKinFunction::GetDescription() {return mDescription;}
-
 CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
-
-vector < CKinFunction::IDENTIFIER > & CKinFunction::Identifiers()
-{return mIdentifiers;} 
-
-char CKinFunction::GetIdentifierType(const string & name)
-{
-    long Index = 0;
-    
-    if ( Index = FindIdentifier(name) < 0 ) FatalError();
-
-    switch (mIdentifiers[Index].Nodes[0]->GetSubtype())
-    {
-    case N_SUBSTRATE: 
-        return 0; 
-        break;
-        
-    case N_PRODUCT: 
-        return 1; 
-        break;
-        
-    case N_MODIFIER: 
-        return 2; 
-        break;
-        
-    case N_KCONSTANT: 
-        return 3; 
-        break;
-        
-    default: 
-        assert(FALSE);
-        break;
-    }
-}
-
-void CKinFunction::SetName(const string & name) {mName = name;}
-
-void CKinFunction::SetDescription(const string & description) 
-{mDescription = description;}
-
-void CKinFunction::SetReversible(short reversible) {mReversible = reversible;}
 
 void CKinFunction::SetIdentifierType(const string & name,
                                 char type)
@@ -122,11 +78,9 @@ void CKinFunction::SetIdentifierType(const string & name,
     long Index = 0;
     
     if ( Index = FindIdentifier(name) < 0 ) FatalError();
-    for (long i = 0; i < mIdentifiers[Index].Nodes.size(); i++)
-        mIdentifiers[Index].Nodes[i]->SetSubtype(type);
+    for (long i = 0; i < mIdentifiers[Index].mNodes.size(); i++)
+        mIdentifiers[Index].mNodes[i]->SetSubtype(type);
 }
-
-short CKinFunction::IsReversible() {return mReversible;}
 
 long CKinFunction::Parse()
 {
@@ -134,9 +88,9 @@ long CKinFunction::Parse()
     char *buffer;
     YY_BUFFER_STATE kkbuff;
     // create a buffer big enough to contain the function string
-    buffer = new char[mDescription.length()+1];
+    buffer = new char[GetDescription().length()+1];
     // copy it into the buffer
-    strcpy(buffer, mDescription.c_str());
+    strcpy(buffer, GetDescription().c_str());
     // input for the scanner is from the buffer
     kkbuff = kk_scan_string(buffer);
     // add the root node
@@ -181,7 +135,7 @@ long CKinFunction::Parse()
 long CKinFunction::FindIdentifier(const string & name)
 {
     for (long i=0; i<mIdentifiers.size(); i++)
-        if (mIdentifiers[i].Name == name) return i;
+        if (mIdentifiers[i].GetName() == name) return i;
     return -1;
 }
 
@@ -440,7 +394,7 @@ CNodeK * CKinFunction::ParsePrimary()
 
 long CKinFunction::InitIdentifiers()
 {
-    IDENTIFIER Identifier;
+    CIdentifier Identifier;
     long Index;
 
     mIdentifiers.clear();
@@ -452,12 +406,12 @@ long CKinFunction::InitIdentifiers()
             Index = FindIdentifier(mNodes[i].GetName());
             if ( Index == -1 )
             {
-                Identifier.Name = mNodes[i].GetName();
+                Identifier.GetName() = mNodes[i].GetName();
                 mIdentifiers.push_back(Identifier);
                 Index = mIdentifiers.size() - 1;
             }
             mNodes[i].SetIndex(Index);
-            mIdentifiers[Index].Nodes.push_back(&mNodes[i]);
+            mIdentifiers[Index].mNodes.push_back(&mNodes[i]);
         }
     }
 }

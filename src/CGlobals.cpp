@@ -10,7 +10,7 @@ CGlobals::CGlobals()
     Version = StringPrint("%d.%d.%d", VersionMajor, 
                           VersionMinor, VersionDevel);
     
-    FunctionDB.SetName("FunctionDB.gps");
+    FunctionDB.SetFilename("FunctionDB.gps");
 
     DefaultConc = 0.0;
 }

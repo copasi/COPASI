@@ -200,6 +200,16 @@ private:
     /**
      *
      */
+    long LoadNew(CReadConfig & configbuffer);
+
+    /**
+     *
+     */
+    long LoadOld(CReadConfig & configbuffer);
+
+    /**
+     *
+     */
     void InitIdentifiers();
 
     /**
@@ -211,6 +221,7 @@ private:
      *
      */
     void CheckIdentifiers();
+
 };
 
 #endif // COPASI_CSteb

@@ -4,9 +4,9 @@ CFunctionDB::CFunctionDB() {}
 
 CFunctionDB::~CFunctionDB() {}
 
-void CFunctionDB::SetName(const string & filename) {mFilename = filename;}
+void CFunctionDB::SetFilename(const string & filename) {mFilename = filename;}
     
-string CFunctionDB::GetName() {return mFilename;}
+string CFunctionDB::GetFilename() {return mFilename;}
 
 CKinFunction & CFunctionDB::DBLoad(const string & functionName) 
 {
@@ -25,9 +25,9 @@ CKinFunction & CFunctionDB::FindFunction(const string & functionName)
 {
     long i;
     
-    for (i = 0; i < Size(); i++)
-        if (functionName == mLoadedFunction[i].GetName())
-            return mLoadedFunction[i];
+    for (i = 0; i < mLoadedFunctions.Size(); i++)
+        if (functionName == mLoadedFunctions[i].GetName())
+            return mLoadedFunctions[i];
 
     return DBLoad(functionName);
 }

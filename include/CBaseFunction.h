@@ -1,0 +1,121 @@
+/**
+ * CBaseIdentifier
+ * 
+ * Created for Copasi by Stefan Hoops
+ * (C) Stefan Hoops 2001
+ */
+
+#ifndef COPASI_CBaseFunction
+#define COPASI_CBaseFunction
+
+#include <string>
+#include <vector>
+
+#include "CBaseIdentifier.h"
+
+class CBaseFunction
+{
+// Attributes
+private:
+    /**
+     *  The name of the function
+     */
+    string mName;
+
+    /**
+     *  The description of the function
+     */
+    string mDescription;
+
+    /**
+     *  Whether the function is reversible
+     */
+    short mReversible;
+
+    /**
+     *  Vector of allowed types of the function
+     */
+    vector < char > mTypes;
+
+    /**
+     *  Vector of identifiers of the function
+     */
+    vector< CBaseIdentifier > mIdentifiers;
+
+// Operations
+public:
+    /**
+     *  Default constructor
+     */
+    CBaseFunction();
+
+    /**
+     *  Default destructor
+     */
+    virtual ~CBaseFunction();
+
+    /**
+     *  Set the name of the function
+     *  @param "const string" &name
+     */
+    virtual void SetName(const string & name);
+
+    /**
+     *  Set the description of the function
+     *  @param "const string" &description
+     */
+    virtual void SetDescription(const string & description);
+
+    /**
+     *  Set the reversiblity of the function
+     *  @param short reversible
+     */
+    virtual void SetReversible(short reversible);
+
+    /**
+     *  Retrieves the name of the function
+     *  @return string
+     */
+    virtual string GetName();
+    
+    /**
+     *  Retrieves the description of the function
+     *  @return string
+     */
+    virtual string GetDescription();
+    
+    /**
+     *  Retrieves whether the function is reversible
+     *  @return short
+     */
+    virtual short IsReversible();
+    
+    /**
+     *  Retrieves the vector of allowed identifiers
+     *  @return "vector < char > &"
+     */
+    virtual vector < char > & IdentifierTypes();
+
+    /**
+     *  Retrieves the vector of identifiers of a specific type
+     *  @param char type Default = 0 (all identifiers)
+     *  @return "vector < char > &"
+     */
+    virtual vector< CBaseIdentifier * > Identifiers(char type = 0);
+
+    /**
+     *  Calculates the value of the function
+     *  @param "vector < double * >" identifiers
+     */
+    virtual double CalcValue(vector < double * > identifiers);
+
+    /**
+     *  Returns the index of an identifier. The index specifies the position in
+     *  the identifier vector of the function call CalcValue.
+     *  @param "const string" &name
+     *  @return long
+     */
+    virtual long FindIdentifier(const string & name);
+};
+
+#endif // COPASI_CBaseFunction

@@ -75,70 +75,11 @@ long CStep::Load(CReadConfig & configbuffer)
     if (Fail = configbuffer.GetVariable("Reversible", "long", &mReversible))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
-        return Fail;
-    mSubstrates.resize(Size);
-    for (i=0; i < Size; i++)
-    {
-//        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
-//        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mSubstrates[i].Identifier))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mSubstrates[i].Metabolite))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mSubstrates[i].Compartment))
-            return Fail;
-   }
-    
-    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
-        return Fail;
-    mProducts.resize(Size);
-    for (i=0; i < Size; i++)
-    {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mProducts[i].Identifier))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mProducts[i].Metabolite))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mProducts[i].Compartment))
-            return Fail;
-    }
-
-    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
-        return Fail;
-    mModifiers.resize(Size);
-    for (i = 0; i < Size; i++)
-    {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mModifiers[i].Identifier))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
-                                            &mModifiers[i].Metabolite))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                            &mModifiers[i].Compartment))
-            return Fail;
-    }
-
-    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
-        return Fail;
-    mParameters.resize(Size);
-    for (i = 0; i < Size; i++)
-    {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
-                                            &mParameters[i].Identifier))
-            return Fail;
-        if (Fail = configbuffer.GetVariable("Value", "double",
-                                            &mParameters[i].Value))
-            return Fail;
-    }
-    
+    if (configbuffer.GetVersion() < "4")
+        Fail = LoadOld(configbuffer);
+    else 
+        Fail = LoadNew(configbuffer);
+        
     SetFunction(KinType);
     
     return Fail; 
@@ -310,3 +251,99 @@ void CStep::Compile(CCopasiVector < CMetab * > &metabolites)
     CheckIdentifiers();
 }
 
+long CStep::LoadNew(CReadConfig & configbuffer)
+{
+    long Fail = 0;
+    long Size;
+    long i;
+    
+    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
+        return Fail;
+    mSubstrates.resize(Size);
+    for (i=0; i < Size; i++)
+    {
+//        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
+//        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
+
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mSubstrates[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mSubstrates[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mSubstrates[i].Compartment))
+            return Fail;
+   }
+    
+    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
+        return Fail;
+    mProducts.resize(Size);
+    for (i=0; i < Size; i++)
+    {
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mProducts[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mProducts[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mProducts[i].Compartment))
+            return Fail;
+    }
+
+    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
+        return Fail;
+    mModifiers.resize(Size);
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mModifiers[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mModifiers[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mModifiers[i].Compartment))
+            return Fail;
+    }
+
+    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
+        return Fail;
+    mParameters.resize(Size);
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mParameters[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Value", "double",
+                                            &mParameters[i].Value))
+            return Fail;
+    }
+    
+    return Fail;
+}
+
+long CStep::LoadOld(CReadConfig & configbuffer)
+{
+    long Fail = 0;
+    long Size;
+    long i;
+
+    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
+        return Fail;
+    mSubstrates.resize(Size);
+    
+    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
+        return Fail;
+    mProducts.resize(Size);
+
+    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
+        return Fail;
+    mModifiers.resize(Size);
+
+    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
+        return Fail;
+    mParameters.resize(Size);
+    return Fail;
+}

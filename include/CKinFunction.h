@@ -15,25 +15,14 @@
 #include <vector>
 
 #include "copasi.h"
+#include "CBaseFunction.h"
 #include "CNodeK.h"
 #include "CCopasiVector.h"
 
-class CKinFunction
+class CKinFunction: public CBaseFunction
 {
 // Attributes
-public:
-
 private:
-    /**
-     *  The name of the function
-     */
-    string mName;
-
-    /**
-     *  The description of the function
-     */
-    string mDescription;
-
     /**
      *  The vector of nodes of the binary tree of the function
      */
@@ -43,23 +32,23 @@ private:
 	short IsInsertAllowed(CNodeK src) {return TRUE;}
       } mNodes;
 
+    class CIdentifier: public CBaseIdentifier
+        {
+        // Attributes
+        public:
+            /*
+             *  The nodes which access the same identifier.
+             */
+            vector < CNodeK * > mNodes;
+        };
+    
     /**
      *  The vector of pointers to the identifiers to the function
      */
-    typedef struct IDENTIFIER 
-    {
-        string Name;
-        vector < CNodeK * > Nodes;
-    };
-    vector < IDENTIFIER > mIdentifiers;
+    vector < CIdentifier > mIdentifiers;
 
     /**
      *  This indicates whether the function is reversible
-     */
-    short mReversible;
-
-    /**
-     *  Internal variable (We should get rid of this)
      */
     long mNidx;
 
@@ -69,7 +58,7 @@ public:
      *  Default constructor
      */
     CKinFunction();
-
+    
     /**
      *  This creates a kinetic function with a name an description
      *  @param "const string" &name
@@ -77,11 +66,6 @@ public:
      */
     CKinFunction(const string & name,
                  const string & description);
-
-    /**
-     *  Destructor
-     */
-    ~CKinFunction();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -100,52 +84,10 @@ public:
     long Save(CWriteConfig & configbuffer);
 
     /**
-     *  This retrieves the name of the function
-     *  @return string
-     */
-    string GetName();
-
-    /**
-     *  This retrieves the description of the function
-     *  @return string
-     */
-    string GetDescription();
-
-    /**
      *  This retrieves the node tree of the function
      *  @return "CCopasiVector < CNodeK > &"
      */
     CCopasiVector < CNodeK > & Nodes();
-
-    /**
-     *  This retrieves the identifiers of the function
-     *  @return vector < CNodeK >
-     */
-    vector < IDENTIFIER > & Identifiers();
-
-    /**
-     *  This retrieves the type of an identifier of the function
-     *  @return char 
-     */
-    char GetIdentifierType(const string & name);
-
-    /**
-     *  This sets the name of the function
-     *  @param "const string" &name
-     */
-    void SetName(const string & name);
-
-    /**
-     *  This sets the description of the function
-     *  @param "const string" &description
-     */
-    void SetDescription(const string & description);
-
-    /**
-     *  This sets wheter the function is reversible
-     *  @param short reversible
-     */
-    void SetReversible(short reversible);
 
     /**
      *  This sets the type of an identifier
@@ -154,12 +96,6 @@ public:
      */
     void SetIdentifierType(const string & name,
                            char type);
-
-    /**
-     *  This returns the value of mReversible
-     *  @return short
-     */
-    short IsReversible();
 
     /**
      *  This parses the function longo a binary tree

@@ -41,7 +41,7 @@ public:
     /**
      *
      */
-    SetFilename(const string & filename);
+    void SetFilename(const string & filename);
     
     /**
      *
