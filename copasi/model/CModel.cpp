@@ -1698,3 +1698,62 @@ unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
 
 unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
   {return mA.numCols();}
+
+CModel::CStateTemplate::CStateTemplate() :
+    mList(),
+    mKeyMap(),
+    mObjectMap()
+{}
+
+CModel::CStateTemplate::~CStateTemplate() {cleanup();}
+
+bool CModel::CStateTemplate::cleanup()
+{
+  std::vector< std::pair< std::string, const std::string * > * >::iterator it =
+    mList.begin();
+  std::vector< std::pair< std::string, const std::string * > * >::iterator End =
+    mList.end();
+
+  for (; it != End; ++it)
+    if (*it)
+      {
+        CKeyFactory::remove((*it)->first);
+        delete *it;
+        *it = NULL;
+      }
+
+  mList.clear();
+  mKeyMap.clear();
+  mObjectMap.clear();
+
+  return true;
+}
+
+bool CModel::CStateTemplate::add(const std::string & objectKey)
+{
+  std::pair< std::string, const std::string * > * pAdd =
+    new std::pair< std::string, const std::string * >
+    (CKeyFactory::add("StateVariable", NULL), &objectKey);
+
+  mList.push_back(pAdd);
+
+  mKeyMap[pAdd->first] = &objectKey;
+  mObjectMap[objectKey] = &pAdd->first;
+
+  return true;
+}
+
+std::string CModel::CStateTemplate::getObjectKey(const std::string & key) const
+  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mKeyMap))[key];}
+
+std::string CModel::CStateTemplate::getKey(const std::string & objectKey) const
+  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mObjectMap))[objectKey];}
+
+unsigned C_INT32 CModel::CStateTemplate::size() const {return mList.size();}
+
+std::pair< std::string, std::string >
+CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
+  {
+    return std::pair< std::string, std::string >
+    (mList[index]->first, *mList[index]->second);
+  }

@@ -5,6 +5,7 @@
 #ifndef COPASI_CModel
 #define COPASI_CModel
 
+#include <map>
 #include <vector>
 #include <string>
 
@@ -138,6 +139,79 @@ class CModel : public CCopasiContainer
             }
           return os;
         }
+      };
+
+    class CStateTemplate
+      {
+        // Attributes
+      private:
+        /**
+         * The list of template variables.
+         */
+        std::vector< std::pair< std::string, const std::string * > * > mList;
+
+        /**
+         * A map to allow finding the object a state variable relates to.
+         */
+        std::map< std::string, const std::string * > mKeyMap;
+
+        /**
+         * A map to allow finding the state variable which represents the 
+         * object. 
+         */
+        std::map< std::string, const std::string * > mObjectMap;
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        CStateTemplate();
+
+        /**
+         * Destructor
+         */
+        ~CStateTemplate();
+
+        /**
+         * Cleanup
+         */
+        bool cleanup();
+
+        /**
+         * Add a state variable representing an object to the state template.
+         * @param const std::string & objectKey
+         * @return bool success
+         */
+        bool add(const std::string & objectKey);
+
+        /**
+         * Retrieve the object key the state variable 'key' refers to.
+         * @param const std::string & key
+         * @return std::string objectKey
+         */
+        std::string getObjectKey(const std::string & key) const;
+
+        /**
+         * Retrieve the state variables key which helds the objects state.
+         * @param const std::string & objectKey
+         * @return std::string key
+         */
+        std::string getKey(const std::string & objectKey) const;
+
+        /**
+         * Retrieve the size of the state template.
+         * @return  unsigned C_INT32 size
+         */
+        unsigned C_INT32 size() const;
+
+        /**
+         * Retreive a state variable descriptions
+         * @param const unsigned C_INT32 & index
+         * @return std::pair< std::string,std::string >
+         */
+        std::pair< std::string, std::string >
+        operator[](const unsigned C_INT32 & index) const;
       };
 
   private:
@@ -298,6 +372,11 @@ class CModel : public CCopasiContainer
      *  taking into account the unit for substance quantities
      */
     C_FLOAT64 mNumber2QuantityFactor;
+
+    /**
+     * The state template for the model
+     */
+    CStateTemplate mStateTemplate;
 
   public:
     /**
@@ -787,6 +866,12 @@ class CModel : public CCopasiContainer
      */
     void setState(const CStateX * state);
 
+    /**
+     * Retreive the state template
+     * @retrun const CModel::CStateTemplate & stateTemplate
+     */
+    const CModel::CStateTemplate & getStateTemplate() const;
+
   private:
     /**
      * Initialize the contained CCopasiObjects
@@ -803,6 +888,12 @@ class CModel : public CCopasiContainer
     static unsigned C_INT32 unitCompare(const std::string & name,
                                         const std::string * units,
                                         const unsigned C_INT32 unique);
+
+    /**
+     * Build the state template for the model.
+     * @return bool success
+     */
+    bool buildStateTemplate();
   };
 
 #endif // CModel
