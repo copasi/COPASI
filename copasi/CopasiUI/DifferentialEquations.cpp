@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
+   $Date: 2004/09/17 13:51:44 $
    End CVS Header */
 
 /*******************************************************************
@@ -123,6 +123,8 @@ void DifferentialEquations::slotBtnCancelClicked()
 bool DifferentialEquations::update(ListViews::ObjectType objectType,
                                    ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

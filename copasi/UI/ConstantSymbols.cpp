@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:26 $
+   $Author: ssahle $ 
+   $Date: 2004/09/17 13:51:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -159,6 +159,8 @@ void ConstantSymbols::resizeEvent(QResizeEvent * re)
 bool ConstantSymbols::update(ListViews::ObjectType objectType,
                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

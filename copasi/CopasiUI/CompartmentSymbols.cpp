@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:23:47 $
+   $Date: 2004/09/17 13:51:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -187,6 +187,8 @@ void CompartmentSymbols::resizeEvent(QResizeEvent * re)
 bool CompartmentSymbols::update(ListViews::ObjectType objectType,
                                 ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 16:05:47 $
+   $Date: 2004/09/17 13:51:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -79,7 +79,7 @@ class CopasiTableWidget : public CopasiWidget
     std::vector<bool> mFlagRenamed;
     std::vector<bool> mFlagRO;
 
-    bool mIgnoreUpdates;
+    //bool mIgnoreUpdates;
     bool mRO;
     ListViews::ObjectType mOT;
 

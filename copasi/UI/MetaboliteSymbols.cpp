@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:28 $
+   $Author: ssahle $ 
+   $Date: 2004/09/17 13:51:46 $
    End CVS Header */
 
 /*******************************************************************
@@ -183,6 +183,8 @@ void MetaboliteSymbols::resizeEvent(QResizeEvent * re)
 
 bool MetaboliteSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

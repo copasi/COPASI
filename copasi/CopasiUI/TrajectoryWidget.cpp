@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 15:50:45 $
+   $Date: 2004/09/17 13:51:50 $
    End CVS Header */
 
 /********************************************************
@@ -338,8 +338,8 @@ void TrajectoryWidget::runTrajectoryTask()
   tt->process();
   tt->restore();
 
-  ListViews::notify(ListViews::STATE, ListViews::CHANGE,
-                    dataModel->getModel()->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE,
+                  dataModel->getModel()->getKey());
 
   unsetCursor();
 }
@@ -521,6 +521,8 @@ void TrajectoryWidget::ExportToFile()
 
 bool TrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

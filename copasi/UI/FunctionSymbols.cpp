@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 13:58:14 $
+   $Author: ssahle $ 
+   $Date: 2004/09/17 13:51:45 $
    End CVS Header */
 
 /*******************************************************************
@@ -169,6 +169,8 @@ void FunctionSymbols::resizeEvent(QResizeEvent * re)
 bool FunctionSymbols::update(ListViews::ObjectType objectType,
                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

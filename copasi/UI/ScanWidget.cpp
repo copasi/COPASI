@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.166 $
+   $Revision: 1.167 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:42 $
+   $Date: 2004/09/17 13:51:48 $
    End CVS Header */
 
 /********************************************************
@@ -784,6 +784,8 @@ bool ScanWidget::leave()
 
 bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

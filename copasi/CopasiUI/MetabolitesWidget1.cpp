@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/10 11:07:59 $
+   $Date: 2004/09/17 13:51:46 $
    End CVS Header */
 
 /*******************************************************************
@@ -270,7 +270,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       metab->setObjectName((const char *)name.utf8());
       //TODO: update the reactions (the real thing, not the gui)
       //      propably not necessary anymore when reaction uses keys instead of names
-      ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, objKey);
+      protectedNotify(ListViews::METABOLITE, ListViews::RENAME, objKey);
     }
 
   //compartment
@@ -281,9 +281,9 @@ bool MetabolitesWidget1::saveToMetabolite()
       dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(metab);
       dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(metab->getObjectName());
       dataModel->getModel()->initializeMetabolites();
-      //ListViews::notify(ListViews::MODEL, ListViews::CHANGE, "");
-      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
-      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+      //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
     }
 
   //for Initial Concentration and Initial Number
@@ -294,7 +294,7 @@ bool MetabolitesWidget1::saveToMetabolite()
     {
       metab->setInitialConcentration(temp1);
       metab->setConcentration(temp1);
-      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
       dataModel->getModel()->setCompileFlag();
     }
 
@@ -307,7 +307,7 @@ bool MetabolitesWidget1::saveToMetabolite()
         {
           metab->setInitialNumber(temp2);
           metab->setNumber(temp2);
-          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           dataModel->getModel()->setCompileFlag();
         }
     }
@@ -318,7 +318,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (metab->getStatus() != CMetab::METAB_FIXED)
         {
           metab->setStatus(CMetab::METAB_FIXED);
-          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           dataModel->getModel()->setCompileFlag();
         }
     }
@@ -327,7 +327,7 @@ bool MetabolitesWidget1::saveToMetabolite()
       if (metab->getStatus() != CMetab::METAB_VARIABLE) //TODO: should be ...==METAB_FIXED ?
         {
           metab->setStatus(CMetab::METAB_VARIABLE);
-          ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
+          protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           dataModel->getModel()->setCompileFlag();
         }
     }
@@ -363,7 +363,7 @@ void MetabolitesWidget1::slotBtnNewClicked()
       name += (const char *)QString::number(i).utf8();
     }
   enter(pMetab->getKey());
-  ListViews::notify(ListViews::METABOLITE, ListViews::ADD);
+  protectedNotify(ListViews::METABOLITE, ListViews::ADD);
 }
 
 void MetabolitesWidget1::slotBtnDeleteClicked()
@@ -423,7 +423,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                          // Yes or Enter
+    case 0:                           // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -435,11 +435,11 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         dataModel->getModel()->removeMetabolite(objKey);
         enter(Copasi->pModel->getMetabolites()[std::min(index, size - 2)]->getKey());
         //for (i = 0; i < imax; i++)
-        ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, objKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
         //TODO notify about reactions
         break;
       }
-    case 1:                          // No or Escape
+    case 1:                           // No or Escape
       break;
     }
 }
@@ -447,6 +447,8 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
                                 ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::STATE:

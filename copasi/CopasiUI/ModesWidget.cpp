@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/16 20:12:44 $
+   $Author: ssahle $ 
+   $Date: 2004/09/17 13:51:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -173,11 +173,11 @@ void ModesWidget::loadModes(CModel *model)
  */
 void ModesWidget::slotTableSelectionChanged()
 {/*
-      if (!table->hasFocus())
-        {
-          table->setFocus();
-        }
-        */
+        if (!table->hasFocus())
+          {
+            table->setFocus();
+          }
+          */
   if (!listView->hasFocus())
     {
       listView->setFocus();
@@ -312,6 +312,8 @@ void ModesWidget::slotBtnCalculateClicked()
 bool ModesWidget::update(ListViews::ObjectType C_UNUSED(objectType),
                          ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   pdelete(modes);
   return true;
 }

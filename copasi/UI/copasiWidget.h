@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:45 $
+   $Date: 2004/09/17 13:51:51 $
    End CVS Header */
 
 /********************************************************
@@ -38,11 +38,13 @@ class CopasiWidget : public QWidget
   private:
     static int realMinWidth;
     static int realMinHeight;
-  private:
     bool bInitialized;
     bool bSetMinSize;
 
   protected:
+    bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+    bool mIgnoreUpdates;
+
     static DataModelGUI* dataModel;
     ListViews* pListView;
   };

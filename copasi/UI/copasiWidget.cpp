@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:44 $
+   $Date: 2004/09/17 13:51:51 $
    End CVS Header */
 
 // copasiWidget.cpp: implementation of the CopasiWidget class.
@@ -22,7 +22,8 @@ int CopasiWidget::realMinWidth = 0;
 DataModelGUI* CopasiWidget::dataModel = NULL;
 
 CopasiWidget::CopasiWidget(QWidget * parent, const char * name, WFlags f)
-    : QWidget (parent, name, f)
+    : QWidget (parent, name, f),
+    mIgnoreUpdates(false)
 {
   pListView = (ListViews*)parent;
   dataModel = ListViews::getDataModel();
@@ -81,6 +82,13 @@ bool CopasiWidget::leave()
 
 bool CopasiWidget::enter(const std::string & C_UNUSED(key))
 {return true;}
+
+bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  mIgnoreUpdates = true;
+  ListViews::notify(objectType, action, key);
+  mIgnoreUpdates = false;
+}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction of CopasiParametersWidget

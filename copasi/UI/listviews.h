@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:25:08 $
+   $Date: 2004/09/17 13:51:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -50,7 +50,6 @@ class TableDefinition;
 class TableDefinition1;
 class OptimizationWidget;
 class CopasiWidget;
-class Folder;
 class PlotWidget1;
 class PlotWidget;
 class CopasiDefaultWidget;
@@ -60,14 +59,16 @@ class CopasiDefaultWidget;
 class FolderListItem : public QListViewItem
   {
   public:
-    FolderListItem(QListView *parent, Folder *f);
-    FolderListItem(FolderListItem *parent, Folder *f);
-    void insertSubFolders(const QObjectList *lst);
-    Folder *folder();
+    FolderListItem(QListView *parent, const IndexedNode *f, bool recurs = true);
+    FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
+    void createSubFolders();
+    void deleteSubFolders();
+
+    const IndexedNode *folder() const;
     QString key(int, bool) const;
 
   protected:
-    Folder *myFolder;
+    const IndexedNode *mpFolder;
   };
 
 //********************************************************************************
@@ -75,10 +76,6 @@ class FolderListItem : public QListViewItem
 class ListViews : public QSplitter
   {
     Q_OBJECT
-  public slots:
-    void slotHideWidget();
-    void slotShowWidget();
-
   public:
     ListViews(QWidget *parent = 0, const char *name = 0);
     ~ListViews();
@@ -91,30 +88,19 @@ class ListViews : public QSplitter
     static DataModelGUI* getDataModel() {return dataModel;};
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
     static bool commit();
-    void switchToOtherWidget(const std::string & key);
+    void switchToOtherWidget(C_INT32 id, const std::string & key);
 
   private:
     CMathModel *mpMathModel;
 
     CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
 
-    void loadSteadyStateTaskNodes(CSteadyStateTask*);
-    void loadTrajectoryTaskNodes(CTrajectoryTask* p_trajectorytask);
     void ConstructNodeWidgets();
-
-    void clearItem(QListViewItem *);
-    void clearParentItem(QListViewItem *); // for the top level items to be cleared..
-
     void setupFolders();
 
     void setTheRightPixmap(QListViewItem* lvi);
 
-    QListViewItem* searchListViewItem(Folder*);
-    QListViewItem* searchListViewItem(int); // search by folder id
-    QListViewItem* searchListViewItem(const char*); // search by folder name
-    QListViewItem* searchListViewItem(const std::string & key); //search by object key
-
-    bool existsListViewItem(QListViewItem* me);
+    FolderListItem* findListViewItem(int id, std::string key); //should always return a valid item
 
   private slots:
     void slotFolderChanged(QListViewItem*);
@@ -128,48 +114,22 @@ class ListViews : public QSplitter
     static std::set<ListViews *> mListOfListViews;
     bool attach();
     bool detach();
-    bool update(ObjectType objectType, Action action, const std::string & key = "");
-    bool updateListViews(ObjectType objectType, Action action, const std::string & key);
-    static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
-    static bool updateAllListviews1(C_INT32 id);
-    static bool updateAllListviews2(C_INT32 id);
 
-    void deleteAllMyChildrens(QListViewItem* me);
-    void addItem(QListViewItem* parent, Folder* child);
-    void addItem(QListView* parent, Folder* child);
-    void addItem(Node<Folder>* child);
-    //void showMessage(QString caption, QString text);
-    void loadModes(QListViewItem*);
-    static void loadMetabolitesToDataModel();
-    static void loadReactionsToDataModel();
-    static void loadMoietiesToDataModel();
-    static void loadCompartmentsToDataModel();
-    static void loadFunctionsToDataModel();
-    static void loadReportDefinition();
-    static void loadPlotsToDataModel();
+    bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
+    static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
+    static bool updateAllListviews(C_INT32 id);
+
+    //void deleteAllMyChildrens(QListViewItem* me);
+    //void addItem(QListViewItem* parent, Folder* child);
+    //void addItem(QListView* parent, Folder* child);
+    //void addItem(Node<Folder>* child);
 
     //the widgets
     QListView *folders;
-    //QMultiLineEdit *bigWidget;
 
     ScanWidget *scanWidget;
-    inline ScanWidget* getScanWidget() const
-      {
-        return scanWidget;
-      }
-
     SteadyStateWidget *steadystateWidget;
-    inline SteadyStateWidget* getSteadystateWidget() const
-      {
-        return steadystateWidget;
-      }
-
     TrajectoryWidget *trajectoryWidget;
-    inline TrajectoryWidget* getTrajectoryWidget() const
-      {
-        return trajectoryWidget;
-      }
-
     MetabolitesWidget *metabolitesWidget;
     ReactionsWidget *reactionsWidget;
     CompartmentsWidget *compartmentsWidget;

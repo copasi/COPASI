@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.145 $
+   $Revision: 1.146 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/10 11:10:20 $
+   $Date: 2004/09/17 13:51:48 $
    End CVS Header */
 
 /*********************************************************************
@@ -213,8 +213,8 @@ bool ReactionsWidget1::saveToReaction()
   //dataModel->getModel()->compile();
 
   //this tells the gui what it needs to know.
-  if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
-  ListViews::notify(ListViews::REACTION, ListViews::CHANGE, objKey);
+  if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+  protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
 
   //TODO: detect rename events (mRi.writeBackToReaction has to do this)
   return true;
@@ -285,7 +285,7 @@ void ReactionsWidget1::slotBtnNewClicked()
     }
   //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
   //table->setNumRows(table->numRows());
-  ListViews::notify(ListViews::REACTION, ListViews::ADD);
+  protectedNotify(ListViews::REACTION, ListViews::ADD);
   enter(dataModel->getModel()->getReactions()[name]->getKey());
   //pListView->switchToOtherWidget(mKeys[row]);
 }
@@ -321,7 +321,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:            // Yes or Enter
+        case 0:             // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -339,13 +339,13 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             //}
 
             //for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
-            // ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
-            ListViews::notify(ListViews::REACTION, ListViews::DELETE, objKey);
+            // protectedNotify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+            protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
 
             break;
           }
 
-        default:                   // No or Escape
+        default:                    // No or Escape
           break;
         }
       //}
@@ -416,6 +416,8 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
                               ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

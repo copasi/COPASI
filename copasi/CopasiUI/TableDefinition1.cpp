@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/29 16:12:30 $
+   $Date: 2004/09/17 13:51:49 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.39 2004/06/29 16:12:30 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.40 2004/09/17 13:51:49 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -311,7 +311,7 @@ void TableDefinition1::slotBtnConfirmClicked()
   if (FROM_UTF8(pReportDefinition->getObjectName()) != (const char*)nameEdit->text().utf8())
     {
       pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
-      ListViews::notify(ListViews::REPORT, ListViews::RENAME, reportKey);
+      protectedNotify(ListViews::REPORT, ListViews::RENAME, reportKey);
     }
 
   if (!bUpdated) return;
@@ -340,7 +340,7 @@ void TableDefinition1::slotBtnConfirmClicked()
       pReportDefinition->addTableElement(CCopasiObjectName(((MyListBoxItem*)(itemsTable->item(i)))->getCN()));
     }
 
-  ListViews::notify(ListViews::REPORT, ListViews::CHANGE, reportKey);
+  protectedNotify(ListViews::REPORT, ListViews::CHANGE, reportKey);
   bUpdated = false;
 }
 
@@ -475,6 +475,8 @@ bool TableDefinition1::leave()
 
 bool TableDefinition1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

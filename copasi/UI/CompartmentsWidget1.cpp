@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Date: 2004/09/17 13:51:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -186,7 +186,7 @@ bool CompartmentsWidget1::saveToCompartment()
     {
       comp->setName((const char *)name.utf8());
       //TODO: update something else in the model?
-      ListViews::notify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
+      protectedNotify(ListViews::COMPARTMENT, ListViews::RENAME, objKey);
     }
 
   //volume
@@ -196,7 +196,7 @@ bool CompartmentsWidget1::saveToCompartment()
       double m1;
       m1 = volume.toDouble();
       comp->setInitialVolume(m1);
-      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
     }
   return true; //TODO: really check
 }
@@ -224,7 +224,7 @@ void CompartmentsWidget1::slotBtnNewClicked()
       name = "compartment_";
       name += (const char *)QString::number(i).utf8();
     }
-  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD);
   enter(pCom->getKey());
 }
 
@@ -311,7 +311,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                  // Yes or Enter
+    case 0:                   // Yes or Enter
       {
         unsigned C_INT32 size = dataModel->getModel()->getCompartments().size();
         unsigned C_INT32 index = dataModel->getModel()->getCompartments().getIndex(comp->getObjectName());
@@ -322,11 +322,11 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
         dataModel->getModel()->removeCompartment(objKey);
         //for (i = 0; i < imax; i++)
         enter(dataModel->getModel()->getCompartments()[std::min(index, size - 2)]->getKey());
-        ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
         //TODO notify about metabs and reactions
         break;
       }
-    case 1:                  // No or Escape
+    case 1:                   // No or Escape
       break;
     }
 }
@@ -338,6 +338,8 @@ void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
 
 bool CompartmentsWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

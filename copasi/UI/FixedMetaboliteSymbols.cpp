@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 14:45:27 $
+   $Author: ssahle $ 
+   $Date: 2004/09/17 13:51:44 $
    End CVS Header */
 
 /*******************************************************************
@@ -183,6 +183,8 @@ void FixedMetaboliteSymbols::resizeEvent(QResizeEvent * re)
 bool FixedMetaboliteSymbols::update(ListViews::ObjectType objectType,
                                     ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

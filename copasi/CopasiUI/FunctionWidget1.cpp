@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:34 $
+   $Date: 2004/09/17 13:51:45 $
    End CVS Header */
 
 /**********************************************************************
@@ -492,7 +492,7 @@ bool FunctionWidget1::saveToFunction()
   if (func->getObjectName() != (const char *)LineEdit1->text().utf8())
     {
       func->setName((const char *)LineEdit1->text().utf8());
-      ListViews::notify(ListViews::FUNCTION, ListViews::RENAME, objKey);
+      protectedNotify(ListViews::FUNCTION, ListViews::RENAME, objKey);
     }
 
   //radio buttons
@@ -519,7 +519,7 @@ bool FunctionWidget1::saveToFunction()
     {
       copyFunctionContentsToFunction(pFunction, func);
 
-      ListViews::notify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
     }
 
   flagChanged = false;
@@ -724,7 +724,7 @@ void FunctionWidget1::slotNewButtonClicked()
       name = "function_";
       name += QString::number(i).utf8();
     }
-  ListViews::notify(ListViews::FUNCTION, ListViews::ADD);
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD);
   enter(pFunc->getKey());
 }
 
@@ -799,7 +799,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                       // Yes or Enter
+        case 0:                        // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -826,12 +826,12 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //  {
             //if (reacFound[i] == 0)
             if (reacFound == 0) //changed from "=" to "=="
-              ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+              protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
             //}
             break;
           }
-        case 1:                       // No or Escape
+        case 1:                        // No or Escape
           break;
         }
     }
@@ -854,6 +854,8 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

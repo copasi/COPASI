@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:38 $
+   $Date: 2004/09/17 13:51:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -102,6 +102,7 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 bool MoietyWidget1::update(ListViews::ObjectType objectType,
                            ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
   return loadFromMoiety(dynamic_cast< CMoiety * >(GlobalKeys.get(objKey)));
 }
 

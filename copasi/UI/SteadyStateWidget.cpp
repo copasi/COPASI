@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 13:53:20 $
+   $Date: 2004/09/17 13:51:49 $
    End CVS Header */
 
 /********************************************************
@@ -391,6 +391,8 @@ bool SteadyStateWidget::enter(const std::string & key)
 bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
                                const std::string & C_UNUSED(key))
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::FUNCTION:

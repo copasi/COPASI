@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:38 $
+   $Date: 2004/09/17 13:51:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -155,31 +155,31 @@ bool ModelWidget::saveToModel()
   if ((const char *)LineEdit->text().utf8() != model->getObjectName())
     {
       model->setTitle((const char *)LineEdit->text().utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::RENAME, objKey);
+      protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
     }
 
   if ((const char *)textBrowser->text().utf8() != model->getComments())
     {
       model->setComments((const char *)textBrowser->text().utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
   if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnit())
     {
       model->setTimeUnit((const char *)ComboBox1->currentText().utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
   if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnit())
     {
       model->setVolumeUnit((const char *)ComboBox2->currentText().utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
   if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnit())
     {
       model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
-      ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
   return success;
@@ -289,7 +289,7 @@ bool ModelWidget::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     steps.remove(reactionsToDelete[i]);
 
-  ListViews::notify(ListViews::MODEL, ListViews::CHANGE, objKey);
+  protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
 
   return ret;
 }
@@ -297,6 +297,8 @@ bool ModelWidget::convert2NonReversible()
 bool ModelWidget::update(ListViews::ObjectType objectType,
                          ListViews::Action C_UNUSED(action), const std::string & key)
 {
+  if (mIgnoreUpdates) return true;
+
   switch (objectType)
     {
     case ListViews::MODEL:

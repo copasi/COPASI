@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 15:48:22 $
+   $Date: 2004/09/17 13:51:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -238,7 +238,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     }
 
   if (GlobalKeys.get(key))
-    pListView->switchToOtherWidget(key);
+    pListView->switchToOtherWidget(0, key);
 }
 
 void CopasiTableWidget::slotTableSelectionChanged()

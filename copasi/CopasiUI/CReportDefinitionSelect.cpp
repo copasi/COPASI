@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:27 $
+   $Date: 2004/09/17 13:51:42 $
    End CVS Header */
 
 /********************************************************
@@ -222,7 +222,7 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
-  pListView->switchToOtherWidget((*pReportDefinitionVector)[row]->getKey());
+  pListView->switchToOtherWidget(0, (*pReportDefinitionVector)[row]->getKey());
   confirmClicked(); // if shown then close
   bShow = false; // if not shown then close
 }
