@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/20 18:43:41 $
+   $Date: 2003/11/20 20:34:33 $
    End CVS Header */
 
 /**********************************************************************
@@ -400,10 +400,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                      // The user clicked the Retry again button or pressed Enter
+            case 0:                       // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                      // The user clicked the Quit or pressed Escape
+            case 1:                       // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -673,36 +673,15 @@ bool FunctionWidget1::saveToFunction()
   // Application Table update of function
   CCopasiVectorNS < CUsageRange > & functUsage = func->getUsageDescriptions();
   CCopasiVectorNS < CUsageRange > & pfunctUsage = pFunction->getUsageDescriptions();
-  /*for (int k = 0; k < pfunctUsage.size(); k++)
+
+  //Clear funcUsage
+  functUsage.cleanup();
+
+  for (int k = 0; k < pfunctUsage.size(); k++)
     {
-   // Clear funcUsage and replace with pfunctUsage
-   functUsage.cleanup();
-   Application.setUsage(
-      functUsage.add(Application);
-      // check if function parameter exists in pFunctionParameter
-      if ((index = functParam.findParameterByName(pfunctParam[i]->getName(),
-                   Type)) != C_INVALID_INDEX)
-        // match found
-        {
-          if (functParam[index]->getUsage() != pfunctParam[i]->getUsage())
-            {
-              changed = true;
-              // update usage
-              functParam[index]->setUsage(pfunctParam[i]->getUsage());
-              //functParam[pfunctParam[i]->getName()]->setUsage(functParam[i]->getUsage());
-            }
-          if (functParam[index]->getType() != pfunctParam[i]->getType())
-            {
-              changed = true;
-              // update type
-              functParam[index]->setType(pfunctParam[i]->getType());
-            }
-        } else
-        {// match not found
-          changed = true;
-          functParam.add(*pfunctParam[i]);
-        }
-    }*/
+      // add pfunctUsage values to functUsage
+      functUsage.add(*pfunctUsage[k]);
+    }
 
   if (changed)
     {
