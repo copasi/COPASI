@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:19 $
+   $Date: 2003/11/04 20:30:05 $
    End CVS Header */
 
 /**
@@ -22,7 +22,7 @@
 #include "CChemEqElement.h"
 #include "utilities/CCopasiVector.h"
 
-/** @dia:pos 52.2128,95.1644 */
+/** @dia:pos 52.1128,98.3144 */
 class CChemEq : public CCopasiContainer
   {
   public:
@@ -52,7 +52,7 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Substrates
      */
-    /** @dia:route 3,29; h,52.2128,95.8644,50.1417,103.881,45.5713 */
+    /** @dia:route 3,17; h,52.1128,99.0144,46.5733,102.331,41.0337 */
     CCopasiVector < CChemEqElement > mSubstrates;
 
     /**
@@ -60,12 +60,13 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Products
      */
-    /** @dia:route 3,33; h,52.2128,95.8644,50.1417,105.481,45.5713 */
+    /** @dia:route 3,21; h,52.1128,99.0144,46.5733,103.931,41.0337 */
     CCopasiVector < CChemEqElement > mProducts;
 
     /**
      *  A vector of modifiers in the chemical reaction. 
      */
+    /** @dia:route 3,13; h,52.1128,99.0144,46.5733,100.731,41.0337 */
     CCopasiVector < CChemEqElement > mModifiers;
 
     /**
@@ -73,7 +74,7 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Stoichiometry
      */
-    /** @dia:route 3,37; h,52.2128,95.8644,50.1417,107.081,45.5713 */
+    /** @dia:route 3,25; h,52.1128,99.0144,46.5733,105.531,41.0337 */
     CCopasiVector < CChemEqElement > mBalances;
 
     // Operations

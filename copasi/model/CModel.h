@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:22 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -71,7 +71,7 @@ class CModel : public CCopasiContainer
 
       private:
         const CMatrix< C_FLOAT64 > & mA;
-        /** @dia:route 39,3; h,117.263,65.6961,127.49,65.7298,129.758 */
+        /** @dia:route 39,3; h,108.729,65.6961,119.243,65.7298,129.758 */
         const CCopasiVector< CMetab > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
@@ -136,6 +136,7 @@ class CModel : public CCopasiContainer
                                         const CLinkMatrixView & A);
       };
 
+    /** @dia:pos 25.9437,20.8602 */
     class CStateTemplate
       {
         // Attributes
@@ -240,49 +241,49 @@ class CModel : public CCopasiContainer
      *  @supplierCardinality 0..*
      *  @associates <{CCompartment}>
      */
-    /** @dia:route 2,18; h,158.906,33.503,167.042,36.1423,177.081 */
+    /** @dia:route 2,18; h,155.606,34.703,166.344,36.1423,177.081 */
     CCopasiVectorNS < CCompartment > mCompartments;
 
     /**
      *  Vector of reference to metabolites
      */
-    /** @dia:route 29,44; h,117.263,61.6961,171.362,46.7423,177.081 */
+    /** @dia:route 29,44; h,108.729,61.6961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
-    /** @dia:route 17,44; h,117.263,56.6961,171.362,46.7423,177.081 */
+    /** @dia:route 17,44; h,108.729,56.6961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
-    /** @dia:route 21,44; h,117.263,58.2961,171.362,46.7423,177.081 */
+    /** @dia:route 21,44; h,108.729,58.2961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
-    /** @dia:route 25,44; h,117.263,60.0961,171.362,46.7423,177.081 */
+    /** @dia:route 25,44; h,108.729,59.8961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesDep;
 
     /**
      *  for array of steps
      */
-    /** @dia:route 154,2; h,177.081,90.7423,175.231,75.5337,169.81 */
+    /** @dia:route 154,29; h,177.081,90.7423,168.084,86.4337,159.088 */
     CCopasiVectorNS< CReaction > mSteps;
 
     /**
      *  Vector of reference to reactions in reduced model representation.
      */
-    /** @dia:route 154,9; h,177.081,90.7423,175.231,77.4337,169.81 */
+    /** @dia:route 154,33; h,177.081,90.7423,168.084,88.0337,159.088 */
     CCopasiVectorN< CReaction > mStepsX;
 
     /**
      *  Vector of reference to independend reactions.
      */
-    /** @dia:route 154,13; h,177.081,90.7423,175.231,79.0337,169.81 */
+    /** @dia:route 154,37; h,177.081,90.7423,168.084,89.6337,159.088 */
     CCopasiVectorN< CReaction > mStepsInd;
 
     /**
@@ -312,7 +313,7 @@ class CModel : public CCopasiContainer
     /**
      *  for array of conserved moieties
      */
-    /** @dia:route 178,7; h,177.081,100.342,174.433,136.262,81.1982 */
+    /** @dia:route 178,7; h,177.081,100.342,168.006,136.562,80.2566 */
     CCopasiVectorN< CMoiety > mMoieties;
 
     /**
@@ -348,7 +349,7 @@ class CModel : public CCopasiContainer
     /**
      *   This is used to return a view to L
      */
-    /** @dia:route 98,2; h,177.081,68.3423,165.341,65.0298,160.278 */
+    /** @dia:route 98,2; h,177.081,68.3423,163.695,65.0298,150.308 */
     CLinkMatrixView mLView;
 
     /**
@@ -366,6 +367,7 @@ class CModel : public CCopasiContainer
     /**
      * The state template for the model
      */
+    /** @dia:route 12,2; h,177.081,33.7423,112.487,20.8602,47.8937 */
     CStateTemplate mStateTemplate;
 
   public:

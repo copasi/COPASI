@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:26 $
+   $Date: 2003/11/04 20:30:03 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@ class CStateX;
 
 template <class CType> class CMatrix;
 
-/** @dia:pos 127.601,-24.3708 */
+/** @dia:pos 127.851,-24.3708 */
 class CState
   {
     friend class CStateX;
@@ -40,7 +40,7 @@ class CState
     /**
      *
      */
-    /** @dia:route 0,2; h,177.081,30.2423,172.597,-24.3708,169.315 */
+    /** @dia:route 0,2; h,177.081,30.2423,166.416,-24.3708,155.751 */
     const CModel * mpModel;
 
     /**
@@ -58,13 +58,13 @@ class CState
     /**
      *
      */
-    /** @dia:route 2,0; h,118.692,-19.4621,125.683,-24.3708,127.601 */
+    /** @dia:route 2,0; h,107.298,-19.4621,117.574,-24.3708,127.851 */
     CParticleNumberList mFixedNumbers;
 
     /**
      *
      */
-    /** @dia:route 9,0; h,118.692,-17.5621,125.683,-24.3708,127.601 */
+    /** @dia:route 9,0; h,107.298,-17.5621,117.574,-24.3708,127.851 */
     CParticleNumberList mVariableNumbers;
 
     // Operations
@@ -282,8 +282,7 @@ class CState
                                       const C_FLOAT64 & resolution);
   };
 
-/** @dia:pos 127.547,11.4075 */
-/** @dia:route CState; v,148.458,9.42919,13.5356,148.667,11.4075 */
+/** @dia:pos 127.956,11.9075 */
 class CStateX: public CState
   {
     friend class CState;
@@ -296,7 +295,7 @@ class CStateX: public CState
     /**
      *
      */
-    /** @dia:route 13,0; h,118.692,-15.9621,125.604,11.4075,127.547 */
+    /** @dia:route 13,0; h,107.298,-15.9621,117.627,11.9075,127.956 */
     CParticleNumberList mDependentNumbers;
 
     // Operations

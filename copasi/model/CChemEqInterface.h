@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:54 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -19,6 +19,7 @@ class CChemEq;
 class CModel;
 class CReaction;
 
+/** @dia:pos 21.8,-18.2 */
 class CChemEqInterface
   {
   private:

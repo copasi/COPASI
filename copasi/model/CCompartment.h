@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:20 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@
 class CReadConfig;
 class CWriteConfig;
 
-/** @dia:pos 128.756,33.503 */
+/** @dia:pos 128.756,34.703 */
 class CCompartment : public CCopasiContainer
   {
     // Attributes
@@ -57,7 +57,7 @@ class CCompartment : public CCopasiContainer
      *  @supplierCardinality 0..*
      *  @associates <{CMetab}>
      */
-    /** @dia:route 3,9; h,128.756,34.203,126.793,53.4961,117.263 */
+    /** @dia:route 3,9; h,128.756,35.403,118.742,53.4961,108.729 */
     CCopasiVectorNS < CMetab > mMetabolites;
     // Operations
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:19 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 
 template <class CType> class CCopasiVectorN;
 
-/** @dia:pos 12.8337,93.7809 */
+/** @dia:pos 12.7837,97.0309 */
 class CChemEqElement : public CCopasiContainer
   {
     //  Attributes

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:49 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 /**
@@ -23,7 +23,7 @@
 #include "CChemEqElement.h"
 #include "utilities/CCopasiVector.h"
 
-/** @dia:pos 52.1566,116.062 */
+/** @dia:pos 52.0066,117.162 */
 class CMoiety : public CCopasiContainer
   {
     // Attributes
@@ -47,7 +47,7 @@ class CMoiety : public CCopasiContainer
      *  Vector of linear dependent CChemEqElement
      * @supplierCardinality 0..*
      */
-    /** @dia:route 7,3; h,45.5713,110.781,50.1417,116.762,52.1566 */
+    /** @dia:route 7,3; h,41.0337,110.831,46.5202,117.862,52.0066 */
     CCopasiVector < CChemEqElement > mEquation;
 
     // Operations

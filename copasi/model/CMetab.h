@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:21 $
+   $Date: 2003/11/04 20:30:04 $
    End CVS Header */
 
 /**
@@ -100,20 +100,20 @@ class CMetab : public CCopasiContainer
      *  pointer to the compartment the metabolite is located in.
      *  The metab needs to know about volumes.
      */
-    /** @dia:route 15,11; h,158.906,38.003,165.545,54.2961,117.263 */
+    /** @dia:route 15,11; h,155.606,39.003,162.634,54.2961,108.729 */
     const CCompartment * mpCompartment;
 
     /**
      *  pointer to the model the metabolite is located in.
      *  The metab needs to know about the unit for concentrations.
      */
-    /** @dia:route 15,38; h,117.263,55.8961,169.801,44.1423,177.081 */
+    /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
     const CModel * mpModel;
 
     /**
      * This the default parent compartmnet used on creation
      */
-    /** @dia:route 13,13; h,158.906,37.003,168.277,55.0961,117.263 */
+    /** @dia:route 13,13; h,155.606,38.203,162.634,55.0961,108.729 */
     static const CCompartment *mpParentCompartment;
 
     // Operations
@@ -382,7 +382,7 @@ class CMetab : public CCopasiContainer
     void initObjects();
   };
 
-/** @dia:pos 51.7045,51.8004 */
+/** @dia:pos 50.0045,52.5004 */
 class CMetabOld : public CCopasiContainer
   {
     friend class CMetab;

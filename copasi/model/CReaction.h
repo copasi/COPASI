@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:24 $
+   $Date: 2003/11/04 20:30:03 $
    End CVS Header */
 
 /**
@@ -33,7 +33,7 @@
 class CWriteConfig;
 class CReadConfig;
 
-/** @dia:pos 135.488,75.5337 */
+/** @dia:pos 129.788,76.3337 */
 class CReaction : public CCopasiContainer
   {
     // Attributes
@@ -51,7 +51,7 @@ class CReaction : public CCopasiContainer
     /**
      *  The chemical equation
      */
-    /** @dia:route 2,5; h,88.6464,95.1644,91.3136,127.734,135.488 */
+    /** @dia:route 4,92; h,80.3628,99.0144,105.075,112.034,129.788 */
     CChemEq mChemEq;
 
     /**
@@ -92,6 +92,7 @@ class CReaction : public CCopasiContainer
      *  more than one compartment involved it must be specified to which volume
      *  the concentration change refers)
      */
+    /** @dia:route 9,23; h,155.606,36.603,165.837,83.8337,159.088 */
     const CCompartment * mpFunctionCompartment;
 
     /**

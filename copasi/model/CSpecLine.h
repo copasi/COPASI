@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 20:47:25 $
+   $Date: 2003/11/04 20:30:03 $
    End CVS Header */
 
 #ifndef Copasi_SpecLine
@@ -24,8 +24,8 @@ class CDeTerm;
  * 
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
- */ 
-/** @dia:pos 55.814,11.5496 */
+ */
+/** @dia:pos 57.4987,10.7701 */
 class CSpecLine
   {
   public:
@@ -34,14 +34,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,            // Comments
-      DE,             // Differential equations
-      EQN,            // Moiety specification equations
-      INIT,            // Initializations
-      CNST,            // Constant assignments
-      VOL,            // Volume assignment
-      CPT,            // Compartment volume assignments
-      RATE,            // Rate constant assignments
+      CMNT,             // Comments
+      DE,              // Differential equations
+      EQN,             // Moiety specification equations
+      INIT,             // Initializations
+      CNST,             // Constant assignments
+      VOL,             // Volume assignment
+      CPT,             // Compartment volume assignments
+      RATE,             // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 
@@ -113,7 +113,7 @@ class CSpecLine
  * It stores the LHS metabolite, the compartment this is in, and the RHS string.
  */
 
-/** @dia:pos 44.726,-0.362133 */
+/** @dia:pos 49.9311,-0.94679 */
 class CBaseEqn
   {
   public:
@@ -163,7 +163,7 @@ class CBaseEqn
  * CNameVal is used as an intermediate in processing the spec input.
  */
 
-/** @dia:pos 57.926,25.0669 */
+/** @dia:pos 58.1362,25.6516 */
 class CNameVal
   {
   public:
@@ -225,7 +225,7 @@ class CTempMetab
     void setNumChange(const C_INT32 num) {mNumChange = num;}
 
   private:
-    /** @dia:route 2,2; h,117.263,51.5961,123.99,35.123,42.6964 */
+    /** @dia:route 4,2; h,108.729,52.2961,112.682,35.123,38.4588 */
     const CMetab *mMetab;
     C_INT32 mMultiplicity;
     C_INT32 mNumChange;
@@ -233,7 +233,7 @@ class CTempMetab
     friend std::ostream & operator<<(std::ostream &os, const CTempMetab & m);
   };
 
-/** @dia:pos 51.4155,37.5278 */
+/** @dia:pos 51.4155,37.3278 */
 class CTempReaction
   {
   public:
@@ -265,11 +265,11 @@ class CTempReaction
   private:
     std::string mName;
     std::string mRateDescription;
-    /** @dia:route 17,3; h,42.6964,40.423,48.4754,38.2278,51.4155 */
+    /** @dia:route 17,3; h,38.4588,40.423,44.9372,38.0278,51.4155 */
     std::vector< CTempMetab> mMetabs;
-    /** @dia:route 13,3; h,42.6964,38.823,48.4754,38.2278,51.4155 */
+    /** @dia:route 13,3; h,38.4588,38.823,44.9372,38.0278,51.4155 */
     std::vector< CTempMetab> mSubstrates;
-    /** @dia:route 9,3; h,42.6964,37.023,48.4754,38.2278,51.4155 */
+    /** @dia:route 9,3; h,38.4588,37.023,44.9372,38.0278,51.4155 */
     std::vector< CTempMetab> mProducts;
     /**
      * a list of identifiers in mRateDescription. Every identifier is in it only once
@@ -280,7 +280,7 @@ class CTempReaction
                                      const CTempReaction & r);
   };
 
-/** @dia:pos 96.4407,39.6026 */
+/** @dia:pos 89.7407,39.6026 */
 class CTempReactionSet
   {
   public:
@@ -292,7 +292,7 @@ class CTempReactionSet
     CTempReaction &operator[](C_INT32 i) {return mReactions[i];}
 
   private:
-    /** @dia:route 2,0; h,88.8259,37.5278,93.7594,39.6026,96.4407 */
+    /** @dia:route 2,0; h,76.5155,37.3278,83.1281,39.6026,89.7407 */
     std::vector< CTempReaction> mReactions;
   };
 
