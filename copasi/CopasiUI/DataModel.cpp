@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:49:53 $
+   $Date: 2004/06/15 13:25:25 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -13,6 +13,7 @@
 #include "plot/COutputHandlerPlot.h"
 #include "qtUtilities.h"
 #include "sbml/SBMLImporter.h"
+#include "sbml/SBMLExporter.h"
 
 DataModel::DataModel()
 {
@@ -410,19 +411,7 @@ void DataModel::exportSBML(const char* fileName)
 {
   if (fileName == NULL) return;
 
-  /*CCopasiXML XML;
+  SBMLExporter exporter;
 
-  std::ofstream os(fileName);
-
-  XML.setModel(*model);
-  XML.setReportList(*reportdefinitions);
-
-  CCopasiVectorN< CCopasiTask > TaskList;
-  if (steadystatetask) TaskList.add(steadystatetask);
-  if (trajectorytask) TaskList.add(trajectorytask);
-  //  if (scantask) TaskList.add(scantask);
-  XML.setTaskList(TaskList);
-
-  //TODO XML.setPlotList(*plotspecs);
-  XML.save(os);*/
+  exporter.exportSBML(model, fileName);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:50:37 $
+   $Date: 2004/06/15 13:25:26 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -145,14 +145,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:      // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:       // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:      // Discard clicked or Alt+D pressed
+        case 1:       // Discard clicked or Alt+D pressed
           break;
 
-        case 2:      // Cancel clicked or Escape pressed
+        case 2:       // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -204,14 +204,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:      // Discard clicked or Alt+D pressed
+            case 1:       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:      // Cancel clicked or Escape pressed
+            case 2:       // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -300,14 +300,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:      // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:       // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:      // Discard clicked or Alt+D pressed
+        case 1:       // Discard clicked or Alt+D pressed
           break;
 
-        case 2:      // Cancel clicked or Escape pressed
+        case 2:       // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -329,14 +329,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:      // Discard clicked or Alt+D pressed
+            case 1:       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:      // Cancel clicked or Escape pressed
+            case 2:       // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -541,14 +541,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:      // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:       // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:      // Discard clicked or Alt+D pressed
+            case 1:       // Discard clicked or Alt+D pressed
               break;
 
-            case 2:      // Cancel clicked or Escape pressed
+            case 2:       // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -579,14 +579,18 @@ void CopasiUI3Window::slotExportSBML()
 {
   ListViews::commit();
 
-  QString SBMLFile = QFileDialog::getSaveFileName(
-                       QString::null, "SBML Files (*.sbml)",
-                       this, "export file dialog",
-                       "Choose a file");
-  if (gpsFile && SBMLFile)
+  QString tmp = QFileDialog::getSaveFileName(
+                  QString::null, "SBML Files (*.sbml)",
+                  this, "export file dialog",
+                  "Choose a filename for SBML export.");
+  if (dataModel && tmp)
     {
-      std::ofstream outputfile((const char *)SBMLFile.utf8());
-      dataModel->getModel()->saveSBML(outputfile);
+      if (!tmp.endsWith(".sbml") &&
+          !tmp.endsWith(".")) tmp += ".sbml";
+
+      tmp = tmp.remove(QRegExp("\\.$"));
+
+      dataModel->exportSBML(tmp.utf8());
     }
 }
 
