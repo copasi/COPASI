@@ -302,12 +302,10 @@ void FunctionWidget1::loadName(QString setValue)
           Table1->setText(j, 0, functParam[j]->getName().c_str());
           QString temp = CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str();
           QStringList functionType;
-          functionType.push_back(temp);
-          QString overall = "DOUBLE";
-          functionType.push_back(overall);
+          for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
+            functionType.push_back(CFunctionParameter::DataTypeName[i].c_str());
 
           QComboTableItem * item = new QComboTableItem(Table1, functionType, true);
-
           Table1->setItem(j, 1, item);
           item->setCurrentItem(temp);
           //Table1->setText(j, 1, CFunctionParameter::DataTypeName[functParam[j]->getType()].c_str());
