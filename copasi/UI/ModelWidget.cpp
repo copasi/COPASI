@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:22 $
+   $Author: chlee $ 
+   $Date: 2004/03/09 02:33:04 $
    End CVS Header */
 
 /*******************************************************************
@@ -83,7 +83,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
 
   // preliminary
   splitModel = new QPushButton(this, "irreversible");
-  splitModel->setText(trUtf8("-> irreversible"));
+  splitModel->setText(trUtf8("Convert All Reactions to Irreversible"));
   ModelWidgetLayout->addWidget(splitModel, 7, 1);
 
   ModelWidgetLayout->addMultiCellLayout(Layout5, 8, 8, 0, 1);
