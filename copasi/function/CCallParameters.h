@@ -45,30 +45,30 @@ class CFunctionParameterMap
     /**
      * Sets a specific parameter. Works only if the parameter is no vector
      */
-    void setCallParameter(const std::string paramName,
-                          const CCopasiObject* obj);
+    void setCallParameter(const std::string paramName, const CCopasiObject* obj);
 
     /**
-     * Adds an object to a specific parameter vector. 
-     * Works only if the parameter is a vector.
+     * Adds an object to a specific parameter vector. Works only if the parameter is a vector
      */
-    void addCallParameter(const std::string paramName,
-                          const CCopasiObject* obj);
+    void addCallParameter(const std::string paramName, const CCopasiObject* obj);
 
     /**
-     * Removes an object from a specific parameter vector.
-     * Works only if the parameter is a vector
+     * Removes an object from a specific parameter vector. Works only if the parameter is a vector
      */
-    void removeCallParameter(const std::string paramName,
-                             const CCopasiObject* obj);
+    void removeCallParameter(const std::string paramName, const CCopasiObject* obj);
+
+    /**
+     * Removes all objects from a specific parameter vector. Works only if the parameter is a vector.
+     */
+    void clearCallParameter(const std::string paramName);
 
     /**
      * Initializes a CallParameters object from a CFunctionParameters object.
      */
     void initializeFromFunctionParameters(const CFunctionParameters & src);
 
-    C_INT32 findParameterByName(const std::string & name,
-                                CFunctionParameter::DataType & dataType) const;
+    unsigned C_INT32 findParameterByName(const std::string & name,
+                                         CFunctionParameter::DataType & dataType) const;
 
   private:
 
@@ -77,7 +77,6 @@ class CFunctionParameterMap
      */
     void clearCallParameters();
 
-  public:    // TODO preliminary
     /**
      * Create the mPointers and mObjects vectors with
      * type information from the CFunctionParameters object.
@@ -88,7 +87,6 @@ class CFunctionParameterMap
      * Check if all pointers are !=NULL.
      */
     void checkCallParameters() const;
-  private:
 
     /**
      * This is a vector of pointers to the data that is passed to a function
@@ -107,12 +105,11 @@ class CFunctionParameterMap
     CFunctionParameters mFunctionParameters;
 
     // these are preliminary
+    CCallParameterPointers & getObjects() {return mObjects;};
   public:
-    CCallParameterPointers & getPointers();
-    CCallParameterPointers & getObjects();
-    std::vector< const CCopasiObject * > getObjects(const unsigned C_INT32 & index) const;
-    const CCallParameterPointers & getObjects() const;
-    const CFunctionParameters & getFunctionParameters() const;
+    const CCallParameterPointers & getObjects() const {return mObjects;};
+    CCallParameterPointers & getPointers() {return mPointers;};
+    const CFunctionParameters & getFunctionParameters() const {return mFunctionParameters;};
   };
 
 #endif // COPASI_CCallParameters
