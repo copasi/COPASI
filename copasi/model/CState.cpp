@@ -554,7 +554,7 @@ void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
           *sum = E(i, j);
 
           for (k = iNo; k < mNo; k++)
-            *sum += E(i, k) * L(k, j);
+            *sum -= E(i, k) * L(k, j);
         }
 
     for (i = 0; i < iNo; i++)
