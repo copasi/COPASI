@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:19:52 $
+   $Date: 2004/05/24 11:50:13 $
    End CVS Header */
 
 /*******************************************************************
@@ -102,12 +102,7 @@ void CopasiTableWidget::fillTable()
   //  const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
   C_INT32 i, j, jmax = objects.size();
 
-  table->QTable::setNumRows(jmax + 1);
-  mKeys.resize(jmax);
-  mFlagChanged.resize(jmax);
-  mFlagDelete.resize(jmax);
-  mFlagNew.resize(jmax);
-  mFlagRenamed.resize(jmax);
+  resizeTable(jmax + 1);
 
   for (j = 0; j < jmax; ++j)
     {
@@ -184,9 +179,11 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
   if (mRO && (row == table->numRows() - 1)) return;
 
   std::string key = mKeys[row];
+  bool flagNew = false;
 
   if (row == table->numRows() - 1) //new Object
     {
+      flagNew = true;
       resizeTable(table->numRows() + 1);
       mFlagNew[row] = true;
       table->setText(row, 1, createNewName(defaultObjectName()));
@@ -194,6 +191,12 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     }
 
   saveTable(); //TODO: should we warn the user here? Propably not.
+
+  if (flagNew)
+    {
+      fillTable();
+      key = mKeys[table->numRows() - 2];
+    }
 
   if (GlobalKeys.get(key))
     pListView->switchToOtherWidget(key);
