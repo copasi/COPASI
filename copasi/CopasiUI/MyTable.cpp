@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/16 11:54:48 $
+   $Date: 2004/08/16 13:12:31 $
    End CVS Header */
 
 #include <iostream>
@@ -117,9 +117,9 @@ void MyTable::resizeEvent(QResizeEvent* e)
           }
           */
         }
-      this->scaleColumns(factor);
+      this->scaleColumns(factor, (int)width);
     }
-
+  QTable::resizeEvent(e);
   delete [] optSizes;
   return;
 }
@@ -148,11 +148,15 @@ void MyTable::scaleColumns(double factor)
 {
   //std::cout << "Scaling columns with factor: " << factor << std::endl;
   int counter;
-  for (counter = 0; counter < this->numCols(); counter++)
+  int w = 0;
+  for (counter = 0; counter < this->numCols() - 1; counter++)
     {
       this->exactColumnWidth[counter] = this->exactColumnWidth[counter] * factor;
       this->setColumnWidth(counter, (int)ceil(this->exactColumnWidth[counter]));
+      w += (int)ceil(this->exactColumnWidth[counter]);
     }
+  this->exactColumnWidth[this->numCols() - 1] = this->exactColumnWidth[this->numCols() - 1] * factor;
+  this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1]);
 }
 
 void MyTable::setNumCols(int count)
@@ -212,7 +216,7 @@ QSize MyTable::headerSectionSizeHint(int section) const
         if (iconSet != 0)
           {
             QSize isize = iconSet->pixmap(QIconSet::Small,
-                                           QIconSet::Normal).size();
+                                          QIconSet::Normal).size();
             iw = isize.width() + 2;
             ih = isize.height();
           }
