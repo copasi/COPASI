@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/07 07:41:00 $
+   $Date: 2004/10/07 09:38:39 $
    End CVS Header */
 
 /********************************************************
@@ -42,17 +42,13 @@ enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 class ObjectBrowserWidget : public QWidget
   {
     Q_OBJECT
-  private:
-    pageIndex currentPage;
-    std::vector<CCopasiObject*>* mOutputObjectVector;
-    void selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject);
 
   public:
+    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, int state = 0);
+    virtual ~ObjectBrowserWidget();
+
     ObjectList* objectItemList;
     ObjectList* refreshList;
-    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, int state = 0);
-    ~ObjectBrowserWidget();
-    void cleanup();
 
     QGridLayout* ObjectBrowserLayout;
     QPushButton* clearButton;
@@ -93,5 +89,11 @@ class ObjectBrowserWidget : public QWidget
     virtual void toggleViewClicked();
     virtual void commitClicked();
     virtual void listviewChecked(QListViewItem*);
+
+  private:
+    std::vector<CCopasiObject*>* mOutputObjectVector;
+    pageIndex currentPage;
+    void selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject);
+    void cleanup();
   };
 #endif // OBJECTBROWSERWIDGET_H
