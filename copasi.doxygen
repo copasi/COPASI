@@ -52,7 +52,8 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./copasi/
-FILE_PATTERNS          = *.h \
+FILE_PATTERNS          = *.cpp \
+                         *.h \
                          *.hh \
                          *.H
 RECURSIVE              = YES
@@ -68,8 +69,8 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
 #---------------------------------------------------------------------------
-SOURCE_BROWSER         = NO
-INLINE_SOURCES         = NO
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
 REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
 #---------------------------------------------------------------------------
