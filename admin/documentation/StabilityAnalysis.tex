@@ -1,0 +1,260 @@
+%% LyX 1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage{graphicx} 
+
+
+\newcommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\N}{\mbox{$I\!\!N$}}
+\newcommand{\Z}{\mbox{$Z\!\!\!Z$}}
+\newcommand{\Q}{\mbox{$I\:\!\!\!\!\!Q$}}
+\newcommand{\R}{\mbox{$I\!\!R$}}
+
+\makeindex 
+\makeatletter
+\makeatother
+
+\begin{document}
+
+\title{Stability Analysis in COPASI}
+
+\author{Stefan Hoops\\
+ Virginia Bioinformatics Institute \\
+ 1880 Pratt Dr. \\
+ Blacksburg, VA 24060 \\
+ USA \\
+ shoops@vt.edu$ $}
+
+
+\date{2004-11-15}
+
+\maketitle
+\begin{abstract}
+The stability analysis is an important feature of COPASI. Since its
+implementation differs from Gepasi's yielding different results an
+explanation is in order. This document describes the methods used
+within COPASI in detail and explains the differences in comparison
+to Gepasi. 
+\end{abstract}
+
+\section{Calculation of the Jacobian}
+
+\subsection{Complete Model}
+The Jacobian of a vector function $\boldsymbol{f}: \R^{n} \rightarrow \R^{n}$
+is defined as:
+%
+\begin{eqnarray}\label{Jacobian}
+\boldsymbol{J}_{i,j}(\boldsymbol{x}) = 
+{\left.
+  \frac{\partial f_i}{\partial x_j}
+\right|}_{\boldsymbol{x}} 
+& \mbox{where} & 
+i = 1, \ldots, n \;\mbox{and}\; j = 1, \ldots, m 
+\end{eqnarray}
+%
+Let us consider $M$ chemical species participating in $N$
+reactions. The kinetics of such a system can then be described by: 
+%
+\begin{eqnarray}\label{FullModel}
+\dot{\boldsymbol{x}} & = & \boldsymbol{N} \, \boldsymbol{v}(\boldsymbol{x})
+\end{eqnarray}
+%
+where $\boldsymbol{N}$ is the stoichiometry matrix, $\boldsymbol{v}$ is the vector
+of reaction velocities, and $\dot{\boldsymbol{x}}$ denotes the change
+of the chemical species over time.
+
+Using the definition of the Jacobian (\ref{Jacobian}) we derive
+for $\boldsymbol{J}$:
+%
+\begin{eqnarray}
+\boldsymbol{J}_{i,j}(\boldsymbol{x}) 
+= 
+{\left.
+  \frac{\partial \dot{x}_i}{\partial x_j}
+\right|}_{\boldsymbol{x}} 
+= 
+\boldsymbol{N}_{i,k} \,  
+{\left.
+  \frac{\partial v_k}{\partial x_j}
+\right|}_{\boldsymbol{x}}
+=
+\boldsymbol{N}_{i,k} \, \boldsymbol{E}_{k,j}(\boldsymbol{x}) 
+\end{eqnarray}
+%
+where we used the definition of the Elasticity Matrix:
+%
+\begin{eqnarray}
+\boldsymbol{E}_{i,j}(\boldsymbol{x}) = 
+{\left.
+  \frac{\partial v_i}{\partial x_j}
+\right|}_{\boldsymbol{x}} 
+\end{eqnarray}
+
+\subsection{Reduced Model}
+Let us assume that the Complete Model (\ref{FullModel}) contains $p$
+independent species and $q = M - p$ dependent species. Furthermore, we
+can assume without loss of generalization that the first $p$ species
+are independent. We therefore can describe the dependent species
+through the following equations:
+%
+\begin{eqnarray}\label{MassConservation}
+x_i = c_i + \sum_{k=0}^p \alpha_{i,k} \, x_k & \mbox{where} & i = q, \ldots, M,
+\end{eqnarray} 
+%
+which are also know as Mass Conservations or Moieties. 
+Using this ability to express the dependent species we rewrite the
+velocity function so that the new velocity function $\boldsymbol{\tilde{v}}$
+only depends on the first $p$ species $\boldsymbol{x}_r$. 
+%
+\begin{eqnarray}
+\boldsymbol{\tilde{v}}(x_r) = \boldsymbol{v}(x_1, \ldots, x_p, 
+c_q + \sum_{i=0}^p \alpha_{q,i} x_i, \ldots, 
+c_M + \sum_{i=0}^M \alpha_{M,i} x_i)
+\end{eqnarray}
+%
+This leads to the reduced system:
+%
+\begin{eqnarray}\label{ReducedModel}
+\dot{\boldsymbol{x_r}} & = & \boldsymbol{N}_r \,
+\boldsymbol{\tilde{v}}(\boldsymbol{x}_r) 
+\end{eqnarray}
+%
+where $\boldsymbol{N}_r$ is the matrix comprised of first $p$ rows of
+$N$.
+%
+Using the definition of the Jacobian (\ref{Jacobian}) once again we derive
+for the Jacobian ($p \mbox{x} p$) of the reduced system:
+%
+\begin{eqnarray}
+\boldsymbol{J}_{i,j}(\boldsymbol{x}_r) 
+& = & 
+{\left.
+  \frac{\partial \dot{x}_i}{\partial x_j}
+\right|}_{\boldsymbol{x}_r} 
+= 
+\boldsymbol{N}_{i,k} \,  
+{\left.
+  \frac{\partial \tilde{v}_k}{\partial x_j}
+\right|}_{\boldsymbol{x}_r} \\
+& = &
+\boldsymbol{N}_{i,k} \,  
+\left(
+{\left. \frac{\partial v_k}{\partial x_j} \right|}_{\boldsymbol{x}_r} +
+\sum_{l=q}^{M} 
+{\left. \frac{\partial v_k}{\partial x_l} \right|}_{\boldsymbol{x}_r}
+\frac{\partial x_l}{\partial x_j} 
+\right) \\
+& = &
+\boldsymbol{N}_{i,k} \,  
+\left(
+\sum_{l=0}^p
+{\left. \frac{\partial v_k}{\partial x_l} \right|}_{\boldsymbol{x}_r}
+\delta_{l,j}
++ \sum_{l=q}^{M} 
+{\left. \frac{\partial v_k}{\partial x_l} \right|}_{\boldsymbol{x}_r}
+\alpha_{l,j}
+\right) \\
+& = & \label{LinkMatrix}
+\boldsymbol{N}_{i,k} \, \boldsymbol{E}_{k,l}(\boldsymbol{x}) 
+\, \boldsymbol{L}_{l,j}
+\end{eqnarray}
+%
+where $\delta_{l,j} = 0$ for $l \neq j$ and $1$ otherwise. The link
+matrix $\boldsymbol{L}$ in (\ref{LinkMatrix}) is defined as: 
+\begin{eqnarray}
+\boldsymbol{L}_{l,j} & = &
+\left\{
+\begin{array}{ll} 
+\delta_{l,j} & \mbox{if $l \leq p$} \\
+\alpha_{l,j} & \mbox{if $l > p$}
+\end{array}
+\right.
+\end{eqnarray}
+
+\subsection{Comparison to Gepasi}
+Gepasi's calculation of the Jacobian is based on the reduced
+system. However it uses the following slightly different formula
+%
+\begin{eqnarray}\label{GepasiModel}
+\dot{\boldsymbol{x_r}} & = & \boldsymbol{N}_r \,
+\boldsymbol{v}(\boldsymbol{x}_r) 
+\end{eqnarray}
+%
+This yields to the Jacobian ($N \mbox{x} p$) of the reduced system: 
+%
+\begin{eqnarray}
+\boldsymbol{J}_{i,j}(\boldsymbol{x}_r) 
+& = & 
+\boldsymbol{N}_{i,k} \, \boldsymbol{E}_{k,l}(\boldsymbol{x}_r) 
+\end{eqnarray}
+%
+The omission to express the kinetic functions in the new reduced
+variables leads to a different Jacobian in the case that the model
+contains dependent species.
+
+{\bf Note:} It is important to mention that the method to calculate the Jacobian
+is not effecting the calculation of the dynamics of a system in
+Gepasi. The reason for this is that Gepasi uses the full
+Differential and Algebraic Equation (DAE) system.
+ 
+\section{Stability Analysis}
+The stability analysis in both COPASI and Gepasi is based on the
+Jacobian of the reduced system since the complete system has a
+singular Jacobian whenever it contains dependent species. The
+interpretation for the reduced system differs between COPASI and
+Gepasi as shown in (\ref{ReducedModel}) and (\ref{GepasiModel}). We
+therefore achieve different results for the stability analysis
+especially the eigenvalues of the Jacobians differ. In most cases this
+does not effect the classification of the steady-state.
+
+We oberved a second cause for different results for the stability
+analysis, which is numerical instability. This behviour can be
+observed in the Brusellator model ({\tt brusselator.gps}), which is
+distributed with Gepasi. \\
+\\
+COPASI's result:\\
+{\tt \small
+KINETIC STABILITY ANALYSIS \\
+The linear stability analysis based on the eigenvalues \\
+of the Jacobian matrix is only valid for steady states. \\
+\\
+Summary: \\
+This steady state is unstable, \\
+transient states in its vicinity have oscillatory components \\
+\\
+Eigenvalue statistics: \\
+ Largest real part: 2.5 \\
+ Largest absolute imaginary part:  1.65831 \\
+ 0 are purely real \\
+ 0 are purely imaginary \\
+ 2 are complex \\
+ 0 are equal to zero \\
+ 2 have positive real part \\
+ 0 have negative real part \\
+ stiffness = 1.00000 \\
+ time hierarchy = 0.000000 \\
+}
+\\
+Gepasi's Result: \\
+{\tt \small
+KINETIC STABILITY ANALYSIS \\
+\\
+Summary: \\
+This steady state is unstable. \\
+\\
+Eigenvalue statistics: \\
+ Largest real part: +1.593070e+000 \\
+ Largest absolute imaginary part:  0.000000e+000 \\
+ 2 are purely real \\
+ 0 are purely imaginary \\
+ 0 are complex \\
+ 0 are equal to zero \\
+ 2 have positive real part \\
+ 0 have negative real part \\
+ stiffness = 1.72068e+305 \\
+ time hierarchy = 1 \\
+}
+\end{document}

@@ -1,0 +1,244 @@
+\documentclass[12pt]{book}
+\usepackage{graphicx}
+
+
+\begin{document} 
+
+\title{C++ Coding Guidelines \\ for \\ COPASI}
+\author{Stefan Hoops\\
+        Virginia Bioinformatics Institute \\ 1880 Pratt Dr. \\
+        Blacksburg, VA 24060 \\ USA \\ shoops@vbi.vt.edu}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Naming Conventions}
+The intent of naming conventions is to allow programmers, which are
+not familiar with the code to easily grasp the meaning and scope of
+symbols in the source code. Each programmer of COPASI should adhere
+for its own benefit and to the advantage of the project to the
+following conventions.
+
+\section{Class Names}
+Class names must all start with a capital letter {\tt C}. This is
+followed by a descriptive name. This name might be composed by
+different words. These words must all start with capital letters and
+are concatenated without underscores. Good examples for class names
+include: 
+  {\tt CCopasiXMLParser} , {\tt CExpatTemplate}, and {\tt CMathModel}.
+
+\section{Variable Name}
+In general a variable name should be descriptive. This name might be
+composed by different words. These words must all start with capital
+letters and are concatenated without underscores. In addition the
+following standards should be followed:  
+
+\begin{itemize}
+\item {\bf Counters} might be used such as {\tt i}, {\tt k}, and {\tt
+  l}, which may be used in loops.
+\item {\bf Iterators} might be used such as {\tt it} and {\tt
+  end}, which may be used in loops. 
+\item {\bf Method Parameters} must start with a lower case letter.
+\item {\bf Class Member Variables} are prepended with a lower case
+  letter {\tt m}.
+\item {\bf Pointers} are prepended with a lower case letter {\tt p}. 
+\item {\bf Class Member Variables} which are {\bf Pointers} must have the
+  prefix {\tt mp}.
+\end{itemize}
+ In addition the
+following standards should be followed:  
+\section{Method Name}
+Method names should have a descriptive name starting with a lower case
+letter. This name might be composed by different words. These words
+beginning with the second must start with capital letters and
+are concatenated without underscores. Good examples for method names
+include: 
+   {\tt createMetabolite}, {\tt compileIfNecessary}, and {\tt buildMoieties}
+
+In addition the following standards should be followed:  
+
+\begin{itemize}
+\item {\bf Retrieval Methods} must start with {\tt get} followed by
+  the member variable name without the prefix.
+\item {\bf Set Methods} must start with {\tt set} followed by
+  the member variable name without the prefix.
+\item {\bf Boolean Query Functions} should start if applicable with
+  {\tt is}.
+\end{itemize}
+
+\chapter{Program Code Guidelines}
+\section{Loops}
+
+
+\chapter{Code Documentation}
+\section{Class Documentation}
+\section{Variable Documentation}
+\section{Method Documentation}
+\section{Incline Code Documentation}
+
+\chapter{Installation Structure}
+This section defines the installation structure for COPASI on
+different platforms. Each platform will adhere to the platform
+specific requirements. 
+
+\section{Unix}
+The installation location needs to be available to COPASI at runtime
+and therefore the environment variable {\tt COPASIDIR} pointing to this
+location must be set by the user. 
+{\tt \scriptsize
+\begin{tabbing}
+ \hspace{4 pt}\=\hspace{17 pt}\=\hspace{17 pt}\=\hspace{17
+ pt}\=\hspace{17 pt}\=\hspace{17 pt}\= \\ [-12 pt]
+ \$COPASIDIR \\
+ \> +- bin \\
+ \> | \> += CopasiUI \\
+ \> +- share \\
+ \> | \> +- copasi \\
+ \> | \> \> +- doc \\
+ \> | \> \> | \> +- html \\
+ \> | \> \> | \> \> +- figures \\
+ \> | \> \> | \> \> | \> +- DefaultPlotAdded.jpg \\
+ \> | \> \> | \> \> | \> +- ModelSettingsDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ObjectBrowserSelection.jpg \\
+ \> | \> \> | \> \> | \> +- ObjectBrowserTree.jpg \\
+ \> | \> \> | \> \> | \> +- PlotDefinition.jpg \\
+ \> | \> \> | \> \> | \> +- PlotWindow.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionOverview.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
+ \> | \> \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
+ \> | \> \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> \> | \> \> +- TutWiz-Step1.html \\
+ \> | \> \> | \> \> +- TutWiz-Step2.html \\
+ \> | \> \> | \> \> +- TutWiz-Step3.html \\
+ \> | \> \> | \> \> +- TutWiz-Step4.html \\
+ \> | \> \> | \> \> +- TutWiz-Step5.html \\
+ \> | \> \> | \> \> +- TutWiz-Step6.html \\
+ \> | \> \> +- examples \\
+ \> | \> \> \> +- CircadianClock.cps \\
+ \> | \> \> \> +- Metabolism-2000Poo.xml \\
+ \> | \> \> \> +- YeastGlycolysis.gps \\
+ \> | \> \> \> +- brusselator.cps \\
+ \> +- README \\
+ \> +- ChangeLog \\
+\end{tabbing}
+}
+
+\section{MacOS X}
+The installation location must be available to COPASI at
+runtime. However it is possible to determine the location through MacOS
+X.
+{\tt \scriptsize
+\begin{tabbing}
+ \hspace{4 pt}\=\hspace{17 pt}\=\hspace{17 pt}\=\hspace{17
+ pt}\=\hspace{17 pt}\=\hspace{17 pt}\= \\ [-12 pt]
+ \$COPASIDIR \\
+ \> +- COPASI.app \\
+ \> | \> +- Contents \\
+ \> | \> +- MacOS \\
+ \> | \> += CopasiUI \\
+ \> | \> +- Resources \\
+ \> | \> | \> +- doc \\
+ \> | \> | \> | \> +- html \\
+ \> | \> | \> | \> \> +- figures \\
+ \> | \> | \> | \> \> | \> +- DefaultPlotAdded.jpg \\
+ \> | \> | \> | \> \> | \> +- ModelSettingsDialog.jpg \\
+ \> | \> | \> | \> \> | \> +- ObjectBrowserSelection.jpg \\
+ \> | \> | \> | \> \> | \> +- ObjectBrowserTree.jpg \\
+ \> | \> | \> | \> \> | \> +- PlotDefinition.jpg \\
+ \> | \> | \> | \> \> | \> +- PlotWindow.jpg \\
+ \> | \> | \> | \> \> | \> +- ReactionDialog.jpg \\
+ \> | \> | \> | \> \> | \> +- ReactionOverview.jpg \\
+ \> | \> | \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
+ \> | \> | \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
+ \> | \> | \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> | \> | \> \> +- TutWiz-Step1.html \\
+ \> | \> | \> | \> \> +- TutWiz-Step2.html \\
+ \> | \> | \> | \> \> +- TutWiz-Step3.html \\
+ \> | \> | \> | \> \> +- TutWiz-Step4.html \\
+ \> | \> | \> | \> \> +- TutWiz-Step5.html \\
+ \> | \> | \> | \> \> +- TutWiz-Step6.html \\
+ \> | \> | \> +- examples \\
+ \> | \> | \> \> +- CircadianClock.cps \\
+ \> | \> | \> \> +- Metabolism-2000Poo.xml \\
+ \> | \> | \> \> +- YeastGlycolysis.gps \\
+ \> | \> | \> \> +- brusselator.cps \\
+ \> | \> +- Info.plist \\
+ \> | \> +- ChangeLog \\
+ \> +- COPASI-README.rtf \\
+\end{tabbing}
+}
+
+\section{Windows}
+The installation location must be available to COPASI at
+runtime. However it is possible to determine the location through
+Windows specific means.
+{\tt \scriptsize
+\begin{tabbing}
+ \hspace{4 pt}\=\hspace{17 pt}\=\hspace{17 pt}\=\hspace{17
+ pt}\=\hspace{17 pt}\=\hspace{17 pt}\= \\ [-12 pt]
+ \$COPASIDIR \\
+ \> +- bin \\
+ \> | \> += CopasiUI \\
+ \> +- share \\
+ \> | \> +- copasi \\
+ \> | \> \> +- doc \\
+ \> | \> \> | \> +- html \\
+ \> | \> \> | \> \> +- figures \\
+ \> | \> \> | \> \> | \> +- DefaultPlotAdded.jpg \\
+ \> | \> \> | \> \> | \> +- ModelSettingsDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ObjectBrowserSelection.jpg \\
+ \> | \> \> | \> \> | \> +- ObjectBrowserTree.jpg \\
+ \> | \> \> | \> \> | \> +- PlotDefinition.jpg \\
+ \> | \> \> | \> \> | \> +- PlotWindow.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionDialog.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionOverview.jpg \\
+ \> | \> \> | \> \> | \> +- ReactionOverviewEmpty.jpg \\
+ \> | \> \> | \> \> | \> +- ReportDefinitionDialog.jpg \\
+ \> | \> \> | \> \> | \> +- TimeCourseDialog.jpg \\
+ \> | \> \> | \> \> +- TutWiz-Step1.html \\
+ \> | \> \> | \> \> +- TutWiz-Step2.html \\
+ \> | \> \> | \> \> +- TutWiz-Step3.html \\
+ \> | \> \> | \> \> +- TutWiz-Step4.html \\
+ \> | \> \> | \> \> +- TutWiz-Step5.html \\
+ \> | \> \> | \> \> +- TutWiz-Step6.html \\
+ \> | \> \> +- examples \\
+ \> | \> \> \> +- CircadianClock.cps \\
+ \> | \> \> \> +- Metabolism-2000Poo.xml \\
+ \> | \> \> \> +- YeastGlycolysis.gps \\
+ \> | \> \> \> +- brusselator.cps \\
+ \> +- README \\
+ \> +- ChangeLog \\
+\end{tabbing}
+}
+
+\section{Handling Installation Differences}
+The handling of differences in the installation structure must be
+dealt with in one place within the COPASI code. The place for this is
+the class {\tt COptions}. In this class the method:
+{\tt \scriptsize
+\begin{tabbing}
+template< class CType > static void getValue(\=const std::string \&
+name, \\
+\> CType \& value)
+\end{tabbing}
+}
+\noindent
+provides access to common options within COPASI. The following values
+will deal with installation dependent settings:
+{\tt CopasiDir}, {\tt Examples}, and {\tt Wizard}. The following code
+shows howe to retrieve the location of the examples files for COPASI: \\
+{\tt \scriptsize
+\indent std::string Examples; \\[-4 pt]
+\indent COptions::getValue(``Examples'', Examples); \\
+}
+\noindent
+To assure that the values are correctly set any main program must
+call: \\
+{\tt \scriptsize
+\indent       COptions::init(argc, argv);
+}
+
+
+\end{document}
