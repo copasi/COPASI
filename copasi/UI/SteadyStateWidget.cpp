@@ -357,7 +357,21 @@ bool SteadyStateWidget::enter(const std::string & key)
 
   objKey = key;
 
-  loadSteadyStateTask();
+  loadSteadyStateTask();;
 
+  return true;
+}
+
+bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::FUNCTION:
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
   return true;
 }
