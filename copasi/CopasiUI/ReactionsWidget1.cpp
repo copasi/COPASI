@@ -1,4 +1,3 @@
-
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp                 
  **  $ Author  : Mudita Singhal
@@ -30,9 +29,6 @@
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
-int numrows;
-using std::cout;
-using std::endl;
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -140,7 +136,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   TextLabel5->setText(trUtf8("Symbol Definition"));
 
   table = new QTable(Frame4e, "tblsymbol");
-  table->setGeometry(QRect(130, 10, 160, 154));
+  table->setGeometry(QRect(130, 10, 170, 154));
 
   table->sortColumn (0, TRUE, TRUE);
   table->setFixedSize(300, 150);
@@ -284,10 +280,6 @@ void ReactionsWidget1::loadName(QString setValue)
             reactn->getId2Parameters().size();
 
   table->setNumRows(numrows);
-  cout << "NumRows: " << reactn->getId2Substrates().size() +
-  reactn->getId2Products().size() +
-  reactn->getId2Modifiers().size() +
-  reactn->getId2Parameters().size() << endl;
   table->ensureCellVisible(numrows + 1, 0);
 
   tableHeader1->setLabel(0, "Value");
@@ -303,8 +295,6 @@ void ReactionsWidget1::loadName(QString setValue)
 
   for (k = 0; k < react1z.size(); k++)
     {
-      cout << line << " " << react1z[k]->getIdentifierName() << endl;
-
       tableHeader2->setLabel(line, react1z[k]->getIdentifierName().c_str());
 
       //for the combo box
@@ -537,7 +527,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   QStringList substrates;
   QStringList products;
   QString chemical_reaction = LineEdit2->text();
-  unsigned int start = 0;
+  //unsigned int start = 0;
   QStringList individual_elements = QStringList::split ("+", chemical_reaction, FALSE);
   QString all_elements = individual_elements.join (" ");
   QStringList individual_elements1 = QStringList::split (" ", all_elements, FALSE);
@@ -549,12 +539,13 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           m++;
           break;
         }
-      substrates[start] = individual_elements1[m];
-      QMessageBox::information(this, substrates[start], "substrates ");
-      start++;
+      substrates.push_back(individual_elements1[m]);
+      //substrates[start] = individual_elements1[m];
+      // QMessageBox::information(this, substrates[start], "substrates ");
+      //start++;
     }
 
-  start = 0;
+  // start = 0;
   for (unsigned int n = m; n <= individual_elements1.size() - 1; n++)
     {
       if (individual_elements1[m] == "+")
@@ -562,9 +553,10 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           n++;
           break;
         }
-      products[start] = individual_elements1[n];
-      QMessageBox::information(this, products[start], "products ");
-      start++;
+      products.push_back(individual_elements1[n]);
+      //products[start] = individual_elements1[n];
+      //QMessageBox::information(this, products[start], "products ");
+      //start++;
     }
 
   for (unsigned int i = 0; i < functionParameters.size(); i++)
@@ -576,7 +568,6 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           substrate_name[count_substrates] = functionParameters[i]->getName();
           count_substrates++;
-          QMessageBox::information(this, functionParameters[i]->getName().c_str(), "The name of the substrate is ");
         }
       else if (p4 == "PRODUCT")
         {
@@ -597,6 +588,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 
       count = 0;
       unsigned int index = count_substrates;
+      unsigned int countofsubstrates = count_substrates;
+      unsigned int countofproducts = count_products;
       QHeader *tableHeader2 = table->verticalHeader();
 
       for (int index1 = 0; index1 <= (count_products - 1); index1++)
@@ -617,34 +610,47 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           index++;
         }
 
-      unsigned int length_of_string = index - 1;
+      unsigned int length = index - 1;
       table->setNumRows(index);
-      for (; count <= length_of_string; count++)
+      for (; count <= length; count++)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
         }
       //---------------------------------------------
       unsigned int z = 0;
-      unsigned int k = 0;
+      unsigned int k;
       unsigned int line = 0;
-      for (k = 0; k <= substrates.size(); k++)
+      QString temp;
+      for (k = 1; k <= countofsubstrates; k++)
         {
-          //QString temp = substrates[z];
-          QComboTableItem * item = new QComboTableItem(table, substrates, TRUE);
-          //item->setCurrentItem(temp);
-          //z++;
-          table->setItem(line, 0, item);
+          QComboTableItem * item1 = new QComboTableItem(table, substrates, TRUE);
+          table->setItem(line, 0, item1);
+          temp = substrates[z];
+          item1->setCurrentItem(temp);
+          z++;
           line++;
         }
 
       z = 0;
-      for (k = 0; k <= products.size(); k++)
+      for (k = 1; k <= countofproducts; k++)
         {
-          //QString temp =products[z];
-          QComboTableItem * item = new QComboTableItem(table, products, TRUE);
-          // item->setCurrentItem(temp);
-          // z++;
-          table->setItem(line, 0, item);
+          QComboTableItem * item1 = new QComboTableItem(table, products, TRUE);
+          table->setItem(line, 0, item1);
+          temp = products[z];
+          item1->setCurrentItem(temp);
+          z++;
+          line++;
+        }
+
+      for (index1 = 0; index1 <= (count_modifiers - 1); index1++)
+        {
+          table->setText(line, 0, "1");
+          line++;
+        }
+
+      for (index1 = 0; index1 <= (count_parameters - 1); index1++)
+        {
+          table->setText(line, 0, "1");
           line++;
         }
     }

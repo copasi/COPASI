@@ -93,7 +93,7 @@ class ReactionsWidget1 : public QWidget
 
     int num_substrates;
     int num_products;
-
+    int numrows;
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
