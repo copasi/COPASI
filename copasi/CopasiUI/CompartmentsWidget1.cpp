@@ -118,6 +118,8 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
 
   hBoxLayout4_1->addWidget(commitChanges);
   hBoxLayout4_1->addWidget(cancelChanges);
+
+  connect(ListBox1, SIGNAL(selected(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews

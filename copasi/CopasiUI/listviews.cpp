@@ -948,3 +948,17 @@ void ListViews::slotCompartmentSelected(const QString &s)
 
   lastWidget = currentWidget;
 }
+
+void ListViews::slotMetaboliteSelected(const QString &s)
+{
+  metabolitesWidget1->isName(s);
+  currentWidget = metabolitesWidget1;
+
+  if (lastWidget)
+    lastWidget->hide();
+
+  if (currentWidget)
+    currentWidget->show();
+
+  lastWidget = currentWidget;
+}
