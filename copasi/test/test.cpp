@@ -47,6 +47,7 @@ C_INT32  TestModel(void);
 C_INT32  TestLU();
 C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32  TestTrajectory(void);
+C_INT32  TestStochDirectMethod(void);
 C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
@@ -102,6 +103,7 @@ C_INT main(C_INT argc, char *argv[])
 //      TestOptimization();
 //      TestEigen();
 //      TestTrajectory();
+//      TestStochDirectMethod();
 //      TestMoiety();
 //      TestKinFunction();
 //      TestMassAction();
@@ -117,9 +119,9 @@ C_INT main(C_INT argc, char *argv[])
 //      TestRandom(10000, 100);
 //      TestDependencyGraph();
 //      TestIndexedPriorityQueue(7);
-//      TestSpec2Model();
+      TestSpec2Model();
     
-      TestElementaryFluxMode();
+//      TestElementaryFluxMode();
     }
 
   catch (CCopasiException Exception)
@@ -451,11 +453,47 @@ C_INT32 TestTrajectory(void)
   traj.initialize();
   traj.getODESolver()->load(inbuf);
   ofstream output("output.txt");
-
+  
+  cout << "Running trajectory\n";
   traj.process(output);
   traj.cleanup();
 
   return 0;
+}
+
+C_INT32 TestStochDirectMethod(void)
+{
+    cout << "Testing stoch direct method\n";
+    string InputFile(Copasi->Arguments[1]);
+    string OutputFile(Copasi->Arguments[2]);
+    CReadConfig inbuf(InputFile);
+    inbuf.getDefaults();
+
+    cout << "Creating model\n";
+    CModel model;
+    model.load(inbuf);
+    model.compile();
+  
+    cout << "Creating trajectory\n";
+    CTrajectory traj;
+    cout << "Setting model\n";
+    traj.setModel(&model);
+    cout << "Setting method\n";
+    traj.setMethod(CTrajectory::STOCH_DIRECT); // method 2 corresponds to the direct method
+    cout << "Setting end time\n";
+    traj.setEndTime(1.0);
+    cout << "Setting max points\n";
+    traj.setMaxSteps(100);
+    cout << "Initializing trajectory\n"; 
+    traj.initialize();
+
+    ofstream output("output.txt");
+  
+    cout << "Running trajectory\n";
+    traj.process(output);
+    traj.cleanup();
+
+    return 0;
 }
 
 C_INT32 TestMCA(void)
