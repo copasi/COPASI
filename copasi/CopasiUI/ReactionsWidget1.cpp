@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.149 $
+   $Revision: 1.150 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 18:28:18 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 08:53:36 $
    End CVS Header */
 
 /*********************************************************************
@@ -202,8 +202,8 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 bool ReactionsWidget1::saveToReaction()
 {
   LineEdit2->slotForceUpdate();
-  std::cout << "SaveToReaction " << std::endl;
-  if (!mRi.isValid()) return false; //TODO: may be warn the user ?
+  //std::cout << "SaveToReaction " << std::endl;
+  if (!mRi.isValid()) return false;
 
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
@@ -263,13 +263,10 @@ void ReactionsWidget1::slotLineEditChanged()
   //first check if the string is a valid equation
   if (!CChemEqInterface::isValidEq(eq))
     {
-      //TODO: bring up a message window??
       //debugging
-      std::cout << "Not a valid equation!\n\n";
+      //std::cout << "Not a valid equation!\n\n";
       return;  // abort further processing
     }
-  //  else  //debugging
-  //    cout<<"Valid equation\n\n";
 
   // tell the reaction interface
   mRi.setReactionName(rName);
@@ -329,7 +326,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                // Yes or Enter
+        case 0:                 // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -353,7 +350,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                       // No or Escape
+        default:                        // No or Escape
           break;
         }
       //}
@@ -433,7 +430,6 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-      //TODO: we have to decide how to handle this
       return loadFromReaction(dynamic_cast< CReaction * >(GlobalKeys.get(objKey)));
       break;
 
