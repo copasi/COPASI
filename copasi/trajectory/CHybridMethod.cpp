@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:16:30 $
+   $Date: 2004/11/30 19:16:07 $
    End CVS Header */
 
 /**
@@ -76,13 +76,13 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * pProblem)
 
   switch (result)
     {
-    case - 3:                 // non-integer stoichometry
+    case - 3:                  // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-    case - 2:                 // reversible reaction exists
+    case - 2:                  // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-    case - 1:                 // more than one compartment involved
+    case - 1:                  // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;
       // Error: Hybrid simulation impossible
@@ -104,7 +104,7 @@ const double CHybridMethod::step(const double & deltaT)
   unsigned C_INT32 i;
   unsigned C_INT32 imax;
 
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
+  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
     if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
@@ -124,7 +124,7 @@ const double CHybridMethod::step(const double & deltaT)
 
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
+  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
   return deltaT;
@@ -1401,7 +1401,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
 
   switch (level)
     {
-    case 0:                 // Everything !!!
+    case 0:                  // Everything !!!
       os << "Version: " << mVersion.getVersion() << " Name: "
       << CCopasiParameter::getObjectName() << " Method: " /* << mMethod */
       << std::endl;
@@ -1508,7 +1508,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << std::endl;
       break;
 
-    case 1:                  // Variable values only
+    case 1:                   // Variable values only
       os << "mTime: " << mpCurrentState->getTime() << std::endl;
       os << "oldState: ";
       for (i = 0; i < mDim; i++)

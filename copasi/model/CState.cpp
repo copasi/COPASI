@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/26 17:53:27 $
+   $Date: 2004/12/20 17:42:39 $
    End CVS Header */
 
 // CSate.cpp
@@ -58,7 +58,7 @@ CState & CState::operator =(const CStateX & stateX)
 
   if (mpModel)
     {
-      mVariableNumbers.resize(mpModel->getIntMetab());
+      mVariableNumbers.resize(mpModel->getNumVariableMetabs());
 
       unsigned C_INT32 i, iVariable, iTotal;
 
@@ -126,8 +126,8 @@ void CState::setModel(const CModel * pModel)
     {
       mVolumes.resize(mpModel->getCompartments().size());
 
-      mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
-      mVariableNumbers.resize(mpModel->getIntMetab());
+      mFixedNumbers.resize(mpModel->getNumMetabs() - mpModel->getNumVariableMetabs());
+      mVariableNumbers.resize(mpModel->getNumVariableMetabs());
     }
 }
 
@@ -269,7 +269,7 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
 
     const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolites();
 
-    unsigned C_INT32 j, jmax = mpModel->getIntMetab();
+    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
 
     C_FLOAT64 * x;
     C_FLOAT64 invVolume;
@@ -309,10 +309,10 @@ void CState::check(const std::string & m) const
 
     //mpModel->check();
 
-    if (mFixedNumbers.size() != mpModel->getTotMetab() - mpModel->getIntMetab())
+    if (mFixedNumbers.size() != mpModel->getNumMetabs() - mpModel->getNumVariableMetabs())
     {std::cout << "CState: " << m << ": mismatch in fixedNumbers" << std::endl;}
 
-    if (mVariableNumbers.size() != mpModel->getIntMetab())
+    if (mVariableNumbers.size() != mpModel->getNumVariableMetabs())
     {std::cout << "CState: " << m << ": mismatch in variableNumbers" << std::endl;}
   }
 #endif
@@ -349,8 +349,8 @@ CStateX & CStateX::operator =(const CState & state)
 
   if (mpModel)
     {
-      mVariableNumbers.resize(mpModel->getIndMetab());
-      mDependentNumbers.resize(mpModel->getDepMetab());
+      mVariableNumbers.resize(mpModel->getNumIndependentMetabs());
+      mDependentNumbers.resize(mpModel->getNumDependentMetabs());
 
       unsigned C_INT32 i, iVariable, iTotal;
 
@@ -417,9 +417,9 @@ void CStateX::setModel(const CModel * pModel)
     {
       mVolumes.resize(mpModel->getCompartments().size());
 
-      mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
-      mVariableNumbers.resize(mpModel->getIndMetab());
-      mDependentNumbers.resize(mpModel->getDepMetab());
+      mFixedNumbers.resize(mpModel->getNumMetabs() - mpModel->getNumVariableMetabs());
+      mVariableNumbers.resize(mpModel->getNumIndependentMetabs());
+      mDependentNumbers.resize(mpModel->getNumDependentMetabs());
     }
 }
 
@@ -552,7 +552,7 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     unsigned C_INT32 i, imax = Reactions.size();
 
     const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolitesX();
-    unsigned C_INT32 j, jmax = mpModel->getIntMetab();
+    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
 
     C_FLOAT64 * x;
     C_FLOAT64 invVolume;
@@ -596,13 +596,13 @@ void CStateX::check(const std::string & m) const
 
     mpModel->check();
 
-    if (mFixedNumbers.size() != mpModel->getTotMetab() - mpModel->getIntMetab())
+    if (mFixedNumbers.size() != mpModel->getNumMetabs() - mpModel->getNumVariableMetabs())
     {std::cout << "CStateX: " << m << ": mismatch in fixedNumbers" << std::endl;}
 
-    if (mVariableNumbers.size() != mpModel->getIndMetab())
+    if (mVariableNumbers.size() != mpModel->getNumIndependentMetabs())
     {std::cout << "CStateX: " << m << ": mismatch in independentNumbers" << std::endl;}
 
-    if (mDependentNumbers.size() != mpModel->getDepMetab())
+    if (mDependentNumbers.size() != mpModel->getNumDependentMetabs())
     {std::cout << "CStateX: " << m << ": mismatch in dependentNumbers" << std::endl;}
   }
 #endif

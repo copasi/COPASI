@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/21 15:29:58 $
+   $Author: ssahle $ 
+   $Date: 2004/11/30 19:16:48 $
    End CVS Header */
 
 /**
@@ -123,7 +123,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   pdelete(mpSteadyStateX);
   mpSteadyStateX = new CStateX(pProblem->getInitialState());
 
-  mCalculateReducedSystem = (pProblem->getModel()->getDepMetab() != 0);
+  mCalculateReducedSystem = (pProblem->getModel()->getNumDependentMetabs() != 0);
 
   //init jacobians
   mJacobian.resize(mpSteadyState->getVariableNumberSize(),

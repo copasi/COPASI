@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/23 03:57:38 $
+   $Author: ssahle $ 
+   $Date: 2004/11/30 19:16:07 $
    End CVS Header */
 
 #ifdef WIN32
@@ -99,7 +99,7 @@ const double CStochMethod::step(const double & deltaT)
   unsigned C_INT32 i;
   unsigned C_INT32 imax;
 
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++)
+  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
     if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
       {
         // TODO:throw exception or something like that
@@ -119,7 +119,7 @@ const double CStochMethod::step(const double & deltaT)
 
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
-  for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
+  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
   return deltaT;
@@ -436,7 +436,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
   mMaxBalance = maxBalance; std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =   /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =    /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
