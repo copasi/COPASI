@@ -270,7 +270,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
           }
       if (c == -1)
         return -1;
-      sprintf(strtmp, "Subs%d", i);
+      sprintf(strtmp, "Subs%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
     }
@@ -286,7 +286,7 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
           }
       if (c == -1)
         return -1;
-      sprintf(strtmp, "Prod%d", i);
+      sprintf(strtmp, "Prod%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
     }
@@ -301,14 +301,14 @@ C_INT32 CReaction::saveOld(CWriteConfig & configbuffer, const vector < CMetab* >
           }
       if (c == -1)
         return -1;
-      sprintf(strtmp, "Modf%d", i);
+      sprintf(strtmp, "Modf%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_INT32", (void *) & c)))
         return Fail;
     }
   Size = mId2Parameters.size();
   for (i = 0; i < Size; i++)
     {
-      sprintf(strtmp, "Param%d", i);
+      sprintf(strtmp, "Param%ld", i);
       if ((Fail = configbuffer.setVariable(strtmp, "C_FLOAT64", (void *) & mId2Parameters[i]->mValue)))
         return Fail;
     }
