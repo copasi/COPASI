@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 12:47:27 $
+   $Date: 2004/06/24 17:59:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -424,7 +424,7 @@ void CopasiTableWidget::tableLineToObject(unsigned C_INT32, CCopasiObject*)
 //  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 void CopasiTableWidget::deleteObjects(const std::vector<std::string> &)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
-void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+void CopasiTableWidget::defaultTableLineContent(unsigned C_INT32, unsigned C_INT32)
 {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
 // QString CopasiTableWidget::defaultObjectName() const
 //  {std::cout << "**** method of CopasiTableWidget should never be called ****" << std::endl;}
