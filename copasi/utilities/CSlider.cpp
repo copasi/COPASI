@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/30 09:26:35 $
+   $Author: shoops $ 
+   $Date: 2005/03/30 13:57:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -56,7 +56,7 @@ CSlider::~CSlider()
 
 bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
-  mpSliderObject = CCopasiContainer::ObjectFromName(listOfContainer, getObjectName());
+  setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
   if (this->mSync) this->sync();
   return (mpSliderObject != NULL);
 }
@@ -182,11 +182,8 @@ void CSlider::sync()
 void CSlider::writeToObject()
 {
   if (!this->mpSliderObject) return;
-
   if (mpSliderObject->setObjectValue(mValue)) return;
-
   if (mpSliderObject->setObjectValue((C_INT32)floor(mValue + 0.5))) return;
-
   if (mpSliderObject->setObjectValue(mValue != 0.0)) return;
 
   return;
