@@ -27,7 +27,7 @@ class CStochDirectMethod : public CStochMethod
     /**
      * Initialization.
      */
-    void initMethod(C_FLOAT64 start_time) {};
+    void initMethod(C_FLOAT64 C_UNUSED(start_time)) {};
 
     /**
      * Do one iteration of the simulation

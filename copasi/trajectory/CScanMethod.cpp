@@ -23,14 +23,13 @@
 #define SD_REGULAR 1
 
 CScanMethod::CScanMethod()
-{
-}
+{}
 
 /**
  *  The main scan method.
  */
 
-void CScanMethod::scan(C_INT32 s, bool nl)
+void CScanMethod::scan(C_INT32 s, bool C_UNUSED(nl))
 {
   C_INT scanDimension = scanProblem->scanItemSize();
   int i, next, top;
