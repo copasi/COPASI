@@ -64,7 +64,7 @@ class CXMLElementHandler
     virtual void reset();
   };
 
-class CXMLCharacterDataHandler()
+class CXMLCharacterDataHandler
   {
     // Attributes
   protected:
