@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/10 16:13:04 $
+   $Date: 2004/08/31 12:19:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -91,6 +91,8 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   inputFlag = FROM_OBJECTS;
 
+  mTime.init();
+
   return compile(); //create mObjects
 }
 
@@ -169,7 +171,11 @@ bool CPlotSpec2Vector::doPlotting()
       return false;
     }
 
-  //updateAllPlots();
+  if (mTime.getTimeDiff() > 200)
+    {
+      updateAllPlots();
+      mTime.init();
+    }
 
   return success;
 }
