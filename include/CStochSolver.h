@@ -38,11 +38,13 @@ class CModel;
  * solver->GetMethod()->InitMethod();
  * while (step < total_steps && time < total_time && time >= 0)
  * {
- *     time = solver->GetMethod()->DoStep();
+ *     time = solver->GetMethod()->DoStep(time);
  *     step++;
  * }
  *
  */
+
+class CStochMethod;
 
 class CStochSolver
 {
@@ -84,7 +86,7 @@ class CStochSolver
      * @param maxtime The maximum simulation time.
      * @param maxsteps The maximum number of simulation steps.
      */
-    CStochSolver(CStochSolver::Type method_type, CModel *model, C_FLOAT_32 maxtime, C_INT32 maxsteps);
+    CStochSolver(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
     /**
      * The destructor
      */
@@ -96,7 +98,7 @@ class CStochSolver
      * @param maxtime The maximum time the simulation may take.
      * @param maxsteps The maximum number of steps in the simulation.
      */
-    void Initialise(std::string method, CModel *model, C_FLOAT_32 maxtime, C_INT32 maxsteps);
+    void Initialise(std::string method, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps);
     // Operations methods
     /**
      * Returns a pointer to the instance of the solver method.
@@ -108,20 +110,15 @@ class CStochSolver
 /**
  * CStochMethod is a parent to concrete solvers derived from it.
  *
- * For each reactant in the model, an initial count is determined from
- * the concentration; this count of each reactant characterises the
- * system state.  For each reaction (specified by CStep) in the model
- * (given by CModel) a propensity amu may be determined. These are
- * stored in the vector mAmu. Each propensity is a product of two
- * state-dependent factors, cmu and hmu; these are stored in the
- * vectors mCmu and mHmu. Since the hmu and cmu values change as the
- * system state changes, the values of amu (may) need to be updated
- * after each step in the simulation. The propensities are then used
- * to determine the next step and the time at which it occurs, after
- * which the particle numbers are updated and the time is
- * incremented. The particulars of how the updating is done, and the
- * determination of the next reaction and its time are left to the
- * inherited classes.
+ * These solvers do the actual work of the simulation. Each solver
+ * maintains a list of propensities, a_mu, one for each reaction. These
+ * propensities are dependent on the state of the system. i.e. the
+ * numbers of each particle, and some or all must be updated after
+ * each reaction. The propensities are then used to determine the next
+ * step and the time at which it occurs, after which the particle
+ * numbers are updated and the time is incremented. The particulars of
+ * how the updating is done, and the determination of the next
+ * reaction and its time are left to the inherited classes.
  */
 
 class CStochMethod
@@ -133,18 +130,13 @@ class CStochMethod
      */
     CModel *mModel;
     /**
-     * The rate-dependent part of the propensity function. (The rate
-     * function may depend on the state, for more complex dynamics.)
-     */
-    std::vector<C_FLOAT64> mCmu;
-    /**
-     * The state-dependent part of the propensity function
-     */
-    std::vector<C_FLOAT64> mHmu;
-    /**
-     * The propensity functions
+     * The propensities for the reactions
      */
     std::vector<C_FLOAT64> mAmu;
+    /**
+     * The sum of the propensities
+     */
+    C_FLOAT64 mA0;
     /**
      * Failure status.
      * 0 = Success
@@ -172,9 +164,20 @@ class CStochMethod
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-     virtual C_FLOAT64 DoStep() = 0;
+     virtual C_FLOAT64 DoStep(C_FLOAT64 time) = 0;
  protected:
     // Protected operations
+    /**
+     * Calculate the propensities for all reactions
+     * @return mFail
+     * @see mFail
+     */
+    C_INT32 UpdatePropensities();
+    /**
+     * Calculate one of the propensities
+     */
+    C_INT32 CalculateAmu(C_INT32);
+#if 0
     /**
      * Determine the value of one of the cmu's
      * @param index The position in the vector of this value of Cmu
@@ -189,6 +192,7 @@ class CStochMethod
      * @see mFail
      */
     C_INT32 CalculateHmu(C_INT32 index);
+#endif // 0
 };
 
 /**
@@ -218,20 +222,14 @@ class CStochDirectMethod: public CStochMethod
      * @return mFail
      * @see mFail
      */
-    C_INT32 InitMethod() = 0;
+    C_INT32 InitMethod();
     /**
      * Do one iteration of the simulation
      * @return Current simulation time or -1 if error.
      */
-     C_FLOAT64 DoStep();
+     C_FLOAT64 DoStep(C_FLOAT64 time);
  private:
     // Private operations
-    /**
-     * Calculate the propensity functions for all reactions
-     * @return mFail
-     * @see mFail
-     */
-    C_INT32 CalculateAmu();
     /**
      * Get the next reaction
      * @return the index of the reaction which occurs.
@@ -247,7 +245,7 @@ class CStochDirectMethod: public CStochMethod
      * @return mFail
      * @see mFail
      */
-    C_INT32 UpdateParticleNumbers();
+    C_INT32 UpdateSystemState(C_INT32 reaction_idx);
 };
 
 /**
@@ -290,7 +288,6 @@ class CStochNextReactionMethod: public CStochMethod
     C_FLOAT64 Step();
  private:
     // Private operations
-    /**
-     * Update the neccessary values of amu
+};
 
 #endif // COPASI_CStochSolver
