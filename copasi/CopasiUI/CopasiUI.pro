@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.23 $ $Author: shoops $ $Date: 2004/02/10 15:17:55 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2004/02/19 02:16:05 $  
 ######################################################################
 
 include(../common.pri)
@@ -30,6 +30,10 @@ contains(BUILD_OS, WIN32) {
   LIBS += $(QTDIR)/lib/qwt.lib
 
   TARGETDEPS += $$COPASI_LIBS
+
+  release {
+    distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
+  }
 } else {
   # The order of objects is important 
   OBJECTS +=  ../lib/libelementaryFluxModes.a \
@@ -60,6 +64,8 @@ contains(BUILD_OS, WIN32) {
             -Wl,-lXft \
             -Wl,-lfontconfig \
             -Wl,-lpthread
+
+    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
   }
 
   TARGETDEPS += ../lib/libcommandline.a \
@@ -77,7 +83,6 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libtrajectory.a \
                 ../lib/libutilities.a \
                 ../lib/libplot.a
-
 }
 
 contains(BUILD_OS, SunOS) {
@@ -187,3 +192,9 @@ SOURCES += \
            TableDefinition1.cpp \
            TrajectoryWidget.cpp
 
+release {
+  distribution.path = .
+  distribution.file = CopasiUI
+
+  INSTALLS += distribution
+}
