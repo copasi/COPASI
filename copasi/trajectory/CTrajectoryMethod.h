@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 18:43:04 $
+   $Date: 2003/11/19 18:56:58 $
    End CVS Header */
 
 /**
@@ -33,6 +33,13 @@ class CTrajectoryMethod : public CCopasiMethod
      *  A list of valid trajectory method types;
      */
     static const CVector< CCopasiMethod::SubType > ValidSubTypes;
+
+    /**
+     * Checks whether the given sub type is a valid method
+     * @param const CCopasiMethod::SubType & subType
+     * @return bool isValidSubType
+     */
+    static bool isValidSubType(const CCopasiMethod::SubType & subType);
 
   protected:
     /**
