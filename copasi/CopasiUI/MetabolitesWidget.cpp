@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/05/03 20:20:18 $
+   $Author: ssahle $ 
+   $Date: 2004/05/07 13:35:37 $
    End CVS Header */
 
 /***********************************************************************
@@ -28,6 +28,7 @@
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
+#include "model/CMetabNameInterface.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -159,8 +160,10 @@ void MetabolitesWidget::fillTable()
     {
       obj = objects[j];
 
-      table->setText(j, 0, FROM_UTF8(obj->getName()));
+      //col 0 Name
+      table->setText(j, 0, FROM_UTF8(CMetabNameInterface::getDisplayName(dataModel->getModel(), *obj)));
 
+      //col 1 & 2 concentrations or numbers
       if (btn_flag == 0) //By G
         {
           table->setText(j, 1, QString::number(obj->getInitialConcentration()));
@@ -180,47 +183,11 @@ void MetabolitesWidget::fillTable()
 
       //col 4 Status
       table->setText(j, 4, FROM_UTF8(CMetab::StatusName[obj->getStatus()]));
-      /*statusComboBox = new QComboBox(NULL , "");
-      //statusComboBox->insertStrList(&statusType);
-      //statusComboBox->insertItem("fixed");
-      statusComboBox->insertItem("variable");
-      statusComboBox->insertItem("fixed");
-      table->setCellWidget(j, 4, statusComboBox);
-      statusComboBox->setCurrentText(CMetab::StatusName[obj->getStatus()].);*/
-
-      //table->setText(j, 4, obj->getCompartment()->getName().);
-
-      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].);
-      //create list of data types (for combobox)
-
-      // col. 3
-      //QComboTableItem * item = new QComboTableItem(table, statusType, false);
-      // next line not doable because Table Item takes in one string not stringlist, not combo
-      //QTableItem * item = new QTableItem(table, QTableItem::WhenCurrent, statusType);
-      // next line causing some probs: 103 errors ComboItem undeclared identifier
-      //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
-
-      //item->setText(CMetab::StatusName[obj->getStatus()].);
-      //table->setItem(j, 3, item);
-
-      //table->setText(j, 3, CMetab::StatusName[obj->getStatus()].);
-      //table->setText(j, 4, obj->getCompartment()->getName().);
-
-      //******** uncomment out for setCellWidget at each cell
-      //table->setCellWidget(j,3,statusComboBox);
 
       // col. 5
       QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
-      //item = new QComboTableItem(table, compartmentType, false);
-      //ComboItem * item = new ComboItem(table, QTableItem::WhenCurrent, statusType);
       table->setItem(j, 5, item);
-      //table->setText(j, 5, "Test");
-      /*item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
-      item->setText(usage);
-      if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
-      if (usage == "PRODUCT") item->setPixmap(*pProduct);
-      if (usage == "MODIFIER") item->setPixmap(*pModifier);
-      Table1->setItem(j, 2, item);*/
+      item->setCurrentItem(FROM_UTF8(obj->getCompartment()->getName()));
 
       mKeys[j] = obj->getKey();
     }
@@ -539,7 +506,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                               // Yes or Enter
+            case 0:                                // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -552,7 +519,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                               // No or Escape
+            case 1:                                // No or Escape
               break;
             }
         }
