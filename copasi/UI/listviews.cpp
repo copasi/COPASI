@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 16:46:17 $
+   $Author: chlee $ 
+   $Date: 2004/01/15 20:19:32 $
    End CVS Header */
 
 /****************************************************************************
@@ -546,7 +546,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                //Time course
+      case 23:                                 //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -555,10 +555,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                               //Report
+      case 43:                                //Report
         return tableDefinition;
         break;
-      case 42:                               //Plots
+      case 42:                                //Plots
         return plotWidget;
         break;
       case 5:
@@ -580,6 +580,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return metabolitesWidget1;
         break;
       case 113:
+        return moietyWidget1;
+        break;
+      case 222:
         return moietyWidget1;
         break;
       case 114:
@@ -852,9 +855,11 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   loadReactionsToDataModel();
   updateAllListviews2(114);
 
-  updateAllListviews1(113);
+  //updateAllListviews1(113);
+  updateAllListviews1(222);
   loadMoietiesToDataModel();
-  updateAllListviews2(113);
+  //updateAllListviews2(113);
+  updateAllListviews2(222);
 
   updateAllListviews1(5);
   loadFunctionsToDataModel();
@@ -994,7 +999,8 @@ void ListViews::loadReactionsToDataModel()
 
 void ListViews::loadMoietiesToDataModel()
 {
-  Folder * parent = dataModel->searchFolderList(113); //Moiety
+  //Folder * parent = dataModel->searchFolderList(113); //Moiety
+  Folder * parent = dataModel->searchFolderList(222); //Moiety
   Folder * f;
 
   dataModel->removeAllChildren(parent);
@@ -1145,7 +1151,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       compartmentsWidget->update(objectType, action, key);
       compartmentSymbols->update(objectType, action, key);
-      //moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       differentialEquations->update(objectType, action, key);
@@ -1155,7 +1161,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
       //        constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
@@ -1173,7 +1179,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       compartmentsWidget->update(objectType, action, key);
       compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       differentialEquations->update(objectType, action, key);
@@ -1183,7 +1189,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
       constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
@@ -1201,7 +1207,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       compartmentsWidget->update(objectType, action, key);
       compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       differentialEquations->update(objectType, action, key);
@@ -1211,7 +1217,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
       constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
@@ -1229,7 +1235,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       //        compartmentsWidget->update(objectType, action, key);
       //        compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       functionWidget->update(objectType, action, key);
       functionSymbols->update(objectType, action, key);
       differentialEquations->update(objectType, action, key);
@@ -1239,7 +1245,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        fixedMetaboliteSymbols->update(objectType, action, key);
       //        compartmentsWidget1->update(objectType, action, key);
       //        constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
@@ -1292,7 +1298,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       compartmentsWidget->update(objectType, action, key);
       compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       //        differentialEquations->update(objectType, action, key);
@@ -1302,7 +1308,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       fixedMetaboliteSymbols->update(objectType, action, key);
       compartmentsWidget1->update(objectType, action, key);
       constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //  modelWidget->update(objectType, action, key);
@@ -1320,7 +1326,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        reactionsWidget->update(objectType, action, key);
       //        compartmentsWidget->update(objectType, action, key);
       //        compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       //        differentialEquations->update(objectType, action, key);
@@ -1330,7 +1336,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        fixedMetaboliteSymbols->update(objectType, action, key);
       //        compartmentsWidget1->update(objectType, action, key);
       //        constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
@@ -1348,7 +1354,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        reactionsWidget->update(objectType, action, key);
       //        compartmentsWidget->update(objectType, action, key);
       //        compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       //        differentialEquations->update(objectType, action, key);
@@ -1358,7 +1364,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        fixedMetaboliteSymbols->update(objectType, action, key);
       //        compartmentsWidget1->update(objectType, action, key);
       //        constantSymbols->update(objectType, action, key);
-      //        moietyWidget1->update(objectType, action, key);
+      moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
