@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:35:45 $
+   $Author: stupe $ 
+   $Date: 2005/01/30 16:55:51 $
    End CVS Header */
 
 /********************************************************
@@ -78,6 +78,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
+
+  setInitialState = new QCheckBox(this, "setInitialState");
+  setInitialState->setText(trUtf8("Set Initial State"));
+  TrajectoryWidgetLayout->addWidget(setInitialState, 0, 4, Qt::AlignLeft);
 
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
@@ -193,7 +197,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TrajectoryWidgetLayout->addWidget(parameterValueLabel, 7, 0);
 
   setTabOrder(taskName, bExecutable);
-  setTabOrder(bExecutable, nStartTime);
+  setTabOrder(bExecutable, setInitialState);
+  setTabOrder(setInitialState, nStartTime);
   setTabOrder(nStartTime, nEndTime);
   setTabOrder(nEndTime, nStepSize);
   setTabOrder(nStepSize, nStepNumber);
@@ -391,6 +396,12 @@ void TrajectoryWidget::runTrajectoryTask()
   try
     {
       tt->process();
+      if (setInitialState->isChecked())
+        {
+          const CState *currentState = tt->getState();
+          if (currentState)
+            (dataModel->getModel())->setInitialState(currentState);
+        }
     }
   catch (CCopasiException Exception)
     {

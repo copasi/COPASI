@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/18 09:34:41 $
+   $Author: stupe $ 
+   $Date: 2005/01/30 16:55:51 $
    End CVS Header */
 
 /********************************************************
@@ -63,7 +63,7 @@ class SteadyStateWidget : public CopasiWidget
     QCheckBox* taskStability;
     //QLabel* taskDescriptionLabel;
     QLabel* parameterValueLabel;
-    QCheckBox* bExecutable;
+    QCheckBox* bExecutable, *setInitialState;
     QLineEdit* taskName;
     QTable* parameterTable;
     QPushButton* bRunButton;

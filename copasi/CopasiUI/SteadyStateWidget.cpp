@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 10:40:31 $
+   $Author: stupe $ 
+   $Date: 2005/01/30 16:55:51 $
    End CVS Header */
 
 /********************************************************
@@ -112,11 +112,16 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
 
   bExecutable = new QCheckBox(this, "bExecutable");
+  setInitialState = new QCheckBox(this, "setInitialState");
   bExecutable->setText(trUtf8("Task Executable"));
+  setInitialState->setText(trUtf8("Set Initial State"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);
+  setInitialState->setChecked(parent == NULL);
+  setInitialState->setEnabled(parent != NULL);
   SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  SteadyStateWidgetLayout->addWidget(setInitialState, 1, 2);
 
   //line8 = new QFrame(this, "line8");
   //line8->setFrameShape(QFrame::HLine);
@@ -162,7 +167,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   // tab order
   setTabOrder(taskName, bExecutable);
-  setTabOrder(bExecutable, taskJacobian);
+  setTabOrder(bExecutable, setInitialState);
+  setTabOrder(setInitialState, taskJacobian);
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
   setTabOrder(parameterTable, bRunButton);
@@ -281,6 +287,12 @@ void SteadyStateWidget::runSteadyStateTask()
   try
     {
       mSteadyStateTask->process();
+      if (setInitialState->isChecked())
+        {
+          const CState *currentState = mSteadyStateTask->getState();
+          if (currentState)
+            (dataModel->getModel())->setInitialState(currentState);
+        }
     }
 
   catch (CCopasiException Exception)
