@@ -66,14 +66,20 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(const QString &)));
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
-
-  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadModelNodes(CModel*)));
-  connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
+  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
+          this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
+  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent,
+          SLOT(slotMetaboliteTableChanged(const QString &)));
+  connect(table, SIGNAL(selectionChanged ()), this,
+          SLOT(slotTableSelectionChanged ()));
+  connect(btnOK, SIGNAL(clicked ()), this,
+          SLOT(slotBtnOKClicked()));
+  connect(btnCancel, SIGNAL(clicked ()), this,
+          SLOT(slotBtnCancelClicked()));
+  connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent,
+          SLOT(loadModelNodes(CModel*)));
+  connect(this, SIGNAL(updated()), (ListViews*)parent,
+          SLOT(dataModelUpdated()));
 }
 
 void MetabolitesWidget::loadMetabolites(CModel *model)
@@ -95,7 +101,8 @@ void MetabolitesWidget::loadMetabolites(CModel *model)
     }
 }
 
-void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
+void MetabolitesWidget::slotTableCurrentChanged(int row, int col,
+    int m , const QPoint & n)
 {
   QString x = table->text(row, 0);
   if (row == table->numRows() - 1)
@@ -106,20 +113,19 @@ void MetabolitesWidget::slotTableCurrentChanged(int row, int col, int m , const 
       if (noOfCompartmentsRows <= 0) //You have to create a Compartment first,
         return;
 
-      CCopasiVectorN< CMetab > & metabolites = mModel->getMetabolites();
-      C_INT32 noOfMetabolitesRows = metabolites.size();
+      std::string name = "metabolite";
 
-      std::string name = "Metabolites";
       int i = 0;
-      while (mModel->addMetabolite(compartments[0]->getName().c_str(), name, 1, CMetab::METAB_FIXED) == -1)
+      while (mModel->addMetabolite(compartments[0]->getName(),
+                                   name,
+                                   1, CMetab::METAB_VARIABLE) == -1)
         {
           i++;
-          name = "Metabolites";
+          name = "metabolite";
           name += "_";
           name += QString::number(i);
         }
-      mModel->initializeMetabolites();
-      metabolites = mModel->getMetabolites();
+
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
