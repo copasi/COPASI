@@ -75,6 +75,12 @@ CState::~CState()
   pdelete (mNumbersDbl);
 }
 
+void CState::setTime(const double & time)
+{mTime = time; }
+
+const double & CState::getTime() const
+  { return mTime; }
+
 void CState::setModel(const CModel * model)
 {
   pdelete (mVolumes);
@@ -117,7 +123,6 @@ CState * CState::load(CReadConfig & configBuffer)
     fatalError();
 
   configBuffer.getVariable("StateModel", "string", &Tmp);
-
   if (Tmp == Copasi->Model->getTitle())
     pState->mModel = Copasi->Model;
   else
@@ -126,31 +131,30 @@ CState * CState::load(CReadConfig & configBuffer)
   configBuffer.getVariable("StateTime", "C_FLOAT64", &pState->mTime);
 
   configBuffer.getVariable("StateVolumesSize", "C_INT32", &Size);
-
   pState->mVolumesSize = Size;
 
   for (i = 0; i < pState->mVolumesSize; i++)
     {
       Tmp = StringPrint("StateVolumes[%d]", i);
-      configBuffer.getVariable("Tmp", "C_FLOAT64", & pState->mVolumes[i]);
+      configBuffer.getVariable(Tmp, "C_FLOAT64", & pState->mVolumes[i]);
     }
 
-  configBuffer.getVariable("StateNumberdSize", "C_INT32", &Size);
+  configBuffer.getVariable("StateNumberSize", "C_INT32", &Size);
   pState->mNumbersSize = Size;
 
-  configBuffer.getVariable("StateNumberdUpdated", "C_INT32", &Size);
+  configBuffer.getVariable("StateNumberUpdated", "C_INT32", &Size);
   pState->mNumbersUpdated = Size;
 
   for (i = 0; i < pState->mNumbersSize; i++)
     {
       Tmp = StringPrint("StateNumbersInt[%d]", i);
-      configBuffer.getVariable("Tmp", "C_INT32", & pState->mNumbersInt[i]);
+      configBuffer.getVariable(Tmp, "C_INT32", & pState->mNumbersInt[i]);
     }
 
   for (i = 0; i < pState->mNumbersSize; i++)
     {
       Tmp = StringPrint("StateNumbersDbl[%d]", i);
-      configBuffer.getVariable("Tmp", "C_FLOAT64", & pState->mNumbersDbl[i]);
+      configBuffer.getVariable(Tmp, "C_FLOAT64", & pState->mNumbersDbl[i]);
     }
 
   return pState;
@@ -162,50 +166,47 @@ void CState::save(CWriteConfig & configBuffer, const CState * pState)
   C_INT32 Size;
   unsigned C_INT32 i;
 
+  Tmp = pState->mModel->getTitle();
+  configBuffer.setVariable("StateModel", "string", &Tmp);
+
   if (typeid(*pState) == typeid(CState))
     Tmp == "Full Model";
   else if (typeid(*pState) == typeid(CStateX))
     Tmp == "Reduced Model";
   else
     fatalError();
-
-  Tmp = pState->mModel->getTitle();
-
-  configBuffer.setVariable("StateModel", "string", &Tmp);
-
   configBuffer.setVariable("StateType", "string", &Tmp);
 
   configBuffer.setVariable("StateTime", "C_FLOAT64", &pState->mTime);
 
   Size = pState->mVolumesSize;
-
   configBuffer.setVariable("StateVolumesSize", "C_INT32", &Size);
 
   for (i = 0; i < pState->mVolumesSize; i++)
     {
       Tmp = StringPrint("StateVolumes[%d]", i);
-      configBuffer.setVariable("Tmp", "C_FLOAT64", & pState->mVolumes[i]);
+      configBuffer.setVariable(Tmp, "C_FLOAT64", & pState->mVolumes[i]);
     }
 
   Size = pState->mNumbersSize;
-  configBuffer.setVariable("StateNumberdSize", "C_INT32", &Size);
+  configBuffer.setVariable("StateNumberSize", "C_INT32", &Size);
 
   Size = pState->mNumbersUpdated;
-  configBuffer.setVariable("StateNumberdUpdated", "C_INT32", &Size);
+  configBuffer.setVariable("StateNumberUpdated", "C_INT32", &Size);
 
   for (i = 0; i < pState->mNumbersSize; i++)
     {
       Tmp = StringPrint("StateNumbersInt[%d]", i);
-      configBuffer.setVariable("Tmp", "C_INT32", & pState->mNumbersInt[i]);
+      configBuffer.setVariable(Tmp, "C_INT32", & pState->mNumbersInt[i]);
     }
 
   for (i = 0; i < pState->mNumbersSize; i++)
     {
       Tmp = StringPrint("StateNumbersDbl[%d]", i);
-      configBuffer.setVariable("Tmp", "C_FLOAT64", & pState->mNumbersDbl[i]);
+      configBuffer.setVariable(Tmp, "C_FLOAT64", & pState->mNumbersDbl[i]);
     }
 
-  return ;
+  return;
 }
 
 CStateX::CStateX(const CModel * model) : CState(model)
