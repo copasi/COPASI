@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/05 01:21:48 $
+   $Date: 2004/12/06 19:58:13 $
    End CVS Header */
 
 /**
@@ -15,6 +15,8 @@
 #define COPASI_CCopasiMessage
 
 #include <string>
+#include <stack>
+
 #include "copasi.h"
 
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
@@ -34,6 +36,7 @@ Message;
 #define MCChemEq              MCopasiBase + 1100
 #define MCTrajectoryMethod    MCopasiBase + 1200
 #define MCXML                 MCopasiBase + 1300
+#define MCCopasiMessage       MCopasiBase + 1400
 
 /**
  *  This throws an exception with information where the error occured.
@@ -79,14 +82,34 @@ class CCopasiMessage
      */
     unsigned C_INT32 mNumber;
 
+    /**
+     *  The stack of messages. Each message created with one of 
+     *  the specific constructors is automically added to the stack.
+     */
+    static std::stack< CCopasiMessage > mMessageStack;
+
     // Operations
 
   public:
+    /**
+     *  This function retrieves the last message created in COPASI.
+     *  Consecutive calls allow for the retrieval of all generated 
+     *  messages. If no more messages are on the stack
+     *  @return CCopasiMessage
+     */
+    static CCopasiMessage getLastMessage();
+
     /**
      *  Default consructor. 
      *  This creates a default error messages, which actually does nothing.
      */
     CCopasiMessage();
+
+    /**
+     *  Copy consructor. 
+     *  @param const CCopasiMessage & src
+     */
+    CCopasiMessage(const CCopasiMessage & src);
 
     /**
      *  Specified consructor. 

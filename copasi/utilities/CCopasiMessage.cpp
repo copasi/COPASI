@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/26 12:18:13 $
+   $Author: shoops $ 
+   $Date: 2004/12/06 19:58:13 $
    End CVS Header */
 
 // CCopasiMessage
@@ -28,12 +28,31 @@
 std::string TimeStamp();
 #define INITIALTEXTSIZE 1024
 
-CCopasiMessage::CCopasiMessage(void)
+std::stack< CCopasiMessage > CCopasiMessage::mMessageStack;
+
+CCopasiMessage CCopasiMessage::getLastMessage()
 {
-  // initialize everything
-  mType = RAW;
-  mNumber = 0;
+  if (mMessageStack.empty())
+    CCopasiMessage(CCopasiMessage::RAW,
+                   MCCopasiMessage + 1);
+
+  CCopasiMessage Message(mMessageStack.top());
+  mMessageStack.pop();
+
+  return Message;
 }
+
+CCopasiMessage::CCopasiMessage(void):
+    mText(),
+    mType(CCopasiMessage::RAW),
+    mNumber(0)
+{}
+
+CCopasiMessage::CCopasiMessage(const CCopasiMessage & src):
+    mText(src.mText),
+    mType(src.mType),
+    mNumber(src.mNumber)
+{}
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
                                const char *format, ...)
@@ -41,11 +60,10 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
 
-  char *Text = NULL;
-
   va_list Arguments; // = NULL;
   va_start(Arguments, format);
 
+  char *Text = NULL;
   Text = new char[TextSize + 1];
 
   Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
@@ -60,14 +78,13 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
       Printed = vsnprintf(Text, TextSize, format, Arguments);
     }
 
-  va_end(Arguments);
-
-  mType = type;
   mText = Text;
+  mType = type;
   mNumber = 0;
 
-  if (Text)
-    handler();
+  va_end(Arguments);
+
+  handler();
 }
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
@@ -78,8 +95,6 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
 
-  char *Text = NULL;
-
   while (Messages[i].No != number && Messages[i].Text)
     i++;
 
@@ -87,9 +102,9 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     fatalError();
 
   va_list Arguments; // = NULL;
-
   va_start(Arguments, number);
 
+  char *Text = NULL;
   Text = new char[TextSize + 1];
 
   Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
@@ -104,11 +119,11 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
       Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
     }
 
-  va_end(Arguments);
-
   mText = Text;
   mType = type;
   mNumber = number;
+
+  va_end(Arguments);
 
   handler();
 }
@@ -120,6 +135,7 @@ void CCopasiMessage::handler()
   switch (mType)
     {
     case RAW:
+      mText = "";
       break;
 
     case TRACE:
@@ -144,6 +160,8 @@ void CCopasiMessage::handler()
   mText += Text;
 
   lineBreak();
+
+  mMessageStack.push(*this);
 
   if (mType == ERROR)
     {
@@ -184,7 +202,7 @@ std::string TimeStamp()
 
   if (sTime)
     {
-      sprintf(str, "%d-%.2d-%.2d %.2d:%.2d:%.2d",
+      sprintf(str, "%d-%.02d-%.02d %.02d:%.02d:%.02d",
               sTime->tm_year + 1900,
               sTime->tm_mon + 1,
               sTime->tm_mday,
