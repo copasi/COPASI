@@ -47,8 +47,6 @@
 # define C_FLOAT32 float
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
-# define timeb _timeb         // they just have a different name for this guy
-# define ftime _ftime         // they just have a different name for this guy
 # define strcasecmp _stricmp  // they just have a different name for this guy
 # define min _cpp_min
 # define max _cpp_max
