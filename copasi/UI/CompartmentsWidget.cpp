@@ -170,6 +170,8 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
           //Zoom in
           if (newWidth > tableWidth)
             {
+              int i = table->columnWidth(0);
+              i = table->columnWidth(1);
               if (newWidth > totalWidth) // can do expansion
                 for (i = 0; i < table->numCols(); i++) // Do expansion
                   table->setColumnWidth(i, newWidth*table->columnWidth(i) / totalWidth);
