@@ -60,14 +60,12 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  //connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-/*void MetabolitesWidget::loadMetabolites(CModel *model)
+/*void ConstantSymbols::loadConstantSymbols(CModel *model)
 {
   if (model != NULL)
     {
@@ -127,11 +125,6 @@ table->setText(j, 4, metab->getCompartment()->getName().c_str());
 }
 }
  */
-void ConstantSymbols::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
-{
-  QString x = table->text(row, col);
-  emit name(x);
-}
 
 void ConstantSymbols::slotTableSelectionChanged()
 {

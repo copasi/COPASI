@@ -25,9 +25,6 @@ class CompartmentSymbols : public QWidget
     QPushButton *btnOK;
     QPushButton *btnCancel;
 
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
   signals:
     void name(QString &);
 
