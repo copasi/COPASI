@@ -35,7 +35,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   if (!name)
     setName("ScanWidget");
-  resize(626, 588);
+  //  resize(626, 588);
   setMinimumSize(QSize(0, 0));
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");

@@ -31,7 +31,7 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
 {
   if (!name)
     setName("MoietyWidget1");
-  resize(486, 375);
+  //  resize(486, 375);
   setCaption(trUtf8("MoietyWidget1"));
   MoietyWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MoietyWidget1Layout");
 

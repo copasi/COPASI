@@ -26,6 +26,19 @@ void CopasiWidget::resize (int w, int h)
   if (!bInitialized)
     {
       bInitialized = true;
+      int tmpW = realMinWidth;
+      int tmpH = realMinHeight;
+      int t = sizeHint().width();
+      t = sizeHint().height();
+      if (minimumSizeHint().width() > realMinWidth)
+        realMinWidth = minimumSizeHint().width();
+      if (minimumSizeHint().height() > realMinHeight)
+        realMinHeight = minimumSizeHint().height();
+      if ((tmpW != realMinWidth) || (tmpH != realMinHeight))
+        {
+          QWidget* qParent = topLevelWidget();
+          qParent->resize(realMinWidth, realMinHeight);
+        }
       //;
       //  if (realMinHeight>Height)
       //   realMinHeight
@@ -40,24 +53,15 @@ void CopasiWidget::resize (int w, int h)
       h = maxMinHeight;
     else
       maxMinHeight = h;
-  */  QWidget::resize(minimumWidth(),  minimumHeight());
+  */  QWidget::resize(minimumSizeHint().width(),  minimumSizeHint().height());
 }
 
 void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
-  int i = 0;
-  int w = event->size().width();
-  int h = event->size().height();
-
-  /*  if (w < maxMinWidth)
-      w = maxMinWidth;
-    else
-      maxMinWidth = w;
-    if (h < maxMinHeight)
-      h = maxMinHeight;
-    else
-      maxMinHeight = h;
-  */
-  if (w != 1) //if w==1 then means hide,
-    QWidget::resizeEvent (event);
+  //  int i = 0;
+  //  int w = event->size().width();
+  //  int h = event->size().height();
+  resize(0, 0);
+  //  if (w!=1) //if w==1 then means hide,
+  // QWidget::resizeEvent (event);
 }
