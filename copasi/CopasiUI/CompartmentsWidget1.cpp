@@ -46,11 +46,12 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   //All the other frames(rows) are embeded in it
   Frame2 = new QFrame(Frame3, "Frame2");
   gridLayout->addWidget(Frame2, 0, 0, 0);
-  QGridLayout *gridLayout1 = new QGridLayout(Frame2, 0);
+  QVBoxLayout *verticalLayout1 = new QVBoxLayout(Frame2, 0);
+  verticalLayout1->addSpacing(25);
 
   //Frame for Ist Row
   Frame4a = new QFrame(Frame2, "Frame4a");
-  gridLayout1->addWidget(Frame4a, 0, 0, 0);
+  verticalLayout1->addWidget(Frame4a);
   QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4a, 0);
   hBoxLayout4a->addSpacing(15);
 
@@ -59,26 +60,16 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   hBoxLayout4a->addSpacing(17);
   LineEdit1 = new QLineEdit("", Frame4a);
   hBoxLayout4a->addWidget(LineEdit1);
-  hBoxLayout4a->addSpacing(20);
+  hBoxLayout4a->addSpacing(60);
 
-  //Frame for 2nd Row
-  Frame4b = new QFrame(Frame2, "Frame4b");
-  gridLayout1->addWidget(Frame4b, 1, 0, 0);
-  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
-  hBoxLayout4b->addSpacing(15);
+  verticalLayout1->addSpacing(85);
+  Frame4_2 = new QFrame(Frame2, "Frame4_2");
+  verticalLayout1->addWidget(Frame4_2);
+  QHBoxLayout *hBoxLayout4_2 = new QHBoxLayout(Frame4_2, 0);
 
-  TextLabel2 = new QLabel("Metabolite Name", Frame4b);
-  hBoxLayout4b->addWidget(TextLabel2);
-  hBoxLayout4b->addSpacing(40);
-
-  ListBox1 = new QListBox(Frame4b, "ListBox1");
-  ListBox1->setGeometry(QRect(120, 40, 31, 41));
-  hBoxLayout4b->addWidget(ListBox1);
-  hBoxLayout4b->addSpacing(20);
-
-  //Frame for 3rd Row
-  Frame4c = new QFrame(Frame2, "Frame4c");
-  gridLayout1->addWidget(Frame4c, 2, 0, 0);
+  //Frame for 2nd left hand side Row
+  Frame4c = new QFrame(Frame4_2, "Frame4c");
+  hBoxLayout4_2->addWidget(Frame4c);
   QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
   hBoxLayout4c->addSpacing(15);
 
@@ -91,9 +82,9 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   hBoxLayout4c->addWidget(LineEdit3);
   hBoxLayout4c->addSpacing(20);
 
-  //Frame for 4th subpart
-  Frame4d = new QFrame(Frame2, "Frame4d");
-  gridLayout1->addWidget(Frame4d, 2, 1, 0);
+  //Frame for 2nd right hand side subpart
+  Frame4d = new QFrame(Frame4_2, "Frame4d");
+  hBoxLayout4_2->addWidget(Frame4d);
   QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
 
   TextLabel4 = new QLabel("Transient Volume", Frame4d);
@@ -104,11 +95,29 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   LineEdit4->setEnabled(false);
   hBoxLayout4d->addSpacing(20);
 
-  //This is for the cancel and the commit buttons
-  commitChanges = new QPushButton("&Commit Changes", Frame2);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame2);
-  gridLayout1->addWidget(commitChanges, 6, 0, 0);
-  gridLayout1->addWidget(cancelChanges, 6, 1, 0);
+  //Frame for 3rd Row
+  Frame4b = new QFrame(Frame2, "Frame4b");
+  verticalLayout1->addWidget(Frame4b);
+  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
+
+  TextLabel2 = new QLabel("Metabolite Name", Frame4b);
+  hBoxLayout4b->addWidget(TextLabel2);
+  //hBoxLayout4b->addSpacing(-36);
+
+  ListBox1 = new QListBox(Frame4b, "ListBox1");
+  // ListBox1->setGeometry(QRect(120, 40, 31, 41));
+  hBoxLayout4b->addWidget(ListBox1);
+  hBoxLayout4b->addSpacing(287);
+
+  Frame4_1 = new QFrame(Frame2, "Frame4_1");
+  verticalLayout1->addWidget(Frame4_1);
+  QHBoxLayout *hBoxLayout4_1 = new QHBoxLayout(Frame4_1, 0);
+
+  commitChanges = new QPushButton("&Commit Changes", Frame4_1);
+  cancelChanges = new QPushButton("&Cancel Changes", Frame4_1);
+
+  hBoxLayout4_1->addWidget(commitChanges);
+  hBoxLayout4_1->addWidget(cancelChanges);
 }
 
 /*This function is used to connect this class to the listviews

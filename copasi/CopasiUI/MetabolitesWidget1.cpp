@@ -72,7 +72,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
 
   TextLabel2 = new QLabel("Compartment Name", Frame4b);
   hBoxLayout4b->addWidget(TextLabel2);
-  hBoxLayout4b->addSpacing(-65);
+  //hBoxLayout4b->addSpacing(-5);
   ComboBox1 = new QComboBox(Frame4b, "ComboBox1");
   hBoxLayout4b->addWidget(ComboBox1);
   hBoxLayout4b->addSpacing(20);
@@ -196,7 +196,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
 
   //extra
   //connect(ComboBox1, SIGNAL(activated(int)), (ListViews*)parent, SLOT(slotCompartmentSelected()));
-  //connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
+  connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
   connect(ComboBox1, SIGNAL(highlighted(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
 }
 
