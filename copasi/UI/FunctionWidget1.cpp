@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/19 21:25:29 $
+   $Author: ssahle $ 
+   $Date: 2004/12/22 12:31:32 $
    End CVS Header */
 
 /**********************************************************************
@@ -49,6 +49,8 @@
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
+
+#include "mml/qtmmlwidget.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
@@ -184,6 +186,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   TextLabel3 = new QLabel(this, "TextLabel3");
   TextLabel3->setText(trUtf8("Function Type"));
   FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
+
+  mMmlWidget = NULL;
 
   setTabOrder(LineEdit1, textBrowser);
   setTabOrder(textBrowser, RadioButton1);
@@ -401,6 +405,11 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
 
   isValid = true;
   flagChanged = false;
+
+  //MathML widget
+  std::ostringstream mml;
+  pFunction->writeMathML(mml);
+  mMmlWidget->setContent(mml.str());
 
   return true;
 }
@@ -835,7 +844,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                // Yes or Enter
+        case 0:                                 // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -852,7 +861,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                // No or Escape
+        case 1:                                 // No or Escape
           break;
         }
     }
@@ -886,6 +895,7 @@ bool FunctionWidget1::leave()
 {
   if (isValid)
     saveToFunction();
+  mScrollView->hide();
   return true;
 }
 
@@ -893,6 +903,17 @@ bool FunctionWidget1::enter(const std::string & key)
 {
   objKey = key;
   CFunction* func = dynamic_cast<CFunction*>(GlobalKeys.get(key));
+
+  //debug
+  //func->writeMathML(std::cout);
+
+  if (!mScrollView) mScrollView = new QScrollView();
+  mScrollView->resize(400, 200);
+
+  if (!mMmlWidget) mMmlWidget = new QtMmlWidget(mScrollView);
+  mScrollView->addChild(mMmlWidget);
+  mScrollView->setResizePolicy(QScrollView::AutoOneFit);
+  mScrollView->show();
 
   if (func) return loadFromFunction(func);
   else return false;
