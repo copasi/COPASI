@@ -40,7 +40,6 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("FunctionWidget1");
-  // resize(719, 539);
   setCaption(trUtf8("FunctionWidget1"));
   FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
 

@@ -36,8 +36,6 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 {
   if (!name)
     setName("SteadyStateWidget");
-  //  resize(626, 588);
-  setMinimumSize(QSize(0, 0));
   setCaption(trUtf8("SteadyStateWidget"));
   SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
 

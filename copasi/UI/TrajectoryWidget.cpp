@@ -35,7 +35,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("TrajectoryWidget");
-  //  resize(695, 581);
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 

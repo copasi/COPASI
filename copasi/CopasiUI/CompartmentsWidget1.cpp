@@ -30,7 +30,6 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFla
 {
   if (!name)
     setName("CompartmentsWidget1");
-  //  resize(644, 478);
   setCaption(trUtf8("CompartmentsWidget1"));
   CompartmentsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "CompartmentsWidget1Layout");
 

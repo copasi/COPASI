@@ -40,7 +40,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 {
   if (!name)
     setName("ReactionsWidget1");
-  //  resize(568, 479);
   setCaption(trUtf8("ReactionsWidget1"));
   ReactionsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
 

@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   CopasiUI3Window window;
   a.setMainWidget(&window);
 
-  window.resize(800, 600);
+  window.resize(640, 480);
   window.show();
 
   //ObjectDebug objwindow;
