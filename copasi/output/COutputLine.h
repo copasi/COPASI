@@ -19,6 +19,7 @@
 template < class CType >
 class CCopasiVector;
 class CState;
+class CSteadyStateTask;
 
 using std::ofstream;
 
@@ -112,7 +113,7 @@ class COutputLine
     /**
      *  Dummy method.
      */
-    string getName() const { return mName; }
+    string getName() const {return mName; }
 
     /**
      *  Complie the mpValue in each output line
@@ -127,7 +128,7 @@ class COutputLine
     /**
      * print the mpValue of each Object in the steady-state data file
      */
-    void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution);
+    void sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the titles of the time couse data file
@@ -153,7 +154,7 @@ class COutputLine
     /**
      *  Assign the pointer to each datum object in the output line for steady State
      */
-    void compile(const string & name, CModel *model, CSS_Solution *soln);
+    void compile(const string & name, CModel *model, CSteadyStateTask *soln);
   };
 
 #endif // COutputLine

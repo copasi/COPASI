@@ -13,6 +13,7 @@
 #include "trajectory/trajectory.h"
 
 class COutputLine;
+class CSteadyStateTask;
 
 using std::ofstream;
 
@@ -124,7 +125,7 @@ class COutput
     /**
      * Pointer to a ss_solution when each 
      **/
-    CSS_Solution *mSolution;
+    CSteadyStateTask *mSolution;
 
     /**
      * the mathematical model 
@@ -220,7 +221,7 @@ class COutput
     /**
      *  Dummy method.
      */
-    string getName() const { return ""; }
+    string getName() const {return ""; }
 
     /**
      * print the titles of the steady-state data file
@@ -230,7 +231,7 @@ class COutput
     /**
      * print the mpValue of Object in the steady-state data file
      */
-    void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution);
+    void sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
     /**
      * print the titles of the time couse data file
@@ -290,7 +291,7 @@ class COutput
     /**
      * print a line of data (one iteration) on the steady-state data file
      */
-    void sSOutputData(ofstream &fout, string &SSName, C_INT32 ss_solution);
+    void sSOutputData(ofstream &fout, string &SSName);
 
     /**
      * Output the model title to the output reporting file
@@ -305,7 +306,7 @@ class COutput
     /**
      * Assign the pointer to each datum object for steady state
      */
-    void compile(const string & name, CModel *model, CSS_Solution *soln);
+    void compile(const string & name, CModel *model, CSteadyStateTask *soln);
 
     /*
      * print the time course dynamic data file
@@ -315,7 +316,7 @@ class COutput
     /*
      * print the steady state data file
      */
-    void copasiSS(ofstream &fout, C_INT32 ss_solution);
+    void copasiSS(ofstream &fout);
 
     /*
      * print the reporting data file

@@ -118,11 +118,11 @@ void COutputList::copasiRep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(ofstream &fout, C_INT32 ss_solution)
+void COutputList::copasiSS(ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->copasiSS(fout, ss_solution);
+      mList[i]->copasiSS(fout);
     }
 }
 
@@ -152,7 +152,7 @@ void COutputList::compile(const string & name, CModel *model, CState *state)
  * Assign the pointer to each datum object for steady state
  */
 void COutputList::compile(const string & name, CModel *model,
-                          CSS_Solution *soln)
+                          CSteadyStateTask *soln)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {

@@ -9,6 +9,8 @@
  */
 
 #include "COptProblem.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
 
 //  Default constructor
 COptProblem::COptProblem()
@@ -24,7 +26,7 @@ COptProblem::COptProblem()
 
 // Destructor
 COptProblem::~COptProblem()
-{ }
+{}
 
 // copy constructor
 COptProblem::COptProblem(const COptProblem& source)
@@ -110,12 +112,12 @@ C_FLOAT64 COptProblem::calculate()
   if (steady_state != NULL)
     {
       // cout << "COptProblem: steady_state";
-      steady_state->process(out);
+      steady_state->process();
     }
   if (trajectory != NULL)
     {
       // cout << "COptProblem: trajectory";
-      trajectory->process(out);
+      trajectory->process();
     }
   return 0;
 }
@@ -233,7 +235,7 @@ double COptProblem::getParameterMax(int i)
 void COptProblem::setProblemType(ProblemType t)
 {
   if (t == SteadyState)
-    steady_state = new CSS_Solution();
+    steady_state = new CSteadyStateTask();
   if (t == Trajectory)
-    trajectory = new CTrajectory();
+    trajectory = new CTrajectoryTask();
 }

@@ -90,7 +90,7 @@ class COutputList
     /*
      * print the steady state data file
      */
-    void copasiSS(ofstream &fout, C_INT32 ss_solution);
+    void copasiSS(ofstream &fout);
 
     /*
      * print the reporting data file
@@ -105,7 +105,7 @@ class COutputList
     /**
      * Assign the pointer to each datum object for steady state
      */
-    void compile(const string & name, CModel *model, CSS_Solution *soln);
+    void compile(const string & name, CModel *model, CSteadyStateTask *soln);
   };
 
 #endif //COutputList

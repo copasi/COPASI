@@ -14,8 +14,9 @@
 #include <string>
 #include <copasi.h>
 #include <vector>
-#include "steadystate/CSS_Solution.h"
-#include "trajectory/CTrajectory.h"
+
+class CSteadyStateTask;
+class CTrajectoryTask;
 
 enum ProblemType
 {
@@ -35,15 +36,15 @@ class COptProblem
     double * mParameterMin;     // the minimum values of parameters
     double * mParameterMax;     // the maximum values of parameters
     /**
-     * Pointer to CSS_Solution.  To be used in calculate() to select between
+     * Pointer to CSteadyStateTask.  To be used in calculate() to select between
      * trajectory and steady state method
      */
-    CSS_Solution * steady_state;
+    CSteadyStateTask * steady_state;
     /**
      * Pointer to CTrajectory.  To be used in calculate() to select between
      * trajectory and steady state method
      */
-    CTrajectory * trajectory;
+    CTrajectoryTask * trajectory;
 
     /**
      * This is not permanant !  this will change when CSS_Solution.process(&ofstream) 

@@ -10,14 +10,10 @@
 #include <iostream>
 
 #include "output/output.h"
-#include "steadystate/CSS_Solution.h"
-#include "trajectory/CTrajectory.h"
 
 class COutput;
-
 class COutputList;
-
-class CSS_Solution;
+class CSteadyStateTask;
 
 using std::ofstream;
 
@@ -44,8 +40,9 @@ class COutputEvent
     /**
      * User defined constructor. 
      * @param time refers to the output interval
-     */
-    COutputEvent(CSS_Solution &ss);
+     */ 
+    // COutputEvent(CSS_Solution &ss);
+    COutputEvent(CSteadyStateTask &ss);
 
     /**
      * Deconstructor
@@ -67,7 +64,7 @@ class COutputEvent
      * Copy output at the specified time 
      * @param tra refers to the CSS_solution object.
      */
-    void print(CSS_Solution &ss, COutputList list, ofstream &fout);
+    void print(CSteadyStateTask &ss, COutputList list, ofstream &fout);
   };
 
 #endif // COutputEvent

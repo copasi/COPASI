@@ -6,8 +6,9 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "output.h" 
-// #include "COutputEvent.h"
+#include "output.h"
+
+#include "steadystate/CSteadyStateTask.h"
 
 /**
  * Default constructor. 
@@ -33,7 +34,7 @@ COutputEvent::COutputEvent(int time)
  * User defined constructor. 
  *  @param time refers to the output interval
  */
-COutputEvent::COutputEvent(CSS_Solution & C_UNUSED(ss))
+COutputEvent::COutputEvent(CSteadyStateTask & C_UNUSED(ss))
 {
   //mTime = time;
   mTime = 0;    // wsun steady state just output one line data
@@ -54,10 +55,10 @@ void COutputEvent::print(COutputList list, ofstream &fout)
  * @param time refers to the output interval
  * @param list refer to the while output list of this model
  */
-void COutputEvent::print(CSS_Solution &ss, COutputList list, ofstream &fout)
-{
-  list.copasiSS(fout, ss.getSolution());
-}
+void COutputEvent::print(CSteadyStateTask & C_UNUSED(ss),
+                         COutputList list,
+                         ofstream &fout)
+{list.copasiSS(fout);}
 
 /**
  * Clean Up

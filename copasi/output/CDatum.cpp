@@ -14,6 +14,8 @@
 #include "utilities/CGlobals.h"
 #include "model/CCompartment.h"
 #include "model/CState.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CEigen.h"
 
 /**
  *  Default constructor. 
@@ -42,6 +44,7 @@ CDatum::CDatum(const string& title, void* value, C_INT32 type, const string& obj
   mType = type;
   mObject = object;
 }
+
 void CDatum::cleanup() {}
 
 /**
@@ -135,7 +138,7 @@ void CDatum::setObject(const string& object)
 /**
  *  Loads an object with data coming from a CReadConfig object.
  *  (CReadConfig object reads an input stream)
-  *  @param pconfigbuffer reference to a CReadConfig object.
+ *  @param pconfigbuffer reference to a CReadConfig object.
  *  @return mFail
  *  @see mFail
  */
@@ -229,7 +232,7 @@ C_INT32 CDatum::load(CReadConfig & configbuffer)
 /**
  *  Saves the contents of the object to a CWriteConfig object.
  *  (Which usually has a file attached but may also have socket)
-  *  @param pconfigbuffer reference to a CWriteConfig object.
+ *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
  */
@@ -321,7 +324,7 @@ C_INT32 CDatum::save(CWriteConfig & configbuffer)
  *  Creates the mObject
  *  @param object constant reference to a string specifing the name of the 
  *  model this datum is in, IStr, JStr, the type of this data, such as D_TCONC.
-  */
+ */
 
 void CDatum::createObject(const string& IStr, const string& JStr, C_INT32 Type)
 {
@@ -594,7 +597,7 @@ string CDatum::getObjectJStr(string object)
 /**
  *  Complie the mpValue in each CDatum
  */
-void CDatum::compileDatum(CModel *Model, CState *state, CSS_Solution *soln)
+void CDatum::compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln)
 {
   C_INT32 Type = 0;
   string IStr, JStr;
@@ -617,7 +620,8 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSS_Solution *soln)
 #endif
 
     case D_SSRES:  // steady-state resolution
-      mpValue = soln->getSSResAddr();
+      //   mpValue = soln->getSSResAddr();
+      fatalError();
       mType = CFLOAT64;
       break;
     case D_UFUNC:  // user functions
@@ -630,7 +634,8 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSS_Solution *soln)
       mType = CFLOAT64;
       break;
     case D_DERIV:  // Derive Factor
-      mpValue = soln->getDerivFactorAddr();
+      //   mpValue = soln->getDerivFactorAddr();
+      fatalError();
       mType = CFLOAT64;
       break;
 #if 0
@@ -640,43 +645,43 @@ void CDatum::compileDatum(CModel *Model, CState *state, CSS_Solution *soln)
 #endif
 
     case D_EIGMR:  // max real eigenvalue component
-      mpValue = soln->getEigen()->getMaxRealPartAddr();
+      mpValue = &soln->getEigenValues()->getEigen_maxrealpart();
       mType = CFLOAT64;
       break;
     case D_EIGMI:  // max absolute imaginary eigenvalue component
-      mpValue = soln->getEigen()->getMaxImagPartAddr();
+      mpValue = &soln->getEigenValues()->getEigen_maximagpart();
       mType = CFLOAT64;
       break;
     case D_EIGPR:   // number of eigenvalues w/ positive real parts
-      mpValue = soln->getEigen()->getNPosRealAddr();
+      mpValue = &soln->getEigenValues()->getEigen_nposreal();
       mType = CFLOAT64;
       break;
     case D_EIGNR:  // number of eigenvalues w/ negative real parts
-      mpValue = soln->getEigen()->getNNegRealAddr();
+      mpValue = &soln->getEigenValues()->getEigen_nnegreal();
       mType = CFLOAT64;
       break;
     case D_EIGR:   // number of real eigenvalues
-      mpValue = soln->getEigen()->getNRealAddr();
+      mpValue = &soln->getEigenValues()->getEigen_nreal();
       mType = CFLOAT64;
       break;
     case D_EIGI:  // number of imaginary eigenvalues
-      mpValue = soln->getEigen()->getNImagAddr();
+      mpValue = &soln->getEigenValues()->getEigen_nimag();
       mType = CFLOAT64;
       break;
     case D_EIGC:  // number of complex eigenvalues
-      mpValue = soln->getEigen()->getNCplxConjAddr();
+      mpValue = &soln->getEigenValues()->getEigen_ncplxconj();
       mType = CFLOAT64;
       break;
     case D_EIGZ:  // number of zero eigenvalues
-      mpValue = soln->getEigen()->getNZeroAddr();
+      mpValue = &soln->getEigenValues()->getEigen_nzero();
       mType = CFLOAT64;
       break;
     case D_THIER:  // time hierarchy
-      mpValue = soln->getEigen()->getHierarchyAddr();
+      mpValue = &soln->getEigenValues()->getEigen_hierarchy();
       mType = CFLOAT64;
       break;
     case D_STIFF:  // stiffness
-      mpValue = soln->getEigen()->getStiffnessAddr();
+      mpValue = &soln->getEigenValues()->getEigen_stiffness();
       mType = CFLOAT64;
       break;
     case D_T:  // time
@@ -807,7 +812,7 @@ int CDatum::FindUDFunct(string title)
     if (Copasi->UDFunctionDB.getFunctions()[i]->getName() == title)
       return i;
 
-  return -1;
+  return - 1;
 }
 
 /**

@@ -15,7 +15,6 @@
 #include "model/CCompartment.h"
 #include "CDatum.h"
 #include "COutputLine.h"
-#include "steadystate/CSS_Solution.h"
 
 using namespace std;
 
@@ -87,7 +86,7 @@ void COutputLine::addDatum(CDatum & newDatum)
 {
   mLine.add(newDatum);
 }
-C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) { return 0; }
+C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) {return 0; }
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
@@ -211,8 +210,7 @@ void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SS
  * print the mpValue of each Object in the steady-state data file
  */
 void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator,
-                               C_INT16 SSColWidth, C_INT16 C_UNUSED(SSQuotes),
-                               C_INT32 C_UNUSED(ss_solution))
+                               C_INT16 SSColWidth, C_INT16 C_UNUSED(SSQuotes))
 {
   unsigned C_INT32 i;
   C_INT32 Type;
@@ -465,7 +463,7 @@ void COutputLine::dynOutputData(ofstream &fout, C_INT16 DynSeparator,
 void COutputLine::compile(const string & name, CModel *model, CState *state)
 {
   if (!mName.compare(name))
-    { // ???? Maybe it isnot necessary after finish whole module
+    {// ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
         {
@@ -478,10 +476,10 @@ void COutputLine::compile(const string & name, CModel *model, CState *state)
  *  Assign the pointer to each datum object in the output line for steady state
  */
 void COutputLine::compile(const string & name, CModel * C_UNUSED(model),
-                          CSS_Solution * C_UNUSED(soln))
+                          CSteadyStateTask * C_UNUSED(soln))
 {
   if (!mName.compare(name))
-    { // ???? Maybe it isnot necessary after finish whole module
+    {// ???? Maybe it isnot necessary after finish whole module
 
       for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
         {
@@ -496,6 +494,6 @@ COutputLine::CCDatum::CCDatum() {}
 COutputLine::CCDatum::~CCDatum() {}
 
 C_INT16 COutputLine::CCDatum::isInsertAllowed(const CDatum & src)
-{ return TRUE; }
+{return TRUE; }
 
 #endif // XXXX

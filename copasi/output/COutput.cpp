@@ -18,6 +18,8 @@
 #include "model/model.h"
 #include "utilities/CGlobals.h"
 #include "tnt/transv.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CEigen.h"
 
 using namespace std;
 
@@ -57,7 +59,7 @@ void COutput::cleanup()
   //  if (mOutput) delete mOutput;
   //  mOutput = NULL;
   mOutput.cleanup();
-  mSolution->cleanup();
+  // mSolution->cleanup();
 }
 
 /**
@@ -198,7 +200,7 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName, C_INT16 SSSeparator
 /**
  * print mpValue of each Object in the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution)
+void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   string Name;
 
@@ -207,7 +209,7 @@ void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT16 SSSeparator, 
       Name = mOutput[i]->getName();
 
       if (Name == SSName)
-        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
+        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -257,7 +259,7 @@ void COutput::compile(const string & name, CModel *model, CState *state)
 /**
  * Assign the pointer to each datum object for steady state
  */
-void COutput::compile(const string & name, CModel *model, CSS_Solution *soln)
+void COutput::compile(const string & name, CModel *model, CSteadyStateTask *soln)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
@@ -559,19 +561,7 @@ void COutput::repSS(ofstream &fout)
   double rate;
   CModel *model = Copasi->Model;
 
-  if (mSolution->getSolution() != SS_FOUND)
-    {
-      fout << endl;
-      fout << "A STEADY STATE COULD NOT BE FOUND.\n(below are the last unsuccessful trial values)";
-      fout << endl;
-    }
-  else
-    {
-      fout << endl << "STEADY STATE SOLUTION" << endl;
-
-      if (CheckEquilibrium())
-        fout << "(chemical equilibrium)" << endl;
-    }
+  fout << *mSolution;
 
   fout.unsetf(ios::left);
   fout.setf(ios::right);
@@ -643,122 +633,49 @@ void COutput::repSS(ofstream &fout)
  */
 void COutput::repStability(ofstream &fout)
 {
-  unsigned C_INT32 i, j;
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 j, jmax;
+
+  const C_FLOAT64 * Jacobian = mSolution->getJacobian();
   CModel *model = Copasi->Model;
 
-  if (mSolution->getSolution() != SS_FOUND)
+  fout << *mSolution->getEigenValues();
+
+  // Set Float manipulators
+  fout.setf(ios::scientific, ios::floatfield);
+  fout.setf(ios::showpoint);
+  fout.width(10);
+
+  // Output Jacobian Matrix
+  fout << endl << "Jacobian matrix" << endl;
+  fout << setprecision(6);
+
+  imax = jmax = model->getMetabolitesInd().size();
+  for (i = 0; i < imax; i++)
     {
-      fout << "The linear stability analysis based on the eigenvalues" << endl;
-      fout << "of the Jacobian matrix is only valid for steady states." << endl;
+      for (j = 0; j < jmax; j++)
+        fout << Jacobian[i * jmax + j];
+
+      fout << endl;
     }
-  else
+
+  // Output Eigenvalus of the Jacibian Matrix
+  fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
+
+  for (i = 0; i < model->getMetabolitesInd().size(); i++)
     {
-      fout << endl << "KINETIC STABILITY ANALYSIS" << endl << endl;
-      fout << "Summary:" << endl;
-      fout << "This steady state ";
-
-      // Output statistics
-
-      if (mSolution->getEigen()->getEigen_maxrealpart() > mSolution->getSSRes())
-        fout << "is unstable";
+      if (mSolution->getEigenValues()->getEigen_i()[i] == 0.0)
+        fout << setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
       else
         {
-          if (mSolution->getEigen()->getEigen_maxrealpart() < -mSolution->getSSRes())
-            fout << "is asymptotically stable";
-          else
-            fout << "stability is undetermined";
-        }
-
-      if (mSolution->getEigen()->getEigen_maximagpart() > mSolution->getSSRes())
-        {
-          fout << "," << endl;
-          fout << "transient states in its vicinity have oscillatory components" << endl;
-        }
-
-      fout << endl;
-      fout << endl << "Eigenvalue statistics:" << endl;
-      // Output Max Real Part
-      fout << " Largest real part: ";
-      fout << setprecision(6) << mSolution->getEigen()->getEigen_maxrealpart() << endl;
-      // Output Max imaginary Part
-      fout << " Largest absolute imaginary part:  ";
-      fout << setprecision(6) << mSolution->getEigen()->getEigen_maximagpart() << endl;
-      // Output Eigen-nreal
-      fout.unsetf(ios::scientific);
-      fout.unsetf(ios::showpoint);
-      fout << " " << mSolution->getEigen()->getEigen_nreal();
-      fout << " are purely real" << endl;
-      // Output Eigen-nimage
-      fout << " " << mSolution->getEigen()->getEigen_nimag();
-      fout << " are purely imaginary" << endl;
-      // Output Eigen-ncplxconj
-      fout << " " << mSolution->getEigen()->getEigen_ncplxconj();
-      fout << " are complex" << endl;
-      // Output Eigen-nzero
-      fout << " " << mSolution->getEigen()->getEigen_nzero();
-      fout << " are equal to zero" << endl;
-      // Output Eigen-nposreal
-      fout << " " << mSolution->getEigen()->getEigen_nposreal();
-      fout << " have positive real part" << endl;
-      // Output Eigen-nnegreal
-      fout << " " << mSolution->getEigen()->getEigen_nnegreal();
-      fout << " have negative real part" << endl;
-
-      // Set point manipulators
-      fout.setf(ios::showpoint);
-      // Output Eigne-stiffness
-      fout << " stiffness = " << mSolution->getEigen()->getEigen_stiffness() << endl;
-      fout << " time hierarchy = " << mSolution->getEigen()->getEigen_hierarchy() << endl;
-
-      // Set Float manipulators
-      fout.setf(ios::scientific, ios::floatfield);
-      fout.setf(ios::showpoint);
-
-      // Output Jacobian Matrix
-      fout << endl << "Jacobian matrix" << endl;
-      fout << setprecision(6);
-
-      for (i = 0; i < model->getMetabolitesInd().size(); i++)
-        {
-          for (j = 0; j < model->getMetabolitesInd().size(); j++)
-            {
-              if (mSolution->getJacob()->getJacob()[i][j] >= 0)
-                {
-                  if (j)
-                    fout << "  ";
-                  else
-                    fout << " ";
-                }
-              else
-                {
-                  if (j)
-                    fout << " ";
-                }
-
-              fout << mSolution->getJacob()->getJacob()[i][j];
-            }
-
-          fout << endl;
-        }
-
-      // Output Eigenvalus of the Jacibian Matrix
-      fout << endl << "Eigenvalues of the Jacobian matrix" << endl;
-
-      for (i = 0; i < model->getMetabolitesInd().size(); i++)
-        {
-          if (mSolution->getEigen()->getEigen_i()[i] == 0.0)
-            fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
-          else
-            {
-              fout << setprecision(6) << mSolution->getEigen()->getEigen_r()[i];
-              fout << " + " << setprecision(6) << mSolution->getEigen()->getEigen_i()[i];
-            }
-
-          fout << endl;
+          fout << setprecision(6) << mSolution->getEigenValues()->getEigen_r()[i];
+          fout << " + " << setprecision(6) << mSolution->getEigenValues()->getEigen_i()[i];
         }
 
       fout << endl;
     }
+
+  fout << endl;
 }
 
 /**
@@ -819,12 +736,12 @@ void COutput::sSOutputTitles(ofstream &fout, string &SSName)
 /**
  * print a line of data (one iteration) on the steady-state data file
  */
-void COutput::sSOutputData(ofstream &fout, string &SSName, C_INT32 ss_solution)
+void COutput::sSOutputData(ofstream &fout, string &SSName)
 {
   for (unsigned C_INT32 i = 0; i < mOutput.size(); i++)
     {
       if (SSName == mOutput[i]->getName())
-        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes, ss_solution);
+        mOutput[i]->sSOutputData(fout, SSSeparator, SSColWidth, SSQuotes);
     }
 }
 
@@ -861,7 +778,7 @@ void COutput::copasiRep(ofstream &fout)
 /*
  * print the steady state data file
  */
-void COutput::copasiSS(ofstream &fout, C_INT32 ss_solution)
+void COutput::copasiSS(ofstream &fout)
 {
   string SSName = "Steady-state output";
 
@@ -870,7 +787,7 @@ void COutput::copasiSS(ofstream &fout, C_INT32 ss_solution)
       if (SSTitles)
         sSOutputTitles(fout, SSName);
 
-      sSOutputData(fout, SSName, ss_solution);
+      sSOutputData(fout, SSName);
     }
 }
 
@@ -1090,7 +1007,7 @@ C_INT32 COutput::writeDefaultVar(CWriteConfig &configbuffer)
   //    in current configure file
   return Fail;
 }
-
+#ifdef XXXX
 int COutput::CheckEquilibrium()
 {
   unsigned C_INT32 i;
@@ -1111,3 +1028,4 @@ int COutput::CheckEquilibrium()
 
   return 0;
 }
+#endif // XXXX

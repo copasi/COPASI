@@ -61,7 +61,7 @@
 #define CFLOAT64 4
 
 class CState;
-class CSS_Solution;
+class CSteadyStateTask;
 
 class CDatum
   {
@@ -220,12 +220,12 @@ class CDatum
     /**
      *  Dummy method.
      */
-    string getName() const { return ""; }
+    string getName() const {return "";}
 
     /**
      *  Complie the mpValue in each CDatum
      */
-    void compileDatum(CModel *Model, CState *state, CSS_Solution *soln);
+    void compileDatum(CModel *Model, CState *state, CSteadyStateTask *soln);
 
     /**
      * Returns the index of a user defined function
