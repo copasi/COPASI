@@ -51,6 +51,7 @@ class SteadyStateWidget;
 class ScanWidget;
 class TrajectoryWidget;
 class TableDefinition;
+class TableDefinition1;
 class CopasiWidget;
 class Folder;
 
@@ -185,6 +186,7 @@ class ListViews : public QSplitter
     ModesWidget *modesWidget;
     ModelWidget *modelWidget;
     TableDefinition *tableDefinition;
+    TableDefinition1 *tableDefinition1;
   };
 
 #endif
