@@ -102,13 +102,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         }
     }
 
-  // Create a vector of pointers to all metabolites.
-  // Note, the metabolites physically exist in the compartments.
-  for (i = 0; i < mCompartments->size(); i++)
-    for (unsigned C_INT32 j = 0;
-	 j < (*mCompartments)[i].metabolites().size(); j++)
-      mMetabolites.push_back(&(*mCompartments)[i].metabolites()[j]);
-
+  initializeMetabolites();
 
   if ((Fail = Copasi.FunctionDB.load(configBuffer))) return Fail;
 
@@ -223,6 +217,7 @@ void CModel::lUDecomposition()
 	  mStepsX[colLU[i]-1] = pStep;
         }
     }
+  cout << mStoi << endl;
 
   return;
 }
@@ -275,7 +270,7 @@ void CModel::buildRedStoi()
       {
 	Sum = 0.0;
 	//for (k=0; k<min(i,j+1); k++) for compiler
-	kmax = (i < j+1) ? j+1 : i;
+	kmax = (i < j+1) ? i : j+1;
 	for (k=0; k<kmax; k++)
 	  Sum += mStoi[i][k] * mStoi[k][j];
 	if (i<=j) Sum += mStoi[i][j];
@@ -351,9 +346,14 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   return;
 }
 
-CCopasiVector<CReaction> & CModel::getReactions()
+CCopasiVector < CReaction > & CModel::getReactions()
 {
   return *mSteps;
+}
+
+vector < CReaction * > & CModel::getReactionsX()
+{
+  return mStepsX;
 }
 
 void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
@@ -384,6 +384,8 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 }
 
 vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
+
+vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
 
 C_INT32 CModel::getTotMetab() const
 {
@@ -541,6 +543,13 @@ C_INT32 CModel::findMoiety(string &Target)
 
   return -1;
 }
+void CModel::initializeMetabolites()
+{
+  unsigned C_INT32 i, j;
 
-
-
+  // Create a vector of pointers to all metabolites.
+  // Note, the metabolites physically exist in the compartments.
+  for (i = 0; i < mCompartments->size(); i++)
+    for (j = 0; j < (*mCompartments)[i].metabolites().size(); j++)
+      mMetabolites.push_back(&(*mCompartments)[i].metabolites()[j]);
+}

@@ -243,6 +243,12 @@ class CModel
   C_INT32 save(CWriteConfig &configBuffer);
 
   /**
+   *  This function must be called to initialize the vector of Metabolites
+   *  after finishing adding metabolites to compartments.
+   */
+  void initializeMetabolites();
+    
+  /**
    *  Build the Stoichiometry Matrix from the chemical equations of the steps
    */
   void buildStoi();
@@ -278,6 +284,7 @@ class CModel
   void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   vector < CMetab * > & getMetabolitesInd();
+  vector < CMetab * > & getMetabolitesX();
     
   /**
    *  Set the vector of particle numbers for independent metabolites
@@ -321,7 +328,8 @@ class CModel
    * Return the vector of reactions
    * @return "CCopasiVector<CReaction> *"
    */
-  CCopasiVector<CReaction> & getReactions();
+  CCopasiVector < CReaction > & getReactions();
+  vector < CReaction * > & getReactionsX();
 
   // Added by Yongqun He
   /**
