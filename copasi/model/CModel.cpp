@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.176 $
+   $Revision: 1.177 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/26 13:36:04 $
+   $Date: 2004/06/08 21:15:12 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -667,9 +667,9 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
         Sum += fabs(LU[j][k]);
 
       if (Sum == 0.0)
-        break;
-
-      mMetabolitesX[j]->setStatus(CMetab::METAB_DEPENDENT);
+        mMetabolitesX[j]->setStatus(CMetab::METAB_UNUSED);
+      else
+        mMetabolitesX[j]->setStatus(CMetab::METAB_DEPENDENT);
     }
 
   mMetabolitesDep.resize(j - i, false);
@@ -848,10 +848,10 @@ void CModel::buildMoieties()
 
   for (i = imin; i < imax; i++)
     {
+      if (mMetabolitesX[i]->getStatus() == CMetab::METAB_UNUSED) continue;
+
       pMoiety = new CMoiety;
-
       pMoiety->setName(mMetabolitesX[i]->getObjectName());
-
       pMoiety->add(1.0, mMetabolitesX[i]);
 
       for (j = 0; j < jmax; j++)

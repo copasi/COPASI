@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:06:19 $
+   $Author: shoops $ 
+   $Date: 2004/06/08 21:15:12 $
    End CVS Header */
 
 /**
@@ -155,8 +155,11 @@ bool CMathModel::buildMetabList()
 
   for (i = 0; i < imax; i++)
     {
-      p = new CMathVariableMetab(*List[i]);
-      mMetabList[p->getName()] = p;
+      if (List[i]->getStatus() != CMetab::METAB_UNUSED)
+        {
+          p = new CMathVariableMetab(*List[i]);
+          mMetabList[p->getName()] = p;
+        }
     }
 
   return Success;
