@@ -30,7 +30,7 @@
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "utilities/CGlobals.h"
-
+int numrows;
 using std::cout;
 using std::endl;
 
@@ -257,7 +257,7 @@ void ReactionsWidget1::loadName(QString setValue)
   Reaction1_Name = new QString(reactn->getName().c_str());
 
   chemEq = & reactn->getChemEq();
-  LineEdit2->setText(chemEq->getChemicalEquation().c_str());
+  LineEdit2->setText(chemEq->getChemicalEquationConverted().c_str());
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
 
@@ -278,10 +278,10 @@ void ReactionsWidget1::loadName(QString setValue)
   num_substrates = reactn->getId2Substrates().size();
   num_products = reactn->getId2Products().size();
 
-  int numrows = reactn->getId2Substrates().size() +
-                reactn->getId2Products().size() +
-                reactn->getId2Modifiers().size() +
-                reactn->getId2Parameters().size();
+  numrows = reactn->getId2Substrates().size() +
+            reactn->getId2Products().size() +
+            reactn->getId2Modifiers().size() +
+            reactn->getId2Parameters().size();
 
   table->setNumRows(numrows);
   cout << "NumRows: " << reactn->getId2Substrates().size() +
@@ -522,6 +522,37 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
   string product_name[100];
   string modifier_name[100];
   string parameter_name[100];
+  unsigned int count = 0;
+
+  //for clearing the values of the table
+  for (count = 0; count <= numrows; count++)
+    {
+      table->clearCell(count, 0);
+    }
+
+  unsigned int z = 0;
+  unsigned int line = 0;
+  QStringList comboEntries1;
+
+  QString chemical_reaction = LineEdit2->text();
+  //int i = chemical_reaction.find ("->", 0, TRUE);
+  QStringList individual_substrates = QStringList::split (" ", chemical_reaction, FALSE);
+  QString try1 = individual_substrates[1];
+
+  QString try2 = individual_substrates[2];
+  QMessageBox::information(this, try1, "first");
+  QMessageBox::information(this, try2, "second");
+  //QStringList individual_products=QStringList::split (" ", chemical_reaction, FALSE);
+  //QString try1=individual_products[0];
+
+  /* chemical_reaction = chemical_reaction.replace(i, 2, "=");
+   LineEdit2->setText(chemical_reaction);
+
+  comboEntries1.push_back(overall);
+  QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+  QString temp = comboEntries1[z];
+  item->setCurrentItem(temp);
+  table->setItem(line, 0, item); */
 
   for (unsigned int i = 0; i < functionParameters.size(); i++)
     {
@@ -532,6 +563,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           substrate_name[count_substrates] = functionParameters[i]->getName();
           count_substrates++;
+          QMessageBox::information(this, functionParameters[i]->getName().c_str(), "The name of the substrate is ");
         }
       else if (p4 == "PRODUCT")
         {
@@ -550,7 +582,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
           count_parameters++;
         }
 
-      unsigned int count = 0;
+      count = 0;
       unsigned int index = count_substrates;
       QHeader *tableHeader2 = table->verticalHeader();
 
@@ -577,12 +609,6 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       for (; count <= length_of_string; count++)
         {
           tableHeader2->setLabel(count, substrate_name[count].c_str());
-        }
-
-      //for clearing the values of the table
-      for (count = 0; count <= length_of_string; count++)
-        {
-          table->clearCell(count, 0);
         }
     }
 }
