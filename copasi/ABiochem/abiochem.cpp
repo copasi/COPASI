@@ -292,26 +292,16 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
       funct->setName(kiname);
       funct->setReversible(TriFalse);
       equation = "V";
-      if ((p != 0) || (k != 0))
-        equation += "/(";
       for (i = 0, j = 1; i < p; i++, j++)
         {
-          if (i == 0)
-            sprintf(tmpstr, "(1+Ka%ld/A%ld)^na%ld", j, j, j);
-          else
-            sprintf(tmpstr, "*(1+Ka%ld/A%ld)^na%ld", j, j, j);
+          sprintf(tmpstr, "*(A%ld/(A%ld+Ka%ld))^na%ld", j, j, j, j);
           equation += tmpstr;
         }
       for (j = 1; i < k; i++, j++)
         {
-          if (i == 0)
-            sprintf(tmpstr, "(1+I%ld/Ki%ld)^ni%ld", j, j, j);
-          else
-            sprintf(tmpstr, "*(1+I%ld/Ki%ld)^ni%ld", j, j, j);
+          sprintf(tmpstr, "*(Ki%ld/(I%ld+Ki%ld))^ni%ld", j, j, j, j);
           equation += tmpstr;
         }
-      if ((p != 0) || (k != 0))
-        equation += ")";
       funct->setDescription(equation);
       funct->addUsage("SUBSTRATES", 0, CRange::NoRange);
       funct->addUsage("PRODUCTS", 1, CRange::NoRange);
