@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.14 2003/10/06 01:42:55 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.15 2003/10/06 02:03:49 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -260,4 +260,24 @@ OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
       lineLower->setEnabled(true);
       lineLower->setText(strLowerLimit.c_str());
     }
+}
+
+std::string OptimizationItemWidget::getItemUpperOper()
+{
+  return comboBoxUpperOp->currentText().latin1();
+}
+
+std::string OptimizationItemWidget::getItemLowerOper()
+{
+  return comboBoxLowerOp->currentText().latin1();
+}
+
+OptimizationItemWidget::setItemUpperOper(std::string oper)
+{
+  comboBoxUpperOp->setCurrentText (oper.c_str());
+}
+
+OptimizationItemWidget::setItemLowerOper(std::string oper)
+{
+  comboBoxLowerOp->setCurrentText (oper.c_str());
 }

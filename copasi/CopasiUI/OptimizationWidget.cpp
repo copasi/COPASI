@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.12 2003/10/06 01:42:55 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.13 2003/10/06 02:03:49 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -379,6 +379,12 @@ void OptimizationWidget::upButtonClicked()
   std::string mUpMin = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemLowerLimit();
   std::string mDownMax = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemUpperLimit();
   std::string mUpMax = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemUpperLimit();
+
+  std::string mDownLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemLowerOper();
+  std::string mUpLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemLowerOper();
+  std::string mDownUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemUpperOper();
+  std::string mUpUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemUpperOper();
+
   CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
   CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
 
@@ -386,6 +392,12 @@ void OptimizationWidget::upButtonClicked()
 
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
+
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperOper(mUpUpperOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperOper(mDownUpperOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerOper(mUpLowerOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerOper(mDownLowerOp);
+
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperLimit(mUpMax);
   ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperLimit(mDownMax);
   ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
@@ -437,32 +449,61 @@ void OptimizationWidget::downButtonClicked()
 
   activeObject++;
 
-  /* need future work
-    CMethodParameterList* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
-    CMethodParameterList* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
-    CScanTask* optFunction = (CScanTask*)(CCopasiContainer*)CKeyFactory::get(objKey);
-    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject - 1));
-    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setScanObject(optFunction->getProblem()->getScanItem(activeObject));
-    ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->updateObject();
-    ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->updateObject();
-  */
+  std::string mDownMin = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemLowerLimit();
+  std::string mUpMin = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemLowerLimit();
+  std::string mDownMax = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getItemUpperLimit();
+  std::string mUpMax = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getItemUpperLimit();
+
+  std::string mDownLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemLowerOper();
+  std::string mUpLowerOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemLowerOper();
+  std::string mDownUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1]) ->getItemUpperOper();
+  std::string mUpUpperOp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1]) ->getItemUpperOper();
+
+  CCopasiObject* pObjectDown = ((OptimizationItemWidget*)selectedList[2 * activeObject + 1])->getCopasiObject();
+  CCopasiObject* pObjectUp = ((OptimizationItemWidget*)selectedList[2 * activeObject - 1])->getCopasiObject();
+
+  COptFunction* optFunction = (COptFunction*)CKeyFactory::get(objKey);
+
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setCopasiObjectPtr(pObjectUp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setCopasiObjectPtr(pObjectDown);
+
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperOper(mUpUpperOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperOper(mDownUpperOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerOper(mUpLowerOp);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerOper(mDownLowerOp);
+
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemUpperLimit(mUpMax);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemUpperLimit(mDownMax);
+  ((OptimizationItemWidget*)selectedList[2*activeObject + 1])->setItemLowerLimit(mUpMin);
+  ((OptimizationItemWidget*)selectedList[2*activeObject - 1])->setItemLowerLimit(mDownMin);
+
+  //back end change
+  CCopasiObject* tmpObj = optFunction->mParaList [activeObject - 1];
+  optFunction->mParaList [activeObject - 1] = optFunction->mParaList [activeObject];
+  optFunction->mParaList [activeObject] = tmpObj;
+
+  std::string tmpStr = optFunction->mMinList [activeObject - 1];
+  optFunction->mMinList [activeObject - 1] = optFunction->mMinList [activeObject];
+  optFunction->mMinList [activeObject] = tmpStr;
+
+  tmpStr = optFunction->mMaxList [activeObject - 1];
+  optFunction->mMaxList [activeObject - 1] = optFunction->mMaxList [activeObject];
+  optFunction->mMaxList [activeObject] = tmpStr;
 
   //upper one
   ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  //  activeTitle->setText(pObjectDown->getCN().c_str());
+  activeTitle->setText(pObjectDown->getCN().c_str());
 
   //bottom one
   activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  //  activeTitle->setText(pObjectUp->getCN().c_str());
+  activeTitle->setText(pObjectUp->getCN().c_str());
 
   //Update ListBox
   QString tmp = itemnamesTable->text (activeObject);
   itemnamesTable->changeItem (NULL, itemnamesTable->text(activeObject - 1) , activeObject);
   itemnamesTable->changeItem (NULL, tmp, activeObject - 1);
-
-  //  optFunction->getProblem()->swapScanItem(activeObject - 1, activeObject);
 
   emit show_me();
   if (activeObject >= 0)

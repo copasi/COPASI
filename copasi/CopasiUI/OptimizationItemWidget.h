@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.4 2003/10/06 00:38:02 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.5 2003/10/06 02:03:49 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -54,6 +54,12 @@ class OptimizationItemWidget : public QWidget
 
     setItemUpperLimit(std::string strUpperLimit);
     setItemLowerLimit(std::string strLowerLimit);
+
+    std::string getItemUpperOper();
+    std::string getItemLowerOper();
+
+    setItemUpperOper(std::string oper);
+    setItemLowerOper(std::string oper);
 
     CCopasiObject* getCopasiObject();
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
