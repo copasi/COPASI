@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.189 $
+   $Revision: 1.190 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:27:28 $
+   $Date: 2004/09/09 14:01:41 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -796,7 +796,7 @@ void CModel::setTransitionTimes()
             TransitionTime = mMetabolites[i]->getNumber() / TotalFlux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
-          mMetabolites[i]->setRate(TotalFlux * mNumber2QuantityFactor);
+          mMetabolites[i]->setRate(TotalFlux);
 
           if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
             mTransitionTime = DBL_MAX;
