@@ -159,11 +159,12 @@ void DataModel<T>::setData(int status)
 template<class T>
 void DataModel<T>::loadModel(const char* fileName)
 {
-    delete model;
+    pdelete(model);
 	//model=NULL;
     CReadConfig inbuf(fileName);
 	model=new CModel();
 	model->load(inbuf);
+	model->compile();
 	modelUpdate=true;
 	notify(MODEL);
 

@@ -161,7 +161,7 @@ void MoietyWidget1::loadName(QString setValue)
 		LineEdit3->setText(moiety->getName().c_str());
 		LineEdit2->setText(QString::number(moiety->getNumber()));
 		  	
-		}
+}
 
 
 

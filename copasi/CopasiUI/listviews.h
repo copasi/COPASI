@@ -14,7 +14,6 @@
 #include <qobject.h>
 #include <qptrlist.h>
 #include <qlistview.h>
-//#include <iostream.h>
 #include <vector>
 #include <qvaluelist.h> 
 #include <qobjectlist.h>
@@ -37,7 +36,7 @@
 #include "ReactionsWidget1.h"
 #include "MetabolitesWidget1.h"
 #include "CompartmentsWidget1.h"
-//#include "MoietyWidget1.h"
+#include "MoietyWidget1.h"
 #include "./icons/folderclosed.xpm"
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
@@ -71,6 +70,7 @@ protected:
 //	QString fCaption;
     QString fName;
 	int id;
+
 	
 };
 
@@ -141,7 +141,7 @@ protected:
 	ReactionsWidget1 *reactionsWidget1;
 	MetabolitesWidget1 *metabolitesWidget1;
 	CompartmentsWidget1 *compartmentsWidget1;
-//MoietyWidget1 *moietyWidget1;
+	MoietyWidget1 *moietyWidget1;
 protected slots:
     void slotFolderChanged( QListViewItem*);
 

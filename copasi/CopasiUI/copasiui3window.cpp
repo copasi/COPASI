@@ -107,9 +107,20 @@ QString gpsFile = QFileDialog::getOpenFileName(
                     "Choose a file" );
     // gives the file information to the datamodel to handle it
 	if(dataModel && gpsFile)
-		 dataModel->loadModel((const char *)gpsFile.utf8());
+		dataModel->loadModel((const char *)gpsFile.utf8());
+			
 
-	
+try
+	{
+		mModel.compile();
+	}
+
+	catch (CCopasiException Exception)
+    {
+      cout << Exception.getMessage().getText() << endl;
+    }
+
+
 
 
 

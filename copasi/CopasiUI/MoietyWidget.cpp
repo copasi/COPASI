@@ -69,7 +69,7 @@ void MoietyWidget::loadMoieties(CModel *model)
 {
 	if (model != NULL)
 	{
-		
+		mModel = model;
 		//Emptying the table
 		int numberOfRows = table->numRows();
 		for(int i = 0; i < numberOfRows; i++)
@@ -78,10 +78,11 @@ void MoietyWidget::loadMoieties(CModel *model)
 		}
 
 
-		CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
+
+	CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
 	
 		C_INT32 noOfMoietyRows = moieties.size();
-		table->setNumRows(noOfMoietyRows);
+		table->setNumRows (noOfMoietyRows);
 		
 		//Now filling the table.
 		CMoiety *moiety;
@@ -96,10 +97,10 @@ void MoietyWidget::loadMoieties(CModel *model)
 			
 		
 		
-		
 		}
 	}
 }
+
 
 
 void MoietyWidget::mousePressEvent ( QMouseEvent * e )
