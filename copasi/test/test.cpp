@@ -97,18 +97,18 @@ C_INT main(void)
       // TestReadSample();
       // TestTrajectory();
       // by Yongqun He
-      // TestNewton();
+      TestNewton();
       // TestSSSolution();
 
       // TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestBaseFunction();
-       MakeFunctionDB();
+      // MakeFunctionDB();
       // TestModel();
       // TestLU();
-	  // TestMCA();
-	 TestOutputEvent();	
+      // TestMCA();
+      // TestOutputEvent();	
     }
 
   catch (CCopasiException Exception)
@@ -510,16 +510,25 @@ C_INT32  TestSSSolution(void)
     model.buildRedStoi();
     model.buildL();
     model.buildMoieties();
- 
-    CSS_Solution ss_soln;
-    ss_soln.setModel(&model);
- 
+
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
     newton.setModel(&model);
+    newton.initialize();
+    newton.setDerivFactor(1.0);
+    newton.setSSRes(1.0);
+    newton.setSs_nfunction(0);
+    newton.init_Ss_x_new();
+
+    CTrajectory traj(&model, 20, 10.0, 1);
+    traj.load(inbuf);
+    traj.getODESolver()->load(inbuf);
+    traj.getODESolver()->loadLSODAParameters(inbuf);
  
+    CSS_Solution ss_soln;
+    ss_soln.setModel(&model);
     ss_soln.setNewton(&newton);
- 
+    ss_soln.setTrajectory(&newton);
  
     ss_soln.process();
  
