@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: stupe $ 
-   $Date: 2005/03/07 15:00:19 $
+   $Date: 2005/03/07 15:45:02 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -303,7 +303,7 @@ std::string COptions::getTemp(void)
 
   User = getEnvironmentVariable("USER");
   if (User == "") User = getEnvironmentVariable("USERNAME");
-
+  if (User == "") User = "CopasiUser";
   if (Temp == "")
 #ifdef WIN32
     Temp = getEnvironmentVariable("windir") + "\\Temp";
@@ -313,7 +313,7 @@ std::string COptions::getTemp(void)
 #endif // WIN32
 
 #ifdef WIN32
-  mCreateUserDir = "" + Temp + "\\" + User;
+  mCreateUserDir = Temp + "\\" + User;
 #else
   mCreateUserDir = Temp + "/" + User;
 #endif
