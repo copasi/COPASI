@@ -7,6 +7,7 @@ DataModel::DataModel(char* fileName)
   trajectorytask = NULL;
   steadystatetask = NULL;
   scantask = NULL;
+  reportdefinitions = NULL;
 }
 
 Folder* DataModel::searchFolderList(int id)
@@ -77,6 +78,9 @@ void DataModel::createModel(const char* fileName)
   scantask->getProblem()->setModel(model);
   searchFolderList(32)->setObjectKey(scantask->getKey());
 
+  pdelete(reportdefinitions);
+  reportdefinitions = new CReportDefinitionVector();
+
   saveModel(fileName);
 }
 
@@ -103,6 +107,10 @@ void DataModel::loadModel(const char* fileName)
   scantask->getProblem()->setModel(model);
   // future work  scantask->load(inbuf);
   searchFolderList(32)->setObjectKey(scantask->getKey());
+
+  pdelete(reportdefinitions);
+  reportdefinitions = new CReportDefinitionVector();
+  reportdefinitions->load(inbuf);
 
   Copasi->pOutputList->load(inbuf);
 

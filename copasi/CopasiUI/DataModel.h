@@ -20,6 +20,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
+#include "report/CReportDefinitionVector.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
 #include "utilities/CGlobals.h"
@@ -106,6 +107,8 @@ class DataModel
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
     CScanTask* scantask;
+    CReportDefinitionVector* reportdefinitions;
+
   public:
     DataModel(char* fileName = "DataModel.txt");
 
