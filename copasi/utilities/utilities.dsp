@@ -116,10 +116,6 @@ SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CRandom.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
@@ -161,10 +157,6 @@ SOURCE=.\CGlobals.h
 # Begin Source File
 
 SOURCE=.\CIndexedPriorityQueue.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRandom.h
 # End Source File
 # Begin Source File
 
