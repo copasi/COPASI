@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/27 15:48:43 $
+   $Date: 2005/02/27 17:02:44 $
    End CVS Header */
 
 #include <iostream>
@@ -120,10 +120,10 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
 
   this->mpDeactivatedLabel = new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", this->sliderBox);
 
+  this->taskMap[23] = &SliderDialog::runTimeCourse;
+
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
-  //this->sliderMap[23] = std::vector< CopasiSlider* >();
-  //this->taskMap[23] = &SliderDialog::runTimeCourse;
   this->setCurrentFolderId(-1);
   this->init();
 }
@@ -245,6 +245,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
   assert(pGUI);
   if (this->equivalentSliderExists(pSlider)) return;
 
+  pGUI->pSliderList->add(pSlider);
   this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
   this->currSlider->setHidden(true);
   ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 1, this->currSlider);
@@ -445,6 +446,7 @@ void SliderDialog::updateAllSliders()
           pCopasiSlider->updateValue(autoModify);
         }
       ++it;
+      pChild = it.current();
     }
 }
 
