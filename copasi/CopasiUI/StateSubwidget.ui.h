@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/12/02 17:36:22 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 17:35:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -161,17 +161,14 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   if (task->getResult() == CSteadyStateMethod::found)
     topLabel->setText("A steady state with given resolution was found.");
-  <<< <<< < StateSubwidget.ui.h
-  else
-    topLabel->setText("A steady state with given resolution couldn't be found.");
-  == == == =
-    else if (task->getResult() == CSteadyStateMethod::notFound)
-      topLabel->setText("No steady state with given resolution was found!");
+  else if (task->getResult() == CSteadyStateMethod::notFound)
+    topLabel->setText("No steady state with given resolution was found!");
   else if (task->getResult() == CSteadyStateMethod::foundEquilibrium)
     topLabel->setText("An equilibrium steady state (zero fluxes) was found.");
   else if (task->getResult() == CSteadyStateMethod::foundNegative)
     topLabel->setText("An invalid steady state (negative concentrations) was found.");
-  >>> >>> > 1.6
+  else
+    topLabel->setText("A steady state with given resolution couldn't be found.");
 
   if (!loadMetabolites(pState->getModel())) return false;
   if (!loadReactions(pState->getModel())) return false;
