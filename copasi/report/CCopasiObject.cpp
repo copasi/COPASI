@@ -94,6 +94,21 @@ CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
 
 const std::string & CCopasiObject::getName() const {return mObjectName;}
 
+const std::string CCopasiObject::getObjectUniqueName() const
+  {
+    /* mUniqueName(mObjectName);
+     if (mpObjectParent)
+      mUniqueName(mObjectName+'{'+mpObjectParent->getObjectUniqueName()+'}');
+     else
+      mUniqueName(mObjectName);
+     return mUniqueName;
+    */ if  (mpObjectParent) 
+      //  return mObjectName+'{'+mpObjectParent->getObjectUniqueName()+'}';
+      return mObjectName + " {" + mpObjectParent->getObjectName() + "}";
+    else
+      return mObjectName;
+  }
+
 const void * CCopasiObject::getObjectValueAddress() const {return &DummyValue; /*TODO or throw exception? */}
 
 const std::string & CCopasiObject::getObjectName() const {return mObjectName;}

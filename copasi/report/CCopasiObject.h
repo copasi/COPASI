@@ -44,6 +44,8 @@ class CCopasiObject
 
     std::string mObjectType;
 
+    std::string mUniqueName;
+
     /** @dia:route 8,0; h,23.7081,53.1343,15.3196,2.55372,40.5964 */
     CCopasiContainer * mpObjectParent;
 
@@ -72,6 +74,8 @@ class CCopasiObject
     virtual const void * getObjectValueAddress() const;
 
     const std::string & getObjectName() const;
+
+    virtual const std::string getObjectUniqueName() const;
 
     const std::string & getObjectType() const;
 

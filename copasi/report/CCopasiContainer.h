@@ -55,6 +55,8 @@ class CCopasiContainer: public CCopasiObject
 
     void remove(CCopasiObject * pObject);
 
+    const std::string getObjectUniqueName() const;
+
   protected:
     virtual void initObjects();
 

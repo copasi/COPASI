@@ -36,6 +36,12 @@ CCopasiContainer::~CCopasiContainer()
     if ((*it)->isReference()) pdelete(*it);
 }
 
+const std::string CCopasiContainer::getObjectUniqueName() const
+  {
+    // return getObjectName();
+    return CCopasiObject::getObjectUniqueName();
+  }
+
 const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
   {
     if (cn == "") return this;
