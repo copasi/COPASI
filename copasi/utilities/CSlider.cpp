@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 21:59:11 $
+   $Date: 2005/02/19 02:02:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -44,6 +44,12 @@ CSlider::CSlider(const CSlider & src,
 
 CSlider::~CSlider()
 {GlobalKeys.remove(mKey);}
+
+bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
+{
+  mpSliderObject = CCopasiContainer::ObjectFromName(listOfContainer, getObjectName());
+  return (mpSliderObject != NULL);
+}
 
 const std::string & CSlider::getKey() const
   {return mKey;}
