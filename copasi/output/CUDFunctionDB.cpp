@@ -108,3 +108,11 @@ void CUDFunctionDB::setItems(const C_INT16 items)
 {
 	mItems = items;
 }
+
+/**
+ * Get the UDFunction array
+ */
+CCopasiVectorN < CUDFunction > & CUDFunctionDB::getFunctions()
+{
+	return mUDFunctions;
+}

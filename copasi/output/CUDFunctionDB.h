@@ -27,7 +27,7 @@ private:
   /**
    *  Vector of user defined functions
    */
-  CCopasiVectorN < CBaseFunction > mUDFunctions;
+  CCopasiVectorN < CUDFunction > mUDFunctions;
 
 public:
   /**
@@ -81,6 +81,11 @@ public:
    * Get the "User-defined functions" string
    */
   string getNameStr() const;
+
+  /**
+   * Get the UDFunction array
+   */
+  CCopasiVectorN < CUDFunction > & getFunctions();
 };
 
 #endif

@@ -10,8 +10,31 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
-#include "function/CBaseFunction.h"
+#include "function/function.h"
+#include "model/CModel.h"
 #include "CNodeO.h"
+
+class CUDIdentifier: public CBaseIdentifier
+{
+  // Attributes
+ public:
+  /*
+   *  The nodes which access the same identifier.
+   */
+  vector < CNodeO * > mNodes;
+
+  // Operations
+ public:
+  /**
+   *  Default constructor
+   */
+  CUDIdentifier();
+                    
+  /**
+   *  Destructor
+   */
+  ~CUDIdentifier();
+};
 
 class CUDFunction: public CBaseFunction
 {
@@ -24,7 +47,10 @@ class CUDFunction: public CBaseFunction
    *  Internal variable
    */
   unsigned C_INT32 mNidx;
-
+  /**
+   * Value of user defined function
+   */
+  C_FLOAT64 mValue;
  public:
   /**
    *  Default constructor
@@ -79,8 +105,14 @@ class CUDFunction: public CBaseFunction
 
   /**
    * Calculate the value of this user defined function
+   * return the pointer of this user defined function
    */
-  C_FLOAT64 calcValue();
+  void calcValue(CModel *model);
+
+  /**
+   * Get the pointer of user defined function
+   */
+  void * getValueAddr();
 
  private:
   /**
@@ -96,6 +128,9 @@ class CUDFunction: public CBaseFunction
   CNodeO * parseExpression(C_INT16 priority);
 
   CNodeO * parsePrimary();
+
+  void initIdentifiers();
+
 };
 
 #endif

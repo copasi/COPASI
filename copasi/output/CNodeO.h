@@ -19,22 +19,6 @@ class CNodeO: public CNodeK
 {
 private:
 	/**
-	 *  Title of the node.
-	 */
-	string mTitle; 
-	/**
-     *  Type of the node's Datum.
-	 */
-	C_INT32 mDatumType;
-	/**
-	 * I String of the node
-	 */
-	string mI;
-	/**
-	 * J String of the node
-	 */
-	string mJ;
-	/**
 	 * pointer to a datum object (if an identifier)
 	 */
 	CDatum *mDatum;
@@ -56,12 +40,9 @@ public:
     CNodeO();
 	/**
 	 * Constructor for operator
-	 * @param "const string" title
-	 * @param "const C_INT32" type
-	 * @param "const string" i_str
-	 * @param "const string" j_str
+	 * @param datum points to a CDatum
 	 */
-	CNodeO(string title, C_INT32 type, string i_str, string j_str);
+	CNodeO(CDatum &datum);
 
 	/**
 	 * Destructor
@@ -89,58 +70,10 @@ public:
      */
     C_INT32 save(CWriteConfig & configbuffer) const;
 
-    /**
-     * Retrieving the Title of a node
-     * @return string
-     */
-    string getTitle() const;
-
-   /**
-    * Retrieving I String of a node
-    * @return string
-    */
-   string getIString() const;
-
-   /**
-    * Retrieving J String of a node
-    * @return string
-    */
-   string getJString() const;
-  
-
-   /**
-    * Setting Title of the node
-    * @param "const string" &title
-    */
-   void setTitle(const string& title);
-
-   /**
-    * Setting I String of the node
-    * @param "const string" &i_string
-    */
-
-   void setIString(const string & i_string);
-
-   /**
-    * Setting I String of the node
-    * @param "const string" &j_string
-    */
-   void setJString(const string & j_string);
-
-   /**
-    * Get the node's Datum type
-	*/
-   C_INT32 getDatumType() const;
-
-   /**
-    * Set the node's Datum Type
-	*/
-   void setDatumType(const C_INT32 datumType);
-
    /**
     * Calculates the value of this sub-tree
 	*/
-   C_FLOAT64 value();
+   C_FLOAT64 value(CModel *model);
 
   /**
    * Retrieving mLeft the left branch of a node
@@ -177,6 +110,14 @@ public:
    */
   void setRight(CNodeO * pright);
 
+  /**
+   * Return Datum in each node
+   */
+  CDatum *getDatum();
+
+  C_INT16 isLeftValid() const;
+
+  C_INT16 isRightValid() const; 
 
 };
 #endif
