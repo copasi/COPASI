@@ -79,6 +79,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
   ButtonGroup1 = new QButtonGroup(this, "ButtonGroup1");
   ButtonGroup1->setFrameShape(QButtonGroup::WinPanel);
   ButtonGroup1->setTitle(trUtf8(""));
+  ButtonGroup1->setExclusive(TRUE);
 
   QWidget* privateLayoutWidget = new QWidget(ButtonGroup1, "Layout2");
   privateLayoutWidget->setGeometry(QRect(70, 20, 400, 20));

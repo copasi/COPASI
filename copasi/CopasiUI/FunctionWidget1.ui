@@ -178,50 +178,17 @@
             <property name="text">
                 <string>Description</string>
             </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
         </column>
         <column>
             <property name="text">
                 <string>Min</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
             </property>
         </column>
         <column>
             <property name="text">
                 <string>Max</string>
             </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
         </column>
-        <row>
-            <property name="text">
-                <string>1</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
-        <row>
-            <property name="text">
-                <string>2</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
-        <row>
-            <property name="text">
-                <string>3</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
         <property name="name">
             <cstring>Table2</cstring>
         </property>
@@ -333,50 +300,17 @@
             <property name="text">
                 <string>Name</string>
             </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
         </column>
         <column>
             <property name="text">
                 <string>Data Type</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
             </property>
         </column>
         <column>
             <property name="text">
                 <string>Description</string>
             </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
         </column>
-        <row>
-            <property name="text">
-                <string>1</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
-        <row>
-            <property name="text">
-                <string>2</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
-        <row>
-            <property name="text">
-                <string>3</string>
-            </property>
-            <property name="pixmap">
-                <pixmap></pixmap>
-            </property>
-        </row>
         <property name="name">
             <cstring>Table1</cstring>
         </property>
@@ -451,6 +385,9 @@
         <property name="title">
             <string></string>
         </property>
+        <property name="exclusive">
+            <bool>true</bool>
+        </property>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>Layout2</cstring>
@@ -501,8 +438,5 @@
         </widget>
     </widget>
 </widget>
-<includes>
-    <include location="local" impldecl="in implementation">FunctionWidget1.ui.h</include>
-</includes>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
