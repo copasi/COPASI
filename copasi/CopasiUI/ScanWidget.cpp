@@ -231,19 +231,25 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
 
-  scanTask = NULL;
   activeObject = -1;
   selectedList.clear();
 
   nTitleHeight = fontMetrics().height() + 6;
 
+  scanTask = new CScanTask();
   pSteadyStateWidget = new SteadyStateWidget(NULL);
-  pSteadyStateWidget->hide();
   pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pSteadyStateWidget->hide();
   pTrajectoryWidget->hide();
 
   pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   pTrajectoryWidget->loadTrajectoryTask(new CTrajectoryTask());
+
+  CScanProblem* scanProblem = scanTask->getProblem();
+  scanProblem->setSteadyStateTask(pSteadyStateWidget->getSteadyStateTask());
+  scanProblem->setTrajectoryTask(pTrajectoryWidget->getTrajectoryTask());
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
 
   sExecutable->setEnabled(false);
   scanButton->setEnabled(false);
@@ -478,17 +484,15 @@ void ScanWidget::loadScan(CModel *model)
 {
   if (model != NULL)
     {
+      // @comment: UI Stuff
+      taskName->setText(tr("Scan"));
+
       mModel = model;
       pSteadyStateWidget->setModel(mModel);
       pTrajectoryWidget->setModel(mModel);
 
-      taskName->setText(tr("Scan"));
-      scanTask = new CScanTask();
       CScanProblem *scanProblem = scanTask->getProblem();
-
       scanProblem->setModel(model);
-      scanProblem->setSteadyStateTask(pSteadyStateWidget->mSteadyStateTask);
-      scanProblem->setTrajectoryTask(pTrajectoryWidget->mTrajectoryTask);
 
       sExecutable->setEnabled(true);
       if (scanTask->isRequested() == true)

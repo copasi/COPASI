@@ -128,42 +128,45 @@ void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
 void CScanProblem::load(CReadConfig & configBuffer,
                         CReadConfig::Mode mode)
 {
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpModel = Copasi->Model;
-      configBuffer.getVariable("EndTime", "C_FLOAT64",
-                               (void *) & mEndTime,
-                               CReadConfig::LOOP);
-      configBuffer.getVariable("Points", "C_INT32",
-                               (void *) & mStepNumber);
-      mStepNumberSetLast = true;
-      mStartTime = 0.0;
-      sync();
-      mpInitialState = mpModel->getInitialState();
-    }
-  else
-    {
-      string Tmp;
-
-      configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
-      if (Tmp == Copasi->Model->getTitle())
+  /*  if (configBuffer.getVersion() < "4.0")
+      {
         mpModel = Copasi->Model;
-      else
-        fatalError();
-
-      configBuffer.getVariable("TrajectoryProblemStepNumber",
-                               "C_INT32", &mStepNumber);
-      configBuffer.getVariable("TrajectoryProblemStepSize",
-                               "C_FLOAT64", &mStepSize);
-      configBuffer.getVariable("TrajectoryProblemSetLast",
-                               "bool", &mStepNumberSetLast);
-      configBuffer.getVariable("TrajectoryProblemStartTime",
-                               "C_FLOAT64", &mStartTime);
-      configBuffer.getVariable("TrajectoryProblemEndTime",
-                               "C_FLOAT64", &mEndTime);
-      mpInitialState = new CState;
-      mpInitialState->load(configBuffer);
-    }
+        configBuffer.getVariable("EndTime", "C_FLOAT64",
+                                 (void *) & mEndTime,
+                                 CReadConfig::LOOP);
+        configBuffer.getVariable("Points", "C_INT32",
+                                 (void *) & mStepNumber);
+        mStepNumberSetLast = true;
+        mStartTime = 0.0;
+        sync();
+        mpInitialState = mpModel->getInitialState();
+      }
+    else
+      {
+        string Tmp;
+   
+        configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
+        if (Tmp == Copasi->Model->getTitle())
+          mpModel = Copasi->Model;
+        else
+          fatalError();
+   
+        configBuffer.getVariable("TrajectoryProblemStepNumber",
+                                 "C_INT32", &mStepNumber);
+        configBuffer.getVariable("TrajectoryProblemStepSize",
+                                 "C_FLOAT64", &mStepSize);
+        configBuffer.getVariable("TrajectoryProblemSetLast",
+                                 "bool", &mStepNumberSetLast);
+        configBuffer.getVariable("TrajectoryProblemStartTime",
+                                 "C_FLOAT64", &mStartTime);
+        configBuffer.getVariable("TrajectoryProblemEndTime",
+                                 "C_FLOAT64", &mEndTime);
+        mpInitialState = new CState;
+        mpInitialState->load(configBuffer);
+      }
+  */
+  mpSteadyState->load(configBuffer);
+  mpTrajectory->load(configBuffer);
 }
 
 /**
@@ -173,20 +176,24 @@ void CScanProblem::load(CReadConfig & configBuffer,
 
 void CScanProblem::save(CWriteConfig & configBuffer) const
   {
-    string Tmp = mpModel->getTitle();
-    configBuffer.setVariable("TrajectoryProblemModel", "string", &Tmp);
-
-    configBuffer.setVariable("TrajectoryProblemStepNumber",
-                             "C_INT32", &mStepNumber);
-    configBuffer.setVariable("TrajectoryProblemStepSize",
-                             "C_FLOAT64", &mStepSize);
-    configBuffer.setVariable("TrajectoryProblemSetLast",
-                             "bool", &mStepNumberSetLast);
-    configBuffer.setVariable("TrajectoryProblemStartTime",
-                             "C_FLOAT64", &mStartTime);
-    configBuffer.setVariable("TrajectoryProblemEndTime",
-                             "C_FLOAT64", &mEndTime);
-    mpInitialState->save(configBuffer);
+    /*
+        string Tmp = mpModel->getTitle();
+        configBuffer.setVariable("TrajectoryProblemModel", "string", &Tmp);
+     
+        configBuffer.setVariable("TrajectoryProblemStepNumber",
+                                 "C_INT32", &mStepNumber);
+        configBuffer.setVariable("TrajectoryProblemStepSize",
+                                 "C_FLOAT64", &mStepSize);
+        configBuffer.setVariable("TrajectoryProblemSetLast",
+                                 "bool", &mStepNumberSetLast);
+        configBuffer.setVariable("TrajectoryProblemStartTime",
+                                 "C_FLOAT64", &mStartTime);
+        configBuffer.setVariable("TrajectoryProblemEndTime",
+                                 "C_FLOAT64", &mEndTime);
+        mpInitialState->save(configBuffer);
+    */
+    mpSteadyState->save(configBuffer);
+    mpTrajectory->save(configBuffer);
   }
 
 bool CScanProblem::processTrajectory() const {return mProcessTrajectory;}

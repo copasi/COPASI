@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 02/03 
-   Comment : SteadyStateWidget
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 02/03 
+  Comment : SteadyStateWidget
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
@@ -38,6 +38,7 @@ class SteadyStateWidget : public CopasiWidget
     ~SteadyStateWidget();
     CSteadyStateTask *mSteadyStateTask;
     void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
+    CSteadyStateTask* getSteadyStateTask() const {return mSteadyStateTask;};
     void setModel(CModel* newModel);
 
     QFrame* line7;

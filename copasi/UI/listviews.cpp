@@ -39,6 +39,10 @@
 #include "model/CModel.h"
 #include "listviews.h"
 
+#include "scan/CScanTask.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+
 QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 QPixmap *folderClosed = 0;   // to store the image of closed icon folder
 QPixmap *folderOpen = 0;     // to store the image of open icon folder
@@ -756,7 +760,13 @@ void ListViews::loadReactionsNodes(CModel* model)
 
 void ListViews::loadScanNodes(CModel *model)
 {
+  (scanWidget->getScanTask())->load(CReadConfig("c:\\YeastGlycolysis.gps"));
   scanWidget->loadScan(model);
+
+  CSteadyStateTask* newTask = new CSteadyStateTask();
+  newTask->load(CReadConfig("c:\\YeastGlycolysis.gps"));
+  newTask->getProblem()->setModel(model);
+  newTask->process();
 }
 
 void ListViews::loadMetabolitesNodes(CModel* model)

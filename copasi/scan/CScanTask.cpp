@@ -39,11 +39,15 @@ void CScanTask::cleanup()
 void CScanTask::initializeReporting(std::ostream & C_UNUSED(out))
 {}
 
-void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
-{}
+void CScanTask::load(CReadConfig & configBuffer)
+{
+  mpProblem->load(configBuffer);
+}
 
-void CScanTask::save(CWriteConfig & C_UNUSED(configBuffer))
-{}
+void CScanTask::save(CWriteConfig & configBuffer)
+{
+  // mpProblem->save(configBuffer);
+}
 
 void CScanTask::setRequested(const bool & requested)
 {mRequested = requested;}
@@ -81,14 +85,4 @@ void CScanTask::process()
     mpMethod->scan(i, true);
 
   return;
-}
-
-void CScanTask::load(CReadConfig & configBuffer)
-{
-  mpProblem->load(configBuffer);
-}
-
-void CScanTask::save(CWriteConfig & configBuffer)
-{
-  mpProblem->save(configBuffer);
 }

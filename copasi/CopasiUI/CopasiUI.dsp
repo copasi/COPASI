@@ -37,8 +37,8 @@ CFG=CopasiUI - Win32 Build
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
-# PROP Cmd_Line "nmake -f "Makefile""
-# PROP Rebuild_Opt "/a"
+# PROP Cmd_Line "nmake"
+# PROP Rebuild_Opt "..\.."
 # PROP Target_File "CopasiUI.exe"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
@@ -232,6 +232,10 @@ SOURCE=.\copasiWidget.h
 # Begin Source File
 
 SOURCE=.\CReactionInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\scan\CScanTask.h
 # End Source File
 # Begin Source File
 

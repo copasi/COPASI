@@ -63,6 +63,7 @@ class ScanWidget : public CopasiWidget
     ~ScanWidget();
     CScanTask *scanTask;
     void loadScan(CModel *model);
+    CScanTask * getScanTask() const {return scanTask;};
     bool addNewScanItem(CCopasiObject* pObject);
 
     QListBox* ObjectListBox;

@@ -25,6 +25,7 @@ class CModel;
 class CReadConfig;
 class CWriteConfig;
 class Folder;
+class CScanTask;
 
 template <class T> class DataModel: public Subject
   {
@@ -43,6 +44,7 @@ template <class T> class DataModel: public Subject
   public:
     CSteadyStateTask* steadystatetask;
     CTrajectoryTask* trajectorytask;
+    CScanTask* scantask;
     //DataModel();
     DataModel(char* fileName = "DataModel.txt");
 
