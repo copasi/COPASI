@@ -78,7 +78,7 @@ echo "Set the icon in the Info.plist file."
 
 # move the image to this directory and delete the temporary diretory
     echo "Cleaning up in temporary directory."
-    mv ${TMPDIR}/Copasi-${RELEASE}-Mac.dmg .
+    mv ${TMPDIR}/Copasi-${RELEASE}-Darwin.dmg .
     rm -rf ${TMPDIR}/copasi
  else
     echo ""
