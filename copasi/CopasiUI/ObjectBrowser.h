@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\ObjectBrowser.ui'
  **
- ** Created: Tue Apr 15 11:16:01 2003
+ ** Created: Tue Apr 15 13:51:36 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -26,10 +26,15 @@ class ObjectBrowser : public QWidget
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
 
-    QPushButton* backButton;
-    QPushButton* nextButton;
     QPushButton* cancelButton;
-    QListView* ObjectList;
+    QPushButton* nextButton;
+    QPushButton* backButton;
+    QListView* ObjectListView;
+
+  public slots:
+    virtual void cancelClicked();
+    virtual void backClicked();
+    virtual void nextClicked();
 
   protected:
     QGridLayout* ObjectBrowserLayout;
