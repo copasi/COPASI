@@ -1,4 +1,5 @@
 #include <sys/timeb.h>
+#include <math.h>
 
 #include "copasi.h"
 #include "CRandom.h"
@@ -147,4 +148,64 @@ const C_FLOAT64 & CRandom::getRandomCO()
 const C_FLOAT64 & CRandom::getRandomOO()
 {
   return mFloat = (getRandomU() + .5) * mModulusInv1;
+}
+
+/* a normal distribution with mean 0 and S.D. 1 */
+
+const C_FLOAT64 & CRandom::getRandomNormal01()
+{
+  static char f = 1;
+  static C_FLOAT64 y;
+  C_FLOAT64 a, b, s;
+  C_FLOAT64 mean = 0;
+  C_FLOAT64 sd = 1;
+
+  /* negate the flag */
+  f = -f;
+  /* return the stored number (if one is there) */
+  if (f > 0) return y;
+  for (;;)
+    {
+      a = 2.0 * getRandomCO() - 1.0;
+      b = 2.0 * getRandomCO() - 1.0;
+      s = a * a + b * b;
+      if ((s < 1.0) && (s != 0)) break;
+    }
+  s = sqrt(-2.0 * log(s) / s);
+  // save one of the numbers for the next time
+  y = sd * s * a + mean;
+  // and return the other
+  return sd * s*b + mean;
+}
+
+/* a normal distribution with mean m and S.D. sd */
+
+const C_FLOAT64 & CRandom::getRandomNormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+{
+  C_FLOAT64 psd;
+  /* force the std.dev. to be positive */
+  psd = fabs(sd);
+  return getRandomNormal01() * psd + mean;
+}
+
+/* a strictly positive normal distribution with mean m and S.D. sd */
+
+const C_FLOAT64 & CRandom::getRandomNormalPositive(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+{
+  C_FLOAT64 x, positive_mean, positive_sd;
+  /* force the mean and std.dev. to be positive */
+  positive_mean = fabs(mean);
+  positive_sd = fabs(sd);
+  for (;;)
+    if ((x = getRandomNormal(positive_mean, positive_sd)) > 0.0) return x;
+}
+
+/* a tentative normal distribution in logarithmic space */
+
+const C_FLOAT64 & CRandom::getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+{
+  C_FLOAT64 positive_sd;
+  /* force the std.dev. to be positive */
+  positive_sd = fabs(sd);
+  return mean * pow(10, getRandomNormal01() * positive_sd);
 }
