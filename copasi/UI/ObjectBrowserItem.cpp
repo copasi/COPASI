@@ -5,9 +5,9 @@ Description:
 Date: 04/03 
 Comment : Copasi Object Browser including:
 
-browserObject: A complex structure uiniquely map to a CopasiObject
+CBrowserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject,
- there may exist multiply wrappers to one browserObject
+there may exist multiply wrappers to one CBrowserObject
 ObjectListItem
 ObjectList: A queue for all element: 
 The reason I dont use std:vector is
@@ -25,12 +25,12 @@ Contact: Please contact lixu1@vt.edu.
 
 long ObjectBrowserItem::KeySpace = KEYBASE;
 
-browserObject::browserObject()
+CBrowserObject::CBrowserObject()
 {
   referenceList = new ObjectList();
 }
 
-browserObject::~browserObject()
+CBrowserObject::~CBrowserObject()
 {
   delete referenceList;
 }
@@ -62,7 +62,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
         }
       else
         {
-          browserObject* newBrowserObject = new browserObject();
+          CBrowserObject* newBrowserObject = new CBrowserObject();
           newBrowserObject->pCopasiObject = mObject;
           newBrowserObject->mChecked = false;
           pBrowserObject = newBrowserObject;
@@ -71,7 +71,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
     }
   else //this is not an ending node
     {
-      browserObject* newBrowserObject = new browserObject();
+      CBrowserObject* newBrowserObject = new CBrowserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
       pBrowserObject = newBrowserObject;
@@ -110,7 +110,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
         }
       else
         {
-          browserObject* newBrowserObject = new browserObject();
+          CBrowserObject* newBrowserObject = new CBrowserObject();
           newBrowserObject->pCopasiObject = mObject;
           newBrowserObject->mChecked = false;
           pBrowserObject = newBrowserObject;
@@ -119,7 +119,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
     }
   else //this is not an ending node
     {
-      browserObject* newBrowserObject = new browserObject();
+      CBrowserObject* newBrowserObject = new CBrowserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
       pBrowserObject = newBrowserObject;

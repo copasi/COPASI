@@ -5,9 +5,9 @@ Description:
 Date: 04/03 
 Comment : Copasi Object Browser including:
 
-browserObject: A complex structure uiniquely map to a CopasiObject
-ObjectBrowserItem: A wraper to a broserObject, 
-there may exist multiply wrappers to one browserObject
+CBrowserObject: A complex structure uiniquely map to a CopasiObject
+ObjectBrowserItem: A wraper to a CBrowserObject, 
+there may exist multiply wrappers to one CBrowserObject
 ObjectListItem
 ObjectList: A queue for all element: 
 The reason I dont use std:vector is
@@ -26,30 +26,45 @@ class QListViewItem;
 class QListView;
 class CCopasiObject;
 
+/* Macro:
+ define the status of Objects(items) in object browser
+ */
 #define NOCHECKED -1
 #define ALLCHECKED 1
-#define PARTCHECKED 0
-
+#define PARTCHECKED 0 
+/* Macro:
+ define the number space for the key
+   KEYBASE: represent the base address for key
+ */
 #define KEYBASE 100000000
 
+/* Enumerate:
+ define 3 types of objects/items in Object Browser
+ */
 enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class ObjectList;
 
-struct browserObject
+/* class CBrowserObject
+ define the structure wrapper for a copasiObject
+ */
+struct CBrowserObject
   {
     CCopasiObject* pCopasiObject;
     bool mChecked;
-    ObjectList* referenceList;
-    browserObject();
-    ~browserObject();
+    ObjectList* referenceList; //keep pointer to all its referenced items for later update
+    CBrowserObject();
+    ~CBrowserObject();
   };
 
+/* class ObjectBrowserItem
+ define the UI wrapper for a CBrowserObject
+ */
 class ObjectBrowserItem : public QListViewItem
   {
   private:
     static long KeySpace;
-    browserObject* pBrowserObject;
+    CBrowserObject* pBrowserObject;
     ObjectBrowserItem* pParent;
     ObjectBrowserItem* pChild;
     ObjectBrowserItem* pSibling;
@@ -61,12 +76,12 @@ class ObjectBrowserItem : public QListViewItem
     {
       KeySpace = KEYBASE;
     }
-    browserObject* getObject()
+    CBrowserObject* getObject()
     {
       return pBrowserObject;
     }
 
-    void setObject(browserObject* pNewObject)
+    void setObject(CBrowserObject* pNewObject)
     {
       pBrowserObject = pNewObject;
     }
@@ -75,8 +90,6 @@ class ObjectBrowserItem : public QListViewItem
       {
         return mKey;
       }
-
-    // inline const QString & getKey() const {return mKey;}
 
     ObjectBrowserItem (QListView * parent = NULL, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
@@ -115,7 +128,9 @@ class ObjectBrowserItem : public QListViewItem
   };
 
 typedef ObjectBrowserItem* pObjectBrowserItem;
-
+/* class ObjectListItem
+ define the status of Objects(items) in object browser
+ */
 struct ObjectListItem
   {
     ObjectListItem(ObjectBrowserItem* item, ObjectListItem* next, ObjectListItem* last)
