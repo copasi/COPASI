@@ -33,44 +33,19 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TableDefinition"));
   TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
-  LineEdit4 = new QLineEdit(this, "LineEdit4");
-  LineEdit4->setEnabled(FALSE);
-  LineEdit4->setReadOnly(TRUE);
-
-  TableDefinitionLayout->addWidget(LineEdit4, 3, 1);
-
   LineEdit1 = new QLineEdit(this, "LineEdit1");
 
   TableDefinitionLayout->addWidget(LineEdit1, 0, 1);
 
   TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Initial  Volume"));
+  TextLabel2->setText(trUtf8("Title"));
 
   TableDefinitionLayout->addWidget(TextLabel2, 2, 0);
 
-  TextLabel2_2 = new QLabel(this, "TextLabel2_2");
-  TextLabel2_2->setText(trUtf8("Transient Volume"));
-
-  TableDefinitionLayout->addWidget(TextLabel2_2, 3, 0);
-
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Compartment Name"));
+  TextLabel1->setText(trUtf8("Seperator"));
 
   TableDefinitionLayout->addWidget(TextLabel1, 0, 0);
-
-  Line4 = new QFrame(this, "Line4");
-  Line4->setFrameShape(QFrame::HLine);
-  Line4->setFrameShadow(QFrame::Sunken);
-  Line4->setFrameShape(QFrame::HLine);
-
-  TableDefinitionLayout->addMultiCellWidget(Line4, 1, 1, 0, 1);
-
-  Line4_2 = new QFrame(this, "Line4_2");
-  Line4_2->setFrameShape(QFrame::HLine);
-  Line4_2->setFrameShadow(QFrame::Sunken);
-  Line4_2->setFrameShape(QFrame::HLine);
-
-  TableDefinitionLayout->addMultiCellWidget(Line4_2, 4, 4, 0, 1);
 
   ListBox1 = new QListBox(this, "ListBox1");
 
@@ -123,8 +98,7 @@ TableDefinition::~TableDefinition()
 
 /*This function is to load the model for the table*/
 void TableDefinition::loadTableDefinition()
-{
-}
+{}
 
 void TableDefinition::slotBtnCancelClicked()
 {}
