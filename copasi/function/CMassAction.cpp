@@ -172,7 +172,7 @@ bool CMassAction::dependsOn(const void * parameter,
     it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
     end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
 
-    for (; it != end; it++) if (parameter == *it++) return true;
+    for (; it != end; it++) if (parameter == *it) return true;
 
     return false;
   }
