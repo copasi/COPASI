@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:31:49 $
+   $Date: 2003/11/12 22:14:25 $
    End CVS Header */
 
 /**
@@ -17,11 +17,16 @@
 #ifndef COPASI_CCopasiStaticString
 #define COPASI_CCopasiStaticString
 
-#include "CCopasiObject.h"
 #include <string>
+
+#include "CCopasiObject.h"
 
 class CCopasiStaticString: public CCopasiObject
   {
+    // Attributes
+  private:
+    std::string mStaticString;
+
     // Operations
   public:
     CCopasiStaticString(const std::string & name = "",
@@ -32,7 +37,9 @@ class CCopasiStaticString: public CCopasiObject
 
     ~CCopasiStaticString();
 
-    void cleanup();
+    CCopasiStaticString & operator = (const std::string & rhs);
+
+    virtual void print(std::ostream * ostream) const;
 
     const std::string & getStaticString() const;
   };
