@@ -777,7 +777,7 @@ void WriteGepasi(char *Title, CModel &model)
 
 void WriteSBML(char *Title, CModel &model)
 {
-  char mtitle[512];
+  char mtitle[2048];
   ofstream fout;
 
   sprintf(mtitle, "%s.xml", Title);
@@ -787,11 +787,35 @@ void WriteSBML(char *Title, CModel &model)
   fout.close();
 }
 
+void WriteCmdLine(CGlobals *Copasi, char *Title)
+{
+  char mtitle[2048];
+  ofstream fout;
+  string a;
+  C_INT32 pos, i;
+
+  sprintf(mtitle, "%s.cmd", Title);
+  fout.open(mtitle, ios::out | ios::trunc);
+  // write the SBML !
+  a = Copasi->Arguments[0];
+  pos = a.find_last_of('/');
+  if (pos == string::npos)
+    pos = a.find_last_of('\\');
+  if (pos != string::npos)
+    fout << a.substr(pos + 1, a.size() - pos);
+  else
+    fout << a;
+  for (i = 1; i < Copasi->Arguments.size(); i++)
+    fout << " " << Copasi->Arguments[i];
+  fout << endl;
+  fout.close();
+}
+
 C_INT main(C_INT argc, char *argv[])
 {
-  C_INT32 n, k, i, j, tot, seed;
+  C_INT32 n, k, i, j, tot, seed, pos;
   CCopasiVector < CGene > GeneList;
-  string prefix;
+  string prefix, fdb;
   CModel model;
   C_FLOAT64 positive, rewiring, coopval, rateval, constval;
 
@@ -835,6 +859,19 @@ C_INT main(C_INT argc, char *argv[])
       return 1;
     }
 
+  Copasi = new CGlobals;
+  // set the Function DB filename to be in the directory of the executable
+  fdb = argv[0];
+  pos = fdb.find_last_of('/');
+  if (pos == string::npos)
+    pos = fdb.find_last_of('\\');
+  if (pos != string::npos)
+    {
+      fdb = fdb.substr(0, pos + 1) + "FunctionDB.gps";
+      Copasi->FunctionDB.setFilename(fdb);
+    }
+  Copasi->setArguments(argc, argv);
+
   if (seed)
     r250_init(seed);
   else
@@ -844,10 +881,11 @@ C_INT main(C_INT argc, char *argv[])
   // generate tot networks of n genes with k random outputs each
   for (i = 0; i < tot; i++)
     {
-      Copasi = new CGlobals;
       // build the gene network
       MakeGeneNetwork(n, k, positive, rewiring, coopval, rateval, constval, GeneList, comments);
       sprintf(NetTitle, "%s%03ld", prefix.data(), i + 1);
+      // write the command line used to generate this model
+      WriteCmdLine(Copasi, NetTitle);
       // create appropriate kinetic types, only those
       // that are really needed for this model
       for (j = 0; j < n; j++)
@@ -868,8 +906,8 @@ C_INT main(C_INT argc, char *argv[])
       // cleanup model and vectors
       model.cleanup();
       GeneList.cleanup();
-      delete Copasi;
     }
 
+  delete Copasi;
   return 0;
 }
