@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:06 $
+   $Author: ssahle $ 
+   $Date: 2005/02/02 15:55:36 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -23,6 +23,11 @@
 #include "report/CReportDefinitionVector.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
+
+#include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CMCATask.h"
+#include "scan/CScanTask.h"
 
 std::vector<const CCopasiObject*> TableDefinition::getObjects() const
   {
@@ -103,6 +108,25 @@ void TableDefinition::deleteObjects(const std::vector<std::string> & keys)
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++)
     {
+      //check where the report is used...
+      CReportDefinition* rd = dynamic_cast< CReportDefinition * >(GlobalKeys.get(keys[i]));
+      if (!rd) break;
+
+      if (dataModel->getTrajectoryTask()->getReport().getReportDefinition() == rd)
+        dataModel->getTrajectoryTask()->getReport().setReportDefinition(NULL);
+
+      if (dataModel->getSteadyStateTask()->getReport().getReportDefinition() == rd)
+        dataModel->getSteadyStateTask()->getReport().setReportDefinition(NULL);
+
+      if (dataModel->getMCATask()->getReport().getReportDefinition() == rd)
+        dataModel->getMCATask()->getReport().setReportDefinition(NULL);
+
+      if (dataModel->getScanTask()->getReport().getReportDefinition() == rd)
+        dataModel->getScanTask()->getReport().setReportDefinition(NULL);
+
+      //TODO: add other tasks...
+
+      //remove the report
       dataModel->getReportDefinitionVectorAddr()->removeReportDefinition(keys[i]);
       ListViews::notify(ListViews::REPORT, ListViews::DELETE, keys[i]);
     }
