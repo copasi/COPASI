@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/06 20:06:59 $
+   $Date: 2004/12/20 16:57:31 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -79,6 +79,15 @@ bool DataModel::loadModel(const char* fileName)
   mChanged = false;
 
   std::ifstream File(fileName);
+
+  if (File.fail())
+    {
+      CCopasiMessage Message(CCopasiMessage::RAW,
+                             "File error when opening '%s'.",
+                             fileName);
+      return false;
+    }
+
   std::string Line;
   File >> Line;
 
