@@ -33,6 +33,9 @@ MESSAGES Messages[] =
     {MCMethodParameterList + 1, "CMethodParameterList (1): No parameter list "
      "found for name '%s' and type '%'."},
 
+    // CRraction
+    {MCReaction + 1, "CReaction (1): Function '%s' not found."},
+
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
   };

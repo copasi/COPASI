@@ -21,6 +21,7 @@ Message;
 #define MCFunctionParameters  MCopasiBase + 600
 #define MCMassAction          MCopasiBase + 700
 #define MCMethodParameterList MCopasiBase + 800
+#define MCReaction            MCopasiBase + 900
 
 /**
  *  This throws an exception with information where the error occured.
