@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/13 09:25:07 $
+   $Date: 2004/08/31 15:51:42 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -59,7 +59,10 @@ CPlotItem::CPlotItem(const std::string & name,
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
     //    mKey(GlobalKeys.add("PlotItem", this)),
     mType(type)
-{setObjectName(TypeName[mType]);}
+{
+  //setObjectName(TypeName[mType]); //TODO
+  setObjectName(name);
+}
 
 CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
