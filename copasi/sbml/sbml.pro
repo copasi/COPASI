@@ -12,13 +12,15 @@ contains(BUILD_OS, WIN32) {
 HEADERS += StdException.h \
            ConverterASTNode.h \
            SBMLImporter.h \
-           SBMLExporter.h
+           SBMLExporter.h \
+           UnitConversionFactory.hpp
            
            
            
 SOURCES += StdException.cpp \
            ConverterASTNode.cpp \
            SBMLImporter.cpp \
-           SBMLExporter.cpp
+           SBMLExporter.cpp \
+           UnitConversionFactory.cpp
 
 
