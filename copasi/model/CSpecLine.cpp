@@ -332,8 +332,8 @@ void CTempReaction::compile(CModel *model,
         {
           id2Metab = new CReaction::CId2Metab();
           id2Metab->setIdentifierName(*name);
-          id2Metab->setMetaboliteName(model->getMetabolites()[i]->getName());
-          id2Metab->setCompartmentName(model->getMetabolites()[i]->getCompartment()->getName());
+          id2Metab->setMetaboliteName(model->getMetabolites()[index]->getName());
+          id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getName());
 
           if (isIn(mSubstrates, *name))
             {

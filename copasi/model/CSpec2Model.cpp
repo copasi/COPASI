@@ -89,6 +89,8 @@ CModel *CSpec2Model::createModel()
       it++;
     }
 
+  //printInput();
+
   mModel->setQuantityUnit("mol");
 
   processCompartments();
@@ -124,10 +126,11 @@ void CSpec2Model::processCompartments()
     {
       if (it->getType() == CSpecLine::CPT)
         {
-          std::string comp_name = it->extractCpt();
-          C_FLOAT64 comp_vol = atof(it->extractRight().c_str());
-          CCompartment *compartment = new CCompartment(comp_name, comp_vol);
-          mModel->getCompartments().add(compartment);
+          string comp_name = it->extractCpt();
+          //C_FLOAT64 comp_vol = atof(it->extractRight().c_str());
+          //CCompartment *compartment = new CCompartment(comp_name, comp_vol);
+          //mModel->getCompartments().add(compartment);
+          mModel->addCompartment(comp_name, atof(it->extractRight().c_str()));
         }
     }
 
@@ -199,12 +202,13 @@ void CSpec2Model::processInits()
           if (vit != mDeVector.end())
             {
               // this _does_ correspond to a metabolite.
-              CMetab metab;
-              metab.setName(metab_name);
-              metab.setStatus(METAB_VARIABLE);
+              //CMetab metab;
+              //metab.setName(metab_name);
+              //metab.setStatus(METAB_VARIABLE);
               C_FLOAT64 iconc = atof(contents.c_str());
-              metab.setInitialConcentration(iconc);
-              mModel->getCompartments()[comp_name]->addMetabolite(metab);
+              //metab.setInitialConcentration(iconc);
+              //mModel->getCompartments()[comp_name]->addMetabolite(metab);
+              mModel->addMetabolite(comp_name, metab_name, iconc, METAB_VARIABLE);
             }
           else
             {
@@ -308,6 +312,7 @@ void CSpec2Model::processDeTerms()
       std::vector<CDeTerm *> termstack = createTermStack(it->getContents());
       // Get the metabolite on the LHS of the DE
       CMetab *LHSMetab = getLHSMetab(*it);
+      cout << LHSMetab->getName() << endl;
       // Step through each term of this differential equation.
       std::vector <CDeTerm *>::iterator termit = termstack.begin();
 
@@ -317,6 +322,7 @@ void CSpec2Model::processDeTerms()
           // The rate constant is used to relate this term to a particular reaction.
           std::string rate_constant = (*termit)->getRateConstant();
           num_change = (*termit)->getSign() * (*termit)->getMultiplier();
+          cout << rate_constant << " num_change: " << num_change << endl;
           // Find or create the CTempReaction with this rate constant
           CTempReaction *reaction = trs.findReaction(rate_constant);
 
@@ -412,7 +418,9 @@ std::vector<CDeTerm *> CSpec2Model::createTermStack(std::string str)
 
   for (; it != termstack->end(); it++)
     {
+      cout << " ----------- " << endl << **it << endl;
       (*it)->compile(mRateVector);
+      cout << **it << endl << endl;
     }
 
   std::cout << "Done compiling\n";
@@ -458,7 +466,7 @@ void CSpec2Model::processMoieties()
 {
   // Find each moiety line
   std::vector<CSpecLine>::iterator it = mSpecLines.begin();
-  std::string comparment_name;
+  std::string compartment_name;
   std::string moiety_name;
   std::string contents;
   CMetab metab;
@@ -467,22 +475,22 @@ void CSpec2Model::processMoieties()
     {
       if (it->getType() == CSpecLine::EQN)
         {
-          comparment_name = it->extractCpt();
+          compartment_name = it->extractCpt();
           moiety_name = it->extractLeft();
           contents = it->extractRight();
 
-          mMoietyVector.push_back(CBaseEqn(comparment_name,
+          mMoietyVector.push_back(CBaseEqn(compartment_name,
                                            moiety_name,
                                            contents));
 
           metab.setName(moiety_name);
-          metab.setStatus(METAB_DEPENDENT);
+          //metab.setStatus(METAB_DEPENDENT);
           // :TODO: metab.setInitialConcentration(iconc);
-          mModel->getCompartments()[comparment_name]->addMetabolite(metab);
-
-          std::cout << "Added moiety " << moiety_name
-          << ", " << comparment_name
-          << ", " << contents << std::endl;
+          //mModel->getCompartments()[compartment_name]->addMetabolite(metab);
+          mModel->addMetabolite(compartment_name, moiety_name, 0, METAB_DEPENDENT);
+          cout << "Added moiety " << moiety_name
+          << ", " << compartment_name
+          << ", " << contents << endl;
         }
     }
 }
@@ -507,7 +515,7 @@ void CSpec2Model::processFunctions()
           std::string parameter =
             tmp.substr(p2 + 1, tmp.find_last_of(")") - p2 - 1);
 
-          CFunctionParameters & Parameters = pFunction->getParameters();
+          //CFunctionParameters & Parameters = pFunction->getParameters();
           p1 = 0;
           p2 = 0;
           std::string ParameterName;
@@ -517,9 +525,12 @@ void CSpec2Model::processFunctions()
               p2 = parameter.find(",");
               ParameterName = parameter.substr(p1, p2 - p1);
               p1 = p2;
-              Parameters.add(ParameterName,
-                             CFunctionParameter::FLOAT64,
-                             "unknown");
+              //Parameters.add(ParameterName,
+              //               CFunctionParameter::FLOAT64,
+              //               "unknown");
+              pFunction->addParameter(ParameterName,
+                                      CFunctionParameter::FLOAT64,
+                                      "unknown");
             }
 
           tmp = it->extractRight();
@@ -535,25 +546,32 @@ void CSpec2Model::processFunctions()
           CDeTerm::Type type;
 
           while ((type = static_cast<CDeTerm::Type>(scanner.yylex())))
-            if (type == CDeTerm::IDENT)
-              {
-                ParameterName = scanner.YYText();
+            {
+              cout << type << endl;
+              if (type == CDeTerm::IDENT)
+                {
+                  ParameterName = scanner.YYText();
+                  cout << "ParameterName: " << ParameterName << endl;
+                  try
+                    {
+                      //Parameters.add(ParameterName,
+                      //               CFunctionParameter::FLOAT64,
+                      //               "PARAMETER");
+                      pFunction->addParameter(ParameterName,
+                                              CFunctionParameter::FLOAT64,
+                                              "PARAMETER");
+                    }
+                  catch (CCopasiException Exception)
+                    {
+                      /* Parameter exists not found */
 
-                try
-                  {
-                    Parameters.add(ParameterName,
-                                   CFunctionParameter::FLOAT64,
-                                   "PARAMETER");
-                  }
-                catch (CCopasiException Exception)
-                  {
-                    /* Parameter exists not found */
-
-                    if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
-                      throw Exception;
-                  }
-              }
-
+                      cout << "Exception" << endl;
+                      if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+                        throw Exception;
+                    }
+                }
+            }
+          cout << pFunction->getParameters() << endl;
           Copasi->FunctionDB.add(pFunction);
           // ((CKinFunction *)pFunction)->compile();
           std::cout << it->getString() << std::endl;
