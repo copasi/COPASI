@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/10/31 21:00:08 $
+   $Date: 2003/10/31 21:02:54 $
    End CVS Header */
 
 /**********************************************************************
@@ -419,10 +419,10 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:            // The user clicked the Retry again button or pressed Enter
+        case 0:             // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:            // The user clicked the Quit or pressed Escape
+        case 1:             // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
@@ -557,7 +557,7 @@ bool FunctionWidget1::saveToFunction()
                                        functParam.getUsageRanges()["PRODUCT"]->getHigh());
                 functUsage.add(Application);*/ 
           //Write back changed pFunction to current function
-          func = pFunction;
+          // func = pFunction;
         }
       else
         {
