@@ -133,7 +133,7 @@ class ListViews : public QSplitter, public Observer
   protected:
     CModel *mModel;  // the re to the model...
     CSteadyStateTask *mSteadyStateTask;
-    void loadNodes(CModel *model);
+    void loadModelNodes(CModel *model);
     void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
