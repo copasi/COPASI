@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/11/19 20:27:04 $
+   $Author: shoops $ 
+   $Date: 2004/11/19 21:25:29 $
    End CVS Header */
 
 /**********************************************************************
@@ -587,7 +587,7 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(Application.Constants::NoRange, Application.getHigh());
+      Application.setRange(CRange::NoRange, Application.getHigh());
       functUsage.add(Application);
     }
 
@@ -600,7 +600,7 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(Application.Constants::NoRange, Application.getHigh());
+      Application.setRange(CRange::NoRange, Application.getHigh());
       functUsage.add(Application);
     }
 
@@ -613,7 +613,7 @@ void FunctionWidget1::updateApplication()
     }
   else
     {
-      Application.setRange(Application.Constants::NoRange, Application.getHigh());
+      Application.setRange(CRange::NoRange, Application.getHigh());
       functUsage.add(Application);
     }
 }
@@ -835,7 +835,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                               // Yes or Enter
+        case 0:                                // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -852,7 +852,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                               // No or Escape
+        case 1:                                // No or Escape
           break;
         }
     }
