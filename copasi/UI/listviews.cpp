@@ -696,6 +696,8 @@ void ListViews::loadModelNodes(CModel *model)
     {
       QListViewItem* loadNode; // to load the tree with that stuff
       // UPDATE THE METABOLITES STUFF..
+      fixedMetaboliteSymbols->loadFixedMetaboliteSymbols(model);
+
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);
       loadNode = searchNode("Metabolites");

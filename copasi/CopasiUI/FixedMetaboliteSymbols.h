@@ -12,6 +12,8 @@
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
+#include "mathmodel/CMathModel.h"
+#include "mathmodel/CMathConstant.h"
 #include <qtable.h>
 #include <qpushbutton.h>
 
@@ -21,6 +23,8 @@ class FixedMetaboliteSymbols : public QWidget
 
   protected:
     CModel * mModel;
+    CMathModel *mathmodel;
+    CMathConstantMetab *metablist;
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
@@ -30,7 +34,7 @@ class FixedMetaboliteSymbols : public QWidget
 
   public:
     FixedMetaboliteSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
+    void loadFixedMetaboliteSymbols(CModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:
