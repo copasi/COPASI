@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/17 10:09:56 $
+   $Date: 2005/04/06 13:10:42 $
    End CVS Header */
 
 #include <limits>
@@ -19,7 +19,7 @@
 CPlotSpec2Vector::CPlotSpec2Vector(const std::string & name):
     CCopasiObject(name),
     //    CCopasiVectorN<CPlotSpecification>(name, pParent),
-    //    mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
+    mKey(GlobalKeys.add("CPlotSpecificationVector", this)),
     mpPlotDefinitionList(NULL),
     inputFlag(NO_INPUT)
 {}
