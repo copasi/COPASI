@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2003/11/17 16:02:23 $
+   $Date: 2003/11/19 17:43:54 $
    End CVS Header */
 
 /**********************************************************************
@@ -139,6 +139,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
   Table1->setNumRows(3);
   Table1->setNumCols(3);
+  Table1->setColumnReadOnly (0, true);  //this restricts users from editing parameter name on the parameter table
 
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
 
@@ -196,6 +197,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
+  connect(Table2, SIGNAL(valueChanged(int, int)), this, SLOT(slotAppTableValueChanged(int, int)));
   connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
   // connect(textBrowser, SIGNAL(edited()), this, SLOT(slotFcnDescriptionChanged()));
 }
@@ -398,10 +400,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                    // The user clicked the Retry again button or pressed Enter
+            case 0:                     // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                    // The user clicked the Quit or pressed Escape
+            case 1:                     // The user clicked the Quit or pressed Escape
               // exit
               break;
             }
@@ -749,6 +751,9 @@ void FunctionWidget1::slotCommitButtonClicked()
       updateParameters();
       updateApplication();
     }
+  // update if Parameters changed... slotTableValueChanged updates Params and calls updateApps
+  // update if Application Table changed.  create a slotAppTableValueChanged??
+
   //let the user confirm?
   saveToFunction();
 }
@@ -809,6 +814,42 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   //saveToFunction();
 }
 
+void FunctionWidget1::slotAppTableValueChanged(int row, int col)
+{
+  std::cout << "table changed " << row << " " << col << std::endl;
+
+  CFunctionParameters &functParam = pFunction->getParameters();
+  CCopasiVectorNS < CUsageRange > & functUsage = pFunction->getUsageDescriptions();
+
+  if (col == 0)
+    {
+      app_Desc = Table2->text(row, col);
+      functUsage[row]->setUsage(app_Desc.latin1());
+    }
+
+  if (col == 1)
+    {
+      app_Low = Table2->text(row, col);
+      int_Low = app_Low.toInt();
+      functUsage[row]->setLow(int_Low);
+    }
+
+  if (col == 2)
+    {
+      app_High = Table2->text(row, col);
+
+      if (QString::compare(app_High, "NA") == 0)
+        {
+          int_High = 0;
+        }
+      else
+        {
+          int_High = app_High.toInt();
+        }
+      functUsage[row]->setHigh(int_High);
+    }
+}
+
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   switch (objectType)
@@ -829,7 +870,7 @@ bool FunctionWidget1::leave()
   // slot commit called to ensure that pFunction has proper values
   slotCommitButtonClicked();
   //let the user confirm?
-  return saveToFunction();  // slotCommit calles saveToFcn, do we want to call it twice??
+  return true;  // slotCommit calls saveToFcn
 }
 
 bool FunctionWidget1::enter(const std::string & key)
