@@ -20,6 +20,7 @@
 #include <qwhatsthis.h>
 #include <qscrollview.h>
 #include <qtoolbutton.h>
+#include <qcanvas.h>
 #include "ScanWidget.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
@@ -359,7 +360,14 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   emit hide_me();
   parameterTable = new ScanItemWidget(this, "parameterTable");
   int widgetOffset;
+
+  QFrame* newTitleBar = new QFrame(this);
+  newTitleBar->setPaletteBackgroundColor(darkGray);
+  newTitleBar->setPaletteForegroundColor(darkGray);
+
   widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
+  scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
+
   parameterTable->setFixedWidth(scrollview->visibleWidth());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
   scrollview->addChild(parameterTable, 0 , widgetOffset);
