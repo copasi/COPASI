@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.19 $ $Author: ssahle $ $Date: 2003/10/29 15:22:05 $  
+# $Revision: 1.20 $ $Author: shoops $ $Date: 2003/10/29 22:15:14 $  
 ######################################################################
 
 include(../common.pri)
@@ -27,6 +27,8 @@ contains(BUILD_OS, WIN32) {
           ../lib/plot.lib
 
   LIBS += $$COPASI_LIBS
+  LIBS += $(QTDIR)/lib/qwt.lib
+
   TARGETDEPS += $$COPASI_LIBS
 } else {
   # The order of objects is important 

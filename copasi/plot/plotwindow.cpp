@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:39 $
+   $Date: 2003/10/29 22:15:22 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -15,10 +15,11 @@
 //#include <qtoolbutton.h>
 //#include <qtimer.h>
 #include <qprinter.h>
-#include "plotspec.h"
-#include "CopasiPlot.h"
+
 #include "plotwindow.h"
-#include "plotwidget1.h"
+#include "plotspec.h"
+#include "CopasiPlot.h" 
+// #include "plotwidget1.h"
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter

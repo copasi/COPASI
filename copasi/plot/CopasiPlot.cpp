@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:32:39 $
+   $Date: 2003/10/29 22:13:25 $
    End CVS Header */
 
 #include <qarray.h>
@@ -146,7 +146,7 @@ void CopasiPlot::appendPlot()
   pos = sourcefile->tellg();
 
   // match data (i.e. columns) with each curve spec and hence produce the plot
-  QArray<long> crvKeys = curveKeys();
+  QMemArray<long> crvKeys = curveKeys();
 
   for (unsigned int k = 0; k < crvKeys.size(); k++)
     {
@@ -156,14 +156,14 @@ void CopasiPlot::appendPlot()
       //setCurveData(crvKeys[k], data[cspec->coordX]->data(), data[cspec->coordY]->data(), currentRow);
 
       // attach the data - this way might yield better performance when data sets are large
-      QwtPlotCurve *curve = CopasiPlot::curve(crvKeys[k]);
+      QwtPlotCurve *curve = CopasiPlot::curve(crvKeys.at(k));
 
       curve->setRawData(data[cspec->coordX]->data(),
                         data[cspec->coordY]->data(),
                         currentRow);
 
       // append each (section of) curve as it's set up
-      drawCurveInterval(crvKeys[k], startRow, currentRow - 1);
+      drawCurveInterval(crvKeys.at(k), startRow, currentRow - 1);
     }
 
   replot();
@@ -358,9 +358,9 @@ void CopasiPlot::redrawCurve(long key)
   if (crvPen.color() == canvasBackground())
     {
       // the curve is 'hidden', so find its original colour and redraw it
-      QArray<long> keys = curveKeys();
+      QMemArray<long> keys = curveKeys();
       for (unsigned int i = 0; i < keys.size(); i++)
-        if (keys[i] == key)
+        if (keys.at(i) == key)
           {
             setCurvePen(key, QPen(curveColours[i]));
             break;
