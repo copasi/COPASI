@@ -28,9 +28,6 @@ C_INT main(void)
       CCompartment compartment;
       compartment.initialize();
       
-      CReadConfig in("tmp"); 
-      CWriteConfig out("tmp"); 
-      
       CMetab metabolite;
 
       metabolite.setName("m_1");
