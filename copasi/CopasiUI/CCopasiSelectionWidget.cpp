@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 12:49:23 $
+   $Date: 2004/12/10 15:12:33 $
    End CVS Header */
+
+#include <iostream>
 
 #include "CCopasiSelectionWidget.h"
 #include "ObjectBrowserWidget.h"
@@ -34,6 +36,14 @@ void CCopasiSelectionWidget::populateTree(CModel * model)
 void CCopasiSelectionWidget::setOutputVector(std::vector<CCopasiObject *> * outputVector)
 {
   this->mpOutputVector = outputVector;
+  if (this->mExpertMode)
+    {
+      this->mpObjectBrowser->setOutputVector(this->mpOutputVector);
+    }
+  else
+    {
+      this->mpSimpleTree->setOutputVector(this->mpOutputVector);
+    }
 }
 
 void CCopasiSelectionWidget::setSingleSelection(bool singleSelection)
@@ -80,9 +90,11 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
       // activate the SimpleTree and get the selection from the ObjectBrowser if there is one
       if (this->mpObjectBrowser)
         {
+          std::cout << "commiting ObjectBrowser." << std::endl;
           this->mpObjectBrowser->commitClicked();
           this->mpObjectBrowser->setOutputVector(NULL);
         }
+      std::cout << "output vector size: " << this->mpOutputVector->size() << std::endl;
       this->mpSimpleTree->setOutputVector(this->mpOutputVector);
       this->raiseWidget(this->mpSimpleTree);
     }
