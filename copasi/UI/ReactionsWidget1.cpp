@@ -296,6 +296,7 @@ void ReactionsWidget1::loadName(QString setValue)
 
       //for the combo box
       QStringList comboEntries1;
+      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
 
       for (l = 0; l < react1->size(); l++)
         {
@@ -305,11 +306,14 @@ void ReactionsWidget1::loadName(QString setValue)
           overall += cchem->getCompartmentName().c_str();
           overall += "}";
           comboEntries1.push_back(overall);
+          //item->setCurrentItem(overall);
         }
 
-      QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+      //item = QComboTableItem(table, comboEntries1, FALSE);
+      item->setStringList(comboEntries1);
+
       table->setItem(line, 0, item);
-      //table->setText(line,0,"ttt");
+
       line++;
     }
 
@@ -336,11 +340,8 @@ void ReactionsWidget1::loadName(QString setValue)
           comboEntries1.push_back(overall);
         }
 
-      //table->setText(line,0,"ttt");
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
-
       table->setItem(line, 0, item);
-
       line++;
     }
 
