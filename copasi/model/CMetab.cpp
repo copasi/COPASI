@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/14 21:06:23 $
+   $Date: 2005/01/12 15:59:33 $
    End CVS Header */
 
 #include <iostream>
@@ -330,6 +330,23 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
     }
 
   return Fail;
+}
+
+bool CMetab::setValueOfNamedReference(std::string name, C_FLOAT64 value)
+{
+  if (name == "InitialConcentration")
+  {setInitialConcentration(value); return true;}
+
+  if (name == "InitialParticleNumber")
+  {setInitialNumber(value); return true;}
+
+  if (name == "Concentration")
+  {setConcentration(value); return true;}
+
+  if (name == "ParticleNumber")
+  {setNumber(value); return true;}
+
+  return CCopasiContainer::setValueOfNamedReference(name, value);
 }
 
 //******************* CMetabOld ***************************************************
