@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.43 $ $Author: ssahle $ $Date: 2004/09/23 14:58:13 $  
+# $Revision: 1.44 $ $Author: shoops $ $Date: 2004/09/29 01:55:03 $  
 ######################################################################
 
 include(../common.pri)
@@ -158,6 +158,7 @@ HEADERS += \
            TableDefinition.h \
            TableDefinition1.h \
            TimeSeriesWidget.h \
+           TimeSeriesSubwidget.h \
            TrajectoryWidget.h \
            Tree.h
 
@@ -218,10 +219,11 @@ SOURCES += \
            TableDefinition.cpp \
            TableDefinition1.cpp \
            TimeSeriesWidget.cpp \
+           TimeSeriesSubwidget.cpp \
            TrajectoryWidget.cpp \
            Tree.cpp
 
-FORMS +=  TimeSeriesSubwidget.ui           
+# FORMS +=  TimeSeriesSubwidget.ui           
            
 release {
   distribution.path = .
