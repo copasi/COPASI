@@ -27,7 +27,8 @@ class COptFunction: public CCopasiContainer
     std::vector<std::string> mMaxList;
     std::vector<std::string> mMinOperList;
     std::vector<std::string> mMaxOperList;
-    std::vector<CKinFunction*> mFunctionList;
+    std::vector<CKinFunction*> mMinFunctionList;
+    std::vector<CKinFunction*> mMaxFunctionList;
 
     // check if a parameter already existing inside the mParaList
     bool bExisted(const std::string & name);
@@ -41,6 +42,9 @@ class COptFunction: public CCopasiContainer
     //get key function of a COptFunction
     inline std::string getKey()
     {return mKey;}
+
+    // compile mMin and mMax list to get a list of functions,
+    void compile();
 
     COptProblem* getProblem()
     {return mpProblem;}
