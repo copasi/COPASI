@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:02:53 $
+   $Author: ssahle $ 
+   $Date: 2005/01/04 17:19:23 $
    End CVS Header */
 
 /**
@@ -42,7 +42,8 @@ class CCopasiMethod : public CCopasiParameterGroup
       deterministic,
       stochastic,
       hybrid,
-      mcaMethodReder
+      mcaMethodReder,
+      scanMethod
     };
 
     /**
