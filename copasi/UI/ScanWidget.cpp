@@ -314,13 +314,13 @@ void ScanWidget::upButtonClicked()
 
   //deactivate
   //lower one
-  QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject + 1) * 2]);
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
   activeTitle->setText(pObjectUp->getCN().c_str());
 
   //activate
   //upper one
-  activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   activeTitle->setText(pObjectDown->getCN().c_str());
 
@@ -342,12 +342,12 @@ void ScanWidget::downButtonClicked()
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->loadObject();
 
   //upper one
-  QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject - 1) * 2]);
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
   activeTitle->setText(pObjectDown->getCN().c_str());
 
   //bottom one
-  activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   activeTitle->setText(pObjectUp->getCN().c_str());
 
@@ -453,7 +453,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
   widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
 
-  QLineEdit* newTitleBar = new QLineEdit(this, "newTitleBar");
+  ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
   newTitleBar->setFixedSize(QSize(scrollview->visibleWidth(), TITLE_HEIGHT));
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
