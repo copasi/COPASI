@@ -74,6 +74,9 @@ class FolderListItem : public QListViewItem
 class ListViews : public QSplitter
   {
     Q_OBJECT
+  public slots:
+    void slotHideWidget();
+    void slotShowWidget();
 
   public:
     ListViews(QWidget *parent = 0, const char *name = 0);
@@ -87,8 +90,6 @@ class ListViews : public QSplitter
     static DataModel* getDataModel() {return dataModel;};
     static bool notify(ObjectType objectType, Action action, const std::string & key = "");
     void switchToOtherWidget(const std::string & key);
-    void slotHideWidget();
-    void slotShowWidget();
   private:
     CMathModel *mpMathModel;
 

@@ -239,10 +239,6 @@ SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\scan\CScanTask.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\DataModel.h
 # End Source File
 # Begin Source File
