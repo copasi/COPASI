@@ -89,7 +89,7 @@ void WriteDot(char *Title, CCopasiVector < CGene > &gene)
     for (j = 0; j < gene[i]->getModifierNumber(); j++)
       {
         fout << "\t" << gene[i]->getModifier(j)->getName() << " -> " << gene[i]->getName() << endl;
-        if (gene[i]->getModifierType(j) == 0)
+        if (gene[i]->getModifierType(j) == 1)
           fout << "\t\t[arrowhead=\"tee\"\n\t\tcolor=\"red\"]" << endl;
       }
   fout << "\n}";
@@ -114,7 +114,7 @@ void WritePajek(char *Title, CCopasiVector < CGene > &gene)
     for (j = 0; j < gene[i]->getModifierNumber(); j++)
       for (l = 0; l < size; l++)
         if (gene[i]->getModifier(j) == gene[l])
-          fout << l + 1 << " " << i + 1 << " 1 c " << (gene[i]->getModifierType(j) == 0 ? "Red" : "Blue") << endl;
+          fout << l + 1 << " " << i + 1 << " 1 c " << (gene[i]->getModifierType(j) == 0 ? "Blue" : "Red") << endl;
   fout.close();
 }
 

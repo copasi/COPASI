@@ -12,6 +12,7 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include <stdio.h>
+#include "utilities/CMethodParameter.h"
 #include "model/model.h"
 #include "ABiochem/CGene.h"
 
@@ -36,14 +37,14 @@ using namespace std;
  */
 
 void MakeGeneNetwork(C_INT32 n,
-                      C_INT32 k,
-                      C_FLOAT64 p,
-                      C_FLOAT64 r,
-                      C_FLOAT64 coopval,
-                      C_FLOAT64 rateval,
-                      C_FLOAT64 constval,
-                      CCopasiVector < CGene > &gene,
-                      char *comments)
+                     C_INT32 k,
+                     C_FLOAT64 p,
+                     C_FLOAT64 r,
+                     C_FLOAT64 coopval,
+                     C_FLOAT64 rateval,
+                     C_FLOAT64 constval,
+                     CCopasiVector < CGene > &gene,
+                     char *comments)
 {
   C_INT32 i, j, l, l2, modf, links, links2;
   char gn[1024];
