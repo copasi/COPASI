@@ -529,6 +529,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 23:              //Time course
         return trajectoryWidget;
         break;
+      case 31:
+        return expressionWidget;
+        break;
       case 32:
         return scanWidget;
         break;
@@ -1052,6 +1055,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
   switch (objectType)
     {
     case METABOLITE:
+      //  expressionWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1077,6 +1081,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case COMPARTMENT:
+      //  expressionWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1102,6 +1107,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case REACTION:
+      //  expressionWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1127,6 +1133,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       tableDefinition1->update(objectType, action, key);
       break;
     case FUNCTION:
+      //  expressionWidget->update(objectType, action, key);
       //        scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1153,6 +1160,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
       break;
     case MODEL:
+      //  expressionWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       steadystateWidget->update(objectType, action, key);
       trajectoryWidget->update(objectType, action, key);
@@ -1185,6 +1193,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
 
       break;
     case STATE:
+      //  expressionWidget->update(objectType, action, key);
       //        scanWidget->update(objectType, action, key);
       //        steadystateWidget->update(objectType, action, key);
       //        trajectoryWidget->update(objectType, action, key);
@@ -1210,6 +1219,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //  tableDefinition1->update(objectType, action, key);
       break;
     case REPORT:
+      //  expressionWidget->update(objectType, action, key);
       scanWidget->update(objectType, action, key);
       steadystateWidget->update(objectType, action, key);
       trajectoryWidget->update(objectType, action, key);

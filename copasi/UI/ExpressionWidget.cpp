@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.4 2003/09/19 20:36:06 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.5 2003/09/19 20:37:45 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -166,6 +166,7 @@ bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 bool ExpressionWidget::leave()
 {
   //let the user confirm?
+  return true;
 }
 
 bool ExpressionWidget::enter(const std::string & key)
@@ -181,4 +182,6 @@ bool ExpressionWidget::enter(const std::string & key)
 }
 
 bool ExpressionWidget::loadFromExpression(CFunction*)
-{}
+{
+  return true;
+}
