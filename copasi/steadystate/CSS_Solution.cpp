@@ -121,11 +121,13 @@ void CSS_Solution::process(void)
   C_FLOAT64 t = 0.1;
 
   mNewton->process();
+  if(mNewton->isSteadyState())
+	return;
 
   while (t < pow(10,10))
     {
-      if(mNewton->isSteadyState())
-	return;
+      // if(mNewton->isSteadyState())
+      //   return;
 
       t *= 10;
       mTraj -> process();
@@ -162,7 +164,7 @@ void CSS_Solution::steadyState( void )
 	  mModel.Compartment[mModel.Metabolite[mModel.Row[i]].Compart].Volume;
       // first attempt a solution by the newton method
       //SS_Newton();
-      mNewton->ProcessNewton();
+      mNewton->process();
       ftot += (double) mSs_nfunction;
       jtot += (double) mSs_njacob;
     }
@@ -359,4 +361,40 @@ C_INT32 CSS_Solution::isSteadyState( void )
   return mSs_solution;
 }
 
+/*
+
+// YH: move the following function to here from CNewton class
+ 
+// finds out if current state is a valid steady state
+C_INT32 CNewton::isSteadyState( void )
+{
+  unsigned C_INT32 i, dim = mModel->getIndMetab();
+  double maxrate;
+
+  mSs_solution = SS_NOT_FOUND;
+  for( i=0; i<dim; i++ )
+    if( mSs_x[i] < 0.0 ) return SS_NOT_FOUND;
+
+  //FEval( 0, 0, mSs_x, ss_dxdt );
+  mModel->lSODAEval(dim, 0, mSs_xnew, &mSs_dxdt[0] );
+  mSs_nfunction++;
+  // maxrate = SS_XNorn( ss_dxdt );
+  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
+ 
+  if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
+  return mSs_solution;
+}
+
+*/
+
+
+
+
 #endif //XXXXXX
+
+
+
+
+
+
+
