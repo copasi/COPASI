@@ -6,10 +6,7 @@
 //
 //////////////////////////////////////////////////
 CReportBody::CReportBody():
-    //    bTable(new CReportTable),
-    //    bReport(new CReport)
-    mTable(NULL),
-    mReport(NULL)
+    mpReportTable(NULL)
 {}
 
 CReportBody::~CReportBody()
@@ -17,21 +14,15 @@ CReportBody::~CReportBody()
 
 void CReportBody::cleanup()
 {
-  pdelete(bTable);
-  pdelete(bReport);
+  mReportObjectName.clear();
+  pdelete(mpReportTable);
 }
 
-CReport* CReportBody::getReport()
-{return bReport;}
-
-void CReportBody::setReport(CReport *report)
-{bReport = report;}
-
 CReportTable* CReportBody::getTable()
-{return bTable;}
+{return mpReportTable;}
 
 void CReportBody::setTable(CReportTable *table)
-{bTable = table;}
+{mpReportTable = table;}
 
 //////////////////////////////////////////////////
 //
@@ -39,8 +30,9 @@ void CReportBody::setTable(CReportTable *table)
 //
 //////////////////////////////////////////////////
 CReportTable::CReportTable():
-    tObject(new CReportObject),
-    tPrintTitle(true)
+    mpObjectNameVector(NULL),
+    mSeperator(" "),
+    mPrintTitle(true)
 {}
 
 CReportTable::~CReportTable()
@@ -48,5 +40,6 @@ CReportTable::~CReportTable()
 
 void CReportTable::cleanup()
 {
-  pdelete(tObject);
+  // this pointer is created outsid
+  pdelete(mpObjectNameVector);
 }

@@ -21,7 +21,7 @@ class CReport : public CCopasiObject
   {
   private:
     CReportDefinition *mpReportDef;
-    const std::string mTarget;
+    std::string mTarget;
     bool mAppend;
     std::string mKey;
 

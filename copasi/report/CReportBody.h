@@ -11,6 +11,8 @@
 
 #include <string>
 #include <vector>
+#include "copasi.h"
+#include "CCopasiObjectName.h"
 
 class CReportTable;
 class CCopasiObjectName;
