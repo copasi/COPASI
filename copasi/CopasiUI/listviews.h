@@ -144,6 +144,7 @@ class ListViews : public QSplitter
     static void loadMoietiesToDataModel();
     static void loadCompartmentsToDataModel();
     static void loadFunctionsToDataModel();
+    static void loadReportDefinition();
 
     //the widgets
     QListView *folders;

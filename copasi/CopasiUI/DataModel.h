@@ -124,9 +124,9 @@ class DataModel
     void saveModel(const char* fileName);
 
     CModel* getModel() {return model;}
-    CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
-    CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
-
+    inline CSteadyStateTask* getSteadyStateTask() {return steadystatetask;}
+    inline CTrajectoryTask* getTrajectoryTask() {return trajectorytask;}
+    inline CReportDefinitionVector* getReportDefinitionVectorAddr(){return reportdefinitions;}
     Node<Folder>* getRoot(){return myTree.getRoot();}
     //Node<Folder>* getData(){return last;}
   };

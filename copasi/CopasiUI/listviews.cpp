@@ -33,6 +33,8 @@
 #include "ScanWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
+#include "report/CReportDefinition.h"
+#include "report/CReportDefinitionVector.h"
 #include "TrajectoryWidget.h"
 #include "function/CFunctionDB.h"
 #include "mathmodel/CMathModel.h"
@@ -552,6 +554,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 114:
         return reactionsWidget1;
         break;
+      case 431:
+        return tableDefinition1;
+        break;
       case 5:
         return functionWidget1;
         break;
@@ -801,7 +806,36 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
   loadFunctionsToDataModel();
   updateAllListviews2(5);
 
+  updateAllListviews1(431);
+  loadReportDefinition();
+  updateAllListviews2(431);
+
   return success;
+}
+
+void ListViews::loadReportDefinition()
+{
+  Folder * parent = dataModel->searchFolderList(431);
+  Folder * f;
+
+  dataModel->removeAllChildren(parent);
+
+  CReportDefinitionVector* obj = dataModel->getReportDefinitionVectorAddr();
+
+  std::vector<CReportDefinition*>* objects = obj->getReportDefinitionsAddr();
+  /*
+  C_INT32 j, jmax = objects.size();
+
+  CReportDefintion *obj;
+  for (j = 0; j < jmax; j++)
+    {
+      obj = objects[j];
+      f = new Folder(parent, obj->getName().c_str());
+      f->setID(parent->getID());
+      f->setObjectKey(obj->getKey());
+      dataModel->addData(parent, f);
+    }
+  */
 }
 
 //**************************************************************************************+***
