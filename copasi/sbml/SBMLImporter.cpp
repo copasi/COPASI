@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/06 14:56:40 $
+   $Author: shoops $ 
+   $Date: 2004/12/06 20:12:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1066,25 +1066,30 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
 {
   if (funDB != NULL)
     {
-      try
-        {
-          this->functionDB = funDB;
-          SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
-          SBMLDocument* sbmlDoc = reader->readSBML(filename);
-          delete reader;
-          //DebugFile << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
-          //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
-          //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
+      this->functionDB = funDB;
+      SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
+      SBMLDocument* sbmlDoc = reader->readSBML(filename);
 
-          CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
-          delete sbmlDoc;
-          return model;
-        }
-      catch (StdException ex)
+      if (sbmlDoc->getNumFatals() > 0)
         {
-          //DebugFile << ex.what() << std::endl;
-          throw ex;
+          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(0);
+
+          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
+                                 pSBMLMessage->getLine(),
+                                 pSBMLMessage->getColumn(),
+                                 pSBMLMessage->getMessage().c_str());
+
+          return NULL;
         }
+
+      delete reader;
+      //DebugFile << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
+      //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
+      //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
+
+      CModel* model = this->createCModelFromSBMLDocument(sbmlDoc);
+      delete sbmlDoc;
+      return model;
     }
   else
     {
