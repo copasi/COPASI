@@ -174,6 +174,20 @@ template < class CType > class CCopasiVector:
             *Target = new CType("NoName", this);
       }
 
+      /**
+       *
+       */
+      virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const
+        {
+          unsigned C_INT32 i, imax = size();
+          const_iterator Target = begin();
+
+          for (i = 0; i < imax; i++, Target++)
+            if (*Target == (void *) pObject) return i;
+
+          return C_INVALID_INDEX;
+        }
+
       friend std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
       {
         os << "   +++Vektor;  size: " << d.size() << std::endl;
@@ -405,20 +419,6 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 
           for (i = 0; i < imax; i++, Target++)
             if ((*Target)->getName() == name) return i;
-
-          return C_INVALID_INDEX;
-        }
-
-      /**
-       *
-       */
-      virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const
-        {
-          unsigned C_INT32 i, imax = size();
-          const_iterator Target = begin();
-
-          for (i = 0; i < imax; i++, Target++)
-            if (*Target == (void *) pObject) return i;
 
           return C_INVALID_INDEX;
         }
