@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/04 21:05:09 $
+   $Author: shoops $ 
+   $Date: 2004/05/06 18:06:48 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -72,7 +72,7 @@ PlotWindow::PlotWindow(const CPlotSpec* ptrSpec)
 
 bool PlotWindow::initFromSpec(const CPlotSpec* ptrSpec)
 {
-  plot->initFromSpec(ptrSpec);
+  return plot->initFromSpec(ptrSpec);
 }
 
 //-----------------------------------------------------------------------------
