@@ -561,22 +561,16 @@ C_INT32 TestEigen(void)
 
   CEigen myEigen;
 
-  C_FLOAT64 matrix[9];
-  matrix[0] = -1;
-  matrix[1] = 4;
-  matrix[2] = -2;
-  matrix[3] = -3;
-  matrix[5] = 4;
-  matrix[6] = 0;
-  matrix[6] = -3;
-  matrix[7] = 1;
-  matrix[8] = 3;
+  CMatrix< C_FLOAT64 > matrix(3, 3);
+  matrix[0][0] = -1; matrix[0][1] = 4; matrix[0][2] = -2;
+  matrix[1][0] = -3; matrix[1][1] = 4; matrix[1][2] = 0;
+  matrix[2][0] = -3; matrix[2][1] = 1; matrix[2][2] = 3;
   //initialize matrix
   //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3];
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
   C_FLOAT64 ssRes = 0.0;
 
-  myEigen.calcEigenValues(matrix, 3);
+  myEigen.calcEigenValues(matrix);
   myEigen.stabilityAnalysis(ssRes);
 
   cout << "!!! Yongqun Testing: the max eigenvalue real part is: " << myEigen.getEigen_maxrealpart() << endl;
@@ -1412,41 +1406,41 @@ C_INT32 TestLU()
 
   for (i = 0; i < row.size(); i++)
     {
-      if (rowLU[i] - 1 > i)
+      if (rowLU[i] > i)
         {
           t = row[i];
-          row[i] = row[rowLU[i] - 1];
-          row[rowLU[i] - 1] = t;
+          row[i] = row[rowLU[i]];
+          row[rowLU[i]] = t;
         }
     }
 
-  for (i = rowi.size(); 0 < i--; )
+  for (i = rowi.size(); 0 < i--;)
     {
-      if (rowLU[i] - 1 > i)
+      if (rowLU[i] > i)
         {
           t = rowi[i];
-          rowi[i] = rowi[rowLU[i] - 1];
-          rowi[rowLU[i] - 1] = t;
+          rowi[i] = rowi[rowLU[i]];
+          rowi[rowLU[i]] = t;
         }
     }
 
-  for (i = col.size(); 0 < i--; )
+  for (i = col.size(); 0 < i--;)
     {
-      if (colLU[i] - 1 < i)
+      if (colLU[i] < i)
         {
           t = col[i];
-          col[i] = col[colLU[i] - 1];
-          col[colLU[i] - 1] = t;
+          col[i] = col[colLU[i]];
+          col[colLU[i]] = t;
         }
     }
 
   for (i = 0; i < coli.size(); i++)
     {
-      if (colLU[i] - 1 < i)
+      if (colLU[i] < i)
         {
           t = coli[i];
-          coli[i] = coli[colLU[i] - 1];
-          coli[colLU[i] - 1] = t;
+          coli[i] = coli[colLU[i]];
+          coli[colLU[i]] = t;
         }
     }
 
@@ -1600,9 +1594,9 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
       C_INT32 k = static_cast<C_INT32> (rnd * nbins);
 
       if (k >= nbins)
-      {cout << " k too big \n"; exit(2); }
+      {cout << " k too big \n"; exit(2);}
       else if (k < 0.0)
-      {cout << " k too small \n"; exit(2); }
+      {cout << " k too small \n"; exit(2);}
 
       store[k] += 1;
       random_nums.push_back(rnd);

@@ -15,6 +15,9 @@
 #include <iostream>
 #include <iomanip>
 
+#include "utilities/CMatrix.h"
+#include "utilities/CVector.h"
+
 using std::ostream;
 using std::endl;
 using std::setprecision;
@@ -124,7 +127,7 @@ class CEigen
      * Use a pointer variable here instead of array since we don't know
      * the dimension yet.
      */
-    C_FLOAT64 * mA;
+    CMatrix< C_FLOAT64 > mA;
 
     /**
      * #6: (input) The leading dimension of the array A. LDA >= max(1,N)
@@ -142,12 +145,12 @@ class CEigen
     /**
      * #8: array with dimension (mN)
      */
-    C_FLOAT64 * mEigen_r;
+    CVector< C_FLOAT64 > mEigen_r;
 
     /**
      * #9: array with dimension (mN)
      */
-    C_FLOAT64 * mEigen_i;
+    CVector< C_FLOAT64 > mEigen_i;
 
     /**
      * #10: (output) array with dimension (mLdvs, mN)
@@ -198,14 +201,16 @@ class CEigen
     /**
      * sorts two arrays using one as the criterion for sorting
      */
-    C_INT32 qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
+    C_INT32 qs_partition(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
+                         C_INT32 p, C_INT32 r);
 
     /**
      * Do quicksort with 2 arrays of double.
      * One is the array of the real part of the eigenvalues.
      * another is the array of the imaginary part of the eigenvalues
      */
-    void quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r);
+    void quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
+                   C_INT32 p, C_INT32 r);
 
   public:
     /**
@@ -233,8 +238,7 @@ class CEigen
      * @param const C_FLOAT64 * matrix
      * @param const unsigned C_INT32 & dim
      */
-    void calcEigenValues(const C_FLOAT64 * matrix,
-                         const unsigned C_INT32 & dim);
+    void calcEigenValues(const CMatrix< C_FLOAT64 > & matrix);
 
     /**
      *  Calculate various eigenvalue statistics
@@ -288,9 +292,9 @@ class CEigen
      */
     const C_INT32 & getEigen_nnegreal() const;
 
-    const C_FLOAT64 * getEigen_i() const;
+    const CVector< C_FLOAT64 > & getEigen_i() const;
 
-    const C_FLOAT64 * getEigen_r() const;
+    const CVector< C_FLOAT64 > & getEigen_r() const;
 
     // Friend functions
     friend ostream &operator<<(ostream &os, const CEigen &A)

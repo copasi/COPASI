@@ -13,6 +13,7 @@
 #include <string>
 
 #include "utilities/CMethodParameterList.h"
+#include "utilities/CMatrix.h"
 
 class CSteadyStateProblem;
 class CState;
@@ -59,7 +60,7 @@ class CSteadyStateMethod : public CMethodParameterList
     /**
      * The jacobian of the steadystate
      */
-    C_FLOAT64 * mJacobian;
+    CMatrix< C_FLOAT64 > * mpJacobian;
 
     /**
      * A pointer to a CEigen object
@@ -118,7 +119,7 @@ class CSteadyStateMethod : public CMethodParameterList
      */
     CSteadyStateMethod::ReturnCode process(CState & steadyState,
                                            const CState & initialState,
-                                           C_FLOAT64 * jacobian,
+                                           CMatrix< C_FLOAT64 > & jacobian,
                                            CEigen * pEigenValues);
 
   protected:

@@ -168,25 +168,25 @@ CLsodaMethod::~CLsodaMethod()
 
 const double CLsodaMethod::step(const double & deltaT)
 {
-  lsoda(mDim,                    // number of variables
-        mY - 1,                  // the array of current concentrations
+  lsoda(mDim,                     // number of variables
+        mY - 1,                   // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                  // the current time
-        mTime + deltaT,          // the final time
-        1,                       // scalar error control
-        (&mRtol) - 1,            // relative tolerance array
+        &mTime,                   // the current time
+        mTime + deltaT,           // the final time
+        1,                        // scalar error control
+        (&mRtol) - 1,             // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,            // absolute tolerance array
+        (&mAtol) - 1,             // absolute tolerance array
         // fortran style vector !!!
-        1,                       // output by overshoot & interpolatation
-        &mLsodaStatus,           // the state control variable
-        1,                       // optional inputs are being used
-        2,                       // jacobian calculated internally
-        0, 0, 0,                 // options left at default values
-        10000,                   // max iterations for each lsoda call
-        0,                       // another value left at the default
-        mAdams,                  // max order for Adams method
-        mBDF,                    // max order for BDF method
+        1,                        // output by overshoot & interpolatation
+        &mLsodaStatus,            // the state control variable
+        1,                        // optional inputs are being used
+        2,                        // jacobian calculated internally
+        0, 0, 0,                  // options left at default values
+        10000,                    // max iterations for each lsoda call
+        0,                        // another value left at the default
+        mAdams,                   // max order for Adams method
+        mBDF,                     // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if ((mLsodaStatus != 1) && (mLsodaStatus != 2))
@@ -220,8 +220,9 @@ const double CLsodaMethod::step(const double & deltaT,
   mpStateX = new CStateX(*initialState);
 
   mDim = mpStateX->getVariableNumberSize();
-  mY = const_cast< C_FLOAT64 * >(mpStateX->getVariableNumberArrayDbl());
+  mY = const_cast< C_FLOAT64 * >(mpStateX->getVariableNumberArrayDbl().array());
   mTime = mpStateX->getTime();
+  mYdot.resize(mDim);
 
   return step(deltaT);
 }
@@ -2599,13 +2600,14 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,         /* Fortran style vector */
+                        C_FLOAT64 * y,      /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);
   mpStateX->setTime(t);
 
-  const_cast<CModel *>(mpStateX->getModel())->getDerivatives(mpStateX,
-      ydot + 1);
+  const_cast<CModel *>(mpStateX->getModel())->getDerivatives(mpStateX, mYdot);
+
+  memcpy(ydot, mYdot.array(), mYdot.size() * sizeof(C_FLOAT64));
   return;
 }

@@ -49,7 +49,7 @@ CSteadyStateMethod::CSteadyStateMethod() :
     CMethodParameterList(),
     mTypeEnum(CSteadyStateMethod::unspecified),
     mpProblem(NULL)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Copy constructor.
@@ -59,16 +59,16 @@ CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src):
     CMethodParameterList(src),
     mTypeEnum(src.mTypeEnum),
     mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Destructor.
  */
 CSteadyStateMethod::~CSteadyStateMethod()
-{DESTRUCTOR_TRACE; }
+{DESTRUCTOR_TRACE;}
 
 const CSteadyStateMethod::Type & CSteadyStateMethod::getTypeEnum() const
-  {return mTypeEnum; }
+{return mTypeEnum;}
 
 /**
  *  Set a pointer to the problem.
@@ -76,7 +76,7 @@ const CSteadyStateMethod::Type & CSteadyStateMethod::getTypeEnum() const
  *  @param "CSteadyStateProblem *" problem
  */
 void CSteadyStateMethod::setProblem(CSteadyStateProblem * problem)
-{mpProblem = problem; }
+{mpProblem = problem;}
 
 /**
  * This instructs the method to calculate a the steady state
@@ -91,11 +91,11 @@ void CSteadyStateMethod::setProblem(CSteadyStateProblem * problem)
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState & steadyState,
                             const CState & initialState,
-                            C_FLOAT64 * jacobian,
+                            CMatrix< C_FLOAT64 > & jacobian,
                             CEigen * pEigenValues)
 {
   mpSteadyState = & steadyState;
-  mJacobian = jacobian;
+  mpJacobian = & jacobian;
   mpEigenValues = pEigenValues;
 
   return process(steadyState, initialState);
@@ -118,12 +118,11 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
 
   if (mpProblem->isJacobianRequested() ||
       mpProblem->isStabilityAnalysisRequested())
-    mpSteadyState->getJacobian(mJacobian, factor, resolution);
+    mpSteadyState->getJacobian(*mpJacobian, factor, resolution);
 
   if (mpProblem->isStabilityAnalysisRequested())
     {
-      mpEigenValues->calcEigenValues(mJacobian,
-                                     mpSteadyState->getVariableNumberSize());
+      mpEigenValues->calcEigenValues(*mpJacobian);
       mpEigenValues->stabilityAnalysis(resolution);
     }
 

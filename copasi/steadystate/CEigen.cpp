@@ -34,16 +34,10 @@ CEigen::CEigen()
   mSelect = NULL;
   // #4: (input) The order of the matrix A
   mN = 0;
-  // #5: (input/output) The double precision array, dimension (LDA,N)
-  mA = NULL;    //initialize later
   // #6: (input) The leading dimension of the array A. LDA >= max(1,N)
   //C_INT32 mLDA;
   // #7: (output) an integer
   //C_INT32 mSdim;
-  // #8: array with dimension (mN)
-  mEigen_r = NULL;       //mWR;
-  // #9: array with dimension (mN)
-  mEigen_i = NULL;       //mWI;
   // #10: (output) array with dimension (mLdvs, mN)
   mVS = NULL;
   // #11: an integer, the leading dimension of the array VS. mLdvs >= 1;
@@ -61,7 +55,7 @@ CEigen::CEigen()
 /**
  * Deconstructor
  */
-CEigen::~CEigen() {DESTRUCTOR_TRACE; }
+CEigen::~CEigen() {DESTRUCTOR_TRACE;}
 
 /**
  * return the matrix
@@ -81,33 +75,33 @@ CEigen::~CEigen() {DESTRUCTOR_TRACE; }
 
 //Get the max eigenvalue real part
 const C_FLOAT64 & CEigen::getEigen_maxrealpart() const
-  {
-    return mEigen_maxrealpart;
-  }
+{
+  return mEigen_maxrealpart;
+}
 
 //Get the max eigenvalue imaginary  part
 const C_FLOAT64 & CEigen::getEigen_maximagpart() const
-  {
-    return mEigen_maximagpart;
-  }
+{
+  return mEigen_maximagpart;
+}
 
 // Get the number of zero eigenvalues
 const C_INT32 & CEigen::getEigen_nzero() const
-  {
-    return mEigen_nzero;
-  }
+{
+  return mEigen_nzero;
+}
 
 //Get the eigenvalue stiffness
 const C_FLOAT64 & CEigen::getEigen_stiffness() const
-  {
-    return mEigen_stiffness;
-  }
+{
+  return mEigen_stiffness;
+}
 
 //Get the eigenvalue hierarchy
 const C_FLOAT64 & CEigen::getEigen_hierarchy() const
-  {
-    return mEigen_hierarchy;
-  }
+{
+  return mEigen_hierarchy;
+}
 
 //initialize variables for eigenvalue calculations
 //
@@ -119,31 +113,29 @@ void CEigen::initialize()
                                   mEigen_nzero = mEigen_ncplxconj = 0;
 
   mLDA = mN > 1 ? mN : 1;
-  mA = new C_FLOAT64[mLDA * mLDA];
 
-  mEigen_r = new C_FLOAT64[mN];
-  mEigen_i = new C_FLOAT64[mN];
+  mEigen_r.resize(mN);
+  mEigen_i.resize(mN);
 
   mLWork = mN > 1365 ? mN * 3 : 4096;
+
   mWork = new C_FLOAT64[mLWork];
 }
 
 void CEigen::cleanup()
 {
-  pdelete(mA);
-  pdelete(mEigen_r);
-  pdelete(mEigen_i);
   pdelete(mWork);
 }
 
-void CEigen::calcEigenValues(const C_FLOAT64 * matrix,
-                             const unsigned C_INT32 & dim)
+void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 {
-  mN = dim;
+  assert (matrix.numRows() == matrix.numCols());
+
+  mN = matrix.numRows();
   initialize();
 
   // copy the jacobian into mA
-  memcpy(mA, matrix, mN * mN * sizeof(C_FLOAT64));
+  mA = matrix;
 
   // calculate the eigenvalues
   /* int dgees_(char *jobvs,
@@ -261,11 +253,11 @@ void CEigen::calcEigenValues(const C_FLOAT64 * matrix,
          &mSort,
          NULL,   // mSelect,           //NULL,
          &mN,                  //&n,
-         mA,
+         mA.array(),
          & mLDA,
          & mSdim,          // output
-         mEigen_r,
-         mEigen_i,
+         mEigen_r.array(),
+         mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
@@ -273,8 +265,7 @@ void CEigen::calcEigenValues(const C_FLOAT64 * matrix,
          mBWork,              //NULL
          &mInfo);            //output
 
-  if (mInfo)
-    fatalError();
+  if (mInfo) fatalError();
 }
 
 void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
@@ -368,7 +359,8 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
 // routines for sorting one matrix taking along another one
 // useful to sort complex numbers by their real or imaginary parts
-C_INT32 CEigen::qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
+C_INT32 CEigen::qs_partition(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
+                             C_INT32 p, C_INT32 r)
 {
   C_INT32 done = 0, i = p, j = r;
   C_FLOAT64 a, b, x = A[p];
@@ -396,7 +388,8 @@ C_INT32 CEigen::qs_partition(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
   return 0;
 }
 
-void CEigen::quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
+void CEigen::quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
+                       C_INT32 p, C_INT32 r)
 {
   C_INT32 q;
   if (p < r)
@@ -411,41 +404,41 @@ void CEigen::quicksort(C_FLOAT64 *A, C_FLOAT64 *B, C_INT32 p, C_INT32 r)
  * Return number of real eigenvalues WeiSun 3/28/02
  */
 const C_INT32 & CEigen::getEigen_nreal() const
-  {
-    return mEigen_nreal;
-  }
+{
+  return mEigen_nreal;
+}
 
 /**
  * Return the number of imaginary eigenvalue numbers
  */
 const C_INT32 & CEigen::getEigen_nimag() const
-  {
-    return mEigen_nimag;
-  }
+{
+  return mEigen_nimag;
+}
 
 const C_INT32 & CEigen::getEigen_ncplxconj() const
-  {
-    return mEigen_ncplxconj;
-  }
+{
+  return mEigen_ncplxconj;
+}
 
 /**
  * Return the number of eigenvalues with positive real part
  */
 const C_INT32 & CEigen::getEigen_nposreal() const
-  {
-    return mEigen_nposreal;
-  }
+{
+  return mEigen_nposreal;
+}
 
 /**
  * Return the number of eigenvalues with negative real part
  */
 const C_INT32 & CEigen::getEigen_nnegreal() const
-  {
-    return mEigen_nnegreal;
-  }
+{
+  return mEigen_nnegreal;
+}
 
-const C_FLOAT64 * CEigen::getEigen_i() const
-  {return mEigen_i;}
+const CVector< C_FLOAT64 > & CEigen::getEigen_i() const
+{return mEigen_i;}
 
-const C_FLOAT64 * CEigen::getEigen_r() const
-  {return mEigen_r;}
+const CVector< C_FLOAT64 > & CEigen::getEigen_r() const
+{return mEigen_r;}

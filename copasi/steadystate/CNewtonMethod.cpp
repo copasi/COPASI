@@ -24,12 +24,7 @@ extern "C"
 
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),
-    mH(NULL),
-    mXold(NULL),
-    mdxdt(NULL),
-    mJacobian(NULL),
     mIpiv(NULL)
-
 {
   setName("Newton");
   mTypeEnum = CSteadyStateMethod::Newton;
@@ -52,10 +47,6 @@ CNewtonMethod::~CNewtonMethod()
 
 void CNewtonMethod::cleanup()
 {
-  pdelete(mH);
-  pdelete(mXold);
-  pdelete(mdxdt);
-  pdelete(mJacobian);
   pdelete(mIpiv);
 }
 
@@ -112,11 +103,11 @@ CNewtonMethod::process(CState & steadyState,
 
   mDimension = SteadyState.getVariableNumberSize();
 
-  mX = const_cast<C_FLOAT64 *>(SteadyState.getVariableNumberArrayDbl());
-  mH = new C_FLOAT64 [mDimension];
-  mXold = new C_FLOAT64 [mDimension];
-  mdxdt = new C_FLOAT64 [mDimension];
-  mJacobian = new C_FLOAT64 [mDimension * mDimension];
+  mX = const_cast< C_FLOAT64 * >(SteadyState.getVariableNumberArrayDbl().array());
+  mH.resize(mDimension);
+  mXold.resize(mDimension);
+  mdxdt.resize(mDimension);
+  mJacobian.resize(mDimension, mDimension);
   mIpiv = new C_INT32 [mDimension];
 
   CNewtonMethod::NewtonReturnCode returnCode;
@@ -225,7 +216,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
   for (k = 0; k < mIterationLimit && mMaxrate > mResolution; k++)
     {
-      memcpy(mXold, mX, mDimension * sizeof(C_FLOAT64));
+      memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       steadyState.getJacobian(mJacobian, min(mFactor, mMaxrate), mResolution);
 
@@ -275,7 +266,8 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *               singular, and division by zero will occur if it is used
        *               to solve a system of equations.
        */
-      dgetrf_(&mDimension, &mDimension, mJacobian, &mDimension, mIpiv, &info);
+      dgetrf_(&mDimension, &mDimension, mJacobian.array(),
+              &mDimension, mIpiv, &info);
 
       if (info)
         {
@@ -332,8 +324,8 @@ CNewtonMethod::processNewton (CStateX & steadyState,
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
        */
-      dgetrs_(&N, &mDimension, &one, mJacobian, &mDimension, mIpiv, mdxdt,
-              &mDimension, &info);
+      dgetrs_(&N, &mDimension, &one, mJacobian.array(),
+              &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
 
       if (info)
         fatalError();
@@ -354,12 +346,14 @@ CNewtonMethod::processNewton (CStateX & steadyState,
 
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
-          nmaxrate = xNorm(mDimension, mdxdt - 1 /* fortran style vector */, 1);
+          nmaxrate = xNorm(mDimension,
+                           mdxdt.array() - 1,  /* fortran style vector */
+                           1);
         }
 
       if (i == 32)
         {
-          memcpy(mX, mXold, mDimension * sizeof(C_FLOAT64));
+          memcpy(mX, mXold.array(), mDimension * sizeof(C_FLOAT64));
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
 
@@ -409,7 +403,9 @@ bool CNewtonMethod::isSteadyState()
 {
   C_INT32 i;
 
-  mMaxrate = xNorm(mDimension, mdxdt - 1 /* fortran style vector */, 1);
+  mMaxrate = xNorm(mDimension,
+                   mdxdt.array() - 1,  /* fortran style vector */
+                   1);
 
   if (mMaxrate > mResolution)
     return false;

@@ -22,7 +22,7 @@
 /**
  * Defaulut constructor
  */
-CMca::CMca() {CONSTRUCTOR_TRACE; }
+CMca::CMca() {CONSTRUCTOR_TRACE;}
 
 /**
  * User defined constructor
@@ -240,7 +240,7 @@ int CMca::CalcGamma()
         aux2[i + 1][j + 1] = 0.0;
 
         for (k = 0; k < Model.getIndMetab(); k++)
-          aux2[i + 1][j + 1] += aux1[i][k] * Model.getL()(k + 1, j + 1); //???
+          aux2[i + 1][j + 1] += aux1[i][k] * Model.getL()(k, j); //???
       }
 
   // LU decomposition if aux2 (for inversion)

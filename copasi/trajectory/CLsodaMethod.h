@@ -1,6 +1,8 @@
 #ifndef COPASI_CLsodaMethod
 #define COPASI_CLsodaMethod
 
+#include "utilities/CVector.h"
+
 class CStateX;
 
 class CLsodaMethod : private CTrajectoryMethod
@@ -24,6 +26,11 @@ class CLsodaMethod : private CTrajectoryMethod
      *  Pointer to the array with left hand side values.
      */
     C_FLOAT64 * mY;
+
+    /**
+     * Vector containig the derivatives after calling eval
+     */
+    CVector< C_FLOAT64 > mYdot;
 
     /**
      *  Current time.

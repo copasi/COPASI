@@ -53,7 +53,7 @@ class CSteadyStateTask
     /**
      * The jacobian of the steady state.
      */
-    C_FLOAT64 * mJacobian;
+    CMatrix< C_FLOAT64 > mJacobian;
 
     /**
      *  The CEigen to work with
@@ -145,9 +145,9 @@ class CSteadyStateTask
 
     /**
      * Retrieves a the jacobian of the steady state.
-     * @return C_FLOAT64 * jacobian
+     * @return const CMatrix< C_FLOAT64 > jacobian
      */
-    const C_FLOAT64 * getJacobian();
+    const CMatrix< C_FLOAT64 > & getJacobian() const;
 
     /**
      * Retrieves a the eigen values of the steady state.

@@ -25,7 +25,6 @@ CSteadyStateTask::CSteadyStateTask():
     mpProblem(NULL),
     mpMethod(NULL),
     mpSteadyState(NULL),
-    mJacobian(NULL),
     mpEigenValues(NULL),
     mpOutEnd(NULL)
 {}
@@ -49,7 +48,6 @@ void CSteadyStateTask::cleanup()
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpSteadyState);
-  pdelete(mJacobian);
   pdelete(mpEigenValues);
   pdelete(mpOutEnd);
 }
@@ -95,24 +93,22 @@ void CSteadyStateTask::save(CWriteConfig & configBuffer)
 }
 
 CSteadyStateProblem * CSteadyStateTask::getProblem()
-{return mpProblem; }
+{return mpProblem;}
 
 void CSteadyStateTask::setProblem(CSteadyStateProblem * pProblem)
-{mpProblem = pProblem; }
+{mpProblem = pProblem;}
 
 CSteadyStateMethod * CSteadyStateTask::getMethod()
-{return mpMethod; }
+{return mpMethod;}
 
 void CSteadyStateTask::setMethod(CSteadyStateMethod * pMethod)
-{mpMethod = pMethod; }
+{mpMethod = pMethod;}
 
 CState * CSteadyStateTask::getState()
-{return mpSteadyState; }
+{return mpSteadyState;}
 
-const C_FLOAT64 * CSteadyStateTask::getJacobian()
-{
-  return mJacobian;
-}
+const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
+{return mJacobian;}
 
 const CEigen * CSteadyStateTask::getEigenValues()
 {
@@ -129,9 +125,9 @@ void CSteadyStateTask::process()
   pdelete(mpSteadyState);
   mpSteadyState = new CState(*mpProblem->getInitialState());
 
-  pdelete(mJacobian);
-  mJacobian = new C_FLOAT64[mpSteadyState->getVariableNumberSize()
-                            * mpSteadyState->getVariableNumberSize()];
+  mJacobian.resize(mpSteadyState->getVariableNumberSize(),
+                   mpSteadyState->getVariableNumberSize());
+
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
 

@@ -96,19 +96,19 @@ void CTrajectoryTask::save(CWriteConfig & configBuffer)
 }
 
 CTrajectoryProblem * CTrajectoryTask::getProblem()
-{return mpProblem; }
+{return mpProblem;}
 
 void CTrajectoryTask::setProblem(CTrajectoryProblem * pProblem)
-{mpProblem = pProblem; }
+{mpProblem = pProblem;}
 
 CTrajectoryMethod * CTrajectoryTask::getMethod()
-{return mpMethod; }
+{return mpMethod;}
 
 void CTrajectoryTask::setMethod(CTrajectoryMethod * pMethod)
-{mpMethod = pMethod; }
+{mpMethod = pMethod;}
 
 CState * CTrajectoryTask::getState()
-{return mpState; }
+{return mpState;}
 
 void CTrajectoryTask::process()
 {
@@ -128,12 +128,12 @@ void CTrajectoryTask::process()
   mpMethod->setCurrentState(mpState);
   mpMethod->setProblem(mpProblem);
 
-  C_FLOAT64 * pDerivatives = new C_FLOAT64 [mpState->getVariableNumberSize()];
+  CVector< C_FLOAT64 > Derivatives(mpState->getVariableNumberSize());
   if (mpOutInit)
     {
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
-      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutInit->print(Copasi->OutputList, *mpOut);
     }
 
@@ -141,7 +141,7 @@ void CTrajectoryTask::process()
     {
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
-      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutPoint->print(Copasi->OutputList, *mpOut);
     }
 
@@ -155,7 +155,7 @@ void CTrajectoryTask::process()
     {
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
-      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutPoint->print(Copasi->OutputList, *mpOut);
     }
 
@@ -174,7 +174,7 @@ void CTrajectoryTask::process()
         {
           /* Correct output depends on the model being updated */
           /* We should try to avoid this in the future         */
-          mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+          mpProblem->getModel()->getDerivatives(mpState, Derivatives);
           mpOutPoint->print(Copasi->OutputList, *mpOut);
         }
 
@@ -195,7 +195,7 @@ void CTrajectoryTask::process()
         {
           /* Correct output depends on the model being updated */
           /* We should try to avoid this in the future         */
-          mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+          mpProblem->getModel()->getDerivatives(mpState, Derivatives);
           mpOutPoint->print(Copasi->OutputList, *mpOut);
         }
 
@@ -212,7 +212,7 @@ void CTrajectoryTask::process()
     {
       /* Correct output depends on the model being updated */
       /* We should try to avoid this in the future         */
-      mpProblem->getModel()->getDerivatives(mpState, pDerivatives);
+      mpProblem->getModel()->getDerivatives(mpState, Derivatives);
       mpOutEnd->print(Copasi->OutputList, *mpOut);
     }
 }

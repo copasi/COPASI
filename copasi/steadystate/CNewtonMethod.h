@@ -9,6 +9,9 @@
 #ifndef COPASI_CNewtonMethod
 #define COPASI_CNewtonMethod
 
+#include "utilities/CMatrix.h"
+#include "utilities/CVector.h"
+
 class CStateX;
 
 class CNewtonMethod : private CSteadyStateMethod
@@ -37,10 +40,10 @@ class CNewtonMethod : private CSteadyStateMethod
     C_INT32 mDimension;
     C_FLOAT64 mMaxrate;
     C_FLOAT64 * mX;
-    C_FLOAT64 * mH;
-    C_FLOAT64 * mXold;
-    C_FLOAT64 * mdxdt;
-    C_FLOAT64 * mJacobian;
+    CVector< C_FLOAT64 > mH;
+    CVector< C_FLOAT64 > mXold;
+    CVector< C_FLOAT64 > mdxdt;
+    CMatrix< C_FLOAT64 > mJacobian;
     C_INT32 * mIpiv;
 
     // Operations
