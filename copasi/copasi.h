@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 15:58:32 $
+   $Author: shoops $ 
+   $Date: 2004/11/09 15:45:23 $
    End CVS Header */
 
 // copasi.h
@@ -122,11 +122,11 @@ extern std::ofstream DebugFile;
 #  if (defined COPASI_TRACE_CONSTRUCTION)
 #    include <typeinfo>
 #    define CONSTRUCTOR_TRACE \
-       {DebugFile << "Construct: " << typeid(*this).name() \
-        << ", \tAddress: " << (void *) this << std::endl;}
+       {DebugFile << "Construct:\t" << typeid(*this).name() \
+        << "\tAddress:\t" << (void *) this << std::endl;}
 #    define DESTRUCTOR_TRACE \
-       {DebugFile << "Destruct: " << typeid(*this).name() \
-        << ", \tAddress: " << (void *) this << std::endl;}
+       {DebugFile << "Destruct:\t" << typeid(*this).name() \
+        << "\tAddress:\t" << (void *) this << std::endl;}
 #  endif // COPASI_TRACE_CONSTRUCTION
 #  define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}
 #endif // COPASI_DEBUG
