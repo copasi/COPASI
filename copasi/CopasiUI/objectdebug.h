@@ -1,8 +1,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Fri Mar 28 17:57:53 2003
- **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.1 2003/04/01 12:35:53 ssahle Exp $)
+ ** Created: Tue Apr 1 19:46:57 2003
+ **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.2 2003/04/02 12:20:04 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,12 +35,13 @@ class ObjectDebug : public QDialog
     void update();
 
   protected:
+    QGridLayout* ObjectDebugLayout;
 
   protected slots:
     virtual void languageChange();
   private:
+    void addObjectRecursive(QWidget * parent, void * ptr);
     void init();
-    void addObjectRecursive(QWidget * parent, void * obj);
   };
 
 #endif // OBJECTDEBUG_H
