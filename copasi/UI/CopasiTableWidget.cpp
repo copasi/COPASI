@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/19 18:37:36 $
+   $Date: 2004/05/19 19:02:11 $
    End CVS Header */
 
 /*******************************************************************
@@ -125,7 +125,7 @@ void CopasiTableWidget::saveTable()
 
   mIgnoreUpdates = true; //to avoid recursive calls
 
-  C_INT32 j, jmax = table->numRows();
+  C_INT32 j, jmax = table->numRows() - 1;
   for (j = 0; j < jmax; ++j)
     {
       if (mFlagNew[j])
