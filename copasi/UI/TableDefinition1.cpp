@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/03/09 23:51:56 $
+   $Date: 2005/03/10 21:31:07 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.45 2005/03/09 23:51:56 anuragr Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.46 2005/03/10 21:31:07 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -334,7 +334,20 @@ void TableDefinition1::delReportClicked()
   //dataModel->getPlotDefinitionList().removePlotSpec(objKey);
   CCopasiDataModel::Global->getReportDefinitionList()->removeReportDefinition(reportKey);
 
-  ListViews::notify(ListViews::REPORT, ListViews::DELETE, reportKey);
+  C_INT32 size = ((CCopasiDataModel::Global)->getReportDefinitionList())->size();
+
+  if (size >= 1)
+    {
+      CReportDefinitionVector* obj = ((CCopasiDataModel::Global)->getReportDefinitionList());
+      enter((*obj)[size - 1]->getKey());
+    }
+
+  else
+    {
+      enter("");
+    }
+
+  protectedNotify(ListViews::REPORT, ListViews::DELETE, reportKey);
 }
 
 void TableDefinition1::slotBtnCancelClicked()
