@@ -30,7 +30,7 @@ class PQNode
      */
     friend std::ostream & operator<<(std::ostream &os, const PQNode & d)
     {
-      os << "  " << d.mIndex << ": " << d.mKey << " ";
+      os << "(" << d.mIndex << ", " << d.mKey << ")";
       return os;
     }
 
@@ -90,6 +90,32 @@ class CIndexedPriorityQueue
     C_FLOAT64 topKey();
 
     /**
+     * Deletes the node in the tree with the given index. The pointer 
+     * in the index array is removed.
+     *
+     * added by juergen 26 July, 2002
+     */
+    C_INT32 removeStochReaction(C_INT32 index);
+
+    /**
+     * Inserts the node with the given index and key into the tree. The index
+     * has to exist in the index array of course.
+     *
+     * added by juergen 26 July, 2002
+     */
+    C_INT32 insertStochReaction(C_INT32 index, C_FLOAT64 key);
+
+    /**
+     * Initializes the vector mIndexPointer. The vector will be
+     * <numberOfReactions> long and every pointer will be -1, because none of
+     * the nodes can be found in the tree so far. Insert the stochastic
+     * reactions into the tree with insertStochReaction()
+     *
+     * added by juergen 26 July, 2002
+     */
+    void initializeIndexPointer(C_INT32 numberOfReactions);
+
+    /**
      * Return the size of the heap
      */
     C_INT32 size() {return mHeap.size();}
@@ -147,6 +173,27 @@ class CIndexedPriorityQueue
 
       os << std::endl;
 
+      return os;
+    }
+
+    /**
+     *   Insert operator.
+     *
+     *   added by juergen 27 August, 2002
+     */
+    friend ostream & operator<<(ostream &os, const CIndexedPriorityQueue & d)
+    {
+      unsigned C_INT32 i;
+
+      os << "CIndexedPriorityQueue " << endl;
+      os << "  mIndexPointer: " << endl;
+      for (i = 0; i < d.mIndexPointer.size(); i++)
+        os << d.mIndexPointer[i] << " ";
+      os << endl;
+      os << "  mHeap: " << endl;
+      for (i = 0; i < d.mHeap.size(); i++)
+        os << d.mHeap[i] << " ";
+      os << endl;
       return os;
     }
 
