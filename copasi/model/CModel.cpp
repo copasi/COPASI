@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.164 $
+   $Revision: 1.165 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:27 $
+   $Date: 2004/05/06 18:48:54 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ const char * CModel::VolumeUnitName[] =
   {"l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
 const char * CModel::TimeUnitName[] =
-  {"s", "m", "h", "d", NULL};
+  {"d", "h", "m", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
 const char * CModel::QuantityUnitName[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
