@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "utilities/CCopasiVector.h"
+#include "utilities/CMethodParameter.h"
 #include "function/CFunction.h"
 #include "function/CCallParameters.h"
 #include "function/CFunctionParameters.h"
@@ -23,7 +24,6 @@
 //template < class CType > class CVector;
 class CWriteConfig;
 class CReadConfig;
-class CParameter;
 
 /** @dia:pos 135.488,75.5337 */
 class CReaction : public CCopasiContainer

@@ -31,7 +31,7 @@ class CMetabNameInterface
     static const std::string & getDisplayName(const std::string & key);
     static const std::string & getDisplayName(const CMetab & metab);
 
-    static const std::string & getMetaboliteKey(const CModel* model, const std::string & name);
+    static std::string getMetaboliteKey(const CModel* model, const std::string & name);
     static CMetab * getMetabolite(const CModel* model, const std::string & name);
 
   private:

@@ -363,41 +363,42 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::str
 
 bool CReactionInterface::createMetabolites(CModel & model) const
   {/*
-        C_INT32 i, imax;
-        const CCopasiVector<CChemEqElement> * el;
-        bool ret = false;
-        std::string compartmentName = model.getCompartments()[0]->getName();
-        //just the first compartment. This could be done more intelligently.
-     
-        el = &(mChemEq.getSubstrates());
-        imax = el->size();
-        for (i = 0; i < imax; ++i)
-          if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-            {
-              model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-              ret = true;
-            }
-     
-        el = &(mChemEq.getProducts());
-        imax = el->size();
-        for (i = 0; i < imax; ++i)
-          if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-            {
-              model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-              ret = true;
-            }
-     
-        el = &(mChemEq.getModifiers());
-        imax = el->size();
-        for (i = 0; i < imax; ++i)
-          if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-            {
-              model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-              ret = true;
-            }
-     
-        return ret;
-        //TODO: this method somehow still assumes unique names
-        //
-      */
+            C_INT32 i, imax;
+            const CCopasiVector<CChemEqElement> * el;
+            bool ret = false;
+            std::string compartmentName = model.getCompartments()[0]->getName();
+            //just the first compartment. This could be done more intelligently.
+         
+            el = &(mChemEq.getSubstrates());
+            imax = el->size();
+            for (i = 0; i < imax; ++i)
+              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                {
+                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                  ret = true;
+                }
+         
+            el = &(mChemEq.getProducts());
+            imax = el->size();
+            for (i = 0; i < imax; ++i)
+              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                {
+                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                  ret = true;
+                }
+         
+            el = &(mChemEq.getModifiers());
+            imax = el->size();
+            for (i = 0; i < imax; ++i)
+              if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                {
+                  model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                  ret = true;
+                }
+         
+            return ret;
+            //TODO: this method somehow still assumes unique names
+            //
+          */
+    return true;
   }

@@ -36,7 +36,7 @@ const std::string & CMetabNameInterface::getDisplayName(const CMetab & metab)
   return metab.getName();
 }
 
-const std::string & CMetabNameInterface::getMetaboliteKey(const CModel* model, const std::string & name)
+std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std::string & name)
 {
   CMetab * metab = getMetabolite(model, name);
   if (metab)
