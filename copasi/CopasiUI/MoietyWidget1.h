@@ -4,7 +4,12 @@
  **  
  ** This is the header file for the Moiety Widget, i.e the second level 
  ** of Moieties.
- *****************************************************************************/
+ *****************************************************************************/ 
+/*
+ reimplement UI to automatically change internal components size
+ Author: Liang Xu
+ */
+
 #ifndef MOIETYWIDGET1_H
 #define MOIETYWIDGET1_H
 

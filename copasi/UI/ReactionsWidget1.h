@@ -6,6 +6,11 @@
  ** of Reactions.
  **
  *****************************************************************************/
+
+/*
+ reimplement UI to automatically change internal components size
+ Author: Liang Xu
+ */
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 #include <qsplitter.h>

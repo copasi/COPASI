@@ -4,7 +4,11 @@
  **  
  ** This is the header file for Function Widget1, i.e the Second  level 
  ** widget which shows detailed description of an individual function
- *****************************************************************************/
+ *****************************************************************************/ 
+/*
+ reimplement UI to automatically change internal components size
+ Author: Liang Xu
+ */
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
 #include <qtextbrowser.h>

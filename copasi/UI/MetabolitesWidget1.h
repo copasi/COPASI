@@ -4,7 +4,11 @@
  **  
  ** This is the header file for the Metabolite Widget, i.e the second level 
  ** of Metabolites.
- *****************************************************************************/
+ *****************************************************************************/ 
+/*
+ reimplement UI to automatically change internal components size
+ Author: Liang Xu
+ */
 #ifndef METABOLITESWIDGET1_H
 #define METABOLITESWIDGET1_H
 
