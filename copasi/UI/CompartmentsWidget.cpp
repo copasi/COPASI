@@ -21,6 +21,7 @@
 #include <qwhatsthis.h>
 
 #include "model/CModel.h"
+#include "StretchTable.h"
 #include "model/CCompartment.h"
 #include "CompartmentsWidget.h"
 #include "listviews.h"
@@ -51,7 +52,7 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
   setCaption(trUtf8("CompartmentsWidget"));
   CompartmentsWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CompartmentsWidgetLayout");
 
-  table = new QTable(this, "table");
+  table = new StretchTable(this, "table");
   table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Name"));
   table->setNumCols(table->numCols() + 1); table->horizontalHeader()->setLabel(table->numCols() - 1, trUtf8("Volume"));
   table->setFrameShadow(QTable::Sunken);
@@ -154,11 +155,58 @@ void CompartmentsWidget::resizeEvent(QResizeEvent * re)
         }
       else
         {
+          table->DisableColWidthUpdate();
           int newWidth = re->size().width();
           int i;
+
+          int totalWidth = 0;
           for (i = 0; i < table->numCols(); i++)
-            table->setColumnWidth(i, newWidth * table->columnWidth(i) / tableWidth);
+            totalWidth += table->columnWidth(i);
+
+          int minTotalWidth = 0;
+          for (i = 0; i < table->numCols(); i++)
+            minTotalWidth += table->minColWidth[i];
+
+          //Zoom in
+          if (newWidth > tableWidth)
+            {
+              if (newWidth > totalWidth) // can do expansion
+                for (i = 0; i < table->numCols(); i++) // Do expansion
+                  table->setColumnWidth(i, newWidth*table->columnWidth(i) / totalWidth);
+              else
+                for (i = 0; i < table->numCols(); i++) // Do not expand
+                  table->setColumnWidth(i, table->columnWidth(i));
+
+              tableWidth = newWidth;
+              table->EnableColWidthUpdate();
+              return;
+            }
+          //Zoom out
+          //calculate total Width
+          if (newWidth >= totalWidth)    //will not decrease any column width
+            {
+              for (i = 0; i < table->numCols(); i++)
+                table->setColumnWidth(i, table->columnWidth(i));
+              tableWidth = newWidth;
+              table->EnableColWidthUpdate();
+              return;
+            }
+          //will decrease only those larger than the minimum width
+          //Less than the user specified total width
+          if (newWidth <= minTotalWidth)
+            {
+              for (i = 0; i < table->numCols(); i++)
+                table->setColumnWidth(i, table->minColWidth[i]);
+              tableWidth = newWidth;
+              table->EnableColWidthUpdate();
+              return;
+            }
+          //Bigger than the user specified total width
+          for (i = 0; i < table->numCols(); i++) // Do Expansion
+            table->setColumnWidth(i, (newWidth - minTotalWidth)*(table->columnWidth(i) - table->minColWidth[i]) / (totalWidth - minTotalWidth) + table->minColWidth[i]);
           tableWidth = newWidth;
+          table->EnableColWidthUpdate();
+          return;
         }
     }
 }

@@ -18,6 +18,7 @@ class CModel;
 class QPushButton;
 class QGridLayout;
 class QTable;
+class StretchTable;
 
 class CompartmentsWidget : public QWidget
   {
@@ -25,7 +26,7 @@ class CompartmentsWidget : public QWidget
 
   protected:
     CModel *mModel;
-    QTable* table;
+    StretchTable* table;
     QPushButton* btnOK;
     QPushButton* btnCancel;
     QGridLayout* CompartmentsWidgetLayout;
