@@ -102,7 +102,7 @@ class CWriteConfig
     /**
      *  Open mode
      */
-    std::ios_base::openmode mOpenMode;
+    std::ios::openmode mOpenMode;
 
     /**
      *  Failure status:
