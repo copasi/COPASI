@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/07/06 17:41:30 $
+   $Author: ssahle $ 
+   $Date: 2004/08/13 14:58:52 $
    End CVS Header */
 
 /**
@@ -78,7 +78,9 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
                            referenceType & reference,
                            const unsigned C_INT32 & flag = 0):
         CCopasiObject(name, pParent, "Reference",
-                      CCopasiObject::Reference | CCopasiObject::NonUniqueName),
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
@@ -128,7 +130,9 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
                            referenceType & reference,
                            const unsigned C_INT32 & flag = 0):
         CCopasiObject(name, pParent, "Reference",
-                      CCopasiObject::Reference | CCopasiObject::NonUniqueName),
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
