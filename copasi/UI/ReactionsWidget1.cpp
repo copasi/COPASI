@@ -25,7 +25,11 @@
 #include "ReactionsWidget1.h"
 #include "listviews.h"
 #include "model/model.h"
-#include "function/function.h" 
+#include "function/function.h"
+
+using std::cout;
+using std::endl;
+
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
