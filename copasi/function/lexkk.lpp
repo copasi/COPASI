@@ -1,0 +1,50 @@
+/* scanner for kinetic functions */
+
+/* remember to comment out the #include <unistd.h> */
+%option outfile="lexkk.cpp"
+%option prefix="kk"
+%option noyywrap
+%option never-interactive
+
+%{
+#include "copasi.h"
+#include "CNodeK.h"
+%}
+
+DIGIT    [0-9]
+ID       [a-zA-Z][a-zA-Z0-9]*
+   
+%%
+
+{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?  return N_NUMBER;
+ 
+log   |
+LOG   return N_LOG;
+
+log10 |
+LOG10 return N_LOG10;
+
+exp   |
+EXP   return N_EXP;
+
+sin   |
+SIN   return N_SIN;
+
+cos   |
+COS   return N_COS;
+     
+"+"   return '+';
+"-"   return '-';
+"*"   return '*';
+"/"   return '/';
+"^"   return '^';
+"("   return '(';
+")"   return ')';
+
+{ID}  return N_IDENTIFIER;
+     
+[ \t\r\n]+ /* eat up whitespace */
+     
+.     return N_NOP;
+     
+%%
