@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 14:57:00 $
+   $Date: 2004/12/19 20:00:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,13 +22,37 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 
+class MyListViewItemWithPtr : public QListViewItem
+  {
+  public:
+
+    MyListViewItemWithPtr(QListViewItem * parent, CCopasiObject * ptr,
+                          QString label1, QString label2 = QString::null,
+                          QString label3 = QString::null, QString label4 = QString::null,
+                          QString label5 = QString::null, QString label6 = QString::null,
+                          QString label7 = QString::null, QString label8 = QString::null)
+        : QListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+        mpObject(ptr)
+    {}
+
+    MyListViewItemWithPtr(QListView * parent, CCopasiObject * ptr,
+                          QString label1, QString label2 = QString::null,
+                          QString label3 = QString::null, QString label4 = QString::null,
+                          QString label5 = QString::null, QString label6 = QString::null,
+                          QString label7 = QString::null, QString label8 = QString::null)
+        : QListViewItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
+        mpObject(ptr)
+    {}
+
+    CCopasiObject* mpObject;
+  };
+
 void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 {
   CCopasiObject* obj = (CCopasiObject*)ptr;
   QListViewItem * element;
 
   std::string cn = obj->getCN();
-  //std::vector< CCopasiContainer * > ListOfContainer; //dummy
   CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
 
   QString flags;
@@ -43,16 +67,23 @@ else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
   QString value;
   if (obj->isValueDbl())
     value = QString::number(*(C_FLOAT64*)obj->getReference());
+  else if (obj->isValueInt())
+    value = QString::number(*(C_INT32*)obj->getReference());
+  else if (obj->isValueBool())
+    {
+      if (*(bool*)obj->getReference()) value = "true"; else value = "false";
+    }
   else
     value = "";
 
-  element = new QListViewItem((QListViewItem*)parent, FROM_UTF8(obj->getObjectName()),
-                              FROM_UTF8(obj->getObjectType()),
-                              flags,
-                              value,
-                              FROM_UTF8(obj->getObjectDisplayName()),
-                              FROM_UTF8(obj->getCN()),
-                              FROM_UTF8(obj->getObjectUniqueName()));
+  element = new MyListViewItemWithPtr((QListViewItem*)parent, obj,
+                                      FROM_UTF8(obj->getObjectName()),
+                                      FROM_UTF8(obj->getObjectType()),
+                                      flags,
+                                      value,
+                                      FROM_UTF8(obj->getObjectDisplayName()),
+                                      FROM_UTF8(obj->getCN()),
+                                      FROM_UTF8(obj->getObjectUniqueName()));
 
   //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 
@@ -97,25 +128,11 @@ void ObjectDebug::update()
   CCopasiObject * obj;
 
   QListViewItem * element;
-  element = new QListViewItem(ListOfObjects, "*");
+  element = new MyListViewItemWithPtr(ListOfObjects, NULL, "*");
+  element->setOpen(true);
 
-  /*
-    obj = (CCopasiObject*)Copasi->pModel;
-    if (!obj) return;
-   
-    while (obj->getObjectParent())
-      {obj = (CCopasiObject*)obj->getObjectParent();}
-    // now we have the root object
-   
-    addObjectRecursive((QWidget*)element, (void*)obj);
-  */ 
-  //zusätzliche Objekte zeigen
   obj = (CCopasiObject*)CCopasiContainer::Root;
   if (!obj) return;
-
-  //while (obj->getObjectParent())
-  //  {obj = (CCopasiObject*)obj->getObjectParent();}
-  // now we have the root object
 
   addObjectRecursive((QWidget*)element, (void*)obj);
 
@@ -131,11 +148,13 @@ void ObjectDebug::init()
   ListOfObjects->addColumn("Display Name", -1);
   ListOfObjects->addColumn("CN", -1);
   ListOfObjects->addColumn("Unique name", -1);
+  ListOfObjects->setAllColumnsShowFocus(true);
 }
 
 void ObjectDebug::action(QListViewItem * item, const QPoint & pnt, int col)
 {
-  CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
+  //CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
+  CCopasiObject* testObj = ((MyListViewItemWithPtr*)item)->mpObject;
 
   if (!testObj) return;
 
