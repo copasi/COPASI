@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/13 23:52:12 $
+   $Date: 2003/11/22 01:16:08 $
    End CVS Header */
 
 /*******************************************************************
@@ -222,72 +222,101 @@ void CompartmentsWidget::slotBtnCancelClicked()
 
 void CompartmentsWidget::slotBtnDeleteClicked()
 {
-  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+  unsigned C_INT32 i, imax = table->numRows() - 1;
+  std::vector< unsigned C_INT32 > ToBeDeleted;
+
+  for (i = 0; i < imax; i++)
+    if (table->isRowSelected(i, true))
+      ToBeDeleted.push_back(i);
+
+  imax = ToBeDeleted.size();
+  if (imax > 0)
     {
-      int j = table->currentRow();
-      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+      QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
+      QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+      QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
+      int metabFound = 0;
+      int reacFound = 0;
+
+      for (i = 0; i < imax; i++)
         {
-          int choice = QMessageBox::warning(this, "Confirm Delete",
-                                            "Delete Selected Rows?",
-                                            //"Only Fully Selected Rows will be deleted." ,
-                                            "Yes", "No", 0, 0, 1);
-          switch (choice)
+          compartmentList.append(table->text(ToBeDeleted[i], 0));
+          compartmentList.append(", ");
+
+          CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[ToBeDeleted[i]]);
+
+          const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
+          C_INT32 noOfMetabs = Metabs.size();
+
+          if (noOfMetabs > 0)
             {
-            case 0:     // Yes or Enter
-              {
-                //QString name(table->text(j, 0));
+              metabFound = 1;
+              for (int k = 0; k < noOfMetabs; k++)
+                {
+                  effectedMetabList.append(Metabs[k]->getName().c_str());
+                  effectedMetabList.append(", ");
+                }
 
-                CCompartment* comp = (CCompartment*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
+              effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+              effectedMetabList.append("  ---> ");
+              effectedMetabList.append(table->text(ToBeDeleted[i], 0));
+              effectedMetabList.append("\n");
 
-                const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-                C_INT32 noOfMetabs = Metabs.size();
+              std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeCompReacKeys(mKeys[ToBeDeleted[i]]);
+              if (effectedReacKeys.size() > 0)
+                {
+                  reacFound = 1;
+                  for (int k = 0; k < effectedReacKeys.size(); k++)
+                    {
+                      CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[k]);
+                      effectedReacList.append(reac->getName().c_str());
+                      effectedReacList.append(", ");
+                    }
 
-                if (noOfMetabs > 0)
-                  {
-                    QString effectedItems = "Following Metabolites will be effected:\n";
-
-                    effectedItems.append(Metabs[0]->getName().c_str());
-                    for (int i = 1; i < noOfMetabs; i++)
-                      {
-                        effectedItems.append(", ");
-                        effectedItems.append(Metabs[i]->getName().c_str());
-                      }
-
-                    std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeCompReacKeys(mKeys[j]);
-                    if (effectedReacKeys.size() > 0)
-                      {
-                        effectedItems.append("\nFollowing Reactions will be effected:\n");
-
-                        CReaction* reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[0]);
-                        effectedItems.append(reac->getName().c_str());
-
-                        for (int i = 1; i < effectedReacKeys.size(); i++)
-                          {
-                            effectedItems.append(", ");
-                            reac = (CReaction*)(CCopasiContainer*)CKeyFactory::get(effectedReacKeys[i]);
-                            effectedItems.append(reac->getName().c_str());
-                          }
-                      }
-
-                    choice = QMessageBox::warning(this, "Confirm Delete",
-                                                  effectedItems,
-                                                  "Yes", "No", 0, 0, 1);
-                  }
-
-                if (choice == 0)
-                  {
-                    table->removeSelectedRows(true);
-                    dataModel->getModel()->removeCompartment(mKeys[j]);
-                    ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[j]);
-                  }
-
-                break;
-              }
-            case 1:     // No or Escape
-              {
-                break;
-              }
+                  effectedReacList.remove(effectedReacList.length() - 2, 2);
+                  effectedReacList.append("  ---> ");
+                  effectedReacList.append(table->text(ToBeDeleted[i], 0));
+                  effectedReacList.append("\n");
+                }
             }
+        }
+
+      compartmentList.remove(compartmentList.length() - 2, 2);
+
+      QString msg = compartmentList;
+      if (metabFound == 1)
+        {
+          msg.append("\n \n");
+          msg.append(effectedMetabList);
+          if (reacFound == 1)
+            {
+              msg.append("\n \n");
+              msg.append(effectedReacList);
+            }
+        }
+
+      int choice = QMessageBox::warning(this,
+                                        "CONFIRM DELETE",
+                                        msg,
+                                        "Continue", "Cancel", 0, 0, 1);
+
+      switch (choice)
+        {
+        case 0:  // Yes or Enter
+          {
+            for (i = 0; i < imax; i++)
+              {
+                table->removeRow(ToBeDeleted[i]);
+                dataModel->getModel()->removeCompartment(mKeys[ToBeDeleted[i]]);
+              }
+
+            for (i = 0; i < imax; i++)
+              ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+
+            break;
+          }
+        case 1:  // No or Escape
+          break;
         }
     }
 }

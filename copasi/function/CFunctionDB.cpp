@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/14 20:58:35 $
+   $Date: 2003/11/22 01:17:17 $
    End CVS Header */
 
 /**
@@ -22,7 +22,6 @@
 #include "report/CCopasiObjectReference.h"
 #include "xml/CCopasiXML.h"
 #include "report/CKeyFactory.h"
-
 #include "FunctionDB.xml.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
@@ -299,6 +298,8 @@ bool CFunctionDB::removeFunction(const std::string &key)
     return false;
 
   mLoadedFunctions.CCopasiVector<CFunction>::remove(index);
+  pdelete(func);
+
   return true;
 }
 

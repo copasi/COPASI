@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/20 15:04:07 $
+   $Author: gasingh $ 
+   $Date: 2003/11/22 01:16:08 $
    End CVS Header */
 
 /*******************************************************************
@@ -261,24 +261,39 @@ void ReactionsWidget::slotBtnDeleteClicked()
     if (table->isRowSelected(i, true))
       ToBeDeleted.push_back(i);
 
-  int choice = QMessageBox::warning(this, "Confirm Delete",
-                                    "Delete Selected Rows?",
-                                    "Yes", "No", 0, 0, 1);
-
-  switch (choice)
+  if (ToBeDeleted.size() > 0)
     {
-    case 0:     // Yes or Enter
-      for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+      QString reacList = "Are you sure you want to delete listed REACTION(S) ?\n";
+      for (i = 0; i < ToBeDeleted.size(); i++)
         {
-          dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
-          table->removeRow(ToBeDeleted[i]);
+          reacList.append(table->text(ToBeDeleted[i], 0));
+          reacList.append(", ");
         }
-      ListViews::notify(ListViews::REACTION, ListViews::DELETE);
+      reacList.remove(reacList.length() - 2, 2);
 
-      break;
+      int choice = QMessageBox::warning(this, "CONFIRM DELETE",
+                                        reacList,
+                                        "Continue", "Cancel", 0, 0, 1);
 
-    default:     // No or Escape
-      break;
+      switch (choice)
+        {
+        case 0: // Yes or Enter
+          {
+            for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+              {
+                dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+                table->removeRow(ToBeDeleted[i]);
+              }
+
+            for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+              ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+
+            break;
+          }
+
+        default:      // No or Escape
+          break;
+        }
     }
 }
 

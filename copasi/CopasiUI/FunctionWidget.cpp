@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/11/14 20:58:35 $
+   $Date: 2003/11/22 01:16:08 $
    End CVS Header */
 
 /***********************************************************************
@@ -184,32 +184,106 @@ void FunctionWidget::slotBtnCancelClicked()
 
 void FunctionWidget::slotBtnDeleteClicked()
 {
-  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+  unsigned C_INT32 i, imax = table->numRows() - 1;
+  std::vector< unsigned C_INT32 > ToBeDeleted;
+
+  for (i = 0; i < imax; i++)
+    if (table->isRowSelected(i, true))
+      {
+        if (table->text(i, 1) == "user-defined")
+          ToBeDeleted.push_back(i);
+      }
+
+  imax = ToBeDeleted.size();
+  if (imax > 0)
     {
-      int j = table->currentRow();
-      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+      const CCopasiVectorN < CReaction > & reactions = Copasi->pModel->getReactions();
+      C_INT32 k, kmax = reactions.size();
+
+      QString msg1 = "Cannot delete Function(s). ";
+      msg1.append("Following dependencies with listed Reaction(s) exist:\n");
+      QString msg2 = "Are you sure to delete listed Functions?\n";
+      int msg1Empty = 1;
+      int msg2Empty = 1;
+      int *reacFound = new int[imax];
+
+      for (i = 0; i < imax; i++)
         {
-          QString type(table->text(j, 1));
-          if (type == "user-defined")
+          reacFound[i] = 0;
+
+          /* Check if Reactions are dependent on Functions to be deleted */
+          if (kmax > 0)
             {
-              int choice = QMessageBox::warning(this, "Confirm Delete",
-                                                "Delete Selected Rows?\n"
-                                                "Only Fully Selected Rows will be deleted." ,
-                                                "Yes", "No", 0, 0, 1);
-              switch (choice)
+              const CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(mKeys[ToBeDeleted[i]]);
+
+              for (k = 0; k < kmax; k++)
                 {
-                case 0:   // Yes or Enter
-                  {
-                    table->removeSelectedRows(true);
-                    Copasi->pFunctionDB->removeFunction(mKeys[j]);
-                    ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, mKeys[j]);
-                    break;
-                  }
-                case 1:   // No or Escape
-                  break;
+                  const CFunction *reacFunc = &(reactions[k]->getFunction());
+                  if (func == reacFunc)
+                    {
+                      reacFound[i] = 1;
+                      msg1.append(reactions[k]->getName().c_str());
+                      msg1.append(" ---> ");
+                      msg1.append(table->text(ToBeDeleted[i], 0));
+                      msg1.append("\n");
+                      msg1Empty = 0;
+                      break;
+                    }
                 }
             }
+
+          /* Make a list of Functions on which no Reaction is dependent */
+          if (reacFound[i] == 0)
+            {
+              msg2.append(table->text(ToBeDeleted[i], 0));
+              msg2.append("\n");
+              msg2Empty = 0;
+            }
         }
+
+      if (msg1Empty == 0)
+        {
+          QMessageBox::warning(this, "Sorry, Cannot Delete",
+                               msg1,
+                               "OK", 0, 0, 0, 1);
+        }
+
+      if (msg2Empty == 0)
+        {
+          int choice = QMessageBox::warning(this,
+                                            "CONFIRM DELETE",
+                                            msg2,
+                                            "Continue", "Cancel", 0, 0, 1);
+
+          /* Check if user chooses to deleted Functions */
+          switch (choice)
+            {
+            case 0:  // Yes or Enter
+              {
+                /* Delete the Functions on which no Reactions are dependent */
+                for (i = 0; i < imax; i++)
+                  {
+                    if (reacFound[i] == 0)
+                      {
+                        Copasi->pFunctionDB->removeFunction(mKeys[ToBeDeleted[i]]);
+                        table->removeRow(ToBeDeleted[i]);
+                      }
+                  }
+
+                /* Send notifications for Functions which have been deleted */
+                for (i = 0; i < imax; i++)
+                  {
+                    if (reacFound[i] == 0)
+                      ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+                  }
+                break;
+              }
+            case 1:  // No or Escape
+              break;
+            }
+        }
+
+      delete[] reacFound;
     }
 }
 
