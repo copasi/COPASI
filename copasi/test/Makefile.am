@@ -1,5 +1,5 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
-bin_PROGRAMS = test matrix 
+bin_PROGRAMS = test matrix
 
 test_SOURCES = test.cpp
 
@@ -51,4 +51,4 @@ installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
 
 $(SUBDIRS): ../
-	test -d $@ || ln -s ../$@ $@
+        test -d $@ || ln -s ../$@ $@
