@@ -41,7 +41,7 @@ public:
     /**
      *
      */
-    void Init();
+    void initialize();
 
     /**
      *
@@ -51,7 +51,7 @@ public:
     /**
      *
      */
-    void Delete();
+    void cleanup();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -59,7 +59,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return mFail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -67,38 +67,38 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return mFail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *
      */
-    void SetFilename(const string & filename);
+    void setFilename(const string & filename);
     
     /**
      *
      */
-    string GetFilename() const;
+    string getFilename() const;
     
     /**
      *  Load the function functionName from the database
      *  @param "const string" &functionName
      *  @return CKinFunction &
      */
-    CBaseFunction & DBLoad(const string & functionName);
+    CBaseFunction & dBLoad(const string & functionName);
 
     /**
      *  Add the function to the database
      *  @param CKinFunction &function
      *  @return C_INT32 Fail
      */
-    void Add(CKinFunction & function);
+    void add(CKinFunction & function);
 
     /**
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
      *  @return C_INT32 Fail
      */
-    void DBDelete(const string & functionName);
+    void dBDelete(const string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no
@@ -107,13 +107,13 @@ public:
      *  @param "const string" &functionName
      *  @return CKinFunction &
      */
-    CBaseFunction & FindFunction(const string & functionName);
+    CBaseFunction & findFunction(const string & functionName);
 
     /**
      *  Retrieves the vector of loades functions.
      *  @return "CCopasiVector < CKinFunction > &" LoadedFunctions
      */
-    CCopasiVectorP < CBaseFunction * > & LoadedFunctions();
+    CCopasiVectorP < CBaseFunction * > & loadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

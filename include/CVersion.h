@@ -58,28 +58,28 @@ public:
      *  @return mMajor
      *  @see mMajor  
      */
-    C_INT32 GetVersionMajor() const;
+    C_INT32 getVersionMajor() const;
 
     /**
      *  Returns the minor version number.
      *  @return mMinor
      *  @see mMinor  
      */
-    C_INT32 GetVersionMinor() const;
+    C_INT32 getVersionMinor() const;
 
     /**
      *  Returns the development version number.
      *  @return mDevel
      *  @see mDevel  
      */
-    C_INT32 GetVersionDevel() const;
+    C_INT32 getVersionDevel() const;
 
     /**
      *  Returns a string with the full version number.
      *  @return mVersion
      *  @see mVersion  
      */
-    const string & GetVersion() const;
+    const string & getVersion() const;
 
 
     /** 
@@ -88,13 +88,13 @@ public:
      *  @param minor minor version number. 
      *  @param devel development version number. 
      */
-    void SetVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
+    void setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
 
 private:
     /**
      *  Creates the version string.
      */
-    void SetString();
+    void setString();
 };
 
 #endif // COPASI_CVersion

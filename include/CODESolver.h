@@ -109,7 +109,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
      *  Saves the parameters of the solver to a CWriteConfig object.
@@ -118,14 +118,14 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Returns a string with the name of this solver.
      *  @return mName
      *  @see mName
      */
-    string GetName();
+    string getName();
 
     /**
      *  Initializes the solver routine.
@@ -134,7 +134,7 @@ public:
      *  @param n dimension of the problem
      *  @param method solver to be used
      */
-    void Initialize(CModel & model,
+    void initialize(CModel & model,
                     C_FLOAT64* y, 
                     C_INT32 n, 
                     C_INT32 method = 1);
@@ -144,7 +144,7 @@ public:
      *  initialized for next time.
      *  
      */
-    void CleanUp();
+    void cleanUp();
 
     /**
      *  Integrate the system from t to et using the selected solver
@@ -152,7 +152,7 @@ public:
      *  @param et end time (for requested solution)
      *  @return 0 if successful or an error code otherwise
      */
-    C_INT32 Step( C_FLOAT64 t, C_FLOAT64 et);
+    C_INT32 step( C_FLOAT64 t, C_FLOAT64 et);
 
 private:
 
@@ -163,7 +163,7 @@ private:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 LoadLSODAParameters(CReadConfig & configbuffer);
+    C_INT32 loadLSODAParameters(CReadConfig & configbuffer);
 
     /**
      *  Saves the parameters specific for the LSODA solver to a 
@@ -173,7 +173,7 @@ private:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 SaveLSODAParameters(CWriteConfig & configbuffer);
+    C_INT32 saveLSODAParameters(CWriteConfig & configbuffer);
 
     /**
      *  Uses LSODA to integrate the system from t to et
@@ -181,7 +181,7 @@ private:
      *  @param et end time (for requested solution)
      *  @return 0 if successful or an error code otherwise
      */
-    C_INT32 LSODAStep( C_FLOAT64 t, C_FLOAT64 et);
+    C_INT32 lSODAStep( C_FLOAT64 t, C_FLOAT64 et);
 };
 
 #endif // CODESolver

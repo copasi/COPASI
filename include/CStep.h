@@ -156,7 +156,7 @@ public:
     /**
      *  Init
      */
-    void Init();
+    void initialize();
     
     /**
      *  Destructor
@@ -166,7 +166,7 @@ public:
     /**
      *  Delete
      */
-    void Delete();
+    void cleanup();
     
     /**
      *  Assignement operator
@@ -180,7 +180,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -189,154 +189,154 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Retrieves the vector of substrates
      *  @return "vector < CId2Metab > &"
      */
-    vector < CId2Metab > &Substrates();
+    vector < CId2Metab > &substrates();
 
     /**
      *  Retrieves the vector of products
      *  @return "vector < CId2Metab > &"
      */
-    vector < CId2Metab > &Products();
+    vector < CId2Metab > &products();
 
     /**
      *  Retrieves the vector of modifiers
      *  @return "vector < CId2Metab > &"
      */
-    vector < CId2Metab > &Modifiers();
+    vector < CId2Metab > &modifiers();
 
     /**
      *  Retrieves the vector of parameters
      *  @return "vector < CId2Param > &"
      */
-    vector < CId2Param > &Parameters();
+    vector < CId2Param > &parameters();
 
     /**
      *  Retrieves the name of the step
      *  @return string
      */
-    string GetName() const;
+    string getName() const;
 
     /**
      *  Retrieves the chemical equation of the step
      *  @return string
      */
-    string GetChemEq() const;
+    string getChemEq() const;
 
     /**
      *  Retrieves the chemical structure of the step
      *  @return vector < ELEMENT >
      */
     typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
-    vector < ELEMENT > GetChemStructure() const;
+    vector < ELEMENT > getChemStructure() const;
 
     /**
      *  Retrieves the rate function of the step
      *  @return "CBaseFunction &"
      */
-    CBaseFunction & GetFunction();
+    CBaseFunction & getFunction();
 
     /**
      *  Retrieves the flux of the step
      *  @return C_FLOAT64
      */
-    C_FLOAT64 GetFlux() const;
+    C_FLOAT64 getFlux() const;
 
     /**
      *  Retrieves whether the step is reversible
      *  @return C_INT16
      */
-    C_INT16 IsReversible() const;
+    C_INT16 isReversible() const;
 
     /**
      *  Sets the name of the step
      *  @param "const string &" name
      */
-    void SetName(const string & name);
+    void setName(const string & name);
 
     /**
      *  Sets the chemical equation of the step
      *  @param "const string &" chemEq
      */
-    void SetChemEq(const string & chemEq);
+    void setChemEq(const string & chemEq);
 
     /**
      *  Sets the rate function of the step
      *  @param "const string &" functionName
      */
-    void SetFunction(const string & functionName);
+    void setFunction(const string & functionName);
 
     /**
      *  Sets the flux of the step
      *  @param C_FLOAT64 flux
      */
-    void SetFlux(C_FLOAT64 flux);
+    void setFlux(C_FLOAT64 flux);
 
     /**
      *  Sets whether the step is reversible
      *  @param C_INT16 reversible
      */
-    void SetReversible(C_INT16 reversible);
+    void setReversible(C_INT16 reversible);
 
     /**
      *  Compile the step, i.e., links the metabolites and parameters with the
      *  rate function.
      *  @param "CCopasiVector < CMetab * > &" metabolites
      */
-    void Compile(const CCopasiVector < CCompartment > * compartments);
+    void compile(const CCopasiVector < CCompartment > * compartments);
 
     /**
      *  Calculate the kinetic function
      *  @return C_FLOAT64 velocity
      */
-    C_FLOAT64 Calculate();
+    C_FLOAT64 calculate();
 
     /**
      *  Retrieves the Compartment Name for substrates, products, and modifiers
      *  @param "vector < CMetab* > &" Metabolites 
      */
-    void Old2New(const vector < CMetab* > & metabolites);
+    void old2New(const vector < CMetab* > & metabolites);
     
 private:
     /**
      *
      */
-    C_INT32 LoadNew(CReadConfig & configbuffer);
+    C_INT32 loadNew(CReadConfig & configbuffer);
 
     /**
      *
      */
-    C_INT32 LoadOld(CReadConfig & configbuffer);
+    C_INT32 loadOld(CReadConfig & configbuffer);
 
     /**
      *
      */
-    void InitIdentifiers();
+    void initIdentifiers();
 
     /**
      *
      */
-    void SetIdentifiers();
+    void setIdentifiers();
 
     /**
      *
      */
-    void CheckIdentifiers();
+    void checkIdentifiers();
 
     /**
      *
      */
-    ELEMENT ExtractElement(const string & input, 
+    ELEMENT extractElement(const string & input, 
                            string::size_type & pos) const;
 
     /**
      *
      */
-    void AddElement(const ELEMENT & element,
+    void addElement(const ELEMENT & element,
                     vector < ELEMENT > & structure) const;
 
 };

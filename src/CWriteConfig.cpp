@@ -38,17 +38,17 @@ CWriteConfig::CWriteConfig(const string& name)
     mBuffer.setf(ios::scientific);
     mBuffer.precision(16);
 
-    SetVariable("Version", "string", &Copasi.ProgramVersion.GetVersion());
+    setVariable("Version", "string", &Copasi.ProgramVersion.getVersion());
 }
 
 
-CWriteConfig::~CWriteConfig(void) {Commit();}
+CWriteConfig::~CWriteConfig(void) {commit();}
 
-C_INT32 CWriteConfig::Flush(void)
+C_INT32 CWriteConfig::flush(void)
 {
-    if (Commit())
+    if (commit())
     {
-        FatalError();
+        fatalError();
         return mFail;
     }
     
@@ -58,7 +58,7 @@ C_INT32 CWriteConfig::Flush(void)
     return mFail;
 }
 
-C_INT32 CWriteConfig::Commit(void)
+C_INT32 CWriteConfig::commit(void)
 {
 #ifdef WIN32
     mOpenMode |= ios::binary;
@@ -67,14 +67,14 @@ C_INT32 CWriteConfig::Commit(void)
     ofstream ConfigFile(mFileName.c_str(), mOpenMode );
     if (ConfigFile.fail())
     {
-        FatalError();
+        fatalError();
         return mFail = 1;
     }
 
     ConfigFile.write(mBuffer.str(), mBuffer.pcount());
     if (ConfigFile.fail())
     {
-        FatalError();
+        fatalError();
         return mFail = 1;
     }
 
@@ -82,13 +82,13 @@ C_INT32 CWriteConfig::Commit(void)
     return mFail;
 }
 
-C_INT32 CWriteConfig::Fail()
+C_INT32 CWriteConfig::fail()
 {
     // return the failure state
     return mFail;
 }
 
-C_INT32 CWriteConfig::SetVariable(const string & name, 
+C_INT32 CWriteConfig::setVariable(const string & name, 
                                   const string & type, 
                                   const void *pout)
 {
@@ -120,7 +120,7 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
     }
     else
     {
-        FatalError();
+        fatalError();
         mFail = 1; //Error
     }
     
@@ -130,7 +130,7 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
     return mFail;
 }
 
-C_INT32 CWriteConfig::SetVariable(const string & name, 
+C_INT32 CWriteConfig::setVariable(const string & name, 
                                   const string & type, 
                                   const void *pout1, 
                                   const void *pout2)
@@ -150,7 +150,7 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
     }
     else
     {
-        FatalError();
+        fatalError();
         mFail = 1; //Error
     }
     

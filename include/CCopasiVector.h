@@ -38,13 +38,13 @@ public:
      *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer, C_INT32 size)
+    C_INT32 load(CReadConfig & configbuffer, C_INT32 size)
         {
             C_INT32 Fail = 0;
             
             mTypes->resize(size);
             for (C_INT32 i = 0; i < size; i++)
-                if (Fail = (*mTypes)[i].Load(configbuffer)) break;
+                if (Fail = (*mTypes)[i].load(configbuffer)) break;
     
             return Fail;
         }
@@ -55,12 +55,12 @@ public:
      *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig & configbuffer)
+    C_INT32 save(CWriteConfig & configbuffer)
         {
             C_INT32 Fail = 0;
 
-            for (C_INT32 i = 0; i < Size(); i++)
-                if (Fail = (*mTypes)[i].Save(configbuffer)) return Fail;
+            for (C_INT32 i = 0; i < size(); i++)
+                if (Fail = (*mTypes)[i].save(configbuffer)) return Fail;
     
             return Fail;
         }
@@ -68,9 +68,9 @@ public:
     /**
      *
      */
-    void Add(const CType & src)
+    void add(const CType & src)
         {
-	    if ( ! IsInsertAllowed(src) ) FatalError();
+	    if ( ! isInsertAllowed(src) ) fatalError();
             // This is not very efficient !!!
             // It results in a lot of resizing of the vector !!!
             mTypes->push_back(src);
@@ -79,58 +79,58 @@ public:
     /**
      *
      */
-    void Delete() 
+    void cleanup() 
         {
             for (C_INT32 i = 0; i < mTypes->size(); i++)
-                (*mTypes)[i].Delete();
+                (*mTypes)[i].cleanup();
             mTypes->clear();
         }
     
     /**
      *
      */
-    void Delete(C_INT32 index)
+    void cleanup(C_INT32 index)
         {
-            if ( 0 <= index && index < Size() )
-                (*mTypes)[index].Delete();
+            if ( 0 <= index && index < size() )
+                (*mTypes)[index].cleanup();
             mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
         }
 
     /**
      *
      */
-    void Delete(const string & name)
+    void cleanup(const string & name)
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
     
-            return Delete(Index);
+            return cleanup(Index);
         }
 
     CType &operator[](C_INT32 index) 
         {
-            if (index < 0 || Size() <= index) FatalError();
+            if (index < 0 || size() <= index) fatalError();
             return (*mTypes)[index];
         }   
 
     CType operator[](C_INT32 index) const    
         {
-            if (index < 0 || Size() <= index) FatalError();
+            if (index < 0 || size() <= index) fatalError();
             return (*mTypes)[index];
         }
     
     CType &operator[](const string &name) 
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
             
             return (*mTypes)[Index];
         }   
 
     CType operator[](const string &name) const
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
             
             return (*mTypes)[Index];
         }   
@@ -138,24 +138,24 @@ public:
     /**
      *
      */
-    C_INT32 Size() const {return mTypes->size();}
+    C_INT32 size() const {return mTypes->size();}
 
 private:
     /**
      *
      */
-    virtual C_INT16 IsInsertAllowed(const CType & src)
-        {return (GetIndex(src.GetName()) == -1);}
+    virtual C_INT16 isInsertAllowed(const CType & src)
+        {return (getIndex(src.getName()) == -1);}
  
     /**
      *
      */
-    C_INT32 GetIndex(const string &name) const
+    C_INT32 getIndex(const string &name) const
         {
             C_INT32 i;
             
-            for (i = 0; i < Size(); i++)
-                if ( name == (*mTypes)[i].GetName() ) 
+            for (i = 0; i < size(); i++)
+                if ( name == (*mTypes)[i].getName() ) 
                     return i;
             
             return -1;
@@ -190,16 +190,16 @@ public:
      *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer, C_INT32 size)
+    C_INT32 load(CReadConfig & configbuffer, C_INT32 size)
         {
             // This is broken
-            FatalError();
+            fatalError();
             
             C_INT32 Fail = 0;
             
             mTypes->resize(size);
             for (C_INT32 i = 0; i < size; i++)
-                if (Fail = (*mTypes)[i]->Load(configbuffer)) break;
+                if (Fail = (*mTypes)[i]->load(configbuffer)) break;
     
             return Fail;
         }
@@ -210,12 +210,12 @@ public:
      *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig & configbuffer)
+    C_INT32 save(CWriteConfig & configbuffer)
         {
             C_INT32 Fail = 0;
 
-            for (C_INT32 i = 0; i < Size(); i++)
-                if (Fail = (*mTypes)[i]->Save(configbuffer)) return Fail;
+            for (C_INT32 i = 0; i < size(); i++)
+                if (Fail = (*mTypes)[i]->save(configbuffer)) return Fail;
     
             return Fail;
         }
@@ -223,9 +223,9 @@ public:
     /**
      *
      */
-    void Add(const CType & src)
+    void add(const CType & src)
         {
-	    if ( ! IsInsertAllowed(src) ) FatalError();
+	    if ( ! isInsertAllowed(src) ) fatalError();
             // This is not very efficient !!!
             // It results in a lot of resizing of the vector !!!
             mTypes->push_back(src);
@@ -234,11 +234,11 @@ public:
     /**
      *
      */
-    void Delete() 
+    void cleanup() 
         {
             for (C_INT32 i = 0; i < mTypes->size(); i++)
             {
-                (*mTypes)[i]->Delete();
+                (*mTypes)[i]->cleanup();
                 delete (*mTypes)[i];
             }
             
@@ -248,11 +248,11 @@ public:
     /**
      *
      */
-    void Delete(C_INT32 index)
+    void cleanup(C_INT32 index)
         {
-            if ( 0 <= index && index < Size() )
+            if ( 0 <= index && index < size() )
             {
-                (*mTypes)[index]->Delete();
+                (*mTypes)[index]->cleanup();
                 delete (*mTypes)[i];
                 
                 mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
@@ -262,38 +262,38 @@ public:
     /**
      *
      */
-    void Delete(const string & name)
+    void cleanup(const string & name)
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
     
-            return Delete(Index);
+            return cleanup(Index);
         }
 
     CType &operator[](C_INT32 index) 
         {
-            if (index < 0 || Size() <= index) FatalError();
+            if (index < 0 || size() <= index) fatalError();
             return (*mTypes)[index];
         }   
 
     CType operator[](C_INT32 index) const    
         {
-            if (index < 0 || Size() <= index) FatalError();
+            if (index < 0 || size() <= index) fatalError();
             return (*mTypes)[index];
         }
     
     CType &operator[](const string &name) 
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
             
             return (*mTypes)[Index];
         }   
 
     CType operator[](const string &name) const
         {
-            C_INT32 Index = GetIndex(name);
-            if ( Index == -1 ) FatalError();
+            C_INT32 Index = getIndex(name);
+            if ( Index == -1 ) fatalError();
             
             return (*mTypes)[Index];
         }   
@@ -301,24 +301,24 @@ public:
     /**
      *
      */
-    C_INT32 Size() const {return mTypes->size();}
+    C_INT32 size() const {return mTypes->size();}
 
 private:
     /**
      *
      */
-    virtual C_INT16 IsInsertAllowed(const CType & src)
-        {return (GetIndex(src->GetName()) == -1);}
+    virtual C_INT16 isInsertAllowed(const CType & src)
+        {return (getIndex(src->getName()) == -1);}
  
     /**
      *
      */
-    C_INT32 GetIndex(const string &name) const
+    C_INT32 getIndex(const string &name) const
         {
             C_INT32 i;
             
-            for (i = 0; i < Size(); i++)
-                if ( name == (*mTypes)[i]->GetName() ) 
+            for (i = 0; i < size(); i++)
+                if ( name == (*mTypes)[i]->getName() ) 
                     return i;
             
             return -1;

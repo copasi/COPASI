@@ -20,10 +20,10 @@ CModel::CModel()
     mSteps        = NULL;
     mMoieties     = NULL;
 
-    Init();
+    initialize();
 }
 
-void CModel::Init()
+void CModel::initialize()
 {
     if ( !mCompartments ) mCompartments = new CCopasiVector < CCompartment >;
     if ( !mSteps )        mSteps        = new CCopasiVector < CStep >;
@@ -32,145 +32,145 @@ void CModel::Init()
 
 CModel::~CModel()
 {
-    Delete();
+    cleanup();
 }
 
-void CModel::Delete()
+void CModel::cleanup()
 {
     if ( mCompartments ) 
     {
-        mCompartments->Delete();
+        mCompartments->cleanup();
         mCompartments = NULL;
     }
     
     if ( mSteps )
     {
-        mSteps->Delete();
+        mSteps->cleanup();
         mSteps = NULL;
     }
 
     if ( mMoieties )
     {
-        mMoieties->Delete();
+        mMoieties->cleanup();
         mMoieties = NULL;
     }
 }
 
-C_INT32 CModel::Load(CReadConfig & configBuffer)
+C_INT32 CModel::load(CReadConfig & configBuffer)
 {
     C_INT32 Size = 0;
     C_INT32 Fail = 0;
     C_INT32 i;
 
-    Init();
+    initialize();
     
     // For old Versions we need must read the list of Metabolites beforehand
-    if (configBuffer.GetVersion() < "4")
+    if (configBuffer.getVersion() < "4")
     {
-        if (Fail = configBuffer.GetVariable("TotalMetabolites", "C_INT32", 
+        if (Fail = configBuffer.getVariable("TotalMetabolites", "C_INT32", 
                                             &Size, CReadConfig::LOOP))
             return Fail;
         
-        if (Fail = Copasi.OldMetabolites.Load(configBuffer, Size))
+        if (Fail = Copasi.OldMetabolites.load(configBuffer, Size))
             return Fail;
     }
 
-    if (Fail = configBuffer.GetVariable("Title", "string", &mTitle,
+    if (Fail = configBuffer.getVariable("Title", "string", &mTitle,
                                         CReadConfig::LOOP))
         return Fail;
 
-    if (Fail = configBuffer.GetVariable("Comments", "multiline", &mComments,
+    if (Fail = configBuffer.getVariable("Comments", "multiline", &mComments,
                                         CReadConfig::SEARCH))
         return Fail;
  
-    if (Fail = configBuffer.GetVariable("TotalCompartments", "C_INT32", &Size,
+    if (Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                         CReadConfig::LOOP))
         return Fail;
  
-    if (Fail = mCompartments->Load(configBuffer, Size)) return Fail;
+    if (Fail = mCompartments->load(configBuffer, Size)) return Fail;
     
-    if (configBuffer.GetVersion() < "4")
+    if (configBuffer.getVersion() < "4")
     {
         // Create the correct compartment / metabolite relationships
         CMetab Metabolite;
-        for (i = 0; i < Copasi.OldMetabolites.Size(); i++)
+        for (i = 0; i < Copasi.OldMetabolites.size(); i++)
         {
             Metabolite = Copasi.OldMetabolites[i];
             
-            (*mCompartments)[Copasi.OldMetabolites[i].GetIndex()].
-                AddMetabolite(Metabolite);
+            (*mCompartments)[Copasi.OldMetabolites[i].getIndex()].
+                addMetabolite(Metabolite);
         }
     }
 
     // Create a vector of pointers to all metabolites.
     // Note, the metabolites physically exist in the compartments.
-    for (i = 0; i < mCompartments->Size(); i++)
-        for (C_INT32 j = 0; j < (*mCompartments)[i].Metabolites().Size(); j++)
-            mMetabolites.push_back(&(*mCompartments)[i].Metabolites()[j]);
+    for (i = 0; i < mCompartments->size(); i++)
+        for (C_INT32 j = 0; j < (*mCompartments)[i].metabolites().size(); j++)
+            mMetabolites.push_back(&(*mCompartments)[i].metabolites()[j]);
 
 
-    if (Fail = Copasi.FunctionDB.Load(configBuffer)) return Fail;
+    if (Fail = Copasi.FunctionDB.load(configBuffer)) return Fail;
 
-    if (Fail = configBuffer.GetVariable("TotalSteps", "C_INT32", &Size,
+    if (Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
                                         CReadConfig::LOOP))
         return Fail;
     
-    if (Fail = mSteps->Load(configBuffer, Size)) return Fail;
+    if (Fail = mSteps->load(configBuffer, Size)) return Fail;
     
     // We must postprocess the steps for old file versions
-    if (configBuffer.GetVersion() < "4")
-        for (i = 0; i < mSteps->Size(); i++)
-            (*mSteps)[i].Old2New(mMetabolites);
+    if (configBuffer.getVersion() < "4")
+        for (i = 0; i < mSteps->size(); i++)
+            (*mSteps)[i].old2New(mMetabolites);
             
-    for (i = 0; i < mSteps->Size(); i++)
-        (*mSteps)[i].Compile(mCompartments);
+    for (i = 0; i < mSteps->size(); i++)
+        (*mSteps)[i].compile(mCompartments);
 
     return Fail;
 }
 
-C_INT32 CModel::Save(CWriteConfig & configBuffer)
+C_INT32 CModel::save(CWriteConfig & configBuffer)
 {
     C_INT32 Size;
     C_INT32 Fail = 0;
     
-    if (Fail = configBuffer.SetVariable("Title", "string", &mTitle))
+    if (Fail = configBuffer.setVariable("Title", "string", &mTitle))
         return Fail;
 
-    if (Fail = configBuffer.SetVariable("Comments", "multiline", &mComments))
+    if (Fail = configBuffer.setVariable("Comments", "multiline", &mComments))
         return Fail;
  
-    Size = mCompartments->Size();
-    if (Fail = configBuffer.SetVariable("TotalCompartments", "C_INT32", &Size))
+    Size = mCompartments->size();
+    if (Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size))
         return Fail;
  
-    if (Fail = mCompartments->Save(configBuffer)) return Fail;
+    if (Fail = mCompartments->save(configBuffer)) return Fail;
     
-    if (Fail = Copasi.FunctionDB.Save(configBuffer)) return Fail;
+    if (Fail = Copasi.FunctionDB.save(configBuffer)) return Fail;
 
-    Size = mSteps->Size();
-    if (Fail = configBuffer.SetVariable("TotalSteps", "C_INT32", &Size))
+    Size = mSteps->size();
+    if (Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size))
         return Fail;
     
-    if (Fail = mSteps->Save(configBuffer)) return Fail;
+    if (Fail = mSteps->save(configBuffer)) return Fail;
 
     return Fail;
 }
 
-void CModel::BuildStoi()
+void CModel::buildStoi()
 {
     vector < CStep::ELEMENT > Structure;
     C_INT32 i,j,k;
     
-    mStoi.newsize(mMetabolites.size(), mSteps->Size());
+    mStoi.newsize(mMetabolites.size(), mSteps->size());
     
-    for (i=0; i<mSteps->Size(); i++)
+    for (i=0; i<mSteps->size(); i++)
     {
-        Structure = (*mSteps)[i].GetChemStructure();
+        Structure = (*mSteps)[i].getChemStructure();
         
         for (j=0; j<mMetabolites.size(); j++)
         {
             for (k=0; k<Structure.size(); k++)
-                if (Structure[k].mName == mMetabolites[j]->GetName()) break;
+                if (Structure[k].mName == mMetabolites[j]->getName()) break;
 
             if (k<Structure.size())
                 mStoi[j][i] = Structure[k].mValue;
@@ -182,7 +182,7 @@ void CModel::BuildStoi()
     return;
 }
 
-void CModel::LUDecomposition()
+void CModel::lUDecomposition()
 {
     C_INT32 i;
     
@@ -193,8 +193,8 @@ void CModel::LUDecomposition()
 
     mMetabolitesX = mMetabolites;
     
-    mStepsX.resize(mSteps->Size());
-    for (i=0; i<mSteps->Size(); i++)
+    mStepsX.resize(mSteps->size());
+    for (i=0; i<mSteps->size(); i++)
         mStepsX[i] = &(*mSteps)[i];
 
     // permutate Metabolites and Steps to match rearangements done during
@@ -225,7 +225,7 @@ void CModel::LUDecomposition()
     return;
 }
 
-void CModel::SetMetabolitesStatus()
+void CModel::setMetabolitesStatus()
 {
     C_INT32 i,j,k;
     C_FLOAT64 Sum;
@@ -233,7 +233,7 @@ void CModel::SetMetabolitesStatus()
     for (i=0; i<min(mStoi.num_rows(), mStoi.num_cols()); i++)
     {
         if (mStoi[i][i] == 0.0) break;
-        mMetabolitesX[i]->SetStatus(METAB_VARIABLE);
+        mMetabolitesX[i]->setStatus(METAB_VARIABLE);
     }
     mMetabolitesInd.clear();
     mMetabolitesInd.insert(0,&mMetabolitesX[0],&mMetabolitesX[i]);
@@ -246,18 +246,18 @@ void CModel::SetMetabolitesStatus()
         for (k=0; k<mStoi.num_cols(); k++)
             Sum += fabs(mStoi[j][k]);
         if (Sum == 0.0) break;
-        mMetabolitesX[j]->SetStatus(METAB_DEPENDENT);
+        mMetabolitesX[j]->setStatus(METAB_DEPENDENT);
     }
     mMetabolitesDep.clear();
     mMetabolitesDep.insert(0,&mMetabolitesX[i],&mMetabolitesX[j]);
 
     for (k=j; k<mStoi.num_rows(); k++)
-        mMetabolitesX[k]->SetStatus(METAB_FIXED);
+        mMetabolitesX[k]->setStatus(METAB_FIXED);
 
     return;
 }
 
-void CModel::BuildRedStoi()
+void CModel::buildRedStoi()
 {
     C_INT32 i,j,k;
     C_FLOAT64 Sum;
@@ -278,7 +278,7 @@ void CModel::BuildRedStoi()
     return;
 }
 
-void CModel::BuildConsRel()
+void CModel::buildConsRel()
 {
     // Since we do not use L anymore we could use L to store ConsRel !!!
     mConsRel.newsize(mMetabolites.size(), mMetabolitesInd.size());
@@ -295,66 +295,81 @@ void CModel::BuildConsRel()
     return;
 }
 
-void CModel::BuildMoieties()
+void CModel::buildMoieties()
 {
     C_INT32 i,j;
     CMoiety Moiety;
     
-    mMoieties->Delete();
+    mMoieties->cleanup();
 
     for (i=mMetabolitesDep.size();
          i<mMetabolitesDep.size() + mMetabolitesInd.size(); i++)
     {
-        Moiety.Delete();
+        Moiety.cleanup();
     
-        Moiety.SetName(mMetabolitesX[i]->GetName());
-        Moiety.Add(1.0, mMetabolitesX[i]);
+        Moiety.setName(mMetabolitesX[i]->getName());
+        Moiety.add(1.0, mMetabolitesX[i]);
         
         for (j=0; j<mConsRel.num_cols(); j++)
         {
             if (mConsRel[i][j] != 0.0)
-                Moiety.Add(mConsRel[i][j], mMetabolitesX[j]);
+                Moiety.add(mConsRel[i][j], mMetabolitesX[j]);
         }
-        Moiety.SetInitialValue();
+        Moiety.setInitialValue();
         
-        mMoieties->Add(Moiety);
+        mMoieties->add(Moiety);
     }
     
     return;
 }
 
-void CModel::LSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CModel::setConcentrations(const C_FLOAT64 * y)
 {
     C_INT32 i,j;
-    C_FLOAT64 v[mSteps->Size()];
-    
-    cout << mTitle << endl;
 
     // Set the concentration of the independent metabolites
-    for (i=0; i<n; i++)
+    for (i=0; i < mMetabolitesInd.size(); i++)
         mMetabolitesInd[i]->
-            SetConcentration(y[i] *
-                             mMetabolitesInd[i]->GetCompartment()->GetVolume());
+            setConcentration(y[i] *
+                             mMetabolitesInd[i]->getCompartment()->getVolume());
     
     // Set the concentration of the dependent metabolites
     for (i=0; i<mMetabolitesDep.size(); i++)
         mMetabolitesDep[i]->
-            SetConcentration((*mMoieties)[i].DependentNumber() *
-                             mMetabolitesDep[i]->GetCompartment()->GetVolume());
+            setConcentration((*mMoieties)[i].dependentNumber() *
+                             mMetabolitesDep[i]->getCompartment()->getVolume());
 
+    return;
+}
+
+
+void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
+{
+    C_INT32 i,j;
+    C_FLOAT64 v[mSteps->size()];
+    
+    cout << mTitle << endl;
+
+    setConcentrations(y);
+    
     // Calculate the velocity vector depending on the step kinetics
-    for (i=0; i<mSteps->Size(); i++)
-        v[i] = (*mSteps)[i].Calculate();
+    for (i=0; i<mSteps->size(); i++)
+        v[i] = (*mSteps)[i].calculate();
 
     // Calculate ydot = RedStoi * v
     for (i=0; i<n; i++)
     {
         ydot[j] = 0.0;
-        for (j=0; j<mSteps->Size(); j++)
+        for (j=0; j<mSteps->size(); j++)
             ydot[i] += mRedStoi[i][j] * v[j];
     }
     
     return;
 }
 
-vector < CMetab * > & CModel::GetMetabolitesInd(){return mMetabolitesInd;}
+vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
+
+C_INT32 CModel::getDimension() const
+{
+    return mMetabolitesInd.size();
+}

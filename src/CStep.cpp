@@ -39,7 +39,7 @@ CStep::CStep(const string & name)
     mCallParameters = NULL;
 }
 
-void CStep::Init()
+void CStep::initialize()
 {
     if (!mSubstrates) mSubstrates = new vector < CId2Metab >;
     if (!mProducts) mProducts = new vector < CId2Metab >;
@@ -50,7 +50,7 @@ void CStep::Init()
 
 CStep::~CStep() {}
 
-void CStep::Delete()
+void CStep::cleanup()
 {
     if (mSubstrates) delete mSubstrates;
     mSubstrates = NULL;
@@ -80,7 +80,7 @@ CStep & CStep::operator=(const CStep & rhs)
     return *this;
 }
 
-C_INT32 CStep::Load(CReadConfig & configbuffer)
+C_INT32 CStep::load(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     C_INT32 Size = 0;
@@ -88,116 +88,116 @@ C_INT32 CStep::Load(CReadConfig & configbuffer)
     
     string KinType;
     
-    Init();
+    initialize();
     
-    if (Fail = configbuffer.GetVariable("Step", "string", &mName,
+    if (Fail = configbuffer.getVariable("Step", "string", &mName,
                                         CReadConfig::SEARCH))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Equation", "string", &mChemEq))
+    if (Fail = configbuffer.getVariable("Equation", "string", &mChemEq))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("KineticType", "string", &KinType))
+    if (Fail = configbuffer.getVariable("KineticType", "string", &KinType))
         return Fail;
 
-    SetFunction(KinType);
+    setFunction(KinType);
     if (mFunction == NULL) return Fail = 1;
 
-    InitIdentifiers();
+    initIdentifiers();
     
-    if (Fail = configbuffer.GetVariable("Flux", "C_FLOAT64", &mFlux))
+    if (Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Reversible", "C_INT32", &mReversible))
+    if (Fail = configbuffer.getVariable("Reversible", "C_INT32", &mReversible))
         return Fail;
     
-    if (configbuffer.GetVersion() < "4")
-        Fail = LoadOld(configbuffer);
+    if (configbuffer.getVersion() < "4")
+        Fail = loadOld(configbuffer);
     else 
-        Fail = LoadNew(configbuffer);
+        Fail = loadNew(configbuffer);
         
     return Fail; 
 }
 
-C_INT32 CStep::Save(CWriteConfig & configbuffer)
+C_INT32 CStep::save(CWriteConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     C_INT32 Size = 0;
     C_INT32 i = 0;
     
-    if (Fail = configbuffer.SetVariable("Step", "string", &mName))
+    if (Fail = configbuffer.setVariable("Step", "string", &mName))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("Equation", "string", &mChemEq))
+    if (Fail = configbuffer.setVariable("Equation", "string", &mChemEq))
         return Fail;
     
-    string KinType = mFunction->GetName();
-    if (Fail = configbuffer.SetVariable("KineticType", "string", &KinType))
+    string KinType = mFunction->getName();
+    if (Fail = configbuffer.setVariable("KineticType", "string", &KinType))
         return Fail;
 
-    if (Fail = configbuffer.SetVariable("Flux", "C_FLOAT64", &mFlux))
+    if (Fail = configbuffer.setVariable("Flux", "C_FLOAT64", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("Reversible", "C_INT32", &mReversible))
+    if (Fail = configbuffer.setVariable("Reversible", "C_INT32", &mReversible))
         return Fail;
     
     Size = mSubstrates->size();
-    if (Fail = configbuffer.SetVariable("Substrates", "C_INT32", &Size))
+    if (Fail = configbuffer.setVariable("Substrates", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.SetVariable("Identifier", "string",
+        if (Fail = configbuffer.setVariable("Identifier", "string",
                                             &(*mSubstrates)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Compartment", "string",
+        if (Fail = configbuffer.setVariable("Compartment", "string",
                                             &(*mSubstrates)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+        if (Fail = configbuffer.setVariable("Metabolite", "string",
                                             &(*mSubstrates)[i].mMetaboliteName))
             return Fail;
     }
     
     Size = mProducts->size();
-    if (Fail = configbuffer.SetVariable("Products", "C_INT32", &Size))
+    if (Fail = configbuffer.setVariable("Products", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.SetVariable("Identifier", "string",
+        if (Fail = configbuffer.setVariable("Identifier", "string",
                                             &(*mProducts)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Compartment", "string",
+        if (Fail = configbuffer.setVariable("Compartment", "string",
                                             &(*mProducts)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+        if (Fail = configbuffer.setVariable("Metabolite", "string",
                                             &(*mProducts)[i].mMetaboliteName))
             return Fail;
     }
 
     Size = mModifiers->size();
-    if (Fail = configbuffer.SetVariable("Modifiers", "C_INT32", &Size))
+    if (Fail = configbuffer.setVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.SetVariable("Identifier", "string",
+        if (Fail = configbuffer.setVariable("Identifier", "string",
                                             &(*mModifiers)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Compartment", "string",
+        if (Fail = configbuffer.setVariable("Compartment", "string",
                                             &(*mModifiers)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+        if (Fail = configbuffer.setVariable("Metabolite", "string",
                                             &(*mModifiers)[i].mMetaboliteName))
             return Fail;
     }
 
     Size = mParameters->size();
-    if (Fail = configbuffer.SetVariable("Constants", "C_INT32", &Size))
+    if (Fail = configbuffer.setVariable("Constants", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.SetVariable("Identifier", "string",
+        if (Fail = configbuffer.setVariable("Identifier", "string",
                                             &(*mParameters)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Value", "C_FLOAT64",
+        if (Fail = configbuffer.setVariable("Value", "C_FLOAT64",
                                             &(*mParameters)[i].mValue))
             return Fail;
     }
@@ -205,60 +205,60 @@ C_INT32 CStep::Save(CWriteConfig & configbuffer)
     return Fail; 
 }
 
-vector < CStep::CId2Metab > &CStep::Substrates() {return *mSubstrates;}
+vector < CStep::CId2Metab > &CStep::substrates() {return *mSubstrates;}
 
-vector < CStep::CId2Metab > &CStep::Products() {return *mProducts;}
+vector < CStep::CId2Metab > &CStep::products() {return *mProducts;}
 
-vector < CStep::CId2Metab > &CStep::Modifiers() {return *mModifiers;}
+vector < CStep::CId2Metab > &CStep::modifiers() {return *mModifiers;}
 
-vector < CStep::CId2Param > &CStep::Parameters() {return *mParameters;}
+vector < CStep::CId2Param > &CStep::parameters() {return *mParameters;}
 
-string CStep::GetName() const {return mName;}
+string CStep::getName() const {return mName;}
 
-string CStep::GetChemEq() const {return mChemEq;}
+string CStep::getChemEq() const {return mChemEq;}
 
-CBaseFunction & CStep::GetFunction() {return *mFunction;}
+CBaseFunction & CStep::getFunction() {return *mFunction;}
 
-C_FLOAT64 CStep::GetFlux() const {return mFlux;}
+C_FLOAT64 CStep::getFlux() const {return mFlux;}
 
-C_INT16 CStep::IsReversible() const {return (mReversible == TRUE);}
+C_INT16 CStep::isReversible() const {return (mReversible == TRUE);}
 
-void CStep::SetName(const string & name) {mName = name;}
+void CStep::setName(const string & name) {mName = name;}
 
-void CStep::SetChemEq(const string & chemEq) {mChemEq = chemEq;}
+void CStep::setChemEq(const string & chemEq) {mChemEq = chemEq;}
 
-void CStep::SetFlux(C_FLOAT64 flux) {mFlux = flux;}
+void CStep::setFlux(C_FLOAT64 flux) {mFlux = flux;}
 
-void CStep::SetReversible(C_INT16 reversible) {mReversible = reversible;}
+void CStep::setReversible(C_INT16 reversible) {mReversible = reversible;}
 
-void CStep::SetFunction(const string & functionName)
+void CStep::setFunction(const string & functionName)
 {
-    mFunction = &Copasi.FunctionDB.FindFunction(functionName);
+    mFunction = &Copasi.FunctionDB.findFunction(functionName);
 }
 
-void CStep::InitIdentifiers()
+void CStep::initIdentifiers()
 {
     C_INT32 i;
     C_INT32 Count;
     
-    if (!mFunction) FatalError();
+    if (!mFunction) fatalError();
 
     mCallParameters->clear();
     
-    mCallParameters->resize(mFunction->CallParameters().size());
+    mCallParameters->resize(mFunction->callParameters().size());
     for (i = 0; i < mCallParameters->size(); i++)
     {
         (*mCallParameters)[i].
-            SetType(mFunction->CallParameters()[i]->GetType());
+            setType(mFunction->callParameters()[i]->getType());
 
-        Count = mFunction->CallParameters()[i]->GetCountLow();
-        (*mCallParameters)[i].Identifiers().resize(Count);
+        Count = mFunction->callParameters()[i]->getCountLow();
+        (*mCallParameters)[i].identifiers().resize(Count);
         for (C_INT32 j = 0; j < Count; j++)
-            (*mCallParameters)[i].Identifiers()[j] = NULL;
+            (*mCallParameters)[i].identifiers()[j] = NULL;
     }
 }
 
-void CStep::SetIdentifiers()
+void CStep::setIdentifiers()
 {
     pair < C_INT32, C_INT32 > Tuple;
     
@@ -269,191 +269,191 @@ void CStep::SetIdentifiers()
     {
         if ((*mSubstrates)[i].mIdentifierName == "") continue;
         
-        Tuple = mFunction->FindIdentifier((*mSubstrates)[i].mIdentifierName);
+        Tuple = mFunction->findIdentifier((*mSubstrates)[i].mIdentifierName);
 
-        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
-        if ((*mCallParameters)[Tuple.first].GetType() 
-            != CCallParameter::VECTOR_DOUBLE) FatalError();
+        if (Tuple.first < 0 || Tuple.second < 0) fatalError();
+        if ((*mCallParameters)[Tuple.first].getType() 
+            != CCallParameter::VECTOR_DOUBLE) fatalError();
 
-        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size()) <
+        if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size()) <
             Tuple.second + 1)
         {
-            (*mCallParameters)[Tuple.first].Identifiers().
+            (*mCallParameters)[Tuple.first].identifiers().
                 resize(Tuple.second + 1);
             for( j = OldSize; j < Tuple.second + 1; j++)
-                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+                (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
         }
         
-        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
-            (*mSubstrates)[i].mpMetabolite->GetConcentration();
+        (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
+            (*mSubstrates)[i].mpMetabolite->getConcentration();
     }
     
     for (i = 0; i < mProducts->size(); i++)
     {
         if ((*mProducts)[i].mIdentifierName == "") continue;
         
-        Tuple = mFunction->FindIdentifier((*mProducts)[i].mIdentifierName);
+        Tuple = mFunction->findIdentifier((*mProducts)[i].mIdentifierName);
 
-        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
-        if ((*mCallParameters)[Tuple.first].GetType ()
-            != CCallParameter::VECTOR_DOUBLE) FatalError();
+        if (Tuple.first < 0 || Tuple.second < 0) fatalError();
+        if ((*mCallParameters)[Tuple.first].getType()
+            != CCallParameter::VECTOR_DOUBLE) fatalError();
                                                      
-        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+        if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size())
             < Tuple.second + 1)
         {
-            (*mCallParameters)[Tuple.first].Identifiers().
+            (*mCallParameters)[Tuple.first].identifiers().
                 resize(Tuple.second + 1);
             for( j = OldSize; j < Tuple.second + 1; j++)
-                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+                (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
         }
         
-        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
-            (*mProducts)[i].mpMetabolite->GetConcentration();
+        (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
+            (*mProducts)[i].mpMetabolite->getConcentration();
     }
 
     for (i = 0; i < mModifiers->size(); i++)
     {
         if ((*mModifiers)[i].mIdentifierName == "") continue;
         
-        Tuple = mFunction->FindIdentifier((*mModifiers)[i].mIdentifierName);
+        Tuple = mFunction->findIdentifier((*mModifiers)[i].mIdentifierName);
 
-        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
-        if ((*mCallParameters)[Tuple.first].GetType()
-            != CCallParameter::VECTOR_DOUBLE) FatalError();
+        if (Tuple.first < 0 || Tuple.second < 0) fatalError();
+        if ((*mCallParameters)[Tuple.first].getType()
+            != CCallParameter::VECTOR_DOUBLE) fatalError();
                                                      
-        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+        if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size())
             < Tuple.second + 1)
         {
-            (*mCallParameters)[Tuple.first].Identifiers().
+            (*mCallParameters)[Tuple.first].identifiers().
                 resize(Tuple.second + 1);
             for( j = OldSize; j < Tuple.second + 1; j++)
-                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+                (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
         }
         
-        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
-            (*mModifiers)[i].mpMetabolite->GetConcentration();
+        (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
+            (*mModifiers)[i].mpMetabolite->getConcentration();
     }
 
     for (i = 0; i < mParameters->size(); i++)
     {
         if ((*mParameters)[i].mIdentifierName == "") continue;
         
-        Tuple = mFunction->FindIdentifier((*mParameters)[i].mIdentifierName);
+        Tuple = mFunction->findIdentifier((*mParameters)[i].mIdentifierName);
 
-        if (Tuple.first < 0 || Tuple.second < 0) FatalError();
-        if ((*mCallParameters)[Tuple.first].GetType()
-            != CCallParameter::VECTOR_DOUBLE) FatalError();
+        if (Tuple.first < 0 || Tuple.second < 0) fatalError();
+        if ((*mCallParameters)[Tuple.first].getType()
+            != CCallParameter::VECTOR_DOUBLE) fatalError();
                                                      
-        if ((OldSize = (*mCallParameters)[Tuple.first].Identifiers().size())
+        if ((OldSize = (*mCallParameters)[Tuple.first].identifiers().size())
             < Tuple.second + 1)
         {
-            (*mCallParameters)[Tuple.first].Identifiers().
+            (*mCallParameters)[Tuple.first].identifiers().
                 resize(Tuple.second + 1);
             for( j = OldSize; j < Tuple.second + 1; j++)
-                (*mCallParameters)[Tuple.first].Identifiers()[j] = NULL;
+                (*mCallParameters)[Tuple.first].identifiers()[j] = NULL;
         }
         
-        (*mCallParameters)[Tuple.first].Identifiers()[Tuple.second] =
+        (*mCallParameters)[Tuple.first].identifiers()[Tuple.second] =
             &(*mParameters)[i].mValue;
     }
 }
 
-void CStep::CheckIdentifiers()
+void CStep::checkIdentifiers()
 {
     for (C_INT32 i = 0; i < mCallParameters->size(); i++)
     {
-        for (C_INT32 j = 0; j < (*mCallParameters)[i].Identifiers().size(); j++)
-            if (!(*mCallParameters)[i].Identifiers()[j]) FatalError();
+        for (C_INT32 j = 0; j < (*mCallParameters)[i].identifiers().size(); j++)
+            if (!(*mCallParameters)[i].identifiers()[j]) fatalError();
     }
 }
 
-void CStep::Compile(const CCopasiVector < CCompartment > * compartments)
+void CStep::compile(const CCopasiVector < CCompartment > * compartments)
 {
     C_INT32 i;
     
     for (i = 0; i < mSubstrates->size(); i++)
         (*mSubstrates)[i].mpMetabolite = 
             &(*compartments)[(*mSubstrates)[i].mCompartmentName].
-            Metabolites()[(*mSubstrates)[i].mMetaboliteName];
+            metabolites()[(*mSubstrates)[i].mMetaboliteName];
     
     for (i = 0; i < mProducts->size(); i++)
         (*mProducts)[i].mpMetabolite = 
             &(*compartments)[(*mProducts)[i].mCompartmentName].
-            Metabolites()[(*mProducts)[i].mMetaboliteName];
+            metabolites()[(*mProducts)[i].mMetaboliteName];
     
     for (i = 0; i < mModifiers->size(); i++)
         (*mModifiers)[i].mpMetabolite = 
             &(*compartments)[(*mModifiers)[i].mCompartmentName].
-            Metabolites()[(*mModifiers)[i].mMetaboliteName];
+            metabolites()[(*mModifiers)[i].mMetaboliteName];
     
-    InitIdentifiers();
-    SetIdentifiers();
-    CheckIdentifiers();
+    initIdentifiers();
+    setIdentifiers();
+    checkIdentifiers();
 }
 
-C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
+C_INT32 CStep::loadNew(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     C_INT32 Size;
     C_INT32 i;
     
-    if (Fail = configbuffer.GetVariable("Substrates", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Substrates", "C_INT32", &Size))
         return Fail;
     mSubstrates->resize(Size);
     for (i=0; i < Size; i++)
     {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
+        if (Fail = configbuffer.getVariable("Identifier", "string",
                                             &(*mSubstrates)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
+        if (Fail = configbuffer.getVariable("Compartment", "string",
                                             &(*mSubstrates)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+        if (Fail = configbuffer.getVariable("Metabolite", "string",
                                             &(*mSubstrates)[i].mMetaboliteName))
             return Fail;
     }
     
-    if (Fail = configbuffer.GetVariable("Products", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Products", "C_INT32", &Size))
         return Fail;
     mProducts->resize(Size);
     for (i=0; i < Size; i++)
     {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
+        if (Fail = configbuffer.getVariable("Identifier", "string",
                                             &(*mProducts)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
+        if (Fail = configbuffer.getVariable("Compartment", "string",
                                             &(*mProducts)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+        if (Fail = configbuffer.getVariable("Metabolite", "string",
                                             &(*mProducts)[i].mMetaboliteName))
             return Fail;
     }
 
-    if (Fail = configbuffer.GetVariable("Modifiers", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     mModifiers->resize(Size);
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
+        if (Fail = configbuffer.getVariable("Identifier", "string",
                                             &(*mModifiers)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Compartment", "string",
+        if (Fail = configbuffer.getVariable("Compartment", "string",
                                             &(*mModifiers)[i].mCompartmentName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+        if (Fail = configbuffer.getVariable("Metabolite", "string",
                                             &(*mModifiers)[i].mMetaboliteName))
             return Fail;
     }
 
-    if (Fail = configbuffer.GetVariable("Constants", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Constants", "C_INT32", &Size))
         return Fail;
     mParameters->resize(Size);
     for (i = 0; i < Size; i++)
     {
-        if (Fail = configbuffer.GetVariable("Identifier", "string",
+        if (Fail = configbuffer.getVariable("Identifier", "string",
                                             &(*mParameters)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Value", "C_FLOAT64",
+        if (Fail = configbuffer.getVariable("Value", "C_FLOAT64",
                                             &(*mParameters)[i].mValue))
             return Fail;
     }
@@ -461,7 +461,7 @@ C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
     return Fail;
 }
 
-C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
+C_INT32 CStep::loadOld(CReadConfig & configbuffer)
 {
     string name;
     
@@ -470,92 +470,92 @@ C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
     C_INT32 i;
     C_INT32 index;
 
-    if (Fail = configbuffer.GetVariable("Substrates", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Substrates", "C_INT32", &Size))
         return Fail;
     mSubstrates->resize(Size);
     
-    if (Fail = configbuffer.GetVariable("Products", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Products", "C_INT32", &Size))
         return Fail;
     mProducts->resize(Size);
 
-    if (Fail = configbuffer.GetVariable("Modifiers", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     mModifiers->resize(Size);
 
-    if (Fail = configbuffer.GetVariable("Constants", "C_INT32", &Size))
+    if (Fail = configbuffer.getVariable("Constants", "C_INT32", &Size))
         return Fail;
     mParameters->resize(Size);
 
     for (i = 0; i < mSubstrates->size(); i++)
     {
         name = StringPrint("Subs%d", i);
-        configbuffer.GetVariable(name, "C_INT32", &index);
+        configbuffer.getVariable(name, "C_INT32", &index);
 
-        if (mFunction->GetName().substr(0,11) == "Mass action")
+        if (mFunction->getName().substr(0,11) == "Mass action")
             (*mSubstrates)[i].mIdentifierName = StringPrint("substrate_%d", i);
-        else if (mFunction->CallParameters()[0]->Identifiers(N_SUBSTRATE).size()
+        else if (mFunction->callParameters()[0]->identifiers(N_SUBSTRATE).size()
                 < i + 1)
             (*mSubstrates)[i].mIdentifierName = "";
         else
-            (*mSubstrates)[i].mIdentifierName = mFunction->CallParameters()[0]->
-                Identifiers(N_SUBSTRATE)[i]->GetName();
+            (*mSubstrates)[i].mIdentifierName = mFunction->callParameters()[0]->
+                identifiers(N_SUBSTRATE)[i]->getName();
         
         (*mSubstrates)[i].mMetaboliteName = 
-            Copasi.OldMetabolites[index].GetName();
+            Copasi.OldMetabolites[index].getName();
     }
     
     for (i = 0; i < mProducts->size(); i++)
     {
         name = StringPrint("Prod%d", i);
-        configbuffer.GetVariable(name, "C_INT32", &index);
+        configbuffer.getVariable(name, "C_INT32", &index);
         
-        if (mFunction->GetName().substr(0,11) == "Mass action")
+        if (mFunction->getName().substr(0,11) == "Mass action")
             (*mProducts)[i].mIdentifierName = StringPrint("product_%d", i);
-        else if (mFunction->CallParameters()[0]->Identifiers(N_PRODUCT).size()
+        else if (mFunction->callParameters()[0]->identifiers(N_PRODUCT).size()
                 < i + 1)
             (*mProducts)[i].mIdentifierName = "";
         else
-            (*mProducts)[i].mIdentifierName = mFunction->CallParameters()[0]->
-                Identifiers(N_PRODUCT)[i]->GetName();
+            (*mProducts)[i].mIdentifierName = mFunction->callParameters()[0]->
+                identifiers(N_PRODUCT)[i]->getName();
         
         (*mProducts)[i].mMetaboliteName = 
-            Copasi.OldMetabolites[index].GetName();
+            Copasi.OldMetabolites[index].getName();
     }
     
     for (i = 0; i < mModifiers->size(); i++)
     {
         name = StringPrint("Modf%d", i);
-        configbuffer.GetVariable(name, "C_INT32", &index);
+        configbuffer.getVariable(name, "C_INT32", &index);
         
-        if (mFunction->CallParameters()[0]->Identifiers(N_MODIFIER).size()
+        if (mFunction->callParameters()[0]->identifiers(N_MODIFIER).size()
                 < i + 1)
             (*mModifiers)[i].mIdentifierName = "";
         else
-            (*mModifiers)[i].mIdentifierName = mFunction->CallParameters()[0]->
-                Identifiers(N_MODIFIER)[i]->GetName();
+            (*mModifiers)[i].mIdentifierName = mFunction->callParameters()[0]->
+                identifiers(N_MODIFIER)[i]->getName();
 
         (*mModifiers)[i].mMetaboliteName = 
-            Copasi.OldMetabolites[index].GetName();
+            Copasi.OldMetabolites[index].getName();
     }
     
     for (i = 0; i < mParameters->size(); i++)
     {
         name = StringPrint("Param%d", i);
-        configbuffer.GetVariable(name, "C_FLOAT64", 
+        configbuffer.getVariable(name, "C_FLOAT64", 
                                  &(*mParameters)[i].mValue);
-        if (mFunction->GetName().substr(0,11) == "Mass action")
+        if (mFunction->getName().substr(0,11) == "Mass action")
         {
             if (i)
                 (*mParameters)[i].mIdentifierName = "kp";
             else
                 (*mParameters)[i].mIdentifierName = "ks";
         }
-        else if (mFunction->CallParameters()[0]->Identifiers(N_KCONSTANT).size()
+        else if (mFunction->callParameters()[0]->identifiers(N_KCONSTANT).size()
                 < i + 1)
             (*mParameters)[i].mIdentifierName = "";
         else
-            (*mParameters)[i].mIdentifierName = mFunction->CallParameters()[0]->
-            Identifiers(N_KCONSTANT)[i]->GetName();
+            (*mParameters)[i].mIdentifierName = mFunction->callParameters()[0]->
+            identifiers(N_KCONSTANT)[i]->getName();
     }
     
         
@@ -570,7 +570,7 @@ CStep::CId2Param::CId2Param() {}
 
 CStep::CId2Param::~CId2Param() {}
 
-vector < CStep::ELEMENT > CStep::GetChemStructure() const
+vector < CStep::ELEMENT > CStep::getChemStructure() const
 {
     vector < ELEMENT > Structure;
     ELEMENT Element;
@@ -593,22 +593,22 @@ vector < CStep::ELEMENT > CStep::GetChemStructure() const
 
     while (pos != string::npos)
     {
-        Element = ExtractElement(Left, pos);
+        Element = extractElement(Left, pos);
         Element.mValue *= -1.0; 
-        AddElement(Element, Structure);
+        addElement(Element, Structure);
     }
     
     pos = 0;
     while (pos != string::npos)
     {
-        Element = ExtractElement(Right, pos);
-        AddElement(Element, Structure);
+        Element = extractElement(Right, pos);
+        addElement(Element, Structure);
     }
     
     return Structure;
 }
 
-CStep::ELEMENT CStep::ExtractElement(const string & input, 
+CStep::ELEMENT CStep::extractElement(const string & input, 
                               string::size_type & pos) const
 {
     ELEMENT Element;
@@ -639,7 +639,7 @@ CStep::ELEMENT CStep::ExtractElement(const string & input,
     return Element;
 }
 
-void CStep::AddElement(const ELEMENT & element,
+void CStep::addElement(const ELEMENT & element,
                        vector < ELEMENT > & structure) const
 {
     C_INT32 i;
@@ -653,41 +653,41 @@ void CStep::AddElement(const ELEMENT & element,
         structure[i].mValue += element.mValue;
 }
 
-void CStep::Old2New(const vector < CMetab* > & metabolites)
+void CStep::old2New(const vector < CMetab* > & metabolites)
 {
     C_INT32 i, j;
     
     for (i = 0; i < mSubstrates->size(); i++)
     {
         for (j = 0; j < metabolites.size(); j++)
-            if (metabolites[j]->GetName() ==
+            if (metabolites[j]->getName() ==
                 (*mSubstrates)[i].mMetaboliteName) break;
         (*mSubstrates)[i].mCompartmentName =
-            metabolites[j]->GetCompartment()->GetName();
+            metabolites[j]->getCompartment()->getName();
     }
     
     for (i = 0; i < mProducts->size(); i++)
     {
         for (j = 0; j < metabolites.size(); j++)
-            if (metabolites[j]->GetName() ==
+            if (metabolites[j]->getName() ==
                 (*mProducts)[i].mMetaboliteName) break;
         (*mProducts)[i].mCompartmentName =
-            metabolites[j]->GetCompartment()->GetName();
+            metabolites[j]->getCompartment()->getName();
     }
     
     for (i = 0; i < mModifiers->size(); i++)
     {
         for (j = 0; j < metabolites.size(); j++)
-            if (metabolites[j]->GetName() ==
+            if (metabolites[j]->getName() ==
                 (*mModifiers)[i].mMetaboliteName) break;
         (*mModifiers)[i].mCompartmentName =
-            metabolites[j]->GetCompartment()->GetName();
+            metabolites[j]->getCompartment()->getName();
     }
 }
 
-C_FLOAT64 CStep::Calculate() 
+C_FLOAT64 CStep::calculate() 
 {
-    return mFunction->CalcValue(*mCallParameters);
+    return mFunction->calcValue(*mCallParameters);
 }
 
 

@@ -48,18 +48,18 @@ CDatum& CDatum::operator=(const CDatum &RHS)
     return *this;
 }
 
-C_INT32 CDatum::Save(CWriteConfig &pconfigbuffer)
+C_INT32 CDatum::save(CWriteConfig &pconfigbuffer)
 {
     // this really should be changed to something like Load
     // TO BE DONE SOON
 
     // make sure fp numbers come out in scientific notation
-    mFail = pconfigbuffer.SetVariable((string) "Title", 
+    mFail = pconfigbuffer.setVariable((string) "Title", 
                                       (string) "string",
                                       (void *) &mTitle);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer.SetVariable((string) "Type", 
+    mFail = pconfigbuffer.setVariable((string) "Type", 
                                       (string) "C_INT32",
                                       (void *) &mType);
     if (mFail) return mFail;
@@ -101,7 +101,7 @@ C_INT32 CDatum::Save(CWriteConfig &pconfigbuffer)
     case D_TT:
     case D_EIGVR:
     case D_EIGVI:
-        mFail = pconfigbuffer.SetVariable((string) "I", 
+        mFail = pconfigbuffer.setVariable((string) "I", 
                                           (string) "string",
                                           (void *) &mI);
         if (mFail) return mFail;
@@ -111,11 +111,11 @@ C_INT32 CDatum::Save(CWriteConfig &pconfigbuffer)
     case D_CCC:
     case D_FCC:
     case D_EIG:
-        mFail = pconfigbuffer.SetVariable((string) "I", 
+        mFail = pconfigbuffer.setVariable((string) "I", 
                                           (string) "C_INT32",
                                           (void *) &mI);
         if (mFail) return mFail;
-        mFail = pconfigbuffer.SetVariable((string) "J", 
+        mFail = pconfigbuffer.setVariable((string) "J", 
                                           (string) "string",
                                           (void *) &mJ);
         if (mFail) return mFail;
@@ -129,14 +129,14 @@ C_INT32 CDatum::Save(CWriteConfig &pconfigbuffer)
 }
 
 
-C_INT32 CDatum::Load(CReadConfig &pconfigbuffer)
+C_INT32 CDatum::load(CReadConfig &pconfigbuffer)
 {
-    mFail = pconfigbuffer.GetVariable((string) "Title", 
+    mFail = pconfigbuffer.getVariable((string) "Title", 
                                       (string) "string",
                                       (void *) &mTitle);
     if (mFail) return mFail;
 
-    mFail = pconfigbuffer.GetVariable((string) "Type", 
+    mFail = pconfigbuffer.getVariable((string) "Type", 
                                       (string) "C_INT32",
                                       (void *) &mType);
     if (mFail) return mFail;
@@ -177,7 +177,7 @@ C_INT32 CDatum::Load(CReadConfig &pconfigbuffer)
     case D_MOIT:
     case D_TT:
     case D_EIGVR:
-    case D_EIGVI:   mFail = pconfigbuffer.GetVariable((string) "I", 
+    case D_EIGVI:   mFail = pconfigbuffer.getVariable((string) "I", 
                                                       (string) "string",
                                                       (void *) &mI);
     if (mFail) return mFail;
@@ -187,11 +187,11 @@ C_INT32 CDatum::Load(CReadConfig &pconfigbuffer)
     case D_CCC:
     case D_FCC:
     case D_EIG:
-        mFail = pconfigbuffer.GetVariable((string) "I", 
+        mFail = pconfigbuffer.getVariable((string) "I", 
                                           (string) "C_INT32",
                                           (void *) &mI);
         if (mFail) return mFail;
-        mFail = pconfigbuffer.GetVariable((string) "J", 
+        mFail = pconfigbuffer.getVariable((string) "J", 
                                           (string) "string",
                                           (void *) &mJ);
         if (mFail) return mFail;
@@ -202,52 +202,52 @@ C_INT32 CDatum::Load(CReadConfig &pconfigbuffer)
     return mFail;
 }
 
-void CDatum::SetValue(C_FLOAT64* pvalue)
+void CDatum::setValue(C_FLOAT64* pvalue)
 {
     mpValue = pvalue;
 }
 
-C_FLOAT64 CDatum::GetValue()
+C_FLOAT64 CDatum::getValue()
 {
     return *mpValue;
 }
 
-void CDatum::SetI(const string& str)
+void CDatum::setI(const string& str)
 {
     mI = str;
 }
 
-string CDatum::GetI()
+string CDatum::getI()
 {
     return mI;
 }
 
-void CDatum::SetJ(const string& str)
+void CDatum::setJ(const string& str)
 {
     mJ = str;
 }
 
-string CDatum::GetJ()
+string CDatum::getJ()
 {
     return mJ;
 }
 
-void CDatum::SetType(C_INT32 type)
+void CDatum::setType(C_INT32 type)
 {
     mType = type;
 }
 
-C_INT32 CDatum::GetType()
+C_INT32 CDatum::getType()
 {
     return mType;
 }
 
-void CDatum::SetTitle(const string& str)
+void CDatum::setTitle(const string& str)
 {
     mTitle = str;
 }
 
-string CDatum::GetTitle()
+string CDatum::getTitle()
 {
     return mTitle;
 }

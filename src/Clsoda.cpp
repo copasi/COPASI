@@ -1271,7 +1271,7 @@ void Clsoda::lsoda (CModel *model,
 /*
   Initial call to f.
 */
-        Eval(neq, *t, y, yh[2]);
+        eval(neq, *t, y, yh[2]);
         nfe = 1;
 /*
   Load the initial value vector in yh.
@@ -2112,7 +2112,7 @@ void Clsoda::stoda(C_INT32 neq,
                     yp1 = yh[1];
                     for (i = 1 ; i <= n ; i++)
                         y[i] = yp1[i];
-                    Eval(neq, tn, y, savf);
+                    eval(neq, tn, y, savf);
                     nfe++;
                     yp1 = yh[2];
                     for (i = 1 ; i <= n ; i++)
@@ -2478,7 +2478,7 @@ void Clsoda::prja(C_INT32 neq,
             r = max(sqrteta * fabs(yj), r0 / ewt[j]);
             y[j] += r;
             fac = -hl0 / r;
-            Eval(neq, tn, y, acor);
+            eval(neq, tn, y, acor);
             for (i = 1 ; i <= n ; i++)
                 wm[i][j] = (acor[i] - savf[i]) * fac;
             y[j] = yj;
@@ -2589,7 +2589,7 @@ void Clsoda::correction(C_INT32 neq,
     yp1 = yh[1];
     for (i = 1 ; i <= n ; i++)
         y[i] = yp1[i];
-    Eval(neq, tn, y, savf);
+    eval(neq, tn, y, savf);
     nfe++;
 /*
   If indicated, the matrix P = I - h * el[1] * J is reevaluated and
@@ -2713,7 +2713,7 @@ void Clsoda::correction(C_INT32 neq,
             yp1 = yh[1];
             for (i = 1 ; i <= n ; i++)
                 y[i] = yp1[i];
-            Eval(neq, tn, y, savf);
+            eval(neq, tn, y, savf);
             nfe++;
         }
 /*
@@ -2722,7 +2722,7 @@ void Clsoda::correction(C_INT32 neq,
         else 
         {
             *delp = *del;
-            Eval(neq, tn, y, savf);
+            eval(neq, tn, y, savf);
             nfe++;
         }
     }   /*   end while   */
@@ -3082,12 +3082,12 @@ void Clsoda::resetcoeff(void)
     conit = 0.5 / (C_FLOAT64) (nq + 2);
 }     /*   end resetcoeff   */
 
-void Clsoda::Eval(C_INT32 n,
+void Clsoda::eval(C_INT32 n,
                   C_FLOAT64 t,
                   C_FLOAT64 * y,
                   C_FLOAT64 * ydot)
 {
-    mModel->LSODAEval(n, t, y, ydot);
+    mModel->lSODAEval(n, t, y, ydot);
     return;
 }
 

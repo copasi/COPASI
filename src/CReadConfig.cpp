@@ -14,7 +14,7 @@
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
 
-// char *InitInputBuffer(char *name);
+// char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
 
 CReadConfig::CReadConfig(void)
@@ -24,7 +24,7 @@ CReadConfig::CReadConfig(void)
     mMode         = CReadConfig::NEXT;
     mFail         = 0;
 
-    InitInputBuffer();
+    initInputBuffer();
 }
 
 CReadConfig::CReadConfig(const string& name)
@@ -35,24 +35,24 @@ CReadConfig::CReadConfig(const string& name)
     mMode         = CReadConfig::NEXT;
     mFail         = 0;
 
-    InitInputBuffer();
+    initInputBuffer();
     
-    GetVariable("Version", "string", &mVersion);
+    getVariable("Version", "string", &mVersion);
 }
 
 CReadConfig::~CReadConfig(void)
 {
 }
 
-C_INT32 CReadConfig::Fail()
+C_INT32 CReadConfig::fail()
 {
     // return the failure state
     return mFail;
 }
 
-string CReadConfig::GetVersion() {return mVersion;}
+string CReadConfig::getVersion() {return mVersion;}
 
-C_INT32 CReadConfig::GetVariable(const string& name, 
+C_INT32 CReadConfig::getVariable(const string& name, 
                                  const string& type, 
                                  void * pout,
                                  enum Mode mode)
@@ -92,7 +92,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
             name == "Compartment"  &&
             Name == "Compartment")
         {
-            if ( LookAhead() != "Volume" )
+            if ( lookAhead() != "Volume" )
             {
                 Name = "<CONTINUE>";
             }
@@ -106,9 +106,9 @@ C_INT32 CReadConfig::GetVariable(const string& name,
             Name == "Title")
         {
             if ((mVersion < "4" &&
-                 LookAhead() != "TotalMetabolites") ||
+                 lookAhead() != "TotalMetabolites") ||
                 (mVersion >= "4" &&
-                 LookAhead() != "Comments"))
+                 lookAhead() != "Comments"))
             {
                 Name = "<CONTINUE>";
             }
@@ -195,7 +195,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
     return mFail;
 }
 
-C_INT32 CReadConfig::GetVariable(const string& name, 
+C_INT32 CReadConfig::getVariable(const string& name, 
                                  const string& type, 
                                  void * pout1,
                                  void * pout2,
@@ -203,7 +203,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
 {
     string Value;
     
-    if (mFail = GetVariable(name, "string", &Value, mode))
+    if (mFail = getVariable(name, "string", &Value, mode))
         return mFail;
     
     if (type == "node")
@@ -227,7 +227,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
     return mFail;
 }
 
-C_INT32 CReadConfig::InitInputBuffer()
+C_INT32 CReadConfig::initInputBuffer()
 {
     char c[] = " ";
     
@@ -256,7 +256,7 @@ C_INT32 CReadConfig::InitInputBuffer()
     return mFail;
 }
 
-string CReadConfig::LookAhead()
+string CReadConfig::lookAhead()
 {
     streampos pos = mBuffer.tellg();
     

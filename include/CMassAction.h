@@ -39,7 +39,7 @@ public:
      *  Calculates the value of the function
      *  @param "vector < C_FLOAT64 * >" identifiers
      */
-    C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters) const;
+    C_FLOAT64 calcValue(vector < CCallParameter > & callParameters) const;
 
     /**
      *  Returns the index of an identifier. The index specifies the position in
@@ -47,7 +47,7 @@ public:
      *  @param "const string" &name
      *  @return C_INT32
      */
-    virtual pair < C_INT32, C_INT32 > FindIdentifier(const string & name) const;
+    virtual pair < C_INT32, C_INT32 > findIdentifier(const string & name) const;
 };
 
 #endif // COPASI_CMassAction

@@ -50,19 +50,19 @@ CNodeK::CNodeK(C_FLOAT64 constant)
     mIndex    = -1;
 }
 
-void CNodeK::Delete() {}
+void CNodeK::cleanup() {}
     
 CNodeK::~CNodeK() {}
 
-C_INT32 CNodeK::Load(CReadConfig & configbuffer)
+C_INT32 CNodeK::load(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     
-    if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype,
+    if (Fail = configbuffer.getVariable("Node", "node", &mType, &mSubtype,
                                         CReadConfig::SEARCH))
         return Fail;
     
-    if (IsIdentifier() && mType != N_IDENTIFIER)
+    if (isIdentifier() && mType != N_IDENTIFIER)
     {
         mSubtype = mType;
         mType = N_IDENTIFIER;
@@ -72,21 +72,21 @@ C_INT32 CNodeK::Load(CReadConfig & configbuffer)
     // value of the constant if one
     if (mType == N_NUMBER)
     {
-        if (Fail = configbuffer.GetVariable("Value", "C_FLOAT64", &mConstant))
+        if (Fail = configbuffer.getVariable("Value", "C_FLOAT64", &mConstant))
             return Fail;
     }
     else if (mType == N_IDENTIFIER)
     {
-        if (Fail = configbuffer.GetVariable("Index", "C_INT32", &mIndex))
+        if (Fail = configbuffer.getVariable("Index", "C_INT32", &mIndex))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Name", "string", &mName))
+        if (Fail = configbuffer.getVariable("Name", "string", &mName))
             return Fail;
     }
 
     return Fail;
 }
 
-C_INT32 CNodeK::Save(CWriteConfig & configbuffer) const
+C_INT32 CNodeK::save(CWriteConfig & configbuffer) const
 {
     C_INT32 Fail = 0;
     
@@ -94,50 +94,50 @@ C_INT32 CNodeK::Save(CWriteConfig & configbuffer) const
     // we don't care about exceptions here.
     // They should be caught by the calling function
     // First the Type and subtype
-    if (Fail = configbuffer.SetVariable("Node", "node", &mType, &mSubtype))
+    if (Fail = configbuffer.setVariable("Node", "node", &mType, &mSubtype))
         return Fail;
     
     // leave the Left & Right pointers out
     // value of the constant if one
     if (mType==N_NUMBER)
     {
-        if (Fail = configbuffer.SetVariable("Value", "C_FLOAT64", &mConstant))
+        if (Fail = configbuffer.setVariable("Value", "C_FLOAT64", &mConstant))
             return Fail;
     }
-    else if (IsIdentifier())
+    else if (isIdentifier())
     {
-        if (Fail = configbuffer.SetVariable("Index", "C_INT32", &mIndex))
+        if (Fail = configbuffer.setVariable("Index", "C_INT32", &mIndex))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Name", "string", &mName))
+        if (Fail = configbuffer.setVariable("Name", "string", &mName))
             return Fail;
     }
     return Fail;
 }
 
-char CNodeK::GetType() const {return mType;}
+char CNodeK::getType() const {return mType;}
 
-char CNodeK::GetSubtype() const {return mSubtype;}
+char CNodeK::getSubtype() const {return mSubtype;}
 
-CNodeK & CNodeK::GetLeft() const
+CNodeK & CNodeK::getLeft() const
 {
     if (!mLeft) 
-        FatalError(); // Call LeftIsValid first to avoid this!
+        fatalError(); // Call LeftIsValid first to avoid this!
     return *mLeft;
 }
 
-CNodeK & CNodeK::GetRight() const
+CNodeK & CNodeK::getRight() const
 {
     if (!mRight) 
-        FatalError(); // Call RightIsValid first to avoid this!
+        fatalError(); // Call RightIsValid first to avoid this!
     return *mRight;
 }
 
-string CNodeK::GetName() const
+string CNodeK::getName() const
 {
     static unsigned C_INT32 ctr = 0;
     char name[9];
     
-    if (IsIdentifier()) return mName;
+    if (isIdentifier()) return mName;
     else 
     {
         sprintf(name, "%X", ctr++);
@@ -145,35 +145,35 @@ string CNodeK::GetName() const
     }
 }
 
-C_FLOAT64 CNodeK::GetConstant() const {return mConstant;}
+C_FLOAT64 CNodeK::getConstant() const {return mConstant;}
 
-C_INT32 CNodeK::GetIndex() const {return mIndex;}
+C_INT32 CNodeK::getIndex() const {return mIndex;}
 
-void CNodeK::SetType(char type) {mType = type;}
+void CNodeK::setType(char type) {mType = type;}
 
-void CNodeK::SetSubtype(char subtype) {mSubtype = subtype;}
+void CNodeK::setSubtype(char subtype) {mSubtype = subtype;}
 
-void CNodeK::SetLeft(CNodeK & left) {mLeft = &left;}
+void CNodeK::setLeft(CNodeK & left) {mLeft = &left;}
 
-void CNodeK::SetLeft(CNodeK * pleft) {mLeft = pleft;}
+void CNodeK::setLeft(CNodeK * pleft) {mLeft = pleft;}
 
-void CNodeK::SetRight(CNodeK & right) {mRight = &right;}
+void CNodeK::setRight(CNodeK & right) {mRight = &right;}
 
-void CNodeK::SetRight(CNodeK * pright) {mRight = pright;}
+void CNodeK::setRight(CNodeK * pright) {mRight = pright;}
 
-void CNodeK::SetName(const string & name) {mName = name;}
+void CNodeK::setName(const string & name) {mName = name;}
 
-void CNodeK::SetConstant(C_FLOAT64 & constant) {mConstant = constant;}
+void CNodeK::setConstant(C_FLOAT64 & constant) {mConstant = constant;}
 
-void CNodeK::SetIndex(C_INT32 index) {mIndex = index;}
+void CNodeK::setIndex(C_INT32 index) {mIndex = index;}
 
-C_INT16 CNodeK::IsLeftValid() const {return (C_INT16) mLeft;}
+C_INT16 CNodeK::isLeftValid() const {return (C_INT16) mLeft;}
 
-C_INT16 CNodeK::IsRightValid() const {return (C_INT16) mRight;}
+C_INT16 CNodeK::isRightValid() const {return (C_INT16) mRight;}
 
-C_INT16 CNodeK::IsNumber() const {return mType == N_NUMBER;}
+C_INT16 CNodeK::isNumber() const {return mType == N_NUMBER;}
 
-C_INT16 CNodeK::IsIdentifier() const
+C_INT16 CNodeK::isIdentifier() const
 {
     switch (mType)
     {
@@ -186,9 +186,9 @@ C_INT16 CNodeK::IsIdentifier() const
     }
 }
 
-C_INT16 CNodeK::IsOperator() const {return mType == N_OPERATOR;}
+C_INT16 CNodeK::isOperator() const {return mType == N_OPERATOR;}
 
-C_INT16 CNodeK::LeftPrecedence() const
+C_INT16 CNodeK::leftPrecedence() const
 {
     switch (mType)
     {
@@ -211,7 +211,7 @@ C_INT16 CNodeK::LeftPrecedence() const
     return 0;
 }
 
-C_INT16 CNodeK::RightPrecedence() const
+C_INT16 CNodeK::rightPrecedence() const
 {
     switch (mType)
     {
@@ -235,10 +235,10 @@ C_INT16 CNodeK::RightPrecedence() const
     return 0;
 }
 
-C_FLOAT64 CNodeK::Value(vector < void * > & identifiers) const
+C_FLOAT64 CNodeK::value(vector < void * > & identifiers) const
 {
     // if it is a constant or an identifier just return its value
-    if (IsNumber()) return mConstant;
+    if (isNumber()) return mConstant;
 
     switch (mType)
     {
@@ -250,22 +250,22 @@ C_FLOAT64 CNodeK::Value(vector < void * > & identifiers) const
 	switch (mSubtype)
 	{
         case '+':
-            return mLeft->Value(identifiers) + mRight->Value(identifiers);
+            return mLeft->value(identifiers) + mRight->value(identifiers);
 
         case '-': 
-            return mLeft->Value(identifiers) - mRight->Value(identifiers);
+            return mLeft->value(identifiers) - mRight->value(identifiers);
 
         case '*': 
-            return mLeft->Value(identifiers) * mRight->Value(identifiers);
+            return mLeft->value(identifiers) * mRight->value(identifiers);
         
         case '/': 
-            return mLeft->Value(identifiers) / mRight->Value(identifiers);
+            return mLeft->value(identifiers) / mRight->value(identifiers);
         
         case '^': 
-            return pow(mLeft->Value(identifiers), mRight->Value(identifiers));
+            return pow(mLeft->value(identifiers), mRight->value(identifiers));
         
         default: 
-            FatalError();   // THROW EXCEPTION
+            fatalError();   // THROW EXCEPTION
             return 0.0;
 	}
 	break;
@@ -274,36 +274,36 @@ C_FLOAT64 CNodeK::Value(vector < void * > & identifiers) const
 	switch (mSubtype)
 	{
         case '+': 
-            return mLeft->Value(identifiers);
+            return mLeft->value(identifiers);
 
         case '-': 
-            return - mLeft->Value(identifiers);
+            return - mLeft->value(identifiers);
 
         case N_EXP: 
-            return exp(mLeft->Value(identifiers));
+            return exp(mLeft->value(identifiers));
 
         case N_LOG: 
-            return log(mLeft->Value(identifiers));
+            return log(mLeft->value(identifiers));
 
         case N_LOG10: 
-            return log10(mLeft->Value(identifiers));
+            return log10(mLeft->value(identifiers));
 
         case N_SIN: 
-            return sin(mLeft->Value(identifiers));
+            return sin(mLeft->value(identifiers));
 
         case N_COS: 
-            return cos(mLeft->Value(identifiers));
+            return cos(mLeft->value(identifiers));
 
         default: 
-            FatalError();   // THROW EXCEPTION
+            fatalError();   // THROW EXCEPTION
             return 0.0;    
 	}
 	break;
 
     default: 
-        FatalError();   // THROW EXCEPTION
+        fatalError();   // THROW EXCEPTION
         return 0.0;
     }
-    FatalError();   // THROW EXCEPTION
+    fatalError();   // THROW EXCEPTION
     return 0.0;
 }

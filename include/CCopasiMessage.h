@@ -19,7 +19,7 @@ typedef struct MESSAGES {unsigned C_INT32 No; char * Text;} Message;
 /**
  *  This throws an exception with information where the error occured.
  */
-#define FatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
+#define fatalError() {CCopasiMessage(CCopasiMessage::ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
 {
@@ -62,13 +62,13 @@ public:
      *  Retrieves the text of the message.
      *  @return mMessage
      */
-    string GetText();
+    string getText();
 
     /**
      *  Retrieves thetype of the message.
      *  @return mType
      */
-    CCopasiMessage::Type GetType();
+    CCopasiMessage::Type getType();
 
 private:
     /**
@@ -76,12 +76,12 @@ private:
      *  @param type message type (RAW|TRACE|WARNING|ERROR)
      *  @param text message text
      */
-    void Handler();
+    void handler();
     
     /**
      *  Inserts line breaks in the message text.
      */
-    void LineBreak();
+    void lineBreak();
     
     /**
      *  Message text.

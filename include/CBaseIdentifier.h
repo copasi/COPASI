@@ -42,25 +42,25 @@ public:
      *  Set the name of an identifier.
      *  @param "const string" &name
      */
-    virtual void SetName(const string & name);
+    virtual void setName(const string & name);
 
     /**
      *  Set the type of an identifier.
      *  @param char type
      */
-    virtual void SetType(const char type);
+    virtual void setType(const char type);
 
     /**
      *  Retrieve the name of an identifier.
      *  @return string
      */
-    virtual string GetName() const;
+    virtual string getName() const;
 
     /**
      *  Retrieve the type of an identifier
      *  @return char
      */
-    virtual char GetType() const;
+    virtual char getType() const;
 };
 
 #endif // COPASI_CBaseIdentifier

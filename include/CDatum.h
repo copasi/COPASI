@@ -90,7 +90,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Save(CWriteConfig &configbuffer);
+    C_INT32 save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -99,77 +99,77 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Load(CReadConfig &configbuffer);
+    C_INT32 load(CReadConfig &configbuffer);
 
     /**
      *  Sets the value of mpValue with a pointer to a C_FLOAT64 that has 
      *  the value of this object.
      *  @param pvalue pointer to a C_FLOAT64.
      */
-    void CDatum::SetValue(C_FLOAT64* pvalue);
+    void CDatum::setValue(C_FLOAT64* pvalue);
 
     /**
      *  Returns a C_FLOAT64 with the value of this object.
      *  @return *mpValue
      *  @see mpValue
      */
-    C_FLOAT64 CDatum::GetValue();
+    C_FLOAT64 CDatum::getValue();
 
     /**
      *  Sets the value of mI with a string
      *  @param str constant reference to a string.
      *  @see mI
      */
-    void CDatum::SetI(const string& str);
+    void CDatum::setI(const string& str);
 
     /**
      *  Returns the first string describing this object.
      *  @return mI
      *  @see mI
      */
-    string CDatum::GetI();
+    string CDatum::getI();
 
     /**
      *  Sets the value of mJ with a string
      *  @param str constant reference to a string.
      *  @see mJ
      */
-    void CDatum::SetJ(const string& str);
+    void CDatum::setJ(const string& str);
 
     /**
      *  Returns the second string describing this object.
      *  @return mJ
      *  @see mJ
      */
-    string CDatum::GetJ();
+    string CDatum::getJ();
 
     /**
      *  Sets the type of this object
      *  @param type integer code of the type
      *  @see mType
      */
-    void CDatum::SetType(C_INT32 type);
+    void CDatum::setType(C_INT32 type);
 
     /**
      *  Returns the type code of this object.
      *  @return mType
      *  @see mType
      */
-    C_INT32 CDatum::GetType();
+    C_INT32 CDatum::getType();
 
     /**
      *  Sets the title of this object
      *  @param str constant reference to a string.
      *  @see mTitle
      */
-    void CDatum::SetTitle(const string& str);
+    void CDatum::setTitle(const string& str);
 
     /**
      *  Returns a string with the title of this object.
      *  @return mTitle
      *  @see mTitle
      */
-    string CDatum::GetTitle();
+    string CDatum::getTitle();
 
 private:
     /**

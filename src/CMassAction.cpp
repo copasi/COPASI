@@ -2,70 +2,70 @@
 #include "CNodeK.h"
 
 CMassAction::CMassAction()
-{SetType(CBaseFunction::BUILTIN);}
+{setType(CBaseFunction::BUILTIN);}
 
 CMassAction::CMassAction(C_INT16 reversible)
 {
-    SetType(CBaseFunction::BUILTIN);
-    SetReversible(reversible);
+    setType(CBaseFunction::BUILTIN);
+    setReversible(reversible);
     
     CBaseCallParameter *Substrates = new CBaseCallParameter;
-    Substrates->SetType(CCallParameter::VECTOR_DOUBLE);
-    Substrates->SetCount(1,CRange::UNSPECIFIED);
-    Substrates->IdentifierTypes().push_back(N_SUBSTRATE);
-    Substrates->IdentifierTypes().push_back(N_KCONSTANT);
-    CallParameters().push_back(Substrates);
+    Substrates->setType(CCallParameter::VECTOR_DOUBLE);
+    Substrates->setCount(1,CRange::UNSPECIFIED);
+    Substrates->identifierTypes().push_back(N_SUBSTRATE);
+    Substrates->identifierTypes().push_back(N_KCONSTANT);
+    callParameters().push_back(Substrates);
 
     CBaseIdentifier *ks = new CBaseIdentifier;
-    ks->SetName("ks");
-    ks->SetType(N_KCONSTANT);
-    Substrates->Identifiers().push_back(ks);
+    ks->setName("ks");
+    ks->setType(N_KCONSTANT);
+    Substrates->identifiers().push_back(ks);
 
     if (reversible)
     {
-        SetName("Mass action (reversible)");
-        SetDescription("ks * PRODUCT <substrate_i> "
+        setName("Mass action (reversible)");
+        setDescription("ks * PRODUCT <substrate_i> "
                        "- kp * PRODUCT <product_j>");
 
         CBaseCallParameter *Products = new CBaseCallParameter;
-        Products->SetType(CCallParameter::VECTOR_DOUBLE);
-        Products->SetCount(1,CRange::UNSPECIFIED);
-        Products->IdentifierTypes().push_back(N_PRODUCT);
-        Products->IdentifierTypes().push_back(N_KCONSTANT);
-        CallParameters().push_back(Products);
+        Products->setType(CCallParameter::VECTOR_DOUBLE);
+        Products->setCount(1,CRange::UNSPECIFIED);
+        Products->identifierTypes().push_back(N_PRODUCT);
+        Products->identifierTypes().push_back(N_KCONSTANT);
+        callParameters().push_back(Products);
 
         CBaseIdentifier *kp = new CBaseIdentifier;
-        kp->SetName("kp");
-        kp->SetType(N_KCONSTANT);
-        Products->Identifiers().push_back(kp);
+        kp->setName("kp");
+        kp->setType(N_KCONSTANT);
+        Products->identifiers().push_back(kp);
     }
     else
     {
-        SetName("Mass action (irreversible)");
-        SetDescription("ks * PRODUCT <substrate_i>");
+        setName("Mass action (irreversible)");
+        setDescription("ks * PRODUCT <substrate_i>");
     }
 }
 
-CMassAction::~CMassAction() {Delete();}
+CMassAction::~CMassAction() {cleanup();}
 
 C_FLOAT64 
-CMassAction::CalcValue(vector < CCallParameter > & callParameters) const
+CMassAction::calcValue(vector < CCallParameter > & callParameters) const
 {
     C_FLOAT64 Products = 1.0, Substrates = 1.0;
     C_INT32 i;
     
-    for (i = 0; i < callParameters[0].Identifiers().size(); i++)
-        Substrates *= *(C_FLOAT64 *) callParameters[0].Identifiers()[i];
+    for (i = 0; i < callParameters[0].identifiers().size(); i++)
+        Substrates *= *(C_FLOAT64 *) callParameters[0].identifiers()[i];
 
-    if (!IsReversible()) return Substrates;
+    if (!isReversible()) return Substrates;
     
-    for (i = 0; i < callParameters[1].Identifiers().size(); i++)
-        Products *= *(C_FLOAT64 *) callParameters[1].Identifiers()[i];
+    for (i = 0; i < callParameters[1].identifiers().size(); i++)
+        Products *= *(C_FLOAT64 *) callParameters[1].identifiers()[i];
     
     return Substrates - Products;
 }
 
-pair < C_INT32, C_INT32 > CMassAction::FindIdentifier(const string & name) const
+pair < C_INT32, C_INT32 > CMassAction::findIdentifier(const string & name) const
 {
     pair < C_INT32, C_INT32 > Tuple(-1, -1);
     string::size_type subscript;
@@ -77,7 +77,7 @@ pair < C_INT32, C_INT32 > CMassAction::FindIdentifier(const string & name) const
         return Tuple;
     }
     
-    if ("kp" == name && IsReversible()) 
+    if ("kp" == name && isReversible()) 
     {
         Tuple.first = 1;
         Tuple.second = 0;
@@ -95,7 +95,7 @@ pair < C_INT32, C_INT32 > CMassAction::FindIdentifier(const string & name) const
         return Tuple;
     }
     
-    if (Type == "product" && IsReversible())
+    if (Type == "product" && isReversible())
     {
         Tuple.first = 1;
         return Tuple;

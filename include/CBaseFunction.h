@@ -56,38 +56,38 @@ public:
     /**
      *
      */
-    void SetLow(unsigned C_INT32 low);
+    void setLow(unsigned C_INT32 low);
     
     /**
      *
      */
-    void SetHigh(unsigned C_INT32 high);
+    void setHigh(unsigned C_INT32 high);
 
     /**
      *
      */
-    void SetRange(unsigned C_INT32 low, unsigned C_INT32 high);
+    void setRange(unsigned C_INT32 low, unsigned C_INT32 high);
 
     /**
      *
      */
-    unsigned C_INT32 GetLow() const;
+    unsigned C_INT32 getLow() const;
     
     /**
      *
      */
-    unsigned C_INT32 GetHigh() const;
+    unsigned C_INT32 getHigh() const;
 
     /**
      *
      */
-    C_INT16 IsRange() const;
+    C_INT16 isRange() const;
 
 private:
     /**
      *
      */
-    void CheckRange() const;
+    void checkRange() const;
 };
 
 /**
@@ -129,17 +129,17 @@ public:
     /**
      *
      */
-    void SetType(CCallParameter::Type type);
+    void setType(CCallParameter::Type type);
 
     /**
      *
      */
-    CCallParameter::Type GetType() const;
+    CCallParameter::Type getType() const;
 
     /**
      *
      */
-    vector < void * > &Identifiers();
+    vector < void * > &identifiers();
 };
     
 class CBaseCallParameter
@@ -187,69 +187,69 @@ public:
     /**
      *  
      */
-    virtual void Delete();
+    virtual void cleanup();
 
     /**
      *  
      */
-    virtual void Copy(const CBaseCallParameter &in);
+    virtual void copy(const CBaseCallParameter &in);
     
     /**
      *
      */
-    virtual void SetType(enum CCallParameter::Type type);
+    virtual void setType(enum CCallParameter::Type type);
         
     /**
      *
      */
-    virtual void SetCount();
+    virtual void setCount();
 
     /**
      *
      */
-    virtual void SetCount(unsigned C_INT32 count);
+    virtual void setCount(unsigned C_INT32 count);
 
     /**
      *
      */
-    virtual void SetCount(unsigned C_INT32 low,
+    virtual void setCount(unsigned C_INT32 low,
                           unsigned C_INT32 high);
 
     /**
      *  Retrieves the type of the the call parameter
      *  @return enum Type
      */
-    virtual enum CCallParameter::Type GetType() const;
+    virtual enum CCallParameter::Type getType() const;
 
     /**
      *  Retrieves the type of the function
      *  @return C_INT32 Count
      */
-    virtual unsigned C_INT32 GetCountLow() const;
+    virtual unsigned C_INT32 getCountLow() const;
 
     /**
      *  Retrieves the type of the function
      *  @return C_INT32 Count
      */
-    virtual unsigned C_INT32 GetCountHigh() const;
+    virtual unsigned C_INT32 getCountHigh() const;
 
     /**
      *  Retrieves the valis identifier types
      */
-    virtual vector < C_INT32 > & IdentifierTypes();
+    virtual vector < C_INT32 > & identifierTypes();
 
     /**
      *  Retrieves the number of identifiers of a specific type
      *  @param char identifierType Default = 0 (all identifiers)
      *  @return C_INT32
      */
-    virtual C_INT32 NoIdentifiers(char identifierType = 0);
+    virtual C_INT32 noIdentifiers(char identifierType = 0);
             
     /**
      *  Retrieves the vector of identifiers
      *  @return "vector < char > &"
      */
-    virtual vector < CBaseIdentifier * > & Identifiers();
+    virtual vector < CBaseIdentifier * > & identifiers();
 
     /**
      *  Retrieves the vector of identifiers of a specific type
@@ -257,7 +257,7 @@ public:
      *  @return "vector < char > &"
      */
     virtual vector < CBaseIdentifier * >
-        Identifiers(char identifierType);
+        identifiers(char identifierType);
 };
 
 class CBaseFunction
@@ -315,12 +315,12 @@ public:
     /**
      *  Delete
      */
-    virtual void Delete();
+    virtual void cleanup();
 
     /**
      *  Copy
      */
-    virtual void Copy(const CBaseFunction & in);
+    virtual void copy(const CBaseFunction & in);
     
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -328,7 +328,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    virtual C_INT32 Load(CReadConfig & configbuffer,
+    virtual C_INT32 load(CReadConfig & configbuffer,
                          CReadConfig::Mode mode = CReadConfig::SEARCH);
 
     /**
@@ -337,68 +337,68 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    virtual C_INT32 Save(CWriteConfig & configbuffer);
+    virtual C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Set the name of the function
      *  @param "const string" &name
      */
-    virtual void SetName(const string & name);
+    virtual void setName(const string & name);
 
     /**
      *  Set the name of the function
      *  @param "CBaseIdentifier::TYPE" &type
      */
-    virtual void SetType(enum Type type);
+    virtual void setType(enum Type type);
 
     /**
      *  Set the description of the function
      *  @param "const string" &description
      */
-    virtual void SetDescription(const string & description);
+    virtual void setDescription(const string & description);
 
     /**
      *  Set the reversiblity of the function
      *  @param C_INT16 reversible
      */
-    virtual void SetReversible(C_INT16 reversible);
+    virtual void setReversible(C_INT16 reversible);
 
     /**
      *  Retrieves the name of the function
      *  @return string
      */
-    virtual string GetName() const;
+    virtual string getName() const;
     
     /**
      *  Retrieves the type of the function
      *  @return enum Type
      */
-    virtual C_INT32 GetType() const;
+    virtual C_INT32 getType() const;
     
     /**
      *  Retrieves the description of the function
      *  @return string
      */
-    virtual string GetDescription() const;
+    virtual string getDescription() const;
     
     /**
      *  Retrieves whether the function is reversible
      *  @return C_INT16
      */
-    virtual C_INT16 IsReversible() const;
+    virtual C_INT16 isReversible() const;
     
     /**
      *  Retrieves the vector of allowed identifiers
      *  @return "vector < char > &"
      */
-    vector < CBaseCallParameter * > & CallParameters();
+    vector < CBaseCallParameter * > & callParameters();
 
     /**
      *  Calculates the value of the function
      *  @param "vector < C_FLOAT64 * >" identifiers
      */
     virtual C_FLOAT64 
-        CalcValue(const vector < CCallParameter > & callParameters) const;
+        calcValue(const vector < CCallParameter > & callParameters) const;
 
     /**
      *  Returns the index of an identifier. The index specifies the position in
@@ -406,7 +406,7 @@ public:
      *  @param "const string" &name
      *  @return C_INT32
      */
-    virtual pair < C_INT32, C_INT32 > FindIdentifier(const string & name) const;
+    virtual pair < C_INT32, C_INT32 > findIdentifier(const string & name) const;
 };
 
 

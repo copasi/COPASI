@@ -15,4 +15,4 @@ CCopasiException::CCopasiException(CCopasiMessage &message){mMessage = message;}
 
 CCopasiException::~CCopasiException(void) {}
 
-CCopasiMessage CCopasiException::GetMessage() {return mMessage;}
+CCopasiMessage CCopasiException::getMessage() {return mMessage;}

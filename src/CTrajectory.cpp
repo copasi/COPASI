@@ -9,179 +9,201 @@
 //default constructor
 CTrajectory::CTrajectory()
 {
-	mPoints = 0;
-	mEndTime = 0.0;	
-	mN = 0;
-	mMethod = 0;
-	mY = new C_FLOAT64[mN];
-	mCModel = NULL;
-	mCODESolver = NULL;
+    mPoints = 0;
+    mEndTime = 0.0;	
+    mN = 0;
+    mMethod = 0;
+
+    mY = NULL;
+    mModel = NULL;
+    mODESolver = NULL;
 }
 	
 
 //Constructor
-CTrajectory::CTrajectory(CModel * aModel, C_INT32 aPoints, C_INT32 aN,
-															 C_FLOAT64 aEndTime, C_INT32 aMethod)
+CTrajectory::CTrajectory(CModel * aModel, C_INT32 aPoints,
+                         C_FLOAT64 aEndTime, C_INT32 aMethod)
 {
-	mN = aN;
-	mY = new C_FLOAT64[mN];
-	mModel = aModel;
-	mPoints = aPoints;
-	mEndTime = aEndTime;
-	mMethod = aMethod;
-}
+    mPoints = aPoints;
+    mEndTime = aEndTime;
+    mMethod = aMethod;
 
+    mN = 0;
 
-// Copy constructor
-CTrajectory::	CTrajectory(CTrajectory& source)
-{
-	mY = source.mY;
-	mCModel = source.mCModell;
-	mCODESolver = source.mCODESolver;
-	mPoints = source.mPoints;
-	mEndTime = source.mEndTime; 	
-	mN = source.mN;
+    mY = NULL;
+    mModel = NULL;
+    mODESolver = NULL;
+    
+    initialize(aModel);
 }
 
 // Object assignment overloading,
-CTrajectory::CTrajectory& operator=(CTrajectory& source)
+CTrajectory & CTrajectory::operator = (const CTrajectory& source)
 {
-	if(this != &source)
-	{
-		mY = source.mY;
-		mCModel = source.mCModell;
-		mCODESolver = source.mCODESolver;
-		mPoints = source.mPoints;
-		mEndTime = source.mEndTime; 	
-		mN = source.mN;
-	}
+    cleanup();
+    
+    if(this != &source)
+    {
+        mMethod = source.mMethod;
+        mPoints = source.mPoints;
+        mEndTime = source.mEndTime; 	
+    }
 
-	return *this;
+    initialize(source.mModel);
+    
+    return *this;
 }
 
 
 //destructor
 CTrajectory::~CTrajectory()
 {
-	cout << "~CTrajectory " << endl;
+    cout << "~CTrajectory " << endl;
+}
+
+void CTrajectory::initialize(CModel * aModel)
+{
+    cleanup();
+    
+    mModel = aModel;
+    mN = mModel->getDimension();
+    
+    mY = new C_FLOAT64[mN];
+    
+    switch (mMethod)
+    {
+    case 1:
+        mODESolver = new CODESolver();
+        break;
+    default:
+        fatalError();
+    }
+    
+    return;
+}
+
+void CTrajectory::cleanup()
+{
+    if (mY) delete [] mY;
+    mY = NULL;
+    
+    //if (mModel) delete mModel;
+    mModel = NULL;
+
+    if (mODESolver) delete mODESolver;
+    mODESolver = NULL;
+    
+    return;
+}
+
+void CTrajectory::setModel(CModel * aModel)
+{
+    mModel = aModel;
 }
 
 
-void CTrajectory::SetModel(CModel * aModel)
+CModel * CTrajectory::getModel() const
 {
- 	mCModel = aModel;
+    return mModel;
 }
 
 
-CModel * CTrajectory::GetModel()
+void CTrajectory::setODESolver(CODESolver * aSolver)
 {
- 	return mCModel;
+    mODESolver = aSolver;
 }
 
 
-void CTrajectory::SetODESolver(CODESolver * aSolver)
+CODESolver * CTrajectory::getSolver() const
 {
- 	mCODESolver = aSolver;
+    return mODESolver;
 }
 
 
-CODESolver * CTrajectory::GetSolver()
+void CTrajectory::setPoints(const C_INT32 anInt)
 {
- 	return mCODESolver;
+    mPoints = anInt;	
+}
+
+C_INT32 CTrajectory::getPoints() const
+{
+    return mPoints;
 }
 
 
-void CTrajectory::SetPoints(C_INT32 anInt)
+void CTrajectory::setArrSize(const C_INT32 anInt)
 {
-	mPoints = anInt;	
-}
-
-C_INT32 CTrajectory::GetPoints()
-{
-	return mPoints;
+    mN = anInt;
 }
 
 
-void CTrajectory::SetArrSize(C_INT32 anInt)
+C_INT32 CTrajectory::getArrSize() const
 {
- 	mN = anInt;
-}
-
-
-C_INT32 CTrajectory::GetArrSize()
-{
- 	return mN;
+    return mN;
 }
 
 	
-void CTrajectory::SetEndTime(C_FLOAT64e aDouble)
+void CTrajectory::setEndTime(const C_FLOAT64 aDouble)
 {
-	mEndTime = aDounble;
+    mEndTime = aDouble;
 }
 
-C_FLOAT64 CTrajectory::GetEndTime()
+C_FLOAT64 CTrajectory::getEndTime() const
 {
-	return mEndTime;
+    return mEndTime;
 }
 
 	
-void CTrajectory::SetMethod(C_INT32 anInt)
+void CTrajectory::setMethod(const C_INT32 anInt)
 {
-	mTypeOfSolver = anInt;
+    mMethod = anInt;
 }
 
-C_INT32 CTrajectory::GetMethod()
+C_INT32 CTrajectory::getMethod() const
 {
-	return mTypeOfSolver;
+    return mMethod;
 }
 
-
-void CTrajectory::SetMY(C_FLOAT64 * arrDouble)
+void CTrajectory::process()
 {
-	mY = arrDouble;
-}
+    mODESolver->initialize(* mModel, mY, mN, mMethod);
+    
+    // COutputEvent *OutInit = NULL, *OutPoint = NULL, *OutEnd = NULL;
 
-C_FLOAT64 * CTrajectory::GetMY()
-{
-	return mY;
-}
-
-
-void CTrajectory::Process()
-{
-
-	// COutputEvent *OutInit = NULL, *OutPoint = NULL, *OutEnd = NULL;
-
-	// OutInit = COutputEvent(TIME_INIT, this);
-	// OutPoint = COutputEvent(TIME_POINT, this);		
- 	// OutEnd = COutputEvent(TIME_END, this);
+    // OutInit = COutputEvent(TIME_INIT, this);
+    // OutPoint = COutputEvent(TIME_POINT, this);		
+    // OutEnd = COutputEvent(TIME_END, this);
 
 
-	//calculates number of iterations and time intervals
-	C_FLOAT64 length = mEndTIme/mPoints;
+    //calculates number of iterations and time intervals
+    C_FLOAT64 length = mEndTime/mPoints;
 
-	// print for the initial time point	
-	// if (OutInit) OutInit.Print();
-  // if (OutPoint) OutPoint.Print();
+    // print for the initial time point	
+    // if (OutInit) OutInit.Print();
+    // if (OutPoint) OutPoint.Print();
+    C_FLOAT64 t = 0.0;
+        
+    for(C_INT32 i = 0; i < mPoints; i++)
+    {
+        //update the CODESolver from current time to end time
+        mODESolver->step(t, t+length);
+
+        //update CModel
+        mModel->setConcentrations(mY);
+
+        //print for current time point in the outputEvent
+        // if (OutPoint) OutPoint.Print();
+
+        t += length;
+    }
 	
-	for(C_FLOAT64 t = 0.0, C_INT32 i = 0; i < mPoints; i++, t += length)
-	{
-		//update the CODESolver from current time to end time
-		mCODESolver->Step(t, t+length);
+    // if (OutEnd) OutEnd.Print();
 
-		//update CModel
-		mCModel->SetConcentrations(mY);
-
-		//print for current time point in the outputEvent
-		// if (OutPoint) OutPoint.Print();
-	}
-	
-	// if (OutEnd) OutEnd.Print();
-
-	// delete OutInit;
-	// delete OutPoint;
-	// delete OutEnd;
-	
+    // delete OutInit;
+    // delete OutPoint;
+    // delete OutEnd;
+    
+    mODESolver->cleanUp();
 }
 
 

@@ -55,7 +55,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     mText = Text;
     mNumber = 0;
     
-    if (Text) Handler();
+    if (Text) handler();
 }
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type, 
@@ -70,7 +70,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 
     while (Messages[i].No != number && Messages[i].Text) Messages[i++];
     
-    if (!Messages[i].Text) FatalError();
+    if (!Messages[i].Text) fatalError();
     
     va_list Arguments = NULL;
     va_start(Arguments, number);
@@ -95,10 +95,10 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
     mType = type;
     mNumber = number;
  
-    Handler();
+    handler();
 }
         
-void CCopasiMessage::Handler()
+void CCopasiMessage::handler()
 {
     string Text = mText;
     
@@ -124,7 +124,7 @@ void CCopasiMessage::Handler()
     }
     mText += Text;
 
-    LineBreak();
+    lineBreak();
     
     if (mType == ERROR) 
     {
@@ -147,9 +147,9 @@ CCopasiMessage &CCopasiMessage::operator=(CCopasiMessage &RHS)
 
 CCopasiMessage::~CCopasiMessage(void) {}
 
-string CCopasiMessage::GetText(void) {return mText;}
+string CCopasiMessage::getText(void) {return mText;}
 
-CCopasiMessage::Type CCopasiMessage::GetType(void) {return mType;}
+CCopasiMessage::Type CCopasiMessage::getType(void) {return mType;}
 
 string TimeStamp()
 {
@@ -178,7 +178,7 @@ string TimeStamp()
     return (string) str;
 }
 
-void CCopasiMessage::LineBreak()
+void CCopasiMessage::lineBreak()
 {
     string Search("\n");
     string Replace("\n>                           < ");

@@ -214,7 +214,7 @@ public:
     /**
      * 
      */
-    void Init();
+    void initialize();
     
     /**
      * 
@@ -224,7 +224,7 @@ public:
     /**
      * 
      */
-    void Delete();
+    void cleanup();
     
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -232,7 +232,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig &configBuffer);
+    C_INT32 load(CReadConfig &configBuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -240,63 +240,63 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig &configBuffer);
+    C_INT32 save(CWriteConfig &configBuffer);
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
      */
-    void BuildStoi();
+    void buildStoi();
     
     /**
      *  LU-Decomposition of the stoichiometry matrix
      */
-    void LUDecomposition();
+    void lUDecomposition();
     
     /**
      *  Set the status of the metabolites
      */
-    void SetMetabolitesStatus();
+    void setMetabolitesStatus();
 
     /**
      *  Build the Reduced Stoichiometry Matrix from the LU decomposition
      */
-    void BuildRedStoi();
+    void buildRedStoi();
 
     /**
      *  Build the Conservation Relationssips based on the LU decomposition
      */
-    void BuildConsRel();
+    void buildConsRel();
     
     /**
      *  Build the Moities based on the LU decomposition
      */
-    void BuildMoieties();
+    void buildMoieties();
     
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
      */
-    void LSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
+    void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
-    vector < CMetab * > & GetMetabolitesInd();
+    vector < CMetab * > & getMetabolitesInd();
     
     /**
      *  Set the vector of particle numbers for independent metabolites
      *  @param C_FLOAT64 & y
      */
-    void SetParticleNoInd(const C_FLOAT64 & y) const;
+    void setParticleNoInd(const C_FLOAT64 & y) const;
 
     /**
      *  Get the dimension of the reduced problem
      *  @return C_INT32 dimension
      */
-    C_INT32 GetDimension() const;
+    C_INT32 getDimension() const;
 
     /**
      *  Set the concentration of all metabolites as a result of the particle
      *  number of the independent metabolites
      *  param C_FLOAT64 & y
      */
-    void SetConcentrations(const C_FLOAT64 *y);
+    void setConcentrations(const C_FLOAT64 *y);
     
 #ifdef XXXX
     /**
@@ -307,7 +307,7 @@ public:
     /**
      * 
      */
-    void Reset(C_INT32 nstep, C_INT32 nmetab,
+    void reset(C_INT32 nstep, C_INT32 nmetab,
                C_INT32 intmet, C_INT32 nmoiety,
                C_INT32 ncompart,
                const string &Tit);   // resets the model
@@ -315,135 +315,135 @@ public:
     /**
      * 
      */
-    void ResetStepMetab(C_INT32 nstep, C_INT32 nmetab, C_INT32 intmet, C_INT32 nmoiety); //resets all nut compartments and title
+    void resetStepMetab(C_INT32 nstep, C_INT32 nmetab, C_INT32 intmet, C_INT32 nmoiety); //resets all nut compartments and title
 
     /**
      * 
      */
-    C_INT32 ResetCompartments(C_INT32 ncompart); // clears the compartments array and resizes it
+    C_INT32 resetCompartments(C_INT32 ncompart); // clears the compartments array and resizes it
 
     /**
      * 
      */
-    void ClearStoi(void);    // zeroes all entries in stoichimetry matxs
+    void clearStoi(void);    // zeroes all entries in stoichimetry matxs
 
     /**
      * 
      */
-    void Clear(void);     // clears the model (incl resetting to 0)
+    void clear(void);     // clears the model (incl resetting to 0)
 
     /**
      * 
      */
-    void CountMetabolites(void);   // counts the metabolites in each class
+    void countMetabolites(void);   // counts the metabolites in each class
 
     /**
      * 
      */
-    void SortMetabolites(void);   // sorts the metabolite for secondary matrices
+    void sortMetabolites(void);   // sorts the metabolite for secondary matrices
 
     /**
      * 
      */
-    void Structural(void);    // identifies structural properties
+    void structural(void);    // identifies structural properties
 
     /**
      * 
      */
-    C_INT32 ElementaryModes(CWriteConfig &configbuffer); // finds the elementary modes
+    C_INT32 elementaryModes(CWriteConfig &configbuffer); // finds the elementary modes
 
     /**
      * 
      */
-    void AddToStoi(C_INT32 StepNo, 
+    void addToStoi(C_INT32 StepNo, 
                    C_INT32 MetabNo,
                    C_INT32 Sign, C_INT32 Value); // adds an entry in Stoi and in the relevant step
 
     /**
      * 
      */
-    void SetupMoiety(void);    // sets the description and concentration of moieties
+    void setupMoiety(void);    // sets the description and concentration of moieties
 
     /**
      * 
      */
-    void UpdateChemEq(void);    // updates the ChemEq equations of all steps
+    void updateChemEq(void);    // updates the ChemEq equations of all steps
 
     /**
      * 
      */
-    void InitDebug(void);    // For debug output
+    void initDebug(void);    // For debug output
 
     /**
      * 
      */
-    void PrintSummary(void);    // For debug output
+    void printSummary(void);    // For debug output
 
     /**
      * 
      */
-    void PrintMatrices(void);   // For debug output
+    void printMatrices(void);   // For debug output
 
     /**
      * 
      */
-    C_INT32 FindMetab(string &Target);  // returns the index of the metab
+    C_INT32 findMetab(string &Target);  // returns the index of the metab
 
     /**
      * 
      */
-    C_INT32 FindStep(string &Target);  // returns the index of the step
+    C_INT32 findStep(string &Target);  // returns the index of the step
 
     /**
      * 
      */
-    C_INT32 FindMoiety(string &Target);  // returns the index of the moiety
+    C_INT32 findMoiety(string &Target);  // returns the index of the moiety
 
     /**
      * 
      */
-    C_INT32 FindCompartment(string &Target);// returns the index of the compartment
+    C_INT32 findCompartment(string &Target);// returns the index of the compartment
 
     /**
      * 
      */
-    void CalculateMoieties(void);  // calculates the total masses of the moieties
+    void calculateMoieties(void);  // calculates the total masses of the moieties
 
     /**
      * 
      */
-    C_INT32 SubstrateMolecularity(C_INT32 st); // returns molecularity (substrates)
+    C_INT32 substrateMolecularity(C_INT32 st); // returns molecularity (substrates)
 
     /**
      * 
      */
-    C_INT32 ProductMolecularity(C_INT32 st);  // returns molecularity (products)
+    C_INT32 productMolecularity(C_INT32 st);  // returns molecularity (products)
 
     /**
      * 
      */
-    void UpdateCompartments(void);  // updates references to compartments
+    void updateCompartments(void);  // updates references to compartments
 
     /**
      * 
      */
-    void SaveUDKin(CWriteConfig &configbuffer); // saves the user-defined kinetic types in this model
+    void saveUDKin(CWriteConfig &configbuffer); // saves the user-defined kinetic types in this model
 
     /**
      * 
      */
-    C_INT32 AddMetabolite(string &NewName);// adds a new metabolite to the model
+    C_INT32 addMetabolite(string &NewName);// adds a new metabolite to the model
 
     /**
      * 
      */
-    void UpdateMoieties(void);
+    void updateMoieties(void);
 
     /**
      * 
      */
     // determine the kernel of the stoichiometry matrix
-    C_INT32 GetKernel(void);
+    C_INT32 getKernel(void);
 
 private:
 
@@ -452,91 +452,91 @@ private:
      */
     // operations
     // allocate memory and set pointers for a model
-    void AllocModel(C_INT32 nstep, C_INT32 nmetab, C_INT32 C_INT32met, C_INT32 nmoiety, C_INT32 ncompart);
+    void allocModel(C_INT32 nstep, C_INT32 nmetab, C_INT32 C_INT32met, C_INT32 nmoiety, C_INT32 ncompart);
 
     /**
      * 
      */
     // deallocate memory and free the pointers
-    void DeAlloc(void);
+    void deAlloc(void);
 
     /**
      * 
      */
     // initilizes the indeces to RedStoi
-    void InitIndex(void);  
+    void initIndex(void);  
 
     /**
      * 
      */
     // copies Stoi into RedStoi
-    void InitRedStoi(void);
+    void initRedStoi(void);
 
     /**
      * 
      */
     // finds metabolites that must be external
-    void SpotExternal(void);
+    void spotExternal(void);
 
     /**
      * 
      */
     // checks if a row in RedStoi is empty
-    C_INT32 EmptyRow(C_INT32 r);
+    C_INT32 emptyRow(C_INT32 r);
 
     /**
      * 
      */
     // switches two rows in the secondary matrices
-    void RedStoiRowSwitch(C_INT32 r1, C_INT32 r2);
+    void redStoiRowSwitch(C_INT32 r1, C_INT32 r2);
 
     /**
      * 
      */
     // switches two cols in the secondary matrices
-    void RedStoiColSwitch(C_INT32 c1, C_INT32 c2);
+    void redStoiColSwitch(C_INT32 c1, C_INT32 c2);
 
     /**
      * 
      */
     // allocates space for the ml and lm matrices
-    C_INT32 CreateLM(void);
+    C_INT32 createLM(void);
 
     /**
      * 
      */
     // deletes the space used by ml and lm matrices
-    void DestroyLM(void);
+    void destroyLM(void);
 
     /**
      * 
      */
     // reduces RedStoi
-    C_INT32 Gauss(void);
+    C_INT32 gauss(void);
 
     /**
      * 
      */
     // identifies the conseravation relations
-    void SpotDependent(void);
+    void spotDependent(void);
 
     /**
      * 
      */
     // Creates the mapping for secondary matrices
-    void MapSecondary(void);
+    void mapSecondary(void);
 
     /**
      * 
      */
     // mark the status of internal metabolites
-    void MarkStatus(void);
+    void markStatus(void);
 
     /**
      * 
      */
     // rebuild the stoichiometry matrix
-    void RebuildStoi(C_INT32 flag);
+    void rebuildStoi(C_INT32 flag);
 #endif // XXXX
 };
 

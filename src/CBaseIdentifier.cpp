@@ -4,10 +4,10 @@ CBaseIdentifier::CBaseIdentifier() {mType = 0;}
 
 CBaseIdentifier::~CBaseIdentifier() {}
 
-void CBaseIdentifier::SetName(const string & name) {mName = name;}
+void CBaseIdentifier::setName(const string & name) {mName = name;}
 
-void CBaseIdentifier::SetType(char type) {mType = type;}
+void CBaseIdentifier::setType(char type) {mType = type;}
 
-string CBaseIdentifier::GetName() const {return mName;}
+string CBaseIdentifier::getName() const {return mName;}
 
-char CBaseIdentifier::GetType() const {return mType;}
+char CBaseIdentifier::getType() const {return mType;}

@@ -25,6 +25,7 @@
 #include "CMoiety.h"
 #include "CModel.h"
 #include "CODESolver.h"
+#include "CTrajectory.h"
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
@@ -45,6 +46,7 @@ C_INT32  TestBaseFunction(void);
 C_INT32  TestModel(void);
 C_INT32  TestLU();
 C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
+C_INT32  TestTrajectory(void);
 
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
@@ -80,7 +82,8 @@ C_INT32 main(void)
         // TestCompartment();
         // TestDatum();
         // TestMetab();
-        TestReadSample();
+        // TestReadSample();
+        TestTrajectory();
         // TestMoiety();
         // TestKinFunction();
         // TestBaseFunction();
@@ -92,7 +95,7 @@ C_INT32 main(void)
 
     catch (CCopasiException Exception)
     {
-        cout << Exception.GetMessage().GetText() << endl;
+        cout << Exception.getMessage().getText() << endl;
     }
 
     cout << "Leaving main program." << endl;
@@ -104,12 +107,12 @@ C_INT32  TestMessage(void)
     try
     {
         CCopasiMessage(CCopasiMessage::WARNING, "Test %s %d", "string", 5, 3);
-        FatalError();
+        fatalError();
     }
 
     catch (CCopasiException Exception)
     {
-        cout << Exception.GetMessage().GetText() << endl;
+        cout << Exception.getMessage().getText() << endl;
     }
     return 0;
 }
@@ -126,7 +129,7 @@ C_INT32  TestException()
     catch (CCopasiException Exception)
     {
         cout << "Entering fatal error handling." << endl;
-        cout << Exception.GetMessage().GetText() << endl;
+        cout << Exception.getMessage().getText() << endl;
         cout << "Leaving fatal error handling." << endl;
     }
 
@@ -148,21 +151,21 @@ C_INT32  TestReadConfig(void)
     // CReadConfig Default;
     CReadConfig Specific((string) "TestWriteConfig.txt");
     string outstring = "";
-    Specific.GetVariable((string) "Compartment", 
+    Specific.getVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
     C_FLOAT64 outdouble = 0;
-    Specific.GetVariable((string) "Volume", 
+    Specific.getVariable((string) "Volume", 
                          (string) "C_FLOAT64", 
                          (void *) &outdouble);
-    Specific.GetVariable((string) "Compartment", 
+    Specific.getVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
-    Specific.GetVariable((string) "Volume", 
+    Specific.getVariable((string) "Volume", 
                          (string) "C_FLOAT64", 
                          (void *) &outdouble);
-    // Default.Free();
-    // Specific.Free();
+    // Default.free();
+    // Specific.free();
     
     cout << endl;
     return 0;
@@ -174,24 +177,24 @@ C_INT32  TestWriteConfig(void)
     // CWriteConfig Default;
     CWriteConfig Specific((string) "TestWriteConfig.txt");
     string outstring = "Laber";
-    Specific.SetVariable((string) "Compartment", 
+    Specific.setVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
     C_FLOAT64 outdouble = 1.03e3;
-    Specific.SetVariable((string) "Volume", 
+    Specific.setVariable((string) "Volume", 
                          (string) "C_FLOAT64", 
                          (void *) &outdouble);
-    Specific.Flush();
+    Specific.flush();
     
     outstring = "Blubber";
-    Specific.SetVariable((string) "Compartment", 
+    Specific.setVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
     outdouble = 1.03e3;
-    Specific.SetVariable((string) "Junk", 
+    Specific.setVariable((string) "Junk", 
                          (string) "C_FLOAT64", 
                          (void *) &outdouble);
-    Specific.Flush();
+    Specific.flush();
     
     cout << endl;
     return 0;
@@ -205,16 +208,16 @@ C_INT32 TestCompartment(void)
     CCompartment c;
     cout << "Opening an output stream" << endl;
     CWriteConfig of("TestCompartment.txt");
-    c.Save(of);
-    of.Flush();
+    c.save(of);
+    of.flush();
 
     CCompartment *d = NULL;
     d = new CCompartment[1];
 
     CCompartment g((string) "test2", 1.1e-2);
     d[0] = g;
-    d[0].Save(of);
-    of.Flush();
+    d[0].save(of);
+    of.flush();
 
     c=d[0];
 
@@ -224,17 +227,17 @@ C_INT32 TestCompartment(void)
     
     CCopasiVector < CCompartment > ListOut;
 
-    ListOut.Load(Specific,2);
+    ListOut.load(Specific,2);
 
     CWriteConfig VectorOut((string) "TestCompartmentVector.txt");
-    ListOut.Save(VectorOut);
-    VectorOut.Flush();
+    ListOut.save(VectorOut);
+    VectorOut.flush();
 
     CCopasiVector < CCompartment > ListIn;
 
     CReadConfig VectorIn((string) "TestCompartmentVector.txt");
 
-    ListIn.Load(VectorIn,2);
+    ListIn.load(VectorIn,2);
 
     cout << endl;
     return 0;
@@ -253,18 +256,18 @@ C_INT32 TestDatum(void)
              (string)"", &doublevariable);
     cout << "Opening an output stream" << endl;
     CWriteConfig of("TestDatum1.txt");
-    d.Save(of);
-    of.Flush();
+    d.save(of);
+    of.flush();
     
     CReadConfig Specific((string) "TestDatum1.txt");
     CDatum* e;
     e = new CDatum[2];
-    e[0].Load(Specific);
+    e[0].load(Specific);
 
     e[1] = e[0];
     cout << "Opening another output stream" << endl;
     CWriteConfig of2("TestDatum2.txt");
-    e[1].Save(of2);
+    e[1].save(of2);
 
     delete [] e;
 
@@ -279,18 +282,18 @@ C_INT32 TestMetab(void)
 
     CCompartmentVector ListIn;
     CReadConfig VectorIn((string) "TestCompartmentVector.txt");
-    ListIn.Load(VectorIn);
+    ListIn.load(VectorIn);
 
     CMetab c((string) "MetabTest", 1, ListIn[0]);
 
     cout << "Opening an output stream" << endl;
     CWriteConfig of("TestMetab.txt");
-    c.Save(of,ListIn);
-    of.Flush();
+    c.save(of,ListIn);
+    of.flush();
 
     CMetab d;
     CReadConfig inf("TestMetab.txt");
-    d.Load(inf,ListIn);
+    d.load(inf,ListIn);
     
     cout << endl;
     return 0;
@@ -304,35 +307,57 @@ C_INT32 TestReadSample(void)
     
     CReadConfig inbuf("gps/BakkerComp.gps");
     CModel model;
-    model.Load(inbuf);
-    model.BuildStoi();
-    model.LUDecomposition();
-    model.SetMetabolitesStatus();
-    model.BuildRedStoi();
+    model.load(inbuf);
+    model.buildStoi();
+    model.lUDecomposition();
+    model.setMetabolitesStatus();
+    model.buildRedStoi();
 
     CODESolver odeSolver;
-    size = model.GetMetabolitesInd().size();
+    size = model.getMetabolitesInd().size();
     C_FLOAT64 *y;
     y = new double[size];
     
-    odeSolver.Initialize(model, y, size);
-    odeSolver.Step(0.0, 1.0);
+    odeSolver.initialize(model, y, size);
+    odeSolver.step(0.0, 1.0);
     
     CWriteConfig outbuf("copasi.gps");
-    model.Save(outbuf);
-    outbuf.Flush();
+    model.save(outbuf);
+    outbuf.flush();
 
-    Copasi.FunctionDB.Delete();
-    Copasi.FunctionDB.Init();
+    Copasi.FunctionDB.cleanup();
+    Copasi.FunctionDB.initialize();
 
     CReadConfig inbuf2("copasi.gps");
     CModel model2;
-    model2.Load(inbuf2);
+    model2.load(inbuf2);
     
     CWriteConfig outbuf2("copasi2.gps");
-    model2.Save(outbuf2);
-    outbuf2.Flush();
+    model2.save(outbuf2);
+    outbuf2.flush();
     
+    return 0;
+}
+
+C_INT32 TestTrajectory(void)
+{
+    C_INT32 size = 0;
+    C_INT32 i;
+    
+    CReadConfig inbuf("gps/BakkerComp.gps");
+    CModel model;
+    model.load(inbuf);
+    model.buildStoi();
+    model.lUDecomposition();
+    model.setMetabolitesStatus();
+    model.buildRedStoi();
+    model.buildConsRel();
+    model.buildMoieties();
+    
+    CTrajectory traj(&model, 20, 10.0, 1);
+    traj.process();
+    traj.cleanup();
+
     return 0;
 }
 
@@ -342,28 +367,28 @@ C_INT32 TestMoiety()
     CCompartment c("comp", 1.0);
     CCopasiVector < CMetab > mv;
     
-    mv = c.Metabolites();
+    mv = c.metabolites();
     
-    mv.Add(CMetab("metab 1"));
+    mv.add(CMetab("metab 1"));
 
-    c.Metabolites().Add(CMetab("metab 1"));
-    c.Metabolites().Add(CMetab("metab 2"));
+    c.metabolites().add(CMetab("metab 1"));
+    c.metabolites().add(CMetab("metab 2"));
     
-    c.Metabolites()[0].SetConcentration(5.2);
-    c.Metabolites()[1].SetConcentration(2.0);
-    CMetab m = c.Metabolites()["metab 2"];
+    c.metabolites()[0].setConcentration(5.2);
+    c.metabolites()[1].setConcentration(2.0);
+    CMetab m = c.metabolites()["metab 2"];
     
-    mo.Add(-2000, c.Metabolites()[0]);
-    mo.Add(3, c.Metabolites()[1]);
-    mo.Add(0, c.Metabolites()[1]);
+    mo.add(-2000, c.metabolites()[0]);
+    mo.add(3, c.metabolites()[1]);
+    mo.add(0, c.metabolites()[1]);
     
-//    C_FLOAT64 Value=mo.Value();
-    string Description = mo.GetDescription();
+//    C_FLOAT64 Value=mo.value();
+    string Description = mo.getDescription();
     
-    mo.Change("metab 2", 2);
+    mo.change("metab 2", 2);
     
-    mo.Delete("metab 1");
-//    Value=mo.Value();
+    mo.cleanup("metab 1");
+//    Value=mo.value();
     
     return 0;
 }
@@ -371,14 +396,14 @@ C_INT32 TestMoiety()
 C_INT32 TestKinFunction()
 {
     CKinFunction f;
-    f.Init();
+    f.initialize();
     
-    f.SetName("test");
-    f.SetDescription("(a-b)*(a+b)/5");
+    f.setName("test");
+    f.setDescription("(a-b)*(a+b)/5");
     
-    f.Parse();
-    f.SetIdentifierType("a", N_SUBSTRATE);
-    f.SetIdentifierType("b", N_PRODUCT);
+    f.parse();
+    f.setIdentifierType("a", N_SUBSTRATE);
+    f.setIdentifierType("b", N_PRODUCT);
 
     C_FLOAT64 a = 4;
     C_FLOAT64 b = 1;
@@ -387,27 +412,27 @@ C_INT32 TestKinFunction()
 
     CallParameters.resize(1);
     
-    CallParameters[0].SetType(CCallParameter::VECTOR_DOUBLE);
-    CallParameters[0].Identifiers().resize(2);
+    CallParameters[0].setType(CCallParameter::VECTOR_DOUBLE);
+    CallParameters[0].identifiers().resize(2);
     
-    CallParameters[0].Identifiers()[0] = &a;
-    CallParameters[0].Identifiers()[1] = &b;
+    CallParameters[0].identifiers()[0] = &a;
+    CallParameters[0].identifiers()[1] = &b;
     
-    C_FLOAT64 r = f.CalcValue(CallParameters);
+    C_FLOAT64 r = f.calcValue(CallParameters);
     
     CWriteConfig out("TestKinFunction");
-    f.Save(out);
-    f.Delete();
+    f.save(out);
+    f.cleanup();
     
-    out.Flush();
+    out.flush();
     
     CReadConfig in("TestKinFunction");
     CKinFunction g;
     
-    g.Load(in);
+    g.load(in);
     
     a = 5;
-    r = g.CalcValue(CallParameters);
+    r = g.calcValue(CallParameters);
 
     return 0;
 }
@@ -417,9 +442,9 @@ InitMetabolites(CCopasiVector < CCompartment > & compartments)
 {
     vector < CMetab * > Metabolites;
 
-    for (C_INT32 i = 0; i < compartments.Size(); i++)
-        for (C_INT32 j = 0; j < compartments[i].Metabolites().Size(); j++)
-            Metabolites.push_back(&compartments[i].Metabolites()[j]);
+    for (C_INT32 i = 0; i < compartments.size(); i++)
+        for (C_INT32 j = 0; j < compartments[i].metabolites().size(); j++)
+            Metabolites.push_back(&compartments[i].metabolites()[j]);
     
     return Metabolites;
 }
@@ -428,9 +453,9 @@ C_INT32 TestBaseFunction()
 {
     CBaseFunction BaseFunction;
     
-    BaseFunction.CallParameters().resize(3);
+    BaseFunction.callParameters().resize(3);
     
-    BaseFunction.Delete();
+    BaseFunction.cleanup();
     
     return 0;
 }
@@ -947,9 +972,9 @@ C_INT32 MakeFunctionDB()
     parameter.clear();
 
     CWriteConfig db("FunctionDB.gps");
-    functions.Save(db);
+    functions.save(db);
 
-    functions.Delete();
+    functions.cleanup();
     
     return 0;
 }
@@ -961,52 +986,52 @@ C_INT32 MakeFunctionEntry(const string &name,
                           vector < string > parameter,
                           CCopasiVector <CKinFunction> &functions)
 {
-    C_INT32 Index = functions.Size();
+    C_INT32 Index = functions.size();
     C_INT32 i;
     
     CKinFunction f;
-    f.Init();
+    f.initialize();
     
-    functions.Add(f);
+    functions.add(f);
 
-    functions[Index].SetName(name);
-    functions[Index].SetDescription(description);
-    functions[Index].SetReversible(reversible);
+    functions[Index].setName(name);
+    functions[Index].setDescription(description);
+    functions[Index].setReversible(reversible);
 
-    functions[Index].Parse();
+    functions[Index].parse();
 
     pair < C_INT32, C_INT32 > Tuple(0, 0);
 
-    Tuple = functions[Index].FindIdentifier("substrate");
+    Tuple = functions[Index].findIdentifier("substrate");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("substrate", N_SUBSTRATE);
+        functions[Index].setIdentifierType("substrate", N_SUBSTRATE);
         
-    Tuple = functions[Index].FindIdentifier("substratea");
+    Tuple = functions[Index].findIdentifier("substratea");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("substratea", N_SUBSTRATE);
+        functions[Index].setIdentifierType("substratea", N_SUBSTRATE);
         
-    Tuple = functions[Index].FindIdentifier("substrateb");
+    Tuple = functions[Index].findIdentifier("substrateb");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("substrateb", N_SUBSTRATE);
+        functions[Index].setIdentifierType("substrateb", N_SUBSTRATE);
         
-    Tuple = functions[Index].FindIdentifier("product");
+    Tuple = functions[Index].findIdentifier("product");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("product", N_PRODUCT);
+        functions[Index].setIdentifierType("product", N_PRODUCT);
         
-    Tuple = functions[Index].FindIdentifier("productp");
+    Tuple = functions[Index].findIdentifier("productp");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("productp", N_PRODUCT);
+        functions[Index].setIdentifierType("productp", N_PRODUCT);
         
-    Tuple = functions[Index].FindIdentifier("productq");
+    Tuple = functions[Index].findIdentifier("productq");
     if (0 <= Tuple.first && 0 <= Tuple.second )
-        functions[Index].SetIdentifierType("productq", N_PRODUCT);
+        functions[Index].setIdentifierType("productq", N_PRODUCT);
         
 
     for (i = 0; i < modifier.size(); i++)
-        functions[Index].SetIdentifierType(modifier[i], N_MODIFIER);
+        functions[Index].setIdentifierType(modifier[i], N_MODIFIER);
 
     for (i = 0; i < parameter.size(); i++)
-        functions[Index].SetIdentifierType(parameter[i], N_KCONSTANT);
+        functions[Index].setIdentifierType(parameter[i], N_KCONSTANT);
             
     return 0;
 }
@@ -1017,7 +1042,7 @@ C_INT32 TestModel()
 
     CModel m;
     
-    m.Load(inbuf);
+    m.load(inbuf);
 }
 
 C_INT32 TestLU()

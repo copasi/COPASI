@@ -30,7 +30,7 @@ public:
 
     /**
      *  Destructor. 
-     *  The destructor calls the method Flush().
+     *  The destructor calls the method flush().
      */
     ~CWriteConfig();
 
@@ -39,14 +39,14 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 Flush();
+    C_INT32 flush();
 
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 Fail();
+    C_INT32 fail();
 
     /**
      *  Writes a variable to the output file.
@@ -57,10 +57,10 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 SetVariable(const string & name,
+    C_INT32 setVariable(const string & name,
                         const string & type, 
                         const void * pout);
-    C_INT32 SetVariable(const string & name,
+    C_INT32 setVariable(const string & name,
                         const string & type, 
                         const void * pout1, 
                         const void * pout2);
@@ -70,7 +70,7 @@ private:
      *  Commits all information to the configuration file. 
      *  This method is called by the destructor.
      */
-    C_INT32 Commit();
+    C_INT32 commit();
 
     /**
      *  Name of the configuration file.

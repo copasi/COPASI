@@ -48,7 +48,7 @@ class CKinNodes: public CCopasiVector < CNodeK >
         ~CKinNodes();
 
     private:
-        C_INT16 IsInsertAllowed(const CNodeK & src);
+        C_INT16 isInsertAllowed(const CNodeK & src);
 };
 
 class CKinFunction: public CBaseFunction
@@ -83,7 +83,7 @@ public:
     /**
      *  Init
      */
-    void Init();
+    void initialize();
     
     /**
      *  Destructor
@@ -93,12 +93,12 @@ public:
     /**
      *  Delete
      */
-    void Delete();
+    void cleanup();
 
     /**
      *  Copy
      */
-    void Copy(const CKinFunction & in);
+    void copy(const CKinFunction & in);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -106,7 +106,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer,
+    C_INT32 load(CReadConfig & configbuffer,
                  CReadConfig::Mode mode = CReadConfig::LOOP);
 
     /**
@@ -115,62 +115,62 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  This retrieves the node tree of the function
      *  @return "CCopasiVector < CNodeK > &"
      */
-    CKinNodes & Nodes();
+    CKinNodes & nodes();
 
     /**
      *  This sets the type of an identifier
      *  @param "const string" &name
      *  @param char identifierType
      */
-    void SetIdentifierType(const string & name,
+    void setIdentifierType(const string & name,
                            char identifierType);
 
     /**
      *  This parses the function into a binary tree
      */
-    C_INT32 Parse();
+    C_INT32 parse();
 
     /**
      *  This calculates the value of this sub-tree (ie with this node as root)
      *  @param "vector < C_FLOAT64 * >" &identifiers
      *  @return C_FLOAT64
      */
-    C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters) const;
+    C_FLOAT64 calcValue(vector < CCallParameter > & callParameters) const;
 
 private:
     /**
      *  This clears all nodes of the function tree
      */
-    void ClearNodes();
+    void clearNodes();
 
     /**
      *  This  connects the nodes to build the binary function tree
      */
-    C_INT32 ConnectNodes();
+    C_INT32 connectNodes();
 
     /**
      *  This function is part of the algorithm that builds the binary tree
      *  @param long priority
      *  @return CNodeK *
      */
-    CNodeK * ParseExpression(C_INT16 priority);
+    CNodeK * parseExpression(C_INT16 priority);
 
     /**
      *  This function is part of the algorithm that builds the binary tree
      *  @return CNodeK *
      */
-    CNodeK * ParsePrimary();
+    CNodeK * parsePrimary();
 
     /**
      *
      */
-    void InitIdentifiers();
+    void initIdentifiers();
 };
 
 #endif // COPASI_CKinFunction

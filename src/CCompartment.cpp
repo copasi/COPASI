@@ -19,7 +19,7 @@ CCompartment::CCompartment()
     mMetabolites = NULL;
 }
 
-void CCompartment::Init()
+void CCompartment::initialize()
 {
     if (!mMetabolites) mMetabolites = new CCopasiVector < CMetab >;
 }
@@ -29,14 +29,14 @@ CCompartment::CCompartment(const string & name,
 {
     // initialize everything
     mName   = name;
-    if (!IsValidName()) FatalError();
+    if (!isValidName()) fatalError();
     mVolume = volume;
     mMetabolites = NULL;
 }
 
 CCompartment::~CCompartment() {}
 
-void CCompartment::Delete()
+void CCompartment::cleanup()
 {
     if (mMetabolites) delete mMetabolites;
     mMetabolites = NULL;
@@ -51,75 +51,75 @@ CCompartment & CCompartment::operator=(const CCompartment & rhs)
     return *this;
 }
 
-C_INT32 CCompartment::Load(CReadConfig & configbuffer)
+C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
-    Init();
+    initialize();
     
-    if (Fail = configbuffer.GetVariable("Compartment", "string",
+    if (Fail = configbuffer.getVariable("Compartment", "string",
                                         (void *) &mName,
                                         CReadConfig::SEARCH))
         return Fail;
 
-    if (Fail = configbuffer.GetVariable("Volume", "C_FLOAT64",
+    if (Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
                                         (void *) &mVolume))
         return Fail;
     
-    if (configbuffer.GetVersion() < "4") return Fail;
+    if (configbuffer.getVersion() < "4") return Fail;
     
     C_INT32 MetabolitesNo;
-    if (Fail = configbuffer.GetVariable("MetabolitesNo", "C_INT32",
+    if (Fail = configbuffer.getVariable("MetabolitesNo", "C_INT32",
                                         (void *) &MetabolitesNo))
         return Fail;
     
-    Fail = mMetabolites->Load(configbuffer, MetabolitesNo);
+    Fail = mMetabolites->load(configbuffer, MetabolitesNo);
     
     return Fail;
 }
 
-C_INT32 CCompartment::Save(CWriteConfig & configbuffer)
+C_INT32 CCompartment::save(CWriteConfig & configbuffer)
 {
     C_INT32 Fail = 0;
 
-    if (Fail = configbuffer.SetVariable("Compartment", "string",
+    if (Fail = configbuffer.setVariable("Compartment", "string",
                                         (void *) &mName))
         return Fail;
 
-    if (Fail = configbuffer.SetVariable("Volume", "C_FLOAT64",
+    if (Fail = configbuffer.setVariable("Volume", "C_FLOAT64",
                                         (void *) &mVolume))
         return Fail;
     
-    C_INT32 size = mMetabolites->Size();
-    if (Fail = configbuffer.SetVariable("MetabolitesNo", "C_INT32",
+    C_INT32 size = mMetabolites->size();
+    if (Fail = configbuffer.setVariable("MetabolitesNo", "C_INT32",
                                         (void *) &size))
         return Fail;
 
-    Fail = mMetabolites->Save(configbuffer);
+    Fail = mMetabolites->save(configbuffer);
     return Fail;
 }
 
-string CCompartment::GetName() const {return mName;}
+string CCompartment::getName() const {return mName;}
 
-C_FLOAT64 CCompartment::GetVolume() const {return mVolume;}
+C_FLOAT64 CCompartment::getVolume() const {return mVolume;}
 
-CCopasiVector < CMetab > & CCompartment::Metabolites() 
+CCopasiVector < CMetab > & CCompartment::metabolites() 
 {return *mMetabolites;}
 
-void CCompartment::SetName(const string & name) 
+void CCompartment::setName(const string & name) 
 {
     mName = name;
-    if (!IsValidName()) FatalError();
+    if (!isValidName()) fatalError();
 }
 
-void CCompartment::SetVolume(C_FLOAT64 volume) {mVolume = volume;}
+void CCompartment::setVolume(C_FLOAT64 volume) {mVolume = volume;}
 
-void CCompartment::AddMetabolite(CMetab &metabolite)
+void CCompartment::addMetabolite(CMetab &metabolite)
 {
-    metabolite.SetCompartment(this);
-    mMetabolites->Add(metabolite);
+    metabolite.setCompartment(this);
+    mMetabolites->add(metabolite);
 }
 
-C_INT16 CCompartment::IsValidName() const
+C_INT16 CCompartment::isValidName() const
 {
     return (mName.find_first_of("; ") == string::npos);
 }

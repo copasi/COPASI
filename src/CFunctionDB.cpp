@@ -3,7 +3,7 @@
 
 CFunctionDB::CFunctionDB() {}
 
-void CFunctionDB::Init() 
+void CFunctionDB::initialize() 
 {
     CMassAction *MassActionReversible   = new CMassAction(TRUE);
     mBuiltinFunctions.push_back((CBaseFunction *)MassActionReversible);
@@ -14,24 +14,24 @@ void CFunctionDB::Init()
 
 CFunctionDB::~CFunctionDB() {}
 
-void CFunctionDB::Delete()
+void CFunctionDB::cleanup()
 {
     C_INT32 i;
     
-    mLoadedFunctions.Delete();
+    mLoadedFunctions.cleanup();
     
     for (i = 0; i < mBuiltinFunctions.size(); i++)
         delete mBuiltinFunctions[i];
     mBuiltinFunctions.clear();
 }
 
-C_INT32 CFunctionDB::Load(CReadConfig &configbuffer)
+C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
     CKinFunction * pFunction = NULL;
     C_INT32 Size = 0;
     C_INT32 Fail = 0;
 
-    if (Fail = configbuffer.GetVariable("TotalUDKinetics", "C_INT32", &Size,
+    if (Fail = configbuffer.getVariable("TotalUDKinetics", "C_INT32", &Size,
                                         CReadConfig::LOOP))
         return Fail;
     
@@ -40,76 +40,76 @@ C_INT32 CFunctionDB::Load(CReadConfig &configbuffer)
         // We should really read the function type first before we allocate,
         // but since we currently have only one type this will do.
         pFunction = new CKinFunction;
-        if (Fail = pFunction->Load(configbuffer)) return Fail;
-        mLoadedFunctions.Add(pFunction);
+        if (Fail = pFunction->load(configbuffer)) return Fail;
+        mLoadedFunctions.add(pFunction);
     }
     return Fail;
 }
 
-C_INT32 CFunctionDB::Save(CWriteConfig &configbuffer)
+C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 {
-    C_INT32 Size = mLoadedFunctions.Size();
+    C_INT32 Size = mLoadedFunctions.size();
     C_INT32 Fail = 0;
     
-    if (Fail = configbuffer.SetVariable("TotalUDKinetics", "C_INT32", &Size))
+    if (Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &Size))
         return Fail;
 
     for (C_INT32 i = 0; i < Size; i++)
-        if (Fail = mLoadedFunctions[i]->Save(configbuffer)) return Fail;
+        if (Fail = mLoadedFunctions[i]->save(configbuffer)) return Fail;
 
     return Fail;
 }
 
-void CFunctionDB::SetFilename(const string & filename) {mFilename = filename;}
+void CFunctionDB::setFilename(const string & filename) {mFilename = filename;}
     
-string CFunctionDB::GetFilename() const {return mFilename;}
+string CFunctionDB::getFilename() const {return mFilename;}
 
-CBaseFunction & CFunctionDB::DBLoad(const string & functionName) 
+CBaseFunction & CFunctionDB::dBLoad(const string & functionName) 
 {
-    C_INT32 Index = mLoadedFunctions.Size();
+    C_INT32 Index = mLoadedFunctions.size();
     C_INT32 Fail = 0;
     
     CKinFunction *pFunction = new CKinFunction;
-    mLoadedFunctions.Add(pFunction);
+    mLoadedFunctions.add(pFunction);
     
     CReadConfig inbuf(mFilename);
     
-    while (functionName != pFunction->GetName())
+    while (functionName != pFunction->getName())
     {
-        pFunction->Delete();
-        Fail = pFunction->Load(inbuf);
+        pFunction->cleanup();
+        Fail = pFunction->load(inbuf);
     }
 
     return *mLoadedFunctions[Index];
 }
 
-void CFunctionDB::Add(CKinFunction & function)
+void CFunctionDB::add(CKinFunction & function)
 {
     CKinFunction *Function = new CKinFunction;
-    Function->Init();
-    Function->Copy(function);
+    Function->initialize();
+    Function->copy(function);
         
-    mLoadedFunctions.Add(Function);
+    mLoadedFunctions.add(Function);
 }
 
-void CFunctionDB::DBDelete(const string & functionName)
+void CFunctionDB::dBDelete(const string & functionName)
 {
 }
 
-CBaseFunction & CFunctionDB::FindFunction(const string & functionName)
+CBaseFunction & CFunctionDB::findFunction(const string & functionName)
 {
     C_INT32 i;
     
-    for (i = 0; i < mLoadedFunctions.Size(); i++)
-        if (functionName == mLoadedFunctions[i]->GetName())
+    for (i = 0; i < mLoadedFunctions.size(); i++)
+        if (functionName == mLoadedFunctions[i]->getName())
             return *mLoadedFunctions[i];
 
     for (i = 0; i < mBuiltinFunctions.size(); i++)
-        if (functionName == mBuiltinFunctions[i]->GetName())
+        if (functionName == mBuiltinFunctions[i]->getName())
             return *mBuiltinFunctions[i];
     
-    return DBLoad(functionName);
+    return dBLoad(functionName);
 }
 
-CCopasiVectorP < CBaseFunction * > & CFunctionDB::LoadedFunctions()
+CCopasiVectorP < CBaseFunction * > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}

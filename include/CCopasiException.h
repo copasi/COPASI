@@ -33,7 +33,7 @@ public:
     /**
      *  Retrieves the Message associated with the exception
      */
-    CCopasiMessage GetMessage();
+    CCopasiMessage getMessage();
     
 private:
     CCopasiMessage mMessage;

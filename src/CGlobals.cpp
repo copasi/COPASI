@@ -3,16 +3,16 @@
 
 CGlobals::CGlobals()
 {
-    ProgramVersion.SetVersion(4,0,101);
-    FunctionDB.SetFilename("FunctionDB.gps");
-    FunctionDB.Init();
+    ProgramVersion.setVersion(4,0,101);
+    FunctionDB.setFilename("FunctionDB.gps");
+    FunctionDB.initialize();
 
     DefaultConc = 0.0;
 }
 
 CGlobals::~CGlobals()
 {
-    FunctionDB.Delete();
+    FunctionDB.cleanup();
 }
 
 CGlobals Copasi;

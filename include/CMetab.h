@@ -110,7 +110,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -118,60 +118,60 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Retrieve the name of the metabolite.
      */
-    string GetName() const;
+    string getName() const;
 
     /**
      *
      */
-    C_INT16 GetStatus() const;
+    C_INT16 getStatus() const;
     
     /**
      *
      */
-    C_FLOAT64 * GetConcentration();
+    C_FLOAT64 * getConcentration();
 
     /**
      *
      */
-    CCompartment * GetCompartment();
+    CCompartment * getCompartment();
 
     /**
      *
      */
-    void SetName(const string & name);
+    void setName(const string & name);
 
     /**
      *
      */
-    void SetConcentration(const C_FLOAT64 concentration);
+    void setConcentration(const C_FLOAT64 concentration);
     
     /**
      *
      */
-    void SetStatus(const C_INT16 status);
+    void setStatus(const C_INT16 status);
     
     /**
      *
      */
-    void SetCompartment(CCompartment * compartment); 
+    void setCompartment(CCompartment * compartment); 
 
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.
      *  @return Fail
      */
-    C_INT32 Reset(const string & name);
+    C_INT32 reset(const string & name);
 
 private:
 
     /*
      *
      */
-    C_INT16 IsValidName();
+    C_INT16 isValidName();
 };
 
 class CMetabOld
@@ -209,11 +209,11 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
-    C_INT32 GetIndex() const;
+    C_INT32 getIndex() const;
 
-    string GetName() const;
+    string getName() const;
 };
 
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
@@ -225,7 +225,7 @@ private:
      */
     // CCopasiVector < CMetabOld > self;
 
-    C_INT16 IsInsertAllowed(const CMetabOld & src) const {return TRUE;}
+    C_INT16 isInsertAllowed(const CMetabOld & src) const {return TRUE;}
 };
   
 #endif // COPASI_CMetab

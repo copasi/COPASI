@@ -135,7 +135,7 @@ private:
     /**
      *  This in connection with mModel replaces the callback function!!!
      */
-    void Eval(C_INT32 n, 
+    void eval(C_INT32 n, 
               C_FLOAT64 t, 
               C_FLOAT64 * y, 
               C_FLOAT64 * ydot);

@@ -8,13 +8,13 @@
  * Protytpe use of this class:
  *
  * CODESolver solver;
- * solver.Initialize(FEval, sy, n, method);
+ * solver.initialize(FEval, sy, n, method);
  * t_old = 0.0;
  * t_new = 0.0;
  * incr = t_final / n_incr;
  * for (i=0; i<n_incr; i++) 
  * {
- *      ret = solver.Step(t_old, t_new);
+ *      ret = solver.step(t_old, t_new);
  *      // if an error ocurred, make sure caller aborts
  *      if (ret) abort_trajectory(); 
  *      // signal caller success iteration
@@ -22,7 +22,7 @@
  *      Model.signal_iteration();
  *      t_new += incr;
  * }
- * solver.CleanUp();
+ * solver.cleanUp();
  */
 
 #include "copasi.h"
@@ -31,7 +31,7 @@
 CODESolver::CODESolver()
 {
     /* set version number */
-    mVersion.SetVersion(1,0,101);
+    mVersion.setVersion(1,0,101);
     // initialize everything
     mName   = "Not selected";
     mMethod = 0;
@@ -43,11 +43,11 @@ CODESolver::CODESolver()
 
 CODESolver::~CODESolver() 
 {
-    CleanUp();
+    cleanUp();
     cout << "~CODESolver " << mName << endl;
 }
 
-void CODESolver::Initialize(CModel & model,
+void CODESolver::initialize(CModel & model,
                             C_FLOAT64 * y, 
                             C_INT32 n, 
                             C_INT32 method)
@@ -68,7 +68,7 @@ void CODESolver::Initialize(CModel & model,
     }
 }
 
-void CODESolver::CleanUp()
+void CODESolver::cleanUp()
 {
     switch (mMethod)
     {
@@ -81,18 +81,18 @@ void CODESolver::CleanUp()
         break;
     default: break;
     }
-    mState = -1; // so that calls without Initialize() fail
+    mState = -1; // so that calls without initialize() fail
 }
 
-string CODESolver::GetName() {return mName;}
+string CODESolver::getName() {return mName;}
 
-C_INT32 CODESolver::Step(C_FLOAT64 t, C_FLOAT64 et)
+C_INT32 CODESolver::step(C_FLOAT64 t, C_FLOAT64 et)
 {
     if ((mState<1) || (mState>2)) return mState;
     switch (mMethod)
     {
     case 1: //LSODA
-        LSODAStep(t, et);
+        lSODAStep(t, et);
         if ((mState<1) || (mState>2)) return mState;
         else return 0;
     default:
@@ -101,12 +101,12 @@ C_INT32 CODESolver::Step(C_FLOAT64 t, C_FLOAT64 et)
 }
 
 
-C_INT32 CODESolver::Load(CReadConfig & configbuffer)
+C_INT32 CODESolver::load(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     
     /* get version from ReadConfig */
-    if (configbuffer.GetVersion() < "4")
+    if (configbuffer.getVersion() < "4")
     {
         /* old Gepasi file, so integrator is LSODA for sure */
         mMethod = 1;
@@ -115,7 +115,7 @@ C_INT32 CODESolver::Load(CReadConfig & configbuffer)
     else
     {
         /* read method number */
-        Fail = configbuffer.GetVariable("ODESolver", "C_INT32",
+        Fail = configbuffer.getVariable("ODESolver", "C_INT32",
                                         (void *) &mMethod,
                                         CReadConfig::SEARCH);
         /* if no method number is found, assume LSODA for now */
@@ -127,49 +127,49 @@ C_INT32 CODESolver::Load(CReadConfig & configbuffer)
     }
     switch (mMethod)
     {
-    case 1: return LoadLSODAParameters(configbuffer);
+    case 1: return loadLSODAParameters(configbuffer);
     default: /* TODO: generate an error message */
         /* return error */
         return -1;
     }
 }
 
-C_INT32 CODESolver::Save(CWriteConfig & configbuffer)
+C_INT32 CODESolver::save(CWriteConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     
     /* method */
-    if (Fail = configbuffer.SetVariable("ODESolver", "C_INT32",
+    if (Fail = configbuffer.setVariable("ODESolver", "C_INT32",
                                         (void *) &mMethod))
         return Fail;
     switch (mMethod)
     {
-    case 1: return SaveLSODAParameters(configbuffer);
+    case 1: return saveLSODAParameters(configbuffer);
     default: /* TODO: generate an error message */
         /* return error */
         return -1;
     }
 }
 
-C_INT32 CODESolver::LoadLSODAParameters(CReadConfig & configbuffer)
+C_INT32 CODESolver::loadLSODAParameters(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     
-    if (Fail = configbuffer.GetVariable("RelativeTolerance", "C_FLOAT64",
+    if (Fail = configbuffer.getVariable("RelativeTolerance", "C_FLOAT64",
                                         (void *) &mRtol,
                                         CReadConfig::SEARCH))
         return Fail;
-    if (Fail = configbuffer.GetVariable("AbsoluteTolerance", "C_FLOAT64",
+    if (Fail = configbuffer.getVariable("AbsoluteTolerance", "C_FLOAT64",
                                         (void *) &mAtol,
                                         CReadConfig::SEARCH))
         return Fail;
-    if (Fail = configbuffer.GetVariable("AdamsMaxOrder", "C_INT32",
+    if (Fail = configbuffer.getVariable("AdamsMaxOrder", "C_INT32",
                                         (void *) &mAdams,
                                         CReadConfig::SEARCH))
         return Fail;
     if (mAdams<2) mAdams = 2;
     else if (mAdams>12) mAdams = 12;
-    if (Fail = configbuffer.GetVariable("BDFMaxOrder", "C_INT32",
+    if (Fail = configbuffer.getVariable("BDFMaxOrder", "C_INT32",
                                         (void *) &mBDF,
                                         CReadConfig::SEARCH))
         return Fail;
@@ -178,7 +178,7 @@ C_INT32 CODESolver::LoadLSODAParameters(CReadConfig & configbuffer)
     return Fail;
 }
 
-C_INT32 CODESolver::LSODAStep(C_FLOAT64 t, C_FLOAT64 et)
+C_INT32 CODESolver::lSODAStep(C_FLOAT64 t, C_FLOAT64 et)
 {
     mTime = t;
     mEndt = et;
@@ -215,20 +215,20 @@ C_INT32 CODESolver::LSODAStep(C_FLOAT64 t, C_FLOAT64 et)
     return 0;
 }
 
-C_INT32 CODESolver::SaveLSODAParameters(CWriteConfig & configbuffer)
+C_INT32 CODESolver::saveLSODAParameters(CWriteConfig & configbuffer)
 {
     C_INT32 Fail = 0;
     
-    if (Fail = configbuffer.SetVariable("RelativeTolerance", "C_FLOAT64",
+    if (Fail = configbuffer.setVariable("RelativeTolerance", "C_FLOAT64",
                                         (void *) &mRtol))
         return Fail;
-    if (Fail = configbuffer.SetVariable("AbsoluteTolerance", "C_FLOAT64",
+    if (Fail = configbuffer.setVariable("AbsoluteTolerance", "C_FLOAT64",
                                         (void *) &mAtol))
         return Fail;
-    if (Fail = configbuffer.SetVariable("AdamsMaxOrder", "C_INT32",
+    if (Fail = configbuffer.setVariable("AdamsMaxOrder", "C_INT32",
                                         (void *) &mAdams))
         return Fail;
-    if (Fail = configbuffer.SetVariable("BDFMaxOrder", "C_INT32",
+    if (Fail = configbuffer.setVariable("BDFMaxOrder", "C_INT32",
                                         (void *) &mBDF))
         return Fail;
     return Fail;

@@ -13,7 +13,7 @@ CVersion::CVersion()
     mMajor = 0L;
     mMinor = 0L;
     mDevel = 101L;
-    SetString();
+    setString();
 }
 
 CVersion::~CVersion()
@@ -21,36 +21,36 @@ CVersion::~CVersion()
  /* get out of here!*/
 }
 
-void CVersion::SetVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
+void CVersion::setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
 {
     mMajor = major;
     mMinor = minor;
     mDevel = devel;
-    SetString();
+    setString();
 }
 
-C_INT32 CVersion::GetVersionMajor() const
+C_INT32 CVersion::getVersionMajor() const
 {
     return mMajor;
 }
 
-C_INT32 CVersion::GetVersionMinor() const
+C_INT32 CVersion::getVersionMinor() const
 {
     return mMinor;
 }
 
-C_INT32 CVersion::GetVersionDevel() const
+C_INT32 CVersion::getVersionDevel() const
 {
     return mDevel;
 }
 
-const string & CVersion::GetVersion() const 
+const string & CVersion::getVersion() const 
 {
     return mVersion;
 }
 
 
-void CVersion::SetString()
+void CVersion::setString()
 {
  /* if it is a development version, set a string with 3 numbers */
  if (mDevel<300L)

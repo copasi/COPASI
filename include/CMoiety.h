@@ -41,23 +41,23 @@ public:
     CMoiety();
     CMoiety(const string & name);
     ~CMoiety();
-    C_INT32 Load(CReadConfig & configBuffer);
-    C_INT32 Save(CWriteConfig & configBuffer);
+    C_INT32 load(CReadConfig & configBuffer);
+    C_INT32 save(CWriteConfig & configBuffer);
     
-    void Add(C_FLOAT64 value, CMetab & metabolite);
-    void Add(C_FLOAT64 value, CMetab * metabolite);
-    void Delete();
-    void Delete(const string & name);
-    void Delete(C_INT32 index);
-    void Change(C_INT32 index,
+    void add(C_FLOAT64 value, CMetab & metabolite);
+    void add(C_FLOAT64 value, CMetab * metabolite);
+    void cleanup();
+    void cleanup(const string & name);
+    void cleanup(C_INT32 index);
+    void change(C_INT32 index,
 		C_FLOAT64 value);
-    void Change(const string & name,
+    void change(const string & name,
 		C_FLOAT64 value);
-    void SetName(const string name);
-    void SetInitialValue();
-    string GetName() const;
-    string GetDescription() const;
-    C_FLOAT64 DependentNumber();
+    void setName(const string name);
+    void setInitialValue();
+    string getName() const;
+    string getDescription() const;
+    C_FLOAT64 dependentNumber();
 };
 
 #endif // COPASI_CMoiety

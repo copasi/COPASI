@@ -55,7 +55,7 @@ public:
     /**
      *  Init
      */
-    void Init();
+    void initialize();
     
     /**
      *  Destructor. 
@@ -66,7 +66,7 @@ public:
     /**
      *  Delete
      */
-    void Delete();
+    void cleanup();
     
     /**
      *  Assignement operator. 
@@ -82,7 +82,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Load(CReadConfig & configbuffer);
+    C_INT32 load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -91,51 +91,51 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    C_INT32 Save(CWriteConfig & configbuffer);
+    C_INT32 save(CWriteConfig & configbuffer);
 
     /**
      *  Returns a string with the name of this compartment.
      *  @return mName
      *  @see mName
      */
-    string GetName() const;
+    string getName() const;
 
     /**
      *  Returns a C_FLOAT64 with the volume of this compartment.
      *  @return mVolume
      *  @see mVolume
      */
-    C_FLOAT64 GetVolume() const;
+    C_FLOAT64 getVolume() const;
 
     /*
      *
      */
-    CCopasiVector < CMetab > & Metabolites();
+    CCopasiVector < CMetab > & metabolites();
     
     /*
      *
      */
-    void AddMetabolite(CMetab & metabolite);
+    void addMetabolite(CMetab & metabolite);
     
     /**
      *  Sets the name of this compartment.
      *  @param name string with the name of the compartment.
      *  @see mName
      */
-    void SetName(const string & name);
+    void setName(const string & name);
 
     /**
      *  Sets the volume of this compartment.
      *  @param volume the volume of the compartment.
      *  @see mVolume
      */
-    void SetVolume(C_FLOAT64 volume);
+    void setVolume(C_FLOAT64 volume);
 private:
 
     /*
      *
      */
-    C_INT16 IsValidName() const;
+    C_INT16 isValidName() const;
 };
 
 #endif // COPASI_CCompartment

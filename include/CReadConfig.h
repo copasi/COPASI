@@ -33,12 +33,12 @@ private:
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 InitInputBuffer();
+    C_INT32 initInputBuffer();
 
     /**
      *  Look ahead to find the next variable name
      */
-    string LookAhead();
+    string lookAhead();
 
     /**
      *  Name of the configuration file.
@@ -90,21 +90,21 @@ public:
 
     /**
      *  Destructor. 
-     *  The destructor calls the method Free().
+     *  The destructor calls the method free().
      */
     ~CReadConfig();
 
     /**
      * Retrieves the version string of the configbuffer
      */
-    string GetVersion();
+    string getVersion();
     
     /**
      *  Returns the failure status.
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 Fail();
+    C_INT32 fail();
 
     /**
      *  Retrieves a variable from the input file.
@@ -115,7 +115,7 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 GetVariable(const string& name, 
+    C_INT32 getVariable(const string& name, 
                         const string& type,
                         void * pout,
                         CReadConfig::Mode mode = CReadConfig::NEXT);
@@ -131,7 +131,7 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    C_INT32 GetVariable(const string& name, 
+    C_INT32 getVariable(const string& name, 
                         const string& type,
                         void * pout1,
                         void * pout2,
