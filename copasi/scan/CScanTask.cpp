@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:33 $
+   $Author: gasingh $ 
+   $Date: 2004/04/03 23:37:53 $
    End CVS Header */
 
 /**
@@ -33,36 +33,52 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
-CScanTask::CScanTask():
-    CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    mReport(new CReport()),
+CScanTask::CScanTask(const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::steadyState, pParent),
+    //-CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
+    //-mReport(new CReport()),
     mRequested(true),
-    mpProblem(new CScanProblem),
-    mpMethod(CScanMethod::createMethod()),
     mpOutEnd(NULL),
     mKey(GlobalKeys.add("ScanTask", this))
-{}
+{
+  mpProblem = new CScanProblem(this);
+  mpMethod =
+    CScanMethod::createMethod();
+  mpMethod->setObjectParent(this);
+  ((CScanMethod *) mpMethod)->
+  setProblem((CScanProblem *) mpProblem);
+}
 
-CScanTask::CScanTask(const CScanTask & src):
-    CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    mReport(new CReport()),
+CScanTask::CScanTask(const CScanTask & src,
+                     const CCopasiContainer * pParent):
+    CCopasiTask(src, pParent),
+    //-CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
+    //-mReport(new CReport()),
     mRequested(src.mRequested),
-    mpProblem(new CScanProblem(*src.mpProblem)),
-    mpMethod(new CScanMethod(*src.mpMethod)),
+    //mpProblem(new CScanProblem(*src.mpProblem)),
+    //mpMethod(new CScanMethod(*src.mpMethod)),
     mpOutEnd(src.mpOutEnd),
     mKey(GlobalKeys.add("ScanTask", this))
-{}
+{
+  mpProblem =
+    new CScanProblem(* (CScanProblem *) src.mpProblem, this);
+  mpMethod =
+    CScanMethod::createMethod();
+  mpMethod->setObjectParent(this);
+  ((CScanMethod *) mpMethod)->
+  setProblem((CScanProblem *) mpProblem);
+}
 
 CScanTask::~CScanTask()
 {cleanup();}
 
 void CScanTask::cleanup()
 {
-  GlobalKeys.remove(mKey);
-  pdelete(mpProblem);
-  pdelete(mpMethod);
+  //GlobalKeys.remove(mKey);
+  //pdelete(mpProblem);
+  //pdelete(mpMethod);
   pdelete(mpOutEnd);
-  pdelete(mReport);
+  //-pdelete(mReport);
 }
 
 void CScanTask::initializeReporting(std::ostream & out)
@@ -70,21 +86,29 @@ void CScanTask::initializeReporting(std::ostream & out)
   pdelete(mpOutEnd);
   mpOut = & out;
   // added by Liang for Scan Report
-  mReport->open(mpOut);
-  mReport->compile();
+  mReport.open(mpOut);
+  mReport.compile();
+
+  CScanProblem* pProblem =
+    dynamic_cast<CScanProblem *>(mpProblem);
+  assert(pProblem);
 
   // for Steadystate Report
-  if (mpProblem->processSteadyState())
-    mpProblem->getSteadyStateTask()->initialize(mpOut);
+  if (pProblem->processSteadyState())
+    pProblem->getSteadyStateTask()->initialize(mpOut);
 
   // for Trajectory Report
-  if (mpProblem->processTrajectory())
-    mpProblem->getTrajectoryTask()->initialize(mpOut);
+  if (pProblem->processTrajectory())
+    pProblem->getTrajectoryTask()->initialize(mpOut);
 }
 
 void CScanTask::load(CReadConfig & configBuffer)
 {
-  mpProblem->load(configBuffer);
+  CScanProblem* pProblem =
+    dynamic_cast<CScanProblem *>(mpProblem);
+  assert(pProblem);
+
+  pProblem->load(configBuffer);
 }
 
 void CScanTask::setRequested(const bool & requested)
@@ -92,55 +116,58 @@ void CScanTask::setRequested(const bool & requested)
 
 bool CScanTask::isRequested() const {return mRequested;}
 
-CScanProblem * CScanTask::getProblem()
-{return mpProblem;}
+//-CScanProblem * CScanTask::getProblem()
+//-{return mpProblem;}
 
 void CScanTask::setProblem(CScanProblem * pProblem)
 {mpProblem = pProblem;}
 
-CScanMethod * CScanTask::getMethod()
-{return mpMethod;}
+//-CScanMethod * CScanTask::getMethod()
+//-{return mpMethod;}
 
 void CScanTask::setMethod(CScanMethod * pMethod)
 {mpMethod = pMethod;}
 
-void CScanTask::process()
+bool CScanTask::process()
 {
   if (!mpProblem)
     fatalError();
   if (!mpMethod)
     fatalError();
 
-  mpMethod->setProblem(mpProblem);
-  mpProblem->initialize();
+  CScanProblem * pProblem = (CScanProblem *) mpProblem;
+  CScanMethod * pMethod = (CScanMethod *) mpMethod;
 
-  mReport->compile();
-  mReport->printHeader();
+  pMethod->setProblem(pProblem);
+  pProblem->initialize();
 
-  if ((mpProblem->getSteadyStateTask() != NULL) && mpProblem->processSteadyState())
+  mReport.compile();
+  mReport.printHeader();
+
+  if ((pProblem->getSteadyStateTask() != NULL) && pProblem->processSteadyState())
     {
-      mpProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
+      pProblem->getSteadyStateTask()->getProblem()->getModel()->compile();
     }
-  if ((mpProblem->getTrajectoryTask() != NULL) && mpProblem->processTrajectory())
+  if ((pProblem->getTrajectoryTask() != NULL) && pProblem->processTrajectory())
     {
-      mpProblem->getTrajectoryTask()->getProblem()->getModel()->compile();
+      pProblem->getTrajectoryTask()->getProblem()->getModel()->compile();
     }
 
-  unsigned C_INT32 scanDimension = mpProblem->getListSize();
+  unsigned C_INT32 scanDimension = pProblem->getListSize();
   int i;
 
   // find the last master
   for (i = scanDimension - 1; i >= 0; i--)
-    if (mpProblem->getScanItemParameter(i, "indp")) break;
+    if (pProblem->getScanItemParameter(i, "indp")) break;
 
   if (i >= 0)
     // execute many simulations
-    mpMethod->scan(i, true, &CReport::printBody, mReport);
+    pMethod->scan(i, true, &CReport::printBody, &mReport);
 
   //  if (mpOutEnd)
   //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
-  mReport->printFooter();
+  mReport.printFooter();
 
-  mpProblem->restore();
-  return;
+  pProblem->restore();
+  return true;
 }

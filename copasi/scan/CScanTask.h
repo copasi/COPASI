@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 16:51:08 $
+   $Author: gasingh $ 
+   $Date: 2004/04/03 23:37:52 $
    End CVS Header */
 
 /**
@@ -27,12 +27,13 @@ class CScanMethod;
 class COutputEvent;
 class CReport;
 
-class CScanTask : public CCopasiContainer
+//-class CScanTask : public CCopasiContainer
+class CScanTask : public CCopasiTask
   {
     //Attributes
   private:
 
-    CReport * mReport;
+    //-CReport * mReport;
 
     /**
      * Flag indicating whether the task shall be executed by CopasiSE
@@ -41,13 +42,13 @@ class CScanTask : public CCopasiContainer
 
     /**
      * A pointer to the problem to be integrated.
-     */
-    CScanProblem *mpProblem;
+     */ 
+    //-CScanProblem *mpProblem;
 
     /**
      * A pointer to the method choosen for the integration.
-     */
-    CScanMethod * mpMethod;
+     */ 
+    //-CScanMethod * mpMethod;
 
     /**
      * Pointer to the output stream for reporting
@@ -78,19 +79,21 @@ class CScanTask : public CCopasiContainer
       pValueAddrMatrix = pInputValueAddrMatrix;
     }
 
-    inline CReport* getReport() {return mReport;};
+    //-inline CReport* getReport() {return mReport;};
 
-    inline std::string getKey() const {return mKey;}
+    //-inline std::string getKey() const {return mKey;}
     /**
      * default constructor
-     */
-    CScanTask();
+     */ 
+    //-CScanTask();
+    CScanTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param const CScanTask & src
-     */
-    CScanTask(const CScanTask & src);
+     */ 
+    //-CScanTask(const CScanTask & src);
+    CScanTask(const CScanTask & src, const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -130,8 +133,8 @@ class CScanTask : public CCopasiContainer
     /**
      * Retrieve the probel to be integrated.
      * @return CTrajectoryProblem * pProblem
-     */
-    CScanProblem * getProblem();
+     */ 
+    //-CScanProblem * getProblem();
 
     /**
      * Set the problem to be integrated.
@@ -142,8 +145,8 @@ class CScanTask : public CCopasiContainer
     /**
      * Retrieve the method choosen for the integration.
      * @return CTrajectoryMethod * pMethod
-     */
-    CScanMethod * getMethod();
+     */ 
+    //-CScanMethod * getMethod();
 
     /**
      * Set the method to be used for the integration.
@@ -153,7 +156,8 @@ class CScanTask : public CCopasiContainer
 
     /**
      * Do the integration
-     */
-    void process();
+     */ 
+    //-void process();
+    virtual bool process();
   };
 #endif // COPASI_CScanTask

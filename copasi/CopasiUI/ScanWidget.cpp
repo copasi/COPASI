@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.161 $
+   $Revision: 1.162 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:24 $
+   $Author: gasingh $ 
+   $Date: 2004/04/03 23:37:52 $
    End CVS Header */
 
 /********************************************************
@@ -353,8 +353,8 @@ void ScanWidget::deleteButtonClicked()
   //   return;
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  if (scanTask->getProblem()->getListSize() > 0)  // for reloading
-    scanTask->getProblem()->
+  if (((CScanProblem *)scanTask->getProblem())->getListSize() > 0)  // for reloading
+    ((CScanProblem *)scanTask->getProblem())->
     removeScanItem(pScanObject->CCopasiParameter::getName().c_str());
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
@@ -390,7 +390,7 @@ void ScanWidget::deleteButtonClicked()
     }
 
   activeObject--;
-  if ((activeObject >= 0) && (scanTask->getProblem()->getListSize() > 0))
+  if ((activeObject >= 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
     {
       CCopasiObject* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
       ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
@@ -401,7 +401,7 @@ void ScanWidget::deleteButtonClicked()
   nSelectedObjects--;
   scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
 
-  if ((selectedList.size() > 0) && (scanTask->getProblem()->getListSize() > 0))
+  if ((selectedList.size() > 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
     {
       ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
     }
@@ -427,8 +427,9 @@ void ScanWidget::upButtonClicked()
   CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
+
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
   activeObject--;
@@ -450,7 +451,7 @@ void ScanWidget::upButtonClicked()
   ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
   ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
 
-  scanTask->getProblem()->swapScanItem(activeObject + 1, activeObject);
+  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject + 1, activeObject);
 
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
   emit show_me();
@@ -472,8 +473,8 @@ void ScanWidget::downButtonClicked()
   CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject - 1));
-  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(scanTask->getProblem()->getScanItem(activeObject));
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
   ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
   ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
 
@@ -492,7 +493,7 @@ void ScanWidget::downButtonClicked()
   ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
   ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
 
-  scanTask->getProblem()->swapScanItem(activeObject - 1, activeObject);
+  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject - 1, activeObject);
 
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
 
@@ -518,12 +519,12 @@ void ScanWidget::runScanTask()
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
 
   std::ofstream output;
-  if (scanTask->getReport()->getTarget() != "")
+  if (scanTask->getReport().getTarget() != "")
     {
-      if (scanTask->getReport()->append())
-        output.open(scanTask->getReport()->getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+      if (scanTask->getReport().append())
+        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out | std::ios_base::app);
       else
-        output.open(scanTask->getReport()->getTarget().c_str(), std::ios_base::out);
+        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out);
     }
   if (output.is_open())
     scanTask->initializeReporting(output);
@@ -545,7 +546,7 @@ void ScanWidget::SteadyStateButtonClicked()
 {
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  CScanProblem *scanProblem = scanTask->getProblem();
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
   scanProblem->setProcessSteadyState(steadyState->isChecked());
   eSteadyState->setEnabled(steadyState->isChecked());
 }
@@ -554,7 +555,7 @@ void ScanWidget::TrajectoryButtonClicked()
 {
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  CScanProblem *scanProblem = scanTask->getProblem();
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
   scanProblem->setProcessTrajectory(trajectory->isChecked());
   eTrajectory->setEnabled(trajectory->isChecked());
   if (trajectory->isChecked())
@@ -569,7 +570,7 @@ void ScanWidget::loadScan()
 
   // @comment: UI Stuff
   taskName->setText(tr("Scan"));
-  CScanProblem *scanProblem = scanTask->getProblem();
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
   mModel = scanProblem->getModel();
 
   CSteadyStateTask* mSteadyStateTask =
@@ -616,7 +617,7 @@ void ScanWidget::loadScan()
   else
     steadyState->setChecked(false);
 
-  if (scanTask->getProblem()->getListSize() == 0)
+  if (((CScanProblem *)scanTask->getProblem())->getListSize() == 0)
     {
       activeObject = ObjectListBox->count() - 1; //because of the empty item
       activeObject --;  // list base start from 1, but list base start from 0;
@@ -634,7 +635,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  if (scanTask->getProblem()->bExisted(pObject->getCN().c_str()))
+  if (((CScanProblem *)scanTask->getProblem())->bExisted(pObject->getCN().c_str()))
     return false;
 
   int widgetOffset;
@@ -672,8 +673,8 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   nSelectedObjects++;
   //  if (pObject->isContainer())
-  scanTask->getProblem()->addScanItem(pObject->getCN());
-  parameterTable->setScanObject(scanTask->getProblem()->
+  ((CScanProblem *)scanTask->getProblem())->addScanItem(pObject->getCN());
+  parameterTable->setScanObject(((CScanProblem *)scanTask->getProblem())->
                                 getScanItem(nSelectedObjects - 1));
   parameterTable->setCopasiObject(pObject);
   parameterTable->loadObject();
@@ -800,7 +801,7 @@ void ScanWidget::ReportDefinitionClicked()
 {
   CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
   CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)GlobalKeys.get(scanTaskKey);
-  pSelectDlg->setReport(scanTask->getReport());
+  pSelectDlg->setReport(&(scanTask->getReport()));
   pSelectDlg->loadReportDefinitionVector();
   if (pSelectDlg->exec () == QDialog::Rejected)
     {
