@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/08 16:46:19 $
+   $Author: gauges $ 
+   $Date: 2004/11/12 09:56:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -205,6 +205,7 @@ void SliderSettingsDialog::minorMajorFactorChanged()
 
 void SliderSettingsDialog::init()
 {
+  this->mpSlider = NULL;
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
