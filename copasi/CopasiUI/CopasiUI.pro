@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.24 $ $Author: shoops $ $Date: 2004/02/19 02:16:05 $  
+# $Revision: 1.25 $ $Author: shoops $ $Date: 2004/02/19 03:00:41 $  
 ######################################################################
 
 include(../common.pri)
@@ -36,7 +36,8 @@ contains(BUILD_OS, WIN32) {
   }
 } else {
   # The order of objects is important 
-  OBJECTS +=  ../lib/libelementaryFluxModes.a \
+  OBJECTS +=  ../lib/libcommandline.a \
+              ../lib/libelementaryFluxModes.a \
               ../lib/libcopasiXML.a \
               ../lib/libmathmodel.a \
               ../lib/libmodel.a \
