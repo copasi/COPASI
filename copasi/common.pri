@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.39 $ $Author: gauges $ $Date: 2005/02/15 12:29:28 $  
+# $Revision: 1.40 $ $Author: shoops $ $Date: 2005/02/16 19:15:33 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -49,26 +49,30 @@ contains(BUILD_OS, Darwin) {
     }
   }
  
-  contains(CONFIG, qt) {
-  }
-
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
   INCLUDEPATH += /System/Library/Frameworks/Carbon.framework/Headers
+
+  !isEmpty(SBML_PATH){
+    LIBS+=  -L$${SBML_PATH}/lib
+    INCLUDEPATH += $${SBML_PATH}/include
+  }
+
+  !isEmpty(EXPAT_PATH){
+    LIBS+=  -L$${EXPAT_PATH}/lib
+    INCLUDEPATH += $${EXPAT_PATH}/include
+  }
+
+  LIBS += -lsbml
+  LIBS += -lexpat
+
+  contains(CONFIG, qt) {
+    LIBS += -lqwt
+  }
+
   LIBS += -framework vecLib
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
   LIBS += -lz
-  INCLUDEPATH += /sw/apps/qwt-4.2.0/include
-  INCLUDEPATH += /Users/ralph/tools/include/
-  INCLUDEPATH += /sw/apps/libsbml-2.2.0-04.12.20/include
-  LIBS += -L/Users/ralph/tools/lib
-  LIBS += /sw/apps/qwt-4.2.0/lib/libqwt.a
-  LIBS += /sw/apps/libsbml-2.2.0-04.12.20/lib//libsbml.a
-  INCLUDEPATH += /sw/include
-  LIBS += /sw/lib/libexpat.a
-  LIBS += $(QTDIR)/lib/libqt-mt.a
-  QMAKE_LIBS_QT =
-  QMAKE_LIBS_QT_THREAD = 
 }
 
 contains(BUILD_OS, WIN32) {

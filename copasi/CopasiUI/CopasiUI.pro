@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.80 $ $Author: gauges $ $Date: 2005/02/15 12:27:47 $  
+# $Revision: 1.81 $ $Author: shoops $ $Date: 2005/02/16 19:15:32 $  
 ######################################################################
 
 include(../common.pri)
@@ -128,14 +128,16 @@ contains(BUILD_OS, SunOS) {
 }  
 
 contains(BUILD_OS, Darwin){
+  QMAKE_LFLAGS += -Wl,-search_paths_first
+  
   LIBS -= -Wl,--start-group
   LIBS -= -Wl,--end-group
-  LIBS -= -lplot
-  LIBS += ../lib/libplot.a
+#  LIBS -= -lplot
+#  LIBS += ../lib/libplot.a
   LIBS -= -lrandomGenerator
-  LIBS -= -lutilities
+#  LIBS -= -lutilities
   LIBS += -lrandomGenerator 
-  LIBS += -lutilities
+#  LIBS += -lutilities
   
 }
 
