@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.168 $
+   $Revision: 1.169 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/14 12:20:09 $
+   $Date: 2004/05/14 13:45:06 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1560,15 +1560,15 @@ void CModel::setTime(const C_FLOAT64 & time) {mTime = time;}
 
 const C_FLOAT64 & CModel::getTime() const {return mTime;}
 
-CMetab* CModel::addMetabolite(const std::string & name,
-                              const std::string & compartment,
-                              const C_FLOAT64 & iconc,
-                              const CMetab::Status & status)
+CMetab* CModel::createMetabolite(const std::string & name,
+                                 const std::string & compartment,
+                                 const C_FLOAT64 & iconc,
+                                 const CMetab::Status & status)
 {
   unsigned C_INT32 Index;
 
   if (mCompartments.size() == 0)
-    addCompartment("compartment_0");
+    createCompartment("compartment_0");
 
   if (compartment == "")
     Index = 0;
@@ -1787,12 +1787,12 @@ bool CModel::removeMetabolite(const std::string & key)
   return true;
 }
 
-bool CModel::addCompartment(const std::string & name,
-                            const C_FLOAT64 & volume)
+CCompartment* CModel::createCompartment(const std::string & name,
+                                        const C_FLOAT64 & volume)
 {
   // check if there is already a volume with this name
   if (mCompartments.getIndex(name) != C_INVALID_INDEX)
-    return false;
+    return NULL;
 
   CCompartment * cpt = new CCompartment(name);
 
@@ -1802,12 +1802,12 @@ bool CModel::addCompartment(const std::string & name,
   if (!mCompartments.add(cpt, true))
     {
       delete cpt;
-      return false;
+      return NULL;
     }
 
   compile();
 
-  return true;
+  return cpt;
 }
 
 bool CModel::removeCompartment(const std::string & key)
@@ -1837,21 +1837,21 @@ bool CModel::removeCompartment(const std::string & key)
   return true;
 }
 
-bool CModel::addReaction(const std::string & name)
+CReaction* CModel::createReaction(const std::string & name)
 {
   if (mSteps.getIndex(name) != C_INVALID_INDEX)
-    return false;
+    return NULL;
 
   CReaction * pReaction = new CReaction(name);
 
   if (!mSteps.add(pReaction, true))
     {
       delete pReaction;
-      return false;
+      return NULL;
     }
 
   compile();
-  return true;
+  return pReaction;
 }
 
 bool CModel::addReaction(const CReaction & reaction)
