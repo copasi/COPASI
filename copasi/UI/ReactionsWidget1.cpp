@@ -461,8 +461,8 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
     ModifierNames.push_back(MetaboliteList[i]->getName().c_str());
 
   /* build list of all needed variables */
-  std::vector< pair< QString, QString > > VariableList;
-  pair< QString, QString > Variable;
+  std::vector< std::pair< QString, QString > > VariableList;
+  std::pair< QString, QString > Variable;
   const CFunctionParameter * pParameter;
 
   for (i = 0, imax = functionParameters.size(); i < imax; i++)
