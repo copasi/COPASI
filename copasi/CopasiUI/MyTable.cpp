@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/18 08:59:10 $
+   $Date: 2004/10/07 13:08:33 $
    End CVS Header */
 
 #include <iostream>
@@ -15,9 +15,9 @@
 //#include "listviews.h"
 
 MyTable::MyTable(QWidget * parent, const char * name)
-    : QTable (parent, name), firstTime(true)
+    : QTable (parent, name) //, firstTime(true)
 {
-  setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding, 2, 1));
+  //setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding, 2, 1));
 }
 
 /*void MyTable::mousePressEvent(QMouseEvent *mpe)
@@ -40,7 +40,7 @@ void MyTable::keyPressEvent (QKeyEvent * e)
       emit delKeyPressed();
     }
 }
-
+/*
 void MyTable::resizeEvent(QResizeEvent* e)
 {
   if (this->firstTime && this->width() != 1)
@@ -57,7 +57,7 @@ void MyTable::resizeEvent(QResizeEvent* e)
           vertScrollbarWidth = this->verticalScrollBar()->width();
         }
       int width = this->width() - vertHeaderWidth - vertScrollbarWidth;
-
+ 
       int widthOfColumns = 0;
       unsigned int counter, numCols;
       numCols = this->numCols();
@@ -119,7 +119,7 @@ void MyTable::resizeEvent(QResizeEvent* e)
   QTable::resizeEvent(e);
   return;
 }
-
+ 
 int MyTable::getOptimalColumnWidth(int index)
 {
   int counter;
@@ -138,7 +138,8 @@ int MyTable::getOptimalColumnWidth(int index)
     }
   return largest;
 }
-
+ 
+ 
 void MyTable::scaleColumns(double factor)
 {
   //std::cout << "Scaling columns with factor: " << factor << std::endl;
@@ -153,13 +154,7 @@ void MyTable::scaleColumns(double factor)
   this->exactColumnWidth[this->numCols() - 1] = this->exactColumnWidth[this->numCols() - 1] * factor;
   this->setColumnWidth(this->numCols() - 1, (int)this->exactColumnWidth[this->numCols() - 1] - 1);
 }
-
-void MyTable::setNumCols(int count)
-{
-  this->exactColumnWidth.resize(count);
-  QTable::setNumCols(count);
-}
-
+ 
 void MyTable::insertColumns(int index, int count)
 {
   this->exactColumnWidth.resize(this->exactColumnWidth.size() + count);
@@ -170,7 +165,7 @@ void MyTable::insertColumns(int index, int count)
     }
   QTable::insertColumns(index, count);
 }
-
+ 
 void MyTable::removeColumn(int col)
 {
   unsigned int counter;
@@ -180,8 +175,9 @@ void MyTable::removeColumn(int col)
     }
   this->exactColumnWidth.resize(this->exactColumnWidth.size() - 1);
   QTable::removeColumn(col);
+  
 }
-
+ 
 void MyTable::removeColumns(const QMemArray<int> & cols)
 {
   unsigned int counter1;
@@ -196,7 +192,7 @@ void MyTable::removeColumns(const QMemArray<int> & cols)
   this->exactColumnWidth.resize(this->exactColumnWidth.size() - cols.size());
   QTable::removeColumns(cols);
 }
-
+ 
 QSize MyTable::headerSectionSizeHint(int section) const
   {
     int iw = 0;
@@ -215,7 +211,7 @@ QSize MyTable::headerSectionSizeHint(int section) const
             iw = isize.width() + 2;
             ih = isize.height();
           }
-
+ 
         QRect bound;
         QString label = horizontalHeader->label(section);
         if (label != QString::null)
@@ -250,3 +246,9 @@ QSize MyTable::headerSectionSizeHint(int section) const
       }
     return QSize(width, height);
   }
+ 
+void MyTable::setNumCols(int c){
+    this->exactColumnWidth.resize(c);
+    QTable::setNumCols(c);
+}
+ */

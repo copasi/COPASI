@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/08/18 08:59:10 $
+   $Date: 2004/10/07 13:08:33 $
    End CVS Header */
 
 #ifndef MY_TABLE_H
@@ -25,19 +25,21 @@ class MyTable: public QTable
     MyTable (QWidget * parent = 0, const char * name = 0);
     //void mousePressEvent(QMouseEvent *mpe);
     void keyPressEvent (QKeyEvent * e);
-    virtual void insertColumns(int index, int count = 1);
-    virtual void removeColumn(int col);
-    virtual void removeColumns(const QMemArray<int> & cols);
-    virtual void MyTable::setNumCols(int count);
+
+  public slots:
+    //virtual void setNumCols(int c);
+    //virtual void insertColumns(int index, int count = 1);
+    //virtual void removeColumn(int col);
+    //virtual void removeColumns(const QMemArray<int> & cols);
 
   protected:
-    virtual void resizeEvent(QResizeEvent* e);
-    virtual int getOptimalColumnWidth(int index);
-    virtual void scaleColumns(double factor);
-    virtual QSize headerSectionSizeHint(int section) const;
+    //virtual void resizeEvent(QResizeEvent* e);
+    //virtual int getOptimalColumnWidth(int index);
+    //virtual void scaleColumns(double factor);
+    //virtual QSize headerSectionSizeHint(int section) const;
 
-    bool firstTime;
-    std::vector<double> exactColumnWidth;
+    //bool firstTime;
+    //std::vector<double> exactColumnWidth;
 
   signals:
     void delKeyPressed();
