@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.3 2003/09/19 19:50:07 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.h,v 1.5 2003/09/19 20:37:45 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,6 +22,7 @@ class QLabel;
 class QTable;
 class QLineEdit;
 class QTextEdit;
+class CFunction;
 
 class ExpressionWidget : public CopasiWidget
   {
@@ -30,6 +31,10 @@ class ExpressionWidget : public CopasiWidget
   public:
     ExpressionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ExpressionWidget();
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
 
     QFrame* bodyField;
     QPushButton* confirmButton;
@@ -52,6 +57,8 @@ class ExpressionWidget : public CopasiWidget
     QVBoxLayout* layout6;
     QGridLayout* layout5;
     QGridLayout* frame5Layout;
+    bool loadFromExpression(CFunction*);
+    std::string objKey;
 
   protected slots:
     virtual void languageChange();

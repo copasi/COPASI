@@ -2,12 +2,10 @@
  ** Form implementation generated from reading ui file '.\ExpressionWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.3 2003/09/19 19:52:25 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: ExpressionWidget.cpp,v 1.4 2003/09/19 20:36:06 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-
-#include "ExpressionWidget.h"
 
 #include <qvariant.h>
 #include <qpushbutton.h>
@@ -19,6 +17,20 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+
+#include "ExpressionWidget.h"
+#include "copasi.h"
+#include "listviews.h"
+#include "utilities/CGlobals.h"
+#include "utilities/CMethodParameter.h"
+#include "function/CFunction.h"
+#include "function/CFunctionDB.h"
+#include "function/CKinFunction.h"
+#include "report/CKeyFactory.h"
+
+#include "./icons/product.xpm"
+#include "./icons/substrate.xpm"
+#include "./icons/modifier.xpm"
 
 /*
  *  Constructs a ExpressionWidget as a child of 'parent', with the 
@@ -137,3 +149,36 @@ void ExpressionWidget::languageChange()
   expressionNameLabel->setText(tr("Expresion Name"));
   expressionEditlabel->setText(tr("Expression"));
 }
+
+bool ExpressionWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool ExpressionWidget::leave()
+{
+  //let the user confirm?
+}
+
+bool ExpressionWidget::enter(const std::string & key)
+{
+  objKey = key;
+  CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(key);
+  //TODO: check if it really is a compartment
+
+  if (func)
+    return loadFromExpression(func);
+  else
+    return false;
+}
+
+bool ExpressionWidget::loadFromExpression(CFunction*)
+{}
