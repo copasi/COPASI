@@ -156,11 +156,33 @@ void ScanItemWidget::ResetData()
   mPosGaussianRadio->setChecked(0);
 }
 
+void ScanItemWidget::InitializeParameterList()
+{
+  //name value type
+  pParameter->add("max", mMax->text().toDouble(), CParameter::DOUBLE);
+  /*
+    pParameter("min", mMin->setText("1.0");
+    pParameter("incr", mDensity->setText("2");
+    pParameter("log", mLogarithmic->setChecked(FALSE);
+    pParameter("Indp", mIndependent->setChecked(TRUE);
+    pParameter("gridType", 
+    pParameter("value", 0, 
+    pParameter(mRegularGridRadio->setChecked(1);
+    pParameter(mGaussianRadio->setChecked(0);
+    pParameter(mUniformRadio->setChecked(0);
+    pParameter(mPosGaussianRadio->setChecked(0);
+   
+   ->add();
+  */
+}
+
 void ScanItemWidget::loadObject()
 {
   if (!pParameter)
     return;
   ResetData();
+  InitializeParameterList();
+
   int i = 0;
 }
 

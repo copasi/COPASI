@@ -34,6 +34,7 @@ class ScanItemWidget : public QWidget
     QScrollView* mParent;
     CMethodParameterList* pParameter;
     void ResetData();
+    void InitializeParameterList();
 
   public:
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);

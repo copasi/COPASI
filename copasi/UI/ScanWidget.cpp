@@ -565,8 +565,6 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   parameterTable->setFixedWidth(ScanItemWidgetWidth);
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-  //  parameterTable->setObject(pObject);
-  parameterTable->loadObject();
 
   scrollview->addChild(parameterTable, 0 , widgetOffset);
   scrollview->setVScrollBarMode(QScrollView::Auto);
