@@ -17,7 +17,6 @@ OBJS	= \
           $(OBJDIR)/CODESolver.o \
           $(OBJDIR)/CReadConfig.o \
           $(OBJDIR)/CStep.o \
-	  $(OBJDIR)/CStochSolver.o \
           $(OBJDIR)/CTrajectory.o \
           $(OBJDIR)/CNewton.o \
           $(OBJDIR)/CSS_Solution.o \

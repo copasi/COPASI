@@ -9,8 +9,8 @@ LIBS	= -lnsl
 
 SRCDIR	= ./src
 OBJDIR	= ./o
-INCDIRS = ./include ./include/Model ./include/Function
-INCDIR	= -I./include -I./include/Model -I./include/Function
+INCDIRS = ./include
+INCDIR	= -I./include
 
 include include.mak
 
