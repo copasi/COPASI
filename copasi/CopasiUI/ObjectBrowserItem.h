@@ -1,19 +1,19 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 04/03 
-    Comment : Copasi Object Browser including:
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 04/03 
+   Comment : Copasi Object Browser including:
 
-   browserObject: A complex structure uiniquely map to a CopasiObject
-   ObjectBrowserItem: A wraper to a broserObject, 
-       there may exist multiply wrappers to one browserObject
-   objectListItem
-   objectList: A queue for all element: 
-      The reason I dont use std:vector is
-      for efficiency requirement for all 
-      object browser item update
-    Contact: Please contact lixu1@vt.edu.
+  browserObject: A complex structure uiniquely map to a CopasiObject
+  ObjectBrowserItem: A wraper to a broserObject, 
+      there may exist multiply wrappers to one browserObject
+  objectListItem
+  objectList: A queue for all element: 
+     The reason I dont use std:vector is
+     for efficiency requirement for all 
+     object browser item update
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECT_BROWSER_ITEM_H
@@ -103,13 +103,15 @@ class ObjectBrowserItem : public QListViewItem
 
 struct objectListItem
   {
-    objectListItem(ObjectBrowserItem* item, objectListItem* next)
+    objectListItem(ObjectBrowserItem* item, objectListItem* next, objectListItem* last)
     {
       pItem = item;
       pNext = next;
+      pLast = last;
     }
     ObjectBrowserItem* pItem;
     objectListItem* pNext;
+    objectListItem* pLast;
   };
 
 class objectList
@@ -124,10 +126,13 @@ class objectList
       while (length > 0)
         pop();
     }
-    void insert(ObjectBrowserItem* pItem);
+    void insert(ObjectBrowserItem* pItem); //insert at the first position
     objectListItem* getRoot();
     ObjectBrowserItem* pop();
   inline int len() {return length;};
+
+    void sortList();
+    bool sortListInsert(ObjectBrowserItem* pItem); //insert and keep the sort order
   };
 
 #endif

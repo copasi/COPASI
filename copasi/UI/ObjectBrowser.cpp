@@ -1,10 +1,10 @@
 /********************************************************
-   Author: Liang Xu
-   Version : 1.xx  <first>
-   Description: 
-   Date: 04/03 
-   Comment : Copasi Object Browser: 
-   Contact: Please contact lixu1@vt.edu.
+  Author: Liang Xu
+  Version : 1.xx  <first>
+  Description: 
+  Date: 04/03 
+  Comment : Copasi Object Browser: 
+  Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowser.h"
 #include "ObjectBrowserItem.h"
@@ -111,20 +111,20 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
   if (pCurrent == NULL)
     return;
   clickToReverseCheck((ObjectBrowserItem*)pCurrent);
-  //  updateUI();
-  loadUI();
+  updateUI();
 }
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
   refreshList->insert(pCurrent);
-  ObjectBrowserItem* pTmp = pCurrent;
-  while (pTmp->parent() != NULL)
-    {
-      pTmp = pTmp->parent();
-      refreshList->insert(pTmp);
-    }
-
+  /*
+    ObjectBrowserItem* pTmp = pCurrent;
+    while (pTmp->parent() != NULL)
+      {
+        pTmp = pTmp->parent();
+        refreshList->insert(pTmp);
+      }
+  */
   if (pCurrent->isChecked() == ALLCHECKED)
     {
       if (pCurrent->isChecked())
@@ -331,35 +331,27 @@ void ObjectBrowser::updateUI()
     setCheckMark(pCurrent->pItem);
     for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
       setCheckMark(pCurrent->pItem);
-  */
-  for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
-    setCheckMark(pCurrent);
+  */ 
+  //refresh List stores all affected items,
+
+  refreshList->sortList();
+  for (objectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
+    {
+      objectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
+      for (; pHead != NULL; pHead = pHead->pNext)
+        {
+          ObjectBrowserItem * pCurrentLevel = pHead->pItem;
+          for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
+            refreshList->sortListInsert(pCurrentLevel);
+        }
+    }
+  for (ObjectBrowserItem* pUpdate = refreshList->pop(); pUpdate != NULL; pUpdate = refreshList->pop())
+    setCheckMark(pUpdate);
 }
 
 void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
 {
-  objectListItem* pHead = pCurrent->getObject()->referenceList->getRoot();
-  for (; pHead != NULL; pHead = pHead->pNext)
-    {
-      ObjectBrowserItem * pCurrentLevel = pHead->pItem;
-      for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
-        {
-          switch (pHead->pItem->nUserChecked())
-            {
-            case NOCHECKED:
-              pCurrent->setPixmap(0, *pObjectNone);
-              break;
-            case ALLCHECKED:
-              pCurrent->setPixmap(0, *pObjectAll);
-              break;
-            case PARTCHECKED:
-              pCurrent->setPixmap(0, *pObjectParts);
-              break;
-            }
-        }
-    }
-  /*
-     switch (pCurrent->nUserChecked())
+  switch (pCurrent->nUserChecked())
     {
     case NOCHECKED:
       pCurrent->setPixmap(0, *pObjectNone);
@@ -371,7 +363,6 @@ void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
       pCurrent->setPixmap(0, *pObjectParts);
       break;
     }
-    */
 }
 
 void ObjectBrowser::loadUI()

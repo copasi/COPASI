@@ -1,19 +1,19 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 04/03 
-    Comment : Copasi Object Browser including:
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 04/03 
+   Comment : Copasi Object Browser including:
 
-   browserObject: A complex structure uiniquely map to a CopasiObject
-   ObjectBrowserItem: A wraper to a broserObject, 
-       there may exist multiply wrappers to one browserObject
-   objectListItem
-   objectList: A queue for all element: 
-      The reason I dont use std:vector is
-      for efficiency requirement for all 
-      object browser item update
-    Contact: Please contact lixu1@vt.edu.
+  browserObject: A complex structure uiniquely map to a CopasiObject
+  ObjectBrowserItem: A wraper to a broserObject, 
+      there may exist multiply wrappers to one browserObject
+  objectListItem
+  objectList: A queue for all element: 
+     The reason I dont use std:vector is
+     for efficiency requirement for all 
+     object browser item update
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #include "ObjectBrowserItem.h"
@@ -226,7 +226,7 @@ objectList::objectList()
 void objectList::insert(ObjectBrowserItem* pItem)
 {
   int i = 0;
-  objectListItem* pNewItem = new objectListItem(pItem, NULL);
+  objectListItem* pNewItem = new objectListItem(pItem, NULL, NULL);
   if (length == 0)
     {
       root = pNewItem;
@@ -237,6 +237,7 @@ void objectList::insert(ObjectBrowserItem* pItem)
   for (; i < length - 1; i++)
     pCurrent = pCurrent->pNext;
   pCurrent->pNext = pNewItem;
+  pNewItem->pLast = pCurrent;
   length++;
 }
 
@@ -254,4 +255,51 @@ ObjectBrowserItem* objectList::pop()
   length--;
   delete delNode;
   return returnValue;
+}
+
+void objectList::sortList()
+{
+  if (len() <= 1) //sorted
+    return;
+  objectListItem* pHead = getRoot();
+  objectListItem* pTail = pHead->pNext;
+  for (; pHead->pNext != NULL; pHead = pHead->pNext)
+    {
+      for (pTail = pHead->pNext; pTail != NULL; pTail = pTail->pNext)
+        if (pHead->pItem->key(0, 0) > pTail->pItem->key(0, 0))
+          {
+            ObjectBrowserItem * pTmp = pHead->pItem;
+            pHead->pItem = pTail->pItem;
+            pTail->pItem = pTmp;
+          }
+    }
+}
+bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the sort order
+{
+  if (pItem->key(0, 0) < getRoot()->pItem->key(0, 0)) //insert at the front
+    {
+      objectListItem* pNewItem = new objectListItem(pItem, root, NULL);
+      root->pLast = pNewItem;
+      root = pNewItem;
+      length++;
+      return true;
+    }
+
+  for (objectListItem* pHead = getRoot(); (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
+;
+  if (pHead && (pHead->pItem->key(0, 0) == pItem->key(0, 0))) //duplicate key
+    return false;
+  //else insert
+
+  if (!pHead) //insert at the end of the list
+    {
+      insert(pItem);
+      return true;
+    }
+
+  length++;
+  objectListItem* pNewItem = new objectListItem(pItem, pHead, pHead->pLast);
+  pHead->pLast = pNewItem;
+  pNewItem->pLast->pNext = pNewItem;
+  return true;
 }
