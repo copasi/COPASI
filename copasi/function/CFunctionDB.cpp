@@ -11,24 +11,13 @@
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
 
-CFunctionDB::CFunctionDB()
-{
-  CONSTRUCTOR_TRACE;
-}
+CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE;}
 
-void CFunctionDB::initialize()
-{}
+void CFunctionDB::initialize() {}
 
-CFunctionDB::~CFunctionDB()
-{
-  cleanup();
-  DESTRUCTOR_TRACE;
-}
+CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE;}
 
-void CFunctionDB::cleanup()
-{
-  mLoadedFunctions.cleanup();
-}
+void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
@@ -52,17 +41,19 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
       switch (Function.getType())
         {
         case CFunction::Base:
-          pFunction = new CFunction(Function);
+          pFunction = new CFunction(Function, &mLoadedFunctions);
           break;
 
         case CFunction::MassAction:
-          pFunction = new CMassAction(Function);
+          pFunction = new CMassAction(Function, &mLoadedFunctions);
           break;
 
         case CFunction::PreDefined:
 
         case CFunction::UserDefined:
-          pFunction = new CKinFunction(Function, &configbuffer);
+          pFunction = new CKinFunction(Function,
+                                       &configbuffer,
+                                       &mLoadedFunctions);
           break;
 
         default:
@@ -120,14 +111,10 @@ C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
 }
 
 void CFunctionDB::setFilename(const std::string & filename)
-{
-  mFilename = filename;
-}
+{mFilename = filename;}
 
 std::string CFunctionDB::getFilename() const
-{
-  return mFilename;
-}
+  {return mFilename;}
 
 CFunction * CFunctionDB::dBLoad(const std::string & functionName)
 {
@@ -183,11 +170,8 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
   return pFunction;
 }
 
-void CFunctionDB::add
-(CFunction * function)
-{
-  mLoadedFunctions.add(function);
-}
+void CFunctionDB::add(CFunction * function)
+{mLoadedFunctions.add(function);}
 
 // void CFunctionDB::dBDelete(const string & functionName)
 // {
