@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:01:34 $
+   $Date: 2004/06/23 16:11:36 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -371,6 +371,12 @@ class CModel : public CCopasiContainer
     /** @dia:route 12,2; h,177.081,33.7423,112.487,20.8602,47.8937 */
     CStateTemplate mStateTemplate;
 
+    /**
+     * indicates whether a recalculation of the stoichiometry matrix decomposition is 
+     * necessary
+     */
+    bool mCompileIsNecessary;
+
   public:
     /**
      *  Default constructor
@@ -431,8 +437,15 @@ class CModel : public CCopasiContainer
     void initializeMetabolites();
 
     /**
-     *  Compile the model
+     *  This must be called whenever something is changed in the model
+     *  that would make it necessary to recalculate the matrix decomposition
      */
+    void setCompileFlag(bool flag = true);
+
+    /**
+     *  Compile the model if necessary
+     */
+    bool compileIfNecessary();
     bool compile2();
     bool compile();
 
@@ -557,14 +570,14 @@ class CModel : public CCopasiContainer
     /**
      *  Get the dimension of the reduced problem
      *  @return unsigned C_INT32 dimension
-     */
-    unsigned C_INT32 getDimension() const;
+     */ 
+    //unsigned C_INT32 getDimension() const;
 
     /**
      * Return the comments of this model Wei Sun 
      * @return string
      */
-    std::string getComments() const;
+    const std::string & getComments() const;
 
     /**
      * Return the key of this model
@@ -575,8 +588,8 @@ class CModel : public CCopasiContainer
     /**
      * Return the title of this model
      * @return string
-     */
-    std::string getTitle() const;
+     */ 
+    //std::string getTitle() const;
 
     /**
      * Set the title of this model
