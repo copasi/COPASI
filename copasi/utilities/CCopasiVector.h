@@ -36,7 +36,10 @@ class CCopasiVector : protected vector < CType * >
     /**
      *  Default constructor
      */
-    CCopasiVector() : vector < CType * > () {CONSTRUCTOR_TRACE; }
+    CCopasiVector() : vector < CType * > ()
+    {
+      CONSTRUCTOR_TRACE;
+    }
 
     /**
      *  Copy constructor
@@ -368,13 +371,6 @@ class CCopasiVectorN
         return *(const CType **)(begin() + Index);
       }
 
-  private:
-    /**
-     *
-     */
-    virtual C_INT16 isInsertAllowed(const CType * src)
-  { return (getIndex(src->getName()) == (unsigned C_INT32) - 1); }
-
     /**
      *
      */
@@ -389,6 +385,13 @@ class CCopasiVectorN
 
         return -1;
       }
+
+  private:
+    /**
+     *
+     */
+    virtual C_INT16 isInsertAllowed(const CType * src)
+  { return (getIndex(src->getName()) == (unsigned C_INT32) - 1); }
   };
 
 template < class CType >
