@@ -1,8 +1,12 @@
 /**
-  CTrajectory.h
-  copyright            : (C) 2001 by
+ *  File name: CTrajactory.h
  *
+ *  Research Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .h file for the class CTrajectory. 
+ *           It is to solve the trajectory time course problem of copasi
  */
+
 
 #ifndef CTRAJECTORY_H
 #define CTRAJECTORY_H

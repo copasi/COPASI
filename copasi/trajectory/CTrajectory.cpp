@@ -1,7 +1,12 @@
 /**
- * CTrajectory.cpp
- * copyright            : (C) 2001 by
+ *  File name: CTrajactory.cpp
+ *
+ *  Research Programmer: Yongqun He 
+ *  Contact email: yohe@vt.edu
+ *  Purpose: This is the .cpp file for the class CTrajectory. 
+ *           It is to solve the trajectory time course problem of copasi
  */
+
 
 #include "copasi.h"
 #include "CTrajectory.h"
