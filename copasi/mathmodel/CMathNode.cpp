@@ -86,7 +86,7 @@ std::string CMathNodeOperation::getData() const
           text << " " << mData << " ";
 
         if (text.str().substr(text.str().length() - 4) == "1 * ")
-          text.seekp(-4, std::ios::cur);
+          text.seekp(-4, std::ios_base::cur);
 
         text << tmp;
       }
