@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/03 16:21:32 $
+   $Date: 2005/02/04 10:38:48 $
    End CVS Header */
 
 #include <qmemarray.h>
@@ -218,14 +218,13 @@ void CopasiPlot::toggleCurve(long curveId)
   QwtPlotCurve *c = curve(curveId);
   if (c)
     {
-      /*QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(curveId));
-      if (button)
-        {
-          //button->setToggleButton(true);
-          button->setDown(c->enabled());// QButton::On
-        }*/
-
       c->setEnabled(!c->enabled());
+
+      if (c->enabled())
+        c->setAxis(QwtPlot::xBottom, QwtPlot::yLeft);
+      else
+        c->setAxis(QwtPlot::xTop, QwtPlot::yRight);
+
       replot();
     }
 }
