@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/05 14:22:46 $
+   $Date: 2004/08/31 15:50:45 $
    End CVS Header */
 
 /********************************************************
@@ -325,11 +325,12 @@ void TrajectoryWidget::runTrajectoryTask()
   tt->initialize();
 
   if (!tt->getReport().getStream())
+    //if ((std::vector<CPlotSpecification*>*)(dataModel->getPlotSpecVectorAddr())->size()==0) //TODO
     {
-      if (QMessageBox::information (NULL, "No output specified,",
-                                    "No report output target defined, Copasi cannot create output for you.\n Do you want to continue running trajectory task with no output?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        return;
+      //      if (QMessageBox::information (NULL, "No output specified,",
+      //                                    "No report output target defined, Copasi cannot create output for you.\n Do you want to continue running trajectory task with no output?",
+      //                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+      //        return;
     }
 
   setCursor(Qt::WaitCursor);
