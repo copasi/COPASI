@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 16:46:00 $
+   $Author: anuragr $ 
+   $Date: 2005/02/02 15:12:14 $
    End CVS Header */
 
 #include <time.h>
@@ -75,7 +75,41 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
 
   return RandomGenerator;
 }
-CRandom::CRandom() {}
+CRandom::CRandom()
+{
+  varp.a0 = -0.5;
+  varp.a1 = 0.3333333;
+  varp.a2 = -0.2500068;
+  varp.a3 = 0.2000118;
+  varp.a4 = -0.1661269;
+  varp.a5 = 0.1421878;
+  varp.a6 = -0.1384794;
+  varp.a7 = 0.125006;
+  varp.muold = -1.0E37;
+  varp.muprev = -1.0E37;
+  varp.fact[0] = 1.0;
+  varp.fact[1] = 1.0;
+  varp.fact[2] = 2.0;
+  varp.fact[3] = 6.0;
+  varp.fact[4] = 24.0;
+  varp.fact[5] = 120.0;
+  varp.fact[6] = 720.0;
+  varp.fact[7] = 5040.0;
+  varp.fact[8] = 40320.0;
+  varp.fact[9] = 362880.0;
+
+  vare.q[0] = 0.6931472;
+  vare.q[1] = 0.9333737;
+  vare.q[2] = 0.9888778;
+  vare.q[3] = 0.9984959;
+  vare.q[4] = 0.9998293;
+  vare.q[5] = 0.9999833;
+  vare.q[6] = 0.9999986;
+  vare.q[7] = 0.9999999;
+
+  vare.q1 = vare.q;
+}
+
 CRandom::~CRandom() {}
 const CRandom::Type & CRandom::getType() const {return mType;}
 const unsigned C_INT32 & CRandom::getModulus() const {return mModulus;}
@@ -291,3 +325,153 @@ C_FLOAT64 CRandom::getRandomNormalPositive(const C_FLOAT64 & mean,
 C_FLOAT64 CRandom::getRandomNormalLog(const C_FLOAT64 & mean,
                                       const C_FLOAT64 & sd)
 {return mean * pow(10, getRandomNormal01() * sd);}
+
+C_FLOAT64 CRandom::getRandomPoisson(const C_FLOAT64 & mu)
+{
+  if (mu == varp.muprev) goto S10;
+  if (mu < 10.0) goto S120;
+  varp.muprev = mu;
+  varp.s = sqrt(mu);
+  varp.d = 6.0 * mu * mu;
+  varp.ll = (long) (mu - 1.1484);
+S10:
+  varp.g = mu + varp.s * getRandomNormal01();
+  if (varp.g < 0.0) goto S20;
+  varp.ignpoi = (long) (varp.g);
+  if (varp.ignpoi >= varp.ll) return varp.ignpoi;
+  varp.fk = (float)varp.ignpoi;
+  varp.difmuk = mu - varp.fk;
+  varp.u = getRandomCC();
+  if (varp.d*varp.u >= varp.difmuk*varp.difmuk*varp.difmuk) return varp.ignpoi;
+S20:
+  if (mu == varp.muold) goto S30;
+  varp.muold = mu;
+  varp.omega = 0.3989423 / varp.s;
+  varp.b1 = 4.166667E-2 / mu;
+  varp.b2 = 0.3 * varp.b1 * varp.b1;
+  varp.c3 = 0.1428571 * varp.b1 * varp.b2;
+  varp.c2 = varp.b2 - 15.0 * varp.c3;
+  varp.c1 = varp.b1 - 6.0 * varp.b2 + 45.0 * varp.c3;
+  varp.c0 = 1.0 - varp.b1 + 3.0 * varp.b2 - 15.0 * varp.c3;
+  varp.c = 0.1069 / mu;
+S30:
+  if (varp.g < 0.0) goto S50;
+  varp.kflag = 0;
+  goto S70;
+S40:
+  if (varp.fy - varp.u*varp.fy <= varp.py*exp(varp.px - varp.fx)) return varp.ignpoi;
+S50:
+  varp.e = getRandomExp();
+  varp.u = getRandomCC();
+  varp.u += (varp.u - 1.0);
+  varp. t = 1.8 + fsign(varp.e, varp.u);
+  if (varp.t <= -0.6744) goto S50;
+  varp.ignpoi = (long) (mu + varp.s * varp.t);
+  varp.fk = (float)varp.ignpoi;
+  varp.difmuk = mu - varp.fk;
+  varp.kflag = 1;
+  goto S70;
+S60:
+  if (varp.c*fabs(varp.u) > varp.py*exp(varp.px + varp.e) - varp.fy*exp(varp.fx + varp.e)) goto S50;
+  return varp.ignpoi;
+S70:
+  if (varp.ignpoi >= 10) goto S80;
+  varp.px = -mu;
+  varp.py = pow(mu, (double)varp.ignpoi) / *(varp.fact + varp.ignpoi);
+  goto S110;
+S80:
+  varp.del = 8.333333E-2 / varp.fk;
+  varp.del -= (4.8 * varp.del * varp.del * varp.del);
+  varp.v = varp.difmuk / varp.fk;
+  if (fabs(varp.v) <= 0.25) goto S90;
+  varp.px = varp.fk * log(1.0 + varp.v) - varp.difmuk - varp.del;
+  goto S100;
+S90:
+  varp.px = varp.fk * varp.v * varp.v * (((((((varp.a7 * varp.v + varp.a6) * varp.v + varp.a5) * varp.v\
+                                          + varp.a4) * varp.v + varp.a3) * varp.v + varp.a2) * varp.v + varp.a1) * varp.v + varp.a0) - varp.del;
+S100:
+  varp.py = 0.3989423 / sqrt(varp.fk);
+S110:
+  varp.x = (0.5 - varp.difmuk) / varp.s;
+  varp.xx = varp.x * varp.x;
+  varp.fx = -0.5 * varp.xx;
+  varp.fy = varp.omega * (((varp.c3 * varp.xx + varp.c2) * varp.xx + varp.c1) * varp.xx + varp.c0);
+  if (varp.kflag <= 0) goto S40;
+  goto S60;
+S120:
+  varp.muprev = -1.0E37;
+  if (mu == varp.muold) goto S130;
+
+  if (mu >= 0.0) goto S125;
+  fprintf(stderr, "MU < 0 in IGNPOI: MU %16.6E\n", mu);
+  fputs("Abort\n", stderr);
+  exit(1);
+S125:
+  varp.muold = mu;
+  varp.m = std::max(1L, (long) (mu));
+  varp.l = 0;
+  varp.p = exp(-mu);
+  varp.q = varp.p0 = varp.p;
+S130:
+  varp.u = getRandomCC();
+  varp.ignpoi = 0;
+  if (varp.u <= varp.p0) return varp.ignpoi;
+  if (varp.l == 0) goto S150;
+  varp.j = 1;
+  if (varp.u > 0.458) varp.j = std::min(varp.l, varp.m);
+  for (varp.k = varp.j; varp.k <= varp.l; varp.k++)
+    {
+      if (varp.u <= *(varp.pp + varp.k - 1)) goto S180;
+    }
+  if (varp.l == 35) goto S130;
+S150:
+  varp.l += 1;
+  for (varp.k = varp.l; varp.k <= 35; varp.k++)
+    {
+      varp.p = varp.p * mu / (float)varp.k;
+      varp.q += varp.p;
+      *(varp.pp + varp.k - 1) = varp.q;
+      if (varp.u <= varp.q) goto S170;
+    }
+  varp.l = 35;
+  goto S130;
+S170:
+  varp.l = varp.k;
+S180:
+  varp.ignpoi = varp.k;
+  return varp.ignpoi;
+}
+
+C_FLOAT64 CRandom::fsign(C_FLOAT64 num, C_FLOAT64 sign)
+{
+  if ((sign > 0.0f && num < 0.0f) || (sign < 0.0f && num > 0.0f))
+    return - num;
+  else return num;
+}
+
+C_FLOAT64 CRandom::getRandomExp()
+{
+  vare.a = 0.0;
+  vare.u = getRandomCC();
+  goto S30;
+S20:
+  vare.a += *vare.q1;
+S30:
+  vare.u += vare.u;
+  if (vare.u < 1.0) goto S20;
+  vare.u -= 1.0;
+  if (vare.u > *vare.q1) goto S60;
+  vare.sexpo = vare.a + vare.u;
+  return vare.sexpo;
+S60:
+  vare.i = 1;
+  vare.ustar = getRandomCC();
+  vare.umin = vare.ustar;
+S70:
+  vare.ustar = getRandomCC();
+  if (vare.ustar < vare.umin) vare.umin = vare.ustar;
+  vare.i += 1;
+  if (vare.u > *(vare.q + vare.i - 1)) goto S70;
+  vare.sexpo = vare.a + vare.umin**vare.q1;
+  return vare.sexpo;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/12 16:46:00 $
+   $Author: anuragr $ 
+   $Date: 2005/02/02 15:14:00 $
    End CVS Header */
 
 #ifndef COPASI_CRandom
@@ -18,6 +18,34 @@ class CRandom
     /**
      * The valid types of a function
      */
+    struct PoissonVars
+      {
+        C_FLOAT64 a0;
+        C_FLOAT64 a1;
+        C_FLOAT64 a2;
+        C_FLOAT64 a3;
+        C_FLOAT64 a4;
+        C_FLOAT64 a5;
+        C_FLOAT64 a6;
+        C_FLOAT64 a7;
+        C_FLOAT64 muold;
+        C_FLOAT64 muprev;
+        C_FLOAT64 fact[10];
+
+        C_INT32 ignpoi, j, k, kflag, l, ll, m;
+
+        C_FLOAT64 b1, b2, c, c0, c1, c2, c3, d, del, difmuk, e, fk, fx, fy, g, omega, p, p0, px, py, q, s,
+        t, u, v, x, xx, pp[35];
+      };
+
+    struct ExpVars
+      {
+        float q[8];
+        long i;
+        float sexpo, a, u, ustar, umin;
+        float *q1;
+      };
+
     enum Type
     {
       r250 = 0,
@@ -70,6 +98,12 @@ class CRandom
      *
      */
     C_FLOAT64 mModulusInv1;
+
+  private:
+
+    PoissonVars varp;
+    ExpVars vare;
+    C_FLOAT64 fsign(C_FLOAT64 num, C_FLOAT64 sign);
 
     // Operations
   protected:
@@ -215,11 +249,23 @@ class CRandom
     virtual C_FLOAT64 getRandomNormalLog(const C_FLOAT64 & mean,
                                          const C_FLOAT64 & sd);
 
-  protected:
     /**
-     * Set the Modulus
-     * @param 
-     */
+        * Produces a Poisson distributed random number with Mean=mean 
+     * @param const C_FLOAT64 & mean
+        * @return C_FLOAT64 random
+        */
+
+    virtual C_FLOAT64 getRandomPoisson(const C_FLOAT64 & mean);
+    virtual C_FLOAT64 getRandomExp();
+    /* Added on  Jan 31, 2005 */
+
+  protected:
+
+    /**
+        * Set the Modulus
+        * @param 
+        */
+
     void setModulus(const unsigned C_INT32 & modulus);
   };
 
