@@ -270,10 +270,10 @@ void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
   mTT = transitionTime;
 }
 
-const C_FLOAT64 & CMetab::getTransitionTime()
-{
-  return mTT;
-}
+const C_FLOAT64 & CMetab::getTransitionTime() const
+  {
+    return mTT;
+  }
 
 bool CMetab::setName(const std::string & name)
 {

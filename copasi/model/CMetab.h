@@ -311,7 +311,7 @@ class CMetab : public CCopasiContainer
      *  Retrieves the transition time
      *  @return "const C_FLOAT64 &" transitionTime
      */
-    const C_FLOAT64 & getTransitionTime();
+    const C_FLOAT64 & getTransitionTime() const;
 
     /**
      * Returns the address of mIConc  Wei Sun
