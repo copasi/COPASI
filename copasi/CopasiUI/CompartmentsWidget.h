@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:52 $
+   $Date: 2004/05/24 08:18:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -27,7 +27,7 @@ class CompartmentsWidget : public CopasiTableWidget
 
   public:
     CompartmentsWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, name, f)
+        : CopasiTableWidget(parent, false, name, f)
     {init();}
 
   protected:

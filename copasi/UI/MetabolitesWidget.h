@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:52 $
+   $Date: 2004/05/24 08:20:24 $
    End CVS Header */
 
 /****************************************************************************
@@ -27,7 +27,7 @@ class MetabolitesWidget : public CopasiTableWidget
 
   public:
     MetabolitesWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, name, f)
+        : CopasiTableWidget(parent, false, name, f)
     {init();}
 
   protected slots:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:51 $
+   $Date: 2004/05/24 08:18:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -44,9 +44,10 @@ std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
 
 void CompartmentsWidget::init()
 {
+  mOT = ListViews::COMPARTMENT;
   numCols = 3;
   table->setNumCols(numCols);
-  table->QTable::setNumRows(1);
+  //table->QTable::setNumRows(1);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();

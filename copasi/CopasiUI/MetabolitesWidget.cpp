@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/21 08:57:52 $
+   $Date: 2004/05/24 08:20:24 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -36,6 +36,7 @@ std::vector<const CCopasiObject*> MetabolitesWidget::getObjects() const
 
 void MetabolitesWidget::init()
 {
+  mOT = ListViews::METABOLITE;
   mFlagConc = false;
   btnToggle = new QPushButton("&Show Concentrations", this);
   mHLayout->addWidget(btnToggle);
@@ -44,7 +45,7 @@ void MetabolitesWidget::init()
 
   numCols = 7;
   table->setNumCols(numCols);
-  table->QTable::setNumRows(1);
+  //table->QTable::setNumRows(1);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
@@ -157,7 +158,7 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
         }
       else
         {
-          table->setText(row, 2, QString::number(1.0));
+          table->setText(row, 2, QString::number(100.0));
           table->setText(row, 3, "");
         }
     }
@@ -270,7 +271,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:               // Yes or Enter
+    case 0:                // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -282,7 +283,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:               // No or Escape
+    case 1:                // No or Escape
       break;
     }
 }
