@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:29:23 $
+   $Date: 2005/03/23 21:14:12 $
    End CVS Header */
 
 #include <iostream>
@@ -44,10 +44,10 @@ CMetab::CMetab(const std::string & name,
                      CCopasiObject::ValueDbl |
                      CCopasiObject::NonUniqueName),
     mKey(GlobalKeys.add("Metabolite", this)),
-    mConc(1.0),
-    mIConc(1.0),
-    mNumber(1.0),
-    mINumber(1.0),
+    mConc(-1.0),
+    mIConc(-1.0),
+    mNumber(-1.0),
+    mINumber(-1.0),
     mRate(0.0),
     mTT(0.0),
     mStatus(METAB_VARIABLE),
@@ -58,10 +58,9 @@ CMetab::CMetab(const std::string & name,
     {
       initModel();
       initCompartment(NULL);
-    }
-  else
-    {
-      mpCompartment = NULL;
+
+      setInitialConcentration(1.0);
+      setConcentration(1.0);
     }
 
   initObjects();
