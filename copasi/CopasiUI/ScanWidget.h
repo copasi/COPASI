@@ -36,6 +36,9 @@ class ScanWidget : public CopasiWidget
   {
     Q_OBJECT
 
+  private:
+    static int nSelectedObjects;
+    int activeObject;
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
@@ -72,7 +75,6 @@ class ScanWidget : public CopasiWidget
     QHBoxLayout* Layout2;
     QHBoxLayout* Layout3;
     QHBoxLayout* Layout4;
-    QVBox* vBox;
     CModel *mModel;
 
   signals:

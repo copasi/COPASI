@@ -37,6 +37,9 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 
+#define TITLE_HEIGHT 16
+
+int ScanWidget::nSelectedObjects = 0;
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -153,13 +156,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   ScanWidgetLayout->addItem(spacer, 5, 0);
 
   scrollview = new QScrollView(this, 0, 0);
-  vBox = new QVBox(this, 0);
+  scrollview->setVScrollBarMode(QScrollView::Auto);
 
-  //Just for test
   //  for (int temp = 1; temp <= 6; temp++)
   //    addNewScanItem(NULL);
-
-  scrollview->addChild(vBox);
 
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
 
@@ -194,6 +194,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
 
   scanTask = NULL;
+  activeObject = -1;
 
   pSteadyStateWidget = new SteadyStateWidget(NULL);
   pSteadyStateWidget->hide();
@@ -240,14 +241,14 @@ void ScanWidget::addButtonClicked()
     if ((pListItem->pItem) && (pListItem->pItem->getObject()) && (pListItem->pItem->getObject()->pCopasiObject))
       break;
 
-  if (pSelectedList->getRoot())
+  if (!pSelectedList->getRoot()) //no result returned
     {
-      scrollview->hide();
-      addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
-      scrollview->addChild(vBox);
-      scrollview->show();
+      delete pSelectedObjects;
+      delete pSelectedList;
+      return;
     }
 
+  addNewScanItem(pListItem->pItem->getObject()->pCopasiObject);
   delete pSelectedObjects;
   delete pSelectedList;
 }
@@ -347,29 +348,23 @@ void ScanWidget::loadScan(CModel *model)
         }
 
       //     emit show_me();
-      scrollview->addChild(vBox);
-      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
-      scrollview->setVScrollBarMode(QScrollView::Auto);
+      //      scrollview->addChild(vBox);
+      //      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
+      //      scrollview->setVScrollBarMode(QScrollView::Auto);
     }
 }
 
 void ScanWidget::addNewScanItem(CCopasiObject* pObject)
 {
-  //  emit hide_me();
-  //  scrollview = new QScrollView(this, 0, 0);
-  //  vBox = new QVBox(this, 0);
+  emit hide_me();
   parameterTable = new ScanItemWidget(this, "parameterTable");
-  parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+  int widgetOffset;
+  widgetOffset = TITLE_HEIGHT + nSelectedObjects * (parameterTable->minimumSizeHint().height() + TITLE_HEIGHT);
+  parameterTable->setFixedWidth(scrollview->visibleWidth());
   parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-  vBox->insertChild(parameterTable);
-
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setLineWidth (4);
-  vBox->insertChild(Line1);
-
-  //  emit show_me();
-  //  scrollview->addChild(vBox);
-  //  scrollview->setVScrollBarMode(QScrollView::Auto);
-  //  ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 9, 1, 4);
+  scrollview->addChild(parameterTable, 0 , widgetOffset);
+  scrollview->setVScrollBarMode(QScrollView::Auto);
+  scrollview->resizeContents(0, widgetOffset + parameterTable->minimumSizeHint().height());
+  nSelectedObjects++;
+  emit show_me();
 }
