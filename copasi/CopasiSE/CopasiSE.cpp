@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/11 09:52:34 $
+   $Author: shoops $ 
+   $Date: 2005/02/08 23:21:45 $
    End CVS Header */
 
 // Main
@@ -41,8 +41,6 @@
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
-#include "output/COutputList.h"
-#include "output/COutput.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
