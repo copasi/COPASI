@@ -88,4 +88,18 @@ C_FLOAT64 ddot(C_INT32 n,
                C_FLOAT64 * dy,
                C_INT32 incy);
 
+/*
+ * Fixes a string to be a SName element from SBML
+ * (this is a destructive function, some changes are irreversible)
+ *
+ */
+void FixSName(string &original, string &fixed)
+;
+
+/*
+ * Fixes a string to a XHTML valid equivalent
+ */
+void FixXHTML(string &original, string &fixed)
+;
+
 #endif // COPASI_utilities
