@@ -275,7 +275,12 @@ void CModel::lUDecomposition()
           mStepsX[colLU[i]-1] = pStep;
         }
     }
-
+  
+  mFluxes.resize(mStepsX.size());
+  
+  for (i=0; i<mFluxes.size(); i++)
+    mFluxes[i] = (C_FLOAT64 *) mStepsX[i]->getFluxAddr();
+  
   return;
 }
 
@@ -482,6 +487,10 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
     }
   cout << endl;
   
+  // Calculate the velocity vector depending on the step kinetics
+  for (i=0; i<mStepsX.size(); i++)
+   mStepsX[i]->calculate();
+
   return;
 }
 
@@ -498,24 +507,16 @@ vector < CReaction * > & CModel::getReactionsX()
 void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i,j;
-  //FIXME: This should be a member
-  C_FLOAT64 * v = new C_FLOAT64[mSteps.size()];
     
   setConcentrations(y);
     
-  // Calculate the velocity vector depending on the step kinetics
-  for (i=0; i<mStepsX.size(); i++)
-    v[i] = mStepsX[i]->calculate();
-
   // Calculate ydot = RedStoi * v
   for (i=0; i<(unsigned C_INT32) n; i++)
     {
       ydot[i] = 0.0;
       for (j=0; j<mSteps.size(); j++)
-        ydot[i] += mRedStoi[i][j] * v[j];
+        ydot[i] += mRedStoi[i][j] * *mFluxes[j];
     }
-    
-  delete [] v;
     
   return;
 }

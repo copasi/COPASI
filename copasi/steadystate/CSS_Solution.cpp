@@ -87,7 +87,7 @@ void CSS_Solution::initialize()
 
 
 // Clean up internal pointer variables
-void CNewton::cleanup(void)
+void CSS_Solution::cleanup(void)
 {
   if (mSs_x) delete [] mSs_x;
   mSs_x = NULL;
@@ -264,12 +264,12 @@ void CSS_Solution::process(void)
           t *= 10;
 
           // before trajectory process, get trajectory.mY
-          oldY = mTraj->getMY();
+          // oldY = mTraj->getMY();
 
           mTraj -> process();
 
 	  // after trajectory process, get trajectory.mY
-	  newY = mTraj->getMY();
+	  // newY = mTraj->getMY();
 
           //compare old and new mY and check isSteadyState()
           if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )
@@ -311,7 +311,7 @@ void CSS_Solution::process(void)
           t *= 10;
 
 	  // before trajectory process, get trajectory.mY
-          oldY = mTraj->getMY();
+          // oldY = mTraj->getMY();
 
           //YH: set up a new trajectory class now
           //set lsoda_incr to -1, and then run it  // ???
@@ -319,7 +319,7 @@ void CSS_Solution::process(void)
           mTraj -> process();
 
 	  // after trajectory process, get trajectory.mY
-	  newY = mTraj->getMY();
+	  // newY = mTraj->getMY();
 
           //compare old and new mY and check isSteadyState()
           if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )

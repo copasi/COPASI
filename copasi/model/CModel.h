@@ -56,7 +56,13 @@ class CModel
   CCopasiVectorS < CReaction > mSteps;
   vector < CReaction * > mStepsX;
   vector < CReaction * > mStepsInd;
-    
+  
+  /**
+   *  Vector of fluxes of the reactions.
+   *  Note: The fluxes are the order corresponding to mStepX
+   */
+  vector < C_FLOAT64 * > mFluxes;
+  
   /**
    *  for array of conserved moieties
    *  @supplierCardinality 0..*
