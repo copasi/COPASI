@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/23 13:21:22 $
+   $Author: shoops $ 
+   $Date: 2004/06/23 17:46:45 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -154,7 +154,8 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
         }
     }
   /* create all compartments */
-  for (unsigned int counter = 0; counter < copasiModel->getCompartments().size(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < copasiModel->getCompartments().size(); counter++)
     {
       Compartment_t* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
       if (sbmlCompartment != NULL)
@@ -167,7 +168,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
         }
     }
   /* create all metabolites */
-  for (unsigned int counter = 0; counter < copasiModel->getMetabolites().size(); counter++)
+  for (counter = 0; counter < copasiModel->getMetabolites().size(); counter++)
     {
       Species_t* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
       if (sbmlSpecies != NULL)
@@ -180,7 +181,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
         }
     }
   /* create all reactions */
-  for (unsigned int counter = 0; counter < copasiModel->getReactions().size(); counter++)
+  for (counter = 0; counter < copasiModel->getReactions().size(); counter++)
     {
       Reaction_t* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
       if (sbmlReaction != NULL)
@@ -377,7 +378,8 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
   Reaction_setReversible(sbmlReaction, copasiReaction->isReversible());
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
   /* Add all substrates */
-  for (unsigned int counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
       SpeciesReference_t* sRef = SpeciesReference_create();
@@ -387,7 +389,7 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
       Reaction_addReactant(sbmlReaction, sRef);
     }
   /* Add all products */
-  for (unsigned int counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
+  for (counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
       SpeciesReference_t* sRef = SpeciesReference_create();
@@ -397,7 +399,7 @@ Reaction_t* SBMLExporter::createSBMLReactionFromCReaction(const CReaction* copas
       Reaction_addProduct(sbmlReaction, sRef);
     }
   /* Add all modifiers */
-  for (unsigned int counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
+  for (counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
       ModifierSpeciesReference_t* sRef = ModifierSpeciesReference_create();

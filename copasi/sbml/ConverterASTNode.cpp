@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/15 16:35:26 $
+   $Author: shoops $ 
+   $Date: 2004/06/23 17:46:45 $
    End CVS Header */
 
-#include "ConverterASTNode.h"
-#include <string.h>
+#include <string>
 #include <iostream>
+
+#include "ConverterASTNode.h"
 
 /**
  * Standard constructor
@@ -80,7 +81,9 @@ bool ConverterASTNode::isUserDefinedFunction(){
 void ConverterASTNode::printASTNode(const ASTNode* node, unsigned int indent)
 {
   std::string spacer = "";
-  for (unsigned int counter = 0; counter < indent; counter++)
+  unsigned int counter;
+
+  for (counter = 0; counter < indent; counter++)
     {
       spacer += " ";
     }
@@ -106,7 +109,7 @@ void ConverterASTNode::printASTNode(const ASTNode* node, unsigned int indent)
       std::cout << "[" << node->getType() << "]";
     }
   std::cout << std::endl;
-  for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+  for (counter = 0; counter < node->getNumChildren(); counter++)
     {
       ConverterASTNode::printASTNode(node->getChild(counter), indent + 2);
     }

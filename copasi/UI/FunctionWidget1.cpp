@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 09:30:01 $
+   $Author: shoops $ 
+   $Date: 2004/06/23 17:46:45 $
    End CVS Header */
 
 /**********************************************************************
@@ -554,7 +554,7 @@ void FunctionWidget1::updateParameters()
   //next delete the parameters that are not in the node tree
   std::vector<std::string>::const_iterator it, itEnd = paramNames.end();
   bool found;
-  for (unsigned C_INT32 i = 0; i < params.size(); i++)
+  for (i = 0; i < params.size(); i++)
     {
       const std::string & name = params[i]->getObjectName();
 
@@ -798,7 +798,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                    // Yes or Enter
+        case 0:                     // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -830,7 +830,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                    // No or Escape
+        case 1:                     // No or Escape
           break;
         }
     }

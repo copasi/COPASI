@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 14:02:06 $
+   $Author: shoops $ 
+   $Date: 2004/06/23 17:46:45 $
    End CVS Header */
 
 #include <iostream>
@@ -113,7 +113,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   /* Create all species */
   //DebugFile << "Creating Metabolites." << std::endl;
   num = sbmlModel->getNumSpecies();
-  for (unsigned int counter = num; counter > 0; counter--)
+
+  for (counter = num; counter > 0; counter--)
     {
       Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
       if (sbmlSpecies == NULL)
@@ -146,7 +147,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
   /* Create all reactions */
   //DebugFile << "Creating reactions." << std::endl;
   num = sbmlModel->getNumReactions();
-  for (unsigned int counter = 0; counter < num; counter++)
+  for (counter = 0; counter < num; counter++)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, compartmentMap);
     }
@@ -295,7 +296,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   unsigned int num = sbmlReaction->getNumReactants();
   bool singleCompartment = true;
   const CCompartment* compartment = NULL;
-  for (unsigned int counter = 0; counter < num; counter++)
+  for (counter = 0; counter < num; counter++)
     {
       SpeciesReference* sr = sbmlReaction->getReactant(counter);
       if (sr == NULL)
@@ -329,7 +330,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* Add all products to the reaction */
   num = sbmlReaction->getNumProducts();
-  for (unsigned int counter = 0; counter < num; counter++)
+  for (counter = 0; counter < num; counter++)
     {
       SpeciesReference* sr = sbmlReaction->getProduct(counter);
       if (sr == NULL)
@@ -362,7 +363,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* Add all modifiers to the reaction */
   num = sbmlReaction->getNumModifiers();
-  for (unsigned int counter = 0; counter < num; counter++)
+  for (counter = 0; counter < num; counter++)
     {
       ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
       if (sr == NULL)
@@ -524,7 +525,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
       //create parameters
       std::vector<CNodeK*>& v = dynamic_cast<CKinFunction*>(cFun)->getNodes();
-      for (unsigned int counter = 0; counter < v.size(); counter++)
+      unsigned int counter;
+      for (counter = 0; counter < v.size(); counter++)
         {
           /* assign a type and a mapping */
           CNodeK* node = v[counter];
@@ -645,7 +647,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
       /* do the mapping from reaction metabolites to the parameters of the
        * kinetic function */
-      for (unsigned int counter = 0; counter < v.size(); counter++)
+      for (counter = 0; counter < v.size(); counter++)
         {
           /* assign a type and a mapping */
           CNodeK* node = v[counter];
@@ -791,7 +793,8 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
   substances["substrates"] = std::map< std::string, std::string >();
   substances["products"] = std::map< std::string, std::string >();
   substances["modifiers"] = std::map< std::string, std::string >();
-  for (unsigned int counter = 0; counter < reaction->getNumReactants(); counter++)
+  unsigned int counter;
+  for (counter = 0; counter < reaction->getNumReactants(); counter++)
     {
       std::string name = reaction->getReactant(counter)->getSpecies();
       if (name.find("substrate_") == 0)
@@ -803,7 +806,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
           substances["substrates"][name] = "substrate_" + name;
         }
     }
-  for (unsigned int counter = 0; counter < reaction->getNumProducts(); counter++)
+  for (counter = 0; counter < reaction->getNumProducts(); counter++)
     {
       std::string name = reaction->getProduct(counter)->getSpecies();
       if (name.find("product_") == 0)
@@ -815,7 +818,7 @@ SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reac
           substances["products"][name] = "product_" + name;
         }
     }
-  for (unsigned int counter = 0; counter < reaction->getNumModifiers(); counter++)
+  for (counter = 0; counter < reaction->getNumModifiers(); counter++)
     {
       std::string name = reaction->getModifier(counter)->getSpecies();
       if (name.find("modifier_") == 0)
