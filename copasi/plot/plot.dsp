@@ -24,7 +24,7 @@ CFG=plot - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=plot - Win32 Build
 # PROP BASE Target_File "libplot.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -56,6 +56,18 @@ CFG=plot - Win32 Build
 # Begin Source File
 
 SOURCE=.\CopasiPlot.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpec.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpecVector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\curve2dwidget.cpp
 # End Source File
 # Begin Source File
 
@@ -91,7 +103,23 @@ SOURCE=.\CopasiPlot.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CPlotSpec.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CPlotSpecVector.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\crvspecscrlview.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\curve2dwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\curve2dwidget.ui.h
 # End Source File
 # Begin Source File
 
