@@ -3,18 +3,15 @@
 
 #include "copasi.h"
 #include "listviews.h"
-#include "model/model.h" 
-//#include "steadystate/.h"
-// #include "trajectory/trajectory.h"
+#include "model/model.h"
 
-class ListViews;
 class QToolButton;
 class CopasiUI3Window : public QMainWindow
   {
     Q_OBJECT
 
   public:
-    CopasiUI3Window(QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel);
+    CopasiUI3Window();
 
   protected:
 
@@ -35,7 +32,7 @@ class CopasiUI3Window : public QMainWindow
 
   private:
     QString gpsFile;
-    QToolButton* msave_button;
+    QToolButton * msave_button;
     QPopupMenu * file;
     int nsave_menu_id;
     int nsaveas_menu_id;

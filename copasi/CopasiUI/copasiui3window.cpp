@@ -32,19 +32,24 @@
  *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
  *  for more information about these flags.
  */
-CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
-    : QMainWindow(parent, name, f)
+CopasiUI3Window::CopasiUI3Window():
+    QMainWindow(),
+    dataModel(NULL),
+    splitter(NULL),
+    listViews(NULL),
+    gpsFile(),
+    msave_button(NULL),
+    file(NULL)
 {
   // Set the window caption/title
   setCaption("Copasi ");
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
+  file = new QPopupMenu;
   file->setItemEnabled(nexport_menu_SBML, false);
   file->setItemEnabled(nsave_menu_id, false);
   file->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
-  dataModel = NULL; // the datamodel tobe used
-  splitter = NULL;  // the splittler for sepearting diff views
 
   resize(766, 400); // to resize the screen..to fit this size
 
