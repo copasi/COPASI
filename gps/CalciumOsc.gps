@@ -1,319 +1,1158 @@
-Version=3.21107
-EndTime=1.000000e+001
-Points=500
-OutputTimeZero=1
-RealTime=0
-SleepTime=1
-TimeUnit=s
-ConcentrationUnit=mM
-VolumeUnit=ml
-TimeElasticities=0
-Dynamics=1
-SteadyState=0
-Report=0
-DynTitles=0
-SSTitles=0
-DynQuotes=0
-SSQuotes=0
-DynColWidth=12
-SSColWidth=12
-DynSeparator=32
-SSSeparator=32
-SSMCAUnscaled=0
-SSStrategy=0
-SSBackIntegration=1
-RepStructuralAnalysis=0
-RepStabilityAnalysis=0
-RepMCA=1
-NewtonLimit=50
-SSResoltion=1.000000e-009
-RelativeTolerance=1.000000e-006
-AbsoluteTolerance=1.000000e-012
-AdamsMaxOrder=12
-BDFMaxOrder=5
-DerivationFactor=1.000000e-003
-ReportFile=CalciumOsc.txt
-DynamicsFile=caosc.dyn
-SSFile=simresults.ss
-Title=Signal-induced Calcium oscillations
-TotalMetabolites=2
-TotalSteps=6
-TotalMoieties=0
-TotalCompartments=1
-Stoichiometry
-1.000000 1.000000 -1.000000 1.000000 1.000000 -1.000000 
-0.000000 0.000000 1.000000 -1.000000 -1.000000 0.000000 
-TotalUDKinetics=2
-UDKType=cnst rate w/ linear inhibitor
-User-defined=1
-Reversible=0
-Substrates=0
-Products=1
-Modifiers=0
-Constants=2
-Constant0=k
-Constant1=beta
-FunctionName=cnst rate w/ linear inhibitor
-Description=k*beta
-Nodes=4
-Node=37,64
-Node=107,64
-Index=0
-Name=k
-Node=79,42
-Node=107,64
-Index=1
-Name=beta
-UDKType=Hill coop w/ coop activator
-User-defined=1
-Reversible=0
-Substrates=1
-Products=1
-Modifiers=1
-Constants=5
-Modifier0=A
-Constant0=V
-Constant1=h
-Constant2=p
-Constant3=Ks
-Constant4=Ka
-FunctionName=Hill coop w/ coop activator
-Description=V*S^h*A^p/((Ks^h+S^h)*(Ka^p+A^p))
-Nodes=32
-Node=37,64
-Node=107,64
-Index=0
-Name=V
-Node=79,42
-Node=115,64
-Index=0
-Name=S
-Node=79,94
-Node=107,64
-Index=1
-Name=h
-Node=79,42
-Node=109,64
-Index=0
-Name=A
-Node=79,94
-Node=107,64
-Index=2
-Name=p
-Node=79,47
-Node=79,40
-Node=79,40
-Node=107,64
-Index=3
-Name=Ks
-Node=79,94
-Node=107,64
-Index=1
-Name=h
-Node=79,43
-Node=115,64
-Index=0
-Name=S
-Node=79,94
-Node=107,64
-Index=1
-Name=h
-Node=79,41
-Node=79,42
-Node=79,40
-Node=107,64
-Index=4
-Name=Ka
-Node=79,94
-Node=107,64
-Index=2
-Name=p
-Node=79,43
-Node=109,64
-Index=0
-Name=A
-Node=79,94
-Node=107,64
-Index=2
-Name=p
-Node=79,41
-Node=79,41
-Metabolite=Z
-Concentration=1.4
-Compartment=0
-Type=1
-Metabolite=Y
-Concentration=1.4
-Compartment=0
-Type=1
-Step=0
-Equation= -> Z
-KineticType=Constant flux (irreversible)
-Flux=0
-Reversible=0
-Substrates=0
-Products=1
-Modifiers=0
-Constants=1
-Prod0=0
-Param0=1
-Step=1
-Equation= -> Z
-KineticType=cnst rate w/ linear inhibitor
-Flux=0
-Reversible=0
-Substrates=0
-Products=1
-Modifiers=0
-Constants=2
-Prod0=0
-Param0=7.3
-Param1=0.301
-Step=2
-Equation=Z -> Y
-KineticType=Hill Cooperativity
-Flux=0
-Reversible=0
-Substrates=1
-Products=1
-Modifiers=0
-Constants=3
-Subs0=0
-Prod0=1
-Param0=1
-Param1=65
-Param2=2
-Step=3
-Equation=Y -> Z
-KineticType=Hill coop w/ coop activator
-Flux=0
-Reversible=0
-Substrates=1
-Products=1
-Modifiers=1
-Constants=5
-Subs0=1
-Prod0=0
-Modf0=0
-Param0=500
-Param1=2
-Param2=4
-Param3=2
-Param4=0.9
-Step=leak
-Equation=Y -> Z
-KineticType=Mass action (irreversible)
-Flux=0
-Reversible=0
-Substrates=1
-Products=1
-Modifiers=0
-Constants=1
-Subs0=1
-Prod0=0
-Param0=1
-Step=efflux
-Equation=Z -> 
-KineticType=Mass action (irreversible)
-Flux=0
-Reversible=0
-Substrates=1
-Products=0
-Modifiers=0
-Constants=1
-Subs0=0
-Param0=10
-Compartment=compartment
-Volume=1.000000e+000
-Comments
-This is the 2-variable model of Calcium oscillations of Goldbeter et al. (1990) PNAS 87, 1461- 1465
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generated with COPASI (http://www.copasi.org) -->
+<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd">
+  <ListOfFunctions>
+    <Function key="Function14" name="Mass action (reversible)" type="MassAction" positive="true">
+      <MathML>
+        <Text>
+          k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter77" name="k1" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter78" name="substrate" order="1" role="substrate" minOccurs="1" maxOccurs="unbounded"/>
+        <ParameterDescription key="FunctionParameter79" name="k2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter80" name="product" order="3" role="product" minOccurs="1" maxOccurs="unbounded"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function38" name="HXT kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          (Vmax * (A-B)/Kglc)/(1+(A+B)/Kglc+(Ki*A*B)/(Kglc^2))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter266" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter267" name="B" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter268" name="Vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter269" name="Kglc" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter270" name="Ki" order="4" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function39" name="HK kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A*B/(Kglc*Katp)- P*Q/(Kglc*Katp*Keq))/((1+A/Kglc+P/Kg6p)*(1+B/Katp+Q/Kadp))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter289" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter290" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter291" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter292" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter293" name="Vmax" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter294" name="Kglc" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter295" name="Katp" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter296" name="Keq" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter297" name="Kg6p" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter298" name="Kadp" order="9" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function40" name="PGI kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A/Kg6p-P/(Kg6p*Keq))/(1+A/Kg6p+P/Kf6p)
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter309" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter310" name="P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter311" name="Vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter312" name="Kg6p" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter313" name="Keq" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter314" name="Kf6p" order="5" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function41" name="PFK kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          Vmax*(gR*(F6P/Kf6p)*(ATP/Katp)*(1+F6P/Kf6p+ATP/Katp+gR*F6P/Kf6p*ATP/Katp)/((1+F6P/Kf6p+ATP/Katp+gR*F6P/Kf6p*ATP/Katp)^2+(L0*((1+Ciatp*ATP/Kiatp)/(1+ATP/Kiatp))^2*((1+Camp*AMP/Kamp)/(1+AMP/Kamp))^2*((1+Cf26*F26BP/Kf26+Cf16*F16P/Kf16)/(1+F26BP/Kf26+F16P/Kf16))^2)*(1+Catp*ATP/Katp)^2))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter363" name="F6P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter364" name="ATP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter365" name="F16P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter366" name="AMP" order="3" role="modifier"/>
+        <ParameterDescription key="FunctionParameter367" name="F26BP" order="4" role="modifier"/>
+        <ParameterDescription key="FunctionParameter368" name="Vmax" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter369" name="gR" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter370" name="Kf6p" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter371" name="Katp" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter372" name="L0" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter373" name="Ciatp" order="10" role="constant"/>
+        <ParameterDescription key="FunctionParameter374" name="Kiatp" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter375" name="Camp" order="12" role="constant"/>
+        <ParameterDescription key="FunctionParameter376" name="Kamp" order="13" role="constant"/>
+        <ParameterDescription key="FunctionParameter377" name="Cf26" order="14" role="constant"/>
+        <ParameterDescription key="FunctionParameter378" name="Kf26" order="15" role="constant"/>
+        <ParameterDescription key="FunctionParameter379" name="Cf16" order="16" role="constant"/>
+        <ParameterDescription key="FunctionParameter380" name="Kf16" order="17" role="constant"/>
+        <ParameterDescription key="FunctionParameter381" name="Catp" order="18" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function42" name="ALD kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A/Kf16bp-(P*Q/(Kf16bp*Keq)))/(1+A/Kf16bp+P/Kdhap+Q/Kgap+A*Q/(Kf16bp*Kigap)+P*Q/(Kdhap*Kgap))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter403" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter404" name="P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter405" name="Q" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter406" name="Vmax" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter407" name="Kf16bp" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter408" name="Keq" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter409" name="Kdhap" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter410" name="Kgap" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter411" name="Kigap" order="8" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function43" name="GAPDH kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          C*(Vmaxf*A*B/(Kgap*Knad)-Vmaxr*P*Q/(Kbpg*Knadh))/((1+A/Kgap+P/Kbpg)*(1+B/Knad+Q/Knadh))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter431" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter432" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter433" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter434" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter435" name="C" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter436" name="Vmaxf" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter437" name="Kgap" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter438" name="Knad" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter439" name="Vmaxr" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter440" name="Kbpg" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter441" name="Knadh" order="10" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function44" name="PGK kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*((Keq*A*B-P*Q)/(Kp3g*Katp))/((1+A/Kbpg+P/Kp3g)*(1+B/Kadp+Q/Katp))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter458" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter459" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter460" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter461" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter462" name="Vmax" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter463" name="Keq" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter464" name="Kp3g" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter465" name="Katp" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter466" name="Kbpg" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter467" name="Kadp" order="9" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function45" name="PGM kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A/Kp3g-P/(Kp3g*Keq))/(1+A/Kp3g+P/Kp2g)
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter478" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter479" name="P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter480" name="Vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter481" name="Kp3g" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter482" name="Keq" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter483" name="Kp2g" order="5" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function46" name="ENO kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A/Kp2g-P/(Kp2g*Keq))/(1+A/Kp2g+P/Kpep)
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter494" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter495" name="P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter496" name="Vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter497" name="Kp2g" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter498" name="Keq" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter499" name="Kpep" order="5" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function47" name="PYK kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A*B/(Kpep*Kadp)-P*Q/(Kpep*Kadp*Keq))/((1+A/Kpep+P/Kpyr)*(1+B/Kadp+Q/Katp))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter518" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter519" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter520" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter521" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter522" name="Vmax" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter523" name="Kpep" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter524" name="Kadp" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter525" name="Keq" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter526" name="Kpyr" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter527" name="Katp" order="9" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function48" name="PDC kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          Vmax*((A/Kpyr)^nH)/(1+(A/Kpyr)^nH)
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter535" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter536" name="Vmax" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter537" name="Kpyr" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter538" name="nH" order="3" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function49" name="ADH kinetics" type="UserDefined" positive="true">
+      <MathML>
+        <Text>
+          Vmax*(A*B/(Ketoh*Kinad)-P*Q/(Ketoh*Kinad*Keq))/(1+B/Kinad+A*Knad/(Kinad*Ketoh)+P*Knadh/(Kinadh*Kacald)+Q/Kinadh+A*B/(Kinad*Ketoh)+B*P*Knadh/(Kinad*Kinadh*Kacald)+A*Q*Knad/(Kinad*Kinadh*Ketoh)+P*Q/(Kacald*Kinadh)+A*B*P/(Kinad*Kiacald*Ketoh)+A*P*Q/(Kietoh*Kinadh*Kacald))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter593" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter594" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter595" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter596" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter597" name="Vmax" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter598" name="Ketoh" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter599" name="Kinad" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter600" name="Keq" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter601" name="Knad" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter602" name="Knadh" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter603" name="Kinadh" order="10" role="constant"/>
+        <ParameterDescription key="FunctionParameter604" name="Kacald" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter605" name="Kiacald" order="12" role="constant"/>
+        <ParameterDescription key="FunctionParameter606" name="Kietoh" order="13" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function50" name="ATPase" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          Katpase*ATP
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter609" name="ATP" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter610" name="Katpase" order="1" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function51" name="G3PDH kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          Vmax*((A/Kdhap)*(B/Knadh)-(P/Kdhap)*(Q/Knadh)*(1/Keq))/((1+A/Kdhap+P/Kglycerol)*(1+B/Knadh+Q/Knad))
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter629" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter630" name="B" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter631" name="P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter632" name="Q" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter633" name="Vmax" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter634" name="Kdhap" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter635" name="Knadh" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter636" name="Keq" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter637" name="Kglycerol" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter638" name="Knad" order="9" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function52" name="Glycogen synthesis kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          KGLYCOGEN
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter640" name="KGLYCOGEN" order="0" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function53" name="Trehalose synthesis kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          Ktrehalose
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter642" name="Ktrehalose" order="0" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function54" name="Succinate kinetics" type="UserDefined" positive="false">
+      <MathML>
+        <Text>
+          k*A
+        </Text>
+      </MathML>
+      <ListOfParameterDescriptions>
+        <ParameterDescription key="FunctionParameter645" name="A" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter646" name="k" order="1" role="constant"/>
+      </ListOfParameterDescriptions>
+    </Function>
+  </ListOfFunctions>
+  <Model key="Model0" name="Yeast glycolysis model of Pritchard and Kell" timeUnit="m" volumeUnit="ml" quantityUnit="mMol" stateVariable="StateVariable1">
+    <Comment>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        From Pritchard and Kell (2002) Eur. J. Biochem. 269, 3894-3904 which was
+modified from Teusink et al. (2000) Eur J Biochem 267, 5313-5329. 
+This version uses the Vmaxes found by the best fit (R1) of Table 1 of the 
+Pritchard and Kell paper, and simulates a decrease of external glucose  concentration from 100 to 2 mM.
+(More model files at http://users.aber.ac.uk/lep/models.shtml)
 
-Z is the free calcium concentration
-Y is the IPT-insensitive calcium pool 
-EndComments
-PlotType=2
-PlotDyn=0
-Plot3d=0
-PlotGrid=0
-PlotKey=0
-PlotTitles=1
-PlotMultiplot=0
-PlotContour=0
-PlotHidden3d=0
-PlotLogX=0
-PlotLogY=0
-PlotLogZ=0
-PlotXEntry=0
-PlotYTotal=2
-PlotZTotal=1
-PlotY0=2
-PlotY1=3
-PlotZ0=-1
-User-defined functions
-Items=0
-Interactive time course
-Items=0
-Time-course output
-Items=4
-Title=time
-Type=14
-Title=1(beta)
-Type=6
-I=1
-J=beta
-Title=[Z]t
-Type=3
-I=Z
-Title=[Y]t
-Type=3
-I=Y
-Steady-state output
-Items=0
-Scan
-Enabled=1
-Dimension=1
-Title=1(beta)
-Type=6
-I=1
-J=beta
-Min=0.0100000000000000
-Max=1.0000000000000000
-Density=5
-Log=1
-Independent=1
-Grid=0
-Parameter Links
-Items=0
-Optimisation
-Enabled=0
-SetModel=0
-Sign=1.0
-OptimiseDyn=1
-Constrained=1
-Method=
-P0=1
-P1=1
-P2=1
-P3=1
-P4=1
-Title=
-Type=0
-Parameters=0
-Fitting
-Enabled=0
-SetModel=0
-FitDyn=1
-Constrained=1
-FitDataFile=
-FitSeparator=32
-FitLines=0
-Method=
-P0=1
-P1=1
-P2=1
-P3=1
-P4=1
-Parameters=0
-AdjConcentrations=0
-FitXItems=0
-FitYItems=0
+      </body>
+    </Comment>
+    <ListOfCompartments>
+      <Compartment key="Compartment0" name="compartment" stateVariable="StateVariable2"/>
+    </ListOfCompartments>
+    <ListOfMetabolites>
+      <Metabolite key="Metabolite2" name="GLCi" compartment="Compartment0" stateVariable="StateVariable3"/>
+      <Metabolite key="Metabolite3" name="ATP" compartment="Compartment0" stateVariable="StateVariable4"/>
+      <Metabolite key="Metabolite4" name="G6P" compartment="Compartment0" stateVariable="StateVariable5"/>
+      <Metabolite key="Metabolite5" name="ADP" compartment="Compartment0" stateVariable="StateVariable6"/>
+      <Metabolite key="Metabolite6" name="F6P" compartment="Compartment0" stateVariable="StateVariable7"/>
+      <Metabolite key="Metabolite7" name="F16bP" compartment="Compartment0" stateVariable="StateVariable8"/>
+      <Metabolite key="Metabolite8" name="AMP" compartment="Compartment0" stateVariable="StateVariable9"/>
+      <Metabolite key="Metabolite10" name="DHAP" compartment="Compartment0" stateVariable="StateVariable10"/>
+      <Metabolite key="Metabolite11" name="GAP" compartment="Compartment0" stateVariable="StateVariable11"/>
+      <Metabolite key="Metabolite12" name="NAD" compartment="Compartment0" stateVariable="StateVariable12"/>
+      <Metabolite key="Metabolite13" name="BPG" compartment="Compartment0" stateVariable="StateVariable13"/>
+      <Metabolite key="Metabolite14" name="NADH" compartment="Compartment0" stateVariable="StateVariable14"/>
+      <Metabolite key="Metabolite15" name="P3G" compartment="Compartment0" stateVariable="StateVariable15"/>
+      <Metabolite key="Metabolite16" name="P2G" compartment="Compartment0" stateVariable="StateVariable16"/>
+      <Metabolite key="Metabolite17" name="PEP" compartment="Compartment0" stateVariable="StateVariable17"/>
+      <Metabolite key="Metabolite18" name="PYR" compartment="Compartment0" stateVariable="StateVariable18"/>
+      <Metabolite key="Metabolite19" name="AcAld" compartment="Compartment0" stateVariable="StateVariable19"/>
+      <Metabolite key="Metabolite25" name="Succinate" compartment="Compartment0" stateVariable="StateVariable20"/>
+      <Metabolite key="Metabolite24" name="Trehalose" compartment="Compartment0" stateVariable="StateVariable21"/>
+      <Metabolite key="Metabolite23" name="Glycogen" compartment="Compartment0" stateVariable="StateVariable22"/>
+      <Metabolite key="Metabolite22" name="Glycerol" compartment="Compartment0" stateVariable="StateVariable23"/>
+      <Metabolite key="Metabolite21" name="EtOH" compartment="Compartment0" stateVariable="StateVariable24"/>
+      <Metabolite key="Metabolite20" name="CO2" compartment="Compartment0" stateVariable="StateVariable25"/>
+      <Metabolite key="Metabolite9" name="F26bP" compartment="Compartment0" stateVariable="StateVariable26"/>
+      <Metabolite key="Metabolite1" name="GLCo" compartment="Compartment0" stateVariable="StateVariable27"/>
+    </ListOfMetabolites>
+    <ListOfReactions>
+      <Reaction key="Reaction0" name="HXT" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite1" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite2" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant29" name="Vmax" value="97.24"/>
+          <Constant key="Constant30" name="Kglc" value="1.1918"/>
+          <Constant key="Constant31" name="Ki" value="0.91"/>
+        </ListOfConstants>
+        <KineticLaw function="Function38">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter647">
+              <SourceParameter reference="Metabolite1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter648">
+              <SourceParameter reference="Metabolite2"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter649">
+              <SourceParameter reference="Constant29"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter650">
+              <SourceParameter reference="Constant30"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter651">
+              <SourceParameter reference="Constant31"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction1" name="HK" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite4" stoichiometry="1"/>
+          <Product metabolite="Metabolite5" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant33" name="Vmax" value="236.7"/>
+          <Constant key="Constant34" name="Kglc" value="0.08"/>
+          <Constant key="Constant35" name="Katp" value="0.15"/>
+          <Constant key="Constant36" name="Keq" value="2000"/>
+          <Constant key="Constant37" name="Kg6p" value="30"/>
+          <Constant key="Constant38" name="Kadp" value="0.23"/>
+        </ListOfConstants>
+        <KineticLaw function="Function39">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter652">
+              <SourceParameter reference="Metabolite2"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter653">
+              <SourceParameter reference="Metabolite3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter654">
+              <SourceParameter reference="Metabolite4"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter655">
+              <SourceParameter reference="Metabolite5"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter656">
+              <SourceParameter reference="Constant33"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter657">
+              <SourceParameter reference="Constant34"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter658">
+              <SourceParameter reference="Constant35"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter659">
+              <SourceParameter reference="Constant36"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter660">
+              <SourceParameter reference="Constant37"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter661">
+              <SourceParameter reference="Constant38"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction2" name="PGI" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite4" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite6" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant40" name="Vmax" value="1056"/>
+          <Constant key="Constant41" name="Kg6p" value="1.4"/>
+          <Constant key="Constant42" name="Keq" value="0.29"/>
+          <Constant key="Constant43" name="Kf6p" value="0.3"/>
+        </ListOfConstants>
+        <KineticLaw function="Function40">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter662">
+              <SourceParameter reference="Metabolite4"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter663">
+              <SourceParameter reference="Metabolite6"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter664">
+              <SourceParameter reference="Constant40"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter665">
+              <SourceParameter reference="Constant41"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter666">
+              <SourceParameter reference="Constant42"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter667">
+              <SourceParameter reference="Constant43"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction3" name="PFK" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite7" stoichiometry="1"/>
+          <Product metabolite="Metabolite5" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfModifiers>
+          <Modifier metabolite="Metabolite8" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite9" stoichiometry="1"/>
+        </ListOfModifiers>
+        <ListOfConstants>
+          <Constant key="Constant45" name="Vmax" value="110"/>
+          <Constant key="Constant46" name="gR" value="5.12"/>
+          <Constant key="Constant47" name="Kf6p" value="0.1"/>
+          <Constant key="Constant48" name="Katp" value="0.71"/>
+          <Constant key="Constant49" name="L0" value="0.66"/>
+          <Constant key="Constant50" name="Ciatp" value="100"/>
+          <Constant key="Constant51" name="Kiatp" value="0.65"/>
+          <Constant key="Constant52" name="Camp" value="0.0845"/>
+          <Constant key="Constant53" name="Kamp" value="0.0995"/>
+          <Constant key="Constant54" name="Cf26" value="0.0174"/>
+          <Constant key="Constant55" name="Kf26" value="0.000682"/>
+          <Constant key="Constant56" name="Cf16" value="0.397"/>
+          <Constant key="Constant57" name="Kf16" value="0.111"/>
+          <Constant key="Constant58" name="Catp" value="3"/>
+        </ListOfConstants>
+        <KineticLaw function="Function41">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter668">
+              <SourceParameter reference="Metabolite6"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter669">
+              <SourceParameter reference="Metabolite3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter670">
+              <SourceParameter reference="Metabolite7"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter671">
+              <SourceParameter reference="Metabolite8"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter672">
+              <SourceParameter reference="Metabolite9"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter673">
+              <SourceParameter reference="Constant45"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter674">
+              <SourceParameter reference="Constant46"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter675">
+              <SourceParameter reference="Constant47"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter676">
+              <SourceParameter reference="Constant48"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter677">
+              <SourceParameter reference="Constant49"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter678">
+              <SourceParameter reference="Constant50"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter679">
+              <SourceParameter reference="Constant51"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter680">
+              <SourceParameter reference="Constant52"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter681">
+              <SourceParameter reference="Constant53"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter682">
+              <SourceParameter reference="Constant54"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter683">
+              <SourceParameter reference="Constant55"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter684">
+              <SourceParameter reference="Constant56"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter685">
+              <SourceParameter reference="Constant57"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter686">
+              <SourceParameter reference="Constant58"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction4" name="ALD" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite7" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite10" stoichiometry="1"/>
+          <Product metabolite="Metabolite11" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant60" name="Vmax" value="94.69"/>
+          <Constant key="Constant61" name="Kf16bp" value="0.3"/>
+          <Constant key="Constant62" name="Keq" value="0.069"/>
+          <Constant key="Constant63" name="Kdhap" value="2"/>
+          <Constant key="Constant64" name="Kgap" value="2.4"/>
+          <Constant key="Constant65" name="Kigap" value="10"/>
+        </ListOfConstants>
+        <KineticLaw function="Function42">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter687">
+              <SourceParameter reference="Metabolite7"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter688">
+              <SourceParameter reference="Metabolite10"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter689">
+              <SourceParameter reference="Metabolite11"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter690">
+              <SourceParameter reference="Constant60"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter691">
+              <SourceParameter reference="Constant61"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter692">
+              <SourceParameter reference="Constant62"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter693">
+              <SourceParameter reference="Constant63"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter694">
+              <SourceParameter reference="Constant64"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter695">
+              <SourceParameter reference="Constant65"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction5" name="TPI" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite10" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite11" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant67" name="k1" value="450000"/>
+          <Constant key="Constant68" name="k2" value="1e+007"/>
+        </ListOfConstants>
+        <KineticLaw function="Function14">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter696">
+              <SourceParameter reference="Constant67"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter697">
+              <SourceParameter reference="Metabolite10"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter698">
+              <SourceParameter reference="Constant68"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter699">
+              <SourceParameter reference="Metabolite11"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction6" name="GAPDH" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite12" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite13" stoichiometry="1"/>
+          <Product metabolite="Metabolite14" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant70" name="C" value="1"/>
+          <Constant key="Constant71" name="Vmaxf" value="1152"/>
+          <Constant key="Constant72" name="Kgap" value="0.21"/>
+          <Constant key="Constant73" name="Knad" value="0.09"/>
+          <Constant key="Constant74" name="Vmaxr" value="6719"/>
+          <Constant key="Constant75" name="Kbpg" value="0.0098"/>
+          <Constant key="Constant76" name="Knadh" value="0.06"/>
+        </ListOfConstants>
+        <KineticLaw function="Function43">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter700">
+              <SourceParameter reference="Metabolite11"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter701">
+              <SourceParameter reference="Metabolite12"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter702">
+              <SourceParameter reference="Metabolite13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter703">
+              <SourceParameter reference="Metabolite14"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter704">
+              <SourceParameter reference="Constant70"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter705">
+              <SourceParameter reference="Constant71"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter706">
+              <SourceParameter reference="Constant72"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter707">
+              <SourceParameter reference="Constant73"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter708">
+              <SourceParameter reference="Constant74"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter709">
+              <SourceParameter reference="Constant75"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter710">
+              <SourceParameter reference="Constant76"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction7" name="PGK" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite13" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite5" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite15" stoichiometry="1"/>
+          <Product metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant78" name="Vmax" value="1288"/>
+          <Constant key="Constant79" name="Keq" value="3200"/>
+          <Constant key="Constant80" name="Kp3g" value="0.53"/>
+          <Constant key="Constant81" name="Katp" value="0.3"/>
+          <Constant key="Constant82" name="Kbpg" value="0.003"/>
+          <Constant key="Constant83" name="Kadp" value="0.2"/>
+        </ListOfConstants>
+        <KineticLaw function="Function44">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter711">
+              <SourceParameter reference="Metabolite13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter712">
+              <SourceParameter reference="Metabolite5"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter713">
+              <SourceParameter reference="Metabolite15"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter714">
+              <SourceParameter reference="Metabolite3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter715">
+              <SourceParameter reference="Constant78"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter716">
+              <SourceParameter reference="Constant79"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter717">
+              <SourceParameter reference="Constant80"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter718">
+              <SourceParameter reference="Constant81"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter719">
+              <SourceParameter reference="Constant82"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter720">
+              <SourceParameter reference="Constant83"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction8" name="PGM" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite15" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite16" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant85" name="Vmax" value="2585"/>
+          <Constant key="Constant86" name="Kp3g" value="1.2"/>
+          <Constant key="Constant87" name="Keq" value="0.19"/>
+          <Constant key="Constant88" name="Kp2g" value="0.08"/>
+        </ListOfConstants>
+        <KineticLaw function="Function45">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter721">
+              <SourceParameter reference="Metabolite15"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter722">
+              <SourceParameter reference="Metabolite16"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter723">
+              <SourceParameter reference="Constant85"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter724">
+              <SourceParameter reference="Constant86"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter725">
+              <SourceParameter reference="Constant87"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter726">
+              <SourceParameter reference="Constant88"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction9" name="ENO" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite16" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite17" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant90" name="Vmax" value="201.6"/>
+          <Constant key="Constant91" name="Kp2g" value="0.04"/>
+          <Constant key="Constant92" name="Keq" value="6.7"/>
+          <Constant key="Constant93" name="Kpep" value="0.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function46">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter727">
+              <SourceParameter reference="Metabolite16"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter728">
+              <SourceParameter reference="Metabolite17"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter729">
+              <SourceParameter reference="Constant90"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter730">
+              <SourceParameter reference="Constant91"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter731">
+              <SourceParameter reference="Constant92"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter732">
+              <SourceParameter reference="Constant93"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction10" name="PYK" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite17" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite5" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite18" stoichiometry="1"/>
+          <Product metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant95" name="Vmax" value="1000"/>
+          <Constant key="Constant96" name="Kpep" value="0.14"/>
+          <Constant key="Constant97" name="Kadp" value="0.53"/>
+          <Constant key="Constant98" name="Keq" value="6500"/>
+          <Constant key="Constant99" name="Kpyr" value="21"/>
+          <Constant key="Constant100" name="Katp" value="1.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function47">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter733">
+              <SourceParameter reference="Metabolite17"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter734">
+              <SourceParameter reference="Metabolite5"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter735">
+              <SourceParameter reference="Metabolite18"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter736">
+              <SourceParameter reference="Metabolite3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter737">
+              <SourceParameter reference="Constant95"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter738">
+              <SourceParameter reference="Constant96"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter739">
+              <SourceParameter reference="Constant97"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter740">
+              <SourceParameter reference="Constant98"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter741">
+              <SourceParameter reference="Constant99"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter742">
+              <SourceParameter reference="Constant100"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction11" name="PDC" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite18" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite19" stoichiometry="1"/>
+          <Product metabolite="Metabolite20" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant102" name="Vmax" value="857.8"/>
+          <Constant key="Constant103" name="Kpyr" value="4.33"/>
+          <Constant key="Constant104" name="nH" value="1.9"/>
+        </ListOfConstants>
+        <KineticLaw function="Function48">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter743">
+              <SourceParameter reference="Metabolite18"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter744">
+              <SourceParameter reference="Constant102"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter745">
+              <SourceParameter reference="Constant103"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter746">
+              <SourceParameter reference="Constant104"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction12" name="ADH" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite12" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite19" stoichiometry="1"/>
+          <Product metabolite="Metabolite14" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant106" name="Vmax" value="209.5"/>
+          <Constant key="Constant107" name="Ketoh" value="17"/>
+          <Constant key="Constant108" name="Kinad" value="0.92"/>
+          <Constant key="Constant109" name="Keq" value="6.9e-005"/>
+          <Constant key="Constant110" name="Knad" value="0.17"/>
+          <Constant key="Constant111" name="Knadh" value="0.11"/>
+          <Constant key="Constant112" name="Kinadh" value="0.031"/>
+          <Constant key="Constant113" name="Kacald" value="1.11"/>
+          <Constant key="Constant114" name="Kiacald" value="1.1"/>
+          <Constant key="Constant115" name="Kietoh" value="90"/>
+        </ListOfConstants>
+        <KineticLaw function="Function49">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter747">
+              <SourceParameter reference="Metabolite21"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter748">
+              <SourceParameter reference="Metabolite12"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter749">
+              <SourceParameter reference="Metabolite19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter750">
+              <SourceParameter reference="Metabolite14"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter751">
+              <SourceParameter reference="Constant106"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter752">
+              <SourceParameter reference="Constant107"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter753">
+              <SourceParameter reference="Constant108"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter754">
+              <SourceParameter reference="Constant109"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter755">
+              <SourceParameter reference="Constant110"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter756">
+              <SourceParameter reference="Constant111"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter757">
+              <SourceParameter reference="Constant112"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter758">
+              <SourceParameter reference="Constant113"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter759">
+              <SourceParameter reference="Constant114"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter760">
+              <SourceParameter reference="Constant115"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction13" name="ATPase" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite5" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant117" name="Katpase" value="39.5"/>
+        </ListOfConstants>
+        <KineticLaw function="Function50">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter761">
+              <SourceParameter reference="Metabolite3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter762">
+              <SourceParameter reference="Constant117"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction14" name="AK" reversible="true">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite5" stoichiometry="2"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite3" stoichiometry="1"/>
+          <Product metabolite="Metabolite8" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant119" name="k1" value="45"/>
+          <Constant key="Constant120" name="k2" value="100"/>
+        </ListOfConstants>
+        <KineticLaw function="Function14">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter763">
+              <SourceParameter reference="Constant119"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter764">
+              <SourceParameter reference="Metabolite5"/>
+              <SourceParameter reference="Metabolite5"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter765">
+              <SourceParameter reference="Constant120"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter766">
+              <SourceParameter reference="Metabolite3"/>
+              <SourceParameter reference="Metabolite8"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction15" name="G3PDH" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite10" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite14" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite22" stoichiometry="1"/>
+          <Product metabolite="Metabolite12" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant122" name="Vmax" value="47.11"/>
+          <Constant key="Constant123" name="Kdhap" value="0.4"/>
+          <Constant key="Constant124" name="Knadh" value="0.023"/>
+          <Constant key="Constant125" name="Keq" value="4300"/>
+          <Constant key="Constant126" name="Kglycerol" value="1"/>
+          <Constant key="Constant127" name="Knad" value="0.93"/>
+        </ListOfConstants>
+        <KineticLaw function="Function51">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter767">
+              <SourceParameter reference="Metabolite10"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter768">
+              <SourceParameter reference="Metabolite14"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter769">
+              <SourceParameter reference="Metabolite22"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter770">
+              <SourceParameter reference="Metabolite12"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter771">
+              <SourceParameter reference="Constant122"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter772">
+              <SourceParameter reference="Constant123"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter773">
+              <SourceParameter reference="Constant124"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter774">
+              <SourceParameter reference="Constant125"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter775">
+              <SourceParameter reference="Constant126"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter776">
+              <SourceParameter reference="Constant127"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction16" name="Glycogen Branch" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite5" stoichiometry="1"/>
+          <Product metabolite="Metabolite23" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant129" name="KGLYCOGEN" value="6"/>
+        </ListOfConstants>
+        <KineticLaw function="Function52">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter777">
+              <SourceParameter reference="Constant129"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction17" name="Trehalose Branch" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite4" stoichiometry="2"/>
+          <Substrate metabolite="Metabolite3" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite5" stoichiometry="1"/>
+          <Product metabolite="Metabolite24" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant131" name="Ktrehalose" value="2.4"/>
+        </ListOfConstants>
+        <KineticLaw function="Function53">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter778">
+              <SourceParameter reference="Constant131"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction18" name="Succinate Branch" reversible="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite19" stoichiometry="2"/>
+          <Substrate metabolite="Metabolite12" stoichiometry="3"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite25" stoichiometry="1"/>
+          <Product metabolite="Metabolite14" stoichiometry="3"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Constant133" name="k" value="21.4"/>
+        </ListOfConstants>
+        <KineticLaw function="Function54">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter779">
+              <SourceParameter reference="Metabolite19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter780">
+              <SourceParameter reference="Constant133"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+    </ListOfReactions>
+    <StateTemplate>
+      <StateTemplateVariable key="StateVariable1" objectReference="Model0"/>
+      <StateTemplateVariable key="StateVariable2" objectReference="Compartment0"/>
+      <StateTemplateVariable key="StateVariable3" objectReference="Metabolite2"/>
+      <StateTemplateVariable key="StateVariable4" objectReference="Metabolite3"/>
+      <StateTemplateVariable key="StateVariable5" objectReference="Metabolite4"/>
+      <StateTemplateVariable key="StateVariable6" objectReference="Metabolite5"/>
+      <StateTemplateVariable key="StateVariable7" objectReference="Metabolite6"/>
+      <StateTemplateVariable key="StateVariable8" objectReference="Metabolite7"/>
+      <StateTemplateVariable key="StateVariable9" objectReference="Metabolite8"/>
+      <StateTemplateVariable key="StateVariable10" objectReference="Metabolite10"/>
+      <StateTemplateVariable key="StateVariable11" objectReference="Metabolite11"/>
+      <StateTemplateVariable key="StateVariable12" objectReference="Metabolite12"/>
+      <StateTemplateVariable key="StateVariable13" objectReference="Metabolite13"/>
+      <StateTemplateVariable key="StateVariable14" objectReference="Metabolite14"/>
+      <StateTemplateVariable key="StateVariable15" objectReference="Metabolite15"/>
+      <StateTemplateVariable key="StateVariable16" objectReference="Metabolite16"/>
+      <StateTemplateVariable key="StateVariable17" objectReference="Metabolite17"/>
+      <StateTemplateVariable key="StateVariable18" objectReference="Metabolite18"/>
+      <StateTemplateVariable key="StateVariable19" objectReference="Metabolite19"/>
+      <StateTemplateVariable key="StateVariable20" objectReference="Metabolite25"/>
+      <StateTemplateVariable key="StateVariable21" objectReference="Metabolite24"/>
+      <StateTemplateVariable key="StateVariable22" objectReference="Metabolite23"/>
+      <StateTemplateVariable key="StateVariable23" objectReference="Metabolite22"/>
+      <StateTemplateVariable key="StateVariable24" objectReference="Metabolite21"/>
+      <StateTemplateVariable key="StateVariable25" objectReference="Metabolite20"/>
+      <StateTemplateVariable key="StateVariable26" objectReference="Metabolite9"/>
+      <StateTemplateVariable key="StateVariable27" objectReference="Metabolite1"/>
+    </StateTemplate>
+    <InitialState type="initial">
+      0 1 5.87906e+019 1.52023e+021 1.61048e+021 7.71808e+020 3.76261e+020 3.74549e+021 1.76328e+020 6.0454e+020 2.72007e+019 9.05041e+020 4.43627e+017 5.22027e+019 5.3322e+020 7.6878e+019 3.80701e+019 1.09289e+021 1.07248e+020 0 0 0 9.0306e+019 3.0102e+022 6.0204e+020 1.20408e+019 1.20408e+021
+    </InitialState>
+  </Model>
+</COPASI>
