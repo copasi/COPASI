@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>644</width>
-            <height>478</height>
+            <width>532</width>
+            <height>471</height>
         </rect>
     </property>
     <property name="font">
@@ -20,172 +20,265 @@
     <property name="caption">
         <string>CompartmentsWidget1</string>
     </property>
-    <grid>
+    <widget class="QLineEdit">
         <property name="name">
-            <cstring>unnamed</cstring>
+            <cstring>LineEdit4</cstring>
         </property>
-        <property name="margin">
-            <number>11</number>
+        <property name="enabled">
+            <bool>false</bool>
         </property>
-        <property name="spacing">
-            <number>6</number>
+        <property name="geometry">
+            <rect>
+                <x>148</x>
+                <y>76</y>
+                <width>373</width>
+                <height>22</height>
+            </rect>
         </property>
-        <widget class="QLineEdit" row="3" column="1">
+        <property name="readOnly">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>LineEdit1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>148</x>
+                <y>11</y>
+                <width>373</width>
+                <height>22</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>48</y>
+                <width>131</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Initial  Volume</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>76</y>
+                <width>131</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Transient Volume</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>11</y>
+                <width>131</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Compartment Name</string>
+        </property>
+    </widget>
+    <widget class="Line">
+        <property name="name">
+            <cstring>Line4</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>39</y>
+                <width>510</width>
+                <height>16</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>HLine</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Sunken</enum>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+    </widget>
+    <widget class="Line">
+        <property name="name">
+            <cstring>Line4_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>104</y>
+                <width>510</width>
+                <height>16</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>HLine</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Sunken</enum>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+    </widget>
+    <widget class="QListBox">
+        <property name="name">
+            <cstring>ListBox3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>148</x>
+                <y>113</y>
+                <width>373</width>
+                <height>305</height>
+            </rect>
+        </property>
+    </widget>
+    <spacer>
+        <property name="name">
+            <cstring>Spacer2</cstring>
+        </property>
+        <property name="orientation">
+            <enum>Vertical</enum>
+        </property>
+        <property name="sizeType">
+            <enum>Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>131</width>
+                <height>270</height>
+            </size>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>134</y>
+                <width>131</width>
+                <height>284</height>
+            </rect>
+        </property>
+    </spacer>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>113</y>
+                <width>131</width>
+                <height>16</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Metabolite Name</string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>LineEdit3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>148</x>
+                <y>48</y>
+                <width>373</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>LineEditPanel</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Sunken</enum>
+        </property>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout5</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>433</y>
+                <width>510</width>
+                <height>27</height>
+            </rect>
+        </property>
+        <hbox>
             <property name="name">
-                <cstring>LineEdit4</cstring>
+                <cstring>unnamed</cstring>
             </property>
-            <property name="enabled">
-                <bool>false</bool>
+            <property name="margin">
+                <number>0</number>
             </property>
-            <property name="readOnly">
-                <bool>true</bool>
+            <property name="spacing">
+                <number>6</number>
             </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="1">
-            <property name="name">
-                <cstring>LineEdit1</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>TextLabel2</cstring>
-            </property>
-            <property name="text">
-                <string>Initial  Volume</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>TextLabel2_2</cstring>
-            </property>
-            <property name="text">
-                <string>Transient Volume</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>TextLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Compartment Name</string>
-            </property>
-        </widget>
-        <widget class="Line" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Line4</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="Line" row="4" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Line4_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QListBox" row="5" column="1" rowspan="2" colspan="1">
-            <property name="name">
-                <cstring>ListBox3</cstring>
-            </property>
-        </widget>
-        <spacer row="6" column="0">
-            <property name="name">
-                <cstring>Spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>131</width>
-                    <height>270</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>TextLabel3</cstring>
-            </property>
-            <property name="text">
-                <string>Metabolite Name</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="2" column="1">
-            <property name="name">
-                <cstring>LineEdit3</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>LineEditPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="8" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Layout5</cstring>
-            </property>
-            <hbox>
+            <widget class="QPushButton">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>commitChanges</cstring>
                 </property>
-                <property name="margin">
-                    <number>0</number>
+                <property name="text">
+                    <string>Commit Changes</string>
                 </property>
-                <property name="spacing">
-                    <number>6</number>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>cancelChanges</cstring>
                 </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>commitChanges</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Commit Changes</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>cancelChanges</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel Changes</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="Line" row="7" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>Line4_3</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-    </grid>
+                <property name="text">
+                    <string>Cancel Changes</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="Line">
+        <property name="name">
+            <cstring>Line4_3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>424</y>
+                <width>510</width>
+                <height>16</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>HLine</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Sunken</enum>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
+        </property>
+    </widget>
 </widget>
 <connections>
     <connection>
@@ -207,9 +300,6 @@
         <slot>slotListBoxCurrentChanged(const QString&amp;)</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">CompartmentsWidget1.ui.h</include>
-</includes>
 <slots>
     <slot>slotCompartmentTableChanged( QString &amp; )</slot>
     <slot>slotBtnCancelClicked()</slot>
