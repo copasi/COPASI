@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/26 15:43:06 $
+   $Author: shoops $ 
+   $Date: 2004/12/18 02:49:12 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -155,19 +155,27 @@ class CMatrix
     }
 
     /**
+     * Scalar multiplication operator
+     * @param const CType & value
+     * @return CMatrix <CType> & lhs
+     */
+    virtual CMatrix <CType> & operator * (const CType & value)
+    {
+      unsigned C_INT32 i, imax = mRows * mCols;
+      CType * tmp = mArray;
+
+      for (i = 0; i < imax; i++, tmp++) *tmp *= value;
+
+      return *this;
+    }
+
+    /**
      * Scalar division operator
      * @param const CType & value
      * @return CMatrix <CType> & lhs
      */
     virtual CMatrix <CType> & operator / (const CType & value)
-    {
-      unsigned C_INT32 i, imax = mRows * mCols;
-      CType * tmp = mArray;
-
-      for (i = 0; i < imax; i++, tmp++) *tmp /= value;
-
-      return *this;
-    }
+  {return (*this) * (1.0 / value);}
 
     /**
      * + operator
