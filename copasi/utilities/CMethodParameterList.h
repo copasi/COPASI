@@ -17,6 +17,8 @@
 
 class CWriteConfig;
 
+enum Type {SD_UNIFORM = 0, SD_GAUSS, SD_BOLTZ, SD_REGULAR};
+
 class CMethodParameterList : public CCopasiContainer
   {
     // Attributes
