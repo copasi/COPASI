@@ -211,7 +211,7 @@ void CScanMethod::InitScan(void)
       if (scanProblem->getScanItemParameter(i, "log"))
         {
           if ((scanProblem->getScanItemParameter(i, "min") <= 0) ||
-               (scanProblem->getScanItemParameter(i, "max") <= 0))
+              (scanProblem->getScanItemParameter(i, "max") <= 0))
             {
               // logarithmic scanning requires positive arguments!
               // user should be warned, but this should never happen!
@@ -232,13 +232,13 @@ void CScanMethod::InitScan(void)
 }
 
 // this function counts the number of iterations to execute
-UINT CScanMethod::CountScan(void)
+unsigned C_INT32 CScanMethod::CountScan(void)
 {
   int i;
   unsigned C_INT32 TotIteration = 1;
   unsigned C_INT32 scanDimension = scanProblem->getListSize();
   for (i = 0; i < ScanDimension; i++)
     if (scanProblem->getScanItemParameter(i, "indp"))
-      TotIteration *= (UINT) scanProblem->getScanItemParameter(i, "density");
+      TotIteration *= (unsigned C_INT32) scanProblem->getScanItemParameter(i, "density");
   return TotIteration;
 }
