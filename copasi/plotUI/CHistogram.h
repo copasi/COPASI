@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:41:47 $
+   $Date: 2005/02/17 14:46:18 $
    End CVS Header */
 
 #ifndef CHISTOGRAM
@@ -33,6 +33,8 @@ class CHistogram
 
   private:
     C_FLOAT64 mIncrement;
+    C_FLOAT64 mInvIncrement;
+
     bool mUptodate;
     double* mXArray;
     double* mYArray;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/CHistogram.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/14 13:41:47 $
+   $Date: 2005/02/17 14:46:18 $
    End CVS Header */
 
 #include "CHistogram.h"
@@ -17,7 +17,9 @@ CHistogram::CHistogram():
     mYArray(NULL),
     mArraySize(0),
     mCount(0)
-{}
+{
+  mInvIncrement = 1 / mIncrement;
+}
 
 CHistogram::CHistogram(C_FLOAT64 incr):
     mIncrement(incr),
@@ -26,7 +28,9 @@ CHistogram::CHistogram(C_FLOAT64 incr):
     mYArray(NULL),
     mArraySize(0),
     mCount(0)
-{}
+{
+  mInvIncrement = 1 / mIncrement;
+}
 
 CHistogram::~CHistogram()
 {
@@ -40,7 +44,8 @@ void CHistogram::addValue(const C_FLOAT64 & val)
 {
   mUptodate = false;
   //std::cout << val<< "  " << (C_INT32)(val/mIncrement)<< std::endl;
-  mMap[(C_INT32)(val / mIncrement)]++;
+  mMap[(C_INT32)(val * mInvIncrement)]++;
+  mMap[(((C_INT32)(val * mInvIncrement))) + 1];
   ++mCount;
 }
 
@@ -71,17 +76,25 @@ void CHistogram::updateArray()
   if (mUptodate)
     return; //do nothing
 
+  //delete Arrays
+  if (mXArray)
+    delete[] mXArray;
+  if (mYArray)
+    delete[] mYArray;
+
   //construct arrays
   mXArray = new double[mMap.size()];
   mYArray = new double[mMap.size()];
   mArraySize = mMap.size();
+
+  C_FLOAT64 tmpFactor = 1 / (mCount * mIncrement);
 
   C_INT32 i;
   std::map<C_INT32, C_INT32>::const_iterator it, itEnd = mMap.end();
   for (it = mMap.begin(), i = 0; it != itEnd; ++it, ++i)
     {//TODO use pointer increments instead of [...]
       mXArray[i] = it->first * mIncrement;
-      mYArray[i] = (double)it->second / mCount / mIncrement;
+      mYArray[i] = (double)it->second * tmpFactor;
       //std::cout <<it->first <<" " <<it->second << std::endl;
     }
 
