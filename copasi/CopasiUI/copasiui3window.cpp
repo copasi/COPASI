@@ -11,6 +11,10 @@
 #include "copasiui3window.h"
 #include "listviews.h"
 
+#include "./icons/fileopen.xpm"
+#include "./icons/filesave.xpm"
+#include "./icons/fileprint.xpm"
+
 /**
  *  Constructs a CopasiUI window which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.  

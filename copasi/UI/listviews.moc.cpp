@@ -211,23 +211,23 @@ bool ListViews::qt_invoke(int _id, QUObject* _o)
   switch (_id - staticMetaObject()->slotOffset())
     {
     case 0:
-      slotFunctionTableChanged(static_QUType_QString.get(_o + 1));
+      slotFunctionTableChanged((QString&)static_QUType_QString.get(_o + 1));
       break;
 
     case 1:
-      slotCompartmentTableChanged(static_QUType_QString.get(_o + 1));
+      slotCompartmentTableChanged((QString&)static_QUType_QString.get(_o + 1));
       break;
 
     case 2:
-      slotMetaboliteTableChanged(static_QUType_QString.get(_o + 1));
+      slotMetaboliteTableChanged((QString&)static_QUType_QString.get(_o + 1));
       break;
 
     case 3:
-      slotMoietyTableChanged(static_QUType_QString.get(_o + 1));
+      slotMoietyTableChanged((QString&)static_QUType_QString.get(_o + 1));
       break;
 
     case 4:
-      slotReactionTableChanged(static_QUType_QString.get(_o + 1));
+      slotReactionTableChanged((QString&)static_QUType_QString.get(_o + 1));
       break;
 
     case 5:

@@ -5,10 +5,6 @@
 #include "listviews.h"
 #include "model/model.h"
 
-#include "./icons/fileopen.xpm"
-#include "./icons/filesave.xpm"
-#include "./icons/fileprint.xpm"
-
 class ListViews;
 
 class CopasiUI3Window : public QMainWindow

@@ -44,10 +44,6 @@ class MoietyWidget1;
 
 class FunctionWidget1;
 
-#include "./icons/folderclosed.xpm"
-#include "./icons/folderopen.xpm"
-#include "./icons/folderlocked.xpm"
-
 class Folder : public QObject
   {
     Q_OBJECT
