@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/23 14:58:14 $
+   $Author: shoops $ 
+   $Date: 2004/09/28 01:59:33 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -97,6 +97,7 @@ bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 bool TimeSeriesWidget::leave()
 {
   //return saveToCompartment();
+  return true;
 }
 
 bool TimeSeriesWidget::enter(const std::string & key)
@@ -106,4 +107,5 @@ bool TimeSeriesWidget::enter(const std::string & key)
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/
+  return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 18:30:54 $
+   $Author: shoops $ 
+   $Date: 2004/09/28 01:59:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -24,7 +24,7 @@ char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWi
 
 char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
-std::string WizardDialog::helpPath = "";
+QString WizardDialog::helpPath = "";
 
 QWidget* copasiMainWindow = NULL;
 
@@ -49,7 +49,7 @@ void WizardDialog::buttonGroup2_clicked(int)
     }
   if (WizardDialog::helpPath != "")
     {
-      QString source = std::string("file://") + WizardDialog::helpPath + std::string("/") + std::string(WizardDialog::texts[this->buttonGroup->selectedId()]);
+      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[this->buttonGroup->selectedId()];
       this->textBrowser->setSource(source);
     }
 }
@@ -64,7 +64,7 @@ void WizardDialog::init()
     {
       // the next line will hopefully ensure that this works under windows as well.
       WizardDialog::helpPath = QDir(helpPath).absPath().latin1();
-      QString source = std::string("file://") + WizardDialog::helpPath + std::string("/") + std::string(WizardDialog::texts[0]);
+      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }
   else
