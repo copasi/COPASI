@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 09:39:27 $
+   $Date: 2004/10/06 09:59:34 $
    End CVS Header */
 
 /**
@@ -40,14 +40,35 @@ class CSteadyStateTask : public CCopasiTask
     CState * mpSteadyState;
 
     /**
+     * A pointer to the found steady state.
+     */
+    CStateX * mpSteadyStateX;
+
+    /**
      * The jacobian of the steady state.
      */
     CMatrix< C_FLOAT64 > mJacobian;
 
     /**
+     * The jacobian of the steady state.
+     */
+    CMatrix< C_FLOAT64 > mJacobianX;
+
+    /**
+     * Whether the model is actually reducable and calculating 
+     * stability of the reduced steady states makes sense
+     */
+    bool mCalculateReducedSystem;
+
+    /**
      *  The CEigen to work with
      */
     CEigen * mpEigenValues;
+
+    /**
+     *  The CEigen to work with
+     */
+    CEigen * mpEigenValuesX;
 
     /**
      * The result of the steady state analysis.
@@ -110,10 +131,22 @@ class CSteadyStateTask : public CCopasiTask
     const CMatrix< C_FLOAT64 > & getJacobian() const;
 
     /**
+     * Retrieves a the jacobian of the steady state.
+     * @return const CMatrix< C_FLOAT64 > jacobian
+     */
+    const CMatrix< C_FLOAT64 > & getJacobianReduced() const;
+
+    /**
      * Retrieves a the eigen values of the steady state.
      * @return const CEigen * eigenValues
      */
     const CEigen * getEigenValues() const;
+
+    /**
+     * Retrieves a the eigen values of the steady state.
+     * @return const CEigen * eigenValues
+     */
+    const CEigen * getEigenValuesReduced() const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os,

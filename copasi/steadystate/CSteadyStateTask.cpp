@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 09:39:27 $
+   $Date: 2004/10/06 09:59:34 $
    End CVS Header */
 
 /**
@@ -33,7 +33,9 @@
 CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::steadyState, pParent),
     mpSteadyState(NULL),
-    mpEigenValues(NULL)
+    mpSteadyStateX(NULL),
+    mpEigenValues(NULL),
+    mpEigenValuesX(NULL)
 {
   mpProblem = new CSteadyStateProblem(this);
   mpMethod =
@@ -46,8 +48,11 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
                                    const CCopasiContainer * pParent):
     CCopasiTask(src, pParent),
     mpSteadyState(src.mpSteadyState),
+    mpSteadyStateX(src.mpSteadyStateX),
     mJacobian(src.mJacobian),
-    mpEigenValues(src.mpEigenValues)
+    mpEigenValues(src.mpEigenValues),
+    mJacobianX(src.mJacobianX),
+    mpEigenValuesX(src.mpEigenValuesX)
 {
   mpProblem =
     new CSteadyStateProblem(* (CSteadyStateProblem *) src.mpProblem, this);
@@ -60,7 +65,9 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 CSteadyStateTask::~CSteadyStateTask()
 {
   pdelete(mpSteadyState);
+  pdelete(mpSteadyStateX);
   pdelete(mpEigenValues);
+  pdelete(mpEigenValuesX);
 }
 
 void CSteadyStateTask::cleanup()
@@ -84,10 +91,16 @@ const CState * CSteadyStateTask::getState() const
 
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
   {return mJacobian;}
+const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
+  {return mJacobianX;}
 
 const CEigen * CSteadyStateTask::getEigenValues() const
   {
     return mpEigenValues;
+  }
+const CEigen * CSteadyStateTask::getEigenValuesReduced() const
+  {
+    return mpEigenValuesX;
   }
 
 bool CSteadyStateTask::initialize(std::ostream * pOstream)
@@ -104,16 +117,26 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   if (!mReport.compile()) success = false;
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
 
+  //init states
   pdelete(mpSteadyState);
   mpSteadyState = new CState(pProblem->getInitialState());
+  pdelete(mpSteadyStateX);
+  mpSteadyStateX = new CStateX(pProblem->getInitialState());
 
+  mCalculateReducedSystem = (pProblem->getModel()->getDepMetab() != 0);
+
+  //init jacobians
   mJacobian.resize(mpSteadyState->getVariableNumberSize(),
                    mpSteadyState->getVariableNumberSize());
+  mJacobianX.resize(mpSteadyStateX->getVariableNumberSize(),
+                    mpSteadyStateX->getVariableNumberSize());
 
+  //init Eigenvalues
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
 
-  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
+  pdelete(mpEigenValuesX);
+  mpEigenValuesX = new CEigen();
 
   return success;
 }
@@ -133,9 +156,12 @@ bool CSteadyStateTask::process()
   mReport.printHeader();
 
   mResult = pMethod->process(mpSteadyState,
+                             mpSteadyStateX,
                              pProblem,
                              mJacobian,
-                             mpEigenValues);
+                             mJacobianX,
+                             mpEigenValues,
+                             mpEigenValuesX);
 
   mReport.printBody();
   mReport.printFooter();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:15:49 $
+   $Date: 2004/10/06 09:59:33 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@
 
 class CSteadyStateProblem;
 class CState;
+class CStateX;
 class CEigen;
 
 class CSteadyStateMethod : public CCopasiMethod
@@ -48,16 +49,30 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     CState * mpSteadyState;
 
-  private:
+    /**
+     * A pointer to the steady state
+     */
+    CStateX * mpSteadyStateX;
+
     /**
      * The jacobian of the steadystate
      */
     CMatrix< C_FLOAT64 > * mpJacobian;
 
     /**
+     * The jacobian of the steadystate
+     */
+    CMatrix< C_FLOAT64 > * mpJacobianX;
+
+    /**
      * A pointer to a CEigen object
      */
     CEigen * mpEigenValues;
+
+    /**
+     * A pointer to a CEigen object
+     */
+    CEigen * mpEigenValuesX;
 
     // Operations
   private:
@@ -115,9 +130,12 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
+                                           CStateX * pStateX,
                                            const CSteadyStateProblem * pProblem,
                                            CMatrix< C_FLOAT64 > & jacobian,
-                                           CEigen * pEigenValues);
+                                           CMatrix< C_FLOAT64 > & jacobianX,
+                                           CEigen * pEigenValues,
+                                           CEigen * pEigenValuesX);
 
   protected:
 

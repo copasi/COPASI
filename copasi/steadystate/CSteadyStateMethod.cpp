@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 12:29:31 $
+   $Date: 2004/10/06 09:59:33 $
    End CVS Header */
 
 /**
@@ -91,14 +91,20 @@ CSteadyStateMethod::~CSteadyStateMethod()
  */
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState * pState,
+                            CStateX * pStateX,
                             const CSteadyStateProblem * pProblem,
                             CMatrix< C_FLOAT64 > & jacobian,
-                            CEigen * pEigenValues)
+                            CMatrix< C_FLOAT64 > & jacobianX,
+                            CEigen * pEigenValues,
+                            CEigen * pEigenValuesX)
 {
   mpSteadyState = pState;
+  mpSteadyStateX = pStateX;
   mpProblem = pProblem;
   mpJacobian = & jacobian;
+  mpJacobianX = & jacobianX;
   mpEigenValues = pEigenValues;
+  mpEigenValuesX = pEigenValuesX;
 
   return processInternal();
 }
@@ -116,20 +122,25 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
                                   const C_FLOAT64 & factor,
                                   const C_FLOAT64 & resolution)
 {
-  mpProblem->getModel()->setTransitionTimes();
+  //mpProblem->getModel()->setTransitionTimes();
 
   if (mpProblem->isJacobianRequested() ||
       mpProblem->isStabilityAnalysisRequested())
-    mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
+    {
+      mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
+      mpSteadyStateX->calculateJacobian(*mpJacobianX, factor, resolution);
+    }
 
-  //CVector< C_FLOAT64 > Derivatives(mpSteadyState->getVariableNumberSize());
-  mpProblem->getModel()->setState(mpSteadyState);
-  mpProblem->getModel()->updateRates();
+  //mpProblem->getModel()->setState(mpSteadyState);
+  //mpProblem->getModel()->updateRates();
 
   if (mpProblem->isStabilityAnalysisRequested())
     {
       mpEigenValues->calcEigenValues(*mpJacobian);
+      mpEigenValuesX->calcEigenValues(*mpJacobianX);
+
       mpEigenValues->stabilityAnalysis(resolution);
+      mpEigenValuesX->stabilityAnalysis(resolution);
     }
 
   if (!steadyStateFound)
