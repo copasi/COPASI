@@ -1,0 +1,12 @@
+<!-- 
+    This file demostrates how to specify options to clo++
+-->
+<cloxx>
+ <options>
+  <option id="save" type="string" strict="yes" default="InputModel">
+   <name>save</name>
+   <name>s</name> 
+   <comment>The file the model is saved in after work.</comment>
+  </option>
+ </options>
+</cloxx>
