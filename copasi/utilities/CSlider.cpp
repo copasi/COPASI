@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/09 13:37:20 $
+   $Date: 2005/03/09 14:16:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -136,6 +136,7 @@ bool CSlider::setSliderValue(const C_FLOAT64 value)
 
 void CSlider::sync()
 {
+  if (!this->mpSliderObject) return;
   if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
     {
       C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getReference());
@@ -152,6 +153,7 @@ void CSlider::sync()
 
 void CSlider::writeToObject()
 {
+  if (!this->mpSliderObject) return;
   if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
     {
       C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getReference());
@@ -169,21 +171,6 @@ void CSlider::writeToObject()
 const C_FLOAT64 CSlider::getSliderValue() const
   {
     return this->mValue;
-    /*
-    C_FLOAT64 value;
-    if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
-      {
-        C_INT32* reference = (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getReference());
-        value = (C_FLOAT64)(*reference);
-      }
-    else if (mSliderType == CSlider::Float || mSliderType == CSlider::UnsignedFloat)
-      {
-        C_FLOAT64* reference = (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)mpSliderObject)->getReference());
-        value = *reference;
-      }
-
-    return value;
-    */
   }
 
 bool CSlider::setMinValue(const C_FLOAT64 minValue)
