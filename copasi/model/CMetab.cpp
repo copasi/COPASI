@@ -275,27 +275,11 @@ const C_FLOAT64 & CMetab::getTransitionTime()
 
 bool CMetab::setName(const std::string & name)
 {
-  if (mName == name) return true;
-
   CCopasiContainer * pParent = getObjectParent();
   if (pParent)
-    {
-      if (pParent->isNameVector())
-        {
-          if (pParent->getIndex(name) == C_INVALID_INDEX)
-            {
-              mName = name;
-              return true;
-            }
-          else
-            return false;
-        }
-      else
-        {
-          mName = name;
-          return true;
-        }
-    }
+    if (pParent->isNameVector())
+      if (pParent->getIndex(name) != C_INVALID_INDEX)
+        return false;
 
   mName = name;
   return true;
