@@ -14,7 +14,8 @@
 #include "listviews.h"
 #include "model/CMetab.h"
 #include <qfont.h>
-#include "utilities/CGlobals.h" 
+#include "utilities/CGlobals.h"
+string outstring;
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
  *  This widget is a child of 'parent', with the 
@@ -69,7 +70,10 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlag
 
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  connect(table, SIGNAL(valueChanged()), this, SLOT(tableClicked()));
+
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(loadCompartments(CModel *model)));
+  //connect(this, SIGNAL(signal_emitted(CModel *)), (ListViews*)parent, SLOT(loadCompartments(CModel *)));
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -85,8 +89,11 @@ void CompartmentsWidget::loadCompartments(CModel *model)
           table->removeRow(0);
         }
 
+      /*CWriteConfig *Fun = new CWriteConfig("oo.gps"); */
       CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
+
       C_INT32 noOfCompartmentsRows = compartments.size();
+
       table->setNumRows(noOfCompartmentsRows);
 
       //Now filling the table.
@@ -96,9 +103,14 @@ void CompartmentsWidget::loadCompartments(CModel *model)
         {
           compartn = compartments[j];
           table->setText(j, 0, compartn->getName().c_str());
-          //table->setText(j, 1, QString::number(*(compartn->getVolume())));
+          /*Compartment_Name = new QString(compartn->getName().c_str());
+          outstring = table->text(j,0);
+            Fun->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
+            Copasi->FunctionDB.save(*Fun);
+            delete Fun;
+          QMessageBox::information(this, "Moiety Widget",outstring.c_str()); */
+
           table->setText(j, 1, QString::number(compartn->getVolume()));
-          //table->setText(j, 3, QString::number(metab->getStatus()));
         }
     }
 }
@@ -150,21 +162,22 @@ void CompartmentsWidget::showMessage(QString title, QString text)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  CWriteConfig *Fun = new CWriteConfig("oo.gps");
-  string outstring = "Laber";
-  Fun->setVariable((string) "Compartment", (string) "string", (void *) &outstring);
-  Copasi->FunctionDB.save(*Fun);
-  delete Fun;
+  QMessageBox::information(this, "Moiety Widget", outstring.c_str());
+  //CWriteConfig *Fun = new CWriteConfig("oo.gps");
+  //string outstring = "Laber";
+  // Fun->setVariable((string) "Compartment",(string) "string", (void *) &outstring);
+  //Copasi->FunctionDB.save(*Fun);
+  //delete Fun;
 
   //CWriteConfig ModelFile("model.gps");
   CWriteConfig *Mod = new CWriteConfig("model.gps");
   //CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
-  CCompartment *compartn;
+  //CCompartment *compartn;
 
   //for (C_INT32 j = 0; j < noOfCompartmentsRows; j++)
   //{
   //compartn = compartments[1];
-  compartn->setName(outstring);
+  //compartn->setName(outstring);
   //}
 
   /*string outstring = "Laber";
@@ -207,6 +220,10 @@ void CompartmentsWidget::slotBtnOKClicked()
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {
-  QMessageBox::information(this, "Moiety Widget",
-                           "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
+  emit signal_emitted(*Compartment_Name);
+}
+
+void CompartmentsWidget::tableClicked()
+{
+  QMessageBox::information(this, "Moiety Widget", outstring.c_str());
 }

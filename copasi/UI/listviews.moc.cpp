@@ -135,75 +135,54 @@ QMetaObject* ListViews::staticMetaObject()
 
   static const QUParameter param_slot_0[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
-  static const QUMethod slot_0 = {"slotCompartmentSelected", 1, param_slot_0 };
+  static const QUMethod slot_0 = {"slotFunctionTableChanged", 1, param_slot_0 };
 
   static const QUParameter param_slot_1[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
-  static const QUMethod slot_1 = {"slotMetaboliteSelected", 1, param_slot_1 };
+  static const QUMethod slot_1 = {"slotCompartmentTableChanged", 1, param_slot_1 };
 
   static const QUParameter param_slot_2[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::In }
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
-  static const QUMethod slot_2 = {"slotFunctionSelected", 1, param_slot_2 };
+  static const QUMethod slot_2 = {"slotMetaboliteTableChanged", 1, param_slot_2 };
 
   static const QUParameter param_slot_3[] =
     {
       { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
-  static const QUMethod slot_3 = {"slotFunctionTableChanged", 1, param_slot_3 };
+  static const QUMethod slot_3 = {"slotMoietyTableChanged", 1, param_slot_3 };
 
   static const QUParameter param_slot_4[] =
     {
       { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
-  static const QUMethod slot_4 = {"slotCompartmentTableChanged", 1, param_slot_4 };
+  static const QUMethod slot_4 = {"slotReactionTableChanged", 1, param_slot_4 };
 
   static const QUParameter param_slot_5[] =
     {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
-    };
-  static const QUMethod slot_5 = {"slotMetaboliteTableChanged", 1, param_slot_5 };
-
-  static const QUParameter param_slot_6[] =
-    {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
-    };
-  static const QUMethod slot_6 = {"slotMoietyTableChanged", 1, param_slot_6 };
-
-  static const QUParameter param_slot_7[] =
-    {
-      { 0, &static_QUType_QString, 0, QUParameter::InOut }
-    };
-  static const QUMethod slot_7 = {"slotReactionTableChanged", 1, param_slot_7 };
-
-  static const QUParameter param_slot_8[] =
-    {
       { 0, &static_QUType_ptr, "QListViewItem", QUParameter::In }
     };
-  static const QUMethod slot_8 = {"slotFolderChanged", 1, param_slot_8 };
+  static const QUMethod slot_5 = {"slotFolderChanged", 1, param_slot_5 };
 
   static const QMetaData slot_tbl[] =
     {
-      { "slotCompartmentSelected(const QString&)", &slot_0, QMetaData::Public },
+      { "slotFunctionTableChanged(QString&)", &slot_0, QMetaData::Public },
 
-      { "slotMetaboliteSelected(const QString&)", &slot_1, QMetaData::Public },
-      { "slotFunctionSelected(const QString&)", &slot_2, QMetaData::Public },
-      { "slotFunctionTableChanged(QString&)", &slot_3, QMetaData::Public },
-      { "slotCompartmentTableChanged(QString&)", &slot_4, QMetaData::Public },
-      { "slotMetaboliteTableChanged(QString&)", &slot_5, QMetaData::Public },
-      { "slotMoietyTableChanged(QString&)", &slot_6, QMetaData::Public },
-      { "slotReactionTableChanged(QString&)", &slot_7, QMetaData::Public },
-      { "slotFolderChanged(QListViewItem*)", &slot_8, QMetaData::Protected }
+      { "slotCompartmentTableChanged(QString&)", &slot_1, QMetaData::Public },
+      { "slotMetaboliteTableChanged(QString&)", &slot_2, QMetaData::Public },
+      { "slotMoietyTableChanged(QString&)", &slot_3, QMetaData::Public },
+      { "slotReactionTableChanged(QString&)", &slot_4, QMetaData::Public },
+      { "slotFolderChanged(QListViewItem*)", &slot_5, QMetaData::Protected }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "ListViews", parentObject,
-              slot_tbl, 9,
+              slot_tbl, 6,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -232,38 +211,26 @@ bool ListViews::qt_invoke(int _id, QUObject* _o)
   switch (_id - staticMetaObject()->slotOffset())
     {
     case 0:
-      slotCompartmentSelected(static_QUType_QString.get(_o + 1));
-      break;
-
-    case 1:
-      slotMetaboliteSelected(static_QUType_QString.get(_o + 1));
-      break;
-
-    case 2:
-      slotFunctionSelected(static_QUType_QString.get(_o + 1));
-      break;
-
-    case 3:
       slotFunctionTableChanged(static_QUType_QString.get(_o + 1));
       break;
 
-    case 4:
+    case 1:
       slotCompartmentTableChanged(static_QUType_QString.get(_o + 1));
       break;
 
-    case 5:
+    case 2:
       slotMetaboliteTableChanged(static_QUType_QString.get(_o + 1));
       break;
 
-    case 6:
+    case 3:
       slotMoietyTableChanged(static_QUType_QString.get(_o + 1));
       break;
 
-    case 7:
+    case 4:
       slotReactionTableChanged(static_QUType_QString.get(_o + 1));
       break;
 
-    case 8:
+    case 5:
       slotFolderChanged((QListViewItem*)static_QUType_ptr.get(_o + 1));
       break;
 

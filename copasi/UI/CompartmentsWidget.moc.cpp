@@ -66,6 +66,7 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
   static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
   static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
   static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0 };
+  static const QUMethod slot_4 = {"tableClicked", 0, 0 };
 
   static const QMetaData slot_tbl[] =
     {
@@ -73,7 +74,8 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
 
       { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
       { "slotBtnOKClicked()", &slot_2, QMetaData::Protected },
-      { "slotBtnCancelClicked()", &slot_3, QMetaData::Protected }
+      { "slotBtnCancelClicked()", &slot_3, QMetaData::Protected },
+      { "tableClicked()", &slot_4, QMetaData::Protected }
     };
 
   static const QUParameter param_signal_0[] =
@@ -82,15 +84,22 @@ QMetaObject* CompartmentsWidget::staticMetaObject()
     };
   static const QUMethod signal_0 = {"name", 1, param_signal_0 };
 
+  static const QUParameter param_signal_1[] =
+    {
+      { 0, &static_QUType_QString, 0, QUParameter::InOut }
+    };
+  static const QUMethod signal_1 = {"signal_emitted", 1, param_signal_1 };
+
   static const QMetaData signal_tbl[] =
     {
-      { "name(QString&)", &signal_0, QMetaData::Public }
+      { "name(QString&)", &signal_0, QMetaData::Public },
+      { "signal_emitted(QString&)", &signal_1, QMetaData::Private }
     };
 
   metaObj = QMetaObject::new_metaobject(
               "CompartmentsWidget", parentObject,
-              slot_tbl, 4,
-              signal_tbl, 1,
+              slot_tbl, 5,
+              signal_tbl, 2,
 #ifndef QT_NO_PROPERTIES
               0, 0,
               0, 0,
@@ -133,6 +142,26 @@ void CompartmentsWidget::name(QString& t0)
   t0 = static_QUType_QString.get(o + 1);
 }
 
+// SIGNAL signal_emitted
+void CompartmentsWidget::signal_emitted(QString& t0)
+{
+  if (signalsBlocked())
+    return ;
+
+  QConnectionList *clist = receivers(staticMetaObject()->signalOffset() + 1);
+
+  if (!clist)
+    return ;
+
+  QUObject o[2];
+
+  static_QUType_QString.set(o + 1, t0);
+
+  activate_signal(clist, o);
+
+  t0 = static_QUType_QString.get(o + 1);
+}
+
 bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
 {
   switch (_id - staticMetaObject()->slotOffset())
@@ -153,6 +182,10 @@ bool CompartmentsWidget::qt_invoke(int _id, QUObject* _o)
       slotBtnCancelClicked();
       break;
 
+    case 4:
+      tableClicked();
+      break;
+
     default:
       return QWidget::qt_invoke(_id, _o);
     }
@@ -166,6 +199,10 @@ bool CompartmentsWidget::qt_emit(int _id, QUObject* _o)
     {
     case 0:
       name(static_QUType_QString.get(_o + 1));
+      break;
+
+    case 1:
+      signal_emitted(static_QUType_QString.get(_o + 1));
       break;
 
     default:
