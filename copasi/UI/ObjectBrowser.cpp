@@ -243,7 +243,7 @@ void ObjectBrowser::loadData()
   ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_1, item_2, NULL, objectItemList);
   ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_1, item_3, NULL, objectItemList);
   ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
-  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
+  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_2, item_5, NULL, objectItemList);
   item_1->setOpen(true);
   item_1->setText(0, trUtf8("Root"));
   item_2->setText(0, trUtf8("Model"));
