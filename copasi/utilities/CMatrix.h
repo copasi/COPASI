@@ -1,7 +1,16 @@
-#include <iostream>
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
+   $Revision: 1.15 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:33 $
+   End CVS Header */
 
 #ifndef COPASI_CMatrix
 #define COPASI_CMatrix
+
+#include <iostream>
+#include <assert.h>
 
 /**
  * Template class CMatrix < class CType >
@@ -124,6 +133,54 @@ class CMatrix
         resize(rhs.mRows, rhs.mCols);
 
       memcpy(mArray, rhs.mArray, mRows * mCols * sizeof(CType));
+
+      return *this;
+    }
+
+    /**
+     * Assignement operator
+     * @param const CType & value
+     * @return CMatrix <CType> & lhs
+     */
+    virtual CMatrix <CType> & operator = (const CType & value)
+    {
+      unsigned C_INT32 i, imax = mRows * mCols;
+      CType * tmp = mArray;
+
+      for (i = 0; i < imax; i++, tmp++) *tmp = value;
+
+      return *this;
+    }
+
+    /**
+     * Scalar division operator
+     * @param const CType & value
+     * @return CMatrix <CType> & lhs
+     */
+    virtual CMatrix <CType> & operator / (const CType & value)
+    {
+      unsigned C_INT32 i, imax = mRows * mCols;
+      CType * tmp = mArray;
+
+      for (i = 0; i < imax; i++, tmp++) *tmp /= value;
+
+      return *this;
+    }
+
+    /**
+     * + operator
+     * @param const CMatrix <CType> & rhs
+     * @return CMatrix <CType> & lhs
+     */
+    virtual CMatrix <CType> & operator + (const CMatrix <CType> & rhs)
+    {
+      assert(mRows == rhs.mRows && mCols == rhs.mCols);
+
+      unsigned C_INT32 i, imax = mRows * mCols;
+      CType * tmp1 = mArray;
+      CType * tmp2 = rhs.mArray;
+
+      for (i = 0; i < imax; i++, tmp1++, tmp2++) *tmp1 += *tmp2;
 
       return *this;
     }
