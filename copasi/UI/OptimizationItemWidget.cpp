@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:40 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/17 01:41:59 $
    End CVS Header */
 
 /********************************************************
@@ -14,10 +14,16 @@ Date: 10/01
 Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
-
+#include "OptimizationWidget.h"
 #include "OptimizationItemWidget.h"
 #include "ScanItemWidget.h"
 #include "FunctionItemWidget.h"
+#include "report/CKeyFactory.h"
+#include "function/CFunction.h"
+#include "function/CFunctionDB.h"
+#include "function/CKinFunction.h"
+#include "optimization/COptFunction.h"
+#include "utilities/CCopasiException.h"
 
 #include <qvariant.h>
 #include <qpushbutton.h>
@@ -27,13 +33,14 @@ Contact: Please contact lixu1@vt.edu.
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-
+#include <qmessagebox.h> 
 /*
  *  Constructs a OptimizationItemWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
 OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : QWidget(parent, name, fl),
+    mpParent((OptimizationWidget*)parent)
 {
   if (!name)
     setName("OptimizationItemWidget");
@@ -185,6 +192,27 @@ void OptimizationItemWidget::slotLowerEdit()
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineLower->setText(strFunction.c_str());
+      COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      func->mMinList[nIndex] = strFunction.c_str();
+      if (!(func->mMinFunctionList[nIndex]))
+        func->mMinFunctionList[nIndex] = new CKinFunction();
+      // dont go through the compile function
+      func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex].c_str());
+      try
+        {
+          func->mMinFunctionList[nIndex]->preCompile();
+        }
+      catch (CCopasiException Exception)
+        {
+          if (QMessageBox::warning(this, "Invalid Function Input",
+                                   "Invalid function expression.\n Please check function again \n Do you still want to keep your input? \n"
+                                   "Press <Yes> to keep.",
+                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+            {
+              func->mMinList[nIndex] = "";
+              lineLower->setText("");
+            }
+        }
     }
 }
 
@@ -206,6 +234,27 @@ void OptimizationItemWidget::slotUpperEdit()
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
       lineUpper->setText(strFunction.c_str());
+      COptFunction* func = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(mpParent->getKey());
+      func->mMaxList[nIndex] = strFunction.c_str();
+      if (!(func->mMaxFunctionList[nIndex]))
+        func->mMaxFunctionList[nIndex] = new CKinFunction();
+      // dont go through the compile function
+      func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex].c_str());
+      try
+        {
+          func->mMaxFunctionList[nIndex]->preCompile();
+        }
+      catch (CCopasiException Exception)
+        {
+          if (QMessageBox::warning(this, "Invalid Function Input",
+                                   "Invalid function expression.\n Please check function again \n Do you still want to keep your input? \n"
+                                   "Press <Yes> to keep.",
+                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+            {
+              func->mMaxList[nIndex] = "";
+              lineUpper->setText("");
+            }
+        }
     }
 }
 
@@ -292,4 +341,9 @@ void OptimizationItemWidget::setItemUpperOper(std::string oper)
 void OptimizationItemWidget::setItemLowerOper(std::string oper)
 {
   comboBoxLowerOp->setCurrentText (oper.c_str());
+}
+
+void OptimizationItemWidget::setIndex(int i)
+{
+  nIndex = i;
 }

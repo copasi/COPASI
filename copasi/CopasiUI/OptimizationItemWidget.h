@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/16 20:00:28 $
+   $Date: 2003/10/17 01:41:59 $
    End CVS Header */
 
 /********************************************************
@@ -31,6 +31,7 @@ class QPushButton;
 class QComboBox;
 class ScanCheckBox;
 class QFrame;
+class OptimizationWidget;
 
 class OptimizationItemWidget : public QWidget
   {
@@ -39,6 +40,8 @@ class OptimizationItemWidget : public QWidget
   public:
     OptimizationItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationItemWidget();
+    OptimizationWidget* mpParent;
+    int nIndex;
 
     QLabel* textLabel2;
     ScanLineEdit* lineLower;
@@ -54,7 +57,6 @@ class OptimizationItemWidget : public QWidget
     ScanCheckBox* checkUpperInf;
     QFrame* line11;
     ScanLineEdit* ObjectName;
-
     CCopasiObject* mpObject;
 
     // shall add a pointer to COptFunction to change its parameter simultaneously
@@ -73,6 +75,8 @@ class OptimizationItemWidget : public QWidget
 
     CCopasiObject* getCopasiObject();
     void setCopasiObjectPtr (CCopasiObject* sourceObject);
+
+    void setIndex(int i);
 
   public slots:
     virtual void slotPosInfClicked();
