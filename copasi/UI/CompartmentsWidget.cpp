@@ -100,7 +100,7 @@ void CompartmentsWidget::createNewObject()
 {
 #ifdef XXXX
   {
-    std::string name = "compartment";
+    std::string name = "compartment_0";
     int i = 0;
     while (dataModel->getModel()->addCompartment(name, 1) == -1)
       {
