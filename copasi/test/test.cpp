@@ -1,10 +1,10 @@
+
 // Main
 //
 // (C) Pedro Mendes 2000
 //
 
 #define COPASI_MAIN
-
 #include "copasi.h"
 
 #include <iostream>
@@ -39,6 +39,7 @@
 #include "randomGenerator/CRandom.h"
 #include "utilities/CluX.h"
 #include "report/CCopasiObjectName.h"
+
 #include "mathmodel/CMathModel.h"
 #include "utilities/CCopasiNode.h"
 #include "utilities/CCopasiTree.h"
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
       //      TestNewton();
       //      TestSSSolution();
       //YOHE: new test
-      //  TestOptimization();
+      TestOptimization();
       //      TestEigen();
       //      TestCopasiTree();
       //      TestTrajectory();
@@ -146,7 +147,7 @@ int main(int argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      ConvertFunctionDB();
+      //      ConvertFunctionDB();
       //      TestRandom(10000, 100);
       //      Testr250();
       //      Testmt19937();
@@ -673,8 +674,13 @@ C_INT32 TestEigen(void)
 C_INT32 TestOptimization(void)
 {
   int i;
+  int NumParameter = 5;
+  int MethodType;
+  //double RangeParameter[NumParameter][2];
   cout << "TestOptimization() begins --- " << endl;
-  COptMethod * CRand = COptMethod::createMethod();
+  // COptMethod * CRand = COptMethod::createMethod();
+  //  COptMethod * CRand = COptMethod::createMethod(COptMethod::SimulatedAnnealing);
+  COptMethod * CRand = COptMethod::createMethod(COptMethod::GeneticAlgorithm);
 
   CRealProblem *CReal = new CRealProblem();
   CRand->setProblem(CReal);
@@ -685,26 +691,46 @@ C_INT32 TestOptimization(void)
   //rand = CRandom::createGenerator(t,2);
 
   // set parameter numbers....
-  CReal->setParameterNum(5);
+  CReal->setParameterNum(NumParameter);
 
   // set the individual parameters
 
-  CRand->setValue(0, 100000.0);
+  //CRand->setValue(0, 100000.0);
+  CRand->setValue(0, 10000000.0);
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < NumParameter; i++)
     {
-      CReal->setParameterMin(i, -5);
-      CReal->setParameterMax(i, 2);
+      CReal->setParameterMin(i, -10);
+      CReal->setParameterMax(i, 10);
     }
 
   CRand->optimise();
-  cout << "result---best values";
-  for (i = 0; i < 5; i++)
+
+  MethodType = CRand->GetMethodType();
+  char filename[20];
+  if (MethodType == 0) sprintf(filename, "best_result.%s", "RS");
+  if (MethodType == 1) sprintf(filename, "best_result.%s", "RSM");
+  if (MethodType == 2) sprintf(filename, "best_result.%s", "SA");
+  if (MethodType == 3) sprintf(filename, "best_result.%s", "GA");
+
+  ofstream bestout(filename);
+  if (!bestout)
     {
-      cout << CReal->getBestValue(i);
-      cout << "\n";
+      cout << " output file  cannot be set!" << endl;
+      exit(0);
     }
 
+  cout << endl << "Final result and the best object function value:" << CReal->getBestValue() << endl;
+  bestout << endl << "Final result and the best object function value:" << CReal->getBestValue() << endl;
+  cout << NumParameter << " Parameters are as follow:" << endl;
+  bestout << NumParameter << " Parameters are as follow:" << endl;
+  for (i = 0; i < NumParameter; i++)
+    {
+      cout << CReal->getBestValue(i) << endl;
+      bestout << CReal->getBestValue(i) << endl;
+    }
+
+  bestout.close();
   pdelete(CRand);
   return 0;
 }
