@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/08 13:06:56 $
+   $Author: ssahle $ 
+   $Date: 2004/10/14 21:06:23 $
    End CVS Header */
 
 #include <iostream>
@@ -55,6 +55,10 @@ CMetab::CMetab(const std::string & name,
     {
       initModel();
       initCompartment(NULL);
+    }
+  else
+    {
+      mpCompartment = NULL;
     }
 
   initObjects();
@@ -152,6 +156,11 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
   mConc = concentration;
   mNumber = concentration * mpCompartment->getVolume()
             * mpModel->getQuantity2NumberFactor();
+
+#ifdef COPASI_DEBUG
+  if (mStatus == METAB_FIXED)
+    std::cout << "warning: set the transient concentration on a fixed metab" << std::endl;
+#endif
 }
 
 void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
@@ -159,6 +168,9 @@ void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
   mIConc = initialConcentration;
   mINumber = initialConcentration * mpCompartment->getVolume()
              * mpModel->getQuantity2NumberFactor();
+
+  if (mStatus == METAB_FIXED)
+    setConcentration(initialConcentration);
 }
 
 void CMetab::setNumber(const C_FLOAT64 number)
@@ -166,6 +178,11 @@ void CMetab::setNumber(const C_FLOAT64 number)
   mConc = number * mpCompartment->getVolumeInv()
           * mpModel->getNumber2QuantityFactor();
   mNumber = number;
+
+#ifdef COPASI_DEBUG
+  if (mStatus == METAB_FIXED)
+    std::cout << "warning: set the transient particle number on a fixed metab" << std::endl;
+#endif
 }
 
 void CMetab::setInitialNumber(const C_FLOAT64 initialNumber)
@@ -173,11 +190,22 @@ void CMetab::setInitialNumber(const C_FLOAT64 initialNumber)
   mIConc = initialNumber * mpCompartment->getVolumeInv()
            * mpModel->getNumber2QuantityFactor();
   mINumber = initialNumber;
+
+  if (mStatus == METAB_FIXED)
+    setNumber(initialNumber);
 }
 
 //  ******************
 
-void CMetab::setStatus(const CMetab::Status & status) {mStatus = status;}
+void CMetab::setStatus(const CMetab::Status & status)
+{
+  mStatus = status;
+  if (mStatus == METAB_FIXED)
+    {
+      if (mpCompartment)
+        setNumber(getInitialNumber());
+    }
+}
 
 void CMetab::setCompartment(const CCompartment * compartment)
 {mpCompartment = compartment;}
