@@ -202,6 +202,8 @@ bool ReactionsWidget1::saveToReaction()
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
 
+  mRi.setReactionName(LineEdit1->text().latin1());
+
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
 
