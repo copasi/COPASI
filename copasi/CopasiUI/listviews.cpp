@@ -1188,7 +1188,7 @@ void ListViews::loadTrajectoryTaskNodes(CTrajectoryTask* trajectorytask)
 
       // UPDATE THE METABOLITES STUFF..
       //      trajectoryWidget->loadTrajectoryTask(trajectorytask);
-      loadNode = searchNode("Steady-State");
+      loadNode = searchNode("Trajectory");
 
       if (loadNode)
         {
