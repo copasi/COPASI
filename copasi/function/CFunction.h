@@ -253,6 +253,15 @@ class CFunction : public CCopasiContainer
     virtual void addParameter(const std::string & name,
                               const CFunctionParameter::DataType & type,
                               const std::string & usage);
+
+  protected:
+
+    /**
+     * this adds a Usage range for modifiers that is derived from the parameter list.
+     * It is only used for heuristics and will be obsolete once a modifier usage range
+     * is saved in the database file.
+     */
+    void guessModifierUsageRange();
   };
 
 #include "CMassAction.h"

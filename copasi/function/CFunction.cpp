@@ -154,6 +154,8 @@ void CFunction::load(CReadConfig & configBuffer,
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are
   // the only ones occuring in those files.
+
+  guessModifierUsageRange();
 }
 
 void CFunction::save(CWriteConfig & configBuffer)
@@ -270,3 +272,18 @@ void CFunction::addParameter(const std::string & name,
                              const CFunctionParameter::DataType & type,
                              const std::string & usage)
 {mParameters.add(name, type, usage);}
+
+void CFunction::guessModifierUsageRange()
+{
+  unsigned C_INT32 pos, imax;
+
+  imax = mParameters.getNumberOfParametersByUsage("MODIFIER");
+
+  if (!imax) return;
+
+  pos = 0;
+  if (mParameters.getParameterByUsage("MODIFIER", pos).getType() == CFunctionParameter::VFLOAT64)
+  {addUsage("MODIFIER", 0, CRange::Infinity);}
+  else
+  {addUsage("MODIFIER", imax, CRange::NoRange);}
+}
