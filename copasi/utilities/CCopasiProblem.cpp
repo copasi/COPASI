@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:43:30 $
+   $Date: 2004/06/10 19:31:54 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@ CCopasiProblem::CCopasiProblem():
 
 CCopasiProblem::CCopasiProblem(const CCopasiTask::Type & type,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(TypeName[type], pParent, "Problem"),
+    CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Problem"),
     mType(type),
     mpModel(NULL),
     mCalculateVariables(),
