@@ -98,19 +98,8 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
   hBoxLayout4d->addSpacing(15);
 
-  //Th buttons are laid out using the Horizontal Layout
-  commitChanges = new QPushButton("&Commit Changes", Frame4d);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame4d);
-  commitChanges->setFont(QFont("Times", 10, QFont::Bold));
-  cancelChanges->setFont(QFont("Times", 10, QFont::Bold));
-
-  hBoxLayout4d->addWidget(commitChanges);
-  hBoxLayout4d->addSpacing(15);
-  hBoxLayout4d->addWidget(cancelChanges);
-  hBoxLayout4d->addSpacing(15);
   //connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
 
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(QString &)));
 }
 

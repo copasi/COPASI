@@ -11,6 +11,7 @@
 #include <qsplitter.h>
 #include <qvariant.h>
 #include <qlayout.h>
+#include "function/function.h"
 
 class QAction;
 
@@ -50,6 +51,7 @@ class ReactionsWidget1 : public QWidget
     QPushButton* newKinetics;
     CModel *mModel;
     QTable *table;
+    CFunctionDB *fFunctionDB;
 
   public:
     ReactionsWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
@@ -87,6 +89,8 @@ class ReactionsWidget1 : public QWidget
     QCheckBox* checkBox;
 
     QComboBox* ComboBox1;
+    int k;
+    int m;
 
   protected slots:
     virtual void slotBtnCancelClicked();

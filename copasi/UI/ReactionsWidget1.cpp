@@ -22,7 +22,7 @@
 #include "listviews.h"
 #include "model/CChemEqElement.h"
 #include <qfont.h>
-
+#include "function/function.h" 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -292,7 +292,7 @@ void ReactionsWidget1::loadName(QString setValue)
 
   const CChemEqElement *cchem;
 
-  for (int k = 0; k < react1->size(); k++)
+  for (k = 0; k < react1->size(); k++)
     {
       tableHeader2->setLabel(0, "Substrates");
       cchem = (*react1)[k];
@@ -316,9 +316,9 @@ void ReactionsWidget1::loadName(QString setValue)
   //CCopasiVector < CReaction::CId2Metab> & react2a = reactn->getId2Products();
   const CCopasiVector < CChemEqElement > * react2 = &reactn->getChemEq().getProducts();
 
-  for (k = 0; k < react2->size(); k++)
+  for (m = 0; m < react2->size(); m++)
     {
-      cchem = (*react2)[k];
+      cchem = (*react2)[m];
       tableHeader2->setLabel(0, react1a[0]->getIdentifierName().c_str());
       QString overall1 = cchem->getMetaboliteName().c_str();
       QString & overall1_2 = overall1.operator += (overall2) ;
@@ -399,7 +399,7 @@ void ReactionsWidget1::slotBtnCancelClicked()
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
+  //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Rtn = new CWriteConfig(filename);
 
@@ -407,7 +407,7 @@ void ReactionsWidget1::slotBtnOKClicked()
   CReaction *reactn1;
   reactn1 = reactions[(string)name.latin1()];
 
-  CChemEq * chem;
+  //CChemEq * chem;
   //chem = & reactn1->getChemEq();
 
   //for Chemical Reaction
@@ -417,19 +417,16 @@ void ReactionsWidget1::slotBtnOKClicked()
 
   if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
     {
+      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+      //int noSubstrates= ;
+      //int noProducts= ;
+      CCopasiVectorN < CFunction > & Functions = fFunctionDB->suitableFunctions(k, m, TriFalse);
+      int m = -1;
+      //CFunction *function;
+      //function = Functions[1];
+      //ComboBox1->insertItem(Functions[1].c_str(), m);
       reactn1->setReversible(TriFalse);
     }
-
-  /*//if (QString::number(metab->getStatus()) == "0")
-
-    if (RadioButton1->isChecked() == TRUE && QString::number(metab->getStatus()) == "0")
-     {
-       metab->setStatus(0);
-     }
-    else
-     {
-    metab->setStatus(1);
-     } */
 
   mModel->save(*Rtn);
 
