@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.157 $
+   $Revision: 1.158 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 17:20:42 $
+   $Date: 2003/11/14 22:07:35 $
    End CVS Header */
 
 /********************************************************
@@ -533,29 +533,8 @@ void ScanWidget::runScanTask()
                                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
         return;
     }
-  // :TODO: This must be moved to CScanProblem or CScanTask.process()
 
-  //prepare for the output value addr
-  valueAddrMatrix.resize(nSelectedObjects);
-  valueMatrix.resize(nSelectedObjects);
-
-  int objectIndex;
-  for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
-    {
-      //    valueAddrMatrix[objectIndex]=(C_FLOAT64*)((ScanItemWidget*)selectedList[2*objectIndex+1])->getCopasiObject()->getReference();
-      valueAddrMatrix[objectIndex] = (C_FLOAT64*)((ScanItemWidget*)selectedList[2 * objectIndex + 1])->getCopasiObject()->getObjectValueAddress();
-      valueMatrix[objectIndex] = *(valueAddrMatrix[objectIndex]);
-    }
-
-  scanTask->setValueMatrixAddr(&valueAddrMatrix);
   scanTask->process();
-
-  //restore the object value
-  for (objectIndex = 0; objectIndex < nSelectedObjects; objectIndex++)
-    *(valueAddrMatrix[objectIndex]) = valueMatrix[objectIndex];
-
-  valueAddrMatrix.resize(0);
-  valueMatrix.resize(0);
 
   ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
   unsetCursor();

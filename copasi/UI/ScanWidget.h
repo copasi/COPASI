@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:13:01 $
+   $Date: 2003/11/14 22:07:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -69,8 +69,6 @@ class ScanWidget : public CopasiParametersWidget
     int activeObject;
     QWidget* pParent;
     std::string scanTaskKey;
-    CVector<C_FLOAT64> valueMatrix;
-    CVector<C_FLOAT64*> valueAddrMatrix;
 
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
