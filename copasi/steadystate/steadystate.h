@@ -4,3 +4,4 @@
 #include "CNewton.h"
 #include "CSS_Solution.h"
 #include "CMca.h"
+#include "CEigen.h"
