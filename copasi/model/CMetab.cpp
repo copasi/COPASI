@@ -219,7 +219,7 @@ void CMetab::saveSBML(std::ofstream &fout)
   fout << "\"/>" << std::endl;
 }
 
-std::string CMetab::getKey() const {return mName;}
+std::string CMetab::getKey() const {return mKey;}
 
 const std::string & CMetab::getName() const {return mName;}
 
