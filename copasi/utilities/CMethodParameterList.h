@@ -76,6 +76,12 @@ class CMethodParameterList : public CCopasiContainer
     unsigned C_INT32 size() const;
 
     /**
+     * Retrieve the index given a name
+     * @return index for the variable
+     */
+    const unsigned int CMethodParameterList::getIndex(const std::string & name);
+
+    /**
      * Retrieve the name of the method
      * @return " const string &" name
      */

@@ -181,7 +181,14 @@ CMethodParameterList::getValue(const unsigned C_INT32 & index) const
  * @return "const double & value
  */
 const double & CMethodParameterList::getValue(const std::string & name) const
-  {return mMethodParameters[name]->getValue();}
+  {
+    return mMethodParameters[name]->getValue();
+  }
+
+const unsigned int CMethodParameterList::getIndex(const std::string & name)
+{
+  return mMethodParameters.getIndex(name);
+}
 
 /**
  * Add a parameter to the list
