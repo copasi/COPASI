@@ -34,7 +34,7 @@
 #undef max
 #endif
 
-#if (defined sparc || defined __CYGWIN__)
+#if (defined sparc || defined __CYGWIN__ || defined __MacOsX__)
 # define C_INT32 long
 # define C_INT long
 # define C_INT16 short

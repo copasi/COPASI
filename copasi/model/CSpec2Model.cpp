@@ -326,7 +326,7 @@ void CSpec2Model::processDeTerms()
 
           // Add the LHS metabolite to the temp reaction
           tmp_metab = reaction->addMetabolite(LHSMetab);
-          tmp_metab->setNumChange(num_change + tmp_metab->getNumChange());
+          tmp_metab->setNumChange((C_INT32) num_change + tmp_metab->getNumChange());
         }
     }
 

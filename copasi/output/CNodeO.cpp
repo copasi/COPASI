@@ -155,7 +155,6 @@ C_FLOAT64 CNodeO::value()
           Value = (C_FLOAT64) * Value4;
           break;
         }
-      return Value;
       break;
 
     case N_OPERATOR:

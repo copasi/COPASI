@@ -79,7 +79,7 @@ void CDeTerm::compile(std::vector<CNameVal> &rates)
 
   bool mc_found = false; // to check if several multiplicative constants are in the term
   bool rate_found = false; // to check if several rate constants are in the term
-  std::pair< std::string, C_INT32> *last_metab;
+  std::pair< std::string, C_INT32> * last_metab = NULL;
   std::vector< std::pair< Type, std::string>* >::iterator it = mTokenStack.begin();
 
   bool is_first_token = true;
@@ -124,7 +124,8 @@ void CDeTerm::compile(std::vector<CNameVal> &rates)
               else if ((*(it - 1))->first == EXPONENT)
                 {
                   // NUM is top level exponent
-                  last_metab->second = atoi((*it)->second.c_str());
+                  if (last_metab)
+                    last_metab->second = atoi((*it)->second.c_str());
                 }
             }
           if (is_multiplier)

@@ -314,8 +314,8 @@ std::string CTempReaction::getChemEquation() const
   }
 
 void CTempReaction::compile(CModel *model,
-                            const std::vector<CNameVal> & rates,
-                            const std::vector<CNameVal> & constants)
+                            const std::vector<CNameVal> & C_UNUSED(rates),
+                            const std::vector<CNameVal> & C_UNUSED(constants))
 {
   create_substrates_and_products_lists();
 

@@ -200,7 +200,9 @@ void CChemEq::addMetaboliteByName(const std::string & name, const C_FLOAT64 mult
     case CChemEq::MODIFIER:
       addElement(mModifiers, element);
       break;
-      //TODO: default: fatal error
+    default:
+      fatalError();
+      break;
     }
 }
 
@@ -223,13 +225,17 @@ void CChemEq::addMetabolite(CMetab & metab, const C_FLOAT64 mult, const Metaboli
     case CChemEq::MODIFIER:
       addElement(mModifiers, element);
       break;
-      //TODO: default: fatal error
+    default:
+      fatalError();
+      break;
     }
 }
 
 const CChemEqElement & CChemEq::findElementByName(const std::string & name,
     const MetaboliteRole role) const
   {
+    static CChemEqElement Element;
+
     unsigned C_INT32 i, imax;
 
     if ((role == NOROLE) || (role == SUBSTRATE))
@@ -253,7 +259,7 @@ const CChemEqElement & CChemEq::findElementByName(const std::string & name,
           if (mModifiers[i]->getMetaboliteName() == name) return *(mModifiers[i]);
       }
 
-    //TODO: throw exception
+    return Element;
   }
 
 unsigned C_INT32 CChemEq::getCompartmentNumber() const

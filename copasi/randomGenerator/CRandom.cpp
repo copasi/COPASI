@@ -1,3 +1,4 @@
+#include <time.h>
 #include <sys/timeb.h>
 #include <math.h>
 #include <algorithm>
@@ -52,8 +53,55 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
   mModulusInv1 = 1.0 / (mModulus + 1.0);
 }
 
+#ifdef __MacOsX__
+#include <mach/mach_init.h> 
+/*
+ * References to host objects are returned by:
+ *      mach_host_self() - trap
+ *
+ * extern mach_port_t mach_host_self(void);
+ */
+
+#include <mach/mach_host.h> 
+/*
+ *      Get service port for a processor set.
+ *      Available to all.
+ *
+ * extern kern_return_t host_get_clock_service(host_t host,
+ *                                             clock_id_t clock_id,
+ *                                             clock_serv_t *clock_serv);
+ */
+
+#include <mach/clock.h> 
+/**
+ *      Get the clock time.
+ *      Available to all.
+ *
+ * extern kern_return_t clock_get_time(clock_serv_t clock_serv,
+ *                                     mach_timespec_t *cur_time);
+ */
+
+void ftime(timeb * pTime);
+
+void ftime(timeb * pTime)
+{
+  mach_port_t host = mach_host_self();
+  clock_serv_t clock_serv;
+  host_get_clock_service(host, 1, & clock_serv);
+
+  mach_timespec_t time;
+  clock_get_time(clock_serv, &time);
+
+  pTime->time = time.tv_sec;
+  pTime->millitm = time.tv_nsec / 1000;
+
+  return;
+}
+#endif // __MacOsX__
+
 unsigned C_INT32 CRandom::getSystemSeed()
 {
+  /* :TODO: MacOS X does not provide ftime we need to supply it */
   struct timeb init_time;
   ftime(&init_time);
 

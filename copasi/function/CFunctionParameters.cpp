@@ -150,7 +150,7 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
       }
 
     fatalError()
-    return - 1;
+    return C_INVALID_INDEX;
   }
 
 void CFunctionParameters::updateUsageRanges()
@@ -221,7 +221,6 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
   {
     if (size() != rhs.size()) return false;
 
-    bool flag = true;
     C_INT32 i, imax = size();
     for (i = 0; i < imax; ++i)
       if (mParameters[i] != rhs.mParameters[i]) return false;
