@@ -241,7 +241,7 @@ void ScanWidget::addButtonClicked()
       return;
     }
 
-  if (pSelectedVector->size() < 0)
+  if (pSelectedVector->size() == 0)
     {
       //      pdelete(pSelectedObjects);
       pdelete(pSelectedVector);
