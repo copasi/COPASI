@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/objectdebug.h,v $
+   $Revision: 1.3 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:06 $
+   End CVS Header */
+
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Fri Mar 28 17:57:53 2003
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.1.1   edited Nov 21 17:40 $)
+ ** Created: Tue Apr 1 19:46:57 2003
+ **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.3 2003/10/16 16:13:06 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,12 +43,13 @@ class ObjectDebug : public QDialog
     void update();
 
   protected:
+    QGridLayout* ObjectDebugLayout;
 
   protected slots:
     virtual void languageChange();
   private:
+    void addObjectRecursive(QWidget * parent, void * ptr);
     void init();
-    void addObjectRecursive(QWidget * parent, void * obj);
   };
 
 #endif // OBJECTDEBUG_H

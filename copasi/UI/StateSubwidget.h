@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 10:03:27 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Thu Sep 30 11:21:02 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.1 2004/09/30 10:03:27 ssahle Exp $)
+ ** Created: Sat Oct 9 15:44:17 2004
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.1.1.1 2004/10/26 15:17:51 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -20,15 +20,19 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include "model/CState.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
+class QLabel;
 class QTabWidget;
 class QTable;
 class QSplitter;
-class QLabel;
+class QTextEdit;
+class CModel;
+class CSteadyStateTask;
 
 class StateSubwidget : public QWidget
   {
@@ -38,7 +42,8 @@ class StateSubwidget : public QWidget
     StateSubwidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~StateSubwidget();
 
-    QTabWidget* tabWidget2;
+    QLabel* topLabel;
+    QTabWidget* tabWidget;
     QWidget* tab;
     QTable* concentrationsTable;
     QWidget* tab_2;
@@ -51,6 +56,21 @@ class StateSubwidget : public QWidget
     QLabel* textLabelJacobian;
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
+    QWidget* TabPage_3;
+    QSplitter* splitterJacobianX;
+    QTable* tableJacobianX;
+    QLabel* textLabelJacobianX;
+    QTable* tableEigenValuesX;
+    QLabel* textLabelEigenvaluesX;
+    QWidget* TabPage_4;
+    QTextEdit* stabilityTextEdit;
+
+    virtual bool loadMetabolites(const CModel * model);
+    virtual bool loadReactions(const CModel * model);
+    virtual bool loadAll(const CSteadyStateTask * task);
+
+  public slots:
+    virtual void loadJacobian(const CSteadyStateTask * task);
 
   protected:
     QVBoxLayout* StateSubwidgetLayout;
@@ -62,6 +82,12 @@ class StateSubwidget : public QWidget
     QSpacerItem* spacer3;
     QGridLayout* layoutEigenvalues;
     QSpacerItem* spacer4;
+    QVBoxLayout* TabPageLayout_3;
+    QGridLayout* layoutJacobianX;
+    QSpacerItem* spacer3_2;
+    QGridLayout* layoutEigenvaluesX;
+    QSpacerItem* spacer4_2;
+    QVBoxLayout* TabPageLayout_4;
 
   protected slots:
     virtual void languageChange();

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:56 $
+   End CVS Header */
+
 /**
  *  CMathModel class.
  *  The class CMathModel is a mathematical representation of a chemical
@@ -10,6 +18,9 @@
 #include "CMathModel.h"
 #include "CMathConstant.h"
 #include "CMathVariable.h"
+#include "CMathNode.h"
+#include "CMathEq.h"
+
 #include "model/CModel.h"
 
 CMathModel::CMathModel():
@@ -20,34 +31,41 @@ CMathModel::CMathModel():
     mVolumeList(),
     mpTime(NULL),
     mFunctionList(),
-    mConstantsList()
+    mConstantsList(),
+    mEqList(),
+    mpConversionFactor(NULL)
 {}
 
 CMathModel::CMathModel(const CMathModel & src):
     mpModel(src.mpModel),
-    mCompartmentList(src.mCompartmentList),
-    mMetabList(src.mMetabList),
-    mFixedMetabList(src.mFixedMetabList),
-    mVolumeList(src.mVolumeList),
-    mpTime(src.mpTime),
-    mFunctionList(src.mFunctionList),
-    mConstantsList(src.mConstantsList)
+    mCompartmentList(),
+    mMetabList(),
+    mFixedMetabList(),
+    mVolumeList(),
+    mpTime(NULL),
+    mFunctionList(),
+    mConstantsList(),
+    mEqList(),
+    mpConversionFactor(NULL)
 {compile();}
 
 CMathModel::~CMathModel()
 {
-  clearList((std::map< std::string, CMathSymbol * > *) & mCompartmentList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mMetabList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mFixedMetabList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mVolumeList);
+  clearList(mCompartmentList);
+  clearList(mMetabList);
+  clearList(mFixedMetabList);
+  clearList(mVolumeList);
   pdelete(mpTime);
-  clearList((std::map< std::string, CMathSymbol * > *) & mFunctionList);
-  clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
+  clearList(mFunctionList);
+  clearList(mConstantsList);
+  clearEqList();
+  pdelete(mpConversionFactor)
 }
 
-bool CMathModel::setModel(const CModel * pModel)
+bool CMathModel::setModel(CModel * pModel)
 {
   mpModel = pModel;
+  mpModelNonConst = pModel;
   return compile();
 }
 
@@ -56,6 +74,7 @@ const CModel * CMathModel::getModel() const {return mpModel;}
 bool CMathModel::compile()
 {
   if (!mpModel) return false;
+  if (!mpModelNonConst->compileIfNecessary()) return false;
 
   bool Success = true;
 
@@ -67,9 +86,20 @@ bool CMathModel::compile()
   if (!buildFunctionList()) Success = false;
   if (!buildConstantsList()) Success = false;
 
+  /* We create a symbol for the conversion factor */
+  CCopasiObjectReference< C_FLOAT64 > & Reference =
+    * (CCopasiObjectReference< C_FLOAT64 > *) const_cast<CModel *>(mpModel)->
+    getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+
+  mpConversionFactor = new CMathConstantReference(Reference);
+  std::string Name("QCF");
+  mpConversionFactor->setName(Name);
+
   if (!compileCompartmentList()) Success = false;
   if (!compileMetabList()) Success = false;
   if (!compileFixedMetabList()) Success = false;
+
+  if (!buildEqList()) Success = false;
 
   return Success;
 }
@@ -98,7 +128,7 @@ bool CMathModel::buildCompartmentList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mCompartmentList);
+  clearList(mCompartmentList);
 
   const CCopasiVector< CCompartment > & List = mpModel->getCompartments();
   unsigned C_INT32 i, imax = List.size();
@@ -118,7 +148,7 @@ bool CMathModel::buildMetabList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mMetabList);
+  clearList(mMetabList);
 
   const CCopasiVector< CMetab > & List = mpModel->getMetabolitesX();
   unsigned C_INT32 i, imax = mpModel->getIntMetab();
@@ -127,8 +157,11 @@ bool CMathModel::buildMetabList()
 
   for (i = 0; i < imax; i++)
     {
-      p = new CMathVariableMetab(*List[i]);
-      mMetabList[p->getName()] = p;
+      if (List[i]->getStatus() != CMetab::METAB_UNUSED)
+        {
+          p = new CMathVariableMetab(*List[i]);
+          mMetabList[p->getName()] = p;
+        }
     }
 
   return Success;
@@ -138,17 +171,21 @@ bool CMathModel::buildFixedMetabList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mFixedMetabList);
+  clearList(mFixedMetabList);
 
   const CCopasiVector< CMetab > & List = mpModel->getMetabolitesX();
-  unsigned C_INT32 i, imax = List.size();
+  unsigned C_INT32 i = 0;
+  unsigned C_INT32 imax = List.size();
 
   CMathConstantMetab * p;
 
   for (i = mpModel->getIntMetab(); i < imax; i++)
     {
-      p = new CMathConstantMetab(*List[i]);
-      mFixedMetabList[p->getName()] = p;
+      if (List[i]->getStatus() == CMetab::METAB_FIXED)
+        {
+          p = new CMathConstantMetab(*List[i]);
+          mFixedMetabList[p->getName()] = p;
+        }
     }
 
   return Success;
@@ -171,7 +208,7 @@ bool CMathModel::buildVolumeList()
   for (i = 0; i < imax; i++)
     {
       p = new CMathVariableVolume(*List[i]);
-      mVolumeList[p->getName()] = p;
+      mVolumeList[p->getObjectName()] = p;
     }
 #endif // XXXX
   return Success;
@@ -192,7 +229,7 @@ bool CMathModel::buildFunctionList()
 {
   bool Success = true;
 
-  clearList(& mFunctionList);
+  clearList(mFunctionList);
 
   const CCopasiVector< CReaction > & List = mpModel->getReactions();
   unsigned C_INT32 i, imax = List.size();
@@ -203,7 +240,7 @@ bool CMathModel::buildFunctionList()
   for (i = 0; i < imax; i++)
     {
       pFunction = &List[i]->getFunction();
-      if (!CMathSymbol::find(pFunction))
+      if (pFunction && !CMathSymbol::find(pFunction))
         {
           p = new CMathSymbol(pFunction);
           mFunctionList[p->getName()] = p;
@@ -217,40 +254,30 @@ bool CMathModel::buildConstantsList()
 {
   bool Success = true;
 
-  clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
+  clearList(mConstantsList);
 
   const CCopasiVector< CReaction > & List = mpModel->getReactions();
   unsigned C_INT32 i, imax = List.size();
   unsigned C_INT32 j, jmax;
 
   CMathConstantParameter * p;
-  CCopasiVector< CReaction::CId2Param > * ParamList;
+  const CCopasiParameterGroup * ParamList;
   for (i = 0; i < imax; i++)
     {
-      ParamList = &List[i]->getId2Parameters();
+      ParamList = &List[i]->getParameters();
       jmax = ParamList->size();
 
       for (j = 0; j < jmax; j++)
         {
-          p = new CMathConstantParameter(*(*ParamList)[j]);
+          p = new CMathConstantParameter(* const_cast< CCopasiParameterGroup * >(ParamList)->getParameter(j),
+                                         List[i]->getObjectName());
           mConstantsList[p->getName()] = p;
         }
     }
 
+  Success = CMathConstantParameter::buildSelection(mpModel);
+
   return Success;
-}
-
-bool CMathModel::clearList(std::map< std::string, CMathSymbol * > * list)
-{
-  std::map< std::string, CMathSymbol * >::iterator it = list->begin();
-  std::map< std::string, CMathSymbol * >::iterator end = list->end();
-
-  for (; it != end; it++)
-    pdelete(it->second);
-
-  list->clear();
-
-  return true;
 }
 
 bool CMathModel::compileCompartmentList()
@@ -296,4 +323,179 @@ bool CMathModel::compileFixedMetabList()
     if (!it->second->compile()) Success = false;
 
   return Success;
+}
+
+bool CMathModel::clearEqList()
+{
+  bool Success = true;
+
+  std::vector< CMathEq * >::iterator it = mEqList.begin();
+  std::vector< CMathEq * >::iterator end = mEqList.begin();
+
+  for (; it != end; it++)
+    pdelete(*it);
+
+  std::map< std::string, CMathVariableMetab * >::iterator itM =
+    mMetabList.begin();
+  std::map< std::string, CMathVariableMetab * >::iterator endM =
+    mMetabList.end();
+
+  for (; itM != endM; itM++)
+    itM->second->setEq(NULL);
+
+  return Success;
+}
+
+bool CMathModel::buildEqList()
+{
+  bool Success = true;
+
+  clearEqList();
+
+  unsigned C_INT32 i, imax = mMetabList.size();
+  mEqList.resize(imax);
+
+  CMathEq * pEq;
+
+  std::map< std::string, CMathVariableMetab *>::iterator it =
+    mMetabList.begin();
+
+  /* Create equation and crossreferences with metabolites */
+  for (i = 0; i < imax; i++, it++)
+    {
+      pEq = new CMathEq;
+      pEq->setVariable(it->second);
+      it->second->setEq(pEq);
+      mEqList[i] = pEq;
+
+      CMathNodeDerivative * pD = new CMathNodeDerivative;
+      pD->addChild(new CMathNodeSymbol(CMathSymbol::find(mpModel)));
+      pD->addChild(new CMathNodeSymbol(it->second));
+
+      pEq->getLeft().attachNode(pD);
+    }
+
+  /* Now loop through all reactions */
+  const CCopasiVector< CReaction > & ReactionList = mpModel->getReactions();
+
+  for (i = 0, imax = ReactionList.size(); i < imax; i++)
+    {
+      const CReaction * pReaction = ReactionList[i];
+
+      /* loop through all participating metabolites */
+      const CCopasiVector < CChemEqElement > * ChemEq =
+        & pReaction->getChemEq().getBalances();
+
+      unsigned C_INT32 j, jmax;
+      for (j = 0, jmax = ChemEq->size(); j < jmax; j++)
+        {
+          const CMetab * pMetab = &(*ChemEq)[j]->getMetabolite();
+
+          /* skip fixed metabolites */
+          if (pMetab->getStatus() == CMetab::METAB_FIXED) continue;
+
+          CMathNodeFunction * pFunction = createFunction(pReaction);
+          CMathNode * pScalingFactor = createScalingFactor(pReaction);
+          CMathNodeOperation * pComponent =
+            createComponent((*ChemEq)[j],
+                            pScalingFactor,
+                            pFunction);
+
+          CCopasiTree< CMathNode > & Tree =
+            ((CMathVariable *) CMathSymbol::find(pMetab))->getEq()->getRight();
+
+          CMathNode * pChild = (CMathNode *) Tree.getRoot()->getChild();
+          if (pChild)
+            {
+              CMathNodeOperation * pNew = new CMathNodeOperation("+");
+              pNew->addChild(pComponent);
+              Tree.attachNode(pNew);
+              Tree.moveNode(pChild, pNew, pNew);
+            }
+          else
+            Tree.attachNode(pComponent);
+        }
+    }
+
+  return Success;
+}
+
+CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
+{
+  CMathNodeFunction * pF =
+    new CMathNodeFunction(CMathSymbol::find(&pReaction->getFunction()));
+
+  CMathNodeList * pL = new CMathNodeList();
+  CMathNodeList * pV;
+
+  pF->addChild(pL);
+
+  const CFunctionParameters & Description =
+    pReaction->getFunction().getParameters();
+  const CCallParameterPointers & Objects = pReaction->getCallParameterObjects();
+
+  unsigned C_INT32 i, imax = Description.size();
+  unsigned C_INT32 j, jmax;
+
+  for (i = 0; i < imax; i++)
+    {
+      if (Description[i]->getType() < CFunctionParameter::VINT32)
+        pL->addChild(new CMathNodeSymbol(CMathSymbol::find((CCopasiObject *)Objects[i])));
+      //TODO reac : the pointer to CCopasiObject is never a pointer to a CMetab (as it is expected here).
+      // instead it is a pointer to an object reference object (the concentration of the metabolite).
+      else
+        {
+          pV = new CMathNodeList();
+          pL->addChild(pV);
+
+          std::vector< CCopasiObject * > * V =
+            (std::vector< CCopasiObject * > *) Objects[i];
+
+          jmax = V->size();
+
+          for (j = 0; j < jmax; j++)
+            pV->addChild(new CMathNodeSymbol(CMathSymbol::find((*V)[j]))); //dito
+        }
+    }
+
+  return pF;
+}
+
+CMathNodeOperation *
+CMathModel::createComponent(const CChemEqElement * pElement,
+                            CMathNode * pScalingFactor,
+                            CMathNodeFunction * pFunction)
+{
+  CMathNodeOperation * pC = new CMathNodeOperation("*");
+
+  pC->addChild(new CMathNodeNumber(pElement->getMultiplicity()));
+  pC->addChild(pScalingFactor);
+
+  CMathNodeOperation * pNew = new CMathNodeOperation("*");
+  pNew->addChild(pC);
+  pC = pNew;
+
+  pC->addChild(pFunction);
+
+  return pC;
+}
+
+CMathNode * CMathModel::createScalingFactor(const CReaction * pReaction)
+{
+  CMathNode * pS;
+  if (pReaction->getCompartmentNumber() == 1)
+    {
+      pS = new CMathNodeOperation("*");
+      pS->addChild(new CMathNodeSymbol(mpConversionFactor));
+
+      const CCopasiObject * pObject =
+        pReaction->getChemEq().getBalances()[0]->getMetabolite().getCompartment();
+
+      pS->addChild(new CMathNodeSymbol(CMathSymbol::find(pObject)));
+    }
+
+  else
+    pS = new CMathNodeNumber(mpConversionFactor->getValue());
+
+  return pS;
 }

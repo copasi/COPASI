@@ -1,302 +1,862 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
- **
- ** Created: Sun Mar 2 20:34:14 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
-#include <qfiledialog.h>
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
 
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 06/03 
+Comment : Copasi ScanWidget including:
+ 
+Contains: front end of Scan Objects from given dataModel,
+ 
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+#include <qfiledialog.h>
+#include <qvbox.h>
 #include <qvariant.h>
 #include <qcheckbox.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
 #include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qscrollview.h>
+#include <qtoolbutton.h>
+#include <qcanvas.h>
+#include <qlistbox.h>
+#include <qmessagebox.h>
+
+#include "copasi.h"
 
 #include "ScanWidget.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
+#include "scan/CScanTask.h"
+#include "scan/CScanProblem.h"
+#include "scan/CScanMethod.h"
 #include "model/CModel.h"
 #include "listviews.h"
+#include "DataModelGUI.h"
+#include "ScanItemWidget.h"
+#include "ObjectBrowserDialog.h"
+#include "ObjectBrowserItem.h"
+#include "SteadyStateWidget.h"
+#include "TrajectoryWidget.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "report/CKeyFactory.h"
+#include "CReportDefinitionSelect.h"
+#include "qtUtilities.h"
+
+#include "./icons/scanwidgetbuttonicon.xpm"
 
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
+    : CopasiParametersWidget(parent, name, f),
+    pParent(parent)
 {
+  nSelectedObjects = 0;
+  nTitleHeight = 16;
+  activeObject = -1;
+  selectedList.clear();
+
   if (!name)
     setName("ScanWidget");
-  resize(626, 588);
-  setMinimumSize(QSize(0, 0));
+
+  QPixmap image0((const char**) image0_data);
+  QPixmap image1((const char**) image1_data);
+  QPixmap image2((const char**) image2_data);
+  QPixmap image3((const char**) image3_data);
+
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setText(trUtf8("Task Name"));
+  Layout4 = new QHBoxLayout(0, 0, 6, "Layout4");
 
-  ScanWidgetLayout->addWidget(taskNameLabel, 0, 0);
-  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  ScanWidgetLayout->addItem(spacer, 5, 0);
+  Layout3 = new QHBoxLayout(0, 0, 6, "Layout3");
 
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Scan Item"));
+  steadyState = new QCheckBox(this, "steadyState");
+  steadyState->setText(trUtf8("Steady State"));
+  Layout3->addWidget(steadyState);
 
-  ScanWidgetLayout->addWidget(parameterValueLabel, 4, 0);
+  eSteadyState = new QToolButton(this, "eSteadyState");
+  eSteadyState->setText(trUtf8("Edit Steady"));
+  Layout3->addWidget(eSteadyState);
+  Layout4->addLayout(Layout3);
 
-  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8(""));
+  Layout4->addWidget(TextLabel3);
 
-  /*bRunButton = new QPushButton(this, "bRunButton");
-  bRunButton->setText(trUtf8("Run"));
-  bRunButton->setEnabled(false);
-  Layout2->addWidget(bRunButton);*/
+  Layout4_2 = new QHBoxLayout(0, 0, 6, "Layout4_2");
 
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
-  Layout2->addWidget(commitChange);
+  trajectory = new QCheckBox(this, "trajectory");
+  trajectory->setText(trUtf8("Trajectory"));
+  Layout4_2->addWidget(trajectory);
 
-  cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
-  Layout2->addWidget(cancelChange);
+  eTrajectory = new QToolButton(this, "eTrajectory");
+  eTrajectory->setText(trUtf8("Edit Trajectory"));
 
-  /*ExportFileButton = new QPushButton(this, "ExportFileButton");
-   ExportFileButton->setText(trUtf8("Export To File"));
-   Layout2->addWidget(ExportFileButton);*/
+  Layout4_2->addWidget(eTrajectory);
+  Layout4->addLayout(Layout4_2);
 
-  ScanWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
+  ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 0, 2);
 
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Problem"));
 
-  ScanWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
+  ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
 
   taskName = new QLineEdit(this, "taskName");
-  taskName->setFrameShape(QLineEdit::LineEditPanel);
-  taskName->setFrameShadow(QLineEdit::Sunken);
 
   ScanWidgetLayout->addWidget(taskName, 0, 1);
 
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Scan Executable"));
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
 
-  ScanWidgetLayout->addWidget(bExecutable, 0, 2);
+  ScanWidgetLayout->addMultiCellWidget(Line2, 5, 5, 0, 2);
 
-  line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
+  sExecutable = new QCheckBox(this, "sExecutable");
+  sExecutable->setText(trUtf8("Scan Executable"));
 
-  ScanWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+  ScanWidgetLayout->addWidget(sExecutable, 0, 2);
 
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
+  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
-  ScanWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+  scanButton = new QPushButton(this, "scanButton");
+  scanButton->setText(trUtf8("Scan"));
+  Layout2->addWidget(scanButton);
 
-  taskStability = new QRadioButton(this, "taskStability");
-  taskStability->setText(trUtf8("Trajectory"));
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setText(trUtf8("cancelChange"));
+  Layout2->addWidget(cancelChange);
 
-  ScanWidgetLayout->addWidget(taskStability, 2, 2);
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
 
-  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
-  taskDescriptionLabel->setText(trUtf8("Problem"));
+  ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
 
-  ScanWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
 
-  taskJacobian = new QRadioButton(this, "taskJacobian");
-  taskJacobian->setText(trUtf8("Steady State"));
+  ScanWidgetLayout->addMultiCellWidget(Line1, 1, 1, 0, 2);
 
-  ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
+  Line1_2 = new QFrame(this, "Line1_2");
+  Line1_2->setFrameShape(QFrame::HLine);
+  Line1_2->setFrameShadow(QFrame::Sunken);
+  Line1_2->setFrameShape(QFrame::HLine);
 
-  line8_2 = new QFrame(this, "line8_2");
-  line8_2->setFrameShape(QFrame::HLine);
-  line8_2->setFrameShadow(QFrame::Sunken);
-  line8_2->setFrameShape(QFrame::HLine);
+  ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 2);
 
-  ScanWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
+  Layout24 = new QHBoxLayout(0, 0, 6, "Layout24");
 
-  // signals and slots connections
-  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
-  //connect(bRunButton, SIGNAL(clicked()), this, SLOT(RunTask()));
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
-  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
-  //connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  //connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
-  //connect(this, SIGNAL(runFinished(CModel*)), (ListViews*)parent,SLOT(loadModelNodes(CModel*)));
+  Layout7 = new QVBoxLayout(0, 0, 6, "Layout7");
+
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Scan Items"));
+  Layout7->addWidget(TextLabel2);
+
+  Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
+
+  deleteButton = new QPushButton(this, "deleteButton");
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
+
+  Layout6->addWidget(deleteButton, 0, 1);
+
+  downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
+
+  Layout6->addWidget(downButton, 1, 1);
+
+  addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
+
+  Layout6->addWidget(addButton, 0, 0);
+
+  upButton = new QPushButton(this, "upButton");
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
+
+  Layout6->addWidget(upButton, 1, 0);
+
+  ObjectListBox = new QListBox(this, "ObjectListBox");
+  ObjectListBox->insertItem(trUtf8("click here to add new item"));
+
+  Layout6->addMultiCellWidget(ObjectListBox, 2, 2, 0, 1);
+  Layout7->addLayout(Layout6);
+  Layout24->addLayout(Layout7);
+
+  scrollview = new ScanScrollView(this, 0, 0);
+  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  scrollview->setMinimumWidth(parameterTable->minimumSizeHint().width());
+  pdelete(parameterTable);
+  scrollview->setVScrollBarMode(QScrollView::Auto);
+  scrollview->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+  scrollview->setSelectedList(&selectedList);
+  Layout24->addWidget(scrollview);
+
+  ScanWidgetLayout->addMultiCellLayout(Layout24, 4, 4, 0, 2);
 
   // tab order
-  setTabOrder(taskName, bExecutable);
-  setTabOrder(bExecutable, taskJacobian);
-  setTabOrder(taskJacobian, taskStability);
-  setTabOrder(taskStability, parameterTable);
-  //setTabOrder(parameterTable, bRunButton);
-  //setTabOrder(bRunButton, commitChange);
-  setTabOrder(commitChange, cancelChange);
+  setTabOrder(taskName, sExecutable);
+  setTabOrder(sExecutable, steadyState);
+  setTabOrder(steadyState, trajectory);
+  setTabOrder(trajectory, addButton);
+  setTabOrder(addButton, deleteButton);
+  setTabOrder(deleteButton, upButton);
+  setTabOrder(upButton, downButton);
+  setTabOrder(downButton, scrollview);
+  setTabOrder(scrollview, ObjectListBox);
+  setTabOrder(ObjectListBox, scanButton);
+  setTabOrder(scanButton, cancelChange);
+  setTabOrder(cancelChange, reportDefinitionButton);
 
-  mSteadyStateTask = NULL;
+  //  connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
+  //  connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
+
+  connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
+  connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
+  connect(upButton, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
+  connect(downButton, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
+
+  connect(scanButton, SIGNAL(clicked()), this, SLOT(runScanTask()));
+  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+
+  connect(steadyState, SIGNAL(clicked()), this, SLOT(SteadyStateButtonClicked()));
+  connect(trajectory, SIGNAL(clicked()), this, SLOT(TrajectoryButtonClicked()));
+  connect(sExecutable, SIGNAL(clicked()), this, SLOT(ScanCheckBoxClicked()));
+
+  connect(ObjectListBox, SIGNAL(clicked(QListBoxItem*)), this, SLOT(ListBoxClicked(QListBoxItem*)));
+  connect(ObjectListBox, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(ListBoxDoubleClicked(QListBoxItem*)));
+
+  connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
+  connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
+
+  nTitleHeight = fontMetrics().height() + 6;
+
+  scanTaskKey = (new CScanTask())->getKey();
+  SteadyStateKey = (new CSteadyStateTask())->getKey();
+  TrajectoryKey = (new CTrajectoryTask())->getKey();
+  pSteadyStateWidget = new SteadyStateWidget(NULL);
+  pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pSteadyStateWidget->hide();
+  pTrajectoryWidget->hide();
+
+  //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
+  //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
+
+  sExecutable->setEnabled(false);
+  scanButton->setEnabled(false);
+
+  steadyState->setEnabled(false);
+  eSteadyState->setEnabled(false);
+
+  trajectory->setEnabled(false);
+  eTrajectory->setEnabled(false);
+
+  reportDefinitionButton->setEnabled(false);
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
-ScanWidget::~ ScanWidget()
+void ScanWidget::SteadyStateEditing()
 {
-  // no need to delete child widgets, Qt does it all for us
+  pSteadyStateWidget->show();
 }
 
-void ScanWidget::CancelChange()
+void ScanWidget::TrajectoryEditing()
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  loadScan(mSteadyStateTask);
+  pTrajectoryWidget->show();
 }
 
-void ScanWidget::CommitChange()
+ScanWidget::~ScanWidget()
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  pdelete(scanTask);
 
-  bool bJacobian = taskJacobian->isChecked ();
-  bool bStatistics = taskStability->isChecked ();
+  CSteadyStateTask* sst =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
+  pdelete(sst);
 
-  steadystateproblem->setJacobianRequested(bJacobian);
-  steadystateproblem->setStabilityAnalysisRequested(bStatistics);
+  CTrajectoryTask* tt =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
+  pdelete(tt);
 
-  QTableItem * pItem;
-  QString substrate;
-  QString strname;
-  unsigned C_INT32 i;
-  for (i = 0; i < steadystatemethod->size(); i++)
+  selectedList.clear();
+}
+
+void ScanWidget::addButtonClicked()
+{
+  ObjectBrowserDialog* pSelectedObjects = new ObjectBrowserDialog();
+  std::vector<CCopasiObject*>* pSelectedVector = new std::vector<CCopasiObject*>();
+  pSelectedObjects->setOutputVector(pSelectedVector);
+
+  if (pSelectedObjects->exec () == QDialog::Rejected)
     {
-      pItem = parameterTable->item(i, 0);
-      substrate = pItem->text();
-      strname = (steadystatemethod->getName(i)).c_str();
-      switch (steadystatemethod->getType((const char *)strname.utf8()))
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (pSelectedVector->size() == 0)
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  unsigned C_INT32 i = 0;
+  for (; i < pSelectedVector->size(); i++)
+    if ((*pSelectedVector)[i])
+      break;
+
+  if (i >= pSelectedVector->size()) //no result returned
+    {
+      pdelete(pSelectedVector);
+      return;
+    }
+
+  if (addNewScanItem((*pSelectedVector)[i]))
+    ObjectListBox->insertItem (FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()), nSelectedObjects - 1);
+
+  pdelete(pSelectedVector);
+}
+
+void ScanWidget::deleteButtonClicked()
+{
+  int pp = selectedList.size();
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
+    return;
+
+  emit hide_me();
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+
+  CCopasiParameterGroup* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+  //  if (!GlobalKeys.get(scanTaskKey))
+  //   return;
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  if (((CScanProblem *)scanTask->getProblem())->getListSize() > 0)  // for reloading
+    ((CScanProblem *)scanTask->getProblem())->
+    removeScanItem(pScanObject-> /*CCopasiParameter::*/getObjectName());
+  scrollview->removeChild(selectedList[2*activeObject]);
+  scrollview->removeChild(selectedList[2*activeObject + 1]);
+
+  ObjectListBox->removeItem (activeObject);
+
+  int i = activeObject + 1;
+  int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight;
+
+  for (; i < selectedList.size() / 2; i++)
+    {
+      scrollview->moveChild(selectedList[2*i], 0, (i - 1)*offsetY);
+      scrollview->moveChild(selectedList[2*i + 1], 0, (i - 1)*offsetY + nTitleHeight);
+    }
+
+  std::vector<QWidget*>::iterator it = selectedList.begin();
+  std::vector<QWidget*>::iterator BeginDel;
+  std::vector<QWidget*>::iterator ToDel;
+  while (it < selectedList.end())
+    {
+      if (it - selectedList.begin() == 2*activeObject)
         {
-        case CMethodParameter::DOUBLE:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      substrate.toDouble());
-          break;
-        case CMethodParameter::INT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (C_INT32) substrate.toInt());
-          break;
-        case CMethodParameter::UINT:
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (unsigned C_INT32) substrate.toUInt());
-          break;
-        case CMethodParameter::BOOL:;
-          steadystatemethod->setValue((const char *)strname.utf8(),
-                                      (bool) substrate.toUShort());
+          BeginDel = it;
+          pdelete (*it);
+          ToDel = ++it;
+          pdelete (*ToDel);
+          ++ToDel;
+          selectedList.erase(BeginDel, ToDel);
           break;
         }
+      it++;
+      it++;
     }
-  loadScan(mSteadyStateTask);
+
+  activeObject--;
+  if ((activeObject >= 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
+    {
+      CCopasiObject* pScanObject = ((ScanItemWidget*)(selectedList[activeObject * 2 + 1]))->getScanObject();
+      ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+      //      activeTitle->setText(pObject->getObjectUniqueName().);
+      activeTitle->setText(FROM_UTF8(pScanObject->getCN()));
+    }
+  nSelectedObjects--;
+  scrollview->resizeContents(0, offsetY*selectedList.size() / 2);
+
+  if ((selectedList.size() > 0) && (((CScanProblem *)scanTask->getProblem())->getListSize() > 0))
+    {
+      ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+    }
+
+  emit show_me();
+
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
+
+  // to verify the size of the mparameterlist in ScanProblem
+  // scanTask->getProblem()->paraCount();
 }
-/*void  ScanWidget::RunButtonClicked()
+
+void ScanWidget::upButtonClicked()
 {
-  if (mSteadyStateTask == NULL)
+  if (activeObject <= 0 || activeObject >= selectedList.size() / 2)  // not a valid entry
     return;
-  if (!bExecutable->isChecked())
-    bRunButton->setEnabled(false);
+
+  emit hide_me();
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+
+  CCopasiParameterGroup* pScanObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+  CCopasiParameterGroup* pScanObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+  activeObject--;
+
+  //deactivate
+  //lower one
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject + 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  activeTitle->setText(FROM_UTF8(pScanObjectUp-> /*CCopasiParameter::*/getObjectName()));
+
+  //activate
+  //upper one
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  activeTitle->setText(FROM_UTF8(pScanObjectDown-> /*CCopasiParameter::*/getObjectName()));
+
+  //Update ListBox
+  QString tmp = ObjectListBox->text (activeObject);
+  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject + 1) , activeObject);
+  ObjectListBox->changeItem (NULL, tmp, activeObject + 1);
+
+  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject + 1, activeObject);
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+  emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
+}
+
+void ScanWidget::downButtonClicked()
+{
+  if (activeObject < 0 || activeObject >= selectedList.size() / 2 - 1)  // not a valid entry
+    return;
+
+  emit hide_me();
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+
+  activeObject++;
+  CCopasiParameterGroup* pObjectDown = ((ScanItemWidget*)selectedList[2 * activeObject + 1])->getScanObject();
+  CCopasiParameterGroup* pObjectUp = ((ScanItemWidget*)selectedList[2 * activeObject - 1])->getScanObject();
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject - 1));
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->setScanObject(((CScanProblem *)scanTask->getProblem())->getScanItem(activeObject));
+  ((ScanItemWidget*)selectedList[2*activeObject + 1])->updateObject();
+  ((ScanItemWidget*)selectedList[2*activeObject - 1])->updateObject();
+
+  //upper one
+  ScanLineEdit* activeTitle = (ScanLineEdit*)(selectedList[(activeObject - 1) * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+  activeTitle->setText(FROM_UTF8(pObjectDown-> /*CCopasiParameter::*/getObjectName()));
+
+  //bottom one
+  activeTitle = (ScanLineEdit*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  activeTitle->setText(FROM_UTF8(pObjectUp-> /*CCopasiParameter::*/getObjectName()));
+
+  //Update ListBox
+  QString tmp = ObjectListBox->text (activeObject);
+  ObjectListBox->changeItem (NULL, ObjectListBox->text(activeObject - 1) , activeObject);
+  ObjectListBox->changeItem (NULL, tmp, activeObject - 1);
+
+  ((CScanProblem *)scanTask->getProblem())->swapScanItem(activeObject - 1, activeObject);
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+
+  emit show_me();
+  if (activeObject >= 0)
+    ListBoxClicked(ObjectListBox->item(activeObject));
+}
+
+void ScanWidget::CancelChangeButton()
+{}
+
+void ScanWidget::ScanCheckBoxClicked()
+{
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  scanTask->setRequested(sExecutable->isChecked());
+  scanButton->setEnabled(sExecutable->isChecked());
+}
+
+void ScanWidget::runScanTask()
+{
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+
+  std::ofstream output;
+  if (scanTask->getReport().getTarget() != "")
+    {
+      if (scanTask->getReport().append())
+        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out | std::ios_base::app);
+      else
+        output.open(scanTask->getReport().getTarget().c_str(), std::ios_base::out);
+    }
+  if (output.is_open())
+    scanTask->initializeReporting(output);
+  else //ask if user insists on proceeding
+    {
+      if (QMessageBox::information (NULL, "No output specified,",
+                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running scan task with no output?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
+    }
+
+  scanTask->process();
+
+  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+  unsetCursor();
+}
+
+void ScanWidget::SteadyStateButtonClicked()
+{
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  eSteadyState->setEnabled(steadyState->isChecked());
+}
+
+void ScanWidget::TrajectoryButtonClicked()
+{
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
+  eTrajectory->setEnabled(trajectory->isChecked());
+  if (trajectory->isChecked())
+    {}}
+
+void ScanWidget::loadScan()
+{
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+
+  if (!scanTask) return;
+
+  // @comment: UI Stuff
+  taskName->setText(tr("Scan"));
+  CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
+  mModel = scanProblem->getModel();
+
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
+  assert(mSteadyStateTask);
+
+  CSteadyStateProblem * mSteadystateproblem =
+    (CSteadyStateProblem *) mSteadyStateTask->getProblem();
+  mSteadystateproblem->setModel(mModel);
+
+  CTrajectoryTask* mTrajectoryTask =
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
+  assert(mTrajectoryTask);
+
+  CTrajectoryProblem * mTrajectoryproblem =
+    (CTrajectoryProblem *) mTrajectoryTask->getProblem();
+  mTrajectoryproblem->setModel(mModel);
+
+  scanProblem->setSteadyStateTask(mSteadyStateTask);
+  scanProblem->setTrajectoryTask(mTrajectoryTask);
+  scanProblem->setProcessSteadyState(steadyState->isChecked());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());
+
+  sExecutable->setEnabled(true);
+  if (scanTask->isRequested() == true)
+    {
+      sExecutable->setChecked(true);
+      scanButton->setEnabled(true);
+    }
   else
-    bRunButton->setEnabled(true);
-}
- 
-void  ScanWidget::parameterValueChanged()
-{
-  qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
-}
- 
-void  ScanWidget::RunTask()
-{
-  if (mSteadyStateTask == NULL)
-    return;
- 
-  mSteadyStateTask->getProblem()->getModel()->compile();
-  mSteadyStateTask->getProblem()->
-  setInitialState(mSteadyStateTask->getProblem()->getModel()->getInitialState());
- 
-  std::ofstream output("steadystate.txt");
-  mSteadyStateTask->initializeReporting(output);
- 
-  mSteadyStateTask->process();
- 
-  emit runFinished(mSteadyStateTask->getProblem()->getModel());
-}
- */
-void ScanWidget::loadScan(CSteadyStateTask *steadystatetask)
-{
-  if (steadystatetask == NULL)
-    return;
-  mSteadyStateTask = steadystatetask;
-  CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
-  CSteadyStateMethod* steadystatemethod = steadystatetask->getMethod();
-
-  taskName->setText(tr("Steady State Task"));
-  taskName->setEnabled(false);
-
-  bool bJacobian = steadystateproblem->isJacobianRequested();
-  bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
-  taskJacobian->setChecked(bJacobian);
-  taskStability->setChecked(bStatistics);
-
-  QTableItem * pItem;
-  QString substrate;
-  QString strname;
-
-  parameterTable->setNumRows(steadystatemethod->size());
-  QHeader *rowHeader = parameterTable->verticalHeader();
-
-  int i;
-  for (i = 0; i < steadystatemethod->size(); i++)
     {
-      strname = (steadystatemethod->getName(i)).c_str();
-      rowHeader->setLabel(i, tr(strname));
+      sExecutable->setChecked(false);
+      scanButton->setEnabled(false);
     }
-
-  for (i = 0; i < steadystatemethod->size(); i++)
-    {
-      strname = (steadystatemethod->getName(i)).c_str();
-      substrate = QString::number(steadystatemethod->getValue((const char *)strname.utf8()));
-      pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
-      parameterTable->setItem(i, 0, pItem);
-    }
-
-  /*if (!bExecutable->isChecked())
-    bRunButton->setEnabled(false);
+  steadyState->setEnabled(true);
+  if (scanProblem->processTrajectory())
+    trajectory->setChecked(true);
   else
-    bRunButton->setEnabled(true);*/
-}
+    trajectory->setChecked(false);
 
-/*void  ScanWidget::ExportToFile()
-{
-  if (!mSteadyStateTask) return;
-  QString textFile = QFileDialog::getSaveFileName(
-                       QString::null, "TEXT Files (*.txt)",
-                       this, "save file dialog",
-                       "Choose a file");
- 
-  if (mSteadyStateTask && textFile)
+  trajectory->setEnabled(true);
+  if (scanProblem->processSteadyState())
+    steadyState->setChecked(true);
+  else
+    steadyState->setChecked(false);
+
+  if (((CScanProblem *)scanTask->getProblem())->getListSize() == 0)
     {
-      textFile += ".txt";
-      CWriteConfig outbuf((const char *)textFile.utf8());
-      mSteadyStateTask->save(outbuf);
+      activeObject = ObjectListBox->count() - 1; //because of the empty item
+      activeObject --;  // list base start from 1, but list base start from 0;
+      while (activeObject >= 0)
+        deleteButtonClicked();
+      ObjectListBox->clear();
+      ObjectListBox->insertItem(trUtf8("click here to add new item"));
     }
 }
- */
+
+bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
+{
+  if (!pObject)
+    return false;
+
+  CScanTask* scanTask =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  if (((CScanProblem *)scanTask->getProblem())->bExisted(pObject->getCN()))
+    return false;
+
+  int widgetOffset;
+  int ScanItemWidgetWidth;
+  emit hide_me();
+
+  if (selectedList.size() > 0)
+    {
+      ((ScanItemWidget*)selectedList[1])->setFirstWidget(false);
+    }
+  //by default isFirstWidget is set as false,
+  ScanItemWidget* parameterTable = new ScanItemWidget(this, "parameterTable");
+  ScanItemWidgetWidth = scrollview->visibleWidth();
+
+  widgetOffset = nTitleHeight + nSelectedObjects * (parameterTable->minimumSizeHint().height() + nTitleHeight);
+
+  ScanLineEdit* newTitleBar = new ScanLineEdit(this, "newTitleBar");
+  newTitleBar->setFixedSize(QSize(ScanItemWidgetWidth, nTitleHeight));
+  newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
+  newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
+
+  newTitleBar->setText(FROM_UTF8(pObject->getCN()));
+  newTitleBar->setReadOnly(TRUE);
+
+  scrollview->addChild(newTitleBar, 0, widgetOffset - nTitleHeight);
+  selectedList.push_back(newTitleBar);
+
+  parameterTable->setFixedWidth(ScanItemWidgetWidth);
+  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+
+  scrollview->addChild(parameterTable, 0 , widgetOffset);
+  scrollview->setVScrollBarMode(QScrollView::Auto);
+  scrollview->resizeContents(ScanItemWidgetWidth, widgetOffset + parameterTable->minimumSizeHint().height());
+  selectedList.push_back(parameterTable);
+
+  nSelectedObjects++;
+  //  if (pObject->isContainer())
+  ((CScanProblem *)scanTask->getProblem())->addScanItem(pObject->getCN());
+  parameterTable->setScanObject(((CScanProblem *)scanTask->getProblem())->
+                                getScanItem(nSelectedObjects - 1));
+  parameterTable->setCopasiObject(pObject);
+  parameterTable->loadObject();
+
+  ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
+
+  emit show_me();
+  return true;
+}
+
+void ScanWidget::ListBoxDoubleClicked(QListBoxItem * item)
+{
+  if (ObjectListBox->index(item) >= nSelectedObjects)
+    addButtonClicked();
+}
+
+void ScanWidget::ListBoxClicked(QListBoxItem * item)
+{
+  if (nSelectedObjects && ObjectListBox->index(item) >= 0) //select an object
+    {
+      double newActiveObject = ObjectListBox->index(item) + 0.5;
+      QPoint point(0, newActiveObject * (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight));
+      QMouseEvent e(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton);
+      scrollview->center(e.x(), e.y());
+      viewMousePressEvent(&e);
+      //emit scrollview(&e);
+    }
+}
+
+void ScanWidget::mouseSelected(ScanItemWidget* pSelected)
+{
+  if (selectedList.size() == 0)
+    return;
+
+  unsigned C_INT32 i = 1;
+  for (; (i < selectedList.size()) && (pSelected != selectedList[i]); i += 2)
+;
+  if (pSelected != selectedList[i]) //not find
+    return;
+
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
+
+  activeObject = i / 2;
+
+  ObjectListBox->setSelected(ObjectListBox->currentItem(), false);
+  ObjectListBox->setSelected(activeObject, true);
+
+  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  emit show_me();
+}
+
+void ScanWidget::viewMousePressEvent(QMouseEvent* e)
+{
+  if (selectedList.size() == 0)
+    return;
+
+  emit hide_me();
+  if (activeObject >= 0)
+    {
+      QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+      activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
+    }
+
+  activeObject = e->y() / (((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + nTitleHeight);
+  if (ObjectListBox->currentItem() != -1)
+    ObjectListBox->setSelected(ObjectListBox->currentItem(), false);
+  ObjectListBox->setSelected(activeObject, true);
+
+  if (activeObject >= selectedList.size() / 2)
+    {
+      emit show_me();
+      activeObject = -1;
+      return;
+    }
+
+  QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
+  activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
+  emit show_me();
+}
+
+bool ScanWidget::enter(const std::string & key)
+{
+  if (!dynamic_cast< CScanTask * >(GlobalKeys.get(key))) return false;
+
+  scanTaskKey = key;
+
+  pSteadyStateWidget->enter(SteadyStateKey);
+  pTrajectoryWidget->enter(TrajectoryKey);
+  loadScan();
+
+  return true;
+}
+
+bool ScanWidget::leave()
+{
+  //let the user confirm?
+  return true;
+}
+
+bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+{
+  if (mIgnoreUpdates) return true;
+
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      // check if there is a list of Report Defs
+      CReportDefinitionVector* pReportDefinitionVector;
+      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      if (pReportDefinitionVector)
+        reportDefinitionButton->setEnabled(true);
+      break;
+    default:
+      break;
+    }
+  return true;
+}
+
+void ScanWidget::ReportDefinitionClicked()
+{
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
+  CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)GlobalKeys.get(scanTaskKey);
+  pSelectDlg->setReport(&(scanTask->getReport()));
+  pSelectDlg->loadReportDefinitionVector();
+  if (pSelectDlg->exec () == QDialog::Rejected)
+    {
+      return;
+    }
+}
+/****************************************
+ * The implementation of ScanScrollView 
+ ****************************************/
+
+ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)
+    : QScrollView(parent, name, fl)
+{
+  pSelectedList = NULL;
+  mParent = (CopasiParametersWidget*)parent;
+}
+
+void ScanScrollView::contentsMousePressEvent(class QMouseEvent *e)
+{
+  QScrollView::contentsMousePressEvent(e);
+  mParent->viewMousePressEvent(e);
+}
+void ScanScrollView:: resizeEvent(QResizeEvent * e)
+{
+  if (e)
+    QScrollView::resizeEvent(e);
+  if (!pSelectedList)
+    return;
+  QScrollView::repaintContents(true);
+  unsigned i;
+  for (i = 0; i < pSelectedList->size(); i++)
+    {
+      (*pSelectedList)[i]->setFixedWidth(visibleWidth());
+    }
+}
+
+void ScanScrollView::setSelectedList(std::vector<QWidget*>* pNewSelectedList)
+{
+  pSelectedList = pNewSelectedList;
+}
+
+void ScanScrollView::viewportResizeEvent (QResizeEvent * e)
+{
+  if (e)
+    QScrollView::viewportResizeEvent(e);
+  if (!pSelectedList)
+    return;
+  QScrollView::repaintContents(true);
+  unsigned i;
+  for (i = 0; i < pSelectedList->size(); i++)
+    {
+      (*pSelectedList)[i]->setFixedWidth(visibleWidth());
+    }
+}

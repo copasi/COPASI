@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/slidersettingsdialog.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/06 19:31:09 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -21,11 +21,38 @@
 void SliderSettingsDialog::setSlider(C_INT32 taskId, CopasiSlider * slider)
 {
   // check if this slider is in the vector belonging to the given task id
+  if (this->sliderMap.find(taskId) != this->sliderMap->end())
+    {
+      std::vector< CopasiSlider* >::const_iterator it = this->sliderMap[taskId]->begin();
+      std::vector< CopasiSlider* >::const_iterator endPos = this->sliderMap[taskId]->end();
+      bool found = false;
+      while (it != endPos)
+        {
+          if ((*it) == slider)
+            {
+              this->setTask(taskId);
+              this->setObject(slider->object());
+              break;
+            }
+          ++it;
+        }
+    }
 }
 
 void SliderSettingsDialog::setTask(C_INT32 taskId)
 {
   // change the selected task in the TaskComboBox if possible
+  std::string name = this->taskDisplayMapping[taskId];
+  unsigned int counter;
+  unsigned int maxCount = this->taskComboBox->count();
+  for (counter = 0; counter < maxCount;++counter)
+    {
+      if (this->taskComboBox->text(counter) == name)
+        {
+          break;
+        }
+    }
+  this->taskComboBox->setCurrentItem(counter);
 }
 
 void SliderSettingsDialog::setTaskList(std::map<C_INT32, std::string> taskMap)
@@ -36,6 +63,7 @@ void SliderSettingsDialog::setTaskList(std::map<C_INT32, std::string> taskMap)
 void SliderSettingsDialog::setSliderMap(std::map<C_INT32 , std::vector<CopasiSlider *> > sliderMap)
 {
   // fill the task ComboBox and the Object ComboBox
+  this->sliderMap = sliderMap;
 }
 
 void SliderSettingsDialog::updateObjectBox()
@@ -44,8 +72,7 @@ void SliderSettingsDialog::updateObjectBox()
 }
 
 void SliderSettingsDialog::updateSliderValues()
-{
-}
+{}
 
 void SliderSettingsDialog::okButtonPressed()
 {
@@ -63,53 +90,133 @@ void SliderSettingsDialog::cancelButtonPressed()
 void SliderSettingsDialog::majorTickSizeChanged()
 {
   // update numMajorTicks
+  this->majorTickSizeVar = this->text2Double(this->majorTickSizeEdit->getText());
+  if (this->majorTickSizeVar == 0.0)
+    {
+      this->majorTickSizeVar = 1.0;
+      this->majorTickSizeEdit->setText("1.0");
+    }
+  if (this->majorTickSizeVar < this->minorTickSizeVar)
+    {
+      this->majorTickSizeVar = this->minorTickSizeVar;
+      this->majorTickSizeEdit->setText(this->double2Text(this->majorTickSizeVar));
+    }
+  this->numMajorTicksVar = (this->maxValueVar - this->minValueVar) / this->majorTickSizeVar;
+  this->numMajorTicksEdit->setText(this->double2Text(this->numMajorTicksVar));
 }
 
 void SliderSettingsDialog::minorTickSizeChanged()
 {
   // update numMinorTicks
+  this->minorTickSizeVar = this->text2Double(this->minorTickSizeEdit->getText());
+  if (this->minorTickSizeVar == 0.0)
+    {
+      this->minorTickSizeVar = 1.0;
+      this->minorTickSizeEdit->setText("1.0");
+    }
+  if (this->minorTickSizeVar > this->majorTickSizeVar)
+    {
+      this->minorTickSizeVar = this->majorTickSizeVar;
+      this->minorTickSizeEdit->setText(this->double2Text(this->minorTickSizeVar));
+    }
+  this->numMajorTicksVar = (this->maxValueVar - this->minValueVar) / this->majorTickSizeVar;
+  this->numMajorTicksEdit->setText(this->double2Text(this->numMajorTicksVar));
 }
 
 void SliderSettingsDialog::numMajorTicksChanged()
 {
   // update majorTickSize
+  this->numMajorTicksVar = this->text2Double(this->numMajorTicksEdit->getText());
+  if (this->numMajorTicksVar == 0.0)
+    {
+      this->numMajorTicksVar = 1.0;
+      this->numMajorTicksEdit->setText("1.0");
+    }
+  if (this->numMajorTicksVar > this->numMinorTicksVar)
+    {
+      this->numMajorTicksVar = this->numMinorTicksVar;
+      this->numMajorTicksEdit->setText(this->double2Text(this->numMajorTicksVar));
+    }
+  this->majorTicksSizeVar = (this->maxValueVar - this->minValueVar) / this->numMajorTicksVar;
+  this->majorTickSizeEdit->setText(this->double2Text(this->majorTickSizeVar));
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
 {
   //update minorTickSize
+  this->numMinorTicksVar = this->text2Double(this->numMinorTicksEdit->getText());
+  if (this->numMinorTicksVar == 0.0)
+    {
+      this->numMinorTicksVar = 1.0;
+      this->numMinorTicksEdit->setText("1.0");
+    }
+  if (this->numMinorTicksVar < this->numMajorTicksVar)
+    {
+      this->numMinorTicksVar = this->numMajorTicksVar;
+      this->numMinorTicksEdit->setText(this->double2Text(this->numMinorTicksVar));
+    }
+  this->minorTicksSizeVar = (this->maxValueVar - this->minValueVar) / this->numMinorTicksVar;
+  this->minorTickSizeEdit->setText(this->double2Text(this->minorTickSizeVar));
 }
 
 void SliderSettingsDialog::minValueChanged()
 {
   // check if min<max, else switch both
   // update major and minorTickSize
-  // check if value is within range, if not, set to sensible value
+
+  this->minValueVar = this->text2Double(this->minValueEdit());
+  if (this->minValueVar > this->maxValueVar)
+    {
+      double tmp = this->minValueVar;
+      this->minValueVar = this->maxValueVar;
+      this->maxValueVar = tmp;
+      this->minValueEdit->setText(this->double2Text(this->minValueVar));
+      this->maxValueEdit->setText(this->double2Text(this->maxValueVar));
+    }
+  this->numMajorTicksVar = (this->maxValueVar - this->minValueVar) / this->majorTickSizeVar;
+  this->numMajorTicksEdit->setText(this->double2Text(this->numMajorTicksVar));
+  this->numMinorTicksVar = (this->maxValueVar - this->minValueVar) / this->minorTickSizeVar;
+  this->numMinorTicksEdit->setText(this->double2Text(this->numMinorTicksVar));
 }
 
 void SliderSettingsDialog::maxValueChanged()
 {
   // check if min<max, else switch both
   // update major and minorTickSize
-  // check if value is within range, if not, set to sensible value
+
+  this->maxValueVar = this->text2Double(this->maxValueEdit());
+  if (this->minValueVar > this->maxValueVar)
+    {
+      double tmp = this->minValueVar;
+      this->minValueVar = this->maxValueVar;
+      this->maxValueVar = tmp;
+      this->minValueEdit->setText(this->double2Text(this->minValueVar));
+      this->maxValueEdit->setText(this->double2Text(this->maxValueVar));
+    }
+  this->numMajorTicksVar = (this->maxValueVar - this->minValueVar) / this->majorTickSizeVar;
+  this->numMajorTicksEdit->setText(this->double2Text(this->numMajorTicksVar));
+  this->numMinorTicksVar = (this->maxValueVar - this->minValueVar) / this->minorTickSizeVar;
+  this->numMinorTicksEdit->setText(this->double2Text(this->numMinorTicksVar));
 }
 
 void SliderSettingsDialog::objectValueChanged()
 {
   // check if value is in the range, else expand range
+  this->objectValueVar = this->text2Double(this->objectValueEdit->text());
+  if (this->objectValueVar < this - < minValueVar || this->objectValueVar > this->maxValueVar)
+    {
+    }
 }
 
 void SliderSettingsDialog::init()
 {
-  QRegExp realRegExp = QRegExp("\\-?\\d+(\\.\\d+)?([eE]\\-?\\d+)?");
-  QRegExp intRegExp = QRegExp("\\d+");
-  objectValueEdit->setValidator(new QRegExpValidator(realRegExp, this));
-  minValueEdit->setValidator(new QRegExpValidator(realRegExp, this));
-  maxValueEdit->setValidator(new QRegExpValidator(realRegExp, this));
-  minorTickSizeEdit->setValidator(new QRegExpValidator(realRegExp, this));
-  majorTickSizeEdit->setValidator(new QRegExpValidator(realRegExp, this));
-  numMinorTicksEdit->setValidator(new QRegExpValidator(intRegExp, this));
-  numMajorTicksEdit->setValidator(new QRegExpValidator(intRegExp, this));
+  objectValueEdit->setValidator(new QDoubleValidator(this));
+  minValueEdit->setValidator(new QDoubleValidator(this));
+  maxValueEdit->setValidator(new QDoubleValidator(this));
+  minorTickSizeEdit->setValidator(new QDoubleValidator(this));
+  majorTickSizeEdit->setValidator(new QDoubleValidator(this));
+  numMinorTicksEdit->setValidator(new QDoubleValidator(this));
+  numMajorTicksEdit->setValidator(new QDoubleValidator(this));
 }
 
 const std::string& SliderSettingsDialog::int2Text(int i)
@@ -136,4 +243,30 @@ int SliderSettingsDialog::text2Int(const std::string & text)
 {
   int i = atol(text.c_str());
   return i;
+}
+
+void SliderSettingsDialog::browseButtonPressed()
+{
+  // open a selection dialog with single selection mode
+  SimpleSelectionDialog browseDialog = new SimpleSelectionDialog(this);
+  std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
+  browseDialog->setOutputVector(selection);
+  browseDialog->exec();
+  delete browseDialog;
+}
+
+void SliderSettingsDialog::setObject(CCopasiObject * object)
+{
+  // find the object in the objectComboBox and make it the current item
+  std::string name = this->object->getCN();
+  unsigned int counter;
+  unsigned int maxCount = this->objectComboBox->count();
+  for (counter = 0; counter < maxCount;++counter)
+    {
+      if (this->objectComboBox->text(counter) == name)
+        {
+          break;
+        }
+    }
+  this->taskComboBox->setCurrentItem(counter);
 }

@@ -15,7 +15,11 @@
 use POSIX;
 
 $pert = 0.5;
+$tpred = 0.05;
+$ttheo = 0.05;
 if( $ARGV[0] =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ ) {$pert = $ARGV[0];}
+if( $ARGV[1] =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ ) {$tpred = $ARGV[1];}
+if( $ARGV[2] =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ ) {$ttheo = $ARGV[2];}
 
 # All configuration parameters here
 
@@ -27,6 +31,10 @@ $STATEXTENSION = "netstat";
 #$GNUPLOT = "/usr/local/bin/gnuplot";
 # Gepasi
 $GEPASI = "/usr/local/bin/gepasi -r";
+# graph layout program (force field)
+$DOT = "/usr/local/bin/dot";
+# alf's program
+$RSA = "/usr/local/bin/rsa";
 
 $counter = 0;
 
@@ -40,6 +48,9 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	$gfile = "$name.$GEPASIEXTENSION";
 	print "$counter, $gfile ";
 
+	# run Gepasi
+	system "$GEPASI $gfile";
+
 	open( STATFILE, "$statfile" );
 	$vertex = 0;
 	@stats = <STATFILE>;
@@ -49,10 +60,53 @@ while( defined($statfile = <*.$STATEXTENSION>) )
       if ($line =~ /number of vertices\t([0-9]+)/)
 	  {
 	    $vertex = $1;
-		$tick = $vertex/10;
+		if( $vertex>9) {$tick = $vertex/10;}
+		else {$tick=1;}
 	    last;
 	  }
 	}
+
+    # get elasticity matrix from the txt file of the original
+	for( $i=0; $i<$vertex*2; $i++ )
+	{
+	 for( $j=0; $j<$vertex; $j++ )
+	 {
+	  $elast[$i][$j] = 0.0;
+	 }
+	}
+	$tfile = "$name.txt";
+	open( TXTFILE, "$tfile" );
+	while( defined($line = <TXTFILE> ))
+	{
+ 	 while ($line =~ /e\(G([0-9]+) synthesis,\[G([0-9]+)\]\) =\s?((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/g ) 
+	 {
+	  $i1 = ($1-1)*2;
+	  $j1 = $2-1;
+	  $e = $3;
+	  $e =~ s/1\.7977e\+308/1\.797e\+308/;
+	  $elast[$i1][$j1] = $e;
+	 }
+	 while ($line =~ /e\(G([0-9]+) degradation,\[G([0-9]+)\]\) =\s?((\+|-)?([0-9]+\.?[0-9]*|\.[0-9]+)([eE](\+|-)?[0-9]+)?)/g )
+	 {
+	  $i1 = ($1-1)*2+1;
+	  $j1 = $2-1;
+	  $e = $3;
+	  $e =~ s/1\.7977e\+308/1\.797e\+308/;
+	  $elast[$i1][$j1] = $e;
+	 }
+	}
+	close( TXTFILE );
+	$elastfile = "$name.ela";
+	open( EFILE, ">$elastfile" );
+	for( $i=0; $i<$vertex*2; $i++ )
+	{
+	 for( $j=0; $j<$vertex; $j++ )
+	 {
+	  print( EFILE "$elast[$i][$j]\t");
+	 }
+	 print( EFILE "\n");
+	}
+	close(EFILE);
 
     # read the original gepasi file and keep it all in memory
 	open( GPSFILE, "$gfile" );
@@ -114,8 +168,7 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 		if( ( $r==$g ) && ( $line =~ /Param0=([-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?)/ ) )
 		{
 		    # this is the basal rate of transcription
-		    # $rate = $1 / 2.0;
-                    $rate = $1 * $pert;
+            $rate = $1 * $pert;
 		    print( HSSFILE "Param0=$rate\n");
 			# change $r so that we don't also change the degradation rate
 			$r = 0;
@@ -158,5 +211,12 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	}
     close(RESULTS);
     close(REDRESULTS);
+
+	system "$RSA $name $vertex $tpred $ttheo";
+	$pngfiled = "$name-rsa.png";
+	$gfile = "$name.dot";
+	if ($vertex < 500)
+	 {system "$DOT -Tpng -o$pngfiled $gfile 2>>dot.log";}
+
     print "\n";
 }

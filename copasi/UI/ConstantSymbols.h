@@ -1,40 +1,47 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:44 $
+   End CVS Header */
+
 /****************************************************************************
- **  $ CopasiUI/MetabolitesWidget.h               
+ **  $ CopasiUI/ConstantSymbols.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Metabolites Widget, i.e the First level 
- ** of Metabolites.
+ ** This is the header file for the Constant Symbols
  *****************************************************************************/
 
 #ifndef CONSTANT_SYMBOLS_H
 #define CONSTANT_SYMBOLS_H
 
-#include "MyTable.h"
-#include "copasi.h"
-#include "model/model.h"
 #include <qtable.h>
 #include <qpushbutton.h>
+#include "MyTable.h"
+#include "copasi.h"
+#include "copasiWidget.h"
+class CMathModel;
 
-class ConstantSymbols : public QWidget
+class ConstantSymbols : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    CModel * mModel;
+    CMathModel * mModel;
     MyTable * table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
-
-  public slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+    //QPushButton *btnOK;
+    //QPushButton *btnCancel;
 
   signals:
-    void name(QString &);
+    void name(const QString &);
 
   public:
     ConstantSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
     void resizeEvent(QResizeEvent * re);
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool enter(const std::string & key = "");
 
   protected slots:
     virtual void slotBtnOKClicked();
@@ -42,7 +49,7 @@ class ConstantSymbols : public QWidget
     virtual void slotTableSelectionChanged();
 
   private:
-    void showMessage(QString caption, QString text);
+    bool loadConstantSymbols(CMathModel *model);
   };
 
 #endif

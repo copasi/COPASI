@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/04 18:50:56 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -57,16 +57,15 @@ void SimpleSelectionWidget::addButtonClicked()
     {
       CCopasiObject* object = selection->at(counter);
 
-      //const std::string name=object->getCN();
+      const std::string name = object->getCN();
       QListViewItem* lvitem = this->findListViewItem(object);
-      const std::string name = lvitem->text(0);
-      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name);
+      //const std::string name = lvitem->text(0);
+      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name.c_str());
 
       this->selectedItemsBox->setSelected(item, true);
       this->selectedObjects[item] = object;
       if (this->singleSelect)
         {
-          //QListViewItem* lvitem=this->findListViewItem(object);
           lvitem->setEnabled(false);
         }
     }
@@ -92,7 +91,10 @@ void SimpleSelectionWidget::deleteButtonClicked()
           if (this->singleSelect)
             {
               QListViewItem* lvitem = this->findListViewItem(object);
-              lvitem->setEnabled(true);
+              if (lvitem)
+                {
+                  lvitem->setEnabled(true);
+                }
             }
         }
     }
@@ -297,18 +299,15 @@ void SimpleSelectionWidget::populateTree(CModel* model)
             }
         }
       name = "[" + name + "]";
-      item = new QListViewItem(this->initialConcentrationSubtree, name + "(t=0)");
+      item = new QListViewItem(this->initialConcentrationSubtree, (name + "(t=0)").c_str());
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-      item = new QListViewItem(this->transientConcentrationSubtree, name + "(t)");
+      item = new QListViewItem(this->transientConcentrationSubtree, (name + "(t)").c_str());
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
-      /*
-      item=new QListViewItem(name+"(t=0)");
-      treeItems[item]=(CCopasiObject*)metab.getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
-      this->initialParticleNumberSubtree->insertItem(item);
-      item=new QListViewItem(name+"(t)");
-      treeItems[item]=(CCopasiObject*)metab.getObject(CCopasiObjectName("Reference=ParticleNumber"));
-      this->particleNumberSubtree->insertItem(item);
-      */
+      item = new QListViewItem(initialParticleNumberSubtree, (name + "(t=0)").c_str());
+
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
+      item = new QListViewItem(this->transientParticleNumberSubtree, (name + "(t)").c_str());
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=ParticleNumber"));
     }
 
   // find all reactions and create items in the reaction subtree
@@ -319,9 +318,9 @@ void SimpleSelectionWidget::populateTree(CModel* model)
       const CReaction* react = reactions[counter];
       std::string name = react->getObjectName();
       name = "flux(" + name + ")";
-      item = new QListViewItem(this->concentrationFluxSubtree, name);
+      item = new QListViewItem(this->concentrationFluxSubtree, name.c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->particleFluxSubtree, "particle_" + name);
+      item = new QListViewItem(this->particleFluxSubtree, ("particle_" + name).c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
     }
 }
@@ -423,6 +422,7 @@ void SimpleSelectionWidget::clearTree()
 
 void SimpleSelectionWidget::setOutputVector(std::vector<CCopasiObject *> * outputVector)
 {
+  this->selectObjects(outputVector);
   this->outputVector = outputVector;
 }
 
@@ -537,5 +537,41 @@ void SimpleSelectionWidget::updateOutputVector()
           CCopasiObject* object = this->selectedObjects[item];
           this->outputVector->push_back(object);
         }
+    }
+}
+
+void SimpleSelectionWidget::selectObjects(std::vector<CCopasiObject * > * objects)
+{
+  //clear selectedObjects
+  //remove all items from selectedItemsList
+  //enable all items in the tree
+  std::map<QListBoxItem*, CCopasiObject*>::const_iterator it = this->selectedObjects.begin();
+  std::map<QListBoxItem*, CCopasiObject*>::const_iterator endPos = this->selectedObjects.end();
+  while (it != endPos)
+    {
+      this->selectedItemsBox->takeItem(it->first);
+      delete it->first;
+      QListViewItem* lvitem = this->findListViewItem(it->second);
+      if (lvitem)
+        {
+          lvitem->setEnabled(true);
+        }
+      ++it;
+    }
+  this->selectedObjects.clear();
+  unsigned int counter;
+  unsigned int maxCount = objects->size();
+  for (counter = 0; counter < maxCount;++counter)
+    {
+      CCopasiObject* object = objects->at(counter);
+      std::string name = object->getCN();
+      QListViewItem* lvitem = this->findListViewItem(object);
+      if (lvitem)
+        {
+          lvitem->setEnabled(false);
+        }
+      QListBoxText* item = new QListBoxText(this->selectedItemsBox, name.c_str());
+      this->selectedItemsBox->setSelected(item, true);
+      this->selectedObjects[item] = object;
     }
 }

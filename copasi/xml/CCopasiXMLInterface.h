@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:05 $
+   End CVS Header */
+
 /**
  * CCopasiXMLInterface class.
  * The class CCopasiXMLInterface is the interface to various XML document 
@@ -11,106 +19,17 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+
+#include "copasi.h"
 
 class CModel;
 template <class CType> class CCopasiVectorN;
 class CFunction;
 class CCopasiTask;
-class CCopasiReport;
-
-/**
- * A list of XML attributes used by saveElement and startSaveElement.
- */
-class CXMLAttributeList
-  {
-    // Attributes
-  private:
-    /**
-     * The attribute list
-     */
-    std::vector< std::string > mAttributeList;
-
-    // Operations
-  public:
-    /**
-     * Constructor.
-     */
-    CXMLAttributeList();
-
-    /**
-     * Copy constructor.
-     * @param const CXMLAttributeList & src
-     */
-    CXMLAttributeList(const CXMLAttributeList & src);
-
-    /**
-     * Destructor.
-     */
-    ~CXMLAttributeList();
-
-    /**
-     * Erase the content of the attribute list.
-     * @return bool success
-     */
-    bool erase();
-
-    /**
-     * Add an attribute to the end of the list.
-     * Note: the value will be XML encoded
-     * @param const std::string & name
-     * @param const std::string & value
-     * @return bool success
-     */
-    bool addAttribute(const std::string & name,
-                      const std::string & value);
-
-    /**
-     * Retreive the size of the list.
-     * @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 size();
-
-    /**
-     * Set the name of the indexed attribute
-     * @param const unsigned C_INT32 & index
-     * @param const std::string & name
-     * @return bool success
-     */
-    bool setName(const unsigned C_INT32 & index,
-                 const std::string & name);
-
-    /**
-     * Retreive the name of the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return const std::string & name
-     */
-    const std::string & getName(const unsigned C_INT32 & index) const;
-
-    /**
-     * Set the value of the indexed attribute
-     * Note: the value will be XML encoded
-     * @param const unsigned C_INT32 & index
-     * @param const std::string & value
-     * @return bool success
-     */
-    bool setValue(const unsigned C_INT32 & index,
-                  const std::string & value);
-
-    /**
-     * Retreive the value of the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return const std::string & value
-     */
-    const std::string & getValue(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retreive the indexed attribute.
-     * @param const unsigned C_INT32 & index
-     * @return std::string attribute
-     */
-    std::string getAttribute(const unsigned C_INT32 & index) const;
-  };
-
+class CReportDefinition;
+class CXMLAttributeList;
+class CPlotSpecification;
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
  * related to COPASI relevant information.
@@ -147,7 +66,13 @@ class CCopasiXMLInterface
      * Pointer to a vector of reports which has been loaded or is to be saved.
      * The ownership is handed to the user.
      */
-    CCopasiVectorN< CCopasiReport > * mpReportList;
+    CCopasiVectorN< CReportDefinition > * mpReportList;
+
+    /**
+     * Pointer to a vector of plots which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CCopasiVectorN< CPlotSpecification > * mpPlotList;
 
     /**
      * A pointer to the input stream
@@ -280,17 +205,42 @@ class CCopasiXMLInterface
     bool freeTaskList();
 
     /**
+     * Set the plot list.
+     * @param const CCopasiVectorN< CPlotSpecification > & plotList
+     * @return bool success
+     */
+    bool setPlotList(const CCopasiVectorN< CPlotSpecification > & plotList);
+
+    /**
+     * Retreive the plot list.
+     * @return CCopasiVectorN< CPlotSpecification > * plotList
+     */
+    CCopasiVectorN< CPlotSpecification > * getPlotList() const;
+
+    /**
+     * Retreive whether the XML contains a plot list.
+     * @return bool havePlotList
+     */
+    bool havePlotList() const;
+
+    /**
+     * Free the plot list.
+     * @return bool success
+     */
+    bool freePlotList();
+
+    /**
      * Set the report list.
      * @param const CCopasiVectorN< CCopasiReport > & reportList
      * @return bool success
      */
-    bool setReportList(const CCopasiVectorN< CCopasiReport > & reportList);
+    bool setReportList(const CCopasiVectorN< CReportDefinition > & reportList);
 
     /**
      * Retreive the report list.
      * @return CCopasiVectorN< CCopasiReport > * reportList
      */
-    CCopasiVectorN< CCopasiReport > * getReportList() const;
+    CCopasiVectorN< CReportDefinition > * getReportList() const;
 
     /**
      * Retreive whether the XML contains a report list.
@@ -320,6 +270,13 @@ class CCopasiXMLInterface
 
   protected:
     /**
+     * Save CDATA  to the ostream
+     * @param const std::string & data
+     * @return bool success
+     */
+    bool saveData(const std::string & data);
+
+    /**
      * Save an XML element to the ostream
      * @param const std::string & name
      * @param CXMLAttributeList & attributeList
@@ -329,7 +286,16 @@ class CCopasiXMLInterface
                      CXMLAttributeList & attributeList);
 
     /**
-     *
+     * Start saving an XML element to the ostream. Call endSaveElement to
+     * conclude.
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool startSaveElement(const std::string & name);
+
+    /**
+     * Start saving an XML element to the ostream. Call endSaveElement to
+     * conclude.
      * @param const std::string & name
      * @param CXMLAttributeList & attributeList
      * @return bool success
@@ -338,11 +304,158 @@ class CCopasiXMLInterface
                           CXMLAttributeList & attributeList);
 
     /**
-     *
+     * End saving an XML element to the ostream started by startSaveElement.
      * @param const std::string & name
      * @return bool success
      */
     bool endSaveElement(const std::string & name);
   };
 
+/**
+ * A list of XML attributes used by saveElement and startSaveElement.
+ */
+class CXMLAttributeList
+  {
+    // Attributes
+  private:
+    /**
+     * The attribute list.
+     */
+    std::vector< std::string > mAttributeList;
+
+    /**
+     * The list wheter an attribute is to be saved.
+     */
+    std::vector< bool > mSaveList;
+
+    // Operations
+  public:
+    /**
+     * Constructor.
+     */
+    CXMLAttributeList();
+
+    /**
+     * Copy constructor.
+     * @param const CXMLAttributeList & src
+     */
+    CXMLAttributeList(const CXMLAttributeList & src);
+
+    /**
+     * Destructor.
+     */
+    ~CXMLAttributeList();
+
+    /**
+     * Erase the content of the attribute list.
+     * @return bool success
+     */
+    bool erase();
+
+    /**
+     * Add an attribute to the end of the list.
+     * Note: the value will be XML encoded
+     * @param const std::string & name
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType>bool add(const std::string & name,
+                                   const CType & value)
+    {
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList.push_back(name);
+      mAttributeList.push_back(CCopasiXMLInterface::encode(Value.str()));
+
+      mSaveList.push_back(true);
+
+      return true;
+    }
+
+    /**
+     * Retreive the size of the list.
+     * @return unsigned C_INT32 size
+     */
+    unsigned C_INT32 size();
+
+    /**
+     * Set the name of the indexed attribute
+     * @param const unsigned C_INT32 & index
+     * @param const std::string & name
+     * @return bool success
+     */
+    bool setName(const unsigned C_INT32 & index,
+                 const std::string & name);
+
+    /**
+     * Retreive the name of the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return const std::string & name
+     */
+    const std::string & getName(const unsigned C_INT32 & index) const;
+
+    /**
+     * Set the name and value of the indexed attribute
+     * Note: the value will be XML encoded
+     * @param const unsigned C_INT32 & index
+     * @param const std::string & name
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType> bool set(const unsigned C_INT32 & index,
+                                    const std::string & name,
+                                    const CType & value)
+    {
+      mAttributeList[2 * index] = name;
+
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mSaveList[index] = true;
+
+      return true;
+    }
+
+    /**
+     * Set the value of the indexed attribute
+     * Note: the value will be XML encoded
+     * @param const unsigned C_INT32 & index
+     * @param const CType & value
+     * @return bool success
+     */
+    template <class CType> bool setValue(const unsigned C_INT32 & index,
+                                         const CType & value)
+    {
+      std::ostringstream Value;
+      Value << value;
+
+      mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(Value.str());
+      mSaveList[index] = true;
+
+      return true;
+    }
+
+    /**
+     * Retreive the value of the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return const std::string & value
+     */
+    const std::string & getValue(const unsigned C_INT32 & index) const;
+
+    /**
+     * Set whether the indexed attribute shall be skipped during save.
+     * @param const unsigned C_INT32 & index
+     * @return bool sucess
+     */
+    bool skip(const unsigned C_INT32 & index);
+
+    /**
+     * Retreive the indexed attribute.
+     * @param const unsigned C_INT32 & index
+     * @return std::string attribute
+     */
+    std::string getAttribute(const unsigned C_INT32 & index) const;
+  };
 #endif // COPASI_CCopasiXMLInterface

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
+   End CVS Header */
+
 // Main
 //
 // (C) Stefan Hoops 2002
@@ -34,6 +42,7 @@
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "output/COutputList.h"
+#include "output/COutput.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -46,6 +55,7 @@ int main(int argc, char *argv[])
 {
   try
     {
+      CCopasiContainer::init();
       Copasi = new CGlobals;
 
       // Parse the commandline options
@@ -65,7 +75,7 @@ int main(int argc, char *argv[])
       Model.load(CopasiFile);
 
       // Load the output specifications
-      Copasi->pOutputList->load(CopasiFile);
+      //Copasi->pOutputList->load(CopasiFile);//TODO
 
       bool runTrajectory;
       CopasiFile.getVariable("Dynamics", "bool", &runTrajectory,
@@ -98,7 +108,9 @@ int main(int argc, char *argv[])
       std::cout << Exception.getMessage().getText() << std::endl;
     }
 
-  delete Copasi;
+  pdelete(Copasi);
+  pdelete(CCopasiContainer::Root);
+
   std::cout << "Leaving main program." << std::endl;
   return 0;
 }
@@ -111,8 +123,8 @@ void processTrajectory(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  ofstream TrajectoryFile(Copasi->pOutputList->getTrajectoryFile().c_str());
-  task.initializeReporting(TrajectoryFile);
+  std::ofstream TrajectoryFile("TEST.DAT" /*Copasi->pOutputList->getTrajectoryFile().c_str()*/);
+  task.initialize(&TrajectoryFile);
 
   task.process();
 }
@@ -125,8 +137,8 @@ void processSteadyState(CModel & model, CReadConfig & copasiFile)
 
   task.getProblem()->setModel(&model);
 
-  ofstream SteadyStateFile(Copasi->pOutputList->getSteadyStateFile().c_str());
-  task.initializeReporting(SteadyStateFile);
+  std::ofstream SteadyStateFile("TEST.DAT" /*Copasi->pOutputList->getSteadyStateFile().c_str()*/);
+  task.initialize(&SteadyStateFile);
 
   task.process();
 }

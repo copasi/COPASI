@@ -1,11 +1,19 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\OptimizationItemWidget.ui'
- **
- ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.1 2003/09/29 04:13:28 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
+
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 10/01
+Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #ifndef OPTIMIZATIONITEMWIDGET_H
 #define OPTIMIZATIONITEMWIDGET_H
@@ -13,38 +21,61 @@
 #include <qvariant.h>
 #include <qwidget.h>
 
+#include "copasi.h"
+#include "report/CCopasiObject.h"
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QLabel;
-class QLineEdit;
+class ScanLineEdit;
 class QPushButton;
 class QComboBox;
-class QCheckBox;
+class ScanCheckBox;
 class QFrame;
+class OptimizationWidget;
 
 class OptimizationItemWidget : public QWidget
   {
     Q_OBJECT
 
   public:
-    OptimizationItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    OptimizationItemWidget(OptimizationWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationItemWidget();
+    OptimizationWidget* mpParent;
 
     QLabel* textLabel2;
-    QLineEdit* lineLower;
+    ScanLineEdit* lineLower;
     QPushButton* buttonLowerEdit;
     QComboBox* comboBoxUpperOp;
     QLabel* textLabel3;
     QComboBox* comboBoxLowerOp;
-    QCheckBox* checkLowerInf;
-    QLineEdit* lineUpper;
+    ScanCheckBox* checkLowerInf;
+    ScanLineEdit* lineUpper;
     QPushButton* buttonUpperEdit;
     QLabel* textLabel4;
     QFrame* line10;
-    QCheckBox* checkUpperInf;
+    ScanCheckBox* checkUpperInf;
     QFrame* line11;
-    QLineEdit* ObjectName;
+    ScanLineEdit* ObjectName;
+    CCopasiObject* mpObject;
+
+    // shall add a pointer to COptFunction to change its parameter simultaneously
+
+    std::string getItemUpperLimit();
+    std::string getItemLowerLimit();
+
+    void setItemUpperLimit(std::string strUpperLimit);
+    void setItemLowerLimit(std::string strLowerLimit);
+
+    std::string getItemUpperOper();
+    std::string getItemLowerOper();
+
+    void setItemUpperOper(std::string oper);
+    void setItemLowerOper(std::string oper);
+
+    CCopasiObject* getCopasiObject();
+    void setCopasiObjectPtr (CCopasiObject* sourceObject);
 
   public slots:
     virtual void slotPosInfClicked();

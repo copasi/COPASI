@@ -1,14 +1,22 @@
 
-LIB = sbml
+LIB = sbmlimport
 include(../lib.pri)
 
+contains(BUILD_OS, WIN32) {
+  DEFINES += LIBSBML_STATIC
+}
+
 # Input
-HEADERS += ConverterASTNode.h \
-           SBMLImporter.h
+HEADERS += StdException.h \
+           ConverterASTNode.h \
+           SBMLImporter.h \
+           SBMLExporter.h
            
            
            
-SOURCES += ConverterASTNode.cpp \
-           SBMLImporter.h
+SOURCES += StdException.cpp \
+           ConverterASTNode.cpp \
+           SBMLImporter.cpp \
+           SBMLExporter.cpp
 
 

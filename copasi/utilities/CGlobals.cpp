@@ -1,18 +1,62 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CGlobals.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:04 $
+   End CVS Header */
+
+#define  COPASI_TRACE_CONSTRUCTION
+
+#include "copasi.h"
+
 #include "CGlobals.h"
-#include "utilities.h"
+#include "CCopasiException.h"
+#include "function/CFunctionDB.h"
+#include "function/CFunction.h"
+#include "model/CMetab.h" 
+//#include "output/CUDFunctionDB.h"
+//#include "output/CUDFunction.h"
+//#include "output/COutputList.h"
+//#include "output/COutput.h"
 
-CGlobals::CGlobals()
+CGlobals::CGlobals():
+    pFunctionDB(new CFunctionDB("Kinetic Functions")),
+    //pUDFunctionDB(new CUDFunctionDB),
+    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+    //pOutputList(new COutputList)
 {
-  ProgramVersion.setVersion(4,0,101);
-  FunctionDB.setFilename("FunctionDB.gps");
-  FunctionDB.initialize();
+  try
+    {
+      ProgramVersion.setVersion(4, 0, 101);
+      pFunctionDB->setFilename("FunctionDB.xml");
+      pModel = NULL;
+    }
 
-  DefaultConc = 0.0;
+  catch (CCopasiException Exception)
+    {
+      std::cout << Exception.getMessage().getText() << std::endl;
+    }
 }
 
 CGlobals::~CGlobals()
 {
-  FunctionDB.cleanup();
+  pdelete(pFunctionDB);
+  //  already be called inside CFunctionDB deconstructor
+  //  pFunctionDB->cleanup();
+  pOldMetabolites->cleanup();
+  //pdelete(pUDFunctionDB);
+  pdelete(pOldMetabolites);
+  //pdelete(pOutputList);
 }
 
-CGlobals Copasi;
+void CGlobals::setArguments(C_INT argc, char *argv[])
+{
+  C_INT i, imax = argc;
+  Arguments.resize(imax);
+
+  for (i = 0; i < imax; i++)
+    Arguments[i] = argv[i];
+}
+
+// CGlobals Copasi;

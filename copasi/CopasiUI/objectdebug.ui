@@ -8,61 +8,67 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>480</height>
+            <width>517</width>
+            <height>486</height>
         </rect>
     </property>
     <property name="caption">
         <string>Copasi Object Tree</string>
     </property>
-    <widget class="QPushButton">
+    <grid>
         <property name="name">
-            <cstring>UpdateButton</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>410</x>
-                <y>430</y>
-                <width>141</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>update</string>
-        </property>
-    </widget>
-    <widget class="QListView">
-        <column>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>UpdateButton</cstring>
+            </property>
             <property name="text">
-                <string>Column 1</string>
+                <string>update</string>
             </property>
-            <property name="clickable">
-                <bool>true</bool>
+        </widget>
+        <widget class="QListView" row="0" column="0" rowspan="1" colspan="2">
+            <column>
+                <property name="text">
+                    <string>Column 1</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+        <item>
+            <property name="text">
+                <string>New Item</string>
             </property>
-            <property name="resizable">
-                <bool>true</bool>
+            <property name="pixmap">
+                <pixmap></pixmap>
             </property>
-        </column>
-    <item>
-        <property name="text">
-            <string>New Item</string>
-        </property>
-        <property name="pixmap">
-            <pixmap></pixmap>
-        </property>
-    </item>
-        <property name="name">
-            <cstring>ListOfObjects</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>581</width>
-                <height>410</height>
-            </rect>
-        </property>
-    </widget>
+        </item>
+            <property name="name">
+                <cstring>ListOfObjects</cstring>
+            </property>
+        </widget>
+        <spacer row="1" column="0">
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>121</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -79,8 +85,8 @@
     <slot specifier="non virtual">update()</slot>
 </slots>
 <functions>
+    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * ptr )</function>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">addObjectRecursive( QWidget * parent, void * obj )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

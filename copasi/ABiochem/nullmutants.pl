@@ -17,7 +17,8 @@ use POSIX;
 # All configuration parameters here
 
 # low value to be considered zero
-$EPSILON = 1e-20;
+$EPSILON = 1e-50;
+$DBL_MAX = 1e+308;
 # file extension for graph files
 $GEPASIEXTENSION = "gps";
 # file extension for stats files
@@ -48,7 +49,8 @@ while( defined($statfile = <*.$STATEXTENSION>) )
       if ($line =~ /number of vertices\t([0-9]+)/)
 	  {
 	    $vertex = $1;
-		$tick = $vertex/10;
+		if($vertex>10) {$tick = $vertex % 10};
+		else {$tick = 1;}
 	    last;
 	  }
 	}
@@ -159,11 +161,11 @@ while( defined($statfile = <*.$STATEXTENSION>) )
 	  @mt = split(/\t/, $line);
 	  for( $i=0; $i<$vertex; $i++ )
 	  {
-	    #if( $wt[$i]>$EPSILON ) 
-		#{ 
+	    if( $wt[$i]>$EPSILON ) 
+		{ 
 		  $val = $mt[$i] / $wt[$i];
-		#}
-		#else { $val = 0.0; }
+		}
+		else { $val = $DBL_MAX; }
 		if( $i!=0 ) { print( REDRESULTS "\t"); }
 		print( REDRESULTS "$val");
 	  }

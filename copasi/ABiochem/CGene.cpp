@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/CGene.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
+   End CVS Header */
+
 /**
  *  CGene class.
  *  Written by Pedro Mendes September 2002.
@@ -6,24 +14,35 @@
  *  to represent it in a model
  */
 
+#ifdef WIN32
+#pragma warning(disable : 4786)
+#endif  // WIN32
+
+#define  COPASI_TRACE_CONSTRUCTION
 #include <iostream>
 #include <string>
 #include <vector>
 
-#define  COPASI_TRACE_CONSTRUCTION
-
 #include "copasi.h"
-#include "utilities/CGlobals.h"
-#include "CGene.h"
 
-CGeneModifier::CGeneModifier()
+#include "utilities/CGlobals.h"
+#include "ABiochem/CGene.h"
+
+CGeneModifier::CGeneModifier(const std::string & name,
+                             CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "CGeneModifier")
 {
   mModifier = NULL;
   mType = 0;
   mK = 1.0;
 }
 
-CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K)
+CGeneModifier::CGeneModifier(const CGeneModifier & src,
+                             CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
+
+CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   mModifier = modf;
   if ((type >= 0) && (type < 2))
@@ -31,6 +50,7 @@ CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K)
   else
     type = 0;
   mK = K > 0.0 ? K : 1.0;
+  mn = n > 0.0 ? n : 1.0;
 }
 
 CGeneModifier::~CGeneModifier()
@@ -46,25 +66,56 @@ C_INT32 CGeneModifier::getType(void)
   return mType;
 }
 
+void CGeneModifier::setType(C_INT32 t)
+{
+  mType = t;
+}
+
 C_FLOAT64 CGeneModifier::getK(void)
 {
   return mK;
 }
-void CGeneModifier::cleanup() {}
 
-CGene::CGene()
+C_FLOAT64 CGeneModifier::getn(void)
 {
+  return mn;
 }
+
+void CGeneModifier::cleanup()
+{}
+
+CGene::CGene(const std::string & name,
+             CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "CGene")
+{
+  mInDegree = 0;
+  mOutDegree = 0;
+  mRate = 1.0;
+  mDegradationRate = 1.0;
+}
+
+CGene::CGene(const CGene & src,
+             CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
 
 CGene::~CGene()
+{}
+
+void CGene::setName(const std::string & name)
 {
+  mName = name;
 }
-void CGene::setName(const string & name) { mName = name; }
-const string & CGene::getName() const { return mName; }
+
+const std::string & CGene::getName() const
+  {
+    return mName;
+  }
 
 C_INT32 CGene::getModifierNumber()
 {
-  return mModifier.size();
+  //  return mModifier.size();
+  return mInDegree;
 }
 
 CGene * CGene::getModifier(C_INT32 n)
@@ -72,11 +123,64 @@ CGene * CGene::getModifier(C_INT32 n)
   return mModifier[n]->getModifier();
 }
 
-void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K)
+void CGene::setRate(C_FLOAT64 rate)
+{
+  mRate = rate;
+}
+
+C_FLOAT64 CGene::getRate(void)
+{
+  return mRate;
+}
+
+void CGene::setDegradationRate(C_FLOAT64 rate)
+{
+  mDegradationRate = rate;
+}
+
+C_FLOAT64 CGene::getDegradationRate(void)
+{
+  return mDegradationRate;
+}
+
+void CGene::addModifier(CGene *modf, C_INT32 idx, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   CGeneModifier *temp;
-  temp = new CGeneModifier(modf, type, K);
+  temp = new CGeneModifier(modf, type, K, n);
+  // add the modifier object to the list
   mModifier.add(temp);
+  // add the index to the list
+  mModifierIndex.push_back(idx);
+  // increment the in-degree of this gene
+  addInDegree();
+  // and the out-degree of the modifier's
+  modf->addOutDegree();
+}
+
+void CGene::removeModifier(CGene *modf)
+{
+  C_INT32 i, j;
+  C_INT32 *it;
+
+  for (i = 0; i < getModifierNumber(); i++)
+    if (modf == getModifier(i))
+      {
+        // decrement the in-degree of this gene
+        decreaseInDegree();
+        // and the out-degree of the modifier's
+        modf->decreaseOutDegree();
+        mModifier.remove(i);
+        it = mModifierIndex.begin();
+        for (j = 0; j < i; j++)
+          it++;
+        mModifierIndex.erase(it);
+        return;
+      }
+}
+
+C_INT32 CGene::getModifierIndex(C_INT32 n)
+{
+  return mModifierIndex[n];
 }
 
 C_INT32 CGene::getModifierType(C_INT32 n)
@@ -84,12 +188,103 @@ C_INT32 CGene::getModifierType(C_INT32 n)
   return mModifier[n]->getType();
 }
 
-C_FLOAT64 CGene::getK(C_INT32 n)
+C_FLOAT64 CGene::getK(C_INT32 i)
 {
-  return mModifier[n]->getK();
+  return mModifier[i]->getK();
+}
+
+C_FLOAT64 CGene::getn(C_INT32 i)
+{
+  return mModifier[i]->getn();
 }
 
 void CGene::cleanup()
 {
   mModifier.cleanup();
+}
+
+C_INT32 CGene::getNegativeModifiers(void)
+{
+  C_INT32 i, n, s;
+  s = mModifier.size();
+  for (i = n = 0; i < s; i++)
+    if (mModifier[i]->getType() == 0)
+      n++;
+  return n;
+}
+
+C_INT32 CGene::getPositiveModifiers(void)
+{
+  C_INT32 i, n, s;
+  s = mModifier.size();
+  for (i = n = 0; i < s; i++)
+    if (mModifier[i]->getType() == 1)
+      n++;
+  return n;
+}
+
+C_INT32 CGene::getInDegree()
+{
+  return mInDegree;
+}
+
+void CGene::addInDegree()
+{
+  mInDegree++;
+}
+
+void CGene::decreaseInDegree()
+{
+  mInDegree--;
+}
+
+C_INT32 CGene::getOutDegree()
+{
+  return mOutDegree;
+}
+
+void CGene::addOutDegree()
+{
+  mOutDegree++;
+}
+
+void CGene::decreaseOutDegree()
+{
+  mOutDegree--;
+}
+
+C_INT32 CGene::getTotalDegree()
+{
+  return mOutDegree + mInDegree;
+}
+
+void CGene::sortModifiers()
+{
+  C_INT32 np, i, j;
+  CGeneModifier *tempModf;
+  C_INT32 tempK, tempN, tempIdx;
+  np = getPositiveModifiers();
+  for (i = 0, j = mInDegree - 1; i < np; i++)
+    {
+      if (mModifier[i]->getType() == 0)
+        {
+          // this is in the wrong place, find a positive one
+          for (; j >= np; j--)
+            {
+              if (mModifier[j]->getType() == 1)
+                {
+                  // found one, let's swap
+                  tempModf = mModifier[i];
+                  tempIdx = getModifierIndex(i);
+                  mModifier[i] = mModifier[j];
+                  mModifierIndex[i] = mModifierIndex[j];
+                  mModifier[i]->setType(1);
+                  mModifier[j] = tempModf;
+                  mModifierIndex[j] = tempIdx;
+                  mModifier[j]->setType(0);
+                  break;
+                }
+            }
+        }
+    }
 }

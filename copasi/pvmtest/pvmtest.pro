@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2003/06/25 15:11:55 $  
+# $Revision: 1.1.1.1 $ $Author: anuragr $ $Date: 2004/10/26 15:18:00 $  
 ######################################################################
 
 include(../common.pri)
@@ -33,7 +33,6 @@ contains(BUILD_OS, WIN32) {
          -Wl,-lmodel \
          -Wl,-lfunction \
          -Wl,-loutput \
-         -Wl,-lreport \
          -Wl,-loptimization \
          -Wl,-lscan \
          -Wl,-lsteadystate \
@@ -41,8 +40,10 @@ contains(BUILD_OS, WIN32) {
          -Wl,-lrandomGenerator \
          -Wl,-lutilities \
          -Wl,-loutput \
-         -Wl,-lfunction \
-         -Wl,-lmodel
+         -Wl,-lmodel \
+         -Wl,-lreport \
+         -Wl,-lfunction
+
   LIBS += $${tmpLIBS}
 
   TARGETDEPS += ../lib/libcommandline.a \
@@ -65,5 +66,5 @@ contains(BUILD_OS, WIN32) {
 # Input
 HEADERS += 
 
-SOURCES += test.cpp \
+SOURCES += pvmtest.cpp
 

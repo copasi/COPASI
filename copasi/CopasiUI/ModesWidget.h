@@ -1,55 +1,62 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:49 $
+   End CVS Header */
+
 /****************************************************************************
- **  $ CopasiUI/CompartmentsWidget.h               
+ **  $ CopasiUI/ModesWidget.h               
  **  $ Author  : Mudita Singhal
  **  
- ** This is the header file for the Compartments Widget, i.e the First level 
- ** of Compartments.
- *****************************************************************************/
-
+ ** This is the header file for the Elementary Modes Widget
+ *****************************************************************************/ 
+/*
+ resizeEvent functions modified 
+ Goal: to memorize the user change and expand according
+ comments: Liang Xu 
+ */
 #ifndef MODES_WIDGET_H
 #define MODES_WIDGET_H
 
-#include <qtable.h>
+//#include <qtable.h>
+#include <qlistview.h>
 #include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
-#include "Structures.h"
+#include "copasiWidget.h"
+#include "elementaryFluxModes/CElementaryFluxModes.h"
 
 class CModel;
 
-class ModesWidget : public QWidget
+class ModesWidget : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    CModel *mModel;
-    MyTable *table;
-    QPushButton *btnOK;
-    QPushButton *btnCancel;
+    //CModel *mModel;
+    CElementaryFluxModes *modes;
+    QListView *listView;
+    QPushButton *btnCalculate;
+    bool binitialized;
 
   public:
     ModesWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadModes(CModel *model);
-    //void mousePressEvent(QMouseEvent * e);
+    void loadModes();
     void resizeEvent(QResizeEvent * re);
-    //QString *Compartment_Name;
 
-  public slots:
-    //virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
+    virtual bool enter(const std::string & key = "");
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   signals:
-    // void name(QString &);
-    //void signal_emitted(QString &);
+    //void signal_emitted(const QString &);
+    //void name(const QString&);
 
   protected slots:
 
     virtual void slotTableSelectionChanged();
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnCancelClicked();
-    //virtual void tableValueChanged(int, int);
-
-  private:
-    void showMessage(QString caption, QString text);
+    virtual void slotBtnCalculateClicked();
   };
 
 #endif

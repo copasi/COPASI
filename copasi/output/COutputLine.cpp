@@ -1,34 +1,53 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputLine.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /*****************************************************************************
-* PROGRAM NAME: COutputLine.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: COutputLine Class Implemention
-*****************************************************************************/
+ * PROGRAM NAME: COutputLine.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: COutputLine Class Implemention
+ *****************************************************************************/
 
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 
-#include "copasi.h"			
+#define  COPASI_TRACE_CONSTRUCTION
+
+#include "copasi.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CCopasiVector.h"
+#include "model/CCompartment.h"
 #include "CDatum.h"
 #include "COutputLine.h"
+#include "steadystate/CSteadyStateTask.h"
 
 /**
  *  Default constructor. 
  */
-COutputLine::COutputLine()
-{
-  mLine = NULL;
-}
+COutputLine::COutputLine(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Output Line"),
+    mLine("Data", this)
+{}
 
-void COutputLine::Init()
-{
-  mLine = new CCDatum;
-}
+COutputLine::COutputLine(const COutputLine & src,
+                         const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mLine(src.mLine, this)
+{}
 
-void COutputLine::Delete()
+void COutputLine::init() {}
+
+void COutputLine::cleanup()
 {
-  if (mLine) delete mLine;
-  mLine = NULL;
+  // if (mLine) delete mLine;
+  // mLine = NULL;
+  mLine.cleanup();
 }
 
 /**
@@ -36,19 +55,7 @@ void COutputLine::Delete()
  */
 COutputLine::~COutputLine()
 {
-  //	Delete();
-}
-
-/**
- *  Assignement operator. 
- *  Copies the contents from one COutputLine object to another.
- *  @param source reference to the recipient object.
- */
-COutputLine& COutputLine::operator=(const COutputLine &source)
-{
-  mLine = source.mLine;
-	
-  return *this;
+  // cleanup();
 }
 
 /**
@@ -56,58 +63,60 @@ COutputLine& COutputLine::operator=(const COutputLine &source)
  *  @return mLine
  *  @see mLine
  */
-COutputLine::CCDatum * COutputLine::GetLine() const
-{
-  return mLine;
-}
+const CCopasiVectorS < CDatum > & COutputLine::getLine() const
+  {
+    return mLine;
+  }
 
 /**
  *  Sets the name of this line, (For example: Interactive time course)
  *  @param title constant reference to a string.
  */
-void COutputLine::SetName(string LineName)
+bool COutputLine::setName(std::string LineName)
 {
-  mName = LineName;
+  return setObjectName(LineName);
 }
-
 
 /**
  *  Add new CDatum object to a line
  *  @param newDatum constant reference to CDatum.
  *  @see CDatum Class
      */
-void COutputLine::AddDatum(CDatum & newDatum)
+void COutputLine::addDatum(CDatum & newDatum)
 {
-  mLine->add(newDatum);
+  mLine.add(newDatum);
 }
+C_INT32 COutputLine::load(CReadConfig & C_UNUSED(configbuffer)) {return 0;}
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
  *  (CReadConfig object reads an input stream)
  *  @param pconfigbuffer reference to a CReadConfig object.
  *  @param searchName refernece to a the time of seach section,
- *		   for example: Interactive time course		
+ *     for example: Interactive time course  
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
+C_INT32 COutputLine::load(CReadConfig & configbuffer, std::string &searchName)
 {
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
 
   // Search string searchName from configure variable
+  std::string tmp;
   if ((Fail = configbuffer.getVariable(searchName, "string",
-				      &mName,
-				      CReadConfig::SEARCH)))
+                                       &tmp,
+                                       CReadConfig::SEARCH)))
     return Fail;
+  setObjectName(tmp);
 
   // now pout points the end of search string
   // Read the number of items in this section
-  if ((Fail = configbuffer.getVariable("Items", "C_INT32", 
-				      &Size, CReadConfig::NEXT)))
+  if ((Fail = configbuffer.getVariable("Items", "C_INT32",
+                                       &Size, CReadConfig::NEXT)))
     return Fail;
 
-  Init();
+  init();
 
   // Read objects and create the OutputLine
   for (int i = 0; i < Size; i++)
@@ -115,11 +124,13 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
       CDatum newItem;
 
       newItem.load(configbuffer);
-      AddDatum(newItem);
+      addDatum(newItem);
     }
 
   return Fail;
 }
+
+//const std::string & COutputLine::getName() const {return getObjectName();}
 
 /**
  *  Saves the contents of the object to a CWriteConfig object.
@@ -127,188 +138,82 @@ C_INT32 COutputLine::load(CReadConfig & configbuffer, string &searchName)
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
- */
-C_INT32 COutputLine::save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 COutputLine::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   C_INT32 Size = 0;
-
-  Size = mLine->size();
-
-  if ((Fail = configbuffer.setVariable(mName, "string", NULL)))
+ 
+  Size = mLine.size();
+  std::string tmp = getObjectName();
+  if ((Fail = configbuffer.setVariable(tmp, "string", NULL)))
     return Fail;
-
+ 
   if ((Fail = configbuffer.setVariable("Items", "C_INT32", &Size)))
     return Fail;
-
+ 
   // Output each datum in this line
-  Fail = mLine->save(configbuffer);
-	
+  //Fail = mLine->save(configbuffer);
+ 
+  mLine.save(configbuffer);
+ 
   return Fail;
-}
+}*/
 
 /**
- *	print the titles of the steady-state data file
+ * print the titles of the steady-state data file
  */
-void COutputLine::SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutputLine::sSOutputTitles(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes)
 {
   unsigned C_INT32 i;
-  CDatum item;
-  string Title;
+  CDatum * item;
+  std::string Title;
 
   // Set Left Justification
-  fout.setf(ios::left);
-  for (i = 0; i < mLine->size(); i++)
+  fout.setf(std::ios::left);
+
+  for (i = 0; i < mLine.size(); i++)
     {
-      if (i) {
-	switch (SSSeparator)
-	  {
-	  case 9: 
-	    fout << "\t";
-	    break;
-	  case 32:	
-	    fout << " ";
-	    break;
-	  case 44:
-	    fout << ",";
-	    break;
-	  }
-      }
-      item = (*mLine)[i];
-		
-      if (item.GetTitle().length() > (unsigned C_INT32) SSColWidth)
-	Title = item.GetTitle().substr(0, SSColWidth);
-      else Title = item.GetTitle();
-		
-      if (SSQuotes) fout << "\"" << setw(SSColWidth) << Title << "\"";
-      else fout << setw(SSColWidth) <<Title;
+      if (i)
+        {
+          switch (SSSeparator)
+            {
+            case 9:
+              fout << "\t";
+              break;
+
+            case 32:
+              fout << " ";
+              break;
+
+            case 44:
+              fout << ",";
+              break;
+            }
+        }
+
+      item = mLine[i];
+
+      if (item->getTitle().length() > (unsigned C_INT32) SSColWidth)
+        Title = item->getTitle().substr(0, SSColWidth);
+      else
+        Title = item->getTitle();
+
+      if (SSQuotes)
+        fout << "\"" << std::setw(SSColWidth) << Title << "\"";
+      else
+        fout << std::setw(SSColWidth) << Title;
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
 
 /**
- *	print the mpValue of each Object in the steady-state data file
+ * print the mpValue of each Object in the steady-state data file
  */
-void COutputLine::SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
-{
-  unsigned C_INT32 i;
-  C_INT32 Type;
-  C_INT16 *Value1;
-  C_INT32 *Value2;
-  C_FLOAT32 *Value3;
-  C_FLOAT64 *Value4;
-
-  // Set Left Justification
-  fout.setf(ios::left);
-  // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
-
-  for (i = 0; i < mLine->size(); i++)
-    {
-      if (i) {
-	switch (SSSeparator)
-	  {
-	  case 9: 
-	    fout << "\t";
-	    break;
-	  case 32:	
-	    fout << " ";
-	    break;
-	  case 44:
-	    fout << ",";
-	    break;
-	  }
-      }
-
-      Type = (*mLine)[i].GetType();
-
-      switch (Type)
-	{
-	case 1:	
-	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].GetValue();
-	  if (!Value1)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
-	  break;
-	case 2:
-	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].GetValue();
-	  if (!Value2)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
-	  break;
-	case 3:
-	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].GetValue();
-	  if (!Value3)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
-	  break;
-	case 4:
-	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].GetValue();
-	  if (!Value4)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
-
-	  break;
-	}
-
-    }
-
-  fout.unsetf(ios::left);
-  fout << endl;
-}
-
-/**
- *	print the titles of the time course data file
- */
-void COutputLine::Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
-{
-  unsigned C_INT32 i;
-  CDatum item;
-  string Title;
-
-  // Set Left Justification
-  fout.setf(ios::left);
-  for (i = 0; i < mLine->size(); i++)
-    {
-      if (i) {
-	switch (DynSeparator)
-	  {
-	  case 9: 
-	    fout << "\t";
-	    break;
-	  case 32:	
-	    fout << " ";
-	    break;
-	  case 44:
-	    fout << ",";
-	    break;
-	  }
-      }
-      item = (*mLine)[i];
-		
-      if (item.GetTitle().length() > (unsigned C_INT16) DynColWidth)
-	Title = item.GetTitle().substr(0, DynColWidth);
-      else Title = item.GetTitle();
-		
-      if (DynQuotes) fout << "\"" << setw(DynColWidth) << Title << "\"";
-      else fout << setw(DynColWidth) <<Title;
-    }
-
-  fout.unsetf(ios::left);
-  fout << endl;
-}
-
-/**
- *	print the mpValue of each Object in the time course data file
- */
-void COutputLine::Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes) 
+void COutputLine::sSOutputData(std::ostream &fout, C_INT16 SSSeparator,
+                               C_INT16 SSColWidth, C_INT16 C_UNUSED(SSQuotes))
 {
   unsigned C_INT32 i;
   C_INT32 Type;
@@ -316,88 +221,281 @@ void COutputLine::Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 D
   C_INT32 *Value2;
   C_FLOAT32 *Value3;
   C_FLOAT64 *Value4;
+  CDatum *datum;
 
   // Set Left Justification
-  fout.setf(ios::left);
+  fout.setf(std::ios::left);
   // Set Float manipulators
-  fout.setf(ios::scientific, ios::floatfield);
-  fout.setf(ios::showpoint);
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
 
-  for (i = 0; i < mLine->size(); i++)
+  for (i = 0; i < mLine.size(); i++)
     {
-      if (i) {
-	switch (DynSeparator)
-	  {
-	  case 9: 
-	    fout << "\t";
-	    break;
-	  case 32:	
-	    fout << " ";
-	    break;
-	  case 44:
-	    fout << ",";
-	    break;
-	  }
-      }
+      if (i)
+        {
+          switch (SSSeparator)
+            {
+            case 9:
+              fout << "\t";
+              break;
 
-      Type = (*mLine)[i].GetType();
+            case 32:
+              fout << " ";
+              break;
+
+            case 44:
+              fout << ",";
+              break;
+            }
+        }
+
+      datum = mLine[i];
+      // before outputing value of user defined function, need to
+      // calculate first
+
+      if (datum->getObjectType(datum->getObject()) == D_UFUNC)
+        datum->calcFunc();
+
+      Type = mLine[i]->getType();
 
       switch (Type)
-	{
-	case 1:	
-	  // Type is C_INT16
-	  Value1 = (C_INT16 *)(*mLine)[i].GetValue();
-	  if (!Value1)
-	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
-	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value1;
-	  break;
-	case 2:
-	  // Type is C_INT32
-	  Value2 = (C_INT32 *)(*mLine)[i].GetValue();
-	  if (!Value2)
-	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
-	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value2;
-	  break;
-	case 3:
-	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)(*mLine)[i].GetValue();
-	  if (!Value3)
-	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
-	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value3;
-	  break;
-	case 4:
-	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)(*mLine)[i].GetValue();
-	  if (!Value4)
-	    fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << 0;
-	  else fout << setprecision(DynColWidth - 8) << setw(DynColWidth) << *Value4;
+        {
+        case 1:
+          // Type is C_INT16
+          Value1 = (C_INT16 *)mLine[i]->getValue();
 
-	  break;
-	}
+          if (!Value1)
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;  //?? Sign std::setw(SSColWidth-1)
+          else
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value1; //?? Sign
+
+          break;
+
+        case 2:
+          // Type is C_INT32
+          Value2 = (C_INT32 *)mLine[i]->getValue();
+
+          if (!Value2)
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
+          else
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value2;
+
+          break;
+
+        case 3:
+          // Type is C_FLOAT32
+          Value3 = (C_FLOAT32 *)mLine[i]->getValue();
+
+          if (!Value3)
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
+          else
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value3;
+
+          break;
+
+        case 4:
+          // Type is C_FLOAT64
+          Value4 = (C_FLOAT64 *)mLine[i]->getValue();
+
+          if (!Value4)
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << 0;
+          else
+            fout << std::setprecision(SSColWidth - 8) << std::setw(SSColWidth) << *Value4;
+
+          break;
+        }
     }
 
-  fout.unsetf(ios::left);
-  fout << endl;
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
 }
-
 
 /**
- *  Complie the mpValue in each output line
+ * print the titles of the time course data file
  */
-void COutputLine::Compile(string &name, CModel &model)
+void COutputLine::dynOutputTitles(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes)
 {
-  if (!mName.compare(name))
-    { // ???? Maybe it isnot necessary after finish whole module
-      for (unsigned C_INT32 i = 0; i < mLine->size(); i++)
-	{
-	  (*mLine)[i].CompileDatum(model);
-	}
+  unsigned C_INT32 i;
+  CDatum * item;
+  std::string Title;
+
+  // Set Left Justification
+  fout.setf(std::ios::left);
+
+  for (i = 0; i < mLine.size(); i++)
+    {
+      if (i)
+        {
+          switch (DynSeparator)
+            {
+            case 9:
+              fout << "\t";
+              break;
+
+            case 32:
+              fout << " ";
+              break;
+
+            case 44:
+              fout << ",";
+              break;
+            }
+        }
+
+      item = mLine[i];
+
+      if (item->getTitle().length() > (unsigned C_INT16) DynColWidth)
+        Title = item->getTitle().substr(0, DynColWidth);
+      else
+        Title = item->getTitle();
+
+      if (DynQuotes)
+        fout << "\"" << std::setw(DynColWidth) << Title << "\"";
+      else
+        fout << std::setw(DynColWidth) << Title;
+    }
+
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
+}
+
+/**
+ * print the mpValue of each Object in the time course data file
+ */
+void COutputLine::dynOutputData(std::ostream &fout, C_INT16 DynSeparator,
+                                C_INT16 DynColWidth, C_INT16 C_UNUSED(DynQuotes))
+{
+  unsigned C_INT32 i;
+  C_INT32 Type;
+  C_INT16 *Value1;
+  C_INT32 *Value2;
+  C_FLOAT32 *Value3;
+  C_FLOAT64 *Value4;
+  CDatum *datum;
+
+  // Set Left Justification
+  fout.setf(std::ios::left);
+  // Set Float manipulators
+  fout.setf(std::ios::scientific, std::ios::floatfield);
+  fout.setf(std::ios::showpoint);
+
+  for (i = 0; i < mLine.size(); i++)
+    {
+      if (i)
+        {
+          switch (DynSeparator)
+            {
+            case 9:
+              fout << "\t";
+              break;
+
+            case 32:
+              fout << " ";
+              break;
+
+            case 44:
+              fout << ",";
+              break;
+            }
+        }
+
+      datum = mLine[i];
+      // before outputing value of user defined function, need to
+      // calculate first
+
+      if (datum->getObjectType(datum->getObject()) == D_UFUNC)
+        datum->calcFunc();
+
+      Type = mLine[i]->getType();
+
+      switch (Type)
+        {
+        case 1:
+          // Type is C_INT16
+          Value1 = (C_INT16 *)mLine[i]->getValue();
+
+          if (!Value1)
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
+          else
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value1;
+
+          break;
+
+        case 2:
+          // Type is C_INT32
+          Value2 = (C_INT32 *)mLine[i]->getValue();
+
+          if (!Value2)
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
+          else
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value2;
+
+          break;
+
+        case 3:
+          // Type is C_FLOAT32
+          Value3 = (C_FLOAT32 *)mLine[i]->getValue();
+
+          if (!Value3)
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
+          else
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value3;
+
+          break;
+
+        case 4:
+          // Type is C_FLOAT64
+          Value4 = (C_FLOAT64 *)mLine[i]->getValue();
+
+          if (!Value4)
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << 0;
+          else
+            fout << std::setprecision(DynColWidth - 8) << std::setw(DynColWidth) << *Value4;
+
+          break;
+        }
+    }
+
+  fout.unsetf(std::ios::left);
+  fout << std::endl;
+}
+
+/**
+ *  Assign the pointer to each datum object in the output line for time course
+ */
+void COutputLine::compile(const std::string & name, CModel *model, CState *state)
+{
+  if (!getObjectName().compare(name))
+    {// ???? Maybe it isnot necessary after finish whole module
+
+      for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
+        {
+          mLine[i]->compileDatum(model, state, NULL);
+        }
     }
 }
 
+/**
+ *  Assign the pointer to each datum object in the output line for steady state
+ */
+void COutputLine::compile(const std::string & name, CModel * model,
+                          CSteadyStateTask * soln)
+{
+  if (!getObjectName().compare(name))
+    {// ???? Maybe it isnot necessary after finish whole module
+
+      for (unsigned C_INT32 i = 0; i < mLine.size(); i++)
+        {
+          mLine[i]->compileDatum(model, soln->getState(), soln);
+        }
+    }
+}
+
+#ifdef XXXX
 COutputLine::CCDatum::CCDatum() {}
-
 COutputLine::CCDatum::~CCDatum() {}
 
 C_INT16 COutputLine::CCDatum::isInsertAllowed(const CDatum & src)
 {return TRUE;}
+
+#endif // XXXX

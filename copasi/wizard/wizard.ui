@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>Form1</class>
+<class>WizardDialog</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>Form1</cstring>
+        <cstring>WizardDialog</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -105,6 +105,46 @@ Naming and Description</string>
                         </property>
                         <property name="buttonGroupId">
                             <number>0</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button6</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>330</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="backgroundOrigin">
+                            <enum>AncestorOrigin</enum>
+                        </property>
+                        <property name="text">
+                            <string>Step 6
+Plotting a Trajectory</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>5</number>
                         </property>
                     </widget>
                     <widget class="QPushButton">
@@ -255,46 +295,6 @@ Calculating a Time Course</string>
                             <number>4</number>
                         </property>
                     </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>button6</cstring>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>0</x>
-                                <y>330</y>
-                                <width>170</width>
-                                <height>50</height>
-                            </rect>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="backgroundOrigin">
-                            <enum>WidgetOrigin</enum>
-                        </property>
-                        <property name="text">
-                            <string>Step 6
-Plotting a Trajectory</string>
-                        </property>
-                        <property name="toggleButton">
-                            <bool>true</bool>
-                        </property>
-                        <property name="autoDefault">
-                            <bool>false</bool>
-                        </property>
-                        <property name="flat">
-                            <bool>true</bool>
-                        </property>
-                        <property name="buttonGroupId">
-                            <number>5</number>
-                        </property>
-                    </widget>
                 </widget>
                 <widget class="QTextBrowser">
                     <property name="name">
@@ -401,54 +401,56 @@ Plotting a Trajectory</string>
     <connection>
         <sender>buttonGroup</sender>
         <signal>clicked(int)</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>buttonGroup2_clicked(int)</slot>
     </connection>
     <connection>
         <sender>forwardButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>forwardButton_clicked()</slot>
     </connection>
     <connection>
         <sender>backButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>backButton_clicked()</slot>
     </connection>
     <connection>
         <sender>textBrowser</sender>
         <signal>anchorClicked(const QString&amp;,const QString&amp;)</signal>
-        <receiver>Form1</receiver>
+        <receiver>WizardDialog</receiver>
         <slot>textBrowser_anchorClicked(const QString&amp;,const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>cancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>Form1</receiver>
-        <slot>cancelButton_clicked()</slot>
+        <receiver>WizardDialog</receiver>
+        <slot>close()</slot>
     </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
     <include location="local" impldecl="in implementation">qmessagebox.h</include>
     <include location="local" impldecl="in implementation">qdir.h</include>
+    <include location="local" impldecl="in implementation">../CopasiUI/listviews.h</include>
     <include location="local" impldecl="in implementation">wizard.ui.h</include>
 </includes>
 <variables>
-    <variable access="public">static char* texts[6];</variable>
-    <variable>static std::string helpPath;</variable>
     <variable>static char* Error;</variable>
+    <variable>static QString helpPath;</variable>
+    <variable access="public">static char* texts[6];</variable>
+    <variable>QWidget* copasiMainWindow;</variable>
 </variables>
 <slots>
     <slot>buttonGroup2_clicked( int )</slot>
     <slot>forwardButton_clicked()</slot>
     <slot>backButton_clicked()</slot>
     <slot>textBrowser_anchorClicked( const QString &amp; name, const QString &amp; link )</slot>
-    <slot>cancelButton_clicked()</slot>
 </slots>
 <functions>
     <function>init()</function>
+    <function>setCopasiMainWindow( QWidget * copasiMainWindow )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

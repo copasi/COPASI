@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 17:01:39 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,45 +15,74 @@
  ** place of a destructor.
  *****************************************************************************/
 
-bool Curve2DWidget::LoadFromCurveSpec(const Curve2DSpec * curve, const QStringList & channels)
+#include "report/CCopasiContainer.h"
+
+bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
   if (!curve) return false;
 
-  lineEditTitle->setText(curve->title.c_str());
+  if (curve->getType() != CPlotItem::curve2d) return false;
+  //if (curve->getChannels().getSize != 2) return false;
+
+  lineEditTitle->setText(curve->getTitle().c_str());
 
   //set the comboboxes for axis selection
-  if (curve->xAxis == QwtPlot::xTop) comboXAxis->setCurrentItem(0);
+  /*if (curve->xAxis == QwtPlot::xTop) comboXAxis->setCurrentItem(0);
   else comboXAxis->setCurrentItem(1);
 
   if (curve->yAxis == QwtPlot::yRight) comboYAxis->setCurrentItem(1);
-  else comboYAxis->setCurrentItem(0);
+  else comboYAxis->setCurrentItem(0);*/
+
+  //std::vector< CCopasiContainer * > LOfC; //dummy
 
   //set the comboboxes for data channel selection
-  comboXData->insertStringList(channels);
-  comboXData->setCurrentItem(curve->xChannel.index);
+  //TODO: check if objects exist....
 
-  comboYData->insertStringList(channels);
-  comboYData->setCurrentItem(curve->yChannel.index);
+  CCopasiObject* co1 = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+  CCopasiObject* co2 = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
 
-  return true;
+  if ((!co1) || (!co2)) return false;
+
+  lineEditXName->setText(co1->getObjectUniqueName().c_str());
+  lineEditXCN->setText(co1->getCN().c_str());
+
+  lineEditYName->setText(co2->getObjectUniqueName().c_str());
+  lineEditYCN->setText(co2->getCN().c_str());
+
+  //for debugging:
+  //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
+  //  std::cout << "  title: " << curve->title << std::endl;
+  //  std::cout << "  " << curve->mChannels.size() << "  " << curve->mChannels[0].object << "  " << curve->mChannels[1].object << std::endl;
+
+  //  std::string sss = CCopasiContainer::ObjectFromName(ListOfContainer, curve->mChannels[0].object)->getObjectUniqueName().c_str();
+  //  std::cout << "uni : " << sss << " *** " << std::endl;
+
+  return true; //TODO
 }
 
-bool Curve2DWidget::SaveToCurveSpec(Curve2DSpec * curve) const
+bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
-    if (!curve) return false;
+    //title
+    curve->setTitle((const char*)lineEditTitle->text().utf8());
 
-    curve->title = lineEditTitle->text().latin1();
+    //channels
+    curve->getChannels().resize(0);
+    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditXCN->text().utf8())));
+    curve->getChannels().push_back(CPlotDataChannelSpec(std::string((const char*)lineEditYCN->text().utf8())));
+    /* if (!curve) return false;
 
-    //read the comboboxes for axis selection
-    if (comboXAxis->currentItem() == 0) curve->xAxis = QwtPlot::xTop;
-    else curve->xAxis = QwtPlot::xBottom;
+     curve->title = lineEditTitle->text().latin1();
 
-    if (comboYAxis->currentItem() == 1) curve->yAxis = QwtPlot::yRight;
-    else curve->yAxis = QwtPlot::yLeft;
+     //read the comboboxes for axis selection
+     if (comboXAxis->currentItem() == 0) curve->xAxis = QwtPlot::xTop;
+     else curve->xAxis = QwtPlot::xBottom;
 
-    //read the comboboxes for data channel selection
-    curve->xChannel.index = comboXData->currentItem();
-    curve->yChannel.index = comboYData->currentItem();
+     if (comboYAxis->currentItem() == 1) curve->yAxis = QwtPlot::yRight;
+     else curve->yAxis = QwtPlot::yLeft;
 
+     //read the comboboxes for data channel selection
+     curve->mChannels[0].index = comboXData->currentItem();
+     curve->mChannels[1].index = comboYData->currentItem();
+    */
     return true;
   }

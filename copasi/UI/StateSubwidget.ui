@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>503</width>
-            <height>611</height>
+            <width>551</width>
+            <height>422</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,9 +19,17 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>topLabel</cstring>
+            </property>
+            <property name="text">
+                <string>textLabel1</string>
+            </property>
+        </widget>
         <widget class="QTabWidget">
             <property name="name">
-                <cstring>tabWidget2</cstring>
+                <cstring>tabWidget</cstring>
             </property>
             <widget class="QWidget">
                 <property name="name">
@@ -138,6 +146,11 @@
                                 <string>Particle flux</string>
                             </property>
                         </column>
+                        <column>
+                            <property name="text">
+                                <string>Chemical equation</string>
+                            </property>
+                        </column>
                         <property name="name">
                             <cstring>tableFlux</cstring>
                         </property>
@@ -145,7 +158,7 @@
                             <number>3</number>
                         </property>
                         <property name="numCols">
-                            <number>3</number>
+                            <number>4</number>
                         </property>
                     </widget>
                 </vbox>
@@ -195,7 +208,7 @@
                                         <cstring>textLabelJacobian</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Jacobian</string>
+                                        <string>Jacobian (complete system)</string>
                                     </property>
                                 </widget>
                                 <spacer row="0" column="1">
@@ -226,6 +239,16 @@
                                     <cstring>unnamed</cstring>
                                 </property>
                                 <widget class="QTable" row="1" column="0" rowspan="1" colspan="2">
+                                    <column>
+                                        <property name="text">
+                                            <string>Real</string>
+                                        </property>
+                                    </column>
+                                    <column>
+                                        <property name="text">
+                                            <string>Imaginary</string>
+                                        </property>
+                                    </column>
                                     <property name="name">
                                         <cstring>tableEigenValues</cstring>
                                     </property>
@@ -233,7 +256,7 @@
                                         <number>3</number>
                                     </property>
                                     <property name="numCols">
-                                        <number>3</number>
+                                        <number>2</number>
                                     </property>
                                 </widget>
                                 <spacer row="0" column="1">
@@ -258,7 +281,7 @@
                                         <cstring>textLabelEigenvalues</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Eigenvalues</string>
+                                        <string>Eigenvalues (complete system)</string>
                                     </property>
                                 </widget>
                             </grid>
@@ -266,14 +289,172 @@
                     </widget>
                 </vbox>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Jacobian (reduced system)</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QSplitter">
+                        <property name="name">
+                            <cstring>splitterJacobianX</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="opaqueResize">
+                            <bool>true</bool>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layoutJacobianX</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTable" row="1" column="0" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>tableJacobianX</cstring>
+                                    </property>
+                                    <property name="numRows">
+                                        <number>3</number>
+                                    </property>
+                                    <property name="numCols">
+                                        <number>3</number>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabelJacobianX</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Jacobian (reduced system)</string>
+                                    </property>
+                                </widget>
+                                <spacer row="0" column="1">
+                                    <property name="name">
+                                        <cstring>spacer3_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>191</width>
+                                            <height>21</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </grid>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layoutEigenvaluesX</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTable" row="1" column="0" rowspan="1" colspan="2">
+                                    <column>
+                                        <property name="text">
+                                            <string>Real</string>
+                                        </property>
+                                    </column>
+                                    <column>
+                                        <property name="text">
+                                            <string>Imaginary</string>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>tableEigenValuesX</cstring>
+                                    </property>
+                                    <property name="numRows">
+                                        <number>3</number>
+                                    </property>
+                                    <property name="numCols">
+                                        <number>2</number>
+                                    </property>
+                                </widget>
+                                <spacer row="0" column="1">
+                                    <property name="name">
+                                        <cstring>spacer4_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>141</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabelEigenvaluesX</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Eigenvalues (reduced system)</string>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Stability</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextEdit">
+                        <property name="name">
+                            <cstring>stabilityTextEdit</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
     </vbox>
 </widget>
 <includes>
+    <include location="local" impldecl="in declaration">model/CState.h</include>
+    <include location="local" impldecl="in implementation">model/CModel.h</include>
+    <include location="local" impldecl="in implementation">model/CMetabNameInterface.h</include>
+    <include location="local" impldecl="in implementation">steadystate/CSteadyStateTask.h</include>
     <include location="local" impldecl="in implementation">StateSubwidget.ui.h</include>
 </includes>
+<forwards>
+    <forward>class CModel;</forward>
+    <forward>class CSteadyStateTask;</forward>
+</forwards>
 <slots>
     <slot access="protected">init()</slot>
+    <slot>loadJacobian( const CSteadyStateTask * task )</slot>
 </slots>
+<functions>
+    <function returnType="bool">loadMetabolites( const CModel * model )</function>
+    <function returnType="bool">loadReactions( const CModel * model )</function>
+    <function returnType="bool">loadAll( const CSteadyStateTask * task )</function>
+</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

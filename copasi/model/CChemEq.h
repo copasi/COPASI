@@ -1,6 +1,15 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:57 $
+   End CVS Header */
+
 /**
  *  CChemEq class.
- *  Describing a chemical equation Stefan Hoops 2001
+ *  Describing a chemical equation.
+ *  The CChemEq class handles everything a reaction has to do with metabolites.
  *
  *  Created for Copasi by Stefan Hoops 2001
  */
@@ -11,166 +20,158 @@
 #include <string>
 
 #include "CChemEqElement.h"
+#include "utilities/CCopasiVector.h"
 
-class CChemEq
-{
- public:
-  enum MetaboliteRole 
+/** @dia:pos 52.1128,98.3144 */
+class CChemEq : public CCopasiContainer
+  {
+  public:
+    enum MetaboliteRole
     {
-    PRODUCT = 0,
-    SUBSTRATE
+      PRODUCT = 0,
+      SUBSTRATE,
+      MODIFIER,
+      NOROLE
     };
 
-  // Attributes
- private:
-  /**
-   *  The chemical equation with multipliers
-   */
-  string mChemicalEquation;
-  
-  /**
-   *  The chemical equation without multipliers
-   */
-  string mChemicalEquationConverted;
-  
-  /**
-   *  A vector of substrates and their multiplicity in the chemical reaction
-   */
-  vector < CChemEqElement * > mSubstrates;
-  
-  /**
-   *  A vector of products and their multiplicity in the chemical reaction
-   */
-  vector < CChemEqElement * > mProducts;
+    // Attributes
 
-  /**
-   *  A vector of metabolites and their total balance in the chemical reaction
-   */
-  vector < CChemEqElement * > mBalances;
+  private:
+    /**
+     * Indicates whether the chemical equation is reversible
+     */
+    bool mReversible;
 
-  // Operations
- public:
-  /**
-   *  Default constructor
-   */
-  CChemEq();
-  
-  /**
-   *  Copy constructor
-   */
-  CChemEq(const CChemEq & src);
-  
-  /**
-   *  Destructor
-   */
-  ~CChemEq();
+    /**
+     *  A vector of substrates and their multiplicity in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Substrates
+     */
+    /** @dia:route 3,17; h,52.1128,99.0144,46.5733,102.331,41.0337 */
+    CCopasiVector < CChemEqElement > mSubstrates;
 
-  /**
-   *  Cleanup
-   */
-  void cleanup();
-  
-  /**
-   *  Set the chemical equation
-   *  @param "const string &" chemicalEquation (in any form even mixed)
-   */
-  void setChemicalEquation(const string & chemicalEquation);
-  
-  /**
-   *  Retrieves the chemical equation with multipliers.
-   */
-  const string & getChemicalEquation() const;
-  
-  /**
-   *  Retrieves the converted form of chemical equation.
-   *  This does not contain any multipliers.
-   */
-  const string & getChemicalEquationConverted() const;
+    /**
+     *  A vector of products and their multiplicity in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Products
+     */
+    /** @dia:route 3,21; h,52.1128,99.0144,46.5733,103.931,41.0337 */
+    CCopasiVector < CChemEqElement > mProducts;
 
-  /**
-   *  Retrieves the vector of substrates and their multiplicity 
-   *  in the chemical reaction.
-   */
-  const vector < CChemEqElement * > & getSubstrates();
+    /**
+     *  A vector of modifiers in the chemical reaction. 
+     */
+    /** @dia:route 3,13; h,52.1128,99.0144,46.5733,100.731,41.0337 */
+    CCopasiVector < CChemEqElement > mModifiers;
 
-  /**
-   *  Retrieves the vector of products and their multiplicity 
-   *  in the chemical reaction.
-   */
-  const vector < CChemEqElement * > & getProducts();
+    /**
+     *  A vector of metabolites and their total balance in the chemical reaction
+     * @supplierCardinality 0..*
+     * @label Stoichiometry
+     */
+    /** @dia:route 3,25; h,52.1128,99.0144,46.5733,105.531,41.0337 */
+    CCopasiVector < CChemEqElement > mBalances;
 
-  /**
-   *  Retrieves the vector of metabolites and their total balance 
-   *  in the chemical reaction.
-   */
-  const vector < CChemEqElement * > & getBalances();
+    // Operations
 
- private:
-  /**
-   *  Extracts the next element of the input string starting at position pos.
-   *  @param "const string &" input (string to parse)
-   *  @param "string::size_type &" pos 
-   *              (on input:  starting position of the parse)
-   *              (on output: starting position for the next parse)
-   *  @return "CChemEqElement" element
-   */
-  CChemEqElement extractElement(const string & input, 
-				string::size_type & pos) const;
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CChemEq(const std::string & name = "NoName",
+            const CCopasiContainer * pParent = NULL);
 
+    /**
+     * Copy constructor
+     * @param "const CChemEq &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CChemEq(const CChemEq & src,
+            const CCopasiContainer * pParent = NULL);
 
-  /**
-   *  Adds an element to the vector given by structure. The element is
-   *  either SUBSTRATE or PRODUCT.
-   *  @param "vector < CChemEqElement * > &" structure
-   *  @param "const CChemEqElement &" element
-   *  @param "CChemEq::MetaboliteRole" role (
-   */
-  void addElement(vector < CChemEqElement * > & structure,
-		  const CChemEqElement & element,
-		  CChemEq::MetaboliteRole role = CChemEq::PRODUCT);
+    /**
+     *  Destructor
+     */
+    ~CChemEq();
 
-  /**
-   *  This function creates the vector < CChemEqElement * > mSubstrates
-   */
-  void setSubstrates(const string & eqn);
-  
-  /**
-   *  This function creates the vector < CChemEqElement * > mProducts
-   */
-  void setProducts(const string & eqn);
+    /**
+     *  Cleanup
+     */
+    void cleanup();
 
-  /**
-   *  This function creates the vector < CChemEqElement * > mBalances
-   */
-  void setBalances(const string & left, const string & right);
+    void setReversibility(bool revers) {mReversible = revers;}
+    bool getReversibility() const {return mReversible;}
 
-  /**
-   *  This is the called by setSubstrates, setProducts, and setBalances.
-   *  It realy does the work.
-   */
-  void setChemEqElements(vector < CChemEqElement * > & elements,
-			 const string & reaction,
-			 CChemEq::MetaboliteRole role = 
-			 CChemEq::PRODUCT);
+    bool addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role);
 
-  /**
-   *  Compile the ChemEqElement, i.e., the pointer to the metabolite
-   *  is assigned.
-   *  @param "vector < CChemEqElement * > &" elements
-   *  @param "vector < CMetab * > &" metabolites
-   */
-  void compileChemEqElements(vector < CChemEqElement * > & elements,
-			     vector < CMetab * > & metabolites);
+    /**
+     *  Retrieves the vector of substrates and their multiplicity 
+     *  in the chemical reaction.
+     *  @return "vector < CChemEqElement * > &" substrates
+     */
+    const CCopasiVector < CChemEqElement > & getSubstrates() const;
 
-  /**
-   *  This function releases the vector < CChemEqElement * > mSubstrates
-   */
-  void cleanupChemEqElements(vector < CChemEqElement * > & elements);
-  
-  /**
-   *  This function splits the chemical equation into a left and a right
-   */
-  void splitChemEq(string & left, string & right) const;
-};
+    /**
+     *  Retrieves the vector of products and their multiplicity 
+     *  in the chemical reaction.
+     *  @return "vector < CChemEqElement * > &" products
+     */
+    const CCopasiVector < CChemEqElement > & getProducts() const;
 
-#endif // COPASI_CChemEq 
+    /**
+     *  Retrieves the vector of Modifiers and their multiplicity
+     */
+    const CCopasiVector < CChemEqElement > & getModifiers() const;
+
+    /**
+     *  Retrieves the vector of metabolites and their total balance
+     *  in the chemical reaction.
+     *  @return "vector < CChemEqElement * > &" balances
+     */
+    const CCopasiVector < CChemEqElement > & getBalances() const;
+
+    /**
+     * Returns the number of comparments the chemical equation is associated
+     * with. 
+     */
+    unsigned C_INT32 getCompartmentNumber() const;
+
+    /**
+     *  Checks if it is possible to figure out a compartment from the
+     *  information in the chemical equation. If there are substrates and if
+     *  all the substrates are in the same compartment this compartment will be
+     *  returned. If there are no substrates and there are Products and all Products are in the
+     *  same compartment this compartment will be returned, else an exception
+     *  will be thrown.
+     */
+    const CCompartment* CheckAndGetFunctionCompartment() const;
+
+    /**
+     *  exchanges products and substrates
+     */
+    void reverse();
+
+    /**
+     *  This returns the sum of the multiplicities
+     */
+    C_INT32 getMolecularity(const MetaboliteRole role) const;
+
+  private:
+
+    /**
+     *  Adds an element to the vector given by structure. The element is
+     *  either SUBSTRATE or PRODUCT.
+     *  @param "CCopasiVector < CChemEqElement > &" structure
+     *  @param "const CChemEqElement &" element
+     *  @param "CChemEq::MetaboliteRole" role (
+     */
+    void addElement(CCopasiVector < CChemEqElement > & structure,
+                    const CChemEqElement & element,
+                    CChemEq::MetaboliteRole role = CChemEq::PRODUCT);
+
+    friend std::ostream & operator<<(std::ostream &os, const CChemEq & d);
+  };
+
+#endif // COPASI_CChemEq

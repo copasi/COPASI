@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
 /**
  * CScanTask class.
  *
@@ -6,44 +14,86 @@
  *  
  */
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
+#ifndef COPASI_CScanTask
+#define COPASI_CScanTask
 
-class CScanProblem;
+#include "utilities/CReadConfig.h" 
+//#include "utilities/CWriteConfig.h"
+#include "CScanMethod.h"
+#include "utilities/CVector.h"
+#include "CScanProblem.h"
+
 class CScanMethod;
+//class COutputEvent;
+class CReport;
 
-class CScanTask
+//-class CScanTask : public CCopasiContainer
+class CScanTask : public CCopasiTask
   {
     //Attributes
   private:
 
+    //-CReport * mReport;
+
+    /**
+     * Flag indicating whether the task shall be executed by CopasiSE
+     */
+    bool mRequested;
+
     /**
      * A pointer to the problem to be integrated.
-     */
-    CScanProblem *scanProblem;
+     */ 
+    //-CScanProblem *mpProblem;
 
     /**
      * A pointer to the method choosen for the integration.
-     */
-    CScanMethod * scanMethod;
+     */ 
+    //-CScanMethod * mpMethod;
 
     /**
      * Pointer to the output stream for reporting
      */
-    std::ofstream * mpOut;
+    std::ostream * mpOut;
 
+    /**
+     * End Phase Output Event
+     */ 
+    //COutputEvent *mpOutEnd;
+
+    /**
+        * Unique Key
+        */
+    std::string mKey;
+
+    /*
+     Output value address
+    */
+    CVector<C_FLOAT64*>* pValueAddrMatrix;
     //Operations
+
   public:
+
+    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
+    {
+      //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
+      pValueAddrMatrix = pInputValueAddrMatrix;
+    }
+
+    //-inline CReport* getReport() {return mReport;};
+
+    //-inline std::string getKey() const {return mKey;}
     /**
      * default constructor
-     */
-    CScanTask();
+     */ 
+    //-CScanTask();
+    CScanTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param const CScanTask & src
-     */
-    CScanTask(const CScanTask & src);
+     */ 
+    //-CScanTask(const CScanTask & src);
+    CScanTask(const CScanTask & src, const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -59,7 +109,7 @@ class CScanTask
      * Initilize the reporting feature
      * @param ofstream & out
      */
-    void initializeReporting(std::ofstream & out);
+    void initializeReporting(std::ostream & out);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -69,17 +119,22 @@ class CScanTask
     void load(CReadConfig & configBuffer);
 
     /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
+     * Set wheter the execution of the task is requested.
+     * @param const bool & execute
      */
-    void save(CWriteConfig & configBuffer);
+    void setRequested(const bool & requested);
+
+    /**
+     * Retrieve whether the execution of the task is requested
+     * @return bool isRequested
+     */
+    bool isRequested() const;
 
     /**
      * Retrieve the probel to be integrated.
      * @return CTrajectoryProblem * pProblem
-     */
-    CScanProblem * getProblem();
+     */ 
+    //-CScanProblem * getProblem();
 
     /**
      * Set the problem to be integrated.
@@ -90,8 +145,8 @@ class CScanTask
     /**
      * Retrieve the method choosen for the integration.
      * @return CTrajectoryMethod * pMethod
-     */
-    CScanMethod * getMethod();
+     */ 
+    //-CScanMethod * getMethod();
 
     /**
      * Set the method to be used for the integration.
@@ -101,7 +156,8 @@ class CScanTask
 
     /**
      * Do the integration
-     */
-    void process();
+     */ 
+    //-void process();
+    virtual bool process();
   };
-#endif // COPASI_CTrajectoryTask
+#endif // COPASI_CScanTask

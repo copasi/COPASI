@@ -1,30 +1,16 @@
-/***************************************************************************
-                          main.cpp  -  description
-                             -------------------
-    begin                : Tue Sep 18 11:48:43 EDT 2001
-    copyright            : (C) 2001 by Stefan Hoops
-    email                : shoops@vt.edu
- ***************************************************************************/
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/main.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
+   End CVS Header */
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+#include <iostream>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <iostream.h>
-#include <stdlib.h>
-
-int main(int argc, char *argv[])
+int main (int argc, const char * argv[])
 {
-  cout << "Hello, World!" << endl;
-
-  return EXIT_SUCCESS;
+  // insert code here...
+  std::cout << "Hello, World!\n";
+  return 0;
 }

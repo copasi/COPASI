@@ -17,6 +17,12 @@ use POSIX;
 $counter = 0;
 
 $dirname="Dummy";
+system("pwd>dirname");
+open( DFILE, "dirname" );
+$dirname = <DFILE>;
+close( DFILE );
+unlink( "dirname" );
+$dirname =~ s/.*\/(.*)/$1/; 
 
 open( HTFILE, ">index.html" );
 $strtime = localtime();

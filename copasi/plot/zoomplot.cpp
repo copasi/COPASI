@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/zoomplot.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:00 $
+   End CVS Header */
+
 // taken from the realtime_plot example
 
 #include <qevent.h>
@@ -373,7 +381,7 @@ void ZoomPlot::updateScrollBars()
         {
           const QwtScaleDiv &xScaleDiv = *axisScale(QwtPlot::xBottom);
           if (xScaleDiv.lBound() > _initialScale.left() ||
-               xScaleDiv.hBound() < _initialScale.right())
+              xScaleDiv.hBound() < _initialScale.right())
             {
               _hScrollBar->setScale(_initialScale.left(),
                                     _initialScale.right());
@@ -397,7 +405,7 @@ void ZoomPlot::updateScrollBars()
         {
           const QwtScaleDiv &yScaleDiv = *axisScale(QwtPlot::yLeft);
           if (yScaleDiv.lBound() > _initialScale.bottom() ||
-               yScaleDiv.hBound() < _initialScale.top())
+              yScaleDiv.hBound() < _initialScale.top())
             {
               _vScrollBar->setScale(_initialScale.bottom(),
                                     _initialScale.top());
@@ -443,7 +451,7 @@ void ZoomPlot::resizeScrollBars()
       _vScrollBar->setGeometry(x, y, w, h);
     }
   if (_hScrollBar && _hScrollBar->isVisible() &&
-       _vScrollBar && _vScrollBar->isVisible())
+      _vScrollBar && _vScrollBar->isVisible())
     {
       if (_cornerWidget == NULL)
         _cornerWidget = new QLabel(this);

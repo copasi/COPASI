@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
 // ReportDefinitionVector.h: interface for the CReportDefinitionVector class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -8,37 +16,28 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
 #include "CReportDefinition.h"
 
-class CReportDefinitionVector: public CCopasiContainer
+class CReportDefinitionVector: public CCopasiVectorN< CReportDefinition >
   {
   private:
-    std::vector<CReportDefinition> mReportDefinitions;
+    std::string mKey;
 
   public:
-    CReportDefinitionVector(const std::string &, const CCopasiContainer*);
+    CReportDefinitionVector(const std::string & name = "ReportDefinitions",
+                            const CCopasiContainer* pParent = &RootContainer);
+
     ~CReportDefinitionVector();
 
-    const std::vector< CReportDefinition >* getReportDefinitionsAddr();
+    //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    void load(CReadConfig & configBuffer);
-
-    /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
+    CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
+    bool removeReportDefinition(const std::string & key);
 
     void cleanup();
+
+    const std::string& getKey();
   };
 
 #endif // !defined(AFX_REPORTDEFINITIONVECTOR_H__172081F2_7BF6_49FA_8FC7_C890F2CB1974__INCLUDED_)

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:57 $
+   End CVS Header */
+
 /**
  *  CMetab class.
  *  Derived from Gepasi's cmetab.cpp. (C) Pedro Mendes 1995-2000.
@@ -8,264 +16,355 @@
 #define COPASI_CMetab
 
 #include <string>
+#include <iostream>
 
-#include "copasi.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "report/CCopasiContainer.h"
 
 class CCompartment;
-
-//constants for use with Status
-#define METAB_FIXED	0
-#define METAB_VARIABLE	1
-#define METAB_DEPENDENT	2
-#define METAB_MOIETY	7
-
+class CReadConfig;
+//class CWriteConfig;
 class CMetabOld;
+class CModel;
 
+#define METAB_MOIETY 7
 
-class CMetab
-{
-  // Attributes
- private:
-  /**
-   *  Name of the metabolite
-   */
-  string mName;
+/** @dia:pos 80.8289,51.5961 */
+class CMetab : public CCopasiContainer
+  {
+  public:
+    /**
+     *  The valid states for metabolites
+     */
+    enum Status
+    {
+      METAB_FIXED = 0,
+      METAB_VARIABLE,
+      METAB_DEPENDENT,
+      METAB_UNUSED
+    };
 
-  /**
-   *  Concentration of the metabolite.
-   */
-  C_FLOAT64 mConc;
+  public:
+    /**
+     * String representation of the states
+     */
+    static const std::string StatusName[];
 
-  /**
-   * Initial concentration of the metabolite
-   */
-  C_FLOAT64 mIConc;
+    /**
+     * XML representation of the states
+     */
+    static const char * XMLStatus[];
 
-  /**
-   *  Rate of production of this metaboLite
-   *  (here used for rate constant).
-   */
-  C_FLOAT64 mRate; 
+    // Attributes
+  private:
+    /**
+     *  Key of the metabolite
+     */
+    std::string mKey;
 
-  /**
-   *  Transition time of the metabolite
-   */
-  C_FLOAT64 mTT;
+    /**
+     *  Concentration of the metabolite as double.
+     */
+    C_FLOAT64 mConc;
 
-  /**
-   *  Status of the metabolite.  
-   *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-   */
-  C_INT16 mStatus;
+    /**
+     *  Initial concentration of the metabolite as double
+     */
+    C_FLOAT64 mIConc;
 
-  /**
-   *  pointer to the compartment the metabolite is located in.
-   */
-  CCompartment  * mCompartment;
+    /**
+     *  Concentration of the metabolite as long.
+     */
+    C_FLOAT64 mNumber;
 
-  // Operations
- public:
-  /**
-   *  Default constructor
-   */
-  CMetab();
+    /**
+     * Initial concentration of the metabolite as long.
+     */
+    C_FLOAT64 mINumber;
 
-  /**
-   *  Specific constructor. 
-   *  @param name name of the metabolite.
-   */
-  CMetab(const string & name);
+    /**
+     *  Rate of production of this metabolite
+     *  (concentration/time).
+     */
+    C_FLOAT64 mRate;
 
-  /**
-   *  Specific constructor.
-   *  @param name name of the metabolite.
-   *  @param status status of the metabolite 
-   *     (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-   *  @param compartment name of the compartment the metabolite
-   *     is located in.
-   */
-  // CMetab(const string & compartment, C_INT16 status, CCompartment & name);
+    /**
+     *  Transition time of the metabolite
+     */
+    C_FLOAT64 mTT;
 
-  /**
-   *  Destructor.
-   */
-  ~CMetab();
+    /**
+     *  Status of the metabolite.  
+     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     */
+    Status mStatus;
 
-  /**
-   *  Assignment operator.
-   */
-  CMetab & operator=(const CMetab & rhs);
+    /**
+     *  pointer to the compartment the metabolite is located in.
+     *  The metab needs to know about volumes.
+     */
+    /** @dia:route 15,11; h,155.606,39.003,162.634,54.2961,108.729 */
+    const CCompartment * mpCompartment;
 
-  /**
-   *  Assignment operator.
-   */
-  CMetab & operator=(const CMetabOld & rhs);
+    /**
+     *  pointer to the model the metabolite is located in.
+     *  The metab needs to know about the unit for concentrations.
+     */
+    /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
+    const CModel * mpModel;
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  C_INT32 load(CReadConfig & configbuffer);
+    /**
+     * This the default parent compartmnet used on creation
+     */
+    /** @dia:route 13,13; h,155.606,38.203,162.634,55.0961,108.729 */
+    static const CCompartment *mpParentCompartment;
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return Fail
-   */
-  C_INT32 save(CWriteConfig & configbuffer);
+    // Operations
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CMetab(const std::string & name = "NoName",
+           const CCopasiContainer * pParent = NULL);
 
-  /**
-   *  Retrieve the name of the metabolite.
-   */
-  string getName() const;
+    /**
+     * Copy constructor
+     * @param const CMetab & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CMetab(const CMetab & src,
+           const CCopasiContainer * pParent = NULL);
 
-  /**
-   *
-   */
-  C_INT16 getStatus() const;
-    
-  /**
-   *
-   */
-  C_FLOAT64 * getConcentration();
+    /**
+     *  Destructor.
+     */
+    ~CMetab();
 
-  /**
-   *
-   */
-  C_FLOAT64 getNumber() const;
+    virtual void * getReference() const;
 
-  /**
-   *
-   */
-  C_FLOAT64 * getInitialConcentration();
+    /**
+     *  Cleanup
+     */
+    void cleanup();
+    void initModel();
+    void initCompartment(const CCompartment * pCompartment = NULL);
 
-  /**
-   *
-   */
-  C_FLOAT64 getInitialNumber() const;
+    /**
+     *  Assignment operator.
+     */
+    CMetab & operator=(const CMetabOld & rhs);
 
-  /**
-   *
-   */
-  CCompartment * getCompartment();
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    C_INT32 load(CReadConfig & configbuffer);
 
-  /**
-   *
-   */
-  void setName(const string & name);
+    /**
+     * Sets the parent of the metabolite;
+     * @param const CCopasiContainer * pParent
+     * @return bool success
+     */
+    virtual bool setObjectParent(const CCopasiContainer * pParent);
 
-  /**
-   *
-   */
-  void setConcentration(const C_FLOAT64 concentration);
-    
-  /**
-   *
-   */
-  void setInitialConcentration(const C_FLOAT64 initialConcentration);
-    
-  /**
-   *
-   */
-  void setNumber(const C_FLOAT64 number);
-    
-  /**
-   *
-   */
-  void setStatus(const C_INT16 status);
-    
-  /**
-   *
-   */
-  void setCompartment(CCompartment * compartment); 
+    /**
+     *  Retrieve the key of the metabolite.
+     * @return std::string key
+     */
+    virtual const std::string & getKey() const;
 
-  /**
-   *  Reset the values of a metabolite as if CMetab(string name) was called.
-   *  @return Fail
-   */
-  C_INT32 reset(const string & name);
+    /**
+     *
+     */
+    void setStatus(const CMetab::Status & status);
 
-  /**
-   *	Returns the address of mIConc		Wei Sun
-   */
-  void * getIConcAddr();
+    /**
+     *
+     */
+    const CMetab::Status & getStatus() const;
 
-  /**
-   *	Returns the address of mConc
-   */
-  void * getConcAddr();
+    /**
+     *
+     */
+    void setConcentration(const C_FLOAT64 concentration);
 
-  /**
-   *	Returns the address of mTT
-   */
-  void * getTTAddr();
+    /**
+     *
+     */
+    const C_FLOAT64 & getConcentration() const;
 
- private:
+    /**
+     *
+     */
+    void setNumber(const C_FLOAT64 number);
 
-  /*
-   *
-   */
-  C_INT16 isValidName();
-};
+    /**
+     *
+     */
+    const C_FLOAT64 & getNumber() const;
 
-class CMetabOld
-{
-  friend class CMetab;
-    
-  // Attributes
- private:
-  /**
-   *  Name of the metabolite
-   */
-  string mName;
+    /**
+     *
+     */
+    void setInitialConcentration(const C_FLOAT64 initialConcentration);
 
-  /**
-   *  Concentration of the metabolite.
-   */
-  C_FLOAT64 mIConc;
+    /**
+     *
+     */
+    const C_FLOAT64 & getInitialConcentration() const;
 
-  /**
-   *  Status of the metabolite.  
-   *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-   */
-  C_INT16 mStatus;
+    /**
+     *
+     */
+    void setInitialNumber(const C_FLOAT64 initialNumber);
 
-  /**
-   *  Index of the compartment the metabolite is located in.
-   */
-  C_INT32  mCompartment;
+    /**
+     *
+     */
+    const C_FLOAT64 & getInitialNumber() const;
 
-  // Operations
- public:
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @return Fail
-   */
-  C_INT32 load(CReadConfig & configbuffer);
+    /**
+     *
+     */
+    void setCompartment(const CCompartment * compartment);
 
-  C_INT32 getIndex() const;
+    /**
+     *
+     */
+    const CCompartment * getCompartment() const;
 
-  string getName() const;
-};
+    /**
+     *
+     */
+    void setModel(CModel * model);
 
-class CMetabolitesOld: public CCopasiVector < CMetabOld >
-{
- private:    
-  /**
-   * @supplierCardinality 0..*
-   * @associates <{CMetabOld}>
-   */
-  // CCopasiVector < CMetabOld > self;
+    /**
+     *
+     */
+    const CModel * getModel() const;
 
-  C_INT16 isInsertAllowed(const CMetabOld & src) const {return TRUE;}
-};
-  
+    /**
+     *  Set transition time
+     *  @param "const C_FLOAT64 &" transitionTime
+     */
+    void setTransitionTime(const C_FLOAT64 & transitionTime);
+
+    /**
+     *  Retrieves the transition time
+     *  @return "const C_FLOAT64 &" transitionTime
+     */
+    const C_FLOAT64 & getTransitionTime() const;
+
+    /**
+     * Return rate of production of this metaboLite
+     */
+    const C_FLOAT64 & getConcentrationRate() const;
+    C_FLOAT64 getNumberRate() const;
+
+    /**
+     *  Set the rate (dmConc/dt)
+     *  @param "const C_FLOAT64 &" rate (unit: particle/time)
+     */
+    void setConcentrationRate(const C_FLOAT64 & rate);
+    void setNumberRate(const C_FLOAT64 & rate);
+
+    /**
+     * insert operator
+     */
+    friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
+
+    /**
+     * Set the default parent compartment
+     * @param const CCompartment * parentCompartmnte
+     */
+    static void setParentCompartment(const CCompartment * parentCompartment);
+
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
+  };
+
+/** @dia:pos 50.0045,52.5004 */
+class CMetabOld : public CCopasiContainer
+  {
+    friend class CMetab;
+
+    // Attributes
+
+  private:
+    /**
+     *  Concentration of the metabolite.
+     */
+    C_FLOAT64 mIConc;
+
+    /**
+     *  Status of the metabolite.  
+     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     */
+    CMetab::Status mStatus;
+
+    /**
+     *  Index of the compartment the metabolite is located in.
+     */
+    C_INT32 mCompartment;
+
+    // Operations
+
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CMetabOld(const std::string & name = "NoName",
+              const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CMetabOld & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CMetabOld(const CMetabOld & src,
+              const CCopasiContainer * pParent = NULL);
+
+    /**
+     *  Destructor.
+     */
+    ~CMetabOld();
+
+    /**
+     *  cleanup()
+     */
+    void cleanup();
+
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    C_INT32 load(CReadConfig & configbuffer);
+
+    /**
+     *  This function is only defined for completeness. We really never going 
+     *  to save objects of class CMetabOld.
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
+
+    C_INT32 getIndex() const;
+
+    //    const std::string & getName() const;
+  };
+
+/**
+ * Non member less than operator. This is needed, for example, when searching for an 
+ * instance CMetab in a set of CMetab.
+ */ 
+//bool operator< (const CMetab &lhs, const CMetab &rhs);
+
 #endif // COPASI_CMetab

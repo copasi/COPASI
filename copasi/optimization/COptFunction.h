@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
@@ -11,11 +19,39 @@ Contact: Please contact lixu1@vt.edu.
 #define COPASI_COptExpression
 
 #include "function/CKinFunction.h"
-#include "utilities/readwrite.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CCopasiVector.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 
-class COptFunction: public CKinFunction
+class COptMethod;
+class COptProblem;
+
+class COptFunction: public CCopasiContainer
   {
-  public:
+  public:         //function
+    std::vector<CCopasiObject*> mParaList;
+    std::vector<std::string> mMinList;
+    std::vector<std::string> mMaxList;
+    std::vector<std::string> mMinOperList;
+    std::vector<std::string> mMaxOperList;
+    std::vector<CKinFunction*> mMinFunctionList;
+    std::vector<CKinFunction*> mMaxFunctionList;
+
+    // check if a parameter already existing inside the mParaList
+    int Index(const std::string & name);
+
+    // add a new item inside
+    int addItem(CCopasiObject* pObject);
+
+    //remove an item with the existing name
+    bool removeItem(const std::string & name);
+
+    //get key function of a COptFunction
+    inline std::string getKey()
+    {return mKey;}
+
+  public:         // constructor and deconstuctor
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -26,26 +62,18 @@ class COptFunction: public CKinFunction
 
     /**
      * Copy constructor
-     * @param "const CFunction &" src
+     * @param "const COptFunction &" src
      * @param "CReadConfig *" configBuffer (Default = NULL)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptFunction(const CFunction & src,
+    COptFunction(const COptFunction & src,
                  CReadConfig * configBuffer = NULL,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor
-     * @param "const CKinFunction &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    COptFunction(const CKinFunction & src,
                  const CCopasiContainer * pParent = NULL);
 
     ~COptFunction();
 
-  protected:
-
+  private:
     void cleanup();
+    std::string mKey;
   };
 #endif

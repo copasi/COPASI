@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:04 $
+   End CVS Header */
+
 /**
  * CCopasiTree class.
  * The template class CCopasiTree describes a tree of Nodes.
@@ -25,32 +33,41 @@
  *       unless you use the detach node function prior to the destruction of
  *       the tree.
  */
-template < class Node > class CCopasiTree
+template < class _Node > class CCopasiTree
     {
+    public:
+      typedef _Node Node;
+
       // Attributes
     private:
       /**
        * The root of the tree
        */
-      Node * mpRoot;
+      _Node * mpRoot;
 
       /**
        * The list of all nodes. This is used to keep the tree consistent
        * by avoiding multiple inserts of the same node.
        */
-      set<Node *> mList;
+      std::set<_Node *> mList;
 
     public:
       /**
        * A forward iterator used to traverse the tree.
        */
-    class iterator: public std::forward_iterator<Node, ptrdiff_t>
+#if (defined __GNUC__ && __GNUC__ < 3)
+    class iterator: public std::forward_iterator< _Node, ptrdiff_t >
+#else
+    class iterator:
+            public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+#endif
+
         {
         private:
           /**
            * A pointer to the current node.
            */
-          Node * mCurrent;
+          _Node * mCurrent;
 
         public:
           /**
@@ -59,7 +76,7 @@ template < class Node > class CCopasiTree
            *       the tree.
            * @param Node * begin (default NULL)
            */
-          iterator(Node * begin = NULL):
+          iterator(_Node * begin = NULL):
               mCurrent(begin)
           {}
 
@@ -80,7 +97,13 @@ template < class Node > class CCopasiTree
            * Dereference operator * returns the node the iterator points to.
            * @return Node &
            */
-          Node & operator*() const {return * mCurrent;}
+          _Node & operator*() const {return * mCurrent;}
+
+          /**
+           * Dereference operator * returns the node the iterator points to.
+           * @return Node &
+           */
+          _Node * operator->() const {return mCurrent;}
 
           /**
            * Comparison operator !=
@@ -95,7 +118,7 @@ template < class Node > class CCopasiTree
            * @param Node * pNode
            * @return iterator &
            */
-          iterator & operator=(Node * pNode)
+          iterator & operator=(_Node * pNode)
           {
             mCurrent = pNode;
             return *this;
@@ -103,25 +126,25 @@ template < class Node > class CCopasiTree
 
           /**
            * Return the first node after the children of the current node.
-           * This might be a sibbling or an ancestor.
+           * This might be a sibling or an ancestor.
            * @return Node * pastChildren
            */
-          Node * pastChildren()
+          _Node * pastChildren()
           {
-            Node * pastChildren = NULL;
+            _Node * pastChildren = NULL;
 
-            if (mCurrent->getSibbling())
-              pastChildren = mCurrent->getSibbling();
+            if (mCurrent->getSibling())
+              pastChildren = (_Node *) mCurrent->getSibling();
             else
               {
-                Node * pTmp = mCurrent->getParent();
+                _Node * pTmp = (_Node *) mCurrent->getParent();
 
                 while (pTmp)
                   {
-                    if ((pastChildren = pTmp->getSibbling()))
+                    if ((pastChildren = (_Node *) pTmp->getSibling()))
                       break;
 
-                    pTmp = pTmp->getParent();
+                    pTmp = (_Node *) pTmp->getParent();
                   }
               }
             return pastChildren;
@@ -134,7 +157,7 @@ template < class Node > class CCopasiTree
           iterator & operator++()
           {
             if (mCurrent->getChild())
-              mCurrent = mCurrent->getChild();
+              mCurrent = (_Node *) mCurrent->getChild();
             else
               mCurrent = pastChildren();
 
@@ -148,7 +171,7 @@ template < class Node > class CCopasiTree
        * Default constructor
        */
       CCopasiTree():
-          mpRoot(new Node),
+          mpRoot(new _Node),
           mList()
     {mList.insert(mpRoot);}
 
@@ -161,13 +184,25 @@ template < class Node > class CCopasiTree
        * Retreive an iterator pointing to the beginning of the tree
        * @return iterator begin
        */
-      iterator begin() {return iterator(*mList.begin());}
+      iterator begin() const {return iterator(mpRoot);}
 
       /**
        * Retreive an iterator pointing beyond the end of the tree
        * @return iterator end
        */
-      iterator end() {return iterator(NULL);}
+      iterator end() const {return iterator(NULL);}
+
+      /**
+       * Retreive the root node of the tree
+       * @return Node * root
+       */
+      _Node * getRoot() {return mpRoot;}
+
+      /**
+       * Retreive the data of the Tree.
+       * @return Data data
+       */
+      typename _Node::Data getData() const {return mpRoot->getData();}
 
       /**
        * Attach a Node to the tree
@@ -178,9 +213,9 @@ template < class Node > class CCopasiTree
        * @param Node * pAfterChild (default: NULL at the end of the children)
        * @return bool Success
        */
-      bool attachNode(Node * pNode,
-                      Node * pParent = NULL,
-                      Node * pAfterChild = NULL)
+      bool attachNode(_Node * pNode,
+                      _Node * pParent = NULL,
+                      _Node * pAfterChild = NULL)
       {
         bool Success = true;
 
@@ -199,7 +234,14 @@ template < class Node > class CCopasiTree
         else
           Success = mpRoot->addChild(pNode, pAfterChild);
 
-        if (Success) mList.insert(pNode);
+        if (Success)
+          {
+            iterator it = pNode;
+            iterator end = it.pastChildren();
+
+            for (; it != end; ++it)
+              mList.insert(&*it);
+          }
 
         return Success;
       }
@@ -209,7 +251,7 @@ template < class Node > class CCopasiTree
        * @param Node * pNode
        * @return bool Success
        */
-      bool removeNode(Node * pNode)
+      bool removeNode(_Node * pNode)
       {
         if (!pNode) return false;          // Nothing to remove.
         if (pNode == mpRoot) return false; // Root must not be removed.
@@ -218,10 +260,7 @@ template < class Node > class CCopasiTree
         iterator end = it.pastChildren();
 
         for (; it != end; ++it)
-          {
-            std::cout << "erasing: " << &*it << std::endl;
-            mList.erase(&*it);
-          }
+          mList.erase(&*it);
 
         delete pNode;
 
@@ -237,7 +276,7 @@ template < class Node > class CCopasiTree
        * @param Node * pAfterChild (default: NULL at the end of the children)
        * @return bool Success
        */
-      bool moveNode(Node * pNode, Node * pParent = NULL, Node * pAfterChild = NULL)
+      bool moveNode(_Node * pNode, _Node * pParent = NULL, _Node * pAfterChild = NULL)
       {
         detachNode(pNode);
         return attachNode(pNode, pParent, pAfterChild);
@@ -249,15 +288,43 @@ template < class Node > class CCopasiTree
        * @param Node * pNode
        * @return bool Success
        */
-      bool detachNode(Node * pNode)
+      bool detachNode(_Node * pNode)
       {
         if (!pNode) return false;          // Nothing to do.
         if (pNode == mpRoot) return false; // Root must not be detached
 
-        mList.erase(pNode);
+        iterator it = pNode;
+        iterator end = it.pastChildren();
+
+        for (; it != end; ++it)
+          mList.erase(&*it);
 
         return pNode->getParent()->removeChild(pNode);
       }
+
+#ifdef WIN32
+      friend std::ostream & operator << (std::ostream & os,
+                                         const CCopasiTree< _Node > & A);
+#else
+      friend std::ostream & operator << <>(std::ostream & os,
+                                           const CCopasiTree< _Node > & A);
+#endif // WIN32
     };
+
+template <class _Node>
+std::ostream & operator<< (std::ostream & os,
+                           const CCopasiTree< _Node > & A)
+{
+  typename CCopasiTree< _Node >::iterator it = A.begin();
+  typename CCopasiTree< _Node >::iterator end = A.end();
+
+  for (; it != end && &*it != NULL; ++it)
+    os << &*it << ": parent: " << it->getParent()
+    << ", child: " << it->getChild()
+    << ", sibling: " << it->getSibling() << std::endl;
+
+  os << std::endl;
+  return os;
+}
 
 #endif // COPASI_CCopasiTree

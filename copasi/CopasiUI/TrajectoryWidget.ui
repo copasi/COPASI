@@ -8,90 +8,215 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>719</width>
-            <height>589</height>
+            <width>695</width>
+            <height>581</height>
         </rect>
+    </property>
+    <property name="font">
+        <font>
+            <family>Times New Roman</family>
+        </font>
     </property>
     <property name="caption">
         <string>TrajectoryWidget</string>
     </property>
-    <widget class="QLayoutWidget">
+    <grid>
         <property name="name">
-            <cstring>layout15</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>449</y>
-                <width>580</width>
-                <height>88</height>
-            </rect>
+        <property name="margin">
+            <number>11</number>
         </property>
-        <vbox>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="Line" row="1" column="0" rowspan="1" colspan="4">
             <property name="name">
-                <cstring>unnamed</cstring>
+                <cstring>line8</cstring>
             </property>
-            <property name="margin">
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QTable" row="7" column="1" rowspan="2" colspan="3">
+            <property name="name">
+                <cstring>parameterTable</cstring>
+            </property>
+            <property name="numRows">
                 <number>0</number>
             </property>
-            <property name="spacing">
-                <number>6</number>
+            <property name="numCols">
+                <number>0</number>
             </property>
-            <spacer>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>taskNameLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Task Name</string>
+            </property>
+        </widget>
+        <widget class="Line" row="6" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line7</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="Line" row="4" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line7_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>taskName</cstring>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="5" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>ComboBox1</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="3" column="1">
+            <property name="name">
+                <cstring>nStartTime</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="0" column="3">
+            <property name="name">
+                <cstring>bExecutable</cstring>
+            </property>
+            <property name="text">
+                <string>Task Executable </string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Step Size</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="0">
+            <property name="name">
+                <cstring>TextLabel1_3</cstring>
+            </property>
+            <property name="text">
+                <string>Start Time</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="5" column="0">
+            <property name="name">
+                <cstring>TextLabel1_3_2</cstring>
+            </property>
+            <property name="text">
+                <string>Method</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="1">
+            <property name="name">
+                <cstring>nStepSize</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="2">
+            <property name="name">
+                <cstring>TextLabel1_2_2</cstring>
+            </property>
+            <property name="text">
+                <string>End Time</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="3" column="3">
+            <property name="name">
+                <cstring>nEndTime</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="3">
+            <property name="name">
+                <cstring>nStepNumber</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="2">
+            <property name="name">
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property name="text">
+                <string>Step Number</string>
+            </property>
+        </widget>
+        <widget class="Line" row="9" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line6</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="10" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Layout2</cstring>
+            </property>
+            <hbox>
                 <property name="name">
-                    <cstring>spacer7_5</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
+                <property name="margin">
+                    <number>0</number>
                 </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
+                <property name="spacing">
+                    <number>6</number>
                 </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>628</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="Line">
-                <property name="name">
-                    <cstring>line6</cstring>
-                </property>
-                <property name="frameShape">
-                    <enum>HLine</enum>
-                </property>
-                <property name="frameShadow">
-                    <enum>Sunken</enum>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-            </widget>
-            <spacer>
-                <property name="name">
-                    <cstring>spacer7_7</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>628</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QSplitter">
-                <property name="name">
-                    <cstring>splitter3</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>bRunTask</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Run Task</string>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>commitChange</cstring>
@@ -108,185 +233,34 @@
                         <string>Cancel Change</string>
                     </property>
                 </widget>
-            </widget>
-        </vbox>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_2</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>570</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>42</y>
-                <width>570</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line8</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>71</y>
-                <width>568</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_3</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>22</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>203</y>
-                <width>568</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>taskNameLabel</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>11</y>
-                <width>282</width>
-                <height>19</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Task Name</string>
-        </property>
-    </widget>
-    <widget class="Line">
-        <property name="name">
-            <cstring>line7</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>231</y>
-                <width>568</width>
-                <height>16</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>HLine</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Sunken</enum>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_4</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>22</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>80</y>
-                <width>568</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </spacer>
-    <spacer>
-        <property name="name">
-            <cstring>spacer7_6</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>568</width>
-                <height>21</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>240</y>
-                <width>568</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QSplitter">
-        <property name="name">
-            <cstring>splitter11</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>14</x>
-                <y>275</y>
-                <width>570</width>
-                <height>160</height>
-            </rect>
-        </property>
-        <property name="orientation">
-            <enum>Horizontal</enum>
-        </property>
-        <widget class="QLabel">
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ExportToFileButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Export To File</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="8" column="0">
+            <property name="name">
+                <cstring>Spacer16</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>71</width>
+                    <height>330</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="7" column="0">
             <property name="name">
                 <cstring>parameterValueLabel</cstring>
             </property>
@@ -294,173 +268,9 @@
                 <string>Parameter value</string>
             </property>
         </widget>
-        <widget class="QTable">
-            <property name="name">
-                <cstring>parameterTable</cstring>
-            </property>
-            <property name="numRows">
-                <number>3</number>
-            </property>
-            <property name="numCols">
-                <number>3</number>
-            </property>
-        </widget>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel1</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>30</x>
-                <y>110</y>
-                <width>56</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Step Size</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel1_3</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>33</x>
-                <y>156</y>
-                <width>56</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Start Time</string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepSize</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>100</x>
-                <y>110</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>taskName</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>100</x>
-                <y>10</y>
-                <width>282</width>
-                <height>19</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepSize_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>101</x>
-                <y>156</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel1_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>300</x>
-                <y>110</y>
-                <width>80</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Step Number</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>TextLabel1_2_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>303</x>
-                <y>156</y>
-                <width>56</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>End Time</string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepNumber</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>400</x>
-                <y>110</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>nStepNumber_2</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>403</x>
-                <y>156</y>
-                <width>121</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
+    </grid>
 </widget>
 <connections>
-    <connection>
-        <sender>taskName</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>TrajectoryWidget</receiver>
-        <slot>taskNameChanged()</slot>
-    </connection>
-    <connection>
-        <sender>parameterTable</sender>
-        <signal>valueChanged(int,int)</signal>
-        <receiver>TrajectoryWidget</receiver>
-        <slot>parameterValueChanged()</slot>
-    </connection>
     <connection>
         <sender>commitChange</sender>
         <signal>clicked()</signal>
@@ -473,20 +283,52 @@
         <receiver>TrajectoryWidget</receiver>
         <slot>CancelChange()</slot>
     </connection>
+    <connection>
+        <sender>bRunTask</sender>
+        <signal>clicked()</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>RunTask()</slot>
+    </connection>
+    <connection>
+        <sender>bExecutable</sender>
+        <signal>clicked()</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>EnableRunTask()</slot>
+    </connection>
+    <connection>
+        <sender>ComboBox1</sender>
+        <signal>activated(int)</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>UpdateMethod()</slot>
+    </connection>
+    <connection>
+        <sender>ExportToFileButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TrajectoryWidget</receiver>
+        <slot>ExportToFile()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>taskName</tabstop>
+    <tabstop>bExecutable</tabstop>
+    <tabstop>nStepSize</tabstop>
+    <tabstop>nStepNumber</tabstop>
+    <tabstop>nStartTime</tabstop>
+    <tabstop>nEndTime</tabstop>
+    <tabstop>ComboBox1</tabstop>
     <tabstop>parameterTable</tabstop>
+    <tabstop>bRunTask</tabstop>
     <tabstop>commitChange</tabstop>
     <tabstop>cancelChange</tabstop>
+    <tabstop>ExportToFileButton</tabstop>
 </tabstops>
 <slots>
-    <slot>taskNameChanged()</slot>
-    <slot>methodJacob()</slot>
-    <slot>methodStability()</slot>
-    <slot>parameterValueChanged()</slot>
-    <slot>CommitChange()</slot>
     <slot>CancelChange()</slot>
+    <slot>CommitChange()</slot>
+    <slot>EnableRunTask()</slot>
+    <slot>ExportToFile()</slot>
+    <slot>RunTask()</slot>
+    <slot>UpdateMethod()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

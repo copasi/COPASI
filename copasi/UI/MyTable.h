@@ -1,23 +1,48 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MyTable.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:49 $
+   End CVS Header */
+
 #ifndef MY_TABLE_H
 #define MY_TABLE_H
 
+#include <vector>
+#include "qtable.h"
+#include <qevent.h> 
+//#include "StretchTable.h"
 
-#include <qtable.h>
-class MyTable:public QTable
-{
-protected:
-	bool deleteConfirmation;
-public:
-	MyTable ( QWidget * parent = 0, const char * name = 0 );
-	MyTable ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 );
-	void mousePressEvent( QMouseEvent *mpe );
-	void keyPressEvent ( QKeyEvent * e);
-	void setDeleteConfirmation(bool enable);
-	void removeRow(int row);
-	void removeSelectedRows(bool full = FALSE);
-        void insertRows(long, long) {}
-	//virtual void setSorting ( bool b, bool wholeRows = TRUE);
+/*
+ Table class to support a signal for delete key (and popups eventually)
+ */
+class MyTable: public QTable
+  {
+    Q_OBJECT
 
-};
+  public:
+    MyTable (QWidget * parent = 0, const char * name = 0);
+    //void mousePressEvent(QMouseEvent *mpe);
+    void keyPressEvent (QKeyEvent * e);
+
+  public slots:
+    //virtual void setNumCols(int c);
+    //virtual void insertColumns(int index, int count = 1);
+    //virtual void removeColumn(int col);
+    //virtual void removeColumns(const QMemArray<int> & cols);
+
+  protected:
+    //virtual void resizeEvent(QResizeEvent* e);
+    //virtual int getOptimalColumnWidth(int index);
+    //virtual void scaleColumns(double factor);
+    //virtual QSize headerSectionSizeHint(int section) const;
+
+    //bool firstTime;
+    //std::vector<double> exactColumnWidth;
+
+  signals:
+    void delKeyPressed();
+  };
 
 #endif

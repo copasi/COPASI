@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/04 18:50:57 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -11,36 +11,51 @@
 #include "qhbox.h"
 #include "qvbox.h"
 #include "qlayout.h"
+#include "ObjectBrowserWidget.h"
 #include "report/CCopasiObject.h"
 #include "simpleselectionwidget.h"
 
-SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * name , bool modal): QDialog(parent, name, modal), okButton(NULL), cancelButton(NULL), buttonBox(NULL), mainWidget(NULL), mainLayout(NULL), tmpVector(new std::vector<CCopasiObject*>()), outputVector(NULL)
+SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * name , bool modal): QDialog(parent, name, modal), okButton(NULL), cancelButton(NULL), modeButton(NULL), buttonBox(NULL), mainWidget(NULL), simpleSelectionWidget(NULL), objectBrowserWidget(NULL), mainLayout(NULL), tmpVector(new std::vector<CCopasiObject*>()), outputVector(NULL), expertMode(false)
 {
   this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   this->mainLayout = new QVBoxLayout(this);
   this->mainLayout->setAutoAdd(false);
-  this->mainWidget = new SimpleSelectionWidget(this);
+  this->simpleSelectionWidget = new SimpleSelectionWidget(this);
+  this->objectBrowserWidget = new ObjectBrowserWidget(this);
+  this->objectBrowserWidget->setHidden(true);
+  this->mainWidget = this->simpleSelectionWidget;
   this->buttonBox = new QHBoxLayout(0);
   ((QBoxLayout*)this->buttonBox->layout())->addStretch();
   this->okButton = new QPushButton(this, "OK");
   this->okButton->setText("OK");
+  this->okButton->setDefault(true);
+  this->okButton->setAutoDefault(true);
   this->buttonBox->addWidget(this->okButton);
   this->cancelButton = new QPushButton(this, "Cancel");
   this->cancelButton->setText("Cancel");
   this->buttonBox->addWidget(this->cancelButton);
+  this->modeButton = new QPushButton(this, "ModeButton");
+  this->modeButton->setText("Expert");
+  this->buttonBox->addWidget(this->modeButton);
   ((QBoxLayout*)this->buttonBox->layout())->addStretch();
 
   connect(this->okButton, SIGNAL(clicked()), this, SLOT(okButton_clicked()));
   connect(this->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton_clicked()));
+  connect(this->modeButton, SIGNAL(clicked()), this, SLOT(modeButton_clicked()));
   this->mainLayout->addWidget(this->mainWidget);
   this->mainLayout->addLayout(this->buttonBox);
-  this->mainWidget->setOutputVector(this->tmpVector);
+  this->simpleSelectionWidget->setOutputVector(this->tmpVector);
+
+  this->setTabOrder(this->okButton, this->cancelButton);
+  this->setTabOrder(this->cancelButton, this->modeButton);
+  this->setTabOrder(this->modeButton, this->mainWidget);
 }
 
 SimpleSelectionDialog::~SimpleSelectionDialog()
 {
   delete this->okButton;
   delete this->cancelButton;
+  delete this->modeButton;
   delete this->buttonBox;
   delete this->mainWidget;
   delete this->mainLayout;
@@ -49,7 +64,7 @@ SimpleSelectionDialog::~SimpleSelectionDialog()
 
 void SimpleSelectionDialog::setModel(CModel* model)
 {
-  this->mainWidget->populateTree(model);
+  this->simpleSelectionWidget->populateTree(model);
 }
 
 void SimpleSelectionDialog::setOutputVector(std::vector<CCopasiObject*>* outputVector)
@@ -62,6 +77,11 @@ void SimpleSelectionDialog::okButton_clicked()
   // fill outputVector
   if (this->outputVector)
     {
+      if (this->expertMode)
+        {
+          this->tmpVector->clear();
+          this->objectBrowserWidget->commitClicked();
+        }
       unsigned int counter;
       unsigned int maxCount = this->tmpVector->size();
       this->outputVector->clear();
@@ -76,4 +96,34 @@ void SimpleSelectionDialog::okButton_clicked()
 void SimpleSelectionDialog::cancelButton_clicked()
 {
   close();
+}
+
+void SimpleSelectionDialog::modeButton_clicked()
+{
+  if (this->expertMode)
+    {
+      this->expertMode = false;
+      this->tmpVector->clear();
+      this->objectBrowserWidget->commitClicked();
+      this->simpleSelectionWidget->setOutputVector(this->tmpVector);
+      this->modeButton->setText("Expert");
+      this->mainWidget->setHidden(true);
+      this->mainLayout->remove(this->mainWidget);
+      this->mainWidget = this->simpleSelectionWidget;
+      this->mainLayout->insertWidget(0, this->mainWidget);
+      this->mainWidget->setHidden(false);
+    }
+  else
+    {
+      this->expertMode = true;
+      this->modeButton->setText("Simple");
+      this->objectBrowserWidget->selectObjects(this->tmpVector);
+      this->tmpVector->clear();
+      this->objectBrowserWidget->setOutputVector(this->tmpVector);
+      this->mainWidget->setHidden(true);
+      this->mainLayout->remove(this->mainWidget);
+      this->mainWidget = this->objectBrowserWidget;
+      this->mainLayout->insertWidget(0, this->mainWidget);
+      this->mainWidget->setHidden(false);
+    }
 }

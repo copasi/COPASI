@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/08 16:44:40 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
    End CVS Header */
 
 #ifndef AboutDialog_H__

@@ -1,159 +1,150 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
+
+#include "ReactionsWidget.h"
+
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
+#include <qfont.h>
+#include <qpushbutton.h>
+#include <qaction.h>
 
-#include "ReactionsWidget.h"
-//#include "MyTreeAndListWidget.h"
+#include "MyTable.h"
+#include "model/CModel.h"
+#include "model/CCompartment.h"
+#include "model/CChemEqInterface.h"
+#include "model/CReaction.h"
+#include "CReactionInterface.h"
+#include "listviews.h"
+#include "DataModelGUI.h"
+#include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 
+std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
+  {
+    CCopasiVectorN<CReaction>& tmp = dataModel->getModel()->getReactions();
+    std::vector<const CCopasiObject*> ret;
 
+    C_INT32 i, imax = tmp.size();
+    for (i = 0; i < imax; ++i)
+      ret.push_back(tmp[i]);
 
-/** 
- *  Constructs a Widget for the Metabolites subsection of the tree.
- *  This widget is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'. 
- *  @param model The CModel class which contains the metabolites 
- *  to be displayed.
- *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify 
- *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
- *  for more information about these flags.
- */
-ReactionsWidget::ReactionsWidget(QWidget *parent, const char * name, WFlags f)
-						: QWidget(parent, name, f)
+    return ret;
+  }
+
+void ReactionsWidget::init()
 {
-	
-        mModel=NULL;		
-	table = new MyTable(0, 2, this, "tblReactions");
-	QVBoxLayout *vBoxLayout = new QVBoxLayout( this, 0 );
-	vBoxLayout->addWidget(table);
+  mOT = ListViews::REACTION;
+  numCols = 5;
+  table->setNumCols(numCols);
+  //table->QTable::setNumRows(1);
 
-	//Setting table headers
-	QHeader *tableHeader = table->horizontalHeader();
-	tableHeader->setLabel(0, "Name");
-	tableHeader->setLabel(1, "Reaction");
+  //Setting table headers
+  QHeader *tableHeader = table->horizontalHeader();
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  tableHeader->setLabel(2, "Equation");
+  tableHeader->setLabel(3, "Kinetics");
+  tableHeader->setLabel(4, "Flux");
 
-	btnOK = new QPushButton("&OK", this);
-	btnCancel = new QPushButton("&Cancel", this);
-
-	QHBoxLayout *hBoxLayout = new QHBoxLayout( vBoxLayout, 0 );
-	
-	//To match the Table left Vertical Header Column Width.
-	hBoxLayout->addSpacing( 32 );
-	
-	hBoxLayout->addSpacing( 50 );
-	hBoxLayout->addWidget(btnOK);
-	hBoxLayout->addSpacing( 5 );
-	hBoxLayout->addWidget(btnCancel);
-	hBoxLayout->addSpacing( 50 );
-	
-	//table->sortColumn (0, TRUE, TRUE);
-	//table->setSorting ( TRUE );
-	table->setFocusPolicy(QWidget::WheelFocus);
-
-	
-	// signals and slots connections
-    connect( table, SIGNAL( clicked( int, int, int, const QPoint &) ), this, SLOT( slotTableClicked( int, int, int, const QPoint &) ) );
-	connect( table, SIGNAL( currentChanged ( int, int ) ), this, SLOT( slotTableCurrentChanged( int, int ) ) );
-	connect( table, SIGNAL( selectionChanged () ), this, SLOT( slotTableSelectionChanged () ) );
-	connect( btnOK, SIGNAL( clicked () ), this, SLOT( slotBtnOKClicked() ) );
-	connect( btnCancel, SIGNAL( clicked () ), this, SLOT( slotBtnCancelClicked() ) );
-
+  //this restricts users from editing function names
+  table->setColumnReadOnly (3, true);
+  table->setColumnReadOnly (4, true);
 }
 
-void ReactionsWidget::loadReactions(CModel *model)
+void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
-	if (model != NULL)
-	{
-		mModel = model;
-		//Emptying the table
-		int numberOfRows = table->numRows();
-		for(int i = 0; i < numberOfRows; i++)
-		{
-			table->removeRow(0);
-		}
-		
-		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
-		C_INT32 noOfReactionsRows = reactions.size();
-		table->setNumRows(noOfReactionsRows);
+  if (!obj) return;
+  const CReaction* pRea = (const CReaction*)obj;
+  table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
+  table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(dataModel->getModel(), *pRea, false)));
+  if (&(pRea->getFunction()))
+    table->setText(row, 3, FROM_UTF8(pRea->getFunction().getObjectName()));
 
-		
-		//Now filling the table.
-		CReaction *reactn;
-		CChemEq chemEq;
-		for (C_INT32 j = 0; j < noOfReactionsRows; j++)
-		{
-			reactn = reactions[j];
-			table->setText(j, 0, reactn->getName().c_str());
-			chemEq = reactn->getChemEq();
-			table->setText(j, 1, chemEq.getChemicalEquation().c_str());
-					
-		}
-	}
+  table->setText(row, 4, QString::number(pRea->getFlux()));
 }
 
-
-void ReactionsWidget::mousePressEvent ( QMouseEvent * e )
+void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
-	QMessageBox::information( this, "Application name",
-                            "Clicked (mousePress) On Reactions Widget." );
+  if (!obj) return;
 
-	QWidget::mousePressEvent(e);
-	table->setFocus();
+  // this loads the reaction into a CReactionInterface object.
+  // the gui works on this object and later writes back the changes to ri;
+  CReactionInterface ri;
+  ri.initFromReaction(*(dataModel->getModel()), obj->getKey());
 
+  QString equation(table->text(row, 2));
+  if ((const char *)equation.utf8() != ri.getChemEqString())
+    {
+      //first check if the string is a valid equation
+      if (!CChemEqInterface::isValidEq((const char *)equation.utf8()))
+        {
+          std::cout << "Not a valid equation!\n\n";
+          return;
+        }
+      else
+        {
+          //tell the reaction interface
+          ri.setChemEqString((const char *)equation.utf8());
+        }
+    }
+
+  //first check if new metabolites need to be created
+  bool createdMetabs = ri.createMetabolites(*(dataModel->getModel()));
+  //this writes all changes to the reaction
+  ri.writeBackToReaction(*(dataModel->getModel()));
+  //dataModel->getModel()->compile();
+  //this tells the gui what it needs to know.
+  if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
 }
 
-
-void ReactionsWidget::slotTableClicked( int row, int col, int button, const QPoint & mousePos )
+void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-	//QMessageBox::information( this, "Application name",
-		//"Clicked (Inside ReactionsWidget::slotTableClicked) On Reactions table." );	
-
+  if (exc != 2)
+    table->setText(row, 2, "");
+  if (exc != 3)
+    table->setText(row, 3, "");
+  table->setText(row, 4, "");
 }
 
-void ReactionsWidget::slotBtnOKClicked()
+QString ReactionsWidget::defaultObjectName() const
+  {
+    return "reaction";
+  }
+
+CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
 {
-	QMessageBox::information( this, "Reactions Widget",
-		"Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnOKClicked())" );	
+  std::string nname = name;
+  int i = 0;
+  CReaction* pRea;
+  while (!(pRea = dataModel->getModel()->createReaction(nname)))
+    {
+      i++;
+      nname = name;
+      nname += (const char *)QString::number(i).utf8();
+    }
+  std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
+  return pRea;
 }
 
-void ReactionsWidget::slotBtnCancelClicked()
+void ReactionsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-	QMessageBox::information( this, "Reactions Widget",
-		"Clicked Ok button On Reactions widget.(Inside ReactionsWidget::slotBtnCancelClicked())" );	
-}
+  if (!dataModel->getModel())
+    return;
 
-void ReactionsWidget::slotTableCurrentChanged( int row, int col )
-{
-	//QMessageBox::information( this, "Reactions Widget",
-		//"Current Changed.(Inside ReactionsWidget::slotTableCurrentChanged())" );	
-}
+  if (keys.size() == 0)
+    return;
 
-void ReactionsWidget::slotTableSelectionChanged() 
-{
-	if (!table->hasFocus())
-	{
-		table->setFocus();
-	}
-}
-
-
-void ReactionsWidget::resizeEvent( QResizeEvent * re)
-{
-	if (isVisible())
-	{
-		int newWidth = re->size().width();
-		
-		newWidth -= 35;	//Accounting for the left (vertical) header width.
-		float weight0 = 3.5, weight1 = 6.5;
-		float weightSum = weight0 + weight1;
-		int w0, w1;
-		w0 = newWidth * (weight0 / weightSum);
-		w1 = newWidth - w0;
-		table->setColumnWidth(0, w0);
-		table->setColumnWidth(1, w1);
-	}
-		
+  unsigned C_INT32 i, imax = keys.size();
+  for (i = 0; i < imax; i++)
+    {
+      dataModel->getModel()->removeReaction(keys[i]);
+      ListViews::notify(ListViews::REACTION, ListViews::DELETE, keys[i]);
+    }
 }

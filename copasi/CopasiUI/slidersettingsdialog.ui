@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>579</width>
-            <height>236</height>
+            <height>241</height>
         </rect>
     </property>
     <property name="caption">
@@ -110,6 +110,9 @@
                                     <height>0</height>
                                 </size>
                             </property>
+                            <property name="duplicatesEnabled">
+                                <bool>false</bool>
+                            </property>
                         </widget>
                         <widget class="QComboBox" row="0" column="1">
                             <property name="name">
@@ -129,8 +132,14 @@
                                     <height>0</height>
                                 </size>
                             </property>
+                            <property name="editable">
+                                <bool>false</bool>
+                            </property>
                             <property name="sizeLimit">
                                 <number>10</number>
+                            </property>
+                            <property name="duplicatesEnabled">
+                                <bool>false</bool>
                             </property>
                         </widget>
                     </grid>
@@ -267,7 +276,7 @@
                                         <cstring>numMinorTicksEdit</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>10</string>
+                                        <string>10.0</string>
                                     </property>
                                     <property name="alignment">
                                         <set>AlignRight</set>
@@ -278,7 +287,7 @@
                                         <cstring>numMajorTicksEdit</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>10</string>
+                                        <string>10.0</string>
                                     </property>
                                     <property name="alignment">
                                         <set>AlignRight</set>
@@ -380,16 +389,118 @@
 </widget>
 <connections>
     <connection>
+        <sender>minValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>maxValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>maxValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>majorTicksSizeEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>majorTickSizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>minorTickSizeEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minorTickSizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>numMajorTicksEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>numMajorTicksChanged()</slot>
+    </connection>
+    <connection>
+        <sender>numMinorTicksEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>numMinorTicksChanged()</slot>
+    </connection>
+    <connection>
+        <sender>objectValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>objectValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>okButtonPressed()</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>cancelButtonPressed()</slot>
+    </connection>
+    <connection>
+        <sender>minValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>maxValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>maxValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>objectValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>objectValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>majorTicksSizeEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>majorTickSizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>minorTickSizeEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minorTickSizeChanged()</slot>
+    </connection>
+    <connection>
+        <sender>numMajorTicksEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>numMajorTicksChanged()</slot>
+    </connection>
+    <connection>
+        <sender>numMinorTicksEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>numMinorTicksChanged()</slot>
+    </connection>
+    <connection>
         <sender>taskComboBox</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <signal>highlighted(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>updateObjectBox()</slot>
     </connection>
     <connection>
         <sender>objectComboBox</sender>
-        <signal>textChanged(const QString&amp;)</signal>
+        <signal>highlighted(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>updateSliderValues()</slot>
+    </connection>
+    <connection>
+        <sender>objectBrowseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>browseButtonPressed()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -406,17 +517,28 @@
     <tabstop>numMinorTicksEdit</tabstop>
 </tabstops>
 <includes>
-    <include location="local" impldecl="in implementation">qvalidator.h</include>
-    <include location="local" impldecl="in implementation">qregexp.h</include>
     <include location="global" impldecl="in declaration">map</include>
     <include location="global" impldecl="in declaration">vector</include>
     <include location="local" impldecl="in declaration">SliderDialog.h</include>
     <include location="global" impldecl="in declaration">string</include>
     <include location="global" impldecl="in declaration">sstream</include>
+    <include location="local" impldecl="in implementation">qvalidator.h</include>
+    <include location="local" impldecl="in implementation">qregexp.h</include>
+    <include location="local" impldecl="in implementation">SimpleSelectionDialog.h</include>
     <include location="local" impldecl="in implementation">slidersettingsdialog.ui.h</include>
 </includes>
 <variables>
+    <variable>std::map&lt;C_INT32, std::string&gt; &gt; taskDisplayMap;</variable>
+    <variable>std::map&lt;C_INT32, std::vector&lt; CopasiSlider * &gt; &gt;* sliderMap&gt;;</variable>
     <variable>std::ostringstream outStream;</variable>
+    <variable>double objectValueVar;</variable>
+    <variable>double majorTickSizeVar;</variable>
+    <variable>double minorTickSizeVar;</variable>
+    <variable>double minValueVar;</variable>
+    <variable>double maxValueVar;</variable>
+    <variable>double numMajorSteps;</variable>
+    <variable>double numMinorSteps;</variable>
+    <variable>int newVariable;</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CopasiSlider* slider)</signal>
@@ -433,6 +555,7 @@
     <slot access="protected">minValueChanged()</slot>
     <slot access="protected">maxValueChanged()</slot>
     <slot access="protected">objectValueChanged()</slot>
+    <slot access="protected">browseButtonPressed()</slot>
 </slots>
 <functions>
     <function>setSlider( C_INT32 taskId, CopasiSlider * slider )</function>
@@ -444,6 +567,7 @@
     <function access="protected" returnType="const std::string &amp;">double2Text( double d )</function>
     <function access="protected" returnType="double">text2Double( const std::string &amp; text )</function>
     <function access="protected" returnType="int">text2Int( const std::string &amp; text )</function>
+    <function>setObject( CCopasiObject * object )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

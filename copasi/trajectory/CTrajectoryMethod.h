@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:03 $
+   End CVS Header */
+
 /**
  *  CTrajectoryMethod class.
  *  This class describes the interface to all integration methods.
@@ -12,40 +20,47 @@
 
 #include <string>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
+#include "utilities/CVector.h"
 
 class CTrajectoryProblem;
-
 class CState;
 
-class CTrajectoryMethod : public CMethodParameterList
+class CTrajectoryValidSubTypes : public CVector< CCopasiMethod::SubType >
   {
   public:
-    static const string MethodTypeName[];
-
-    // Attributes
-
-  private:
-    enum MethodType
-    {
-      unspecified = 0,
-      deterministic,
-      stochastic,
-      hybrid
-    };
-
     /**
-     *  The name of the method
+     * Default constructor.
      */
-    string mName;
+    CTrajectoryValidSubTypes();
 
     /**
-     *  The type of the method
+     * Destructor.
      */
-    CTrajectoryMethod::MethodType mType;
+    ~CTrajectoryValidSubTypes();
+  };
+
+class CTrajectoryMethod : public CCopasiMethod
+  {
+  public:
+    /**
+     *  A list of valid trajectory method types;
+     */
+    static const CTrajectoryValidSubTypes ValidSubTypes;
 
     /**
-     *  A pointer to the current state
+     * Checks whether the given sub type is a valid method
+     * @param const CCopasiMethod::SubType & subType
+     * @return bool isValidSubType
+     */
+    static bool isValidSubType(const CCopasiMethod::SubType & subType);
+
+  protected:
+    /**
+     *  A pointer to the current state. This is set from outside
+     *  with the setState() method and never changed anywhere else.
+     *  It´s used to report the results
+     *  to the calling TrajectoryTask
      */
     CState * mpCurrentState;
 
@@ -54,20 +69,42 @@ class CTrajectoryMethod : public CMethodParameterList
      */
     CTrajectoryProblem * mpProblem;
 
-  public:
     // Operations
+  private:
+    /**
+     * Default constructor.
+     */
+    CTrajectoryMethod();
+
+  protected:
+    /**
+     * Default constructor.
+     * @param const CCopasiMethod::SubType & subType 
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CTrajectoryMethod(const CCopasiMethod::SubType & subType,
+                      const CCopasiContainer * pParent = NULL);
+
+  public:
 
     /**
-     *  Default constructor.
-     *  @param "CState *" currentState (Default = NULL)
+     * Create a trajectory method for a special problem.
+     * Note: the returned object has to be released after use with delete
+     * a problem is also passed so that the method has a chance to choose an
+     * appropriate simulation method.
      */
-    CTrajectoryMethod(CState * currentState = NULL);
+    static CTrajectoryMethod *
+    createTrajectoryMethod(CCopasiMethod::SubType subType
+                           = CCopasiMethod::deterministic,
+                           CTrajectoryProblem * pProblem = NULL);
 
     /**
-     *  Copy constructor.
-     *  @param "const CTrajectoryMethod &" src
+     * Copy constructor.
+     * @param "const CTrajectoryMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryMethod(const CTrajectoryMethod & src);
+    CTrajectoryMethod(const CTrajectoryMethod & src,
+                      const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
@@ -76,7 +113,8 @@ class CTrajectoryMethod : public CMethodParameterList
 
     /**
      *  Set a pointer to the current state.
-     *  This method is used by CTrajectory 
+     *  This method is used by CTrajectoryTask::process()
+     *  The results of the simulation are passed via this CState variable
      *  @param "CState *" currentState
      */
     void setCurrentState(CState * currentState);
@@ -110,5 +148,9 @@ class CTrajectoryMethod : public CMethodParameterList
      */
     virtual const double step(const double & deltaT, const CState * initialState);
   };
+
+#include "CLsodaMethod.h"
+#include "CStochMethod.h"
+#include "CHybridMethod.h"
 
 #endif // COPASI_CTrajectoryMethod

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /**
  *  File name: COptMethod.h
  *
@@ -9,15 +17,16 @@
  *           methods by which the simulation subsystem accesses several 
  *           optimization algorithms.
  *  Note: This is an abstract class
+ 
+ ****** Modified by Liang Xu
  */
 
 #ifndef COPASI_COptMethod
 #define COPASI_COptMethod
 
 #include <string>
-#include <vector>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
 
 class COptProblem;
 template < class CType > class CVector;
@@ -25,26 +34,18 @@ template < class CType > class CVector;
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
-class COptMethod : public CMethodParameterList
+/** @dia:pos 36.4,4.15 */
+class COptMethod : public CCopasiMethod
   {
   public:
     static const std::string TypeName[];
 
     // Attributes
   public:
-    enum Type
-    {
-      RandomSearch = 0,
-      RandomSearchMaster
-    };
 
     //data member
   protected:
-    /**
-     *  The type of the method
-     */
-    COptMethod::Type mTypeEnum;
-
+    /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
     COptProblem * mOptProblem;        // pointer to remote problem
 
     //These parameters are optimization parameters, not method (algm) parameters
@@ -58,33 +59,42 @@ class COptMethod : public CMethodParameterList
 
     //rohan: modified 7/26
 
-    // Implementation
+    // Operations
+  private:
+    /**
+     * Default constructor.
+     */
+    COptMethod();
+
   protected:
+    /**
+     *
+     * @param CCopasiMethod::SubType subType
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COptMethod(CCopasiMethod::SubType subType,
+               const CCopasiContainer * pParent = NULL);
 
   public:
     /**
      * Create a optimization method.
      * Note: the returned object has to be released after use with delete
      */
-    static COptMethod * createMethod(COptMethod::Type type
-                                     = COptMethod::RandomSearch);
+    static COptMethod * createMethod(CCopasiMethod::SubType subType
+                                     = CCopasiMethod::RandomSearch);
 
     /**
-     * Default constructor
-     * @param const bool & bounds (Default: false)
+     * Copy constructor
+     * @param const COptMethod & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptMethod(const bool & bounds = false);
+    COptMethod(const COptMethod & src,
+               const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
     virtual ~COptMethod();
-
-    /**
-     * Copy constructor
-     * @param const COptMethod & src
-     */
-    COptMethod(const COptMethod & src);
 
     /**
      * Execute the optimization algorithm calling simulation routine 
@@ -108,5 +118,6 @@ class COptMethod : public CMethodParameterList
 
 #include "CRandomSearch.h"
 #include "CRandomSearchMaster.h"
+#include "COptMethodSA.h"
 
 #endif  // COPASI_COptMethod

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:49 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/ModelWidget.h               
  **  $ Author  : Mudita Singhal
@@ -10,12 +18,12 @@
 #include <qvariant.h>
 #include <qwidget.h>
 #include "copasiWidget.h"
+#include <qtextbrowser.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
-#include <qtextbrowser.h>
 class QLineEdit;
 class QLabel;
 class QComboBox;
@@ -29,10 +37,22 @@ class ModelWidget : public CopasiWidget
   public:
     ModelWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ModelWidget();
-    CModel *mModel;
-    void loadModel(CModel *model);
-    QString name;
 
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+
+  protected:
+    bool loadModel(CModel *model);
+    bool saveToModel();
+    std::string objKey;
+
+    QGridLayout* ModelWidgetLayout;
+    QHBoxLayout* Layout5;
     QLineEdit* LineEdit;
     QTextBrowser* textBrowser;
     QLabel* TextLabel1;
@@ -46,17 +66,6 @@ class ModelWidget : public CopasiWidget
 
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
-    //QFrame* Line4_3;
-
-  public slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-
-  signals:
-
-  protected:
-    QGridLayout* ModelWidgetLayout;
-    QHBoxLayout* Layout5;
   };
 
 #endif // MODELWIDGET_H

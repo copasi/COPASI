@@ -1,17 +1,30 @@
-/***********************************************************************
- **  $ CopasiUI/MetabolitesWidget.cpp                 
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:48 $
+   End CVS Header */
+
+/*******************************************************************
+ **  $ CopasiUI/MetaboliteSymbols.cpp                 
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the  information
- ** obtained from the data model about the Metabolites----It is 
- ** Basically the First level of Metabolites.
- ************************************************************************/
+ ** This file is used to create the GUI FrontPage for the 
+ ** information obtained from the data model about the 
+ ** Metabolite Symbols
+ ********************************************************************/
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "MetaboliteSymbols.h"
+#include "mathmodel/CMathModel.h"
+#include "mathmodel/CMathVariable.h"
+#include "mathmodel/CMathConstant.h"
+#include "model/CCompartment.h"
 #include "listviews.h"
-#include <qfont.h>
+#include "DataModelGUI.h"
+#include "qtUtilities.h"
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -29,112 +42,105 @@
  *  for more information about these flags.
  */
 MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
-  table = new MyTable(0, 7, this, "tblMetaboliteSymbols");
+  table = new MyTable(this, "tblMetaboliteSymbols");
+  table->setNumCols(7);
+  table->setNumRows(-1);
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Symbol");
   tableHeader->setLabel(1, "Metabolite");
-  tableHeader->setLabel(2, "Initial Concentration");
-  tableHeader->setLabel(3, "Initial Particle No.");
-  tableHeader->setLabel(4, "Concentration");
-  tableHeader->setLabel(5, "Particle No.");
-  tableHeader->setLabel(6, "Compartment");
+  tableHeader->setLabel(2, "Compartment");
+  tableHeader->setLabel(3, "Initial Concentration");
+  tableHeader->setLabel(4, "Initial Particle No.");
+  tableHeader->setLabel(5, "Concentration");
+  tableHeader->setLabel(6, "Particle No.");
 
-  btnOK = new QPushButton("&OK", this);
-  btnCancel = new QPushButton("&Cancel", this);
+  //btnOK = new QPushButton("&OK", this);
+  //btnCancel = new QPushButton("&Cancel", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
   //To match the Table left Vertical Header Column Width.
   hBoxLayout->addSpacing(32);
 
-  hBoxLayout->addSpacing(50);
+  /*hBoxLayout->addSpacing(50);
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
-  hBoxLayout->addSpacing(50);
+  hBoxLayout->addSpacing(50);*/
 
   table->sortColumn (0, true, true);
   table->setSorting (true);
   table->setFocusPolicy(QWidget::WheelFocus);
+  //table->setProtected(true);
 
   // signals and slots connections
-  connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  //connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
-  connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
-  connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+  //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
+  //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 }
 
-/*void MetabolitesWidget::loadMetabolites(CModel *model)
+void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
 {
+  dataModel->updateMathModel();
+
   if (model != NULL)
     {
+      int i;
       mModel = model;
- 
       //Emptying the table
       int numberOfRows = table->numRows();
- 
-      for (int i = 0; i < numberOfRows; i++)
+      for (i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
- 
-      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      table->setNumRows(noOfMetabolitesRows);
- 
-      //Now filling the table.
-      CMetab *metab;
- 
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+
+      std::map< std::string, CMathVariableMetab * > metabList = mModel->getMetabList();
+      std::map<std::string, CMathVariableMetab * >::iterator it;
+      CMathVariableMetab * variableMetab;
+
+      table->setNumRows(metabList.size());
+      int index = 0;
+      for (it = metabList.begin(); it != metabList.end();++it)
         {
-          metab = metabolites[j];
-          table->setText(j, 0, metab->getName().c_str());
- 
-          /*double m=(*(metab->getConcentration()));
-          QString *m1;
-          //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
-          table->setText(j, 1,*m1);
-           
-          //table->setText(j, 1,ms); */
-/*table->setText(j, 1, QString::number(metab->getConcentration()));
+          variableMetab = it->second;
 
-table->setText(j, 2, QString::number(metab->getNumberDbl()));
+          table->setText(index, 0, FROM_UTF8(it->first));
+          table->setText(index, 1, FROM_UTF8(variableMetab->getObject()->getObjectName()));
+          table->setText(index, 2, FROM_UTF8(variableMetab->getCompartment().getName()));
+          table->setText(index, 3, QString::number(variableMetab->getInitialConcentration()));
+          table->setText(index, 4, QString::number(variableMetab->getInitialParticleNumber()));
+          table->setText(index, 5, QString::number(variableMetab->getConcentration()));
+          table->setText(index, 6, QString::number(variableMetab->getParticleNumber()));
+          index++;
+        }
 
-table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-#ifdef XXXX
-if (QString::number(metab->getStatus()) == "0")
-  {
-    table->setText(j, 3, "defineda");
-  }
-else if (QString::number(metab->getStatus()) == "1")
-  {
-    table->setText(j, 3, "definedb");
-  }
-else if (QString::number(metab->getStatus()) == "2")
-  {
-    table->setText(j, 3, "definedc");
-  }
-#endif // XXXX
-table->setText(j, 4, metab->getCompartment()->getName().c_str());
-}
-
-//table->sortColumn(0,true,true);
-}
-}
- */
-void MetaboliteSymbols::slotTableCurrentChanged(int row, int col, int m , const QPoint & n)
-{
-  QString x = table->text(row, col);
-  emit name(x);
+      /*
+           unsigned C_INT32 k= mModel->getIntMetab();
+           CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
+           C_INT32 noOfMetaboliteRows = metabolite.size();
+           table->setNumRows(k);
+           const CMetab *metab;
+        for (i = 0; i < k; i++)
+             {
+               
+               metab = metabolite[i];
+               table->setText(i, 0, metab->getName().);
+         table->setText(i, 2, QString::number(metab->getInitialConcentration()));
+               table->setText(i, 3, QString::number(metab->getInitialNumberDbl()));
+         table->setText(i, 4, QString::number(metab->getConcentration()));
+               table->setText(i, 5, QString::number(metab->getNumberDbl()));
+         const CCompartment *Compartment=metab->getCompartment();
+               table->setText(i, 6, Compartment->getName().);
+       }*/
+    }
 }
 
 void MetaboliteSymbols::slotTableSelectionChanged()
@@ -145,23 +151,11 @@ void MetaboliteSymbols::slotTableSelectionChanged()
     }
 }
 
-/***********ListViews::showMessage(QString caption,QString text)------------------------>
- **
- ** Parameters:- 1. QString :- The Title that needs to be displayed in message box
- **              2. QString :_ The Text that needs to be displayed in the message box
- ** Returns  :-  void(Nothing)
- ** Description:- This method is used to show the message box on the screen
- ****************************************************************************************/
-
 void MetaboliteSymbols::slotBtnOKClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit changes");
-}
+{}
 
 void MetaboliteSymbols::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Metabolites Widget", "Do you really want to cancel changes");
-}
+{}
 
 void MetaboliteSymbols::resizeEvent(QResizeEvent * re)
 {
@@ -184,4 +178,31 @@ void MetaboliteSymbols::resizeEvent(QResizeEvent * re)
       table->setColumnWidth(3, w3);
       table->setColumnWidth(4, w4);
     }
+  CopasiWidget::resizeEvent(re);
+}
+
+bool MetaboliteSymbols::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  if (mIgnoreUpdates) return true;
+
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+    case ListViews::REACTION:
+      loadMetaboliteSymbols(dataModel->getMathModel());
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool MetaboliteSymbols::enter(const std::string & C_UNUSED(key))
+{
+  loadMetaboliteSymbols(dataModel->getMathModel());
+  return true;
 }

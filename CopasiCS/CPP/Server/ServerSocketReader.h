@@ -22,36 +22,36 @@ class ClientConnection;
 class ServerSocketReader
 {
 protected:
-	/**ClientConnection object (containing the socket ID) from where 
-	 * this Reader will read.
-	 */
+    /**ClientConnection object (containing the socket ID) from where 
+     * this Reader will read.
+     */
     ClientConnection *connection;
-	/**The thread ID of the ServerSocketReader thread.*/
-	pthread_t a_thread;
+    /**The thread ID of the ServerSocketReader thread.*/
+    pthread_t a_thread;
 
 public:
- 	/**Build the Reader using the ClientConnection object.
-	* @param c This is the ClientConnection object 
-	* (containing the socket ID) from which this Reader is to be built.
-	*/
-	ServerSocketReader(ClientConnection *c);
+    /**Build the Reader using the ClientConnection object.
+     * @param c This is the ClientConnection object 
+     * (containing the socket ID) from which this Reader is to be built.
+     */
+    ServerSocketReader(ClientConnection *c);
     /**Spawns a new ServerSocketReader thread.*/
-	void start();
+    void start();
     /**Returns the ID of the ServerSocketReader thread.
-	 * @return ID of the ServerSocketReader thread.
-	 */
-	pthread_t getReaderThreadID();
+     * @return ID of the ServerSocketReader thread.
+     */
+    pthread_t getReaderThreadID();
     friend void *reader_thread_function(void *arg);
     /**Stops the ServerSocketReader thread.*/
-	void stop();
+    void stop();
 
 private:
- 	/**A small function to display messages.
-	* @param msg The message string to show.
-	*/
-	void showMessage(string msg)
+    /**A small function to display messages.
+     * @param msg The message string to show.
+     */
+    void showMessage(string msg)
   	{
-  		cerr << "ServerSocketReader: " << msg << endl;
+            cerr << "ServerSocketReader: " << msg << endl;
   	}
 };
 

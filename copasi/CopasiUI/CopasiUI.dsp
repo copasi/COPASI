@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="CopasiUI3" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="CopasiUI" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Application" 0x0101
+# TARGTYPE "Win32 (x86) External Target" 0x0106
 
-CFG=CopasiUI3 - Win32 Debug
+CFG=CopasiUI - Win32 Build
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,87 +13,117 @@ CFG=CopasiUI3 - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "CopasiUI.mak" CFG="CopasiUI3 - Win32 Debug"
+!MESSAGE NMAKE /f "CopasiUI.mak" CFG="CopasiUI - Win32 Build"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "CopasiUI3 - Win32 Release" (based on "Win32 (x86) Application")
-!MESSAGE "CopasiUI3 - Win32 Debug" (based on "Win32 (x86) Application")
+!MESSAGE "CopasiUI - Win32 Build" (based on "Win32 (x86) External Target")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "$(QTDIR)\include" /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /YX /FD /c
-# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 mkl_lapack.lib mkl_p3.lib mkl_c.lib function.lib model.lib output.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /machine:I386 /libpath:"../Release" /libpath:"$(CBLAS_LIB)/ia32/lib"
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Output_Dir "Build"
+# PROP BASE Intermediate_Dir "Build"
+# PROP BASE Cmd_Line "nmake /f "Makefile""
+# PROP BASE Rebuild_Opt "/a"
+# PROP BASE Target_File "CopasiUI.exe"
+# PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Ignore_Export_Lib 0
+# PROP Output_Dir "Build"
+# PROP Intermediate_Dir "Build"
+# PROP Cmd_Line "nmake"
+# PROP Rebuild_Opt ""
+# PROP Target_File "build/CopasiUI.exe"
+# PROP Bsc_Name ""
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "$(QTDIR)\include" /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /FR /YX /FD /GZ /c
-# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 mkl_lapack.lib mkl_p3.lib mkl_c.lib function.lib model.lib output.lib trajectory.lib utilities.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib $(QTDIR)\lib\qt-mt302.lib $(QTDIR)\lib\qtmain.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept /libpath:"../Debug" /libpath:"$(CBLAS_LIB)/ia32/lib"
-# SUBTRACT LINK32 /profile /incremental:no /nodefaultlib
+# Begin Target
+
+# Name "CopasiUI - Win32 Build"
+
+!IF  "$(CFG)" == "CopasiUI - Win32 Build"
 
 !ENDIF 
 
-# Begin Target
-
-# Name "CopasiUI3 - Win32 Release"
-# Name "CopasiUI3 - Win32 Debug"
 # Begin Group "Source Files"
 
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat;for;f90"
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\model\CModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ConstantSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiTableWidget.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\copasiui3window.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\copasiWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReactionInterface.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinitionSelect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DataModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DifferentialEquations.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Expression.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FixedMetaboliteSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionItemWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionSymbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionWidget1.cpp
 # End Source File
 # Begin Source File
 
@@ -109,15 +139,35 @@ SOURCE=.\MetabolitesWidget.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_copasiui3window.cpp
+SOURCE=.\MetabolitesWidget1.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_listviews.cpp
+SOURCE=.\MetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\moc_MetabolitesWidget.cpp
+SOURCE=.\ModelWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModesWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietiesWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietyWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietyWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyLineEdit.cpp
 # End Source File
 # Begin Source File
 
@@ -125,19 +175,131 @@ SOURCE=.\MyTable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ObjectBrowser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowserItem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectdebug.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Observer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationItemWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\parametertable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlotWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\qtUtilities.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanItemWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SteadyStateWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StretchTable.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Subject.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\TableDefinition.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TableDefinition1.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TrajectoryWidget.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentsWidget1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CompartmentSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ConstantSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiTableWidget.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\copasiui3window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\copasiversion.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\copasiWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReactionInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CReportDefinitionSelect.h
 # End Source File
 # Begin Source File
 
@@ -145,7 +307,43 @@ SOURCE=.\DataModel.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataModel.txt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DifferentialEquations.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Expression.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FixedMetaboliteSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FunctionWidget1.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\listviews.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\mathematics.h
 # End Source File
 # Begin Source File
 
@@ -153,7 +351,55 @@ SOURCE=.\MetabolitesWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MetabolitesWidget1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MetaboliteSymbols.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModelWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModesWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietiesWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietyWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MoietyWidget1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyLineEdit.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MyTable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowserItem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectdebug.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectdebug.ui.h
 # End Source File
 # Begin Source File
 
@@ -161,7 +407,75 @@ SOURCE=.\Observer.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\OptimizationItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\parametertable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlotWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\qtUtilities.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReactionsWidget1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ScanWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SteadyStateWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StretchTable.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Subject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TableDefinition.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TableDefinition1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\TrajectoryWidget.h
 # End Source File
 # Begin Source File
 
@@ -170,7 +484,27 @@ SOURCE=.\Tree.h
 # End Group
 # Begin Group "Resource Files"
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\TableDefinition.cur
+# End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=..\copasi.pro
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiUI.pro
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib.pri
+# End Source File
 # End Target
 # End Project

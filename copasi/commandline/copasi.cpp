@@ -1,54 +1,68 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/Attic/copasi.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
+   End CVS Header */
+
 // Main
 //
 // (C) Stefan Hoops 2002
 //
 
+#ifdef WIN32
+# include <windows.h>
+# include <winbase.h>
+# include <direct.h>
+# define getcwd _getcwd
+# ifdef ERROR
+#  undef ERROR
+# endif
+#else
+# include <unistd.h>
+#endif
+
+#include <stdlib.h>
+#include <sstream>
+#include <string>
+#include <iostream>
+
 #define COPASI_MAIN
+#define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiException.h"
 #include "COptionParser.h"
+#include "COptions.h"
 
 C_INT32 TestOptimization(void);
 
-C_INT main(C_INT argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  cout << "Starting main program." << endl;
+  char PrgName[512];
+
+#ifdef WIN32
+  GetModuleFileName(NULL, PrgName, 512);
+#else
+  strcpy(PrgName, argv[0]);
+#endif
+  std::cout << "Starting main program: " << PrgName << std::endl;
   Copasi = new CGlobals;
+
+  std::string line;
+  std::ifstream in(".copasirc");
+  std::getline(in, line);
 
   try
     {
-      /*
-       * create a command line parser class and then tell it to parse your
-       * command line.
-       */
-      copasi::COptionParser parser;
-      parser.parse(".copasirc");
-      parser.parse(argc, argv);
-
-      /*
-       * get the struct of options from the parser class so that you can
-       * access the option values.
-       */
-      const copasi::options &options = parser.get_options();
-      const copasi::option_locations &locations = parser.get_locations();
-      const std::vector<std::string> &non_options =
-        parser.get_non_options();
-
-      std::cout << options.CopasiLib << " "
-      << locations.CopasiLib << std::endl;
-      std::cout << options.SystemFunctionDB << " "
-      << locations.SystemFunctionDB << std::endl;
-      std::cout << options.UserFunctionDB << " "
-      << locations.UserFunctionDB << std::endl;
-      std::cout << options.rc << " "
-      << locations.rc << std::endl;
-      std::cout << options.save << " "
-      << locations.save << std::endl;
-
-      unsigned C_INT32 i, imax = non_options.size();
-      for (i = 0; i < imax; i++)
-        std::cout << non_options[i] << std::endl;
+      COptions::init(argc, argv);
+      std::cout << "Default: key1 = '" << COptions::getDefault("key1")
+      << "'" << std::endl;
+      std::cout << "Default: key2 = '" << COptions::getDefault("key2")
+      << "'" << std::endl;
     }
 
   catch (copasi::autoexcept &e)
@@ -58,7 +72,6 @@ C_INT main(C_INT argc, char *argv[])
         case copasi::autothrow_help:
           std::cout << "Usage: " << argv[0] << " [options]\n";
           std::cout << e.what();
-          return 0;
         }
     }
 
@@ -66,15 +79,14 @@ C_INT main(C_INT argc, char *argv[])
     {
       std::cerr << argv[0] << ": " << e.what() << "\n";
       std::cerr << e.get_help_comment() << std::endl;
-      return 1;
     }
 
   catch (CCopasiException Exception)
     {
-      cout << Exception.getMessage().getText() << endl;
+      std::cout << Exception.getMessage().getText() << std::endl;
     }
 
   delete Copasi;
-  cout << "Leaving main program." << endl;
+  std::cout << "Leaving main program." << std::endl;
   return 0;
 }

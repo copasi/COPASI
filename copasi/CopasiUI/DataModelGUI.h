@@ -1,15 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:31 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:47 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
 
-#include <qptrlist.h>
 #include <qobject.h>
 
 #include "DataModel.h"
@@ -18,79 +17,10 @@
 
 class CMathModel;
 
-//**********************************************************************
-
-class Folder : public QObject
-  {
-    Q_OBJECT
-
-  public:
-    ~Folder(){}
-
-    Folder(Folder *parent, const QString &name)
-        : QObject(parent, name),
-        fName(name),
-        mDisplayString(name),
-        mObjectKey("")
-    {}
-
-    int getID(){return id;}
-
-    void setID(int id, bool fixed = false)
-    {
-      mSortKey = QString::number(id) + "_" + fName;
-
-      if (fixed)
-        this->id = id;
-      else
-        this->id = id * 1000000 + getModifier();
-    }
-
-  const QString & getSortKey() const {return mSortKey;}
-
-    const std::string & getObjectKey() const {return mObjectKey;}
-    void setObjectKey(const std::string & key) {mObjectKey = key;}
-
-    const QString & getDisplayString() const {return mDisplayString;}
-    void setDisplayString(const QString & ds) {mDisplayString = ds;}
-
-    QString folderName() {return fName;}
-
-    const int & getModifier()
-    {
-      mModifier++;
-      mModifier %= 1000000;
-      return mModifier;
-    }
-
-    int operator==(Folder &folder)
-    {
-      return this->getID() == folder.getID() ? 1 : 0;
-    } // for the comparing the stuff
-
-    // inline friend ostream& operator<< (ostream& s,Folder& f)
-    // {
-    //  s<<"I am :-"<<f.getID()<<endl;
-    //  return s;
-    //}
-
-  private:
-    QString fName;
-    QString mDisplayString;
-    std::string mObjectKey; // from KeyFactory
-    int id;
-    QString mSortKey;
-
-    static int mModifier;
-  };
-
-//******************************************************************************
-
 class DataModelGUI : public DataModel
   {
   private:
-    Tree<Folder> myTree; // create the  object of the tree
-    QPtrList<Folder> folderList;  // to keep track of the number of the object in the tree...
+    IndexedTree mTree; // create the  object of the tree
 
     CMathModel * mpMathModel;
     bool mMathModelUpdateScheduled;
@@ -103,11 +33,16 @@ class DataModelGUI : public DataModel
     DataModelGUI();
 
     void populateData();
-    Folder* searchFolderList(int id);
 
-    Node<Folder> * addData(Folder* parent, Folder* child);
-    void removeData(Folder*);
-    void removeAllChildren(Folder* f);
+    void updateCompartments();
+    void updateMetabolites();
+    void updateReactions();
+    void updateMoieties();
+    void updateFunctions();
+    void updateReportDefinitions();
+    void updatePlots();
+
+    const IndexedNode & getRootNode() const;
 
     void loadModel(const char* fileName);
     void createModel();
@@ -122,8 +57,6 @@ class DataModelGUI : public DataModel
 
     void setQApp(QApplication* app);
     QApplication* getQApp() const;
-
-    Node<Folder>* getRoot(){return myTree.getRoot();}
   };
 
 #endif

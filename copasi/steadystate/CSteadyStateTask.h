@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
 /**
  * CSteadyStateTask class.
  *
@@ -13,47 +21,44 @@
 
 #include <iostream>
 
+#include "utilities/CCopasiTask.h"
+#include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
 #include "CSteadyStateMethod.h"
 
 class CSteadyStateProblem;
 class CState;
-class COutputEvent;
 class CEigen;
 
-using std::ostream;
-using std::endl;
-
-class CSteadyStateTask
+class CSteadyStateTask : public CCopasiTask
   {
     //Attributes
   private:
-
-    /**
-     * A pointer to the steady state problem.
-     */
-    CSteadyStateProblem *mpProblem;
-
-    /**
-     * A pointer to the method choosen for the evaluation.
-     */
-    CSteadyStateMethod * mpMethod;
-
     /**
      * A pointer to the found steady state.
      */
     CState * mpSteadyState;
 
     /**
-     * The result of the steady state analysis.
+     * A pointer to the found steady state.
      */
-    CSteadyStateMethod::ReturnCode mResult;
+    CStateX * mpSteadyStateX;
 
     /**
      * The jacobian of the steady state.
      */
-    C_FLOAT64 * mJacobian;
+    CMatrix< C_FLOAT64 > mJacobian;
+
+    /**
+     * The jacobian of the steady state.
+     */
+    CMatrix< C_FLOAT64 > mJacobianX;
+
+    /**
+     * Whether the model is actually reducable and calculating 
+     * stability of the reduced steady states makes sense
+     */
+    bool mCalculateReducedSystem;
 
     /**
      *  The CEigen to work with
@@ -61,43 +66,49 @@ class CSteadyStateTask
     CEigen * mpEigenValues;
 
     /**
-     * End Phase Output Event
+     *  The CEigen to work with
      */
-    COutputEvent *mpOutEnd;
+    CEigen * mpEigenValuesX;
 
     /**
-     * Pointer to the output stream for reporting
+     * The result of the steady state analysis.
      */
-    std::ofstream * mpOut;
+    CSteadyStateMethod::ReturnCode mResult;
 
     //Operations
   public:
+
     /**
-     * default constructor
+     * Default constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateTask();
+    CSteadyStateTask(const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param const CSteadyStateTask & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateTask(const CSteadyStateTask & src);
+    CSteadyStateTask(const CSteadyStateTask & src,
+                     const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
-    ~CSteadyStateTask();
+    virtual ~CSteadyStateTask();
 
     /**
-     * cleanup()
+     * Initialize the task. If an ostream is given this ostream is used
+     * instead of the target specified in the report. This allows nested 
+     * tasks to share the same output device.
+     * @param std::ostream * pOstream (default: NULL)
      */
-    void cleanup();
+    virtual bool initialize(std::ostream * pOstream = NULL);
 
     /**
-     * Initilize the reporting feature
-     * @param ofstream & out
+     * Process the task
      */
-    void initializeReporting(std::ofstream & out);
+    virtual bool process();
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -107,80 +118,47 @@ class CSteadyStateTask
     void load(CReadConfig & configBuffer);
 
     /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
-
-    /**
-     * Retrieve the steady state problem.
-     * @return CSteadyStateProblem * pProblem
-     */
-    CSteadyStateProblem * getProblem();
-
-    /**
-     * Set the steady state problem
-     * @param CSteadyStateProblem * pProblem
-     */
-    void setProblem(CSteadyStateProblem * pProblem);
-
-    /**
-     * Retrieve the method choosen.
-     * @return CSteadyStateMethod * pMethod
-     */
-    CSteadyStateMethod * getMethod();
-
-    /**
-     * Set the method to be used for finding the steady state.
-     * @param CSteadyStateMethod * pMethod
-     */
-    void setMethod(CSteadyStateMethod * pMethod);
-
-    /**
      * Retrieves a pointer to steady state.
      * @return CState * pSteadyState
-     */
-    CState * getState();
+     */ 
+    //CState * getState();
+    const CState * getState() const;
 
     /**
      * Retrieves a the jacobian of the steady state.
-     * @return C_FLOAT64 * jacobian
+     * @return const CMatrix< C_FLOAT64 > jacobian
      */
-    const C_FLOAT64 * getJacobian();
+    const CMatrix< C_FLOAT64 > & getJacobian() const;
+
+    /**
+     * Retrieves a the jacobian of the steady state.
+     * @return const CMatrix< C_FLOAT64 > jacobian
+     */
+    const CMatrix< C_FLOAT64 > & getJacobianReduced() const;
 
     /**
      * Retrieves a the eigen values of the steady state.
      * @return const CEigen * eigenValues
      */
-    const CEigen * getEigenValues();
+    const CEigen * getEigenValues() const;
 
     /**
-     * Do the integration
+     * Retrieves a the eigen values of the steady state.
+     * @return const CEigen * eigenValues
      */
-    void process();
+    const CEigen * getEigenValuesReduced() const;
+
+    const CSteadyStateMethod::ReturnCode & getResult() const {return mResult;}
 
     // Friend functions
-    friend ostream &operator<<(ostream &os, const CSteadyStateTask &A)
-    {
-      os << endl;
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const CSteadyStateTask &A);
 
-      if (A.mResult == CSteadyStateMethod::notFound)
-        {
-          os << "A STEADY STATE COULD NOT BE FOUND." << endl;
-          os << "(below are the last unsuccessful trial values)";
-        }
-      else
-        {
-          os << "STEADY STATE SOLUTION";
-
-          if (A.mResult == CSteadyStateMethod::foundEquilibrium)
-            os << " (chemical equilibrium)";
-        }
-
-      os << endl;
-
-      return os;
-    }
+  private:
+    /**
+     * cleanup()
+     */
+    void cleanup();
   };
+
 #endif // COPASI_CSteadyStateTask

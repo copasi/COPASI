@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:55 $
+   End CVS Header */
+
 /**
  * CUsageRange
  * 
@@ -9,30 +17,46 @@
 #include "copasi.h"
 #include "CUsageRange.h"
 
-CUsageRange::CUsageRange() : CRange(){CONSTRUCTOR_TRACE;}
+CUsageRange::CUsageRange(const std::string & name,
+                         const CCopasiContainer * pParent,
+                         const std::string & type):
+    CRange(name, pParent, type)
+{CONSTRUCTOR_TRACE;}
 
-CUsageRange::CUsageRange(const CUsageRange & src) : CRange(src)
-{CONSTRUCTOR_TRACE; mUsage = src.mUsage;}
+CUsageRange::CUsageRange(const CUsageRange & src,
+                         const CCopasiContainer * pParent):
+    CRange(src, pParent)
+{CONSTRUCTOR_TRACE;}
 
-CUsageRange::~CUsageRange(){DESTRUCTOR_TRACE;}
+CUsageRange::~CUsageRange() {DESTRUCTOR_TRACE;}
 
-void CUsageRange::cleanup(){}
-
-void CUsageRange::load(CReadConfig & configBuffer, 
+void CUsageRange::load(CReadConfig & configBuffer,
                        CReadConfig::Mode mode)
 {
-  configBuffer.getVariable("Usage", "string", &mUsage, mode);
+  std::string tmp;
+  configBuffer.getVariable("Usage", "string", &tmp, mode);
+  setObjectName(tmp);
   CRange::load(configBuffer);
 }
 
-void CUsageRange::save(CWriteConfig & configBuffer)
+/*void CUsageRange::save(CWriteConfig & configBuffer)
 {
-  configBuffer.setVariable("Usage", "string", &mUsage);
+  std::string tmp = getObjectName();
+  configBuffer.setVariable("Usage", "string", &tmp);
   CRange::save(configBuffer);
+}*/
+
+bool CUsageRange::setUsage(const std::string & usage)
+{
+  return setObjectName(usage);
 }
 
-void CUsageRange::setUsage(const string & usage){mUsage = usage;}
+const std::string & CUsageRange::getUsage() const
+  {
+    return getObjectName();
+  }
 
-const string & CUsageRange::getUsage() const {return mUsage;}
-
-const string & CUsageRange::getName() const {return mUsage;}
+/*const std::string & CUsageRange::getName() const
+  {
+    return getObjectName();
+  }*/

@@ -1,107 +1,190 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:54 $
+   End CVS Header */
+
+/**
+ * CMassAction
+ * 
+ * Created for Copasi by Stefan Hoops
+ * (C) Stefan Hoops 2001
+ */
+
+#include "copasi.h"
 #include "CMassAction.h"
-#include "CNodeK.h"
+#include "utilities/utility.h"
 
-CMassAction::CMassAction()
-{setType(CBaseFunction::BUILTIN);}
-
-CMassAction::CMassAction(C_INT16 reversible)
+#define COPASI_TRACE_CONSTRUCTION
+CMassAction::CMassAction(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CFunction(name, pParent)
 {
-  setType(CBaseFunction::BUILTIN);
+  CONSTRUCTOR_TRACE;
+  setType(CFunction::MassAction);
+}
+
+CMassAction::CMassAction(const CFunction & src,
+                         const CCopasiContainer * pParent):
+    CFunction(src, pParent)
+{CONSTRUCTOR_TRACE;}
+
+CMassAction::CMassAction(const TriLogic & reversible,
+                         const CCopasiContainer * pParent):
+    CFunction((reversible == TriTrue) ?
+              "Mass action (reversible)" :
+              "Mass action (irreversible)",
+              pParent)
+{
+  CONSTRUCTOR_TRACE;
+  if (reversible != TriFalse && reversible != TriTrue)
+    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
+
+  setType(CFunction::MassAction);
   setReversible(reversible);
-    
-  CBaseCallParameter *Substrates = new CBaseCallParameter;
-  Substrates->setType(CCallParameter::VECTOR_DOUBLE);
-  Substrates->setCount(1,CRange::UNSPECIFIED);
-  Substrates->identifierTypes().push_back(N_SUBSTRATE);
-  Substrates->identifierTypes().push_back(N_KCONSTANT);
-  callParameters().push_back(Substrates);
 
-  CBaseIdentifier *ks = new CBaseIdentifier;
-  ks->setName("ks");
-  ks->setType(N_KCONSTANT);
-  Substrates->identifiers().push_back(ks);
+  getParameters().add("k1",
+                      CFunctionParameter::FLOAT64,
+                      "PARAMETER");
+  getParameters().add("substrate",
+                      CFunctionParameter::VFLOAT64,
+                      "SUBSTRATE");
+  addUsage("SUBSTRATES", 1, CRange::Infinity);
 
-  if (reversible)
+  if (isReversible() == TriTrue)
     {
-      setName("Mass action (reversible)");
-      setDescription("ks * PRODUCT <substrate_i> "
-		     "- kp * PRODUCT <product_j>");
-
-      CBaseCallParameter *Products = new CBaseCallParameter;
-      Products->setType(CCallParameter::VECTOR_DOUBLE);
-      Products->setCount(1,CRange::UNSPECIFIED);
-      Products->identifierTypes().push_back(N_PRODUCT);
-      Products->identifierTypes().push_back(N_KCONSTANT);
-      callParameters().push_back(Products);
-
-      CBaseIdentifier *kp = new CBaseIdentifier;
-      kp->setName("kp");
-      kp->setType(N_KCONSTANT);
-      Products->identifiers().push_back(kp);
+      // setName("Mass action (reversible)");
+      setDescription("k1 * PRODUCT <substrate_i> "
+                     "- k2 * PRODUCT <product_j>");
+      getParameters().add("k2",
+                          CFunctionParameter::FLOAT64,
+                          "PARAMETER");
+      getParameters().add("product",
+                          CFunctionParameter::VFLOAT64,
+                          "PRODUCT");
+      addUsage("PRODUCTS", 1, CRange::Infinity);
     }
   else
     {
-      setName("Mass action (irreversible)");
-      setDescription("ks * PRODUCT <substrate_i>");
+      // setName("Mass action (irreversible)");
+      setDescription("k1 * PRODUCT <substrate_i>");
     }
 }
+CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
-CMassAction::~CMassAction() {cleanup();}
-
-C_FLOAT64 
-CMassAction::calcValue(vector < CCallParameter > & callParameters) const
+/*unsigned C_INT32 CMassAction::getParameterPosition(const std::string & name) const
 {
-  C_FLOAT64 Products = 1.0, Substrates = 1.0;
-  unsigned C_INT32 i;
-    
-  for (i = 0; i < callParameters[0].identifiers().size(); i++)
-    Substrates *= *(C_FLOAT64 *) callParameters[0].identifiers()[i];
+  if (isReversible() != TriFalse && isReversible() != TriTrue)
+    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
+ 
+  if (name == "k1")
+    return 0;
+  if (name.substr(0, strlen("substrate")) == "substrate")
+    return 1;
+  if (name == "k2" &&
+      isReversible() == TriTrue)
+    return 2;
+  if (name.substr(0, strlen("product")) == "product" &&
+      isReversible() == TriTrue)
+    return 3;
+ 
+  return (unsigned C_INT32) - 1;
+}*/
 
-  if (!isReversible()) return Substrates;
-    
-  for (i = 0; i < callParameters[1].identifiers().size(); i++)
-    Products *= *(C_FLOAT64 *) callParameters[1].identifiers()[i];
-    
-  return Substrates - Products;
-}
+/*std::string CMassAction::getSBMLString(const std::vector< std::vector< std::string > > & callParameterNames,
+                                       const std::string &r) const
+  {
+    std::string sf, tmpstr;
+    unsigned C_INT32 i, imax;
+    const std::vector<std::string> * pFactors;
+ 
+    pFactors = &(callParameterNames[1]);   // first substr.
+    imax = pFactors->size();   // NoSubstrates
+    if (imax)
+      {
+        sf = callParameterNames[0][0] + r;           // k1
+        for (i = 0; i < imax; i++)
+          {
+            FixSName((*pFactors)[i], tmpstr);
+            sf += "*" + tmpstr;
+          }
+      }
+ 
+    if (isReversible() == TriFalse)
+      return sf;
+ 
+    pFactors = &(callParameterNames[3]);
+    imax = pFactors->size();
+    if (imax)
+      {
+        sf += "-" + callParameterNames[2][0] + r;
+        for (i = 0; i < imax; i++)
+          {
+            FixSName((*pFactors)[i], tmpstr);
+            sf += "*" + tmpstr;
+          }
+      }
+ 
+    return sf;
+  }*/
 
-pair < C_INT32, C_INT32 > CMassAction::findIdentifier(const string & name) const
-{
-  pair < C_INT32, C_INT32 > Tuple(-1, -1);
-  string::size_type subscript;
-    
-  if ("ks" == name) 
-    {
-      Tuple.first = 0;
-      Tuple.second = 0;
-      return Tuple;
-    }
-    
-  if ("kp" == name && isReversible()) 
-    {
-      Tuple.first = 1;
-      Tuple.second = 0;
-      return Tuple;
-    }
-    
-  subscript = name.find("_");
-  string Type  = name.substr(0,subscript);
-  string Index = name.substr(subscript+1);
-  Tuple.second = atoi(Index.c_str()) + 1;
-    
-  if (Type == "substrate")
-    {
-      Tuple.first = 0;
-      return Tuple;
-    }
-    
-  if (Type == "product" && isReversible())
-    {
-      Tuple.first = 1;
-      return Tuple;
-    }
-    
-  Tuple.second = -1;
-  return Tuple;
-}
-                     
+C_FLOAT64 CMassAction::calcValue(const CCallParameterPointers & callParameters) const
+  {
+    unsigned C_INT32 i, imax;
+    C_FLOAT64 **Factor;
+    C_FLOAT64 Substrates = 0.0, Products = 0.0;
+
+    imax = ((std::vector< C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
+    if (imax)
+      {
+        Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
+        Factor =
+          &*((std::vector< C_FLOAT64*>*)callParameters[1])->begin();   // first substr.
+
+        for (i = 0; i < imax; i++)
+          Substrates *= **(Factor++);
+      }
+
+    if (isReversible() == TriFalse)
+      return Substrates;
+
+    imax = ((std::vector< C_FLOAT64 *> *)callParameters[3])->size();   // NoProducts
+    if (imax)
+      {
+        Products = *(C_FLOAT64 *) callParameters[2];             // k2
+        Factor =
+          &*((std::vector< C_FLOAT64*>*)callParameters[3])->begin();   // first product
+
+        for (i = 0; i < imax; i++)
+          Products *= **(Factor++);
+      }
+
+    return Substrates - Products;
+  }
+
+bool CMassAction::dependsOn(const void * parameter,
+                            const CCallParameterPointers & callParameters) const
+  {
+    if (parameter == callParameters[0]) return true;
+
+    std::vector< C_FLOAT64 * >::const_iterator it;
+    std::vector< C_FLOAT64 * >::const_iterator end;
+
+    it = ((std::vector< C_FLOAT64 * > *) callParameters[1])->begin();
+    end = ((std::vector< C_FLOAT64 * > *) callParameters[1])->end();
+
+    for (; it != end; it++) if (parameter == *it) return true;
+
+    if (isReversible() == TriFalse) return false;
+
+    if (parameter == callParameters[2]) return true;
+
+    it = ((std::vector< C_FLOAT64 * > *) callParameters[3])->begin();
+    end = ((std::vector< C_FLOAT64 * > *) callParameters[3])->end();
+
+    for (; it != end; it++) if (parameter == *it) return true;
+
+    return false;
+  }

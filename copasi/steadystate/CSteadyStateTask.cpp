@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
 /**
  * CSteadyStateTask class.
  *
@@ -14,136 +22,172 @@
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
 #include "CEigen.h"
-
-#include "output/output.h"
+#include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
+#include "report/CKeyFactory.h"
+#include "report/CReport.h"
 
 #define XXXX_Reporting
 
-CSteadyStateTask::CSteadyStateTask():
-    mpProblem(NULL),
-    mpMethod(NULL),
+CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::steadyState, pParent),
     mpSteadyState(NULL),
-    mJacobian(NULL),
+    mpSteadyStateX(NULL),
     mpEigenValues(NULL),
-    mpOutEnd(NULL)
-{}
+    mpEigenValuesX(NULL)
+{
+  mpProblem = new CSteadyStateProblem(this);
+  mpMethod =
+    CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::Newton);
+  mpMethod->setObjectParent(this);
+  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+}
 
-CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src):
-    mpProblem(src.mpProblem),
-    mpMethod(src.mpMethod),
+CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
+                                   const CCopasiContainer * pParent):
+    CCopasiTask(src, pParent),
     mpSteadyState(src.mpSteadyState),
+    mpSteadyStateX(src.mpSteadyStateX),
     mJacobian(src.mJacobian),
     mpEigenValues(src.mpEigenValues),
-    mpOutEnd(src.mpOutEnd)
-{}
+    mJacobianX(src.mJacobianX),
+    mpEigenValuesX(src.mpEigenValuesX)
+{
+  mpProblem =
+    new CSteadyStateProblem(* (CSteadyStateProblem *) src.mpProblem, this);
+  mpMethod =
+    CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
+  mpMethod->setObjectParent(this);
+  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
+}
 
 CSteadyStateTask::~CSteadyStateTask()
 {
-  cleanup();
+  pdelete(mpSteadyState);
+  pdelete(mpSteadyStateX);
+  pdelete(mpEigenValues);
+  pdelete(mpEigenValuesX);
 }
 
 void CSteadyStateTask::cleanup()
-{
-  pdelete(mpProblem);
-  pdelete(mpMethod);
-  pdelete(mpSteadyState);
-  pdelete(mJacobian);
-  pdelete(mpEigenValues);
-  pdelete(mpOutEnd);
-}
-
-void CSteadyStateTask::initializeReporting(ofstream & out)
-{
-  pdelete(mpOutEnd);
-
-  mpOut = & out;
-  mpOutEnd = new COutputEvent(*this);
-}
+{}
 
 void CSteadyStateTask::load(CReadConfig & configBuffer)
 {
-  pdelete(mpProblem);
-  mpProblem = new CSteadyStateProblem();
-  mpProblem->load(configBuffer);
+  configBuffer.getVariable("SteadyState", "bool", &mScheduled,
+                           CReadConfig::LOOP);
 
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpMethod = CSteadyStateMethod::createSteadyStateMethod();
-    }
-  else
-    {
-      C_INT32 Method;
-      configBuffer.getVariable("SteadyStateMethod", "C_INT32", &Method,
-                               CReadConfig::SEARCH);
+  ((CSteadyStateProblem *) mpProblem)->load(configBuffer);
 
-      mpMethod = CSteadyStateMethod::
-                 createSteadyStateMethod((CSteadyStateMethod::Type) Method);
-      mpMethod->load(configBuffer);
-    }
+  ((CSteadyStateMethod *) mpMethod)->load(configBuffer);
 }
 
-void CSteadyStateTask::save(CWriteConfig & configBuffer)
+//CState * CSteadyStateTask::getState()
+//{return mpSteadyState;}
+
+const CState * CSteadyStateTask::getState() const
+  {return mpSteadyState;}
+
+const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
+  {return mJacobian;}
+const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
+  {return mJacobianX;}
+
+const CEigen * CSteadyStateTask::getEigenValues() const
+  {
+    return mpEigenValues;
+  }
+const CEigen * CSteadyStateTask::getEigenValuesReduced() const
+  {
+    return mpEigenValuesX;
+  }
+
+bool CSteadyStateTask::initialize(std::ostream * pOstream)
 {
-  mpProblem->save(configBuffer);
+  assert(mpProblem && mpMethod);
 
-  const C_INT32 Method = mpMethod->getTypeEnum();
-  configBuffer.setVariable("SteadyStateMethod", "C_INT32", &Method);
+  CSteadyStateProblem* pProblem =
+    dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  assert(pProblem);
 
-  mpMethod->save(configBuffer);
-}
+  bool success = true;
 
-CSteadyStateProblem * CSteadyStateTask::getProblem()
-{return mpProblem; }
+  if (!mReport.open(pOstream)) success = false;
+  if (!mReport.compile()) success = false;
+  if (!pProblem->getModel()->compileIfNecessary()) success = false;
 
-void CSteadyStateTask::setProblem(CSteadyStateProblem * pProblem)
-{mpProblem = pProblem; }
-
-CSteadyStateMethod * CSteadyStateTask::getMethod()
-{return mpMethod; }
-
-void CSteadyStateTask::setMethod(CSteadyStateMethod * pMethod)
-{mpMethod = pMethod; }
-
-CState * CSteadyStateTask::getState()
-{return mpSteadyState; }
-
-const C_FLOAT64 * CSteadyStateTask::getJacobian()
-{
-  return mJacobian;
-}
-
-const CEigen * CSteadyStateTask::getEigenValues()
-{
-  return mpEigenValues;
-}
-
-void CSteadyStateTask::process()
-{
-  if (!mpProblem)
-    fatalError();
-  if (!mpMethod)
-    fatalError();
-
+  //init states
   pdelete(mpSteadyState);
-  mpSteadyState = new CState(*mpProblem->getInitialState());
+  mpSteadyState = new CState(pProblem->getInitialState());
+  pdelete(mpSteadyStateX);
+  mpSteadyStateX = new CStateX(pProblem->getInitialState());
 
-  pdelete(mJacobian);
-  mJacobian = new C_FLOAT64[mpSteadyState->getVariableNumberSize()];
+  mCalculateReducedSystem = (pProblem->getModel()->getDepMetab() != 0);
 
+  //init jacobians
+  mJacobian.resize(mpSteadyState->getVariableNumberSize(),
+                   mpSteadyState->getVariableNumberSize());
+  mJacobianX.resize(mpSteadyStateX->getVariableNumberSize(),
+                    mpSteadyStateX->getVariableNumberSize());
+
+  //init Eigenvalues
   pdelete(mpEigenValues);
   mpEigenValues = new CEigen();
 
-  if (mpOutEnd)
-    Copasi->OutputList.compile("Steady-state output",
-                               mpProblem->getModel(),
-                               this);
+  pdelete(mpEigenValuesX);
+  mpEigenValuesX = new CEigen();
 
-  mpMethod->setProblem(mpProblem);
+  return success;
+}
 
-  mResult = mpMethod->process(*mpSteadyState,
-                              *mpProblem->getInitialState(),
-                              mJacobian,
-                              mpEigenValues);
+bool CSteadyStateTask::process()
+{
+  assert(mpProblem && mpMethod);
+
+  CSteadyStateProblem* pProblem =
+    dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  assert(pProblem);
+
+  CSteadyStateMethod* pMethod =
+    dynamic_cast<CSteadyStateMethod *>(mpMethod);
+  assert(pMethod);
+
+  mReport.printHeader();
+
+  mResult = pMethod->process(mpSteadyState,
+                             mpSteadyStateX,
+                             pProblem,
+                             mJacobian,
+                             mJacobianX,
+                             mpEigenValues,
+                             mpEigenValuesX,
+                             mpProgressHandler);
+
+  mReport.printBody();
+  mReport.printFooter();
+
+  return (mResult != CSteadyStateMethod::notFound);
+}
+
+std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
+{
+  os << std::endl;
+
+  if (A.mResult == CSteadyStateMethod::notFound)
+    {
+      os << "A STEADY STATE COULD NOT BE FOUND." << std::endl;
+      os << "(below are the last unsuccessful trial values)";
+    }
+  else
+    {
+      os << "STEADY STATE SOLUTION";
+
+      if (A.mResult == CSteadyStateMethod::foundEquilibrium)
+        os << " (chemical equilibrium)";
+    }
+
+  os << std::endl;
+
+  return os;
 }

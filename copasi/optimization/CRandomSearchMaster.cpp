@@ -1,7 +1,15 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearchMaster.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /***************************************************************************
                     CRandomSearchMaster.cpp  -  Random Optimizer
                        -------------------
-
+ 
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
  ***************************************************************************/
@@ -15,7 +23,7 @@ email                : rluktuke@vt.edu
 #include "COptMethod.h"
 
 CRandomSearchMaster::CRandomSearchMaster():
-    COptMethod()
+    COptMethod(CCopasiMethod::RandomSearchMaster)
 {}
 
 CRandomSearchMaster::CRandomSearchMaster(const CRandomSearchMaster & src):

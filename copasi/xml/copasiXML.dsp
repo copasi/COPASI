@@ -2,9 +2,9 @@
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Static Library" 0x0104
+# TARGTYPE "Win32 (x86) External Target" 0x0106
 
-CFG=copasiXML - Win32 Debug
+CFG=copasiXML - Win32 Build
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,73 +13,43 @@ CFG=copasiXML - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "copasiXML.mak" CFG="copasiXML - Win32 Debug"
+!MESSAGE NMAKE /f "copasiXML.mak" CFG="copasiXML - Win32 Build"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "copasiXML - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "copasiXML - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "copasiXML - Win32 Build" (based on "Win32 (x86) External Target")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-CPP=cl.exe
-RSC=rc.exe
-
-!IF  "$(CFG)" == "copasiXML - Win32 Release"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\Release"
-# PROP Intermediate_Dir "..\Release"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /I "$(EXPAT_LIB)/Source/lib" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "XML_STATIC" /YX /FD /c
-# ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
-
-!ELSEIF  "$(CFG)" == "copasiXML - Win32 Debug"
-
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Output_Dir "Build"
+# PROP BASE Intermediate_Dir "Build"
+# PROP BASE Cmd_Line "nmake /f "Makefile""
+# PROP BASE Rebuild_Opt "/a"
+# PROP BASE Target_File "../lib/copasiXML.lib"
+# PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\Debug"
-# PROP Intermediate_Dir "..\Debug"
+# PROP Output_Dir "Build"
+# PROP Intermediate_Dir "Build"
+# PROP Cmd_Line "nmake /f "Makefile""
+# PROP Rebuild_Opt "/a"
+# PROP Target_File "../lib/copasiXML.lib"
+# PROP Bsc_Name ""
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../copasi" /I "../.." /I "$(CBLAS_LIB)/include" /I "$(EXPAT_LIB)/Source/lib" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "XML_STATIC" /YX /FD /GZ /c
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# Begin Target
+
+# Name "copasiXML - Win32 Build"
+
+!IF  "$(CFG)" == "copasiXML - Win32 Build"
 
 !ENDIF 
 
-# Begin Target
-
-# Name "copasiXML - Win32 Release"
-# Name "copasiXML - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -93,7 +63,15 @@ SOURCE=.\CCopasiXMLInterface.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiXMLParser.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CExpat.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CXMLHandler.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -109,8 +87,32 @@ SOURCE=.\CCopasiXMLInterface.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiXMLParser.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CExpat.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\CXMLHandler.h
+# End Source File
 # End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# End Group
+# Begin Source File
+
+SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\xml.pro
+# End Source File
 # End Target
 # End Project

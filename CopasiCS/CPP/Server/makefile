@@ -13,9 +13,10 @@ CFLAGS = -g -Wall -ansi
 # CFLAGS = -O -Wall -ansi
 
 
-Server: Server.o ServerNetwork.o ServerSocketReader.o ServerManager.o ClientConnection.o Message.o
-	$(CC) -o Server Server.o ServerNetwork.o ServerSocketReader.o ServerManager.o \
-					ClientConnection.o Message.o -lpthread
+Server: Server.o ServerNetwork.o ServerSocketReader.o \
+	ServerManager.o ClientConnection.o Message.o
+	$(CC) -o Server Server.o ServerNetwork.o ServerSocketReader.o \
+	         ServerManager.o ClientConnection.o Message.o -lpthread
 
 
 Server.o:\

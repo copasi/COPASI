@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:20 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
    End CVS Header */
 
 /********************************************************
@@ -14,6 +14,8 @@ Date: 04/03
 Comment : Copasi Object Browser: 
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
+#include "ObjectBrowserWidget.h"
+
 #include <qmessagebox.h>
 #include <qvariant.h>
 #include <qheader.h>
@@ -27,9 +29,9 @@ Contact: Please contact lixu1@vt.edu.
 #include <qimage.h>
 #include <qpixmap.h>
 #include <qsimplerichtext.h>
+#include <qframe.h>
 
 #include "copasi.h"
-#include "ObjectBrowserWidget.h"
 #include "ObjectBrowserItem.h"
 #include "copasiui3window.h"
 #include "qtUtilities.h"
@@ -42,25 +44,44 @@ Contact: Please contact lixu1@vt.edu.
 #include "./icons/objectParts.xpm"
 #include "./icons/objectNone.xpm"
 
+QPixmap *pObjectAll = 0;
+QPixmap *pObjectParts = 0;
+QPixmap *pObjectNone = 0;
+
 /*
  *  Constructs a ObjectBrowser which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFlags fl, int state)
+    : QWidget(parent, name, fl),
+    objectItemList(NULL),
+    refreshList(NULL),
+    ObjectBrowserLayout(NULL),
+    clearButton(NULL),
+    toggleViewButton(NULL),
+    commitButton(NULL),
+    ObjectListView(NULL),
+    Line1(NULL),
+    spacer(NULL),
+    ObjectItemText(NULL),
+    mOutputObjectVector(NULL),
+    currentPage(LISTVIEWPAGE)
 {
   if (!name)
     setName("ObjectBrowser");
-  resize(420, 460);
-  setCaption(trUtf8("Object Browser"));
-  ObjectBrowserLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectBrowserLayout");
 
+  if (state == 0)
+    ObjectBrowserLayout = new QGridLayout(this, 1, 1, 0, -1, "ObjectBrowserLayout");
+  else
+    ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
+  ObjectBrowserLayout->setAutoAdd(false);
   ObjectListView = new QListView(this, "ObjectListView");
   ObjectListView->addColumn(trUtf8("Object Browser"));
   ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
   ObjectListView->setAcceptDrops(FALSE);
   ObjectListView->setResizeMode(QListView::LastColumn);
   ObjectListView->setTreeStepSize(19);
+  //  ObjectListView->setSorting(-1);
 
   ObjectItemText = new QTextEdit(this, "ObjectItemText");
   ObjectItemText ->hide();
@@ -68,69 +89,52 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
   ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 3);
   ObjectBrowserLayout->addMultiCellWidget(ObjectItemText, 0, 0, 0, 3);
 
-  Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
+  if (state != 0)
+    {
+      Line1 = new QFrame(this, "Line1");
+      Line1->setFrameShape(QFrame::HLine);
+      Line1->setFrameShadow(QFrame::Sunken);
+      Line1->setFrameShape(QFrame::HLine);
 
-  ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
+      ObjectBrowserLayout->addMultiCellWidget(Line1, 1, 1, 0, 3);
 
-  cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setText(trUtf8("Cancel"));
+      clearButton = new QPushButton(this, "clearButton");
+      clearButton->setText(trUtf8("Clear"));
+      ObjectBrowserLayout->addWidget(clearButton, 2, 0);
 
-  //  if (parent)
-  //    ObjectBrowserLayout->addWidget(cancelButton, 2, 0);
-  //  else
-  ObjectBrowserLayout->addWidget(cancelButton, 2, 2);
+      commitButton = new QPushButton(this, "commitButton");
+      commitButton->setText(trUtf8("Commit"));
+      ObjectBrowserLayout->addWidget(commitButton, 2, 3);
 
-  nextButton = new QPushButton(this, "nextButton");
-  //  if (parent)
-  //    nextButton->setText(trUtf8("ItemView"));
-  //  else
-  nextButton->setText(trUtf8("OK"));
+      toggleViewButton = new QPushButton(this, "toggleViewButton");
+      toggleViewButton->setText(trUtf8("Selected Items"));
+      ObjectBrowserLayout->addWidget(toggleViewButton, 2, 2);
 
-  ObjectBrowserLayout->addWidget(nextButton, 2, 3);
+      spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
+      ObjectBrowserLayout->addItem(spacer, 2, 1);
 
-  //  if (parent)
-  //    {
-  //      backButton = new QPushButton(this, "backButton");
-  //      backButton->setText(trUtf8("ListView"));
-  //      ObjectBrowserLayout->addWidget(backButton, 2, 2);
-  //      QSpacerItem* spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  //      ObjectBrowserLayout->addItem(spacer, 2, 1);
-  //}
+      // signals and slots connections
+      connect(clearButton, SIGNAL(clicked()), this, SLOT(clearClicked()));
+      connect(toggleViewButton, SIGNAL(clicked()), this, SLOT(toggleViewClicked()));
+      connect(commitButton, SIGNAL(clicked()), this, SLOT(commitClicked()));
 
-  // tab order
-  setTabOrder(ObjectListView, cancelButton);
-  //  if (parent)
-  //    {
-  //      setTabOrder(cancelButton, backButton);
-  //      setTabOrder(backButton, nextButton);
-  //}
-  //  else
-  setTabOrder(cancelButton, nextButton);
+      // tab order
+      setTabOrder(ObjectListView, clearButton);
+      setTabOrder(clearButton, toggleViewButton);
+      setTabOrder(toggleViewButton, commitButton);
+    }
+
+  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
 
   pObjectAll = new QPixmap((const char**)ptrObjectAll);
   pObjectNone = new QPixmap((const char**)ptrObjectNone);
   pObjectParts = new QPixmap((const char**)ptrObjectParts);
-
-  // signals and slots connections
-  //  if (parent)
-  //    connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
-  connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
-  connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-
-  //  mparent = (CopasiUI3Window*)parent;
-  //  if (mparent)
-  //    mparent->disable_object_browser_menu();
 
   objectItemList = new ObjectList();
   refreshList = new ObjectList();
   ObjectBrowserItem::resetKeySpace();
   loadData();
   currentPage = LISTVIEWPAGE;
-  mOutputObjectVector = NULL;
 }
 
 ObjectBrowserWidget::~ObjectBrowserWidget()
@@ -140,21 +144,23 @@ ObjectBrowserWidget::~ObjectBrowserWidget()
 
 void ObjectBrowserWidget::cleanup()
 {
-  pdelete(objectItemList);
-  pdelete(refreshList);
-  // no need to delete child widgets, Qt does it all for us
+  delete objectItemList;
+  delete refreshList;
 }
 
-void ObjectBrowserWidget::cancelClicked()
+void ObjectBrowserWidget::clearClicked()
 {
-  //  close();
-  qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
-  emit commitClicked(1);
+  if (!ObjectListView->firstChild()) return;
+  ObjectBrowserItem* root = (ObjectBrowserItem *)ObjectListView->firstChild();
+  setUncheck(root);
+  updateUI();
+  //  qWarning("ObjectBrowser::clearClicked(): Not implemented yet!");
 }
 
 void ObjectBrowserWidget::listviewChecked(QListViewItem* pCurrent)
 {
-  if (pCurrent == NULL)
+  //  if ((pCurrent == NULL)||(((ObjectBrowserItem *)pCurrent)->getType() == FIELDATTR))
+  if ((pCurrent == NULL) || (pCurrent->text(0) == "Select by attribute"))
     return;
   clickToReverseCheck((ObjectBrowserItem*)pCurrent);
   updateUI();
@@ -168,7 +174,7 @@ void ObjectBrowserWidget::clickToReverseCheck(ObjectBrowserItem* pCurrent)
   ObjectBrowserItem* pTmp = pCurrent;
   while (pTmp->parent() != NULL)
     {
-      pTmp = pTmp->parent();
+      pTmp = (ObjectBrowserItem *)pTmp->parent();
       refreshList->insert(pTmp);
     }
 
@@ -176,13 +182,13 @@ void ObjectBrowserWidget::clickToReverseCheck(ObjectBrowserItem* pCurrent)
     {
       if (pCurrent->isChecked())
         pCurrent->reverseChecked();
-      setUncheck(pCurrent->child());
+      setUncheck((ObjectBrowserItem *)pCurrent->firstChild());
       return;
     }
   //else no check or partly checked
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
-  setCheck(pCurrent->child());
+  setCheck((ObjectBrowserItem *)pCurrent->firstChild());
   return;
 }
 
@@ -196,11 +202,11 @@ void ObjectBrowserWidget::setUncheck(ObjectBrowserItem* pCurrent)
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
 
-  if (pCurrent->child() != NULL)
-    setUncheck(pCurrent->child());
+  if (pCurrent->firstChild() != NULL)
+    setUncheck((ObjectBrowserItem *)pCurrent->firstChild());
 
-  if (pCurrent->sibling() != NULL)
-    setUncheck(pCurrent->sibling());
+  if (pCurrent->nextSibling() != NULL)
+    setUncheck((ObjectBrowserItem *)pCurrent->nextSibling());
 }
 
 void ObjectBrowserWidget::setCheck(ObjectBrowserItem* pCurrent)
@@ -212,75 +218,38 @@ void ObjectBrowserWidget::setCheck(ObjectBrowserItem* pCurrent)
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
 
-  if (pCurrent->child() != NULL)
-    setCheck(pCurrent->child());
+  if (pCurrent->firstChild() != NULL)
+    setCheck((ObjectBrowserItem *)pCurrent->firstChild());
 
-  if (pCurrent->sibling() != NULL)
-    setCheck(pCurrent->sibling());
+  if (pCurrent->nextSibling() != NULL)
+    setCheck((ObjectBrowserItem *)pCurrent->nextSibling());
 }
 
-void ObjectBrowserWidget::backClicked()
+void ObjectBrowserWidget::toggleViewClicked()
 {
   switch (currentPage)
     {
     case LISTVIEWPAGE:
-      //last page
+      updateSelectedItemsView();
+      currentPage = SELECTEDITEMPAGE;
+      if (toggleViewButton) toggleViewButton->setText(trUtf8("Tree View"));
+      ObjectListView->hide();
+      ObjectItemText->show();
       break;
     case SELECTEDITEMPAGE:
       currentPage = LISTVIEWPAGE;
+      if (toggleViewButton) toggleViewButton->setText(trUtf8("Selected Items"));
       ObjectListView->show();
       ObjectItemText->hide();
       break;
     }
 }
 
-//need to delete the list outside the funciton
-/*
-ObjectList* ObjectBrowserWidget::outputList()
+void ObjectBrowserWidget::updateSelectedItemsView()
 {
-  ObjectList* outputList;
-  ObjectBrowserItem* rootItem;
-  if (object
-  rootItem = objectItemList->getRoot()->pItem;
-  outputList = new ObjectList();
-  eXport(rootItem, outputList);
-  if (outputList->len() <= 0)
-    {
-      delete outputList;
-      return NULL;
-    }
-  else
-    return outputList;
-}
- */
-
-void ObjectBrowserWidget::setOutputVector(std::vector<CCopasiObject*>* pObjectVector)
-{
-  mOutputObjectVector = pObjectVector;
-}
-
-void ObjectBrowserWidget::nextClicked()
-{
-  //  if (!mparent)
-  //    {
-  ObjectBrowserItem* rootItem;
-  rootItem = objectItemList->getRoot()->pItem;
-  eXport(rootItem, mOutputObjectVector);
-  mOutputObjectVector = NULL;
-  //      cleanup();
-  //      QDialog::done(QDialog::Accepted);
-  emit commitClicked(1);
-  return;
-  //}
-  /*
   std::vector<CCopasiObject*>* outputVector;
   ObjectBrowserItem* rootItem;
   unsigned C_INT32 i;
-  switch (currentPage)
-  {
-  case LISTVIEWPAGE:
-  ObjectListView->hide(); //last page
-  ObjectItemText->show();
   rootItem = objectItemList->getRoot()->pItem;
   outputVector = new std::vector<CCopasiObject*>();
   eXport(rootItem, outputVector);
@@ -290,49 +259,56 @@ void ObjectBrowserWidget::nextClicked()
 
   for (i = 0; i < outputVector->size(); i++)
     {
-      if (double(i) / 2 == int(i / 2))
-        ObjectItemText->setColor(red);
-      else
-        ObjectItemText->setColor(blue);
+      //   if (double(i) / 2 == int(i / 2))
+      //     ObjectItemText->setColor(red);
+      //   else
+      //     ObjectItemText->setColor(blue);
       if ((*outputVector)[i])
         {
+          ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectUniqueName()), -1);
           //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
-          ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectType()), -1);
+          //ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectType()), -1);
         }
-  }*/
+    }
   /*
-        for (pHead = outputVector->getRoot(), i = 1; pHead != NULL; pHead = pHead->pNext)
-          {
-            if (double(i) / 2 == int(i / 2))
-              ObjectItemText->setColor(red);
-            else
-              ObjectItemText->setColor(blue);
-            if (pHead->pItem->getObject()->pCopasiObject)
-              {
-                //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
-                ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType()., -1);
-                i++;
-              }
-          }
-  */
-  /*
-  pdelete(outputVector);
-  currentPage = SELECTEDITEMPAGE;
-  break;
-  case SELECTEDITEMPAGE:
-  // show();
-  // ->hide();
-  break;
+  for (pHead = outputVector->getRoot(), i = 1; pHead != NULL; pHead = pHead->pNext)
+  {
+  if (double(i) / 2 == int(i / 2))
+  ObjectItemText->setColor(red);
+  else
+  ObjectItemText->setColor(blue);
+  if (pHead->pItem->getObject()->pCopasiObject)
+  {
+  //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
+  ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getObjectType()., -1);
+  i++;
+  }
   }
   */
+  pdelete(outputVector);
+}
+
+void ObjectBrowserWidget::setOutputVector(std::vector<CCopasiObject*>* pObjectVector)
+{
+  mOutputObjectVector = pObjectVector;
+  if (mOutputObjectVector) selectObjects(mOutputObjectVector);
+}
+
+void ObjectBrowserWidget::commitClicked()
+{
+  ObjectBrowserItem* rootItem;
+  rootItem = objectItemList->getRoot()->pItem;
+  eXport(rootItem, mOutputObjectVector);
+  return;
 }
 
 void ObjectBrowserWidget::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector)
 {
-  if (pCurrent->child())
+  if (!outputVector) return;
+  if (pCurrent->firstChild())
     {
-      ObjectBrowserItem* pChild = pCurrent->child();
-      for (; pChild != NULL; pChild = pChild->sibling())
+      ObjectBrowserItem* pChild = (ObjectBrowserItem *)pCurrent->firstChild();
+      for (; pChild != NULL; pChild = (ObjectBrowserItem *)pChild->nextSibling())
         if (pChild->getType() != FIELDATTR)
           eXport(pChild, outputVector);
     }
@@ -341,8 +317,14 @@ void ObjectBrowserWidget::eXport(ObjectBrowserItem* pCurrent, std::vector<CCopas
       if (pCurrent->isChecked() && (pCurrent->getType() != FIELDATTR))
         {
           if (pCurrent->getObject())
-            //   ObjectBrowserItem* pCopyCurrent = new ObjectBrowserItem((ObjectBrowserItem*)(NULL), 0, pCurrent->getObject()->pCopasiObject,outputList);
-            outputVector->push_back(pCurrent->getObject()->pCopasiObject);
+            {
+              bool insertFlag = true;
+              unsigned C_INT32 i = 0;
+              for (; i < outputVector->size(); i++)
+                if (pCurrent->getObject()->pCopasiObject->getCN() == (*outputVector)[i]->getCN()) insertFlag = false;
+              if (insertFlag)
+                outputVector->push_back(pCurrent->getObject()->pCopasiObject);
+            }
         }
       // else skip current item
     }
@@ -445,6 +427,7 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList* objectItemList)
 void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
                                     CCopasiContainer* copaParent, bool nField)
 {
+  unsigned int i;
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
@@ -454,51 +437,69 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
   CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
-  while (it != end)
+  if ((copaParent->isVector()) && (nField))
     {
-      current = it->second;
-      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
-      last = currentItem;
-      currentItem->setText(0, FROM_UTF8(current->getObjectName()));
-      if (current->isContainer())
+      if ((((CCopasiVector <CCopasiObject>*)copaParent)->size() >= 1) && ((*(CCopasiVector <CCopasiObject>*)copaParent)[0]->isContainer()))
+        {//add atribute list
+          ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
+          fieldChild->setObjectType(FIELDATTR);
+          fieldChild->setText(0, "Select by attribute");
+          fieldChild->setSelectable(false);
+          loadField(fieldChild, (CCopasiVector <CCopasiObject>*) copaParent);
+          fieldChild->attachKey();
+          last = fieldChild;
+        }
+    }
+
+  if (copaParent->isVector())
+    {
+      for (i = 0; i < ((CCopasiVector <CCopasiObject>*)copaParent)->size(); i++)
         {
-          currentItem->setObjectType(CONTAINERATTR);
-          currentItem->attachKey();
-          if (!current->isVector())
-            loadChild(currentItem, (CCopasiContainer*) current, nField);
+          current = (*(CCopasiVector <CCopasiObject>*)copaParent)[i];
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+          last = currentItem;
+          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
+          if (current->isContainer())
+            {
+              currentItem->setObjectType(CONTAINERATTR);
+              currentItem->attachKey();
+              if (current->isVector())
+                currentItem->setText(0, currentItem->text(0) + "[]");
+              loadChild(currentItem, (CCopasiContainer*) current, nField);
+            }
           else
             {
-              currentItem->setText(0, currentItem->text(0) + "[]");
-              ObjectBrowserItem* objectChild = currentItem;
-              if (nField) // divide into attribute and object lists
-                {
-                  /* to change replace the part inside the if(nField) with the following statements
-                    loadChild(objectChild, (CCopasiContainer *) current, false);
-                    objectChild->attachKey();
-                    * end of change */
-
-                  objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
-                  objectChild->setObjectType(OBJECTATTR);
-                  objectChild->setText(0, "Object list");
-                  loadChild(objectChild, (CCopasiContainer *) current, false);
-                  ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
-                  fieldChild->setObjectType(FIELDATTR);
-                  fieldChild->setText(0, "Attribute list");
-                  loadField(fieldChild, (CCopasiContainer*) current);
-                  fieldChild->attachKey();
-                  objectChild->attachKey();
-                }
-              else
-                loadChild(objectChild, (CCopasiContainer *) current, nField);
+              currentItem->setObjectType(OBJECTATTR);
+              childStack->insert(currentItem);  //attach the key later
             }
-        }
-      else
-        {
-          currentItem->setObjectType(OBJECTATTR);
-          childStack->insert(currentItem);  //attach the key later
-        }
 
-      it++;
+          it++;
+        }
+    }
+  else
+    {
+      while (it != end)
+        {
+          current = it->second;
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+          last = currentItem;
+          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
+          if (current->isContainer())
+            {
+              currentItem->setObjectType(CONTAINERATTR);
+              currentItem->attachKey();
+              if (current->isVector())
+                currentItem->setText(0, currentItem->text(0) + "[]");
+              loadChild(currentItem, (CCopasiContainer*) current, nField);
+            }
+          else
+            {
+              currentItem->setObjectType(OBJECTATTR);
+              childStack->insert(currentItem);  //attach the key later
+            }
+
+          it++;
+        }
     }
 
   ObjectBrowserItem* pCurrent;
@@ -510,75 +511,50 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
   pdelete(childStack);
 }
 
-void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
+void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CCopasiObject>* copaParent)
 {
-  ObjectBrowserItem* lastField = NULL;
-  CCopasiObject* currentField = NULL;
-  ObjectBrowserItem* last = NULL;
-  CCopasiObject* current = NULL;
+  unsigned int i;
+  ObjectBrowserItem* lastFieldItem = NULL;
+  CCopasiObject* currentFieldObject = NULL;
+  ObjectBrowserItem* lastObjectItem = NULL;
+  CCopasiObject* currentObject = NULL;
 
-  const CCopasiContainer::objectMap * pObjectList = & copaParent->getObjects();
-  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
-  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
-  CCopasiContainer::objectMap::const_iterator pFirstObject = it;
-
-  if (it == end) return; //empty list
-
-  while (it != end) // find all missing reference attribute
-    {
-      currentField = it->second;
-      if (!currentField->isContainer())
-        {
-          ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, currentField, objectItemList);
-          currentItemField->attachKey();
-          currentItemField->setObjectType(FIELDATTR);
-          currentItemField->setText(0, FROM_UTF8(currentField->getObjectName()));
-          lastField = currentItemField;
-        }
-      it++;
-    }
-
-  it = pFirstObject; //reset to the beginning
-  while (it != end)
-    {
-      if (it->second->isContainer())
-        break;
-      it++;
-    }
-
-  if (it == end) return; //no container found
+  if ((copaParent->size() < 1) || (!(*copaParent)[0]->isContainer())) return; //empty list
 
   const CCopasiContainer::objectMap * pFieldList =
-    &(((CCopasiContainer *) it->second)->getObjects());
+    &(((CCopasiContainer *)(*copaParent)[0])->getObjects());
 
   CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
   CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
 
   while (fieldIt != fieldEnd)
     {
-      currentField = fieldIt->second;
-      ObjectBrowserItem* currentItemField = new ObjectBrowserItem(parent, lastField, NULL, objectItemList);
-      currentItemField->attachKey();
-      currentItemField->setObjectType(FIELDATTR);
-      currentItemField->setText(0, FROM_UTF8(currentField->getObjectName()));
-      lastField = currentItemField;
-      it = pFirstObject;
-      last = NULL;
+      currentFieldObject = fieldIt->second;
+      ObjectBrowserItem* currentFieldItem = new ObjectBrowserItem(parent, lastFieldItem, NULL, objectItemList);
+      currentFieldItem->attachKey();
+      currentFieldItem->setObjectType(FIELDATTR);
+      currentFieldItem->setText(0, FROM_UTF8(currentFieldObject->getObjectName()));
+      lastFieldItem = currentFieldItem;
+      lastObjectItem = NULL;
 
-      while (it != end)
+      for (i = 0; i < copaParent->size(); i++)
         {
           CCopasiObject* pSubField;
-          current = it->second;
+          currentObject = (*(CCopasiVector <CCopasiObject>*)copaParent)[i];
 
-          if (current->isContainer())
+          if (currentObject->isContainer())
             pSubField =
-              getFieldCopasiObject((CCopasiContainer *) current,
-                                   FROM_UTF8(currentField->getObjectName()));
+              getFieldCopasiObject((CCopasiContainer *) currentObject,
+                                   FROM_UTF8(currentFieldObject->getObjectName()));
           else
-            pSubField = NULL; // this shall be an exception error
+            {
+              pSubField = NULL; // this shall be an exception error
+            }
 
-          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
-          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentFieldItem, lastObjectItem, pSubField, objectItemList);
+          currentItem->setText(0, FROM_UTF8(currentObject->getObjectName()));
+          //   if ((pSubField)&&(pSubField->isVector()))
+          //            currentItem->setText(0, currentItem->text(0) + "[]");
           currentItem->setObjectType(FIELDATTR);
           currentItem->attachKey();
 
@@ -588,8 +564,7 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiContainer 
                 loadChild(currentItem, (CCopasiContainer *)pSubField, false); // wont show the attribute and field list
               }
 
-          last = currentItem;
-          it++;
+          lastObjectItem = currentItem;
         }
       fieldIt++;
     }
@@ -607,7 +582,7 @@ void ObjectBrowserWidget::updateUI()
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
           if (pCurrent != pHead)
-            for (; (pCurrentLevel != NULL); pCurrentLevel = pCurrentLevel->parent())
+            for (; (pCurrentLevel != NULL); pCurrentLevel = (ObjectBrowserItem *)pCurrentLevel->parent())
               refreshList->insertBucket(pCurrentLevel);
           pHead = pHead->pNext;
         }
@@ -618,10 +593,16 @@ void ObjectBrowserWidget::updateUI()
     setCheckMark(pUpdate);
 
   refreshList->destroyBucket();
+  if (currentPage == SELECTEDITEMPAGE) updateSelectedItemsView();
 }
 
 void ObjectBrowserWidget::setCheckMark(ObjectBrowserItem* pCurrent)
 {
+  if (pCurrent->text(0) == "Select by attribute")
+    {
+      pCurrent->setPixmap(0, NULL);
+      return;
+    }
   switch (pCurrent->nUserChecked())
     {
     case NOCHECKED:
@@ -650,31 +631,67 @@ CCopasiObject* ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer * pCur
   CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
-  /*
-    if (it != end)
-      return it->second;
-    else
-      return NULL;
-  */
-
-  //#ifdef XXXX
-  //  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
-  //  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
-
   CCopasiObject* pResult;
   while (it != end)
     {
-      if (it->second->isContainer())
-        {
-          pResult = getFieldCopasiObject((CCopasiContainer *)it->second, name);
-          if (pResult)
-            return pResult;
-        }
+      //      if (it->second->isContainer())
+      //        {
+      //          pResult = getFieldCopasiObject((CCopasiContainer *)it->second, name);
+      //          if (pResult)
+      //            return pResult;
+      //}
       if (FROM_UTF8(it->second->getObjectName()) == name)
         return it->second;
       it++;
     }
 
   return NULL;
-  //#endif // XXXX
+}
+
+void ObjectBrowserWidget::selectObjects(std::vector<CCopasiObject*>* pObjectVector)
+{
+  unsigned int i;
+  ObjectBrowserItem* rootItem;
+
+  rootItem = objectItemList->getRoot()->pItem;
+
+  for (i = 0; i < pObjectVector->size(); i++)
+    {
+      if ((*pObjectVector)[i]) selectObjects(rootItem, (*pObjectVector)[i]);
+    }
+  updateUI();
+}
+
+void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject)
+{
+  ObjectBrowserItem* pCurrent;
+  pCurrent = browserItem;
+
+  if (pCurrent->firstChild())
+    {
+      ObjectBrowserItem* pChild = (ObjectBrowserItem *)pCurrent->firstChild();
+      for (; pChild != NULL; pChild = (ObjectBrowserItem *)pChild->nextSibling())
+        if (pChild->getType() != FIELDATTR)
+          selectObjects(pChild, selectObject);
+    }
+  else
+    {//it has no child
+      if (pCurrent->getType() != FIELDATTR)
+        {
+          if (pCurrent->getObject() && (pCurrent->getObject()->pCopasiObject == selectObject))
+            {
+              refreshList->insert(pCurrent);
+
+              ObjectBrowserItem* pTmp = pCurrent;
+              while (pTmp->parent() != NULL)
+                {
+                  pTmp = (ObjectBrowserItem *)pTmp->parent();
+                  refreshList->insert(pTmp);
+                }
+              pCurrent->getObject()->mChecked = ALLCHECKED;
+              setCheck((ObjectBrowserItem *)pCurrent->firstChild());
+            }
+          // else skip current item
+        }
+    }
 }

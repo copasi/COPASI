@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
 /**
  *  CSteadyStateMethod class.
  *  This class describes the interface to all steady state methods.
@@ -10,72 +18,66 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
-#include "utilities/utilities.h"
+#include "utilities/CCopasiVector.h"
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
 #include "CEigen.h"
 
 #include "model/CModel.h"
 #include "model/CState.h"
-
-const string CSteadyStateMethod::TypeName[] =
-  {
-    "unspecified",
-    "Newton",
-  };
+#include "model/CCompartment.h"
 
 CSteadyStateMethod *
-CSteadyStateMethod::createSteadyStateMethod(CSteadyStateMethod::Type type)
+CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::SubType subType)
 {
-  CSteadyStateMethod * Method = NULL;
-  switch (type)
+  CSteadyStateMethod * pMethod = NULL;
+
+  switch (subType)
     {
-    case unspecified:
+    case unset:
     case Newton:
-      Method = new CNewtonMethod();
+      pMethod = new CNewtonMethod();
       break;
 
     default:
       fatalError();
     }
-  return Method;
+
+  return pMethod;
 }
 
 /**
  *  Default constructor.
  */
-CSteadyStateMethod::CSteadyStateMethod() :
-    CMethodParameterList(),
-    mTypeEnum(CSteadyStateMethod::unspecified),
+CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
+                                       const CCopasiContainer * pParent):
+    CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
     mpProblem(NULL)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Copy constructor.
  *  @param "const CSteadyStateMethod &" src
  */
-CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src):
-    CMethodParameterList(src),
-    mTypeEnum(src.mTypeEnum),
+CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
+                                       const CCopasiContainer * pParent):
+    CCopasiMethod(src, pParent),
     mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE; }
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Destructor.
  */
 CSteadyStateMethod::~CSteadyStateMethod()
-{DESTRUCTOR_TRACE; }
-
-const CSteadyStateMethod::Type & CSteadyStateMethod::getTypeEnum() const
-  {return mTypeEnum; }
+{DESTRUCTOR_TRACE;}
 
 /**
  *  Set a pointer to the problem.
  *  This method is used by CSteadyState 
  *  @param "CSteadyStateProblem *" problem
- */
-void CSteadyStateMethod::setProblem(CSteadyStateProblem * problem)
-{mpProblem = problem; }
+ */ 
+//void CSteadyStateMethod::setProblem(CSteadyStateProblem * problem)
+//{mpProblem = problem;}
 
 /**
  * This instructs the method to calculate a the steady state
@@ -88,16 +90,25 @@ void CSteadyStateMethod::setProblem(CSteadyStateProblem * problem)
  * @return CSteadyStateMethod::ReturnCode returnCode
  */
 CSteadyStateMethod::ReturnCode
-CSteadyStateMethod::process(CState & steadyState,
-                            const CState & initialState,
-                            C_FLOAT64 * jacobian,
-                            CEigen * pEigenValues)
+CSteadyStateMethod::process(CState * pState,
+                            CStateX * pStateX,
+                            const CSteadyStateProblem * pProblem,
+                            CMatrix< C_FLOAT64 > & jacobian,
+                            CMatrix< C_FLOAT64 > & jacobianX,
+                            CEigen * pEigenValues,
+                            CEigen * pEigenValuesX,
+                            CCallbackHandler* handler)
 {
-  mpSteadyState = & steadyState;
-  mJacobian = jacobian;
+  mpSteadyState = pState;
+  mpSteadyStateX = pStateX;
+  mpProblem = pProblem;
+  mpJacobian = & jacobian;
+  mpJacobianX = & jacobianX;
   mpEigenValues = pEigenValues;
+  mpEigenValuesX = pEigenValuesX;
+  mpProgressHandler = handler;
 
-  return process(steadyState, initialState);
+  return processInternal();
 }
 
 /**
@@ -113,17 +124,25 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
                                   const C_FLOAT64 & factor,
                                   const C_FLOAT64 & resolution)
 {
-  mpProblem->getModel()->setTransitionTimes();
+  //mpProblem->getModel()->setTransitionTimes();
 
   if (mpProblem->isJacobianRequested() ||
       mpProblem->isStabilityAnalysisRequested())
-    mpSteadyState->getJacobian(mJacobian, factor, resolution);
+    {
+      mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
+      mpSteadyStateX->calculateJacobian(*mpJacobianX, factor, resolution);
+    }
+
+  //mpProblem->getModel()->setState(mpSteadyState);
+  //mpProblem->getModel()->updateRates();
 
   if (mpProblem->isStabilityAnalysisRequested())
     {
-      mpEigenValues->calcEigenValues(mJacobian,
-                                     mpSteadyState->getVariableNumberSize());
+      mpEigenValues->calcEigenValues(*mpJacobian);
+      mpEigenValuesX->calcEigenValues(*mpJacobianX);
+
       mpEigenValues->stabilityAnalysis(resolution);
+      mpEigenValuesX->stabilityAnalysis(resolution);
     }
 
   if (!steadyStateFound)
@@ -137,15 +156,10 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
 
 /**
  * This instructs the method to calculate a the steady state
- * starting with the initialState given.
- * The steady state is returned in the object pointed to by steadyState.
- * @param CState * steadyState
- * @param const CState * initialState
  * @return CSteadyStateMethod::ReturnCode returnCode
  */
 CSteadyStateMethod::ReturnCode
-CSteadyStateMethod::process(CState & C_UNUSED(steadyState),
-                            const CState & C_UNUSED(initialState))
+CSteadyStateMethod::processInternal()
 {return CSteadyStateMethod::notFound;}
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution)

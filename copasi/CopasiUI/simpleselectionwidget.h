@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/04 18:50:56 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'simpleselectionwidget.ui'
  **
- ** Created: Mon Oct 4 20:18:43 2004
- **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.1 2004/10/04 18:50:56 gauges Exp $)
+ ** Created: Fri Oct 8 10:36:21 2004
+ **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.1.1.1 2004/10/26 15:17:50 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -85,6 +85,7 @@ class SimpleSelectionWidget : public QWidget
     virtual const std::vector<int>* getSelectedIndicesFromList();
     virtual void updateMoveButtons();
     virtual void updateOutputVector();
+    virtual void selectObjects(std::vector<CCopasiObject *> * objects);
 
     QHBoxLayout* SimpleSelectionWidgetLayout;
     QHBoxLayout* layout4;

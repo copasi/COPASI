@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 18:36:01 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:04 $
    End CVS Header */
 
 /**
@@ -47,11 +47,29 @@ const char* CCopasiMethod::XMLSubType[] =
 
 //    std::string mType;
 
+CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "") i++;
+
+  if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
+  else return CCopasiMethod::unset;
+}
+
+CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (strcmp(xmlTypeName, XMLSubType[i]) && XMLSubType[i]) i++;
+
+  if (XMLSubType[i]) return (CCopasiMethod::SubType) i;
+  else return CCopasiMethod::unset;
+}
+
 CCopasiMethod::CCopasiMethod():
     CCopasiParameterGroup("NoName", NULL, "Method"),
     mType(CCopasiTask::unset),
     mSubType(unset)
-{setName(SubTypeName[mType]);}
+{setObjectName(SubTypeName[mType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
                              const CCopasiMethod::SubType & subType,
@@ -59,7 +77,7 @@ CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
     CCopasiParameterGroup(TypeName[type], pParent, "Method"),
     mType(type),
     mSubType(subType)
-{setName(SubTypeName[mType]);}
+{setObjectName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):

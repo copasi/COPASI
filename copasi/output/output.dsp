@@ -2,9 +2,9 @@
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Static Library" 0x0104
+# TARGTYPE "Win32 (x86) External Target" 0x0106
 
-CFG=output - Win32 Debug
+CFG=output - Win32 Build
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,100 +13,77 @@ CFG=output - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "output.mak" CFG="output - Win32 Debug"
+!MESSAGE NMAKE /f "output.mak" CFG="output - Win32 Build"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "output - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "output - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "output - Win32 Build" (based on "Win32 (x86) External Target")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-CPP=cl.exe
-RSC=rc.exe
-
-!IF  "$(CFG)" == "output - Win32 Release"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
-
-!ELSEIF  "$(CFG)" == "output - Win32 Debug"
-
-# PROP BASE Use_MFC 0
+# PROP BASE Use_MFC
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Output_Dir "Build"
+# PROP BASE Intermediate_Dir "Build"
+# PROP BASE Cmd_Line "nmake /f "Makefile"
+# PROP BASE Rebuild_Opt "/a"
+# PROP BASE Target_File "../lib/output.lib"
+# PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC 0
+# PROP Use_MFC
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "Build"
+# PROP Intermediate_Dir "Build"
+# PROP Cmd_Line "nmake /f Makefile"
+# PROP Rebuild_Opt "/a"
+# PROP Target_File "../lib/output.lib"
+# PROP Bsc_Name ""
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "../../copasi/output" /I "../../copasi" /I "../.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Desc=copy
-PostBuild_Cmds=copy Debug\*.lib ..\Debug
-# End Special Build Tool
+# Begin Target
+
+# Name "output - Win32 Build"
+
+!IF  "$(CFG)" == "output - Win32 Build"
 
 !ENDIF 
 
-# Begin Target
-
-# Name "output - Win32 Release"
-# Name "output - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\copasi\output\CDatum.cpp
+SOURCE=.\CDatum.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutput.cpp
+SOURCE=.\CNodeO.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputEvent.cpp
+SOURCE=.\COutput.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputLine.cpp
+SOURCE=.\COutputEvent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputList.cpp
+SOURCE=.\COutputLine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputList.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunctionDB.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -114,24 +91,56 @@ SOURCE=..\..\copasi\output\COutputList.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\copasi\output\CDatum.h
+SOURCE=.\CDatum.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutput.h
+SOURCE=.\CNodeO.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputEvent.h
+SOURCE=.\COutput.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputLine.h
+SOURCE=.\COutputEvent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputList.h
+SOURCE=.\COutputLine.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputList.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunction.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CUDFunctionDB.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\output.h
 # End Source File
 # End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# End Group
+# Begin Source File
+
+SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\output.pro
+# End Source File
 # End Target
 # End Project

@@ -5,22 +5,17 @@
 	};
 	objectVersion = 38;
 	objects = {
-		0E0973F80494FFC30C52A85A = {
-			children = (
-			);
-			isa = PBXGroup;
-			refType = 4;
-		};
-		0E0973FA0494FFC30C52A85A = {
+		014CEA460018CE2711CA2923 = {
 			buildRules = (
 			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
 		};
-		0E0973FB0494FFC30C52A85A = {
+		014CEA470018CE2711CA2923 = {
 			buildRules = (
 			);
 			buildSettings = {
@@ -29,19 +24,1966 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
-		0E0973FC0494FFC30C52A85A = {
+//010
+//011
+//012
+//013
+//014
+//020
+//021
+//022
+//023
+//024
+		0249A662FF388D9811CA2CEA = {
+			children = (
+				0249A663FF388D9811CA2CEA,
+				EDE70CBCC5B04B760352A85A,
+				EDE70CBEC5B04C890352A85A,
+				EDE70D79C5B077FB0352A85A,
+				EDE70D87C5B079460352A85A,
+				EDE70E1AC5B079760352A85A,
+				EDE70E2DC5B0798D0352A85A,
+				ED523390046DA93A03C9C501,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+		};
+		0249A663FF388D9811CA2CEA = {
+			isa = PBXFileReference;
+			name = "libstdc++.a";
+			path = "/usr/lib/libstdc++.a";
+			refType = 0;
+		};
+//020
+//021
+//022
+//023
+//024
+//080
+//081
+//082
+//083
+//084
+		08FB7793FE84155DC02AAC07 = {
 			buildStyles = (
-				0E0973FA0494FFC30C52A85A,
-				0E0973FB0494FFC30C52A85A,
+				014CEA460018CE2711CA2923,
+				014CEA470018CE2711CA2923,
 			);
 			isa = PBXProject;
-			mainGroup = 0E0973F80494FFC30C52A85A;
+			mainGroup = 08FB7794FE84155DC02AAC07;
 			projectDirPath = "";
 			targets = (
-				0E0973FD0494FFEC0C52A85A,
+				ED5DCB0E047A9DD803B0BD8E,
 			);
 		};
-		0E0973FD0494FFEC0C52A85A = {
+		08FB7794FE84155DC02AAC07 = {
+			children = (
+				EDE70F5EC5B07C7C0352A85A,
+				ED523117046DA6DE03C9C501,
+				ED523180046DA6DE03C9C501,
+				EDACF9A90475B8F50352A85A,
+				ED5231AB046DA6DE03C9C501,
+				ED5DC9FD047712BB03B0BD8E,
+				ED5231BB046DA6DE03C9C501,
+				ED5231CB046DA6DE03C9C501,
+				ED1507B005C5C6C103AD62C7,
+				ED5231E4046DA6DE03C9C501,
+				ED5231EE046DA6DE03C9C501,
+				ED5231FB046DA6DE03C9C501,
+				ED523205046DA6DE03C9C501,
+				ED523215046DA6DE03C9C501,
+				ED52322B046DA6DE03C9C501,
+				ED52324D046DA6DE03C9C501,
+				C6859E8C029090F304C91782,
+				0249A662FF388D9811CA2CEA,
+				1AB674ADFE9D54B511CA2CBB,
+				EDE70F54C5B07C7C0352A85A,
+				ED523116046DA6DE03C9C501,
+				ED523190046DA6DE03C9C501,
+				ED5DCA230477C3D203B0BD8E,
+				ED1507AF05C5C69B03AD62C7,
+			);
+			isa = PBXGroup;
+			name = copasi;
+			refType = 4;
+		};
+//080
+//081
+//082
+//083
+//084
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+		1AB674ADFE9D54B511CA2CBB = {
+			children = (
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+//C60
+//C61
+//C62
+//C63
+//C64
+		C6859E8B029090EE04C91782 = {
+			isa = PBXFileReference;
+			path = copasi.1;
+			refType = 4;
+		};
+		C6859E8C029090F304C91782 = {
+			children = (
+				C6859E8B029090EE04C91782,
+			);
+			isa = PBXGroup;
+			name = Documentation;
+			refType = 4;
+		};
+//C60
+//C61
+//C62
+//C63
+//C64
+//ED0
+//ED1
+//ED2
+//ED3
+//ED4
+		ED1507AF05C5C69B03AD62C7 = {
+			isa = PBXFileReference;
+			path = common.pri;
+			refType = 4;
+		};
+		ED1507B005C5C6C103AD62C7 = {
+			children = (
+				ED1507B105C5C6C103AD62C7,
+				ED1507B205C5C6C103AD62C7,
+				ED1507B305C5C6C103AD62C7,
+				ED1507B405C5C6C103AD62C7,
+				ED1507B505C5C6C103AD62C7,
+				ED1507B605C5C6C103AD62C7,
+				ED1507B705C5C6C103AD62C7,
+				ED1507B805C5C6C103AD62C7,
+				ED1507B905C5C6C103AD62C7,
+				ED1507BA05C5C6C103AD62C7,
+				ED1507BB05C5C6C103AD62C7,
+				ED1507BC05C5C6C103AD62C7,
+				ED1507BE05C5C6C103AD62C7,
+				ED1507BF05C5C6C103AD62C7,
+				ED1507C005C5C6C103AD62C7,
+				ED1507C105C5C6C103AD62C7,
+				ED1507C205C5C6C103AD62C7,
+				ED1507C305C5C6C103AD62C7,
+				ED1507C405C5C6C103AD62C7,
+				ED1507C505C5C6C103AD62C7,
+				ED1507C605C5C6C103AD62C7,
+			);
+			isa = PBXGroup;
+			path = plot;
+			refType = 2;
+		};
+		ED1507B105C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CopasiPlot.cpp;
+			refType = 4;
+		};
+		ED1507B205C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CopasiPlot.h;
+			refType = 4;
+		};
+		ED1507B305C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpec.cpp;
+			refType = 4;
+		};
+		ED1507B405C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpec.h;
+			refType = 4;
+		};
+		ED1507B505C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpecVector.cpp;
+			refType = 4;
+		};
+		ED1507B605C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = CPlotSpecVector.h;
+			refType = 4;
+		};
+		ED1507B705C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.cpp;
+			refType = 4;
+		};
+		ED1507B805C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.h;
+			refType = 4;
+		};
+		ED1507B905C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.ui;
+			refType = 4;
+		};
+		ED1507BA05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = curve2dwidget.ui.h;
+			refType = 4;
+		};
+		ED1507BB05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = doublerect.cpp;
+			refType = 4;
+		};
+		ED1507BC05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = doublerect.h;
+			refType = 4;
+		};
+		ED1507BE05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plot.pro;
+			refType = 4;
+		};
+		ED1507BF05C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotspec.h;
+			refType = 4;
+		};
+		ED1507C005C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.cpp;
+			refType = 4;
+		};
+		ED1507C105C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.h;
+			refType = 4;
+		};
+		ED1507C205C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwidget1.ui;
+			refType = 4;
+		};
+		ED1507C305C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwindow.cpp;
+			refType = 4;
+		};
+		ED1507C405C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = plotwindow.h;
+			refType = 4;
+		};
+		ED1507C505C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = zoomplot.cpp;
+			refType = 4;
+		};
+		ED1507C605C5C6C103AD62C7 = {
+			isa = PBXFileReference;
+			path = zoomplot.h;
+			refType = 4;
+		};
+		ED1507CA05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CChemEqInterface.cpp;
+			refType = 4;
+		};
+		ED1507CB05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CChemEqInterface.h;
+			refType = 4;
+		};
+		ED1507CC05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CMetabNameInterface.cpp;
+			refType = 4;
+		};
+		ED1507CD05C60F4503AD62C7 = {
+			isa = PBXFileReference;
+			path = CMetabNameInterface.h;
+			refType = 4;
+		};
+		ED523116046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = copasi.h;
+			refType = 4;
+		};
+		ED523117046DA6DE03C9C501 = {
+			children = (
+				ED523118046DA6DE03C9C501,
+				ED523119046DA6DE03C9C501,
+				ED52311B046DA6DE03C9C501,
+				ED52311C046DA6DE03C9C501,
+				ED52311D046DA6DE03C9C501,
+				ED52311E046DA6DE03C9C501,
+				ED52311F046DA6DE03C9C501,
+				ED523120046DA6DE03C9C501,
+				ED523123046DA6DE03C9C501,
+				ED523124046DA6DE03C9C501,
+				ED523125046DA6DE03C9C501,
+				ED523126046DA6DE03C9C501,
+				ED523127046DA6DE03C9C501,
+				ED523128046DA6DE03C9C501,
+				ED523129046DA6DE03C9C501,
+				ED52312A046DA6DE03C9C501,
+				ED52312B046DA6DE03C9C501,
+				ED52312C046DA6DE03C9C501,
+				ED52312D046DA6DE03C9C501,
+				ED52312E046DA6DE03C9C501,
+				ED52312F046DA6DE03C9C501,
+				ED523130046DA6DE03C9C501,
+				ED523131046DA6DE03C9C501,
+				ED523132046DA6DE03C9C501,
+				ED523133046DA6DE03C9C501,
+				ED523135046DA6DE03C9C501,
+				ED523144046DA6DE03C9C501,
+				ED523145046DA6DE03C9C501,
+				ED523146046DA6DE03C9C501,
+				ED523149046DA6DE03C9C501,
+				ED52314A046DA6DE03C9C501,
+				ED52314B046DA6DE03C9C501,
+				ED52314C046DA6DE03C9C501,
+				ED52314E046DA6DE03C9C501,
+				ED52314F046DA6DE03C9C501,
+				ED523150046DA6DE03C9C501,
+				ED523151046DA6DE03C9C501,
+				ED523152046DA6DE03C9C501,
+				ED523153046DA6DE03C9C501,
+				ED523154046DA6DE03C9C501,
+				ED523155046DA6DE03C9C501,
+				ED523156046DA6DE03C9C501,
+				ED523157046DA6DE03C9C501,
+				ED523158046DA6DE03C9C501,
+				ED523159046DA6DE03C9C501,
+				ED52315B046DA6DE03C9C501,
+				ED52315C046DA6DE03C9C501,
+				ED52315D046DA6DE03C9C501,
+				ED52315E046DA6DE03C9C501,
+				ED52315F046DA6DE03C9C501,
+				ED523160046DA6DE03C9C501,
+				ED523162046DA6DE03C9C501,
+				ED523163046DA6DE03C9C501,
+				ED523164046DA6DE03C9C501,
+				ED523165046DA6DE03C9C501,
+				ED523167046DA6DE03C9C501,
+				ED523168046DA6DE03C9C501,
+				ED523169046DA6DE03C9C501,
+				ED52316A046DA6DE03C9C501,
+				ED52316B046DA6DE03C9C501,
+				ED52316C046DA6DE03C9C501,
+				ED52316D046DA6DE03C9C501,
+				ED52316E046DA6DE03C9C501,
+				ED52316F046DA6DE03C9C501,
+				ED523173046DA6DE03C9C501,
+				ED523174046DA6DE03C9C501,
+				ED523175046DA6DE03C9C501,
+				ED523176046DA6DE03C9C501,
+				ED523178046DA6DE03C9C501,
+				ED523179046DA6DE03C9C501,
+				ED52317A046DA6DE03C9C501,
+				ED52317B046DA6DE03C9C501,
+				ED52317C046DA6DE03C9C501,
+				ED52317D046DA6DE03C9C501,
+				ED52317F046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = CopasiUI;
+			refType = 4;
+		};
+		ED523118046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentsWidget.cpp;
+			refType = 4;
+		};
+		ED523119046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentsWidget.h;
+			refType = 4;
+		};
+		ED52311B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentsWidget1.cpp;
+			refType = 4;
+		};
+		ED52311C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentsWidget1.h;
+			refType = 4;
+		};
+		ED52311D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentSymbols.cpp;
+			refType = 4;
+		};
+		ED52311E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CompartmentSymbols.h;
+			refType = 4;
+		};
+		ED52311F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ConstantSymbols.cpp;
+			refType = 4;
+		};
+		ED523120046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ConstantSymbols.h;
+			refType = 4;
+		};
+		ED523123046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = copasiui3window.cpp;
+			refType = 4;
+		};
+		ED523124046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = copasiui3window.h;
+			refType = 4;
+		};
+		ED523125046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = copasiWidget.cpp;
+			refType = 4;
+		};
+		ED523126046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = copasiWidget.h;
+			refType = 4;
+		};
+		ED523127046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CReactionInterface.cpp;
+			refType = 4;
+		};
+		ED523128046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CReactionInterface.h;
+			refType = 4;
+		};
+		ED523129046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = DataModel.h;
+			refType = 4;
+		};
+		ED52312A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = DifferentialEquations.cpp;
+			refType = 4;
+		};
+		ED52312B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = DifferentialEquations.h;
+			refType = 4;
+		};
+		ED52312C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FixedMetaboliteSymbols.cpp;
+			refType = 4;
+		};
+		ED52312D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FixedMetaboliteSymbols.h;
+			refType = 4;
+		};
+		ED52312E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionSymbols.cpp;
+			refType = 4;
+		};
+		ED52312F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionSymbols.h;
+			refType = 4;
+		};
+		ED523130046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionWidget.cpp;
+			refType = 4;
+		};
+		ED523131046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionWidget.h;
+			refType = 4;
+		};
+		ED523132046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionWidget1.cpp;
+			refType = 4;
+		};
+		ED523133046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FunctionWidget1.h;
+			refType = 4;
+		};
+		ED523135046DA6DE03C9C501 = {
+			children = (
+				ED523136046DA6DE03C9C501,
+				ED523137046DA6DE03C9C501,
+				ED523138046DA6DE03C9C501,
+				ED523139046DA6DE03C9C501,
+				ED52313A046DA6DE03C9C501,
+				ED52313B046DA6DE03C9C501,
+				ED52313C046DA6DE03C9C501,
+				ED52313D046DA6DE03C9C501,
+				ED52313E046DA6DE03C9C501,
+				ED52313F046DA6DE03C9C501,
+				ED523140046DA6DE03C9C501,
+				ED523141046DA6DE03C9C501,
+				ED523142046DA6DE03C9C501,
+				ED523143046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = icons;
+			refType = 4;
+		};
+		ED523136046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = fileopen.xpm;
+			refType = 4;
+		};
+		ED523137046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = fileprint.xpm;
+			refType = 4;
+		};
+		ED523138046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = filesave.xpm;
+			refType = 4;
+		};
+		ED523139046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = folderclosed.xpm;
+			refType = 4;
+		};
+		ED52313A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = folderlocked.xpm;
+			refType = 4;
+		};
+		ED52313B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = folderopen.xpm;
+			refType = 4;
+		};
+		ED52313C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = locked.xpm;
+			refType = 4;
+		};
+		ED52313D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = modifier.xpm;
+			refType = 4;
+		};
+		ED52313E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectAll.xpm;
+			refType = 4;
+		};
+		ED52313F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectNone.xpm;
+			refType = 4;
+		};
+		ED523140046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectParts.xpm;
+			refType = 4;
+		};
+		ED523141046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = product.xpm;
+			refType = 4;
+		};
+		ED523142046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = substrate.xpm;
+			refType = 4;
+		};
+		ED523143046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = unlocked.xpm;
+			refType = 4;
+		};
+		ED523144046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = listviews.cpp;
+			refType = 4;
+		};
+		ED523145046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = listviews.h;
+			refType = 4;
+		};
+		ED523146046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = main.cpp;
+			refType = 4;
+		};
+		ED523149046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetabolitesWidget.cpp;
+			refType = 4;
+		};
+		ED52314A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetabolitesWidget.h;
+			refType = 4;
+		};
+		ED52314B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetabolitesWidget1.cpp;
+			refType = 4;
+		};
+		ED52314C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetabolitesWidget1.h;
+			refType = 4;
+		};
+		ED52314E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetaboliteSymbols.cpp;
+			refType = 4;
+		};
+		ED52314F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MetaboliteSymbols.h;
+			refType = 4;
+		};
+		ED523150046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ModelWidget.cpp;
+			refType = 4;
+		};
+		ED523151046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ModelWidget.h;
+			refType = 4;
+		};
+		ED523152046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ModesWidget.cpp;
+			refType = 4;
+		};
+		ED523153046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ModesWidget.h;
+			refType = 4;
+		};
+		ED523154046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietiesWidget.cpp;
+			refType = 4;
+		};
+		ED523155046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietiesWidget.h;
+			refType = 4;
+		};
+		ED523156046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietyWidget.cpp;
+			refType = 4;
+		};
+		ED523157046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietyWidget.h;
+			refType = 4;
+		};
+		ED523158046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietyWidget1.cpp;
+			refType = 4;
+		};
+		ED523159046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MoietyWidget1.h;
+			refType = 4;
+		};
+		ED52315B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MyLineEdit.cpp;
+			refType = 4;
+		};
+		ED52315C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MyLineEdit.h;
+			refType = 4;
+		};
+		ED52315D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MyTable.cpp;
+			refType = 4;
+		};
+		ED52315E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = MyTable.h;
+			refType = 4;
+		};
+		ED52315F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ObjectBrowser.cpp;
+			refType = 4;
+		};
+		ED523160046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ObjectBrowser.h;
+			refType = 4;
+		};
+		ED523162046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ObjectBrowserItem.cpp;
+			refType = 4;
+		};
+		ED523163046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ObjectBrowserItem.h;
+			refType = 4;
+		};
+		ED523164046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectdebug.cpp;
+			refType = 4;
+		};
+		ED523165046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectdebug.h;
+			refType = 4;
+		};
+		ED523167046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = objectdebug.ui.h;
+			refType = 4;
+		};
+		ED523168046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Observer.cpp;
+			refType = 4;
+		};
+		ED523169046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Observer.h;
+			refType = 4;
+		};
+		ED52316A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = parametertable.cpp;
+			refType = 4;
+		};
+		ED52316B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = parametertable.h;
+			refType = 4;
+		};
+		ED52316C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ReactionsWidget.cpp;
+			refType = 4;
+		};
+		ED52316D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ReactionsWidget.h;
+			refType = 4;
+		};
+		ED52316E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ReactionsWidget1.cpp;
+			refType = 4;
+		};
+		ED52316F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ReactionsWidget1.h;
+			refType = 4;
+		};
+		ED523173046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ScanWidget.cpp;
+			refType = 4;
+		};
+		ED523174046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = ScanWidget.h;
+			refType = 4;
+		};
+		ED523175046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = SteadyStateWidget.cpp;
+			refType = 4;
+		};
+		ED523176046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = SteadyStateWidget.h;
+			refType = 4;
+		};
+		ED523178046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = StretchTable.cpp;
+			refType = 4;
+		};
+		ED523179046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = StretchTable.h;
+			refType = 4;
+		};
+		ED52317A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Subject.cpp;
+			refType = 4;
+		};
+		ED52317B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Subject.h;
+			refType = 4;
+		};
+		ED52317C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = TrajectoryWidget.cpp;
+			refType = 4;
+		};
+		ED52317D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = TrajectoryWidget.h;
+			refType = 4;
+		};
+		ED52317F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Tree.h;
+			refType = 4;
+		};
+		ED523180046DA6DE03C9C501 = {
+			children = (
+				ED523181046DA6DE03C9C501,
+				ED523182046DA6DE03C9C501,
+				ED523183046DA6DE03C9C501,
+				ED523184046DA6DE03C9C501,
+				ED523185046DA6DE03C9C501,
+				ED523186046DA6DE03C9C501,
+				ED523187046DA6DE03C9C501,
+				ED523188046DA6DE03C9C501,
+				ED523189046DA6DE03C9C501,
+				ED52318A046DA6DE03C9C501,
+				ED52318B046DA6DE03C9C501,
+				ED52318C046DA6DE03C9C501,
+				ED5DCA2B0477D48403B0BD8E,
+			);
+			isa = PBXGroup;
+			path = elementaryFluxModes;
+			refType = 4;
+		};
+		ED523181046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CEFMAlgorithm.cpp;
+			refType = 4;
+		};
+		ED523182046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CEFMAlgorithm.h;
+			refType = 4;
+		};
+		ED523183046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CElementaryFluxModes.cpp;
+			refType = 4;
+		};
+		ED523184046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CElementaryFluxModes.h;
+			refType = 4;
+		};
+		ED523185046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CFluxMode.cpp;
+			refType = 4;
+		};
+		ED523186046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CFluxMode.h;
+			refType = 4;
+		};
+		ED523187046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CFluxScore.cpp;
+			refType = 4;
+		};
+		ED523188046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CFluxScore.h;
+			refType = 4;
+		};
+		ED523189046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTableauLine.cpp;
+			refType = 4;
+		};
+		ED52318A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTableauLine.h;
+			refType = 4;
+		};
+		ED52318B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTableauMatrix.cpp;
+			refType = 4;
+		};
+		ED52318C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTableauMatrix.h;
+			refType = 4;
+		};
+		ED523190046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = FlexLexer.h;
+			refType = 4;
+		};
+		ED5231AB046DA6DE03C9C501 = {
+			children = (
+				ED5231AC046DA6DE03C9C501,
+				ED5231AD046DA6DE03C9C501,
+				ED5231AE046DA6DE03C9C501,
+				ED5231AF046DA6DE03C9C501,
+				ED5231B0046DA6DE03C9C501,
+				ED5231B1046DA6DE03C9C501,
+				ED5231B2046DA6DE03C9C501,
+				ED5231B3046DA6DE03C9C501,
+				ED5231B4046DA6DE03C9C501,
+				ED5231B5046DA6DE03C9C501,
+				ED5231B6046DA6DE03C9C501,
+				ED5231B7046DA6DE03C9C501,
+				ED5DCA290477D23503B0BD8E,
+			);
+			isa = PBXGroup;
+			path = mathmodel;
+			refType = 4;
+		};
+		ED5231AC046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathConstant.cpp;
+			refType = 4;
+		};
+		ED5231AD046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathConstant.h;
+			refType = 4;
+		};
+		ED5231AE046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathEq.cpp;
+			refType = 4;
+		};
+		ED5231AF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathEq.h;
+			refType = 4;
+		};
+		ED5231B0046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathModel.cpp;
+			refType = 4;
+		};
+		ED5231B1046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathModel.h;
+			refType = 4;
+		};
+		ED5231B2046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathNode.cpp;
+			refType = 4;
+		};
+		ED5231B3046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathNode.h;
+			refType = 4;
+		};
+		ED5231B4046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathSymbol.cpp;
+			refType = 4;
+		};
+		ED5231B5046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathSymbol.h;
+			refType = 4;
+		};
+		ED5231B6046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathVariable.cpp;
+			refType = 4;
+		};
+		ED5231B7046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMathVariable.h;
+			refType = 4;
+		};
+		ED5231BB046DA6DE03C9C501 = {
+			children = (
+				ED5231BE046DA6DE03C9C501,
+				ED5231BF046DA6DE03C9C501,
+				ED5231C0046DA6DE03C9C501,
+				ED5231C1046DA6DE03C9C501,
+				ED5231C2046DA6DE03C9C501,
+				ED5231C3046DA6DE03C9C501,
+				ED5231C4046DA6DE03C9C501,
+				ED5231C5046DA6DE03C9C501,
+				ED5231C6046DA6DE03C9C501,
+				ED5231C7046DA6DE03C9C501,
+				ED5DCA2F0477D8E903B0BD8E,
+			);
+			isa = PBXGroup;
+			path = optimization;
+			refType = 4;
+		};
+		ED5231BE046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COptMethod.cpp;
+			refType = 4;
+		};
+		ED5231BF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COptMethod.h;
+			refType = 4;
+		};
+		ED5231C0046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COptProblem.cpp;
+			refType = 4;
+		};
+		ED5231C1046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COptProblem.h;
+			refType = 4;
+		};
+		ED5231C2046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandomSearch.cpp;
+			refType = 4;
+		};
+		ED5231C3046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandomSearch.h;
+			refType = 4;
+		};
+		ED5231C4046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandomSearchMaster.cpp;
+			refType = 4;
+		};
+		ED5231C5046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandomSearchMaster.h;
+			refType = 4;
+		};
+		ED5231C6046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRealProblem.cpp;
+			refType = 4;
+		};
+		ED5231C7046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRealProblem.h;
+			refType = 4;
+		};
+		ED5231CB046DA6DE03C9C501 = {
+			children = (
+				ED5231CC046DA6DE03C9C501,
+				ED5231CD046DA6DE03C9C501,
+				ED5231CE046DA6DE03C9C501,
+				ED5231CF046DA6DE03C9C501,
+				ED5231D0046DA6DE03C9C501,
+				ED5231D1046DA6DE03C9C501,
+				ED5231D2046DA6DE03C9C501,
+				ED5231D3046DA6DE03C9C501,
+				ED5231D4046DA6DE03C9C501,
+				ED5231D5046DA6DE03C9C501,
+				ED5231D6046DA6DE03C9C501,
+				ED5231D7046DA6DE03C9C501,
+				ED5231D8046DA6DE03C9C501,
+				ED5231D9046DA6DE03C9C501,
+				ED5231DA046DA6DE03C9C501,
+				ED5231DB046DA6DE03C9C501,
+				ED5231DF046DA6DE03C9C501,
+				ED5DCA2E0477D62703B0BD8E,
+			);
+			isa = PBXGroup;
+			path = output;
+			refType = 4;
+		};
+		ED5231CC046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CDatum.cpp;
+			refType = 4;
+		};
+		ED5231CD046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CDatum.h;
+			refType = 4;
+		};
+		ED5231CE046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CNodeO.cpp;
+			refType = 4;
+		};
+		ED5231CF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CNodeO.h;
+			refType = 4;
+		};
+		ED5231D0046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutput.cpp;
+			refType = 4;
+		};
+		ED5231D1046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutput.h;
+			refType = 4;
+		};
+		ED5231D2046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputEvent.cpp;
+			refType = 4;
+		};
+		ED5231D3046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputEvent.h;
+			refType = 4;
+		};
+		ED5231D4046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputLine.cpp;
+			refType = 4;
+		};
+		ED5231D5046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputLine.h;
+			refType = 4;
+		};
+		ED5231D6046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputList.cpp;
+			refType = 4;
+		};
+		ED5231D7046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = COutputList.h;
+			refType = 4;
+		};
+		ED5231D8046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CUDFunction.cpp;
+			refType = 4;
+		};
+		ED5231D9046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CUDFunction.h;
+			refType = 4;
+		};
+		ED5231DA046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CUDFunctionDB.cpp;
+			refType = 4;
+		};
+		ED5231DB046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CUDFunctionDB.h;
+			refType = 4;
+		};
+		ED5231DF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = output.h;
+			refType = 4;
+		};
+		ED5231E4046DA6DE03C9C501 = {
+			children = (
+				ED5231E5046DA6DE03C9C501,
+				ED5231E6046DA6DE03C9C501,
+				ED5231E7046DA6DE03C9C501,
+				ED5231E8046DA6DE03C9C501,
+				ED5231E9046DA6DE03C9C501,
+				ED5231EA046DA6DE03C9C501,
+				ED5DCA310477DAAF03B0BD8E,
+			);
+			isa = PBXGroup;
+			path = randomGenerator;
+			refType = 4;
+		};
+		ED5231E5046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Cmt19937.cpp;
+			refType = 4;
+		};
+		ED5231E6046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Cmt19937.h;
+			refType = 4;
+		};
+		ED5231E7046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Cr250.cpp;
+			refType = 4;
+		};
+		ED5231E8046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = Cr250.h;
+			refType = 4;
+		};
+		ED5231E9046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandom.cpp;
+			refType = 4;
+		};
+		ED5231EA046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CRandom.h;
+			refType = 4;
+		};
+		ED5231EE046DA6DE03C9C501 = {
+			children = (
+				ED5231EF046DA6DE03C9C501,
+				ED5231F0046DA6DE03C9C501,
+				ED5231F1046DA6DE03C9C501,
+				ED5231F2046DA6DE03C9C501,
+				ED5231F3046DA6DE03C9C501,
+				ED5231F4046DA6DE03C9C501,
+				ED5231F5046DA6DE03C9C501,
+				ED5231F6046DA6DE03C9C501,
+				ED5231F7046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = report;
+			refType = 4;
+		};
+		ED5231EF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiContainer.cpp;
+			refType = 4;
+		};
+		ED5231F0046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiContainer.h;
+			refType = 4;
+		};
+		ED5231F1046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiObject.cpp;
+			refType = 4;
+		};
+		ED5231F2046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiObject.h;
+			refType = 4;
+		};
+		ED5231F3046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiObjectName.cpp;
+			refType = 4;
+		};
+		ED5231F4046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiObjectName.h;
+			refType = 4;
+		};
+		ED5231F5046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiObjectReference.h;
+			refType = 4;
+		};
+		ED5231F6046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CKeyFactory.cpp;
+			refType = 4;
+		};
+		ED5231F7046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CKeyFactory.h;
+			refType = 4;
+		};
+		ED5231FB046DA6DE03C9C501 = {
+			children = (
+				ED5231FC046DA6DE03C9C501,
+				ED5231FD046DA6DE03C9C501,
+				ED5231FE046DA6DE03C9C501,
+				ED5231FF046DA6DE03C9C501,
+				ED523200046DA6DE03C9C501,
+				ED523201046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = scan;
+			refType = 4;
+		};
+		ED5231FC046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanMethod.cpp;
+			refType = 4;
+		};
+		ED5231FD046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanMethod.h;
+			refType = 4;
+		};
+		ED5231FE046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanProblem.cpp;
+			refType = 4;
+		};
+		ED5231FF046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanProblem.h;
+			refType = 4;
+		};
+		ED523200046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanTask.cpp;
+			refType = 4;
+		};
+		ED523201046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CScanTask.h;
+			refType = 4;
+		};
+		ED523205046DA6DE03C9C501 = {
+			children = (
+				ED523206046DA6DE03C9C501,
+				ED523207046DA6DE03C9C501,
+				ED523208046DA6DE03C9C501,
+				ED523209046DA6DE03C9C501,
+				ED52320A046DA6DE03C9C501,
+				ED52320B046DA6DE03C9C501,
+				ED52320C046DA6DE03C9C501,
+				ED52320D046DA6DE03C9C501,
+				ED52320E046DA6DE03C9C501,
+				ED52320F046DA6DE03C9C501,
+				ED523210046DA6DE03C9C501,
+				ED523211046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = steadystate;
+			refType = 4;
+		};
+		ED523206046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CEigen.cpp;
+			refType = 4;
+		};
+		ED523207046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CEigen.h;
+			refType = 4;
+		};
+		ED523208046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMca.cpp;
+			refType = 4;
+		};
+		ED523209046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMca.h;
+			refType = 4;
+		};
+		ED52320A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CNewtonMethod.cpp;
+			refType = 4;
+		};
+		ED52320B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CNewtonMethod.h;
+			refType = 4;
+		};
+		ED52320C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateMethod.cpp;
+			refType = 4;
+		};
+		ED52320D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateMethod.h;
+			refType = 4;
+		};
+		ED52320E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateProblem.cpp;
+			refType = 4;
+		};
+		ED52320F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateProblem.h;
+			refType = 4;
+		};
+		ED523210046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateTask.cpp;
+			refType = 4;
+		};
+		ED523211046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CSteadyStateTask.h;
+			refType = 4;
+		};
+		ED523215046DA6DE03C9C501 = {
+			children = (
+				ED523216046DA6DE03C9C501,
+				ED523217046DA6DE03C9C501,
+				ED523218046DA6DE03C9C501,
+				ED523219046DA6DE03C9C501,
+				ED52321A046DA6DE03C9C501,
+				ED52321B046DA6DE03C9C501,
+				ED52321C046DA6DE03C9C501,
+				ED52321D046DA6DE03C9C501,
+				ED52321E046DA6DE03C9C501,
+				ED52321F046DA6DE03C9C501,
+				ED523220046DA6DE03C9C501,
+				ED523221046DA6DE03C9C501,
+				ED523222046DA6DE03C9C501,
+				ED523223046DA6DE03C9C501,
+				ED523224046DA6DE03C9C501,
+				ED523225046DA6DE03C9C501,
+				ED523226046DA6DE03C9C501,
+				ED523227046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = trajectory;
+			refType = 4;
+		};
+		ED523216046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CHybridMethod.cpp;
+			refType = 4;
+		};
+		ED523217046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CHybridMethod.h;
+			refType = 4;
+		};
+		ED523218046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CHybridNextReactionRKMethod.cpp;
+			refType = 4;
+		};
+		ED523219046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CHybridNextReactionRKMethod.h;
+			refType = 4;
+		};
+		ED52321A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CLsodaMethod.cpp;
+			refType = 4;
+		};
+		ED52321B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CLsodaMethod.h;
+			refType = 4;
+		};
+		ED52321C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochDirectMethod.cpp;
+			refType = 4;
+		};
+		ED52321D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochDirectMethod.h;
+			refType = 4;
+		};
+		ED52321E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochMethod.cpp;
+			refType = 4;
+		};
+		ED52321F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochMethod.h;
+			refType = 4;
+		};
+		ED523220046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochNextReactionMethod.cpp;
+			refType = 4;
+		};
+		ED523221046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CStochNextReactionMethod.h;
+			refType = 4;
+		};
+		ED523222046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryMethod.cpp;
+			refType = 4;
+		};
+		ED523223046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryMethod.h;
+			refType = 4;
+		};
+		ED523224046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryProblem.cpp;
+			refType = 4;
+		};
+		ED523225046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryProblem.h;
+			refType = 4;
+		};
+		ED523226046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryTask.cpp;
+			refType = 4;
+		};
+		ED523227046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CTrajectoryTask.h;
+			refType = 4;
+		};
+		ED52322B046DA6DE03C9C501 = {
+			children = (
+				ED52322C046DA6DE03C9C501,
+				ED52322D046DA6DE03C9C501,
+				ED52322E046DA6DE03C9C501,
+				ED52322F046DA6DE03C9C501,
+				ED523230046DA6DE03C9C501,
+				ED523231046DA6DE03C9C501,
+				ED523232046DA6DE03C9C501,
+				ED523233046DA6DE03C9C501,
+				ED523234046DA6DE03C9C501,
+				ED523235046DA6DE03C9C501,
+				ED523236046DA6DE03C9C501,
+				ED523237046DA6DE03C9C501,
+				ED523238046DA6DE03C9C501,
+				ED523239046DA6DE03C9C501,
+				ED52323A046DA6DE03C9C501,
+				ED52323F046DA6DE03C9C501,
+				ED523240046DA6DE03C9C501,
+				ED523241046DA6DE03C9C501,
+				ED523242046DA6DE03C9C501,
+				ED523243046DA6DE03C9C501,
+				ED523244046DA6DE03C9C501,
+				ED523245046DA6DE03C9C501,
+				ED523248046DA6DE03C9C501,
+				ED523249046DA6DE03C9C501,
+				ED52324B046DA6DE03C9C501,
+				ED52324C046DA6DE03C9C501,
+			);
+			isa = PBXGroup;
+			path = utilities;
+			refType = 4;
+		};
+		ED52322C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiException.cpp;
+			refType = 4;
+		};
+		ED52322D046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiException.h;
+			refType = 4;
+		};
+		ED52322E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiMessage.cpp;
+			refType = 4;
+		};
+		ED52322F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiMessage.h;
+			refType = 4;
+		};
+		ED523230046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiNode.h;
+			refType = 4;
+		};
+		ED523231046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiTree.h;
+			refType = 4;
+		};
+		ED523232046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiVector.h;
+			refType = 4;
+		};
+		ED523233046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CDependencyGraph.cpp;
+			refType = 4;
+		};
+		ED523234046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CDependencyGraph.h;
+			refType = 4;
+		};
+		ED523235046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CGlobals.cpp;
+			refType = 4;
+		};
+		ED523236046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CGlobals.h;
+			refType = 4;
+		};
+		ED523237046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CIndexedPriorityQueue.cpp;
+			refType = 4;
+		};
+		ED523238046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CIndexedPriorityQueue.h;
+			refType = 4;
+		};
+		ED523239046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CluX.h;
+			refType = 4;
+		};
+		ED52323A046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CMatrix.h;
+			refType = 4;
+		};
+		ED52323F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CReadConfig.cpp;
+			refType = 4;
+		};
+		ED523240046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CReadConfig.h;
+			refType = 4;
+		};
+		ED523241046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CVector.h;
+			refType = 4;
+		};
+		ED523242046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CVersion.cpp;
+			refType = 4;
+		};
+		ED523243046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CVersion.h;
+			refType = 4;
+		};
+		ED523244046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CWriteConfig.cpp;
+			refType = 4;
+		};
+		ED523245046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CWriteConfig.h;
+			refType = 4;
+		};
+		ED523248046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = messages.h;
+			refType = 4;
+		};
+		ED523249046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = readwrite.h;
+			refType = 4;
+		};
+		ED52324B046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = utility.cpp;
+			refType = 4;
+		};
+		ED52324C046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = utility.h;
+			refType = 4;
+		};
+		ED52324D046DA6DE03C9C501 = {
+			children = (
+				ED52324E046DA6DE03C9C501,
+				ED52324F046DA6DE03C9C501,
+				ED523250046DA6DE03C9C501,
+				ED523251046DA6DE03C9C501,
+				ED523252046DA6DE03C9C501,
+				ED523253046DA6DE03C9C501,
+				ED7804E804B0B3FA0352A85A,
+				ED7804E904B0B3FA0352A85A,
+				ED7804EB04B0B3FA0352A85A,
+			);
+			isa = PBXGroup;
+			path = xml;
+			refType = 4;
+		};
+		ED52324E046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiXML.cpp;
+			refType = 4;
+		};
+		ED52324F046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiXML.h;
+			refType = 4;
+		};
+		ED523250046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiXMLInterface.cpp;
+			refType = 4;
+		};
+		ED523251046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CCopasiXMLInterface.h;
+			refType = 4;
+		};
+		ED523252046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CExpat.cpp;
+			refType = 4;
+		};
+		ED523253046DA6DE03C9C501 = {
+			isa = PBXFileReference;
+			path = CExpat.h;
+			refType = 4;
+		};
+		ED523390046DA93A03C9C501 = {
+			isa = PBXFrameworkReference;
+			name = vecLib.framework;
+			path = /System/Library/Frameworks/vecLib.framework;
+			refType = 0;
+		};
+		ED5DC9FD047712BB03B0BD8E = {
+			children = (
+				ED5DC9FE047712BB03B0BD8E,
+				ED5DC9FF047712BB03B0BD8E,
+				ED5DCA00047712BB03B0BD8E,
+				ED5DCA01047712BB03B0BD8E,
+				ED1507CA05C60F4503AD62C7,
+				ED1507CB05C60F4503AD62C7,
+				ED5DCA02047712BB03B0BD8E,
+				ED5DCA03047712BB03B0BD8E,
+				ED5DCA04047712BB03B0BD8E,
+				ED5DCA05047712BB03B0BD8E,
+				ED5DCA06047712BB03B0BD8E,
+				ED5DCA07047712BB03B0BD8E,
+				ED1507CC05C60F4503AD62C7,
+				ED1507CD05C60F4503AD62C7,
+				ED5DCA08047712BB03B0BD8E,
+				ED5DCA09047712BB03B0BD8E,
+				ED5DCA0A047712BB03B0BD8E,
+				ED5DCA0B047712BB03B0BD8E,
+				ED5DCA0C047712BB03B0BD8E,
+				ED5DCA0D047712BB03B0BD8E,
+				ED5DCA0E047712BB03B0BD8E,
+				ED5DCA0F047712BB03B0BD8E,
+				ED5DCA10047712BB03B0BD8E,
+				ED5DCA11047712BB03B0BD8E,
+				ED5DCA12047712BB03B0BD8E,
+				ED5DCA13047712BB03B0BD8E,
+				ED5DCA14047712BB03B0BD8E,
+				ED5DCA15047712BB03B0BD8E,
+				ED5DCA16047712BB03B0BD8E,
+				ED5DCA17047712BB03B0BD8E,
+				ED5DCA1D047712BB03B0BD8E,
+				ED5DCA2D0477D54103B0BD8E,
+			);
+			isa = PBXGroup;
+			path = model;
+			refType = 2;
+		};
+		ED5DC9FE047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CChemEq.cpp;
+			refType = 4;
+		};
+		ED5DC9FF047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CChemEq.h;
+			refType = 4;
+		};
+		ED5DCA00047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CChemEqElement.cpp;
+			refType = 4;
+		};
+		ED5DCA01047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CChemEqElement.h;
+			refType = 4;
+		};
+		ED5DCA02047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CCompartment.cpp;
+			refType = 4;
+		};
+		ED5DCA03047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CCompartment.h;
+			refType = 4;
+		};
+		ED5DCA04047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CDeTerm.cpp;
+			refType = 4;
+		};
+		ED5DCA05047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CDeTerm.h;
+			refType = 4;
+		};
+		ED5DCA06047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CMetab.cpp;
+			refType = 4;
+		};
+		ED5DCA07047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CMetab.h;
+			refType = 4;
+		};
+		ED5DCA08047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CModel.cpp;
+			refType = 4;
+		};
+		ED5DCA09047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CModel.h;
+			refType = 4;
+		};
+		ED5DCA0A047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CMoiety.cpp;
+			refType = 4;
+		};
+		ED5DCA0B047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CMoiety.h;
+			refType = 4;
+		};
+		ED5DCA0C047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CParticleNumberList.cpp;
+			refType = 4;
+		};
+		ED5DCA0D047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CParticleNumberList.h;
+			refType = 4;
+		};
+		ED5DCA0E047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CReaction.cpp;
+			refType = 4;
+		};
+		ED5DCA0F047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CReaction.h;
+			refType = 4;
+		};
+		ED5DCA10047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CScanInputFlexLexer.cpp;
+			refType = 4;
+		};
+		ED5DCA11047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CScanInputFlexLexer.lpp;
+			refType = 4;
+		};
+		ED5DCA12047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CSpec2Model.cpp;
+			refType = 4;
+		};
+		ED5DCA13047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CSpec2Model.h;
+			refType = 4;
+		};
+		ED5DCA14047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CSpecLine.cpp;
+			refType = 4;
+		};
+		ED5DCA15047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CSpecLine.h;
+			refType = 4;
+		};
+		ED5DCA16047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CState.cpp;
+			refType = 4;
+		};
+		ED5DCA17047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = CState.h;
+			refType = 4;
+		};
+		ED5DCA1D047712BB03B0BD8E = {
+			isa = PBXFileReference;
+			path = model.h;
+			refType = 4;
+		};
+		ED5DCA230477C3D203B0BD8E = {
+			isa = PBXFileReference;
+			path = lib.pri;
+			refType = 4;
+		};
+		ED5DCA290477D23503B0BD8E = {
+			isa = PBXFileReference;
+			path = mathmodel.pro;
+			refType = 4;
+		};
+		ED5DCA2A0477D3E203B0BD8E = {
+			isa = PBXFileReference;
+			path = commandline.pro;
+			refType = 4;
+		};
+		ED5DCA2B0477D48403B0BD8E = {
+			isa = PBXFileReference;
+			path = elementaryFluxModes.pro;
+			refType = 4;
+		};
+		ED5DCA2C0477D4EF03B0BD8E = {
+			isa = PBXFileReference;
+			path = function.pro;
+			refType = 4;
+		};
+		ED5DCA2D0477D54103B0BD8E = {
+			isa = PBXFileReference;
+			path = model.pro;
+			refType = 4;
+		};
+		ED5DCA2E0477D62703B0BD8E = {
+			isa = PBXFileReference;
+			path = output.pro;
+			refType = 4;
+		};
+		ED5DCA2F0477D8E903B0BD8E = {
+			isa = PBXFileReference;
+			path = optimization.pro;
+			refType = 4;
+		};
+		ED5DCA310477DAAF03B0BD8E = {
+			isa = PBXFileReference;
+			path = randomGenerator.pro;
+			refType = 4;
+		};
+		ED5DCB0E047A9DD803B0BD8E = {
 			buildArgumentsString = $ACTION;
 			buildPhases = (
 			);
@@ -50,7 +1992,7 @@
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
 			buildToolPath = /usr/bin/gnumake;
-			buildWorkingDirectory = CopasiUI/;
+			buildWorkingDirectory = .;
 			dependencies = (
 			);
 			isa = PBXLegacyTarget;
@@ -61,6 +2003,246 @@
 			settingsToPassOnCommandLine = 280;
 			shouldUseHeadermap = 0;
 		};
+		ED7804E804B0B3FA0352A85A = {
+			isa = PBXFileReference;
+			path = CCopasiXMLParser.cpp;
+			refType = 4;
+		};
+		ED7804E904B0B3FA0352A85A = {
+			isa = PBXFileReference;
+			path = CCopasiXMLParser.h;
+			refType = 4;
+		};
+		ED7804EB04B0B3FA0352A85A = {
+			isa = PBXFileReference;
+			path = CXMLHandler.h;
+			refType = 4;
+		};
+		EDACF9A90475B8F50352A85A = {
+			children = (
+				EDACF9AA0475B8F50352A85A,
+				EDACF9AB0475B8F50352A85A,
+				EDACF9AC0475B8F50352A85A,
+				EDACF9AD0475B8F50352A85A,
+				EDACF9AE0475B8F50352A85A,
+				EDACF9AF0475B8F50352A85A,
+				EDACF9B00475B8F50352A85A,
+				EDACF9B10475B8F50352A85A,
+				EDACF9B20475B8F50352A85A,
+				EDACF9B30475B8F50352A85A,
+				EDACF9B40475B8F50352A85A,
+				EDACF9B50475B8F50352A85A,
+				EDACF9B60475B8F50352A85A,
+				EDACF9B70475B8F50352A85A,
+				EDACF9B80475B8F50352A85A,
+				EDACF9B90475B8F50352A85A,
+				EDACF9BA0475B8F50352A85A,
+				EDACF9BB0475B8F50352A85A,
+				EDACF9BC0475B8F50352A85A,
+				EDACF9BD0475B8F50352A85A,
+				EDACF9BE0475B8F50352A85A,
+				EDACF9BF0475B8F50352A85A,
+				ED5DCA2C0477D4EF03B0BD8E,
+			);
+			isa = PBXGroup;
+			path = function;
+			refType = 2;
+		};
+		EDACF9AA0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CCallParameters.cpp;
+			refType = 4;
+		};
+		EDACF9AB0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CCallParameters.h;
+			refType = 4;
+		};
+		EDACF9AC0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunction.cpp;
+			refType = 4;
+		};
+		EDACF9AD0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunction.h;
+			refType = 4;
+		};
+		EDACF9AE0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionDB.cpp;
+			refType = 4;
+		};
+		EDACF9AF0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionDB.h;
+			refType = 4;
+		};
+		EDACF9B00475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionParameter.cpp;
+			refType = 4;
+		};
+		EDACF9B10475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionParameter.h;
+			refType = 4;
+		};
+		EDACF9B20475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionParameters.cpp;
+			refType = 4;
+		};
+		EDACF9B30475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CFunctionParameters.h;
+			refType = 4;
+		};
+		EDACF9B40475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CKinFunction.cpp;
+			refType = 4;
+		};
+		EDACF9B50475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CKinFunction.h;
+			refType = 4;
+		};
+		EDACF9B60475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CKinFunctionFlexLexer.cpp;
+			refType = 4;
+		};
+		EDACF9B70475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CKinFunctionFlexLexer.lpp;
+			refType = 4;
+		};
+		EDACF9B80475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CMassAction.cpp;
+			refType = 4;
+		};
+		EDACF9B90475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CMassAction.h;
+			refType = 4;
+		};
+		EDACF9BA0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CNodeK.cpp;
+			refType = 4;
+		};
+		EDACF9BB0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CNodeK.h;
+			refType = 4;
+		};
+		EDACF9BC0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CRange.cpp;
+			refType = 4;
+		};
+		EDACF9BD0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CRange.h;
+			refType = 4;
+		};
+		EDACF9BE0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CUsageRange.cpp;
+			refType = 4;
+		};
+		EDACF9BF0475B8F50352A85A = {
+			isa = PBXFileReference;
+			path = CUsageRange.h;
+			refType = 4;
+		};
+		EDE70CBCC5B04B760352A85A = {
+			isa = PBXFileReference;
+			name = libexpat.a;
+			path = /usr/local/lib/libexpat.a;
+			refType = 0;
+		};
+		EDE70CBEC5B04C890352A85A = {
+			isa = PBXFileReference;
+			name = libqt.a;
+			path = /usr/local/qt/lib/libqt.a;
+			refType = 0;
+		};
+		EDE70D79C5B077FB0352A85A = {
+			isa = PBXFrameworkReference;
+			name = AGL.framework;
+			path = /System/Library/Frameworks/AGL.framework;
+			refType = 0;
+		};
+		EDE70D87C5B079460352A85A = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		EDE70E1AC5B079760352A85A = {
+			isa = PBXFrameworkReference;
+			name = OpenGL.framework;
+			path = /System/Library/Frameworks/OpenGL.framework;
+			refType = 0;
+		};
+		EDE70E2DC5B0798D0352A85A = {
+			isa = PBXFrameworkReference;
+			name = QuickTime.framework;
+			path = /System/Library/Frameworks/QuickTime.framework;
+			refType = 0;
+		};
+		EDE70F54C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = copasi.pro;
+			refType = 4;
+		};
+		EDE70F5EC5B07C7C0352A85A = {
+			children = (
+				EDE70F61C5B07C7C0352A85A,
+				EDE70F62C5B07C7C0352A85A,
+				EDE70F64C5B07C7C0352A85A,
+				EDE70F63C5B07C7C0352A85A,
+				EDE70F65C5B07C7C0352A85A,
+				EDE70F66C5B07C7C0352A85A,
+				ED5DCA2A0477D3E203B0BD8E,
+			);
+			isa = PBXGroup;
+			path = commandline;
+			refType = 4;
+		};
+		EDE70F61C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = copasi.cpp;
+			refType = 4;
+		};
+		EDE70F62C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = COptionParser.cpp;
+			refType = 4;
+		};
+		EDE70F63C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = COptionParser.h;
+			refType = 4;
+		};
+		EDE70F64C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = COptionParser.xml;
+			refType = 4;
+		};
+		EDE70F65C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = COptions.cpp;
+			refType = 4;
+		};
+		EDE70F66C5B07C7C0352A85A = {
+			isa = PBXFileReference;
+			path = COptions.h;
+			refType = 4;
+		};
 	};
-	rootObject = 0E0973FC0494FFC30C52A85A;
+	rootObject = 08FB7793FE84155DC02AAC07;
 }

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:54 $
+   End CVS Header */
+
 /**
  * CFunctionParameters
  * 
@@ -8,142 +16,183 @@
 #ifndef COPASI_CFunctionParameters
 #define COPASI_CFunctionParameters
 
-#include "utilities/utilities.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CCopasiVector.h"
 #include "CFunctionParameter.h"
 #include "CUsageRange.h"
+#include "report/CCopasiContainer.h"
 
-class CFunctionParameters
-{
-  // Attributes
- private:
-  /**
-   *  A vector of parameters
-   *  @supplierCardinality 0..*
-   *  @associates <{CFunctionParameter}>
-   */
-  CCopasiVectorNS < CFunctionParameter > mParameters;
+/** @dia:pos 10.7176,6.51973 */
+class CFunctionParameters : public CCopasiContainer
+  {
+    // Attributes
 
-  /**
-   *  A vector describing the ranges of numbers of parameters for
-   *  a specific usage
-   * @supplierCardinality 0..*
-   */
-  CCopasiVectorNS < CUsageRange > mUsageRanges;
+  private:
+    /**
+     *  A vector of parameters
+     *  @supplierCardinality 0..*
+     *  @associates <{CFunctionParameter}>
+     */
+    /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
+    CCopasiVectorNS < CFunctionParameter > mParameters;
 
-  // Operations
- public:
-  /**
-   *  Default constructor
-   */
-  CFunctionParameters();
+    /**
+     *  A vector describing the ranges of numbers of parameters for
+     *  a specific usage
+     * @supplierCardinality 0..*
+     */
+    /** @dia:route 0,2; h,10.7176,6.51973,7.07775,25.0674,1.28919 */
+    CCopasiVectorNS < CUsageRange > mUsageRanges;
 
-  /**
-   *  Copy constructor
-   *  @param "const CFunctionParameters &" src
-   */
-  CFunctionParameters(const CFunctionParameters & src);
+    // Operations
 
-  /**
-   *  Destructor
-   */
-  ~CFunctionParameters();
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFunctionParameters(const std::string & name = "NoName",
+                        const CCopasiContainer * pParent = NULL);
 
-  /**
-   *  Cleanup
-   */
-  void cleanup();
-  
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param "CReadConfig &" configBuffer,
-   *  @param "CReadConfig::Mode" mode (Default: CReadConfig::NEXT)
-   *  @return Fail
-   */
-  void load(CReadConfig & configBuffer,
-            CReadConfig::Mode mode = CReadConfig::NEXT);
+    /**
+     * Copy constructor
+     * @param "const CFunctionParameters &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFunctionParameters(const CFunctionParameters & src,
+                        const CCopasiContainer * pParent = NULL);
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param "CWriteConfig &" configBuffer
-   *  @return Fail
-   */
-  void save(CWriteConfig & configBuffer);
+    /**
+     *  Destructor
+     */
+    ~CFunctionParameters();
 
-  /**
-   *  Add a parameter to the parameter list
-   *  @param "const CFunctionParameter &" parameter
-   */
-  void add(const CFunctionParameter & parameter);
-  
-  /**
-   *  Add a parameter to the parameter list
-   *  @param "CFunctionParameter *" parameter
-   */
-  void add(CFunctionParameter * parameter);
-  
-  /**
-   *  Add a parameter to the parameter list
-   *  @param "const string & name
-   *  @param "const CFunctionParameter::DataType &" type
-   *  @param "const string &" usage
-   */
-  void add(const string & name,
-           const CFunctionParameter::DataType & type,
-           const string & usage);
-  
-  /**
-   *  Remove a parameter from the parameter list
-   *  @param "const CFunctionParameter &" parameter
-   */
-  void remove(const string & name);
-  
-  /**
-   *  Retrieves the vector of function parameters
-   *  @return "CCopasiVectorNS < CFunctionParameter >" & parameter
-   */
-  // CCopasiVectorNS < CFunctionParameter > & getParameters();
+    /**
+     *  Cleanup
+     */
+    void cleanup();
 
-  /**
-   *
-   */
-  CFunctionParameter * & operator[](unsigned C_INT32 index);
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param "CReadConfig &" configBuffer,
+     *  @param "CReadConfig::Mode" mode (Default: CReadConfig::NEXT)
+     *  @return Fail
+     */
+    void load(CReadConfig & configBuffer,
+              CReadConfig::Mode mode = CReadConfig::NEXT);
 
-  /**
-   *
-   */
-  const CFunctionParameter * & operator[](unsigned C_INT32 index) const;
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param "CWriteConfig &" configBuffer
+     *  @return Fail
+     */ 
+    //    void save(CWriteConfig & configBuffer);
 
-  /**
-   *
-   */
-  CFunctionParameter * operator[](const string &name);
+    /**
+     *  Add a parameter to the parameter list
+     *  @param "const CFunctionParameter &" parameter
+     */
 
-  /**
-   *
-   */
-  unsigned C_INT32 size() const;
+    void add(const CFunctionParameter & parameter);
 
-  /**
-   *  Retreives the vector of usage ranges for the parameters
-   *  @return "vector < CUsageRange * > & usageRanges
-   */
-  CCopasiVectorNS < CUsageRange  > & getUsageRanges();
+    /**
+     *  Add a parameter to the parameter list
+     *  @param "CFunctionParameter *" parameter
+     *  @param const bool & adopt (Default: false)
+     */
+    void add(CFunctionParameter * parameter, const bool & adopt = false);
 
-  /**
-   *  Retrieves the first parameter with the specified usage after pos
-   *  @param "const string &" usage
-   *  @param "unsigned C_INT32 &" pos (first call should be with 0)
-   *  @return "CFunctionParameter &" usageRange
-   */
-  CFunctionParameter & getParameterByUsage(const string & usage,
-                                           unsigned C_INT32 & pos);
-  
- private:
-  /**
-   *  Update usage ranges
-   */
-  void updateUsageRanges();
-};
+    /**
+     *  Add a parameter to the parameter list
+     *  @param "const string & name
+     *  @param "const CFunctionParameter::DataType &" type
+     *  @param "const string &" usage
+     */
+    bool add(const std::string & name,
+             const CFunctionParameter::DataType & type,
+             const std::string & usage);
+
+    /**
+     *  Remove a parameter from the parameter list
+     *  @param "const CFunctionParameter &" parameter
+     */
+    void remove(const std::string & name);
+
+    /**
+     *  Retrieves the vector of function parameters
+     *  @return "CCopasiVectorNS < CFunctionParameter >" & parameter
+     */ 
+    // CCopasiVectorNS < CFunctionParameter > & getParameters();
+
+    /**
+     *
+     */
+    CFunctionParameter * operator[](unsigned C_INT32 index);
+    const CFunctionParameter * operator[](unsigned C_INT32 index) const;
+
+    /**
+     *
+     */
+    CFunctionParameter * operator[](const std::string &name);
+    const CFunctionParameter * operator[](const std::string &name) const;
+
+    /**
+     *
+     */
+    unsigned C_INT32 size() const;
+
+    /**
+     *  Retreives the vector of usage ranges for the parameters
+     *  @return "vector < CUsageRange * > & usageRanges
+     */
+    const CCopasiVectorNS < CUsageRange > & getUsageRanges() const;
+
+    /**
+     *  Retrieves the first parameter with the specified usage after pos
+     *  In a normal situation pos is set to 0 for the first call. 
+     *  It is increment by the method to allow subsequent searches to start
+     *  after the last found item. This is usefull if several parameters 
+     *  with the same usage exist.
+     *  @param "const string &" usage
+     *  @param "unsigned C_INT32 &" pos (first call should be with 0)
+     *  @return "CFunctionParameter &" usageRange
+     */
+    const CFunctionParameter & getParameterByUsage(const std::string & usage,
+        unsigned C_INT32 & pos) const;
+
+    /**
+     * gets the number of Parameters with a specific usage
+     */
+    unsigned C_INT32 getNumberOfParametersByUsage(const std::string & usage) const;
+
+    /**
+     * find a parameter by its name and return its index
+     */
+    unsigned C_INT32 findParameterByName(const std::string & name,
+                                         CFunctionParameter::DataType & dataType) const;
+
+    bool operator==(const CFunctionParameters & rhs) const;
+
+    /**
+     * insert operator
+     */
+    friend std::ostream & operator<<(std::ostream &os, const CFunctionParameters & d)
+    {
+      os << "++++CFunctionParameters: " << std::endl;
+      os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
+      os << "    CFunctionParameters.mUsageRanges " << std::endl << d.mUsageRanges;
+      os << "----CFunctionParameters " << std::endl;
+
+      return os;
+    }
+
+    /**
+     *  WHAT DOES THIS DO ??????
+     */
+    void updateUsageRanges();
+  };
+
 #endif // COPASI_CFunctionParameters

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:57 $
+   End CVS Header */
+
 /**
  *  CMathVariable class.
  *  The class CMathVariable associates a symbol with a CCopasiObject which
@@ -35,7 +43,7 @@ class CMathVariable: public CMathSymbol
     static const std::string TypeName[];
 
     // Attributes
-  private:
+  protected:
     /**
      ** The type of the associated equation
      */

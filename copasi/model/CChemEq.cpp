@@ -1,180 +1,231 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:57 $
+   End CVS Header */
+
 // CChemEqElement
-// 
+//
 // A class describing an element of a chemical equation
 // (C) Stefan Hoops 2001
 //
 
+#define  COPASI_TRACE_CONSTRUCTION
+
+#include "mathematics.h"
 #include "copasi.h"
 #include "CChemEq.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/CCopasiVector.h"
+#include "CMetabNameInterface.h"
 
-CChemEq::CChemEq(){};
+CChemEq::CChemEq(const std::string & name,
+                 const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Chemical Equation"),
+    mReversible(false),
+    mSubstrates("Substrates", this),
+    mProducts("Products", this),
+    mModifiers("Modifiers", this),
+    mBalances("Balances", this)
+{CONSTRUCTOR_TRACE;}
 
-CChemEq::CChemEq(const CChemEq & src)
-{
-  mChemicalEquation = src.mChemicalEquation;
-  mChemicalEquationConverted = src.mChemicalEquationConverted;
-  mSubstrates = src.mSubstrates;
-  mProducts = src.mProducts;
-  mBalances = src.mBalances;
-}
+CChemEq::CChemEq(const CChemEq & src,
+                 const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mReversible(src.mReversible),
+    mSubstrates(src.mSubstrates, this),
+    mProducts(src.mProducts, this),
+    mModifiers(src.mModifiers, this),
+    mBalances(src.mBalances, this)
+{CONSTRUCTOR_TRACE;}
 
-CChemEq::~CChemEq(){cleanup();}
+CChemEq::~CChemEq(){cleanup(); DESTRUCTOR_TRACE;}
 
 void CChemEq::cleanup()
 {
-  cleanupChemEqElements(mSubstrates);
-  cleanupChemEqElements(mProducts);
-  cleanupChemEqElements(mBalances);
+  mSubstrates.cleanup();
+  mProducts.cleanup();
+  mModifiers.cleanup();
+  mBalances.cleanup();
 }
 
-void CChemEq::setChemicalEquation(const string & chemicalEquation)
+const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates() const
+  {return mSubstrates;}
+
+const CCopasiVector < CChemEqElement > & CChemEq::getProducts() const
+  {return mProducts;}
+
+const CCopasiVector < CChemEqElement > & CChemEq::getModifiers() const
+  {return mModifiers;}
+
+const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
+  {return mBalances;}
+
+bool CChemEq::addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role)
 {
-  string Substrates, Products;
+  CChemEqElement element;
+  element.setMetabolite(key);
+  element.setMultiplicity(mult);
 
-  mChemicalEquation = chemicalEquation;
+  switch (role)
+    {
+    case CChemEq::SUBSTRATE:
+      addElement(mSubstrates, element);
+      addElement(mBalances, element, CChemEq::SUBSTRATE);
+      break;
+    case CChemEq::PRODUCT:
+      addElement(mProducts, element);
+      addElement(mBalances, element);
+      break;
+    case CChemEq::MODIFIER:
+      addElement(mModifiers, element);
+      break;
+    default:
+      fatalError();
+      break;
+    }
 
-  splitChemEq(Substrates, Products);
-
-  setChemEqElements(mSubstrates, Substrates);
-
-  setChemEqElements(mProducts, Products);
-
-  setChemEqElements(mBalances, Substrates, CChemEq::SUBSTRATE);
-  setChemEqElements(mBalances, Products);
-
-  /* :TODO: we should construct this out of mSubstrates ans mProducts */
-  mChemicalEquation = chemicalEquation;
-  
-  /* :TODO: we should construct this out of mBalances */
-  mChemicalEquationConverted = chemicalEquation;
+  return true;
 }
 
-const string & CChemEq::getChemicalEquation() const
-{return mChemicalEquation;}
+unsigned C_INT32 CChemEq::getCompartmentNumber() const
+  {
+    unsigned C_INT32 i, imax = mBalances.size();
+    unsigned C_INT32 j, jmax;
+    unsigned C_INT32 Number;
+    std::vector<const CCompartment *> Compartments;
 
-const string & CChemEq::getChemicalEquationConverted() const
-{return mChemicalEquationConverted;}
+    for (i = 0, Number = 0; i < imax; i++)
+      {
+        for (j = 0, jmax = Compartments.size(); j < jmax; j++)
+          if (Compartments[j] == mBalances[i]->getMetabolite().getCompartment())
+            break;
 
-const vector < CChemEqElement * > & CChemEq::getSubstrates()
-{return mSubstrates;}
+        if (j == jmax)
+          {
+            Number ++;
+            Compartments.push_back(mBalances[i]->getMetabolite().getCompartment());
+          }
+      }
 
-const vector < CChemEqElement * > & CChemEq::getProducts()
-{return mProducts;}
+    return Number;
+  }
 
-const vector < CChemEqElement * > & CChemEq::getBalances()
-{return mBalances;}
-
-CChemEqElement CChemEq::extractElement(const string & input, 
-				       string::size_type & pos) const
-{
-  CChemEqElement Element;
-  string Value;
-    
-  string::size_type Start = input.find_first_not_of(" ", pos);
-  string::size_type End = input.find("+", Start);
-  string::size_type Multiplier = input.find("*", Start);
-  string::size_type NameStart;
-  string::size_type NameEnd;
-    
-  if (Multiplier == string::npos || Multiplier > End)
-    {
-      NameStart = Start;
-      Element.setMultiplicity(1.0);
-    }
-  else
-    {
-      NameStart = input.find_first_not_of(" ",Multiplier+1);
-      Value = input.substr(Start, Multiplier - Start);
-      Element.setMultiplicity(atof(Value.c_str()));
-    }
-    
-  NameEnd = input.find_first_of(" +", NameStart);
-  if (NameStart != string::npos)
-    Element.setMetaboliteName(input.substr(NameStart, NameEnd - NameStart));
-
-  pos = (End == string::npos) ? End: End+1;
-  return Element;
-}
-
-void CChemEq::addElement(vector < CChemEqElement * > & structure,
-			 const CChemEqElement & element,
-			 CChemEq::MetaboliteRole role)
+void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
+                         const CChemEqElement & element,
+                         CChemEq::MetaboliteRole role)
 {
   unsigned C_INT32 i;
- 
-  string Name = element.getMetaboliteName();
-  for (i=0; i < structure.size(); i++)
-    if (Name == structure[i]->getMetaboliteName()) break;
-    
+
+  std::string key = element.getMetaboliteKey();
+
+  if (key == "")
+    return; // don´t add empty element
+
+  for (i = 0; i < structure.size(); i++)
+    if (key == structure[i]->getMetaboliteKey())
+      break;
+
   if (i >= structure.size())
     {
       CChemEqElement * Element = new CChemEqElement(element);
-      if (role == CChemEq::SUBSTRATE) 
-	Element->setMultiplicity(- Element->getMultiplicity());
-      structure.push_back(Element);
+
+      if (role == CChemEq::SUBSTRATE)
+        Element->setMultiplicity(- Element->getMultiplicity());
+
+      structure.add(Element, true);
     }
-  else if (role == CChemEq::SUBSTRATE) 
+  else if (role == CChemEq::SUBSTRATE)
     structure[i]->addToMultiplicity(- element.getMultiplicity());
   else
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
 
-void CChemEq::setSubstrates(const string & left)
-{
-  setChemEqElements(mSubstrates, left, CChemEq::SUBSTRATE);
-}
-  
-void CChemEq::setProducts(const string & right)
-{
-  setChemEqElements(mProducts, right);
-}
+const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
+  {
+    // check initialized() and compiled
 
-void CChemEq::setBalances(const string & left, const string & right)
+    const CCompartment* comp = NULL;
+    unsigned C_INT32 i, imax;
+
+    if (mSubstrates.size() > 0)
+      {
+        comp = mSubstrates[0]->getMetabolite().getCompartment();
+        imax = mSubstrates.size();
+        for (i = 1; i < imax; i++)
+          if (comp != mSubstrates[i]->getMetabolite().getCompartment())
+          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 2);} // substs in different compartments
+        return comp; // all substrates are in the same compartment
+      }
+    else if (mProducts.size() > 0)
+      {
+        comp = mProducts[0]->getMetabolite().getCompartment();
+        imax = mProducts.size();
+        for (i = 1; i < imax; i++)
+          if (comp != mProducts[i]->getMetabolite().getCompartment())
+          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 3);}  // products in different compartments
+        return comp; // all products are in the same compartment
+      }
+    else
+      {
+        CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 1); // error: no subs. and no product
+        return NULL;
+      }
+  }
+
+#ifdef xxxx
+void CChemEq::reverse()
 {
-  setChemEqElements(mBalances, left, CChemEq::SUBSTRATE);
-  setChemEqElements(mBalances, right);
+  CCopasiVector<CChemEqElement> dummy;
+  dummy = mSubstrates;
+  mSubstrates = mProducts;
+  mProducts = dummy;
 }
+#endif
 
-void CChemEq::setChemEqElements(vector < CChemEqElement * > & elements,
-				const string & reaction,
-				CChemEq::MetaboliteRole role)
+C_INT32 CChemEq::getMolecularity(const MetaboliteRole role) const
+  {
+    const CCopasiVector<CChemEqElement> * tmpVector = NULL;
+
+    switch (role)
+      {
+      case CChemEq::SUBSTRATE:
+        tmpVector = &mSubstrates;
+        break;
+      case CChemEq::PRODUCT:
+        tmpVector = &mProducts;
+        break;
+      case CChemEq::MODIFIER:
+        tmpVector = &mModifiers;
+        break;
+      default:
+        fatalError();
+        break;
+      }
+
+    C_INT32 ccc, i, imax = tmpVector->size();
+    ccc = 0;
+    for (i = 0; i < imax; ++i)
+      ccc += (C_INT32)floor((*tmpVector)[i]->getMultiplicity());
+
+    return ccc;
+  }
+
+std::ostream & operator<<(std::ostream &os, const CChemEq & d)
 {
-  string::size_type pos = 0;
+  os << "CChemEq:" << std::endl;
+  //os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
+  //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
 
-  while (pos != string::npos)
-    addElement(elements, extractElement(reaction, pos), role);
-}
+  os << "   mSubstrates:" << std::endl;
+  os << d.mSubstrates;
+  os << "   mProducts:" << std::endl;
+  os << d.mProducts;
+  os << "   mBalances:" << std::endl;
+  os << d.mBalances;
 
-void CChemEq::cleanupChemEqElements(vector < CChemEqElement * > & elements)
-{
-  for (unsigned C_INT32 i=0; i<elements.size(); i++)
-    free(elements[i]);
-  elements.clear();
-}
-
-void CChemEq::splitChemEq(string & left, string & right) const
-{
-  string::size_type equal = 0;
-    
-  equal = mChemicalEquation.find("=");
-  if (equal == string::npos) 
-    {
-      equal = mChemicalEquation.find("->");
-      right = mChemicalEquation.substr(equal+2);
-    }
-  else
-    right = mChemicalEquation.substr(equal+1);
-  left = mChemicalEquation.substr(0,equal);
-  
-  return;
-}
-
-void 
-CChemEq::compileChemEqElements(vector < CChemEqElement * > & elements,
-			       vector < CMetab * > & metabolites)
-{
-  unsigned C_INT32 i, imax = elements.size();
-  
-  for (i=0; i<imax; i++)
-    elements[i]->compile(metabolites);
+  os << "----CChemEq" << std::endl;
+  return os;
 }

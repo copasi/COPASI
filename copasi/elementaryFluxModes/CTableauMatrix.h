@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:54 $
+   End CVS Header */
+
 /**
  *  CTableauMatrix class.
  *  Used to calculate elementary flux modes
@@ -13,72 +21,75 @@
 #include "CTableauLine.h"
 
 class CTableauMatrix
-{
-  // Attributes
- private:    
-  /**
-   *  Vector containing the lines of the Matrix
-   *  @associates <{CTableauLine}>
-   *  @supplierCardinality 0..*
-   */
-  list < const CTableauLine * > mLine;
+  {
+    // Attributes
 
-  /**
-   *  Iterator pointing to the first irreversible reaction
-   */
-  list < const CTableauLine * >::iterator mFirstIrreversible;
+  private:
+    /**
+     *  Vector containing the lines of the Matrix
+     *  @associates <{CTableauLine}>
+     *  @supplierCardinality 0..*
+     */
+    std::list< const CTableauLine * > mLine;
 
-  // Operations
- public:
-  /**
-   *  Default constructor
-   */
-  CTableauMatrix();
-  
-  /**
-   *  Specific constructor
-   *  The first reversibleNumber lines of stoi must be reversible reactions.
-   *  Note: stoi is actually the transpose of the stoichiometry matrix
-   *  @param "const vector < vector < double > >" & stoi
-   *  @param "C_INT32 " reversibleNumber
-   */
-  CTableauMatrix(const vector < vector < double > > & stoi,
-                 C_INT32 reversibleNumber);
-  
-  /**
-   *  Destructor
-   */
-  ~CTableauMatrix();
+    /**
+     *  Iterator pointing to the first irreversible reaction
+     */
+    std::list< const CTableauLine * >::iterator mFirstIrreversible;
 
-  /**
-   *  Retrieves the first line from the matrix
-   *  @return "list < const CTableauLine * >::iterator" iterator
-   */
-  list < const CTableauLine * >::iterator getFirst();
-  
-  /**
-   *  Retrieves the last line from the matrix
-   *  @return "list < const CTableauLine * >::iterator" iterator
-   */
-  list < const CTableauLine * >::iterator getEnd();
-  
-  /**
-   *  Add a line to the matrix
-   *  @param "const CTableauLine *" src
-   */
-  void addLine(const CTableauLine * src);
-  
-  /**
-   *  Remove the indexed line of the matrix
-   *  @param "list < const CTableauLine * >::const_iterator" line
-   */
-  void removeLine(list < const CTableauLine * >::iterator line);
+    // Operations
 
- private:
-  /**
-   *  Check whether the new line fullfills the constraints
-   *  @param "const CTableauLine *" src
-   */
-  bool isValid(const CTableauLine * src);
-};
+  public:
+    /**
+     *  Default constructor
+     */
+    CTableauMatrix();
+
+    /**
+     *  Specific constructor
+     *  The first reversibleNumber lines of stoi must be reversible reactions.
+     *  Note: stoi is actually the transpose of the stoichiometry matrix
+     *  @param "const vector < vector < double > >" & stoi
+     *  @param "C_INT32 " reversibleNumber
+     */
+    CTableauMatrix(const std::vector < std::vector < double > > & stoi,
+                   C_INT32 reversibleNumber);
+
+    /**
+     *  Destructor
+     */
+    ~CTableauMatrix();
+
+    /**
+     *  Retrieves the first line from the matrix
+     *  @return "list< const CTableauLine * >::iterator" iterator
+     */
+    std::list< const CTableauLine * >::iterator getFirst();
+
+    /**
+     *  Retrieves the last line from the matrix
+     *  @return "list< const CTableauLine * >::iterator" iterator
+     */
+    std::list< const CTableauLine * >::iterator getEnd();
+
+    /**
+     *  Add a line to the matrix
+     *  @param "const CTableauLine *" src
+     */
+    void addLine(const CTableauLine * src);
+
+    /**
+     *  Remove the indexed line of the matrix
+     *  @param "list< const CTableauLine * >::const_iterator" line
+     */
+    void removeLine(std::list< const CTableauLine * >::iterator line);
+
+  private:
+    /**
+     *  Check whether the new line fullfills the constraints
+     *  @param "const CTableauLine *" src
+     */
+    bool isValid(const CTableauLine * src);
+  };
+
 #endif // COPASI_CTableauMatrix

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportBody.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
 /****************************************************************************
  * 
  * Created: Tue Aug 11 2003
@@ -11,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include "CCopasiObjectName.h"
 
 class CReportTable;
 class CCopasiObjectName;
@@ -52,7 +61,7 @@ class CReportTable
   {
   private:
     std::vector<CCopasiObjectName>* mpObjectNameVector;
-    std::string mSeperator;
+    std::string mSeparator;
     bool mPrintTitle;
 
   public:
@@ -88,19 +97,19 @@ class CReportTable
     }
 
     /**
-    gets the Seperator attribute of the Table tag
+    gets the Separator attribute of the Table tag
     */
-    inline const std::string getSeperator()
+    inline const std::string& getSeparator()
     {
-      return mSeperator;
+      return mSeparator;
     }
 
     /**
-       sets the seperator attribute of the Table tag
+       sets the separator attribute of the Table tag
     */
-    inline void setSeperator(const std::string seperator)
+    inline void setSeparator(const std::string separator)
     {
-      mSeperator = seperator;
+      mSeparator = separator;
     }
 
     /**

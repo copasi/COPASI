@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/07 16:59:55 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
    End CVS Header */
 
 #include <qstring.h>
@@ -39,20 +39,25 @@ QString getParameterValue(const CCopasiParameterGroup * group,
 
     case CCopasiParameter::STRING:
       return
-      QString::fromLatin1((* (std::string *) group->getValue(index)).c_str());
+      FROM_UTF8((* (std::string *) group->getValue(index)));
       break;
 
     case CCopasiParameter::GROUP:
-      return QString::fromLatin1(group->getName(index).c_str());
+      return FROM_UTF8((group->getName(index)));
       break;
 
     case CCopasiParameter::INVALID:
-      return QString::fromLatin1("INVALID");
+      return QString::fromUtf8("INVALID");
       break;
     }
 
   return QString::fromLatin1("INVALID");
 }
+
+QString getParameterValue(const CCopasiParameterGroup * group,
+                          const std::string & name,
+                          CCopasiParameter::Type * type)
+{return getParameterValue(group, group->getIndex(name), type);}
 
 bool setParameterValue(CCopasiParameterGroup * group,
                        const unsigned C_INT32 & index,
@@ -101,7 +106,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
       break;
 
     case CCopasiParameter::STRING:
-      STRING = value.latin1();
+      STRING = value.utf8();
       return group->setValue(index, STRING);
       break;
 
@@ -113,3 +118,8 @@ bool setParameterValue(CCopasiParameterGroup * group,
 
   return false;
 }
+
+bool setParameterValue(CCopasiParameterGroup * group,
+                       const std::string & name,
+                       const QString & value)
+{return setParameterValue(group, group->getIndex(name), value);}

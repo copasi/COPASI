@@ -1,3 +1,12 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportBody.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
+#include "copasi.h"
 #include "CReportBody.h"
 
 //////////////////////////////////////////////////
@@ -6,10 +15,7 @@
 //
 //////////////////////////////////////////////////
 CReportBody::CReportBody():
-    //    bTable(new CReportTable),
-    //    bReport(new CReport)
-    mTable(NULL),
-    mReport(NULL)
+    mpReportTable(NULL)
 {}
 
 CReportBody::~CReportBody()
@@ -17,21 +23,15 @@ CReportBody::~CReportBody()
 
 void CReportBody::cleanup()
 {
-  pdelete(bTable);
-  pdelete(bReport);
+  mReportObjectName.clear();
+  pdelete(mpReportTable);
 }
 
-CReport* CReportBody::getReport()
-{return bReport;}
-
-void CReportBody::setReport(CReport *report)
-{bReport = report;}
-
 CReportTable* CReportBody::getTable()
-{return bTable;}
+{return mpReportTable;}
 
 void CReportBody::setTable(CReportTable *table)
-{bTable = table;}
+{mpReportTable = table;}
 
 //////////////////////////////////////////////////
 //
@@ -39,8 +39,9 @@ void CReportBody::setTable(CReportTable *table)
 //
 //////////////////////////////////////////////////
 CReportTable::CReportTable():
-    tObject(new CReportObject),
-    tPrintTitle(true)
+    mpObjectNameVector(NULL),
+    mSeparator(" "),
+    mPrintTitle(true)
 {}
 
 CReportTable::~CReportTable()
@@ -48,5 +49,6 @@ CReportTable::~CReportTable()
 
 void CReportTable::cleanup()
 {
-  pdelete(tObject);
+  // this pointer is created outsid
+  pdelete(mpObjectNameVector);
 }

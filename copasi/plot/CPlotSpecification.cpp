@@ -1,103 +1,95 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/06 14:45:05 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:00 $
    End CVS Header */
 
-/**
- *  CCopasiMethod class.
- *  This class is used to describe a task in COPASI. This class is 
- *  intended to be used as the parent class for all tasks whithin COPASI.
- *  
- *  Created for Copasi by Stefan Hoops 2003
- */
+#include "model/CModel.h"
 
-#include "copasi.h"
+#include "CPlotSpecification.h"
 
-#include "CCopasiMethod.h"
-#include "CCopasiMessage.h"
-
-const std::string CCopasiMethod::SubTypeName[] =
-  {
-    "Not set",
-    "Random Search",
-    "Random Search (PVM)",
-    "Simulated Annealing",
-    "Enhanced Newton",
-    "Deterministic (LSODA)",
-    "Stochastic",
-    "Hybrid",
-    ""
-  };
-
-const char* CCopasiMethod::XMLSubType[] =
-  {
-    "NotSet",
-    "RandomSearch",
-    "RandomSearch(PVM)",
-    "SimulatedAnnealing",
-    "EnhancedNewton",
-    "Deterministic(LSODA)",
-    "Stochastic",
-    "Hybrid",
-    NULL
-  };
-
-//    std::string mType;
-
-CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
-{
-  unsigned C_INT32 i = 0;
-  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "") i++;
-
-  if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
-  else return CCopasiMethod::unset;
-}
-
-CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
-{
-  unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLSubType[i]) && XMLSubType[i]) i++;
-
-  if (XMLSubType[i]) return (CCopasiMethod::SubType) i;
-  else return CCopasiMethod::unset;
-}
-
-CCopasiMethod::CCopasiMethod():
-    CCopasiParameterGroup("NoName", NULL, "Method"),
-    mType(CCopasiTask::unset),
-    mSubType(unset)
-{setName(SubTypeName[mType]);}
-
-CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
-                             const CCopasiMethod::SubType & subType,
-                             const CCopasiContainer * pParent):
-    CCopasiParameterGroup(TypeName[type], pParent, "Method"),
-    mType(type),
-    mSubType(subType)
-{setName(SubTypeName[mSubType]);}
-
-CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
-                             const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mType(src.mType),
-    mSubType(src.mSubType)
+CPlotSpecification::CPlotSpecification(const std::string & name,
+                                       const CCopasiContainer * pParent,
+                                       const CPlotSpecification::Type & type):
+    CPlotItem(name, pParent, type),
+    mActive(true)
 {}
 
-CCopasiMethod::~CCopasiMethod() {}
+CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
+                                       const CCopasiContainer * pParent):
+    CPlotItem(src, pParent),
+    items(src.getItems()),
+    mActive(true)
+{}
 
-const CCopasiTask::Type & CCopasiMethod::getType() const {return mType;}
+CPlotSpecification::~CPlotSpecification() {}
 
-// void CCopasiMethod::setType(const CCopasiTask::Type & type) {mType = type;}
+void CPlotSpecification::cleanup()
+{
+  items.cleanup();
+  this->CPlotItem::cleanup();
+}
 
-const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
-  {return mSubType;}
+void CPlotSpecification::initObjects()
+{}
 
-// void CCopasiMethod::setSubType(const CCopasiMethod::SubType & subType)
-// {mSubType = subType;}
+CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::Type type)
+{
+  CPlotItem * itm = new CPlotItem(name, NULL, type);
 
-void CCopasiMethod::load(CReadConfig & C_UNUSED(configBuffer),
-                         CReadConfig::Mode C_UNUSED(mode))
-{fatalError();}
+  if (!items.add(itm, true))
+    {
+      delete itm;
+      return NULL;
+    }
+
+  return itm;
+}
+
+bool CPlotSpecification::createDefaultPlot(const CModel* model)
+{
+  mActive = true;
+
+  //TODO cleanup before?
+  //title = "Default Data Plot 2D";
+
+  /*axes.resize(4);
+
+  axes[QwtPlot::xBottom].active = true;
+  axes[QwtPlot::xBottom].autoscale = true;
+  axes[QwtPlot::xBottom].title = "X-Achse";
+
+  axes[QwtPlot::yLeft].active = true;
+  axes[QwtPlot::yLeft].autoscale = true;
+  axes[QwtPlot::yLeft].title = "Y-Achse";
+
+  axes[QwtPlot::xTop].active = false;
+  axes[QwtPlot::xTop].autoscale = true;
+  axes[QwtPlot::xTop].title = "X2-Achse";
+
+  axes[QwtPlot::yRight].active = false;
+  axes[QwtPlot::yRight].autoscale = true;
+  axes[QwtPlot::yRight].title = "Y2-Achse";*/
+
+  CPlotItem * plItem;
+  std::string itemTitle;
+  CPlotDataChannelSpec name2;
+
+  CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
+  std::cout << name1 << std::endl;
+
+  unsigned C_INT32 i, imax = model->getMetabolites().size();
+  for (i = 0; i < imax; ++i)
+    {
+      name2 = model->getMetabolites()[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN();
+      itemTitle = model->getMetabolites()[i]->getObjectName();
+      std::cout << itemTitle << " : " << name2 << std::endl;
+
+      plItem = this->createItem(itemTitle, CPlotItem::curve2d);
+      plItem->addChannel(name1);
+      plItem->addChannel(name2);
+    }
+  return true; //TODO: really check;
+}

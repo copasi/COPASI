@@ -15,55 +15,103 @@
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
  <options>
-   <option id="rc" 
-           type="string" 
-           mandatory="no" 
+   <option id="ConfigFile"
+           type="string"
+           mandatory="no"
            strict="yes"
-           location="commandline" 
-           default="~/.copasirc"
+           location="commandline"
            hidden="no">
-    <name>rc</name> 
+    <name>rc</name>
     <comment>The configuration file for copasi.</comment>
    </option>
-   <option id="CopasiLib" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
-           default="copasi/lib"
+   <option id="CopasiDir"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
            hidden="no">
-    <name>lib</name>
+    <name>copasidir</name>
+    <name>c</name>
     <comment>The location of suplementary files for copasi.</comment>
    </option>
-   <option id="SystemFunctionDB" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
-           default="FunctionDB.cps"
+   <option id="Home"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>home</name>
+    <comment>Your home directory.</comment>
+   </option>
+   <option id="SystemFunctionDB"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           default="FunctionDB.gps"
            hidden="no">
     <name>systemFunctionDB</name>
     <comment>A write protected database of kinetic functions.</comment>
    </option>
-   <option id="UserFunctionDB" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
+   <option id="UserFunctionDB"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
            default="~/FunctionDB.cps"
            hidden="no">
     <name>userFunctionDB</name>
     <comment>The user extensible database of kinetic functions.</comment>
    </option>
-   <option id="save" 
-           type="string" 
-           mandatory="no" 
-           strict="yes" 
-           location="both" 
+   <option id="CopasiFile"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           hidden="no">
+    <name>copasiFile</name>
+    <name>f</name>
+    <comment>The file the model which specifies the model and task.</comment>
+   </option>
+   <option id="Save"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
            hidden="no">
     <name>save</name>
-    <name>s</name> 
+    <name>s</name>
     <comment>The file the model is saved in after work.</comment>
+   </option>
+   <option id="ImportSBML"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>importSBML</name>
+    <name>i</name>
+    <comment>A SBML file to import.</comment>
+   </option>
+   <option id="ExportSBML"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>exportSBML</name>
+    <name>e</name>
+    <comment>The SBML file to export.</comment>
+   </option>
+   <option id="Default"
+           type="string"
+           mandatory="no"
+           location="both"
+           modifier="map"
+           hidden="no">
+    <name>default</name>
+    <name>d</name>
+    <comment>The SBML file to export.</comment>
    </option>
  </options>
 </cloxx>

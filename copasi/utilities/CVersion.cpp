@@ -1,12 +1,22 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:04 $
+   End CVS Header */
+
 /**
  * CVersion
  * 
  * (C) Pedro Mendes 2001
  */
 
-#include "CVersion.h"
-#include "utilities.h"
+#define  COPASI_TRACE_CONSTRUCTION
 
+#include "copasi.h"
+#include "CVersion.h"
+#include "utility.h"
 
 CVersion::CVersion()
 {
@@ -30,33 +40,30 @@ void CVersion::setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
 }
 
 C_INT32 CVersion::getVersionMajor() const
-{
-  return mMajor;
-}
+  {
+    return mMajor;
+  }
 
 C_INT32 CVersion::getVersionMinor() const
-{
-  return mMinor;
-}
+  {
+    return mMinor;
+  }
 
 C_INT32 CVersion::getVersionDevel() const
-{
-  return mDevel;
-}
+  {
+    return mDevel;
+  }
 
-const string & CVersion::getVersion() const 
-{
-  return mVersion;
-}
-
+const std::string & CVersion::getVersion() const
+  {
+    return mVersion;
+  }
 
 void CVersion::setString()
 {
-  /* if it is a development version, set a string with 3 numbers */
-  if (mDevel<300L)
-    mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
-  /* otherwise just major and minor */
-  else
-    mVersion = StringPrint("%d.%d", mMajor, mMinor);
+#ifdef COPASI_DEBUG
+  mVersion = StringPrint("%d.%d Debug %d++", mMajor, mMinor, mDevel);
+#else
+  mVersion = StringPrint("%d.%d Build %d", mMajor, mMinor, mDevel);
+#endif
 }
-

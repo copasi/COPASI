@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:03 $
+   End CVS Header */
+
 /**
  *  CTrajectoryProblem class.
  *  This class describes the trajectory problem, i.e., it allows to specify
@@ -19,50 +27,51 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CTrajectoryProblem::CTrajectoryProblem(CModel * pModel):
-    mpModel(pModel),
+CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
+    CCopasiProblem(CCopasiTask::timeCourse, pParent),
     mStepNumberSetLast(true),
-    mpInitialState(NULL),
-    mpEndState(NULL)
+    mInitialState()
+    //mEndState()
 {
-  CONSTRUCTOR_TRACE;
+  addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
+  addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
+  addParameter("StartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
+  addParameter("EndTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+  addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
 
-  if (mpModel)
-    mpInitialState = mpModel->getInitialState();
+  CONSTRUCTOR_TRACE;
 }
 
 /**
  *  Copy constructor.
  *  @param "const CTrajectoryProblem &" src
  */
-CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src):
-    mpModel(src.mpModel),
-    mStepNumber(src.mStepNumber),
-    mStepSize(src.mStepSize),
+CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
+                                       const CCopasiContainer * pParent):
+    CCopasiProblem(src, pParent),
     mStepNumberSetLast(src.mStepNumberSetLast),
-    mStartTime(src.mStartTime),
-    mEndTime(src.mEndTime),
-    mpInitialState(src.mpInitialState),
-    mpEndState(src.mpEndState)
-{CONSTRUCTOR_TRACE; }
+    mInitialState(src.mInitialState)
+    //mEndState(src.mEndState)
+{CONSTRUCTOR_TRACE;}
 
 /**
  *  Destructor.
  */
 CTrajectoryProblem::~CTrajectoryProblem()
-{DESTRUCTOR_TRACE; }
+{DESTRUCTOR_TRACE;}
 
 /**
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-void CTrajectoryProblem::setModel(CModel * pModel) {mpModel = pModel; }
+bool CTrajectoryProblem::setModel(CModel * pModel)
+{
+  mpModel = pModel;
+  mInitialState.setModel(mpModel);
+  //mEndState.setModel(mpModel);
 
-/**
- * Retrieve the model the problem is dealing with.
- * @return "CModel *" pModel
- */
-CModel * CTrajectoryProblem::getModel() const { return mpModel; }
+  return true;
+}
 
 /**
  * Set the number of time steps the trajectory method should integrate.
@@ -70,7 +79,7 @@ CModel * CTrajectoryProblem::getModel() const { return mpModel; }
  */
 void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
 {
-  mStepNumber = stepNumber;
+  setValue("StepNumber", stepNumber);
   mStepNumberSetLast = true;
   sync();
 }
@@ -80,162 +89,161 @@ void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
  * @return "const unsigned C_INT32 &" stepNumber
  */
 const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
-  { return mStepNumber; }
+  {return * (unsigned C_INT32 *) getValue("StepNumber");}
 
 /**
  * Set the size a integration step the trajectory method should do.
- * @param "const double &" stepSize
+ * @param "const C_FLOAT64 &" stepSize
  */
-void CTrajectoryProblem::setStepSize(const double & stepSize)
+void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
 {
-  mStepSize = stepSize;
+  setValue("StepSize", stepSize);
   mStepNumberSetLast = false;
   sync();
 }
 
 /**
  * Retrieve the size a integration step the trajectory method should do.
- * @return "const double &" stepSize
+ * @return "const C_FLOAT64 &" stepSize
  */
-const double & CTrajectoryProblem::getStepSize() const { return mStepSize; }
+const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
+  {return * (C_FLOAT64 *) getValue("StepSize");}
 
 /**
  * Set the start time.
- * @param "const double &" startTime
+ * @param "const C_FLOAT64 &" startTime
  */
-void CTrajectoryProblem::setStartTime(const double & startTime)
+void CTrajectoryProblem::setStartTime(const C_FLOAT64 & startTime)
 {
-  mStartTime = startTime;
-
-  if (mpInitialState)
-    mpInitialState->setTime(mStartTime);
+  setValue("StartTime", startTime);
+  mInitialState.setTime(startTime);
 
   sync();
 }
 
 /**
  * Retrieve the start time.
- * @return "const double &" startTime
+ * @return "const C_FLOAT64 &" startTime
  */
-const double & CTrajectoryProblem::getStartTime() const { return mStartTime; }
+const C_FLOAT64 & CTrajectoryProblem::getStartTime() const
+  {return * (C_FLOAT64 *) getValue("StartTime");}
 
 /**
  * Set the end time.
- * @param "const double &" endTime
+ * @param "const C_FLOAT64 &" endTime
  */
-void CTrajectoryProblem::setEndTime(const double & endTime)
+void CTrajectoryProblem::setEndTime(const C_FLOAT64 & endTime)
 {
-  mEndTime = endTime;
+  setValue("EndTime", endTime);
   sync();
 }
 
 /**
  * Retrieve the end time.
- * @return "const double &" endTime
+ * @return "const C_FLOAT64 &" endTime
  */
-const double & CTrajectoryProblem::getEndTime() const { return mEndTime; }
+const C_FLOAT64 & CTrajectoryProblem::getEndTime() const
+  {return * (C_FLOAT64 *) getValue("EndTime");}
+
+void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
+{
+  setValue("TimeSeriesRequested", flag);
+}
+
+bool CTrajectoryProblem::timeSeriesRequested() const
+  {return * (bool *) getValue("TimeSeriesRequested");}
 
 /**
  * Set the initial state of the problem.
- * @param "const CState *" pInitialState
+ * @param "const CState &" initialState
  */
-void CTrajectoryProblem::setInitialState(CState * pInitialState)
+void CTrajectoryProblem::setInitialState(const CState & initialState)
 {
-  mpInitialState = pInitialState;
-  setStartTime(mpInitialState->getTime());
+  mInitialState = initialState;
+  setStartTime(mInitialState.getTime());
+}
+
+/**
+ * Set the initial state of the problem.
+ * @param "const CStateX &" initialState
+ */
+void CTrajectoryProblem::setInitialState(const CStateX & initialState)
+{
+  mInitialState = initialState;
+  setStartTime(mInitialState.getTime());
 }
 
 /**
  * Retrieve the initial state of the problem.
  * @return "const CState *" pInitialState
  */
-const CState * CTrajectoryProblem::getInitialState() const
-  { return mpInitialState; }
+const CState & CTrajectoryProblem::getInitialState() const
+  {return mInitialState;}
 
 /**
  * Set the end state of the problem.
  * @param "const CState *" pEndState
- */
-void CTrajectoryProblem::setEndState(const CState * pEndState)
-{mpEndState = pEndState; }
+ */ 
+//void CTrajectoryProblem::setEndState(const CState * pEndState)
+//{mEndState = *pEndState;}
+
+/**
+ * Set the end state of the problem.
+ * @param "const CStateX *" pEndState
+ */ 
+//void CTrajectoryProblem::setEndState(const CStateX * pEndState)
+//{mEndState = *pEndState;}
 
 /**
  * Retrieve the end state of the problem.
- * @return "const CState *" pEndState
- */
-const CState * CTrajectoryProblem::getEndState() const
-  { return mpEndState; }
+ * @return "const CState &" pEndState
+ */ 
+//const CState & CTrajectoryProblem::getEndState() const
+//  {return mEndState;}
 
 /**
  * Load a trajectory problem
  * @param "CReadConfig &" configBuffer
  */
 void CTrajectoryProblem::load(CReadConfig & configBuffer,
-                              CReadConfig::Mode mode)
+                              CReadConfig::Mode C_UNUSED(mode))
 {
-  string Tmp;
+  C_FLOAT64 dbl;
+  unsigned C_INT32 uint;
 
-  configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
-
-  if (Tmp == Copasi->Model->getTitle())
-    mpModel = Copasi->Model;
-  else
-    fatalError();
-
-  configBuffer.getVariable("TrajectoryProblemStepNumber",
-                           "C_INT32", &mStepNumber);
-
-  configBuffer.getVariable("TrajectoryProblemStepSize",
-                           "C_FLOAT64", &mStepSize);
-
-  configBuffer.getVariable("TrajectoryProblemSetLast",
-                           "bool", &mStepNumberSetLast);
-
-  configBuffer.getVariable("TrajectoryProblemStartTime",
-                           "C_FLOAT64", &mStartTime);
-
-  configBuffer.getVariable("TrajectoryProblemEndTime",
-                           "C_FLOAT64", &mEndTime);
-
-  mpInitialState = CState::load(configBuffer);
+  if (configBuffer.getVersion() < "4.0")
+    {
+      mpModel = Copasi->pModel;
+      configBuffer.getVariable("EndTime", "C_FLOAT64",
+                               & dbl,
+                               CReadConfig::LOOP);
+      setValue("EndTime", dbl);
+      configBuffer.getVariable("Points", "C_INT32",
+                               & uint);
+      setValue("StepNumber", uint);
+      mStepNumberSetLast = true;
+      setValue("StartTime", (C_FLOAT64) 0.0);
+      sync();
+      mInitialState = mpModel->getInitialState();
+    }
 }
-
-/**
- * Save a trajectory problem
- * @param "CWriteConfig &" configBuffer
- */
-void CTrajectoryProblem::save(CWriteConfig & configBuffer) const
-  {
-    string Tmp = mpModel->getTitle();
-    configBuffer.setVariable("StateModel", "string", &Tmp);
-
-    configBuffer.setVariable("TrajectoryProblemStepNumber",
-                             "C_INT32", &mStepNumber);
-    configBuffer.setVariable("TrajectoryProblemStepSize",
-                             "C_FLOAT64", &mStepSize);
-    configBuffer.setVariable("TrajectoryProblemSetLast",
-                             "bool", &mStepNumberSetLast);
-    configBuffer.setVariable("TrajectoryProblemStartTime",
-                             "C_FLOAT64", &mStartTime);
-    configBuffer.setVariable("TrajectoryProblemEndTime",
-                             "C_FLOAT64", &mEndTime);
-    CState::save(configBuffer, mpInitialState);
-  }
 
 /**
  * This function synchronizes step size and number
  */
 void CTrajectoryProblem::sync()
 {
+  C_FLOAT64 Tmp = getEndTime() - getStartTime();
+
   if (mStepNumberSetLast)
-    mStepSize = (mEndTime - mStartTime) / (C_FLOAT64) mStepNumber;
+    setValue("StepSize", Tmp / (C_FLOAT64) getStepNumber());
   else
     {
-      C_FLOAT64 Tmp = (mEndTime - mStartTime) / mStepSize;
+      Tmp /= getStepSize();
 
       if (Tmp == (unsigned C_INT32) Tmp)
-        mStepNumber = (unsigned C_INT32) Tmp;
+        setValue("StepNumber", (unsigned C_INT32) Tmp);
       else
-        mStepNumber = 1 + (unsigned C_INT32) Tmp;
+        setValue("StepNumber", 1 + (unsigned C_INT32) Tmp);
     }
 }

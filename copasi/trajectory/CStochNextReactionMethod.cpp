@@ -1,4 +1,16 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:03 $
+   End CVS Header */
+
+#include "copasi.h"
 #include "CStochNextReactionMethod.h"
+#include "CTrajectoryMethod.h"
+#include "model/CCompartment.h"
+#include "model/CModel.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod()
     : CStochMethod()
@@ -9,15 +21,22 @@ void CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
   setupPriorityQueue(start_time);
 }
 
-C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time))
+C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLOAT64 endTime)
 {
   C_FLOAT64 steptime = mPQ.topKey();
-  C_INT32 reaction_index = mPQ.topIndex();
-  updateSystemState(reaction_index);
-  updatePriorityQueue(reaction_index, steptime);
 
-  //printDebugInfo();
-  return steptime;
+  if (steptime >= endTime)
+    {
+      return endTime;
+    }
+  else
+    {
+      C_INT32 reaction_index = mPQ.topIndex();
+      updateSystemState(reaction_index);
+      updatePriorityQueue(reaction_index, steptime);
+      //printDebugInfo();
+      return steptime;
+    }
 }
 
 //void CStochNextReactionMethod::printDebugInfo()
@@ -29,6 +48,7 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 {
   C_FLOAT64 time;
 
+  mPQ.clear();
   for (unsigned C_INT32 i = 0; i < mpModel->getReactions().size(); i++)
     {
       time = start_time + generateReactionTime(i);

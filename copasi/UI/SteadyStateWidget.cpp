@@ -1,145 +1,172 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\SteadyStateWidget.ui'
- **
- ** Created: Tue Feb 4 16:45:46 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
-#include "SteadyStateWidget.h"
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
+   End CVS Header */
 
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : SteadyStateWidget
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+#include <qfiledialog.h>
+
+#include <qvariant.h>
+#include <qcheckbox.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qsplitter.h>
 #include <qtable.h>
 #include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qmessagebox.h>
 
-/*
+#include "DataModelGUI.h"
+#include "qtUtilities.h"
+
+#include "SteadyStateWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
+#include "model/CModel.h"
+#include "listviews.h"
+#include "utilities/CCopasiException.h"
+#include "report/CKeyFactory.h"
+#include "report/CReportDefinitionVector.h"
+#include "report/CReport.h"
+#include "report/CReportDefinition.h"
+#include "CReportDefinitionSelect.h"
+#include "CProgressBar.h"
+
+/**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+    : CopasiWidget(parent, name, fl),
+    pParent(parent)
 {
   if (!name)
     setName("SteadyStateWidget");
-  resize(655, 639);
   setCaption(trUtf8("SteadyStateWidget"));
+  SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");
 
-  QWidget* privateLayoutWidget = new QWidget(this, "layout15");
-  privateLayoutWidget->setGeometry(QRect(10, 379, 580, 88));
-  layout15 = new QVBoxLayout(privateLayoutWidget, 0, 6, "layout15");
-  QSpacerItem* spacer = new QSpacerItem(628, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout15->addItem(spacer);
-
-  line6 = new QFrame(privateLayoutWidget, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-  layout15->addWidget(line6);
-  QSpacerItem* spacer_2 = new QSpacerItem(628, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout15->addItem(spacer_2);
-
-  splitter3 = new QSplitter(privateLayoutWidget, "splitter3");
-  splitter3->setOrientation(QSplitter::Horizontal);
-
-  commitChange = new QPushButton(splitter3, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
-
-  cancelChange = new QPushButton(splitter3, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
-  layout15->addWidget(splitter3);
-
-  splitter11 = new QSplitter(this, "splitter11");
-  splitter11->setGeometry(QRect(14, 205, 570, 160));
-  splitter11->setOrientation(QSplitter::Horizontal);
-
-  parameterValueLabel = new QLabel(splitter11, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Parameter value"));
-
-  parameterTable = new QTable(splitter11, "parameterTable");
-  QHeader *rowHeader = parameterTable->verticalHeader();
-  parameterTable->setNumRows(10);
-  parameterTable->setNumCols(1);
-  rowHeader->setLabel(0, tr("UseNewton:mUseNewton"));
-  rowHeader->setLabel(1, tr("UseIntegration:mUseIntegration"));
-  rowHeader->setLabel(2, tr("UseBackIntegration:mUseBackIntegration"));
-  rowHeader->setLabel(3, tr("IterationLimit:mIterationLimit"));
-  rowHeader->setLabel(4, tr("DerivationFactor:mFactor"));
-  rowHeader->setLabel(5, tr("Resolution:mResolution:"));
-  rowHeader->setLabel(6, tr("LSODA.RelativeTolerance:"));
-  rowHeader->setLabel(7, tr("LSODA.AbsoluteTolerance:"));
-  rowHeader->setLabel(8, tr("LSODA.AdamsMaxOrder:"));
-  rowHeader->setLabel(9, tr("LSODA.BDFMaxOrder:"));
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-
-  QWidget* privateLayoutWidget_2 = new QWidget(this, "layout14");
-  privateLayoutWidget_2->setGeometry(QRect(10, 70, 570, 122));
-  layout14 = new QVBoxLayout(privateLayoutWidget_2, 0, 6, "layout14");
-
-  line8 = new QFrame(privateLayoutWidget_2, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-  layout14->addWidget(line8);
-  QSpacerItem* spacer_3 = new QSpacerItem(628, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout14->addItem(spacer_3);
-
-  splitter12 = new QSplitter(privateLayoutWidget_2, "splitter12");
-  splitter12->setOrientation(QSplitter::Horizontal);
-
-  taskDescriptionLabel = new QLabel(splitter12, "taskDescriptionLabel");
-  taskDescriptionLabel->setText(trUtf8("Task Description"));
-
-  QWidget* privateLayoutWidget_3 = new QWidget(splitter12, "Layout2");
-  Layout2 = new QHBoxLayout(privateLayoutWidget_3, 0, 6, "Layout2");
-
-  taskJacobian = new QRadioButton(privateLayoutWidget_3, "taskJacobian");
-  taskJacobian->setText(trUtf8("Jacobian"));
-  Layout2->addWidget(taskJacobian);
-
-  taskStability = new QRadioButton(privateLayoutWidget_3, "taskStability");
-  taskStability->setText(trUtf8("Stability Analysis"));
-  Layout2->addWidget(taskStability);
-  layout14->addWidget(splitter12);
-  QSpacerItem* spacer_4 = new QSpacerItem(628, 22, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout14->addItem(spacer_4);
-
-  line7 = new QFrame(privateLayoutWidget_2, "line7");
-  line7->setFrameShape(QFrame::HLine);
-  line7->setFrameShadow(QFrame::Sunken);
-  line7->setFrameShape(QFrame::HLine);
-  layout14->addWidget(line7);
-  QSpacerItem* spacer_5 = new QSpacerItem(628, 21, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout14->addItem(spacer_5);
-
-  splitter7 = new QSplitter(this, "splitter7");
-  splitter7->setGeometry(QRect(12, 19, 570, 19));
-  splitter7->setOrientation(QSplitter::Horizontal);
-
-  taskNameLabel = new QLabel(splitter7, "taskNameLabel");
+  taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
 
-  taskName = new QLineEdit(splitter7, "taskName");
+  SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  SteadyStateWidgetLayout->addItem(spacer, 5, 0);
+
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setText(trUtf8("Parameter value"));
+  SteadyStateWidgetLayout->addWidget(parameterValueLabel, 4, 0);
+
+  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+
+  bRunButton = new QPushButton(this, "bRunButton");
+  if (parent == NULL)
+    bRunButton->setText(trUtf8("OK"));
+  else
+    bRunButton->setText(trUtf8("Run"));
+  bRunButton->setEnabled(true /*(parent == NULL)*/);
+  Layout2->addWidget(bRunButton);
+
+  //  commitChange = new QPushButton(this, "commitChange");
+  //  commitChange->setText(trUtf8("Commit"));
+  //  Layout2->addWidget(commitChange);
+
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setText(trUtf8("Revert"));
+  Layout2->addWidget(cancelChange);
+
+  //ExportFileButton = new QPushButton(this, "ExportFileButton");
+  //ExportFileButton->setText(trUtf8("Export To File"));
+  //Layout2->addWidget(ExportFileButton);
+
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
+
+  SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
+
+  line6 = new QFrame(this, "line6");
+  line6->setFrameShape(QFrame::HLine);
+  line6->setFrameShadow(QFrame::Sunken);
+  //line6->setFrameShape(QFrame::HLine);
+  SteadyStateWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
+
+  taskName = new QLineEdit(this, "taskName");
+  //taskName->setFrameShape(QLineEdit::LineEditPanel);
+  //taskName->setFrameShadow(QLineEdit::Sunken);
+  SteadyStateWidgetLayout->addWidget(taskName, 0, 1);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
+  SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+
+  //line8 = new QFrame(this, "line8");
+  //line8->setFrameShape(QFrame::HLine);
+  //line8->setFrameShadow(QFrame::Sunken);
+  //line8->setFrameShape(QFrame::HLine);
+  //SteadyStateWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  SteadyStateWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
+
+  //taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
+  //taskDescriptionLabel->setText(trUtf8(""));
+  //SteadyStateWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
+
+  taskJacobian = new QCheckBox(this, "taskJacobian");
+  taskJacobian->setText(trUtf8("calculate Jacobian"));
+  SteadyStateWidgetLayout->addWidget(taskJacobian, 2, 1);
+
+  taskStability = new QCheckBox(this, "taskStability");
+  taskStability->setText(trUtf8("perform Stability Analysis"));
+  SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
+
+  line8_2 = new QFrame(this, "line8_2");
+  line8_2->setFrameShape(QFrame::HLine);
+  //line8_2->setFrameShadow(QFrame::Sunken);
+  //line8_2->setFrameShape(QFrame::HLine);
+  SteadyStateWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
-  connect(taskName, SIGNAL(textChanged(const QString&)), this, SLOT(taskNameChanged()));
-  connect(taskJacobian, SIGNAL(stateChanged(int)), this, SLOT(methodJacob()));
-  connect(taskStability, SIGNAL(stateChanged(int)), this, SLOT(methodStability()));
+  connect(bRunButton, SIGNAL(clicked()), this, SLOT(runSteadyStateTask()));
+  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
+  //connect(ExportFileButton, SIGNAL(clicked()), this, SLOT(ExportToFileButtonClicked()));
+  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonChecked()));
+  //  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
-  connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelChange()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   // tab order
-  setTabOrder(taskStability, taskName);
-  setTabOrder(taskName, parameterTable);
-  setTabOrder(parameterTable, commitChange);
-  setTabOrder(commitChange, cancelChange);
-  setTabOrder(cancelChange, taskJacobian);
+  setTabOrder(taskName, bExecutable);
+  setTabOrder(bExecutable, taskJacobian);
+  setTabOrder(taskJacobian, taskStability);
+  setTabOrder(taskStability, parameterTable);
+  setTabOrder(parameterTable, bRunButton);
+  setTabOrder(bRunButton, cancelChange);
+  //setTabOrder(cancelChange, ExportFileButton);
+  //setTabOrder(ExportFileButton, reportDefinitionButton);
+
+  //  mSteadyStateTask = NULL;
+  reportDefinitionButton->setEnabled(false);
 }
 
 /*
@@ -147,143 +174,128 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
  */
 SteadyStateWidget::~SteadyStateWidget()
 {
-  // no need to delete child widgets, Qt does it all for us
+  //I believe this should not be done in this place. Sven
+  /*CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
+  pdelete(mSteadyStateTask);*/
 }
 
-void SteadyStateWidget::taskNameChanged()
+void SteadyStateWidget::CancelButtonClicked()
 {
-  qWarning("SteadyStateWidget::taskNameChanged(): Not implemented yet!");
+  loadSteadyStateTask();
 }
 
-void SteadyStateWidget::methodJacob()
+void SteadyStateWidget::CommitButtonClicked()
 {
-  qWarning("SteadyStateWidget::methodJacob(): Not implemented yet!");
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+  assert(mSteadyStateTask);
+
+  CSteadyStateProblem* steadystateproblem =
+    dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
+  assert(steadystateproblem);
+
+  CSteadyStateMethod* steadystatemethod =
+    dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
+  assert(steadystatemethod);
+
+  steadystateproblem->setInitialState(dataModel->getModel()->getInitialState());
+
+  bool bJacobian = taskJacobian->isChecked ();
+  bool bStatistics = taskStability->isChecked ();
+
+  steadystateproblem->setJacobianRequested(bJacobian);
+  steadystateproblem->setStabilityAnalysisRequested(bStatistics);
+
+  QTableItem * pItem;
+  QString value;
+  QString strname;
+
+  unsigned C_INT32 i;
+
+  for (i = 0; i < steadystatemethod->size(); i++)
+    {
+      pItem = parameterTable->item(i, 0);
+      value = pItem->text();
+      setParameterValue(steadystatemethod, i, value);
+    }
+  loadSteadyStateTask();
 }
 
-void SteadyStateWidget::methodStability()
+/*void SteadyStateWidget::RunButtonChecked()
 {
-  qWarning("SteadyStateWidget::methodStability(): Not implemented yet!");
-}
+  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey)))
+    return;
+ 
+  if (!bExecutable->isChecked())
+    bRunButton->setEnabled(false);
+  else
+    bRunButton->setEnabled(true);
+}*/
 
 void SteadyStateWidget::parameterValueChanged()
 {
   qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
 }
 
-void SteadyStateWidget::CommitChange()
+void SteadyStateWidget::runSteadyStateTask()
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CSteadyStateMethod* steadystatemethod = mSteadyStateTask->getMethod();
+  CommitButtonClicked();
 
-  taskName->setText(tr("Steady State Task"));
-  taskName->setEnabled(false);
+  if (bRunButton->text() != "Run")
+    {
+      hide();
+      return;
+    }
 
-  bool bJacobian = taskJacobian->isChecked();
-  steadystateproblem->setJacobianRequested(bJacobian);
-  bool bStatistics = taskStability->isChecked();
-  steadystateproblem->setStabilityAnalysisRequested(bStatistics);
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+  assert(mSteadyStateTask);
 
-  QTableItem * pItem;
-  pItem = (QTableItem *)parameterTable->item(0, 0);
-  int t = (pItem->text()).toInt();
-  //  steadystatemethod->setValue("Newton.UseNewton", (pItem->text()).toInt());
-  //  steadystatemethod->setValue("Newton.UseNewton", 0);
-  //  t  = steadystatemethod->getValue("Newton.UseNewton");
-  steadystatemethod->setValue(1, 0);
-  t = steadystatemethod->getValue(1);
+  mSteadyStateTask->initialize();
 
-  /*  pItem = (QTableItem  *)parameterTable->item(1, 0);
-    steadystatemethod->setValue("Newton.UseIntegration", pItem->text().toInt());
-    
-    pItem = (QTableItem  *)parameterTable->item(2, 0);
-    steadystatemethod->setValue("Newton.UseBackIntegration", pItem->text().toInt());
-    
-    pItem = (QTableItem  *)parameterTable->item(3, 0);
-    steadystatemethod->setValue("Newton.IterationLimit", pItem->text().toInt());
-   
-    pItem = (QTableItem  *)parameterTable->item(4, 0);
-    steadystatemethod->setValue("Newton.DerivationFactor", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(5, 0);
-    steadystatemethod->setValue("Newton.Resolution", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(6, 0);
-    steadystatemethod->setValue("Newton.LSODA.RelativeTolerance", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(7, 0);
-    steadystatemethod->setValue("Newton.LSODA.AbsoluteTolerance", pItem->text().toDouble());
-   
-    pItem = (QTableItem  *)parameterTable->item(8, 0);
-    steadystatemethod->setValue("Newton.LSODA.AdamsMaxOrder", pItem->text().toInt());
-   
-    pItem = (QTableItem  *)parameterTable->item(9, 0);
-    steadystatemethod->setValue("Newton.LSODA.BDFMaxOrder", pItem->text().toInt());
-   
-   
-  /*
-    CWriteConfig outbuf(mSteadyStateTask->getFileName());
-    mSteadyStateTask->save(outbuf);
-   
-    CReadConfig inbuf(mSteadyStateTask->getFileName());
-    mSteadyStateTask->load(inbuf,mSteadyStateTask->getFileName());
-  */
+  setCursor(Qt::WaitCursor);
+  CProgressBar* tmpBar = new CProgressBar(dataModel);
+  mSteadyStateTask->setProgressHandler(tmpBar);
+
+  try
+    {
+      mSteadyStateTask->process();
+    }
+
+  catch (CCopasiException Exception)
+    {
+      QMessageBox mb("Copasi",
+                     "Could not find a Steady State",
+                     QMessageBox::NoIcon,
+                     QMessageBox::Ok | QMessageBox::Escape,
+                     QMessageBox::NoButton,
+                     QMessageBox::NoButton);
+      mb.exec();
+    }
+
+  tmpBar->finish(); pdelete(tmpBar);
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
+
+  unsetCursor();
+
+  pListView->switchToOtherWidget(211, ""); //change to the results window
 }
 
-void SteadyStateWidget::CancelChange()
+void SteadyStateWidget::loadSteadyStateTask()
 {
-  if (mSteadyStateTask == NULL)
-    return;
-  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
-  CNewtonMethod* steadystatemethod = (CNewtonMethod*)mSteadyStateTask->getMethod();
+  CSteadyStateTask* mSteadyStateTask =
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+  assert(mSteadyStateTask);
 
-  taskName->setText(tr("Steady State Task"));
-  taskName->setEnabled(false);
+  CSteadyStateProblem* steadystateproblem =
+    dynamic_cast<CSteadyStateProblem *>(mSteadyStateTask->getProblem());
+  assert(steadystateproblem);
 
-  bool bJacobian = steadystateproblem->isJacobianRequested();
-  bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
-  taskJacobian->setChecked(bJacobian);
-  taskStability->setChecked(bStatistics);
-
-  parameterTable->setText(0, 0, QString::number(steadystatemethod->getValue("Newton.UseNewton")));
-  parameterTable->updateCell(0, 0);
-
-  parameterTable->setText(1, 0, QString::number(steadystatemethod->getValue("Newton.UseIntegration")));
-  parameterTable->updateCell(1, 0);
-
-  parameterTable->setText(2, 0, QString::number(steadystatemethod->getValue("Newton.UseBackIntegration")));
-  parameterTable->updateCell(2, 0);
-
-  parameterTable->setText(3, 0, QString::number(steadystatemethod->getValue("Newton.IterationLimit")));
-  parameterTable->updateCell(3, 0);
-
-  parameterTable->setText(4, 0, QString::number(steadystatemethod->getValue("Newton.DerivationFactor")));
-  parameterTable->updateCell(4, 0);
-
-  parameterTable->setText(5, 0, QString::number(steadystatemethod->getValue("Newton.Resolution")));
-  parameterTable->updateCell(5, 0);
-
-  parameterTable->setText(6, 0, QString::number(steadystatemethod->getValue("Newton.LSODA.RelativeTolerance")));
-  parameterTable->updateCell(6, 0);
-
-  parameterTable->setText(7, 0, QString::number(steadystatemethod->getValue("Newton.LSODA.AbsoluteTolerance")));
-  parameterTable->updateCell(7, 0);
-
-  parameterTable->setText(8, 0, QString::number(steadystatemethod->getValue("Newton.LSODA.AdamsMaxOrder")));
-  parameterTable->updateCell(8, 0);
-
-  parameterTable->setText(9, 0, QString::number(steadystatemethod->getValue("Newton.LSODA.BDFMaxOrder")));
-  parameterTable->updateCell(9, 0);
-}
-
-void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
-{
-  if (steadystatetask == NULL)
-    return;
-  mSteadyStateTask = steadystatetask;
-  CSteadyStateProblem * steadystateproblem = steadystatetask->getProblem();
-  CNewtonMethod* steadystatemethod = (CNewtonMethod*)steadystatetask->getMethod();
+  CSteadyStateMethod* steadystatemethod =
+    dynamic_cast<CSteadyStateMethod *>(mSteadyStateTask->getMethod());
+  assert(steadystatemethod);
 
   taskName->setText(tr("Steady State Task"));
   taskName->setEnabled(false);
@@ -294,56 +306,81 @@ void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)
   taskStability->setChecked(bStatistics);
 
   QTableItem * pItem;
+  QString value;
+  QString strname;
 
-  QString substrates1;
-  substrates1 = QString::number(steadystatemethod->getValue("Newton.UseNewton"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates1);
-  parameterTable->setItem(0, 0, pItem);
+  parameterTable->setNumRows(steadystatemethod->size());
+  QHeader *rowHeader = parameterTable->verticalHeader();
 
-  QString substrates2;
-  substrates2 = QString::number(steadystatemethod->getValue("Newton.UseIntegration"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates2);
-  parameterTable->setItem(1, 0, pItem);
+  unsigned C_INT32 i;
+  CCopasiParameter::Type Type;
+  for (i = 0; i < steadystatemethod->size(); i++)
+    {
+      strname = FROM_UTF8(steadystatemethod->getName(i));
+      rowHeader->setLabel(i, tr(strname));
 
-  QString substrates3;
-  substrates3 = QString::number(steadystatemethod->getValue("Newton.UseBackIntegration"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates3);
-  parameterTable->setItem(2, 0, pItem);
+      value = getParameterValue(steadystatemethod, i, &Type);
+      pItem = new QTableItem (parameterTable, QTableItem::Always, value);
+      parameterTable->setItem(i, 0, pItem);
+    }
 
-  QString substrates4;;
-  substrates4 = QString::number(steadystatemethod->getValue("Newton.IterationLimit"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates4);
-  parameterTable->setItem(3, 0, pItem);
+  /*if (!bExecutable->isChecked())
+    bRunButton->setEnabled(false);
+  else
+    bRunButton->setEnabled(true);*/
+}
 
-  QString substrates5;
-  substrates5 = QString::number(steadystatemethod->getValue("Newton.DerivationFactor"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates5);
-  parameterTable->setItem(4, 0, pItem);
+//void SteadyStateWidget::ExportToFileButtonClicked()
+//{}
 
-  QString substrates6;
-  substrates6 = QString::number(steadystatemethod->getValue("Newton.Resolution"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates6);
-  parameterTable->setItem(5, 0, pItem);
+bool SteadyStateWidget::enter(const std::string & key)
+{
+  if (!dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(key))) return false;
 
-  QString substrates7;
-  substrates7 = QString::number(steadystatemethod->getValue("Newton.LSODA.RelativeTolerance"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates7);
-  parameterTable->setItem(6, 0, pItem);
+  objKey = key;
 
-  QString substrates8;
-  substrates8 = QString::number(steadystatemethod->getValue("Newton.LSODA.AbsoluteTolerance"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates8);
-  parameterTable->setItem(7, 0, pItem);
+  loadSteadyStateTask();;
 
-  QString substrates9;
-  substrates9 = QString::number(steadystatemethod->getValue("Newton.LSODA.AdamsMaxOrder"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates9);
-  parameterTable->setItem(8, 0, pItem);
+  return true;
+}
 
-  QString substrates10;
-  substrates10 = QString::number(steadystatemethod->getValue("Newton.LSODA.BDFMaxOrder"));
-  pItem = new QTableItem (parameterTable, QTableItem::Always, substrates10);
-  parameterTable->setItem(9, 0, pItem);
+bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
+                               const std::string & C_UNUSED(key))
+{
+  if (mIgnoreUpdates) return true;
 
-  //Liang Reach Here finalfantasy
+  switch (objectType)
+    {
+    case ListViews::FUNCTION:
+      break;
+    case ListViews::MODEL:
+      CReportDefinitionVector* pReportDefinitionVector;
+      pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
+      if (pReportDefinitionVector)
+        reportDefinitionButton->setEnabled(true);
+      break;
+    default:
+      break;
+    }
+  return true;
+}
+
+bool SteadyStateWidget::leave()
+{
+  //let the user confirm?
+  return true;
+}
+
+void SteadyStateWidget::ReportDefinitionClicked()
+{
+  CSteadyStateTask* steadystateTask =
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
+  assert(steadystateTask);
+
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  pSelectDlg->setReport(&steadystateTask->getReport());
+  pSelectDlg->loadReportDefinitionVector();
+  pSelectDlg->exec();
+
+  delete pSelectDlg;
 }

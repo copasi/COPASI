@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 09:13:51 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -13,7 +13,7 @@
 #include "StateWidget.h"
 #include "StateSubwidget.h"
 #include "DataModelGUI.h"
-#include "trajectory/CTrajectoryTask.h"
+#include "steadystate/CSteadyStateTask.h"
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -58,8 +58,9 @@ StateWidget::~StateWidget()
   clicked in the tree   */
 bool StateWidget::loadFromBackend()
 {
-  //mCentralWidget->table()->setTimeSeries(dataModel->getTrajectoryTask()->getTimeSeries());
-  return true;
+  if (!dataModel->getSteadyStateTask()) return false;
+  if (!dataModel->getSteadyStateTask()->getState()) return false;
+  return mCentralWidget->loadAll(dataModel->getSteadyStateTask());
 }
 
 bool StateWidget::saveToBackend()

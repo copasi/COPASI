@@ -201,6 +201,14 @@
         <slot>moveDownButton_clicked()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>itemTree</tabstop>
+    <tabstop>selectedItemsBox</tabstop>
+    <tabstop>addButton</tabstop>
+    <tabstop>deleteButton</tabstop>
+    <tabstop>moveUpButton</tabstop>
+    <tabstop>moveDownButton</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in implementation">model/CModel.h</include>
     <include location="local" impldecl="in implementation">report/CCopasiObject.h</include>
@@ -254,6 +262,7 @@
     <function access="protected" returnType="const std::vector&lt;int&gt;*">getSelectedIndicesFromList()</function>
     <function access="protected">updateMoveButtons()</function>
     <function access="protected">updateOutputVector()</function>
+    <function access="protected">selectObjects( std::vector&lt;CCopasiObject *&gt; * objects )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

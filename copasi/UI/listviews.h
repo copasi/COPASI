@@ -1,156 +1,171 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:47 $
+   End CVS Header */
+
 /****************************************************************************
-**  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
-**  $ Author  : Ankur Gupta
-**  
-** 
-**   
-**
-*****************************************************************************/
+ **  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
+ **  $ Author  : Ankur Gupta
+ *****************************************************************************/
 #ifndef LISTVIEWS_H
 #define LISTVIEWS_H
 
+#include <set>
 #include <qsplitter.h>
-#include <qstring.h>
-#include <qobject.h>
-#include <qptrlist.h>
 #include <qlistview.h>
-//#include <iostream.h>
-#include <vector>
-#include <qvaluelist.h> 
-#include <qobjectlist.h>
-#include <qheader.h>
-#include <qmessagebox.h>
-#include <qmultilineedit.h>
-
-#include "DataModel.h"
-#include "Observer.h"
-#include "Tree.h"
-
 
 #include "copasi.h"
-#include "MetabolitesWidget.h"
-//#include "ReactionsWidget.h"
+#include "Tree.h"
 
+class DataModelGUI;
 
+//class CSteadyStateTask;
+//class CTrajectoryTask;
 
-#include "./icons/folderclosed.xpm"
-#include "./icons/folderopen.xpm"
-#include "./icons/folderlocked.xpm"
-// -----------------------------------------------------------------
-class Folder : public QObject
-{
-    Q_OBJECT
+class CompartmentSymbols;
+class CompartmentsWidget1;
+class CompartmentsWidget;
+class ConstantSymbols;
+class DifferentialEquations;
+class FixedMetaboliteSymbols;
+class FunctionSymbols;
+class FunctionWidget1;
+class FunctionWidget;
+class CMathModel;
+class MetaboliteSymbols;
+class MetabolitesWidget1;
+class MetabolitesWidget;
+class ModesWidget;
+class ModelWidget;
+class MoietyWidget1;
+class MoietyWidget;
+class ReactionsWidget1;
+class ReactionsWidget;
+class SteadyStateWidget;
+class ScanWidget;
+class StateWidget;
+class TrajectoryWidget;
+class TableDefinition;
+class TableDefinition1;
+class OptimizationWidget;
+class CopasiWidget;
+class PlotWidget1;
+class PlotWidget;
+class CopasiDefaultWidget;
+class TimeSeriesWidget;
 
-public:
-    
-    ~Folder(){}
-  	inline Folder( Folder *parent, const QString &name )
-                 : QObject( parent, name ), fName( name ){}
-
-//	inline void setCaption(const QString &name){ fCaption(name);}
-//	inline QString getCaption(){return fCaption;}
-
-	inline int getID(){return id;}
-	inline void setID(int id){this->id=id;}
-	inline QString folderName() { return fName; }
-	inline int operator==(Folder &folder){
-			return this->getID()==folder.getID()?1:0;}// for the comparing the stuff
-//	inline friend ostream& operator<< (ostream& s,Folder& f)
-//	{
-//	 s<<"I am :-"<<f.getID()<<endl;
-//	 return s;
-//	}
-
-	
-protected:
-//	QString fCaption;
-    QString fName;
-	int id;
-
-};
-
-// -----------------------------------------------------------------
+//*********************************************************************************
 
 class FolderListItem : public QListViewItem
-{
-public:
-    FolderListItem( QListView *parent, Folder *f );
-    FolderListItem( FolderListItem *parent, Folder *f );
-    void insertSubFolders( const QObjectList *lst );
-    Folder *folder() { return myFolder; }
-	
+  {
+  public:
+    FolderListItem(QListView *parent, const IndexedNode *f, bool recurs = true);
+    FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs = true);
+    void createSubFolders();
+    void deleteSubFolders();
 
-protected:
-    Folder *myFolder;
+    const IndexedNode *folder() const;
+    QString key(int, bool) const;
 
-};
+  protected:
+    const IndexedNode *mpFolder;
+  };
 
+//********************************************************************************
 
-// -----------------------------------------------------------------
-
-class ListViews : public QSplitter,public Observer
-{
+class ListViews : public QSplitter
+  {
     Q_OBJECT
 
-public:
-    ListViews( QWidget *parent = 0, const char *name = 0 );
-    ~ListViews(){dataModel->detach(this);}
-    void setDataModel(DataModel<Folder>* dm);
-	void update(Subject*,int status);//overides..the update method...
-	// for loading models...
+    friend class CopasiUI3Window;
 
+  public:
+    ListViews(QWidget *parent = 0, const char *name = 0);
+    ~ListViews();
 
-protected:
-	CModel *mModel;  // the re to the model...
+    // CHANGE does not include RENAME
+    enum Action {CHANGE = 0, ADD, DELETE, RENAME};
+    enum ObjectType {METABOLITE = 0, COMPARTMENT, REACTION, FUNCTION, MODEL, STATE, REPORT, PLOT};
 
-	void loadNodes(CModel *model);
-	void ConstructNodeWidgets();
+    void setDataModel(DataModelGUI* dm);
+    static DataModelGUI* getDataModel() {return dataModel;};
+    static bool notify(ObjectType objectType, Action action, const std::string & key = "");
+    static bool commit();
+    void switchToOtherWidget(C_INT32 id, const std::string & key);
+    static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
 
-    void clearItem(QListViewItem *);
-//	void clearMyChildrenItem(QListViewItem * i);
-	void clearParentItem(QListViewItem *);// for the top level items to be cleared..
+    void storeCurrentItem();
+    void restoreCurrentItem();
+    static void storeCurrentItemInAllListViews();
+    static void restoreCurrentItemInAllListViews();
 
-    void initFolders();
-//	void initFolders(Node<Folder>*);// default parameter....
+  private:
+    CMathModel *mpMathModel;
 
+    CopasiWidget* findWidgetFromItem(FolderListItem* item) const;
+
+    void ConstructNodeWidgets();
     void setupFolders();
-//	void setupFolders(QListView*);
-//	void setupFolders(QListViewItem*);
-	
-	QListViewItem* searchNode(Folder*);
-	QListViewItem* searchNode(int);// search by folder id
-    QListViewItem* searchNode(char*);// searfch by folder name
-	int searchNode(QListViewItem* me);
-	
-	// the variables used in the code...
-	QPtrList<Folder> lstFolders;// to keep the track of the folder items...for creation of the tree...
+
+    void setTheRightPixmap(QListViewItem* lvi);
+
+    FolderListItem* findListViewItem(int id, std::string key); //should always return a valid item
+
+  private slots:
+    void slotFolderChanged(QListViewItem*);
+
+  private:
+    static DataModelGUI* dataModel;
+    QListViewItem* lastSelection;
+    CopasiWidget* currentWidget;
+    std::string lastKey;
+
+    std::string mSaveObjectKey;
+    C_INT32 mSaveFolderID;
+
+    static std::set<ListViews *> mListOfListViews;
+    bool attach();
+    bool detach();
+
+    bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
+    static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
+    static bool updateAllListviews(C_INT32 id);
+
+    //the widgets
     QListView *folders;
-	QMultiLineEdit *bigWidget;
-    // all the objects to be displayed...
-	// all the new object widgets information goes here..
-	// create the pointer to the new one here and use it in the code
+
+    ScanWidget *scanWidget;
+    SteadyStateWidget *steadystateWidget;
+    TrajectoryWidget *trajectoryWidget;
     MetabolitesWidget *metabolitesWidget;
-
-
-protected slots:
-    void slotFolderChanged( QListViewItem*);
-
-private:
-	DataModel<Folder>* dataModel; // this the datamodel that has to be used..in the code..
-	QListViewItem* lastSelection;
-	QWidget* currentWidget;
-	QWidget* lastWidget;
-
-	void deleteAllMyChildrens(QListViewItem* me);
-	void addItem(QListViewItem* parent,Folder* child);
-	void addItem(QListView* parent,Folder* child);
-	void loadMetabolites(QListViewItem*);
-	void showMessage(QString caption,QString text);
-
-	
-
-
-
-};
+    ReactionsWidget *reactionsWidget;
+    CompartmentsWidget *compartmentsWidget;
+    CompartmentSymbols *compartmentSymbols;
+    MoietyWidget *moietyWidget;
+    FunctionWidget *functionWidget;
+    FunctionSymbols *functionSymbols;
+    DifferentialEquations *differentialEquations;
+    ReactionsWidget1 *reactionsWidget1;
+    MetabolitesWidget1 *metabolitesWidget1;
+    MetaboliteSymbols *metaboliteSymbols;
+    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
+    CompartmentsWidget1 *compartmentsWidget1;
+    ConstantSymbols *constantSymbols;
+    MoietyWidget1 *moietyWidget1;
+    FunctionWidget1 *functionWidget1;
+    ModesWidget *modesWidget;
+    ModelWidget *modelWidget;
+    TableDefinition *tableDefinition;
+    TableDefinition1 *tableDefinition1;
+    OptimizationWidget *optimizationWidget;
+    PlotWidget1 *plotWidget1;
+    PlotWidget *plotWidget;
+    CopasiDefaultWidget *defaultWidget;
+    TimeSeriesWidget *timeSeriesWidget;
+    StateWidget *stateWidget;
+  };
 
 #endif

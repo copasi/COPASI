@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/Attic/wizard.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 11:30:19 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,18 +17,20 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+#if defined(Q_OS_MACX)
+#include "Carbon.h"
+#endif
 
-//char* baseDir="/Users/ralph/wizard/";
+char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
 
-char* Form1::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", "TutWiz-Step3.html", "TutWiz-Step4.html", "TutWiz-Step5.html", "TutWiz-Step6.html"};
+char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
-char* Form1::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
+QString WizardDialog::helpPath = "";
 
-std::string Form1::helpPath = "";
+QWidget* copasiMainWindow = NULL;
 
-void Form1::buttonGroup2_clicked(int)
+void WizardDialog::buttonGroup2_clicked(int)
 {
-  //std::cout << "Selected button: " << this->buttonGroup->selectedId() << std::endl;
   int selectedId = this->buttonGroup->selectedId();
   if (selectedId == 0)
     {
@@ -45,26 +47,47 @@ void Form1::buttonGroup2_clicked(int)
       this->forwardButton->setEnabled(true);
       this->backButton->setEnabled(true);
     }
-  if (Form1::helpPath != "")
+  if (WizardDialog::helpPath != "")
     {
-      QString source = std::string("file://") + Form1::helpPath + std::string("/") + std::string(Form1::texts[this->buttonGroup->selectedId()]);
+      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[this->buttonGroup->selectedId()];
       this->textBrowser->setSource(source);
     }
 }
 
-void Form1::init()
+void WizardDialog::init()
 {
-  char* helpPath = getenv("COPASI_HELP_PATH");
-  if (helpPath != NULL)
+  WFlags f = this->getWFlags();
+  f = (f | Qt::WStyle_Minimize | Qt::WDestructiveClose);
+  this->setWFlags(f);
+  const char* tmp = getenv("COPASI_HELP_PATH");
+  std::string helpPath;
+  if (tmp)
+    {
+      helpPath = tmp;
+    }
+
+#if defined(Q_OS_MACX)
+
+  CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
+                        kCFURLPOSIXPathStyle);
+  helpPath = std::string(CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding())) + "/Contents/Resources/";
+#endif
+
+#if defined(Q_OS_WIN32)
+
+#endif
+
+  if (!helpPath.empty())
     {
       // the next line will hopefully ensure that this works under windows as well.
-      Form1::helpPath = QDir(helpPath).absPath().latin1();
-      QString source = std::string("file://") + Form1::helpPath + std::string("/") + std::string(Form1::texts[0]);
+      WizardDialog::helpPath = QDir(helpPath.c_str()).absPath().latin1();
+      QString source = "file://" + WizardDialog::helpPath + "/" + WizardDialog::texts[0];
       this->textBrowser->setSource(source);
     }
   else
     {
-      this->textBrowser->setText(Form1::Error);;
+      this->textBrowser->setText(WizardDialog::Error);;
     }
 
   this->button1->setStyle("motif");
@@ -81,31 +104,34 @@ void Form1::init()
   this->button6->setBackgroundOrigin(QButton::WindowOrigin);
 }
 
-void Form1::forwardButton_clicked()
+void WizardDialog::forwardButton_clicked()
 {
   this->buttonGroup->setButton(this->buttonGroup->selectedId() + 1);
   this->buttonGroup2_clicked(this->buttonGroup->selectedId());
 }
 
-void Form1::backButton_clicked()
+void WizardDialog::backButton_clicked()
 {
   this->buttonGroup->setButton(this->buttonGroup->selectedId() - 1);
   this->buttonGroup2_clicked(this->buttonGroup->selectedId());
 }
 
-void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
+void WizardDialog::textBrowser_anchorClicked(const QString &name, const QString &link)
 {
   if (name == "Model Settings")
     {
-      QMessageBox::information(this, "Info", "I am the model settings dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(1, "");
+      //QMessageBox::information(this, "Info", "I am the model settings dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Reaction Overview")
     {
-      QMessageBox::information(this, "Info", "I am the reaction overview!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(114, "");
+      //QMessageBox::information(this, "Info", "I am the reaction overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Report Definition")
     {
-      QMessageBox::information(this, "Info", "I am the report definition dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(43, "");
+      //QMessageBox::information(this, "Info", "I am the report definition dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Step 1")
     {
@@ -114,19 +140,22 @@ void Form1::textBrowser_anchorClicked(const QString &name, const QString &link)
     }
   else if (name == "Time Course")
     {
-      QMessageBox::information(this, "Info", "I am the time course dialog!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(23, "");
+      //QMessageBox::information(this, "Info", "I am the time course dialog!", QMessageBox::Yes | QMessageBox::Default);
     }
   else if (name == "Plot Definition Overview")
     {
-      QMessageBox::information(this, "Info", "I am the plot definition overview!", QMessageBox::Yes | QMessageBox::Default);
+      ListViews::switchAllListViewsToWidget(42, "");
+      //QMessageBox::information(this, "Info", "I am the plot definition overview!", QMessageBox::Yes | QMessageBox::Default);
     }
   else
     {
+      QMessageBox::warning(this, "Error", "Sorry. I don't know this link!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       std::cerr << "Unknown anchor: " << name << std::endl;
     }
 }
 
-void Form1::cancelButton_clicked()
+void WizardDialog::setCopasiMainWindow(QWidget * copasiMainWindow)
 {
-  exit(0);
+  this->copasiMainWindow = copasiMainWindow;
 }

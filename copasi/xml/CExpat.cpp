@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:06 $
+   End CVS Header */
+
 /**
  * CExpatTemplate class.
  * The class CExpatTemplate is a demplate definening a C++ interface to
@@ -5,6 +13,8 @@
  *
  * Created for Copasi by Stefan Hoops 2003
  */
+
+#include "copasi.h"
 
 #include "CExpat.h"
 

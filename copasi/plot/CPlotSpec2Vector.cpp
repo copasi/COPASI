@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:11 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -91,6 +91,8 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   inputFlag = FROM_OBJECTS;
 
+  mTime.init();
+
   return compile(); //create mObjects
 }
 
@@ -118,22 +120,30 @@ bool CPlotSpec2Vector::updateAllPlots()
 
 bool CPlotSpec2Vector::initAllPlots()
 {
+  windows.resize(0);
+
   //step through the vector of specifications and create the plot windows
-  PlotWindow* pTemp;
+  std::string key;
   const_iterator it;
-  std::vector<PlotWindow*>::iterator winit;
-  windows.resize(size());
-  for (it = begin(), winit = windows.begin(); it != end(); ++it, ++winit)
+  for (it = begin(); it != end(); ++it)
     {
-      if (*winit)
-      {(*winit)->initFromSpec(this, *it);}
-      else
+      if ((*it)->isActive())
         {
-          pTemp = new PlotWindow(this, *it);
-          *winit = pTemp;
-          //pTemp->resize(600, 360);
+          key = (*it)->CCopasiParameter::getKey();
+          std::cout << key << std::endl;
+
+          if (windowMap[key] == NULL)
+            {
+              windowMap[key] = new PlotWindow(this, *it);
+            }
+          else
+            {
+              windowMap[key]->initFromSpec(this, *it);
+            }
+          windowMap[key]->show();
+
+          windows.push_back(windowMap[key]);
         }
-      (*winit)->show();
     }
   return true;
 }
@@ -148,7 +158,10 @@ bool CPlotSpec2Vector::doPlotting()
       std::vector<CCopasiObject*>::const_iterator it = mObjects.begin();
       for (; it != mObjects.end(); ++it, ++i)
         {
-          data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
+          if (*it)
+            data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
+          else
+            data[i] = 0;
           //std::cout << "debug1: " <<  *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference())<< std::endl;
           //std::cout << "debug2: " <<   data[i] << std::endl;
           //(*it)->print(&std::cout);
@@ -157,11 +170,15 @@ bool CPlotSpec2Vector::doPlotting()
     }
   else
     {
-      std::cout << "doPlotting: no input method" << std::endl;
+      //std::cout << "doPlotting: no input method" << std::endl;
       return false;
     }
 
-  //updateAllPlots();
+  if (mTime.getTimeDiff() > 200)
+    {
+      updateAllPlots();
+      mTime.init();
+    }
 
   return success;
 }
@@ -187,8 +204,6 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
 
 bool CPlotSpec2Vector::compile()
 {
-  bool success = true;
-
   mObjects.clear();
 
   CCopasiObject* pSelected;
@@ -201,7 +216,8 @@ bool CPlotSpec2Vector::compile()
       if (!pSelected)
         {
           //std::cout << "Object not found!" << std::endl;
-          return false;
+          mObjects.push_back(NULL);
+          //return false;
         }
       //TODO check hasValue()
       //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;

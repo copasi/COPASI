@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:05 $
+   End CVS Header */
+
 /**
  * CCopasiXMLInterface class.
  * The class CCopasiXMLInterface is the interface to various XML document 
@@ -7,16 +15,17 @@
  */
 
 #include <fstream>
-#include <sstream>
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
 #include "model/CModel.h"
+#include "report/CReportDefinition.h"
+#include "plot/CPlotSpecification.h"
 
 std::string CCopasiXMLInterface::encode(const std::string & str)
 {
-  /* We first need to encode the ASII string to UTF-8 */
-  std::string tmp = utf8(str);
+  /* All COPASI std::strings and char are already UTF-8 encoded.*/
+  std::string tmp = str;
   std::ostringstream xml;
 
   unsigned C_INT32 i, imax;
@@ -55,6 +64,8 @@ std::string CCopasiXMLInterface::encode(const std::string & str)
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
 {
+  return str;
+
   std::ostringstream utf8;
 
   /* Based on RFC 2279.
@@ -79,6 +90,7 @@ CCopasiXMLInterface::CCopasiXMLInterface():
     mpFunctionList(NULL),
     mpTaskList(NULL),
     mpReportList(NULL),
+    mpPlotList(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
@@ -154,13 +166,31 @@ bool CCopasiXMLInterface::freeTaskList()
   return true;
 }
 
-bool CCopasiXMLInterface::setReportList(const CCopasiVectorN< CCopasiReport > & reportList)
+bool CCopasiXMLInterface::setPlotList(const CCopasiVectorN< CPlotSpecification > & plotList)
 {
-  mpReportList = const_cast<CCopasiVectorN< CCopasiReport > *>(&reportList);
+  mpPlotList = const_cast<CCopasiVectorN< CPlotSpecification > *>(&plotList);
   return true;
 }
 
-CCopasiVectorN< CCopasiReport > * CCopasiXMLInterface::getReportList() const
+CCopasiVectorN< CPlotSpecification > * CCopasiXMLInterface::getPlotList() const
+  {return mpPlotList;}
+
+bool CCopasiXMLInterface::havePlotList() const
+  {return mpPlotList != NULL;}
+
+bool CCopasiXMLInterface::freePlotList()
+{
+  pdelete(mpPlotList);
+  return true;
+}
+
+bool CCopasiXMLInterface::setReportList(const CCopasiVectorN< CReportDefinition > & reportList)
+{
+  mpReportList = const_cast<CCopasiVectorN< CReportDefinition > *>(&reportList);
+  return true;
+}
+
+CCopasiVectorN< CReportDefinition > * CCopasiXMLInterface::getReportList() const
   {return mpReportList;}
 
 bool CCopasiXMLInterface::haveReportList() const
@@ -172,17 +202,33 @@ bool CCopasiXMLInterface::freeReportList()
   return true;
 }
 
+bool CCopasiXMLInterface::saveData(const std::string & data)
+{
+  *mpOstream << mIndent << CCopasiXMLInterface::encode(data) << std::endl;
+
+  return true;
+}
+
 bool CCopasiXMLInterface::saveElement(const std::string & name,
                                       CXMLAttributeList & attributeList)
 {
   *mpOstream << mIndent << "<" << name;
 
   unsigned C_INT32 i, imax;
+
   for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << " " << attributeList.getAttribute(i);
+    *mpOstream << attributeList.getAttribute(i);
 
   *mpOstream << "/>" << std::endl;
 
+  return true;
+}
+
+bool CCopasiXMLInterface::startSaveElement(const std::string & name)
+{
+  *mpOstream << mIndent << "<" << name << ">" << std::endl;
+
+  mIndent += "  ";
   return true;
 }
 
@@ -193,7 +239,7 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 
   unsigned C_INT32 i, imax;
   for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << " " << attributeList.getAttribute(i);
+    *mpOstream << attributeList.getAttribute(i);
 
   *mpOstream << ">" << std::endl;
 
@@ -203,18 +249,20 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 
 bool CCopasiXMLInterface::endSaveElement(const std::string & name)
 {
+  mIndent = mIndent.substr(0, mIndent.length() - 2);
   *mpOstream << mIndent << "</" << name << ">" << std::endl;
 
-  mIndent.substr(0, mIndent.length() - 2);
   return true;
 }
 
 CXMLAttributeList::CXMLAttributeList():
-    mAttributeList()
+    mAttributeList(),
+    mSaveList()
 {}
 
 CXMLAttributeList::CXMLAttributeList(const CXMLAttributeList & src):
-    mAttributeList(src.mAttributeList)
+    mAttributeList(src.mAttributeList),
+    mSaveList(src.mSaveList)
 {}
 
 CXMLAttributeList::~CXMLAttributeList() {}
@@ -222,17 +270,11 @@ CXMLAttributeList::~CXMLAttributeList() {}
 bool CXMLAttributeList::erase()
 {
   mAttributeList.clear();
-  return true;
-}
-
-bool CXMLAttributeList::addAttribute(const std::string & name,
-                                     const std::string & value)
-{
-  mAttributeList.push_back(name);
-  mAttributeList.push_back(CCopasiXMLInterface::encode(value));
+  mSaveList.clear();
 
   return true;
 }
+
 unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
 
 bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
@@ -245,17 +287,19 @@ bool CXMLAttributeList::setName(const unsigned C_INT32 & index,
 const std::string & CXMLAttributeList::getName(const unsigned C_INT32 & index) const
   {return mAttributeList[2 * index];}
 
-bool CXMLAttributeList::setValue(const unsigned C_INT32 & index,
-                                 const std::string & value)
-{
-  mAttributeList[2 * index + 1] = CCopasiXMLInterface::encode(value);
-  return true;
-}
-
 const std::string & CXMLAttributeList::getValue(const unsigned C_INT32 & index) const
   {return mAttributeList[2 * index + 1];}
 
+bool CXMLAttributeList::skip(const unsigned C_INT32 & index)
+{
+  mSaveList[index] = false;
+  return true;
+}
+
 std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) const
   {
-    return mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
+    if (mSaveList[index])
+      return " " + mAttributeList[2 * index] + "=\"" + mAttributeList[2 * index + 1] + "\"";
+    else
+      return "";
   }

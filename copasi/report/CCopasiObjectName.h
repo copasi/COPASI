@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
 /**
  * Class CCopasiObjectName
  *
@@ -12,7 +20,7 @@
 #include <string>
 
 /** @dia:pos 21.4754,29.8662 */
-class CCopasiObjectName: public string
+class CCopasiObjectName: public std::string
   {
     // Operations
   public:
@@ -32,9 +40,10 @@ class CCopasiObjectName: public string
 
     std::string getObjectName() const;
 
-    unsigned C_INT32 getIndex(const unsigned C_INT32 & pos = 0) const;
+    unsigned C_INT32 getElementIndex(const unsigned C_INT32 & pos = 0) const;
 
-    std::string getName(const unsigned C_INT32 & pos = 0) const;
+    std::string getElementName(const unsigned C_INT32 & pos /*= 0*/,
+                               const bool & unescape = true) const;
 
     static std::string escape(const std::string & name);
 

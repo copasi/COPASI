@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 14:05:26 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 #include <assert.h>

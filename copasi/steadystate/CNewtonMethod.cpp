@@ -1,6 +1,12 @@
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
-#include "tnt/lu.h"
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
+#include <algorithm>
 
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
@@ -10,56 +16,129 @@
 
 #include "model/CState.h"
 #include "model/CModel.h"
+#include "model/CCompartment.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
+#include "utilities/CCopasiException.h"
 
-extern "C"
-  {
-#include "clapack.h"        //use CLAPACK
-  }
+#include "clapackwrap.h"        //use CLAPACK
+#include "utilities/utility.h"
+#include "utilities/COutputHandler.h"
 
-CNewtonMethod::CNewtonMethod():
-    CSteadyStateMethod(),
-    mH(NULL),
-    mXold(NULL),
-    mdxdt(NULL),
-    mJacobian(NULL),
+CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
+    CSteadyStateMethod(CCopasiMethod::Newton, pParent),
     mIpiv(NULL)
-
 {
-  setName("Newton");
-  mTypeEnum = CSteadyStateMethod::Newton;
-  setType(CSteadyStateMethod::TypeName[mTypeEnum]);
-
-  add("Newton.UseNewton", 1);
-  add("Newton.UseIntegration", 1);
-  add("Newton.UseBackIntegration", 1);
-  add("Newton.IterationLimit", 50);
-  add("Newton.DerivationFactor", 1.0e-003);
-  add("Newton.Resolution", 1.0e-009);
-  add("Newton.LSODA.RelativeTolerance", 1.0e-012);
-  add("Newton.LSODA.AbsoluteTolerance", 1.0e-006);
-  add("Newton.LSODA.AdamsMaxOrder", 12);
-  add("Newton.LSODA.BDFMaxOrder", 5);
+  addParameter("Newton.UseNewton",
+               CCopasiParameter::BOOL, true);
+  addParameter("Newton.UseIntegration",
+               CCopasiParameter::BOOL, true);
+  addParameter("Newton.UseBackIntegration",
+               CCopasiParameter::BOOL, true);
+  addParameter("Newton.IterationLimit",
+               CCopasiParameter::UINT, (unsigned C_INT32) 50);
+  addParameter("Newton.DerivationFactor",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
+  addParameter("Newton.Resolution",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  addParameter("Newton.LSODA.RelativeTolerance",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
+  addParameter("Newton.LSODA.AbsoluteTolerance",
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  addParameter("Newton.LSODA.AdamsMaxOrder",
+               CCopasiParameter::UINT, (unsigned C_INT32) 12);
+  addParameter("Newton.LSODA.BDFMaxOrder",
+               CCopasiParameter::UINT, (unsigned C_INT32) 5);
+  addParameter("Newton.LSODA.MaxStepsInternal",
+               CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 }
+
+CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
+                             const CCopasiContainer * pParent):
+    CSteadyStateMethod(src, pParent),
+    mIpiv(NULL)
+{}
 
 CNewtonMethod::~CNewtonMethod()
 {cleanup();}
 
 void CNewtonMethod::cleanup()
 {
-  pdelete(mH);
-  pdelete(mXold);
-  pdelete(mdxdt);
-  pdelete(mJacobian);
-  pdelete(mIpiv);
+  if (mIpiv) delete [] mIpiv; mIpiv = NULL;
+  // pdelete(mIpiv);
+}
+
+void CNewtonMethod::load(CReadConfig & configBuffer,
+                         CReadConfig::Mode C_UNUSED(mode))
+{
+  if (configBuffer.getVersion() < "4.0")
+    {
+      C_FLOAT64 Dbl;
+      C_INT32 Int;
+      bool Bool;
+
+      configBuffer.getVariable("SSStrategy", "C_INT32", &Int, CReadConfig::LOOP);
+      switch (Int)
+        {
+        case 0:
+          setValue("Newton.UseNewton", true);
+          setValue("Newton.UseIntegration", true);
+          setValue("Newton.UseBackIntegration", false);
+          break;
+
+        case 1:
+          setValue("Newton.UseNewton", false);
+          setValue("Newton.UseIntegration", true);
+          setValue("Newton.UseBackIntegration", false);
+          break;
+
+        case 2:
+          setValue("Newton.UseNewton", true);
+          setValue("Newton.UseIntegration", false);
+          setValue("Newton.UseBackIntegration", false);
+          break;
+
+        case 3:
+          setValue("Newton.UseNewton", false);
+          setValue("Newton.UseIntegration", false);
+          setValue("Newton.UseBackIntegration", true);
+          break;
+
+        default:
+          fatalError();
+        }
+
+      configBuffer.getVariable("SSBackIntegration", "bool", &Bool);
+      setValue("Newton.UseBackIntegration", Bool);
+
+      configBuffer.getVariable("NewtonLimit", "C_INT32", &Int,
+                               CReadConfig::SEARCH);
+      setValue("Newton.IterationLimit", Int);
+
+      configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl); //typo is necessary!!
+      setValue("Newton.Resolution", Dbl);
+
+      configBuffer.getVariable("RelativeTolerance", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.RelativeTolerance", Dbl);
+
+      configBuffer.getVariable("AbsoluteTolerance", "C_FLOAT64", &Dbl);
+      setValue("Newton.LSODA.AbsoluteTolerance", Dbl);
+
+      configBuffer.getVariable("AdamsMaxOrder", "C_INT32", &Int);
+      setValue("Newton.LSODA.AdamsMaxOrder", Int);
+
+      configBuffer.getVariable("BDFMaxOrder", "C_INT32", &Int);
+      setValue("Newton.LSODA.BDFMaxOrder", Int);
+
+      configBuffer.getVariable("DerivationFactor", "C_FLOAT64", &Dbl);
+      setValue("Newton.DerivationFactor", Dbl);
+    }
 }
 
 CSteadyStateMethod::ReturnCode
-CNewtonMethod::process(CState & steadyState,
-                       const CState & initialState)
+CNewtonMethod::processInternal()
 {
   CTrajectoryTask * pTrajectory = NULL;
   CTrajectoryProblem * pTrajectoryProblem = NULL;
@@ -70,113 +149,145 @@ CNewtonMethod::process(CState & steadyState,
   /* Configure Newton */
   mUseNewton = mUseIntegration = mUseBackIntegration = false;
 
-  if (getValue("Newton.UseNewton"))
+  if (* (bool *) getValue("Newton.UseNewton"))
     mUseNewton = true;
-  if (getValue("Newton.UseIntegration"))
+  if (* (bool *) getValue("Newton.UseIntegration"))
     mUseIntegration = true;
-  if (getValue("Newton.UseBackIntegration"))
+  if (* (bool *) getValue("Newton.UseBackIntegration"))
     mUseBackIntegration = true;
-  mIterationLimit = (C_INT32) getValue("Newton.IterationLimit");
-  mFactor = getValue("Newton.DerivationFactor");
-  mResolution = getValue("Newton.Resolution");
+  mIterationLimit = * (unsigned C_INT32 *) getValue("Newton.IterationLimit");
+  mFactor = * (C_FLOAT64 *) getValue("Newton.DerivationFactor");
+  mResolution = * (C_FLOAT64 *) getValue("Newton.Resolution");
+  mScaledResolution =
+    mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
+  //TODO discuss scaling
 
-  if (mUseIntegration || mUseBackIntegration)
-    {
-      // create an appropriate trajectory task
-      pTrajectoryProblem = new CTrajectoryProblem();
-      pTrajectoryProblem->setModel(mpProblem->getModel());
-      pTrajectoryProblem->setStepNumber(1);
+  // convert CState to CStateX
+  mInitialStateX = mpProblem->getInitialState();
+  *mpSteadyStateX = mInitialStateX; //not strictly necessary
 
-      pTrajectoryMethod = CTrajectoryMethod::
-                          createTrajectoryMethod(CTrajectoryMethod::deterministic);
-      pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
-                                  getValue("Newton.LSODA.RelativeTolerance"));
-      pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
-                                  getValue("Newton.LSODA.AbsoluteTolerance"));
-      pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
-                                  getValue("Newton.LSODA.AdamsMaxOrder"));
-      pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
-                                  getValue("Newton.LSODA.BDFMaxOrder"));
+  mDimension = mpSteadyStateX->getVariableNumberSize();
+  mX = const_cast< CVector< C_FLOAT64 > * >(&mpSteadyStateX->getVariableNumberVector());
 
-      pTrajectory = new CTrajectoryTask();
-      pTrajectory->setProblem(pTrajectoryProblem);
-      pTrajectory->setMethod(pTrajectoryMethod);
-    }
+  mH.resize(mDimension);
+  mXold.resize(mDimension);
+  mdxdt.resize(mDimension);
+  //mJacobianX.resize(mDimension, mDimension);
+  mIpiv = new C_INT [mDimension];
 
-  // make sure the steady state has the correct allocation
-  steadyState = initialState;
-  CState InitialState = initialState;
-
-  mDimension = steadyState.getVariableNumberSize();
-
-  mX = const_cast<C_FLOAT64 *>(steadyState.getVariableNumberArrayDbl());
-  mH = new C_FLOAT64 [mDimension];
-  mXold = new C_FLOAT64 [mDimension];
-  mdxdt = new C_FLOAT64 [mDimension];
-  mJacobian = new C_FLOAT64 [mDimension * mDimension];
-  mIpiv = new C_INT32 [mDimension];
+  if (mpProgressHandler) mpProgressHandler->init(0, "performing steady state calculation...", true);
 
   CNewtonMethod::NewtonReturnCode returnCode;
-
   if (mUseNewton)
     {
-      returnCode = processNewton(&steadyState, &InitialState);
+      returnCode = processNewton();
       if (returnCode == CNewtonMethod::found)
         return returnProcess(true, mFactor, mResolution);
     }
 
-  C_FLOAT64 EndTime;
+  if (mUseIntegration || mUseBackIntegration)
+    {
+      // create an appropriate trajectory task
+      pTrajectory = new CTrajectoryTask();
 
+      pTrajectoryProblem =
+        dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
+      assert(pTrajectoryProblem);
+
+      pTrajectoryMethod =
+        dynamic_cast<CTrajectoryMethod *>(pTrajectory->getMethod());
+      assert(pTrajectoryMethod);
+
+      pTrajectoryProblem->setModel(mpProblem->getModel());
+      pTrajectoryProblem->setStepNumber(1);
+
+      pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
+                                  * (C_FLOAT64 *) getValue("Newton.LSODA.RelativeTolerance"));
+      pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
+                                  * (C_FLOAT64 *) getValue("Newton.LSODA.AbsoluteTolerance"));
+      pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
+                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.AdamsMaxOrder"));
+      pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
+                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.BDFMaxOrder"));
+      pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
+                                  * (unsigned C_INT32 *) getValue("Newton.LSODA.MaxStepsInternal"));
+
+      pTrajectory->initialize();
+    }
+
+  bool stepLimitReached = false;
+  C_FLOAT64 EndTime;
   if (mUseIntegration)
     {
+      std::cout << "Try integrating ..." << std::endl;
       for (EndTime = 1; EndTime < 1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(&InitialState);
-          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
-                                         + EndTime);
-          pTrajectory->process();
-          steadyState = *pTrajectory->getState();
+          if (mpProgressHandler) mpProgressHandler->reInit(0, "forward integrating...");
+          if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
+          std::cout << "   integrating up to " << EndTime << std::endl;
 
-          const_cast<CModel *>(steadyState.getModel())->
-          getDerivatives(&steadyState, mdxdt);
+          pTrajectoryProblem->setInitialState(mpProblem->getInitialState()); //TODO: on second run do not start from the beginning
+          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
+          try
+            {
+              stepLimitReached = !pTrajectory->processSimple(true); //single step
+            }
+          catch (CCopasiException Exception)
+            {
+              std::cout << std::endl << "exception in trajectory task" << std::endl;
+              *mpSteadyStateX = *pTrajectory->getState();
+              break;
+            }
 
+          *mpSteadyStateX = *pTrajectory->getState();
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           if (isSteadyState())
-            return returnProcess(true, mFactor, mResolution);
+            {
+              *mpSteadyState = *mpSteadyStateX; //convert back to CState
+              return returnProcess(true, mFactor, mResolution);
+            }
 
-          InitialState = steadyState;
-
+          //try Newton
+          //mInitialStateX = mStateX;
           if (mUseNewton)
             {
-              returnCode = processNewton(&steadyState, &InitialState);
+              returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
-                return returnProcess(true, mFactor, mResolution);
+              {return returnProcess(true, mFactor, mResolution);}
+            }
+
+          if (stepLimitReached)
+            {
+              std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              break;
             }
         }
     }
 
-  if (mUseBackIntegration)
+  if (false /*mUseBackIntegration*/) //TODO:disabled at the moment
     {
       for (EndTime = -1; EndTime > -1.0e10; EndTime *= 10)
         {
-          pTrajectoryProblem->setInitialState(&InitialState);
+          pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime()
                                          + EndTime);
-          pTrajectory->process();
-          steadyState = *pTrajectory->getState();
+          pTrajectory->processSimple();
 
-          const_cast<CModel *>(steadyState.getModel())->
-          getDerivatives(&steadyState, mdxdt);
-
+          *mpSteadyStateX = *pTrajectory->getState();
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           if (isSteadyState())
-            return returnProcess(true, mFactor, mResolution);
+            {
+              *mpSteadyState = *mpSteadyStateX; //convert back to CState
+              return returnProcess(true, mFactor, mResolution);
+            }
 
-          InitialState = steadyState;
-
+          //try Newton
+          //mInitialStateX = mStateX;
           if (mUseNewton)
             {
-              returnCode = processNewton(&steadyState, &InitialState);
+              returnCode = processNewton();
               if (returnCode == CNewtonMethod::found)
-                return returnProcess(true, mFactor, mResolution);
+              {return returnProcess(true, mFactor, mResolution);}
             }
         }
     }
@@ -184,33 +295,42 @@ CNewtonMethod::process(CState & steadyState,
   pdelete(pTrajectory);
   cleanup();
 
+  if (mpProgressHandler) mpProgressHandler->finish();
+
+  *mpSteadyState = *mpSteadyStateX; //convert back to CState
   return returnProcess(false, mFactor, mResolution);
 }
 
-CNewtonMethod::NewtonReturnCode
-CNewtonMethod::processNewton (CState * steadyState,
-                              CState * initialState)
+CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 {
   CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
   C_INT32 i, j, k;
   C_FLOAT64 nmaxrate;
 
-  const_cast<CModel *>(steadyState->getModel())->getDerivatives(steadyState,
-      mdxdt);
-
+  const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
   if (isSteadyState())
-    returnNewton(CNewtonMethod::found, steadyState, initialState);
+    return returnNewton(CNewtonMethod::found);
 
   // Start the iterations
-  C_INT32 info = 0;
-  char N = 'N';
-  C_INT32 one = 1;
+  C_INT info = 0;
+  char T = 'T'; /* difference between fortran's and c's matrix storrage */
+  C_INT one = 1;
 
-  for (k = 0; k < mIterationLimit && mMaxrate > mResolution; k++)
+  std::cout << "processNewton called" << std::endl;
+
+  for (k = 0; k < mIterationLimit && mMaxrate > mScaledResolution; k++)
     {
-      memcpy(mXold, mX, mDimension * sizeof(C_FLOAT64));
+      if (mpProgressHandler) /*flagStopped =*/ mpProgressHandler->reInit(0, "newton method...");
+      if (mpProgressHandler) if (mpProgressHandler->progress(-1)) break;
+      //std::cout << "newton: " << k << std::endl << mStateX;
 
-      steadyState->getJacobian(mJacobian, min(mFactor, mMaxrate), mResolution);
+      //memcpy(mXold.array(), mX->array(), mDimension * sizeof(C_FLOAT64));
+      mXold = *mX; //should be almost as efficient as the above
+
+      //      DebugFile << "Iteration: " << k << std::endl;
+      mpSteadyStateX->calculateJacobian(*mpJacobianX, std::min(mFactor, mMaxrate),
+                                        mResolution); //X
+      //std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -250,13 +370,15 @@ CNewtonMethod::processNewton (CState * steadyState,
        *               singular, and division by zero will occur if it is used
        *               to solve a system of equations.
        */
-      dgetrf_(&mDimension, &mDimension, mJacobian, &mDimension, mIpiv, &info);
+      dgetrf_(&mDimension, &mDimension, mpJacobianX->array(),
+              &mDimension, mIpiv, &info);
+
+      //std::cout << "Jacobian: " << mJacobianX << std::endl;
 
       if (info)
         {
           if (info > 0)
-            return returnNewton(CNewtonMethod::singularJacobian,
-                                steadyState, initialState);
+            return returnNewton(CNewtonMethod::singularJacobian);
           fatalError();
         }
 
@@ -306,9 +428,11 @@ CNewtonMethod::processNewton (CState * steadyState,
        *  info    (output) INTEGER
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
-       */
-      dgetrs_(&N, &mDimension, &one, mJacobian, &mDimension, mIpiv, mdxdt,
-              &mDimension, &info);
+       */ 
+      //std::cout << "b: " << mdxdt << std::endl;
+      dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
+              &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
+      //std::cout << "a: " << mdxdt << std::endl << std::endl;
 
       if (info)
         fatalError();
@@ -319,33 +443,39 @@ CNewtonMethod::processNewton (CState * steadyState,
       for (i = 0; i < mDimension; i++)
         mH[i] = mdxdt[i];
 
-      for (i = 0; (i < 32) && (nmaxrate > mMaxrate); i++)
+      for (i = 0; (i < 32) && (nmaxrate >= mMaxrate); i++)
         {
           for (j = 0; j < mDimension; j++)
             {
-              mX[j] -= mH[j];
+              (*mX)[j] = mXold[j] - mH[j];
               mH[j] /= 2;
             }
 
-          const_cast<CModel *>(steadyState->getModel())->
-          getDerivatives(steadyState, mdxdt);
-          nmaxrate = xNorm(mDimension, mdxdt - 1 /* fortran style vector */, 1);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          nmaxrate = xNorm(mDimension,
+                           mdxdt.array() - 1,                             /* fortran style vector */
+                           1);
         }
+
+      std::cout << k << "th Newton Step. i = " << i << " maxRate = " << nmaxrate << std::endl;
 
       if (i == 32)
         {
-          memcpy(mX, mXold, mDimension * sizeof(C_FLOAT64));
-          const_cast<CModel *>(steadyState->getModel())->
-          getDerivatives(steadyState, mdxdt);
+          std::cout << "a newton step did not succeed" << std::endl;
+
+          //discard the step
+          *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));
+
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
 
           if (isSteadyState())
             ReturnCode = CNewtonMethod::found;
-          else if (mMaxrate < mResolution)
+          else if (mMaxrate < mScaledResolution)
             ReturnCode = CNewtonMethod::notFound;
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
 
-          return returnNewton(ReturnCode, steadyState, initialState);
+          return returnNewton(ReturnCode);
         }
 
       //      for (i = 0; i < mDimension; i++)
@@ -356,26 +486,32 @@ CNewtonMethod::processNewton (CState * steadyState,
 
   if (isSteadyState())
     ReturnCode = CNewtonMethod::found;
-  else if (mMaxrate < mResolution)
+  else if (mMaxrate < mScaledResolution)
     ReturnCode = CNewtonMethod::notFound;
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
 
-  return returnNewton(ReturnCode, steadyState, initialState);
+  return returnNewton(ReturnCode);
 }
 
 CNewtonMethod::NewtonReturnCode
-CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode,
-                            CState * steadyState,
-                            CState * initialState)
+CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
-  /* Make sure the model reflects the current state */
-  if (returnCode == CNewtonMethod::found)
-    const_cast<CModel *>(steadyState->getModel())->
-    getDerivatives(steadyState, mdxdt);
+  mpProblem->getModel()->setStateX(mpSteadyStateX);
+  mpProblem->getModel()->updateRates();
+  *mpSteadyState = *mpSteadyStateX; //convert back to CState
+
+  /*if (returnCode == CNewtonMethod::found)
+    {
+      const_cast<CModel *>(mStateX.getModel())->getDerivativesX_particles(&mStateX, mdxdt);
+      *mpSteadyState = mStateX; //convert back to CState
+    }
   else
-    const_cast<CModel *>(initialState->getModel())->
-    getDerivatives(initialState, mdxdt);
+    {
+      const_cast<CModel *>(mpProblem->getInitialState().getModel())
+      ->getDerivatives_particles(&mpProblem->getInitialState(), mdxdt);
+      *mpSteadyState = mpProblem->getInitialState();
+    }*/
 
   return returnCode;
 }
@@ -384,14 +520,17 @@ bool CNewtonMethod::isSteadyState()
 {
   C_INT32 i;
 
-  mMaxrate = xNorm(mDimension, mdxdt - 1 /* fortran style vector */, 1);
+  if (mDimension == 0) return true;
 
-  if (mMaxrate > mResolution)
+  mMaxrate = xNorm(mDimension,
+                   mdxdt.array() - 1,                             /* fortran style vector */
+                   1);
+
+  if (mMaxrate > mScaledResolution)
     return false;
 
-  for (i = 0; i < mDimension; i++)
-    if (mX[i] < 0.0)
-      return false;
-
+  //for (i = 0; i < mDimension; i++)
+  //  if (mX[i] < - mResolution) return false;
+  //TODO: check if the above is really unnecessary...
   return true;
 }

@@ -1,6 +1,5 @@
 /* scanner for kinetic functions */
 
-/* remember to comment out the #include <unistd.h> */
 %option outfile="CKinFunctionFlexLexer.cpp"
 %option prefix="CKinFunction"
 %option noyywrap
@@ -8,12 +7,11 @@
 %option c++
 
 %{
-#include "copasi.h"
 #include "CNodeK.h"
 %}
 
 DIGIT    [0-9]
-ID       [a-zA-Z][a-zA-Z0-9]*
+ID       [a-z_A-Z][a-z_A-Z0-9]*
    
 %%
 
@@ -43,9 +41,11 @@ COS   return N_COS;
 ")"   return ')';
 
 {ID}  return N_IDENTIFIER;
+
+\<[0-9]*\>  return N_OBJECT;
      
 [ \t\r\n]+ /* eat up whitespace */
      
-..     return N_NOP;
+.     return N_NOP;
      
 %%

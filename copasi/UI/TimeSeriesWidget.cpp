@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/23 14:58:14 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -12,6 +12,9 @@
 
 #include "TimeSeriesWidget.h"
 #include "TimeSeriesSubwidget.h"
+#include "DataModelGUI.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "CTimeSeriesTable.h"
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -28,10 +31,10 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TimeSeriesWidget");
   setCaption(trUtf8("TimeSeriesWidget"));
 
-  TimeSeriesWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new TimeSeriesSubWidget(this, "TimeSeriesSubwidget");
-  TimeSeriesWidgetLayout->addWidget(mCentralWidget, 0, 0);
+  mWidgetLayout->addWidget(mCentralWidget, 0, 0);
 
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -52,10 +55,9 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
 TimeSeriesWidget::~TimeSeriesWidget()
 {}
 
-/* This function loads the compartments widget when its name is
-  clicked in the tree   */
 bool TimeSeriesWidget::loadFromBackend()
 {
+  mCentralWidget->table()->setTimeSeries(dataModel->getTrajectoryTask()->getTimeSeries());
   return true;
 }
 
@@ -74,7 +76,7 @@ bool TimeSeriesWidget::saveToBackend()
   saveToCompartment();
 }*/
 
-bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   /* if (mIgnoreUpdates) return true;
 
@@ -84,7 +86,6 @@ bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Actio
      case ListViews::STATE:
      case ListViews::COMPARTMENT:
      case ListViews::METABOLITE:
-       //TODO: check if it really is a compartment
        return loadFromCompartment(dynamic_cast< CCompartment * >(GlobalKeys.get(objKey)));
        break;
 
@@ -97,10 +98,12 @@ bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Actio
 bool TimeSeriesWidget::leave()
 {
   //return saveToCompartment();
+  return true;
 }
 
-bool TimeSeriesWidget::enter(const std::string & key)
+bool TimeSeriesWidget::enter(const std::string & C_UNUSED(key))
 {
+  return loadFromBackend();
   /*objKey = key;
   CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiDefaultWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/04 15:48:27 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:44 $
    End CVS Header */
 
 #ifndef COPASIDEFAULTW_H

@@ -1,4 +1,3 @@
-
 /*
  * ClientSocketWriter.h
  *
@@ -26,44 +25,44 @@ class ClientNetwork;
 class ClientSocketWriter
 {
 protected:
-	/**The ClientNetwork whose writer this component is.*/
-	ClientNetwork *clientNetwork;
+    /**The ClientNetwork whose writer this component is.*/
+    ClientNetwork *clientNetwork;
 
 private:
-	/**A thread ID*/
-	pthread_t a_thread;
+    /**A thread ID*/
+    pthread_t a_thread;
 
 public:
-	/**Writer constructor
-	* @param cn The ClientNetwork class to which this thread belongs.
-	*/
-	ClientSocketWriter(ClientNetwork *cn)
+    /**Writer constructor
+     * @param cn The ClientNetwork class to which this thread belongs.
+     */
+    ClientSocketWriter(ClientNetwork *cn)
 	{
-	    	clientNetwork = cn;
-                //writer_thread_function_ptr = &ClientSocketWriter::thread_function;
+            clientNetwork = cn;
+            //writer_thread_function_ptr = &ClientSocketWriter::thread_function;
   	}
 
-	 /**Spawns a new thread*/
-	void start();
-	friend void *writer_thread_function(void *arg);
-	/**Function to get the Thread ID.
-	* @return The ID of the writer thread
-	*/
-	pthread_t getWriterThreadID();
-        /**Writes a message to the socket so that it is sent to the server.*/
-	void writeMessageToServer(Message &msg);
-       	/**Stops the thread*/
-	void stop();
+    /**Spawns a new thread*/
+    void start();
+    friend void *writer_thread_function(void *arg);
+    /**Function to get the Thread ID.
+     * @return The ID of the writer thread
+     */
+    pthread_t getWriterThreadID();
+    /**Writes a message to the socket so that it is sent to the server.*/
+    void writeMessageToServer(Message &msg);
+    /**Stops the thread*/
+    void stop();
 
 
 
- private:
-	/**A small function to display messages.
-	 * @param msg The message string to show.
-	 */
-	void showMessage(string msg)
+private:
+    /**A small function to display messages.
+     * @param msg The message string to show.
+     */
+    void showMessage(string msg)
   	{
-  		cerr << "ClientSocketWriter: " << msg << endl;
+            cerr << "ClientSocketWriter: " << msg << endl;
   	}
 
 

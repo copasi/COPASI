@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
 /**
  * Class CCopasiObjectReference
  *
@@ -28,19 +36,26 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
   public:
     CCopasiObjectReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
+        CCopasiObject(name, pParent, "Reference",
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
-    CCopasiObjectReference(const CCopasiObjectReference< CType > & src):
+    CCopasiObjectReference(const CCopasiObjectReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
 
     virtual ~CCopasiObjectReference() {}
 
-    virtual void * getReference() {return &mReference;}
+    virtual void * getReference() const {return &mReference;}
+
+    virtual void print(std::ostream * ostream) const
+      {(*ostream) << mReference;};
   };
 
 /** @dia:pos 64.092,38.1129 */
@@ -60,27 +75,39 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
   public:
     CCopasiVectorReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
+        CCopasiObject(name, pParent, "Reference",
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
-    CCopasiVectorReference(const CCopasiVectorReference< CType > & src):
+    CCopasiVectorReference(const CCopasiVectorReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
 
     virtual ~CCopasiVectorReference() {}
 
-    virtual CCopasiObject * getObject(const CCopasiObjectName & C_UNUSED(cn))
+    virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< typename CType::elementType >
-      (mObjectName + cn,
+#ifdef WIN32
+      return new CCopasiObjectReference< referenceType::elementType >
+#else
+      return new CCopasiObjectReference< typename referenceType::elementType >
+#endif
+      (getObjectName() + cn,
        getObjectParent(),
-       mReference[cn.getIndex()]);
+       mReference[cn.getElementIndex()],
+       isValueBool() ? CCopasiObject::ValueBool :
+       isValueInt() ? CCopasiObject::ValueInt :
+       isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0
+);
     }
 
-    virtual void * getReference() {return &mReference;}
+    virtual void * getReference() const {return &mReference;}
   };
 
 /** @dia:pos 64.092,50.0714 */
@@ -100,27 +127,38 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
   public:
     CCopasiMatrixReference(const std::string & name,
                            const CCopasiContainer * pParent,
-                           CType & reference):
-        CCopasiObject(name, pParent, "Reference", 0),
+                           referenceType & reference,
+                           const unsigned C_INT32 & flag = 0):
+        CCopasiObject(name, pParent, "Reference",
+                      CCopasiObject::Reference |
+                      CCopasiObject::NonUniqueName |
+                      flag),
         mReference(reference)
     {}
 
-    CCopasiMatrixReference(const CCopasiMatrixReference< CType > & src):
+    CCopasiMatrixReference(const CCopasiMatrixReference< referenceType > & src):
         CCopasiObject(src),
         mReference(src.mReference)
     {}
 
     virtual ~CCopasiMatrixReference() {}
 
-    virtual CCopasiObject * getObject(const CCopasiObjectName & C_UNUSED(cn))
+    virtual CCopasiObject * getObject(const CCopasiObjectName & cn)
     {
-      return new CCopasiObjectReference< typename CType::elementType >
-      (mObjectName + cn,
+#ifdef WIN32
+      return new CCopasiObjectReference< referenceType::elementType >
+#else
+      return new CCopasiObjectReference< typename referenceType::elementType >
+#endif
+      (getObjectName() + cn,
        getObjectParent(),
-       mReference(cn.getName(),
-                  cn.getName(1)));
+       mReference(cn.getElementIndex(),
+                  cn.getElementIndex(1)),
+       isValueBool() ? CCopasiObject::ValueBool :
+       isValueInt() ? CCopasiObject::ValueInt :
+       isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0);
     }
 
-    virtual void * getReference() {return &mReference;}
+    virtual void * getReference() const {return &mReference;}
   };
 #endif // COPASI_CCopasiObjectReference

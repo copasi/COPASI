@@ -1,73 +1,93 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
- **
- ** Created: Tue Feb 4 16:45:46 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:51 $
+   End CVS Header */
+
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 02/03 
+Comment : SteadyStateWidget
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
 
-#include <qvariant.h>
-#include <qwidget.h> 
-//#include "model/model.h"
 #include "copasi.h"
-#include "Structures.h"
+#include <qvariant.h>
+#include <qwidget.h>
+#include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QCheckBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRadioButton;
-class QSplitter;
 class QTable;
 class CSteadyStateTask;
 class CSteadyStateProblem;
 class CSteadyStateMethod;
+class CModel;
 
-class SteadyStateWidget : public QWidget
+class SteadyStateWidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
     SteadyStateWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~SteadyStateWidget();
-    CSteadyStateTask *mSteadyStateTask;
-    void loadSteadyStateTask(CSteadyStateTask* steadystatetask);
+    //    CSteadyStateTask *mSteadyStateTask;
+    //   CSteadyStateTask* getSteadyStateTask() const {return mSteadyStateTask;};
 
-    QFrame* line6;
-    QSplitter* splitter3;
-    QPushButton* commitChange;
-    QPushButton* cancelChange;
-    QSplitter* splitter11;
-    QLabel* parameterValueLabel;
-    QTable* parameterTable;
-    QFrame* line8;
-    QSplitter* splitter12;
-    QLabel* taskDescriptionLabel;
-    QRadioButton* taskJacobian;
-    QRadioButton* taskStability;
+    void loadSteadyStateTask();
+    //    void setModel(CModel* newModel);
+
     QFrame* line7;
-    QSplitter* splitter7;
+    QFrame* line6;
+    QFrame* line8;
+    QFrame* line8_2;
     QLabel* taskNameLabel;
+    QCheckBox* taskJacobian;
+    QCheckBox* taskStability;
+    //QLabel* taskDescriptionLabel;
+    QLabel* parameterValueLabel;
+    QCheckBox* bExecutable;
     QLineEdit* taskName;
+    QTable* parameterTable;
+    QPushButton* bRunButton;
+    QPushButton* cancelChange;
+    //QPushButton* ExportFileButton;
+    QPushButton* reportDefinitionButton;
+
+  signals:
+    //virtual void runFinished(CModel*);
 
   public slots:
-    virtual void taskNameChanged();
-    virtual void methodJacob();
-    virtual void methodStability();
+    virtual void CancelButtonClicked();
+    virtual void CommitButtonClicked();
+    //virtual void ExportToFileButtonClicked();
     virtual void parameterValueChanged();
-    virtual void CommitChange();
-    virtual void CancelChange();
+    //virtual void RunButtonChecked();
+    virtual void runSteadyStateTask();
+    virtual void ReportDefinitionClicked();
 
   protected:
-    QVBoxLayout* layout15;
-    QVBoxLayout* layout14;
+    QGridLayout* SteadyStateWidgetLayout;
     QHBoxLayout* Layout2;
+    std::string objKey;
+    QWidget* pParent;
   };
 
 #endif // STEADYSTATEWIDGET_H

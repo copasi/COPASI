@@ -1,37 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:11 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
    End CVS Header */
-
-//#include "copasi.h"
-//#include "model/CModel.h"
-
-//#include "report/CKeyFactory.h"
 
 #include "CPlotItem.h"
 
 const std::string CPlotItem::TypeName[] =
   {
-    "Not set",
+    "Unset",
     "2D Curve",
     "2D Plot",
     "SimWiz",
     ""
   };
 
-const char* CPlotItem::XMLType[] =
+const std::string CPlotItem::XMLType[] =
   {
-    "NotSet",
+    "Unset",
     "Curve2D",
     "Plot2D",
     "SimWiz",
-    NULL
+    ""
   };
 
-CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName)
+CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
 {
   unsigned C_INT32 i = 0;
   while (TypeName[i] != typeName && TypeName[i] != "") i++;
@@ -40,12 +35,21 @@ CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName)
   else return CPlotItem::unset;
 }
 
-CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName)
+/*CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName) //static
 {
   unsigned C_INT32 i = 0;
   while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
-
+ 
   if (XMLType[i]) return (CPlotItem::Type) i;
+  else return CPlotItem::unset;
+}*/
+
+CPlotItem::Type CPlotItem::XMLNameToEnum(const std::string & xmlTypeName) //static
+{
+  unsigned C_INT32 i = 0;
+  while (xmlTypeName != XMLType[i] && XMLType[i] != "") i++;
+
+  if (XMLType[i] != "") return (CPlotItem::Type) i;
   else return CPlotItem::unset;
 }
 
@@ -55,14 +59,30 @@ CPlotItem::CPlotItem(const std::string & name,
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
     //    mKey(GlobalKeys.add("PlotItem", this)),
     mType(type)
-{setName(TypeName[mType]);}
+{
+  //setObjectName(TypeName[mType]); //TODO
+  setObjectName(name);
+}
 
 CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     //    mKey(GlobalKeys.add("PlotItem", this)),
-    mType(src.mType)
-{}
+    mType(src.mType),
+    channels(src.getChannels())
+{
+  /*
+  std::cout << "Creating new PlotItem from Template: " << this << std::endl;
+  for(unsigned int counter=0; counter < src.getChannels().size(); counter++)
+  {
+     std::cout << "Channel " << counter << ": " << src.getChannels()[counter] << std::endl;
+  } 
+  for(unsigned int counter=0; counter < this->getChannels().size(); counter++)
+  {
+     std::cout << "New Channel " << counter << ": " << this->getChannels()[counter] << std::endl;
+  } 
+  */
+}
 
 CPlotItem::~CPlotItem()
 {

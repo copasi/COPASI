@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
+   End CVS Header */
+
 /**
  * Class CCopasiStaticString
  *
@@ -11,16 +19,28 @@
 
 #include <string>
 
-class CCopasiStaticString: public std::string
+#include "CCopasiObject.h"
+
+class CCopasiStaticString: public CCopasiObject
   {
+    // Attributes
+  private:
+    std::string mStaticString;
+
     // Operations
   public:
-    CCopasiStaticString();
+    CCopasiStaticString(const std::string & name = "",
+                        const CCopasiContainer * pParent = NULL);
 
-    CCopasiStaticString(const std::string & name);
+    CCopasiStaticString(const CCopasiStaticString & src,
+                        const CCopasiContainer * pParent = NULL);
 
     ~CCopasiStaticString();
 
-    void cleanup();
+    CCopasiStaticString & operator = (const std::string & rhs);
+
+    virtual void print(std::ostream * ostream) const;
+
+    const std::string & getStaticString() const;
   };
 #endif // COPASI_CCopasiStaticString

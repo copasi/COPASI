@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/30 09:22:14 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:46 $
    End CVS Header */
 
 #include "CTimeSeriesTable.h"
+#include "qtUtilities.h"
 
 void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
 {
@@ -17,12 +18,12 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
   QHeader *tableHeader = horizontalHeader();
   C_INT32 i, imax = mTS->getNumVariables();
   for (i = 0; i < imax; ++i)
-    tableHeader->setLabel(i, mTS->getTitle(i).c_str());
+    tableHeader->setLabel(i, FROM_UTF8(mTS->getTitle(i)));
 
   //TODO save old current cell and set afterwards
 }
 
-QString CTimeSeriesTable::textForCell(int row, int col)
+QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)
 {
   if (row > mTS->getNumSteps()) return "";
   if (col > mTS->getNumVariables()) return "";
@@ -38,3 +39,13 @@ void CTimeSeriesTable::showConcentrations(bool conc)
   mFlagConc = conc;
   hide(); show(); //TODO: ugly!
 }
+
+const CTimeSeries* CTimeSeriesTable::getTimeSeries()
+{
+  return mTS;
+}
+
+bool CTimeSeriesTable::doShowConcentrations() const
+  {
+    return this->mFlagConc;
+  }

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:56 $
+   End CVS Header */
+
 /**
  *  CMathConstant class.
  *  The class CMathConstant associates a symbol with a CCopasiObject with
@@ -17,6 +25,7 @@
 class CMetab;
 class CMathVariableMetab;
 class CMathConstantCompartment;
+template < class CType > class CCopasiObjectReference;
 
 /** @dia:pos -3.01499,-4.1693 */
 /** @dia:route CMathSymbol; v,-33.2334,-9.4956,-6.77622,9.59181,-4.1693 */
@@ -132,11 +141,77 @@ class CMathConstantMetab : public CMathConstant
     bool compile();
   };
 
+class CMathConstantReference : public CMathConstant
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    static std::map< std::string, CCopasiObject * > mSelection;
+
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstantReference();
+
+    /**
+     *
+     */
+    CMathConstantReference(const CMathConstantReference & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstantReference(const CCopasiObjectReference< C_FLOAT64 > & reference);
+
+    /**
+     *
+     */
+    ~CMathConstantReference();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     * Retreive the selection list
+     * @return const std::map< std::string, CCopasiObject * > & selectionList
+     */
+    static const std::map< std::string, CCopasiObject * > & getSelection();
+
+    /**
+     * Build the selection list
+     * @param const CModel * pModel
+     * @return bool Success
+     */
+    static bool buildSelection(const CModel * pModel);
+  };
+
 /** @dia:pos 2.18922,32.6698 */
 /** @dia:route CMathConstant; v,-3.01499,2.6307,31.9,19.1124,32.6698 */
 class CMathConstantParameter : public CMathConstant
   {
+    // Attributes
+  private:
+    std::string mReaction;
+
     // Operations
+  private:
+    /**
+     *
+     */
+    static std::map< std::string, CCopasiObject * > mSelection;
+
   protected:
     /**
      *
@@ -152,7 +227,8 @@ class CMathConstantParameter : public CMathConstant
     /**
      *
      */
-    CMathConstantParameter(const CReaction::CId2Param & parameter);
+    CMathConstantParameter(const CCopasiParameter & parameter,
+                           const std::string & reaction);
 
     /**
      *
@@ -168,6 +244,24 @@ class CMathConstantParameter : public CMathConstant
      *
      */
     virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     *
+     */
+    const std::string & getReaction() const;
+
+    /**
+     * Retreive the selection list
+     * @return const std::map< std::string, CCopasiObject * > & selectionList
+     */
+    static const std::map< std::string, CCopasiObject * > & getSelection();
+
+    /**
+     * Build the selection list
+     * @param const CModel * pModel
+     * @return bool Success
+     */
+    static bool buildSelection(const CModel * pModel);
   };
 
 /** @dia:pos 2.18922,7.75635 */

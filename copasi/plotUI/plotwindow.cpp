@@ -1,16 +1,22 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:00 $
+   End CVS Header */
+
 // the window containing the plot and buttons for supported operations
 
-//#include <fstream>
-#include <math.h> 
-//#include <qmainwindow.h>
-#include <qtoolbar.h> 
-//#include <qtoolbutton.h>
-//#include <qtimer.h>
+#include <qtoolbar.h>
 #include <qprinter.h>
-#include "plotspec.h"
+
+#include "plotwindow.h" 
+//#include "plotspec.h"
 #include "CopasiPlot.h"
-#include "plotwindow.h"
-#include "plotwidget1.h"
+#include "CPlotSpecification.h"
+
+// #include "plotwidget1.h"
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -28,21 +34,14 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(std::string filename)
+PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
+  this->resize(640, 480);
+  this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
+
   // set up the GUI - the toolbar
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
-
-  // this button is for testing only
-  QToolButton * appendPlot = new QToolButton(plotTools, "append plot");
-  appendPlot -> setTextLabel("Append curves");
-  appendPlot -> setText("Append");
-
-  QToolButton * autoUpdateButton = new QToolButton(plotTools, "auto update plot");
-  autoUpdateButton -> setTextLabel("Update plot automatically");
-  autoUpdateButton -> setToggleButton(true);
-  autoUpdateButton -> setText("AutoUpdate");
 
   zoomButton = new QToolButton(plotTools, "zoom");
   zoomButton->setText("Zoom");
@@ -55,90 +54,17 @@ PlotWindow::PlotWindow(std::string filename)
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
-  // prepare the data file - 'simulates' what happens in copasi
-  targetfile.open(filename.c_str(), std::ios::in | std::ios::out | std::ios::trunc);
-
-  stepSize = 100;  // also the initial number of points
-  count = 0;
-
-  for (int i = 1; i <= stepSize; i++)
-    {
-      double temp = 0.05 * double(i);
-      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
-    }
-
-  pos = targetfile.tellp();
-
-  CurveSpec* cs1 = new CurveSpec("sin", 0, 1);
-  CurveSpec* cs2 = new CurveSpec("cos", 0, 2);
-  CurveSpec* cs3 = new CurveSpec("log", 0, 3);
-
-  std::vector<int> vindices;
-  vindices.push_back(0);
-  vindices.push_back(1);
-  vindices.push_back(3);
-  vindices.push_back(4);
-
-  std::vector<CurveSpec*> crvspecs;
-  crvspecs.push_back(cs1);
-  crvspecs.push_back(cs2);
-  crvspecs.push_back(cs3);
-
-  ptspec = new PlotTaskSpec(targetfile, "Copasi plot", vindices, crvspecs);
-
-  plot = new CopasiPlot(ptspec, this);
+  plot = new CopasiPlot(psv, ptrSpec, this);
   setCentralWidget(plot);
 
-  timer = new QTimer();
-
-  connect(appendPlot, SIGNAL(clicked()), this, SLOT(append()));
-  connect(autoUpdateButton, SIGNAL(toggled(bool)), this, SLOT(autoUpdate(bool)));
   connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(plot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
-  connect(timer, SIGNAL(timeout()), this, SLOT(append()));
 }
 
-//-----------------------------------------------------------------------------
-
-void PlotWindow::append()
+bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 {
-  writeFile(count);
-
-  plot->appendPlot();  // only this line is the proper code
-
-  count++;
-}
-
-//-----------------------------------------------------------------------------
-
-void PlotWindow::autoUpdate(bool toggled)
-{
-  if (toggled)
-    {
-      // zoom out first
-      plot->zoomOut();
-
-      plot->setAxisAutoScale(QwtPlot::yLeft);
-      plot->setAxisAutoScale(QwtPlot::yRight);
-      plot->setAxisAutoScale(QwtPlot::xBottom);
-      plot->setAxisAutoScale(QwtPlot::xTop);
-
-      // disable zooming
-      zoomButton->setEnabled(false);
-      plot->enableZoom(false);
-
-      // initiate the first update
-      append();  //for now
-
-      // NB: timeout is hard-coded for now - maybe add something in the GUI to let the user decide
-      timer->start(5000);
-    }
-  else
-    {
-      timer->stop();
-      zoomButton->setEnabled(true);
-    }
+  return plot->initFromSpec(psv, ptrSpec);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,6 +79,8 @@ void PlotWindow::enableZoom()
 
 void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
+  //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
+
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
 }
@@ -180,27 +108,11 @@ void PlotWindow::printPlot()
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::reloadPlot(PlotTaskSpec* plotspec, std::vector<int> deletedCurveKeys)
-{
-  plot->reloadPlot(plotspec, deletedCurveKeys);
-}
-
-//-----------------------------------------------------------------------------
-
-void PlotWindow::writeFile(int step)
-{
-  targetfile.seekp(pos);
-  for (int i = 1 + (step + 1) * stepSize; i <= stepSize * (step + 2); i++)
-    {
-      double temp = 0.05 * double(i);
-      targetfile << temp << "\t" << sin(temp) << "\t" << tan(temp) << "\t" << cos(temp) << "\t" << log(temp) << "\n";
-    }
-  pos = targetfile.tellp();
-}
-
-//-----------------------------------------------------------------------------
-
 PlotWindow::~PlotWindow()
-{
-  targetfile.close();
-}
+{}
+
+void PlotWindow::takeData(const std::vector<C_FLOAT64> & data)
+{if (plot) plot->takeData(data);};
+
+void PlotWindow::updatePlot()
+{if (plot) plot->updatePlot();};

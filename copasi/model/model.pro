@@ -1,5 +1,5 @@
 ######################################################################
-# Created by Stefan Hoops <shoops@vt.edu> Sat May 17 20:57:42 2003
+# $Revision: 1.1.1.1 $ $Author: anuragr $ $Date: 2004/10/26 15:17:58 $  
 ######################################################################
 
 LIB = model
@@ -8,12 +8,14 @@ include(../lib.pri)
 # Input
 HEADERS += CChemEq.h \
            CChemEqElement.h \
+           CChemEqInterface.h \
            CCompartment.h \
            CDeTerm.h \
            CMetab.h \
+           CMetabNameInterface.h \
            CModel.h \
            CMoiety.h \
-           CParticleNumberList.h \
+           #CParticleNumberList.h \
            CReaction.h \
            CSpec2Model.h \
            CSpecLine.h \
@@ -22,26 +24,19 @@ HEADERS += CChemEq.h \
            
 SOURCES += CChemEq.cpp \
            CChemEqElement.cpp \
+           CChemEqInterface.cpp \
            CCompartment.cpp \
            CDeTerm.cpp \
            CMetab.cpp \
+           CMetabNameInterface.cpp \
            CModel.cpp \
            CMoiety.cpp \
-           CParticleNumberList.cpp \
+           #CParticleNumberList.cpp \
            CReaction.cpp \
            CScanInputFlexLexer.cpp \
            CSpec2Model.cpp \
            CSpecLine.cpp \
            CState.cpp
-
-# The character # (hex 23) can not be escaped we therefore create a variable containing it
-HASH = $$system(echo -e \\x23)
-
-myLex = \
-        $(LEX) -t $< | \
-        sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
-            -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-            -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
 
 1.target = CScanInputFlexLexer.cpp
 1.depends = CScanInputFlexLexer.lpp 

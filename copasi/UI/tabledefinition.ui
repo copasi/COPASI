@@ -184,15 +184,15 @@
                 </widget>
                 <widget class="QLineEdit" row="2" column="1">
                     <property name="name">
-                        <cstring>seperatorEdit</cstring>
+                        <cstring>separatorEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>seperatorLabel</cstring>
+                        <cstring>separatorLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>Seperator</string>
+                        <string>Separator</string>
                     </property>
                 </widget>
                 <widget class="QComboBox" row="0" column="1">
@@ -296,7 +296,7 @@
     <tabstop>commentEdit</tabstop>
     <tabstop>titleChecked</tabstop>
     <tabstop>comboTask</tabstop>
-    <tabstop>seperatorEdit</tabstop>
+    <tabstop>separatorEdit</tabstop>
     <tabstop>tabChecked</tabstop>
     <tabstop>addButton</tabstop>
     <tabstop>deleteButton</tabstop>

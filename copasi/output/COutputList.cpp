@@ -1,48 +1,59 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputList.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /*****************************************************************************
-* PROGRAM NAME: COutputList.cpp
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: COutputList Class Implemention
-*****************************************************************************/
+ * PROGRAM NAME: COutputList.cpp
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: COutputList Class Implemention
+ *****************************************************************************/
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
+#define  COPASI_TRACE_CONSTRUCTION
+
 #include "copasi.h"
 #include "COutputList.h"
+#include "COutput.h"
+#include "utilities/CReadConfig.h"
 
 /**
- *	Default constructor.
+ * Default constructor.
  */
 COutputList::COutputList()
 {
-  mList = NULL;
+  //  mList = NULL;
 }
 
 COutputList::~COutputList()
-{
-}
+{}
 
 /**
- *	User defined constructor.
- *	Read config variables from input configburg buffer
+ * User defined constructor.
+ * Read config variables from input configburg buffer
  *  @param configbuffer: reference of the config buffer.
  */
-COutputList::COutputList(CReadConfig &configbuffer)
+COutputList::COutputList(CReadConfig & C_UNUSED(configbuffer))
 {
-  Init();
+  init();
 }
 
-
-void COutputList::Init()
+void COutputList::init()
 {
-  mList = new CCOutput;
+  //  mList = new CCOutput;
 }
 
-void COutputList::Delete()
+void COutputList::cleanup()
 {
-  if (mList) delete mList;
-  mList = NULL;
+  //  if (mList) delete mList;
+  //  mList = NULL;
+  mList.cleanup();
 }
 
 /**
@@ -51,33 +62,42 @@ void COutputList::Delete()
  *  @param pconfigbuffer reference to a CWriteConfig object.
  *  @return mFail
  *  @see mFail
- */
-C_INT32 COutputList::Save(CWriteConfig & configbuffer)
+ */ 
+/*C_INT32 COutputList::save(CWriteConfig & configbuffer)
 {
   C_INT32 Fail = 0;
-
-  mList->save(configbuffer);
-
+ 
+  mList.save(configbuffer);
+ 
   return Fail;
-}
+}*/
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
  *  (CReadConfig object reads an input stream)
  *  @param pconfigbuffer reference to a CReadConfig object.
- *  @param searchName refernece to a the time of seach section,
- *		   for example: Interactive time course
+ *  @param model refernce to the input configbuffer
  *  @return mFail
  *  @see mFail
  */
-C_INT32 COutputList::Load(CReadConfig & configbuffer)
+C_INT32 COutputList::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   COutput output;
 
+  // We need to load
+  // ReportFile=MassAction.txt
+  // DynamicsFile=simresults.dyn
+  // SSFile=simresults.ss
+  configbuffer.getVariable("ReportFile", "string", &mReportFile,
+                           CReadConfig::LOOP);
+  configbuffer.getVariable("DynamicsFile", "string", &mTrajectoryFile);
+  configbuffer.getVariable("SSFile", "string", &mSteadyStateFile);
+
   output.load(configbuffer);
-  output.setModel(Model);
-  AddOutput(output);
+  /* :TODO: We must not set the model here! */
+  //output.setModel(model);
+  addOutput(output);
 
   return Fail;
 }
@@ -87,83 +107,83 @@ C_INT32 COutputList::Load(CReadConfig & configbuffer)
  *  @return mList
  *  @see mList
  */
-CCOutput * COutputList::GetList() const
-{
-  return mList;
-}
+const CCopasiVectorS < COutput > & COutputList::getList() const
+  {
+    return mList;
+  }
 
 /**
  *  Add new OutputLine object to a list
  *  @param newLine constant reference to COutputLine .
  *  @see COutputLine Class
  */
-void COutputList::AddOutput(COutput &newOutput)
+void COutputList::addOutput(COutput &newOutput)
 {
-  if (!mList) Init();
-  mList->add(newOutput);
-}
-
-/**
- *	Assigns model in the Outputlist
- */
-void COutputList::setModel(const CModel &model)
-{
-  Model = model;
-  // Temporarily use, need consideration???
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
-    {
-      (*mList)[i].setModel(model);
-    }
-
+  //  if (!mList) init();
+  mList.add(newOutput);
 }
 
 /*
- *	print the reporting data file
+ * print the reporting data file
  */
-void COutputList::CCopasi_Rep(ofstream &fout)
-{
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
-    {
-      (*mList)[i].CCopasi_Rep(fout);
-    }
-}
+void COutputList::copasiRep(std::ostream &fout) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiRep(fout);
+      }
+  }
 
 /*
  * print the steady state data file
  */
-void COutputList::CCopasi_SS(ofstream &fout)
-{
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
-    {
-      (*mList)[i].CCopasi_SS(fout);
-    }
-}
+void COutputList::copasiSS(std::ostream &fout) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiSS(fout);
+      }
+  }
 
 /*
  * print the time course dynamic data file
  */
-void COutputList::CCopasi_Dyn(ofstream &fout)
+void COutputList::copasiDyn(std::ostream &fout, int time) const
+  {
+    for (unsigned C_INT32 i = 0; i < mList.size(); i++)
+      {
+        mList[i]->copasiDyn(fout, time);
+      }
+  }
+
+/**
+ * Assign the mpvalue in CDatum for each type
+ */
+void COutputList::compile(const std::string & name, CModel *model, CState *state)
 {
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].CCopasi_Dyn(fout);
+      mList[i]->compile(name, model, state);
     }
 }
 
-void COutputList::Compile(string &name)
+/**
+ * Assign the pointer to each datum object for steady state
+ */
+void COutputList::compile(const std::string & name, CModel *model,
+                          CSteadyStateTask *soln)
 {
-
-  for (unsigned C_INT32 i = 0; i < mList->size(); i++)
+  for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      (*mList)[i].Compile(name, Model);
+      mList[i]->compile(name, model, soln);
     }
-
 }
 
+const std::string & COutputList::getReportFile() const
+  {return mReportFile;}
 
-CCOutput::CCOutput() {}
+const std::string & COutputList::getTrajectoryFile() const
+  {return mTrajectoryFile;}
 
-CCOutput::~CCOutput() {}
-
-C_INT16 CCOutput::IsInsertAllowed(const COutput & src)
-{return TRUE;}
+const std::string & COutputList::getSteadyStateFile() const
+  {return mSteadyStateFile;}

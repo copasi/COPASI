@@ -1,7 +1,22 @@
-#include "ReactionsWidget1.h"
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
+
+/*********************************************************************
+ **  $ CopasiUI/ReactionsWidget1.cpp                 
+ **  $ Author  : Mudita Singhal
+ **
+ ** This file is used to create the GUI FrontPage for the  information 
+ ** obtained from the data model about the Recations----It is Basically 
+ ** the Second level of Reactions.
+ **********************************************************************/
+
 #include <qgroupbox.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -9,374 +24,434 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
-#include <qcheckbox.h> 
-#include "listviews.h"
+#include <qcheckbox.h>
+#include <qlineedit.h>
+#include <qmessagebox.h>
+#include <qtooltip.h>
 
-/* 
+#include "copasi.h"
+#include "utilities/CCopasiVector.h"
+#include "ReactionsWidget1.h"
+#include "listviews.h"
+#include "DataModelGUI.h"
+#include "model/CModel.h"
+#include "function/CFunctionDB.h"
+#include "function/CFunctionParameters.h"
+#include "function/CFunctionParameter.h"
+#include "utilities/CGlobals.h"
+#include "parametertable.h"
+#include "report/CKeyFactory.h"
+#include "MyLineEdit.h"
+#include "qtUtilities.h"
+#include "ChemEqValidator.h"
+
+/*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  *
  */
 
-ReactionsWidget1::ReactionsWidget1( QWidget *parent, const char * name, WFlags f )
-    : QWidget(parent, name, f)
+ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
+    : CopasiWidget(parent, name, f),
+    objKey("")
 
-{	
-	//This is to make the Main Frame of the page
-	//The Main layout used is the Vertical Layout
-	QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0 );
-	Frame1 = new QFrame( this, "Frame1" );
-	Frame1->setFrameShape( QFrame::Box );
-    Frame1->setFrameShadow( QFrame::Plain);
-	vboxLayout->addWidget(Frame1);
-	QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0 );
-	vboxLayout1->addSpacing(1);
-   
-
-
-	//This Frame had to be added because of the border around the frame
-	//The grid Layout is used for this frame
-	Frame3 = new QFrame( Frame1, "Frame3" );
-	vboxLayout1->addWidget(Frame3);
-	QGridLayout *gridLayout1 = new QGridLayout(Frame3, 0 );
-	
-	
-	//Frame for Ist Row
-	Frame4a = new QFrame(Frame3, "Frame4a" );
-	gridLayout1->addWidget(Frame4a,0,0,0);
-	QHBoxLayout *hBoxLayout4a = new QHBoxLayout( Frame4a, 0 );
-	hBoxLayout4a->addSpacing(15);
-	
-	TextLabel1 = new QLabel( "Name", Frame4a );
-    hBoxLayout4a->addWidget(TextLabel1);
-	hBoxLayout4a->addSpacing(75);
-
-    LineEdit1 = new QLineEdit( "",Frame4a  );
-	hBoxLayout4a->addWidget(LineEdit1);
-    hBoxLayout4a->addSpacing(250);
-	
-
-	//Frame for 2nd Row
-	Frame4b = new QFrame(Frame3, "Frame4b" );
-   gridLayout1->addWidget(Frame4b,1,0,0);
-	QHBoxLayout *hBoxLayout4b = new QHBoxLayout( Frame4b, 0 );
-	hBoxLayout4b->addSpacing(15);
-	
-	TextLabel2 = new QLabel( "Chemical Reaction", Frame4b );
-    hBoxLayout4b->addWidget(TextLabel2);
-	hBoxLayout4b->addSpacing(17);
-
-    LineEdit2 = new QLineEdit( "",Frame4b  );
-	hBoxLayout4b->addWidget(LineEdit2);
-	hBoxLayout4b->addSpacing(50);
-
-
-	//Frame for 3rd Row
-	Frame4c = new QFrame(Frame3, "Frame4c" );
-   gridLayout1->addWidget(Frame4c,2,0,0);
-	QHBoxLayout *hBoxLayout4c = new QHBoxLayout( Frame4c, 0 );
-	hBoxLayout4c->addSpacing(15);
-
-	Line2 = new QFrame( Frame4c, "Line2" );
-    Line2->setGeometry( QRect( 80, 10, 91, 31 ) ); 
-    Line2->setProperty( "frameShape", (int)QFrame::HLine );
-    Line2->setFrameShadow( QFrame::Sunken );
-    Line2->setFrameShape( QFrame::HLine );
-	hBoxLayout4c->addWidget(Line2);
-
-
-
-
-	//Frame for 4th Row
-	Frame4d = new QFrame( Frame3, "Frame4d" );
-   gridLayout1->addWidget(Frame4d,3,0,0);
-	QHBoxLayout *hBoxLayout4d = new QHBoxLayout( Frame4d, 0 );
-	hBoxLayout4d->addSpacing(15);
-	
-	
-	TextLabel3= new QLabel( "Kinetics",Frame4d);
-    hBoxLayout4d->addWidget( TextLabel3);
-  	hBoxLayout4d->addSpacing(65);
-	
-	ComboBox1 = new QComboBox( Frame4d, "ComboBox1" );
-    hBoxLayout4d ->addWidget(ComboBox1);
-	ComboBox1->setFixedSize(225,20);
-	hBoxLayout4d->addSpacing(50);
-	
-	checkBox=new QCheckBox ( Frame4d, "checkBox" );
-	
-	hBoxLayout4d->addWidget(checkBox);
-	hBoxLayout4d->addSpacing(1);
-	
-	
-	TextLabel4= new QLabel( "Reversible",Frame4d);
-    hBoxLayout4d->addWidget( TextLabel4);
-    hBoxLayout4d->addSpacing(20);
-	
-
-	newKinetics = new QPushButton("&New Kinetics", Frame4d);
-	hBoxLayout4d->addWidget(newKinetics);
-	hBoxLayout4d->addSpacing(20);
-
-
-
-
-	//Frame for 5th Row
-	Frame4e = new QFrame(Frame3, "Frame4e" );
-	Frame4e->setGeometry( QRect( 0, 0, 740, 120 )); 
-   gridLayout1->addMultiCellWidget(Frame4e,4,5,0,0,0);
-
-	TextLabel5 = new QLabel( Frame4e, "Symbol Definition" );
-    TextLabel5->setGeometry( QRect( 10, 40, 90, 50 )); 
-    TextLabel5->setText( trUtf8( "Symbol Definition" ) );
-    
-    table = new QTable( Frame4e, "tblsymbol" );
-    table->setGeometry( QRect( 130, 10, 160, 154 )   ); 
-    
-	table->sortColumn (0, TRUE, TRUE);
-	table->setFixedSize(300,150);
-	table->setFocusPolicy(QWidget::WheelFocus);
-	table->setColumnWidth ( 0, 200 );
-
-
-
-
-	//Frame for 6th Row
-	Frame4f = new QFrame(Frame3, "Frame4f" );
-   gridLayout1->addWidget(Frame4f,6,0,0);
-	QHBoxLayout *hBoxLayout4f = new QHBoxLayout( Frame4f, 0 );
-	hBoxLayout4f->addSpacing(15);
-
-	Line1 = new QFrame( Frame4f, "Line1" );
-    Line1->setGeometry( QRect( 180, 110, 291, 31 ) ); 
-    Line1->setProperty( "frameShape", (int)QFrame::HLine );
-    Line1->setFrameShadow( QFrame::Sunken );
-    Line1->setFrameShape( QFrame::HLine );
-	hBoxLayout4f->addWidget(Line1);
-
-
-
-
-
-	
-	
-	//Frame for 7th Row
-	Frame4g = new QFrame(Frame3, "Frame4g" );
-   gridLayout1->addWidget(Frame4g,7,0,0);
-	QHBoxLayout *hBoxLayout4g = new QHBoxLayout( Frame4g, 0 );
-	hBoxLayout4g->addSpacing(15);
-	
-	TextLabel6 = new QLabel( "Flux", Frame4g);
-    hBoxLayout4g->addWidget(TextLabel6);
-	hBoxLayout4g->addSpacing(84);
-
-    LineEdit3 = new QLineEdit( "",Frame4g);
-	hBoxLayout4g->addWidget(LineEdit3);
-	LineEdit3->setEnabled(false);
-	hBoxLayout4g->addSpacing(250);
-		
-
-
-	
-	//for the commit and cancel buttons
-        
-	Frame4h= new QFrame( Frame3, "Frame4h" );
-   gridLayout1->addWidget(Frame4h,8,0,0);
-	QHBoxLayout *hBoxLayout4h = new QHBoxLayout( Frame4h, 0 );
-	hBoxLayout4h->addSpacing(15);
-
-	
-	commitChanges = new QPushButton("&Commit Changes", Frame4h);
-	cancelChanges = new QPushButton("&Cancel Changes", Frame4h);
-	hBoxLayout4h->addWidget(commitChanges);
-	hBoxLayout4h->addSpacing(15);
-	hBoxLayout4h->addWidget(cancelChanges);
-	hBoxLayout4h->addSpacing(15);
-   
-}
-
-
-
-void ReactionsWidget1::loadName(QString setValue)
 {
-	//if (model != NULL)
-	//{
-		//mModel = model;
-		CCopasiVectorS < CReaction > & reactions = mModel->getReactions();
-		C_INT32 noOfReactionsRows = reactions.size();
-		
-		CReaction *reactn;
-		CChemEq chemEq;
-		CFunction *function;
-		int i=0;			
-		int myValue=-1;
-		for(;i<reactions.size();i++)
-		{
+  if (!name)
+    setName("ReactionsWidget1");
+  setCaption(trUtf8("ReactionsWidget1"));
 
+  ReactionsWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "ReactionsWidget1Layout");
 
-		     reactn = reactions[i];
-         int value=QString::compare(reactn->getName().c_str(),setValue);   
-             if(!value)
-             {
-			   myValue=i;
-			   break;
-			 }
-		}
+  TextLabel4 = new QLabel(this, "TextLabel4");
+  TextLabel4->setText(trUtf8("Name"));
+  ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
-		if(myValue != -1)
-		{
-		reactn = reactions[myValue];
-		
+  TextLabel7 = new QLabel(this, "TextLabel7");
+  TextLabel7->setText(trUtf8("Symbol Definition"));
+  ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
-			LineEdit1->setText(reactn->getName().c_str());
+  //Buttons:
+  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
 
-		    chemEq = reactn->getChemEq();
-			LineEdit2->setText(chemEq.getChemicalEquation().c_str());
-			
-			LineEdit3->setText(QString::number(reactn->getFlux()));
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit"));
+  Layout1->addWidget(commitChanges);
 
-	
-			for (C_INT32  j = 0; j < noOfReactionsRows ; j++)
-			{
-			reactn = reactions[j];
-			function = &reactn->getFunction();
-			ComboBox1->insertItem(function->getName().c_str(),j-1);
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Revert"));
+  Layout1->addWidget(cancelChanges);
 
-			if(reactn->isReversible() == TRUE)
-			{
-				checkBox->setChecked(TRUE);
-			}
-			}
+  newReaction = new QPushButton(this, "newReaction");
+  newReaction->setText(trUtf8("&New"));
+  Layout1->addWidget(newReaction);
 
-			
-	table->setNumCols( 1 );
-	QHeader *tableHeader1 = table->horizontalHeader();
-	QHeader *tableHeader2 = table->verticalHeader();
-    CCopasiVector < CReaction::CId2Metab> & react3 = reactn->getId2Modifiers();
-	if(	react3.size()!=0)
-	{
-	table->setNumRows( 5 );
-	tableHeader2->setLabel(3,"ParameterName");
-    tableHeader2->setLabel(4,"ParameterValue");
-	}
-	else
-	{
-	table->setNumRows( 4 );
-	tableHeader2->setLabel(2,"ParameterName");
-    tableHeader2->setLabel(3,"ParameterValue");
-	};
+  deleteReaction = new QPushButton(this, "deleteReaction");
+  deleteReaction->setText(trUtf8("&Delete"));
+  Layout1->addWidget(deleteReaction);
 
-	//Setting table headers
+  ReactionsWidget1Layout->addMultiCellLayout(Layout1, 12, 12, 0, 3);
 
-	tableHeader1->setLabel(0, "Value");
-	tableHeader2->setLabel(0,"Substrates");
-    tableHeader2->setLabel(1,"Products");
-	table->setColumnWidth (0, 200); 
-	
-	QString overall2="{";
-	QString overall4="}";
+  //
 
-	CCopasiVector < CReaction::CId2Metab > & react1 = reactn->getId2Substrates();
-	C_INT32 noOfReact1s =react1.size();
-	for ( int k = 0;k <noOfReact1s; ++k )
-	{
-	QString overall1=react1[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-    QString overall3=react1[k]->getCompartmentName().c_str();
-	QString & overall3_4=overall3.operator+=(overall4) ;
-	QString & overall=overall1_2.operator+=(overall3_4) ;
-	//for the combo box
-	QStringList comboEntries1;
-    comboEntries1= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE );
-    table->setItem( 0, 0, item );
-    }
-	
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
+  ReactionsWidget1Layout->addMultiCellWidget(Line2, 6, 7, 0, 3);
 
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
+  ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);
 
-	CCopasiVector < CReaction::CId2Metab> & react2 = reactn->getId2Products();
-	C_INT32 noOfReact2s =react2.size();
-	for ( k = 0;k <noOfReact2s; ++k )
-	{
-	QString overall1=react2[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-	QString overall3=react2[k]->getCompartmentName().c_str();
-    QString & overall3_4=overall3.operator+=(overall4) ;
-    QString & overall=overall1_2.operator+=(overall3_4) ;
-	//for the combo box
-	QStringList comboEntries2;
-    comboEntries2= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries2, FALSE );
-    table->setItem( 1, 0, item );
-    }
+  Line3 = new QFrame(this, "Line3");
+  Line3->setFrameShape(QFrame::HLine);
+  Line3->setFrameShadow(QFrame::Sunken);
+  Line3->setFrameShape(QFrame::HLine);
+  ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);
 
+  // kinetics line
+  TextLabel6 = new QLabel(this, "TextLabel6");
+  TextLabel6->setText(trUtf8("Kinetics"));
+  ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
 
-	int i=2;
-		C_INT32 noOfReact3s =react3.size();
-	if(	noOfReact3s!=0)
-	{
-	tableHeader2->setLabel(i,"Modifiers");
-	i++;
-	for (k = 0;k <noOfReact3s; ++k )
-	{
-	QString overall1=react3[k]->getMetaboliteName().c_str();
-	QString & overall1_2=overall1.operator+=(overall2) ;
-	QString overall3=react3[k]->getCompartmentName().c_str();
-    QString & overall3_4=overall3.operator+=(overall4) ;
-    QString & overall=overall1_2.operator+=(overall3_4) ;
-	//for the combo box
-	QStringList comboEntries3;
-    comboEntries3= overall;
-    QComboTableItem * item = new QComboTableItem(table, comboEntries3, FALSE );
-    table->setItem( 2, 0, item );
-	}
-	}
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 2);
 
-	CCopasiVector < CReaction::CId2Param > & react4 = reactn->getId2Parameters();
-	C_INT32 noOfReact4s =react4.size();
-	for ( k = 0;k <noOfReact4s; ++k )
-	{
-	//for the combo box
-	QStringList comboEntries4;
-    comboEntries4= react4[k]->getIdentifierName().c_str();
-    QComboTableItem * item = new QComboTableItem(table, comboEntries4, FALSE );
-    table->setItem( i, 0, item );
-    }
-	
+  newKinetics = new QPushButton(this, "newKinetics");
+  newKinetics->setText(trUtf8("&New Kinetics"));
+  ReactionsWidget1Layout->addWidget(newKinetics, 4, 3);
 
-	
-	CCopasiVector < CReaction::CId2Param > & react5 = reactn->getId2Parameters();
-	C_INT32 noOfReact5s =react5.size();
-	for (k = 0;k <noOfReact5s; ++k )
-	{
-	//for the combo box
-	QStringList comboEntries5;
-    comboEntries5= QString::number(react5[0]->getValue());
-    QComboTableItem * item = new QComboTableItem(table, comboEntries5, FALSE );
-    table->setItem( i+1, 0, item );
-    }
+  TextLabel8 = new QLabel(this, "TextLabel8");
+  TextLabel8->setText(trUtf8("Flux:"));
+  ReactionsWidget1Layout->addWidget(TextLabel8, 5, 1);
 
+  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3->setEnabled(FALSE);
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 5, 5, 2, 3);
 
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
 
+  // equation line
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Chemical Equation"));
+  ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
 
+  LineEdit2 = new MyLineEdit(this, "LineEdit2");
+  LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
+  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 2);
+
+  CheckBox = new QCheckBox(this, "CheckBox");
+  CheckBox->setText(trUtf8("Reversible"));
+  ReactionsWidget1Layout->addWidget(CheckBox, 2, 3);
+
+  Line4 = new QFrame(this, "Line4");
+  Line4->setFrameShape(QFrame::HLine);
+  Line4->setFrameShadow(QFrame::Sunken);
+  Line4->setFrameShape(QFrame::HLine);
+  ReactionsWidget1Layout->addMultiCellWidget(Line4, 3, 3, 0, 3);
+
+  table = new ParameterTable(this, "table");
+  ReactionsWidget1Layout->addMultiCellWidget(table, 7, 9, 1, 3);
+
+  QSpacerItem* spacer = new QSpacerItem(80, 101, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  ReactionsWidget1Layout->addItem(spacer, 9, 0);
+
+  setTabOrder(LineEdit1, LineEdit2);
+  setTabOrder(LineEdit2, CheckBox);
+  setTabOrder(CheckBox, ComboBox1);
+  setTabOrder(ComboBox1, newKinetics);
+  setTabOrder(newKinetics, table);
+  setTabOrder(table, commitChanges);
+  setTabOrder(commitChanges, cancelChanges);
+  setTabOrder(cancelChanges, newReaction);
+  setTabOrder(newReaction, deleteReaction); //TODO !!!!!
+
+  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
+  connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+  connect(deleteReaction, SIGNAL(clicked()), this, SLOT(slotBtnDeleteClicked()));
+
+  connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
+  connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
+  connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
+
+  //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
-	}
 
-//}
+ReactionsWidget1::~ReactionsWidget1()
+{}
 
+/* This function loads the reactions widget when its name is
+   clicked in the tree   */
+bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
+{
+  if (!reaction) return false;
 
+  // this loads the reaction into a CReactionInterface object.
+  // the gui works on this object and later writes back the changes to the reaction
+  mRi.initFromReaction(*(dataModel->getModel()), reaction->getKey());
 
+  // update the widget.
+  FillWidgetFromRI();
 
+  return true; //TODO: really check
+}
 
+bool ReactionsWidget1::saveToReaction()
+{
+  LineEdit2->slotForceUpdate();
+  //std::cout << "SaveToReaction " << std::endl;
+  if (!mRi.isValid()) return false;
 
+  //first check if new metabolites need to be created
+  bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
 
+  mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
+  //this writes all changes to the reaction
+  mRi.writeBackToReaction(*(dataModel->getModel()));
 
+  //dataModel->getModel()->compile();
 
+  //this tells the gui what it needs to know.
+  if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+  protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
 
+  //TODO: detect rename events (mRi.writeBackToReaction has to do this)
+  return true;
+}
 
+void ReactionsWidget1::slotBtnCancelClicked()
+{enter(objKey);}
 
+void ReactionsWidget1::slotBtnOKClicked()
+{
+  LineEdit2->slotForceUpdate();
+  saveToReaction();
+}
 
+void ReactionsWidget1::slotCheckBoxClicked()
+{
+  LineEdit2->slotForceUpdate();
 
+  // tell the reaction interface
+  mRi.setReversibility(CheckBox->isChecked());
 
-	
+  // update the widget
+  FillWidgetFromRI();
+}
+
+// the function has been changed
+void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
+{
+  // tell the reaction interface
+  mRi.setFunction((const char *)p2.utf8());
+
+  // update the widget
+  FillWidgetFromRI();
+}
+
+/*This function is called when the "Chemical Reaction" LineEdit is changed.*/
+void ReactionsWidget1::slotLineEditChanged()
+{
+  std::string rName = (const char *)LineEdit1->text().utf8();
+
+  std::string eq = (const char *)LineEdit2->text().utf8();
+
+  //first check if the string is a valid equation
+  if (!CChemEqInterface::isValidEq(eq))
+    {
+      //debugging
+      //std::cout << "Not a valid equation!\n\n";
+      return;  // abort further processing
+    }
+
+  // tell the reaction interface
+  mRi.setReactionName(rName);
+
+  mRi.setChemEqString(eq);
+
+  // update the widget
+  FillWidgetFromRI();
+}
+
+// added 5/19/04
+void ReactionsWidget1::slotBtnNewClicked()
+{
+  std::string name = "reaction_0";
+  int i = 0;
+  while (!dataModel->getModel()->createReaction(name))
+    {
+      i++;
+      name = "reaction_";
+      name += QString::number(i).utf8();
+    }
+  //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
+  //table->setNumRows(table->numRows());
+  protectedNotify(ListViews::REACTION, ListViews::ADD);
+  enter(dataModel->getModel()->getReactions()[name]->getKey());
+  //pListView->switchToOtherWidget(mKeys[row]);
+}
+
+// Just added 5/18/04
+void ReactionsWidget1::slotBtnDeleteClicked()
+{
+  if (dataModel->getModel())
+    {
+      //unsigned C_INT32 i, imax = table->numRows() - 1;
+      //std::vector< unsigned C_INT32 > ToBeDeleted;
+
+      /*for (i = 0; i < imax; i++)
+        {
+          if (table->isRowSelected(i, true))
+            ToBeDeleted.push_back(i);
+        }*/
+
+      //if (ToBeDeleted.size() > 0)
+      //  {
+      QString reacList = "Are you sure you want to delete the REACTION?\n";
+      /*for (i = 0; i < ToBeDeleted.size(); i++)
+        {
+          reacList.append(table->text(ToBeDeleted[i], 0));
+          reacList.append(", ");
+        }
+      reacList.remove(reacList.length() - 2, 2);*/
+      reacList.append(FROM_UTF8(mRi.getReactionName()));
+
+      int choice = QMessageBox::warning(this, "CONFIRM DELETE",
+                                        reacList,
+                                        "Continue", "Cancel", 0, 0, 1);
+
+      switch (choice)
+        {
+        case 0:                  // Yes or Enter
+          {
+            /*for (i = ToBeDeleted.size(); 0 < i;)
+              {
+                i--;*/ 
+            //unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
+            unsigned C_INT32 size = Copasi->pModel->getReactions().size();
+            //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+            unsigned C_INT32 index = Copasi->pModel->getReactions().getIndex(mRi.getReactionName());
+            //dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+            dataModel->getModel()->removeReaction(objKey);
+            //enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
+            enter(Copasi->pModel->getReactions()[std::min(index, size - 2)]->getKey());
+            //dataModel->getModel()->removeReaction(objKey);
+            // table->removeRow(ToBeDeleted[i]);
+            //}
+
+            //for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+            // protectedNotify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+            protectedNotify(ListViews::REACTION, ListViews::DELETE, objKey);
+
+            break;
+          }
+
+        default:                         // No or Escape
+          break;
+        }
+      //}
+    }
+}
+
+void ReactionsWidget1::FillWidgetFromRI()
+{
+  std::cout << "FillWidget " << std::endl;
+  LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
+
+  LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
+
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  if (reac)
+    LineEdit3->setText(QString::number(reac->getFlux()));
+  else
+    LineEdit3->setText("");
+
+  // the reversibility checkbox
+  CheckBox->setChecked(false);
+  if (mRi.isReversible() == true)
+    {
+      CheckBox->setChecked(true);
+    }
+
+  // the function combobox
+  QStringList comboEntries;
+  ParameterTable::vectorOfStrings2QStringList(mRi.getListOfPossibleFunctions(), comboEntries);
+
+  ComboBox1->clear();
+  ComboBox1->insertStringList(comboEntries, -1);
+
+  // if there is a current function the parameter table is initialized
+  if (mRi.getFunctionName() != "")
+    {
+      ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
+      QToolTip::add(ComboBox1, FROM_UTF8(mRi.getFunctionDescription()));
+
+      table->updateTable(mRi, *dataModel->getModel());
+    }
+  else
+    table->initTable();
+
+  //TODO isValid()
+  commitChanges->setEnabled(mRi.isValid());
+}
+
+void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
+{
+  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue <<  std::endl;
+
+  // setValue
+  if (mRi.getUsage(index) == "PARAMETER")
+    {
+      if (sub != 0) return;
+      mRi.setValue(index, newValue.toDouble()); // TODO: check
+    }
+  else
+    {
+      if (sub == 0)
+        {
+          mRi.setMetab(index, (const char *)table->text(table->mIndex2Line[index], 2).utf8());
+        }
+    }
+
+  // update the widget
+  FillWidgetFromRI();
+}
+
+bool ReactionsWidget1::update(ListViews::ObjectType objectType,
+                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+{
+  if (mIgnoreUpdates) return true;
+
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+    case ListViews::STATE:
+    case ListViews::COMPARTMENT:
+    case ListViews::METABOLITE:
+      return loadFromReaction(dynamic_cast< CReaction * >(GlobalKeys.get(objKey)));
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+bool ReactionsWidget1::leave()
+{
+  return saveToReaction();
+}
+
+bool ReactionsWidget1::enter(const std::string & key)
+{
+  objKey = key;
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(key));
+
+  if (reac) return loadFromReaction(reac);
+  else return false;
+}

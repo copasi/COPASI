@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
+   End CVS Header */
+
 /**
  *  CSteadyStateMethod class.
  *  This class describes the interface to all steady state methods.
@@ -12,26 +20,18 @@
 
 #include <string>
 
-#include "utilities/CMethodParameterList.h"
+#include "utilities/CCopasiMethod.h"
+#include "utilities/CMatrix.h"
 
 class CSteadyStateProblem;
 class CState;
+class CStateX;
 class CEigen;
+class CCallbackHandler;
 
-using std::string;
-
-class CSteadyStateMethod : public CMethodParameterList
+class CSteadyStateMethod : public CCopasiMethod
   {
   public:
-    static const string TypeName[];
-
-    // Attributes
-    enum Type
-    {
-      unspecified = 0,
-      Newton
-    };
-
     enum ReturnCode
     {
       notFound = 0,
@@ -41,37 +41,60 @@ class CSteadyStateMethod : public CMethodParameterList
 
   protected:
     /**
-     *  The type of the method
-     */
-    CSteadyStateMethod::Type mTypeEnum;
-
-    /**
      *  A pointer to the trajectory problem.
      */
-    CSteadyStateProblem * mpProblem;
+    const CSteadyStateProblem * mpProblem;
 
-  private:
     /**
      * A pointer to the steady state
      */
     CState * mpSteadyState;
 
     /**
+     * A pointer to the steady state
+     */
+    CStateX * mpSteadyStateX;
+
+    /**
      * The jacobian of the steadystate
      */
-    C_FLOAT64 * mJacobian;
+    CMatrix< C_FLOAT64 > * mpJacobian;
+
+    /**
+     * The jacobian of the steadystate
+     */
+    CMatrix< C_FLOAT64 > * mpJacobianX;
 
     /**
      * A pointer to a CEigen object
      */
     CEigen * mpEigenValues;
 
-    // Operations
-  protected:
     /**
-     *  Default constructor.
+     * A pointer to a CEigen object
+     */
+    CEigen * mpEigenValuesX;
+
+    /**
+     * A pointer to the progress bar handler
+     */
+    CCallbackHandler * mpProgressHandler;
+
+    // Operations
+  private:
+    /**
+     * Default constructor.
      */
     CSteadyStateMethod();
+
+  protected:
+    /**
+     * Specific constructor.
+     * @param CCopasiMethod::SubType subType 
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CSteadyStateMethod(CCopasiMethod::SubType subType,
+                       const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -79,14 +102,16 @@ class CSteadyStateMethod : public CMethodParameterList
      * Note: the returned object has to be released after use with delete
      */
     static CSteadyStateMethod *
-    createSteadyStateMethod(CSteadyStateMethod::Type type
-                            = CSteadyStateMethod::Newton);
+    createSteadyStateMethod(CCopasiMethod::SubType subType
+                            = CCopasiMethod::Newton);
 
     /**
-     *  Copy constructor.
-     *  @param "const CSteadyStateMethod &" src
+     * Copy constructor.
+     * @param "const CSteadyStateMethod &" src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateMethod(const CSteadyStateMethod & src);
+    CSteadyStateMethod(const CSteadyStateMethod & src,
+                       const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
@@ -94,17 +119,11 @@ class CSteadyStateMethod : public CMethodParameterList
     ~CSteadyStateMethod();
 
     /**
-     * Retrieve the type in numeric form
-     * @return const CSteadyStateMethod::Type & type 
-     */
-    const CSteadyStateMethod::Type & getTypeEnum() const;
-
-    /**
      *  Set a pointer to the problem.
      *  This method is used by CSteadyState 
      *  @param "CSteadyStateProblem *" problem
-     */
-    void setProblem(CSteadyStateProblem * problem);
+     */ 
+    //void setProblem(CSteadyStateProblem * problem);
 
     /**
      * This instructs the method to calculate a the steady state
@@ -116,10 +135,14 @@ class CSteadyStateMethod : public CMethodParameterList
      * @param CEigen * pEigenValues
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
-    CSteadyStateMethod::ReturnCode process(CState & steadyState,
-                                           const CState & initialState,
-                                           C_FLOAT64 * jacobian,
-                                           CEigen * pEigenValues);
+    CSteadyStateMethod::ReturnCode process(CState * pState,
+                                           CStateX * pStateX,
+                                           const CSteadyStateProblem * pProblem,
+                                           CMatrix< C_FLOAT64 > & jacobian,
+                                           CMatrix< C_FLOAT64 > & jacobianX,
+                                           CEigen * pEigenValues,
+                                           CEigen * pEigenValuesX,
+                                           CCallbackHandler* handler);
 
   protected:
 
@@ -127,12 +150,10 @@ class CSteadyStateMethod : public CMethodParameterList
      * This instructs the method to calculate a the steady state
      * starting with the initialState given.
      * The steady state is returned in the object pointed to by steadyState.
-     * @param CState * steadyState
-     * @param const CState * initialState
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     virtual CSteadyStateMethod::ReturnCode
-    process(CState & steadyState, const CState & initialState);
+    processInternal();
 
     /**
      * This function has to be called at the return of any implementation

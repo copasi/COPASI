@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:20 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
    End CVS Header */
 
 /********************************************************
@@ -20,52 +20,46 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qwidget.h>
-#include <qwidget.h>
 #include <vector>
+#include "utilities/CCopasiVector.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QSpacerItem;
 class QPushButton;
 class QListView;
+class QListViewItem;
 class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
-class QListViewItem;
 class QFrame;
 class CCopasiContainer;
 class CCopasiObject;
 class CopasiUI3Window;
+class QPixmap;
 
 enum pageIndex {LISTVIEWPAGE = 0, SELECTEDITEMPAGE};
 
 class ObjectBrowserWidget : public QWidget
   {
     Q_OBJECT
-  private:
-    pageIndex currentPage;
-    CopasiUI3Window* mparent;
-    std::vector<CCopasiObject*>* mOutputObjectVector;
-    QPixmap *pObjectAll;   // to store the image of locked icon folder
-    QPixmap *pObjectParts;   // to store the image of closed icon folder
-    QPixmap *pObjectNone;     // to store the image of open icon folder
 
   public:
+    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0, int state = 0);
+    virtual ~ObjectBrowserWidget();
+
     ObjectList* objectItemList;
     ObjectList* refreshList;
-    ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
-    ~ObjectBrowserWidget();
-    void cleanup();
 
-    QPushButton* cancelButton;
-    QPushButton* nextButton;
-    QPushButton* backButton;
+    QGridLayout* ObjectBrowserLayout;
+    QPushButton* clearButton;
+    QPushButton* toggleViewButton;
+    QPushButton* commitButton;
     QListView* ObjectListView;
     QFrame* Line1;
+    QSpacerItem* spacer;
     QTextEdit* ObjectItemText;
-
-    //Each Function calls the output shall be responsible to delete the list
-    //    ObjectList* outputList();
 
     void eXport(ObjectBrowserItem* pCurrent, std::vector<CCopasiObject*>* outputVector);
     void removeDuplicate(ObjectList* objectItemList);
@@ -76,11 +70,11 @@ class ObjectBrowserWidget : public QWidget
 
     void loadData();
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent, bool nField);
-    void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
+    void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
     void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
-
+    void selectObjects(std::vector<CCopasiObject*>* pObjectVector);
     void updateUI();
     void loadUI();
 
@@ -89,15 +83,16 @@ class ObjectBrowserWidget : public QWidget
     void quick_sort(int, int, ObjectBrowserItem**);
 
   public slots:
-    virtual void cancelClicked();
+    virtual void clearClicked();
+    virtual void toggleViewClicked();
+    virtual void commitClicked();
     virtual void listviewChecked(QListViewItem*);
-    virtual void backClicked();
-    virtual void nextClicked();
 
-  signals:
-    void commitClicked(int);
-
-  protected:
-    QGridLayout* ObjectBrowserLayout;
+  private:
+    std::vector<CCopasiObject*>* mOutputObjectVector;
+    pageIndex currentPage;
+    void selectObjects(ObjectBrowserItem* browserItem, CCopasiObject* selectObject);
+    void updateSelectedItemsView();
+    void cleanup();
   };
 #endif // OBJECTBROWSERWIDGET_H

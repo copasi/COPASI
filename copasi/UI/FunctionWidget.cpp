@@ -1,145 +1,196 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\function2.ui'
- **
- ** Created: Thu May 30 18:47:54 2002
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:47 $
+   End CVS Header */
+
 #include "FunctionWidget.h"
 
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include "model/CMetab.h"
-#include <qvariant.h>
-#include <qtable.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
+#include <qfont.h>
+#include <qpushbutton.h>
+#include <qaction.h>
+
+#include "MyTable.h"
+#include "function/CFunctionDB.h"
+#include "listviews.h"
+#include "DataModelGUI.h"
+#include "report/CKeyFactory.h"
+#include "qtUtilities.h"
 #include "utilities/CGlobals.h"
-#include "function/function.h" 
-/*
- *  Constructs a FunctionWidget which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'.
- */
-FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
-{
-  mModel = NULL;
-  table = new MyTable(0, 2, this, "tblFunctions");
-  QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
-  vBoxLayout->addWidget(table);
+#include "model/CModel.h"
 
+std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
+  {
+    CCopasiVectorN<CFunction>& tmp = Copasi->pFunctionDB->loadedFunctions();
+    std::vector<const CCopasiObject*> ret;
+
+    C_INT32 i, imax = tmp.size();
+    for (i = 0; i < imax; ++i)
+      ret.push_back(tmp[i]);
+
+    return ret;
+  }
+
+void FunctionWidget::init()
+{
+  mOT = ListViews::FUNCTION;
+  numCols = 4;
+  table->setNumCols(numCols);
+
+  //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Type");
-  setFocusPolicy(QWidget::WheelFocus);
-  setFocusProxy (table);
-  table->setFocusPolicy(QWidget::WheelFocus);
+  tableHeader->setLabel(0, "Status");
+  tableHeader->setLabel(1, "Name");
+  tableHeader->setLabel(2, "Type");
+  tableHeader->setLabel(3, "mathematical description");
 
-  // signals and slots connections
-  connect(table, SIGNAL(clicked (int, int, int, const QPoint &)), this, SLOT(slotTableClicked(int, int, int, const QPoint &)));
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  //this restricts users from editing function types or descriptions on the table
+  table->setColumnReadOnly (2, true);
+  table->setColumnReadOnly (3, true);
 }
 
-// ************make changes for function widgets in this function **********
-
-void FunctionWidget::loadFunction(CModel *model)
+void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
 {
-  if (model != NULL)
+  if (!obj) return;
+  const CFunction* pFunc = (const CFunction*)obj;
+  table->setText(row, 1, FROM_UTF8(pFunc->getObjectName()));
+
+  QString ftype;
+  switch (pFunc->getType())
     {
-      mModel = model;
+    case 1:
+    case 2:
+      ftype = QString("pre-defined");
+      mFlagRO[row] = true;
+      break;
+    case 3:
+      ftype = QString("user-defined");
+      break;
+    }
+  table->setText(row, 2, ftype);
+  table->setText(row, 3, FROM_UTF8(pFunc->getDescription()));
+}
 
-      //Emptying the table
-      int numberOfRows = table->numRows();
+void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
+{
+  if (!obj) return;
+  CFunction* pFunc = (CFunction*)obj;
+}
 
-      for (int i = 0; i < numberOfRows; i++)
+void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
+{
+  if (exc != 2)
+    table->setText(row, 2, "");
+  if (exc != 3)
+    table->setText(row, 3, "");
+}
+
+QString FunctionWidget::defaultObjectName() const
+  {
+    return "function";
+  }
+
+CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
+{
+  std::string nname = name;
+  int i = 0;
+  CFunction* pFunc;
+  while (!(pFunc = Copasi->pFunctionDB->createFunction(nname, CFunction::UserDefined)))
+    {
+      i++;
+      nname = name;
+      nname += (const char *)QString::number(i).utf8();
+    }
+  std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
+  return pFunc;
+}
+
+void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
+{
+  if (!dataModel->getModel())
+    return;
+
+  if (keys.size() == 0)
+    return;
+
+  QString funcList = "Are you sure you want to delete listed function(s)?\n";
+  QString effectedReacList = "The following reaction(s) reference above functions(s) and will be deleted -\n";
+  int reacFound = 0;
+
+  std::set<std::string> totalEffectedReacKeys;
+  unsigned C_INT32 i, imax = keys.size();
+  for (i = 0; i < imax; i++)
+    {
+      funcList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
+      funcList.append(", ");
+
+      //CMetab* metab =
+      //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
+
+      std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnFunction(keys[i]);
+
+      if (effectedReacKeys.size() > 0)
         {
-          table->removeRow(0);
-        }
-
-      CCopasiVectorNS< CFunction > & Functions =
-        Copasi->FunctionDB.loadedFunctions();
-
-      C_INT32 noOfFunctionsRows = Functions.size();
-      table->setNumRows(noOfFunctionsRows);
-
-      //Now filling the table.
-
-      CFunction *funct;
-
-      for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
-        {
-          funct = Functions[j];
-          table->setText(j, 0, funct->getName().c_str());
-          //table->setText(j, 1, QString::number((funct->getType())));
-          QString ftype;
-
-          switch (funct->getType())
+          reacFound = 1;
+          std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+          for (it = effectedReacKeys.begin(); it != itEnd; ++it)
             {
-            case 1:
-
-            case 2:
-              ftype = QString("pre-defined");
-              //table->setText(j, 1, QString::number((funct->getType())));
-              break;
-
-            case 3:
-              ftype = QString("user-defined");
-              break;
+              effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+              effectedReacList.append(", ");
+              totalEffectedReacKeys.insert(*it);
             }
-
-          table->setText(j, 1, ftype);
+          effectedReacList.remove(effectedReacList.length() - 2, 2);
+          effectedReacList.append("  ---> ");
+          effectedReacList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
+          effectedReacList.append("\n");
         }
     }
-}
+  funcList.remove(funcList.length() - 2, 2);
 
-void FunctionWidget::setFocus()
-{
-  QWidget::setFocus();
-  table->setFocus();
-}
-
-void FunctionWidget::slotTableClicked(int row, int col, int button, const QPoint & mousePos)
-{
-  //QMessageBox::information(this, "Application name",
-  //"Clicked (mousePress) On Metabolites table.");
-
-  if (!table->hasFocus())
+  QString msg = funcList;
+  if (reacFound == 1)
     {
-      table->setFocus();
+      msg.append("\n \n");
+      msg.append(effectedReacList);
     }
-}
 
-void FunctionWidget::slotTableSelectionChanged()
-{
-  if (!table->hasFocus())
+  C_INT32 choice;
+  if (reacFound == 1)
+    choice = QMessageBox::warning(this,
+                                  "CONFIRM DELETE",
+                                  msg,
+                                  "Continue", "Cancel", 0, 0, 1);
+  else
+    choice = 0;
+
+  switch (choice)
     {
-      table->setFocus();
-    }
-}
+    case 0:                   // Yes or Enter
+      {
+        //first delete reactions
+        std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
+        for (it = totalEffectedReacKeys.begin(); it != itEnd; ++it)
+          {
+            dataModel->getModel()->removeReaction(*it);
+            ListViews::notify(ListViews::REACTION, ListViews::DELETE, *it);
+          }
 
-void FunctionWidget::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      int newWidth = re->size().width();
+        //now delete functions
 
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
-      float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
-      int w0, w1, w2, w3 , w4;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth * (weight2 / weightSum);
-      w3 = newWidth * (weight3 / weightSum);
-      w4 = newWidth - w0 - w1 - w2 - w3;
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
-      table->setColumnWidth(2, w2);
-      table->setColumnWidth(3, w3);
-      table->setColumnWidth(4, w4);
+        for (i = 0; i < imax; i++)
+          {
+            Copasi->pFunctionDB->removeFunction(keys[i]);
+            ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, keys[i]);
+          }
+
+        break;
+      }
+    case 1:                   // No or Escape
+      break;
     }
 }

@@ -1,20 +1,24 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/11 08:43:28 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:01 $
    End CVS Header */
 
-#ifndef SBMLIMPORTER_HPP
-#define SBMLIMPORTER_HPP
+#ifndef SBMLIMPORTER_H__
+#define SBMLIMPORTER_H__
 
 #include <string>
 #include <map>
 #include "sbml/ASTNode.hpp"
 
+#include "function/CFunctionDB.h"
+#include "sbml/StdException.h"
+#include "sbml/UnitDefinition.hpp"
+#include "model/CModel.h"
+
 class SBMLDocument;
-class CModel;
 class CCompartment;
 class CMetab;
 class CReaction;
@@ -26,47 +30,16 @@ class SBMLDocument;
 class ConverterASTNode;
 class FunctionDefinition;
 
-/**
- * Simple exception class that implements the what() function of std::exception
- * to specify an error message.
- */
-class StdException: public std::exception
-  {
-  public:
-    /**
-     * Constructor that sets the error message object to "Error."
-     */
-    StdException() throw();
-
-    /**
-     * Constructor that sets the error message object to the string given.
-     */
-    explicit StdException(const std::string what) throw();
-
-    /**
-     * Destructor that does nothing.
-     */
-    virtual ~StdException() throw();
-
-    /**
-     * Returns the error message object as a character array.
-     */
-    virtual const char* what() const throw();
-
-  protected:
-    std::string message;
-  };
-
 class SBMLImporter
   {
   protected:
     std::map<std::string, CMetab*> speciesMap;
-    //std::map<std::string,CCompartment*> compartmentMap;
+    CFunctionDB* functionDB;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
-    CModel* createCModelFromSBMLDocument(SBMLDocument* doc) throw(StdException);
+    CModel* createCModelFromSBMLDocument(SBMLDocument* doc);
 
     /**
      * Creates and returns a Copasi CCompartment from the SBML Compartment
@@ -83,7 +56,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel) throw(StdException);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<std::string, CCompartment*> compartmentMap);
 
     /**
      * Traverses the brach of the given AST node recursively and prefixes all substrate
@@ -95,7 +68,7 @@ class SBMLImporter
      * Recursively replaces all parameter names in the branch of the given AST node
      * with the ones give in the map.
      */
-    void replaceSubstanceNames(ConverterASTNode* node, std::map<std::string, std::string> substances);
+    void replaceSubstanceNames(ConverterASTNode* node, std::map< std::string, std::map <std::string, std::string > > substMap, bool reversible);
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
@@ -121,10 +94,39 @@ class SBMLImporter
      */
     ConverterASTNode* replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> bvarMap);
 
+    /**
+     * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
+     * with the AST_POWER node.
+     */
+    void replacePowerFunctionNodes(ASTNode* node);
+
+    /**
+     * Returns the copasi VolumeUnit corresponding to the given SBML Volume
+     *  UnitDefinition.
+     */
+    CModel::VolumeUnit handleVolumeUnit(const UnitDefinition* uDef);
+
+    /**
+     * Returns the copasi QuantityUnit corresponding to the given SBML
+     *  Substance UnitDefinition.
+     */
+    CModel::QuantityUnit handleSubstanceUnit(const UnitDefinition* uDef);
+
+    /**
+     * Returns the copasi TimeUnit corresponding to the given SBML Time
+     *  UnitDefinition.
+     */
+    CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef);
+
+    /**
+     * Replaces all compartment nodes in an AST tree with the initial volume of the compartment.
+     */
+    void replaceCompartmentNodes(ConverterASTNode* node, std::map<std::string, CCompartment*> compartmentMap);
+
   public:
     SBMLImporter();
     ~SBMLImporter();
-    CModel* readSBML(std::string filename);
+    CModel* readSBML(std::string filename, CFunctionDB* funDB);
   };
 
 #endif

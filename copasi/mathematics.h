@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/mathematics.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:29:01 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:43 $
    End CVS Header */
 
 #include <math.h>

@@ -1,45 +1,161 @@
-# The character # (hex 23) can not be escaped we therefore create a variable containing it
-HASH = $$system(echo "\\043")
-contains(HASH, \\043){
-  HASH = $$system(echo -e "\\043")
+######################################################################
+# $Revision: 1.1.1.1 $ $Author: anuragr $ $Date: 2004/10/26 15:17:43 $  
+######################################################################
+
+# In the case the BUILD_OS is not specified we make a guess.
+isEmpty(BUILD_OS) {
+  win32 {
+    BUILD_OS = WIN32
+  } else {
+    BUILD_OS = $$system(uname)
+  }
+}
+DEFINES += $$BUILD_OS
+message("Configuring for $${BUILD_OS}.")
+
+TARGETDEPS += Makefile
+DEFINES+=XML_STATIC
+
+# Common configuration settings
+CONFIG += exceptions
+CONFIG += rtti
+
+debug {
+  DEFINES += COPASI_DEBUG
 }
 
-myLex = \
-        $(LEX) -t $< | \
-        sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
-            -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
-            -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
+!contains(BUILD_OS, WIN32) {
+  QMAKE_QMAKE = $(QTDIR)/bin/qmake
+  
+  # The character # (hex 23) can not be escaped we therefore create 
+  # a variable containing it
+  HASH = $$system(echo "\\043")
+  contains(HASH, \\043){
+    HASH = $$system(echo -e "\\043")
+  }
 
-contains(OS, Darwin) {
+  myLex = \
+          $(LEX) -t $< | \
+          sed -e 's/class istream;/$${HASH}include "copasi.h"/' \
+              -e 's/<FlexLexer.h>/"FlexLexer.h"/' \
+              -e 's/$${HASH}include <unistd.h>/using namespace std;/' > $@
+}
+
+contains(BUILD_OS, Darwin) {
   INCLUDEPATH += /System/Library/Frameworks/vecLib.framework/Headers
+  LIBS += -framework vecLib
+  LIBS += -framework Carbon
+  LIBS += -framework QuickTime
+  LIBS += -lz
 }
 
-win32{
-  OS = win32
-} else {
-  OS = $$system(uname)
-}
+contains(BUILD_OS, WIN32) {
+  QMAKE_QMAKE = $(QTDIR)\bin\qmake.exe
+  DEFINES -= UNICODE 
+  debug {
+    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
+    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"libcmt.lib"
+  }
+  release {
+    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"libcmt"
+  }
 
-contains(OS, SunOS) {
+  !isEmpty(MKL_PATH) {
+    DEFINES += USE_MKL
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
+    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
+  } else {
+    !isEmpty(CLAPACK_PATH) {
+      DEFINES += USE_CLAPACK
+      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
+      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
+      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      LIBS += clapack.lib
+    } else {
+      error( "Either MKL_PATH or CLAPACK_PATH must be specified" )
+    }
+  }
+
+  !isEmpty(EXPAT_PATH) {
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    LIBS += libexpat.lib
+  } else {
+    error( "EXPAT_PATH must be specified" )
+  }
+
+  !isEmpty(SBML_PATH) {
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${SBML_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${SBML_PATH}\include"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${SBML_PATH}\lib"
+    LIBS += libsbml.lib libexpat-compat.lib
+  } else {
+    error( "SBML_PATH must be specified" )
+  }
+} 
+
+contains(BUILD_OS, SunOS) {
   !isEmpty(CLAPACK_PATH) {
+    DEFINES += USE_CLAPACK
     INCLUDEPATH += $${CLAPACK_PATH}/include
     LIBS += -llapack -lblas -lF77 -lfl
-    LIBS +=  $${CLAPACK_PATH}/lib
+    LIBS += -L$${CLAPACK_PATH}/lib
   } else {
-    error( "CLAPACK_PATH must be specified )
+    error( "CLAPACK_PATH must be specified" )
   }
+  LIBS += -lSM
 }
  
-contains(OS, Linux) {
+contains(BUILD_OS, Linux) {
+  QMAKE_LFLAGS_RELEASE += -static
+
+  LIBS += -lsbml -lexpat
+
+  !isEmpty(QWT_PATH){
+      LIBS+=  -L$${QWT_PATH}/lib
+      INCLUDEPATH += $${QWT_PATH}/include
+  }
+#  else {
+#      error( "QWT_PATH must be specified" )
+#  }
+  !isEmpty(EXPAT_PATH){
+      LIBS+=  -L$${EXPAT_PATH}/lib
+      INCLUDEPATH += $${EXPAT_PATH}/include
+  }
+  !isEmpty(SBML_PATH){
+      LIBS+=  -L$${SBML_PATH}/lib
+      INCLUDEPATH += $${SBML_PATH}/include
+  }
   !isEmpty(MKL_PATH) {
+    DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
     LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
-    LIBS +=  $${MKL_PATH}/lib/32
-  } else !isEmpty(CLAPACK_PATH) {
-    INCLUDEPATH += $${CLAPACK_PATH}/include
-    LIBS += -llapack -lblas -lF77 -lfl
-    LIBS +=  $${CLAPACK_PATH}/lib
+    LIBS +=  -L$${MKL_PATH}/lib/32
   } else {
-    error( "Either MKL_PATH or CLAPACK_PATH must be specified )
+    !isEmpty(CLAPACK_PATH) {
+      DEFINES += USE_CLAPACK
+      INCLUDEPATH += $${CLAPACK_PATH}/include
+      INCLUDEPATH += /usr/include/qt3
+      LIBS += -llapack -lblas -lF77 -lfl
+      LIBS += -L$${CLAPACK_PATH}/lib 
+    } else {
+      !isEmpty(LAPACK_PATH) {
+        message("Using lapack.")
+        DEFINES += USE_CLAPACK
+        INCLUDEPATH += $${LAPACK_PATH}/include
+        LIBS += -llapack -lblas  -lg2c
+        LIBS += -L$${LAPACK_PATH}/lib
+      } else {
+        error( "Either MKL_PATH, CLAPACK_PATH, or LAPACK_PATH must be specified" )
+      }
+    }
   }
 }
+
+DEP1.target   = depend
+DEP1.depends  = qmake
+
+QMAKE_EXTRA_UNIX_TARGETS += DEP1

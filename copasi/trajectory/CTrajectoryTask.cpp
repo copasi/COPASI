@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:03 $
+   End CVS Header */
+
 /**
  * CTrajectoryTask class.
  *
@@ -8,31 +16,76 @@
  * Created for Copasi by Stefan Hoops 2002
  */
 
+#include <string>
+
 #include "copasi.h"
+
 #include "CTrajectoryTask.h"
 #include "CTrajectoryProblem.h"
 #include "CTrajectoryMethod.h"
-#include "output/output.h"
+#include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
+#include "report/CKeyFactory.h"
+#include "report/CReport.h"
+#include "utilities/COutputHandler.h"
 
 #define XXXX_Reporting
 
-CTrajectoryTask::CTrajectoryTask():
-    mpProblem(NULL),
-    mpMethod(NULL),
-    mpOutInit(NULL),
-    mpOutPoint(NULL),
-    mpOutEnd(NULL)
-{}
+CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL),
+    mTimeSeriesRequested(true)
+{
+  mpProblem = new CTrajectoryProblem(this);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+}
 
-CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
-    mpProblem(src.mpProblem),
-    mpMethod(src.mpMethod),
-    mpOutInit(src.mpOutInit),
-    mpOutPoint(src.mpOutPoint),
-    mpOutEnd(src.mpOutEnd)
-{}
+/*CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
+                                 const CCopasiContainer * pParent):
+    CCopasiTask(src, pParent),
+    mpState(src.mpState),
+    mTimeSeriesRequested(src.mTimeSeriesRequested)
+{fatalError();}*/
+
+/*CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
+                                 CTrajectoryMethod::SubType subType,
+                                 const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL),
+    mTimeSeriesRequested(true)
+{
+  mpProblem = pProblem;
+  mpProblem->setObjectParent(this);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(subType,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+}*/
+
+/*CTrajectoryTask::CTrajectoryTask(CModel * pModel,
+                                 C_FLOAT64 starttime, C_FLOAT64 endtime,
+                                 unsigned C_INT32 stepnumber,
+                                 CTrajectoryMethod::SubType subType,
+                                 const CCopasiContainer * pParent):
+    CCopasiTask(CCopasiTask::timeCourse, pParent),
+    mpState(NULL),
+    mTimeSeriesRequested(true)
+{
+  mpProblem = new CTrajectoryProblem(this);
+  ((CTrajectoryProblem *) mpProblem)->setModel(pModel);
+  ((CTrajectoryProblem *) mpProblem)->setStartTime(starttime);
+  ((CTrajectoryProblem *) mpProblem)->setEndTime(endtime);
+  ((CTrajectoryProblem *) mpProblem)->setStepNumber(stepnumber);
+ 
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(subType,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+}*/
 
 CTrajectoryTask::~CTrajectoryTask()
 {
@@ -41,116 +94,105 @@ CTrajectoryTask::~CTrajectoryTask()
 
 void CTrajectoryTask::cleanup()
 {
-  pdelete(mpProblem);
-  pdelete(mpMethod);
-  pdelete(mpOutInit);
-  pdelete(mpOutPoint);
-  pdelete(mpOutEnd);
-}
-
-void CTrajectoryTask::initializeReporting(ofstream & out)
-{
-  pdelete(mpOutInit);
-  pdelete(mpOutPoint);
-  pdelete(mpOutEnd);
-
-  mpOut = & out;
-  mpOutInit = new COutputEvent(0);
-  mpOutPoint = new COutputEvent(1);
-  mpOutEnd = new COutputEvent(2);
+  pdelete(mpState);
 }
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
 {
+  configBuffer.getVariable("Dynamics", "bool", &mScheduled,
+                           CReadConfig::LOOP);
+
   pdelete(mpProblem);
-  mpProblem = new CTrajectoryProblem();
-  mpProblem->load(configBuffer);
+  mpProblem = new CTrajectoryProblem(this);
+  ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
-  if (configBuffer.getVersion() < "4.0")
-    {
-      mpMethod = CTrajectoryMethod::createTrajectoryMethod();
-    }
-  else
-    {
-      C_INT32 Method;
-      configBuffer.getVariable("TrajectoryMethod", "C_INT32", &Method,
-                               CReadConfig::SEARCH);
-
-      mpMethod = CTrajectoryMethod::
-                 createTrajectoryMethod((CTrajectoryMethod::Type) Method);
-      mpMethod->load(configBuffer);
-    }
+  pdelete(mpMethod);
+  mpMethod = CTrajectoryMethod::createTrajectoryMethod();
+  mpMethod->setObjectParent(this);
+  ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
 
-void CTrajectoryTask::save(CWriteConfig & configBuffer)
+bool CTrajectoryTask::initialize(std::ostream * pOstream)
 {
-  mpProblem->save(configBuffer);
+  assert(mpProblem && mpMethod);
 
-  const C_INT32 Method = mpMethod->getTypeEnum();
-  configBuffer.setVariable("TrajectoryMethod", "C_INT32", &Method);
+  CTrajectoryProblem* pProblem =
+    dynamic_cast<CTrajectoryProblem *>(mpProblem);
+  assert(pProblem);
 
-  mpMethod->save(configBuffer);
+  bool success = true;
+
+  if (!mReport.open(pOstream)) success = false;
+  if (!mReport.compile()) success = false;
+  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+  //  if (!pProblem->
+  //      setInitialState(pProblem->getModel()->getInitialState()))
+  //    success = false;
+  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+
+  return success;
 }
 
-CTrajectoryProblem * CTrajectoryTask::getProblem()
-{ return mpProblem; }
-
-void CTrajectoryTask::setProblem(CTrajectoryProblem * pProblem)
-{mpProblem = pProblem; }
-
-CTrajectoryMethod * CTrajectoryTask::getMethod()
-{ return mpMethod; }
-
-void CTrajectoryTask::setMethod(CTrajectoryMethod * pMethod)
-{mpMethod = pMethod; }
-
-CState * CTrajectoryTask::getState()
-{ return mpState; }
-
-void CTrajectoryTask::process()
+bool CTrajectoryTask::process()
 {
-  if (!mpProblem)
-    fatalError();
-  if (!mpMethod)
-    fatalError();
+  assert(mpProblem && mpMethod);
+
+  CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
+  CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
+
+  mTimeSeriesRequested = pProblem->timeSeriesRequested();
 
   pdelete(mpState);
-  mpState = new CState(*mpProblem->getInitialState());
+  mpState = new CState(pProblem->getInitialState());
 
-  mpMethod->setCurrentState(mpState);
-  mpMethod->setProblem(mpProblem);
+  pMethod->setCurrentState(mpState);
+  pMethod->setProblem(pProblem);
 
-  if (mpOutInit)
-    mpOutInit->print(Copasi->OutputList, *mpOut);
+  bool flagStopped = false;
+  C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
+  if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
+  mReport.printHeader();
+  mReport.printBody();
+  if (mpOutputHandler) mpOutputHandler->init();
+  if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
+  if (mpOutputHandler) mpOutputHandler->doOutput();
+  if (mTimeSeriesRequested) mTimeSeries.add();
 
-  C_FLOAT64 StepSize = mpProblem->getStepSize();
+  C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 ActualStepSize;
   const C_FLOAT64 & Time = mpState->getTime();
-  C_FLOAT64 EndTime = mpProblem->getEndTime() - StepSize;
+  C_FLOAT64 EndTime = pProblem->getEndTime() - StepSize;
 
-  if (mpOutPoint)
-    mpOutPoint->print(Copasi->OutputList, *mpOut);
+  ActualStepSize = pMethod->step(StepSize, mpState);
 
-  ActualStepSize = mpMethod->step(StepSize,
-                                  mpProblem->getInitialState());
+  if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
+  mReport.printBody();
+  if (mpOutputHandler) mpOutputHandler->doOutput();
+  if (mTimeSeriesRequested) mTimeSeries.add();
 
 #ifdef  XXXX_Event
-
   if (ActualStepSize != StepSize)
     {
       /* Here we will do conditional event processing */
     }
 #endif // XXXX_Event
 
-  while (Time < EndTime)
+  while ((Time < EndTime) && (!flagStopped))
     {
-      if (mpOutPoint)
-        mpOutPoint->print(Copasi->OutputList, *mpOut);
+      ActualStepSize = pMethod->step(StepSize);
 
-      ActualStepSize = mpMethod->step(StepSize);
+      if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
+      mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
+      if (mTimeSeriesRequested) mTimeSeries.add();
 
 #ifdef  XXXX_Event
-
       if (ActualStepSize != StepSize)
         {
           /* Here we will do conditional event processing */
@@ -158,26 +200,100 @@ void CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-  while (Time < mpProblem->getEndTime())
+  while ((Time < pProblem->getEndTime()) && (!flagStopped))
     {
-      if (mpOutPoint)
-        mpOutPoint->print(Copasi->OutputList, *mpOut);
+      ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
-      ActualStepSize = mpMethod->step(mpProblem->getEndTime() - Time);
+      if (mpProgressHandler) flagStopped = mpProgressHandler->progress((Time - pProblem->getStartTime()) * handlerFactor);
+      pProblem->getModel()->setState(mpState);
+      pProblem->getModel()->updateRates();
+      mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
+      if (mTimeSeriesRequested) mTimeSeries.add();
 
 #ifdef  XXXX_Event
-
-      if (ActualStepSize != (mpProblem->getEndTime() - Time))
+      if (ActualStepSize != (pProblem->getEndTime() - Time))
         {
           /* Here we will do conditional event processing */
         }
 #endif // XXXX_Event
     }
-  mpProblem->setEndState(new CState(*mpState));
 
-  if (mpOutPoint)
-    mpOutPoint->print(Copasi->OutputList, *mpOut);
+  //pProblem->setEndState(new CState(*mpState));
 
-  if (mpOutEnd)
-    mpOutEnd->print(Copasi->OutputList, *mpOut);
+  if (mpProgressHandler) mpProgressHandler->finish();
+  pProblem->getModel()->setState(mpState);
+  pProblem->getModel()->updateRates();
+  mReport.printFooter();
+  if (mpOutputHandler) mpOutputHandler->finish();
+  if (mTimeSeriesRequested) mTimeSeries.finish();
+
+  return true;
 }
+
+bool CTrajectoryTask::processSimple(bool singleStep) //without output
+{
+  assert(mpProblem && mpMethod);
+
+  CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
+  CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
+
+  //give the method a state to work on
+  pdelete(mpState);
+  mpState = new CState(pProblem->getInitialState());
+  pMethod->setCurrentState(mpState);
+
+  pMethod->setProblem(pProblem);
+
+  bool flagStopped = false;
+  C_FLOAT64 handlerFactor = 1000 / (pProblem->getEndTime() - pProblem->getStartTime());
+  if (mpProgressHandler) mpProgressHandler->init(1000, "performing simulation...", true);
+
+  //first step
+  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getInitialState().getTime();
+  pMethod->step(StepSize, &pProblem->getInitialState());
+
+  if (mpProgressHandler) flagStopped =
+      mpProgressHandler->progress((mpState->getTime() - pProblem->getStartTime()) * handlerFactor);
+
+  if (mpState->getTime() == pProblem->getEndTime()) return true; //end reached in one step
+  if (singleStep) return false; //end not reached but only one step requested
+
+  //more Steps if necessary
+  while ((mpState->getTime() < pProblem->getEndTime()) && (!flagStopped))
+    {
+      StepSize = pProblem->getEndTime() - mpState->getTime();
+      pMethod->step(StepSize);
+
+      if (mpProgressHandler) flagStopped =
+          mpProgressHandler->progress((mpState->getTime() - pProblem->getStartTime()) * handlerFactor);
+    }
+
+  //pProblem->setEndState(new CState(*mpState));
+
+  //if (mpProgressHandler) mpProgressHandler->finish();
+
+  return true;
+}
+
+bool CTrajectoryTask::setMethodType(const int & type)
+{
+  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
+
+  if (!CTrajectoryMethod::isValidSubType(Type)) return false;
+  if (mpMethod->getSubType() == Type) return true;
+
+  pdelete (mpMethod);
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(Type,
+        (CTrajectoryProblem *) mpProblem);
+  mpMethod->setObjectParent(this);
+
+  return true;
+}
+
+CState * CTrajectoryTask::getState()
+{return mpState;}
+
+const CTimeSeries & CTrajectoryTask::getTimeSeries() const
+  {return mTimeSeries;}

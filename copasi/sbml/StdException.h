@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/StdException.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.1.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/21 09:49:29 $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:18:02 $
    End CVS Header */
 
 #ifndef STDEXCEPTION_H__

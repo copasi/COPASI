@@ -1,31 +1,48 @@
-/****************************************************************************
- ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
- **
- ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.1 2003/09/29 04:13:28 lixu1 Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.cpp,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
 
-#include "OptimizationItemWidget.h"
-
+/********************************************************
+Author: Liang Xu
+Version : 1.xx  <first>
+Description: 
+Date: 10/01
+Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
+Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qcombobox.h>
-#include <qcheckbox.h>
 #include <qframe.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qmessagebox.h>
+
+#include "OptimizationWidget.h"
+#include "OptimizationItemWidget.h"
+#include "ScanItemWidget.h"
+#include "FunctionItemWidget.h"
+#include "report/CKeyFactory.h"
+#include "function/CFunction.h"
+#include "function/CFunctionDB.h"
+#include "function/CKinFunction.h"
+#include "optimization/COptFunction.h"
+#include "utilities/CCopasiException.h"
+#include "qtUtilities.h"
 
 /*
  *  Constructs a OptimizationItemWidget as a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name, WFlags fl)
-    : QWidget(parent, name, fl)
+OptimizationItemWidget::OptimizationItemWidget(OptimizationWidget* parent, const char* name, WFlags fl)
+    : QWidget(parent, name, fl),
+    mpParent(parent)
 {
   if (!name)
     setName("OptimizationItemWidget");
@@ -37,7 +54,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   layout13 = new QHBoxLayout(0, 0, 6, "layout13");
 
-  lineLower = new QLineEdit(this, "lineLower");
+  lineLower = new ScanLineEdit(this, "lineLower");
   layout13->addWidget(lineLower);
 
   buttonLowerEdit = new QPushButton(this, "buttonLowerEdit");
@@ -57,13 +74,13 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addWidget(comboBoxLowerOp, 5, 1);
 
-  checkLowerInf = new QCheckBox(this, "checkLowerInf");
+  checkLowerInf = new ScanCheckBox(this, "checkLowerInf");
 
   OptimizationItemWidgetLayout->addWidget(checkLowerInf, 6, 2);
 
   layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
-  lineUpper = new QLineEdit(this, "lineUpper");
+  lineUpper = new ScanLineEdit(this, "lineUpper");
   layout14->addWidget(lineUpper);
 
   buttonUpperEdit = new QPushButton(this, "buttonUpperEdit");
@@ -82,7 +99,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addMultiCellWidget(line10, 4, 4, 0, 2);
 
-  checkUpperInf = new QCheckBox(this, "checkUpperInf");
+  checkUpperInf = new ScanCheckBox(this, "checkUpperInf");
 
   OptimizationItemWidgetLayout->addWidget(checkUpperInf, 3, 2);
 
@@ -93,7 +110,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
 
   OptimizationItemWidgetLayout->addMultiCellWidget(line11, 1, 1, 0, 2);
 
-  ObjectName = new QLineEdit(this, "ObjectName");
+  ObjectName = new ScanLineEdit(this, "ObjectName");
   ObjectName->setEnabled(FALSE);
 
   OptimizationItemWidgetLayout->addMultiCellWidget(ObjectName, 0, 0, 1, 2);
@@ -116,6 +133,15 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   setTabOrder(comboBoxLowerOp, lineLower);
   setTabOrder(lineLower, buttonLowerEdit);
   setTabOrder(buttonLowerEdit, checkLowerInf);
+
+  checkUpperInf->setChecked(true);
+  checkLowerInf->setChecked(true);
+
+  //  buttonUpperEdit->setEnabled(false);
+  //  buttonLowerEdit->setEnabled(false);
+
+  lineUpper->setEnabled(false);
+  lineLower->setEnabled(false);
 }
 
 /*
@@ -152,20 +178,176 @@ void OptimizationItemWidget::languageChange()
 
 void OptimizationItemWidget::slotPosInfClicked()
 {
-  qWarning("OptimizationItemWidget::slotPosInfClicked(): Not implemented yet");
+  lineUpper->setEnabled(!checkUpperInf->isChecked());
+  //buttonUpperEdit->setEnabled(!checkUpperInf->isChecked());
 }
 
 void OptimizationItemWidget::slotLowerEdit()
 {
-  qWarning("OptimizationItemWidget::slotLowerEdit(): Not implemented yet");
+  //qWarning("OptimizationItemWidget::slotLowerEdit(): Not implemented yet");
+  checkLowerInf->setChecked(false);
+  lineLower->setEnabled(true);
+  std::string strFunction;
+  FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
+  strFunction = lineLower->text().utf8();
+  pFuncDlg->setStrFunction(&strFunction);
+
+  if (pFuncDlg->exec () == QDialog::Accepted)
+    {
+      lineLower->setText(FROM_UTF8(strFunction));
+      COptFunction* func =
+        dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
+      int nIndex; // this nIndex must exist;
+      nIndex = func->Index(mpObject->getCN());
+      func->mMinList[nIndex] = strFunction;
+      if (!(func->mMinFunctionList[nIndex]))
+        func->mMinFunctionList[nIndex] = new CKinFunction();
+      // dont go through the compile function
+      func->mMinFunctionList[nIndex]->CFunction::setDescription(func->mMinList[nIndex]);
+      try
+        {
+          func->mMinFunctionList[nIndex]->compile();
+        }
+      catch (CCopasiException Exception)
+        {
+          if (QMessageBox::warning(this, "Invalid Function Input",
+                                   "Invalid function expression.\n Please check function again \n Do you still want to keep your input? \n"
+                                   "Press <Yes> to keep.",
+                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+            {
+              func->mMinList[nIndex] = "";
+              lineLower->setText("");
+            }
+        }
+    }
 }
 
 void OptimizationItemWidget::slotNegInfClicked()
 {
-  qWarning("OptimizationItemWidget::slotNegInfClicked(): Not implemented yet");
+  lineLower->setEnabled(!checkLowerInf->isChecked());
+  //buttonLowerEdit->setEnabled(!checkLowerInf->isChecked());
 }
 
 void OptimizationItemWidget::slotUpperEdit()
 {
-  qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
+  //qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
+  checkUpperInf->setChecked(false);
+  lineUpper->setEnabled(true);
+  std::string strFunction;
+  FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
+  strFunction = lineUpper->text().utf8();
+  pFuncDlg->setStrFunction(&strFunction);
+  if (pFuncDlg->exec () == QDialog::Accepted)
+    {
+      lineUpper->setText(FROM_UTF8(strFunction));
+      COptFunction* func =
+        dynamic_cast< COptFunction * >(GlobalKeys.get(mpParent->getKey()));
+      int nIndex; // this nIndex must exist;
+      nIndex = func->Index(mpObject->getCN());
+      func->mMaxList[nIndex] = strFunction;
+      if (!(func->mMaxFunctionList[nIndex]))
+        func->mMaxFunctionList[nIndex] = new CKinFunction();
+      // dont go through the compile function
+      func->mMaxFunctionList[nIndex]->CFunction::setDescription(func->mMaxList[nIndex]);
+      try
+        {
+          func->mMaxFunctionList[nIndex]->compile();
+        }
+      catch (CCopasiException Exception)
+        {
+          if (QMessageBox::warning(this, "Invalid Function Input",
+                                   "Invalid function expression.\n Please check function again \n Do you still want to keep your input? \n"
+                                   "Press <Yes> to keep.",
+                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+            {
+              func->mMaxList[nIndex] = "";
+              lineUpper->setText("");
+            }
+        }
+    }
+}
+
+std::string OptimizationItemWidget::getItemUpperLimit()
+{
+  if (checkUpperInf->isChecked())
+    return "+inf";
+  else
+    return (const char*)lineUpper->text().utf8();
+}
+
+std::string OptimizationItemWidget::getItemLowerLimit()
+{
+  if (checkLowerInf->isChecked())
+    return "-inf";
+  else
+    return (const char*)lineLower->text().utf8();
+}
+
+CCopasiObject* OptimizationItemWidget::getCopasiObject()
+{
+  return mpObject;
+}
+
+void OptimizationItemWidget::setCopasiObjectPtr (CCopasiObject* sourceObject)
+{
+  if (!sourceObject) // NULL pointer
+    return;
+  mpObject = sourceObject;
+  ObjectName->setText(FROM_UTF8(mpObject->getObjectUniqueName()));
+}
+
+void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
+{
+  if (strUpperLimit == "+inf")
+    {
+      checkUpperInf->setChecked(true);
+      //buttonUpperEdit->setEnabled(false);
+      lineUpper->setEnabled(false);
+      lineUpper->setText("");
+    }
+  else
+    {
+      checkUpperInf->setChecked(false);
+      //buttonUpperEdit->setEnabled(true);
+      lineUpper->setEnabled(true);
+      lineUpper->setText(FROM_UTF8(strUpperLimit));
+    }
+}
+
+void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
+{
+  if (strLowerLimit == "-inf")
+    {
+      checkLowerInf->setChecked(true);
+      //buttonLowerEdit->setEnabled(false);
+      lineLower->setEnabled(false);
+      lineLower->setText("");
+    }
+  else
+    {
+      checkLowerInf->setChecked(false);
+      //buttonLowerEdit->setEnabled(true);
+      lineLower->setEnabled(true);
+      lineLower->setText(FROM_UTF8(strLowerLimit));
+    }
+}
+
+std::string OptimizationItemWidget::getItemUpperOper()
+{
+  return (const char*)comboBoxUpperOp->currentText().utf8();
+}
+
+std::string OptimizationItemWidget::getItemLowerOper()
+{
+  return (const char*)comboBoxLowerOp->currentText().utf8();
+}
+
+void OptimizationItemWidget::setItemUpperOper(std::string oper)
+{
+  comboBoxUpperOp->setCurrentText(FROM_UTF8(oper));
+}
+
+void OptimizationItemWidget::setItemLowerOper(std::string oper)
+{
+  comboBoxLowerOp->setCurrentText(FROM_UTF8(oper));
 }

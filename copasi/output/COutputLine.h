@@ -1,141 +1,153 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputLine.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:59 $
+   End CVS Header */
+
 /*****************************************************************************
-* PROGRAM NAME: COutputLine.h
-* PROGRAMMER: Wei Sun	wsun@vt.edu
-* PURPOSE: Declare the COutputLine Class, each COutputLine object contains 
-*	       all the CDatum object that can be output at the same line in a given
-*		   time			
-*****************************************************************************/
+ * PROGRAM NAME: COutputLine.h
+ * PROGRAMMER: Wei Sun wsun@vt.edu
+ * PURPOSE: Declare the COutputLine Class, each COutputLine object contains 
+ *        all the CDatum object that can be output at the same line in a given
+ *     time   
+ *****************************************************************************/
 
 #ifndef COPASI_COutputLine
 #define COPASI_COutputLine
 
+#include <iostream>
+#include <fstream>
+
 #include "CDatum.h"
+#include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 
-class COutputLine
-{
- private:
+class CState;
+class CSteadyStateTask;
+class CReadConfig;
+class CWriteConfig;
+class CState;
+class CModel;
+class CSteadyStateTask;
 
-  class CCDatum: public CCopasiVector < CDatum >
-    {
-    public:
-      CCDatum();
-      ~CCDatum();
-			
-    private:
-      C_INT16 isInsertAllowed(const CDatum & src);
-    };
+class COutputLine : public CCopasiContainer
+  {
+  private:
+    /**
+     *  Datum can be output in the same line.
+     * @supplierCardinality 0..*
+     */
+    CCopasiVectorS < CDatum > mLine;
 
-  /**
-   *  Datum can be output in the same line.
-   */
-  CCDatum * mLine;
+  public:
 
-  /**
-   *  Note: Temperaly use it 
-   *	The name of outputline from configuration file, 
-   *  such as "Interactive time course"
-   */
-  string mName;
-	
- public:
+    /**
+     * Default constructor. 
+     * @param const std::string & name (default: "NoName")
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COutputLine(const std::string & name = "NoName",
+                const CCopasiContainer * pParent = NULL);
 
-  /**
-   *  Default constructor. 
-   */
-  COutputLine();
+    /**
+     * Copy constructor. 
+     * @param const COutputLineg & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COutputLine(const COutputLine & src,
+                const CCopasiContainer * pParent = NULL);
 
+    /**
+     *  Destructor. 
+     */
+    ~COutputLine();
 
-  /**
-   *  Destructor. 
-   */
-  ~COutputLine();
+    void init();
 
-  void Init();
+    void cleanup();
 
-  void Delete();
+    /**
+     *  Return the pointer of the CDatum that can be output at the same line. 
+     *  @return mLine
+     *  @see mLine
+     */
+    const CCopasiVectorS < CDatum > & getLine() const;
 
-  /**
-   *  Assignement operator. 
-   *  Copies the contents from one COutputLine object to another.
-   *  @param source reference to the recipient object.
-   */
-  COutputLine& operator=(const COutputLine &source);
+    /**
+     *  Add new data object to a line
+     *  @param newDatum constant reference to CDatum.
+     *  @see CDatum Class
+     */
+    void addDatum(CDatum & newDatum);
 
-  /**
-   *  Return the pointer of the CDatum that can be output at the same line. 
-   *  @return mLine
-   *  @see mLine
-   */
-  CCDatum * GetLine() const;
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return mFail
+     *  @see mFail
+     */ 
+    //    C_INT32 save(CWriteConfig & configbuffer);
 
-  /**
-   *  Add new data object to a line
-   *  @param newDatum constant reference to CDatum.
-   *  @see CDatum Class
-   */
-  void AddDatum(CDatum & newDatum);
+    C_INT32 load(CReadConfig & configbuffer);
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @param searchName refernece to a the time of seach section,
+     *     for example: Interactive time course  
+     *  @return mFail
+     *  @see mFail
+     */
+    C_INT32 load(CReadConfig & configbuffer, std::string& searchName);
 
-  /**
-   *  Saves the contents of the object to a CWriteConfig object.
-   *  (Which usually has a file attached but may also have socket)
-   *  @param pconfigbuffer reference to a CWriteConfig object.
-   *  @return mFail
-   *  @see mFail
-   */
-  C_INT32 save(CWriteConfig & configbuffer);
+    /**
+     *  Dummy method.
+     */ 
+    //    const std::string & getName() const;
 
-  /**
-   *  Loads an object with data coming from a CReadConfig object.
-   *  (CReadConfig object reads an input stream)
-   *  @param pconfigbuffer reference to a CReadConfig object.
-   *  @param searchName refernece to a the time of seach section,
-   *		   for example: Interactive time course		
-   *  @return mFail
-   *  @see mFail
-   */
-  C_INT32 load(CReadConfig & configbuffer, string& searchName);
+    /**
+     *  Complie the mpValue in each output line
+     */ 
+    //void compileOutputLine(COutputList &outputList);
 
-  /**
-   *  Dummy method.
-   */	
-  string getName() const {return mName;}
+    /**
+     * print the titles of the steady-state data file
+     */
+    void sSOutputTitles(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
-  /**
-   *  Complie the mpValue in each output line
-   */
-  //void CompileOutputLine(COutputList &outputList);
+    /**
+     * print the mpValue of each Object in the steady-state data file
+     */
+    void sSOutputData(std::ostream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
 
-  /**
-   * print the titles of the steady-state data file
-   */
-  void SS_OutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    /**
+     * print the titles of the time couse data file
+     */
+    void dynOutputTitles(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
-  /**
-   * print the mpValue of each Object in the steady-state data file
-   */
-  void SS_OutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes);
+    /**
+     * print the mpValue of Object in the time course data file
+     */
+    void dynOutputData(std::ostream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
 
-  /**
-   * print the titles of the time couse data file
-   */
-  void Dyn_OutputTitles(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    /**
+     *  Sets the name of this line, (For example: Interactive time course)
+     *  @param title constant reference to a string.
+     */
+    bool setName(std::string LineName);
 
-  /**
-   * print the mpValue of Object in the time course data file
-   */
-  void Dyn_OutputData(ofstream &fout, C_INT16 DynSeparator, C_INT16 DynColWidth, C_INT16 DynQuotes);
+    /**
+     *  Assign the pointer to each datum object in the output line for time course
+     */
+    void compile(const std::string & name, CModel *model, CState *state);
 
-  /**
-   *  Sets the name of this line, (For example: Interactive time course)
-   *  @param title constant reference to a string.
-   */
-  void SetName(string LineName);
-
-  /**
-   *	Assign the pointer to each datum object in the output line
-   */
-  void Compile(string &name, CModel &model);
-};
+    /**
+     *  Assign the pointer to each datum object in the output line for steady State
+     */
+    void compile(const std::string & name, CModel *model, CSteadyStateTask *soln);
+  };
 
 #endif // COutputLine

@@ -1,69 +1,94 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.h,v $
+   $Revision: 1.1.1.1 $
+   $Name:  $
+   $Author: anuragr $ 
+   $Date: 2004/10/26 15:17:50 $
+   End CVS Header */
+
+/****************************************************************************
+ **  $ CopasiUI/ReactionsWidget1.h               
+ **  $ Author  : Mudita Singhal
+ **  
+ ** This is the header file for the Reactions Widget, i.e the second level 
+ ** of Reactions.
+ **
+ *****************************************************************************/
+
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 
+#include "copasiWidget.h"
+#include "CReactionInterface.h"
 
-#include <qsplitter.h>
-#include <qvariant.h>
-#include <qlayout.h> 
-class QAction;
-class QActionGroup;
-class QToolBar;
-class QPopupMenu;
-class QLabel;
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QCheckBox;
-class QLineEdit;
 class QComboBox;
-class QListBoxItem;
 class QFrame;
-class QRect;
-#include "qtable.h"
-#include "MyTable.h"
-class CModel;
+class QLabel;
+class QLineEdit;
 class QPushButton;
-class ReactionsWidget1 : public QWidget
-{ 
+class ParameterTable;
+class MyLineEdit;
+
+class ReactionsWidget1 : public CopasiWidget
+  {
     Q_OBJECT
 
-protected:
-	QPushButton* cancelChanges;
+  public:
+    ReactionsWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~ReactionsWidget1();
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
+    virtual void slotBtnNewClicked();
+    virtual void slotBtnDeleteClicked();
+    virtual void slotCheckBoxClicked();
+    virtual void slotComboBoxSelectionChanged(const QString &);
+    virtual void slotLineEditChanged();
+
+    //  public slots:
+    virtual void slotTableChanged(int index, int sub, QString newValue);
+
+  protected:
+    bool loadFromReaction(const CReaction* reaction);
+    bool saveToReaction();
+    void FillWidgetFromRI();
+
+    std::string objKey;
+    CReactionInterface mRi;
+
+    QGridLayout* ReactionsWidget1Layout;
+    QHBoxLayout* Layout1;
+    QLabel* TextLabel4;
+    QLabel* TextLabel7;
     QPushButton* commitChanges;
-	QPushButton* newKinetics;
-	CModel *mModel;
-	QTable *table;	
-
-public:
-    ReactionsWidget1( QWidget *parent, const char * name=0, WFlags f=0 );
-	void loadName(QString setValue);
+    QPushButton* cancelChanges;
+    QPushButton* newReaction;
+    QPushButton* deleteReaction;
+    QLabel* TextLabel8;
+    QFrame* Line2;
     QFrame* Line1;
-	QFrame* Line2;
-
-
-    QLineEdit* LineEdit1;
-	QLineEdit* LineEdit2;
-	QLineEdit* LineEdit3;
-   
-
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
-	QLabel* TextLabel4;
-	QLabel* TextLabel5;
+    QFrame* Line3;
     QLabel* TextLabel6;
-    
-	QFrame* Frame1;
-	QFrame* Frame3;
-	QFrame* Frame4a;
-	QFrame* Frame4b;
-	QFrame* Frame4c;
-	QFrame* Frame4d;
-	QFrame* Frame4e;
-	QFrame* Frame4f;
-	QFrame* Frame4g;
-	QFrame* Frame4h;
+    QLineEdit* LineEdit1;
+    MyLineEdit* LineEdit2;
+    QComboBox* ComboBox1;
+    QFrame* Line4;
+    ParameterTable* table;
+    QLineEdit* LineEdit3;
+    QLabel* TextLabel5;
+    QPushButton* newKinetics;
+    QCheckBox* CheckBox;
 
-	QCheckBox* checkBox;
+    //QString name;
+  };
 
-	QComboBox* ComboBox1;
-};
-
-#endif 
+#endif // REACTIONSWIDGET1_H

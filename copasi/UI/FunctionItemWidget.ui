@@ -8,12 +8,12 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>368</width>
-            <height>332</height>
+            <width>372</width>
+            <height>373</height>
         </rect>
     </property>
     <property name="caption">
-        <string>function</string>
+        <string>function editor</string>
     </property>
     <grid>
         <property name="name">
@@ -22,296 +22,6 @@
         <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>textFunction</cstring>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="3">
-            <property name="name">
-                <cstring>button7</cstring>
-            </property>
-            <property name="text">
-                <string>7</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="5" column="2">
-            <property name="name">
-                <cstring>button0</cstring>
-            </property>
-            <property name="text">
-                <string>0</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="3" column="1">
-            <property name="name">
-                <cstring>button1</cstring>
-            </property>
-            <property name="text">
-                <string>1</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="2">
-            <property name="name">
-                <cstring>button6</cstring>
-            </property>
-            <property name="text">
-                <string>6</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="3" column="3">
-            <property name="name">
-                <cstring>button3</cstring>
-            </property>
-            <property name="text">
-                <string>3</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="5" column="0">
-            <property name="name">
-                <cstring>button8</cstring>
-            </property>
-            <property name="text">
-                <string>8</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="3" column="2">
-            <property name="name">
-                <cstring>button2</cstring>
-            </property>
-            <property name="text">
-                <string>2</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="3" column="0">
-            <property name="name">
-                <cstring>buttonItems</cstring>
-            </property>
-            <property name="text">
-                <string>Items</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="0">
-            <property name="name">
-                <cstring>button4</cstring>
-            </property>
-            <property name="text">
-                <string>4</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="5" column="3">
-            <property name="name">
-                <cstring>buttonSign</cstring>
-            </property>
-            <property name="text">
-                <string>+/-</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="1">
-            <property name="name">
-                <cstring>button5</cstring>
-            </property>
-            <property name="text">
-                <string>5</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="5" column="1">
-            <property name="name">
-                <cstring>button9</cstring>
-            </property>
-            <property name="text">
-                <string>9</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="9" column="1">
-            <property name="name">
-                <cstring>buttonRightB</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>)</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="8" column="1">
-            <property name="name">
-                <cstring>buttonDiv</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>/</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="9" column="3">
-            <property name="name">
-                <cstring>buttonCos</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>cos</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="0">
-            <property name="name">
-                <cstring>buttonAdd</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>+</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="8" column="2">
-            <property name="name">
-                <cstring>buttonLog</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>log</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="9" column="0">
-            <property name="name">
-                <cstring>buttonLeftB</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>(</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="1">
-            <property name="name">
-                <cstring>buttonMul</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>*</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="3">
-            <property name="name">
-                <cstring>buttonExp</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>exp</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="8" column="0">
-            <property name="name">
-                <cstring>buttonMin</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>-</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="2">
-            <property name="name">
-                <cstring>buttonLn</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>ln</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="8" column="3">
-            <property name="name">
-                <cstring>buttonSin</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>sin</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="9" column="2">
-            <property name="name">
-                <cstring>buttonPower</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>170</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>^</string>
-            </property>
-        </widget>
-        <widget class="Line" row="6" column="0" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
             </property>
         </widget>
         <widget class="QButtonGroup" row="1" column="0" rowspan="1" colspan="3">
@@ -374,6 +84,336 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QPushButton" row="6" column="0">
+            <property name="name">
+                <cstring>buttonAdd</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>+</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="1">
+            <property name="name">
+                <cstring>button5</cstring>
+            </property>
+            <property name="text">
+                <string>5</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="1">
+            <property name="name">
+                <cstring>button9</cstring>
+            </property>
+            <property name="text">
+                <string>9</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>button1</cstring>
+            </property>
+            <property name="text">
+                <string>1</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="2">
+            <property name="name">
+                <cstring>button6</cstring>
+            </property>
+            <property name="text">
+                <string>6</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="3">
+            <property name="name">
+                <cstring>button3</cstring>
+            </property>
+            <property name="text">
+                <string>3</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0">
+            <property name="name">
+                <cstring>button8</cstring>
+            </property>
+            <property name="text">
+                <string>8</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="2">
+            <property name="name">
+                <cstring>button0</cstring>
+            </property>
+            <property name="text">
+                <string>0</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="6" column="2">
+            <property name="name">
+                <cstring>buttonLn</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>ln</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="3">
+            <property name="name">
+                <cstring>buttonSin</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>sin</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="1">
+            <property name="name">
+                <cstring>buttonDiv</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>/</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="6" column="1">
+            <property name="name">
+                <cstring>buttonMul</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>*</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="1">
+            <property name="name">
+                <cstring>buttonRightB</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>)</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="2">
+            <property name="name">
+                <cstring>buttonPower</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>^</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="0">
+            <property name="name">
+                <cstring>buttonLeftB</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>(</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="0">
+            <property name="name">
+                <cstring>buttonMin</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>-</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="6" column="3">
+            <property name="name">
+                <cstring>buttonExp</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>exp</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="3">
+            <property name="name">
+                <cstring>button7</cstring>
+            </property>
+            <property name="text">
+                <string>7</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>buttonItems</cstring>
+            </property>
+            <property name="text">
+                <string>Items</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>button2</cstring>
+            </property>
+            <property name="text">
+                <string>2</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="0">
+            <property name="name">
+                <cstring>button4</cstring>
+            </property>
+            <property name="text">
+                <string>4</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="7" column="2">
+            <property name="name">
+                <cstring>buttonLog</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>log</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="3">
+            <property name="name">
+                <cstring>buttonSign</cstring>
+            </property>
+            <property name="text">
+                <string>+/-</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="8" column="3">
+            <property name="name">
+                <cstring>buttonCos</cstring>
+            </property>
+            <property name="paletteForegroundColor">
+                <color>
+                    <red>170</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>cos</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="10" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>buttonConfirm</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Confirm</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line" row="5" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="Line" row="9" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1_3</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QPushButton" row="1" column="3">
             <property name="name">
                 <cstring>buttonClear</cstring>
@@ -386,21 +426,7 @@
                 </color>
             </property>
             <property name="text">
-                <string>C</string>
-            </property>
-        </widget>
-        <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>line1_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+                <string>Clear</string>
             </property>
         </widget>
     </grid>
@@ -411,12 +437,6 @@
         <signal>clicked()</signal>
         <receiver>FunctionItemWidget</receiver>
         <slot>slotRadioDec()</slot>
-    </connection>
-    <connection>
-        <sender>buttonClear</sender>
-        <signal>clicked()</signal>
-        <receiver>FunctionItemWidget</receiver>
-        <slot>slotButtonClear()</slot>
     </connection>
     <connection>
         <sender>buttonItems</sender>
@@ -562,6 +582,24 @@
         <receiver>FunctionItemWidget</receiver>
         <slot>slotButton8()</slot>
     </connection>
+    <connection>
+        <sender>buttonClear</sender>
+        <signal>clicked()</signal>
+        <receiver>FunctionItemWidget</receiver>
+        <slot>slotButtonClear()</slot>
+    </connection>
+    <connection>
+        <sender>buttonConfirm</sender>
+        <signal>clicked()</signal>
+        <receiver>FunctionItemWidget</receiver>
+        <slot>slotButtonConfirm()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>FunctionItemWidget</receiver>
+        <slot>slotButtonCancel()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>textFunction</tabstop>
@@ -569,6 +607,19 @@
     <tabstop>radioDec</tabstop>
     <tabstop>radioOct</tabstop>
     <tabstop>radioBin</tabstop>
+    <tabstop>buttonClear</tabstop>
+    <tabstop>buttonItems</tabstop>
+    <tabstop>button1</tabstop>
+    <tabstop>button2</tabstop>
+    <tabstop>button3</tabstop>
+    <tabstop>button4</tabstop>
+    <tabstop>button5</tabstop>
+    <tabstop>button6</tabstop>
+    <tabstop>button7</tabstop>
+    <tabstop>button8</tabstop>
+    <tabstop>button9</tabstop>
+    <tabstop>button0</tabstop>
+    <tabstop>buttonSign</tabstop>
     <tabstop>buttonAdd</tabstop>
     <tabstop>buttonMul</tabstop>
     <tabstop>buttonLn</tabstop>
@@ -581,6 +632,8 @@
     <tabstop>buttonRightB</tabstop>
     <tabstop>buttonPower</tabstop>
     <tabstop>buttonCos</tabstop>
+    <tabstop>buttonConfirm</tabstop>
+    <tabstop>buttonCancel</tabstop>
 </tabstops>
 <slots>
     <slot>slotButtonClear()</slot>
@@ -589,7 +642,7 @@
     <slot>slotButtonItems()</slot>
     <slot>slotButton2()</slot>
     <slot>slotButton3()</slot>
-    <slot>slotButton0()</slot>
+    <slot>slotButtonConfirm()</slot>
     <slot>slotButton5()</slot>
     <slot>slotButton7()</slot>
     <slot>slotButton8()</slot>
@@ -609,6 +662,8 @@
     <slot>slotButtonRightB()</slot>
     <slot>slotButtonPower()</slot>
     <slot>slotButtonCos()</slot>
+    <slot>slotButton0()</slot>
+    <slot>slotButtonCancel()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
