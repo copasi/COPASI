@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:06 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 14:52:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -93,14 +93,10 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
 
   if (model != NULL)
     {
-      int i;
       mModel = model;
+
       //Emptying the table
-      int numberOfRows = table->numRows();
-      for (i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
+      table->setNumRows(0);
 
       std::map< std::string, CMathVariableMetab * > metabList = mModel->getMetabList();
       std::map<std::string, CMathVariableMetab * >::iterator it;

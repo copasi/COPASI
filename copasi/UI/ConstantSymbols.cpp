@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 14:52:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -91,9 +91,7 @@ bool ConstantSymbols::loadConstantSymbols(CMathModel *model)
     {
       mModel = model;
       //Emptying the table
-      int numberOfRows = table->numRows();
-      for (int i = 0; i < numberOfRows; i++)
-        table->removeRow(0);
+      table->setNumRows(0);
 
       CMathConstantParameter * pConstant;
       std::map< std::string, CMathConstantParameter * > & List =

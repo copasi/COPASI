@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 14:52:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -97,12 +97,8 @@ void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
     {
       mModel = model;
 
-      int numberOfRows = table->numRows();
-
-      for (int i = 0; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
+      //Emptying the table
+      table->setNumRows(0);
 
       Copasi->pFunctionDB->loadedFunctions();
 

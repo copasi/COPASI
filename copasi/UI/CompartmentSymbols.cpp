@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:42 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 14:52:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -95,12 +95,7 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
       mModel = model;
 
       //Emptying the table
-      int numberOfRows = table->numRows();
-
-      for (int i = 1; i < numberOfRows; i++)
-        {
-          table->removeRow(0);
-        }
+      table->setNumRows(0);
 
       std::map< std::string, CMathConstantCompartment * > compartList =
         mModel->getCompartmentList();
