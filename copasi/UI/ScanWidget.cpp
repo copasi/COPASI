@@ -316,13 +316,13 @@ void ScanWidget::upButtonClicked()
   //lower one
   QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject + 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectUp->getCN().getName().c_str());
+  activeTitle->setText(pObjectUp->getCN().c_str());
 
   //activate
   //upper one
   activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectDown->getCN().getObjectName().c_str());
+  activeTitle->setText(pObjectDown->getCN().c_str());
 
   emit show_me();
 }
@@ -344,12 +344,12 @@ void ScanWidget::downButtonClicked()
   //upper one
   QLineEdit* activeTitle = (QLineEdit*)(selectedList[(activeObject - 1) * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(160, 160, 255));
-  activeTitle->setText(pObjectDown->getCN().getName().c_str());
+  activeTitle->setText(pObjectDown->getCN().c_str());
 
   //bottom one
   activeTitle = (QLineEdit*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
-  activeTitle->setText(pObjectUp->getCN().getObjectName().c_str());
+  activeTitle->setText(pObjectUp->getCN().c_str());
 
   emit show_me();
 }
@@ -458,7 +458,7 @@ void ScanWidget::addNewScanItem(CCopasiObject* pObject)
   newTitleBar->setPaletteForegroundColor(QColor(255, 255, 0));
   newTitleBar->setPaletteBackgroundColor(QColor(160, 160, 255));
   if (pObject)
-    newTitleBar->setText(pObject->getCN().getObjectName().c_str());
+    newTitleBar->setText(pObject->getCN().c_str());
   newTitleBar->setReadOnly(TRUE);
   scrollview->addChild(newTitleBar, 0, widgetOffset - TITLE_HEIGHT);
   selectedList.push_back(newTitleBar);
