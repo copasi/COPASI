@@ -217,6 +217,7 @@ class CMatrixInt : public CMatrix <C_INT32> {};
 template <class Matrix>
 class CUpperTriangularView
   {
+  public:
     typedef typename Matrix::elementType elementType;
 
   private:
@@ -250,6 +251,7 @@ class CUpperTriangularView
 template <class Matrix>
 class CLowerTriangularView
   {
+  public:
     typedef typename Matrix::elementType elementType;
 
   private:
@@ -283,6 +285,7 @@ class CLowerTriangularView
 template <class Matrix>
 class CUnitLowerTriangularView
   {
+  public:
     typedef typename Matrix::elementType elementType;
 
   private:
@@ -319,11 +322,10 @@ class CUnitLowerTriangularView
       }
   };
 
-#define TransposeView(A)[row][col] A[col][row]
-
 template <class Matrix>
 class CTransposeView
   {
+  public:
     typedef typename Matrix::elementType elementType;
 
   private:
