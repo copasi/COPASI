@@ -1,5 +1,7 @@
 
 LIB = sbmlimport
+
+include(../common.pri)
 include(../lib.pri)
 
 contains(BUILD_OS, WIN32) {

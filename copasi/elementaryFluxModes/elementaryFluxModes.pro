@@ -3,6 +3,8 @@
 ######################################################################
 
 LIB = elementaryFluxModes
+
+include(../common.pri)
 include(../lib.pri)
 
 # Input

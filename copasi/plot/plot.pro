@@ -1,9 +1,12 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: ssahle $ $Date: 2004/08/09 13:14:22 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2004/11/04 01:01:43 $  
 ######################################################################
 
 LIB = plot
+
+include(../common.pri)
 include(../lib.pri)
+
 CONFIG += qt
 
 HEADERS += plotwidget1.h \

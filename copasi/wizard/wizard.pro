@@ -1,6 +1,6 @@
-#TEMPLATE	= app
 LANGUAGE	= C++
 
+include(../common.pri)
 include(../lib.pri)
 
 LIB= wizard
