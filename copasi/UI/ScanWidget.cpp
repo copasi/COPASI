@@ -173,11 +173,13 @@ void ScanWidget::loadScan(CModel *model)
           parameterTable->setNumCols(1);
           parameterTable->setFocusPolicy(QWidget::WheelFocus);
           parameterTable->horizontalHeader()->setLabel(0, "Value");
-          QHeader *rowHeader = parameterTable->verticalHeader();
+
           for (C_INT32 j = 0; j < itemList->size(); j++)
             {
               parameterTable->setNumRows(itemList->size());
               //rowHeader->setLabel(j, itemList(j).c_str());
+              parameterTable->verticalHeader()->setLabel(j, itemList->getName(j).c_str());
+              parameterTable->setText(j, 0, QString::number(itemList->getValue(j)));
             }
           vBox->insertChild(parameterTable);
           vBox->setSpacing(25);

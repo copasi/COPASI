@@ -272,7 +272,7 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   table->setNumCols(1);
-  table->horizontalHeader()->setLabel(0, "Value");
+
   table->setColumnWidth (0, 200);
 
   if (&reactn->getFunction())
