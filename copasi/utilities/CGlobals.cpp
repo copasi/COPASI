@@ -10,7 +10,6 @@ CGlobals::CGlobals()
       FunctionDB.initialize();
       
       DefaultConc = 0.0;
-      return;
       CReadConfig inbuf("gps/DANNY.GPS");
       OutputList.load(inbuf);
     }
