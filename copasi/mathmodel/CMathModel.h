@@ -217,7 +217,20 @@ class CMathModel
     /**
      *
      */
-    template < class SymbolList > bool clearList(SymbolList & list);
+    template < class SymbolList > bool clearList(SymbolList & list)
+      {
+        typedef typename SymbolList::iterator iterator;
+
+        iterator it = list.begin();
+        iterator end = list.end();
+
+        for (; it != end; it++)
+          pdelete(it->second);
+
+        list.clear();
+
+        return true;
+      }
 
     /**
      *

@@ -269,19 +269,6 @@ bool CMathModel::buildConstantsList()
   return Success;
 }
 
-template < class SymbolList > bool CMathModel::clearList(SymbolList & list)
-  {
-    SymbolList::iterator it = list.begin();
-    SymbolList::iterator end = list.end();
-
-    for (; it != end; it++)
-      pdelete(it->second);
-
-    list.clear();
-
-    return true;
-  }
-
 bool CMathModel::compileCompartmentList()
 {
   bool Success = true;
