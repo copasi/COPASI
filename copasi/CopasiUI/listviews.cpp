@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.137 $
+   $Revision: 1.138 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:00:51 $
+   $Author: chlee $ 
+   $Date: 2004/05/28 18:34:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -212,6 +212,10 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
   // establishes the communication betweent the folders clicked and the routine called....
   connect(folders, SIGNAL(pressed(QListViewItem*)),
+          this, SLOT(slotFolderChanged(QListViewItem*)));
+
+  // Need to somehow signal folders to change when navigating using up and down arrows
+  connect(folders, SIGNAL(returnPressed(QListViewItem*)),
           this, SLOT(slotFolderChanged(QListViewItem*)));
 
   attach();
@@ -547,7 +551,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                                      //Time course
+      case 23:                                       //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -556,10 +560,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                                     //Report
+      case 43:                                      //Report
         return tableDefinition;
         break;
-      case 42:                                     //Plots
+      case 42:                                      //Plots
         return plotWidget;
         break;
       case 5:
