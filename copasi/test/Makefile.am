@@ -37,3 +37,18 @@ LDADD = \
 	../output/liboutput.a \
 	../model/libmodel.a \
 	../trajectory/libtrajectory.a
+
+SUBDIRS = \
+	function \
+	output \
+	model \
+	steadystate \
+	trajectory \
+	utilities
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive: $(SUBDIRS)
+
+$(SUBDIRS): ../
+	test -d $@ || ln -s ../$@ $@
