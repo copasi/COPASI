@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/03 09:56:11 $
+   $Date: 2004/10/14 21:20:18 $
    End CVS Header */
 
 /**
@@ -224,6 +224,11 @@ class CState
     /* virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                        const C_FLOAT64 & factor,
                                        const C_FLOAT64 & resolution);*/
+
+#ifdef COPASI_DEBUG
+  public:
+    void check(const std::string & m = "") const;
+#endif
   };
 
 //**********************************************************************************************************
@@ -343,6 +348,11 @@ class CStateX: public CState
     /*virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                       const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution);*/
+
+#ifdef COPASI_DEBUG
+  public:
+    void check(const std::string & m = "") const;
+#endif
   };
 
 #endif

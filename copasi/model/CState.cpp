@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 15:51:33 $
+   $Date: 2004/10/14 21:20:18 $
    End CVS Header */
 
 // CSate.cpp
@@ -46,6 +46,11 @@ CState::~CState() {}
 
 CState & CState::operator =(const CStateX & stateX)
 {
+#ifdef COPASI_DEBUG
+  //this->check("operator= lhs");
+  stateX.check("operator= rhs");
+#endif
+
   mpModel = stateX.mpModel;
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
@@ -94,6 +99,11 @@ CState & CState::operator =(const CStateX & stateX)
 
 CState & CState::operator =(const CState & state)
 {
+#ifdef COPASI_DEBUG
+  //this->check("operator= lhs");
+  state.check("operator= rhs");
+#endif
+
   mpModel = state.mpModel;
   mTime = state.mTime;
   mVolumes = state.mVolumes;
@@ -172,6 +182,9 @@ void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & factor,
                                const C_FLOAT64 & resolution) const
   {
+#ifdef COPASI_DEBUG
+    this->check("calculate Jacobian");
+#endif
     //std::cout << "calculateJacobian" << std::endl;
     const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
     unsigned C_INT32 mNo = Stoi.numRows();
@@ -247,6 +260,9 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                        const C_FLOAT64 & factor,
                                        const C_FLOAT64 & resolution) const
   {
+#ifdef COPASI_DEBUG
+    this->check("calculate Elasticity");
+#endif
     const_cast<CModel *>(mpModel)->setState(this);
     const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
     unsigned C_INT32 i, imax = Reactions.size();
@@ -282,6 +298,25 @@ std::ostream & operator << (std::ostream & os, const CState & A)
   return os;
 }
 
+#ifdef COPASI_DEBUG
+void CState::check(const std::string & m) const
+  {
+    if (!mpModel)
+      {
+        std::cout << "CState: " << m << ": mpModel==NULL" << std::endl;
+        return;
+      }
+
+    //mpModel->check();
+
+    if (mFixedNumbers.size() != mpModel->getTotMetab() - mpModel->getIntMetab())
+    {std::cout << "CState: " << m << ": mismatch in fixedNumbers" << std::endl;}
+
+    if (mVariableNumbers.size() != mpModel->getIntMetab())
+    {std::cout << "CState: " << m << ": mismatch in variableNumbers" << std::endl;}
+  }
+#endif
+
 //*****************************************************************************
 
 /**************************/
@@ -303,6 +338,10 @@ CStateX::~CStateX(){}
 
 CStateX & CStateX::operator =(const CState & state)
 {
+#ifdef COPASI_DEBUG
+  //this->check("operator= lhs");
+  state.check("operator= rhs");
+#endif
   mpModel = state.mpModel;
   mTime = state.mTime;
   mVolumes = state.mVolumes;
@@ -355,6 +394,10 @@ CStateX & CStateX::operator =(const CState & state)
 
 CStateX & CStateX::operator =(const CStateX & stateX)
 {
+#ifdef COPASI_DEBUG
+  //this->check("operator= lhs");
+  stateX.check("operator= rhs");
+#endif
   mpModel = stateX.mpModel;
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
@@ -400,6 +443,9 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                 const C_FLOAT64 & factor,
                                 const C_FLOAT64 & resolution) const
   {
+#ifdef COPASI_DEBUG
+    this->check("calculate Jacobian");
+#endif
     //std::cout << "calculateJacobianX" << std::endl;
     const CModel::CLinkMatrixView & L = mpModel->getL();
     unsigned C_INT32 mNo = L.numRows();
@@ -438,7 +484,13 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   }
 
 void CStateX::updateDependentNumbers()
-{mpModel->updateDepMetabNumbers(*this);}
+{
+#ifdef COPASI_DEBUG
+  this->check("update dependent numbers");
+#endif
+
+  mpModel->updateDepMetabNumbers(*this);
+}
 
 /*void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                    const C_FLOAT64 & factor,
@@ -492,6 +544,9 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                         const C_FLOAT64 & factor,
                                         const C_FLOAT64 & resolution) const
   {
+#ifdef COPASI_DEBUG
+    this->check("calculate elasticities");
+#endif
     const_cast<CModel *>(mpModel)->setStateX(this);
     const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
     unsigned C_INT32 i, imax = Reactions.size();
@@ -529,3 +584,25 @@ std::ostream & operator << (std::ostream & os, const CStateX & A)
 
   return os;
 }
+
+#ifdef COPASI_DEBUG
+void CStateX::check(const std::string & m) const
+  {
+    if (!mpModel)
+      {
+        std::cout << "CStateX: " << m << ": mpModel==NULL" << std::endl;
+        return;
+      }
+
+    mpModel->check();
+
+    if (mFixedNumbers.size() != mpModel->getTotMetab() - mpModel->getIntMetab())
+    {std::cout << "CStateX: " << m << ": mismatch in fixedNumbers" << std::endl;}
+
+    if (mVariableNumbers.size() != mpModel->getIndMetab())
+    {std::cout << "CStateX: " << m << ": mismatch in independentNumbers" << std::endl;}
+
+    if (mDependentNumbers.size() != mpModel->getDepMetab())
+    {std::cout << "CStateX: " << m << ": mismatch in dependentNumbers" << std::endl;}
+  }
+#endif
