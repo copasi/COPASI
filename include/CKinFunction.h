@@ -32,20 +32,49 @@ private:
             short IsInsertAllowed(CNodeK src) {return TRUE;}
         } mNodes;
 
-    class CIdentifier: public CBaseIdentifier
+    class CCallParameter: public CBaseCallParameter
         {
-            // Attributes
+            friend class CKinFunction;
+        private:
+            class CIdentifier: public CBaseIdentifier
+                {
+                // Attributes
+                public:
+                    /*
+                     *  The nodes which access the same identifier.
+                     */
+                    vector < CNodeK * > * mNodes;
+                // Operations
+                public:
+                    /**
+                     *  Default constructor
+                     */
+                    CIdentifier();
+                    
+                    /**
+                     *  Destructor
+                     */
+                    ~CIdentifier();
+                };
+
+            vector < CIdentifier > * mIdentifiers;
+        // Operations
         public:
-            /*
-             *  The nodes which access the same identifier.
+            /**
+             *  Default constructor
              */
-            vector < CNodeK * > mNodes;
+            CCallParameter();
+
+            /**
+             *  Destructor
+             */
+            ~CCallParameter();
         };
     
     /**
      *  The vector of pointers to the identifiers to the function
      */
-    vector < CIdentifier > mIdentifiers;
+    vector < CCallParameter > * mCallParameters;
 
     /**
      *  Internal variable

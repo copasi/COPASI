@@ -2,10 +2,14 @@
 
 CBaseFunction::CBaseFunction() 
 {
+    mCallParameters = new vector < CBaseCallParameter >;
     mReversible = FALSE;
 }
 
-CBaseFunction::~CBaseFunction() {;}
+CBaseFunction::~CBaseFunction() 
+{
+    delete [] mCallParameters;
+}
 
 void CBaseFunction::SetName(const string & name) {mName = name;}
 
@@ -25,30 +29,47 @@ string CBaseFunction::GetDescription() {return mDescription;}
 
 short CBaseFunction::IsReversible() {return mReversible;}
 
-vector < CBaseFunction::CCallParameter > & CBaseFunction::CallParameters() 
-{return mCallParameters;}
+vector < CBaseFunction::CBaseCallParameter > & CBaseFunction::CallParameters() 
+{return *mCallParameters;}
 
-long CBaseFunction::NoIdentifiers(char identifierType)
+CBaseFunction::CBaseCallParameter::CBaseCallParameter()
+{
+    mIdentifierTypes = new vector < char >;
+    mIdentifiers = new vector< CBaseIdentifier >;
+}
+
+CBaseFunction::CBaseCallParameter::~CBaseCallParameter()
+{
+    delete [] mIdentifierTypes;
+    delete [] mIdentifiers;
+}
+
+long CBaseFunction::CBaseCallParameter::NoIdentifiers(char identifierType)
 {
     if (identifierType) 
     {
         long Count = 0;
-	for (long i = 0; i < mIdentifiers.size(); i ++)
-	    if (mIdentifiers[i].GetType() == identifierType) Count++;
+	for (long i = 0; i < mIdentifiers->size(); i ++)
+	    if ((*mIdentifiers)[i].GetType() == identifierType) Count++;
         return Count;
     }
     else
-        return mIdentifiers.size();
+        return mIdentifiers->size();
 }
 
-vector< CBaseIdentifier * > CBaseFunction::Identifiers(char identifierType)
+void CBaseFunction::CBaseCallParameter::SetType(enum Type type) {mType = type;}
+
+void CBaseFunction::CBaseCallParameter::SetCount(long count) {mCount = count;}
+
+vector< CBaseIdentifier * > 
+CBaseFunction::CBaseCallParameter::Identifiers(char identifierType)
 {
     vector < CBaseIdentifier * > Identifiers;
 
-    for (long i = 0; i < mIdentifiers.size(); i ++)
+    for (long i = 0; i < mIdentifiers->size(); i ++)
         if (!identifierType ||
-	    mIdentifiers[i].GetType() == identifierType) 
-	    Identifiers.push_back(&mIdentifiers[i]);
+	    (*mIdentifiers)[i].GetType() == identifierType) 
+	    Identifiers.push_back(&(*mIdentifiers)[i]);
 
     return Identifiers;
 }
@@ -56,10 +77,20 @@ vector< CBaseIdentifier * > CBaseFunction::Identifiers(char identifierType)
 double CBaseFunction::CalcValue(vector < double * > identifiers)
 {return 0.0;}
 
-long CBaseFunction::FindIdentifier(const string & name)
+pair < long, long > CBaseFunction::FindIdentifier(const string & name)
 {
-    for (long i = 0; i < mIdentifiers.size(); i ++)
-        if (mIdentifiers[i].GetName() == name) return i;
+    pair < long, long > Tuple(-1, -1);
+    long j;
+    long i;
     
-    return -1;
+    for (j = 0; j < mCallParameters->size(); j++)
+        for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
+            if ((*(*mCallParameters)[j].mIdentifiers)[i].GetName() == name) 
+                {
+                    Tuple.first = j;
+                    Tuple.second = i;
+                    break;
+                }
+
+    return Tuple;
 }

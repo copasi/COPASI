@@ -11,30 +11,30 @@ short DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction() 
 {
     SetReversible(FALSE);
-    CallParameters().resize(1);
-    CallParameters()[0].mType  = 0; // double *
-    CallParameters()[0].mCount = 0; // ask for number
-    CallParameters()[0].mIdentifierTypes.resize(5);
-    CallParameters()[0].mIdentifierTypes[0] = 0;
-    CallParameters()[0].mIdentifierTypes[1] = N_SUBSTRATE;
-    CallParameters()[0].mIdentifierTypes[2] = N_PRODUCT;
-    CallParameters()[0].mIdentifierTypes[3] = N_MODIFIER;
-    CallParameters()[0].mIdentifierTypes[4] = N_KCONSTANT;
+    mCallParameters = new vector < CCallParameter >[1];
+    (*mCallParameters)[0].SetType(CBaseCallParameter::VECTOR_DOUBLE);
+    (*mCallParameters)[0].SetCount(-1);
+    (*mCallParameters)[0].IdentifierTypes().resize(5);
+    (*mCallParameters)[0].IdentifierTypes()[0] = 0;
+    (*mCallParameters)[0].IdentifierTypes()[1] = N_SUBSTRATE;
+    (*mCallParameters)[0].IdentifierTypes()[2] = N_PRODUCT;
+    (*mCallParameters)[0].IdentifierTypes()[3] = N_MODIFIER;
+    (*mCallParameters)[0].IdentifierTypes()[4] = N_KCONSTANT;
 }
 
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
     SetReversible(FALSE);
-    CallParameters().resize(1);
-    CallParameters()[0].mType  = 0; // double *
-    CallParameters()[0].mCount = 0; // ask for number
-    CallParameters()[0].mIdentifierTypes.resize(5);
-    CallParameters()[0].mIdentifierTypes[0] = 0;
-    CallParameters()[0].mIdentifierTypes[1] = N_SUBSTRATE;
-    CallParameters()[0].mIdentifierTypes[2] = N_PRODUCT;
-    CallParameters()[0].mIdentifierTypes[3] = N_MODIFIER;
-    CallParameters()[0].mIdentifierTypes[4] = N_KCONSTANT;
+    mCallParameters = new vector < CCallParameter >[1];
+    (*mCallParameters)[0].SetType(CBaseCallParameter::VECTOR_DOUBLE);
+    (*mCallParameters)[0].SetCount(-1);
+    (*mCallParameters)[0].IdentifierTypes().resize(5);
+    (*mCallParameters)[0].IdentifierTypes()[0] = 0;
+    (*mCallParameters)[0].IdentifierTypes()[1] = N_SUBSTRATE;
+    (*mCallParameters)[0].IdentifierTypes()[2] = N_PRODUCT;
+    (*mCallParameters)[0].IdentifierTypes()[3] = N_MODIFIER;
+    (*mCallParameters)[0].IdentifierTypes()[4] = N_KCONSTANT;
 
     SetName(name);
     SetDescription(description);
@@ -97,11 +97,17 @@ CCopasiVector < CNodeK > & CKinFunction::Nodes() {return mNodes;}
 void CKinFunction::SetIdentifierType(const string & name,
                                      char identifierType)
 {
-    long Index = 0;
+    pair < long, long > Index(0, 0);
     
-    if ( Index = FindIdentifier(name) < 0 ) FatalError();
-    for (long i = 0; i < mIdentifiers[Index].mNodes.size(); i++)
-        mIdentifiers[Index].mNodes[i]->SetSubtype(identifierType);
+    Index = FindIdentifier(name);
+    
+    if ( Index.first < 0 || Index.second < 0 ) FatalError();
+    for (long i = 0; 
+         i < (*(*mCallParameters)[Index.first].
+              mIdentifiers)[Index.second].mNodes->size();
+         i++)
+        (*(*(*mCallParameters)[Index.first].
+         mIdentifiers)[Index.second].mNodes)[i]->SetSubtype(identifierType);
 }
 
 long CKinFunction::Parse()
@@ -409,24 +415,46 @@ CNodeK * CKinFunction::ParsePrimary()
 
 void CKinFunction::InitIdentifiers()
 {
-    CIdentifier Identifier;
-    long Index;
+    CCallParameter::CIdentifier Identifier;
+    pair < long, long > Index;
 
-    mIdentifiers.clear();
+    (*(*mCallParameters)[0].mIdentifiers).clear();
     
     for(long i = 0; i < mNodes.Size(); i++)
     {
         if (mNodes[i].IsIdentifier())
         {
             Index = FindIdentifier(mNodes[i].GetName());
-            if ( Index == -1 )
+            if ( Index.first == -1 )
             {
                 Identifier.GetName() = mNodes[i].GetName();
-                mIdentifiers.push_back(Identifier);
-                Index = mIdentifiers.size() - 1;
+                (*(*mCallParameters)[0].mIdentifiers).push_back(Identifier);
+                Index.second = (*mCallParameters)[0].mIdentifiers->size() - 1;
             }
-            mNodes[i].SetIndex(Index);
-            mIdentifiers[Index].mNodes.push_back(&mNodes[i]);
+            mNodes[i].SetIndex(Index.second);
+            (*(*mCallParameters)[0].mIdentifiers)[Index.second].
+                mNodes->push_back(&mNodes[i]);
         }
     }
+    (*mCallParameters)[0].SetCount((*mCallParameters)[0].Identifiers(0).size());
+}
+
+CKinFunction::CCallParameter::CCallParameter()
+{
+    mIdentifiers = new vector < CIdentifier >;
+}
+
+CKinFunction::CCallParameter::~CCallParameter()
+{
+    delete [] mIdentifiers;
+}
+
+CKinFunction::CCallParameter::CIdentifier::CIdentifier()
+{
+    mNodes = new vector < CNodeK * >;
+}
+
+CKinFunction::CCallParameter::CIdentifier::~CIdentifier()
+{
+    delete [] mNodes;
 }
