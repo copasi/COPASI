@@ -8,6 +8,7 @@ CopasiUI_MOC = \
 	FunctionWidget.moc.cpp \
 	MetabolitesWidget.moc.cpp \
 	MetabolitesWidget1.moc.cpp \
+	ModesWidget.moc.cpp \
 	MoietyWidget.moc.cpp \
 	MoietyWidget1.moc.cpp \
 	MyLineEdit.moc.cpp \
@@ -27,6 +28,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC) \
         FunctionWidget1.cpp \
         MetabolitesWidget.cpp \
         MetabolitesWidget1.cpp \
+	ModesWidget.cpp \
         MoietyWidget.cpp \
         MoietyWidget1.cpp \
 	MyLineEdit.cpp \
@@ -61,6 +63,7 @@ EXTRA_DIST = \
 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp \
 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp \
 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp \
+	ModesWidget.h ModesWidget.cpp \
 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp \
 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp \
 	MyLineEdit.h MyLineEdit.cpp MyLineEdit.moc.cpp \
@@ -88,7 +91,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+	-llapack -lblas -lF77 -lfl
 
 #  Use this for standard clapack
 #	-llapack -lblas -lF77 -lfl
