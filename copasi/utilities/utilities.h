@@ -7,4 +7,5 @@
 #include "CReadConfig.h"
 #include "CVersion.h"
 #include "CWriteConfig.h"
+#include "CIndexedPriorityQueue.h"
 #include "utility.h"
