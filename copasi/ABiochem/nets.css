@@ -1,0 +1,284 @@
+BODY
+{
+    PADDING-RIGHT: 2px;
+    PADDING-LEFT: 2px;
+    PADDING-BOTTOM: 5px;
+    PADDING-TOP: 5px;
+    MARGIN: 0px;
+    FONT: 11px/1.5 Verdana, sans-serif;
+    background: #fff;
+    text-align: center;
+}
+
+H1
+{
+    FONT-SIZE: 2em
+}
+
+H2
+{
+    FONT-SIZE: 1.75em
+}
+
+H3
+{
+    FONT-SIZE: 1.5em
+}
+
+H4
+{
+    FONT-SIZE: 1.25em
+}
+
+H5
+{
+    FONT-SIZE: 1.25em
+}
+
+H1
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+H2
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+H3
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+H4
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+H5
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+H6
+{
+    BACKGROUND: none transparent scroll repeat 0% 0%;
+    MARGIN: 1.25em 0px 0px;
+    COLOR: #996633;
+    FONT-FAMILY: Arial, sans-serif
+}
+
+P
+{
+    MARGIN: 0.5em 0px
+}
+
+:link, :visited
+{
+    TEXT-DECORATION: none;
+    FONT-WEIGHT: bold;
+}
+
+:link
+{
+    COLOR: #603;
+    BACKGROUND-COLOR: transparent
+}
+
+:visited
+{
+    COLOR: #633;
+    BACKGROUND-COLOR: transparent
+}
+
+:link:hover, :visited:hover
+{
+    COLOR: #600;
+    BACKGROUND-COLOR: transparent;
+    TEXT-DECORATION: underline
+}
+
+:link:active, :visited:active
+{
+    COLOR: #630;
+    BACKGROUND-COLOR: transparent
+}
+
+
+UNKNOWN
+{
+    MARGIN-TOP: -0.5em;
+    TEXT-INDENT: 2em
+}
+
+#wrapper {
+	margin: auto;
+        width: 95%;
+        color: #000;
+	}
+
+#main
+{
+        padding: 1em;
+	text-align: left;
+	border: solid 1px #000;
+        background-color: #ffc;
+}
+
+#main :link
+{
+    COLOR: #ff0000;
+}
+
+#main :visited
+{
+    COLOR: #cc6666;
+}
+
+#main :link:active, #main :visited:active
+{
+    COLOR: #ff3399;
+}
+
+#main h1, #main h2, #main h3, #main h4, #main h5, #main h6
+{
+       text-align: center;
+}
+
+#main table
+{
+        border: solid 2px #000;
+        border-collapse: collapse;
+}
+
+#main table td
+{
+        border: solid 1px #666;
+	padding: 3px;
+}
+
+#main img
+{
+        border: 0;
+}
+
+#timestamp 
+{
+        font-size: 0.7em;
+        padding: 2px;
+	float: right;
+	text-align: left;
+	border-top: dotted 1px #000;
+	border-bottom: dotted 1px #000;
+	border-left: dotted 1px #000;
+	border-right: dotted 1px #000;
+        background: #fff;
+}
+
+#timestamp P
+{
+	padding: 0px;
+}
+
+#topmenu 
+{
+	padding: 5px;
+	border: 1px solid #000;
+	margin-bottom: 25px;
+	background-color: #ff9933;
+	text-align: center;
+}
+
+#topmenu :link, #topmenu :visited 
+{
+	text-decoration: underline;
+        background: transparent;
+}
+ 
+#topmenu :link:hover, #topmenu :visited:hover  
+{
+	text-decoration: none;
+        background-color: #ff6633;
+}
+
+#topmenu ul 
+{
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+} 
+
+#topmenu ul li 
+{
+	padding: 3px 15px;
+	border-left: 1px solid #000;
+	list-style: none;
+	display: inline;
+}
+
+#topmenu ul li.first 
+{
+	margin-left: 0;
+	border-left: none;
+	list-style: none;
+	display: inline;
+}
+
+#menu
+{
+	padding: 5px;
+	margin-bottom: 25px;
+	text-align: center;
+}
+
+#menu :link, #menu :visited 
+{
+	text-decoration: underline;
+        background: transparent;
+}
+ 
+#menu :link:hover, #menu :visited:hover  
+{
+	text-decoration: none;
+        background-color: #eeeeee;
+}
+
+#menu ul 
+{
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+} 
+
+#menu ul li 
+{
+	margin-left: 0;
+	padding: 3px 15px;
+	border-left: 1px solid #000;
+	list-style: none;
+	display: inline;
+}
+	
+		
+#menu ul li.first 
+{
+	margin-left: 0;
+	border-left: none;
+	list-style: none;
+	display: inline;
+}
