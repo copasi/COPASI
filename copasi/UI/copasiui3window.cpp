@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2004/03/10 07:03:48 $
+   $Date: 2004/04/03 21:35:48 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -56,6 +56,7 @@ CopasiUI3Window::CopasiUI3Window():
 {
   // Set the window caption/title
   closeFlag = 0;
+  newFlag = 0;
 
   QString Title = "COPASI (";
   Title += Copasi->ProgramVersion.getVersion().c_str();
@@ -158,6 +159,31 @@ void CopasiUI3Window::newDoc()
   //       listViews->show();
        }
   */
+
+  //newFlag is set first time the application runs.
+  if (newFlag == 1)
+    {
+      int choice = 0;
+      if (gpsFile)
+        {
+          if (gpsFile != "untitled.gps")
+            {
+              choice =
+                QMessageBox::warning(this,
+                                     "Confirm File Changes Update",
+                                     "Do you want to save the changes you made to previous model ?",
+                                     "Yes", "No", 0, 0, 1);
+
+              if (!(choice))
+                slotFileSave();
+            }
+          else slotFileSave();
+        }
+      else slotFileSaveAs();
+    }
+  if (newFlag == 0)
+    newFlag = 1;
+
   if (!dataModel)
     dataModel = new DataModel(); // create the data model
 
