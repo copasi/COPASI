@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: shoops $ $Date: 2005/02/28 02:44:37 $  
+# $Revision: 1.15 $ $Author: shoops $ $Date: 2005/02/28 02:46:41 $  
 ######################################################################
 
 TEMPLATE = app
@@ -41,7 +41,7 @@ contains(BUILD_OS, WIN32) {
 contains(BUILD_OS, Linux) {
   LIBS = -L../lib \
          -Wl,--start-group \
-         $$join(COPASI_LIBS, " -l", -l)) \
+         $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
          $${LIBS}
 
@@ -52,7 +52,7 @@ contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
 
   LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l)) \
+         $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
