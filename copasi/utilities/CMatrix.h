@@ -80,7 +80,7 @@ class CMatrix
      * The number of elements stored in the matrix.
      * @return unsigned C_INT32 size
      */
-  unsigned C_INT32 size() const {return mRows * mCols;}
+    unsigned C_INT32 size() const {return mRows * mCols;}
 
     /**
      * The number of rows of the matrix.
@@ -101,17 +101,19 @@ class CMatrix
      */
     void resize(unsigned C_INT32 rows, unsigned C_INT32 cols)
     {
-      if (mArray)
+      if (rows * cols != mRows * mCols)
         {
-          delete [] mArray;
-          mArray = NULL;
+          if (mArray)
+            {
+              delete [] mArray;
+              mArray = NULL;
+            }
+          if (rows && cols)
+            mArray = new CType[rows * cols];
         }
 
       mRows = rows;
       mCols = cols;
-
-      if (mRows && mCols)
-        mArray = new CType[mRows * mCols];
     }
 
     /**
@@ -143,7 +145,7 @@ class CMatrix
      * @return const CType * row
      */
     inline const CType * operator[](unsigned C_INT32 row) const
-      {return mArray + row * mCols;}
+    {return mArray + row * mCols;}
 
     /**
      * Retrieve a matrix element using c-style indexing.
@@ -163,7 +165,7 @@ class CMatrix
      */
     inline const elementType & operator()(const unsigned C_INT32 & row,
                                           const unsigned C_INT32 & col) const
-      {return *(mArray + row * mCols + col);}
+    {return *(mArray + row * mCols + col);}
 
     /**
      * Retrieve the array of the matrix elements. This is suitable
@@ -244,7 +246,7 @@ class CFortranAccess
      * @return const elementType * row
      */
     inline const elementType * operator[](unsigned C_INT32 row) const
-      {return mA[row - 1] - 1;}
+    {return mA[row - 1] - 1;}
 
     /**
      * Retrieve a matrix element using Fortran style indexing.
@@ -264,7 +266,7 @@ class CFortranAccess
      */
     inline const elementType & operator()(const unsigned C_INT32 & row,
                                           const unsigned C_INT32 & col) const
-      {return mA(row - 1, col - 1);}
+    {return mA(row - 1, col - 1);}
   };
 
 template <class Matrix>
@@ -293,26 +295,26 @@ class CUpperTriangularView
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
-      {
-        if (row < col)
-          return mA(row, col);
-        else
-          return mZero;
+    {
+      if (row < col)
+      return mA(row, col);
+      else
+        return mZero;
       }
-  };
+    };
 
 template <class Matrix>
 class CLowerTriangularView
-  {
-  public:
-    typedef typename Matrix::elementType elementType;
+{
+public:
+  typedef typename Matrix::elementType elementType;
 
-  private:
-    const Matrix & mA;
-    elementType mZero;
+private:
+  const Matrix & mA;
+  elementType mZero;
 
-  public:
-    CLowerTriangularView(const Matrix & A, const elementType zero):
+public:
+  CLowerTriangularView(const Matrix & A, const elementType zero):
         mA(A),
         mZero(zero)
     {}
@@ -327,29 +329,29 @@ class CLowerTriangularView
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
-      {
-        if (row > col)
-          return mA(row, col);
-        else
-          return mZero;
+    {
+      if (row > col)
+      return mA(row, col);
+      else
+        return mZero;
       }
-  };
+    };
 
 template <class Matrix>
 class CUnitUpperTriangularView
-  {
-  public:
-    typedef typename Matrix::elementType elementType;
+{
+public:
+  typedef typename Matrix::elementType elementType;
 
-  private:
-    const Matrix & mA;
-    elementType mZero;
-    elementType mUnit;
+private:
+  const Matrix & mA;
+  elementType mZero;
+  elementType mUnit;
 
-  public:
-    CUnitUpperTriangularView(const Matrix & A,
-                             const elementType zero,
-                             const elementType unit):
+public:
+  CUnitUpperTriangularView(const Matrix & A,
+                           const elementType zero,
+                           const elementType unit):
         mA(A),
         mZero(zero),
         mUnit(unit)
@@ -365,31 +367,31 @@ class CUnitUpperTriangularView
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
-      {
-        if (row < col)
-          return mA(row, col);
-        else if (row > col)
-          return mZero;
+    {
+      if (row < col)
+      return mA(row, col);
+      else if (row > col)
+        return mZero;
         else
           return mUnit;
-      }
-  };
+        }
+      };
 
 template <class Matrix>
 class CUnitLowerTriangularView
-  {
-  public:
-    typedef typename Matrix::elementType elementType;
+{
+public:
+  typedef typename Matrix::elementType elementType;
 
-  private:
-    const Matrix & mA;
-    elementType mZero;
-    elementType mUnit;
+private:
+  const Matrix & mA;
+  elementType mZero;
+  elementType mUnit;
 
-  public:
-    CUnitLowerTriangularView(const Matrix & A,
-                             const elementType zero,
-                             const elementType unit):
+public:
+  CUnitLowerTriangularView(const Matrix & A,
+                           const elementType zero,
+                           const elementType unit):
         mA(A),
         mZero(zero),
         mUnit(unit)
@@ -405,27 +407,27 @@ class CUnitLowerTriangularView
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
-      {
-        if (row > col)
-          return mA(row, col);
-        else if (row < col)
-          return mZero;
+    {
+      if (row > col)
+      return mA(row, col);
+      else if (row < col)
+        return mZero;
         else
           return mUnit;
-      }
-  };
+        }
+      };
 
 template <class Matrix>
 class CTransposeView
-  {
-  public:
-    typedef typename Matrix::elementType elementType;
+{
+public:
+  typedef typename Matrix::elementType elementType;
 
-  private:
-    const Matrix & mA;
+private:
+  const Matrix & mA;
 
-  public:
-    CTransposeView(const Matrix & A): mA(A) {}
+public:
+  CTransposeView(const Matrix & A): mA(A) {}
 
     ~CTransposeView() {}
 
@@ -437,6 +439,6 @@ class CTransposeView
      */
     inline elementType operator()(const unsigned C_INT32 & row,
                                   const unsigned C_INT32 & col) const
-      {return mA(col, row);}
+    {return mA(col, row);}
   };
 #endif // COPASI_CMatrix
