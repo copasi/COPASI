@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SimpleSelectionDialog.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/02 16:57:42 $
+   $Author: shoops $ 
+   $Date: 2004/11/18 17:47:52 $
    End CVS Header */
 
 #include "SimpleSelectionDialog.h"
@@ -13,7 +13,7 @@
 #include "qlayout.h"
 #include "ObjectBrowserWidget.h"
 #include "report/CCopasiObject.h"
-#include "simpleselectionwidget.h"
+#include "SimpleSelectionWidget.h"
 
 SimpleSelectionDialog::SimpleSelectionDialog(QWidget * parent , const char * name , bool modal): QDialog(parent, name, modal), okButton(NULL), cancelButton(NULL), modeButton(NULL), buttonBox(NULL), mainWidget(NULL), simpleSelectionWidget(NULL), objectBrowserWidget(NULL), mainLayout(NULL), tmpVector(new std::vector<CCopasiObject*>()), outputVector(NULL), expertMode(false)
 {

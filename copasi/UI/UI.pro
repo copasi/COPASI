@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.65 $ $Author: gauges $ $Date: 2004/11/18 15:38:11 $  
+# $Revision: 1.66 $ $Author: shoops $ $Date: 2004/11/18 17:45:18 $  
 ######################################################################
 
 include(../common.pri)
@@ -160,8 +160,8 @@ HEADERS += \
            ScanWidget.h \
            SliderDialog.h \
            SimpleSelectionDialog.h \
-           simpleselectionwidget.h \
-           slidersettingsdialog.h \
+           SimpleSelectionWidget.h \
+           SliderSettingsDialog.h \
            StateWidget.h \
            StateSubwidget.h \
            SteadyStateWidget.h \
@@ -237,8 +237,8 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-      	   simpleselectionwidget.cpp \
-           slidersettingsdialog.cpp \	
+      	   SimpleSelectionWidget.cpp \
+           SliderSettingsDialog.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
            SteadyStateWidget.cpp \
@@ -250,12 +250,11 @@ SOURCES += \
            Tree.cpp
 
 
-#FORMS +=  TimeSeriesSubwidget.ui \
-#          StateSubwidget.ui \
-#          simpleselectionwidget.ui        
-#          CMCAResultSubwidget.ui \
-#          simpleselectionwidget.ui        
-#FORMS +=          slidersettingsdialog.ui           
+# FORMS +=  TimeSeriesSubwidget.ui
+# FORMS +=  StateSubwidget.ui
+# FORMS +=  CMCAResultSubwidget.ui
+# FORMS +=  SimpleSelectionWidget.ui        
+# FORMS +=  SliderSettingsDialog.ui           
 
 release {
   distribution.path = .

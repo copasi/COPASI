@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/12 10:00:34 $
+   $Author: shoops $ 
+   $Date: 2004/11/18 17:48:02 $
    End CVS Header */
 
 #include <iostream>
@@ -25,7 +25,7 @@
 #include "SliderDialog.h"
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
-#include "slidersettingsdialog.h"
+#include "SliderSettingsDialog.h"
 #include "DataModelGUI.h"
 #include "CopasiSlider.h"
 #include "mathematics.h"
