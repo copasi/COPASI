@@ -669,19 +669,19 @@ C_INT32 TestMoiety()
   c.setName("comp");
   c.setVolume(1.0);
 
-  c.metabolites().add(CMetab());
-  c.metabolites().add(CMetab());
+  c.getMetabolites().add(CMetab());
+  c.getMetabolites().add(CMetab());
 
-  c.metabolites()[0]->setName("metab 1");
-  c.metabolites()[0]->setConcentration(5.2);
-  c.metabolites()[1]->setName("metab 2");
-  c.metabolites()[1]->setConcentration(2.0);
+  c.getMetabolites()[0]->setName("metab 1");
+  c.getMetabolites()[0]->setConcentration(5.2);
+  c.getMetabolites()[1]->setName("metab 2");
+  c.getMetabolites()[1]->setConcentration(2.0);
 
-  CMetab m(*c.metabolites()["metab 2"]);
+  CMetab m(*c.getMetabolites()["metab 2"]);
 
-  mo.add(-2000, c.metabolites()[0]);
-  mo.add(3, c.metabolites()[1]);
-  mo.add(0, c.metabolites()[1]);
+  mo.add(-2000, c.getMetabolites()[0]);
+  mo.add(3, c.getMetabolites()[1]);
+  mo.add(0, c.getMetabolites()[1]);
 
   //    C_FLOAT64 Value=mo.value();
   string Description = mo.getDescription();
@@ -751,8 +751,8 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
  
   for (unsigned C_INT32 i = 0; i < compartments.size(); i++)
     for (unsigned C_INT32 j = 0;
-         j < compartments[i]->metabolites().size(); j++)
-      Metabolites.push_back(compartments[i]->metabolites()[j]);
+         j < compartments[i]->getMetabolites().size(); j++)
+      Metabolites.push_back(compartments[i]->getMetabolites()[j]);
     
   return Metabolites;
 }
