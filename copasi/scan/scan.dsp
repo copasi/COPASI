@@ -92,6 +92,10 @@ SOURCE=.\CScanMethod.cpp
 
 SOURCE=.\CScanProblem.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\CScanTask.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
