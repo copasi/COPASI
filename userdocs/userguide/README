@@ -9,3 +9,6 @@ The html output is actually not a valid html file since it contains MathML eleme
 As soon as the bugs in the xhtml stylesheet are resolved (either we do it, or we wait for the maintainer to do it), we should switch to that.
 
 Also the figures in the html document are very small with the standard style mozilla uses. We should maybe provide our own stylesheet that overrides the size of the figures so that they are a little larger.
+
+
+The tex output also has a bug. The = sign in mathml equations is omitted by the output. So before making the pdf from the tex file, one has to manually add the = sign. So far this only concerns one equation for the GUI documentation. THis will be very annoying once the methods and functions documentation is added.
