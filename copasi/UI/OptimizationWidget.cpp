@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:59 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.8 2003/10/06 00:34:57 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.cpp,v 1.9 2003/10/06 00:39:32 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -501,8 +501,8 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
   i = optFunction->addItem(pObject); // automatically creat the 3 fields
 
   parameterTable->setCopasiObjectPtr(pObject);
-  parameterTable->setItemLowerLimit(optFunction->getMin);
-  parameterTable->setItemUpperLimit();
+  parameterTable->setItemLowerLimit(optFunction->mMinList[i]);
+  parameterTable->setItemUpperLimit(optFunction->mMaxList[i]);
 
   emit show_me();
   return true;
