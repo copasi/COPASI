@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 14:44:02 $
+   $Date: 2005/02/18 07:57:53 $
    End CVS Header */
 
 class UnitDefinition;
@@ -13,8 +13,23 @@ class UnitDefinition;
 #include <math.h>
 #include <sstream>
 
+/*
+ * Vector that holds the ids for UnitDefinitions that have been created
+ * by the conversion framework so that no two UnitDefinitions produced
+ * have the same id.
+ */
 std::vector<std::string> UnitConversionFactory::usedIds = std::vector<std::string>();
 
+/*
+ * Converts a Unit into the corresponding UnitDefinition that consists
+ * only of SI units.
+ * Possible offsets are ignored.
+ * Freeing the memory for the returned UnitDefinition is up to the
+ * receiver.
+ * On failure a NULL pointer is returned.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertToSI(const Unit& unit)
 {
@@ -177,9 +192,21 @@ UnitDefinition* UnitConversionFactory::convertToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts an Ampere Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertAmpereToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_AMPERE) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -187,9 +214,21 @@ UnitDefinition* UnitConversionFactory::convertAmpereToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a frequency Unit into the corresponding UnitDefinition
+ * consisting only of SI units. This could be e.g. a Hertz or Bequerel unit. 
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertFrequencyToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_HERTZ && uKind != UNIT_KIND_BECQUEREL) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_SECOND);
@@ -198,9 +237,21 @@ UnitDefinition* UnitConversionFactory::convertFrequencyToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Candela Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCandelaToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_CANDELA) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -208,9 +259,21 @@ UnitDefinition* UnitConversionFactory::convertCandelaToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Celsius Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCelsiusToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_CELSIUS) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KELVIN);
@@ -219,9 +282,21 @@ UnitDefinition* UnitConversionFactory::convertCelsiusToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Coulomb Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertCoulombToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_COULOMB) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_AMPERE);
@@ -234,9 +309,21 @@ UnitDefinition* UnitConversionFactory::convertCoulombToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a "Dimensionless" Unit into the corresponding UnitDefinition
+ * consisting only of SI units. This would include e.g. the Radian unit.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertDimensionlessToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_DIMENSIONLESS && uKind != UNIT_KIND_ITEM && uKind != UNIT_KIND_RADIAN && uKind != UNIT_KIND_STERADIAN) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_DIMENSIONLESS);
@@ -245,9 +332,21 @@ UnitDefinition* UnitConversionFactory::convertDimensionlessToSI(const Unit& unit
   return pUdef;
 }
 
+/*
+ * Converts a Farad Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertFaradToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_FARAD) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -266,9 +365,21 @@ UnitDefinition* UnitConversionFactory::convertFaradToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Kilogram Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKilogramToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_KILOGRAM) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -276,9 +387,22 @@ UnitDefinition* UnitConversionFactory::convertKilogramToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a dose Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * Dose units are e.g. gray and sievert.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertDoseToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_GRAM && uKind != UNIT_KIND_SIEVERT) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -291,9 +415,21 @@ UnitDefinition* UnitConversionFactory::convertDoseToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Henry Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertHenryToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_HENRY) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -312,9 +448,21 @@ UnitDefinition* UnitConversionFactory::convertHenryToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Joule Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertJouleToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_JOULE) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -330,9 +478,21 @@ UnitDefinition* UnitConversionFactory::convertJouleToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Katal Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKatalToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_KATAL) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -345,9 +505,21 @@ UnitDefinition* UnitConversionFactory::convertKatalToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Kelvin Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertKelvinToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_KELVIN) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -355,9 +527,21 @@ UnitDefinition* UnitConversionFactory::convertKelvinToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Lumen Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertLumenToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_LUMEN) return NULL;
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_CANDELA);
   UnitDefinition* pUdef = convertCandelaToSI(*pU);
@@ -365,9 +549,21 @@ UnitDefinition* UnitConversionFactory::convertLumenToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Lux Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertLuxToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_LUX) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_CANDELA);
@@ -379,9 +575,21 @@ UnitDefinition* UnitConversionFactory::convertLuxToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Meter Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertMeterToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_METER) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -389,9 +597,21 @@ UnitDefinition* UnitConversionFactory::convertMeterToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Mole Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertMoleToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_MOLE) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -399,9 +619,21 @@ UnitDefinition* UnitConversionFactory::convertMoleToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Newton Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertNewtonToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_NEWTON) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -416,9 +648,21 @@ UnitDefinition* UnitConversionFactory::convertNewtonToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Ohm Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertOhmToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_OHM) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -437,9 +681,21 @@ UnitDefinition* UnitConversionFactory::convertOhmToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Pascal Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertPascalToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_PASCAL) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setKind(UNIT_KIND_KILOGRAM);
@@ -454,9 +710,21 @@ UnitDefinition* UnitConversionFactory::convertPascalToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Second Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertSecondToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_SECOND) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -464,9 +732,21 @@ UnitDefinition* UnitConversionFactory::convertSecondToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Siemens Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertSiemensToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_SIEMENS) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -485,9 +765,21 @@ UnitDefinition* UnitConversionFactory::convertSiemensToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Tesla Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertTeslaToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_TESLA) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -503,9 +795,21 @@ UnitDefinition* UnitConversionFactory::convertTeslaToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Volt Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertVoltToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_VOLT) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -524,9 +828,21 @@ UnitDefinition* UnitConversionFactory::convertVoltToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Watt Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertWattToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_WATT) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -542,9 +858,21 @@ UnitDefinition* UnitConversionFactory::convertWattToSI(const Unit& unit)
   return pUdef;
 }
 
+/*
+ * Converts a Weber Unit into the corresponding UnitDefinition
+ * consisting only of SI units.
+ * If the given unit does not have the correct kind, a NULL pointer is
+ * returned.
+ * It is up to the receiver to free the memory of the returned
+ * UnitDefinition.
+ * @param const Unit& unit
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertWeberToSI(const Unit& unit)
 {
+  UnitKind_t uKind = unit.getKind();
+  if (uKind != UNIT_KIND_WATT) return NULL;
   UnitDefinition* pUdef = new UnitDefinition();
   Unit* pU = new Unit(unit);
   pU->setOffset(0.0);
@@ -563,72 +891,85 @@ UnitDefinition* UnitConversionFactory::convertWeberToSI(const Unit& unit)
   return pUdef;
 }
 
-LIBSBML_EXTERN
-UnitDefinition* UnitConversionFactory::normalize(const UnitDefinition& uDef)
+/*
+   LIBSBML_EXTERN
+   UnitDefinition* UnitConversionFactory::normalize(const UnitDefinition& uDef)
+   {
+// convert all units to SI units
+// see if units other then the first one have a scale and/or a multiplier
+// if so, combine those with the scale and/or multiplier of the first unit
+UnitDefinition* pResult = NULL;
+unsigned int maxUnits = uDef.getNumUnits();
+unsigned int counter = 0;
+while (counter < maxUnits)
 {
-  // convert all units to SI units
-  // see if units other then the first one have a scale and/or a multiplier
-  // if so, combine those with the scale and/or multiplier of the first unit
-  UnitDefinition* pResult = NULL;
-  unsigned int maxUnits = uDef.getNumUnits();
-  unsigned int counter = 0;
-  while (counter < maxUnits)
-    {
-      Unit* pU = uDef.getUnit(counter);
-      UnitDefinition* pTempUdef = UnitConversionFactory::convertToSI(*pU);
-      if (pTempUdef == NULL)
-        {
-          pResult = NULL;
-          break;
-        }
-      UnitDefinition* pTempUdef2 = UnitConversionFactory::combine(*pResult, *pTempUdef);
-      delete pTempUdef;
-      delete pResult;
-      pResult = pTempUdef2;
-      if (pResult == NULL)
-        {
-          break;
-        }
-      ++counter;
-    }
-  if (pResult != NULL)
-    {
-      pResult->setName(uDef.getName());
-      pResult->setId(uDef.getId());
-      maxUnits = pResult->getNumUnits();
-      counter = 1;
-      if (maxUnits > 0)
-        {
-          Unit* pFirst = pResult->getUnit(0);
-          while (counter < maxUnits)
-            {
-              Unit* pU = pResult->getUnit(counter);
-              int scale = pU->getScale();
-              if (scale != 0)
-                {
-                  pFirst->setScale(scale + pFirst->getScale());
-                }
-              double multiplier = pU->getMultiplier();
-              if (multiplier != 1.0)
-                {
-                  // if the multiplier is 0, the unit definition does not make sense
-                  // we treat this as an error rather than returning a dimensionless
-                  // UnitDefinition
-                  if (multiplier == 0.0)
-                    {
-                      delete pResult;
-                      pResult = NULL;
-                      break;
-                    }
-                  pFirst->setMultiplier(multiplier*pFirst->getMultiplier());
-                }
-              ++counter;
-            }
-        }
-    }
-  return pResult;
+Unit* pU = uDef.getUnit(counter);
+UnitDefinition* pTempUdef = UnitConversionFactory::convertToSI(*pU);
+if (pTempUdef == NULL)
+{
+pResult = NULL;
+break;
 }
+UnitDefinition* pTempUdef2 = UnitConversionFactory::combine(*pResult, *pTempUdef);
+delete pTempUdef;
+delete pResult;
+pResult = pTempUdef2;
+if (pResult == NULL)
+{
+break;
+}
+++counter;
+}
+if (pResult != NULL)
+{
+pResult->setName(uDef.getName());
+pResult->setId(uDef.getId());
+maxUnits = pResult->getNumUnits();
+counter = 1;
+if (maxUnits > 0)
+{
+Unit* pFirst = pResult->getUnit(0);
+while (counter < maxUnits)
+{
+Unit* pU = pResult->getUnit(counter);
+int scale = pU->getScale();
+if (scale != 0)
+{
+pFirst->setScale(scale + pFirst->getScale());
+}
+double multiplier = pU->getMultiplier();
+if (multiplier != 1.0)
+{
+// if the multiplier is 0, the unit definition does not make sense
+// we treat this as an error rather than returning a dimensionless
+// UnitDefinition
+if (multiplier == 0.0)
+{
+delete pResult;
+pResult = NULL;
+break;
+}
+pFirst->setMultiplier(multiplier*pFirst->getMultiplier());
+}
+++counter;
+}
+}
+}
+return pResult;
+}
+ */
 
+/*
+ * Combines two UnitDefinitions by combining the equivalent units from
+ * both UnitDefinitions.
+ * A new UnitDefinition containing the combination is returned.
+ * If two eqivalent units have a different offset, the function returns a
+ * NULL pointer.
+ * It is up to the receiver to free the memory of the returned UnitDefinition.
+ * @param const UnitDefinition& uDef1
+ * @param const UnitDefinition& uDef2
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, const UnitDefinition& uDef2)
 {
@@ -718,6 +1059,14 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
   return pResult;
 }
 
+/*
+ * Eliminate all dimensionless units from the given UnitDefinition.
+ * A new UnitDefinition without the dimensionless units is returned.
+ * The scale and multiplier are preserved. If the UnitDefinition has only
+ * one unit the is a dimensionless, it is not deleted.
+ * @param UnitDefinition* pUdef
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pUdef)
 {
@@ -763,6 +1112,16 @@ UnitDefinition* UnitConversionFactory::eliminateDimensionless(UnitDefinition* pU
   return pTmpUdef;
 }
 
+/*
+ * Converts a UnitDefinition into the corresponding UnitDefinition that consists
+ * only of SI units.
+ * Possible offsets are ignored.
+ * Freeing the memory for the returned UnitDefinition is up to the
+ * receiver.
+ * On failure a NULL pointer is returned.
+ * @param const UnitDefinition& uDef
+ * @return UnitDefinition* result
+ */
 LIBSBML_EXTERN
 UnitDefinition* UnitConversionFactory::convertToSI(const UnitDefinition& uDef)
 {
@@ -790,6 +1149,16 @@ UnitDefinition* UnitConversionFactory::convertToSI(const UnitDefinition& uDef)
   return pResult;
 }
 
+/*
+ * Checks if two UnitDefinitions are equivalent, i.e. wether they are
+ * interconvertible.
+ * This is the case if they consist of the same set of units after being
+ * converted to SI units.
+ * If the offset of two equivalent units differ, false is returned.
+ * @param const UnitDefinition& uDef1
+ * @param const UnitDefinition& uDef2
+ * @return bool areEquivalent
+ */
 LIBSBML_EXTERN
 bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const UnitDefinition& uDef2)
 {
@@ -834,6 +1203,17 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
   return equivalent;
 }
 
+/*
+ * Converts the given value from the given source UnitDefinition to the
+ * given destination UnitDefinition if the two UnitDefinitions are
+ * equivalent.
+ * The original value is changed. On success the functions returns true,
+ * otherwise it returns false.
+ * @param const double* value
+ * @param const UnitDefinition& srcUdef
+ * @param const UnitDefinition& destUdef
+ * @return bool success
+ */
 LIBSBML_EXTERN
 bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& srcUdef, const UnitDefinition& destUdef)
 {
@@ -857,6 +1237,13 @@ bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& sr
   return success;
 }
 
+/*
+ * The functions determins wether the given UnitDefinition contains only
+ * units from the list given as the second argument.
+ * @param const UnitDefinition& uDef
+ * @param const ListOf& unitList
+ * @return bool containsOnlyGivenUnits
+ */
 LIBSBML_EXTERN
 bool UnitConversionFactory::containsOnlyGivenUnits(const UnitDefinition& uDef, const ListOf& unitList)
 {
@@ -898,6 +1285,12 @@ bool UnitConversionFactory::containsOnlyGivenUnits(const UnitDefinition& uDef, c
   return result;
 }
 
+/*
+ * Checks wether a given id is has already been used by the conversion
+ * framework.
+ * @param const std::string id
+ * @return bool isUnused
+ */
 LIBSBML_EXTERN
 bool UnitConversionFactory::isIdUnused(const std::string& id)
 {
@@ -915,6 +1308,12 @@ bool UnitConversionFactory::isIdUnused(const std::string& id)
   return unused;
 }
 
+/*
+ * Returns a string representation of the given Unit. THis function is
+ * only for debugging purposes.
+ * @param const UnitDefinition& uDef
+ * @return std::string unitDefinitionRepresentation
+ */
 LIBSBML_EXTERN
 std::string UnitConversionFactory::toString(const UnitDefinition& uDef)
 {
@@ -928,6 +1327,12 @@ std::string UnitConversionFactory::toString(const UnitDefinition& uDef)
   return ss.str();
 }
 
+/*
+ * Returns a string representation of the given Unit. THis function is
+ * only for debugging purposes.
+ * @param const Unit& unit
+ * @return std::string unitRepresentation
+ */
 LIBSBML_EXTERN
 std::string UnitConversionFactory::toString(const Unit& unit)
 {
