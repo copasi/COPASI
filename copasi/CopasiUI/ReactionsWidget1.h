@@ -15,7 +15,8 @@
 #include "MyTable.h"
 #include "MyLineEdit.h"
 #include "copasiWidget.h"
-#include "CReactionInterface.h" 
+#include "CReactionInterface.h"
+#include "utilities/CMethodParameter.h" 
 //#include "parametertable.h"
 
 class QVBoxLayout;

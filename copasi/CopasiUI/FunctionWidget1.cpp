@@ -28,6 +28,7 @@
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "utilities/CGlobals.h"
+#include "utilities/CMethodParameter.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
