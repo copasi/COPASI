@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/17 13:51:43 $
+   $Date: 2004/09/17 14:47:35 $
    End CVS Header */
 
 #include "DataModelGUI.h"
@@ -34,53 +34,6 @@ DataModelGUI::DataModelGUI()
   mpMathModel = NULL;
   mMathModelUpdateScheduled = false;
 }
-
-/*Folder* DataModelGUI::searchFolderList(int id)
-{
-  for (Folder* f = mFolderList.first(); f; f = mFolderList.next())
-    if (f->getID() == id)
-      return f;
- 
-  return NULL;
-}*/
-
-/*Node<Folder> * DataModelGUI::addData(Folder* parent, Folder* child)
-{
-  mTree.addSibling(child, parent);
-//  mFolderList.append(child);
-  return last =  mTree.search(child, mTree.getRoot());    //propably needs to return
-}*/
-
-/*void DataModelGUI::removeData(Folder* i)
-{
-  Node<Folder>* node = mTree.search(i, mTree.getRoot());
- 
-  if (node)
-    {
-      //last = node;
-      //notify(DELETE);
- 
-      mTree.deleteNode(i);
-//      mFolderList.remove(i);
-    }
- 
-  //last = NULL;
-}*/
-
-/*void DataModelGUI::removeAllChildren(Folder* f)
-{
-  Node<Folder>* node = mTree.search(f, mTree.getRoot());
-  Folder* fff;
- 
-  if (!node->child) return;
- 
-  while (node->child)
-    {
-      fff = node->child->info;
-      removeData(node->child->info);
-      delete fff;
-    }
-}*/
 
 //************************************************************
 
@@ -113,11 +66,6 @@ void DataModelGUI::linkDataModelToGUI()
 
 void DataModelGUI::populateData()
 {
-  //QString str = QString("Folder ");
-  //Folder *f = new Folder(0, 0, true, str);
-  //f->setID(0, true);
-  //mTree.addRoot(f);
-
   std::stringstream in;
   in.str(DataModeltxt);
 
