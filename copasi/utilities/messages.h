@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/25 01:44:24 $
+   $Date: 2005/03/30 14:31:53 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -79,6 +79,12 @@ MESSAGES Messages[] =
      "                   Please set the environment variable COPASIDIR or use the\n"
      "                   commandline options -c COPASIDIR or --copasidir COPASIDIR\n"
      "                   to point to the COPASI installation directory."},
+
+    // Optimization
+    {MCOptimization + 1, "Optimization (1): Object '%s' not found."},
+    {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
+    {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
+    {MCOptimization + 4, "Optimization (3): Invalid Relationship: '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
