@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:29:27 $
+   $Date: 2005/03/30 18:45:00 $
    End CVS Header */
 
 /**
@@ -135,15 +135,22 @@ class COptProblem : public CCopasiProblem
     virtual bool checkFunctionalConstraints();
 
     /**
-     * Retrieve the size of the variable vectors
+     * Retrieve the size of the variable vectors.
      * @result unsigned C_INT32 VariableSize
      */
     unsigned C_INT32 getVariableSize() const;
 
     /**
-     * Retrieve the update methods for the variables for calculation
+     * Retrieve the list of optimization parameters.
+     * @return const std::vector< COptItem * > & optItemList
      */
-    std::vector< UpdateMethod * > & getCalculateVariableUpdateMethods();
+    const std::vector< COptItem * > & getOptItemList() const;
+
+    /**
+     * Retrieve the update methods for the variables for calculation.
+     * @return const std::vector< UpdateMethod * > & updateMethods
+     */
+    const std::vector< UpdateMethod * > & getCalculateVariableUpdateMethods() const;
 
     /**
      * Retrieve the result of a calculation
