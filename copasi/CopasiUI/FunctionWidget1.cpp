@@ -23,7 +23,6 @@
 #include <qwidget.h>
 #include <qframe.h>
 #include <qmessagebox.h>
-
 #include "copasi.h"
 #include "FunctionWidget1.h"
 #include "model/CMetab.h"
