@@ -560,7 +560,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
 
       if (!CMetabNameInterface::isValidMetabName(unit))
         {
-          //debugging
+          // debugging
           std::cout << "Not a valid metabolite name: (" << unit << ")\n";
           return false;
         }
@@ -574,7 +574,7 @@ bool CChemEqInterface::isValidEq(const std::string eq)
       if ((startMetab == sep1) || (startMetab == sep2))  // this means a metabolite is missing after a "+"
         {
           //debugging
-          std::cout << "substrate/product missing\n";
+          std::cout << "missing substrate/product\n";
           return false;
         }
     }
