@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/18 13:01:46 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 16:11:27 $
    End CVS Header */
 
 /**
@@ -255,7 +255,7 @@ void CCopasiXMLParser::UnknownElement::start(const XML_Char *pszName,
 {
   /* We count the level of subelements of the Unknown Elelement */
   mCurrentElement++;
-  mLineNumber = mParser.getCurrentLineNumber();
+  if (!mCurrentElement) mLineNumber = mParser.getCurrentLineNumber();
   return;
 }
 
@@ -3551,15 +3551,6 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         case CCopasiTask::scan:
           mCommon.pCurrentTask = new CScanTask();
-          break;
-        case CCopasiTask::fluxMode:
-          mCommon.pCurrentTask = NULL;
-          break;
-        case CCopasiTask::optimization:
-          mCommon.pCurrentTask = NULL;
-          break;
-        case CCopasiTask::parameterFitting:
-          mCommon.pCurrentTask = NULL;
           break;
         case CCopasiTask::mca:
           mCommon.pCurrentTask = new CMCATask();
