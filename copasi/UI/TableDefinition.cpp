@@ -105,7 +105,7 @@ void TableDefinition::createNewObject()
   while (!dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, ""))
     {
       i++;
-      name = "compartment";
+      name = "ReportDefinition";
       name += "_";
       name += QString::number(i).latin1();
     }
