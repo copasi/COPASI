@@ -477,7 +477,7 @@ void CModel::buildStoi()
 {
   CCopasiVector < CChemEqElement > Structure;
   unsigned C_INT32 i, j, k, imax;
-  std::string Name;
+  std::string key;
 
   imax = mMetabolites.size();
   mMetabolitesX.resize(imax, false);
@@ -516,11 +516,11 @@ void CModel::buildStoi()
       for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
         {
           mStoi[j][i] = 0.0;
-          Name = mMetabolites[j]->getName();
+          key = mMetabolites[j]->getKey();
           // Name = mMetabolitesX[j]->getName();
 
           for (k = 0; k < Structure.size(); k++)
-            if (Structure[k]->getMetaboliteName() == Name)
+            if (Structure[k]->getMetaboliteKey() == key)
               {
                 mStoi[j][i] = Structure[k]->getMultiplicity();
                 break;
