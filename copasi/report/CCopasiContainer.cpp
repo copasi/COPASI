@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 22:13:47 $
+   $Date: 2003/11/21 19:45:53 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 #include "CCopasiObjectName.h"
 #include "CCopasiContainer.h"
 #include "CCopasiObjectReference.h"
+#include "CCopasiStaticString.h"
 #include "utilities/CCopasiVector.h"
 
 CCopasiContainer * CCopasiContainer::Root = NULL;
@@ -49,6 +50,20 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
   // if not find search the root
   if (!pObject)
     pObject = CCopasiContainer::Root->getObject(objName);
+
+  if (pObject)
+    {
+      std::cout << "Name:     " << pObject->getObjectName() << std::endl;
+      std::cout << "Type:     " << pObject->getObjectType() << std::endl;
+      std::cout << "Container:" << pObject->isContainer() << std::endl;
+      std::cout << "Vector:   " << pObject->isVector() << std::endl;
+      std::cout << "VectorN:  " << pObject->isNameVector() << std::endl;
+      std::cout << "Matrix:   " << pObject->isMatrix() << std::endl;
+      std::cout << "Reference:" << pObject->isReference() << std::endl;
+      std::cout << "Bool:     " << pObject->isValueBool() << std::endl;
+      std::cout << "Int:      " << pObject->isValueInt() << std::endl;
+      std::cout << "Dbl:      " << pObject->isValueDbl() << std::endl;
+    }
 
   return const_cast<CCopasiObject *>(pObject);
 }
@@ -104,10 +119,16 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
       mObjects.equal_range(Name);
 
-    if (range.first == range.second) return NULL;
+    if (range.first == range.second)
+      {
+        if (Type == "String")
+          return new CCopasiStaticString(Name, this);
+        else
+          return NULL;
+      }
 
     /* We just pick the first one since in real containers the name should be */
-    /* unique. The exeption is CCopasiContainer but in those the name is not  */
+    /* unique. The exeption is CCopasiVector but in those the name is not  */
     /* meaningful anyway. */
     objectMap::const_iterator it = range.first;
 
