@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:51 $
+   $Author: ssahle $ 
+   $Date: 2005/02/24 16:38:50 $
    End CVS Header */
 
 /********************************************************
@@ -595,7 +595,7 @@ void TrajectoryWidget::saveTrajectoryTask()
   //numbers
   if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
     trajectoryproblem->setStepSize(nStepSize->text().toDouble());
-  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toLong())
+  else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toULong())
     trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
   trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   trajectoryproblem->setEndTime(nEndTime->text().toDouble());
