@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:51:08 $
+   $Date: 2003/11/14 22:13:59 $
    End CVS Header */
 
 /**
@@ -63,6 +63,11 @@ class CScanProblem : public CCopasiProblem
      */
     CVector< C_FLOAT64 * > mMapping;
 
+    /**
+     * 
+     */
+    CVector< C_FLOAT64 > mStartValues;
+
   public:
     /**
      * Default constructor.
@@ -103,6 +108,13 @@ class CScanProblem : public CCopasiProblem
      * @result bool succes
      */
     virtual bool calculate();
+
+    /**
+     * Undo all temporary changes to the model etc.
+     * This is called once from CScanTask::process()
+     * @result bool succes
+     */
+    virtual bool restore();
 
     /**
      * Initialize the pointer for steadystate task 

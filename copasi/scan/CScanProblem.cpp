@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:51:08 $
+   $Date: 2003/11/14 22:13:59 $
    End CVS Header */
 
 /**
@@ -40,7 +40,9 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::scan, pParent),
     mpScanParameterList(NULL),
     mpTrajectory(NULL),
-    mpSteadyState(NULL)
+    mpSteadyState(NULL),
+    mMapping(),
+    mStartValues()
 {
   addGroup("ScanItemList");
   mpScanParameterList = (CCopasiParameterGroup *) getParameter("ScanItemList");
@@ -60,7 +62,9 @@ CScanProblem::CScanProblem(const CScanProblem & src,
     CCopasiProblem(src, pParent),
     mpScanParameterList(NULL),
     mpTrajectory(src.mpTrajectory),
-    mpSteadyState(src.mpSteadyState)
+    mpSteadyState(src.mpSteadyState),
+    mMapping(),
+    mStartValues()
 {
   mpScanParameterList = (CCopasiParameterGroup *) getParameter("ScanItemList");
   CONSTRUCTOR_TRACE;
@@ -208,6 +212,7 @@ bool CScanProblem::initialize()
   unsigned C_INT32 Size = getListSize();
   mCalculateVariables.resize(Size);
   mMapping.resize(Size);
+  mStartValues.resize(Size);
   mCalculateResults.resize(1);
   CCopasiObject * pObject;
 
@@ -222,7 +227,8 @@ bool CScanProblem::initialize()
                 ((CCopasiParameter *) getScanItem(i))->getName());
       if (!pObject) fatalError();
       if (!pObject->isValueDbl()) fatalError();
-      mMapping[i] = (C_FLOAT64 *) pObject->getReference();
+
+      mStartValues[i] = *(mMapping[i] = (C_FLOAT64 *) pObject->getReference());
     }
 
   return true;
@@ -253,6 +259,15 @@ bool CScanProblem::calculate()
       setStartTime(getTrajectoryTask()->getProblem()->getStartTime());
       mpTrajectory->process();
     }
+
+  return true;
+}
+
+bool CScanProblem::restore()
+{
+  unsigned C_INT32 i, imax = mMapping.size();
+  for (i = 0; i < imax; i ++)
+    *mMapping[i] = mStartValues[i];
 
   return true;
 }

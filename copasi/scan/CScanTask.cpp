@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 16:51:08 $
+   $Date: 2003/11/14 22:13:59 $
    End CVS Header */
 
 /**
@@ -128,9 +128,11 @@ void CScanTask::process()
 
   unsigned C_INT32 scanDimension = mpProblem->getListSize();
   int i;
+
   // find the last master
   for (i = scanDimension - 1; i >= 0; i--)
     if (mpProblem->getScanItemParameter(i, "indp")) break;
+
   if (i >= 0)
     // execute many simulations
     mpMethod->scan(i, true, &CReport::printBody, mReport);
@@ -139,5 +141,6 @@ void CScanTask::process()
   //    mpOutEnd->print(*Copasi->pOutputList, *mpOut);
   mReport->printFooter();
 
+  mpProblem->restore();
   return;
 }
