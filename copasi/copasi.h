@@ -94,14 +94,33 @@ enum TriLogic
 
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG
+#include <time.h>
+#include <sys/timeb.h>
 # ifdef COPASI_MAIN
-
+#  ifndef Darwin
+struct timeb init_time;
+unsigned C_INT32 last_time = 0;
+unsigned C_INT32 this_time;
+#  endif // !Darwin
 std::ofstream DebugFile("trace");
 # else
 #  include <fstream>
-
+#  ifndef Darwin
+extern struct timeb init_time;
+extern unsigned C_INT32 last_time;
+extern unsigned C_INT32 this_time;
+#  endif // !Darwin
 extern std::ofstream DebugFile;
 # endif // COPASI_MAIN
+# ifndef Darwin
+#  include <iostream>
+#  define TIME_TRACE(f, l) {\
+  ftime(&init_time); \
+  this_time = init_time.time * 1000 + init_time.millitm; \
+  std::cout << f <<"(" << l << "):\t" << this_time - last_time  << std::endl; \
+  last_time = this_time;\
+}
+# endif // !Darwin
 # if (defined COPASI_TRACE_CONSTRUCTION)
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
@@ -119,6 +138,10 @@ extern std::ofstream DebugFile;
 
 #ifndef DESTRUCTOR_TRACE
 # define DESTRUCTOR_TRACE
+#endif
+
+#ifndef TIME_TRACE
+# define TIME_TRACE(f, l)
 #endif
 
 // protected free
