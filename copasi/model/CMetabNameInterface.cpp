@@ -83,8 +83,11 @@ bool CMetabNameInterface::doesExist(const CModel* model, const std::string & nam
   CCompartment *comp;
   CCopasiVectorNS<CMetab> metabs;
 
-  if (pos)    //compartment specified, so check if the metabolite exists in this compartment
+  if (pos >= 0)    //compartment specified, so check if the metabolite exists in this compartment
     {
+      if (!pos)
+        return false;
+
       std::string metabName = name. substr(0, pos), s;
       C_INT32 len = name.find('}') - pos - 1;
 
