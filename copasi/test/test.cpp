@@ -610,7 +610,7 @@ C_INT32 TestOptimization(void)
 
   // set the individual parameters
 
-  CRand->setValue(0, 100000);
+  CRand->setValue(0, 100000UL);
 
   for (i = 0; i < 5; i++)
     {
