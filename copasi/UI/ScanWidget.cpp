@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.177 $
+   $Revision: 1.178 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:59:05 $
+   $Date: 2005/02/22 16:22:36 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -164,7 +164,9 @@ ScanWidget::~ScanWidget()
 {}
 
 void ScanWidget::CancelChangeButton()
-{}
+{
+  loadScan();
+}
 
 void ScanWidget::ScanCheckBoxClicked()
 {
@@ -311,7 +313,7 @@ bool ScanWidget::slotAddItem()
       //+++
     case CScanProblem::SCAN_LINEAR :
       tmp1 = new CScanWidgetScan(scrollview);
-      //tmp1->initFromScanItem(scanProblem->getScanItem(i), dataModel->getModel());
+      tmp1->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
       scrollview->insertWidget(tmp1);
       break;
 

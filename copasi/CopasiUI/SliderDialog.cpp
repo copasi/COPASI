@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:51 $
+   $Author: ssahle $ 
+   $Date: 2005/02/22 16:22:37 $
    End CVS Header */
 
 #include <iostream>
@@ -399,24 +399,27 @@ void SliderDialog::sliderValueChanged()
   this->mSliderValueChanged = true;
   if ((!this->mSliderPressed) && this->autoRunCheckBox->isChecked())
     {
-      //this->runTask();
+      this->runTask();
       this->mSliderValueChanged = false;
     }
+  std::cout << "SliderDialog::sliderValueChanged()" << std::endl;
 }
 
 void SliderDialog::sliderReleased()
 {
-  if (this->mSliderValueChanged && this->autoRunCheckBox->isChecked())
+  /*if (this->mSliderValueChanged && this->autoRunCheckBox->isChecked())
     {
       this->runTask();
       this->mSliderValueChanged = false;
-    }
+    }*/
   this->mSliderPressed = false;
+  std::cout << "SliderDialog::sliderReleased()" << std::endl;
 }
 
 void SliderDialog::sliderPressed()
 {
   this->mSliderPressed = true;
+  std::cout << "SliderDialog::sliderPressed()" << std::endl;
 }
 
 void SliderDialog::runTimeCourse()
