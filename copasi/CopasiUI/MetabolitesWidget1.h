@@ -82,6 +82,8 @@ class MetabolitesWidget1 : public CopasiWidget
 
   protected:
     QGridLayout* MetabolitesWidget1Layout;
+    QGridLayout* ButtonGroup2Layout;
+    QGridLayout* ButtonGroup3Layout;
     QHBoxLayout* Layout7;
   };
 
