@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\CReportDefinitionSelect.ui'
  **
  ** Created: Fri Aug 15 09:16:02 2003
- **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.23 2003/09/18 13:39:26 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: CReportDefinitionSelect.cpp,v 1.24 2003/09/18 22:36:43 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -138,53 +138,50 @@ void CReportDefinitionSelect::loadReportDefinitionVector()
   // if it is an empty list
   if (reportDefinitionNameList->count() == 0)
     {
-      try
-        {
-          std::string name = "ReportDefinition_0";
-          dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, "");
-          reportDefinitionNameList->insertItem (name.c_str());
-          reportDefinitionNameList->setCurrentItem(1);
-          mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
-          mpReport->setAppend(appendChecked->isChecked());
-          mpReport->setTarget(targetEdit->text().latin1());
-          ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
-          if (QMessageBox::information (NULL, "No Report Definition Defined",
-                                        "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
-                                        QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-            jumpToReportDefinitionEdit();
-        }
-      catch (CCopasiException Exception)
-      {}
-      return;
-    }
-
-  if (!mpReport->getReportDefinition())
-    {
-      C_INT32 row;
-      row = reportDefinitionNameList->currentItem();
-      mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+      std::string name = "ReportDefinition_0";
+      dataModel->getReportDefinitionVectorAddr()->addReportDefinition(name, "");
+      reportDefinitionNameList->insertItem (name.c_str());
+      reportDefinitionNameList->setCurrentItem(1);
+      mpReport->setReportDefinition((*dataModel->getReportDefinitionVectorAddr())[0]); //first one report definition
       mpReport->setAppend(appendChecked->isChecked());
       mpReport->setTarget(targetEdit->text().latin1());
+      ListViews::notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+      if (QMessageBox::information (NULL, "No Report Definition Defined",
+                                    "No report definition defined, Copasi has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes);
       jumpToReportDefinitionEdit();
       return;
     }
-  else
-    {
-      C_INT32 i;
-      // no use to compare the last one
-      for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
-        if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
-          break;
-      reportDefinitionNameList->setCurrentItem(i);
-      appendChecked->setChecked(mpReport->append());
-      targetEdit->setText(mpReport->getTarget().c_str());
-    }
+  catch (CCopasiException Exception)
+    {}}
+
+if (!mpReport->getReportDefinition())
+  {
+    C_INT32 row;
+    row = reportDefinitionNameList->currentItem();
+    mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+    mpReport->setAppend(appendChecked->isChecked());
+    mpReport->setTarget(targetEdit->text().latin1());
+    return;
+  }
+else
+  {
+    C_INT32 i;
+    // no use to compare the last one
+    for (i = reportDefinitionNameList->count() - 1; i >= 1; i--)
+      if (reportDefinitionNameList->text(i) == mpReport->getReportDefinition()->getName().c_str())
+        break;
+    reportDefinitionNameList->setCurrentItem(i);
+    appendChecked->setChecked(mpReport->append());
+    targetEdit->setText(mpReport->getTarget().c_str());
+  }
 }
 
 void CReportDefinitionSelect::cancelClicked()
 {
   cleanup();
-  delete this;
+  QDialog::done(QDialog::Rejected);
+  // delete this;
 }
 
 void CReportDefinitionSelect::confirmClicked()
@@ -200,7 +197,8 @@ void CReportDefinitionSelect::confirmClicked()
   mpReport->setAppend(appendChecked->isChecked());
   mpReport->setTarget(targetEdit->text().latin1());
   cleanup();
-  delete this;
+  QDialog::done(QDialog::Accepted);
+  //  delete this;
 }
 
 void CReportDefinitionSelect::cleanup()
@@ -214,7 +212,7 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
   CReportDefinitionVector* pReportDefinitionVector = dataModel->getReportDefinitionVectorAddr();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
-  pListView->switchToOtherWidget((*(pReportDefinitionVector))[row]->getKey());
+  pListView->switchToOtherWidget((*pReportDefinitionVector)[row]->getKey());
   confirmClicked();
 }
 
