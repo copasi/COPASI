@@ -292,13 +292,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   // DebugFile << std::endl << mSteps << std::endl;  //debug
 
-  // We must postprocess the steps for old file versions
-  if (configBuffer.getVersion() < "4")
-    for (i = 0; i < mSteps.size(); i++)
-      mSteps[i]->old2New(mMetabolites);
-
-  // DebugFile << "After postprocessing " << std::endl << mSteps << std::endl;
-
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(mCompartments);
 
@@ -427,7 +420,8 @@ void CModel::saveSBML(std::ofstream &fout)
   // check if any reaction has no substrates or no products
   // (necessary because SBML l1v1 does not support empty subs or prods)
   for (dummy = i = 0; (i < mSteps.size()) && (dummy == 0); i++)
-    if ((mSteps[i]->getSubstrateNumber() == 0) || (mSteps[i]->getProductNumber()))
+    if ((mSteps[i]->getChemEq().getSubstrates().size() == 0)
+         || (mSteps[i]->getChemEq().getProducts().size() == 0))
       dummy = 1;
   // if there are any, we need a dummy metabolite, let's call it _void !
   if (dummy)
