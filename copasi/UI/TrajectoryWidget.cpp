@@ -1,13 +1,14 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Thu Feb 13 22:07:02 2003
+ ** Created: Thu Feb 20 14:48:29 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #include <qvariant.h>
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qframe.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -20,7 +21,7 @@
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
 
-/**
+/*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
@@ -36,59 +37,27 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   taskNameLabel->setGeometry(QRect(11, 11, 282, 19));
   taskNameLabel->setText(trUtf8("Task Name"));
 
-  line7 = new QFrame(this, "line7");
-  line7->setGeometry(QRect(11, 222, 568, 16));
-  line7->setFrameShape(QFrame::HLine);
-  line7->setFrameShadow(QFrame::Sunken);
-  line7->setFrameShape(QFrame::HLine);
-
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setGeometry(QRect(100, 266, 484, 160));
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-
-  line8 = new QFrame(this, "line8");
-  line8->setGeometry(QRect(11, 62, 568, 16));
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-
-  TextLabel1_2 = new QLabel(this, "TextLabel1_2");
-  TextLabel1_2->setGeometry(QRect(300, 101, 80, 20));
-  TextLabel1_2->setText(trUtf8("Step Number"));
-
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setGeometry(QRect(14, 266, 80, 160));
-  parameterValueLabel->setText(trUtf8("Parameter value"));
-
-  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
-  TextLabel1_3->setGeometry(QRect(33, 147, 56, 20));
-  TextLabel1_3->setText(trUtf8("Start Time"));
-
-  TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
-  TextLabel1_2_2->setGeometry(QRect(303, 147, 56, 20));
-  TextLabel1_2_2->setText(trUtf8("End Time"));
-
-  nStepSize = new QLineEdit(this, "nStepSize");
-  nStepSize->setGeometry(QRect(100, 101, 121, 21));
-  nStepSize->setText(trUtf8(""));
-
-  nStepNumber = new QLineEdit(this, "nStepNumber");
-  nStepNumber->setGeometry(QRect(400, 101, 121, 21));
-  nStepNumber->setText(trUtf8(""));
-
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setGeometry(QRect(30, 101, 56, 20));
-  TextLabel1->setText(trUtf8("Step Size"));
-
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setGeometry(QRect(430, 10, 120, 16));
   bExecutable->setText(trUtf8("Task Executable "));
 
-  taskName = new QLineEdit(this, "taskName");
-  taskName->setGeometry(QRect(100, 10, 282, 19));
+  commitChange = new QPushButton(this, "commitChange");
+  commitChange->setGeometry(QRect(206, 501, 188, 23));
+  commitChange->setText(trUtf8("Commit Change"));
+
+  bRunTask = new QPushButton(this, "bRunTask");
+  bRunTask->setGeometry(QRect(11, 501, 189, 23));
+  bRunTask->setText(trUtf8("Run Task"));
+
+  cancelChange = new QPushButton(this, "cancelChange");
+  cancelChange->setGeometry(QRect(400, 501, 189, 23));
+  cancelChange->setText(trUtf8("Cancel Change"));
+
+  line8 = new QFrame(this, "line8");
+  line8->setGeometry(QRect(11, 42, 568, 16));
+  line8->setFrameShape(QFrame::HLine);
+  line8->setFrameShadow(QFrame::Sunken);
+  line8->setFrameShape(QFrame::HLine);
 
   line6 = new QFrame(this, "line6");
   line6->setGeometry(QRect(11, 468, 578, 16));
@@ -96,29 +65,71 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   line6->setFrameShadow(QFrame::Sunken);
   line6->setFrameShape(QFrame::HLine);
 
-  QWidget* privateLayoutWidget = new QWidget(this, "Layout7");
-  privateLayoutWidget->setGeometry(QRect(10, 500, 580, 25));
-  Layout7 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout7");
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setGeometry(QRect(14, 296, 80, 160));
+  parameterValueLabel->setText(trUtf8("Parameter value"));
 
-  bRunTask = new QPushButton(privateLayoutWidget, "bRunTask");
-  bRunTask->setText(trUtf8("Run Task"));
-  Layout7->addWidget(bRunTask);
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setGeometry(QRect(100, 296, 484, 160));
+  parameterTable->setNumRows(3);
+  parameterTable->setNumCols(3);
 
-  commitChange = new QPushButton(privateLayoutWidget, "commitChange");
-  commitChange->setText(trUtf8("Commit Change"));
-  Layout7->addWidget(commitChange);
+  line7 = new QFrame(this, "line7");
+  line7->setGeometry(QRect(10, 270, 568, 16));
+  line7->setFrameShape(QFrame::HLine);
+  line7->setFrameShadow(QFrame::Sunken);
+  line7->setFrameShape(QFrame::HLine);
 
-  cancelChange = new QPushButton(privateLayoutWidget, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel Change"));
-  Layout7->addWidget(cancelChange);
+  line7_2 = new QFrame(this, "line7_2");
+  line7_2->setGeometry(QRect(20, 160, 568, 16));
+  line7_2->setFrameShape(QFrame::HLine);
+  line7_2->setFrameShadow(QFrame::Sunken);
+  line7_2->setFrameShape(QFrame::HLine);
+
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setGeometry(QRect(17, 71, 56, 20));
+  TextLabel1->setText(trUtf8("Step Size"));
+
+  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
+  TextLabel1_3->setGeometry(QRect(20, 117, 56, 20));
+  TextLabel1_3->setText(trUtf8("Start Time"));
+
+  taskName = new QLineEdit(this, "taskName");
+  taskName->setGeometry(QRect(93, 10, 282, 19));
+
+  TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
+  TextLabel1_3_2->setGeometry(QRect(20, 211, 56, 20));
+  TextLabel1_3_2->setText(trUtf8("Method"));
 
   nStartTime = new QLineEdit(this, "nStartTime");
-  nStartTime->setGeometry(QRect(101, 147, 121, 21));
+  nStartTime->setGeometry(QRect(98, 117, 121, 21));
   nStartTime->setText(trUtf8(""));
 
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
+  ComboBox1->insertItem(trUtf8("deterministic"));
+  ComboBox1->insertItem(trUtf8("stochastic"));
+  ComboBox1->insertItem(trUtf8("hybrid"));
+  ComboBox1->setGeometry(QRect(101, 210, 281, 21));
+
+  nStepSize = new QLineEdit(this, "nStepSize");
+  nStepSize->setGeometry(QRect(97, 71, 121, 21));
+  nStepSize->setText(trUtf8(""));
+
+  TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
+  TextLabel1_2_2->setGeometry(QRect(250, 117, 56, 20));
+  TextLabel1_2_2->setText(trUtf8("End Time"));
+
   nEndTime = new QLineEdit(this, "nEndTime");
-  nEndTime->setGeometry(QRect(400, 140, 121, 21));
+  nEndTime->setGeometry(QRect(347, 110, 121, 21));
   nEndTime->setText(trUtf8(""));
+
+  nStepNumber = new QLineEdit(this, "nStepNumber");
+  nStepNumber->setGeometry(QRect(347, 71, 121, 21));
+  nStepNumber->setText(trUtf8(""));
+
+  TextLabel1_2 = new QLabel(this, "TextLabel1_2");
+  TextLabel1_2->setGeometry(QRect(247, 71, 80, 20));
+  TextLabel1_2->setText(trUtf8("Step Number"));
 
   // signals and slots connections
   connect(commitChange, SIGNAL(clicked()), this, SLOT(CommitChange()));
@@ -179,6 +190,19 @@ void TrajectoryWidget::CommitChange()
           break;
         }
     }
+  CTrajectoryMethod* ptrTmpMethod = trajectorymethod;
+  trajectorymethod = CTrajectoryMethod::createTrajectoryMethod((CTrajectoryMethod::Type)ComboBox1->currentItem(), trajectoryproblem);
+  if (trajectorymethod != NULL)
+    {
+      trajectorymethod -> setProblem(trajectoryproblem);
+      mTrajectoryTask -> setMethod(trajectorymethod);
+      pdelete(ptrTmpMethod);
+    }
+  else
+    {
+      trajectorymethod = ptrTmpMethod;
+    }
+
   loadTrajectoryTask(mTrajectoryTask);
 }
 
@@ -234,6 +258,8 @@ void TrajectoryWidget::loadTrajectoryTask(CTrajectoryTask *trajectorytask)
       pItem = new QTableItem (parameterTable, QTableItem::Always, substrate);
       parameterTable->setItem(i, 0, pItem);
     }
+
+  ComboBox1->setCurrentItem (trajectorymethod->getTypeEnum());
 
   if (!bExecutable->isChecked())
     bRunTask->setEnabled(false);
