@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 20:29:28 $
+   $Author: ssahle $ 
+   $Date: 2004/11/19 10:14:35 $
    End CVS Header */
 
 /***************************************************************************
@@ -67,7 +67,7 @@ COptMethodGA::COptMethodGA():
                (unsigned C_INT32) 600);
   addParameter("GeneticAlgorithm.RandomGenerator.Type",
                CCopasiParameter::INT,
-               CRandom::mt19937);
+               (C_INT32) CRandom::mt19937);
   addParameter("GeneticAlgorithm.RandomGenerator.Seed",
                CCopasiParameter::INT,
                (C_INT32) 0);
@@ -649,8 +649,7 @@ void COptMethodGA::crossover(int p1, int p2, int c1, int c2)
         }
     }
   catch (int)
-  {}
-}
+    {}}
 
 // replicate the individuals w/ crossover
 void COptMethodGA::replicate(void)
@@ -677,7 +676,7 @@ void COptMethodGA::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:   // parent-offspring competition
+    case 1:    // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -687,7 +686,7 @@ void COptMethodGA::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:   // tournament competition
+    case 2:    // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one

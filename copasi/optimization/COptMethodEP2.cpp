@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/18 20:29:27 $
+   $Author: ssahle $ 
+   $Date: 2004/11/19 10:14:35 $
    End CVS Header */
 
 /***************************************************************************
@@ -43,7 +43,7 @@ COptMethodEP2::COptMethodEP2(): COptMethod(CCopasiMethod::EvolutionaryProgram2)
                (unsigned C_INT32) 600);
   addParameter("EvolutionaryProgram2.RandomGenerator.Type",
                CCopasiParameter::INT,
-               CRandom::mt19937);
+               (C_INT32)CRandom::mt19937);
   addParameter("EvolutionaryProgram2.RandomGenerator.Seed",
                CCopasiParameter::INT,
                (C_INT32) 0);
@@ -514,7 +514,7 @@ void COptMethodEP2::select(int SelectionStrategy)
 
   switch (SelectionStrategy)
     {
-    case 1:   // parent-offspring competition
+    case 1:    // parent-offspring competition
       for (i = PopulationSize; i < 2*PopulationSize; i++)
         {
           // if offspring is fitter keep it
@@ -524,7 +524,7 @@ void COptMethodEP2::select(int SelectionStrategy)
             }
         }
       break;
-    case 2:   // tournament competition
+    case 2:    // tournament competition
       // compete with 20% of the population
       TournamentSize = PopulationSize / 5;
       // but at least one
