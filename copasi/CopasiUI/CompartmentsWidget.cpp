@@ -109,9 +109,8 @@ void CompartmentsWidget::createNewObject()
         name += "_";
         name += QString::number(i).latin1();
       }
+    table->setText(table->numRows() - 1, 0, name.c_str());
     table->setNumRows(table->numRows());
-    table->setText(row, 0, name.c_str());
-    x = name.c_str();
     //emit updated();
     //emit leaf(mModel);
     ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
@@ -129,6 +128,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
   if (row == table->numRows() - 1)
     {
       //TODO: create a new Object
+      createNewObject();
     }
 
   pListView->switchToOtherWidget(mKeys[row]);
