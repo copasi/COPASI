@@ -15,11 +15,14 @@ enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
 class objectList;
 
-struct browserObject
+class browserObject
   {
+  public:
     CCopasiObject* pCopasiObject;
     bool mChecked;
-    int nRefer;
+    objectList* referenceList;
+    browserObject();
+    ~browserObject();
   };
 
 class ObjectBrowserItem : public QListViewItem
@@ -97,10 +100,15 @@ class objectList
     int length;
   public:
     objectList();
+    ~objectList()
+    {
+      while (length > 0)
+        pop();
+    }
     void insert(ObjectBrowserItem* pItem);
     objectListItem* getRoot();
     ObjectBrowserItem* pop();
-    inline int len() {return length;};
+  inline int len() {return length;};
   };
 
 #endif

@@ -87,7 +87,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(nextButton, cancelButton);
 
   objectItemList = new objectList();
-  //  refreshList = new objectList();
+  refreshList = new objectList();
   loadData();
 }
 
@@ -97,7 +97,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 ObjectBrowser::~ObjectBrowser()
 {
   delete objectItemList;
-  // delete refreshList;
+  delete refreshList;
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -111,18 +111,19 @@ void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
   if (pCurrent == NULL)
     return;
   clickToReverseCheck((ObjectBrowserItem*)pCurrent);
-  updateUI();
+  //  updateUI();
+  loadUI();
 }
 
 void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
 {
-  //  refreshList->insert(pCurrent);
+  refreshList->insert(pCurrent);
   ObjectBrowserItem* pTmp = pCurrent;
-  //  while (pTmp->parent() != NULL)
-  //    {
-  //      pTmp = pTmp->parent();
-  //      refreshList->insert(pTmp);
-  //}
+  while (pTmp->parent() != NULL)
+    {
+      pTmp = pTmp->parent();
+      refreshList->insert(pTmp);
+    }
 
   if (pCurrent->isChecked() == ALLCHECKED)
     {
@@ -142,7 +143,8 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  //  refreshList->insert(pCurrent);
+
+  refreshList->insert(pCurrent);
 
   if (pCurrent->isChecked())
     pCurrent->reverseChecked();
@@ -158,7 +160,7 @@ void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  //  refreshList->insert(pCurrent);
+  refreshList->insert(pCurrent);
 
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
@@ -193,7 +195,6 @@ void ObjectBrowser::loadData()
 
 void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaParent, bool nField)
 {
-  // ObjectBrowserItem* parent=itemRoot;
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
@@ -262,7 +263,6 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
 
 void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
 {
-  // ObjectBrowserItem* parent=itemRoot;
   ObjectBrowserItem* lastField = NULL;
   CCopasiObject* currentField = NULL;
   ObjectBrowserItem* last = NULL;
@@ -294,7 +294,6 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
           current = *it;
           CCopasiObject* pSubField = getFieldCopasiObject(current, currentField->getObjectName().c_str());
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
-          //          ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, current, objectItemList);
 
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(FIELDATTR);
@@ -307,19 +306,39 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
 
 void ObjectBrowser::updateUI()
 {
-  objectListItem* pCurrent = objectItemList->getRoot();
-  setCheckMark(pCurrent->pItem);
-  for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+  /*  objectListItem* pCurrent = objectItemList->getRoot();
     setCheckMark(pCurrent->pItem);
-  /*
-    for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
-      setCheckMark(pCurrent);
+    for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+      setCheckMark(pCurrent->pItem);
   */
+  for (ObjectBrowserItem* pCurrent = refreshList->pop(); pCurrent != NULL; pCurrent = refreshList->pop())
+    setCheckMark(pCurrent);
 }
 
 void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
 {
-  switch (pCurrent->nUserChecked())
+  objectListItem* pHead = pCurrent->getObject()->referenceList->getRoot();
+  for (; pHead != NULL; pHead = pHead->pNext)
+    {
+      ObjectBrowserItem * pCurrentLevel = pHead->pItem;
+      for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
+        {
+          switch (pHead->pItem->nUserChecked())
+            {
+            case NOCHECKED:
+              pCurrent->setPixmap(0, *pObjectNone);
+              break;
+            case ALLCHECKED:
+              pCurrent->setPixmap(0, *pObjectAll);
+              break;
+            case PARTCHECKED:
+              pCurrent->setPixmap(0, *pObjectParts);
+              break;
+            }
+        }
+    }
+  /*
+     switch (pCurrent->nUserChecked())
     {
     case NOCHECKED:
       pCurrent->setPixmap(0, *pObjectNone);
@@ -331,6 +350,7 @@ void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
       pCurrent->setPixmap(0, *pObjectParts);
       break;
     }
+    */
 }
 
 void ObjectBrowser::loadUI()

@@ -7,6 +7,16 @@
 
 long ObjectBrowserItem::KeySpace = 100000000;
 
+browserObject::browserObject()
+{
+  referenceList = new objectList();
+}
+
+browserObject::~browserObject()
+{
+  delete referenceList;
+}
+
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
     : QListViewItem(parent, after)
 {
@@ -30,15 +40,17 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
-          pBrowserObject->nRefer++;
+          //pBrowserObject->nRefer++;
+          pBrowserObject->referenceList->insert(this);
         }
       else
         {
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
           newBrowserObject->mChecked = false;
-          newBrowserObject->nRefer = 1;
+          //newBrowserObject->nRefer=1;
           pBrowserObject = newBrowserObject;
+          pBrowserObject->referenceList->insert(this);
         }
     }
   else //this is not an ending node
@@ -46,8 +58,9 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
-      newBrowserObject->nRefer = 1;
+      //newBrowserObject->nRefer=1;
       pBrowserObject = newBrowserObject;
+      pBrowserObject->referenceList->insert(this);
     }
   pList->insert(this);
 
@@ -77,15 +90,17 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
-          pBrowserObject->nRefer++;
+          //pBrowserObject->nRefer++;
+          pBrowserObject->referenceList->insert(this);
         }
       else
         {
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
-          newBrowserObject->nRefer = 1;
+          //newBrowserObject->nRefer=1;
           newBrowserObject->mChecked = false;
           pBrowserObject = newBrowserObject;
+          pBrowserObject->referenceList->insert(this);
         }
     }
   else //this is not an ending node
@@ -93,8 +108,9 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
-      newBrowserObject->nRefer = 1;
+      //newBrowserObject->nRefer=1;
       pBrowserObject = newBrowserObject;
+      pBrowserObject->referenceList->insert(this);
     }
   pList->insert(this);
 
@@ -113,13 +129,8 @@ int ObjectBrowserItem::nUserChecked()
     {
       ObjectBrowserItem* pChild = child();
       condition = pChild->nUserChecked();
-      if ((pChild->getType() == FIELDATTR) && (pChild->getObject()->pCopasiObject) && (QString("compartment") == (pChild->getObject()->pCopasiObject->getName().c_str())))
-        {
-          int i = 0;
-        }
 
-      /*   if (!((pChild->getObject()->nRefer>1) && (pChild->getType()==FIELDATTR)))
-      */    for  (; pChild !=  NULL; pChild =  pChild->sibling())
+      for (; pChild != NULL; pChild = pChild->sibling())
         {
           switch (pChild->nUserChecked())
             {
@@ -145,7 +156,6 @@ int ObjectBrowserItem::nUserChecked()
       else
         condition = NOCHECKED;
     }
-
   return condition;
 }
 
