@@ -23,7 +23,7 @@ class CReactionInterface
     /**
      * This is the name that identifies the Reaction that is beeing edited (may become a key later)
      */
-    std::string mReactionReferenceName;
+    std::string mReactionReferenceKey;
 
     /**
      * The name of the reaction (which may change)
@@ -135,9 +135,11 @@ class CReactionInterface
     void setValue(C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
     const C_FLOAT64 & getValue(C_INT32 index) const {return mValues[index];}
 
-    void initFromReaction(const std::string & rn, const CModel & model);
+    void initFromReaction(const std::string & key);
 
     void writeBackToReaction(CModel & model) const;
+
+    bool createMetabolites(CModel & model) const;
 
     bool isValid() const {return mValid;}
 

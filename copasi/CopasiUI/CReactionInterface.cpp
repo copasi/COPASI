@@ -6,6 +6,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CMethodParameter.h"
 #include "function/CFunctionDB.h"
+#include "report/CKeyFactory.h"
 
 CReactionInterface::CReactionInterface(){emptyString = "";}
 CReactionInterface::~CReactionInterface(){}
@@ -60,12 +61,12 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     return ret;
   }
 
-void CReactionInterface::initFromReaction(const std::string & rn, const CModel & model)
+void CReactionInterface::initFromReaction(const std::string & key)
 {
-  mReactionReferenceName = rn;
+  mReactionReferenceKey = key;
 
   const CReaction *rea;
-  rea = model.getReactions()[rn];
+  rea = (CReaction*)(CCopasiContainer*)CKeyFactory::get(key);
 
   mReactionName = rea->getName();
 
@@ -91,7 +92,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
     if (!(mParameters == mpFunction->getParameters())) return; // do nothing
 
     CReaction *rea;
-    rea = model.getReactions()[mReactionReferenceName];
+    rea = (CReaction*)(CCopasiContainer*)CKeyFactory::get(mReactionReferenceKey);
 
     rea->setName(mReactionName); //TODO: what else needs to be done here?
 
@@ -357,4 +358,9 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::str
           ret.push_back((*el)[i]->getMetaboliteName());
       }
     return ret;
+  }
+
+bool CReactionInterface::createMetabolites(CModel & model) const
+  {
+    return false;
   }

@@ -235,8 +235,8 @@ bool ModelWidget::convert2NonReversible()
         reac2->setName(rn2);
         steps.add(reac2);
 
-        ri1.initFromReaction(rn1, *model);
-        ri2.initFromReaction(rn2, *model);
+        ri1.initFromReaction(reac1->getKey());
+        ri2.initFromReaction(reac2->getKey());
 
         //set the new function
         fn = reac0->getFunction().getName();
