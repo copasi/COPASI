@@ -192,7 +192,7 @@ class CMatrix
       unsigned C_INT32 i, j;
       CType * tmp = A.mArray;
 
-      for (i = 0; i < A.mCols; i++)
+      for (i = 0; i < A.mRows; i++)
         {
           for (j = 0; j < A.mCols; j++)
             cout << "  " << * (tmp++);
