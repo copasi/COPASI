@@ -591,12 +591,23 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         }
       else if (VariableList[i].second == "PARAMETER")
         {
+          //Liang
+          QTableItem * pItem;
           j = pReaction->
               getId2Parameters().getIndex(VariableList[i].first.latin1());
           if (HaveParameters && j != C_INVALID_INDEX)
-            table->setText(i, 0, QString::number(pReaction->getId2Parameters()[j]->getValue()));
+            pItem = new QTableItem (table, QTableItem::Always, QString::number(pReaction->getId2Parameters()[j]->getValue()));
           else
-            table->setText(i, 0, QString::number(1.0));
+            pItem = new QTableItem (table, QTableItem::Always, QString::number(1.0));
+          table->setItem(i, 0, pItem);
+          /*
+                    j = pReaction->
+                        getId2Parameters().getIndex(VariableList[i].first.latin1());
+                    if (HaveParameters && j != C_INVALID_INDEX)
+                      table->setText(i, 0, QString::number(pReaction->getId2Parameters()[j]->getValue()));
+                    else
+                      table->setText(i, 0, QString::number(1.0));
+          */
         }
     }
 }
