@@ -266,6 +266,10 @@ SOURCE=.\copasiui3window.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\copasiversion.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\copasiWidget.h
 # End Source File
 # Begin Source File
