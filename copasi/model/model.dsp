@@ -114,6 +114,10 @@ SOURCE=..\..\copasi\model\CMoiety.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CParticleNumberList.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\model\CReaction.cpp
 # End Source File
 # Begin Source File
@@ -163,6 +167,10 @@ SOURCE=..\..\copasi\model\CModel.h
 # Begin Source File
 
 SOURCE=..\..\copasi\model\CMoiety.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CParticleNumberList.h
 # End Source File
 # Begin Source File
 
