@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/14 21:20:59 $
+   $Date: 2004/12/16 17:14:15 $
    End CVS Header */
 
 /**
@@ -41,7 +41,8 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mpMethod =
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::deterministic,
         (CTrajectoryProblem *) mpProblem);
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //mpMethod->setObjectParent(this);
 }
 
 /*CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
@@ -108,7 +109,8 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
 
   pdelete(mpMethod);
   mpMethod = CTrajectoryMethod::createTrajectoryMethod();
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //mpMethod->setObjectParent(this);
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
 
@@ -288,7 +290,8 @@ bool CTrajectoryTask::setMethodType(const int & type)
   mpMethod =
     CTrajectoryMethod::createTrajectoryMethod(Type,
         (CTrajectoryProblem *) mpProblem);
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //mpMethod->setObjectParent(this);
 
   return true;
 }

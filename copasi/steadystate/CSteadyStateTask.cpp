@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/30 19:16:48 $
+   $Author: shoops $ 
+   $Date: 2004/12/20 18:19:25 $
    End CVS Header */
 
 /**
@@ -40,7 +40,8 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
   mpProblem = new CSteadyStateProblem(this);
   mpMethod =
     CSteadyStateMethod::createSteadyStateMethod(CCopasiMethod::Newton);
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 
@@ -58,7 +59,8 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
     new CSteadyStateProblem(* (CSteadyStateProblem *) src.mpProblem, this);
   mpMethod =
     CSteadyStateMethod::createSteadyStateMethod(src.mpMethod->getSubType());
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //mpMethod->setObjectParent(this);
   //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 

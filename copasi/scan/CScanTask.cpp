@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:10:27 $
+   $Date: 2004/12/16 17:11:14 $
    End CVS Header */
 
 /**
@@ -35,7 +35,8 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
 {
   mpProblem = new CScanProblem(this);
   mpMethod = CScanMethod::createMethod();
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //  mpMethod->setObjectParent(this);
   ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
 }
 
@@ -45,7 +46,8 @@ CScanTask::CScanTask(const CScanTask & src,
 {
   mpProblem = new CScanProblem(* (CScanProblem *) src.mpProblem, this);
   mpMethod = CScanMethod::createMethod();
-  mpMethod->setObjectParent(this);
+  this->add(mpMethod, true);
+  //  mpMethod->setObjectParent(this);
   ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
 }
 
