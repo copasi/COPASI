@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/14 13:50:17 $
+   $Date: 2004/05/19 10:07:44 $
    End CVS Header */
 
 /***********************************************************************
@@ -472,14 +472,15 @@ void MetabolitesWidget::slotBtnDeleteClicked()
               metabList.append(table->text(ToBeDeleted[i], 0));
               metabList.append(", ");
 
-              std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeMetabReacKeys(mKeys[ToBeDeleted[i]]);
+              std::set<std::string> effectedReacKeys = dataModel->getModel()->listReactionsDependentOnMetab(mKeys[ToBeDeleted[i]]);
 
               if (effectedReacKeys.size() > 0)
                 {
                   reacFound = 1;
-                  for (unsigned C_INT32 j = 0; j < effectedReacKeys.size(); j++)
+                  std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+                  for (it = effectedReacKeys.begin(); it != itEnd; ++it)
                     {
-                      CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
+                      CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
                       effectedReacList.append(FROM_UTF8(reac->getObjectName()));
                       effectedReacList.append(", ");
                     }
@@ -506,7 +507,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                                  // Yes or Enter
+            case 0:                                   // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -519,7 +520,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                                  // No or Escape
+            case 1:                                   // No or Escape
               break;
             }
         }

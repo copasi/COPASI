@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/29 23:34:55 $
+   $Author: ssahle $ 
+   $Date: 2004/05/19 10:07:44 $
    End CVS Header */
 
 /****************************************************************************
@@ -47,19 +47,40 @@ class CompartmentsWidget : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
-    virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
+    virtual void slotDoubleClicked(int, int, int, const QPoint &);
     virtual void slotTableSelectionChanged();
+    virtual void slotValueChanged(int, int);
+    virtual void slotCurrentChanged(int, int);
+
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void slotBtnDeleteClicked();
-    virtual void tableValueChanged(int, int);
-
-    virtual void CurrentValueChanged(int, int);
 
   private:
     void fillTable();
-    void createNewObject();
+    void saveTable();
+    //void createNewObject();
+    void updateRow(const C_INT32 row);
+    QString createNewName(const QString name);
+    void resizeTable(const unsigned C_INT32 numRows);
+
+    //specific
+    void init();
+    void tableLineFromObject(const CCopasiObject* obj, std::vector<QString>& list);
+    void tableLineToObject(const C_INT32 row, CCopasiObject* obj);
+    CCopasiObject* createNewObject(const std::string & name);
+    void deleteObjects(const std::vector<std::string> & keys);
+
+    void defaultTableLineContent(std::vector<QString>& list);
+    QString defaultObjectName();
+
+    C_INT32 numCols;
+    std::vector<bool> mFlagChanged;
+    std::vector<bool> mFlagDelete;
+    std::vector<bool> mFlagNew;
+    std::vector<bool> mFlagRenamed;
+
+    bool mIgnoreUpdates;
 
     int m_SavedCol;
     int m_SavedRow;
