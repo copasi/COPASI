@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/30 14:22:32 $
+   $Date: 2005/03/30 14:41:32 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -164,7 +164,7 @@ template <class CType> class CVector
      * @param const CType & value
      * @return CVector <CType> & lhs
      */
-    virtual CVector< CType > & operator = (const CType & value)
+    CVector< CType > & operator = (const CType & value)
     {
       unsigned C_INT32 i;
       CType * tmp = mVector;

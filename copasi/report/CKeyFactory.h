@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 21:21:31 $
+   $Date: 2005/03/30 14:37:42 $
    End CVS Header */
 
 /**
@@ -55,7 +55,7 @@ class CKeyFactory
       public:
         CDecisionVector(const std::string & str);
 
-        ~CDecisionVector();
+        virtual ~CDecisionVector();
 
         const bool & operator () (const unsigned char & c) const;
       };
