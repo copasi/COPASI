@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 11:00:17 $
+   $Date: 2004/06/21 15:20:56 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -39,30 +39,30 @@ class SBMLImporter
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
      */
-    CModel* createCModelFromSBMLDocument(SBMLDocument* doc) throw(StdException);
+    CModel* createCModelFromSBMLDocument(SBMLDocument* doc);
 
     /**
      * Creates and returns a Copasi CCompartment from the SBML Compartment
      * given as argument.
      */
-    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel) throw(StdException);
+    CCompartment* createCCompartmentFromCompartment(const Compartment* sbmlComp, CModel* copasiModel);
 
     /**
      * Creates and returns a Copasi CMetab from the given SBML Species object.
      */
-    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment) throw(StdException);
+    CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment);
 
     /**
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel) throw(StdException);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel);
 
     /**
      * Traverses the brach of the given AST node recursively and prefixes all substrate
      * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
      */
-    void replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction);
+    void replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction, const Model* sbmlModel);
 
     /**
      * Recursively replaces all parameter names in the branch of the given AST node
@@ -104,24 +104,24 @@ class SBMLImporter
      * Returns the copasi VolumeUnit corresponding to the given SBML Volume
      *  UnitDefinition.
      */
-    CModel::VolumeUnit handleVolumeUnit(const UnitDefinition* uDef) throw (StdException);
+    CModel::VolumeUnit handleVolumeUnit(const UnitDefinition* uDef);
 
     /**
      * Returns the copasi QuantityUnit corresponding to the given SBML
      *  Substance UnitDefinition.
      */
-    CModel::QuantityUnit handleSubstanceUnit(const UnitDefinition* uDef) throw (StdException);
+    CModel::QuantityUnit handleSubstanceUnit(const UnitDefinition* uDef);
 
     /**
      * Returns the copasi TimeUnit corresponding to the given SBML Time
      *  UnitDefinition.
      */
-    CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef) throw (StdException);
+    CModel::TimeUnit handleTimeUnit(const UnitDefinition* uDef);
 
   public:
     SBMLImporter();
     ~SBMLImporter();
-    CModel* readSBML(std::string filename, CFunctionDB* funDB) throw(StdException);
+    CModel* readSBML(std::string filename, CFunctionDB* funDB);
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 11:31:10 $
+   $Date: 2004/06/21 15:20:55 $
    End CVS Header */
 
 #include <iostream>
@@ -36,7 +36,7 @@
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) throw(StdException)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument)
 {
   Model* sbmlModel = sbmlDocument->getModel();
   /* Create an empty model and set the title. */
@@ -157,7 +157,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
  * given as argument.
  */
 CCompartment*
-SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel) throw(StdException)
+SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment, CModel* copasiModel)
 {
   if (sbmlCompartment->isSetUnits())
     {
@@ -195,7 +195,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment) throw(StdException)
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment)
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
@@ -259,7 +259,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel) throw(StdException)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel)
 {
   /* Check if the name of the reaction is unique. */
   if (sbmlReaction == NULL)
@@ -433,7 +433,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       DebugFile << "Replacing the user defined functions failed." << std::endl;
       throw StdException("Error. Replacing the user defined functions failed.");
     }
-  this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
+  this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction, sbmlModel);
   this->replacePowerFunctionNodes(node);
   /* if it is a single compartment reaction, we have to devide the whole kinetic
   ** equation by the volume of the compartment because copasi expects
@@ -736,7 +736,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
  * parameters with "substrate_", all product parameters with "product_" and all modifier parameters with "modifier_".
  */
 void
-SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction)
+SBMLImporter::replaceSubstanceNames(ConverterASTNode* node, const Reaction* reaction, const Model* sbmlModel)
 {
   std::map< std::string, std::map<std::string, std::string> > substances;
   substances["substrates"] = std::map< std::string, std::string >();
@@ -976,7 +976,7 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
  * caller.
  */
 CModel*
-SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdException)
+SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB)
 {
   if (funDB != NULL)
     {
@@ -1011,7 +1011,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdExcept
  *  Substance UnitDefinition.
  */
 CModel::QuantityUnit
-SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef) throw (StdException)
+SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
   CModel::QuantityUnit qUnit = CModel::Mol;
   if (uDef == NULL)
@@ -1090,7 +1090,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef) throw (StdExceptio
  *  UnitDefinition.
  */
 CModel::TimeUnit
-SBMLImporter::handleTimeUnit(const UnitDefinition* uDef) throw(StdException)
+SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
   CModel::TimeUnit tUnit = CModel::s;
   if (uDef == NULL)
@@ -1177,7 +1177,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef) throw(StdException)
  *  UnitDefinition.
  */
 CModel::VolumeUnit
-SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef) throw (StdException)
+SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
   CModel::VolumeUnit vUnit = CModel::l;
   if (uDef == NULL)
