@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Stefan Hoops (Virginia Bioinformatics Institute - 0477) -->
-<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<!-- edited with XMLSpy v2005 sp2 U (http://www.altova.com) by Stefan Hoops (VBI) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="COPASI" id="copasi.COPASI">
     <xs:annotation>
       <xs:documentation>The root of a COPASI xml file.</xs:documentation>
@@ -8,6 +8,9 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="ListOfFunctions" id="copasi.ListOfFunctions" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The list of functions used by the current model. If there are no functions in the model this element must not occur.</xs:documentation>
+          </xs:annotation>
           <xs:complexType mixed="true">
             <xs:sequence>
               <xs:element name="Function" type="cFUNCTION" maxOccurs="unbounded"/>
@@ -193,6 +196,9 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="ListOfTasks" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The list of tasks defined for  the current model. If there are no tasks defined this element must not occur.</xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Task" maxOccurs="unbounded">
@@ -204,7 +210,7 @@
                         <xs:complexContent>
                           <xs:extension base="cPARAMETER_LIST">
                             <xs:sequence>
-                              <xs:element name="InitialState" id="copasi.Model.InitialState" minOccurs="0">
+                              <xs:element name="InitialState" id="copasiTask.Problem.InitialState" minOccurs="0">
                                 <xs:complexType>
                                   <xs:simpleContent>
                                     <xs:extension base="cSTATE_TYPE"/>
@@ -235,6 +241,7 @@
                       </xs:unique>
                     </xs:element>
                   </xs:sequence>
+                  <xs:attribute name="key" type="cTASK_KEY" use="required"/>
                   <xs:attribute name="name" type="xs:string" use="required"/>
                   <xs:attribute name="type" use="required">
                     <xs:simpleType>
@@ -294,24 +301,68 @@
             <xs:sequence>
               <xs:element name="PlotSpecification" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:extension base="cPLOTITEM">
-                    <xs:sequence>
-                      <xs:element name="ListOfPlotItems" minOccurs="1">
-                        <xs:complexType>
-                          <xs:sequence>
-                            <xs:element name="PlotItem" type="cPLOTITEM" minOccurs="1" maxOccurs="unbounded"/>
-                          </xs:sequence>
-                        </xs:complexType>
-                      </xs:element>      I   
-                    </xs:sequence>  
-                    <xs:attribute name="active" type="xs:boolean" use="optional" default="true"/>
-                  </xs:extension>
+                  <xs:complexContent>
+                    <xs:extension base="cPLOTITEM">
+                      <xs:sequence>
+                        <xs:element name="ListOfPlotItems">
+                          <xs:complexType>
+                            <xs:sequence>
+                              <xs:element name="PlotItem" type="cPLOTITEM" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                      <xs:attribute name="active" type="xs:boolean" use="optional" default="true"/>
+                    </xs:extension>
+                  </xs:complexContent>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
-        </xs:element>    
+        </xs:element>
+        <xs:element name="GUI" id="copasi.GUI" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ListOfSliders" id="copasi.GUI.ListOfSliders" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Slider" id="copasi.GUI.ListOfSliders.Sliders" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="cSLIDER_KEY" use="required"/>
+                        <xs:attribute name="associatedEntityKey" type="cKEYREF" use="required"/>
+                        <xs:attribute name="objectCN" type="xs:string" use="required" id="copasi.GUI.ListOfSliders.Sliders.objectCN"/>
+                        <xs:attribute name="objectType" use="required" id="copasi.GUI.ListOfSliders.Sliders.objectType">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                              <xs:enumeration value="float"/>
+                              <xs:enumeration value="unsignedFloat"/>
+                              <xs:enumeration value="integer"/>
+                              <xs:enumeration value="unsignedInteger"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="objectValue" type="xs:double" use="required" id="copasi.GUI.ListOfSliders.Sliders.objectValue"/>
+                        <xs:attribute name="minValue" type="xs:double" use="required" id="copasi.GUI.ListOfSliders.Sliders.minValue"/>
+                        <xs:attribute name="maxValue" type="xs:double" use="required" id="copasi.GUI.ListOfSliders.Sliders.maxValue"/>
+                        <xs:attribute name="tickNumber" type="xs:positiveInteger" use="optional" default="1000"/>
+                        <xs:attribute name="tickFactor" type="xs:positiveInteger" use="optional" default="100"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="updateRanges" type="xs:boolean" use="optional" default="true"/>
+                  <xs:attribute name="autoExecuteTask" type="xs:boolean" use="optional" default="true"/>
+                </xs:complexType>
+                <xs:unique name="SliderObject">
+                  <xs:selector xpath="Slider"/>
+                  <xs:field xpath="@objectCN"/>
+                </xs:unique>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
+      <xs:attribute name="versionMajor" type="xs:integer"/>
+      <xs:attribute name="versionMinor" type="xs:integer"/>
     </xs:complexType>
     <xs:unique name="ModelStateVariableReference">
       <xs:selector xpath="Model| Model/*/*"/>
@@ -495,33 +546,39 @@
     <xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
   </xs:complexType>
   <xs:complexType name="cPLOTITEM">
-    <xs:extension base="cPARAMETER_LIST">
-      <xs:sequence>
-        <xs:element name="ListOfChannels" minOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="ChannelSpec" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:extension base="cOBJECT">
-                    <xs:attribute name="min" type="xs:double" use="optional"/>
-                    <xs:attribute name="max" type="xs:double" use="optional"/>
-                  </xs:extension>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-      <xs:attribute name="type" use="required">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="Unset"/>
-          <xs:enumeration value="Curve2d"/>
-          <xs:enumeration value="Plot2d"/>
-          <xs:enumeration value="SimWiz"/>
-        </xs:restriction>
-      </xs:attribute> 
-    </xs:extension>  
-  </xs:complexType> 
+    <xs:complexContent>
+      <xs:extension base="cPARAMETER_LIST">
+        <xs:sequence>
+          <xs:element name="ListOfChannels">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ChannelSpec" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:complexContent>
+                      <xs:extension base="cOBJECT">
+                        <xs:attribute name="min" type="xs:double" use="optional"/>
+                        <xs:attribute name="max" type="xs:double" use="optional"/>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="Unset"/>
+              <xs:enumeration value="Curve2d"/>
+              <xs:enumeration value="Plot2d"/>
+              <xs:enumeration value="SimWiz"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:simpleType name="cKEY" id="copasi.KEY">
     <xs:restriction base="xs:ID">
       <xs:pattern value="[_a-zA-Z]+_\d+"/>
@@ -572,6 +629,16 @@
       <xs:pattern value="Report_\d+"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="cTASK_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Task_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSLIDER_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="Slider_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="cKEYREF" id="copasi.KEYREF">
     <xs:restriction base="xs:IDREF">
       <xs:pattern value="[_a-zA-Z]+_\d+"/>
@@ -620,6 +687,16 @@
   <xs:simpleType name="cREPORT_KEYREF">
     <xs:restriction base="cKEYREF">
       <xs:pattern value="Report_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cTASK_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Task_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSLIDER_KEYREF">
+    <xs:restriction base="cKEYREF">
+      <xs:pattern value="Slider_\d+"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
