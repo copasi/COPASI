@@ -28,11 +28,12 @@ CMathNode::CMathNode(const std::string & data, CMathNode * pParent):
 
 CMathNode::~CMathNode() {}
 
-std::string & CMathNode::getData()
-{return getChild()->getData();}
-
 std::string CMathNode::getData() const
-  {return getChild()->getData();}
+  {
+    CMathNode * pC = (CMathNode *) getChild();
+    if (pC) return pC->getData();
+    else return "@@@";
+  }
 
 bool CMathNode::setData(const std::string & data)
 {
@@ -56,9 +57,6 @@ CMathNodeOperation::CMathNodeOperation(const CMathNodeOperation & src):
 
 CMathNodeOperation::~CMathNodeOperation() {}
 
-std::string & CMathNodeOperation::getData()
-{return mData = ((const CMathNodeOperation *) this)->getData();}
-
 std::string CMathNodeOperation::getData() const
   {
     std::stringstream text;
@@ -66,15 +64,31 @@ std::string CMathNodeOperation::getData() const
 
     if (pChild)
       {
-        text << pChild->getData() << mData;
+        text << pChild->getData();
 
+        std::string tmp;
         if (pChild->getSibbling())
-          text << ((CMathNode *) pChild->getSibbling())->getData();
+          tmp = ((CMathNode *) pChild->getSibbling())->getData();
         else
-          text << "-?-";
+          tmp = "@@@";
+
+        if (mData == "+" && tmp[0] == '-')
+          {
+            tmp = tmp.substr(1);
+            text << "-";
+          }
+        else if (mData == "-" && tmp[0] == '-')
+          {
+            tmp = tmp.substr(1);
+            text << "+";
+          }
+        else
+          text << mData;
+
+        text << tmp;
       }
     else
-      text << "-?-" << mData << "-?-";
+      text << "@@@" << mData << "@@@";
 
     return text.str();
   }
@@ -90,29 +104,26 @@ CMathNodeDerivative::CMathNodeDerivative(const CMathNodeDerivative &src):
 
 CMathNodeDerivative::~CMathNodeDerivative() {}
 
-std::string & CMathNodeDerivative::getData()
-{return mData = ((const CMathNodeDerivative *) this)->getData();}
-
 std::string CMathNodeDerivative::getData() const
   {
     std::stringstream text;
     CMathNode * pChild = (CMathNode *) getChild();
 
-    text << mData << " ";
+    text << "(" << mData << " ";
 
     if (pChild)
       {
-        text << pChild->getData() << "(";
+        text << pChild->getData() << ")(";
 
         if (pChild->getSibbling())
           text << ((CMathNode *) pChild->getSibbling())->getData();
         else
-          text << "-?-";
+          text << "@@@";
 
         text << ")";
       }
     else
-      text << "-?-(-?-)";
+      text << "@@@)(@@@)";
 
     return text.str();
   }
@@ -128,10 +139,7 @@ CMathNodeNumber::CMathNodeNumber(const CMathNodeNumber &src):
 
 CMathNodeNumber::~CMathNodeNumber() {}
 
-std::string & CMathNodeNumber::getData() {return mData;}
-
-std::string CMathNodeNumber::getData() const
-  {return mData;}
+std::string CMathNodeNumber::getData() const {return mData;}
 
 bool CMathNodeNumber::setData(const C_FLOAT64 & number)
 {
@@ -155,8 +163,6 @@ CMathNodeSymbol::CMathNodeSymbol(const CMathNodeSymbol & src):
 
 CMathNodeSymbol::~CMathNodeSymbol() {}
 
-std::string & CMathNodeSymbol::getData() {return mData;}
-
 std::string CMathNodeSymbol::getData() const {return mData;}
 
 bool CMathNodeSymbol::setData(const CMathSymbol * pSymbol)
@@ -166,7 +172,7 @@ bool CMathNodeSymbol::setData(const CMathSymbol * pSymbol)
   if (mpSymbol)
     mData = mpSymbol->getName();
   else
-    mData = "-?-";
+    mData = "@@@";
 
   return true;
 }
@@ -181,9 +187,6 @@ CMathNodeFunction::CMathNodeFunction(const CMathNodeFunction & src):
 {}
 
 CMathNodeFunction::~CMathNodeFunction() {}
-
-std::string & CMathNodeFunction::getData()
-{return mData = ((const CMathNodeFunction *) this)->getData();}
 
 std::string CMathNodeFunction::getData() const
   {
@@ -207,9 +210,6 @@ CMathNodeList::CMathNodeList(const CMathNodeList & src):
 {}
 
 CMathNodeList::~CMathNodeList() {}
-
-std::string & CMathNodeList::getData()
-{return mData = ((const CMathNodeList *) this)->getData();}
 
 std::string CMathNodeList::getData() const
   {

@@ -30,8 +30,6 @@ class CMathNode: public CCopasiNode< std::string >
 
     virtual ~CMathNode();
 
-    virtual std::string & getData();
-
     virtual std::string getData() const;
 
     virtual bool setData(const std::string & data);
@@ -54,8 +52,6 @@ class CMathNodeOperation: public CMathNode
 
     virtual ~CMathNodeOperation();
 
-    virtual std::string & getData();
-
     virtual std::string getData() const;
   };
 
@@ -68,8 +64,6 @@ class CMathNodeDerivative: public CMathNodeOperation
     CMathNodeDerivative(const CMathNodeDerivative &src);
 
     virtual ~CMathNodeDerivative();
-
-    virtual std::string & getData();
 
     virtual std::string getData() const;
   };
@@ -84,8 +78,6 @@ class CMathNodeNumber: public CMathNode
     CMathNodeNumber(const CMathNodeNumber &src);
 
     virtual ~CMathNodeNumber();
-
-    virtual std::string & getData();
 
     virtual std::string getData() const;
 
@@ -106,8 +98,6 @@ class CMathNodeSymbol: public CMathNode
 
     virtual ~CMathNodeSymbol();
 
-    virtual std::string & getData();
-
     virtual std::string getData() const;
 
     virtual bool setData(const CMathSymbol * pSymbol);
@@ -123,8 +113,6 @@ class CMathNodeFunction: public CMathNodeSymbol
 
     virtual ~CMathNodeFunction();
 
-    virtual std::string & getData();
-
     virtual std::string getData() const;
   };
 
@@ -137,8 +125,6 @@ class CMathNodeList: public CMathNode
     CMathNodeList(const CMathNodeList & src);
 
     virtual ~CMathNodeList();
-
-    virtual std::string & getData();
 
     virtual std::string getData() const;
   };

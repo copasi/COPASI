@@ -10,6 +10,7 @@
 #include "CMathModel.h"
 #include "CMathConstant.h"
 #include "CMathVariable.h"
+#include "CMathNode.h"
 #include "CMathEq.h"
 
 #include "model/CModel.h"
@@ -23,19 +24,21 @@ CMathModel::CMathModel():
     mpTime(NULL),
     mFunctionList(),
     mConstantsList(),
-    mEqList()
+    mEqList(),
+    mpConversionFactor(NULL)
 {}
 
 CMathModel::CMathModel(const CMathModel & src):
     mpModel(src.mpModel),
-    mCompartmentList(src.mCompartmentList),
-    mMetabList(src.mMetabList),
-    mFixedMetabList(src.mFixedMetabList),
-    mVolumeList(src.mVolumeList),
-    mpTime(src.mpTime),
-    mFunctionList(src.mFunctionList),
-    mConstantsList(src.mConstantsList),
-    mEqList(src.mEqList)
+    mCompartmentList(),
+    mMetabList(),
+    mFixedMetabList(),
+    mVolumeList(),
+    mpTime(NULL),
+    mFunctionList(),
+    mConstantsList(),
+    mEqList(),
+    mpConversionFactor(NULL)
 {compile();}
 
 CMathModel::~CMathModel()
@@ -48,6 +51,7 @@ CMathModel::~CMathModel()
   clearList((std::map< std::string, CMathSymbol * > *) & mFunctionList);
   clearList((std::map< std::string, CMathSymbol * > *) & mConstantsList);
   clearEqList();
+  pdelete(mpConversionFactor)
 }
 
 bool CMathModel::setModel(const CModel * pModel)
@@ -72,11 +76,27 @@ bool CMathModel::compile()
   if (!buildFunctionList()) Success = false;
   if (!buildConstantsList()) Success = false;
 
+  /* We create a symbol for the conversion factor */
+  CCopasiObjectReference< C_FLOAT64 > & Reference =
+    * (CCopasiObjectReference< C_FLOAT64 > *) const_cast<CModel *>(mpModel)->
+    getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+
+  mpConversionFactor = new CMathConstantReference(Reference);
+  std::string Name("QCF");
+  mpConversionFactor->setName(Name);
+
   if (!compileCompartmentList()) Success = false;
   if (!compileMetabList()) Success = false;
   if (!compileFixedMetabList()) Success = false;
 
   if (!buildEqList()) Success = false;
+
+  unsigned C_INT32 i, imax;
+  for (i = 0, imax = mEqList.size(); i < imax; i++)
+    {
+      std::cout << mEqList[i]->getLeft().getRoot()->getData() << " = ";
+      std::cout << mEqList[i]->getRight().getRoot()->getData() << std::endl << std::endl;
+    }
 
   return Success;
 }
@@ -317,6 +337,14 @@ bool CMathModel::clearEqList()
   for (; it != end; it++)
     pdelete(*it);
 
+  std::map< std::string, CMathVariableMetab * >::iterator itM =
+    mMetabList.begin();
+  std::map< std::string, CMathVariableMetab * >::iterator endM =
+    mMetabList.end();
+
+  for (; itM != endM; itM++)
+    itM->second->setEq(NULL);
+
   return Success;
 }
 
@@ -334,34 +362,140 @@ bool CMathModel::buildEqList()
   std::map< std::string, CMathVariableMetab *>::iterator it =
     mMetabList.begin();
 
+  /* Create equation and crossreferences with metabolites */
   for (i = 0; i < imax; i++, it++)
     {
       pEq = new CMathEq;
       pEq->setVariable(it->second);
       it->second->setEq(pEq);
       mEqList[i] = pEq;
+
+      CMathNodeDerivative * pD = new CMathNodeDerivative;
+      pD->addChild(new CMathNodeSymbol(CMathSymbol::find(mpModel)));
+      pD->addChild(new CMathNodeSymbol(it->second));
+
+      pEq->getLeft().attachNode(pD);
     }
 
-  const CCopasiVector< CReaction > & ReactionList =
-    mpModel->getReactions();
+  /* Now loop through all reactions */
+  const CCopasiVector< CReaction > & ReactionList = mpModel->getReactions();
 
-  imax = ReactionList.size();
-
-  const CReaction * pReaction;
-
-  for (i = 0; i < imax; i++)
+  for (i = 0, imax = ReactionList.size(); i < imax; i++)
     {
-      pReaction = ReactionList[i];
+      const CReaction * pReaction = ReactionList[i];
 
-      const CCopasiVector<CChemEqElement> & Balances =
-        pReaction->getChemEq().getBalances();
-      unsigned C_INT32 j, jmax = Balances.size();
-      for (j = 0; j < jmax; j++)
+      /* loop through all participating metabolites */
+      const CCopasiVector < CChemEqElement > * ChemEq =
+        & pReaction->getChemEq().getBalances();
+
+      unsigned C_INT32 j, jmax;
+      for (j = 0, jmax = ChemEq->size(); j < jmax; j++)
         {
-          pEq = ((CMathVariable *) CMathSymbol::find(&Balances[i]->getMetabolite()))->getEq();
-          pEq->getRight().attachNode(new CMathNodeNumber(Balances[i]->getMultiplicity()));
+          const CMetab * pMetab = &(*ChemEq)[j]->getMetabolite();
+
+          /* skip fixed metabolites */
+          if (pMetab->getStatus() == CMetab::METAB_FIXED) continue;
+
+          CMathNodeFunction * pFunction = createFunction(pReaction);
+          CMathNode * pScalingFactor = createScalingFactor(pReaction);
+          CMathNodeOperation * pComponent =
+            createComponent((*ChemEq)[j],
+                            pScalingFactor,
+                            pFunction);
+
+          CCopasiTree< CMathNode > & Tree =
+            ((CMathVariable *) CMathSymbol::find(pMetab))->getEq()->getRight();
+
+          CMathNode * pChild = (CMathNode *) Tree.getRoot()->getChild();
+          if (pChild)
+            {
+              CMathNodeOperation * pNew = new CMathNodeOperation("+");
+              pNew->addChild(pComponent);
+              Tree.attachNode(pNew);
+              Tree.moveNode(pChild, pNew, pNew);
+            }
+          else
+            Tree.attachNode(pComponent);
         }
     }
 
   return Success;
+}
+
+CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
+{
+  CMathNodeFunction * pF =
+    new CMathNodeFunction(CMathSymbol::find(&pReaction->getFunction()));
+
+  CMathNodeList * pL = new CMathNodeList();
+  CMathNodeList * pV;
+
+  pF->addChild(pL);
+
+  const CFunctionParameters & Description =
+    pReaction->getFunction().getParameters();
+  const CCallParameters & Objects = pReaction->getCallParameterObjects();
+
+  unsigned C_INT32 i, imax = Description.size();
+  unsigned C_INT32 j, jmax;
+
+  for (i = 0; i < imax; i++)
+    {
+      if (Description[i]->getType() < CFunctionParameter::VINT32)
+        pL->addChild(new CMathNodeSymbol(CMathSymbol::find((CCopasiObject *)Objects[i])));
+      else
+        {
+          pV = new CMathNodeList();
+          pL->addChild(pV);
+
+          std::vector< CCopasiObject * > * V =
+            (std::vector< CCopasiObject * > *) Objects[i];
+
+          jmax = V->size();
+
+          for (j = 0; j < jmax; j++)
+            pV->addChild(new CMathNodeSymbol(CMathSymbol::find((*V)[j])));
+        }
+    }
+
+  return pF;
+}
+
+CMathNodeOperation *
+CMathModel::createComponent(const CChemEqElement * pElement,
+                            CMathNode * pScalingFactor,
+                            CMathNodeFunction * pFunction)
+{
+  CMathNodeOperation * pC = new CMathNodeOperation("*");
+
+  pC->addChild(new CMathNodeNumber(pElement->getMultiplicity()));
+  pC->addChild(pScalingFactor);
+
+  CMathNodeOperation * pNew = new CMathNodeOperation("*");
+  pNew->addChild(pC);
+  pC = pNew;
+
+  pC->addChild(pFunction);
+
+  return pC;
+}
+
+CMathNode * CMathModel::createScalingFactor(const CReaction * pReaction)
+{
+  CMathNode * pS;
+  if (pReaction->getCompartmentNumber() == 1)
+    {
+      pS = new CMathNodeOperation("*");
+      pS->addChild(new CMathNodeSymbol(mpConversionFactor));
+
+      const CCopasiObject * pObject =
+        pReaction->getChemEq().getBalances()[0]->getMetabolite().getCompartment();
+
+      pS->addChild(new CMathNodeSymbol(CMathSymbol::find(pObject)));
+    }
+
+  else
+    pS = new CMathNodeNumber(mpConversionFactor->getValue());
+
+  return pS;
 }

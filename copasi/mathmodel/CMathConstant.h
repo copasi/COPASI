@@ -17,6 +17,7 @@
 class CMetab;
 class CMathVariableMetab;
 class CMathConstantCompartment;
+template < class CType > class CCopasiObjectReference;
 
 /** @dia:pos -3.01499,-4.1693 */
 /** @dia:route CMathSymbol; v,-33.2334,-9.4956,-6.77622,9.59181,-4.1693 */
@@ -130,6 +131,62 @@ class CMathConstantMetab : public CMathConstant
      *
      */
     bool compile();
+  };
+
+class CMathConstantReference : public CMathConstant
+  {
+    // Attributes
+  private:
+    /**
+     *
+     */
+    static std::map< std::string, CCopasiObject * > mSelection;
+
+    // Operations
+  protected:
+    /**
+     *
+     */
+    CMathConstantReference();
+
+    /**
+     *
+     */
+    CMathConstantReference(const CMathConstantReference & src);
+
+  public:
+    /**
+     *
+     */
+    CMathConstantReference(const CCopasiObjectReference< C_FLOAT64 > & reference);
+
+    /**
+     *
+     */
+    ~CMathConstantReference();
+
+    /**
+     *
+     */
+    virtual bool setValue(const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    virtual const C_FLOAT64 & getValue() const;
+
+    /**
+     * Retreive the selection list
+     * @return const std::map< std::string, CCopasiObject * > & selectionList
+     */
+    static const std::map< std::string, CCopasiObject * > & getSelection();
+
+    /**
+     * Build the selection list
+     * @param const CModel * pModel
+     * @return bool Success
+     */
+    static bool buildSelection(const CModel * pModel);
   };
 
 /** @dia:pos 2.18922,32.6698 */

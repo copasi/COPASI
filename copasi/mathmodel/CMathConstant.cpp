@@ -14,6 +14,7 @@
 #include "model/CMetab.h"
 #include "model/CReaction.h"
 #include "model/CCompartment.h"
+#include "report/CCopasiObjectReference.h"
 
 CMathConstant::CMathConstant(const CMathConstant & src):
     CMathSymbol(src)
@@ -71,6 +72,26 @@ bool CMathConstantMetab::compile()
 
 CMathConstantCompartment & CMathConstantMetab::getCompartment() const
 {return *mpCompartment;}
+
+/* Reference */
+CMathConstantReference::CMathConstantReference(const CMathConstantReference & src):
+    CMathConstant(src)
+{}
+
+CMathConstantReference::CMathConstantReference(const CCopasiObjectReference< C_FLOAT64 > & reference):
+    CMathConstant(&reference)
+{assert(reference.isReference());}
+
+CMathConstantReference::~CMathConstantReference() {}
+
+bool CMathConstantReference::setValue(const C_FLOAT64 & value)
+{
+  *(C_FLOAT64 *)mpObject->getReference() = value;
+  return true;
+}
+
+const C_FLOAT64 & CMathConstantReference::getValue() const
+  {return *(C_FLOAT64 *)mpObject->getReference();}
 
 /* Parameter */
 std::map< std::string, CCopasiObject * > CMathConstantParameter::mSelection;

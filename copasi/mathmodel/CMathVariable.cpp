@@ -35,7 +35,7 @@ bool CMathVariable::setEq(CMathEq * eq, const CMathVariable::Type & type)
   return true;
 }
 
-CMathEq * CMathVariable:: getEq() {return mpEq;}
+CMathEq * CMathVariable::getEq() {return mpEq;}
 
 CMathVariable::Type CMathVariable::getType() const {return mType;}
 
@@ -126,7 +126,10 @@ CMathVariableTime::CMathVariableTime(const CMathVariableTime & src):
 
 CMathVariableTime::CMathVariableTime(const CModel & model):
     CMathVariable(& model)
-{}
+{
+  std::string Name("Time");
+  setName(Name);
+}
 
 CMathVariableTime::~CMathVariableTime() {}
 

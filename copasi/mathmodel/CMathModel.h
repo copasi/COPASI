@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "model/CReaction.h"
+
 class CModel;
 class CMathConstantCompartment;
 class CMathVariableMetab;
@@ -21,7 +23,11 @@ class CMathVariableVolume;
 class CMathVariableTime;
 class CMathSymbol;
 class CMathConstantParameter;
+class CMathConstantReference;
 class CMathEq;
+class CMathNode;
+class CMathNodeFunction;
+class CMathNodeOperation;
 
 /** @dia:pos 97.0405,-33.6536 */
 class CMathModel
@@ -79,6 +85,11 @@ class CMathModel
      *
      */
     std::vector< CMathEq * > mEqList;
+
+    /**
+     *
+     */
+    CMathConstantReference * mpConversionFactor;
 
     // Operations
   public:
@@ -217,6 +228,36 @@ class CMathModel
      *
      */
     bool buildEqList();
+
+    /**
+     *
+     */
+    CMathNode * createScalingFactor(const CReaction * pReaction);
+
+    /**
+     * Create a node presenting the kinetic function for a reaction
+     * including it list of parameters.
+     * @param const CReaction * pReaction
+     * @return CMathNodeFunction * pFunction
+     */
+    static CMathNodeFunction * createFunction(const CReaction * pReaction);
+
+    /**
+     *
+     */
+    static CMathNodeOperation * createComponent(const CChemEqElement * pElement,
+        CMathNode * pScalingFactor,
+        CMathNodeFunction * pFunction);
+
+    /**
+     *
+     */
+    static bool addParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
+
+    /**
+     *
+     */
+    static bool deleteParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
   };
 
 #endif // COPASI_CMathModel

@@ -20,7 +20,10 @@ std::string & CMathSymbol::alternateName(std::string & name)
   tmpName << name;
 
   while (mList.count(tmpName.str()))
-    tmpName << name << "_" << count++;
+    {
+      tmpName.seekp(0);
+      tmpName << name << "_" << count++;
+    }
 
   return name = tmpName.str();
 }
@@ -66,23 +69,25 @@ CMathSymbol::CMathSymbol(const CMathSymbol & src):
   mList[mName] = this;
 }
 
-CMathSymbol::~CMathSymbol() {mList.erase(mName);}
+CMathSymbol::~CMathSymbol()
+{
+  mList.erase(mName);
+}
 
 bool CMathSymbol::setName(std::string & name)
 {
+  bool Success = true;
+
   mList.erase(mName);
 
   mName = name;
-  if (alternateName(mName) == name)
-    {
-      mList[mName] = this;
-      return true;
-    }
-  else
-    {
-      mList[mName] = this;
-      return false;
-    }
+  if (alternateName(mName) == name) Success = true;
+  else Success = false;
+  name = mName;
+
+  mList[mName] = this;
+
+  return Success;
 }
 
 const std::string & CMathSymbol::getName() const {return mName;}
