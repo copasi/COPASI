@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/18 20:21:41 $
+   $Date: 2005/01/18 20:46:37 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -132,7 +132,7 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * Set the value of the parameter
      * @param const unsigned C_INT32 & value
-     * @return bool is ValidValue
+     * @return bool isValidValue
      */
     template <class CType> bool setValue(const CType & value)
     {
@@ -141,6 +141,15 @@ class CCopasiParameter: public CCopasiContainer
       * (CType *) mpValue = value;
       return true;
     }
+
+    /**
+     * Set the value of the parameter when the origin is a parameter group.
+     * This function is currently not implemented and creates a fatalError
+     * when called.
+     * @param const CCopasiParameter::parameterGroup& value
+     * @return bool false
+     */
+    bool setValue(const std::vector< CCopasiParameter * > & value);
 
     /**
      * Retrieve the private value of the parameter.
