@@ -450,6 +450,7 @@ void ScanWidget::deleteButtonClicked()
   scrollview->removeChild(selectedList[2*activeObject]);
   scrollview->removeChild(selectedList[2*activeObject + 1]);
 
+  ObjectListBox->removeItem (activeObject);
   int i = activeObject + 1;
   int offsetY = ((ScanItemWidget*)selectedList[1])->minimumSizeHint().height() + TITLE_HEIGHT;
 
