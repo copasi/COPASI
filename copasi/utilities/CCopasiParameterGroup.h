@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 14:35:50 $
+   $Date: 2005/01/18 20:22:32 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -58,6 +58,13 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Destructor
      */
     virtual ~CCopasiParameterGroup();
+
+    /**
+     * Assignement operator
+     * @param const CCopasiParameterGroup & rhs
+     * @return CCopasiParameterGroup & lhs
+     */
+    CCopasiParameterGroup & operator = (const CCopasiParameterGroup & rhs);
 
     /**
      * Retrieve the begin of an alphabetically sorted iterator
@@ -334,6 +341,24 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @param CCopasiParameter * pParameter
      */
     void addParameter(CCopasiParameter * pParameter);
+
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const CCopasiParameterGroup & A
+     * @return ostream & os
+     */
+    friend std::ostream & operator << (std::ostream & os, const CCopasiParameterGroup & A)
+    {
+      os << (CCopasiParameter) A;
+
+      index_iterator it = const_cast< parameterGroup * >(A.mpValue)->begin();
+      index_iterator end = const_cast< parameterGroup * >(A.mpValue)->end();
+
+      for (; it != end; ++it) os << **it;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CCopasiParameterGroup
