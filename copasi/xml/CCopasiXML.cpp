@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 16:53:09 $
+   $Date: 2003/11/24 20:57:20 $
    End CVS Header */
 
 /**
@@ -303,7 +303,8 @@ bool CCopasiXML::saveModel()
                 {
                   Attr.erase();
                   Attr.add("functionParameter",
-                           pReaction->getFunctionParameters()[j]->getKey());
+                           pReaction->
+                           getFunction().getParameters()[j]->getKey());
 
                   startSaveElement("CallParameter", Attr);
 
