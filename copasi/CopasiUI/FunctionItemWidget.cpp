@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.4 2003/10/04 16:28:31 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.5 2003/10/04 19:04:59 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -586,4 +586,6 @@ void FunctionItemWidget::slotButtonCancel()
 void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
 {
   strFunction = targetFunctionPtr;
+  textFunction->setText(strFunction->c_str());
+  textFunction->moveCursor(QTextEdit::MoveEnd, false);
 }

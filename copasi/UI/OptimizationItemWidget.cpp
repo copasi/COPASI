@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\OptimizationItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:08 2003
- **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.9 2003/10/04 18:55:20 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.cpp,v 1.10 2003/10/04 19:04:59 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -170,6 +170,7 @@ void OptimizationItemWidget::slotLowerEdit()
   //qWarning("OptimizationItemWidget::slotLowerEdit(): Not implemented yet");
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
+  strFunction = lineLower->text().latin1();
   pFuncDlg->setStrFunction(&strFunction);
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
@@ -188,6 +189,7 @@ void OptimizationItemWidget::slotUpperEdit()
   //qWarning("OptimizationItemWidget::slotUpperEdit(): Not implemented yet");
   std::string strFunction;
   FunctionItemWidget* pFuncDlg = new FunctionItemWidget(this);
+  strFunction = lineUpper->text().latin1();
   pFuncDlg->setStrFunction(&strFunction);
   if (pFuncDlg->exec () == QDialog::Accepted)
     {
