@@ -19,34 +19,34 @@ CopasiWidget::~CopasiWidget()
 
 void CopasiWidget::resize (int w, int h)
 {
-  if (w < maxMinWidth)
-    w = maxMinWidth;
-  else
-    maxMinWidth = w;
-  if (h < maxMinHeight)
-    h = maxMinHeight;
-  else
-    maxMinHeight = h;
-  QWidget::resize(w, h);
+  //need to calculate a minimum size for all widget
+  /*
+    if (w < maxMinWidth)
+      w = maxMinWidth;
+    else
+      maxMinWidth = w;
+    if (h < maxMinHeight)
+      h = maxMinHeight;
+    else
+      maxMinHeight = h;
+  */  QWidget::resize(w,  h);
 }
+
 void CopasiWidget::resizeEvent (QResizeEvent * event)
 {
   int i = 0;
-  QWidget::resizeEvent (event);
-}
+  int w = event->size().width();
+  int h = event->size().height();
 
-void CopasiWidget::resize (const QSize & newSize)
-{
-  int i = 0;
-  QWidget::resize(newSize);
-}
-void CopasiWidget::setGeometry (int x, int y, int w, int h)
-{
-  int i = 0;
-  QWidget::setGeometry(x, y, w, h);
-}
-void CopasiWidget::setGeometry (const QRect & rect)
-{
-  int i = 0;
-  QWidget::setGeometry(rect);
+  /*  if (w < maxMinWidth)
+      w = maxMinWidth;
+    else
+      maxMinWidth = w;
+    if (h < maxMinHeight)
+      h = maxMinHeight;
+    else
+      maxMinHeight = h;
+  */
+  if (w != 1) //if w==1 then means hide,
+    QWidget::resizeEvent (event);
 }

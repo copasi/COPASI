@@ -14,9 +14,6 @@ class CopasiWidget : public QWidget
     void resizeEvent (QResizeEvent *);
   public slots:
     virtual void resize (int w, int h);
-    void resize (const QSize &);
-    virtual void setGeometry (int x, int y, int w, int h);
-    virtual void setGeometry (const QRect &);
   public:
     static int maxMinWidth;
     static int maxMinHeight;
