@@ -16,7 +16,9 @@ CCopasiContainer * CCopasiContainer::Root = NULL;
 
 void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
 
-CCopasiContainer::CCopasiContainer() {}
+CCopasiContainer::CCopasiContainer() :
+    CCopasiObject("Root", NULL, "CN", CCopasiObject::Container)
+{}
 
 CCopasiContainer::CCopasiContainer(const std::string & name,
                                    const CCopasiContainer * pParent,
