@@ -60,11 +60,12 @@ InitMetabolites(CCopasiVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
 C_INT32 TestOutputEvent(void);
 
-C_INT main(void)
+C_INT main(C_INT argc, char *argv[])
 {
   cout << "Starting main program." << endl;
   Copasi = new CGlobals;
-    
+  Copasi->setArguments(argc, argv);
+  
   try
     {
       cout << "sizeof(long) = " << sizeof(long) << endl;
@@ -86,20 +87,21 @@ C_INT main(void)
       // TestReadSample();
       // TestTrajctory();
       // TestNewton();
-      TestSSSolution();
+      // TestSSSolution();
 
-      // TestTrajectory();
+      TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestMassAction();
       // TestFunctionDB();
       // TestBaseFunction();
-      // MakeFunctionDB();
       // TestModel();
       // TestLU();
       // TestMCA();
       // TestOutputEvent();        
-      CovertFunctionDB();
+
+      // MakeFunctionDB();
+      // CovertFunctionDB();
     }
 
   catch (CCopasiException Exception)
@@ -404,7 +406,10 @@ C_INT32 TestOutputEvent(void)
 
 C_INT32 TestTrajectory(void)
 {
-  CReadConfig inbuf("gps/NewtonTest.gps");
+  string InputFile(Copasi->Arguments[1]);
+  string OutputFile(Copasi->Arguments[2]);
+  CReadConfig inbuf(InputFile);
+  CWriteConfig outbuf(OutputFile);
   CModel model;
 
   // COutput output;
@@ -417,7 +422,10 @@ C_INT32 TestTrajectory(void)
   model.buildRedStoi();
   model.buildL();
   model.buildMoieties();
-    
+  model.save(outbuf);
+  
+  Copasi->OutputList.load(inbuf);
+  
   CTrajectory traj(&model, 20, 10.0, 1);
 
   traj.load(inbuf);

@@ -24,16 +24,10 @@ class CFunctionDB
   string mFilename;
 
   /**
-   *  Builtin Functions
-   *  :TODO: this should be removed their is no need to always create them
-   */
-  vector < CFunction * > mBuiltinFunctions;
-
-  /**
    *  Vector of the currently loaded functions
    *  @supplierCardinality 0..*
    */
-  CCopasiVectorN < CFunction > mLoadedFunctions;
+  CCopasiVectorNS < CFunction > mLoadedFunctions;
 
   // Operations
  public:
@@ -95,7 +89,7 @@ class CFunctionDB
    *  @param CKinFunction &function
    *  @return C_INT32 Fail
    */
-  void add(CKinFunction & function);
+  void add(CFunction & function);
 
   /**
    *  Delete the function functionName from the database
@@ -117,7 +111,7 @@ class CFunctionDB
    *  Retrieves the vector of loades functions.
    *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
    */
-  CCopasiVectorN < CFunction > & loadedFunctions();
+  CCopasiVectorNS < CFunction > & loadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

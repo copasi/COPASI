@@ -9,6 +9,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std ;
 
@@ -58,14 +59,19 @@ using namespace std ;
 
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG
+# ifdef __MAIN
+   ofstream DebugFile("trace");
+# else
+   extern ofstream DebugFile;
+#  endif // __MAIN
 # ifdef COPASI_TRACE_CONSTRUCTION
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
-  {cout << "Construct: " << typeid(*this).name() \
-        << ", \tAddress: " << (void *) this << endl;}
+    {DebugFile << "Construct: " << typeid(*this).name() \
+               << ", \tAddress: " << (void *) this << endl;}
 #  define DESTRUCTOR_TRACE \
- {cout << "Destruct: " << typeid(*this).name() \
-        << ", \tAddress: " << (void *) this << endl;}
+    {DebugFile << "Destruct: " << typeid(*this).name() \
+               << ", \tAddress: " << (void *) this << endl;}
 # else
 #  define CONSTRUCTOR_TRACE
 #  define DESTRUCTOR_TRACE

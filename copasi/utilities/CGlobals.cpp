@@ -10,9 +10,8 @@ CGlobals::CGlobals()
       FunctionDB.initialize();
       
       DefaultConc = 0.0;
-      CReadConfig inbuf("gps/DANNY.GPS");
-      OutputList.load(inbuf);
     }
+
   catch (CCopasiException Exception)
     {
       cout << Exception.getMessage().getText() << endl;
@@ -24,4 +23,14 @@ CGlobals::~CGlobals()
   FunctionDB.cleanup();
 }
 
+void CGlobals::setArguments(C_INT argc, char *argv[])
+{
+  C_INT i, imax = argc;
+  Arguments.resize(imax);
+
+  for (i=0; i<imax; i++)
+    Arguments[i] = argv[i];
+}
+
+      
 // CGlobals Copasi;

@@ -129,7 +129,7 @@ void CCopasiMessage::handler()
   if (mType == ERROR) 
     {
 #ifdef COPASI_DEBUG      
-      cout << mText << endl;
+      DebugFile << mText << endl;
 #endif // COPASI_DEBUG
       throw CCopasiException(*this);
     }

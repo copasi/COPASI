@@ -42,6 +42,12 @@ class CGlobals
    *
    */
   COutputList OutputList;
+
+  /**
+   *
+   */
+  vector <char *> Arguments;
+  
  public:
 
   // Operations
@@ -55,6 +61,12 @@ class CGlobals
    *
    */
   ~CGlobals();
+
+  /**
+   *
+   */
+  void setArguments(C_INT argc, char *argv[]);
+  
 };
 
 #ifdef __MAIN

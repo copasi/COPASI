@@ -13,29 +13,11 @@
 
 CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE;}
 
-void CFunctionDB::initialize() 
-{
-  /*
-  CMassAction *MassActionReversible   = new CMassAction(TriTrue);
-  mBuiltinFunctions.push_back(MassActionReversible);
-    
-  CMassAction *MassActionIrreversible = new CMassAction(TriFalse);
-  mBuiltinFunctions.push_back(MassActionIrreversible);
-  */
-}
+void CFunctionDB::initialize() {}
 
 CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE;}
 
-void CFunctionDB::cleanup()
-{
-  unsigned C_INT32 i;
-    
-  mLoadedFunctions.cleanup();
-    
-  for (i = 0; i < mBuiltinFunctions.size(); i++)
-    delete mBuiltinFunctions[i];
-  mBuiltinFunctions.clear();
-}
+void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
@@ -43,10 +25,13 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
 
-  if ((Fail = configbuffer.getVariable("TotalKinetics", "C_INT32", &Size,
-				       CReadConfig::LOOP)))
-    return Fail;
-    
+  if (configbuffer.getVersion() < "4")
+    configbuffer.getVariable("TotalUDKinetics", "C_INT32", &Size,
+                             CReadConfig::LOOP);
+  else
+    configbuffer.getVariable("TotalKinetics", "C_INT32", &Size,
+                             CReadConfig::LOOP);
+  
   for (C_INT32 i = 0; i < Size; i++)
     {
       // We should really read the function type first before we allocate,
@@ -66,8 +51,7 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
   if ((Fail = configbuffer.setVariable("TotalKinetics", "C_INT32", &Size)))
     return Fail;
 
-  for (C_INT32 i = 0; i < Size; i++)
-    mLoadedFunctions[i]->save(configbuffer);
+  mLoadedFunctions.save(configbuffer);
 
   return Fail;
 }
@@ -114,7 +98,7 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
   return mLoadedFunctions[Index];
 }
 
-void CFunctionDB::add(CKinFunction & function)
+void CFunctionDB::add(CFunction & function)
 {mLoadedFunctions.add(function);}
 
 // void CFunctionDB::dBDelete(const string & functionName)
@@ -132,5 +116,5 @@ CFunction * CFunctionDB::findFunction(const string & functionName)
   return dBLoad(functionName);
 }
 
-CCopasiVectorN < CFunction > & CFunctionDB::loadedFunctions()
+CCopasiVectorNS < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
