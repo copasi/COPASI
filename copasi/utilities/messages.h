@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/17 15:25:54 $
+   $Author: shoops $ 
+   $Date: 2005/01/05 18:02:28 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -67,6 +67,8 @@ MESSAGES Messages[] =
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
     {MCXML + 2, "XML (2): XML error (line: '%d', column: '%d'): '%s'."},
+    {MCXML + 3, "XML (3): Unknown Element '%s' encountered at line '%d'."},
+    {MCXML + 4, "XML (4): Unknown Parameter '%s' encountered at line '%d'."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
