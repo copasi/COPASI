@@ -6,6 +6,12 @@
 
 using namespace std;
 
+// node
+
+CDependencyGraphNode::CDependencyGraphNode()
+    : mNodeNumber(0)
+{}
+
 CDependencyGraphNode::CDependencyGraphNode(C_INT32 node_number)
     : mNodeNumber(node_number)
 {}
@@ -27,16 +33,22 @@ const vector<C_INT32> & CDependencyGraphNode::getDependents()
 {
   return mDependents;
 }
+
+// dependency graph
 CDependencyGraph::CDependencyGraph() {}
 CDependencyGraph::~CDependencyGraph() {}
 
 void CDependencyGraph::addNode(C_INT32 node)
 {
-  mNodes.push_back(node);
+  if (node >= mNodes.size())
+    mNodes.resize(node + 1);
+
+  //  mNodes.push_back(node);
 }
 
 void CDependencyGraph::addDependent(C_INT32 node, C_INT32 dependent)
 {
+  addNode(node) ;
   mNodes[node].addDependent(dependent);
 }
 

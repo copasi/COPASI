@@ -1,6 +1,7 @@
 #ifndef COPASI_CDependencyGraph
 #define COPASI_CDependencyGraph
 
+#include <iostream>
 #include <vector> 
 /**
  * CDependencyGraphNode describes a node in the dependency graph.
@@ -10,6 +11,12 @@ using std::vector;
 class CDependencyGraphNode
   {
   public:
+    /**
+     * Constructor
+     * @param react_num The number describing this node (usually corresponds to reaction number)
+     */
+    CDependencyGraphNode();
+
     /**
      * Constructor
      * @param react_num The number describing this node (usually corresponds to reaction number)
@@ -33,6 +40,21 @@ class CDependencyGraphNode
      * @return A vector of the dependents.
      */
     const vector<C_INT32> &getDependents();
+
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CDependencyGraphNode & d)
+    {
+      unsigned int i;
+
+      for (i = 0; i < d.mDependents.size(); i++)
+        os << d.mDependents[i] << "  " ;
+
+      os << endl;
+
+      return os;
+    }
 
   private:
     /**
@@ -88,6 +110,21 @@ class CDependencyGraph
      * A vector containing the nodes in the graph
      */
     vector<CDependencyGraphNode> mNodes;
+
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CDependencyGraph & d)
+    {
+      unsigned int i;
+
+      for (i = 0; i < d.mNodes.size(); i++)
+        os << d.mNodes[i] ;
+
+      os << endl;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CDependencyGraph
