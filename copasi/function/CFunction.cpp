@@ -118,6 +118,7 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   C_INT32 dummy, i, sizem, sizep;
   unsigned C_INT32 pos;
   string tmpstr1, tmpstr2;
+  CCopasiVectorNS < CUsageRange > tmpusage;
 
   if (mType == UserDefined)
     dummy = 1;
@@ -130,7 +131,12 @@ void CFunction::saveOld(CWriteConfig & configBuffer)
   configBuffer.setVariable("Substrates", "C_INT32", &dummy);
   dummy = mUsageDescriptions["PRODUCTS"]->getLow();
   configBuffer.setVariable("Products", "C_INT32", &dummy);
-  sizem = mParameters.getUsageRanges()["MODIFIER"]->getLow();
+  tmpusage = mParameters.getUsageRanges();
+  i = tmpusage.getIndex("MODIFIER");
+  if (i == -1)
+    sizem = 0;
+  else
+    sizem = tmpusage[i]->getLow();
   configBuffer.setVariable("Modifiers", "C_INT32", &sizem);
   sizep = mParameters.getUsageRanges()["PARAMETER"]->getLow();
   configBuffer.setVariable("Constants", "C_INT32", &sizep);
