@@ -90,7 +90,7 @@ void CComment::setText(CComment *text)
 //
 //////////////////////////////////////////////////
 CHeaderFooter::CHeaderFooter():
-    hObject(new CObject),
+    hObject(new CReportObject),
     hText(new CComment),
     hReport(new CReport)
 {}
@@ -105,10 +105,10 @@ void CHeaderFooter::cleanup()
   pdelete(hReport);
 }
 
-CObject* CHeaderFooter::getObject()
+CReportObject* CHeaderFooter::getObject()
 {return hObject;}
 
-void CHeaderFooter::setObject(CObject *object)
+void CHeaderFooter::setObject(CReportObject *object)
 {hObject = object;}
 
 CComment* CHeaderFooter::getText()
@@ -129,7 +129,7 @@ void CHeaderFooter::setReport(CReport *report)
 //
 //////////////////////////////////////////////////
 CBody::CBody():
-    bTable(new CTable),
+    bTable(new CReportTable),
     bReport(new CReport)
 {}
 
@@ -148,27 +148,27 @@ CReport* CBody::getReport()
 void CBody::setReport(CReport *report)
 {bReport = report;}
 
-CTable* CBody::getTable()
+CReportTable* CBody::getTable()
 {return bTable;}
 
-void CBody::setTable(CTable *table)
+void CBody::setTable(CReportTable *table)
 {bTable = table;}
 
 //////////////////////////////////////////////////
 //
-//class CObject
+//class CReportObject
 //
 //////////////////////////////////////////////////
-CObject::CObject()
+CReportObject::CReportObject()
 {}
 
-CObject::~CObject()
+CReportObject::~CReportObject()
 {}
 
-const std::string* CObject::getName()
+const std::string* CReportObject::getName()
 {return oName;}
 
-void CObject::setName(const std::string * name)
+void CReportObject::setName(const std::string * name)
 {oName = name;}
 
 //////////////////////////////////////////////////
@@ -209,36 +209,36 @@ void CReport::setAppend(bool append)
 
 //////////////////////////////////////////////////
 //
-//class CTable
+//class CReportTable
 //
 //////////////////////////////////////////////////
-CTable::CTable():
-    tObject(new CObject),
+CReportTable::CReportTable():
+    tObject(new CReportObject),
     tPrintTitle(true)
 {}
 
-CTable::~CTable()
+CReportTable::~CReportTable()
 {cleanup();}
 
-void CTable::cleanup()
+void CReportTable::cleanup()
 {
   pdelete(tObject);
 }
 
-CObject* CTable::getObject()
+CReportObject* CReportTable::getObject()
 {return tObject;}
 
-void CTable::setObject(CObject *object)
+void CReportTable::setObject(CReportObject *object)
 {tObject = object;}
 
-const std::string* CTable::getSeperator()
+const std::string* CReportTable::getSeperator()
 {return tSeperator;}
 
-void CTable::setSeperator(const std::string *seperator)
+void CReportTable::setSeperator(const std::string *seperator)
 {tSeperator = seperator;}
 
-bool CTable::printTitle()
+bool CReportTable::printTitle()
 {return tPrintTitle;}
 
-void CTable::setPrintTitle(bool printTitle)
+void CReportTable::setPrintTitle(bool printTitle)
 {tPrintTitle = printTitle;}

@@ -13,9 +13,9 @@ class CReportDefinition;
 class CComment;
 class CHeaderFooter;
 class CBody;
-class CObject;
+class CReportObject;
 class CReport;
-class CTable;
+class CReportTable;
 
 class CReportDefinition
   {
@@ -121,7 +121,7 @@ class CComment
 class CHeaderFooter
   {
   private:
-    CObject *hObject;
+    CReportObject *hObject;
     CComment *hText;
     CReport *hReport;
 
@@ -142,14 +142,14 @@ class CHeaderFooter
     ~CHeaderFooter();
 
     /**
-    gets the Object in the Header or Footer tag
+    gets the Report Object in the Header or Footer tag
     */
-    CObject* getObject();
+    CReportObject* getObject();
 
     /**
     sets the Object in the Header or Footer tag
     */
-    void setObject(CObject *object);
+    void setObject(CReportObject *object);
 
     /**
     gets the Text in the Header or Footer tag
@@ -176,7 +176,7 @@ class CBody
   {
   private:
     CReport *bReport;
-    CTable *bTable;
+    CReportTable *bTable;
 
   public:
     /**
@@ -207,15 +207,15 @@ class CBody
     /**
     gets the Table tag  in the Body Tag
     */
-    CTable* getTable();
+    CReportTable* getTable();
 
     /**
     sets the Table tag in the Body tag
     */
-    void setTable(CTable *table);
+    void setTable(CReportTable *table);
   };
 
-class CObject
+class CReportObject
   {
   private:
     const std::string * oName;
@@ -224,12 +224,12 @@ class CObject
     /**
         *  Default constructor.
         */
-    CObject();
+    CReportObject();
 
     /**
      *  Destructor.
      */
-    ~CObject();
+    ~CReportObject();
 
     /**
     returns the name of the Object Tag
@@ -296,10 +296,10 @@ class CReport
     void setAppend(bool append);
   };
 
-class CTable
+class CReportTable
   {
   private:
-    CObject *tObject;
+    CReportObject *tObject;
     const std::string * tSeperator;
     bool tPrintTitle;
 
@@ -307,7 +307,7 @@ class CTable
     /**
         *  Default constructor.
         */
-    CTable();
+    CReportTable();
 
     /**
     cleanup
@@ -317,17 +317,17 @@ class CTable
     /**
        *  Destructor.
        */
-    ~CTable();
+    ~CReportTable();
 
     /**
     gets the Object tag of the Table tag
     */
-    CObject* getObject();
+    CReportObject* getObject();
 
     /**
        sets the Object tag of the Table tag
     */
-    void setObject(CObject *object);
+    void setObject(CReportObject *object);
 
     /**
     gets the Seperator attribute of the Table tag
