@@ -23,7 +23,7 @@ class CTrajectoryMethod : public CMethodParameterList
     static const string TypeName[];
 
     // Attributes
-  protected:
+  public:
     enum Type
     {
       unspecified = 0,

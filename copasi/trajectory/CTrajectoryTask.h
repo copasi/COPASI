@@ -57,7 +57,7 @@ class CTrajectoryTask
     /**
      * Pointer to the output stream for reporting
      */
-    ofstream * mpOut;
+    std::ofstream * mpOut;
 
     //Operations
   public:
@@ -86,7 +86,7 @@ class CTrajectoryTask
      * Initilize the reporting feature
      * @param ofstream & out
      */
-    void initializeReporting(ofstream & out);
+    void initializeReporting(std::ofstream & out);
 
     /**
      * Loads parameters for this solver with data coming from a
