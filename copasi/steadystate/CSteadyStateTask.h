@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/26 18:39:28 $
+   $Author: ssahle $ 
+   $Date: 2004/10/04 09:39:27 $
    End CVS Header */
 
 /**
@@ -99,8 +99,9 @@ class CSteadyStateTask : public CCopasiTask
     /**
      * Retrieves a pointer to steady state.
      * @return CState * pSteadyState
-     */
-    CState * getState();
+     */ 
+    //CState * getState();
+    const CState * getState() const;
 
     /**
      * Retrieves a the jacobian of the steady state.
@@ -112,7 +113,7 @@ class CSteadyStateTask : public CCopasiTask
      * Retrieves a the eigen values of the steady state.
      * @return const CEigen * eigenValues
      */
-    const CEigen * getEigenValues();
+    const CEigen * getEigenValues() const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os,

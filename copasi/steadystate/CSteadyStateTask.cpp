@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/09 12:15:50 $
+   $Date: 2004/10/04 09:39:27 $
    End CVS Header */
 
 /**
@@ -21,10 +21,7 @@
 #include "CSteadyStateTask.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
-#include "CEigen.h" 
-//#include "output/COutputEvent.h"
-//#include "output/COutputList.h"
-//#include "output/COutput.h"
+#include "CEigen.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
@@ -79,16 +76,19 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
   ((CSteadyStateMethod *) mpMethod)->load(configBuffer);
 }
 
-CState * CSteadyStateTask::getState()
-{return mpSteadyState;}
+//CState * CSteadyStateTask::getState()
+//{return mpSteadyState;}
+
+const CState * CSteadyStateTask::getState() const
+  {return mpSteadyState;}
 
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
   {return mJacobian;}
 
-const CEigen * CSteadyStateTask::getEigenValues()
-{
-  return mpEigenValues;
-}
+const CEigen * CSteadyStateTask::getEigenValues() const
+  {
+    return mpEigenValues;
+  }
 
 bool CSteadyStateTask::initialize(std::ostream * pOstream)
 {
