@@ -130,6 +130,11 @@ public:
      *  @see mVolume
      */
     void setVolume(C_FLOAT64 volume);
+    /**
+	 *	Returns the address of mVolume		Wei Sun
+	 */
+	void * getVolumeAddr();
+
 private:
 
     /*

@@ -58,6 +58,13 @@ public:
     string getName() const;
     string getDescription() const;
     C_FLOAT64 dependentNumber();
+	C_FLOAT64 getNumber() const;
+    /**
+	 *	Returns the address of mNumber
+	 */
+	void * getNumberAddr();
+
+
 };
 
 #endif // COPASI_CMoiety

@@ -191,6 +191,21 @@ public:
      */
     C_INT32 reset(const string & name);
 
+    /**
+	 *	Returns the address of mIConc		Wei Sun
+	 */
+	void * getIConcAddr();
+
+    /**
+	 *	Returns the address of mConc
+	 */
+	void * getConcAddr();
+
+    /**
+	 *	Returns the address of mTT
+	 */
+	void * getTTAddr();
+
 private:
 
     /*

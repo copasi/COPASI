@@ -121,3 +121,19 @@ void CMoiety::setInitialValue()
     return;
 }
 
+/**
+ * Return the number value Wei Sun
+ */
+C_FLOAT64 CMoiety::getNumber() const
+{
+	return mNumber;
+}
+
+/**
+ *	Returns the address of mNumber
+ */
+void * CMoiety::getNumberAddr()
+{
+	return &mNumber;
+}
+

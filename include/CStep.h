@@ -145,6 +145,21 @@ private:
              *  Destructor
              */
             ~CId2Param();
+			/**
+			 *	Return Identifier Name		Wei Sun		
+			 */
+			string getIdentifierName() const;
+
+			/**
+			 *	Retun the value of the pararmeter	
+			 */
+			C_FLOAT64 getValue() const;
+
+		    /**
+			 *	Returns the address of mValue
+			 */
+			void * getValueAddr();
+
         };
 
     /**
@@ -362,6 +377,16 @@ public:
      */
     void old2New(const vector < CMetab* > & metabolites);
     
+    /**
+	 *	Returns the address of mFlux		Wei Sun
+	 */
+	void * getFluxAddr();
+
+	/**
+	 *	Returns the index of the parameter
+	 */
+	C_INT32 findPara(string &Target);
+
 private:
     /**
      *

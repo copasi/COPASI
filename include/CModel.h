@@ -316,12 +316,14 @@ public:
      */
     void setConcentrations(const C_FLOAT64 *y);
 
+#if 0
     // Added by CvG
     /**
      * Return the vector of steps
      * @return "CCopasiVector<CStep> *"
      */
     CCopasiVector<CStep> & getSteps();
+#endif
 
     // Added by Yongqun He
     /**
@@ -330,6 +332,72 @@ public:
      */
     C_INT32 getTotSteps();
 
+    /**
+     *  Get the dimension of the reduced problem
+     *  @return C_INT32 dimension
+     */
+    C_INT32 getDimension() const;
+
+	/**
+	 *	Return the comments of this model	Wei Sun 
+	 *	@return string
+	 */
+	string getComments() const;	
+
+	/**
+	 *	Return the msteps of this model	
+	 *	@return CCopasiVector < CStep > * 
+	 */
+	CCopasiVector < CStep > * getSteps();
+
+	/**
+	 *	Return the title of this model
+	 *	@return string
+	 */
+	string getTitle() const;
+
+	/**
+	 *	Return the compartments of this model
+	 *	@return CCopasiVector < CCompartment > *
+	 */
+	CCopasiVector < CCompartment > *getCompartments();
+
+	/**
+	 *	Return the metabolites of this model
+	 *	@return vector < CMetab * > 
+	 */
+    vector < CMetab * > & getMetabolites();
+
+    /**
+     *  Get the Reduced Stoichiometry Matrix of this Model
+     */
+    TNT::Matrix < C_FLOAT64 >& getRedStoi();
+
+	/**
+	 *	Return the mMoieties of this model	
+	 *	@return CCopasiVector < CMoiety > * 
+	 */
+	CCopasiVector < CMoiety > * getMoieties();
+
+    /**
+     *	Returns the index of the metab
+     */
+    C_INT32 findMetab(string &Target); 
+
+    /**
+     *	Returns the index of the step
+     */
+    C_INT32 findStep(string &Target); 
+
+    /**
+     *	Returns the index of the compartment
+     */
+    C_INT32 findCompartment(string &Target);
+
+    /**
+     *	Returns the index of the Moiety
+     */
+    C_INT32 findMoiety(string &Target);
     
 #ifdef XXXX
     /**
