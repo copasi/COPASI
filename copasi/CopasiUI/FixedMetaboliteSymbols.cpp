@@ -7,6 +7,7 @@
 #include "mathmodel/CMathConstant.h"
 #include "model/CCompartment.h"
 #include <qfont.h>
+#include <map>
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for 
@@ -66,11 +67,9 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
 {
   if (model != NULL)
     {
-      int i;
       mModel = model;
-      //Emptying the table
       int numberOfRows = table->numRows();
-      for (i = 0; i < numberOfRows; i++)
+      for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
@@ -78,66 +77,48 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
       CMathModel *mathmodel = new CMathModel();
       mathmodel->setModel(mModel);
       const CModel *nModel = mathmodel->getModel();
-      //mathmodel->getFixedMetabList();
 
-      unsigned C_INT32 k = mModel->getIntMetab();
-      CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
-      C_INT32 noOfMetaboliteRows = metabolite.size();
-      table->setNumRows(noOfMetaboliteRows - k + 1);
-      const CMetab *metab;
+      std::map< std::string, CMathConstantMetab * > metabList = mathmodel->getFixedMetabList();
+      std::map<std::string, CMathConstantMetab * >::iterator it;
+      CMathConstantMetab * constantMetab;
 
-      QMessageBox::information(this, "k", QString::number(k));
-      QMessageBox::information(this, "noOfMetaboliteRows", QString::number(noOfMetaboliteRows));
-
-      for (i = k - 1; i < noOfMetaboliteRows; i++)
+      C_INT32 noOfMetaboliteRows = metabList.size();
+      table->setNumRows(noOfMetaboliteRows);
+      int index = 0;
+      for (it = metabList.begin(); it != metabList.end();++it)
         {
-          //CMathConstantMetab *metablist=new CMathConstantMetab(metabolite);
-          //metablist = mathmodel->getFixedMetabList();
-          //C_INT32 noOfMetabElements = metablist->size();
-
-          metab = metabolite[i];
-          table->setText(noOfMetaboliteRows - i - 1, 0, metab->getName().c_str());
-          //const CCopasiObjectName *name;
-
-          //CCopasiObject *metab_object=metab->getObject(metab->getName());
-          //table->setText(noOfMetaboliteRows-i-1, 1, QString::number(metab->getObject()->getName()));
-          table->setText(noOfMetaboliteRows - i - 1, 2, QString::number(metab->getConcentration()));
-          table->setText(noOfMetaboliteRows - i - 1, 3, QString::number(metab->getNumberDbl()));
-          const CCompartment *Compartment = metab->getCompartment();
-          table->setText(noOfMetaboliteRows - i - 1, 4, Compartment->getName().c_str());
-
-          /*double m=(*(metab->getConcentration()));
-          QString *m1;
-          //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
-          table->setText(j, 1,*m1);
-           
-          //table->setText(j, 1,ms); */
-          /*table->setText(j, 1, QString::number(metab->getConcentration()));
-
-          table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-          table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-          #ifdef XXXX
-          if (QString::number(metab->getStatus()) == "0")
-            {
-              table->setText(j, 3, "defineda");
-            }
-          else if (QString::number(metab->getStatus()) == "1")
-            {
-              table->setText(j, 3, "definedb");
-            }
-          else if (QString::number(metab->getStatus()) == "2")
-            {
-              table->setText(j, 3, "definedc");
-            }
-          #endif // XXXX
-          table->setText(j, 4, metab->getCompartment()->getName().c_str());
-          }
-
-          //table->sortColumn(0,true,true);*/
+          //QMessageBox::information(this, "key",it->first.c_str());
+          constantMetab = it->second;
+          table->setText(index, 0, constantMetab->getName().c_str());
+          CCopasiObject *metabObject = constantMetab->getObject();
+          table->setText(index, 1, metabObject->getName().c_str());
+          table->setText(index, 2, QString::number(constantMetab->getConcentration()));
+          table->setText(index, 3, QString::number(constantMetab->getParticleNumber()));
+          CMathConstantCompartment &Compartment = constantMetab->getCompartment();
+          table->setText(index, 4, Compartment.getName().c_str());
+          index++;
         }
+
+      //unsigned C_INT32 k= mModel->getIntMetab();
+      //CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
+      //C_INT32 noOfMetaboliteRows = metabolite.size();
+      //table->setNumRows(noOfMetaboliteRows-k);
+      //const CMetab *metab;
+
+      //QMessageBox::information(this, "k",QString::number(k));
+      //QMessageBox::information(this, "noOfMetaboliteRows",QString::number(noOfMetaboliteRows));
+
+      /*for (i = k; i < noOfMetaboliteRows; i++)
+           {
+              
+             metab = metabolite[i];
+             table->setText(noOfMetaboliteRows-i-1, 0, metab->getName().c_str());
+       //table->setText(noOfMetaboliteRows-i-1, 1, QString::number(metab->getObject()->getName()));
+             table->setText(noOfMetaboliteRows-i-1, 2, QString::number(metab->getConcentration()));
+             table->setText(noOfMetaboliteRows-i-1, 3, QString::number(metab->getNumberDbl()));
+      const CCompartment *Compartment=metab->getCompartment();
+            table->setText(noOfMetaboliteRows-i-1, 4, Compartment->getName().c_str());
+      }*/
     }
 }
 
