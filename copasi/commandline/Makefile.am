@@ -3,6 +3,7 @@ bin_PROGRAMS = copasi
 
 copasi_SOURCES = \
 	COptionParser.cpp \
+	COptions.cpp \
 	copasi.cpp
 
 copasi_DEPENDENCIES = $(copasi_LIBS) check_LIBS
@@ -20,6 +21,7 @@ copasi_LIBS = \
 
 EXTRA_DIST = \
 	COptionParser.h	COptionParser.cpp	COptionParser.xml \
+	COptions.h	COptions.cpp \
 	copasi.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############

@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.5 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.6 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -237,6 +237,7 @@ bin_PROGRAMS = copasi
 
 copasi_SOURCES = \
 	COptionParser.cpp \
+	COptions.cpp \
 	copasi.cpp
 
 
@@ -256,6 +257,7 @@ copasi_LIBS = \
 
 EXTRA_DIST = \
 	COptionParser.h	COptionParser.cpp	COptionParser.xml \
+	COptions.h	COptions.cpp \
 	copasi.cpp
 
 
@@ -312,11 +314,13 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = copasi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_copasi_OBJECTS = COptionParser.$(OBJEXT) copasi.$(OBJEXT)
+am_copasi_OBJECTS = COptionParser.$(OBJEXT) COptions.$(OBJEXT) \
+	copasi.$(OBJEXT)
 #>- copasi_OBJECTS = $(am_copasi_OBJECTS)
-#>+ 4
+#>+ 5
 copasi_final_OBJECTS = copasi.all_cpp.o 
-copasi_nofinal_OBJECTS = COptionParser.$(OBJEXT) copasi.$(OBJEXT)
+copasi_nofinal_OBJECTS = COptionParser.$(OBJEXT) COptions.$(OBJEXT) \
+	copasi.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@copasi_OBJECTS = $(copasi_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@copasi_OBJECTS = $(copasi_final_OBJECTS)
 copasi_LDADD = $(LDADD)
@@ -326,7 +330,8 @@ DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/COptionParser.Po $(DEPDIR)/copasi.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/COptionParser.Po $(DEPDIR)/COptions.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/copasi.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -419,6 +424,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptionParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copasi.Po@am__quote@
 
 distclean-depend:
@@ -478,7 +484,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=options.cpp trace copasi options.cpp.bak options.h 
+KDE_DIST=quatch copasi commandline.dsp trace core 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -630,11 +636,11 @@ force-reedit:
 
 
 #>+ 11
-copasi.all_cpp.cpp: $(srcdir)/Makefile.in COptionParser.cpp $(srcdir)/copasi.cpp
+copasi.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/COptionParser.cpp $(srcdir)/COptions.cpp $(srcdir)/copasi.cpp
 	@echo 'creating copasi.all_cpp.cpp ...'; \
 	rm -f copasi.all_cpp.files copasi.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> copasi.all_cpp.final; \
-	for file in COptionParser.cpp copasi.cpp ; do \
+	for file in COptionParser.cpp COptions.cpp copasi.cpp ; do \
 	  echo "#include \"$$file\"" >> copasi.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> copasi.all_cpp.final; \
 	done; \
