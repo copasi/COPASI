@@ -129,7 +129,7 @@ int LUX_factor( MaTRiX &A, VecToRSubscript &row, VecToRSubscript &col)
             
             if ( A(jp,j) == 0 ) // now we have to swap colums to find a pivot
             {
-                if (jl <= j) return 0; // we are done
+                if (jl <= j) return 1; // we are done
                 for (k=1; k<=M; k++)
                 {
                     t = A(k,jl);
@@ -186,11 +186,12 @@ int LUX_factor( MaTRiX &A, VecToRSubscript &row, VecToRSubscript &col)
 
 
 
-template <class MaTRiX, class VecToR, class VecToRSubscripts>
-int LU_solve(const MaTRiX &A, const VecToRSubscripts &indx, VecToR &b)
+template <class MaTRiX, class VecToR, class VecToRSubscript>
+int LUX_solve(const MaTRiX &A, VecToRSubscript &row, 
+	      VecToRSubscript &col, VecToR &b)
 {
     assert(A.lbound() == 1);                // currently for 1-offset
-    assert(indx.lbound() == 1);             // vectors and matrices
+    assert(row.lbound() == 1);             // vectors and matrices
     assert(b.lbound() == 1);
 
     Subscript i,ii=0,ip,j;
@@ -199,7 +200,7 @@ int LU_solve(const MaTRiX &A, const VecToRSubscripts &indx, VecToR &b)
 
     for (i=1;i<=n;i++) 
     {
-        ip=indx(i);
+        ip=row(i);
         sum=b(ip);
         b(ip)=b(i);
         if (ii)
