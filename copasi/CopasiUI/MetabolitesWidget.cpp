@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/10 11:07:59 $
+   $Date: 2004/10/08 08:51:28 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -152,7 +152,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
           ListViews::notify(ListViews::COMPARTMENT,
                             ListViews::CHANGE, "");
         }
-    } //TODO check if changing the compartment of a metabolite really works
+    } //TODO check if changing the compartment of a metabolite really works. NO!!!
 
   dataModel->getModel()->setCompileFlag(); //TODO: check if really necessary
 }
@@ -285,7 +285,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                      // Yes or Enter
+    case 0:                       // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -297,7 +297,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                      // No or Escape
+    case 1:                       // No or Escape
       break;
     }
 }
