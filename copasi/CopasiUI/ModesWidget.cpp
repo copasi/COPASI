@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/09 19:28:24 $
+   $Date: 2004/01/09 19:45:38 $
    End CVS Header */
 
 /*******************************************************************
@@ -260,6 +260,12 @@ void ModesWidget::slotBtnCalculateClicked()
       //table->setText(j, 0,modes->getFluxModeDescription(j).c_str());
       table->setText(j, 1, modes->getFluxModeDescription(j).c_str());
     }***CL***/
+}
+
+bool ModesWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  pdelete(modes);
+  return true;
 }
 
 bool ModesWidget::enter(const std::string & C_UNUSED(key))

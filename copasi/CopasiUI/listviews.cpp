@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/05 19:20:55 $
+   $Author: chlee $ 
+   $Date: 2004/01/09 19:45:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -544,7 +544,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                              //Time course
+      case 23:                               //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -553,10 +553,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                             //Report
+      case 43:                              //Report
         return tableDefinition;
         break;
-      case 42:                             //Plots
+      case 42:                              //Plots
         return plotWidget;
         break;
       case 5:
@@ -1144,7 +1144,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       reactionsWidget->update(objectType, action, key);
       compartmentsWidget->update(objectType, action, key);
       compartmentSymbols->update(objectType, action, key);
-      //        moietyWidget->update(objectType, action, key);
+      //moietyWidget->update(objectType, action, key);
       //        functionWidget->update(objectType, action, key);
       //        functionSymbols->update(objectType, action, key);
       differentialEquations->update(objectType, action, key);
@@ -1156,7 +1156,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
@@ -1184,7 +1184,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
@@ -1212,7 +1212,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
@@ -1240,7 +1240,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
       //     tableDefinition1->update(objectType, action, key);
@@ -1303,8 +1303,8 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
-      modelWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
+      //  modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
       //  tableDefinition1->update(objectType, action, key);
       plotWidget->update(objectType, action, key);
@@ -1331,7 +1331,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        constantSymbols->update(objectType, action, key);
       //        moietyWidget1->update(objectType, action, key);
       //        functionWidget1->update(objectType, action, key);
-      //        modesWidget->update(objectType, action, key);
+      modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
       tableDefinition1->update(objectType, action, key);
