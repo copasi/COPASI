@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.13 2003/08/15 14:14:36 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.14 2003/08/19 17:02:22 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -313,6 +313,8 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   pReportDefinition->setTitle(titleChecked->isChecked());
   pReportDefinition->setComment(commentEdit->text().latin1());
+
+  bUpdated = false;
 }
 
 void TableDefinition1::nameTextChanged(const QString &)
