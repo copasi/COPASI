@@ -19,10 +19,15 @@ extern "C"
 #include "clapack.h"        //use CLAPACK
   }
 
-#ifdef WIN32
-# define max(a , b)  ((a) > (b) ? (a) : (b))
-# define min(a , b)  ((a) < (b) ? (a) : (b))
-#endif // WIN32
+/* clapack includes f2c.h which defines min and max. We need
+   to remove the define since we use std::min and std::max */
+#ifdef min
+#undef min
+#endif
+
+#ifdef max
+#undef max
+#endif
 
 CNewtonMethod::CNewtonMethod():
     CSteadyStateMethod(),
@@ -350,7 +355,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,   /* fortran style vector */
+                           mdxdt.array() - 1,    /* fortran style vector */
                            1);
         }
 
@@ -407,7 +412,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,   /* fortran style vector */
+                   mdxdt.array() - 1,    /* fortran style vector */
                    1);
 
   if (mMaxrate > mResolution)
