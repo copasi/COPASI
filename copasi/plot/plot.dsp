@@ -150,5 +150,17 @@ SOURCE=.\zoomplot.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\plot.pro
+# End Source File
 # End Target
 # End Project
