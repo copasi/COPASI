@@ -20,10 +20,15 @@ class CTrajectoryProblem;
 class CState;
 class COutputEvent;
 
-class CTrajectoryTask
+class CTrajectoryTask : public CCopasiContainer
   {
     //Attributes
   private:
+
+    /**
+     *  Key 
+     */
+    std::string mKey;
 
     /**
      * A pointer to the problem to be integrated.
@@ -77,19 +82,22 @@ class CTrajectoryTask
     /**
      * default constructor
      */
-    CTrajectoryTask();
+    CTrajectoryTask(const std::string & name = "TrajectoryTask",
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
      * @param const CTrajectoryTask & src
      */
-    CTrajectoryTask(const CTrajectoryTask & src);
+    CTrajectoryTask(const CTrajectoryTask & src,
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * special constructor. Allows definition of a Trajectory task without loading one
      */
     CTrajectoryTask(CTrajectoryProblem * pProblem,
-                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic);
+                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic,
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * special constructor. Allows definition of a Trajectory task
@@ -103,12 +111,19 @@ class CTrajectoryTask
     CTrajectoryTask(CModel * pModel,
                     C_FLOAT64 starttime, C_FLOAT64 endtime,
                     unsigned C_INT32 stepnumber,
-                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic);
+                    CTrajectoryMethod::Type type = CTrajectoryMethod::deterministic,
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
     ~CTrajectoryTask();
+
+    /**
+     *  Retrieve the key 
+     * @return std::string key
+     */
+    std::string getKey() const;
 
     /**
      * Initilize the reporting feature

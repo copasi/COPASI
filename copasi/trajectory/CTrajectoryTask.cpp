@@ -8,6 +8,8 @@
  * Created for Copasi by Stefan Hoops 2002
  */
 
+#include <string>
+
 #include "copasi.h"
 
 #include "CTrajectoryTask.h"
@@ -19,10 +21,14 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
+#include "report/CKeyFactory.h"
 
 #define XXXX_Reporting
 
-CTrajectoryTask::CTrajectoryTask():
+CTrajectoryTask::CTrajectoryTask(const std::string & name,
+                                 const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(new CTrajectoryProblem),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod()),
     mpState(NULL),
@@ -31,7 +37,10 @@ CTrajectoryTask::CTrajectoryTask():
     mpOutEnd(NULL)
 {}
 
-CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
+CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
+                                 const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(src.mpProblem),
     mpMethod(src.mpMethod),
     mpState(src.mpState),
@@ -41,7 +50,10 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src):
 {}
 
 CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
-                                 CTrajectoryMethod::Type type):
+                                 CTrajectoryMethod::Type type,
+                                 const CCopasiContainer * pParent):
+    CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(pProblem),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, pProblem)),
     mpState(NULL),
@@ -53,7 +65,10 @@ CTrajectoryTask::CTrajectoryTask(CTrajectoryProblem * pProblem,
 CTrajectoryTask::CTrajectoryTask(CModel * pModel,
                                  C_FLOAT64 starttime, C_FLOAT64 endtime,
                                  unsigned C_INT32 stepnumber,
-                                 CTrajectoryMethod::Type type):
+                                 CTrajectoryMethod::Type type,
+                                 const CCopasiContainer * pParent):
+    CCopasiContainer("TrajectoryTask", pParent, "TrajectoryTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("TrajectoryTask", this)),
     mpProblem(new CTrajectoryProblem(pModel, starttime, endtime, stepnumber)),
     mpMethod(CTrajectoryMethod::createTrajectoryMethod(type, mpProblem)),
     mpState(NULL),
@@ -62,7 +77,11 @@ CTrajectoryTask::CTrajectoryTask(CModel * pModel,
     mpOutEnd(NULL)
 {}
 
-CTrajectoryTask::~CTrajectoryTask() {cleanup();}
+CTrajectoryTask::~CTrajectoryTask()
+{
+  CKeyFactory::remove(mKey);
+  cleanup();
+}
 
 void CTrajectoryTask::cleanup()
 {
@@ -73,6 +92,8 @@ void CTrajectoryTask::cleanup()
   pdelete(mpOutPoint);
   pdelete(mpOutEnd);
 }
+
+std::string CTrajectoryTask::getKey() const {return mKey;}
 
 void CTrajectoryTask::initializeReporting(std::ostream & out)
 {
