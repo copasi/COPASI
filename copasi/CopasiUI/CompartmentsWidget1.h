@@ -79,10 +79,13 @@ class CompartmentsWidget1 : public QWidget
     QFrame* Frame4_1;
     QFrame* Frame4_2;
     QFrame* Frame4_3;
+    //struct  compartment_struct cmpt_struct;
 
   protected slots:
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
+    virtual void NameChanged(const QString &);
+    virtual void VolumeChanged(const QString &);
 
   signals:
     void signal_emitted(QString &);

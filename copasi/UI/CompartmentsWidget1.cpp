@@ -17,7 +17,8 @@
 #include <qframe.h>
 #include "listviews.h"
 #include <qlistbox.h>
-#include <qfont.h> 
+#include <qfont.h>
+
 /*
  *  Constructs a CompartmentsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -122,10 +123,13 @@ CompartmentsWidget1::CompartmentsWidget1(QWidget *parent, const char * name, WFl
   hBoxLayout4_1->addWidget(commitChanges);
   hBoxLayout4_1->addWidget(cancelChanges);
 
+  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 
   connect(ListBox1, SIGNAL(selected(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
+  connect(LineEdit1, SIGNAL(textChanged(const QString &)), this, SLOT(NameChanged(const QString &)));
+  connect(LineEdit3, SIGNAL(textChanged(const QString &)), this, SLOT(VolumeChanged(const QString &)));
 }
 
 /*This function is used to connect this class to the listviews
@@ -202,8 +206,37 @@ void CompartmentsWidget1::slotBtnCancelClicked()
 
 void CompartmentsWidget1::slotBtnOKClicked()
 {
-  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
-  // emit signal_emitted(*Compartment1_Name);
+  CWriteConfig *Mod = new CWriteConfig("mudita.gps");
+
+  CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
+  CCompartment *compartn1;
+  compartn1 = compartments1[2];
+
+  Structures *mud1 = new Structures();
+  string x = mud1.cmpt_name;
+  QString & volume;
+  volume = mud1.cmpt_volume;
+  double m1;
+  m1 = volume.toDouble(0);
+
+  compartn1->setName(x);
+  compartn1->setVolume((float)m1);
+
+  compartn1->save(*Mod);
+  //Copasi->Compartmentfile.save(*Mod);
+  delete Mod;
+}
+
+void CompartmentsWidget1::NameChanged(const QString & name)
+{
+  Structures *mud1 = new Structures();
+  mud1.cmpt_name = name;
+}
+
+void CompartmentsWidget1::VolumeChanged(const QString & volume)
+{
+  Structures *mud1 = new Structures();
+  mud1.cmpt_volume = volume;
 }
 
 //last function ends

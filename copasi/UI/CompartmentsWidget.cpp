@@ -16,6 +16,7 @@
 #include <qfont.h>
 #include "utilities/CGlobals.h"
 string outstring;
+CWriteConfig *Mod;
 
 /**
  *  Constructs a Widget for the Compartments subsection of the tree.
@@ -28,20 +29,18 @@ string outstring;
  *  this QObject. It's particularly useful in conjunction with the Qt 
  
 Designer.
- *  You can find an object by name (and type) using child(), and more 
- 
-than one 
+ *  You can find an object by name (and type) using child(), and more than one 
  *  using queryList(). 
  *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt 
  
 documentation 
  *  for more information about these flags.
  */
-CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char *
-
-                                       name, WFlags f)
+CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 {
+  Mod = new CWriteConfig("try.gps");
+  Copasi = new CGlobals;
   mModel = NULL;
   table = new MyTable(0, 2, this, "tblCompartments");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
@@ -77,11 +76,11 @@ CompartmentsWidget::CompartmentsWidget(QWidget *parent, const char *
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(QString &)));
 
-  connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
+  //connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
 
   connect(table, SIGNAL(valueChanged(int , int)), this, SLOT(tableValueChanged(int, int)));
-  //connect(btnOK, SIGNAL(clicked ()), this,
+  //connect(btnOK, SIGNAL(clicked ()), this,SLOT(
 }
 
 void CompartmentsWidget::loadCompartments(CModel *model)
@@ -201,25 +200,24 @@ void CompartmentsWidget::slotBtnCancelClicked()
 
 void CompartmentsWidget::tableValueChanged(int row, int col)
 {
-  CWriteConfig *Mod = new CWriteConfig("try.gps");
-  Copasi->Compartmentfile.save(*Mod);
-  //CWriteConfig *Fun = new CWriteConfig("try.gps");
+  //CWriteConfig *Mod = new CWriteConfig("try.gps");
+
   CCopasiVectorNS < CCompartment > & compartments1 = mModel->getCompartments();
   CCompartment *compartn1;
-  compartn1 = compartments1[col];
+  compartn1 = compartments1[row];
 
   string x = table->text(row, col);
 
-  if (row == 0)
+  if (col == 0)
     {
       compartn1->setName(x);
     }
   else
     {
-      // compartn1->setVolume(x);
+      compartn1->setVolume(int(x.c_str()));
     }
 
   compartn1->save(*Mod);
-  //delete Fun;
+  //Copasi->Compartmentfile.save(*Mod);
   delete Mod;
 }
