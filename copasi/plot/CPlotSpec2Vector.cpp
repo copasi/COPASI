@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/02/27 20:09:48 $
    End CVS Header */
+
+#include <limits>
 
 #include "copasi.h"
 #include "CPlotSpec2Vector.h"
@@ -180,6 +182,18 @@ bool CPlotSpec2Vector::doPlotting()
     }
 
   return success;
+}
+
+bool CPlotSpec2Vector::doPlottingSeparator()
+{
+  unsigned C_INT32 i = 0;
+  std::vector<CCopasiObject*>::const_iterator it = mObjects.begin();
+  for (; it != mObjects.end(); ++it, ++i)
+    {
+      data[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN(); //0/0;
+    }
+  sendDataToAllPlots();
+  return true;
 }
 
 bool CPlotSpec2Vector::finishPlotting()
