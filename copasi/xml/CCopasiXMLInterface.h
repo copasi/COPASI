@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2004/01/05 20:09:04 $
+   $Author: ssahle $ 
+   $Date: 2004/05/18 13:26:02 $
    End CVS Header */
 
 /**
@@ -20,6 +20,8 @@
 #include <vector>
 #include <string>
 #include <sstream>
+
+#include "copasi.h"
 
 class CModel;
 template <class CType> class CCopasiVectorN;
