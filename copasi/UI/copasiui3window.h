@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/15 13:29:21 $
+   $Date: 2005/02/16 13:28:28 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -71,4 +71,5 @@ class CopasiUI3Window : public QMainWindow
     void createMenuBar();
     SliderDialog* sliders;
     int mShowSlidersMenuEntry;
+    QToolButton* mpToggleSliderDialogButton;
   };

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 09:30:54 $
+   $Date: 2005/02/16 13:28:28 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -36,6 +36,7 @@
 #include "./icons/fileopen.xpm"
 #include "./icons/filesave.xpm"
 #include "./icons/fileprint.xpm"
+#include "./icons/showSliders.xpm"
 
 /**
  *  Constructs a CopasiUI window which is a child of 'parent', with the 
@@ -56,7 +57,8 @@ CopasiUI3Window::CopasiUI3Window():
     gpsFile(),
     msave_button(NULL),
     mpFileMenu(NULL),
-    sliders(NULL)
+    sliders(NULL),
+    mpToggleSliderDialogButton(NULL)
 
 {
   // Set the window caption/title
@@ -172,14 +174,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                     // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                     // Discard clicked or Alt+D pressed
+        case 1:                                                      // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                     // Cancel clicked or Escape pressed
+        case 2:                                                      // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -236,14 +238,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                     // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                     // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                     // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -388,14 +390,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                     // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                     // Discard clicked or Alt+D pressed
+        case 1:                                                      // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                     // Cancel clicked or Escape pressed
+        case 2:                                                      // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -417,14 +419,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                     // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                     // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                     // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -504,6 +506,8 @@ void CopasiUI3Window::createToolBar()
                "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
 
+  toolTip[3] = "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>Show Sliders</b> in the <b>Tools</b> menu.</p>";
+
   QToolButton* toolb;
   int j;
   for (j = 0; j < numofIcons; j++)
@@ -516,6 +520,14 @@ void CopasiUI3Window::createToolBar()
       if (j == numofIcons - 1)
         msave_button = toolb;
     }
+
+  // add a toobar toggle button to display/hide slider dialog
+
+  QPixmap toggleSliderDialogPixmap = toggleSliderDialog;
+  this->mpToggleSliderDialogButton = new QToolButton(toggleSliderDialogPixmap, "toggleSliderDialog", QString::null, this, SLOT(slotToggleSliders()), tbMain);
+
+  QWhatsThis::add(this->mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
+  this->mpToggleSliderDialogButton->setToggleButton(true);
 
   toolb = QWhatsThis::whatsThisButton(tbMain);
 
@@ -659,14 +671,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                     // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                      // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                     // Discard clicked or Alt+D pressed
+            case 1:                                                      // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                     // Cancel clicked or Escape pressed
+            case 2:                                                      // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -761,6 +773,7 @@ void CopasiUI3Window::slotToggleSliders()
 {
   bool isChecked = menuBar()->isItemChecked(mShowSlidersMenuEntry);
   menuBar()->setItemChecked(mShowSlidersMenuEntry, !isChecked);
+  this->mpToggleSliderDialogButton->setOn(!isChecked);
   this->sliders->setHidden(isChecked);
 }
 
