@@ -163,13 +163,13 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange->setText(trUtf8("Cancel"));
   Layout2->addWidget(cancelChange);
 
-  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
-  Layout2->addWidget(reportDefinitionButton);
-
   ExportToFileButton = new QPushButton(this, "ExportToFileButton");
   ExportToFileButton->setText(trUtf8("Export To File"));
   Layout2->addWidget(ExportToFileButton);
+
+  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
+  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  Layout2->addWidget(reportDefinitionButton);
 
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 3);
   QSpacerItem* spacer = new QSpacerItem(71, 330, QSizePolicy::Minimum, QSizePolicy::Expanding);
