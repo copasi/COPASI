@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/30 15:30:14 $
+   $Author: gauges $ 
+   $Date: 2004/10/05 10:06:15 $
    End CVS Header */
 
 /**
@@ -3371,6 +3371,7 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
   mCurrentElement++; // We should always be on the next element
 
   std::string target;
+  std::string sAppend;
   bool append;
   std::string reference;
 
@@ -3380,7 +3381,9 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
       if (strcmp(pszName, "Report")) fatalError();
       reference = mParser.getAttributeValue("reference", papszAttrs);
       target = mParser.getAttributeValue("target", papszAttrs);
-      append = mParser.toBool(mParser.getAttributeValue("append", papszAttrs, "false"));
+
+      sAppend = mParser.toBool(mParser.getAttributeValue("append", papszAttrs, "false"));
+      append = mParser.toBool(sAppend.c_str());
       mCommon.pCurrentTask->getReport().setAppend(append);
       mCommon.pCurrentTask->getReport().setTarget(target);
       if (mCommon.taskReferenceMap.find(reference) == mCommon.taskReferenceMap.end())
