@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/21 18:34:24 $
+   $Date: 2003/10/22 18:59:16 $
    End CVS Header */
 
 /**
@@ -137,7 +137,7 @@ bool CKinFunction::createObjList()
   std::string mToken = "";
   CCopasiObject* mpObj;
   mpObj = NULL;
-  int i;
+  unsigned C_INT32 i;
   for (i = 0; i < mDescription.length(); i++)
     {
       mTarget += mDescription[i];
@@ -265,7 +265,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                              // this is an error
+        case N_NOP:                               // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
