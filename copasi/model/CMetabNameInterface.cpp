@@ -81,3 +81,9 @@ bool CMetabNameInterface::doesExist(const CModel* model, const std::string & nam
   //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
   return (model->findMetab(name) + 1);
 }
+
+std::string CMetabNameInterface::extractCompartmentName(const CModel* model, const std::string & name)
+{}
+
+std::string CMetabNameInterface::extractMetabName(const CModel* model, const std::string & name)
+{}
