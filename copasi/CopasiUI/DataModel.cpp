@@ -80,6 +80,7 @@ void DataModel::createModel(const char* fileName)
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
+  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   saveModel(fileName);
 }
@@ -111,6 +112,7 @@ void DataModel::loadModel(const char* fileName)
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
   reportdefinitions->load(inbuf);
+  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   Copasi->pOutputList->load(inbuf);
 
