@@ -13,20 +13,24 @@
 #include "copasi.h"
 #include "CWriteConfig.h"
 
+
 CWriteConfig::CWriteConfig(void)
 {
     // initialize everything
-    mFileName     = "NULL";
+    mFileName     = "";
+    mOpenMode     = ios::out;
     mLineNumber   = 0;
     mFail         = 0;
 
     mBuffer.setf(ios::scientific); 
+    
 }
 
 CWriteConfig::CWriteConfig(string name)
 {
     // initialize everything
     mFileName     = name;
+    mOpenMode     = ios::out;
     mLineNumber   = 0;
     mFail         = 0;
 
@@ -39,20 +43,33 @@ CWriteConfig::~CWriteConfig(void)
     Commit();
 }
 
+CWriteConfig::Flush(void)
+{
+    Commit();
+    
+    mBuffer.freeze(0);
+    mBuffer.seekp(0);
+}
+
 CWriteConfig::Commit(void)
 {
 #ifdef WIN32
-    ofstream ConfigFile(mFileName.c_str(), COPASI__msbug ios::binary );
-#else
-    ofstream ConfigFile(mFileName.c_str());
+    mOpenMode |= ios::binary;
 #endif
 
-    ConfigFile.write(mBuffer.str(), mBuffer.pcount());
-    if( mBuffer.pcount() != ConfigFile.tellp())
+    ofstream ConfigFile(mFileName.c_str(), mOpenMode );
+    if (ConfigFile.fail())
     {
-        mFail = 1;
+        return mFail = 1;
     }
 
+    ConfigFile.write(mBuffer.str(), mBuffer.pcount());
+    if (ConfigFile.fail())
+    {
+        return mFail = 1;
+    }
+
+    mOpenMode |= ios::app;
     return mFail;
 }
 
