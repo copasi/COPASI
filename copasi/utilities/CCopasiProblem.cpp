@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 19:31:54 $
+   $Author: ssahle $ 
+   $Date: 2004/06/28 14:41:16 $
    End CVS Header */
 
 /**
@@ -87,3 +87,5 @@ bool CCopasiProblem::calculate() {return true;}
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 
 bool CCopasiProblem::checkFunctionalConstraints() {return true;}
+
+void CCopasiProblem::setInitialState(const CState & initialState) {}
