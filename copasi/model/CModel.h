@@ -318,15 +318,15 @@ class CModel
 
     /**
      * Set the title of this model
-     * @param "const string &" tit title for this model
+     * @param "const string &" title title for this model
      */
-    void setTitle(const string tit);
+    void setTitle(const string &title);
 
     /**
      * Set the title of this model
-     * @param "const string &" comm comments for this model
+     * @param "const string &" comments comments for this model
      */
-    void setComments(const string comm);
+    void setComments(const string &comments);
 
     /**
      * Return the compartments of this model

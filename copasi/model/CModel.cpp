@@ -1267,14 +1267,14 @@ string CModel::getQuantityUnit() const { return mQuantityUnitName; }
 C_FLOAT64 CModel::getQuantity2NumberFactor() const { return mQuantity2NumberFactor; }
 C_FLOAT64 CModel::getNumber2QuantityFactor() const { return mNumber2QuantityFactor; }
 
-void CModel::setTitle(const string tit)
+void CModel::setTitle(const string &title)
 {
-  mTitle = tit;
+  mTitle = title;
 }
 
-void CModel::setComments(const string comm)
+void CModel::setComments(const string &comments)
 {
-  mComments = comm;
+  mComments = comments;
 }
 
 C_INT32 CModel::addMetabolite(const string & comp,
