@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:56:00 $
+   $Date: 2005/03/20 04:28:38 $
    End CVS Header */
 
 /**
@@ -85,9 +85,6 @@ class CCopasiContainer: public CCopasiObject
                                  bool (CCopasiContainer::*updateMethod)(const C_FLOAT64 & value));
 
     virtual bool remove(CCopasiObject * pObject);
-
-    virtual bool setChildValue(const CCopasiObject * pChild,
-                               const C_FLOAT64 & value);
 
   protected:
     virtual void initObjects();

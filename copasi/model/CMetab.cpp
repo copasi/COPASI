@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:57:20 $
+   $Date: 2005/03/20 04:29:23 $
    End CVS Header */
 
 #include <iostream>
@@ -170,6 +170,8 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 
 bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 {
+  if (mIConc == initialConcentration) return true;
+
   mIConc = initialConcentration;
   mINumber = initialConcentration * mpCompartment->getVolume()
              * mpModel->getQuantity2NumberFactor();
@@ -197,6 +199,8 @@ void CMetab::setNumber(const C_FLOAT64 number)
 
 bool CMetab::setInitialNumber(const C_FLOAT64 & initialNumber)
 {
+  if (mINumber == initialNumber) return true;
+
   mIConc = initialNumber * mpCompartment->getVolumeInv()
            * mpModel->getNumber2QuantityFactor();
   mINumber = initialNumber;
@@ -230,14 +234,13 @@ void CMetab::setStatus(const CMetab::Status & status)
 void CMetab::initObjects()
 {
   CCopasiObject * pObject;
+
   addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
   pObject = addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
-  addUpdateMethod(pObject,
-                  (bool (CCopasiContainer::*)(const C_FLOAT64 & value)) &CMetab::setInitialConcentration);
+  pObject->setUpdateMethod(this, &CMetab::setInitialConcentration);
   addObjectReference("ParticleNumber", mNumber, CCopasiObject::ValueDbl);
   pObject = addObjectReference("InitialParticleNumber", mINumber, CCopasiObject::ValueDbl);
-  addUpdateMethod(pObject,
-                  (bool (CCopasiContainer::*)(const C_FLOAT64 & value)) &CMetab::setInitialNumber);
+  pObject->setUpdateMethod(this, &CMetab::setInitialNumber);
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:54:26 $
+   $Date: 2005/03/20 04:28:38 $
    End CVS Header */
 
 /**
@@ -31,6 +31,42 @@ template <class CType> class CCopasiMatrixReference;
 #ifdef WIN32
 template <class CType> class CCopasiVector;
 #endif // WIN32
+
+class UpdateMethod
+  {
+  public:
+
+    virtual bool operator()(const C_FLOAT64 & value)
+    {return false;}
+
+    virtual bool operator()(const C_INT32 & value)
+    {return false;}
+
+    virtual bool operator()(const bool & value)
+    {return false;}
+  };
+
+template <class CType, class VType> class SpecificUpdateMethod : public UpdateMethod
+    {
+    private:
+      bool (CType::*mMethod)(const VType &);   // pointer to member function
+      CType * mpType;                                    // pointer to object
+
+    public:
+
+      // constructor - takes pointer to an object and pointer to a member and stores
+      // them in two private variables
+      SpecificUpdateMethod(CType * pType,
+                           bool(CType::*method)(const VType &))
+      {
+        mpType = pType;
+        mMethod = method;
+      };
+
+      // override operator "()"
+      virtual bool operator()(const VType & value)
+      {return (*mpType.*mMethod)(value);};              // execute member function
+    };
 
 /** @dia:pos 40.5964,2.55372 */
 class CCopasiObject
@@ -70,6 +106,10 @@ class CCopasiObject
 
     unsigned C_INT32 mObjectFlag;
 
+    UpdateMethod * mpUpdateMethodDbl;
+    UpdateMethod * mpUpdateMethodInt;
+    UpdateMethod * mpUpdateMethodBool;
+
   private:
     static const C_FLOAT64 DummyValue;
 
@@ -101,8 +141,6 @@ class CCopasiObject
      * @param std::ostream * ostream
      */
     virtual void print(std::ostream * ostream) const;
-
-    //    virtual const std::string & getName() const;
 
     /**
      * Set the name of the object. 
@@ -161,7 +199,46 @@ class CCopasiObject
 
     virtual const std::string & getKey() const;
 
-    virtual bool setObjectValue(const C_FLOAT64 & value);
+    bool setObjectValue(const C_FLOAT64 & value);
+    bool setObjectValue(const C_INT32 & value);
+    bool setObjectValue(const bool & value);
+
+    template <class CType>
+    bool setUpdateMethod(CType * pType,
+                         bool (CType::*method)(const C_FLOAT64 &))
+    {
+      pdelete(mpUpdateMethodDbl);
+      mpUpdateMethodDbl =
+        new SpecificUpdateMethod< CType, C_FLOAT64 >(pType, method);
+
+      return true;
+    }
+
+    template <class CType>
+    bool setUpdateMethod(CType * pType,
+                         bool (CType::*method)(const C_INT32 &))
+    {
+      pdelete(mpUpdateMethodDbl);
+      mpUpdateMethodDbl =
+        new SpecificUpdateMethod< CType, C_INT32 >(pType, method);
+
+      return true;
+    }
+
+    template <class CType>
+    bool setUpdateMethod(CType * pType,
+                         bool (CType::*method)(const bool &))
+    {
+      pdelete(mpUpdateMethodDbl);
+      mpUpdateMethodDbl =
+        new SpecificUpdateMethod< CType, bool >(pType, method);
+
+      return true;
+    }
+
+  private:
+    template <typename VType> bool updateMethod(const VType & value)
+    {return false;}
   };
 
 template <class CType> CCopasiObjectReference< CType > *

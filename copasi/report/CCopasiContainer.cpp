@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:56:00 $
+   $Date: 2005/03/20 04:28:38 $
    End CVS Header */
 
 /**
@@ -162,7 +162,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +           //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +            //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
@@ -228,13 +228,4 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
   mObjects.erase(it);
 
   return true;
-}
-
-bool CCopasiContainer::setChildValue(const CCopasiObject * pChild,
-                                     const C_FLOAT64 & value)
-{
-  updateMap::iterator it = mUpdates.find(pChild);
-  if (it == mUpdates.end()) return false;
-
-  return (*this.*it->second)(value);
 }

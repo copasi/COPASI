@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/17 19:54:37 $
+   $Date: 2005/03/20 04:28:38 $
    End CVS Header */
 
 /**
@@ -34,6 +34,12 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
   private:
     CCopasiObjectReference() {};
 
+    bool updateMethod(const CType & value)
+    {
+      mReference = value;
+      return true;
+    }
+
   public:
     CCopasiObjectReference(const std::string & name,
                            const CCopasiContainer * pParent,
@@ -58,6 +64,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
     virtual void print(std::ostream * ostream) const
       {(*ostream) << mReference;};
 
+    /*
     virtual bool setObjectValue(const C_FLOAT64 & value)
     {
       if (getObjectParent()->setChildValue(this, value)) return true;
@@ -69,6 +76,7 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
 
       return true;
     }
+    */
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const
       {
@@ -107,6 +115,48 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
         return CCopasiObject::getObjectDisplayName(regular, richtext);
       }
   };
+
+CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & name,
+    const CCopasiContainer * pParent,
+    referenceType & reference,
+    const unsigned C_INT32 & flag):
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mReference(reference)
+{
+  assert(pParent != NULL);
+  setUpdateMethod(this, &CCopasiObjectReference<C_FLOAT64>::updateMethod);
+}
+
+CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name,
+    const CCopasiContainer * pParent,
+    referenceType & reference,
+    const unsigned C_INT32 & flag):
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mReference(reference)
+{
+  assert(pParent != NULL);
+  setUpdateMethod(this, &CCopasiObjectReference<C_INT32>::updateMethod);
+}
+
+CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
+    const CCopasiContainer * pParent,
+    referenceType & reference,
+    const unsigned C_INT32 & flag):
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mReference(reference)
+{
+  assert(pParent != NULL);
+  setUpdateMethod(this, &CCopasiObjectReference<bool>::updateMethod);
+}
 
 /** @dia:pos 64.092,38.1129 */
 /** @dia:route CCopasiObject; v,60.054,22.7537,36.0826,82.52,38.1129 */
