@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2003/05/20 01:53:58 $  
+# $Revision: 1.6 $ $Author: shoops $ $Date: 2003/05/20 14:30:46 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -47,25 +47,30 @@ contains(BUILD_OS, WIN32) {
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    INCLUDEPATH += $${MKL_PATH}/include
-    LIBS += # mkl_lapack.lib mkl_p3.lib
-    LIBS += # -L$${MKL_PATH}/lib/32"
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
+    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
-      INCLUDEPATH += $${CLAPACK_PATH}/include
-      LIBS += $${CLAPACK_PATH}/lib/clapack.lib
+      QMAKE_CXXFLAGS_DEBUG   += -I"$${CLAPACK_PATH}\include"
+      QMAKE_CXXFLAGS_RELEASE += -I"$${CLAPACK_PATH}\include"
+      QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${CLAPACK_PATH}\lib"
+      LIBS += clapack.lib
     } else {
       error( "Either MKL_PATH or CLAPACK_PATH must be specified )
     }
   }
 
   !isEmpty(EXPAT_PATH) {
-      INCLUDEPATH += $${EXPAT_PATH}/Source/lib
-      LIBS += $${EXPAT_PATH}/StaticLibs/libexpat.lib
-    } else {
-      error( "EXPAT_PATH must be specified )
-    }
+    QMAKE_CXXFLAGS_DEBUG   += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_CXXFLAGS_RELEASE += -I"$${EXPAT_PATH}\Source\lib"
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${EXPAT_PATH}\StaticLibs"
+    LIBS += libexpat.lib
+  } else {
+    error( "EXPAT_PATH must be specified )
+  }
 } 
 
 contains(BUILD_OS, SunOS) {
