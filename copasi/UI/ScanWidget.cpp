@@ -101,7 +101,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout2->addWidget(commitChange);
 
   cancelChange = new QPushButton(this, "PushButton2");
-  cancelChange->setText(trUtf8("cancelChange"));
+  cancelChange->setText(trUtf8("Cancel"));
   Layout2->addWidget(cancelChange);
 
   ScanWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 4);
