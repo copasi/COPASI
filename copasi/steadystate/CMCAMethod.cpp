@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:29:57 $
+   $Date: 2004/10/26 11:31:12 $
    End CVS Header */
 
 #include <cmath>
@@ -26,7 +26,11 @@
  * Default constructor
  */
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
-{CONSTRUCTOR_TRACE;}
+{
+  CONSTRUCTOR_TRACE;
+  addParameter("MCA.GFactor",
+               CCopasiParameter::UDOUBLE, 1.0e-009);
+}
 
 /**
  * User defined constructor
@@ -35,6 +39,9 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent): CCopasiMethod(CCopasiTa
 CMCAMethod::CMCAMethod(const CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent): CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
 {
   CONSTRUCTOR_TRACE;
+  addParameter("MCA.GFactor",
+               CCopasiParameter::UDOUBLE, 1.0e-009);
+
   mpModel = &model;
 
   mDxv.resize(mpModel->getTotSteps(), mpModel->getIndMetab());
