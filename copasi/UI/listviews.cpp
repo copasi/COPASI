@@ -914,7 +914,7 @@ void ListViews::loadMoieties(QListViewItem* i)
   // multiply myId by 1000000 and than add these items with seq nu..of that id..
   //  myId = 10 * myId;
 
-  CCopasiVectorN < CMoiety > * moieties = &mModel->getMoieties();
+  const CCopasiVectorN < CMoiety > * moieties = &mModel->getMoieties();
 
   //Now filling the table.
   CMoiety *moiety;

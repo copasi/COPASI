@@ -1,7 +1,7 @@
-#include "copasi.h"
-
 #include <iostream>
 #include <sstream>
+
+#include "copasi.h"
 
 #include "CSpecLine.h"
 #include "CDeTerm.h"

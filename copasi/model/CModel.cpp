@@ -876,43 +876,30 @@ std::string CModel::getTitle() const
     return mTitle;
   }
 
-/**
- *        Return the compartments of this model
- *        @return CCopasiVector < CCompartment > *
- */ 
-/*CCopasiVectorNS < CCompartment > & CModel::getCompartments()
-  {
-    return (const_cast< CModel * >(this))->mCompartments;
-  }*/
+CCopasiVectorNS < CCompartment > & CModel::getCompartments()
+{return mCompartments;}
+
 const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
-  {
-    return mCompartments;
-  }
+  {return mCompartments;}
 
 /**
  *  Get the Reduced Stoichiometry Matrix of this Model
  */
 const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
-  {
-    return mRedStoi;
-  }
+  {return mRedStoi;}
 
 /**
  *  Get the Stoichiometry Matrix of this Model
  */
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
-  {
-    return mStoi;
-  }
+  {return mStoi;}
 
 /**
  *        Return the mMoieties of this model        
  *        @return CCopasiVector < CMoiety > * 
  */
-CCopasiVectorN < CMoiety > & CModel::getMoieties()
-{
-  return mMoieties;
-}
+const CCopasiVectorN < CMoiety > & CModel::getMoieties() const
+  {return mMoieties;}
 
 /**
  *        Returns the index of the metab

@@ -69,7 +69,7 @@ void MoietyWidget::loadMoieties(CModel *model)
           table->removeRow(0);
         }
 
-      CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
+      const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
 
       C_INT32 noOfMoietyRows = moieties.size();
       table->setNumRows (noOfMoietyRows);

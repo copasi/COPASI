@@ -459,8 +459,13 @@ class CModel : public CCopasiContainer
     /**
      * Return the compartments of this model
      * @return CCopasiVectorNS < CCompartment > *
-     */ 
-    //CCopasiVectorNS < CCompartment > & getCompartments();
+     */
+    CCopasiVectorNS < CCompartment > & getCompartments();
+
+    /**
+     * Return the compartments of this model
+     * @return const CCopasiVectorNS < CCompartment > *
+     */
     const CCopasiVectorNS < CCompartment > & getCompartments() const;
 
     /**
@@ -477,7 +482,7 @@ class CModel : public CCopasiContainer
      * Return the mMoieties of this model 
      * @return CCopasiVectorN < CMoiety > & 
      */
-    CCopasiVectorN < CMoiety > & getMoieties();
+    const CCopasiVectorN < CMoiety > & getMoieties() const;
 
     /**
      * Returns the index of the metab
