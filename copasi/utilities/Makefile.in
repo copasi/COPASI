@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.9 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.11 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -238,7 +238,6 @@ noinst_LIBRARIES = libutilities.a
 libutilities_a_SOURCES = \
 	CCopasiException.cpp \
 	CCopasiMessage.cpp \
-	CCopasiNode.cpp \
 	CDependencyGraph.cpp \
 	CGlobals.cpp \
 	CIndexedPriorityQueue.cpp \
@@ -254,8 +253,9 @@ EXTRA_DIST = \
 	utilities.h \
 	CCopasiException.h	CCopasiException.cpp \
 	CCopasiMessage.h	CCopasiMessage.cpp \
-	CCopasiNode.h		CCopasiNode.cpp \
+	CCopasiNode.h \
 	CCopasiVector.h \
+	CCopasiTree.h \
 	CDependencyGraph.h	CDependencyGraph.cpp \
 	CGlobals.h		CGlobals.cpp \
 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp \
@@ -281,20 +281,18 @@ LIBRARIES = $(noinst_LIBRARIES)
 libutilities_a_AR = $(AR) cru
 libutilities_a_LIBADD =
 am_libutilities_a_OBJECTS = CCopasiException.$(OBJEXT) \
-	CCopasiMessage.$(OBJEXT) CCopasiNode.$(OBJEXT) \
-	CDependencyGraph.$(OBJEXT) CGlobals.$(OBJEXT) \
-	CIndexedPriorityQueue.$(OBJEXT) CReadConfig.$(OBJEXT) \
-	CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) \
+	CCopasiMessage.$(OBJEXT) CDependencyGraph.$(OBJEXT) \
+	CGlobals.$(OBJEXT) CIndexedPriorityQueue.$(OBJEXT) \
+	CReadConfig.$(OBJEXT) CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) \
 	CMethodParameter.$(OBJEXT) CMethodParameterList.$(OBJEXT) \
 	utility.$(OBJEXT)
 #>- libutilities_a_OBJECTS = $(am_libutilities_a_OBJECTS)
-#>+ 10
+#>+ 9
 libutilities_a_final_OBJECTS = libutilities_a.all_cpp.o 
 libutilities_a_nofinal_OBJECTS = CCopasiException.$(OBJEXT) \
-	CCopasiMessage.$(OBJEXT) CCopasiNode.$(OBJEXT) \
-	CDependencyGraph.$(OBJEXT) CGlobals.$(OBJEXT) \
-	CIndexedPriorityQueue.$(OBJEXT) CReadConfig.$(OBJEXT) \
-	CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) \
+	CCopasiMessage.$(OBJEXT) CDependencyGraph.$(OBJEXT) \
+	CGlobals.$(OBJEXT) CIndexedPriorityQueue.$(OBJEXT) \
+	CReadConfig.$(OBJEXT) CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) \
 	CMethodParameter.$(OBJEXT) CMethodParameterList.$(OBJEXT) \
 	utility.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libutilities_a_OBJECTS = $(libutilities_a_nofinal_OBJECTS)
@@ -308,7 +306,6 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CCopasiException.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CCopasiMessage.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CCopasiNode.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CDependencyGraph.Po $(DEPDIR)/CGlobals.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CIndexedPriorityQueue.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/CMethodParameter.Po \
@@ -382,7 +379,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CCopasiNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CDependencyGraph.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CGlobals.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CIndexedPriorityQueue.Po@am__quote@
@@ -450,7 +446,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=utilities.dsp libutilities.a CVector.h CMatrix.h CluX.h 
+KDE_DIST=CMatrix.h utilities.dsp libutilities.a CVector.h CluX.h 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -579,11 +575,11 @@ force-reedit:
 
 
 #>+ 11
-libutilities_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCopasiException.cpp $(srcdir)/CCopasiMessage.cpp $(srcdir)/CCopasiNode.cpp $(srcdir)/CDependencyGraph.cpp $(srcdir)/CGlobals.cpp $(srcdir)/CIndexedPriorityQueue.cpp $(srcdir)/CReadConfig.cpp $(srcdir)/CVersion.cpp $(srcdir)/CWriteConfig.cpp $(srcdir)/CMethodParameter.cpp $(srcdir)/CMethodParameterList.cpp $(srcdir)/utility.cpp
+libutilities_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CCopasiException.cpp $(srcdir)/CCopasiMessage.cpp $(srcdir)/CDependencyGraph.cpp $(srcdir)/CGlobals.cpp $(srcdir)/CIndexedPriorityQueue.cpp $(srcdir)/CReadConfig.cpp $(srcdir)/CVersion.cpp $(srcdir)/CWriteConfig.cpp $(srcdir)/CMethodParameter.cpp $(srcdir)/CMethodParameterList.cpp $(srcdir)/utility.cpp
 	@echo 'creating libutilities_a.all_cpp.cpp ...'; \
 	rm -f libutilities_a.all_cpp.files libutilities_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libutilities_a.all_cpp.final; \
-	for file in CCopasiException.cpp CCopasiMessage.cpp CCopasiNode.cpp CDependencyGraph.cpp CGlobals.cpp CIndexedPriorityQueue.cpp CReadConfig.cpp CVersion.cpp CWriteConfig.cpp CMethodParameter.cpp CMethodParameterList.cpp utility.cpp ; do \
+	for file in CCopasiException.cpp CCopasiMessage.cpp CDependencyGraph.cpp CGlobals.cpp CIndexedPriorityQueue.cpp CReadConfig.cpp CVersion.cpp CWriteConfig.cpp CMethodParameter.cpp CMethodParameterList.cpp utility.cpp ; do \
 	  echo "#include \"$$file\"" >> libutilities_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libutilities_a.all_cpp.final; \
 	done; \
