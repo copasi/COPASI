@@ -62,6 +62,9 @@ void CReport::setAppend(bool append)
 
 void CReport::printHeader()
 {
+  // check if there is a target defined,
+  if (!ostream)
+    return;
   // for loop print out mpReportDef->getHeader()
   unsigned C_INT32 i;
   for (i = 0; i < headerObjectList.size(); i++)
@@ -70,6 +73,9 @@ void CReport::printHeader()
 
 void CReport::printBody()
 {
+  // check if there is a target defined,
+  if (!ostream)
+    return;
   // for loop print out mpReportDef->getBody()
   unsigned C_INT32 i;
   for (i = 0; i < bodyObjectList.size(); i++)
@@ -78,6 +84,9 @@ void CReport::printBody()
 
 void CReport::printFooter()
 {
+  // check if there is a target defined,
+  if (!ostream)
+    return;
   // for loop print out mpReportDef->getFooter()
   unsigned C_INT32 i;
   for (i = 0; i < footerObjectList.size(); i++)
