@@ -1,34 +1,25 @@
-@echo off 
+rem @echo off 
 
-cd copasi
-echo %1
-echo %2
-if "%1" == "--enable-debug"        goto ENABLE
-if "%1" == "--disable-debug"       goto DISABLE
-
-:ENABLE
-if "%2" == "false"                 goto RELEASE
-if "%2" == "no"                    goto RELEASE
-goto DEBUG
-
-:DISABLE
-if "%2" == "false"                 goto DEBUG
-if "%2" == "no"                    goto DEBUG
-goto RELEASE
+if "%1" == "--enable-debug"        goto DEBUG
+if "%1" == "--disable-debug"       goto RELEASE
+set cps_release=debug
+goto QMAKE
 
 :DEBUG
-set cps_release="CONFIG+=debug"
+shift
+set cps_release=debug
 goto QMAKE
 
 :RELEASE
-set cps_release="CONFIG+=release"
+shift
+set cps_release=release
 
 :QMAKE
 cd copasi
 echo executing in copasi:
-echo   del /s .qmake.internal.cache
-del /s .qmake.internal.cache
-echo   qmake %cps_release% "MKL_PATH=%CBLAS_LIB%" "EXPAT_PATH=%EXPAT_LIB%"
-qmake %cps_release% "MKL_PATH=%CBLAS_LIB%" "EXPAT_PATH=%EXPAT_LIB%"
+echo   for %%d in (*\.qmake.internal.cache) do del %d
+for %%d in (*\.qmake.internal.cache) do del %d
+echo   qmake "CONFIG+=%cps_release%" %1 %2
+qmake "CONFIG+=%cps_release%" %1 %2
 
 cd ..
