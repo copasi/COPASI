@@ -72,7 +72,7 @@ class CCopasiObject
     virtual ~CCopasiObject();
 
     //  pure virtual function,
-    // virtual void print(std::ostream& ostream) = 0;
+    virtual void print(std::ostream& ostream) {ostream << (*this);};
 
     virtual const std::string & getName() const;
 
@@ -117,6 +117,12 @@ class CCopasiObject
     bool hasValueDbl() const;
 
     virtual void * getReference();
+
+    friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
+    {
+      os << o.mObjectName << std::endl;
+      return os;
+    }
   };
 
 template <class CType> CCopasiObjectReference< CType > *
