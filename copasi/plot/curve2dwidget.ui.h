@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 16:11:53 $
+   $Date: 2004/10/08 09:22:02 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,11 +36,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   //std::vector< CCopasiContainer * > LOfC; //dummy
 
   //set the comboboxes for data channel selection
-  lineEditXName->setText(CCopasiContainer::ObjectFromName(curve->getChannels()[0])->getObjectUniqueName().c_str());
-  lineEditXCN->setText(CCopasiContainer::ObjectFromName(curve->getChannels()[0])->getCN().c_str());
+  //TODO: check if objects exist....
 
-  lineEditYName->setText(CCopasiContainer::ObjectFromName(curve->getChannels()[1])->getObjectUniqueName().c_str());
-  lineEditYCN->setText(CCopasiContainer::ObjectFromName(curve->getChannels()[1])->getCN().c_str());
+  CCopasiObject* co1 = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+  CCopasiObject* co2 = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
+
+  if ((!co1) || (!co2)) return false;
+
+  lineEditXName->setText(co1->getObjectUniqueName().c_str());
+  lineEditXCN->setText(co1->getCN().c_str());
+
+  lineEditYName->setText(co2->getObjectUniqueName().c_str());
+  lineEditYCN->setText(co2->getCN().c_str());
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
