@@ -3,13 +3,14 @@ PRG	= test
 
 CC	= gcc
 CXX	= g++
-CFLAGS	= -g -I$(INCDIR) -I. -DGCC 
+CFLAGS	= -g $(INCDIR) -I. -DGCC 
 
 LIBS	= -lnsl 
 
 SRCDIR	= ./src
 OBJDIR	= ./o
-INCDIR	= ./include
+INCDIRS = ./include ./include/Model ./include/Function
+INCDIR	= -I./include -I./include/Model -I./include/Function
 
 include include.mak
 
@@ -28,7 +29,7 @@ doc/html/index.html: $(INCDIR)/*.h test.dox
 	doxygen test.dox
 
 dependencies:
-	$(CC) -I./include -I. -MM $(SRCDIR)/*.cpp | \
+	$(CC) $(INCDIR) -I. -MM $(SRCDIR)/*.cpp | \
 	sed -e 's?\(.*\)\.o:?$(OBJDIR)/\1.o:?' > ./dependencies
 
 clean:  

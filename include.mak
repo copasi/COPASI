@@ -17,6 +17,7 @@ OBJS	= \
           $(OBJDIR)/CODESolver.o \
           $(OBJDIR)/CReadConfig.o \
           $(OBJDIR)/CStep.o \
+          $(OBJDIR)/CTrajectory.o \
           $(OBJDIR)/CVersion.o \
           $(OBJDIR)/CWriteConfig.o \
           $(OBJDIR)/Clsoda.o \
