@@ -1,0 +1,454 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>Form1</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Form1</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>900</width>
+            <height>564</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Tutorial</string>
+    </property>
+    <property name="modal">
+        <bool>false</bool>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="resizeMode">
+            <enum>Fixed</enum>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout12</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Plain</enum>
+                    </property>
+                    <property name="lineWidth">
+                        <number>0</number>
+                    </property>
+                    <property name="title">
+                        <string></string>
+                    </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
+                    <property name="exclusive">
+                        <bool>true</bool>
+                    </property>
+                    <property name="selectedId" stdset="0">
+                        <number>0</number>
+                    </property>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button1</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>80</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="focusPolicy">
+                            <enum>NoFocus</enum>
+                        </property>
+                        <property name="text">
+                            <string>Step 1
+Naming and Description</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="on">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="default">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>0</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button2</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>130</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Step 2
+Creating Reactions</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>1</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button3</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>180</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Step 3
+Refining the Model</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>2</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button4</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>230</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Step 4
+Defining the Output</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>3</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button5</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>280</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Step 5
+Calculating a Time Course</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>4</number>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>button6</cstring>
+                        </property>
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>330</y>
+                                <width>170</width>
+                                <height>50</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="backgroundOrigin">
+                            <enum>WidgetOrigin</enum>
+                        </property>
+                        <property name="text">
+                            <string>Step 6
+Plotting a Trajectory</string>
+                        </property>
+                        <property name="toggleButton">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoDefault">
+                            <bool>false</bool>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <property name="buttonGroupId">
+                            <number>5</number>
+                        </property>
+                    </widget>
+                </widget>
+                <widget class="QTextBrowser">
+                    <property name="name">
+                        <cstring>textBrowser</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>700</width>
+                            <height>500</height>
+                        </size>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>WheelFocus</enum>
+                    </property>
+                    <property name="resizePolicy">
+                        <enum>Manual</enum>
+                    </property>
+                    <property name="textFormat">
+                        <enum>AutoText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>WidgetWidth</enum>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout9</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>backButton</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>&lt;&lt; back</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>forwardButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>forward &gt;&gt;</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>310</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonGroup</sender>
+        <signal>clicked(int)</signal>
+        <receiver>Form1</receiver>
+        <slot>buttonGroup2_clicked(int)</slot>
+    </connection>
+    <connection>
+        <sender>forwardButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>forwardButton_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>backButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>backButton_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>textBrowser</sender>
+        <signal>anchorClicked(const QString&amp;,const QString&amp;)</signal>
+        <receiver>Form1</receiver>
+        <slot>textBrowser_anchorClicked(const QString&amp;,const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Form1</receiver>
+        <slot>cancelButton_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in implementation">iostream</include>
+    <include location="local" impldecl="in implementation">qmessagebox.h</include>
+    <include location="local" impldecl="in implementation">qdir.h</include>
+    <include location="local" impldecl="in implementation">wizard.ui.h</include>
+</includes>
+<variables>
+    <variable access="public">static char* texts[6];</variable>
+    <variable>static std::string helpPath;</variable>
+    <variable>static char* Error;</variable>
+</variables>
+<slots>
+    <slot>buttonGroup2_clicked( int )</slot>
+    <slot>forwardButton_clicked()</slot>
+    <slot>backButton_clicked()</slot>
+    <slot>textBrowser_anchorClicked( const QString &amp; name, const QString &amp; link )</slot>
+    <slot>cancelButton_clicked()</slot>
+</slots>
+<functions>
+    <function>init()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: ssahle $ $Date: 2004/06/15 09:24:22 $  
+# $Revision: 1.7 $ $Author: gauges $ $Date: 2004/09/23 11:30:18 $  
 ######################################################################
 
 include(common.pri)
@@ -23,7 +23,7 @@ SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += utilities
 SUBDIRS += xml
-
+SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiUI
 #SUBDIRS += CopasiSE
