@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 11:50:13 $
+   $Date: 2004/05/24 14:58:54 $
    End CVS Header */
 
 /*******************************************************************
@@ -65,7 +65,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
       mHLayout->addWidget(btnOK);
       mHLayout->addSpacing(5);
       mHLayout->addWidget(btnCancel);
-      mHLayout->addSpacing(5);
+      mHLayout->addSpacing(30);
       mHLayout->addWidget(btnDelete);
       mHLayout->addSpacing(50);
     }
