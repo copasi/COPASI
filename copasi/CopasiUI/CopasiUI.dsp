@@ -218,6 +218,14 @@ SOURCE=.\parametertable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ParamFittingItemWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ParamFittingWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\PlotWidget.cpp
 # End Source File
 # Begin Source File
@@ -459,6 +467,14 @@ SOURCE=.\OptimizationWidget.h
 # Begin Source File
 
 SOURCE=.\parametertable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ParamFittingItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ParamFittingWidget.h
 # End Source File
 # Begin Source File
 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.59 $ $Author: gauges $ $Date: 2004/11/02 17:06:46 $  
+# $Revision: 1.60 $ $Author: shoops $ $Date: 2004/11/04 16:04:57 $  
 ######################################################################
 
 include(../common.pri)
@@ -149,6 +149,8 @@ HEADERS += \
            objectdebug.h \
            OptimizationItemWidget.h \
            OptimizationWidget.h \
+           ParamFittingItemWidget.h \
+           ParamFittingWidget.h \
            parametertable.h \
            PlotWidget.h \
            qtUtilities.h \
@@ -223,6 +225,8 @@ SOURCES += \
            objectdebug.cpp \
            OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \
+           ParamFittingItemWidget.h \
+           ParamFittingWidget.h \
            parametertable.cpp \
            PlotWidget.cpp \
            qtUtilities.cpp \
@@ -232,7 +236,7 @@ SOURCES += \
            ScanWidget.cpp \
            SliderDialog.cpp \
            SimpleSelectionDialog.cpp \
-     	   simpleselectionwidget.cpp \
+      	   simpleselectionwidget.cpp \
            slidersettingsdialog.cpp \	
            StateWidget.cpp \
            StateSubwidget.cpp \
