@@ -56,7 +56,7 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   // signals and slots connections
   /*** for connecting first and second level function widget ****/
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
-  connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
+  connect(this, SIGNAL(name(const QString &)), (ListViews*)parent, SLOT(slotCompartmentTableChanged(const QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
 }
 
