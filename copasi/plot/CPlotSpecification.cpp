@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/09 15:44:02 $
+   $Date: 2004/07/13 14:35:42 $
    End CVS Header */
 
 /**
@@ -16,32 +16,20 @@
 
 #include "copasi.h"
 
-#include "CCopasiMethod.h"
-#include "CCopasiMessage.h"
+#include "CPlotSpecification.h" 
+//#include "CCopasiMessage.h"
 
 const std::string CPlotItem::TypeName[] =
   {
     "Not set",
-    "Random Search",
-    "Random Search (PVM)",
-    "Simulated Annealing",
-    "Enhanced Newton",
-    "Deterministic (LSODA)",
-    "Stochastic",
-    "Hybrid",
+    "2D Curve",
     ""
   };
 
-const char* CPlotItem::XMLSubType[] =
+const char* CPlotItem::XMLType[] =
   {
     "NotSet",
-    "RandomSearch",
-    "RandomSearch(PVM)",
-    "SimulatedAnnealing",
-    "EnhancedNewton",
-    "Deterministic(LSODA)",
-    "Stochastic",
-    "Hybrid",
+    "Curve2D",
     NULL
   };
 
@@ -63,39 +51,32 @@ CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName)
   else return CPlotItem::unset;
 }
 
-CCopasiMethod::CCopasiMethod():
-    CCopasiParameterGroup("NoName", NULL, "Method"),
-    mType(CCopasiTask::unset),
-    mSubType(unset)
-{setName(SubTypeName[mType]);}
+CPlotItem::CPlotItem():
+    CCopasiParameterGroup("NoName", NULL, "PlotItem"),
+    mType(CPlotItem::unset)
+{setName(TypeName[mType]);}
 
-CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
-                             const CCopasiMethod::SubType & subType,
-                             const CCopasiContainer * pParent):
-    CCopasiParameterGroup(TypeName[type], pParent, "Method"),
-    mType(type),
-    mSubType(subType)
-{setName(SubTypeName[mSubType]);}
+CPlotItem::CPlotItem(const CPlotItem::Type & type,
+                     const CCopasiContainer * pParent):
+    CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
+    mType(type)
+{setName(TypeName[mType]);}
 
-CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
-                             const CCopasiContainer * pParent):
+CPlotItem::CPlotItem(const CPlotItem & src,
+                     const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
-    mType(src.mType),
-    mSubType(src.mSubType)
+    mType(src.mType)
 {}
 
-CCopasiMethod::~CCopasiMethod() {}
+CPlotItem::~CPlotItem() {}
 
-const CCopasiTask::Type & CCopasiMethod::getType() const {return mType;}
+const CPlotItem::Type & CPlotItem::getType() const
+  {return mType;}
 
-// void CCopasiMethod::setType(const CCopasiTask::Type & type) {mType = type;}
+void CPlotItem::setType(CPlotItem::Type type)
+{mType = type;}
 
-const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
-  {return mSubType;}
+std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels()
+{return channels;}
 
-// void CCopasiMethod::setSubType(const CCopasiMethod::SubType & subType)
-// {mSubType = subType;}
-
-void CCopasiMethod::load(CReadConfig & C_UNUSED(configBuffer),
-                         CReadConfig::Mode C_UNUSED(mode))
-{fatalError();}
+//**************************************************************

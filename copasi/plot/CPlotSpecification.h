@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/09 15:44:03 $
+   $Date: 2004/07/13 14:35:43 $
    End CVS Header */
 
 /**
@@ -15,8 +15,9 @@
 
 #include <string>
 
-#include "CCopasiParameterGroup.h"
+#include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObjectName.h"
+#include "utilities/CCopasiVector.h"
 
 class CPlotDataChannelSpec : public CCopasiObjectName
   {
@@ -55,7 +56,7 @@ class CPlotDataChannelSpec : public CCopasiObjectName
         min(minimum),
         max(maximum),
         autoscale(false)
-    {}}
+    {}};
 
 //****************************************************************************************
 
@@ -67,7 +68,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, xxx, yyy, zzz //dummy
+      unset = 0, curve2d //dummy
     };
 
     /**
@@ -113,9 +114,8 @@ class CPlotItem : public CCopasiParameterGroup
      * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCopasiMethod(const CCopasiTask::Type & taskType,
-                  const SubType & subType,
-                  const CCopasiContainer * pParent = NULL);
+    CPlotItem(const CPlotItem::Type & taskType,
+              const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -134,7 +134,7 @@ class CPlotItem : public CCopasiParameterGroup
      * @return CCopasiMethod::SubType type
      */
     static
-    CPlotItem::SubType XMLNameToEnum(const char * xmlTypeName);
+    CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Copy constructor
@@ -151,12 +151,17 @@ class CPlotItem : public CCopasiParameterGroup
 
     /**
      * Retrieve the type of the method
-     * @return  const string & type
      */
     const CPlotItem::Type & getType() const;
 
+    void setType(CPlotItem::Type type);
+
     virtual const std::string & getKey() const;
+
+    std::vector<CPlotDataChannelSpec> & getChannels();
   };
+
+//****************************************************************************************
 
 class CPlotSpecification : public CPlotItem
   {
@@ -166,7 +171,7 @@ class CPlotSpecification : public CPlotItem
      */
     enum Type
     {
-      unset = 0, xxx2, yyy2, zzz2 //dummy
+      unset = 0, plot2d, simWiz
     };
 
     /**
@@ -206,9 +211,8 @@ class CPlotSpecification : public CPlotItem
      * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CCopasiMethod(const CCopasiTask::Type & taskType,
-                  const SubType & subType,
-                  const CCopasiContainer * pParent = NULL);
+    CPlotSpecification(const CPlotSpecification::Type & taskType,
+                       const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -227,7 +231,7 @@ class CPlotSpecification : public CPlotItem
      * @return CCopasiMethod::SubType type
      */
     static
-    CPlotSpecification::SubType XMLNameToEnum(const char * xmlTypeName);
+    CPlotSpecification::Type XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Copy constructor
