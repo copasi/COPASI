@@ -123,11 +123,3 @@ C_INT16 CCompartment::isValidName() const
 {
     return (mName.find_first_of("; ") == string::npos);
 }
-
-/**
- *	Returns the address of mVolume		Wei Sun
- */
-void * CCompartment::getVolumeAddr()
-{
-	return &mVolume;
-}

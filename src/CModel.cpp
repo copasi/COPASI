@@ -340,15 +340,11 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
 
     // Set the concentration of the independent metabolites
     for (i=0; i < mMetabolitesInd.size(); i++)
-        mMetabolitesInd[i]->
-            setConcentration(y[i] *
-                             mMetabolitesInd[i]->getCompartment()->getVolume());
+        mMetabolitesInd[i]->setNumber(y[i]);
     
     // Set the concentration of the dependent metabolites
     for (i=0; i<mMetabolitesDep.size(); i++)
-        mMetabolitesDep[i]->
-            setConcentration((*mMoieties)[i].dependentNumber() *
-                             mMetabolitesDep[i]->getCompartment()->getVolume());
+        mMetabolitesDep[i]->setNumber((*mMoieties)[i].dependentNumber());
 
     return;
 }
