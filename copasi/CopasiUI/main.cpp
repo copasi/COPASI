@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/24 15:56:39 $
+   $Date: 2005/02/25 01:47:07 $
    End CVS Header */
 
 #include <stdexcept>
@@ -48,8 +48,8 @@ int main(int argc, char **argv)
   a.setMainWidget(&window);
   window.getDataModel()->setQApp(&a);
 
-  window.resize(800, 600);
-  window.show();
+  //  window.resize(800, 600);
+  //  window.show();
 
   //ObjectDebug objwindow;
   //objwindow.show();
