@@ -28,7 +28,7 @@ void Subject::detach(Observer* o)
     if (_observers[i] == o)
       break;
 
-  Observer** Target;
+  std::vector<Observer*>::iterator Target;
 
   if (i != length)
     {
