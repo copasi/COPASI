@@ -92,6 +92,18 @@ class CMethodParameterList : public CCopasiContainer
     const std::string & getType() const;
 
     /**
+     * Retrieve the type of the given method
+     * @return " const string &" type
+     */
+    const CMethodParameter::Type & getType(const unsigned C_INT32 & index);
+
+    /**
+     * Retrieve the type of the given method
+     * @return " const string &" type
+     */
+    const CMethodParameter::Type & getType(const std::string & name);
+
+    /**
      * Set the type of the method
      * @param "const string &" type
      */

@@ -72,6 +72,21 @@ void CMethodParameterList::setName(const std::string & name) {mName = name;}
  */
 const std::string & CMethodParameterList::getType() const {return mType;}
 
+//added by Liang
+/**
+ * Retrieve the type of the given method
+ * @return " const string &" type
+ */
+const CMethodParameter::Type & CMethodParameterList::getType(const unsigned C_INT32 & index)
+{return mMethodParameters[index]->getType();}
+
+/**
+ * Retrieve the type of the given method
+ * @return " const string &" type
+ */
+const CMethodParameter::Type & CMethodParameterList::getType(const std::string & name)
+{return mMethodParameters[name]->getType();}
+
 /**
  * Set the type of the method
  * @param "const string &" type
@@ -139,7 +154,9 @@ void CMethodParameterList::setValue(const std::string & name,
  */
 const double &
 CMethodParameterList::getValue(const unsigned C_INT32 & index) const
-  {return mMethodParameters[index]->getValue();}
+  {
+    return mMethodParameters[index]->getValue();
+  }
 
 /**
  * Retrieve the value of the named parameter.
