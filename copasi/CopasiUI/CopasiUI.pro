@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.77 $ $Author: shoops $ $Date: 2005/02/09 13:26:17 $  
+# $Revision: 1.78 $ $Author: shoops $ $Date: 2005/02/09 14:24:04 $  
 ######################################################################
 
 include(../common.pri)
@@ -123,6 +123,11 @@ contains(BUILD_OS, SunOS) {
   }
 
   LIBS += -lICE -ldl
+
+  QMAKE_LFLAGS += -z rescan
+
+  LIBS -= -Wl,--start-group
+  LIBS -= -Wl,--end-group
 }  
 
 # Input
