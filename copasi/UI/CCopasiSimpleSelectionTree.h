@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/10 12:44:17 $
+   $Author: ssahle $ 
+   $Date: 2005/01/19 13:51:22 $
    End CVS Header */
 
 #ifndef SimpleSelectionTree_H__
@@ -29,7 +29,7 @@ class CCopasiSimpleSelectionTree: public QListView
     CCopasiSimpleSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
     ~CCopasiSimpleSelectionTree();
 
-    virtual void populateTree(CModel * model);
+    virtual void populateTree(const CModel * model);
     virtual void setOutputVector(std::vector<CCopasiObject*>* outputVector);
 
   public slots:

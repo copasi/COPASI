@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/10 15:10:06 $
+   $Author: ssahle $ 
+   $Date: 2005/01/19 13:51:21 $
    End CVS Header */
 
 #include "CCopasiSelectionDialog.h"
@@ -58,7 +58,7 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
   delete this->mpSelectionWidget;
 }
 
-void CCopasiSelectionDialog::setModel(CModel* model)
+void CCopasiSelectionDialog::setModel(const CModel* model)
 {
   this->mpSelectionWidget->populateTree(model);
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/13 13:27:16 $
+   $Author: ssahle $ 
+   $Date: 2005/01/19 13:51:21 $
    End CVS Header */
 
 #include <iostream>
@@ -28,7 +28,7 @@ CCopasiSelectionWidget::~CCopasiSelectionWidget()
   delete mpSimpleTree;
 }
 
-void CCopasiSelectionWidget::populateTree(CModel * model)
+void CCopasiSelectionWidget::populateTree(const CModel * model)
 {
   this->mpSimpleTree->populateTree(model);
 }

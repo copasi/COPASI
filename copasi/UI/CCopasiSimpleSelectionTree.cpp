@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/15 14:37:29 $
+   $Author: ssahle $ 
+   $Date: 2005/01/19 13:51:21 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -54,7 +54,7 @@ CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
   delete this->expertSubtree;
 }
 
-void CCopasiSimpleSelectionTree::populateTree(CModel * model)
+void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
   if (!model) return;
   // find all metabolites and create items in the metabolite subtree

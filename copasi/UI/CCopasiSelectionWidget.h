@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/10 12:45:09 $
+   $Author: ssahle $ 
+   $Date: 2005/01/19 13:51:21 $
    End CVS Header */
 
 #ifndef CCopasiSelectionWidget_H__
@@ -26,7 +26,7 @@ class CCopasiSelectionWidget: public QWidgetStack
     CCopasiSelectionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CCopasiSelectionWidget();
 
-    virtual void populateTree(CModel * model);
+    virtual void populateTree(const CModel * model);
     virtual void setOutputVector(std::vector<CCopasiObject *> * outputVector);
     virtual void setSingleSelection(bool singleSelection);
     virtual bool isSingleSelection() const;
