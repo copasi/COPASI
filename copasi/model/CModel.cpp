@@ -24,15 +24,7 @@
 #include "utilities/CluX.h"
 #include "utilities/CVector.h"
 
-extern "C"
-  {
-#include "clapack.h"        //use CLAPACK
-  }
-
-#if (defined min && ! defined WIN32)
-# undef min
-# undef max
-#endif // min && ! WIN32
+#include "clapackwrap.h"
 
 CModel::CModel():
     mMetabolitesInd(),
@@ -591,7 +583,7 @@ void CModel::buildRedStoi()
 void CModel::buildL()
 {
   C_INT32 N = mMetabolitesInd.size();
-  C_INT32 LDA = std::max(1L, N);
+  C_INT32 LDA = std::max((C_INT32)1, N);
   C_INT32 Info;
 
   unsigned C_INT32 i, imin, imax;
@@ -1528,7 +1520,8 @@ CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
 CModel::CLinkMatrixView::~CLinkMatrixView()
 {DESTRUCTOR_TRACE;}
 
-CModel::CLinkMatrixView::CLinkMatrixView & CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView::CLinkMatrixView & rhs)
+CModel::CLinkMatrixView &
+CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
 {
   const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
   const_cast< vector< CMetab * > &>(mIndependent) = rhs.mIndependent;

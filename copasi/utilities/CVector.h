@@ -164,8 +164,8 @@ template <class CType> class CVector
       CType * tmp = A.mVector;
 
       for (i = 0; i < A.mRows; i++)
-        cout << "  " << * (tmp++);
-      cout << endl;
+        os << "  " << * (tmp++);
+      os << endl;
       return os;
     }
   };

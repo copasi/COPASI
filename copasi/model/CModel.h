@@ -20,6 +20,7 @@ template <class CType> class CVector;
 class CModel
   {
     //Attributes
+  public:
     class CLinkMatrixView
       {
       public:
@@ -92,13 +93,13 @@ class CModel
               {
                 unsigned C_INT32 i, imax = A.numRows();
                 unsigned C_INT32 j, jmax = A.numCols();
-                os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+                os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
                 for (i = 0; i < imax; i++)
                   {
                     for (j = 0; j < jmax; j++)
-                      cout << "  " << A(i, j);
-                    cout << endl;
+                      os << "  " << A(i, j);
+                    os << std::endl;
                   }
                 return os;
               }
