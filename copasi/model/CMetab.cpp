@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 17:59:23 $
+   $Date: 2003/11/19 20:05:10 $
    End CVS Header */
 
 // cmetab.cpp : implementation of the CMetab class
@@ -81,14 +81,13 @@ CMetab::CMetab(const CMetab & src,
 CMetab &CMetab::operator=(const CMetabOld &RHS)
 {
   setObjectName(RHS.getObjectName());
+
   setInitialConcentration(RHS.mIConc);
   setConcentration(RHS.mIConc);
 
   mRate = 1.0;
   mTT = 0.0;
   mStatus = RHS.mStatus;
-  mpCompartment = NULL;
-  mpModel = NULL;
 
   return *this;  // Assignment operator returns left side.
 }

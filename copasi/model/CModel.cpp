@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/18 17:59:23 $
+   $Date: 2003/11/19 20:05:11 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -285,14 +285,15 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   if (configBuffer.getVersion() < "4")
     {
       // Create the correct compartment / metabolite relationships
-      CMetab Metabolite;
+      CMetab *pMetabolite;
 
       for (i = 0; i < Copasi->pOldMetabolites->size(); i++)
         {
-          Metabolite.cleanup();
-          Metabolite = *(*Copasi->pOldMetabolites)[i];
+          pMetabolite = new CMetab;
           mCompartments[(*Copasi->pOldMetabolites)[i]->getIndex()]->
-          addMetabolite(Metabolite);
+          addMetabolite(pMetabolite);
+
+          (*pMetabolite) = *(*Copasi->pOldMetabolites)[i];
         }
     }
 
@@ -461,7 +462,7 @@ void CModel::saveSBML(std::ofstream &fout)
   fout << "</sbml>" << std::endl;
 }
 
-void CModel::compile()
+bool CModel::compile()
 {
   CMatrix< C_FLOAT64 > LU;
 
@@ -476,6 +477,8 @@ void CModel::compile()
   buildL(LU);
   buildMoieties();
   buildStateTemplate();
+
+  return true;
 }
 
 void CModel::buildStoi()
@@ -1258,9 +1261,7 @@ void CModel::setState(const CState * state)
      numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIntMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolites[i]->getConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolitesX[i]->setNumber(*Dbl);
 
   //   DebugFile << "setState " << mTime;
   //   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++)
@@ -1319,9 +1320,7 @@ void CModel::setState(const CStateX * state)
      numbers which are provided separately in a state */
   Dbl = state->getVariableNumberVector().array();
   for (i = 0, imax = getIndMetab(); i < imax; i++, Dbl++)
-    *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv()
-      * mNumber2QuantityFactor;
+    mMetabolitesX[i]->setNumber(*Dbl);
 
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */
@@ -1330,10 +1329,7 @@ void CModel::setState(const CStateX * state)
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
     {
       NumberDbl = mMoieties[i]->dependentNumber();
-      mMetabolitesDep[i]->
-      setConcentration(NumberDbl *
-                       mMetabolitesDep[i]->getCompartment()->getVolumeInv()
-                       * mNumber2QuantityFactor);
+      mMetabolitesDep[i]->setNumber(NumberDbl);
       (const_cast<CStateX *>(state))->setDependentNumber(i, NumberDbl);
     }
 

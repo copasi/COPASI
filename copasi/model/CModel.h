@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/11/13 23:52:12 $
+   $Author: shoops $ 
+   $Date: 2003/11/19 20:05:11 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -432,7 +432,7 @@ class CModel : public CCopasiContainer
     /**
      *  Compile the model
      */
-    void compile();
+    bool compile();
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
