@@ -392,4 +392,6 @@ bool SteadyStateWidget::leave()
 }
 
 void SteadyStateWidget::ReportDefinitionClicked()
-{}
+{
+  int i = 0;
+}
