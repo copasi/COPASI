@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/10 19:59:23 $
+   $Date: 2003/12/10 20:27:19 $
    End CVS Header */
 
 /**
@@ -1211,11 +1211,8 @@ class CCopasiXMLParser : public CExpat
          */
         enum Element
         {
-          COPASI = 0,
-          ListOfFunctions,
-          Model,
-          ListOfTasks,
-          ListOfReports
+          ListOfReports = 0,
+          Reports
         };
 
         // Operations
