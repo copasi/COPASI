@@ -1,7 +1,7 @@
 /****************************************************************************
-**  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
-**  $ Author  : Ankur Gupta
-*****************************************************************************/
+ **  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
+ **  $ Author  : Ankur Gupta
+ *****************************************************************************/
 #ifndef LISTVIEWS_H
 #define LISTVIEWS_H
 
@@ -11,7 +11,7 @@
 #include <qptrlist.h>
 #include <qlistview.h>
 #include <vector>
-#include <qvaluelist.h> 
+#include <qvaluelist.h>
 #include <qobjectlist.h>
 #include <qheader.h>
 #include <qmessagebox.h>
@@ -37,128 +37,113 @@
 #include "./icons/folderopen.xpm"
 #include "./icons/folderlocked.xpm"
 
-
 class Folder : public QObject
-{
+  {
     Q_OBJECT
 
-public:
-    
+  public:
     ~Folder(){}
-  	inline Folder( Folder *parent, const QString &name )
-                 : QObject( parent, name ), fName( name ){}
 
-//	inline void setCaption(const QString &name){ fCaption(name);}
-//	inline QString getCaption(){return fCaption;}
+    inline Folder(Folder *parent, const QString &name)
+        : QObject(parent, name), fName(name){}
+    // inline void setCaption(const QString &name){ fCaption(name); }
+    // inline QString getCaption(){return fCaption; }
+    inline int getID(){ return id; }
+    inline void setID(int id){this->id = id; }
+    inline QString folderName() { return fName; }
 
-	inline int getID(){return id;}
-	inline void setID(int id){this->id=id;}
-	inline QString folderName() { return fName; }
-	inline int operator==(Folder &folder){
-			return this->getID()==folder.getID()?1:0;}// for the comparing the stuff
-//	inline friend ostream& operator<< (ostream& s,Folder& f)
-//	{
-//	 s<<"I am :-"<<f.getID()<<endl;
-//	 return s;
-//	}
+    inline int operator==(Folder &folder)
+    {
+      return this->getID() == folder.getID() ? 1 : 0;
+    } // for the comparing the stuff
 
-	
-protected:
-//	QString fCaption;
+    // inline friend ostream& operator<< (ostream& s,Folder& f)
+    // {
+    //  s<<"I am :-"<<f.getID()<<endl;
+    //  return s;
+    // }
+
+  protected:
+    // QString fCaption;
     QString fName;
-	int id;
-
-	
-};
-
-
+    int id;
+  };
 
 class FolderListItem : public QListViewItem
-{
-public:
-    FolderListItem( QListView *parent, Folder *f );
-    FolderListItem( FolderListItem *parent, Folder *f );
-    void insertSubFolders( const QObjectList *lst );
+  {
+  public:
+    FolderListItem(QListView *parent, Folder *f);
+    FolderListItem(FolderListItem *parent, Folder *f);
+    void insertSubFolders(const QObjectList *lst);
     Folder *folder() { return myFolder; }
-	
 
-protected:
+  protected:
     Folder *myFolder;
+  };
 
-};
-
-
-
-class ListViews : public QSplitter,public Observer
-{
+class ListViews : public QSplitter, public Observer
+  {
     Q_OBJECT
 
-public:
-    ListViews( QWidget *parent = 0, const char *name = 0 );
-    ~ListViews(){dataModel->detach(this);}
+  public:
+    ListViews(QWidget *parent = 0, const char *name = 0);
+    ~ListViews(){dataModel->detach(this); }
+
     void setDataModel(DataModel<Folder>* dm);
-	void update(Subject*,int status);//overides..the update method...
+    void update(Subject*, int status); //overides..the update method...
 
+  public slots:
+    virtual void slotCompartmentSelected(const QString &);
 
+  protected:
+    CModel *mModel;  // the re to the model...
 
-protected:
-	CModel *mModel;  // the re to the model...
-
-	void loadNodes(CModel *model);
-	void ConstructNodeWidgets();
+    void loadNodes(CModel *model);
+    void ConstructNodeWidgets();
 
     void clearItem(QListViewItem *);
-	void clearParentItem(QListViewItem *);// for the top level items to be cleared..
+    void clearParentItem(QListViewItem *); // for the top level items to be cleared..
 
     void initFolders();
 
-
     void setupFolders();
 
-	
-	QListViewItem* searchNode(Folder*);
-	QListViewItem* searchNode(int);// search by folder id
-    QListViewItem* searchNode(char*);// searfch by folder name
-	int searchNode(QListViewItem* me);
-	
-	// the variables used in the code...
-	QPtrList<Folder> lstFolders;// to keep the track of the folder items...for creation of the tree...
+    QListViewItem* searchNode(Folder*);
+    QListViewItem* searchNode(int); // search by folder id
+    QListViewItem* searchNode(char*); // searfch by folder name
+    int searchNode(QListViewItem* me);
+
+    // the variables used in the code...
+    QPtrList<Folder> lstFolders; // to keep the track of the folder items...for creation of the tree...
     QListView *folders;
-	QMultiLineEdit *bigWidget;
-   
+    QMultiLineEdit *bigWidget;
+
     MetabolitesWidget *metabolitesWidget;
-	ReactionsWidget *reactionsWidget;
-	CompartmentsWidget *compartmentsWidget;
-	MoietyWidget *moietyWidget;
-	ReactionsWidget1 *reactionsWidget1;
-	MetabolitesWidget1 *metabolitesWidget1;
-	CompartmentsWidget1 *compartmentsWidget1;
-	MoietyWidget1 *moietyWidget1;
+    ReactionsWidget *reactionsWidget;
+    CompartmentsWidget *compartmentsWidget;
+    MoietyWidget *moietyWidget;
+    ReactionsWidget1 *reactionsWidget1;
+    MetabolitesWidget1 *metabolitesWidget1;
+    CompartmentsWidget1 *compartmentsWidget1;
+    MoietyWidget1 *moietyWidget1;
 
+  protected slots:
+    void slotFolderChanged(QListViewItem*);
 
+  private:
+    DataModel<Folder>* dataModel; // this the datamodel that has to be used..in the code..
+    QListViewItem* lastSelection;
+    QWidget* currentWidget;
+    QWidget* lastWidget;
 
-protected slots:
-    void slotFolderChanged( QListViewItem*);
-
-private:
-	DataModel<Folder>* dataModel; // this the datamodel that has to be used..in the code..
-	QListViewItem* lastSelection;
-	QWidget* currentWidget;
-	QWidget* lastWidget;
-
-	void deleteAllMyChildrens(QListViewItem* me);
-	void addItem(QListViewItem* parent,Folder* child);
-	void addItem(QListView* parent,Folder* child);
-	void loadMetabolites(QListViewItem*);
-	void loadReactions(QListViewItem*);
-	void loadMoieties(QListViewItem*);
-	void loadCompartments(QListViewItem*);
-	void showMessage(QString caption,QString text);
-
-	
-
-
-
-};
+    void deleteAllMyChildrens(QListViewItem* me);
+    void addItem(QListViewItem* parent, Folder* child);
+    void addItem(QListView* parent, Folder* child);
+    void loadMetabolites(QListViewItem*);
+    void loadReactions(QListViewItem*);
+    void loadMoieties(QListViewItem*);
+    void loadCompartments(QListViewItem*);
+    void showMessage(QString caption, QString text);
+  };
 
 #endif

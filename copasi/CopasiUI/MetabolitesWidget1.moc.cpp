@@ -12,7 +12,7 @@
 
 #include <private/qucomextra_p.h>
 #if !defined(Q_MOC_OUTPUT_REVISION) || (Q_MOC_OUTPUT_REVISION != 19)
-#error "This file was generated using the moc from 3.0.2. It"
+#error "This file was generated using the moc from 3.0.*. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -53,10 +53,16 @@ QMetaObject* MetabolitesWidget1::staticMetaObject()
     return metaObj;
 
   QMetaObject* parentObject = QWidget::staticMetaObject();
+  static const QUMethod slot_0 = {"slotmSelected", 0, 0 };
+
+  static const QMetaData slot_tbl[] =
+    {
+      { "slotmSelected()", &slot_0, QMetaData::Public }
+    };
 
   metaObj = QMetaObject::new_metaobject(
               "MetabolitesWidget1", parentObject,
-              0, 0,
+              slot_tbl, 1,
               0, 0,
 #ifndef QT_NO_PROPERTIES
               0, 0,
@@ -79,7 +85,17 @@ void* MetabolitesWidget1::qt_cast(const char* clname)
 
 bool MetabolitesWidget1::qt_invoke(int _id, QUObject* _o)
 {
-  return QWidget::qt_invoke(_id, _o);
+  switch (_id - staticMetaObject()->slotOffset())
+    {
+    case 0:
+      slotmSelected();
+      break;
+
+    default:
+      return QWidget::qt_invoke(_id, _o);
+    }
+
+  return TRUE;
 }
 
 bool MetabolitesWidget1::qt_emit(int _id, QUObject* _o)

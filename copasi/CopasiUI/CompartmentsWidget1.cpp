@@ -141,7 +141,7 @@ void CompartmentsWidget1::loadCompartments(CModel *model)
 }
 
 /* This function loads the compartments widget when its name is
-   clicked in the tree   */
+  clicked in the tree   */
 void CompartmentsWidget1::loadName(QString setValue)
 {
   if (mModel == NULL)
