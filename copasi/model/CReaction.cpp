@@ -126,7 +126,7 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("Step", "string", &mName)))
     return Fail;
 
-  if ((Fail = configbuffer.setVariable("Equation", "string", &mChemEq)))
+  if ((Fail = configbuffer.setVariable("Equation", "string", &(mChemEq.getChemicalEquation()))))
     return Fail;
 
   std::string KinType = mpFunction->getName();
