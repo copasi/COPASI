@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 16:53:37 $
+   $Date: 2004/11/28 21:02:11 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -115,7 +115,7 @@ class CMCAMethod: public CCopasiMethod
     /**
      * Get the Model
      */
-    CModel* getModel();
+    const CModel* getModel() const;
 
     /**
      * the steady state MCA entry point

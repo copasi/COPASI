@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/26 20:41:17 $
+   $Date: 2004/11/28 21:02:11 $
    End CVS Header */
 
 #include <cmath>
@@ -70,6 +70,8 @@ CMCAMethod::~CMCAMethod()
   //delSsipvt();
 }
 
+//that caclulates the elasticities as d(particle flux)/d(particle number)
+//which is the same as d(flux of substance)/d(amount of substance)
 void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 {
   if (!mpModel) return;
@@ -136,6 +138,10 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
       // restore the value of (src[i])ss_x[i]
       metabs[j]->setNumber(store);
     }
+
+  // make shure the fluxes are correct afterwords (needed for scaling of the MCA results)
+  for (i = 0; i < numReacs; i++)
+  {reacs[i]->calculate();}
 
   std::cout << "elasticities" << std::endl;
   std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;
@@ -206,10 +212,10 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
     }
   std::cout << std::endl;
 
-  // LU decomposition if aux2 (for inversion)
+  // LU decomposition of aux2 (for inversion)
   // dgefa -> luX??
   C_INT32 * ssipvt;
-  ssipvt = (C_INT32 *) malloc((mpModel->getIndMetab()) * sizeof(C_INT32));
+  ssipvt = (C_INT32 *) malloc((mpModel->getIndMetab() + 1) * sizeof(C_INT32));
   dgefa(aux2, mpModel->getIndMetab(), ssipvt, &info);
 
   if (info != 0)
@@ -338,28 +344,35 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
           {
             mScaledElasticities[i][j] = mUnscaledElasticities[i][j]
-                                        * mpModel->getMetabolites()[j]->getConcentration()
-                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
-                                        / mpModel->getReactions()[i]->getFlux();
+                                        * mpModel->getMetabolites()[j]->getNumber()
+                                        / mpModel->getReactions()[i]->getParticleFlux();
+            //                                        * mpModel->getMetabolites()[j]->getConcentration()
+            //                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
+            //                                        / mpModel->getReactions()[i]->getFlux();
           }
         else
           mScaledElasticities[i][j] = DBL_MAX;
       }
+  std::cout << "scElas " << std::endl;
+  std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
 
   // Scale ConcCC
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
-  for (i = 0; i < mpModel->getIndMetab(); i++)
+  for (i = 0; i < mpModel->getIntMetab(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
         if (fabs(mpModel->getMetabolites()[i]->getConcentration()) >= res)
           mScaledConcCC[i][j] = mUnscaledConcCC[i][j]
-                                * mpModel->getReactions()[j]->getFlux()
-                                / (mpModel->getMetabolites()[i]->getConcentration()
-                                   *
-                                   mpModel->getMetabolites()[j]->getCompartment()->getVolume());
+                                * mpModel->getReactions()[j]->getParticleFlux()
+                                / mpModel->getMetabolites()[i]->getNumber();
+        //                                * mpModel->getReactions()[j]->getFlux()
+        //                                / (mpModel->getMetabolites()[i]->getConcentration()
+        //                                   *mpModel->getMetabolites()[j]->getCompartment()->getVolume());
         else
           mScaledConcCC[i][j] = DBL_MAX;
       }
+  std::cout << "scConcCC " << std::endl;
+  std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
 
   // Scale FluxCC
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
@@ -373,6 +386,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         else
           mScaledFluxCC[i][j] = DBL_MAX;
       }
+  std::cout << "scFluxCC " << std::endl;
+  std::cout << (CMatrix<C_FLOAT64>)mScaledFluxCC << std::endl;
 }
 
 /**
@@ -501,7 +516,7 @@ void CMCAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
   this->mSteadyStateResolution = resolution;
 }
 
-CModel* CMCAMethod::getModel()
-{
-  return this->mpModel;
-}
+const CModel* CMCAMethod::getModel() const
+  {
+    return this->mpModel;
+  }
