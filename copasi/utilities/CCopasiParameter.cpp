@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/12 09:12:10 $
+   $Author: shoops $ 
+   $Date: 2004/12/13 13:47:59 $
    End CVS Header */
 
 /**
@@ -21,6 +21,7 @@
 #include "CCopasiParameterGroup.h"
 #include "CCopasiMessage.h"
 #include "report/CKeyFactory.h"
+#include "report/CCopasiObjectReference.h"
 
 const std::string CCopasiParameter::TypeName[] =
   {
@@ -148,12 +149,14 @@ void * CCopasiParameter::createValue(const void * pValue)
       mpValue = new C_FLOAT64;
       if (pValue) * (C_FLOAT64 *) mpValue = * (C_FLOAT64 *) pValue;
       mSize = sizeof(C_FLOAT64);
+      addObjectReference("Value", * (C_FLOAT64 *) mpValue, CCopasiObject::ValueDbl);
       break;
 
     case CCopasiParameter::INT:
       mpValue = new C_INT32;
       if (pValue) * (C_INT32 *) mpValue = * (C_INT32 *) pValue;
       mSize = sizeof(C_INT32);
+      addObjectReference("Value", * (C_INT32 *) mpValue, CCopasiObject::ValueInt);
       break;
 
     case CCopasiParameter::UINT:
@@ -161,12 +164,14 @@ void * CCopasiParameter::createValue(const void * pValue)
       if (pValue)
         * (unsigned C_INT32 *) mpValue = * (unsigned C_INT32 *) pValue;
       mSize = sizeof(unsigned C_INT32);
+      addObjectReference("Value", * (unsigned C_INT32 *) mpValue, CCopasiObject::ValueInt);
       break;
 
     case CCopasiParameter::BOOL:
       mpValue = new bool;
       if (pValue) * (bool *) mpValue = * (bool *) pValue;
       mSize = sizeof(bool);
+      addObjectReference("Value", * (bool *) mpValue, CCopasiObject::ValueBool);
       break;
 
     case CCopasiParameter::STRING:
@@ -174,6 +179,7 @@ void * CCopasiParameter::createValue(const void * pValue)
         mpValue = new std::string(* (std::string *) pValue);
       else mpValue = new std::string;
       mSize = sizeof(std::string);
+      addObjectReference("Value", * (std::string *) mpValue);
       break;
 
     case CCopasiParameter::GROUP:
