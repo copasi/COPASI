@@ -284,7 +284,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
       memcpy(mXold.array(), mX, mDimension * sizeof(C_FLOAT64));
 
       steadyState.getJacobian(mJacobian, std::min(mFactor, mMaxrate),
-                              mScaledResolution);
+                              mResolution);
 
       /* We use dgetrf_ and dgetrs_ to solve
          mJacobian * b = mH for b (the result is in mdxdt) */
@@ -405,7 +405,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,        /* fortran style vector */
+                           mdxdt.array() - 1,         /* fortran style vector */
                            1);
         }
 
@@ -462,7 +462,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,        /* fortran style vector */
+                   mdxdt.array() - 1,         /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)
