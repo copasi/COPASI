@@ -51,14 +51,33 @@ private:
             friend class CKinFunction;
         // Attributes
         private:
-            long mType;
+            long mType; // currently we only have double
             long mCount;
             vector < char > mIdentifierTypes;
+            /**
+             *  Vector of identifiers of the function
+             */
+            vector< CBaseIdentifier > mIdentifiers;
+
         // Operations
         public:
-            long GetType();
-            long GetCount();
-            vector < char > IdentifierTypes();
+            virtual long GetType();
+            virtual long GetCount();
+            virtual vector < char > IdentifierTypes();
+            /**
+             *  Retrieves the number of identifiers of a specific type
+             *  @param char identifierType Default = 0 (all identifiers)
+             *  @return long
+             */
+            virtual long NoIdentifiers(char identifierType = 0);
+            
+            /**
+             *  Retrieves the vector of identifiers of a specific type
+             *  @param char identifierType Default = 0 (all identifiers)
+             *  @return "vector < char > &"
+             */
+            virtual vector< CBaseIdentifier * > 
+                Identifiers(char identifierType = 0);
         };
 
     /**
@@ -66,11 +85,6 @@ private:
      */
     vector < CCallParameter > mCallParameters;
     
-    /**
-     *  Vector of identifiers of the function
-     */
-    vector< CBaseIdentifier > mIdentifiers;
-
 // Operations
 public:
     /**
@@ -136,20 +150,6 @@ public:
      *  @return "vector < char > &"
      */
     vector < CCallParameter > & CallParameters();
-
-    /**
-     *  Retrieves the number of identifiers of a specific type
-     *  @param char identifierType Default = 0 (all identifiers)
-     *  @return long
-     */
-    virtual long NoIdentifiers(char identifierType = 0);
-
-    /**
-     *  Retrieves the vector of identifiers of a specific type
-     *  @param char identifierType Default = 0 (all identifiers)
-     *  @return "vector < char > &"
-     */
-    virtual vector< CBaseIdentifier * > Identifiers(char identifierType = 0);
 
     /**
      *  Calculates the value of the function

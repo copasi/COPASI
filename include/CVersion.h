@@ -79,7 +79,7 @@ public:
      *  @return mVersion
      *  @see mVersion  
      */
-    string GetVersion();
+    const string & GetVersion();
 
 
     /** 
@@ -88,7 +88,7 @@ public:
      *  @param minor minoor version number. 
      *  @param devel development version number. 
      */
-	SetVersion(long major, long minor, long devel);
+    SetVersion(long major, long minor, long devel);
 
 private:
     /**

@@ -1,5 +1,5 @@
 SHELL	= /bin/sh
-PRG	= test.exe
+PRG	= test
 
 CC	= gcc
 CXX	= g++
