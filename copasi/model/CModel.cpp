@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.216 $
+   $Revision: 1.217 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:24:35 $
+   $Date: 2005/03/23 13:48:51 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -587,10 +587,8 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
 void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 {
-  unsigned C_INT32 i, j, k;
+  unsigned C_INT32 i;
   unsigned C_INT32 iIndependent = 0, iVariable = 0;
-
-  C_FLOAT64 Sum;
 
   unsigned C_INT32 imax = (LU.numRows() < LU.numCols()) ?
                           LU.numRows() : LU.numCols();
@@ -605,7 +603,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 
   iIndependent = i;
 
-  for (i; i < LU.numRows(); i++)
+  for (; i < LU.numRows(); i++)
     mMetabolitesX[i]->setStatus(CMetab::METAB_DEPENDENT);
 
   iVariable = i;
