@@ -54,6 +54,10 @@ CFG=CopasiUI - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\AboutDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMCAResultSubwidget.cpp
 # End Source File
 # Begin Source File
@@ -90,6 +94,10 @@ SOURCE=.\CopasiDefaultWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiSlider.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiTableWidget.cpp
 # End Source File
 # Begin Source File
@@ -102,11 +110,23 @@ SOURCE=.\copasiWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CPlotSelectionDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CProgressBar.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\CReportDefinitionSelect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeSeriesTable.cpp
 # End Source File
 # Begin Source File
 
@@ -198,7 +218,15 @@ SOURCE=.\ObjectBrowser.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ObjectBrowserDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ObjectBrowserItem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowserWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -254,11 +282,27 @@ SOURCE=.\ScanWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\SimpleSelectionDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SimpleSelectionWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\SliderDialog.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\slidersettingsdialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StateSubwidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StateWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -302,6 +346,14 @@ SOURCE=.\Tree.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\AboutDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ChemEqValidator.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CMCAResultSubwidget.h
 # End Source File
 # Begin Source File
@@ -338,6 +390,10 @@ SOURCE=.\CopasiDefaultWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiSlider.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiTableWidget.h
 # End Source File
 # Begin Source File
@@ -354,11 +410,23 @@ SOURCE=.\copasiWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CPlotSelectionDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CProgressBar.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\CReportDefinitionSelect.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTimeSeriesTable.h
 # End Source File
 # Begin Source File
 
@@ -454,7 +522,15 @@ SOURCE=.\ObjectBrowser.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ObjectBrowserDialog.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ObjectBrowserItem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ObjectBrowserWidget.h
 # End Source File
 # Begin Source File
 
@@ -514,6 +590,18 @@ SOURCE=.\ScanWidget.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SimpleSelectionDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SimpleSelectionWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SimpleSelectionWidget.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SliderDialog.h
 # End Source File
 # Begin Source File
@@ -523,6 +611,18 @@ SOURCE=.\slidersettingsdialog.h
 # Begin Source File
 
 SOURCE=.\slidersettingsdialog.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StateSubwidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StateSubwidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StateWidget.h
 # End Source File
 # Begin Source File
 
