@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:57:33 $
+   $Author: chlee $ 
+   $Date: 2003/10/31 21:00:08 $
    End CVS Header */
 
 /**********************************************************************
@@ -387,6 +387,8 @@ void FunctionWidget1::updateParameters()
   // next step place the text area contents into the function description
   //***************
   //func->setDescription(textBrowser->text().latin1());
+  //if (pFunction->getDescription() != textBrowser->text().latin1())
+  //{
   pFunction->setDescription(textBrowser->text().latin1());
 
   // compile and retrieve nodes
@@ -417,14 +419,15 @@ void FunctionWidget1::updateParameters()
                                    "Retry",
                                    "Quit", 0, 0, 1))
         {
-        case 0:           // The user clicked the Retry again button or pressed Enter
+        case 0:            // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:           // The user clicked the Quit or pressed Escape
+        case 1:            // The user clicked the Quit or pressed Escape
           // exit
           break;
         }
     }
+  //}
 } //end of function
 
 bool FunctionWidget1::saveToFunction()
@@ -552,7 +555,9 @@ bool FunctionWidget1::saveToFunction()
                 else
                   Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
                                        functParam.getUsageRanges()["PRODUCT"]->getHigh());
-                functUsage.add(Application);*/
+                functUsage.add(Application);*/ 
+          //Write back changed pFunction to current function
+          func = pFunction;
         }
       else
         {
@@ -601,6 +606,8 @@ bool FunctionWidget1::saveToFunction()
 
 void FunctionWidget1::updateApplication()
 {
+  //if (textBrowser->text().latin1() != pFunction->getDescription())
+  //{
   //CFunction* func = (CFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
   //CFunctionParameters &functParam = func ->getParameters();
   CFunctionParameters &functParam = pFunction->getParameters();
@@ -629,14 +636,19 @@ void FunctionWidget1::updateApplication()
 
   // reload
   loadFromFunction();
+  //}
 }
 
 /*This function is called when the Function Description LineEdit is changed.*/
 void FunctionWidget1::slotFcnDescriptionChanged()
 {
-  //  if (textbrowser.getText() ==
-  // update the widget
+  //if (textBrowser->text().latin1() != pFunction->getDescription())
+  //{
+  // update the parameter widget
   updateParameters();
+  // update the application widget
+  //updateApplication();
+  //}
 }
 
 void FunctionWidget1::slotCancelButtonClicked()
@@ -701,6 +713,8 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
 
       functParam[row]->setUsage(usage.latin1());
     }
+  // need to updateUsageRanges of CFcnParameters
+  //updateUsageRanges();
   updateApplication();
   //saveToFunction();
 }
