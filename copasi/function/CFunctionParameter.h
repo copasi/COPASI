@@ -131,6 +131,11 @@ class CFunctionParameter
      *  @param "const string" & usage
      */
     void setUsage(const string & usage);
+
+    /**
+    * insert operator
+    */
+    friend ostream & operator<<(ostream &os, const CFunctionParameter & d);
   };
 
 #endif // COPASI_CFunctionParameter

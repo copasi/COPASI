@@ -78,6 +78,11 @@ class CUsageRange : public CRange
      *  @param "const string &" usage
      */
     void setUsage(const string & usage);
+
+    /**
+    * insert operator
+    */
+    friend ostream & operator<<(ostream &os, const CUsageRange & d);
   };
 
 #endif // COPASI_CUsageRange
