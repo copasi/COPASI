@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/02/23 22:07:52 $
+   $Date: 2004/02/25 20:23:26 $
    End CVS Header */
 
 /***********************************************************************
@@ -112,6 +112,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
           this, SLOT(CurrentValueChanged(int, int))); //By G
   connect(table, SIGNAL(valueChanged(int, int)),
           this, SLOT(slotTableValueChanged(int, int))); //
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 
   m_SavedRow = 0;
   m_SavedCol = 0;
@@ -536,7 +538,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
           switch (choice)
             {
-            case 0:                         // Yes or Enter
+            case 0:                          // Yes or Enter
               {
                 for (i = 0; i < imax; i++)
                   {
@@ -549,7 +551,7 @@ void MetabolitesWidget::slotBtnDeleteClicked()
 
                 break;
               }
-            case 1:                         // No or Escape
+            case 1:                          // No or Escape
               break;
             }
         }
