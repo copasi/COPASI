@@ -80,8 +80,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   ScanItemWidgetLayout->addLayout(layout21, 1, 0);
 
   buttonGroup = new QButtonGroup(this, "buttonGroup");
-  buttonGroup->setFrameShape(QButtonGroup::GroupBoxPanel);
-  buttonGroup->setFrameShadow(QButtonGroup::Sunken);
+  buttonGroup->setFrameShape(QFrame::StyledPanel);
+  buttonGroup->setFrameShadow(QFrame::Sunken);
   buttonGroup->setLineWidth(2);
   buttonGroup->setExclusive(TRUE);
   buttonGroup->setColumnLayout(0, Qt::Vertical);
@@ -193,28 +193,28 @@ void ScanItemWidget::RegularGridClicked()
 {
   mMinLabel->setText(tr("Min"));
   mMaxLabel->setText(tr("Max"));
-  pParameter->setValue("gridType", SD_REGULAR);
+  pParameter->setValue("gridType", (C_INT32) SD_REGULAR);
 }
 
 void ScanItemWidget::UniformClicked()
 {
   mMinLabel->setText(tr("Min"));
   mMaxLabel->setText(tr("Max"));
-  pParameter->setValue("gridType", SD_UNIFORM);
+  pParameter->setValue("gridType", (C_INT32) SD_UNIFORM);
 }
 
 void ScanItemWidget::GaussianClicked()
 {
   mMinLabel->setText(tr("Mean"));
   mMaxLabel->setText(tr("Std.Dev."));
-  pParameter->setValue("gridType", SD_GAUSS);
+  pParameter->setValue("gridType", (C_INT32) SD_GAUSS);
 }
 
 void ScanItemWidget::PosGaussianClicked()
 {
   mMinLabel->setText(tr("Mean"));
   mMaxLabel->setText(tr("Std.Dev."));
-  pParameter->setValue("gridType", SD_BOLTZ);
+  pParameter->setValue("gridType", (C_INT32) SD_BOLTZ);
 }
 
 /*
