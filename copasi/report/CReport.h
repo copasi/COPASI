@@ -90,6 +90,11 @@ class CReport : public CCopasiObject
        to print footer
        */
     void printFooter();
+
+    /**
+    to print body
+    */
+    static void printBody(CReport * pReport);
   };
 
 #endif

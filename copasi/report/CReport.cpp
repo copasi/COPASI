@@ -60,3 +60,6 @@ void CReport::printFooter()
 
 void CReport::compile()
 {}
+
+void CReport::printBody(CReport * pReport)
+{if (pReport) pReport->printBody();}
