@@ -142,8 +142,8 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
       x = name.c_str();
-      emit update();
       emit informUpdated();
+      emit update();
     }
   emit name(x);
 }
