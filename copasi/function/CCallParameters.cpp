@@ -13,7 +13,19 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
     mPointers(src.mPointers),
     mObjects(src.mObjects),
     mFunctionParameters(src.mFunctionParameters)
-{};
+{
+  std::vector<const void*> * pDummy;
+
+  C_INT32 i, imax = mFunctionParameters.size();
+  for (i = 0; i < imax; ++i)
+    if (mFunctionParameters[i]->getType() >= CFunctionParameter::VINT32)
+      {
+        pDummy = new std::vector<const void*>(*(std::vector<const void*>*)(mPointers[i]));
+        mPointers[i] = pDummy;
+        pDummy = new std::vector<const void*>(*(std::vector<const void*>*)(mObjects[i]));
+        mObjects[i] = pDummy;
+      }
+}
 
 CFunctionParameterMap::~CFunctionParameterMap() {};
 
@@ -22,10 +34,6 @@ void CFunctionParameterMap::initializeFromFunctionParameters(const CFunctionPara
   clearCallParameters();
 
   mFunctionParameters = src;
-  /* TODO: may be we should copy the function parameters here. the call parameters can only be
-     destroyed if we have the type information. So the CCallparameter object is save when the 
-     function changes. But what about the reaction? Should it copy the function? (Then CCallParams
-     would not need to copy CFunctionParameters) */
 
   initCallParameters();
 }
