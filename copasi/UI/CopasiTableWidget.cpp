@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:57:58 $
+   $Date: 2004/05/27 10:06:52 $
    End CVS Header */
 
 /*******************************************************************
@@ -40,7 +40,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   vBoxLayout->addWidget(table);
 
   table->sortColumn (0, true, true);
-  table->setSorting (true);
+  table->setSorting (false);
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnReadOnly(0, true);
   table->setColumnWidth(0, 20);
@@ -332,6 +332,7 @@ void CopasiTableWidget::slotBtnDeleteClicked()
             }
 
           mFlagDelete[i] = flagNewDelState;
+
           if (mFlagRO[i]) mFlagDelete[i] = false;
           updateRow(i);
         }
