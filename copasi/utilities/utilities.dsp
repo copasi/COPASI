@@ -24,7 +24,7 @@ CFG=utilities - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=utilities - Win32 Build
 # PROP BASE Target_File "../lib/utilities.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -63,6 +63,26 @@ SOURCE=.\CCopasiMessage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiParameter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiParameterGroup.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiTask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
@@ -72,18 +92,6 @@ SOURCE=.\CGlobals.cpp
 # Begin Source File
 
 SOURCE=.\CIndexedPriorityQueue.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CMethodParameter.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CMethodParameterList.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
 
@@ -111,7 +119,27 @@ SOURCE=.\CCopasiMessage.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CCopasiMethod.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCopasiNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiParameter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiParameterGroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CCopasiTask.h
 # End Source File
 # Begin Source File
 
@@ -140,14 +168,6 @@ SOURCE=.\CluX.h
 # Begin Source File
 
 SOURCE=.\CMatrix.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CMethodParameter.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CMethodParameterList.h
 # End Source File
 # Begin Source File
 
