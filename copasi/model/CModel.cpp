@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.197 $
+   $Revision: 1.198 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 21:16:26 $
+   $Author: gauges $ 
+   $Date: 2004/10/19 07:23:33 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ const char * CModel::QuantityUnitName[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 CModel::CModel():
-    CCopasiContainer("NoName", &RootContainer, "Model"),
+    CCopasiContainer("New Model", &RootContainer, "Model"),
     mKey(GlobalKeys.add("Model", this)),
     mComments(),
     mVolumeUnit("ml"),

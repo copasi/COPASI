@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/19 07:14:50 $
+   $Date: 2004/10/19 07:23:34 $
    End CVS Header */
 
 /********************************************************
@@ -333,7 +333,7 @@ void TrajectoryWidget::runTrajectoryTask()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                 {
                   mainWidget->saveFile();
                 }

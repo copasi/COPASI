@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/19 07:14:49 $
+   $Date: 2004/10/19 07:23:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -146,7 +146,7 @@ void ModesWidget::slotBtnCalculateClicked()
           CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
           if (mainWidget)
             {
-              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsafed changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
+              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
                 {
                   mainWidget->saveFile();
                 }
