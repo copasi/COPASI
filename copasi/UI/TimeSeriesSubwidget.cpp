@@ -10,7 +10,7 @@
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
  ** Created: Thu Sep 30 17:54:10 2004
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.5 2004/10/04 13:47:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,8 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qfiledialog.h>
+#include <qmessagebox.h>
 #include "CTimeSeriesTable.h"
 #include "TimeSeriesSubwidget.ui.h"
 
