@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 21:05:19 $
+   $Date: 2005/03/29 13:46:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 #include <math.h>
+#include "qmessagebox.h"
 
 CSlider* SliderSettingsDialog::getSlider()
 {
@@ -178,6 +179,12 @@ void SliderSettingsDialog::minValueChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+  if (this->mMinValue == 0.0 && this->mpLogCheckBox->isChecked())
+    {
+      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0. Please set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+      this->mpLogCheckBox->setChecked(false);
+      this->mScaling = CSlider::linear;
+    }
   this->mChanged = false;
 }
 
@@ -370,7 +377,17 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
   this->mChanged = true;
   if (on)
     {
-      this->mScaling = CSlider::logarithmic;
+      // check if the minValue is 0.0 if so, issue an error message and uncheck the checkbox again
+      if (this->mMinValue == 0.0)
+        {
+          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0. Please set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+          this->mpLogCheckBox->setChecked(false);
+          this->mScaling = CSlider::linear;
+        }
+      else
+        {
+          this->mScaling = CSlider::logarithmic;
+        }
     }
   else
     {

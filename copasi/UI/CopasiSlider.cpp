@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/03/29 13:46:46 $
    End CVS Header */
 
 #include <math.h>
@@ -190,6 +190,7 @@ void CopasiSlider::sliderValueChanged(int value)
   this->mpCSlider->setSliderValue(this->calculateValueFromPosition(value), false);
 
   this->updateLabel();
+  this->mpCSlider->writeToObject();
 
   emit valueChanged(this->mpCSlider->getSliderValue());
 }
@@ -261,8 +262,8 @@ C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
       value = this->mpCSlider->getMinValue() + position * this->minorTickInterval();
       break;
     case CSlider::logarithmic:
-      exponent = (log10(this->mpCSlider->getMaxValue() - this->mpCSlider->getMinValue()) * position) / this->mpCSlider->getTickNumber();
-      value = this->mpCSlider->getMinValue() + (pow(10, exponent)) - 1;
+      exponent = (((double)position) * log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue())) / this->mpCSlider->getTickNumber();
+      value = this->mpCSlider->getMinValue() * pow(10, exponent);
       break;
     default:
       value = 0.0;
@@ -277,11 +278,10 @@ int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
   switch (this->mpCSlider->getScaling())
     {
     case CSlider::linear:
-      position = (int)floor(((this->mpCSlider->getSliderValue() - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
+      position = (int)floor(((value - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
       break;
     case CSlider::logarithmic:
-
-      position = (int)floor((log10(value + 1 - this->mpCSlider->getMinValue()) * this->mpCSlider->getTickNumber()) / (log10(this->mpCSlider->getMaxValue() - this->mpCSlider->getMinValue())));
+      position = (int)floor((this->mpCSlider->getTickNumber() * (log10(value / this->mpCSlider->getMinValue()) / log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue()))) + 0.5);
       break;
     default:
       position = 0;
