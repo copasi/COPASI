@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\FunctionItemWidget.ui'
  **
  ** Created: Mon Sep 29 00:08:09 2003
- **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.6 2003/10/05 01:13:38 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: FunctionItemWidget.cpp,v 1.7 2003/10/05 04:47:47 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,6 +22,7 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qcolor.h>
 
 /*
  *  Constructs a FunctionItemWidget as a child of 'parent', with the 
@@ -39,6 +40,7 @@ FunctionItemWidget::FunctionItemWidget(QWidget* parent, const char* name, bool m
   FunctionItemWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "FunctionItemWidgetLayout");
 
   textFunction = new QTextEdit(this, "textFunction");
+  textFunction->setColor(QColor(0, 0, 0));
 
   FunctionItemWidgetLayout->addMultiCellWidget(textFunction, 0, 0, 0, 3);
 
@@ -344,7 +346,8 @@ void FunctionItemWidget::slotButton1()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "1");
+  //textFunction->setText(textFunction->text() + "1");
+  textFunction->insert("1");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -391,7 +394,8 @@ void FunctionItemWidget::slotButton2()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "2");
+  //textFunction->setText(textFunction->text() + "2");
+  textFunction->insert("2");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -400,7 +404,8 @@ void FunctionItemWidget::slotButton3()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "3");
+  //textFunction->setText(textFunction->text() + "3");
+  textFunction->insert("3");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -416,7 +421,8 @@ void FunctionItemWidget::slotButton5()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "5");
+  //textFunction->setText(textFunction->text() + "5");
+  textFunction->insert("5");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -425,7 +431,8 @@ void FunctionItemWidget::slotButton7()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "7");
+  //textFunction->setText(textFunction->text() + "7");
+  textFunction->insert("7");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -434,7 +441,8 @@ void FunctionItemWidget::slotButton8()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "8");
+  //textFunction->setText(textFunction->text() + "8");
+  textFunction->insert("8");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -443,7 +451,8 @@ void FunctionItemWidget::slotButton9()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "9");
+  //textFunction->setText(textFunction->text() + "9");
+  textFunction->insert("9");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -452,7 +461,8 @@ void FunctionItemWidget::slotButton4()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "4");
+  //textFunction->setText(textFunction->text() + "4");
+  textFunction->insert("4");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -461,7 +471,8 @@ void FunctionItemWidget::slotButton6()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "6");
+  //textFunction->setText(textFunction->text() + "6");
+  textFunction->insert("6");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -500,7 +511,8 @@ void FunctionItemWidget::slotButtonAdd()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "+");
+  //textFunction->setText(textFunction->text() + "+");
+  textFunction->insert("+");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -509,7 +521,8 @@ void FunctionItemWidget::slotButtonSin()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "sin");
+  //textFunction->setText(textFunction->text() + "sin");
+  textFunction->insert("sin");
   index += 3;
   textFunction->setCursorPosition(para, index);
 }
@@ -518,7 +531,8 @@ void FunctionItemWidget::slotButtonLn()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "ln");
+  //textFunction->setText(textFunction->text() + "ln");
+  textFunction->insert("ln");
   index += 2;
   textFunction->setCursorPosition(para, index);
 }
@@ -527,7 +541,8 @@ void FunctionItemWidget::slotButtonMin()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "-");
+  //textFunction->setText(textFunction->text() + "-");
+  textFunction->insert("-");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -536,7 +551,8 @@ void FunctionItemWidget::slotButtonDiv()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "/");
+  //textFunction->setText(textFunction->text() + "/");
+  textFunction->insert("/");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -545,7 +561,8 @@ void FunctionItemWidget::slotButtonLog()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "log");
+  //textFunction->setText(textFunction->text() + "log");
+  textFunction->insert("log");
   index += 3;
   textFunction->setCursorPosition(para, index);
 }
@@ -554,7 +571,8 @@ void FunctionItemWidget::slotButtonMul()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "*");
+  //textFunction->setText(textFunction->text() + "*");
+  textFunction->insert("*");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -563,7 +581,8 @@ void FunctionItemWidget::slotButtonExp()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "exp");
+  //textFunction->setText(textFunction->text() + "exp");
+  textFunction->insert("exp");
   index += 3;
   textFunction->setCursorPosition(para, index);
 }
@@ -572,7 +591,8 @@ void FunctionItemWidget::slotButtonLeftB()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "(");
+  //textFunction->setText(textFunction->text() + "(");
+  textFunction->insert("(");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -581,7 +601,8 @@ void FunctionItemWidget::slotButtonRightB()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + ")");
+  //textFunction->setText(textFunction->text() + ")");
+  textFunction->insert(")");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -590,7 +611,8 @@ void FunctionItemWidget::slotButtonPower()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "^");
+  //textFunction->setText(textFunction->text() + "^");
+  textFunction->insert("^");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -599,7 +621,8 @@ void FunctionItemWidget::slotButtonCos()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "cos");
+  //textFunction->setText(textFunction->text() + "cos");
+  textFunction->insert("cos");
   index += 3;
   textFunction->setCursorPosition(para, index);
 }
@@ -608,7 +631,8 @@ void FunctionItemWidget::slotButton0()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  textFunction->setText(textFunction->text() + "0");
+  //textFunction->setText(textFunction->text() + "0");
+  textFunction->insert("0");
   index++;
   textFunction->setCursorPosition(para, index);
 }
@@ -630,14 +654,21 @@ void FunctionItemWidget::setStrFunction(std::string * targetFunctionPtr)
 void FunctionItemWidget::objectLinkWrapper(CCopasiObject * pObject)
 {
   std::string lnk;
-  lnk = "<a href=";
+  lnk = "<";
   lnk = lnk + pObject->getCN().c_str();
   lnk = lnk + ">";
-  lnk = lnk + pObject->getObjectUniqueName().c_str();
-  lnk = lnk + "</a>";
-  textFunction->setText(textFunction->text() + lnk.c_str());
-  int para, index;
-  textFunction->getCursorPosition(&para, &index);
-  index += strlen(lnk.c_str());
-  textFunction->setCursorPosition(para, index);
+  textFunction->insert(lnk.c_str());
+
+  //  textFunction->setColor(QColor(255,0,0));
+  //  textFunction->setColor(QColor(0,0,0));
+  //  lnk = "<a href=";
+  //  lnk = lnk + pObject->getCN().c_str();
+  //  lnk = lnk + ">";
+  //  lnk = lnk + pObject->getObjectUniqueName().c_str();
+  //  lnk = lnk + "</a>";
+  //  textFunction->setText(textFunction->text() + lnk.c_str());
+  //  int para, index;
+  //  textFunction->getCursorPosition(&para, &index);
+  //  index += strlen(lnk.c_str());
+  textFunction->moveCursor(QTextEdit::MoveEnd, false);
 }
