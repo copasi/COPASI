@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/01/14 16:47:42 $
+   $Author: gasingh $ 
+   $Date: 2004/01/30 06:38:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -149,21 +149,25 @@ void PlotWidget::slotTableSelectionChanged()
 
 void PlotWidget::slotBtnOKClicked()
 {
-  //for testing only
-  std::ifstream datafile("datafile");
-  //datafile.open("datafile", std::ios::in);
+  if (dataModel->getPlotSpecVectorAddr())
+    {
+      //for testing only
+      std::ifstream datafile("datafile");
+      //datafile.open("datafile", std::ios::in);
 
-  dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
-  dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
-  dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
+      dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
+      dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
+      dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
 
-  dataModel->getPlotSpecVectorAddr()->doPlotting();
-  dataModel->getPlotSpecVectorAddr()->doPlotting();
+      dataModel->getPlotSpecVectorAddr()->doPlotting();
+      dataModel->getPlotSpecVectorAddr()->doPlotting();
+    }
 }
 
 void PlotWidget::slotBtnCancelClicked()
 {
-  fillTable();
+  if (dataModel->getPlotSpecVectorAddr())
+    fillTable();
 }
 
 void PlotWidget::tableValueChanged(int C_UNUSED(row),

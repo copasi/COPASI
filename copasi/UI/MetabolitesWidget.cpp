@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:22 $
+   $Author: gasingh $ 
+   $Date: 2004/01/30 06:38:47 $
    End CVS Header */
 
 /***********************************************************************
@@ -314,222 +314,232 @@ void MetabolitesWidget::slotTableValueChanged(int row, int col)
 
 void MetabolitesWidget::slotBtnOKClicked()
 {
-  CMetab *obj;
-  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
-  C_INT32 j, jmax = objects.size();
-  int *renamed = new int[jmax];
-  int *changed = new int[jmax];
-
-  table->setCurrentCell(jmax, 0);
-  double temp1;
-  C_FLOAT64 temp2;
-
-  for (j = 0; j < jmax; ++j)
+  if (dataModel->getModel())
     {
-      obj = objects[j];
-      renamed[j] = 0;
-      changed[j] = 0;
+      CMetab *obj;
+      const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+      C_INT32 j, jmax = objects.size();
+      int *renamed = new int[jmax];
+      int *changed = new int[jmax];
 
-      //name
-      QString name(table->text(j, 0));
-      if (name.latin1() != obj->getName())
-        {
-          obj->setName(name.latin1());
-          renamed[j] = 1;
-        }
+      table->setCurrentCell(jmax, 0);
+      double temp1;
+      C_FLOAT64 temp2;
 
-      //for Initial Concentration and Initial Number
-      if (btn_flag == 0)
+      for (j = 0; j < jmax; ++j)
         {
-          QString initialConcentration(table->text(j, 1));
-          temp1 = initialConcentration.toDouble();
-          if (fabs(temp1 - obj->getInitialConcentration()) > 1e-10)
+          obj = objects[j];
+          renamed[j] = 0;
+          changed[j] = 0;
+
+          //name
+          QString name(table->text(j, 0));
+          if (name.latin1() != obj->getName())
             {
-              obj->setInitialConcentration(temp1);
-
-              QString Concentration(table->text(j, 2));
-              temp1 = Concentration.toDouble();
-              obj->setConcentration(temp1);
-
-              changed[j] = 1;
+              obj->setName(name.latin1());
+              renamed[j] = 1;
             }
-        }
-      else
-        {
-          QString initialNumber(table->text(j, 1));
-          temp2 = initialNumber.toDouble();
-          if (fabs(temp2 - obj->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
+
+          //for Initial Concentration and Initial Number
+          if (btn_flag == 0)
             {
-              obj->setInitialNumber(temp2);
+              QString initialConcentration(table->text(j, 1));
+              temp1 = initialConcentration.toDouble();
+              if (fabs(temp1 - obj->getInitialConcentration()) > 1e-10)
+                {
+                  obj->setInitialConcentration(temp1);
 
-              QString Number(table->text(j, 2));
-              temp2 = Number.toDouble();
-              obj->setNumber(temp2);
+                  QString Concentration(table->text(j, 2));
+                  temp1 = Concentration.toDouble();
+                  obj->setConcentration(temp1);
 
-              changed[j] = 1;
+                  changed[j] = 1;
+                }
             }
-        }
-
-      //fixed?
-      QString status(table->text(j, 4));
-      if (status.latin1() != CMetab::StatusName[obj->getStatus()])
-        {
-          if (obj->getStatus() != CMetab::METAB_FIXED)
-            obj->setStatus(CMetab::METAB_FIXED);
           else
-            obj->setStatus(CMetab::METAB_VARIABLE);
+            {
+              QString initialNumber(table->text(j, 1));
+              temp2 = initialNumber.toDouble();
+              if (fabs(temp2 - obj->getInitialNumber()) > 1e-3) //TODO: this is extremely ugly
+                {
+                  obj->setInitialNumber(temp2);
 
-          changed[j] = 1;
+                  QString Number(table->text(j, 2));
+                  temp2 = Number.toDouble();
+                  obj->setNumber(temp2);
+
+                  changed[j] = 1;
+                }
+            }
+
+          //fixed?
+          QString status(table->text(j, 4));
+          if (status.latin1() != CMetab::StatusName[obj->getStatus()])
+            {
+              if (obj->getStatus() != CMetab::METAB_FIXED)
+                obj->setStatus(CMetab::METAB_FIXED);
+              else
+                obj->setStatus(CMetab::METAB_VARIABLE);
+
+              changed[j] = 1;
+            }
+
+          //compartment
+          QString Compartment(table->text(j, 5));
+          if (Compartment.latin1() != obj->getCompartment()->getName())
+            {
+              dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*obj);
+              dataModel->getModel()->getCompartments()[obj->getCompartment()->getName()]->getMetabolites().remove(obj->getName());
+              dataModel->getModel()->initializeMetabolites();
+              ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+
+              changed[j] = 1;
+            }
         }
 
-      //compartment
-      QString Compartment(table->text(j, 5));
-      if (Compartment.latin1() != obj->getCompartment()->getName())
+      for (j = 0; j < jmax; ++j)
         {
-          dataModel->getModel()->getCompartments()[Compartment.latin1()]->addMetabolite(*obj);
-          dataModel->getModel()->getCompartments()[obj->getCompartment()->getName()]->getMetabolites().remove(obj->getName());
-          dataModel->getModel()->initializeMetabolites();
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+          obj = objects[j];
+          if (renamed[j] == 1)
+            ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, obj->getKey());
 
-          changed[j] = 1;
+          if (changed[j] == 1)
+            ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, obj->getKey());
         }
+
+      table->setCurrentCell(prev_row, prev_col);
+
+      delete[] renamed;
+      delete[] changed;
+
+      return; //TODO: really check
     }
-
-  for (j = 0; j < jmax; ++j)
-    {
-      obj = objects[j];
-      if (renamed[j] == 1)
-        ListViews::notify(ListViews::METABOLITE, ListViews::RENAME, obj->getKey());
-
-      if (changed[j] == 1)
-        ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, obj->getKey());
-    }
-
-  table->setCurrentCell(prev_row, prev_col);
-
-  delete[] renamed;
-  delete[] changed;
-
-  return; //TODO: really check
 }
 
 void MetabolitesWidget::slotBtnSwitchColsClicked() //By G
 {
-  const CMetab *obj;
-  const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
-  C_INT32 j, jmax = objects.size();
-  table->setNumRows(jmax);
-  mKeys.resize(jmax);
-
-  QHeader *tableHeader = table->horizontalHeader();
-
-  if (btn_flag == 0)
+  if (dataModel->getModel())
     {
-      tableHeader->setLabel(1, "Initial Number");
-      tableHeader->setLabel(2, "Number");
-      btnSwitchCols->setText("&Show Concentrations");
-      btn_flag = 1;
+      const CMetab *obj;
+      const CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+      C_INT32 j, jmax = objects.size();
+      table->setNumRows(jmax);
+      mKeys.resize(jmax);
 
-      for (j = 0; j < jmax; ++j)
+      QHeader *tableHeader = table->horizontalHeader();
+
+      if (btn_flag == 0)
         {
-          obj = objects[j];
-          table->setText(j, 1, QString::number(obj->getInitialNumber()));
-          table->setText(j, 2, QString::number(obj->getNumber()));
+          tableHeader->setLabel(1, "Initial Number");
+          tableHeader->setLabel(2, "Number");
+          btnSwitchCols->setText("&Show Concentrations");
+          btn_flag = 1;
+
+          for (j = 0; j < jmax; ++j)
+            {
+              obj = objects[j];
+              table->setText(j, 1, QString::number(obj->getInitialNumber()));
+              table->setText(j, 2, QString::number(obj->getNumber()));
+            }
         }
-    }
-  else
-    {
-      tableHeader->setLabel(1, "Initial Concentration");
-      tableHeader->setLabel(2, "Concentration");
-      btnSwitchCols->setText("&Show Numbers");
-      btn_flag = 0;
-
-      for (j = 0; j < jmax; ++j)
+      else
         {
-          obj = objects[j];
-          table->setText(j, 1, QString::number(obj->getInitialConcentration()));
-          table->setText(j, 2, QString::number(obj->getConcentration()));
+          tableHeader->setLabel(1, "Initial Concentration");
+          tableHeader->setLabel(2, "Concentration");
+          btnSwitchCols->setText("&Show Numbers");
+          btn_flag = 0;
+
+          for (j = 0; j < jmax; ++j)
+            {
+              obj = objects[j];
+              table->setText(j, 1, QString::number(obj->getInitialConcentration()));
+              table->setText(j, 2, QString::number(obj->getConcentration()));
+            }
         }
     }
 }
 
 void MetabolitesWidget::slotBtnCancelClicked()
 {
-  fillTable();
+  if (dataModel->getModel())
+    fillTable();
 }
 
 void MetabolitesWidget::slotBtnDeleteClicked()
 {
-  unsigned C_INT32 i, imax = table->numRows() - 1;
-  std::vector< unsigned C_INT32 > ToBeDeleted;
-
-  for (i = 0; i < imax; i++)
+  if (dataModel->getModel())
     {
-      if (table->isRowSelected(i, true))
-        ToBeDeleted.push_back(i);
-    }
-
-  imax = ToBeDeleted.size();
-  if (imax > 0)
-    {
-      QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
-      QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-      int reacFound = 0;
+      unsigned C_INT32 i, imax = table->numRows() - 1;
+      std::vector< unsigned C_INT32 > ToBeDeleted;
 
       for (i = 0; i < imax; i++)
         {
-          metabList.append(table->text(ToBeDeleted[i], 0));
-          metabList.append(", ");
+          if (table->isRowSelected(i, true))
+            ToBeDeleted.push_back(i);
+        }
 
-          std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeMetabReacKeys(mKeys[ToBeDeleted[i]]);
+      imax = ToBeDeleted.size();
+      if (imax > 0)
+        {
+          QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
+          QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
+          int reacFound = 0;
 
-          if (effectedReacKeys.size() > 0)
+          for (i = 0; i < imax; i++)
             {
-              reacFound = 1;
-              for (int j = 0; j < effectedReacKeys.size(); j++)
+              metabList.append(table->text(ToBeDeleted[i], 0));
+              metabList.append(", ");
+
+              std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeMetabReacKeys(mKeys[ToBeDeleted[i]]);
+
+              if (effectedReacKeys.size() > 0)
                 {
-                  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
-                  effectedReacList.append(reac->getName().c_str());
-                  effectedReacList.append(", ");
+                  reacFound = 1;
+                  for (int j = 0; j < effectedReacKeys.size(); j++)
+                    {
+                      CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(effectedReacKeys[j]));
+                      effectedReacList.append(reac->getName().c_str());
+                      effectedReacList.append(", ");
+                    }
+
+                  effectedReacList.remove(effectedReacList.length() - 2, 2);
+                  effectedReacList.append("  ---> ");
+                  effectedReacList.append(table->text(ToBeDeleted[i], 0));
+                  effectedReacList.append("\n");
                 }
-
-              effectedReacList.remove(effectedReacList.length() - 2, 2);
-              effectedReacList.append("  ---> ");
-              effectedReacList.append(table->text(ToBeDeleted[i], 0));
-              effectedReacList.append("\n");
             }
-        }
 
-      metabList.remove(metabList.length() - 2, 2);
+          metabList.remove(metabList.length() - 2, 2);
 
-      QString msg = metabList;
-      if (reacFound == 1)
-        {
-          msg.append("\n \n");
-          msg.append(effectedReacList);
-        }
-      int choice = QMessageBox::warning(this,
-                                        "CONFIRM DELETE",
-                                        msg,
-                                        "Continue", "Cancel", 0, 0, 1);
+          QString msg = metabList;
+          if (reacFound == 1)
+            {
+              msg.append("\n \n");
+              msg.append(effectedReacList);
+            }
+          int choice = QMessageBox::warning(this,
+                                            "CONFIRM DELETE",
+                                            msg,
+                                            "Continue", "Cancel", 0, 0, 1);
 
-      switch (choice)
-        {
-        case 0:                     // Yes or Enter
-          {
-            for (i = 0; i < imax; i++)
+          switch (choice)
+            {
+            case 0:                      // Yes or Enter
               {
-                table->removeRow(ToBeDeleted[i]);
-                dataModel->getModel()->removeMetabolite(mKeys[ToBeDeleted[i]]);
+                for (i = 0; i < imax; i++)
+                  {
+                    table->removeRow(ToBeDeleted[i]);
+                    dataModel->getModel()->removeMetabolite(mKeys[ToBeDeleted[i]]);
+                  }
+
+                for (i = 0; i < imax; i++)
+                  ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+
+                break;
               }
-
-            for (i = 0; i < imax; i++)
-              ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
-
-            break;
-          }
-        case 1:                     // No or Escape
-          break;
+            case 1:                      // No or Escape
+              break;
+            }
         }
     }
 }

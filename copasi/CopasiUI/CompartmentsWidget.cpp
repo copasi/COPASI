@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:21 $
+   $Author: gasingh $ 
+   $Date: 2004/01/30 06:38:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -169,158 +169,165 @@ void CompartmentsWidget::CurrentValueChanged(int row, int col)
 
 void CompartmentsWidget::slotBtnOKClicked()
 {
-  CCompartment *obj;
-  CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
-  C_INT32 j, jmax = objects.size();
-
-  int *changed = new int[jmax];
-
-  table->setCurrentCell(jmax, 0);
-  for (j = 0; j < jmax; ++j)
+  if (dataModel->getModel())
     {
-      obj = objects[j];
-      changed[j] = 0;
+      CCompartment *obj;
+      CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
+      C_INT32 j, jmax = objects.size();
 
-      //name
-      QString name(table->text(j, 0));
-      if (name.latin1() != obj->getName())
-        {
-          obj->setName(name.latin1());
-          changed[j] = 1;
-        }
+      int *changed = new int[jmax];
 
-      //volume
-      QString volumeSave = QString::number(obj->getVolume());
-      QString volume(table->text(j, 1));
-      if (volume != volumeSave)
-        {
-          double m1;
-          m1 = volume.toDouble();
-          obj->setInitialVolume(m1);
-          changed[j] = 1;
-        }
-    }
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (changed[j] == 1)
+      table->setCurrentCell(jmax, 0);
+      for (j = 0; j < jmax; ++j)
         {
           obj = objects[j];
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, obj->getKey());
-        }
-    }
-  table->setCurrentCell(prev_row, prev_col);
+          changed[j] = 0;
 
-  delete[] changed;
-  return; //TODO: really check
+          //name
+          QString name(table->text(j, 0));
+          if (name.latin1() != obj->getName())
+            {
+              obj->setName(name.latin1());
+              changed[j] = 1;
+            }
+
+          //volume
+          QString volumeSave = QString::number(obj->getVolume());
+          QString volume(table->text(j, 1));
+          if (volume != volumeSave)
+            {
+              double m1;
+              m1 = volume.toDouble();
+              obj->setInitialVolume(m1);
+              changed[j] = 1;
+            }
+        }
+
+      for (j = 0; j < jmax; ++j)
+        {
+          if (changed[j] == 1)
+            {
+              obj = objects[j];
+              ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, obj->getKey());
+            }
+        }
+      table->setCurrentCell(prev_row, prev_col);
+
+      delete[] changed;
+      return; //TODO: really check
+    }
 }
 
 void CompartmentsWidget::slotBtnCancelClicked()
 {
-  fillTable();
+  if (dataModel->getModel())
+    fillTable();
 }
 
 void CompartmentsWidget::slotBtnDeleteClicked()
 {
-  unsigned C_INT32 i, imax = table->numRows() - 1;
-  std::vector< unsigned C_INT32 > ToBeDeleted;
-
-  for (i = 0; i < imax; i++)
+  if (dataModel->getModel())
     {
-      if (table->isRowSelected(i, true))
-        ToBeDeleted.push_back(i);
-    }
-
-  imax = ToBeDeleted.size();
-  if (imax > 0)
-    {
-      QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
-      QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
-      QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-      int metabFound = 0;
-      int reacFound = 0;
+      unsigned C_INT32 i, imax = table->numRows() - 1;
+      std::vector< unsigned C_INT32 > ToBeDeleted;
 
       for (i = 0; i < imax; i++)
         {
-          compartmentList.append(table->text(ToBeDeleted[i], 0));
-          compartmentList.append(", ");
+          if (table->isRowSelected(i, true))
+            ToBeDeleted.push_back(i);
+        }
 
-          CCompartment* comp =
-            dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[ToBeDeleted[i]]));
+      imax = ToBeDeleted.size();
+      if (imax > 0)
+        {
+          QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
+          QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+          QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
+          int metabFound = 0;
+          int reacFound = 0;
 
-          const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-          C_INT32 noOfMetabs = Metabs.size();
-
-          if (noOfMetabs > 0)
+          for (i = 0; i < imax; i++)
             {
-              metabFound = 1;
-              for (int k = 0; k < noOfMetabs; k++)
-                {
-                  effectedMetabList.append(Metabs[k]->getName().c_str());
-                  effectedMetabList.append(", ");
-                }
+              compartmentList.append(table->text(ToBeDeleted[i], 0));
+              compartmentList.append(", ");
 
-              effectedMetabList.remove(effectedMetabList.length() - 2, 2);
-              effectedMetabList.append("  ---> ");
-              effectedMetabList.append(table->text(ToBeDeleted[i], 0));
-              effectedMetabList.append("\n");
+              CCompartment* comp =
+                dynamic_cast< CCompartment *>(GlobalKeys.get(mKeys[ToBeDeleted[i]]));
 
-              std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeCompReacKeys(mKeys[ToBeDeleted[i]]);
-              if (effectedReacKeys.size() > 0)
+              const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
+              C_INT32 noOfMetabs = Metabs.size();
+
+              if (noOfMetabs > 0)
                 {
-                  reacFound = 1;
-                  for (int k = 0; k < effectedReacKeys.size(); k++)
+                  metabFound = 1;
+                  for (int k = 0; k < noOfMetabs; k++)
                     {
-                      CReaction* reac =
-                        dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
-                      effectedReacList.append(reac->getName().c_str());
-                      effectedReacList.append(", ");
+                      effectedMetabList.append(Metabs[k]->getName().c_str());
+                      effectedMetabList.append(", ");
                     }
 
-                  effectedReacList.remove(effectedReacList.length() - 2, 2);
-                  effectedReacList.append("  ---> ");
-                  effectedReacList.append(table->text(ToBeDeleted[i], 0));
-                  effectedReacList.append("\n");
+                  effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+                  effectedMetabList.append("  ---> ");
+                  effectedMetabList.append(table->text(ToBeDeleted[i], 0));
+                  effectedMetabList.append("\n");
+
+                  std::vector<std::string> effectedReacKeys = dataModel->getModel()->removeCompReacKeys(mKeys[ToBeDeleted[i]]);
+                  if (effectedReacKeys.size() > 0)
+                    {
+                      reacFound = 1;
+                      for (int k = 0; k < effectedReacKeys.size(); k++)
+                        {
+                          CReaction* reac =
+                            dynamic_cast< CReaction *>(GlobalKeys.get(effectedReacKeys[k]));
+                          effectedReacList.append(reac->getName().c_str());
+                          effectedReacList.append(", ");
+                        }
+
+                      effectedReacList.remove(effectedReacList.length() - 2, 2);
+                      effectedReacList.append("  ---> ");
+                      effectedReacList.append(table->text(ToBeDeleted[i], 0));
+                      effectedReacList.append("\n");
+                    }
                 }
             }
-        }
 
-      compartmentList.remove(compartmentList.length() - 2, 2);
+          compartmentList.remove(compartmentList.length() - 2, 2);
 
-      QString msg = compartmentList;
-      if (metabFound == 1)
-        {
-          msg.append("\n \n");
-          msg.append(effectedMetabList);
-          if (reacFound == 1)
+          QString msg = compartmentList;
+          if (metabFound == 1)
             {
               msg.append("\n \n");
-              msg.append(effectedReacList);
+              msg.append(effectedMetabList);
+              if (reacFound == 1)
+                {
+                  msg.append("\n \n");
+                  msg.append(effectedReacList);
+                }
             }
-        }
 
-      int choice = QMessageBox::warning(this,
-                                        "CONFIRM DELETE",
-                                        msg,
-                                        "Continue", "Cancel", 0, 0, 1);
+          int choice = QMessageBox::warning(this,
+                                            "CONFIRM DELETE",
+                                            msg,
+                                            "Continue", "Cancel", 0, 0, 1);
 
-      switch (choice)
-        {
-        case 0:    // Yes or Enter
-          {
-            for (i = 0; i < imax; i++)
+          switch (choice)
+            {
+            case 0:     // Yes or Enter
               {
-                table->removeRow(ToBeDeleted[i]);
-                dataModel->getModel()->removeCompartment(mKeys[ToBeDeleted[i]]);
+                for (i = 0; i < imax; i++)
+                  {
+                    table->removeRow(ToBeDeleted[i]);
+                    dataModel->getModel()->removeCompartment(mKeys[ToBeDeleted[i]]);
+                  }
+
+                for (i = 0; i < imax; i++)
+                  ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+
+                break;
               }
-
-            for (i = 0; i < imax; i++)
-              ListViews::notify(ListViews::COMPARTMENT, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
-
-            break;
-          }
-        case 1:    // No or Escape
-          break;
+            case 1:     // No or Escape
+              break;
+            }
         }
     }
 }

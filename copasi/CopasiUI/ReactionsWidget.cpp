@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/12/18 20:10:32 $
+   $Date: 2004/01/30 06:38:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -175,128 +175,135 @@ void ReactionsWidget::CurrentValueChanged(int row, int col)
 
 void ReactionsWidget::slotBtnOKClicked()
 {
-  CReaction *obj;
-  CCopasiVectorN < CReaction > & objects = dataModel->getModel()->getReactions();
-  C_INT32 j, jmax = objects.size();
-
-  int *changed = new int[jmax];
-
-  table->setCurrentCell(jmax, 0);
-  for (j = 0; j < jmax; ++j)
+  if (dataModel->getModel())
     {
-      obj = objects[j];
-      changed[j] = 0;
+      CReaction *obj;
+      CCopasiVectorN < CReaction > & objects = dataModel->getModel()->getReactions();
+      C_INT32 j, jmax = objects.size();
 
-      // this loads the reaction into a CReactionInterface object.
-      // the gui works on this object and later writes back the changes to the reaction
-      mRi.initFromReaction(*(dataModel->getModel()), obj->getKey());
+      int *changed = new int[jmax];
 
-      //first check if new metabolites need to be created
-      bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
-
-      //name
-      QString name(table->text(j, 0));
-      if (name.latin1() != mRi.getReactionName())
-        {
-          mRi.setReactionName(name.latin1());
-          changed[j] = 1;
-        }
-
-      //equation
-      QString equation(table->text(j, 1));
-      if (equation.latin1() != mRi.getChemEqString())
-        {
-          //first check if the string is a valid equation
-          if (!CChemEqInterface::isValidEq(equation.latin1()))
-            {
-              std::cout << "Not a valid equation!\n\n";
-              table->setText(j, 1, mRi.getChemEqString().c_str());
-            }
-          else
-            {
-              //tell the reaction interface
-              mRi.setChemEqString(equation.latin1());
-              changed[j] = 1;
-            }
-        }
-
-      //this writes all changes to the reaction
-      mRi.writeBackToReaction(*(dataModel->getModel()));
-
-      //this tells the gui what it needs to know.
-      if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
-
-      // update the widget
-      //table->setText(j, 0, mRi.getReactionName().c_str());
-      //table->setText(j, 1, mRi.getChemEqString().c_str());
-    }
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (changed[j] == 1)
+      table->setCurrentCell(jmax, 0);
+      for (j = 0; j < jmax; ++j)
         {
           obj = objects[j];
-          ListViews::notify(ListViews::REACTION, ListViews::CHANGE, obj->getKey());
+          changed[j] = 0;
+
+          // this loads the reaction into a CReactionInterface object.
+          // the gui works on this object and later writes back the changes to the reaction
+          mRi.initFromReaction(*(dataModel->getModel()), obj->getKey());
+
+          //first check if new metabolites need to be created
+          bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
+
+          //name
+          QString name(table->text(j, 0));
+          if (name.latin1() != mRi.getReactionName())
+            {
+              mRi.setReactionName(name.latin1());
+              changed[j] = 1;
+            }
+
+          //equation
+          QString equation(table->text(j, 1));
+          if (equation.latin1() != mRi.getChemEqString())
+            {
+              //first check if the string is a valid equation
+              if (!CChemEqInterface::isValidEq(equation.latin1()))
+                {
+                  std::cout << "Not a valid equation!\n\n";
+                  table->setText(j, 1, mRi.getChemEqString().c_str());
+                }
+              else
+                {
+                  //tell the reaction interface
+                  mRi.setChemEqString(equation.latin1());
+                  changed[j] = 1;
+                }
+            }
+
+          //this writes all changes to the reaction
+          mRi.writeBackToReaction(*(dataModel->getModel()));
+
+          //this tells the gui what it needs to know.
+          if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
+
+          // update the widget
+          //table->setText(j, 0, mRi.getReactionName().c_str());
+          //table->setText(j, 1, mRi.getChemEqString().c_str());
         }
+
+      for (j = 0; j < jmax; ++j)
+        {
+          if (changed[j] == 1)
+            {
+              obj = objects[j];
+              ListViews::notify(ListViews::REACTION, ListViews::CHANGE, obj->getKey());
+            }
+        }
+
+      table->setCurrentCell(prev_row, prev_col);
+
+      delete[] changed;
+
+      return; //TODO: really check
     }
-
-  table->setCurrentCell(prev_row, prev_col);
-
-  delete[] changed;
-
-  return; //TODO: really check
 }
 
 void ReactionsWidget::slotBtnCancelClicked()
 {
-  fillTable();
+  if (dataModel->getModel())
+    fillTable();
 }
 
 void ReactionsWidget::slotBtnDeleteClicked()
 {
-  unsigned C_INT32 i, imax = table->numRows() - 1;
-  std::vector< unsigned C_INT32 > ToBeDeleted;
-
-  for (i = 0; i < imax; i++)
+  if (dataModel->getModel())
     {
-      if (table->isRowSelected(i, true))
-        ToBeDeleted.push_back(i);
-    }
+      unsigned C_INT32 i, imax = table->numRows() - 1;
+      std::vector< unsigned C_INT32 > ToBeDeleted;
 
-  if (ToBeDeleted.size() > 0)
-    {
-      QString reacList = "Are you sure you want to delete listed REACTION(S) ?\n";
-      for (i = 0; i < ToBeDeleted.size(); i++)
+      for (i = 0; i < imax; i++)
         {
-          reacList.append(table->text(ToBeDeleted[i], 0));
-          reacList.append(", ");
+          if (table->isRowSelected(i, true))
+            ToBeDeleted.push_back(i);
         }
-      reacList.remove(reacList.length() - 2, 2);
 
-      int choice = QMessageBox::warning(this, "CONFIRM DELETE",
-                                        reacList,
-                                        "Continue", "Cancel", 0, 0, 1);
-
-      switch (choice)
+      if (ToBeDeleted.size() > 0)
         {
-        case 0:   // Yes or Enter
-          {
-            for (i = ToBeDeleted.size(); 0 < i;)
-              {
-                i--;
+          QString reacList = "Are you sure you want to delete listed REACTION(S) ?\n";
+          for (i = 0; i < ToBeDeleted.size(); i++)
+            {
+              reacList.append(table->text(ToBeDeleted[i], 0));
+              reacList.append(", ");
+            }
+          reacList.remove(reacList.length() - 2, 2);
 
-                dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
-                table->removeRow(ToBeDeleted[i]);
+          int choice = QMessageBox::warning(this, "CONFIRM DELETE",
+                                            reacList,
+                                            "Continue", "Cancel", 0, 0, 1);
+
+          switch (choice)
+            {
+            case 0:  // Yes or Enter
+              {
+                for (i = ToBeDeleted.size(); 0 < i;)
+                  {
+                    i--;
+
+                    dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+                    table->removeRow(ToBeDeleted[i]);
+                  }
+
+                for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+                  ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+
+                break;
               }
 
-            for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
-              ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
-
-            break;
-          }
-
-        default:        // No or Escape
-          break;
+            default:         // No or Escape
+              break;
+            }
         }
     }
 }
