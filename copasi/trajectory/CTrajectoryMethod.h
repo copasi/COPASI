@@ -26,8 +26,8 @@ class CTrajectoryMethod : public CMethodParameterList
   public:
     enum Type
     {
-      unspecified = 0,
-      deterministic,
+      unspecified = -1,
+      deterministic = 0,
       stochastic,
       hybrid
     };
