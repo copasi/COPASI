@@ -1,0 +1,70 @@
+<!-- 
+    This file demostrates how to specify options to clo++
+-->
+<cloxx>
+    <config>
+	<autohelp/>
+    </config>
+
+    <options>
+	<option id="total" type="int" default="10">
+            <range min="1"/>
+	    <name>total</name>
+	    <name>t</name>
+	    <comment>the total number of networks to generate</comment>
+	</option>
+
+	<option id="genes" type="int" default="10">
+            <range min="1"/>
+	    <name>genes</name>
+	    <name>g</name>
+	    <name>n</name>
+	    <comment>the total number of genes</comment>
+	</option>
+
+	<option id="inputs" type="int" default="2">
+            <range min="1"/>
+	    <name>inputs</name>
+	    <name>k</name>
+	    <name>i</name>
+	    <comment>
+		the number of inputs per gene
+	    </comment>
+	</option>
+
+	<option id="positive" type="double" default="0.5">
+            <range min="0.0" max="1.0" />
+	    <name>positive</name>
+	    <name>p</name>
+	    <comment>
+		the probability of inputs being positive
+	    </comment>
+	</option>
+
+	<option id="rewire" type="double" default="0.1">
+            <range min="0.0" max="1.0" />
+	    <name>rewire</name>
+	    <name>r</name>
+	    <comment>
+		the probability of rewiring links at random
+	    </comment>
+	</option>
+
+	<option id="seed" type="int">
+	    <name>seed</name>
+	    <name>s</name>
+	    <comment>
+		a seed for the random number generator
+	    </comment>
+	</option>
+
+	<option id="prefix" type="string" default="erdos">
+	    <name>prefix</name>
+	    <name>x</name>
+	    <comment>
+		Prefix for filenames
+	    </comment>
+	</option>
+
+    </options>
+</cloxx>
