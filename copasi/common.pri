@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.40 $ $Author: shoops $ $Date: 2005/02/16 19:15:33 $  
+# $Revision: 1.41 $ $Author: shoops $ $Date: 2005/02/22 22:54:08 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -66,6 +66,10 @@ contains(BUILD_OS, Darwin) {
   LIBS += -lexpat
 
   contains(CONFIG, qt) {
+    !isEmpty(QWT_PATH){
+       LIBS+=  -L$${QWT_PATH}/lib
+       INCLUDEPATH += $${QWT_PATH}/include
+    }
     LIBS += -lqwt
   }
 
