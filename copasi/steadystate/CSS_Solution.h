@@ -21,9 +21,9 @@
 // #include <cmath>
 #include "trajectory/Clsoda.h"
 
-#define NEWTON 1;
-#define TRAJ 2;
-#define TRAJBACK 3;
+//#define NEWTON 1;
+//#define TRAJ 2;
+//#define TRAJBACK 3;
 
 //these defines are directly from GepasiDoc.h
 //#define SS_FOUND 0
@@ -68,12 +68,12 @@ class CSS_Solution
   /**
    *  variable for steady-state solution
    */
-  C_FLOAT64 * mSs_x;
+  //C_FLOAT64 * mSs_x;
 
   /**
    *  variable for steady-state solution
    */
-  C_FLOAT64 * mSs_xnew;
+  C_FLOAT64 * mY_traj;
 
   /**
    *  variable for steady-state solution
@@ -118,10 +118,10 @@ class CSS_Solution
   CTrajectory * mTraj;
 
   /**
-   *  The option to choose from 1(NEWTON),2(TRAY), or 3(TRAJBACK)
+   *  The option to choose from 0-normal 1-Integr.only 2-Newton only 3-back.integr.only
    */
   C_INT32 mOption;
-  //same as an int in GepasiDoc: int SSStrategy; // 0-normal 1-Integr.only 2-Newton only 3-back.integr.only
+  //same as an int in GepasiDoc: int SSStrategy;
 
 
 
@@ -230,16 +230,16 @@ class CSS_Solution
   CTrajectory * getTrajectory() const;
 
   /**
-   *  set mSs_xnew
-   *  @param aXnew is the double to be set as mSs_xnewModel
+   *  set mY_traj
+   *  @param aXnew is the double to be set as mY_traj
    */
-  void setSs_xnew(C_FLOAT64 * aXnew);
+  void setY_traj(C_FLOAT64 * aY);
 
   /**
-   *  get mSs_xnew
-   *  @return mSs_xnew
+   *  get mY_traj
+   *  @return mY_traj
    */
-  C_FLOAT64 * getSs_xnew() const;
+  C_FLOAT64 * getY_traj() const;
 
   
   /**
@@ -269,7 +269,7 @@ class CSS_Solution
    *  Check if it is steady state
    *  @return an int acting like a bool
    */
-  C_INT32 isSteadyState( void );
+  //C_INT32 isSteadyState( void );
 
   
   /**
@@ -277,13 +277,23 @@ class CSS_Solution
    *  It's based on if (mY[i]-mY_old[i])/delta(t) < mSSRes
    *  @return an int acting like a bool
    */
-  C_INT32 isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 *oldY, C_FLOAT64 * newY);
+  C_INT32 isSteadyStateAfterTrajectory();
 
 };
 
 
 
 #endif // COPASI_CSS_Solution
+
+
+
+
+
+
+
+
+
+
 
 
 

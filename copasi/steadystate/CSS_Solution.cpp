@@ -22,11 +22,10 @@ CSS_Solution::CSS_Solution()
   mNewton = NULL;
   mModel = NULL;
   mTraj = NULL;
-  mOption = NEWTON;
+  mOption = 0;    //0 means normal
 
   mSs_nfunction = 0;
-  mSs_x = NULL;
-  mSs_xnew = NULL;
+  mY_traj = NULL;
   //mSs_dxdt = NULL;
 }
 
@@ -38,8 +37,7 @@ CSS_Solution::CSS_Solution(const CSS_Solution& source)
   mModel = source.mModel;
   mTraj = source.mTraj;
   mOption = source.mOption;
-  mSs_x = source.mSs_x;
-  mSs_xnew = source.mSs_xnew;
+  mY_traj = source.mY_traj;
   mSs_dxdt = source.mSs_dxdt;
 }
 
@@ -53,8 +51,7 @@ CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
       mModel = source.mModel;
       mTraj = source.mTraj;
       mOption = source.mOption;
-      mSs_x = source.mSs_x;
-      mSs_xnew = source.mSs_xnew;
+      mY_traj = source.mY_traj;
       mSs_dxdt = source.mSs_dxdt;
 
     }
@@ -80,7 +77,7 @@ void CSS_Solution::initialize()
   mModel = new CModel();
   mTraj = new CTrajectory();
   
-  mSs_xnew = new C_FLOAT64[dim];
+  mY_traj = new C_FLOAT64[dim];
   mSs_dxdt.newsize(dim);
   
 }
@@ -89,15 +86,12 @@ void CSS_Solution::initialize()
 // Clean up internal pointer variables
 void CSS_Solution::cleanup(void)
 {
-  if (mSs_x) delete [] mSs_x;
-  mSs_x = NULL;
 
-  if (mSs_xnew) delete [] mSs_xnew;
-  mSs_xnew = NULL;
+  if (mY_traj) delete [] mY_traj;
+  mY_traj = NULL;
 
   // if (mSs_dxdt) delete [] mSs_dxdt;
   // mSs_dxdt = NULL;
-
  
 }
 
@@ -156,15 +150,15 @@ CTrajectory *  CSS_Solution::getTrajectory() const
 
 
 //set mSs_xnew
-void  CSS_Solution::setSs_xnew(C_FLOAT64 * aXnew)
+void  CSS_Solution::setY_traj(C_FLOAT64 * aY)
 {
-  mSs_xnew = aXnew;
+  mY_traj = aY;
 }
 
-// get mSs_xnew
-C_FLOAT64 * CSS_Solution::getSs_xnew() const
+// get mY_traj
+C_FLOAT64 * CSS_Solution::getY_traj() const
 {
-  return mSs_xnew;
+  return mY_traj;
 }
 
    
@@ -241,9 +235,7 @@ void CSS_Solution::process(void)
   if((mOption==0) || (mOption==2)) 
     {
       mNewton->process();
-      //YH: better return ss_x array from mNewton, or sth. like:
-      //mNewton.getSs_x();   // will be used in this class
-
+ 
       //ftot += (double) mSs_nfunction;     // ??
       //jtot += (double) mSs_njacob;        // ??
 
@@ -256,34 +248,29 @@ void CSS_Solution::process(void)
       || (mOption==1) // or forward integration only
       )
     {
-      C_FLOAT64 * oldY;
-      C_FLOAT64 * newY;
 
       while (t < pow(10,10))
         {
           t *= 10;
 
-          // before trajectory process, get trajectory.mY
-          // oldY = mTraj->getMY();
-
           mTraj -> process();
 
-	  // after trajectory process, get trajectory.mY
-	  // newY = mTraj->getMY();
+          // after trajectory process, get trajectory.mY
+          setY_traj(mTraj->getMY());
 
           //compare old and new mY and check isSteadyState()
-          if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )
+          if( isSteadyStateAfterTrajectory() )
                 afterFindSteadyState();
 
           // newton+integration (we use newton before recycling)
           if( mOption==0 ) 
             {
-              mSs_njacob = mSs_nfunction = 0;
+              //mSs_njacob = mSs_nfunction = 0;
 
               mNewton->process();
 
               // update count of function and jacobian evaluations
-	      // is it needed, anyway?
+              // is it needed, anyway?
               //ftot += (double) mSs_nfunction;
               //jtot += (double) mSs_njacob;
 
@@ -302,32 +289,50 @@ void CSS_Solution::process(void)
     {
       t = -1;
 
-      C_FLOAT64 * oldY;
-      C_FLOAT64 * newY;
-
       //YH: will be done later
       while ( t > -(pow(10,10)) )
         {
           t *= 10;
-
-	  // before trajectory process, get trajectory.mY
-          // oldY = mTraj->getMY();
 
           //YH: set up a new trajectory class now
           //set lsoda_incr to -1, and then run it  // ???
 
           mTraj -> process();
 
-	  // after trajectory process, get trajectory.mY
-	  // newY = mTraj->getMY();
+          // after trajectory process, get trajectory.mY
+          setY_traj(mTraj->getMY());
 
           //compare old and new mY and check isSteadyState()
-          if( isSteadyStateAfterTrajectory(mTraj, oldY, newY) )
+          if( isSteadyStateAfterTrajectory() )
                 afterFindSteadyState();
 
         }
     }
 
+}
+
+
+//another version
+// finds out if current state is a valid steady state
+C_INT32  CSS_Solution::isSteadyStateAfterTrajectory()
+
+{
+  unsigned C_INT32 i, dim = mModel->getIndMetab();
+  double maxrate;
+
+  mSs_solution = SS_NOT_FOUND;
+  for( i=0; i<dim; i++ )
+    if( mY_traj[i] < 0.0 ) return SS_NOT_FOUND;
+
+  //FEval( 0, 0, mSs_x, ss_dxdt );
+  mModel->lSODAEval(dim, 0, mY_traj, &mSs_dxdt[0] );
+  //mSs_nfunction++;
+  // maxrate = SS_XNorn( ss_dxdt );
+  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
+ 
+  if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
+  return mSs_solution;
+ 
 }
 
 
@@ -350,6 +355,12 @@ void CSS_Solution::afterFindSteadyState()
   return;
 }
 
+
+
+
+#ifdef XXXXXX
+
+
 // finds out if current state is a valid steady state
 // YH: it's a new function 
 // based on if | (mY[i]-mY_old[i])/delta(t)| < mSSRes 
@@ -362,8 +373,8 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
   for (int i=0; i < arrSize; i++)
     {
       if ( fabs( (newY[i]-oldY[i])/timeLength ) > mSSRes) {
-	mSs_solution = SS_NOT_FOUND;
-	return mSs_solution;
+        mSs_solution = SS_NOT_FOUND;
+        return mSs_solution;
       }
     }
 
@@ -371,38 +382,6 @@ C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT6
   return mSs_solution;
 
 }
-
-
-/*
-
-//another version
-// finds out if current state is a valid steady state
-C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * traj, C_FLOAT64 * oldY, C_FLOAT64 * newY )
-
-{
-  unsigned C_INT32 i, dim = mModel->getIndMetab();
-  double maxrate;
-
-  mSs_solution = SS_NOT_FOUND;
-  for( i=0; i<dim; i++ )
-    if( newY[i] < 0.0 ) return SS_NOT_FOUND;
-
-  //FEval( 0, 0, mSs_x, ss_dxdt );
-  mModel->lSODAEval(dim, 0, newY, &mSs_dxdt[0] );
-  //mSs_nfunction++;
-  // maxrate = SS_XNorn( ss_dxdt );
-  maxrate = xNorm(dim, &mSs_dxdt[0] - 1, 1);
- 
-  if( maxrate < mSSRes ) mSs_solution = SS_FOUND;
-  return mSs_solution;
- 
-}
-
-
-*/
-
-
-#ifdef XXXXXX
 
 
 //YH: change SSStrategy to mOption
@@ -628,6 +607,120 @@ C_INT32 CSS_Solution::isSteadyState( void )
   return mSs_solution;
 }
 
+
+//YH:  From GepasiDoc.cpp
+//
+// eigenvalue calculations
+void CGepasiDoc::CalcEigenvalues( void )
+{
+ int res;
+ char jobvs = 'N';
+ char sort = 'N';
+ long int lda;
+ long int sdim;
+ long int n, pz, mx, mn;
+ long int ldvs = 1;
+ double *work;
+ long int lwork = 4096;
+ long int info;
+ int i, j;
+ double distt, maxt, tott;
+ // the dimension of the matrix
+ n = Model.IndMetab;
+ lda = n>1 ? n : 1;
+ // create the matrices
+ work = new double[lwork];
+ // copy the jacobian into J
+ for( i=0; i<n; i++ )
+  for( j=0; j<n; j++ )
+   eigen_jacob[i*n+j] = ss_jacob[i+1][j+1];
+ // calculate the eigenvalues
+ res = dgees_( &jobvs,
+              &sort,
+                          NULL,
+                          &n,
+                  eigen_jacob,
+                          &lda,
+                          &sdim,
+                          eigen_r,
+                  eigen_i,
+                          NULL,
+                          &ldvs,
+                          work,
+                  &lwork,
+                          NULL,
+                          &info);
+ // release the work array
+ delete [] work;
+ // initialise variables
+ eigen_nreal = eigen_nimag = eigen_nposreal = eigen_nnegreal =
+ eigen_nzero = eigen_ncplxconj = 0.0;
+ // sort the eigenvalues
+ qsort( eigen_r, eigen_i, 0, n-1 );
+ // search for the number of positive real parts
+ for( pz=0; pz<n; pz++ )
+  if( eigen_r[pz] < 0.0 ) break;
+ // calculate various eigenvalue statistics
+ eigen_maxrealpart = eigen_r[0];
+ eigen_maximagpart = fabs(eigen_i[0]);
+ for( i=0; i<n; i++ )
+ {
+  // for the largest real part
+  if( eigen_r[i] > eigen_maxrealpart ) eigen_maxrealpart = eigen_r[i];
+  // for the largest imaginary part
+  if( fabs(eigen_i[i]) > eigen_maximagpart ) eigen_maximagpart = fabs(eigen_i[i]);
+  if( fabs(eigen_r[i]) > SSRes )
+  {
+   // positive real part
+   if( eigen_r[i]>=SSRes ) eigen_nposreal += 1.0;
+   // negative real part
+   if( eigen_r[i]<=-SSRes ) eigen_nnegreal += 1.0;
+   if( fabs(eigen_i[i]) > SSRes )
+   {
+    // complex
+    eigen_ncplxconj += 1.0;
+   }
+   else
+   {
+    // pure real
+        eigen_nreal += 1.0;
+   }
+  }
+  else
+  {
+   if( fabs(eigen_i[i]) > SSRes )
+   {
+    // pure imaginary
+    eigen_nimag += 1.0;
+   }
+   else
+   {
+    // zero
+        eigen_nzero += 1.0;
+   }
+  }
+ }
+ if( pz > 0 )
+ {
+  if( eigen_r[0] > fabs( eigen_r[n] ) ) mx = 0; else mx = n-1;
+  if( eigen_r[pz-1] < fabs( eigen_r[pz] ) ) mn = 0; else mn = pz;
+ }
+ else
+ {
+  mx = n-1; // index of the largest absolute real part
+  mn = 0; // index of the smallest absolute real part
+ }
+ eigen_stiffness = fabs( eigen_r[mx] ) / fabs( eigen_r[mn] );
+ maxt = tott = fabs( 1/eigen_r[mn] );
+ distt = 0.0;
+ for( i=1; i<n; i++ )
+  if( i!=mn )
+  {
+   distt += maxt - fabs( 1/eigen_r[i] );
+   tott += fabs( 1/eigen_r[i] );
+  }
+ eigen_hierarchy = distt / tott / (n-1);
+}
 
 
 #endif //XXXXXX
