@@ -106,11 +106,12 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout4d->addWidget(TextLabel3);
   hBoxLayout4d->addSpacing(65);
 
+  hBoxLayout4d ->setResizeMode(QLayout::Fixed);
   ComboBox1 = new QComboBox(Frame4d, "ComboBox1");
   hBoxLayout4d ->addWidget(ComboBox1);
   ComboBox1->setFixedSize(225, 20);
+
   hBoxLayout4d->addSpacing(50);
-  //ComboBox1->setEditable(true);
 
   checkBox = new QCheckBox (Frame4d, "checkBox");
 
