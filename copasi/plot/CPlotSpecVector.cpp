@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpecVector.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:37:56 $
+   $Date: 2004/05/27 11:59:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -60,7 +60,17 @@ CPlotSpec* CPlotSpecVector::createPlotSpec(const std::string & name)
 
 bool CPlotSpecVector::removePlotSpec(const std::string & key)
 {
-  //TODO
+  CPlotSpec* pPl =
+    dynamic_cast<CPlotSpec*>(GlobalKeys.get(key));
+  unsigned C_INT32 index = this->CCopasiVector<CPlotSpec>::getIndex(pPl);
+  if (index == C_INVALID_INDEX)
+    return false;
+
+  this->CCopasiVector<CPlotSpec>::remove(index);
+
+  //pdelete(pPl);  //TODO: propably a memory leak, may be not
+
+  return true;
 }
 
 bool CPlotSpecVector::initPlottingFromObjects()
