@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 16:17:27 $
+   $Date: 2005/02/22 17:21:29 $
    End CVS Header */
 
 #include "CScanContainerWidget.h"
@@ -26,6 +26,12 @@ CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
   setShowGrid(false);
 
   setNumCols(2);
+
+  setSelectionMode(QTable::NoSelection);
+  setFocusStyle(QTable::FollowStyle);
+
+  //TODO maybe reemplement paintFocus() to make the focus completely invisible
+  // (it is already invisible most of the time)
 }
 
 CScanContainerWidget::~CScanContainerWidget()
