@@ -336,7 +336,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
-  std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
+  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue <<  std::endl;
 
   // setValue
   if (mRi.getUsage(index) == "PARAMETER")
@@ -350,7 +350,6 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
         {
           mRi.setMetab(index, table->text(table->mIndex2Line[index], 2).latin1());
         }
-      //      if (mRi.isVector(index))
     }
 
   // update the widget

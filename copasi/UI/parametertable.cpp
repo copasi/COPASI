@@ -40,7 +40,7 @@ void ParameterTable::initTable()
   verticalHeader()->hide();
   setLeftMargin(0);
   setSelectionMode(QTable::Single);
-  setFocusStyle(QTable::FollowStyle);
+  //setFocusStyle(QTable::FollowStyle);
 
   setNumRows(3);
   setNumCols(3);
@@ -103,7 +103,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
 
       // add second column
       item = new ColorTableItem(this, QTableItem::Never, color, ri.getParameterName(i).c_str());
-      if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
+      if (usage != "PARAMETER")
+        {
+          if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
+        }
       setItem(rowCounter, 1, item);
 
       // add a line for a metabolite Parameter
@@ -136,7 +139,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
                   item = new ColorTableItem(this, QTableItem::Never, color, "");
                   setItem(rowCounter, 2, item);
                 }
-              else
+              else // this should not happen
                 {
                   combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo->setText("add metabolite");
@@ -176,7 +179,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri)
 
 void ParameterTable::handleCurrentCell(int row, int col)
 {
-  std::cout << row << " " << col << std::endl;
+  //std::cout << row << " " << col << std::endl;
 
   int changed = 0;
 
@@ -198,7 +201,7 @@ if (col != 2) {changed = 1; col = 2;}
 
 void ParameterTable::slotCellChanged(int row, int col)
 {
-  std::cout << "table: cell changed" << std::endl;
+  //std::cout << "table: cell changed" << std::endl;
   // find the index of the parameter
   C_INT32 i, imax = mIndex2Line.size();
   for (i = imax - 1; i >= 0; --i)
@@ -219,7 +222,7 @@ ComboItem::ComboItem(QTable *t, EditType et, QColor c, const QStringList & sl)
 
 QWidget *ComboItem::createEditor() const
   {
-    std::cout << "createEditor(combo)" << std::endl;
+    //std::cout << "createEditor(combo)" << std::endl;
     // create an editor - a combobox in our case
     ((ComboItem*)this)->cb = new QComboBox(table()->viewport());
     QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
@@ -230,7 +233,7 @@ QWidget *ComboItem::createEditor() const
 
 void ComboItem::setContentFromEditor(QWidget *w)
 {
-  std::cout << "setContentFromEditor(combo)" << std::endl;
+  //std::cout << "setContentFromEditor(combo)" << std::endl;
   // the user changed the value of the combobox, so synchronize the
   // value of the item (its text), with the value of the combobox
   if (w->inherits("QComboBox"))
@@ -241,14 +244,6 @@ void ComboItem::setContentFromEditor(QWidget *w)
 
 void ComboItem::setText(const QString &s)
 {
-  std::cout << "setText(combo)" << std::endl;
-  /*if (cb) {
-      // initialize the combobox from the text
-      if (s == "No")
-          cb->setCurrentItem(1);
-      else
-          cb->setCurrentItem(0);
-  }*/
   QTableItem::setText(s);
 }
 
