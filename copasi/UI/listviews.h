@@ -31,6 +31,7 @@ class CompartmentSymbols;
 class CompartmentsWidget1;
 class CompartmentsWidget;
 class ConstantSymbols;
+class DifferentialEquations;
 class FixedMetaboliteSymbols;
 class FunctionSymbols;
 class FunctionWidget1;
@@ -165,6 +166,7 @@ class ListViews : public QSplitter, public Observer
     MoietyWidget *moietyWidget;
     FunctionWidget *functionWidget;
     FunctionSymbols *functionSymbols;
+    DifferentialEquations *differentialEquations;
     ReactionsWidget1 *reactionsWidget1;
     MetabolitesWidget1 *metabolitesWidget1;
     MetaboliteSymbols *metaboliteSymbols;

@@ -19,6 +19,7 @@
 #include "FunctionSymbols.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
+#include "DifferentialEquations.h"
 #include "MetaboliteSymbols.h"
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
@@ -392,6 +393,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     currentWidget = metabolitesWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Metabolite Symbols")))
     currentWidget = metaboliteSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Differential Equations")))
+    currentWidget = differentialEquations;
   else if (! (value = QString::compare(item->folder()->folderName(), "Fixed Metabolite Symbols")))
     currentWidget = fixedMetaboliteSymbols;
   else if (! (value = QString::compare(item->folder()->folderName(), "Reactions")))
@@ -708,6 +711,8 @@ void ListViews::loadModelNodes(CModel *model)
       functionSymbols->loadFunctionSymbols(mpMathModel);
       constantSymbols->loadConstantSymbols(mpMathModel);
       compartmentSymbols->loadCompartmentSymbols(mpMathModel);
+      differentialEquations->loadDifferentialEquations();
+
       metabolitesWidget->loadMetabolites(model);
       metabolitesWidget1->loadMetabolites(model);
       loadNode = searchNode("Metabolites");
@@ -823,6 +828,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Constant Symbols
     metaboliteSymbols = new MetaboliteSymbols(this);
     metaboliteSymbols->hide();
+
+    //Constructing the Constant Symbols
+    differentialEquations = new DifferentialEquations(this);
+    differentialEquations->hide();
 
     //Constructing the Constant Symbols
     fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
