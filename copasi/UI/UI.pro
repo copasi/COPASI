@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.44 $ $Author: shoops $ $Date: 2004/09/29 01:55:03 $  
+# $Revision: 1.45 $ $Author: ssahle $ $Date: 2004/09/30 09:02:55 $  
 ######################################################################
 
 include(../common.pri)
@@ -124,6 +124,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CTimeSeriesTable.h \
            DataModel.h \
            DataModelGUI.h \
            DifferentialEquations.h \
@@ -154,6 +155,7 @@ HEADERS += \
            ReactionsWidget1.h \
            ScanItemWidget.h \
            ScanWidget.h \
+           StateWidget.h \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
@@ -184,6 +186,7 @@ SOURCES += \
            copasiWidget.cpp \
            copasiui3window.cpp \
            CProgressBar.cpp \
+           CTimeSeriesTable.cpp \
            DataModel.cpp \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
@@ -215,6 +218,7 @@ SOURCES += \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
            ScanWidget.cpp \
+           StateWidget.cpp \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
@@ -223,7 +227,8 @@ SOURCES += \
            TrajectoryWidget.cpp \
            Tree.cpp
 
-# FORMS +=  TimeSeriesSubwidget.ui           
+FORMS +=  TimeSeriesSubwidget.ui \
+          StateSubwidget.ui
            
 release {
   distribution.path = .
