@@ -33,6 +33,7 @@ class ScanItemWidget : public QWidget
   private:
     QScrollView* mParent;
     CMethodParameterList* pParameter;
+    void ResetData();
 
   public:
     ScanItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
@@ -41,12 +42,12 @@ class ScanItemWidget : public QWidget
     ScanLineEdit* mMin;
     ScanLineEdit* mMax;
     ScanLineEdit* mDensity;
-    ScanCheckBox* bLogarithmic;
-    ScanCheckBox* bMaster;
-    ScanRadioButton* mRegularGrid;
+    ScanCheckBox* mLogarithmic;
+    ScanCheckBox* mIndependent;
+    ScanRadioButton* mRegularGridRadio;
     ScanRadioButton* mUniformRadio;
-    ScanRadioButton* mNormalRadio;
-    ScanRadioButton* mPosNormalRadio;
+    ScanRadioButton* mGaussianRadio;
+    ScanRadioButton* mPosGaussianRadio;
 
     QLabel* TextLabel1;
     QLabel* TextLabel2;

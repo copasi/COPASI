@@ -71,11 +71,11 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout21 = new QVBoxLayout(0, 0, 6, "layout21");
 
-  bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
-  layout21->addWidget(bLogarithmic);
+  mLogarithmic = new ScanCheckBox(this, "bLogarithmic");
+  layout21->addWidget(mLogarithmic);
 
-  bMaster = new ScanCheckBox(this, "bMaster");
-  layout21->addWidget(bMaster);
+  mIndependent = new ScanCheckBox(this, "mIndependent");
+  layout21->addWidget(mIndependent);
 
   ScanItemWidgetLayout->addLayout(layout21, 1, 0);
 
@@ -92,8 +92,8 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
 
   layout19 = new QVBoxLayout(0, 0, 6, "layout19");
 
-  mRegularGrid = new ScanRadioButton(buttonGroup, "mRegularGrid");
-  layout19->addWidget(mRegularGrid);
+  mRegularGridRadio = new ScanRadioButton(buttonGroup, "mRegularGridRadio");
+  layout19->addWidget(mRegularGridRadio);
 
   randomeLabel = new QLabel(buttonGroup, "randomeLabel");
   randomeLabel->setFrameShadow(QLabel::Sunken);
@@ -106,11 +106,11 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   mUniformRadio = new ScanRadioButton(buttonGroup, "mUniformRadio");
   layout20->addWidget(mUniformRadio);
 
-  mNormalRadio = new ScanRadioButton(buttonGroup, "mNormalRadio");
-  layout20->addWidget(mNormalRadio);
+  mGaussianRadio = new ScanRadioButton(buttonGroup, "mNormalRadio");
+  layout20->addWidget(mGaussianRadio);
 
-  mPosNormalRadio = new ScanRadioButton(buttonGroup, "mPosNormalRadio");
-  layout20->addWidget(mPosNormalRadio);
+  mPosGaussianRadio = new ScanRadioButton(buttonGroup, "mPosGaussianRadio");
+  layout20->addWidget(mPosGaussianRadio);
 
   buttonGroupLayout->addLayout(layout20, 1, 1);
   QSpacerItem* spacer_4 = new QSpacerItem(20, 50, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -124,12 +124,12 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   // tab order
   setTabOrder(mMin, mMax);
   setTabOrder(mMax, mDensity);
-  setTabOrder(mDensity, bMaster);
-  setTabOrder(bMaster, bLogarithmic);
-  setTabOrder(bLogarithmic, mRegularGrid);
-  setTabOrder(mRegularGrid, mUniformRadio);
-  setTabOrder(mUniformRadio, mNormalRadio);
-  setTabOrder(mNormalRadio, mPosNormalRadio);
+  setTabOrder(mDensity, mIndependent);
+  setTabOrder(mIndependent, mLogarithmic);
+  setTabOrder(mLogarithmic, mRegularGridRadio);
+  setTabOrder(mRegularGridRadio, mUniformRadio);
+  setTabOrder(mUniformRadio, mGaussianRadio);
+  setTabOrder(mGaussianRadio, mPosGaussianRadio);
 
   pParameter = NULL;
 }
@@ -142,10 +142,25 @@ ScanItemWidget::~ScanItemWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
+void ScanItemWidget::ResetData()
+{
+  // clear the values of the variables
+  mMax->setText("2.0");
+  mMin->setText("1.0");
+  mDensity->setText("2");
+  mLogarithmic->setChecked(FALSE);
+  mIndependent->setChecked(TRUE);
+  mRegularGridRadio->setChecked(1);
+  mGaussianRadio->setChecked(0);
+  mUniformRadio->setChecked(0);
+  mPosGaussianRadio->setChecked(0);
+}
+
 void ScanItemWidget::loadObject()
 {
   if (!pParameter)
     return;
+  ResetData();
   int i = 0;
 }
 
@@ -160,12 +175,12 @@ void ScanItemWidget::languageChange()
   TextLabel2->setText(tr("Max"));
   TextLabel1->setText(tr("Min"));
   mDensity->setText(QString::null);
-  bMaster->setText(tr("          Master"));
-  bLogarithmic->setText(tr("          Logarithmic"));
+  mIndependent->setText(tr("          Master"));
+  mLogarithmic->setText(tr("          Logarithmic"));
   buttonGroup->setTitle(QString::null);
-  mNormalRadio->setText(tr("Normal"));
+  mGaussianRadio->setText(tr("Normal"));
   mUniformRadio->setText(tr("Uniform"));
-  mPosNormalRadio->setText(tr("Pos. Normal"));
-  mRegularGrid->setText(tr("Regular Grid"));
+  mPosGaussianRadio->setText(tr("Pos. Normal"));
+  mRegularGridRadio->setText(tr("Regular Grid"));
   randomeLabel->setText(tr("Random"));
 }
