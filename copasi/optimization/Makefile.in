@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.5 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.6 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -236,7 +236,6 @@ x_libraries = @x_libraries@
 noinst_LIBRARIES = liboptimization.a
 
 liboptimization_a_SOURCES = \
-	CGA.cpp \
 	COptAlgorithm.cpp \
 	COptAlgorithmParameter.cpp \
 	COptProblem.cpp \
@@ -245,7 +244,6 @@ liboptimization_a_SOURCES = \
 
 
 EXTRA_DIST = \
-	CGA.h				CGA.cpp \
 	COptAlgorithm.h			COptAlgorithm.cpp \
 	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp \
 	COptProblem.h			COptProblem.cpp \
@@ -266,13 +264,13 @@ LIBRARIES = $(noinst_LIBRARIES)
 
 liboptimization_a_AR = $(AR) cru
 liboptimization_a_LIBADD =
-am_liboptimization_a_OBJECTS = CGA.$(OBJEXT) COptAlgorithm.$(OBJEXT) \
+am_liboptimization_a_OBJECTS = COptAlgorithm.$(OBJEXT) \
 	COptAlgorithmParameter.$(OBJEXT) COptProblem.$(OBJEXT) \
 	CRealProblem.$(OBJEXT) COptAlgorithmRand.$(OBJEXT)
 #>- liboptimization_a_OBJECTS = $(am_liboptimization_a_OBJECTS)
 #>+ 6
 liboptimization_a_final_OBJECTS = liboptimization_a.all_cpp.o 
-liboptimization_a_nofinal_OBJECTS = CGA.$(OBJEXT) COptAlgorithm.$(OBJEXT) \
+liboptimization_a_nofinal_OBJECTS = COptAlgorithm.$(OBJEXT) \
 	COptAlgorithmParameter.$(OBJEXT) COptProblem.$(OBJEXT) \
 	CRealProblem.$(OBJEXT) COptAlgorithmRand.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@liboptimization_a_OBJECTS = $(liboptimization_a_nofinal_OBJECTS)
@@ -284,7 +282,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CGA.Po $(DEPDIR)/COptAlgorithm.Po \
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/COptAlgorithm.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/COptAlgorithmParameter.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/COptAlgorithmRand.Po \
 	@AMDEP_TRUE@	$(DEPDIR)/COptProblem.Po $(DEPDIR)/CRealProblem.Po
@@ -361,7 +359,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CGA.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptAlgorithm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptAlgorithmParameter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/COptAlgorithmRand.Po@am__quote@
@@ -425,7 +422,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=random.cpp liboptimization.a r250.h optimization.dsp 
+KDE_DIST=optimization.dsp CGA.cpp liboptimization.a CGA.h 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -566,11 +563,11 @@ force-reedit:
 
 
 #>+ 11
-liboptimization_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CGA.cpp $(srcdir)/COptAlgorithm.cpp $(srcdir)/COptAlgorithmParameter.cpp $(srcdir)/COptProblem.cpp $(srcdir)/CRealProblem.cpp $(srcdir)/COptAlgorithmRand.cpp
+liboptimization_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/COptAlgorithm.cpp $(srcdir)/COptAlgorithmParameter.cpp $(srcdir)/COptProblem.cpp $(srcdir)/CRealProblem.cpp $(srcdir)/COptAlgorithmRand.cpp
 	@echo 'creating liboptimization_a.all_cpp.cpp ...'; \
 	rm -f liboptimization_a.all_cpp.files liboptimization_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> liboptimization_a.all_cpp.final; \
-	for file in CGA.cpp COptAlgorithm.cpp COptAlgorithmParameter.cpp COptProblem.cpp CRealProblem.cpp COptAlgorithmRand.cpp ; do \
+	for file in COptAlgorithm.cpp COptAlgorithmParameter.cpp COptProblem.cpp CRealProblem.cpp COptAlgorithmRand.cpp ; do \
 	  echo "#include \"$$file\"" >> liboptimization_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> liboptimization_a.all_cpp.final; \
 	done; \
