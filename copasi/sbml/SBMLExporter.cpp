@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/09/30 15:37:14 $
+   $Date: 2004/11/17 13:48:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -620,8 +620,6 @@ ASTNode* SBMLExporter::createASTNodeFromCNodeK(const CNodeK& cNodeK, const CKinF
           node->setType(AST_FUNCTION_EXP);
           node->setName("exp");
           childNode = this->createASTNodeFromCNodeK(cNodeK.getLeft(), kinFunction, vect);
-          node->addChild(childNode);
-          childNode = this->createASTNodeFromCNodeK(cNodeK.getRight(), kinFunction, vect);
           node->addChild(childNode);
           break;
         case N_LOG:
