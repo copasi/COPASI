@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:12 $
+   $Date: 2003/11/06 18:43:04 $
    End CVS Header */
 
 /**
@@ -21,12 +21,19 @@
 #include <string>
 
 #include "utilities/CCopasiMethod.h"
+#include "utilities/CVector.h"
 
 class CTrajectoryProblem;
 class CState;
 
 class CTrajectoryMethod : public CCopasiMethod
   {
+  public:
+    /**
+     *  A list of valid trajectory method types;
+     */
+    static const CVector< CCopasiMethod::SubType > ValidSubTypes;
+
   protected:
     /**
      *  A pointer to the current state. This is set from outside
