@@ -134,6 +134,7 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
           name += "_";
           name += QString::number(i);
         }
+      newFunction->setName(name);
       Copasi->pFunctionDB->add(newFunction);
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());
