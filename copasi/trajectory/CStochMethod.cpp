@@ -98,8 +98,8 @@ const double CStochMethod::step(const double & deltaT)
       }
 
   // do several steps:
-  float time = mpCurrentState->getTime();
-  float endtime = time + deltaT;
+  C_FLOAT64 time = mpCurrentState->getTime();
+  C_FLOAT64 endtime = time + deltaT;
 
   for (i = 0; ((i < (unsigned C_INT32) mMaxSteps) && (time < endtime)); i++)
     {
@@ -114,9 +114,11 @@ const double CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumberDbl();
 
+#ifndef  COPASI_DEPRECATED
   C_INT32 * Int = const_cast<C_INT32 *>(mpCurrentState->getVariableNumberVectorInt().array());
   for (i = 0, imax = mpProblem->getModel()->getIntMetab(); i < imax; i++, Int++)
     *Int = mpProblem->getModel()->getMetabolites()[i]->getNumberInt();
+#endif //  COPASI_DEPRECATED
 
   return deltaT;
 }
@@ -192,7 +194,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       num_ident = static_cast<C_INT32>(substrates[i]->getMultiplicity());
       //std::cout << "Num ident = " << num_ident << std::endl;
       total_substrates += num_ident;
-      number =    /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
+      number =     /*static_cast<C_INT32>*/ (substrates[i]->getMetabolite().getNumberInt());
       lower_bound = number - num_ident;
       //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
