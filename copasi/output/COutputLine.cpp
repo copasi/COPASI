@@ -197,7 +197,7 @@ void COutputLine::sSOutputTitles(ofstream &fout, C_INT16 SSSeparator, C_INT16 SS
 /**
  *	print the mpValue of each Object in the steady-state data file
  */
-void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes) 
+void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSColWidth, C_INT16 SSQuotes, C_INT32 ss_solution) 
 {
   unsigned C_INT32 i;
   C_INT32 Type;
@@ -214,64 +214,68 @@ void COutputLine::sSOutputData(ofstream &fout, C_INT16 SSSeparator, C_INT16 SSCo
   fout.setf(ios::showpoint);
 
   for (i = 0; i < mLine.size(); i++)
-    {
+  {
       if (i) {
-	switch (SSSeparator)
-	  {
-	  case 9: 
-	    fout << "\t";
-	    break;
-	  case 32:	
-	    fout << " ";
-	    break;
-	  case 44:
-	    fout << ",";
-	    break;
+		switch (SSSeparator)
+		{
+		case 9: 
+			fout << "\t";
+			break;
+		case 32:	
+			fout << " ";
+			break;
+		case 44:
+			fout << ",";
+			break;
+		}
 	  }
-      }
 
-	  datum = mLine[i];
-	  // before outputing value of user defined function, need to 
-	  // calculate first
-	  if (datum->getObjectType(datum->getObject()) == D_UFUNC)
-		  datum->calcFunc();
+	  if (ss_solution == SS_FOUND)
+	  {
+			datum = mLine[i];
+			// before outputing value of user defined function, need to 
+			// calculate first
+			if (datum->getObjectType(datum->getObject()) == D_UFUNC)
+				datum->calcFunc();
 
-      Type = mLine[i]->getType();
+			Type = mLine[i]->getType();
 
-      switch (Type)
-	{
-	case 1:	
-	  // Type is C_INT16
-	  Value1 = (C_INT16 *)mLine[i]->getValue();
-	  if (!Value1)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
-	  break;
-	case 2:
-	  // Type is C_INT32
-	  Value2 = (C_INT32 *)mLine[i]->getValue();
-	  if (!Value2)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
-	  break;
-	case 3:
-	  // Type is C_FLOAT32
-	  Value3 = (C_FLOAT32 *)mLine[i]->getValue();
-	  if (!Value3)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
-	  break;
-	case 4:
-	  // Type is C_FLOAT64
-	  Value4 = (C_FLOAT64 *)mLine[i]->getValue();
-	  if (!Value4)
-	    fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
-	  else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
+			switch (Type)
+			{
+				case 1:	
+					// Type is C_INT16
+					Value1 = (C_INT16 *)mLine[i]->getValue();
+					if (!Value1)
+						fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;  //?? Sign setw(SSColWidth-1)
+					else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value1; //?? Sign
+					break;
+				case 2:
+					// Type is C_INT32
+					Value2 = (C_INT32 *)mLine[i]->getValue();
+					if (!Value2)
+						fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+					else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value2;
+					break;
+				case 3:
+					// Type is C_FLOAT32
+					Value3 = (C_FLOAT32 *)mLine[i]->getValue();
+					if (!Value3)
+						fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+					else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value3;
+					break;
+				case 4:
+					// Type is C_FLOAT64
+					Value4 = (C_FLOAT64 *)mLine[i]->getValue();
+					if (!Value4)
+						fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+					else fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << *Value4;
+					break;
+				}
 
-	  break;
-	}
-
-    }
+			}
+	  else 
+		  fout << setprecision(SSColWidth - 8) << setw(SSColWidth) << 0;
+  }
 
   fout.unsetf(ios::left);
   fout << endl;
