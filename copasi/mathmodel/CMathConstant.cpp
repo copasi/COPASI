@@ -128,6 +128,9 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
   CReaction * pReaction;
   CCopasiVector < CReaction::CId2Param > * pParameters;
   std::string Name;
+
+  mSelection.clear();
+
   for (i = 0; i < imax; i++)
     {
       pReaction = Reactions[i];
