@@ -24,9 +24,9 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
     ~ObjectBrowserItem() {}
 
-    setParent(ObjectBrowserItem* parent);
-    setChild(ObjectBrowserItem* child);
-    setSibling(ObjectBrowserItem* sibling);
+    void setParent(ObjectBrowserItem* parent);
+    void setChild(ObjectBrowserItem* child);
+    void setSibling(ObjectBrowserItem* sibling);
 
     ObjectBrowserItem* parent() const;
     ObjectBrowserItem* child() const;

@@ -74,17 +74,17 @@ int ObjectBrowserItem::UserChecked()
   return condition;
 }
 
-ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
+void ObjectBrowserItem::setParent(ObjectBrowserItem* parent)
 {
   pParent = parent;
 }
 
-ObjectBrowserItem::setChild(ObjectBrowserItem* child)
+void ObjectBrowserItem::setChild(ObjectBrowserItem* child)
 {
   pChild = child;
 }
 
-ObjectBrowserItem::setSibling(ObjectBrowserItem* sibling)
+void ObjectBrowserItem::setSibling(ObjectBrowserItem* sibling)
 {
   pSibling = sibling;
 }
