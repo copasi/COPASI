@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\ObjectBrowser.ui'
  **
- ** Created: Tue Apr 15 13:51:37 2003
+ ** Created: Tue Apr 15 14:03:55 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -15,6 +15,8 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 /*
  *  Constructs a ObjectBrowser which is a child of 'parent', with the 
@@ -47,6 +49,30 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   ObjectListView = new QListView(this, "ObjectListView");
   ObjectListView->addColumn(trUtf8("Object Browser"));
   ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
+  QListViewItem * item_2 = new QListViewItem(ObjectListView, 0);
+  item_2->setOpen(TRUE);
+  QListViewItem * item_3 = new QListViewItem(item_2, 0);
+  item_3->setOpen(TRUE);
+  QListViewItem * item_4 = new QListViewItem(item_3, 0);
+  item_4->setOpen(TRUE);
+  QListViewItem * item_5 = new QListViewItem(item_4, 0);
+  item_5->setOpen(TRUE);
+  QListViewItem * item_6 = new QListViewItem(item_5, 0);
+  item_6->setOpen(TRUE);
+  QListViewItem * item = new QListViewItem(item_6, 0);
+  item->setText(0, trUtf8("Subitem"));
+  item_6->setText(0, trUtf8("Subitem"));
+  item_5->setText(0, trUtf8("Subitem"));
+  item_4->setText(0, trUtf8("Subitem"));
+  item_3->setText(0, trUtf8("Subitem"));
+  item_2->setText(0, trUtf8("Item"));
+
+  item = new QListViewItem(ObjectListView, item_2);
+  item->setText(0, trUtf8("Item"));
+
+  item = new QListViewItem(ObjectListView, item);
+  item->setText(0, trUtf8("Item"));
+
   ObjectListView->setAcceptDrops(FALSE);
   ObjectListView->setResizeMode(QListView::LastColumn);
   ObjectListView->setTreeStepSize(19);
@@ -55,8 +81,10 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 
   // signals and slots connections
   connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
-  connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
+  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
+  connect(ObjectListView, SIGNAL(pressed(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
+  connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
 
   // tab order
   setTabOrder(ObjectListView, backButton);
@@ -74,7 +102,12 @@ ObjectBrowser::~ObjectBrowser()
 
 void ObjectBrowser::cancelClicked()
 {
-  destroy();
+  qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
+}
+
+void ObjectBrowser::listviewChecked(QListViewItem*)
+{
+  qWarning("ObjectBrowser::listviewChecked(QListViewItem*): Not implemented yet!");
 }
 
 void ObjectBrowser::backClicked()

@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file '.\ObjectBrowser.ui'
  **
- ** Created: Tue Apr 15 13:51:36 2003
+ ** Created: Tue Apr 15 14:03:55 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -33,6 +33,7 @@ class ObjectBrowser : public QWidget
 
   public slots:
     virtual void cancelClicked();
+    virtual void listviewChecked(QListViewItem*);
     virtual void backClicked();
     virtual void nextClicked();
 
