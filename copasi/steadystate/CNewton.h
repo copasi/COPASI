@@ -158,7 +158,7 @@ class CNewton
    * initialize mSs_x and mSs_xnew
    * it may be changed later and got directly from steady state class
    */
-  void init_Ss_x_new(void);
+  void init_Ss_x(void);
 
 
   /**
@@ -222,7 +222,18 @@ class CNewton
    */
   C_FLOAT64 getDerivFactor() const;
 
-
+  /**
+   *  set the iteration limit
+   *  @param C_INT32 limit
+   */
+  void setNewtonLimit(C_INT32 limit);
+  
+  /**
+   *  retrieve the iteration limit
+   *  @return C_INT32 limit
+   */
+  C_INT32 getNewtonLimit() const;
+  
   /**
    *  to process the primary function of this class
    */
