@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/14 13:40:43 $
+   $Date: 2005/03/17 10:14:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -170,7 +170,7 @@ void DataModelGUI::updateMoieties()
 
   parent->removeChildren();
 
-  const CCopasiVectorN< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
+  const CCopasiVector< CMoiety > & objects = CCopasiDataModel::Global->getModel()->getMoieties();
 
   C_INT32 j, jmax = objects.size();
   CMoiety *obj;
