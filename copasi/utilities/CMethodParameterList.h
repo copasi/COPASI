@@ -41,7 +41,7 @@ class CMethodParameterList : public CCopasiContainer
 
     /**
      * Default constructor
-     * @param "const string &" name (Default = "")
+     * @param "const string &" name (Default = "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      * @param const std::string & type (default: "Method Parameter List")
      */
