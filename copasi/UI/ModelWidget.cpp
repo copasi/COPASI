@@ -95,9 +95,9 @@ void ModelWidget::loadModel(CModel *model)
       mModel = model;
       LineEdit->setText(mModel->getTitle().c_str());
       textBrowser->setText(mModel->getComments().c_str());
-      ComboBox1->setCurrentText(mModel->getTimeUnit().c_str());
-      ComboBox2->setCurrentText(mModel->getVolumeUnit().c_str());
-      ComboBox3->setCurrentText(mModel->getQuantityUnit().c_str());
+      ComboBox1->setCurrentText(mModel->TimeUnitName[1].c_str());
+      ComboBox2->setCurrentText(mModel->VolumeUnitName[2].c_str());
+      ComboBox3->setCurrentText(mModel->QuantityUnitName[1].c_str());
     }
 }
 
