@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 13:47:29 $
+   $Date: 2004/07/04 15:48:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -359,7 +359,7 @@ void CopasiTableWidget::slotBtnDeleteClicked()
 
 //*********** Standard Interface to Copasi Widgets ******************
 
-bool CopasiTableWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CopasiTableWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   //this avoids recursive calls
   if (mIgnoreUpdates) return true;
