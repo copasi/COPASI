@@ -104,6 +104,10 @@ unsigned C_INT32
 CCopasiObject::getIndex(const CCopasiObject * C_UNUSED(pObject)) const
 {return C_INVALID_INDEX;}
 
+unsigned C_INT32
+CCopasiObject::getIndex(const std::string & C_UNUSED(name)) const
+  {return C_INVALID_INDEX;}
+
 void * CCopasiObject::getReference() {return this;}
 
 bool CCopasiObject::isContainer() const

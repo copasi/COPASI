@@ -75,6 +75,8 @@ class CCopasiObject
 
     virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
 
+    virtual unsigned C_INT32 getIndex(const std::string & name) const;
+
     virtual CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
     template <class CType> CType * getReference(CType * reference)
