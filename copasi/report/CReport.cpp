@@ -21,6 +21,13 @@ CReport::~CReport()
 
 void CReport::cleanup()
 {
+  // Please Dont clear the objectList, as all pointers are also referred swh else
+  int i;
+  for (i = 0; i < objectList.size(); i++)
+    {
+      objectList[i] = NULL;
+    }
+
   objectList.clear();
   //  CKeyFactory::remove(mKey);
   // mpReportDef pointer shall be dealt outside, where it is created
