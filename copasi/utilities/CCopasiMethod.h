@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 18:41:51 $
+   $Date: 2004/11/18 19:11:01 $
    End CVS Header */
 
 /**
@@ -35,6 +35,9 @@ class CCopasiMethod : public CCopasiParameterGroup
       RandomSearch,
       RandomSearchMaster,
       SimulatedAnnealing,
+      GeneticAlgorithm,
+      EvolutionaryProgram2,
+      HybridGASA,
       Newton,
       deterministic,
       stochastic,

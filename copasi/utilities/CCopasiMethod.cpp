@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 16:15:42 $
+   $Author: shoops $ 
+   $Date: 2004/11/18 19:11:01 $
    End CVS Header */
 
 /**
@@ -25,6 +25,9 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Random Search",
     "Random Search (PVM)",
     "Simulated Annealing",
+    "Genetic Algorithm",
+    "Evolutionary Program",
+    "Hybrid GA/SA",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Stochastic",
@@ -38,6 +41,9 @@ const char* CCopasiMethod::XMLSubType[] =
     "RandomSearch",
     "RandomSearch(PVM)",
     "SimulatedAnnealing",
+    "GeneticAlgorithm",
+    "EvolutionaryProgram2",
+    "HybridGASA",
     "EnhancedNewton",
     "Deterministic(LSODA)",
     "Stochastic",
