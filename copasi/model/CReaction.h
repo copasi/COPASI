@@ -385,6 +385,20 @@ class CReaction
    */
   C_INT32 findPara(string &Target);
 
+  /**
+   * Find an pointer to a substrate corresponding to the given identifier name.
+   * @param ident_name The identifier name to search by
+   * @return A pointer to the metabolite corresponding to this identifier name
+   */
+  CMetab * findSubstrate(string ident_name);
+
+  /**
+   * Find an pointer to a modifier corresponding to the given identifier name.
+   * @param ident_name The identifier name to search by
+   * @return A pointer to the metabolite corresponding to this identifier name
+   */
+  CMetab * findModifier(string ident_name);
+
  private:
   /**
    *

@@ -4,6 +4,7 @@
 #include "utilities/utilities.h"
 #include "utilities/CRandom.h"
 #include "model/model.h"
+#include <set>
 #include <queue>
 /**
  * CStochSolver
@@ -315,6 +316,19 @@ class CStochNextReactionMethod: public CStochMethod
    * Update the priority queue
    */
   void updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time);
+  /**
+   * Get the set of metabolites on which a given reaction depends.
+   * @param reaction_index The index of the reaction being executed.
+   * @return The set of metabolites depended on.
+   */
+  set<CMetab> *getDependsOn(C_INT32 reaction_index);
+  /**
+   * Get the set of metaboloites which change number when a given
+   * reaction is executed.
+   * @param reaction_index The index of the reaction being executed.
+   * @return The set of affected metabolites.
+   */
+  set<CMetab> *getAffects(C_INT32 reaction_index);
 };
 
 #endif // COPASI_CStochSolver

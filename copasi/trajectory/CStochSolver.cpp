@@ -4,6 +4,7 @@
 
 #include "copasi.h"
 #include "utilities/utilities.h"
+#include "function/function.h"
 #include "CStochSolver.h"
 #include "CTrajectory.h"
 
@@ -92,6 +93,10 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
     C_INT32 num_ident = 0;
     C_INT32 number = 0;
     C_INT32 lower_bound;
+    // substrate_factor - The substrates, raised to their multiplicities, 
+    // multiplied with one another. If there are, e.g. m substrates of type m, 
+    // and n of type N, then substrate_factor = M^m * N^n. 
+    C_FLOAT64 substrate_factor = 1;
     // First, find the reaction associated with this index.
     // Keep a pointer to this.
     CChemEq *chemeq = &mModel->getReactions()[index]->getChemEq();
@@ -111,6 +116,7 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
             amu *= number;
             number--;
         }
+        substrate_factor *= pow(number, num_ident);
     }
     // We assume that all substrates are in the same compartment.
     // If there are no substrates, then volume is irrelevant. Otherwise,
@@ -121,11 +127,13 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
           substrates[0]->getMetabolite().getCompartment()->getVolume();
         amu /= pow(volume, total_substrates-1);
     }
-//    C_FLOAT64 rate;
-    // amu *= rate_with_factor; // XXX :TODO: rate (including factor from dynamics)
+    // rate_factor is the rate function divided by substrate_factor.
+    // It would be more efficient if this was generated directly, since in effect we
+    // are multiplying and then dividing by the same thing (substrate_factor)!
+    C_FLOAT64 rate_factor = mModel->getReactions()[index]->calculate() / substrate_factor;
+    
+    amu *= rate_factor;
     mAmu[index] = amu;
-
-    // :TODO: Is this correct Carel?
     return 0;
 }
     
@@ -154,7 +162,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 C_INT32 CStochMethod::generateReactionIndex()
 {
     C_FLOAT64 rand1 = mRandomGenerator->getUniformRandom();
-    C_FLOAT64 sum;
+    C_FLOAT64 sum = 0;
     unsigned C_INT32 index = 0;
     while (index < mModel->getReactions().size())
     {
@@ -163,8 +171,8 @@ C_INT32 CStochMethod::generateReactionIndex()
         {
             return index;
         }
+        index++;
     }
-    index++;
     // shouldn't get here
     return mFail;
 }
@@ -236,36 +244,37 @@ C_FLOAT64 CStochNextReactionMethod::doStep()
 
 void CStochNextReactionMethod::setupDependencyGraph()
 {
-    vector<set<CMetab> > DependsOn;
-    vector<set<CMetab> > Affects;
-    C_INT32 num_reacts = mModel->getReactions().size();
+    vector< set<CMetab>* > DependsOn;
+    vector< set<CMetab>* > Affects;
+//    set<CMetab> *tmpdepends = 0;
+//    set<CMetab> *tmpaffects = 0;
+    C_INT32 num_reactions = mModel->getReactions().size();
     C_INT32 i, j;
     // Do for each reaction:
-    for (i = 0; i < num_reacts; i++)
+    for (i = 0; i < num_reactions; i++)
     {
-	// Get the set of metabolites  which affect the value of amu for this reaction
-        // i.e. the set on which amu depends
-        set<CMetab> tmpdepends;
-        // TODO: get DependsOn
-        DependsOn.push_back(tmpdepends);
+	// Get the set of metabolites  which affect the value of amu for this 
+        // reaction i.e. the set on which amu depends. This may be  more than
+        // the set of substrates, since the kinetics can involve other 
+        // reactants, e.g. catalysts. We thus need to step through the 
+        // rate function and pick out every reactant which can vary.
+        DependsOn.push_back(getDependsOn(i));
     	// Get the set of metabolites which are affected when this reaction takes place
-        set<CMetab> tmpaffects;
-        // TODO: get Affects
-        Affects.push_back(tmpaffects);
+        Affects.push_back(getAffects(i));
     }
     // For each possible pair of reactions i and j, if the intersection of
     // Affects(i) with DependsOn(j) is non-empty, add a dependency edge from i to j.
-    for (i = 0; i < num_reacts; i++)
+    for (i = 0; i < num_reactions; i++)
     {
-        for (j = 0; j < num_reacts; j++)
+        for (j = 0; j < num_reactions; j++)
         {
             // Determine whether the intersection of these two sets is non-empty
             // Could also do this with set_intersection generic algorithm, but that 
             // would require operator<() to be defined on the set elements.
-            set<CMetab>::iterator iter = Affects[i].begin();
-            for (; iter != Affects[i].end(); iter++)
+            set<CMetab>::iterator iter = Affects[i]->begin();
+            for (; iter != Affects[i]->end(); iter++)
             {
-                if (DependsOn[j].count(*iter))
+                if (DependsOn[j]->count(*iter))
                 {
                     // The set intersection is non-empty
                     mDG.addDependent(i,j);
@@ -275,6 +284,13 @@ void CStochNextReactionMethod::setupDependencyGraph()
         }
         // Ensure that self edges are included
         mDG.addDependent(i,i);
+    }
+    // Delete the memory allocated in getDependsOn() and getAffects()
+    // since this is allocated in other functions.
+    for (i = 0; i < num_reactions; i++)
+    {
+        delete DependsOn[i];
+        delete Affects[i];
     }
 }    
 
@@ -301,3 +317,68 @@ void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLO
     }
 }
   
+set<CMetab> *CStochNextReactionMethod::getDependsOn(C_INT32 reaction_index)
+{
+    set<CMetab> *retset = new set<CMetab>;
+    // Get the reaction associated with this index
+    CReaction *react = mModel->getReactions()[reaction_index];
+    // Get the kinetic function associated with the reaction_index'th reaction in the model.
+    CKinFunction *pfunction = dynamic_cast<CKinFunction*>(&react->getFunction());
+    if (!pfunction)
+    {
+        // the dynamic cast didn't work
+        CCopasiMessage(CCopasiMessage::ERROR, "Dynamic cast of CFunction to CKinFunction failed");
+        return 0;
+    }
+    // Get the vector of nodes associated with this function
+    CCopasiVectorS<CNodeK> node_vec = pfunction->getNodes();
+    CNodeK *tmpnode;
+    char subtype;
+    CMetab *pmetab = 0;
+    // Step through the nodes. If the node is an identifier and this
+    // is a substrate, product or modifier, then add this to the set.
+    
+    for (unsigned C_INT32 i = 0; i < node_vec.size(); i++)
+    {
+        pmetab = 0;
+        tmpnode = node_vec[i];
+        if ((tmpnode->getType() == N_IDENTIFIER) &&
+            (((subtype = tmpnode->getSubtype()) == N_SUBSTRATE) ||
+             (subtype == N_MODIFIER) ) )
+        {
+            // Get the identifier as known to the node.
+            string id_name = tmpnode->getName();
+            // Now try to find this, first amongst the substrates, then the products
+
+            if ((pmetab = react->findSubstrate(id_name)) == 0)
+            {
+                pmetab = react->findModifier(id_name);
+            }
+            if (pmetab == 0)
+            {
+                // Uh oh, we haven't found a metabolite corresponding to this node.
+                CCopasiMessage(CCopasiMessage::ERROR, "Couldn't find a substrate or modifier named %s", id_name.c_str());
+            }
+            // we found it
+            retset->insert(*pmetab);
+        }
+    }
+    return retset;
+}
+
+set<CMetab> *CStochNextReactionMethod::getAffects(C_INT32 reaction_index)
+{
+    set<CMetab> *retset = new set<CMetab>;
+    // Get the balances  associated with the reaction at this index
+    // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
+    CCopasiVector<CChemEqElement> balances = mModel->getReactions()[reaction_index]->getChemEq().getBalances();
+    for (unsigned C_INT32 i = 0; i < balances.size(); i++)
+    {
+        if (balances[i]->getMultiplicity() != 0)
+        {
+            retset->insert(balances[i]->getMetabolite());
+        }
+    }
+    return retset;
+}
+    

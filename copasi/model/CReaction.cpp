@@ -755,3 +755,31 @@ unsigned C_INT32 CReaction::usageRangeSize(const string & usage)
   return Size;
 }
 
+// Added by cvg
+CMetab * CReaction::findSubstrate(string ident_name)
+{
+    for (unsigned C_INT32 i = 0; i < mId2Substrates.size(); i++)
+    {
+        if (mId2Substrates[i]->mIdentifierName == ident_name)
+        {
+            // found it
+            return mId2Substrates[i]->mpMetabolite;
+        }
+    }
+    // If we get here, we found nutting
+    return 0;
+}
+
+CMetab * CReaction::findModifier(string ident_name)
+{
+    for (unsigned C_INT32 i = 0; i < mId2Modifiers.size(); i++)
+    {
+        if (mId2Modifiers[i]->mIdentifierName == ident_name)
+        {
+            // found it
+            return mId2Modifiers[i]->mpMetabolite;
+        }
+    }
+    // If we get here, we found nutting
+    return 0;
+}
