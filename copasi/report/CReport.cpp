@@ -88,9 +88,9 @@ void CReport::printFooter()
 
 void CReport::compile(const std::vector< CCopasiContainer * > * pListOfContainer)
 {
-  generateObjectFromName(pListOfContainer, headerObjectList, mpReportDef->getHeaderAddr());
-  generateObjectFromName(pListOfContainer, bodyObjectList, mpReportDef->getBodyAddr());
-  generateObjectFromName(pListOfContainer, footerObjectList, mpReportDef->getFooterAddr());
+  generateObjectsFromName(pListOfContainer, headerObjectList, mpReportDef->getHeaderAddr());
+  generateObjectsFromName(pListOfContainer, bodyObjectList, mpReportDef->getBodyAddr());
+  generateObjectsFromName(pListOfContainer, footerObjectList, mpReportDef->getFooterAddr());
 }
 
 void CReport::printBody(CReport * pReport)
@@ -99,9 +99,10 @@ void CReport::printBody(CReport * pReport)
     pReport->printBody();
 }
 
-void CReport::generateObjectFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
-                                     std::vector<CCopasiObject*> & objectList,
-                                     std::vector<CCopasiObjectName>* nameVector)
+// make to support parallel tasks
+void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
+                                      std::vector<CCopasiObject*> & objectList,
+                                      std::vector<CCopasiObjectName>* nameVector)
 {
   int i;
   CCopasiObject* pSelected;
@@ -145,5 +146,37 @@ void CReport::generateObjectFromName(const std::vector< CCopasiContainer * > * p
                 objectList.push_back(pSelected);
             }
         }
+    }
+}
+
+void CReport::getObjectFromName(
+  const std::vector< CCopasiContainer * > * pListOfContainer,
+  CCopasiObject* pObject,
+  const CCopasiObjectName& objName)
+{
+  // if no specified container list
+  if (!pListOfContainer)
+    {
+      pObject = NULL;
+      pObject =
+        (CCopasiObject*)CCopasiContainer::Root->getObject(objName);
+    }
+  else
+    {
+      CCopasiContainer* pCopasiObject;
+      int containerIndex;
+      //favor to search the list of container first
+      pObject = NULL;
+      for (containerIndex = 0; containerIndex < pListOfContainer->size(); containerIndex++)
+        {
+          pCopasiObject = (*pListOfContainer)[containerIndex];
+          pObject =
+            (CCopasiObject*)pCopasiObject->getObject(objName);
+        }
+      // if not find search the root
+      if (!pObject)
+        pObject =
+          (CCopasiObject*)CCopasiContainer::Root->getObject(objName);
+      // has been deleted all where
     }
 }

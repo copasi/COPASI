@@ -68,14 +68,22 @@ class CReport : public CCopasiObject
     /**
     transfer every individual object list from name vector
     */
-    void generateObjectFromName(
+    void generateObjectsFromName(
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector<CCopasiObject*> & objectList,
       std::vector<CCopasiObjectName>* nameVector);
 
     /**
-    sets the reference to the report
+    transfer an individual object list from one name
     */
+    static void getObjectFromName(
+      const std::vector< CCopasiContainer * > * pListOfContainer,
+      CCopasiObject* pObject,
+      const CCopasiObjectName& objName);
+
+    /**
+       sets the reference to the report
+       */
     void setReportDefinition(CReportDefinition *reportDef);
 
     /**

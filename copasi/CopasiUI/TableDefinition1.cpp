@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.17 2003/09/10 18:58:53 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.18 2003/09/12 03:22:03 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +31,7 @@
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiStaticString.h"
+#include "report/CReport.h"
 #include "ScanWidget.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
@@ -265,7 +266,9 @@ void TableDefinition1::loadTableDefinition1()
 
   C_INT32 i;
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i++)
-    itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
+    {
+      itemsTable->insertItem((*(pReportDefinition->getBodyAddr()))[i].c_str());
+    }
   comboTask->setEnabled(true);
 
   if (pReportDefinition->getSeperator().getStaticString() == "/t")
@@ -305,7 +308,23 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
-    pReportDefinition->getBodyAddr()->push_back(CCopasiObjectName(itemsTable->text(i).latin1()));
+    {
+      CCopasiObject* pSelectedObject, *pObjectAncestor;
+      pSelectedObject = NULL, pObjectAncestor = NULL;
+      CReport::getObjectFromName(NULL, pSelectedObject, CCopasiObjectName(itemsTable->text(i).latin1()));
+      if (pSelectedObject)
+        {
+          pReportDefinition->getHeaderAddr()->push_back(pSelectedObject->getCN());
+          // not sure about the full list of possible ancestor types
+          // future work: see if there is any other objects
+          pObjectAncestor = pSelectedObject->getObjectAncestor("Compartment");
+          if (!pObjectAncestor)
+            pObjectAncestor = pSelectedObject->getObjectAncestor("Model");
+          // Ancestor existing
+          if (!pObjectAncestor)
+            pReportDefinition->getBodyAddr()->push_back(pObjectAncestor->getCN());
+        }
+    }
 
   if (tabChecked->isChecked())
     pReportDefinition->setSeperator(CCopasiStaticString("/t"));
