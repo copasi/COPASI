@@ -126,9 +126,11 @@ std::string COptions::getCopasiDir(void)
   if (CopasiDir == "")
     {
       size_t PrgNameSize = 256;
+      size_t Returned;
       char * PrgName = new char[PrgNameSize];
 
-      while (PrgNameSize == GetModuleFileName(NULL, PrgName, PrgNameSize))
+      while (!(Returned = GetModuleFileName(NULL, PrgName, PrgNameSize)) ||
+             PrgNameSize == Returned)
         {
           if (GetLastError() != ERROR_ALREADY_EXISTS)
             {
