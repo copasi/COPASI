@@ -1,0 +1,80 @@
+/**
+ *  CScanMethod class.
+ *  This class describes the method for doing the Scan.
+ *
+ *  Created for Copasi by Rohan Luktuke 2002
+ */
+
+#ifndef COPASI_CScanMethod
+#define COPASI_CScanMethod
+
+#include <string>
+
+#include "utilities/CMethodParameterList.h"
+
+class CScanProblem;
+
+class CScanMethod
+  {
+  protected:
+    /**
+     *  A pointer to the trajectory problem.
+     */
+    CScanProblem * scanProblem;
+
+    // Operations
+  protected:
+    /**
+     *  Default constructor.
+     */
+    CScanMethod();
+
+  public:
+    /**
+     * Create a trajectory method.
+     * Note: the returned object has to be released after use with delete
+     */
+
+    /*
+    static CTrajectoryMethod *
+    createTrajectoryMethod(CTrajectoryMethod::Type type
+                           = CTrajectoryMethod::deterministic);
+
+    */
+
+    /**
+     *  Copy constructor.
+     *  @param "const CTrajectoryMethod &" src
+     */
+    CScanMethod(const CScanMethod & src);
+
+    /**
+     *  Destructor.
+     */
+    ~CScanMethod();
+
+    /**
+     *  Set a pointer to the problem.
+     *  This method is used by CTrajectory
+     *  @param "CTrajectoryProblem *" problem
+     */
+    void setProblem(CScanProblem * problem);
+
+    /**
+     *  The main scan method.
+     */
+    void scan(C_INT32 i, BOOL nl);
+
+    /**
+     *  Set the value of the scan parameter based on the distribution
+     *  @param "C_INT32 i" where to start in the distribution
+     *  @param "C_INT32 first" first parameter in the set of Master/Slaves
+     *  @param "C_INT32 last" last parameter in the set of Master/Slaves
+     */
+
+    void setScanParameterValue(C_INT32 i, C_INT32 first, C_INT32 last);
+  };
+
+#include "CLsodaMethod.h"
+
+#endif // COPASI_CTrajectoryMethod
