@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/13 14:04:30 $
+   $Author: jpahle $ 
+   $Date: 2004/12/16 14:44:54 $
    End CVS Header */
 
 /********************************************************
@@ -76,12 +76,15 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFla
     ObjectBrowserLayout = new QGridLayout(this, 2, 4, 0, 6, "ObjectBrowserLayout");
   ObjectBrowserLayout->setAutoAdd(false);
   ObjectListView = new QListView(this, "ObjectListView");
-  ObjectListView->addColumn(trUtf8("Object Browser"));
+  //  ObjectListView->addColumn(trUtf8("Object Browser"));
+  ObjectListView->addColumn(trUtf8("Name"));
+  ObjectListView->addColumn(trUtf8("Type"));
   ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
   ObjectListView->setAcceptDrops(FALSE);
   ObjectListView->setResizeMode(QListView::LastColumn);
   ObjectListView->setTreeStepSize(19);
   //  ObjectListView->setSorting(-1);
+  ObjectListView->setSelectionMode(QListView::NoSelection);
 
   ObjectItemText = new QTextEdit(this, "ObjectItemText");
   ObjectItemText ->hide();
@@ -299,7 +302,7 @@ void ObjectBrowserWidget::commitClicked()
 {
   ObjectBrowserItem* rootItem;
   rootItem = objectItemList->getRoot()->pItem;
-  mOutputObjectVector->clear();
+  if (mOutputObjectVector) mOutputObjectVector->clear();
   eXport(rootItem, mOutputObjectVector);
   return;
 }
@@ -633,7 +636,7 @@ CCopasiObject* ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer * pCur
   CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
-  CCopasiObject* pResult;
+  //  CCopasiObject* pResult;
   while (it != end)
     {
       //      if (it->second->isContainer())
