@@ -20,6 +20,9 @@ class CWriteConfig;
 class CModel;
 class CStateX;
 
+namespace TNT {template <class CType>
+  class Matrix; }
+
 class CState
   {
   protected:
@@ -82,7 +85,27 @@ class CState
     void setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value);
     void setVolumeArray(const C_FLOAT64 * values);
 
+    /**
+     * Calculate the jacobian of the state and store it in the provided matrix.
+     * @param TNT::Matrix < C_FLOAT64 > & jacobian
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+                             const C_FLOAT64 & factor,
+                             const C_FLOAT64 & resolution) const;
+
   protected:
+    /**
+     * Calculate the jacobian of the state and store it in the provided matrix.
+     * @param TNT::Matrix < C_FLOAT64 > & jacobian
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getJacobianProtected(TNT::Matrix < C_FLOAT64 > & jacobian,
+                                      const C_FLOAT64 & factor,
+                                      const C_FLOAT64 & resolution);
+
     virtual void cleanup();
   };
 
@@ -129,6 +152,15 @@ class CStateX: public CState
     void setDependentNumberArray(const C_FLOAT64 * values);
     void updateDependentNumbers();
 
+    /**
+     * Calculate the jacobian of the state and store it in the provided matrix.
+     * @param TNT::Matrix < C_FLOAT64 > & jacobian
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    virtual void getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+                             const C_FLOAT64 & factor,
+                             const C_FLOAT64 & resolution) const;
   protected:
     virtual void cleanup();
   };

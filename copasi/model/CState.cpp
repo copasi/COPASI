@@ -5,6 +5,9 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
+#include "tnt/tnt.h"
+#include "tnt/cmat.h"
+
 #include "copasi.h"
 #include "CState.h"
 #include "CModel.h"
@@ -266,6 +269,15 @@ void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 void CState::setVolumeArray(const C_FLOAT64 * values)
 {memcpy(mVolumes, values, mVolumeSize * sizeof(double)); }
 
+void CState::getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+                         const C_FLOAT64 & factor,
+                         const C_FLOAT64 & resolution) const
+  {
+    CState * tmp = new CState(*this);
+    tmp->getJacobianProtected(jacobian, factor, resolution);
+    delete [] tmp;
+  }
+
 void CState::cleanup()
 {
   mTime = 0;
@@ -274,6 +286,61 @@ void CState::cleanup()
 
   mVariableNumbers.resize(0);
   mFixedNumbers.resize(0);
+}
+
+void CState::getJacobianProtected(TNT::Matrix < C_FLOAT64 > & jacobian,
+                                  const C_FLOAT64 & factor,
+                                  const C_FLOAT64 & resolution)
+{
+  unsigned C_INT32 i, j, dim = mVariableNumbers.size();
+  C_FLOAT64 * x =
+    const_cast<C_FLOAT64 *>(mVariableNumbers.getDblArray());
+
+  // resize the jacobian
+  jacobian.newsize(dim, dim);
+
+  // constants for differentiation by finite differences
+  C_FLOAT64 K1 = 1 + factor;
+  C_FLOAT64 K2 = 1 - factor;
+  C_FLOAT64 K3 = 2 * factor;
+
+  C_FLOAT64 store, temp;
+  C_FLOAT64 * f1 = new C_FLOAT64 [dim];
+  C_FLOAT64 * f2 = new C_FLOAT64 [dim];
+
+  for (i = 0; i < dim; i++)
+    {
+      /** if y[i] is zero, the derivative will be calculated at a small
+       *  positive value (no point in considering negative values!).
+       *  let's stick with SSRes*(1.0+DerivFactor)
+       */
+
+      store = x[i];
+
+      if (store < resolution)
+        temp = resolution * K1;
+      else
+        temp = store;
+
+      x[i] = temp * K1;
+      const_cast<CModel *>(mpModel)->getDerivatives(this, f1);
+
+      x[i] = temp * K2;
+      const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
+
+      for (j = 0; j < dim; j++)
+        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
+
+      x[i] = store;
+    }
+
+  // We need this to reset the model (a bad hack)
+  const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
+
+  delete [] f1;
+  delete [] f2;
+
+  return;
 }
 
 /**************************/
@@ -405,6 +472,15 @@ void CStateX::setDependentNumberArray(const C_INT32 * values)
 
 void CStateX::setDependentNumberArray(const C_FLOAT64 * values)
 {mDependentNumbers.setArray(values); }
+
+void CStateX::getJacobian(TNT::Matrix < C_FLOAT64 > & jacobian,
+                          const C_FLOAT64 & factor,
+                          const C_FLOAT64 & resolution) const
+  {
+    CStateX *tmp = new CStateX(*this);
+    tmp->getJacobianProtected(jacobian, factor, resolution);
+    delete [] tmp;
+  }
 
 void CStateX::cleanup()
 {
