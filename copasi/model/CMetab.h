@@ -206,12 +206,6 @@ class CMetab
   const C_FLOAT64 & getTransitionTime();
   
   /**
-   *  Reset the values of a metabolite as if CMetab(string name) was called.
-   *  @return Fail
-   */
-  C_INT32 reset(const string & name);
-
-  /**
    *	Returns the address of mIConc		Wei Sun
    */
   void * getIConcAddr();
@@ -229,9 +223,20 @@ class CMetab
   /**
    * Return rate of production of this metaboLite
    */ 
-  C_FLOAT64 getRate();
+  const C_FLOAT64 & getRate();
+
+  /**
+   *  Set the rate (dmConc/dt)
+   *  @param "const C_FLOAT64 &" rate (unit: particle/time)
+   */
+  void setRate(const C_FLOAT64 & rate);
+  
   
  private:
+  /**
+   *  Calculate transition time
+   */
+  void calculateTransitionTime(void);
 
   /*
    *

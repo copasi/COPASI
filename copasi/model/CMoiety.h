@@ -137,6 +137,11 @@ class CMoiety
   /**
    *
    */
+  C_FLOAT64 dependentRate();
+
+  /**
+   *
+   */
   C_FLOAT64 getNumber() const;
 
   /**

@@ -486,27 +486,40 @@ void CModel::buildMoieties()
 
 void CModel::setConcentrations(const C_FLOAT64 * y)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, imax;
 
   // Set the concentration of the independent metabolites
-  for (i=0; i < mMetabolitesInd.size(); i++)
-    {
-      mMetabolitesInd[i]->setNumber(y[i]);
-      cout << *mMetabolitesInd[i]->getConcentration() << "  ";
-    }
+  imax = mMetabolitesInd.size();
+  for (i=0; i < imax; i++)
+    mMetabolitesInd[i]->setNumber(y[i]);
   
   // Set the concentration of the dependent metabolites
-  for (i=0; i<mMetabolitesDep.size(); i++)
-    {
-      mMetabolitesDep[i]->setNumber(mMoieties[i]->dependentNumber());
-      cout << *mMetabolitesDep[i]->getConcentration() << "  ";
-    }
-  cout << endl;
+  imax = mMetabolitesDep.size();
+  for (i=0; i < imax; i++)
+    mMetabolitesDep[i]->setNumber(mMoieties[i]->dependentNumber());
   
   // Calculate the velocity vector depending on the step kinetics
-  for (i=0; i<mStepsX.size(); i++)
-   mStepsX[i]->calculate();
+  imax = mStepsX.size();
+  for (i=0; i < imax; i++)
+    mStepsX[i]->calculate();
 
+  return;
+}
+
+void CModel::setRates(const C_FLOAT64 * y)
+{
+  unsigned C_INT32 i, imax;
+
+  // Set the rate of the independent metabolites
+  imax = mMetabolitesInd.size();
+  for (i=0; i < imax; i++)
+    mMetabolitesInd[i]->setRate(y[i]);
+  
+  // Set the rate of the dependent metabolites
+  imax = mMetabolitesDep.size();
+  for (i=0; i < imax; i++)
+    mMetabolitesDep[i]->setRate(mMoieties[i]->dependentRate());
+  
   return;
 }
 
@@ -542,7 +555,9 @@ void CModel::setTransitionTimes()
     }
 }
 
+#ifdef XXXX
 const C_FLOAT64 & CModel::getTransitionTime() {return mTransitionTime;}
+#endif // XXXX
 
 CCopasiVectorS < CReaction > & CModel::getReactions()
 {

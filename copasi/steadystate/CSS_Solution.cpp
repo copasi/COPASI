@@ -406,7 +406,11 @@ C_INT32 CSS_Solution::isSteadyState()
 // Process after the steady state is found
 void CSS_Solution::afterFindSteadyState()
 {
-
+  //set the rates for all internal metabolites
+  mModel->setRates(&mSs_dxdt[0]);
+  //set the transition times
+  mModel->setTransitionTimes();
+  
   //evaluate the jacobian
   mJacob->jacobEval(mSs_x, mDerivFactor, mSSRes);
 

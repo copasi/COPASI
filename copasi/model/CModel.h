@@ -367,17 +367,26 @@ class CModel
   void setConcentrations(const C_FLOAT64 *y);
 
   /**
+   *  Set the rate for all internal metabolites and the
+   *  transistion time of the model.
+   *  param C_FLOAT64 & y
+   */
+  void setRates(const C_FLOAT64 *y);
+
+  /**
    *  Set the transition times for all internal metabolites and the
    *  transistion time of the model.
    */
   void setTransitionTimes();
 
+#ifdef XXXX
   /**
    *  Retrieves the transition time of the model.
    *  @return "const C_FLOAT64 &" transitionTime
    */
   const C_FLOAT64 & getTransitionTime();
-  
+#endif // XXXX
+
   // Added by CvG
   /**
    * Return the vector of reactions

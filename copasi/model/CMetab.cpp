@@ -41,11 +41,13 @@ CMetab::CMetab(const CMetab & src)
   mCompartment = src.mCompartment;
 }
 
+#ifdef XXXX
 CMetab::CMetab(const string & name)
 {
   CONSTRUCTOR_TRACE;
   reset(name);
 }
+#endif // XXXX
 
 // overload assignment operator
 CMetab &CMetab::operator=(const CMetab &RHS)
@@ -76,6 +78,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 
 CMetab::~CMetab() {DESTRUCTOR_TRACE;}
 
+#ifdef XXXX
 C_INT32 CMetab::reset(const string& name)
 {
   // initialize everything
@@ -89,6 +92,7 @@ C_INT32 CMetab::reset(const string& name)
 
   return 0;
 }
+#endif // XXXX
 
 void CMetab::cleanup() {} 
 
@@ -301,7 +305,16 @@ bool operator<(const CMetab &lhs, const CMetab &rhs)
 /**
  * Return rate of production of this metaboLite
  */ 
-C_FLOAT64 CMetab::getRate()
+const C_FLOAT64 & CMetab::getRate()
 {
 	return mRate;
 }
+
+void CMetab::setRate(const C_FLOAT64 & rate)
+{
+  mRate = rate / getCompartment()->getVolume();
+  //  calculateTransitionTime();
+}
+
+void CMetab::calculateTransitionTime(void) {mTT = mConc / mRate;}
+

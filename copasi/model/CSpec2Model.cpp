@@ -179,7 +179,8 @@ void CSpec2Model::processInits()
             if (vit != mDeVector.end())
             {
                 // this does correspond to a reactant.
-                CMetab metab(metab_name);
+                CMetab metab;
+                metab.setName(metab_name);
                 metab.setCompartment( mModel->getCompartments()[comp_name]);
                 metab.setStatus(METAB_VARIABLE);
                 C_FLOAT64 iconc = atof(contents.c_str());

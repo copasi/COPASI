@@ -49,6 +49,18 @@ C_FLOAT64 CMoiety::dependentNumber()
   return mNumber;
 }
 
+C_FLOAT64 CMoiety::dependentRate()
+{
+  C_FLOAT64 Rate = 0.0;
+  
+  for(unsigned C_INT32 i=1; i < mEquation.size(); i++)
+    Rate -= mEquation[i]->getMultiplicity() * 
+      mEquation[i]->getMetabolite().getRate() * 
+      mEquation[i]->getMetabolite().getCompartment()->getVolume();
+    
+  return Rate;
+}
+
 string CMoiety::getName() const {return mName;}
 
 string CMoiety::getDescription() const
