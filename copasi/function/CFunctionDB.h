@@ -103,27 +103,38 @@ class CFunctionDB
 
     /**
      *  Search for a function among the loaded functions. If no
-     *  function is found the database is searched and the apropriate 
-     *  function is loaded.
+     *  function is found NULL is returned
      *  @param "const string" &functionName
-     *  @return CKinFunction &
+     *  @return CFunction *
      */
     CFunction * findFunction(const string & functionName);
 
     /**
-     *  Retrieves the vector of loades functions.
-     *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
+     *  Search for a function among the loaded functions. If no
+     *  function is found the database is searched and the apropriate 
+     *  function is loaded.
+     *  @param "const string" &functionName
+     *  @return CFunction *
+     */
+    CFunction * findLoadFunction(const string & functionName);
+
+    /**
+     *  Retrieves the vector of loaded functions.
+     *  @return "CCopasiVectorNS < CKinFunction > &" loadedFunctions
      */
     CCopasiVectorNS < CFunction > & loadedFunctions();
 
     /**
-     *  Retrieves the vector of loades functions.
-     *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
+     *  Retrieves the vector of functions that are suitable for a
+    *  number of substrates, products and reversibility status.
+     *  @param "const unsigned C_INT32" noSubstrates the number of substrates
+     *  @param "const unsigned C_INT32" noProducts the number of products
+     *  @param "const TriLogic" reversible the reversibility status
+     *  @return "CCopasiVectorN < CKinFunction > " suitableFunctions
      */
-    CCopasiVectorN < CFunction >
-    suitableFunctions(const unsigned C_INT32 noSubstrates,
-                      const unsigned C_INT32 noProducts,
-                      const TriLogic reversible);
+    CCopasiVectorN < CFunction > suitableFunctions(const unsigned C_INT32 noSubstrates,
+        const unsigned C_INT32 noProducts,
+        const TriLogic reversible);
   };
 
 #endif // COPASI_CFunctionDB

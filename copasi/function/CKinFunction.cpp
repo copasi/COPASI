@@ -58,9 +58,13 @@ CKinFunction::CKinFunction(const string & name,
   setName(name);
   setDescription(description);
 }
-
 #endif // XXXX
-CKinFunction::~CKinFunction() {cleanup(); DESTRUCTOR_TRACE; }
+
+CKinFunction::~CKinFunction()
+{
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
 
 void CKinFunction::cleanup()
 {
@@ -148,7 +152,7 @@ C_INT32 CKinFunction::parse()
           mNodes.add(pNode);
           break;
 
-        case N_NOP:           // this is an error
+        case N_NOP:            // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();
@@ -163,7 +167,9 @@ C_INT32 CKinFunction::parse()
 }
 
 C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
-{ return mNodes[0]->getLeft().value(callParameters); }
+  {
+    return mNodes[0]->getLeft().value(callParameters);
+  }
 
 C_INT32 CKinFunction::connectNodes()
 {
@@ -588,4 +594,8 @@ void CKinFunction::initIdentifierNodes()
         fatalError();
     }
 }
-CCopasiVectorS < CNodeK > & CKinFunction::getNodes() { return mNodes; }
+
+CCopasiVectorS < CNodeK > & CKinFunction::getNodes()
+{
+  return mNodes;
+}

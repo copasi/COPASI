@@ -181,7 +181,31 @@ class CFunction
      *  @param "vector < void * >" callParameters
      *  @return "C_FLOAT64" result
      */
-    virtual C_FLOAT64
-    calcValue(const CCallParameters & callParameters) const;
+    virtual C_FLOAT64 calcValue(const CCallParameters & callParameters) const;
+
+    /**
+     *  Adds one usage descriptiont
+     *  @param "const string &" usage (SUBSTRATE or PRODUCT)
+     *  @param "C_INT32" low lower cardinality
+     *  @param "C_INT32" high maximum cardinality
+     */
+    virtual void addUsage(const string& usage, C_INT32 low, C_INT32 high);
+
+    /**
+     *  Adds the description of one parameter 
+     *  @param "const string &" name the name of the parameter
+    *  @param "CFunctionParameter::DataType &" type type of parameter (usually FLOAT64)
+    *  @param "const string &" usage usage for this paramter (SUBSTRATE, PRODUCT, MODIFIER, PARAMETER)
+     */
+    virtual void addParameter(const string & name, const CFunctionParameter::DataType & type,
+                              const string & usage);
+
+    /**
+     *  Adds one usage in the mParamters object
+     *  @param "const string &" usage the usage string
+    *  @param "C_INT32" low the lower cardinality
+    *  @param "C_INT32" high the maximum cardinality
+     */
+    void addParametersUsage(const string& usage, C_INT32 low, C_INT32 high);
   };
 #endif // COPASI_CFunction

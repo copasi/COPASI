@@ -10,10 +10,25 @@
 #include "CFunctionDB.h"
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
-CFunctionDB::CFunctionDB() {CONSTRUCTOR_TRACE; }
-void CFunctionDB::initialize() {}
-CFunctionDB::~CFunctionDB() {cleanup(); DESTRUCTOR_TRACE; }
-void CFunctionDB::cleanup() {mLoadedFunctions.cleanup(); }
+
+CFunctionDB::CFunctionDB()
+{
+  CONSTRUCTOR_TRACE;
+}
+
+void CFunctionDB::initialize()
+{}
+
+CFunctionDB::~CFunctionDB()
+{
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
+
+void CFunctionDB::cleanup()
+{
+  mLoadedFunctions.cleanup();
+}
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
@@ -81,8 +96,16 @@ C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
 
   return Fail;
 }
-void CFunctionDB::setFilename(const string & filename) {mFilename = filename; }
-string CFunctionDB::getFilename() const { return mFilename; }
+
+void CFunctionDB::setFilename(const string & filename)
+{
+  mFilename = filename;
+}
+
+string CFunctionDB::getFilename() const
+  {
+    return mFilename;
+  }
 
 CFunction * CFunctionDB::dBLoad(const string & functionName)
 {
@@ -137,13 +160,26 @@ CFunction * CFunctionDB::dBLoad(const string & functionName)
 
 void CFunctionDB::add
   (CFunction * function)
-{mLoadedFunctions.add(function); }
+  {
+    mLoadedFunctions.add(function);
+  }
 
 // void CFunctionDB::dBDelete(const string & functionName)
 // {
 // }
 
 CFunction * CFunctionDB::findFunction(const string & functionName)
+{
+  unsigned C_INT32 i;
+
+  for (i = 0; i < mLoadedFunctions.size(); i++)
+    if (functionName == mLoadedFunctions[i]->getName())
+      return mLoadedFunctions[i];
+
+  return NULL;
+}
+
+CFunction * CFunctionDB::findLoadFunction(const string & functionName)
 {
   unsigned C_INT32 i;
 

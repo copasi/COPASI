@@ -49,12 +49,11 @@ class CKinFunction : public CFunction
     CKinFunction(const CKinFunction & src);
 
     /**
-     *  This creates a kinetic function with a name an description
+     *  This creates a kinetic function with a name and description
      *  @param "const string" &name
      *  @param "const string" &description
      */
-    CKinFunction(const string & name,
-                 const string & description);
+    CKinFunction(const string & name, const string & description);
 
     /**
      *  Destructor
@@ -124,7 +123,7 @@ class CKinFunction : public CFunction
     void createParameters();
 
     /**
-     *  This function assignes the appropriate indezes to nodes of type identifier
+     *  This function assignes the appropriate indeces to nodes of type identifier
      *  so that the value of the matching call parameter is returned when 
      *  calculating the function.
      */

@@ -27,7 +27,12 @@ CFunction::CFunction(const CFunction & src)
   mUsageDescriptions = CCopasiVectorNS < CUsageRange > (src.mUsageDescriptions);
   mParameters = CFunctionParameters(src.mParameters);
 }
-CFunction::~CFunction() {cleanup(); DESTRUCTOR_TRACE; }
+
+CFunction::~CFunction()
+{
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
 
 void CFunction::cleanup()
 {
@@ -107,25 +112,88 @@ void CFunction::save(CWriteConfig & configBuffer)
   mUsageDescriptions.save(configBuffer);
   mParameters.save(configBuffer);
 }
-void CFunction::setName(const string& name){mName = name; }
-const string & CFunction::getName() const { return mName; }
+
+void CFunction::setName(const string& name)
+{
+  mName = name;
+}
+
+const string & CFunction::getName() const
+  {
+    return mName;
+  }
 
 void CFunction::setDescription(const string & description)
-{mDescription = description; }
-const string & CFunction::getDescription() const{ return mDescription; }
-void CFunction::setType(const CFunction::Type & type){mType = type; }
-const CFunction::Type & CFunction::getType() const { return mType; }
+{
+  mDescription = description;
+}
+
+const string & CFunction::getDescription() const
+  {
+    return mDescription;
+  }
+
+void CFunction::setType(const CFunction::Type & type)
+{
+  mType = type;
+}
+
+const CFunction::Type & CFunction::getType() const
+  {
+    return mType;
+  }
 
 void CFunction::setReversible(const TriLogic & reversible)
-{mReversible = reversible; }
-const TriLogic & CFunction::isReversible() const { return mReversible; }
-CFunctionParameters & CFunction::getParameters() { return mParameters; }
+{
+  mReversible = reversible;
+}
+
+const TriLogic & CFunction::isReversible() const
+  {
+    return mReversible;
+  }
+
+CFunctionParameters & CFunction::getParameters()
+{
+  return mParameters;
+}
 
 CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
-{ return mUsageDescriptions; }
+{
+  return mUsageDescriptions;
+}
 
 unsigned C_INT32 CFunction::getParameterPosition(const string & name)
-{ return mParameters[0] - mParameters[name]; }
+{
+  return mParameters[0] - mParameters[name];
+}
 
 C_FLOAT64 CFunction::calcValue(const CCallParameters & callParameters) const
-  { return 0.0; }
+  {
+    return 0.0;
+  }
+
+void CFunction::addUsage(const string& usage, C_INT32 low, C_INT32 high)
+{
+  CUsageRange *u;
+  u = new CUsageRange();
+  u->setUsage(usage);
+  u->setLow(low);
+  u->setHigh(high);
+  mUsageDescriptions.add(u);
+}
+
+void CFunction::addParameter(const string & name, const CFunctionParameter::DataType & type,
+                             const string & usage)
+{
+  mParameters.add(name, type, usage);
+}
+
+void CFunction::addParametersUsage(const string& usage, C_INT32 low, C_INT32 high)
+{
+  CUsageRange u;
+  u.setUsage(usage);
+  u.setLow(low);
+  u.setHigh(high);
+  mParameters.addUsageRange((const CUsageRange) u);
+}

@@ -64,14 +64,12 @@ class CFunctionParameter
     CFunctionParameter(const CFunctionParameter & src);
 
     /**
-     *  Specified constuctorSet all member values at once
+     *  Specified constuctor, sets all member values at once
      *  @param "const string &" name
      *  @param "const CFunctionParameter::DataType &" type
      *  @param "const string &" usage
      */
-    CFunctionParameter(const string & name,
-                       const DataType & type,
-                       const string & usage);
+    CFunctionParameter(const string & name, const DataType & type, const string & usage);
 
     /**
      *  Destructor

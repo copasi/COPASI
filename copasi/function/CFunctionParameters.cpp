@@ -8,7 +8,11 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionParameters.h"
-CFunctionParameters::CFunctionParameters() {CONSTRUCTOR_TRACE; }
+
+CFunctionParameters::CFunctionParameters()
+{
+  CONSTRUCTOR_TRACE;
+}
 
 CFunctionParameters::CFunctionParameters(const CFunctionParameters & src)
 {
@@ -16,7 +20,11 @@ CFunctionParameters::CFunctionParameters(const CFunctionParameters & src)
   mParameters = CCopasiVectorNS < CFunctionParameter >(src.mParameters);
   mUsageRanges = CCopasiVectorNS < CUsageRange >(src.mUsageRanges);
 }
-CFunctionParameters::~CFunctionParameters(){DESTRUCTOR_TRACE; }
+
+CFunctionParameters::~CFunctionParameters()
+{
+  DESTRUCTOR_TRACE;
+}
 
 void CFunctionParameters::cleanup()
 {
@@ -61,9 +69,7 @@ void CFunctionParameters::add
     updateUsageRanges();
   }
 
-void
-
-CFunctionParameters::add
+void CFunctionParameters::add
   (const string & name,
    const CFunctionParameter::DataType & type,
    const string & usage)
@@ -177,4 +183,9 @@ void CFunctionParameters::updateUsageRanges()
           pUsageRange->setLow(pUsageRange->getLow() + 1);
         }
     }
+}
+
+void CFunctionParameters::addUsageRange(const CUsageRange &u)
+{
+  mUsageRanges.add(u);
 }

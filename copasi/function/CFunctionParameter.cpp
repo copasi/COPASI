@@ -31,17 +31,23 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src)
   mUsage = src.mUsage;
 }
 
-CFunctionParameter::CFunctionParameter(const string & name,
-                                       const CFunctionParameter::DataType &type,
-                                       const string & usage)
+CFunctionParameter::CFunctionParameter(const string &name,
+                                       const enum CFunctionParameter::DataType &type,
+                                       const string &usage)
 {
   CONSTRUCTOR_TRACE;
   mName = name;
   mType = type;
   mUsage = usage;
 }
-CFunctionParameter::~CFunctionParameter(){DESTRUCTOR_TRACE; }
-void CFunctionParameter::cleanup() {}
+
+CFunctionParameter::~CFunctionParameter()
+{
+  DESTRUCTOR_TRACE;
+}
+
+void CFunctionParameter::cleanup()
+{}
 
 void CFunctionParameter::load(CReadConfig & configbuffer,
                               CReadConfig::Mode mode)
@@ -57,19 +63,35 @@ void CFunctionParameter::save(CWriteConfig & configbuffer)
   configbuffer.setVariable("DataType", "C_INT32", &mType);
   configbuffer.setVariable("Usage", "string", &mUsage);
 }
-void CFunctionParameter::setName(const string & name){mName = name; }
-const string & CFunctionParameter::getName() const { return mName; }
+
+void CFunctionParameter::setName(const string & name)
+{
+  mName = name;
+}
+
+const string & CFunctionParameter::getName() const
+  {
+    return mName;
+  }
 
 void CFunctionParameter::setUsage(const string & usage)
-{mUsage = usage; }
+{
+  mUsage = usage;
+}
 
 const string & CFunctionParameter::getUsage() const
-  { return mUsage; }
+  {
+    return mUsage;
+  }
 
-void
-CFunctionParameter::setType(const CFunctionParameter::DataType & type)
-{mType = type; }
+void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
+{
+  mType = type;
+}
 
 const CFunctionParameter::DataType &
+
 CFunctionParameter::getType() const
-  { return mType; }
+  {
+    return mType;
+  }
