@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 17:36:32 $
+   $Date: 2004/10/15 17:11:54 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.22 2004/10/08 17:36:32 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.23 2004/10/15 17:11:54 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -189,7 +189,10 @@ void PlotWidget1::addCurveTab(const std::string & title,
 void PlotWidget1::addCurveGroupBox()
 {
   SimpleSelectionDialog* pBrowser1 = new SimpleSelectionDialog();
+  pBrowser1->setCaption("Choose objects to plot on X-Axis");
+
   SimpleSelectionDialog* pBrowser2 = new SimpleSelectionDialog();
+  pBrowser2->setCaption("Choose objects to plot on Y-Axis");
 
   std::vector<CCopasiObject*>* pVector1 = new std::vector<CCopasiObject*>();
   pBrowser1->setOutputVector(pVector1);
