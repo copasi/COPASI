@@ -87,10 +87,10 @@ C_INT main(C_INT argc, char *argv[])
       // TestMetab();
       // TestReadSample();
       // TestTrajctory();
-      // TestNewton();
-      // TestSSSolution();
+      TestNewton();
+      TestSSSolution();
 
-      TestTrajectory();
+      //TestTrajectory();
       // TestMoiety();
       // TestKinFunction();
       // TestMassAction();
@@ -455,14 +455,15 @@ C_INT32 TestMCA(void)
     return 0;
 }
 
-/*
+
 // by YH
 C_INT32  TestNewton(void)
 {
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
+    CReadConfig inbuf("gps/NewtonTest.gps");
+    //   CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
     CModel model;
     model.load(inbuf);
     model.compile();
@@ -491,8 +492,7 @@ C_INT32  TestNewton(void)
  
     return 0;
 }
-
-*/ 
+ 
  
 // by YH
 C_INT32  TestSSSolution(void)
@@ -501,15 +501,13 @@ C_INT32  TestSSSolution(void)
     C_INT32 i;
  
     //CReadConfig inbuf("gps/BakkerComp.gps");
-    CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
+    CReadConfig inbuf("gps/NewtonTest.gps");
+    //CReadConfig inbuf("gps/NewtonTest_yhtest.gps"); //dos format
     CModel model;
     model.load(inbuf);
-    model.buildStoi();
-    model.lUDecomposition();
-    model.setMetabolitesStatus();
-    model.buildRedStoi();
-    model.buildL();
-    model.buildMoieties();
+    model.compile();
+ 
+    model.getReactions().size();
 
     //set up CNewton object and pass to CSS_Solution
     CNewton newton;
@@ -527,7 +525,12 @@ C_INT32  TestSSSolution(void)
     traj.getODESolver()->loadLSODAParameters(inbuf);
  
     CSS_Solution ss_soln;
+
     ss_soln.setModel(&model);
+
+    //yohe: new added on 03/15/02
+    ss_soln.initialize();
+
     ss_soln.setNewton(&newton);
     ss_soln.setTrajectory(&traj);
  
