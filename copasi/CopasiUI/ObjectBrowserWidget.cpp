@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/08 15:33:41 $
+   $Date: 2004/10/08 16:57:03 $
    End CVS Header */
 
 /********************************************************
@@ -427,6 +427,7 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList* objectItemList)
 void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
                                     CCopasiContainer* copaParent, bool nField)
 {
+  unsigned int i;
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
@@ -437,37 +438,68 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
   if ((copaParent->isVector()) && (nField))
-    {//add atribute list
-      ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
-      fieldChild->setObjectType(FIELDATTR);
-      fieldChild->setText(0, "Select by attribute");
-      fieldChild->setSelectable(false);
-      loadField(fieldChild, (CCopasiContainer*) copaParent);
-      fieldChild->attachKey();
-      last = fieldChild;
+    {
+      if ((((CCopasiVector <CCopasiObject>*)copaParent)->size() >= 1) && ((*(CCopasiVector <CCopasiObject>*)copaParent)[0]->isContainer()))
+        {//add atribute list
+          ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
+          fieldChild->setObjectType(FIELDATTR);
+          fieldChild->setText(0, "Select by attribute");
+          fieldChild->setSelectable(false);
+          loadField(fieldChild, (CCopasiVector <CCopasiObject>*) copaParent);
+          fieldChild->attachKey();
+          last = fieldChild;
+        }
     }
 
-  while (it != end)
+  if (copaParent->isVector())
     {
-      current = it->second;
-      ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
-      last = currentItem;
-      currentItem->setText(0, FROM_UTF8(current->getObjectName()));
-      if (current->isContainer())
+      for (i = 0; i < ((CCopasiVector <CCopasiObject>*)copaParent)->size(); i++)
         {
-          currentItem->setObjectType(CONTAINERATTR);
-          currentItem->attachKey();
-          if (current->isVector())
-            currentItem->setText(0, currentItem->text(0) + "[]");
-          loadChild(currentItem, (CCopasiContainer*) current, nField);
-        }
-      else
-        {
-          currentItem->setObjectType(OBJECTATTR);
-          childStack->insert(currentItem);  //attach the key later
-        }
+          current = (*(CCopasiVector <CCopasiObject>*)copaParent)[i];
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+          last = currentItem;
+          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
+          if (current->isContainer())
+            {
+              currentItem->setObjectType(CONTAINERATTR);
+              currentItem->attachKey();
+              if (current->isVector())
+                currentItem->setText(0, currentItem->text(0) + "[]");
+              loadChild(currentItem, (CCopasiContainer*) current, nField);
+            }
+          else
+            {
+              currentItem->setObjectType(OBJECTATTR);
+              childStack->insert(currentItem);  //attach the key later
+            }
 
-      it++;
+          it++;
+        }
+    }
+  else
+    {
+      while (it != end)
+        {
+          current = it->second;
+          ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
+          last = currentItem;
+          currentItem->setText(0, FROM_UTF8(current->getObjectName()));
+          if (current->isContainer())
+            {
+              currentItem->setObjectType(CONTAINERATTR);
+              currentItem->attachKey();
+              if (current->isVector())
+                currentItem->setText(0, currentItem->text(0) + "[]");
+              loadChild(currentItem, (CCopasiContainer*) current, nField);
+            }
+          else
+            {
+              currentItem->setObjectType(OBJECTATTR);
+              childStack->insert(currentItem);  //attach the key later
+            }
+
+          it++;
+        }
     }
 
   ObjectBrowserItem* pCurrent;
@@ -479,45 +511,18 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
   pdelete(childStack);
 }
 
-void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent)
+void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiVector <CCopasiObject>* copaParent)
 {
+  unsigned int i;
   ObjectBrowserItem* lastFieldItem = NULL;
   CCopasiObject* currentFieldObject = NULL;
   ObjectBrowserItem* lastObjectItem = NULL;
   CCopasiObject* currentObject = NULL;
 
-  const CCopasiContainer::objectMap * pObjectList = & copaParent->getObjects();
-  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
-  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
-  CCopasiContainer::objectMap::const_iterator pFirstObject = it;
-
-  if (it == end) return; //empty list
-
-  //  while (it != end) // find all missing reference attribute
-  //    {
-  //      currentFieldObject = it->second;
-  //      if (!currentFieldObject->isContainer())
-  //        {
-  //          ObjectBrowserItem* currentFieldItem = new ObjectBrowserItem(parent, lastFieldItem, currentFieldObject, objectItemList);
-  //          currentFieldItem->attachKey();
-  //          currentFieldItem->setObjectType(FIELDATTR);
-  //          currentFieldItem->setText(0, FROM_UTF8(currentFieldObject->getObjectName()));
-  //          lastFieldItem = currentFieldItem;
-  //}
-  //      it++;
-  //}
-
-  it = pFirstObject; //reset to the beginning
-  while (it != end)
-    {
-      if (it->second->isContainer())
-        break;
-      it++;
-    }
-  if (it == end) return; //no container found
+  if ((copaParent->size() < 1) || (!(*copaParent)[0]->isContainer())) return; //empty list
 
   const CCopasiContainer::objectMap * pFieldList =
-    &(((CCopasiContainer *) it->second)->getObjects());
+    &(((CCopasiContainer *)(*copaParent)[0])->getObjects());
 
   CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
   CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
@@ -530,13 +535,12 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiContainer 
       currentFieldItem->setObjectType(FIELDATTR);
       currentFieldItem->setText(0, FROM_UTF8(currentFieldObject->getObjectName()));
       lastFieldItem = currentFieldItem;
-      it = pFirstObject;
       lastObjectItem = NULL;
 
-      while (it != end)
+      for (i = 0; i < copaParent->size(); i++)
         {
           CCopasiObject* pSubField;
-          currentObject = it->second;
+          currentObject = (*(CCopasiVector <CCopasiObject>*)copaParent)[i];
 
           if (currentObject->isContainer())
             pSubField =
@@ -561,7 +565,6 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem* parent, CCopasiContainer 
               }
 
           lastObjectItem = currentItem;
-          it++;
         }
       fieldIt++;
     }

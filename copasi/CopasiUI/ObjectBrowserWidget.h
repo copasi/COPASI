@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/08 07:11:24 $
+   $Date: 2004/10/08 16:57:03 $
    End CVS Header */
 
 /********************************************************
@@ -21,6 +21,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include <qwidget.h>
 #include <vector>
+#include "utilities/CCopasiVector.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -69,7 +70,7 @@ class ObjectBrowserWidget : public QWidget
 
     void loadData();
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent, bool nField);
-    void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
+    void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
 
     CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
     void setOutputVector(std::vector<CCopasiObject*>* pObjectVector);
