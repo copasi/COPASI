@@ -110,6 +110,19 @@ public:
      CNewton(C_INT32 anInt);
 
     /**
+     * copy constructor
+     * @param source a CNewton object for copy
+     */
+     CNewton(const CNewton& source);
+
+    /**
+     * Object assignment overloading
+     * @param source a CNewton object for copy
+     * @return an assigned CNewton object
+     */
+     CNewton& operator=(const CNewton& source);
+
+    /**
      *  destructor
      */
      ~CNewton();

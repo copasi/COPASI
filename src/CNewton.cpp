@@ -29,6 +29,26 @@ CNewton::CNewton(C_INT32 anInt)
 }
 
 
+// copy constructor
+CNewton::CNewton(const CNewton& source)
+{
+  mModel = source.mModel;
+  mNewtonLimit = source.mNewtonLimit;
+}
+
+  
+//Object assignment overloading
+CNewton& CNewton::operator=(const CNewton& source)
+{
+  if(this != &source)
+    {
+      mModel = source.mModel;
+      mNewtonLimit = source.mNewtonLimit;
+    }
+
+  return *this;
+}
+
 
 //destructor
 CNewton::~CNewton()

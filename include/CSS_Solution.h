@@ -67,6 +67,19 @@ public:
      CSS_Solution();
 
     /**
+     * copy constructor 
+     * @param source a CSS_Solution object for copy
+     */
+     CSS_Solution(const CSS_Solution& source);
+
+    /**
+     * Object assignment overloading 
+     * @param source a CSS_Solution object for copy
+     * @return an assigned CSS_Solution object
+     */
+     CSS_Solution& operator=(const CSS_Solution& source);
+
+    /**
      *  destructor
      */
      ~CSS_Solution();

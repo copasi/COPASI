@@ -13,7 +13,33 @@ CSS_Solution::CSS_Solution()
   mNewton = NULL;
   mModel = NULL;
   mTraj = NULL;
+  mOption = NEWTON;
 }
+
+
+//copy constructor 
+CSS_Solution::CSS_Solution(const CSS_Solution& source)
+{
+  mNewton = source.mNewton;
+  mModel = source.mModel;
+  mTraj = source.mTraj;
+  mOption = source.mOption;
+}
+
+    
+// Object assignment overloading 
+CSS_Solution& CSS_Solution::operator=(const CSS_Solution& source)
+{
+  if(this != &source)
+    {
+      mNewton = source.mNewton;
+      mModel = source.mModel;
+      mTraj = source.mTraj;
+      mOption = source.mOption;
+    }
+  return *this;
+}
+
 
 
 //destructor
