@@ -80,6 +80,9 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 void TableDefinition::fillTable()
 {
+  //  const CReportDefinition* mpReportDefinition;
+  //  const std::vector<CReportDefinition*> &reportVector =
+
   /*
     const CCompartment *obj;
     const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
