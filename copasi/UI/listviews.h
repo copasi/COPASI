@@ -52,7 +52,7 @@ class ScanWidget;
 class TrajectoryWidget;
 class TableDefinition;
 class TableDefinition1;
-class ExpressionWidget;
+class OptimizationWidget;
 class CopasiWidget;
 class Folder;
 
