@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/09 03:33:52 $
+   $Date: 2005/01/09 03:43:59 $
    End CVS Header */
 
 /**
@@ -1892,9 +1892,6 @@ class CCopasiXMLParser : public CExpat
          */
         virtual void end(const XML_Char *pszName);
       };
-
-    friend void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName,
-        const XML_Char **papszAttrs);
 
   class ListOfReportsElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
