@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/04 20:31:04 $
+   $Date: 2003/11/12 16:51:07 $
    End CVS Header */
 
 /**
@@ -35,6 +35,21 @@ class CScanMethod : public CCopasiMethod
      */
     CScanProblem * scanProblem;
 
+    /**
+     * A pointer to the random number generator
+     */
+    CRandom * mpRandomGenerator;
+
+    /**
+     *
+     */
+    unsigned C_INT32 mVariableSize;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpVariables;
+
     // Operations
   private:
     /**
@@ -52,13 +67,6 @@ class CScanMethod : public CCopasiMethod
                 const CCopasiContainer * pParent = NULL);
 
   public:
-
-    /**
-       * calculate function for ScanMethod
-       */
-
-    C_FLOAT64 simulate();
-
     /**
      * Create a trajectory method.
      * Note: the returned object has to be released after use with delete
@@ -89,6 +97,17 @@ class CScanMethod : public CCopasiMethod
      *  The main scan method.
      */
     void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+
+  private:
+    /**
+     *  Set the value of the scan parameter based on the distribution
+     *  @param unsigned C_INT32 i where to start in the distribution
+     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
+     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
+     */
+    void setScanParameterValue(unsigned C_INT32 i,
+                               unsigned C_INT32 first,
+                               unsigned C_INT32 last);
   };
 
 #endif // COPASI_CTrajectoryMethod

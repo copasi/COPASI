@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:00 $
+   $Date: 2003/11/12 16:51:08 $
    End CVS Header */
 
 /**
@@ -43,18 +43,10 @@ class CScanProblem : public CCopasiProblem
 
     // Attributes
   private:
-    CRandom * pRandomGenerator;
-    Cr250* pCr250Generator;
-
-    /**
-     *  The model the problem is working on.
-     */
-    CModel * mpModel;
-
     /**
      *
      */
-    bool mProcessTrajectory;
+    CCopasiParameterGroup * mpScanParameterList;
 
     /**
      *
@@ -64,58 +56,24 @@ class CScanProblem : public CCopasiProblem
     /**
      *
      */
-    bool mProcessSteadyState;
-
-    /**
-     *
-     */
     CSteadyStateTask * mpSteadyState;
 
     /**
-     *
-     */
-    CCopasiParameterGroup mScanItemList;
-
-    /*
      * 
      */
-    CVector<C_FLOAT64*>* pValueAddrMatrix;
+    CVector< C_FLOAT64 * > mMapping;
 
   public:
-    // Operations
-    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
-    {
-      pValueAddrMatrix = pInputValueAddrMatrix;
-    }
-
-    inline bool ifSteadyStateTask() {return mProcessSteadyState;}
-    inline bool ifTrajectoryTask() {return mProcessTrajectory;}
-    inline CSteadyStateTask* getSteadyStateTask() {return mpSteadyState;}
-    inline CTrajectoryTask* getTrajectoryTask() {return mpTrajectory;}
     /**
-    check if an object already exists in the list
-    */
-    inline bool bExisted(const std::string & name)
-    {
-      return (mScanItemList.getIndex(name) != C_INVALID_INDEX);
-    }
-
-    /**
-      count the size of Parameter List
-    */
-    unsigned int paraCount()
-    {
-      return mScanItemList.size();
-    }
-
-    /**
-     *  Default constructor.
+     * Default constructor.
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CScanProblem();
+    CScanProblem(const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Copy constructor.
-     *  @param "const CScanProblem &" src
+     * Copy constructor.
+     * @param const CScanProblem & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
     CScanProblem(const CScanProblem & src,
                  const CCopasiContainer * pParent = NULL);
@@ -123,12 +81,27 @@ class CScanProblem : public CCopasiProblem
     /**
      *  Destructor.
      */
-    ~CScanProblem();
+    virtual ~CScanProblem();
 
     /**
-     * process the trajectory and steadystate task
-    */
+     * Set the model of the problem
+     * @param CModel * pModel
+     * @result bool succes
+     */
+    virtual bool setModel(CModel * pModel);
 
+    /**
+     * Do all neccessary initialization so that calls to caluclate will 
+     * be successful. This is called once from CScanTask::process()
+     * @result bool succes
+     */
+    virtual bool initialize();
+
+    /**
+     * Do the calculattin based on CalculateVariables and fill
+     * CalculateResults with the results. 
+     * @result bool succes
+     */
     virtual bool calculate();
 
     /**
@@ -149,8 +122,10 @@ class CScanProblem : public CCopasiProblem
 
     /**
      *  Add a Scan Item to the vector ScanItem
+     * @param const std::string & name
+     * @return bool success
      */
-    void addScanItem(const CCopasiParameterGroup & Item);
+    bool addScanItem(const std::string & name);
 
     /**
     * Delete a parameter in the list
@@ -178,34 +153,31 @@ class CScanProblem : public CCopasiProblem
                               const double & value);
 
     /**
-     *  Get a parameter from a scan item
+     * Get a parameter from a scan item
      * @param "const C_INT32" itemNumber
      * @param "const std::string &" name
+     * @return void *;
      */
-    const double & getScanItemParameter(const C_INT32 itemNumber,
-                                        const std::string & name);
+    void * getScanItemParameter(const C_INT32 itemNumber,
+                                const std::string & name);
 
     /**
-     *  Set the value of a parameter in a scan item
-     * @param "const C_INT32" itemNumber
-     * @param "const std::string &" name
-     * @param "const double &" value
+     * Set the value of a parameter in a scan item
+     * @param const C_INT32 itemNumber
+     * @param const std::string & name
+     * @param const CType & value
+     * @return bool success
      */
-    void setScanItemParameter(const C_INT32 itemNumber,
-                              const std::string & name,
-                              const double & value);
-
-    /**
-     * Set the moddel the problem is dealing with.
-     * @param "CModel *" pModel
-     */
-    virtual bool setModel(CModel * pModel);
-
-    /**
-     * Retrieve the model the problem is dealing with.
-     * @return "CModel *" pModel
-     */
-    CModel * getModel() const;
+    template< class CType >
+          bool setScanItemParameter(const C_INT32 itemNumber,
+                                    const std::string & name,
+                                    const CType & value)
+      {
+        return
+        ((CCopasiParameterGroup *)
+         mpScanParameterList->getParameter(itemNumber))
+        ->setValue(name, value);
+      }
 
     /**
      * Check whether to process a Trajectory task
@@ -241,23 +213,22 @@ class CScanProblem : public CCopasiProblem
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
 
+    // this function counts the number of iterations to execute
+    unsigned C_INT32 CountScan(void);
+
+    CSteadyStateTask* getSteadyStateTask();
+    CTrajectoryTask* getTrajectoryTask();
+
+    /**
+     * check if an object already exists in the list
+     */
+    bool bExisted(const std::string & name);
+
+  private:
     /**
      * Intialized all parameters insidethe Scan Parameter Matrix,
      */
     void InitScan(void);
-
-    // this function counts the number of iterations to execute
-    unsigned C_INT32 CountScan(void);
-
-    /**
-     *  Set the value of the scan parameter based on the distribution
-     *  @param unsigned C_INT32 i where to start in the distribution
-     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
-     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
-     */
-    void setScanParameterValue(unsigned C_INT32 i,
-                               unsigned C_INT32 first,
-                               unsigned C_INT32 last);
   };
 
 #endif // COPASI_CScanProblem

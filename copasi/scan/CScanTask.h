@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:01 $
+   $Date: 2003/11/12 16:51:08 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ class CScanTask : public CCopasiContainer
 
     inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
     {
-      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
+      //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
       pValueAddrMatrix = pInputValueAddrMatrix;
     }
 

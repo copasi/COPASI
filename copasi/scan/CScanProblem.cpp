@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:00 $
+   $Date: 2003/11/12 16:51:08 $
    End CVS Header */
 
 /**
@@ -36,15 +36,20 @@
  *  Default constructor.
  *
  */
-CScanProblem::CScanProblem():
-    CCopasiProblem(CCopasiTask::scan),
-    mpModel(NULL),
-    mProcessTrajectory(false),
+CScanProblem::CScanProblem(const CCopasiContainer * pParent):
+    CCopasiProblem(CCopasiTask::scan, pParent),
+    mpScanParameterList(NULL),
     mpTrajectory(NULL),
-    mProcessSteadyState(false),
-    mpSteadyState(NULL),
-    mScanItemList("ScanItemList", this)
-{CONSTRUCTOR_TRACE;}
+    mpSteadyState(NULL)
+{
+  addGroup("ScanItemList");
+  mpScanParameterList = (CCopasiParameterGroup *) getParameter("ScanItemList");
+
+  addParameter("ProcessTrajectory", CCopasiParameter::BOOL, false);
+  addParameter("ProcessSteadyState", CCopasiParameter::BOOL, false);
+
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Copy constructor.
@@ -53,13 +58,13 @@ CScanProblem::CScanProblem():
 CScanProblem::CScanProblem(const CScanProblem & src,
                            const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mpModel(src.mpModel),
-    mProcessTrajectory(src.mProcessTrajectory),
+    mpScanParameterList(NULL),
     mpTrajectory(src.mpTrajectory),
-    mProcessSteadyState(src.mProcessSteadyState),
-    mpSteadyState(src.mpSteadyState),
-    mScanItemList(src.mScanItemList)
-{CONSTRUCTOR_TRACE;}
+    mpSteadyState(src.mpSteadyState)
+{
+  mpScanParameterList = (CCopasiParameterGroup *) getParameter("ScanItemList");
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Destructor.
@@ -71,36 +76,32 @@ CScanProblem::~CScanProblem()
  *  Size of the scanItem vector
  */
 unsigned C_INT32 CScanProblem::getListSize() const
-  {return mScanItemList.size();}
+  {return mpScanParameterList->size();}
 
-void CScanProblem::addScanItem(const CCopasiParameterGroup & Item)
-{
-  mScanItemList.addParameter(Item.CCopasiParameter::getName(),
-                             CCopasiParameter::GROUP,
-                             * (CCopasiParameterGroup::parameterGroup *)
-                             Item.CCopasiParameter::getValue());
-}
+bool CScanProblem::addScanItem(const std::string & name)
+{return mpScanParameterList->addGroup(name);}
 
-/*
-  Remove a parameter from the list
+/**
+ * Remove a parameter from the list
  */
 void CScanProblem::removeScanItem(const std::string & name)
-{mScanItemList.removeParameter(name);}
+{mpScanParameterList->removeParameter(name);}
 
 /*
   Swap
  */
 void CScanProblem::swapScanItem(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo)
-{
-  mScanItemList.swap(indexFrom, indexTo);
-}
+{mpScanParameterList->swap(indexFrom, indexTo);}
 
 /**
  *  Get a Scan Item from the vector ScanItem
  * @param "C_INT32" itemNumber
  */
 CCopasiParameterGroup * CScanProblem::getScanItem(C_INT32 itemNumber)
-{return (CCopasiParameterGroup *) mScanItemList.getParameter(itemNumber);}
+{
+  return
+  (CCopasiParameterGroup *) mpScanParameterList->getParameter(itemNumber);
+}
 
 /**
  *  Add a parameter to a scan item
@@ -112,36 +113,23 @@ void CScanProblem::addScanItemParameter(const C_INT32 itemNumber,
                                         const std::string & name,
                                         const double & value)
 {
-  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
+  ((CCopasiParameterGroup *)
+   mpScanParameterList->getParameter(itemNumber))
   ->addParameter(name, CCopasiParameter::DOUBLE, value);
 }
 
 /**
- *  Get a parameter from a scan item
+ * Get a parameter from a scan item
  * @param "const C_INT32" itemNumber
  * @param "const std::string &" name
  */
-const double & CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
+void * CScanProblem::getScanItemParameter(const C_INT32 itemNumber,
     const std::string & name)
 {
   return
-  * (C_FLOAT64 *)
-  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
+  ((CCopasiParameterGroup *)
+   mpScanParameterList->getParameter(itemNumber))
   ->getValue(name);
-}
-
-/**
- *  Set the value of a parameter in a scan item
- * @param "const C_INT32" itemNumber
- * @param "const std::string &" name
- * @param "const double &" value
- */
-void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
-                                        const std::string & name,
-                                        const double & value)
-{
-  ((CCopasiParameterGroup *)mScanItemList.getParameter(itemNumber))
-  ->setValue(name, value);
 }
 
 /**
@@ -150,8 +138,11 @@ void CScanProblem::setScanItemParameter(const C_INT32 itemNumber,
  */
 
 void CScanProblem::load(CReadConfig & configBuffer,
-                        CReadConfig::Mode mode)
+                        CReadConfig::Mode C_UNUSED(mode))
 {
+  /* :TODO: How important is it to read old scan problems? */
+  /*        This is realated to to the reading of old report definitions. */
+
   /*  if (configBuffer.getVersion() < "4.0")
       {
         mpModel = Copasi->Model;
@@ -193,44 +184,71 @@ void CScanProblem::load(CReadConfig & configBuffer,
   mpTrajectory->load(configBuffer);
 }
 
-bool CScanProblem::processTrajectory() const {return mProcessTrajectory;}
+bool CScanProblem::processTrajectory() const
+  {return * (bool *) getValue("ProcessTrajectory");}
 
 bool CScanProblem::setProcessTrajectory(const bool & processTrajectory)
-{
-  mProcessTrajectory = processTrajectory;
-  return true;
-}
+{return setValue("ProcessTrajectory", processTrajectory);}
 
-bool CScanProblem::processSteadyState() const {return mProcessSteadyState;}
+bool CScanProblem::processSteadyState() const
+  {return * (bool *) getValue("ProcessSteadyState");}
 
 bool CScanProblem::setProcessSteadyState(const bool & processSteadyState)
-{
-  mProcessSteadyState = processSteadyState;
-  return true;
-}
+{return setValue("ProcessSteadyState", processSteadyState);}
 
 bool CScanProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
+
   return true;
 }
 
-CModel * CScanProblem::getModel() const {return mpModel;}
+bool CScanProblem::initialize()
+{
+  unsigned C_INT32 Size = getListSize();
+  mCalculateVariables.resize(Size);
+  mMapping.resize(Size);
+  mCalculateResults.resize(1);
+  CCopasiObject * pObject;
+
+  InitScan();
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+
+  unsigned C_INT32 i;
+  for (i = 0; i < Size; i++)
+    {
+      pObject = CCopasiContainer::ObjectFromName(ListOfContainer,
+                ((CCopasiParameter *) getScanItem(i))->getName());
+      if (!pObject) fatalError();
+      if (!pObject->isValueDbl()) fatalError();
+      mMapping[i] = (C_FLOAT64 *) pObject->getReference();
+    }
+
+  return true;
+}
 
 bool CScanProblem::calculate()
 {
-  if ((mpSteadyState != NULL) && mProcessSteadyState)
+  unsigned C_INT32 i, imax = mMapping.size();
+  for (i = 0; i < imax; i ++)
+    *mMapping[i] = mCalculateVariables[i];
+
+  if ((mpSteadyState != NULL) && processSteadyState())
     {
       // std::cout << "COptProblem: mpSteadyState";
       getSteadyStateTask()->getProblem()->
-      setInitialState(getSteadyStateTask()->getProblem()->getModel()->getInitialState());
+      setInitialState(getSteadyStateTask()->getProblem()->getModel()
+                      ->getInitialState());
       mpSteadyState->process();
     }
-  if ((mpTrajectory != NULL) && mProcessTrajectory)
+
+  if ((mpTrajectory != NULL) && processTrajectory())
     {
       // std::cout << "COptProblem: mpTrajectory";
       getTrajectoryTask()->getProblem()->
-      setInitialState(getTrajectoryTask()->getProblem()->getModel()->getInitialState());
+      setInitialState(getTrajectoryTask()->getProblem()->getModel()
+                      ->getInitialState());
       getTrajectoryTask()->getProblem()->
       setStartTime(getTrajectoryTask()->getProblem()->getStartTime());
       mpTrajectory->process();
@@ -251,7 +269,7 @@ void CScanProblem::setTrajectoryTask(CTrajectoryTask* pTrajectoryTask)
 
 void CScanProblem::InitScan(void)
 {
-  int i, density;
+  unsigned C_INT32 i, density;
   unsigned C_INT32 scanDimension = getListSize();
   // do nothing if ScanDimension is smaller than 1
   if (scanDimension < 1)
@@ -262,110 +280,56 @@ void CScanProblem::InitScan(void)
   // ensure that that the first item is a master
   setScanItemParameter(0, "indp", true);
   // and that its density is >= 2
-  if (getScanItemParameter(0, "density") < 2)
-    setScanItemParameter(0, "density", 2);
+  if (* (unsigned C_INT32 *) getScanItemParameter(0, "density") < 2)
+    setScanItemParameter(0, "density", (unsigned C_INT32) 2);
 
   unsigned C_INT32 TotIteration = 1;
   for (i = 0, density = 2; i < scanDimension; i++)
     {
       // if this item is slave keep the density of the master
-      if (getScanItemParameter(i, "indp"))
+      if (* (bool *) getScanItemParameter(i, "indp"))
         {
-          density = getScanItemParameter(i, "density");
+          density = * (unsigned C_INT32 *) getScanItemParameter(i, "density");
           TotIteration *= density;
         }
 
       // calculate the amplitude
-      if (getScanItemParameter(i, "log"))
+      if (* (bool *) getScanItemParameter(i, "log"))
         {
-          if ((getScanItemParameter(i, "min") <= 0) ||
-              (getScanItemParameter(i, "max") <= 0))
+          if ((* (C_FLOAT64 *) getScanItemParameter(i, "min") <= 0) ||
+              (* (C_FLOAT64 *) getScanItemParameter(i, "max") <= 0))
             {
               // logarithmic scanning requires positive arguments!
               // user should be warned, but this should never happen!
-              setScanItemParameter(i, "min", 1.0);
-              setScanItemParameter(i, "max", 2.0);
+              setScanItemParameter(i, "min", (C_FLOAT64) 1.0);
+              setScanItemParameter(i, "max", (C_FLOAT64) 2.0);
             }
           setScanItemParameter(i, "ampl",
-                               log10(getScanItemParameter(i, "max"))
-                               - log10(getScanItemParameter(i, "min")));
+                               (C_FLOAT64) (log10(* (C_FLOAT64 *)
+                                                  getScanItemParameter(i, "max"))
+                                            - log10(* (C_FLOAT64 *)
+                                                    getScanItemParameter(i, "min"))));
         }
       else
         setScanItemParameter(i, "ampl",
-                             getScanItemParameter(i, "max")
-                             - getScanItemParameter(i, "min"));
+                             (C_FLOAT64) (* (C_FLOAT64 *)
+                                          getScanItemParameter(i, "max")
+                                          - * (C_FLOAT64 *)
+                                          getScanItemParameter(i, "min")));
       // calculate the increment
-      setScanItemParameter(i, "incr", getScanItemParameter(i, "ampl") / (getScanItemParameter(i, "density") - 1));
-    }
-}
-
-/**
- *  set the values master and all slave parameters
- * @param "C_INT32 i" initial value
- * @param "C_INT32 first" first parameter (master)
- * @param "C_INT32 last" last slave parameter
- */
-
-void CScanProblem::setScanParameterValue(unsigned C_INT32 i,
-    unsigned C_INT32 first,
-    unsigned C_INT32 last)
-{
-  unsigned C_INT32 j;
-  double min, max, incr, ampl;
-  for (j = first; j < last; j++)
-    {
-      // making a copy of the min and max parameters of the scanItem j
-      min = getScanItemParameter(j, "min");
-      max = getScanItemParameter(j, "max");
-      ampl = getScanItemParameter(j, "ampl");
-      incr = getScanItemParameter(j, "incr");
-
-      // switch the grid type and set values accordingly
-      switch ((int)getScanItemParameter(j, "gridType"))
-        {
-        case SD_UNIFORM:
-          if (getScanItemParameter(j, "log"))
-            *((*pValueAddrMatrix)[j]) = min * pow(10, ampl * pCr250Generator->getRandomCO()); //dr250()
-          //            setScanItemParameter(j, "value", min* pow(10, ampl * pCr250Generator->getRandomCO())); //dr250()
-          else
-            *((*pValueAddrMatrix)[j]) = min + ampl * pCr250Generator->getRandomCO(); //dr250()
-          //            setScanItemParameter(j, "value", min + ampl * pCr250Generator->getRandomCO()); //dr250()
-          break;
-        case SD_GAUSS:
-          if (getScanItemParameter(j, "log"))
-            //CRandom::getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
-            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalLog(min, max);
-          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
-          else
-            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormal(min, max);
-          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormal(min, max));
-          break;
-        case SD_BOLTZ:
-          if (getScanItemParameter(j, "log"))
-            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalLog(min, max);
-          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
-          else
-            *((*pValueAddrMatrix)[j]) = pRandomGenerator->getRandomNormalPositive(min, max);
-          //            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalPositive(min, max));
-          break;
-        case SD_REGULAR:
-          // log scale
-          if (getScanItemParameter(j, "log"))
-            *((*pValueAddrMatrix)[j]) = min * pow(10, incr * i);
-          //            setScanItemParameter(j, "value", (min*pow(10, incr*i)));
-          // non-log scale
-          else
-            *((*pValueAddrMatrix)[j]) = (min + incr * i);
-          //            setScanItemParameter(j, "value", (min + incr*i));
-          break;
-        }
+      setScanItemParameter(i, "incr",
+                           (C_FLOAT64) (* (C_FLOAT64 *)
+                                        getScanItemParameter(i, "ampl")
+                                        / (* (unsigned C_INT32 *)
+                                           getScanItemParameter(i, "density")
+                                           - 1)));
     }
 }
 
 // this function counts the number of iterations to execute
 unsigned C_INT32 CScanProblem::CountScan(void)
 {
-  int i;
+  unsigned C_INT32 i;
   unsigned C_INT32 TotIteration = 1;
   unsigned C_INT32 scanDimension = getListSize();
   for (i = 0; i < scanDimension; i++)
@@ -373,3 +337,12 @@ unsigned C_INT32 CScanProblem::CountScan(void)
       TotIteration *= (unsigned C_INT32) getScanItemParameter(i, "density");
   return TotIteration;
 }
+
+CSteadyStateTask* CScanProblem::getSteadyStateTask() {return mpSteadyState;}
+CTrajectoryTask* CScanProblem::getTrajectoryTask() {return mpTrajectory;}
+
+/**
+ * check if an object already exists in the list
+ */
+bool CScanProblem::bExisted(const std::string & name)
+{return (mpScanParameterList->getIndex(name) != C_INVALID_INDEX);}

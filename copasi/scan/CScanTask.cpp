@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:01 $
+   $Date: 2003/11/12 16:51:08 $
    End CVS Header */
 
 /**
@@ -74,11 +74,11 @@ void CScanTask::initializeReporting(std::ostream & out)
   mReport->compile();
 
   // for Steadystate Report
-  if (mpProblem->ifSteadyStateTask())
+  if (mpProblem->processSteadyState())
     mpProblem->getSteadyStateTask()->initializeReporting(out);
 
   // for Trajectory Report
-  if (mpProblem->ifTrajectoryTask())
+  if (mpProblem->processTrajectory())
     mpProblem->getTrajectoryTask()->initializeReporting(out);
 }
 
@@ -112,7 +112,7 @@ void CScanTask::process()
     fatalError();
 
   mpMethod->setProblem(mpProblem);
-  mpProblem->InitScan();
+  mpProblem->initialize();
 
   mReport->compile();
   mReport->printHeader();
