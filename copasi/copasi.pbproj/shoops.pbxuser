@@ -1,0 +1,797 @@
+// !$*UTF8*$!
+{
+	1996A68107D6A31B00A80068 = {
+		activeBuildStyle = 1996A67F07D6A31B00A80068;
+		activeExecutable = 1996AB9307D6A9F300A80068;
+		activeTarget = 1996AB9207D6A54600A80068;
+		addToTargets = (
+		);
+		executables = (
+			1996AB9307D6A9F300A80068,
+			1996AB9507D6AC6000A80068,
+		);
+		perUserDictionary = {
+			PBXPerProjectTemplateStateSaveDate = 131512332;
+			PBXWorkspaceContents = (
+				{
+					LeftSlideOut = {
+						Split0 = {
+							Split0 = {
+								NavContent0 = {
+									bookmark = 1996ABD107D6B7F900A80068;
+									history = (
+										1996AB9907D6B4DA00A80068,
+										1996AB9A07D6B4DA00A80068,
+										1996AB9B07D6B4DA00A80068,
+										1996AB9C07D6B4DA00A80068,
+										1996AB9D07D6B4DA00A80068,
+										1996AB9E07D6B4DA00A80068,
+										1996AB9F07D6B4DA00A80068,
+										1996ABA007D6B4DA00A80068,
+										1996ABA107D6B4DA00A80068,
+										1996ABA207D6B4DA00A80068,
+										1996ABA307D6B4DA00A80068,
+										1996ABA407D6B4DA00A80068,
+										1996ABA507D6B4DA00A80068,
+										1996ABA607D6B4DA00A80068,
+										1996ABA707D6B4DA00A80068,
+										1996ABA807D6B4DA00A80068,
+										1996ABA907D6B4DA00A80068,
+										1996ABAA07D6B4DA00A80068,
+										1996ABC207D6B61100A80068,
+										1996ABC307D6B61100A80068,
+										1996ABC407D6B61100A80068,
+										1996ABCE07D6B7F900A80068,
+										1996ABCF07D6B7F900A80068,
+									);
+									prevStack = (
+										1996ABAC07D6B4DA00A80068,
+										1996ABAD07D6B4DA00A80068,
+										1996ABAE07D6B4DA00A80068,
+										1996ABAF07D6B4DA00A80068,
+										1996ABB007D6B4DA00A80068,
+										1996ABB107D6B4DA00A80068,
+										1996ABB207D6B4DA00A80068,
+										1996ABB307D6B4DA00A80068,
+										1996ABB407D6B4DA00A80068,
+										1996ABB507D6B4DA00A80068,
+										1996ABB607D6B4DA00A80068,
+										1996ABB707D6B4DA00A80068,
+										1996ABB807D6B4DA00A80068,
+										1996ABB907D6B4DA00A80068,
+										1996ABBA07D6B4DA00A80068,
+										1996ABBB07D6B4DA00A80068,
+										1996ABBC07D6B4DA00A80068,
+										1996ABBD07D6B4DA00A80068,
+										1996ABBE07D6B4DA00A80068,
+										1996ABC607D6B61100A80068,
+										1996ABC707D6B61100A80068,
+										1996ABC807D6B61100A80068,
+										1996ABD007D6B7F900A80068,
+									);
+								};
+								NavCount = 1;
+								NavGeometry0 = {
+									Frame = "{{0, 0}, {696, 376}}";
+									NavBarVisible = YES;
+								};
+								NavSplitVertical = NO;
+							};
+							SplitCount = 1;
+							Tab1 = {
+								Debugger = {
+									Split0 = {
+										SplitCount = 2;
+									};
+									SplitCount = 1;
+									TabCount = 2;
+								};
+								LauncherConfigVersion = 7;
+							};
+							Tab2 = {
+								LauncherConfigVersion = 3;
+								Runner = {
+								};
+							};
+							TabCount = 5;
+						};
+						SplitCount = 1;
+						Tab1 = {
+							OptionsSetName = "Hierarchy, project classes";
+						};
+						TabCount = 5;
+					};
+				},
+			);
+			PBXWorkspaceGeometries = (
+				{
+					ContentSize = "{978, 637}";
+					LeftSlideOut = {
+						ActiveTab = 0;
+						ActiveTabName = PBXGroupTreeModule;
+						Collapsed = NO;
+						Frame = "{{0, 23}, {978, 614}}";
+						Split0 = {
+							ActiveTab = 4;
+							ActiveTabName = PBXCVSModule;
+							Collapsed = NO;
+							Frame = "{{282, 0}, {696, 614}}";
+							Split0 = {
+								Frame = "{{0, 238}, {696, 376}}";
+							};
+							SplitCount = 1;
+							Tab0 = {
+								Frame = "{{0, 0}, {696, 214}}";
+							};
+							Tab1 = {
+								Debugger = {
+									Collapsed = NO;
+									Frame = "{{0, 0}, {572, 150}}";
+									Split0 = {
+										Frame = "{{0, 24}, {572, 126}}";
+										Split0 = {
+											Frame = "{{0, 0}, {279, 126}}";
+										};
+										Split1 = {
+											DebugVariablesTableConfiguration = (
+												Name,
+												123,
+												Value,
+												85,
+												Summary,
+												62.123,
+											);
+											Frame = "{{288, 0}, {284, 126}}";
+										};
+										SplitCount = 2;
+									};
+									SplitCount = 1;
+									Tab0 = {
+										Frame = "{{0, 0}, {100, 50}}";
+									};
+									Tab1 = {
+										Frame = "{{0, 0}, {100, 50}}";
+									};
+									TabCount = 2;
+									TabsVisible = YES;
+								};
+								Frame = "{{0, 0}, {572, 125}}";
+								LauncherConfigVersion = 7;
+							};
+							Tab2 = {
+								Frame = "{{0, 0}, {572, 127}}";
+								LauncherConfigVersion = 3;
+								Runner = {
+									Frame = "{{0, 0}, {572, 127}}";
+								};
+							};
+							Tab3 = {
+								BuildMessageFrame = "{{0, 0}, {643, 73}}";
+								BuildTranscriptFrame = "{{0, 82}, {643, 161}}";
+								BuildTranscriptFrameExpanded = YES;
+								Frame = "{{0, 0}, {641, 265}}";
+							};
+							Tab4 = {
+								Frame = "{{0, 0}, {574, 295}}";
+							};
+							TabCount = 5;
+							TabsVisible = YES;
+						};
+						SplitCount = 1;
+						Tab0 = {
+							Frame = "{{0, 0}, {258, 614}}";
+							GroupTreeTableConfiguration = (
+								TargetStatusColumn,
+								18,
+								MainColumn,
+								225,
+							);
+						};
+						Tab1 = {
+							ClassesFrame = "{{0, 0}, {247, 369}}";
+							ClassesTreeTableConfiguration = (
+								PBXBookColumnIdentifier,
+								20,
+								PBXClassColumnIdentifier,
+								204,
+							);
+							Frame = "{{0, 0}, {245, 614}}";
+							MembersFrame = "{{0, 378}, {247, 236}}";
+							MembersTreeTableConfiguration = (
+								PBXBookColumnIdentifier,
+								20,
+								PBXMethodColumnIdentifier,
+								203,
+							);
+						};
+						Tab2 = {
+							Frame = "{{0, 0}, {226, 549}}";
+						};
+						Tab3 = {
+							Frame = "{{0, 0}, {191, 614}}";
+							TargetTableConfiguration = (
+								ActiveObject,
+								16,
+								ObjectNames,
+								202.296,
+							);
+						};
+						Tab4 = {
+							BreakpointsTreeTableConfiguration = (
+								breakpointColumn,
+								138,
+								enabledColumn,
+								31,
+							);
+							Frame = "{{0, 0}, {191, 549}}";
+						};
+						TabCount = 5;
+						TabsVisible = YES;
+					};
+					NavBarShownByDefault = YES;
+					StatusViewVisible = YES;
+					Template = F5F68CF101725D4C0D7A8F4C;
+					ToolbarVisible = YES;
+					WindowLocation = "{56, 110}";
+				},
+			);
+			PBXWorkspaceStateSaveDate = 131512332;
+		};
+		perUserProjectItems = {
+			1996AB9907D6B4DA00A80068 = 1996AB9907D6B4DA00A80068;
+			1996AB9A07D6B4DA00A80068 = 1996AB9A07D6B4DA00A80068;
+			1996AB9B07D6B4DA00A80068 = 1996AB9B07D6B4DA00A80068;
+			1996AB9C07D6B4DA00A80068 = 1996AB9C07D6B4DA00A80068;
+			1996AB9D07D6B4DA00A80068 = 1996AB9D07D6B4DA00A80068;
+			1996AB9E07D6B4DA00A80068 = 1996AB9E07D6B4DA00A80068;
+			1996AB9F07D6B4DA00A80068 = 1996AB9F07D6B4DA00A80068;
+			1996ABA007D6B4DA00A80068 = 1996ABA007D6B4DA00A80068;
+			1996ABA107D6B4DA00A80068 = 1996ABA107D6B4DA00A80068;
+			1996ABA207D6B4DA00A80068 = 1996ABA207D6B4DA00A80068;
+			1996ABA307D6B4DA00A80068 = 1996ABA307D6B4DA00A80068;
+			1996ABA407D6B4DA00A80068 = 1996ABA407D6B4DA00A80068;
+			1996ABA507D6B4DA00A80068 = 1996ABA507D6B4DA00A80068;
+			1996ABA607D6B4DA00A80068 = 1996ABA607D6B4DA00A80068;
+			1996ABA707D6B4DA00A80068 = 1996ABA707D6B4DA00A80068;
+			1996ABA807D6B4DA00A80068 = 1996ABA807D6B4DA00A80068;
+			1996ABA907D6B4DA00A80068 = 1996ABA907D6B4DA00A80068;
+			1996ABAA07D6B4DA00A80068 = 1996ABAA07D6B4DA00A80068;
+			1996ABAC07D6B4DA00A80068 = 1996ABAC07D6B4DA00A80068;
+			1996ABAD07D6B4DA00A80068 = 1996ABAD07D6B4DA00A80068;
+			1996ABAE07D6B4DA00A80068 = 1996ABAE07D6B4DA00A80068;
+			1996ABAF07D6B4DA00A80068 = 1996ABAF07D6B4DA00A80068;
+			1996ABB007D6B4DA00A80068 = 1996ABB007D6B4DA00A80068;
+			1996ABB107D6B4DA00A80068 = 1996ABB107D6B4DA00A80068;
+			1996ABB207D6B4DA00A80068 = 1996ABB207D6B4DA00A80068;
+			1996ABB307D6B4DA00A80068 = 1996ABB307D6B4DA00A80068;
+			1996ABB407D6B4DA00A80068 = 1996ABB407D6B4DA00A80068;
+			1996ABB507D6B4DA00A80068 = 1996ABB507D6B4DA00A80068;
+			1996ABB607D6B4DA00A80068 = 1996ABB607D6B4DA00A80068;
+			1996ABB707D6B4DA00A80068 = 1996ABB707D6B4DA00A80068;
+			1996ABB807D6B4DA00A80068 = 1996ABB807D6B4DA00A80068;
+			1996ABB907D6B4DA00A80068 = 1996ABB907D6B4DA00A80068;
+			1996ABBA07D6B4DA00A80068 = 1996ABBA07D6B4DA00A80068;
+			1996ABBB07D6B4DA00A80068 = 1996ABBB07D6B4DA00A80068;
+			1996ABBC07D6B4DA00A80068 = 1996ABBC07D6B4DA00A80068;
+			1996ABBD07D6B4DA00A80068 = 1996ABBD07D6B4DA00A80068;
+			1996ABBE07D6B4DA00A80068 = 1996ABBE07D6B4DA00A80068;
+			1996ABC207D6B61100A80068 = 1996ABC207D6B61100A80068;
+			1996ABC307D6B61100A80068 = 1996ABC307D6B61100A80068;
+			1996ABC407D6B61100A80068 = 1996ABC407D6B61100A80068;
+			1996ABC607D6B61100A80068 = 1996ABC607D6B61100A80068;
+			1996ABC707D6B61100A80068 = 1996ABC707D6B61100A80068;
+			1996ABC807D6B61100A80068 = 1996ABC807D6B61100A80068;
+			1996ABCE07D6B7F900A80068 = 1996ABCE07D6B7F900A80068;
+			1996ABCF07D6B7F900A80068 = 1996ABCF07D6B7F900A80068;
+			1996ABD007D6B7F900A80068 = 1996ABD007D6B7F900A80068;
+			1996ABD107D6B7F900A80068 = 1996ABD107D6B7F900A80068;
+		};
+		projectwideBuildSettings = {
+		};
+		wantsIndex = 1;
+		wantsSCM = -1;
+	};
+	1996AB9207D6A54600A80068 = {
+		activeExec = 0;
+	};
+	1996AB9307D6A9F300A80068 = {
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		configStateDict = {
+			"PBXLSLaunchAction-1" = {
+				PBXLSLaunchAction = 1;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXGDB_LaunchConfig;
+				identifier = com.apple.ProjectBuilder.launch.GDBMI_Config;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		debuggerPlugin = GDBDebugging;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		isa = PBXExecutable;
+		launchableReference = 1996AB9407D6A9F300A80068;
+		name = CopasiSE;
+		shlibInfoDictList = (
+		);
+		sourceDirectories = (
+		);
+	};
+	1996AB9407D6A9F300A80068 = {
+		isa = PBXApplicationReference;
+		name = CopasiSE.app;
+		path = /Users/shoops/development/copasi_dev/copasi/CopasiSE/CopasiSE.app;
+		refType = 0;
+	};
+	1996AB9507D6AC6000A80068 = {
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		configStateDict = {
+		};
+		debuggerPlugin = GDBDebugging;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		isa = PBXExecutable;
+		launchableReference = 1996AB9607D6AC6000A80068;
+		name = CopasiUI;
+		shlibInfoDictList = (
+		);
+		sourceDirectories = (
+		);
+	};
+	1996AB9607D6AC6000A80068 = {
+		isa = PBXApplicationReference;
+		name = CopasiUI.app;
+		path = /Users/shoops/development/copasi_dev/copasi/CopasiUI/CopasiUI.app;
+		refType = 0;
+	};
+	1996AB9907D6B4DA00A80068 = {
+		fRef = 1996AA2F07D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "copasiversion.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 357;
+		vrLoc = 0;
+	};
+	1996AB9A07D6B4DA00A80068 = {
+		isa = PBXTargetBookmark;
+		trg = 1996AB9207D6A54600A80068;
+	};
+	1996AB9B07D6B4DA00A80068 = {
+		fRef = 1996AA8507D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CModel.cpp: operator";
+		rLen = 33;
+		rLoc = 15982;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 15789;
+	};
+	1996AB9C07D6B4DA00A80068 = {
+		fRef = 1996ABC007D6B4DA00A80068;
+		isa = PBXTextBookmark;
+		name = "stdexcept: 109";
+		rLen = 4;
+		rLoc = 3634;
+		rType = 0;
+		vrLen = 548;
+		vrLoc = 2809;
+	};
+	1996AB9D07D6B4DA00A80068 = {
+		fRef = 1996AB8807D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiXMLInterface.h: 66";
+		rLen = 44;
+		rLoc = 1482;
+		rType = 0;
+		vrLen = 333;
+		vrLoc = 1292;
+	};
+	1996AB9E07D6B4DA00A80068 = {
+		fRef = 1996AB0207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "UnitConversionFactory.hpp: 11";
+		rLen = 29;
+		rLoc = 198;
+		rType = 0;
+		vrLen = 630;
+		vrLoc = 2117;
+	};
+	1996AB9F07D6B4DA00A80068 = {
+		fRef = 1996AAF807D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "ConverterASTNode.h: 15";
+		rLen = 4;
+		rLoc = 329;
+		rType = 0;
+		vrLen = 351;
+		vrLoc = 0;
+	};
+	1996ABA007D6B4DA00A80068 = {
+		fRef = 1996AB5107D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiVector.h: 542";
+		rLen = 6;
+		rLoc = 15202;
+		rType = 0;
+		vrLen = 503;
+		vrLoc = 14965;
+	};
+	1996ABA107D6B4DA00A80068 = {
+		fRef = 1996A94E07D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiDataModel.h: 30";
+		rLen = 4;
+		rLoc = 668;
+		rType = 0;
+		vrLen = 446;
+		vrLoc = 480;
+	};
+	1996ABA207D6B4DA00A80068 = {
+		fRef = 1996A94D07D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiDataModel.cpp: exportSBML";
+		rLen = 2;
+		rLoc = 6570;
+		rType = 0;
+		vrLen = 330;
+		vrLoc = 6373;
+	};
+	1996ABA307D6B4DA00A80068 = {
+		exec = 1996AB9307D6A9F300A80068;
+		isa = PBXExecutableBookmark;
+	};
+	1996ABA407D6B4DA00A80068 = {
+		fRef = 1996AB5007D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiTree.h: 37";
+		rLen = 6;
+		rLoc = 1040;
+		rType = 0;
+		vrLen = 437;
+		vrLoc = 731;
+	};
+	1996ABA507D6B4DA00A80068 = {
+		fRef = 1996AA9407D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CState.h: 238";
+		rLen = 4;
+		rLoc = 5120;
+		rType = 0;
+		vrLen = 269;
+		vrLoc = 4936;
+	};
+	1996ABA607D6B4DA00A80068 = {
+		fRef = 1996AA9307D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CState.cpp: calculateElasticityMatrix";
+		rLen = 4;
+		rLoc = 14933;
+		rType = 0;
+		vrLen = 630;
+		vrLoc = 14634;
+	};
+	1996ABA707D6B4DA00A80068 = {
+		fRef = 1996AA9207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CSpecLine.h: 1";
+		rLen = 351;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 320;
+		vrLoc = 0;
+	};
+	1996ABA807D6B4DA00A80068 = {
+		exec = 1996AB9507D6AC6000A80068;
+		isa = PBXExecutableBookmark;
+	};
+	1996ABA907D6B4DA00A80068 = {
+		fRef = 1996A95207D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CopasiSE.cpp: __GNUC__";
+		rLen = 0;
+		rLoc = 13;
+		rType = 0;
+		vrLen = 370;
+		vrLoc = 0;
+	};
+	1996ABAA07D6B4DA00A80068 = {
+		fRef = 1996A95407D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CopasiSE.pro: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 472;
+		vrLoc = 0;
+	};
+	1996ABAC07D6B4DA00A80068 = {
+		bstl = 1996A67F07D6A31B00A80068;
+		isa = PBXBuildStyleBookmark;
+	};
+	1996ABAD07D6B4DA00A80068 = {
+		isa = PBXTargetBookmark;
+		trg = 1996AB9207D6A54600A80068;
+	};
+	1996ABAE07D6B4DA00A80068 = {
+		fRef = 1996AA8507D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CModel.cpp: operator";
+		rLen = 33;
+		rLoc = 15982;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 15789;
+	};
+	1996ABAF07D6B4DA00A80068 = {
+		fRef = 1996ABC107D6B4DA00A80068;
+		isa = PBXTextBookmark;
+		name = "stdexcept: 109";
+		rLen = 4;
+		rLoc = 3634;
+		rType = 0;
+		vrLen = 548;
+		vrLoc = 2809;
+	};
+	1996ABB007D6B4DA00A80068 = {
+		fRef = 1996AB8807D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiXMLInterface.h: 66";
+		rLen = 44;
+		rLoc = 1482;
+		rType = 0;
+		vrLen = 333;
+		vrLoc = 1292;
+	};
+	1996ABB107D6B4DA00A80068 = {
+		fRef = 1996AB0207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "UnitConversionFactory.hpp: 11";
+		rLen = 29;
+		rLoc = 198;
+		rType = 0;
+		vrLen = 630;
+		vrLoc = 2117;
+	};
+	1996ABB207D6B4DA00A80068 = {
+		fRef = 1996AAF807D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "ConverterASTNode.h: 15";
+		rLen = 4;
+		rLoc = 329;
+		rType = 0;
+		vrLen = 351;
+		vrLoc = 0;
+	};
+	1996ABB307D6B4DA00A80068 = {
+		fRef = 1996AA9207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CSpecLine.h: 117";
+		rLen = 4;
+		rLoc = 2719;
+		rType = 0;
+		vrLen = 477;
+		vrLoc = 2451;
+	};
+	1996ABB407D6B4DA00A80068 = {
+		fRef = 1996AB5107D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiVector.h: 542";
+		rLen = 6;
+		rLoc = 15202;
+		rType = 0;
+		vrLen = 503;
+		vrLoc = 14965;
+	};
+	1996ABB507D6B4DA00A80068 = {
+		fRef = 1996A94E07D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiDataModel.h: 30";
+		rLen = 4;
+		rLoc = 668;
+		rType = 0;
+		vrLen = 446;
+		vrLoc = 480;
+	};
+	1996ABB607D6B4DA00A80068 = {
+		fRef = 1996A94D07D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiDataModel.cpp: exportSBML";
+		rLen = 2;
+		rLoc = 6570;
+		rType = 0;
+		vrLen = 330;
+		vrLoc = 6373;
+	};
+	1996ABB707D6B4DA00A80068 = {
+		exec = 1996AB9307D6A9F300A80068;
+		isa = PBXExecutableBookmark;
+	};
+	1996ABB807D6B4DA00A80068 = {
+		fRef = 1996AB5007D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiTree.h: 37";
+		rLen = 6;
+		rLoc = 1040;
+		rType = 0;
+		vrLen = 437;
+		vrLoc = 731;
+	};
+	1996ABB907D6B4DA00A80068 = {
+		fRef = 1996AA9407D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CState.h: 238";
+		rLen = 4;
+		rLoc = 5120;
+		rType = 0;
+		vrLen = 269;
+		vrLoc = 4936;
+	};
+	1996ABBA07D6B4DA00A80068 = {
+		fRef = 1996AA9307D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CState.cpp: calculateElasticityMatrix";
+		rLen = 4;
+		rLoc = 14933;
+		rType = 0;
+		vrLen = 630;
+		vrLoc = 14634;
+	};
+	1996ABBB07D6B4DA00A80068 = {
+		fRef = 1996AA9207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CSpecLine.h: 1";
+		rLen = 351;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 320;
+		vrLoc = 0;
+	};
+	1996ABBC07D6B4DA00A80068 = {
+		exec = 1996AB9507D6AC6000A80068;
+		isa = PBXExecutableBookmark;
+	};
+	1996ABBD07D6B4DA00A80068 = {
+		fRef = 1996A95207D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CopasiSE.cpp: __GNUC__";
+		rLen = 0;
+		rLoc = 13;
+		rType = 0;
+		vrLen = 370;
+		vrLoc = 0;
+	};
+	1996ABBE07D6B4DA00A80068 = {
+		fRef = 1996A95407D6A3C900A80068;
+		isa = PBXTextBookmark;
+		name = "CopasiSE.pro: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 472;
+		vrLoc = 0;
+	};
+	1996ABC007D6B4DA00A80068 = {
+		isa = PBXFileReference;
+		name = stdexcept;
+		path = "/usr/include/gcc/darwin/3.3/c++/stdexcept";
+		refType = 0;
+	};
+	1996ABC107D6B4DA00A80068 = {
+		isa = PBXFileReference;
+		name = stdexcept;
+		path = "/usr/include/gcc/darwin/3.3/c++/stdexcept";
+		refType = 0;
+	};
+	1996ABC207D6B61100A80068 = {
+		bstl = 1996A67F07D6A31B00A80068;
+		isa = PBXBuildStyleBookmark;
+	};
+	1996ABC307D6B61100A80068 = {
+		fRef = 1996ABCB07D6B61100A80068;
+		glyphRangeLength = 0;
+		glyphRangeLocation = 0;
+		isa = PBXDocBookmark;
+	};
+	1996ABC407D6B61100A80068 = {
+		fRef = 1996ABCC07D6B61100A80068;
+		glyphRangeLength = 0;
+		glyphRangeLocation = 0;
+		isa = PBXDocBookmark;
+	};
+	1996ABC607D6B61100A80068 = {
+		bstl = 1996A67F07D6A31B00A80068;
+		isa = PBXBuildStyleBookmark;
+	};
+	1996ABC707D6B61100A80068 = {
+		fRef = 1996ABCD07D6B61100A80068;
+		glyphRangeLength = 0;
+		glyphRangeLocation = 0;
+		isa = PBXDocBookmark;
+	};
+	1996ABC807D6B61100A80068 = {
+		fRef = 1996ABCA07D6B61100A80068;
+		glyphRangeLength = 0;
+		glyphRangeLocation = 0;
+		isa = PBXDocBookmark;
+	};
+	1996ABCA07D6B61100A80068 = {
+		isa = PBXFileReference;
+		name = i_Finding_Do_JBEACHC.html;
+		path = /Developer/Documentation/DeveloperTools/ProjectBuilder/ProjectBuilder.help/Contents/Resources/English.lproj/Finding/i_Finding_Do_JBEACHC.html;
+		refType = 0;
+	};
+	1996ABCB07D6B61100A80068 = {
+		isa = PBXFileReference;
+		name = index.html;
+		path = /Developer/Documentation/DeveloperTools/ProjectBuilder/ProjectBuilder.help/Contents/Resources/English.lproj/UsingHelp/index.html;
+		refType = 0;
+	};
+	1996ABCC07D6B61100A80068 = {
+		isa = PBXFileReference;
+		name = i_Finding_Do_JBEACHC.html;
+		path = /Developer/Documentation/DeveloperTools/ProjectBuilder/ProjectBuilder.help/Contents/Resources/English.lproj/Finding/i_Finding_Do_JBEACHC.html;
+		refType = 0;
+	};
+	1996ABCD07D6B61100A80068 = {
+		isa = PBXFileReference;
+		name = index.html;
+		path = /Developer/Documentation/DeveloperTools/ProjectBuilder/ProjectBuilder.help/Contents/Resources/English.lproj/UsingHelp/index.html;
+		refType = 0;
+	};
+	1996ABCE07D6B7F900A80068 = {
+		fRef = 1996AAE207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiContainer.h: 29";
+		rLen = 4;
+		rLoc = 691;
+		rType = 0;
+		vrLen = 781;
+		vrLoc = 408;
+	};
+	1996ABCF07D6B7F900A80068 = {
+		fRef = 1996AA1107D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "StateSubwidget.cpp: __GNUC__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 830;
+		vrLoc = 0;
+	};
+	1996ABD007D6B7F900A80068 = {
+		fRef = 1996AAE207D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "CCopasiContainer.h: 29";
+		rLen = 4;
+		rLoc = 691;
+		rType = 0;
+		vrLen = 781;
+		vrLoc = 408;
+	};
+	1996ABD107D6B7F900A80068 = {
+		fRef = 1996AA1107D6A3CA00A80068;
+		isa = PBXTextBookmark;
+		name = "StateSubwidget.cpp: __GNUC__";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 830;
+		vrLoc = 0;
+	};
+}
