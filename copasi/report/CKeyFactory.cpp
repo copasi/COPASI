@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 21:21:31 $
+   $Author: ssahle $ 
+   $Date: 2004/10/08 17:41:05 $
    End CVS Header */
 
 /**
@@ -198,7 +198,9 @@ bool CKeyFactory::remove(const std::string & key)
 
 CCopasiObject * CKeyFactory::get(const std::string & key)
 {
-  unsigned C_INT32 pos = key.length() - 1;
+  if (key.length == 0) return NULL;
+
+  unsigned C_INT32 pos = key.length() - 1; //TODO !!!pos can be invalid (-1); not anymore, but look for other errors like this
   while (isDigit(key[pos]) && pos) --pos;
 
   std::string Prefix = key.substr(0, pos);
