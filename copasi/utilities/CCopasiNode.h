@@ -14,16 +14,10 @@
  * implementation of nodes must be dereived from CCopasiNode for the tree 
  * to operate properly.
  */
-template < class Data >
-      class CCopasiNode
+template < class Data > class CCopasiNode
     {
       // Attributes
     private:
-      /**
-       * The data of the node.
-       */
-      Data mData;
-
       /**
        * A pointer to the parent of the node.
        */
@@ -46,7 +40,6 @@ template < class Data >
        * @param CCopasiNode< Data > * pParent (default: NULL)
        */
       CCopasiNode(CCopasiNode< Data > * pParent = NULL):
-          mData(),
           mpParent(pParent),
           mpChild(NULL),
           mpSibbling(NULL)
@@ -54,55 +47,49 @@ template < class Data >
 
       /**
        * Copy constructor.
-       * @param const CCopasiNode & src
+       * @param const CCopasiNode< Data > & src
        */
       CCopasiNode(const CCopasiNode< Data > & src):
-          mData(src.mData),
           mpParent(src.mpParent),
           mpChild(src.mpChild),
           mpSibbling(src.mpSibbling)
       {}
 
       /**
+       * Specific constructor.
+       * @param const Data & data
+       * @param CCopasiNode< Data > * pParent (default: NULL)
+       */
+      CCopasiNode(const Data & data, CCopasiNode< Data > * pParent = NULL):
+          mpParent(pParent),
+          mpChild(NULL),
+          mpSibbling(NULL)
+      {}
+
+      /**
        * Destructor.
        * Note: Within a tree the parent of this node has to be corrected.
        */
-      ~CCopasiNode()
-      {
-        CCopasiNode< Data > * pTmp = mpChild;
-        while (NULL)
-          {
-            pTmp = mpChild->getSibbling();
-            mpChild->setParent(NULL);
-            delete mpChild;
-          }
-
-        if (mpParent)
-          mpParent->removeChild(this);
-      }
+      ~CCopasiNode() {deleteChildren();}
 
       /**
        * Retreive the data of the Node.
        * @return Data & data
        */
-    Data & getData() {return mData;}
+      virtual Data & getData() = NULL;
 
       /**
        * Retreive the data of the Node.
-       * @return const Data & data
+       * @return Data data
        */
-      const Data & getData() const {return mData;}
+      virtual Data getData() const = NULL;
 
       /**
        * Set the data of the Node.
        * @param const Data & data
        * @return bool success
        */
-      bool setData(const Data & data)
-      {
-        mData = data;
-        return true;
-      }
+      virtual bool setData(const Data & data) = NULL;
 
       /**
        * Retreive the parent of a Node.
@@ -111,8 +98,18 @@ template < class Data >
       CCopasiNode< Data > * getParent() {return mpParent;}
 
       /**
+       * Retreive the parent of a Node.
+       * @return const CCopasiNode< Data > * pParent
+       */
+      const CCopasiNode< Data > * getParent() const {return mpParent;}
+
+      /**
        * Add a child to a node.
+       * If pAfter == this the child will be inserted at the fornt of the list
+       * of children.
        * @param CCopasiNode< Data > * pChild
+       * @param CCopasiNode< Data > * pAfter 
+       *        (default: NULL appended to the list of children)
        * @return bool Success
        */
       bool addChild(CCopasiNode< Data > * pChild,
@@ -158,6 +155,12 @@ template < class Data >
     CCopasiNode< Data > * getChild() {return mpChild;}
 
       /**
+       * Retreive the child of a node.
+       * @return const CCopasiNode< Data > * pChild
+       */
+      const CCopasiNode< Data > * getChild() const {return mpChild;}
+
+      /**
        * Add a sibbling to a node.
        * If pAfter == this the sibbling will be inserted at the fornt of the list
        * of sibblings.
@@ -179,7 +182,7 @@ template < class Data >
             return true;
           }
 
-        CCopasiNode * pTmp = this;
+        CCopasiNode< Data > * pTmp = this;
         while (pTmp != pAfter && pTmp->getSibbling())
           pTmp = pTmp->getSibbling();
 
@@ -206,8 +209,8 @@ template < class Data >
               return false;                  // Root can not be removed
           }
 
-        CCopasiNode * pTmp = this;
-        CCopasiNode * pTmpSibbling = this->mpSibbling;
+        CCopasiNode< Data > * pTmp = this;
+        CCopasiNode< Data > * pTmpSibbling = this->mpSibbling;
 
         while (pTmpSibbling != pSibbling && pTmpSibbling != NULL)
           {
@@ -226,6 +229,12 @@ template < class Data >
        * @return CCopasiNode< Data > * pSibbling
        */
     CCopasiNode< Data > * getSibbling() {return mpSibbling;}
+
+      /**
+       * Retreive the sibbling of a node.
+       * @return const CCopasiNode< Data > * pSibbling
+       */
+      const CCopasiNode< Data > * getSibbling() const {return mpSibbling;}
 
     protected:
       /**
@@ -257,6 +266,14 @@ template < class Data >
       bool setSibbling(CCopasiNode< Data > * pSibbling)
       {
         mpSibbling = pSibbling;
+        return true;
+      }
+
+      bool deleteChildren()
+      {
+        while (mpChild) delete mpChild;
+        if (mpParent) mpParent->removeChild(this);
+
         return true;
       }
     };
