@@ -470,11 +470,17 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
   initFolders();
   setupFolders();
 
+  dataModel->setModelUpdate(true);
+
   // get the model information and than construct the nodes and load them
   mModel = dataModel->getModel();
-  //  mTask = dataModel->_observers
+
   this->ConstructNodeWidgets();
+
+  loadFunction();
   this->loadNodes(mModel);
+
+  dataModel->setModelUpdate(false);
 }
 
 /***********ListViews::update(Subject* theChangedSubject,int status)----------->
@@ -500,10 +506,9 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                            // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
-
+          // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
-
+        case ADD:
           if ((node = dataModel->getData()) != NULL)
             {
               /* This routines were used to draw from the node again...which was not
@@ -523,8 +528,8 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:                        // WHEN ANY DATA IS DELETED FROM THE TREE
-
+          // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:
           if ((node = dataModel->getData()) != NULL)
             // check if the node that is requested to be deleted is present or not
             // if present than check whether it is the top level node or child of one of
@@ -535,8 +540,8 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                          // new model is loaded.
-
+          // new model is loaded.
+        case MODEL:
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -730,22 +735,7 @@ void ListViews::loadNodes(CModel *model)
         }
 
       // UPDATE THE FUNCTIONS STUFF..
-      functionWidget->loadFunction(model);
-
-      functionWidget1->loadFunction(model);
-
-      loadNode = searchNode("Functions");
-
-      if (loadNode)
-        {
-          this->loadFunction(loadNode);
-
-          if (loadNode->isSelected())
-            if (loadNode->childCount() != 0)
-              loadNode->setPixmap(0, *folderOpen);
-
-          loadNode = NULL;
-        }
+      this->loadFunction();
 
       // Load the Elementary Modes
       modesWidget->loadModes(model);
@@ -994,15 +984,16 @@ void ListViews::loadCompartments(QListViewItem* i)
  ** Description:-This method is used to load the function nodes to the 
  **              i node as obtained by the parameter
  *************************************************************************/
-void ListViews::loadFunction(QListViewItem* i)
+void ListViews::loadFunction()
 {
-  if (mModel == NULL)
+  QListViewItem * i = searchNode("Functions");
+
+  functionWidget->loadFunction();
+
+  // If the model is not updated or "Functions" node does not exist than return.
+  if (!dataModel->getModelUpdate() || !i)
     return;
 
-  if (!dataModel->getModelUpdate())
-    return; // if the model is not updated than return
-
-  //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
 
   if (i->childCount() != 0)
@@ -1031,6 +1022,10 @@ void ListViews::loadFunction(QListViewItem* i)
       f->setID(myId);
       dataModel->addData(p, f);
     }
+
+  if (i->isSelected())
+    if (i->childCount() != 0)
+      i->setPixmap(0, *folderOpen);
 }
 
 /***********ListViews::showMessage(QString caption,QString text)------------------------>

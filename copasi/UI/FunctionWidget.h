@@ -27,11 +27,10 @@ class FunctionWidget : public QWidget
     Q_OBJECT
   protected:
     MyTable *table;
-    CModel *mModel;
 
   public:
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
-    void loadFunction(CModel *model);
+    void loadFunction();
     void setFocus();
     void resizeEvent(QResizeEvent * re);
 

@@ -182,7 +182,7 @@ class ListViews : public QSplitter, public Observer
     void loadReactions(QListViewItem*);
     void loadMoieties(QListViewItem*);
     void loadCompartments(QListViewItem*);
-    void loadFunction(QListViewItem*);
+    void loadFunction();
     void loadModes(QListViewItem*);
     void showMessage(QString caption, QString text);
   };

@@ -27,7 +27,6 @@
  *  displaying the functions.
  *  This widget is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'. 
- *  @param model 
  *  @param parent The widget which this widget is a child of.
  *  @param name The object name is a text that can be used to identify 
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
@@ -40,7 +39,6 @@
 FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
 {
-  mModel = NULL;
   table = new MyTable(0, 2, this, "tblFunctions");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
@@ -59,45 +57,40 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
 }
 
-void FunctionWidget::loadFunction(CModel *model)
+void FunctionWidget::loadFunction()
 {
-  if (model != NULL)
+  //Emptying the table
+  int numberOfRows = table->numRows();
+  for (int i = 0; i < numberOfRows; i++)
     {
-      mModel = model;
+      table->removeRow(0);
+    }
 
-      //Emptying the table
-      int numberOfRows = table->numRows();
-      for (int i = 0; i < numberOfRows; i++)
+  CCopasiVectorNS< CFunction > & Functions =
+    Copasi->FunctionDB.loadedFunctions();
+
+  C_INT32 noOfFunctionsRows = Functions.size();
+  table->setNumRows(noOfFunctionsRows);
+
+  //Now filling the table.
+
+  CFunction *funct;
+  for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
+    {
+      funct = Functions[j];
+      table->setText(j, 0, funct->getName().c_str());
+      QString ftype;
+      switch (funct->getType())
         {
-          table->removeRow(0);
+        case 1:
+        case 2:
+          ftype = QString("pre-defined");
+          break;
+        case 3:
+          ftype = QString("user-defined");
+          break;
         }
-
-      CCopasiVectorNS< CFunction > & Functions =
-        Copasi->FunctionDB.loadedFunctions();
-
-      C_INT32 noOfFunctionsRows = Functions.size();
-      table->setNumRows(noOfFunctionsRows);
-
-      //Now filling the table.
-
-      CFunction *funct;
-      for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
-        {
-          funct = Functions[j];
-          table->setText(j, 0, funct->getName().c_str());
-          QString ftype;
-          switch (funct->getType())
-            {
-            case 1:
-            case 2:
-              ftype = QString("pre-defined");
-              break;
-            case 3:
-              ftype = QString("user-defined");
-              break;
-            }
-          table->setText(j, 1, ftype);
-        }
+      table->setText(j, 1, ftype);
     }
 }
 
