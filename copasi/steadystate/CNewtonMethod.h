@@ -12,7 +12,7 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
 
-class CStateX;
+#include "model/CState.h"
 
 class CNewtonMethod : private CSteadyStateMethod
   {
@@ -46,6 +46,8 @@ class CNewtonMethod : private CSteadyStateMethod
     CVector< C_FLOAT64 > mdxdt;
     CMatrix< C_FLOAT64 > mJacobian;
     C_INT * mIpiv;
+
+    CStateX mSteadyState;
 
     // Operations
   private:
