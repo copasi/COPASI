@@ -46,6 +46,6 @@ COS   return N_COS;
      
 [ \t\r\n]+ /* eat up whitespace */
      
-..     return N_NOP;
+.     return N_NOP;
      
 %%
