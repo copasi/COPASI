@@ -512,8 +512,8 @@ void ListViews::setDataModel(DataModel<Folder>* dm)
 
   // get the model information and than construct the nodes and load them
   mModel = dataModel->getModel();
-  this->loadModelNodes(mModel);
   this->ConstructNodeWidgets();
+  this->loadModelNodes(mModel);
   loadFunction();
   dataModel->setModelUpdate(false);
 
@@ -708,9 +708,6 @@ void ListViews::loadCompartmentsNodes(CModel *model)
   compartmentsWidget1->loadCompartments(model);
   QListViewItem* loadNode; // to load the tree with that stuff
   // UPDATE THE METABOLITES STUFF..
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel;
-  mpMathModel->setModel(model);
   loadNode = searchNode("Compartments");
   if (loadNode)
     {
@@ -722,7 +719,6 @@ void ListViews::loadCompartmentsNodes(CModel *model)
 
       loadNode = NULL;
     }
-  dataModel->setModelUpdate(false);
 }
 void ListViews::loadReactionsNodes(CModel* model)
 {
@@ -730,9 +726,6 @@ void ListViews::loadReactionsNodes(CModel* model)
   reactionsWidget1->loadReactions(model);
   QListViewItem* loadNode; // to load the tree with that stuff
   // UPDATE THE METABOLITES STUFF..
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel;
-  mpMathModel->setModel(model);
   loadNode = searchNode("Reactions");
   if (loadNode)
     {
@@ -744,7 +737,6 @@ void ListViews::loadReactionsNodes(CModel* model)
 
       loadNode = NULL;
     }
-  dataModel->setModelUpdate(false);
 }
 void ListViews::loadMetabolitesNodes(CModel* model)
 {
@@ -752,9 +744,6 @@ void ListViews::loadMetabolitesNodes(CModel* model)
   metabolitesWidget1->loadMetabolites(model);
   QListViewItem* loadNode; // to load the tree with that stuff
   // UPDATE THE METABOLITES STUFF..
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel;
-  mpMathModel->setModel(model);
   loadNode = searchNode("Metabolites");
   if (loadNode)
     {
@@ -765,17 +754,14 @@ void ListViews::loadMetabolitesNodes(CModel* model)
           loadNode->setPixmap(0, *folderOpen);
       loadNode = NULL;
     }
-  dataModel->setModelUpdate(false);
 }
+
 void ListViews::loadMoietiesNodes(CModel* model)
 {
   moietyWidget->loadMoieties(model);
   moietyWidget1->loadMoieties(model);
   QListViewItem* loadNode; // to load the tree with that stuff
   // UPDATE THE METABOLITES STUFF..
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel;
-  mpMathModel->setModel(model);
 
   loadNode = searchNode("Moiety");
   if (loadNode)
@@ -788,7 +774,6 @@ void ListViews::loadMoietiesNodes(CModel* model)
 
       loadNode = NULL;
     }
-  dataModel->setModelUpdate(false);
 }
 
 /***********ListViews::loadNodes(CModel *model)-------->
@@ -803,6 +788,7 @@ void ListViews::loadModelNodes(CModel *model)
     {
       QListViewItem* loadNode; // to load the tree with that stuff
       // UPDATE THE METABOLITES STUFF..
+
       pdelete(mpMathModel);
       mpMathModel = new CMathModel;
       mpMathModel->setModel(model);
@@ -840,8 +826,6 @@ void ListViews::loadModelNodes(CModel *model)
 
           loadNode = NULL;
         }
-
-      dataModel->setModelUpdate(false);
     }
 }
 
