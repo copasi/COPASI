@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/19 15:09:32 $
+   $Author: gauges $ 
+   $Date: 2004/10/25 13:27:40 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -16,6 +16,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "scan/CScanTask.h"
+#include "steadystate/CMCATask.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/CPlotSpec2Vector.h"
 #include "optimization/COptFunction.h"
@@ -32,6 +33,7 @@ DataModel::DataModel()
   reportdefinitions = NULL;
   plotspecs = NULL;
   pOptFunction = NULL;
+  mpCMCATask = NULL;
 }
 
 void DataModel::createModel()
@@ -53,6 +55,10 @@ void DataModel::createModel()
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
+
+  pdelete(mpCMCATask);
+  mpCMCATask = new CMCATask();
+  mpCMCATask->getProblem()->setModel(model);
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
@@ -92,6 +98,10 @@ void DataModel::loadModel(const char* fileName)
       scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
 
+      pdelete(mpCMCATask);
+      mpCMCATask = new CMCATask();
+      mpCMCATask->getProblem()->setModel(model);
+
       pdelete(reportdefinitions);
       reportdefinitions = new CReportDefinitionVector();
 
@@ -127,6 +137,7 @@ void DataModel::loadModel(const char* fileName)
       pdelete(steadystatetask);
       pdelete(trajectorytask);
       pdelete(scantask);
+      pdelete(mpCMCATask);
 
       unsigned C_INT32 i, imax = TaskList.size();
       for (i = 0; i < imax; i++)
@@ -144,6 +155,10 @@ void DataModel::loadModel(const char* fileName)
             case CCopasiTask::scan:
               scantask = dynamic_cast< CScanTask * >(TaskList[i]);
               break;
+
+            case CCopasiTask::mca:
+              mpCMCATask = dynamic_cast< CMCATask * >(TaskList[i]);
+              break;
             }
         }
 
@@ -155,6 +170,9 @@ void DataModel::loadModel(const char* fileName)
 
       if (!scantask) scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
+
+      if (!mpCMCATask) mpCMCATask = new CMCATask();
+      mpCMCATask->getProblem()->setModel(model);
 
       pdelete(reportdefinitions);
       reportdefinitions = pNewReports;
@@ -185,6 +203,7 @@ void DataModel::saveModel(const char* fileName)
   if (steadystatetask) TaskList.add(steadystatetask);
   if (trajectorytask) TaskList.add(trajectorytask);
   //  if (scantask) TaskList.add(scantask);
+  //  if(mpCMCATask) TaskList.add(mpCMCATask);
   XML.setTaskList(TaskList);
 
   XML.setPlotList(*plotspecs);
@@ -228,6 +247,10 @@ void DataModel::importSBML(const char* fileName)
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
+
+  pdelete(mpCMCATask);
+  mpCMCATask = new CMCATask();
+  mpCMCATask->getProblem()->setModel(model);
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
