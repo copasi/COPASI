@@ -52,7 +52,21 @@ void CEigen::setMatrix(int rows, int cols)
   mMatrix.newsize(rows, cols);
 }
 	
+/**
+ * Set the Work
+ */
+void CEigen::setWork(C_FLOAT64 * aWork)
+{
+  mWork = aWork;
+}
 
+/**
+ * Get the Work
+ */
+C_FLOAT64 * CEigen::getWork() const
+{
+  return mWork;
+}
 
 // eigenvalue calculations
 void CEigen::CalcEigenvalues( void )

@@ -20,6 +20,15 @@ extern "C" {
 #include "CLAPACK/clapack.h"
 }
 
+
+/*
+extern "C" int dgees_(char *jobvs, char *sort, L_fp select, long int *n,
+        double *a, long int *lda, long int *sdim, double *wr,
+        double *wi, double *vs, long int *ldvs, double *work,
+        long int *lwork, long int *bwork, long int *info);
+*/
+
+
 class CEigen {
 
  private:
@@ -28,6 +37,31 @@ class CEigen {
    */
 
   TNT::Matrix <C_FLOAT64> mMatrix;
+
+  /**
+   * Workspace/output
+   */
+  C_FLOAT64 * mWork;
+
+  /**
+   * Dimension of array Work
+   */
+  C_INT32 mLWork;
+
+  /**
+   * 
+   */
+
+
+  /**
+   * 
+   */
+
+
+  /**
+   * 
+   */
+
 
 
  public:
@@ -60,6 +94,19 @@ class CEigen {
    * Set the Matrix
    */
   void setMatrix(int rows, int cols);
+
+
+  /**
+   * Set the Work
+   */
+  void CEigen::setWork(C_FLOAT64 * aWork);
+
+  /**
+   * Get the Work
+   */
+  C_FLOAT64 * CEigen::getWork() const;
+
+
 
 
   /**
