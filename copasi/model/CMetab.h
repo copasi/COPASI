@@ -149,7 +149,7 @@ class CMetab
     C_INT32 save(CWriteConfig & configbuffer);
 
     /**
-     *
+     *  Sets the name of the metabolite.
      */
     void setName(const string & name);
 
