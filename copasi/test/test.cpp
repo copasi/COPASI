@@ -46,6 +46,7 @@ C_INT32  TestTrajectory(void);
 C_INT32  TestNewton(void);
 C_INT32  TestSSSolution(void);
 C_INT32  TestEigen(void);
+C_INT32  TestOptimization(void);     //yohe: new
 
 C_INT32  CovertFunctionDB(void);
 C_INT32  MakeFunctionDB(void);
@@ -578,6 +579,41 @@ C_INT32  TestEigen(void)
   
   return 0;
 }
+
+
+//yohe: test optimization -- 03/27/02
+//
+C_INT32  TestOptimization(void)
+{
+    C_INT32 size = 0;
+    C_INT32 i;
+ 
+    //CReadConfig inbuf("gps/BakkerComp.gps");
+    CReadConfig inbuf("gps/NewtonTest.gps");
+    CModel model;
+    model.load(inbuf);
+    model.compile();
+ 
+    model.getReactions().size();
+
+    /*   
+    CSS_Solution ss_soln;
+    ss_soln.setModel(&model);
+    //yohe: new added on 03/15/02
+    ss_soln.initialize();
+    ss_soln.process();
+    */
+
+    COptimizer opt;
+
+
+    opt.process();
+ 
+    return 0;
+
+}
+
+
 
 C_INT32 TestMoiety()
 {
