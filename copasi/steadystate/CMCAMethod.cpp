@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:02:53 $
+   $Author: ssahle $ 
+   $Date: 2004/11/26 15:47:46 $
    End CVS Header */
 
 #include <cmath>
@@ -68,6 +68,244 @@ CMCAMethod::~CMCAMethod()
 {
   DESTRUCTOR_TRACE;
   delSsipvt();
+}
+
+void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
+{
+  if (!mpModel) return;
+
+  CCopasiVector<CMetab> & metabs = mpModel->getMetabolites();
+  CCopasiVector<CReaction> & reacs = mpModel->getReactions();
+
+  mUnscaledElasticities.setup(reacs, metabs);
+  unsigned C_INT32 numReacs = reacs.size();
+  unsigned C_INT32 numMetabs = metabs.size();
+
+  unsigned C_INT32 i, j;
+  C_FLOAT64 store, temp;
+  C_FLOAT64 K1, K2, K3;
+
+  // constants for differentiation by finite differences
+  K1 = 1 + mFactor;
+  K2 = 1 - mFactor;
+  K3 = 2 * mFactor;
+
+  // Arrays to store function value
+  std::vector<C_FLOAT64> f1; f1.resize(numReacs);
+  std::vector<C_FLOAT64> f2; f2.resize(numReacs);
+
+  // calculate elasticities
+  for (j = 0; j < numMetabs; j++)
+    {
+      /**
+       * if src[i+1] (x_ss[i+1]) is zero, the derivative will be calculated at a small
+       * positive value (no point in considering negative values!).
+       * let's stick with res*K1 (SSRes)
+       */
+      store = metabs[j]->getNumber();
+
+      if (store < res)
+        temp = res * K1;
+      else
+        temp = store;
+
+      // let's take X_dx
+      metabs[j]->setNumber(temp * K1);
+
+      // Calculate the fluxes
+      for (i = 0; i < numReacs; i++)
+        {
+          reacs[i]->calculate();
+          f1[i] = reacs[i]->getParticleFlux();
+        }
+
+      // now X-dx
+      metabs[j]->setNumber(temp * K2);
+
+      // calculate the fluxes
+      for (i = 0; i < numReacs; i++)
+        {
+          reacs[i]->calculate();
+          f2[i] = reacs[i]->getParticleFlux();
+        }
+
+      // set column j of Dxv
+      for (i = 0; i < numReacs; i++)
+        mUnscaledElasticities[i][j] = (f1[i] - f2[i]) / (temp * K3); //TODO optimize
+
+      // restore the value of (src[i])ss_x[i]
+      metabs[j]->setNumber(store);
+    }
+
+  std::cout << "elasticities" << std::endl;
+  std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;
+}
+
+void CMCAMethod::calculateUnscaledConcentrationCC()
+{
+  unsigned C_INT32 i, j, k;
+  unsigned C_INT32 dim;
+  C_INT32 info;
+  C_FLOAT64 **aux1, **aux2;
+
+  // Create auxiliary matrices as big as needed
+
+  if (mpModel->getIndMetab() > mpModel->getTotSteps())
+    dim = mpModel->getIndMetab() + 1;
+  else
+    dim = mpModel->getTotSteps() + 1;
+
+  // Create aux1 and aux2
+  aux1 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux1));
+  aux2 = (C_FLOAT64 **) malloc((dim) * sizeof(*aux2));
+
+  for (i = 0; i < dim; i++)
+    {
+      aux1[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
+      aux2[i] = (C_FLOAT64 *) malloc((dim) * sizeof(C_FLOAT64));
+    }
+
+  // set mGamma to zeros
+
+  /*for (i = 0; i < (unsigned C_INT32) mGamma.numRows(); i++)
+    for (j = 0; j < (unsigned C_INT32) mGamma.numCols(); j++)
+      mGamma[i][j] = 0.0;*/
+
+  // aux1 = rstoi * mDxv
+  //CMatrix<C_FLOAT64> aux1; aux1.resize(mpModel->getIndMetab(), mpModel->getIntMetab());
+
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIntMetab(); j++)
+      {
+        aux1[i][j] = 0.0;
+
+        for (k = 0; k < mpModel->getTotSteps(); k++)
+          aux1[i][j] += (C_FLOAT64) mpModel->getRedStoi()[i][k] * mUnscaledElasticities[k][j];
+      }
+
+  //debug
+  std::cout << "aux1 = redStoi * unscaledElasticities" << std::endl;
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    {
+      for (j = 0; j < mpModel->getIntMetab(); j++)
+        std::cout << "  " << aux1[i][j];
+      std::cout << std::endl;
+    }
+  std::cout << std::endl;
+
+  // aux2 = aux1 * m1 (shifting indices for dgefa)
+  //CMatrix<C_FLOAT64> aux2; aux2.resize(mpModel->getIndMetab()+1, mpModel->getIndMetab()+1);
+
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
+      {
+        aux2[i + 1][j + 1] = 0.0;
+
+        for (k = 0; k < mpModel->getIntMetab(); k++)
+          if (k < mpModel->getIndMetab()) //correct different signs in L in copasi
+            aux2[i + 1][j + 1] += aux1[i][k] * mpModel->getL()(k, j); //???
+          else
+            aux2[i + 1][j + 1] -= aux1[i][k] * mpModel->getL()(k, j); //???
+      } //should be the jacobian of the reduced system?
+
+  //debug
+  std::cout << "aux2 = aux1 * L,  equals reduced Jacobian?" << std::endl;
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    {
+      for (j = 0; j < mpModel->getIndMetab(); j++)
+        std::cout << "  " << aux2[i + 1][j + 1];
+      std::cout << std::endl;
+    }
+  std::cout << std::endl;
+
+  // LU decomposition if aux2 (for inversion)
+  // dgefa -> luX??
+  dgefa(aux2, mpModel->getIndMetab(), mSsipvt, &info);
+
+  if (info != 0)
+    {
+      // matrix is singular
+      // return now (mGamma[i][j] = 0)
+      // delete matrices
+
+      for (i = 0; i < dim; i++)
+        {
+          free((void *) aux1[i]);
+          free((void *) aux2[i]);
+        }
+
+      free((void *) aux1);
+      free((void *) aux2);
+
+      return; // MCA_SINGULAR;
+    }
+
+  // set aux1 to the identity matrix (for inversion with dgesl)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
+      aux1[i + 1][j + 1] = (i == j) ? 1.0 : 0.0;
+
+  // now invert aux2 (result in aux1)
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    dgesl(aux2, mpModel->getIndMetab(), mSsipvt, aux1[i + 1], 1);
+
+  //debug
+  std::cout << "aux1 = inv(aux2)" << std::endl;
+  for (i = 0; i < mpModel->getIndMetab(); i++)
+    {
+      for (j = 0; j < mpModel->getIndMetab(); j++)
+        std::cout << "  " << aux1[i + 1][j + 1];
+      std::cout << std::endl;
+    }
+  std::cout << std::endl;
+
+  // aux2 = - ml * aux1 (shifting indeces back to 0 again)
+  for (i = 0; i < mpModel->getIntMetab(); i++)
+    for (j = 0; j < mpModel->getIndMetab(); j++)
+      {
+        aux2[i][j] = 0.0;
+
+        for (k = 0; k < mpModel->getIndMetab(); k++)
+          if (i < mpModel->getIndMetab()) //because the signs are different in copasi
+            aux2[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
+          else
+            aux2[i][j] += (C_FLOAT64)mpModel->getL()(i, k) * aux1[k + 1][j + 1];
+      }
+
+  //debug
+  std::cout << "aux2 = -L*aux1" << std::endl;
+  for (i = 0; i < mpModel->getIntMetab(); i++)
+    {
+      for (j = 0; j < mpModel->getIndMetab(); j++)
+        std::cout << "  " << aux2[i][j];
+      std::cout << std::endl;
+    }
+  std::cout << std::endl;
+
+  // mGamma = aux2 *RedStoi
+  mUnscaledConcCC.resize(mpModel->getIntMetab(), mpModel->getTotSteps());
+  for (i = 0; i < mpModel->getIntMetab(); i++)
+    for (j = 0; j < mpModel->getTotSteps(); j++)
+      {
+        mUnscaledConcCC[i][j] = 0;
+        for (k = 0; k < mpModel->getIndMetab(); k++)
+          mUnscaledConcCC[i][j] += aux2[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
+      }
+
+  // delete matrices
+  for (i = 0; i < dim; i++)
+    {
+      free((void *) aux1[i]);
+      free((void *) aux2[i]);
+    }
+
+  free((void *) aux1);
+  free((void *) aux2);
+
+  std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi ?)" << std::endl;
+  std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
+
+  return; // MCA_OK;
 }
 
 /**
@@ -369,10 +607,12 @@ int CMCAMethod::CalculateMCA(int ss_solution, C_FLOAT64 res)
 
   //if (!ss_solution)
   calculateDxv(res);
+  calculateUnscaledElasticities(res);
   //else
   //  clearDxv();
 
   ret = CalcGamma();
+  calculateUnscaledConcentrationCC();
 
   CalcFCC(ret);
 

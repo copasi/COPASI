@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/11/18 15:38:36 $
+   $Date: 2004/11/26 15:47:46 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -12,6 +12,7 @@
 #include <vector>
 #include "utilities/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 #define MCA_OK 0
 #define MCA_SINGULAR 1
@@ -22,6 +23,14 @@ class CMCAMethod: public CCopasiMethod
   {
   private:
 
+    CModel * mpModel;
+
+    CAnnotatedMatrix mUnscaledElasticities;
+
+    CAnnotatedMatrix mUnscaledConcCC;
+
+    CAnnotatedMatrix mUnscaledFluxCC;
+
     /**
      * MCA Matrix
      */
@@ -31,8 +40,6 @@ class CMCAMethod: public CCopasiMethod
     CMatrix <C_FLOAT64> mFcc;
 
     CMatrix <C_FLOAT64> mGamma;
-
-    CModel * mpModel;
 
     /**
      * an n+1 integer vector of pivot indices.
@@ -76,6 +83,21 @@ class CMCAMethod: public CCopasiMethod
      */
 
     virtual ~CMCAMethod();
+
+    const CAnnotatedMatrix & getUnscaledElasticities() const
+      {return mUnscaledElasticities;}
+
+    void calculateUnscaledElasticities(C_FLOAT64 res);
+
+    const CAnnotatedMatrix & getUnscaledConcentrationCC() const
+      {return mUnscaledConcCC;}
+
+    void calculateUnscaledConcentrationCC();
+
+    const CAnnotatedMatrix & getUnscaledFluxCC() const
+      {return mUnscaledFluxCC;}
+
+    void calculateUnscaledFluxCC();
 
     /**
      * Set the Model
