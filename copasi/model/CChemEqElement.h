@@ -126,6 +126,19 @@ class CChemEqElement
      *  @return "string"
      */
     string writeElement() const;
+
+    friend ostream & operator<<(ostream &os, const CChemEqElement & d)
+    {
+      os << "CChemEqElement: [" << d.mCompartmentName << "]  " << d.mMultiplicity <<
+      " * " << d.mMetaboliteName << endl;
+
+      if (d.mpMetabolite)
+        os << "      mpMetabolite " << d.mpMetabolite->getName() << endl;
+      else
+        os << "      mpMetabolite == 0 " << endl;
+
+      return os;
+    }
   };
 
 #endif // COPASI_CChemEqElement

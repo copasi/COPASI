@@ -108,6 +108,23 @@ class CReaction
          *  @return "const string &" compartmentName
          */
         const string & getCompartmentName() const;
+
+        /**
+         * insert operator
+         */
+        friend ostream & operator<<(ostream &os, const CId2Metab & d)
+        {
+          os << "     CId2Metab: Ident " << d.getIdentifierName()
+          << " Metab " << d.getMetaboliteName()
+          << " Compa " << d.getCompartmentName() ;
+
+          if (d.mpMetabolite)
+            os << " *metab " << d.mpMetabolite->getName() << endl;
+          else
+            os << " metab == 0 " << endl;
+
+          return os;
+        }
       };
 
     class CId2Param
@@ -178,6 +195,16 @@ class CReaction
          * Returns the address of mValue
          */
         void * getValueAddr();
+
+        /**
+         * insert operator
+         */
+        friend ostream & operator<<(ostream &os, const CId2Param & d)
+        {
+          os << "     CId2Param: Ident " << d.getIdentifierName()
+          << " Value " << d.getValue() << endl;
+          return os;
+        }
       };
 
   private:
@@ -503,6 +530,11 @@ class CReaction
      * Set the scaling factor of the for the fluxes
      */
     void setScalingFactor();
+
+    /**
+     * insert operator
+     */
+    friend ostream & operator<<(ostream &os, const CReaction & d);
   };
 
 #endif // COPASI_CReaction

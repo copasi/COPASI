@@ -121,6 +121,14 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mCompartments.load(configBuffer, Size);
 
+  string sss;
+
+  sss = mCompartments[0]->getName();
+
+  cout << mCompartments.size() << endl;
+
+  cout << sss << endl;
+
   if (configBuffer.getVersion() < "4")
     {
       // Create the correct compartment / metabolite relationships
