@@ -12,6 +12,8 @@
 #include <math.h>
 #include "COptAlgorithm.h"
 #include "COptProblem.h"
+#include "utilities/CMethodParameter.cpp"
+#include "utilities/CMethodParameterList.cpp"
 
 using namespace std;
 
@@ -26,12 +28,15 @@ COptAlgorithm::COptAlgorithm()
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
 
+  /*
   for (unsigned C_INT32 i = 0; i < mOptAlgmParams.size(); i++)
     {
       mOptAlgmParams[i].setName("unknown");
       mOptAlgmParams[i].setValue(0.0);
     }
+  */
 
+  mOptAlgmParams = new CMethodParameterList();
   mMethodVersion = "0";
   mMethodName = "Unknown";
   mBounds = false;
@@ -39,7 +44,7 @@ COptAlgorithm::COptAlgorithm()
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptAlgorithm::~COptAlgorithm()
-{ }
+{}
 
 // copy constructor
 COptAlgorithm::COptAlgorithm(const COptAlgorithm& source):
@@ -123,8 +128,9 @@ void COptAlgorithm::cleanup(void)
   if (mParameterMax)
     mParameterMax = NULL;
 
-  if (!mOptAlgmParams.empty())
-    mOptAlgmParams.clear();
+  if ((mOptAlgmParams) && (mOptAlgmParams->size() != 0))
+    //mOptAlgmParams.clear();
+    mOptAlgmParams = NULL;
 
   return;
 }
@@ -146,29 +152,50 @@ unsigned C_INT32 COptAlgorithm::getMethodParameterNumber(void)
   return mParameterNum;
 }
 
+/**
+ * -- commented 10/15...method deleted because another class encapsulates method parameters
+ 
 // get method parameters
 vector <COptAlgorithmParameter> & COptAlgorithm::getMethodParameters()
 {
   return mOptAlgmParams;
 }
+ 
+ */
 
+/**
+ * -- commented 10/15...method deleted because another class encapsulates method parameters
+ 
 // set method parameter value
 void COptAlgorithm::setMethodParameterValue(C_INT32 i, C_FLOAT64 value)
 {
   mOptAlgmParams[i].setValue(value);
 }
+ 
+ */
 
+/**
+ * -- commented 10/15...method deleted because another class encapsulates method parameters
+ 
 // get method parameter value
 C_FLOAT64 COptAlgorithm::getMethodParameterValue(C_INT32 i)
 {
   return mOptAlgmParams[i].getValue();
 }
+ 
+ */
 
+/**
+ * -- commented 10/15...method deleted because another class encapsulates method parameters
+ 
+ 
 // get method parameter name
 string COptAlgorithm::getMethodParameterName(C_INT32 i)
 {
   return mOptAlgmParams[i].getName();
 }
+ 
+ */
 
 // get method name
 string COptAlgorithm::getMethodName(void)

@@ -17,12 +17,12 @@
 #include <string>
 #include <copasi.h>
 #include <vector>
+#include "utilities/CMethodParameter.h"
+#include "utilities/CMethodParameterList.h"
 
 using std::vector;
 
 class COptProblem;
-
-#include "COptAlgorithmParameter.h"
 
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
@@ -35,21 +35,22 @@ class COptAlgorithm
     //These parameters are optimization parameters, not method (algm) parameters
     //they are for the model or calculation function.
     //Their memories are stored in COptProblem. Here are only pointers.
-    C_FLOAT64 * mParameters;       // pointer to parameters
-    unsigned C_INT32 mParameterNum;          // the number of parameters
-    C_FLOAT64 * mParameterMin;     // the minimum values of parameters
-    C_FLOAT64 * mParameterMax;     // the maximum values of parameters
+    C_FLOAT64 * mParameters;          // pointer to parameters
+    unsigned C_INT32 mParameterNum;   // the number of parameters
+    C_FLOAT64 * mParameterMin;        // the minimum values of parameters
+    C_FLOAT64 * mParameterMax;        // the maximum values of parameters
 
-    vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
+    // is this ever used ? -- 10/14
+    //vector <COptAlgorithmParameter> mOptAlgmParams;  //vector of COptAlgorithmParameter object
 
-    string mMethodVersion;      // Method Version string, yes
-    string mMethodName;       // method Name (descriptive)
-    bool mBounds;      // True if method accepts bounds on the parameters
+    string mMethodVersion;            // Method Version string, yes
+    string mMethodName;               // method Name (descriptive)
+    bool mBounds;                     // True if method accepts bounds on the parameters
 
     //rohan: modified 7/26
   protected:
-    COptProblem * mOptProblem;  // pointer to remote problem
-
+    COptProblem * mOptProblem;        // pointer to remote problem
+    CMethodParameterList * mOptAlgmParams; // pointer to parameter list
     // Implementation
   public:
 
@@ -105,23 +106,25 @@ class COptAlgorithm
 
     /**
      * get method parameter that matches a specific index 
-     */
-    vector <COptAlgorithmParameter> & getMethodParameters();
+     */ 
+    //vector <COptAlgorithmParameter> & getMethodParameters();
 
     /**
      * set a method parameter
-     */
-    void setMethodParameterValue(C_INT32 i, C_FLOAT64 value);
+     */ 
+    //void setMethodParameterValue(C_INT32 i, C_FLOAT64 value);
 
     /**
-     * get method parameter that matches a specific index 
-     */
-    C_FLOAT64 getMethodParameterValue(C_INT32 i);
+     * get method parameter that matches a specific index
+     * @param "C_INT32" i
+     */ 
+    //C_FLOAT64 getMethodParameterValue(C_INT32 i);
 
     /**
      * get method parameter name
-     */
-    string getMethodParameterName(C_INT32 i);
+     * @param "C_INT32" i
+     */ 
+    //string getMethodParameterName(C_INT32 i);
 
     /**
      * get method name
@@ -140,6 +143,10 @@ class COptAlgorithm
     //virtual bool isBounded(void);
     bool isBounded(void);
 
+    /**
+     * Set the problem to be optmised
+     * @param "COptProblem *" problem
+     */
     void setProblem(COptProblem * problem);
   };
 

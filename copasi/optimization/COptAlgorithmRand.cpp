@@ -1,9 +1,9 @@
 /***************************************************************************
-                        COptAlgorithmRand.cpp  -  Random Optimizer
-                           -------------------
+                       COptAlgorithmRand.cpp  -  Random Optimizer
+                          -------------------
 
-  Programmer           : Rohan Luktuke
-  email                : rluktuke@vt.edu
+ Programmer           : Rohan Luktuke
+ email                : rluktuke@vt.edu
  ***************************************************************************/
 
 /***************************************************************************
@@ -38,15 +38,22 @@ COptAlgorithmRand::COptAlgorithmRand(): COptAlgorithm()
    * Setting the Method Parameter to 1.
    */
   setMethodParameterNumber(1);
-  vector<COptAlgorithmParameter>& AlgorithmParameters = getMethodParameters();
 
+  //vector<COptAlgorithmParameter>& AlgorithmParameters = getMethodParameters();
+  //CMethodParameterList AlgorithmParameters;
   /**
    * Specifying the values of the Method Parameter.
    */
+
+  /** -- commented ... alternative class for specifying method parameters
   AlgorithmParameters.resize(1);
   AlgorithmParameters[0].setName("Iterations");
   //default value - 100 iterations
   AlgorithmParameters[0].setValue(100);
+  */ 
+  //AlgorithmParameters.add("Iterations",100.0);
+
+  mOptAlgmParams->add("Iterations", 100000.0);
 
   /**
    * Declaring a variable of the enum CRandom::Type
@@ -103,7 +110,8 @@ C_INT32 COptAlgorithmRand::optimise()
   //set candx to max value
   candx = DBL_MAX;
   //cout<<"inside optimise()";
-  count = (C_INT32) getMethodParameterValue(0);
+  //count = (C_INT32) getMethodParameterValue(0);
+  count = (C_INT32)mOptAlgmParams->getValue(0);
   /**
    * mMin and mMax store pointers to arrays mParameterMin/Max.
    * particular values can be accessed by using subscripts.
