@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 22:13:41 $
+   $Date: 2003/12/03 20:26:42 $
    End CVS Header */
 
 /**
@@ -42,7 +42,7 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
       pContainer = listOfContainer[containerIndex];
 
       for (Name = objName, pObject = NULL;
-           Name != "" && !pObject;
+           Name.getRemainder() != "" && !pObject;
            Name = Name.getRemainder())
         pObject = pContainer->getObject(Name);
     }
@@ -140,7 +140,8 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
           return pObject->getObject(cn.getRemainder());
       }
 
-    if (it->second->isContainer()) return it->second->getObject(cn.getRemainder());
+    if (it->second->isContainer())
+      return it->second->getObject(cn.getRemainder());
 
     if (it->second->isMatrix())
       {

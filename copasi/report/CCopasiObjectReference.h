@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/12 17:21:20 $
+   $Date: 2003/12/03 20:26:42 $
    End CVS Header */
 
 /**
@@ -54,7 +54,8 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
 
     virtual void * getReference() {return &mReference;}
 
-    virtual void print(std::ostream& ostream) {ostream << mReference;};
+    virtual void print(std::ostream * ostream) const
+      {(*ostream) << mReference;};
   };
 
 /** @dia:pos 64.092,38.1129 */
