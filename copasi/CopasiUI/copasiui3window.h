@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:13:05 $
+   $Date: 2003/10/21 14:16:13 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -32,7 +32,7 @@ class CopasiUI3Window : public QMainWindow
   protected slots:
     void slotFileOpen();
     void slotFileSave();
-    void slotFileSaveAs();
+    void slotFileSaveAs(QString str = QString::null);
     void newDoc();
     void slotFilePrint();
     void slotImportSBML();
