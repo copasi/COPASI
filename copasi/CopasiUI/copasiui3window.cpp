@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:15 $
+   $Date: 2004/05/06 19:13:37 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -401,28 +401,19 @@ void CopasiUI3Window::createToolBar()
   QToolBar *tbMain = new QToolBar(this, "MainToolBar");
 
   // put something in it
-  QPixmap icon[3] = {fileopen, filesave, fileprint};
-  const char* iconName[3] = {"Open", "Save", "Print"};
-  const char* slotFileName[3] = {SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFilePrint())};
+  QPixmap icon[2] = {fileopen, filesave};
+  const char* iconName[2] = {"Open", "Save"};
+  const char* slotFileName[2] = {SLOT(slotFileOpen()), SLOT(slotFileSave())};
 
-  const char* toolTip[3];
+  const char* toolTip[2];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
                "You can also select the <b>Open</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[1] = "<p>Click this button to save the file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Save</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[2] = "Click this button to print the file you "
-               "are editing.\n You can also select the Print "
-               "command from the File menu.";
-
   QToolButton* toolb;
   int j;
-  for (j = 0; j < 3; j++)
+  for (j = 0; j < 2; j++)
     {
       toolb = new QToolButton(icon[j], iconName[j], QString::null,
                               this, slotFileName[j], tbMain);
@@ -449,7 +440,7 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[8] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileprint, fileopen};
+  QPixmap icon[7] = {fileopen, fileopen, filesave, filesave, fileopen, filesave, fileopen};
   const char* toolTip[8];
 
   toolTip[0] = "Click this button to open a <em>new file</em>. <br>"
@@ -479,22 +470,18 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Export SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[6] = "Click this button to print the file you "
-               "are editing.\n You can also select the Print "
-               "command from the File menu.";
-
-  toolTip[7] = "Click this button to select the output objects "
+  toolTip[6] = "Click this button to select the output objects "
                ".\n You can also select the only numeric value ";
 
-  const char* iconName[8] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Print", "Object &Browser"};
-  const char* slotFileName[8] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotFilePrint()), SLOT(slotObjectBrowser())};
-  QKeySequence hotKey[8] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_P, CTRL + Key_B};
-  int fileSeperator[8] = {0, 0, 0, 0, 0, 0, 1, 0};
+  const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "Object &Browser"};
+  const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotObjectBrowser())};
+  QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_B};
+  int fileSeperator[7] = {0, 0, 0, 0, 0, 0, 1};
 
   mpFileMenu = new QPopupMenu(this);
   menuBar()->insertItem("&File", mpFileMenu);
   int j;
-  for (j = 0; j < 8; j++)
+  for (j = 0; j < 7; j++)
     {
       if (fileSeperator[j] == 1)
         mpFileMenu->insertSeparator();
