@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/07 17:41:56 $
+   $Author: chlee $ 
+   $Date: 2004/05/25 19:39:04 $
    End CVS Header */
 
 /*********************************************************************
@@ -181,6 +181,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
+  connect(deleteReaction, SIGNAL(clicked()), this, SLOT(slotBtnDeleteClicked()));
 
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
@@ -288,8 +289,87 @@ void ReactionsWidget1::slotLineEditChanged()
   FillWidgetFromRI();
 }
 
+// added 5/19/04
 void ReactionsWidget1::slotBtnNewClicked()
-{}
+{
+  std::string name = "reaction_0";
+  int i = 0;
+  while (!dataModel->getModel()->createReaction(name))
+    {
+      i++;
+      name = "reaction_";
+      name += QString::number(i).utf8();
+    }
+  //table->setText(table->numRows() - 1, 0, FROM_UTF8(name));
+  //table->setNumRows(table->numRows());
+  //emit updated();
+  //emit leaf(mModel);
+  ListViews::notify(ListViews::REACTION, ListViews::ADD);
+  enter(dataModel->getModel()->getReactions()[name]->getKey());
+  //pListView->switchToOtherWidget(mKeys[row]);
+}
+
+// Just added 5/18/04
+void ReactionsWidget1::slotBtnDeleteClicked()
+{
+  if (dataModel->getModel())
+    {
+      //unsigned C_INT32 i, imax = table->numRows() - 1;
+      //std::vector< unsigned C_INT32 > ToBeDeleted;
+
+      /*for (i = 0; i < imax; i++)
+        {
+          if (table->isRowSelected(i, true))
+            ToBeDeleted.push_back(i);
+        }*/
+
+      //if (ToBeDeleted.size() > 0)
+      //  {
+      QString reacList = "Are you sure you want to delete the REACTION?\n";
+      /*for (i = 0; i < ToBeDeleted.size(); i++)
+        {
+          reacList.append(table->text(ToBeDeleted[i], 0));
+          reacList.append(", ");
+        }
+      reacList.remove(reacList.length() - 2, 2);*/
+      reacList.append(FROM_UTF8(mRi.getReactionName()));
+
+      int choice = QMessageBox::warning(this, "CONFIRM DELETE",
+                                        reacList,
+                                        "Continue", "Cancel", 0, 0, 1);
+
+      switch (choice)
+        {
+        case 0:         // Yes or Enter
+          {
+            /*for (i = ToBeDeleted.size(); 0 < i;)
+              {
+                i--;*/ 
+            //unsigned C_INT32 size = Copasi->pFunctionDB->loadedFunctions().size();
+            unsigned C_INT32 size = Copasi->pModel->getReactions().size();
+            //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
+            unsigned C_INT32 index = Copasi->pModel->getReactions().getIndex(mRi.getReactionName());
+            //dataModel->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
+            dataModel->getModel()->removeReaction(objKey);
+            //enter(Copasi->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
+            enter(Copasi->pModel->getReactions()[std::min(index, size - 2)]->getKey());
+            //dataModel->getModel()->removeReaction(objKey);
+            // table->removeRow(ToBeDeleted[i]);
+            //}
+
+            //for (i = 0, imax = ToBeDeleted.size(); i < imax; i++)
+            // ListViews::notify(ListViews::REACTION, ListViews::DELETE, mKeys[ToBeDeleted[i]]);
+            ListViews::notify(ListViews::REACTION, ListViews::DELETE, objKey);
+
+            break;
+          }
+
+        default:                // No or Escape
+          break;
+        }
+      //}
+    }
+}
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
