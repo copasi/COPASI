@@ -18,6 +18,7 @@ class QPushButton;
 class QListView;
 class ObjectBrowserItem;
 class objectList;
+class QListViewItem;
 
 class ObjectBrowser : public QWidget
   {
@@ -41,7 +42,7 @@ class ObjectBrowser : public QWidget
     void updateUI();
   public slots:
     virtual void cancelClicked();
-    virtual void listviewChecked(ObjectBrowserItem*);
+    virtual void listviewChecked(QListViewItem*);
     virtual void backClicked();
     virtual void nextClicked();
 

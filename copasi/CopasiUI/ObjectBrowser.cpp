@@ -73,8 +73,8 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
   connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-  connect(ObjectListView, SIGNAL(pressed(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-  connect(ObjectListView, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
+  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
+  //  connect(ObjectListView, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
 
   // tab order
   setTabOrder(ObjectListView, backButton);
@@ -98,11 +98,11 @@ void ObjectBrowser::cancelClicked()
   qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
 }
 
-void ObjectBrowser::listviewChecked(ObjectBrowserItem* pCurrent)
+void ObjectBrowser::listviewChecked(QListViewItem* pCurrent)
 {
   if (pCurrent == NULL)
     return;
-  clickToReverseCheck(pCurrent);
+  clickToReverseCheck((ObjectBrowserItem*)pCurrent);
   updateUI();
 }
 
@@ -249,7 +249,7 @@ void ObjectBrowser::loadData()
   item_2->setText(0, trUtf8("Model"));
   item_3->setText(0, trUtf8("Task"));
   item_4->setText(0, trUtf8("Function"));
-  item_5->setText(0, trUtf8("Metobolite"));
+  item_5->setText(0, trUtf8("Metabolites"));
   item_6->setText(0, trUtf8("Reaction"));
 
   updateUI();
