@@ -518,10 +518,10 @@ C_FLOAT64 * CModel::getInitialNumbers()
  * Get the total steps
  *
 */
-//C_INT32 CModel::getTotSteps()
-//{
-// return mSteps;   //should not return mSteps
-//}
+C_INT32 CModel::getTotSteps()
+{
+ return mSteps->size();   //should not return mSteps
+}
 
 C_INT32 CModel::getDimension() const
 {
