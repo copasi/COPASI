@@ -76,7 +76,8 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
   COutput output;
 
   output.load(configbuffer);
-  output.setModel(Model);
+  /* :TODO: We must not set the model here! */
+  // output.setModel(Model);
   addOutput(output);
 
   return Fail;
