@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 14:48:22 $
+   $Author: gasingh $ 
+   $Date: 2004/02/06 02:26:10 $
    End CVS Header */
 
 /**********************************************************************
@@ -70,9 +70,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  //textBrowser = new QTextBrowser (this, "Text Browser");
-  textBrowser = new MyLineEdit(this, "Text Browser");
-
+  textBrowser = new QTextBrowser(this, "Text Browser");
+  //textBrowser = new MyLineEdit(this, "Text Browser");
   FunctionWidget1Layout->addWidget(textBrowser, 1, 1);
 
   Line2 = new QFrame(this, "Line2");
@@ -405,10 +404,10 @@ void FunctionWidget1::updateParameters()
                                        "Retry",
                                        "Quit", 0, 0, 1))
             {
-            case 0:                            // The user clicked the Retry again button or pressed Enter
+            case 0:                             // The user clicked the Retry again button or pressed Enter
               // try again
               break;
-            case 1:                            // The user clicked the Quit or pressed Escape
+            case 1:                             // The user clicked the Quit or pressed Escape
               // exit
               break;
             }

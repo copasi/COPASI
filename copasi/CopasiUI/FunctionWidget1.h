@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: chlee $ 
-   $Date: 2003/11/19 17:43:54 $
+   $Author: gasingh $ 
+   $Date: 2004/02/06 02:26:10 $
    End CVS Header */
 
 /****************************************************************************
@@ -65,8 +65,8 @@ class FunctionWidget1 : public CopasiWidget
     QHBoxLayout* Layout2;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
-    //QTextBrowser* textBrowser;
-    MyLineEdit* textBrowser;
+    QTextBrowser* textBrowser;
+    //MyLineEdit* textBrowser;
     QFrame* Line2;
     QPushButton* commitChanges;
     QPushButton* cancelChanges;
