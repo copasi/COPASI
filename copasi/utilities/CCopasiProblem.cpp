@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:10:00 $
+   $Date: 2005/01/03 13:06:48 $
    End CVS Header */
 
 /**
@@ -62,7 +62,7 @@ bool CCopasiProblem::setModel(CModel * pModel)
 
 CModel * CCopasiProblem::getModel() const {return mpModel;}
 
-void CCopasiProblem::setInitialState(const CState & initialState) {}
+//void CCopasiProblem::setInitialState(const CState & initialState) {}
 
 // propably for optimization only
 

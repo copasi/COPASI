@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/14 17:10:00 $
+   $Date: 2005/01/03 13:06:48 $
    End CVS Header */
 
 /**
@@ -114,8 +114,8 @@ class CCopasiProblem : public CCopasiParameterGroup
 
     /**
      * Sets the initial value (in case this applies to the specific problem)
-     */
-    virtual void setInitialState(const CState & initialState);
+     */ 
+    //virtual void setInitialState(const CState & initialState);
 
     // propably for optimization only
 
