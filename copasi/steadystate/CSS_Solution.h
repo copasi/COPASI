@@ -277,7 +277,7 @@ class CSS_Solution
    *  It's based on if (mY[i]-mY_old[i])/delta(t) < mSSRes
    *  @return an int acting like a bool
    */
-  C_INT32  CSS_Solution::isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 * oldY, C_FLOAT64 * newY);
+  C_INT32 isSteadyStateAfterTrajectory(CTrajectory * aTraj, C_FLOAT64 *oldY, C_FLOAT64 * newY);
 
 };
 
