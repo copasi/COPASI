@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 11:48:09 $
+   $Date: 2004/12/14 17:10:27 $
    End CVS Header */
 
 /**
@@ -31,39 +31,22 @@
 #include "steadystate/CSteadyStateProblem.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::steadyState, pParent),
-    //-CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    //-mReport(new CReport()),
-    mRequested(true),
-    //mpOutEnd(NULL),
-    mKey(GlobalKeys.add("ScanTask", this))
+    CCopasiTask(CCopasiTask::scan, pParent)
 {
   mpProblem = new CScanProblem(this);
-  mpMethod =
-    CScanMethod::createMethod();
+  mpMethod = CScanMethod::createMethod();
   mpMethod->setObjectParent(this);
-  ((CScanMethod *) mpMethod)->
-  setProblem((CScanProblem *) mpProblem);
+  ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
 }
 
 CScanTask::CScanTask(const CScanTask & src,
                      const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent),
-    //-CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    //-mReport(new CReport()),
-    mRequested(src.mRequested),
-    //mpProblem(new CScanProblem(*src.mpProblem)),
-    //mpMethod(new CScanMethod(*src.mpMethod)),
-    //mpOutEnd(src.mpOutEnd),
-    mKey(GlobalKeys.add("ScanTask", this))
+    CCopasiTask(src, pParent)
 {
-  mpProblem =
-    new CScanProblem(* (CScanProblem *) src.mpProblem, this);
-  mpMethod =
-    CScanMethod::createMethod();
+  mpProblem = new CScanProblem(* (CScanProblem *) src.mpProblem, this);
+  mpMethod = CScanMethod::createMethod();
   mpMethod->setObjectParent(this);
-  ((CScanMethod *) mpMethod)->
-  setProblem((CScanProblem *) mpProblem);
+  ((CScanMethod *) mpMethod)->setProblem((CScanProblem *) mpProblem);
 }
 
 CScanTask::~CScanTask()
@@ -71,7 +54,6 @@ CScanTask::~CScanTask()
 
 void CScanTask::cleanup()
 {
-  //GlobalKeys.remove(mKey);
   //pdelete(mpProblem);
   //pdelete(mpMethod);
   //  pdelete(mpOutEnd);
@@ -107,23 +89,6 @@ void CScanTask::load(CReadConfig & configBuffer)
 
   pProblem->load(configBuffer);
 }
-
-void CScanTask::setRequested(const bool & requested)
-{mRequested = requested;}
-
-bool CScanTask::isRequested() const {return mRequested;}
-
-//-CScanProblem * CScanTask::getProblem()
-//-{return mpProblem;}
-
-void CScanTask::setProblem(CScanProblem * pProblem)
-{mpProblem = pProblem;}
-
-//-CScanMethod * CScanTask::getMethod()
-//-{return mpMethod;}
-
-void CScanTask::setMethod(CScanMethod * pMethod)
-{mpMethod = pMethod;}
 
 bool CScanTask::process()
 {

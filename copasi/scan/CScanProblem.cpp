@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/05 16:10:16 $
+   $Date: 2004/12/14 17:10:27 $
    End CVS Header */
 
 /**
@@ -49,6 +49,8 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
 
   addParameter("ProcessTrajectory", CCopasiParameter::BOOL, false);
   addParameter("ProcessSteadyState", CCopasiParameter::BOOL, false);
+
+  std::cout << *this << std::endl;
 
   CONSTRUCTOR_TRACE;
 }

@@ -1,18 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/22 16:12:42 $
+   $Date: 2004/12/14 17:10:27 $
    End CVS Header */
-
-/**
- *  CTrajectoryProblem class.
- *  This class describes the trajectory problem, i.e., it allows to specify
- *  for example initial conditions and number of steps.
- *  
- *  Created for Copasi by Stefan Hoops 2002
- */
 
 #ifndef COPASI_CScanProblem
 #define COPASI_CScanProblem

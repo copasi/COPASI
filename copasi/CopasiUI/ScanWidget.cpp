@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.172 $
+   $Revision: 1.173 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/08 20:19:00 $
+   $Author: ssahle $ 
+   $Date: 2004/12/14 17:13:57 $
    End CVS Header */
 
 /********************************************************
@@ -255,13 +255,13 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   nTitleHeight = fontMetrics().height() + 6;
 
-  scanTaskKey = (new CScanTask())->getKey();
+  /*scanTaskKey = (new CScanTask())->getKey();
   SteadyStateKey = (new CSteadyStateTask())->getKey();
   TrajectoryKey = (new CTrajectoryTask())->getKey();
   pSteadyStateWidget = new SteadyStateWidget(NULL);
   pTrajectoryWidget = new TrajectoryWidget(NULL);
   pSteadyStateWidget->hide();
-  pTrajectoryWidget->hide();
+  pTrajectoryWidget->hide();*/
 
   //pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
   //pTrajectoryWidget->loadTrajectoryTask(/*new CTrajectoryTask()*/);
@@ -280,17 +280,17 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
 void ScanWidget::SteadyStateEditing()
 {
-  pSteadyStateWidget->show();
+  //pSteadyStateWidget->show();
 }
 
 void ScanWidget::TrajectoryEditing()
 {
-  pTrajectoryWidget->show();
+  //pTrajectoryWidget->show();
 }
 
 ScanWidget::~ScanWidget()
 {
-  CScanTask* scanTask =
+  /*CScanTask* scanTask =
     dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
   pdelete(scanTask);
 
@@ -300,7 +300,7 @@ ScanWidget::~ScanWidget()
 
   CTrajectoryTask* tt =
     dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(TrajectoryKey));
-  pdelete(tt);
+  pdelete(tt);*/
 
   selectedList.clear();
 }
@@ -515,10 +515,10 @@ void ScanWidget::CancelChangeButton()
 
 void ScanWidget::ScanCheckBoxClicked()
 {
-  CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
-  scanTask->setRequested(sExecutable->isChecked());
-  scanButton->setEnabled(sExecutable->isChecked());
+  /*  CScanTask* scanTask =
+      dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+    scanTask->setRequested(sExecutable->isChecked());
+    scanButton->setEnabled(sExecutable->isChecked());*/
 }
 
 void ScanWidget::runScanTask()
@@ -583,7 +583,7 @@ void ScanWidget::loadScan()
   CScanProblem *scanProblem = ((CScanProblem *)scanTask->getProblem());
   mModel = scanProblem->getModel();
 
-  CSteadyStateTask* mSteadyStateTask =
+  /*CSteadyStateTask* mSteadyStateTask =
     dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(SteadyStateKey));
   assert(mSteadyStateTask);
 
@@ -597,14 +597,14 @@ void ScanWidget::loadScan()
 
   CTrajectoryProblem * mTrajectoryproblem =
     (CTrajectoryProblem *) mTrajectoryTask->getProblem();
-  mTrajectoryproblem->setModel(mModel);
+  mTrajectoryproblem->setModel(mModel);*/
 
-  scanProblem->setSteadyStateTask(mSteadyStateTask);
+  /*scanProblem->setSteadyStateTask(mSteadyStateTask);
   scanProblem->setTrajectoryTask(mTrajectoryTask);
   scanProblem->setProcessSteadyState(steadyState->isChecked());
-  scanProblem->setProcessTrajectory(trajectory->isChecked());
+  scanProblem->setProcessTrajectory(trajectory->isChecked());*/
 
-  sExecutable->setEnabled(true);
+  /*sExecutable->setEnabled(true);
   if (scanTask->isRequested() == true)
     {
       sExecutable->setChecked(true);
@@ -614,7 +614,7 @@ void ScanWidget::loadScan()
     {
       sExecutable->setChecked(false);
       scanButton->setEnabled(false);
-    }
+    }*/
   steadyState->setEnabled(true);
   if (scanProblem->processTrajectory())
     trajectory->setChecked(true);
@@ -777,8 +777,8 @@ bool ScanWidget::enter(const std::string & key)
 
   scanTaskKey = key;
 
-  pSteadyStateWidget->enter(SteadyStateKey);
-  pTrajectoryWidget->enter(TrajectoryKey);
+  //pSteadyStateWidget->enter(SteadyStateKey);
+  //pTrajectoryWidget->enter(TrajectoryKey);
   loadScan();
 
   return true;

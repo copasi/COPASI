@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/14 22:07:35 $
+   $Author: ssahle $ 
+   $Date: 2004/12/14 17:13:58 $
    End CVS Header */
 
 /****************************************************************************
@@ -106,10 +106,10 @@ class ScanWidget : public CopasiParametersWidget
     QCheckBox* trajectory;
     QToolButton* eTrajectory;
 
-    std::string SteadyStateKey;
-    std::string TrajectoryKey;
-    SteadyStateWidget* pSteadyStateWidget;
-    TrajectoryWidget* pTrajectoryWidget;
+    //std::string SteadyStateKey;
+    //std::string TrajectoryKey;
+    //SteadyStateWidget* pSteadyStateWidget;
+    //TrajectoryWidget* pTrajectoryWidget;
     std::vector<QWidget*> selectedList;
 
     QPushButton* reportDefinitionButton;
