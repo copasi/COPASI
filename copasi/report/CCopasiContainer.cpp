@@ -122,12 +122,7 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
   for (it = range.first; it != range.second; ++it)
     if (it->second == pObject) break;
 
-  if (it != range.second)
-    {
-      std::cout << "multiple add: " << pObject->getCN() << ", "
-      << (void *) pObject << std::endl;
-      return false;
-    }
+  if (it != range.second) return false;
 
   /* This object is not contained, so we can add it. */
   mObjects.insert
