@@ -20,6 +20,89 @@ template <class CType> class CVector;
 class CModel
   {
     //Attributes
+    class CLinkMatrixView
+      {
+      public:
+        typedef C_FLOAT64 elementType;
+
+      private:
+        const CMatrix< C_FLOAT64 > & mA;
+        const vector < CMetab * > & mIndependent;
+        static const elementType mZero;
+        static const elementType mUnit;
+
+      public:
+        /**
+         * Default constructor
+         * @param const CMatrix< C_FLOAT64 > & A
+         * @param const vector< CMetab * > & independent
+         */
+        CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
+                        const vector< CMetab * > & independent);
+
+        /**
+         * Destructor.
+         */
+        ~CLinkMatrixView();
+
+        /**
+         * Assignement operator
+         * @param const CLinkMatrixView & rhs
+         * @return CLinkMatrixView & lhs
+         */
+        CLinkMatrixView & operator = (const CLinkMatrixView & rhs);
+
+        /**
+         * The number of rows of the matrix.
+         * @return unsigned C_INT32 rows
+         */
+        unsigned C_INT32 numRows() const;
+
+        /**
+         * The number of columns of the matrix
+         * @return unsigned C_INT32 cols
+         */
+        unsigned C_INT32 numCols() const;
+
+        /**
+         * Retrieve a matrix element  using the c-style indexing.
+         * @param const unsigned C_INT32 & row
+         * @param const unsigned C_INT32 & col
+         * @return elementType element
+         */
+        inline elementType operator()(const unsigned C_INT32 & row,
+                                      const unsigned C_INT32 & col) const
+        {
+          if (row >= mIndependent.size())
+          return mA(row - mIndependent.size(), col);
+          else if (row != col)
+            return mZero;
+            else
+              return mUnit;
+            }
+
+            /**
+             * Output stream operator
+             * @param ostream & os
+             * @param const CLinkMatrixView & A
+             * @return ostream & os
+             */
+            friend ostream &operator<<(ostream &os,
+                                       const CLinkMatrixView & A)
+              {
+                unsigned C_INT32 i, imax = A.numRows();
+                unsigned C_INT32 j, jmax = A.numCols();
+                os << "Matrix(" << imax << "x" << jmax << ")" << endl;
+
+                for (i = 0; i < imax; i++)
+                  {
+                    for (j = 0; j < jmax; j++)
+                      cout << "  " << A(i, j);
+                    cout << endl;
+                  }
+                return os;
+              }
+      };
 
   private:
     /**
@@ -125,20 +208,14 @@ class CModel
     vector < unsigned C_INT32 > mColLU;
 
     /**
-     *   This matrix stores L and the inverse of L
+     *   This matrix stores L
      */
     CMatrix < C_FLOAT64 > mL;
 
     /**
      *   This is used to return a view to L
      */
-    CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > *mpLView;
-
-    /**
-     *   This is used to return a view to the inverse of L
-     */
-    CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
-    *mpInverseLView;
+    CLinkMatrixView mLView;
 
     /**
      *  Unit for substance quantities
@@ -458,18 +535,10 @@ class CModel
     const CMatrix < C_FLOAT64 > & getmLU() const;
 
     /**
-     * Get the L matrix the LU decomposition of this model
-     * @return const TNT::Matrix < C_FLOAT64 > & LU
+     * Get the link matrix L of the relation: Stoi = L * RedStoi
+     * @return const CLinkMatrixView L
      */
-    const CUnitLowerTriangularView<CMatrix<C_FLOAT64 > > & getL() const;
-
-    /**
-     * Retrieve the inverse of the L matrix
-     * @return const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > & L-inverse
-     */
-    const
-    CTransposeView<CUpperTriangularView<CMatrix<C_FLOAT64 > > >
-    & getInverseL() const;
+    const CLinkMatrixView & getL() const;
 
     /**
      * Get the initial state of the model, i.e., initial concentrations 

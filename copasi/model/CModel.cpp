@@ -8,6 +8,7 @@
 #include <vector>
 #include <limits.h>
 #include <cmath>
+#include <algorithm>
 
 #ifndef DBL_MAX
 #define DBL_MAX 1.7976931348623158e+308
@@ -23,32 +24,33 @@
 #include "utilities/CluX.h"
 #include "utilities/CVector.h"
 
-using std::cout;
+extern "C"
+  {
+#include "clapack.h"        //use CLAPACK
+  }
 
-CModel::CModel()
+#if (defined min && ! defined WIN32)
+# undef min
+# undef max
+#endif // min && ! WIN32
+
+CModel::CModel():
+    mMetabolitesInd(),
+    mL(0, 0),
+    mLView(mL, mMetabolitesInd)
 {
   CONSTRUCTOR_TRACE;
   mComments = "";
-
-  mpLView
-  = new CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > (mL, 0.0, 1.0);
-
-  mpInverseLView
-  = new CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > > (CUpperTriangularView< CMatrix< C_FLOAT64 > >(mL, 0.0));
 
   mQuantityUnitName = "unknown";
   mNumber2QuantityFactor = 1.0;
   mQuantity2NumberFactor = 1.0;
 }
 
-CModel::CModel(const CModel & src)
+CModel::CModel(const CModel & src):
+    mLView(mL, mMetabolitesInd)
 {
   CONSTRUCTOR_TRACE;
-  mpLView
-  = new CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > (mL, 0.0, 1.0);
-
-  mpInverseLView
-  = new CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > > (CUpperTriangularView< CMatrix< C_FLOAT64 > >(mL, 0.0));
 
   mTitle = src.mTitle;
   mComments = src.mComments;
@@ -72,9 +74,6 @@ CModel::CModel(const CModel & src)
 
 CModel::~CModel()
 {
-  delete mpLView;
-  delete mpInverseLView;
-
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -173,7 +172,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         }
     }
 
-  //cout << mCompartments;       //debug
+  //std::cout << mCompartments;       //debug
 
   initializeMetabolites();
 
@@ -186,19 +185,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size);
 
-  // cout << endl << mSteps << endl;  //debug
+  // std::cout << std::endl << mSteps << std::endl;  //debug
 
   // We must postprocess the steps for old file versions
   if (configBuffer.getVersion() < "4")
     for (i = 0; i < mSteps.size(); i++)
       mSteps[i]->old2New(mMetabolites);
 
-  // cout << "After postprocessing " << endl << mSteps << endl;
+  // std::cout << "After postprocessing " << std::endl << mSteps << std::endl;
 
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(mCompartments);
 
-  // cout << "After compiling " << endl << mSteps << endl;   //debug
+  // std::cout << "After compiling " << std::endl << mSteps << std::endl;   //debug
 
   Copasi->OldMetabolites.cleanup();
 
@@ -283,35 +282,35 @@ void CModel::saveSBML(std::ofstream &fout)
   C_INT32 p, dummy;
   unsigned C_INT32 i;
 
-  fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-  fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << endl;
+  fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+  fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << std::endl;
   // TODO: add time stamp to the comment string
-  fout << "<sbml xmlns=\"http://www.sbml.org/sbml/level1\" level=\"1\" version=\"1\">" << endl;
+  fout << "<sbml xmlns=\"http://www.sbml.org/sbml/level1\" level=\"1\" version=\"1\">" << std::endl;
   FixSName(mTitle, tmpstr);
-  fout << "\t<model name=\"" + tmpstr + "\">" << endl;
+  fout << "\t<model name=\"" + tmpstr + "\">" << std::endl;
   // model notes
   if (! mComments.empty())
     {
-      fout << "\t\t<notes>" << endl;
-      fout << "\t\t\t<body xmlns=\"http://www.w3.org/1999/xhtml\">" << endl;
+      fout << "\t\t<notes>" << std::endl;
+      fout << "\t\t\t<body xmlns=\"http://www.w3.org/1999/xhtml\">" << std::endl;
       tmpstr = mComments;
       for (i = 0; i != (unsigned C_INT32) - 1;)
         {
           p = tmpstr.find_first_of("\r\n");
           FixXHTML(tmpstr.substr(0, p), tmpstr2);
-          fout << "\t\t\t\t<p>" << tmpstr2 << "</p>" << endl;
+          fout << "\t\t\t\t<p>" << tmpstr2 << "</p>" << std::endl;
           i = tmpstr.find('\n');
           tmpstr = tmpstr.substr(i + 1);
         }
-      fout << "\t\t\t</body>" << endl;
-      fout << "\t\t</notes>" << endl;
+      fout << "\t\t\t</body>" << std::endl;
+      fout << "\t\t</notes>" << std::endl;
     }
-  fout << "\t\t<listOfCompartments>" << endl;
+  fout << "\t\t<listOfCompartments>" << std::endl;
   // compartments
   for (i = 0; i < mCompartments.size(); i++)
     mCompartments[i]->saveSBML(fout);
-  fout << "\t\t</listOfCompartments>" << endl;
-  fout << "\t\t<listOfSpecies>" << endl;
+  fout << "\t\t</listOfCompartments>" << std::endl;
+  fout << "\t\t<listOfSpecies>" << std::endl;
   for (i = 0; i < mMetabolites.size(); i++)
     mMetabolites[i]->saveSBML(fout);
   // check if any reaction has no substrates or no products
@@ -325,15 +324,15 @@ void CModel::saveSBML(std::ofstream &fout)
       fout << "\t\t\t<specie name=\"_void_\"";
       FixSName(mCompartments[0]->getName(), tmpstr);
       fout << " compartment=\"" << tmpstr << "\"";
-      fout << " initialAmount=\"0.0\" boundaryCondition=\"true\"/>" << endl;
+      fout << " initialAmount=\"0.0\" boundaryCondition=\"true\"/>" << std::endl;
     }
-  fout << "\t\t</listOfSpecies>" << endl;
-  fout << "\t\t<listOfReactions>" << endl;
+  fout << "\t\t</listOfSpecies>" << std::endl;
+  fout << "\t\t<listOfReactions>" << std::endl;
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->saveSBML(fout, i);
-  fout << "\t\t</listOfReactions>" << endl;
-  fout << "\t</model>" << endl;
-  fout << "</sbml>" << endl;
+  fout << "\t\t</listOfReactions>" << std::endl;
+  fout << "\t</model>" << std::endl;
+  fout << "</sbml>" << std::endl;
 }
 
 void CModel::compile()
@@ -402,8 +401,8 @@ void CModel::buildStoi()
     }
 
 #ifdef DEBUG_MATRIX
-  cout << "Stoichiometry Matrix" << endl;
-  cout << mStoi << endl;
+  std::cout << "Stoichiometry Matrix" << std::endl;
+  std::cout << mStoi << std::endl;
 #endif
 
   return;
@@ -429,14 +428,13 @@ void CModel::lUDecomposition()
   LUfactor(mLU, rowLU, colLU);
 
 #ifdef DEBUG_MATRIX
+  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(mLU, 0.0);
+  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU, 0.0, 1.0);
 
-  CUpperTriangularView < CMatrix < C_FLOAT64 > > U(mLU);
-  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU);
-
-  cout << "U" << endl;
-  cout << U << endl;
-  cout << "L" << endl;
-  cout << L << endl;
+  std::cout << "U" << std::endl;
+  std::cout << U << std::endl;
+  std::cout << "L" << std::endl;
+  std::cout << L << std::endl;
 #endif
 
   // mMetabolitesX = mMetabolites;
@@ -543,15 +541,17 @@ void CModel::setMetabolitesStatus()
 
 void CModel::buildRedStoi()
 {
-  C_INT32 i, j, k;
-  C_FLOAT64 Sum;
-  C_INT32 imax, jmax, kmax;                // wei for compiler
-
-  imax = mMetabolitesInd.size();
-  jmax = mStepsX.size();
+  C_INT32 i, imax = mMetabolitesInd.size();
+  C_INT32 j, jmax = mStepsX.size();                // wei for compiler
 
   mRedStoi.resize(imax, jmax);
 
+  /* just have to swap rows and colums */
+  for (i = 0; i < imax; i++)
+    for (j = 0; j < jmax; j++)
+      mRedStoi(i, j) = mStoi(mRowLU[i], mColLU[j]);
+
+#ifdef XXXX
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
       {
@@ -578,10 +578,11 @@ void CModel::buildRedStoi()
 
         mRedStoi[i][j] = Sum;
       }
+#endif // XXXX
 
 #ifdef DEBUG_MATRIX
-  cout << "Reduced Stoichiometry Matrix" << endl;
-  cout << mRedStoi << endl;
+  std::cout << "Reduced Stoichiometry Matrix" << std::endl;
+  std::cout << mRedStoi << std::endl;
 #endif
 
   return;
@@ -589,53 +590,103 @@ void CModel::buildRedStoi()
 
 void CModel::buildL()
 {
-  unsigned C_INT32 size = mStoi.numRows();
-  unsigned C_INT32 i, j, jmax, k;
-  CUnitLowerTriangularView < CMatrix < C_FLOAT64 > > L(mLU, 0.0, 1.0);
+  C_INT32 N = mMetabolitesInd.size();
+  C_INT32 LDA = std::max(1L, N);
+  C_INT32 Info;
 
-  mL.resize(size, size);
-  jmax = (size < mSteps.size()) ? size : mSteps.size();
+  unsigned C_INT32 i, imin, imax;
+  unsigned C_INT32 j, jmax;
+  unsigned C_INT32 k;
+  C_FLOAT64 * sum;
 
-  /* Create L from the UnitLowerTriangularView of mLU */
+  CMatrix< C_FLOAT64 > R(N, N);
 
-  for (i = 0; i < size; i++)
+  for (i = 1; i < (unsigned C_INT32) N; i++)
+    for (j = 0; j < i; j++)
+      R(i, j) = mLU(i, j);
+
+  /* to take care of differences between fortran's and c's memory  acces,
+     we need to take the transpose, i.e.,the upper triangular */
+  char cL = 'U';
+  char cU = 'U'; /* 1 in the diaogonal of R */
+
+  /* int dtrtri_(char *uplo,
+   *             char *diag, 
+   *             integer *n, 
+   *             doublereal * A,
+   *             integer *lda, 
+   *             integer *info);   
+   *  -- LAPACK routine (version 3.0) --
+   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+   *     Courant Institute, Argonne National Lab, and Rice University
+   *     March 31, 1993
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DTRTRI computes the inverse of a real upper or lower triangular
+   *  matrix A.
+   *
+   *  This is the Level 3 BLAS version of the algorithm.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  uplo    (input) CHARACTER*1
+   *          = 'U':  A is upper triangular;
+   *          = 'L':  A is lower triangular.
+   *
+   *  diag    (input) CHARACTER*1
+   *          = 'N':  A is non-unit triangular;
+   *          = 'U':  A is unit triangular.
+   *
+   *  n       (input) INTEGER
+   *          The order of the matrix A.  n >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+   *          On entry, the triangular matrix A.  If uplo = 'U', the
+   *          leading n-by-n upper triangular part of the array A contains
+   *          the upper triangular matrix, and the strictly lower
+   *          triangular part of A is not referenced.  If uplo = 'L', the
+   *          leading n-by-n lower triangular part of the array A contains
+   *          the lower triangular matrix, and the strictly upper
+   *          triangular part of A is not referenced.  If diag = 'U', the
+   *          diagonal elements of A are also not referenced and are
+   *          assumed to be 1.
+   *          On exit, the (triangular) inverse of the original matrix, in
+   *          the same storage format.
+   *
+   *  lda     (input) INTEGER
+   *          The leading dimension of the array A.  lda >= max(1,n).
+   *
+   *  info    (output) INTEGER
+   *          = 0: successful exit
+   *          < 0: if info = -i, the i-th argument had an illegal value
+   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
+   *               matrix is singular and its inverse can not be computed.
+   */
+  dtrtri_(&cL, &cU, &N, R.array(), &LDA, &Info);
+  if (Info) fatalError();
+
+  mL.resize(mMetabolitesDep.size(), mMetabolitesInd.size());
+
+  imin = getIndMetab(), imax = getIntMetab();
+  jmax = getIndMetab();
+
+  for (i = imin; i < imax; i++)
     for (j = 0; j < jmax; j++)
-      mL[i][j] = L(i, j);
-
-  /* We complete L so that it is a square matrix */
-  for (i = 0; i < size; i++)
-    for (j = jmax; j < size; j++)
-      mL[i][j] = 0.0;
-
-  for (j = jmax; j < size; j++)
-    mL[j][j] = 1.0;
-
-  /* Calculate the inverse of L and store it in the upper triangular
-     part of L */
-
-  C_FLOAT64 *sum;
-
-  jmax = (size) ? size - 1 : size;
-
-  for (j = 0; j < jmax; j++)
-    for (i = j + 1; i < size; i++)
       {
-        sum = &mL[j][i];
-        *sum = - mL[i][j];
+        sum = & mL(i - imin, j);
+        *sum = - mLU(i, j);
 
-        for (k = j + 1; k < i; k++)
-          // I[i][j] -= mL[i][k] * I[k][j]
-          *sum -= mL[i][k] * mL[j][k];
+        for (k = j + 1; k < jmax; k++)
+          *sum -= mLU(i, k) * R(k, j);
       }
 
 #ifdef DEBUG_MATRIX
-  cout << "L" << endl;
-  cout << CLowerTriangularView< CMatrix< C_FLOAT64 > >(mL)
-  << endl;
-  cout << "L inverse" << endl;
-  cout << CTranspose_View< CUpperTriangularView< CMatrix< C_FLOAT64 > > >(mL)
-  << endl;
-#endif
+  std::cout << "Link Matrix:" << std::endl;
+  std::cout << mLView << std::endl;
+#endif // DEBUG_MATRIX
 }
 
 void CModel::buildMoieties()
@@ -643,8 +694,7 @@ void CModel::buildMoieties()
   unsigned C_INT32 i;
   unsigned C_INT32 imin = mMetabolitesInd.size();
   unsigned C_INT32 imax = imin + mMetabolitesDep.size();
-  unsigned C_INT32 j;
-  unsigned C_INT32 jmax = imin;
+  unsigned C_INT32 j, jmax = mMetabolitesInd.size();
 
   CMoiety *pMoiety;
 
@@ -661,14 +711,14 @@ void CModel::buildMoieties()
 
       for (j = 0; j < jmax; j++)
         {
-          if (mL[j][i] != 0.0)
+          if (mLView(i, j) != 0.0)
             pMoiety->add
-            (mL[j][i], mMetabolitesX[j]);
+            (mLView(i, j), mMetabolitesX[j]);
         }
 
       pMoiety->setInitialValue();
-      cout << pMoiety->getDescription() << " = "
-      << pMoiety->getNumber() << endl;
+      std::cout << pMoiety->getDescription() << " = "
+      << pMoiety->getNumber() << std::endl;
 
       mMoieties.add(pMoiety);
     }
@@ -1035,24 +1085,16 @@ vector < CReaction * > & CModel::getStepsX()
   return mStepsX;
 }
 
+/* only used in steadystate/CMca.cpp */
 /**
  *  Get the mLU matrix of this model
  */
 const CMatrix < C_FLOAT64 > & CModel::getmLU() const
-{
-  return mLU;
-}
+{return mLU;}
 
-const CUnitLowerTriangularView< CMatrix< C_FLOAT64 > > & CModel::getL() const
-{
-  return *mpLView;
-}
-
-const CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
-& CModel::getInverseL() const
-{
-  return *mpInverseLView;
-}
+/* only used in steadystate/CMca.cpp */
+const CModel::CLinkMatrixView & CModel::getL() const
+{return mLView;}
 
 CState * CModel::getInitialState() const
 {
@@ -1473,3 +1515,29 @@ void CModel::updateDepMetabNumbers(CStateX const & state) const
 {
   (const_cast< CModel * >(this))->setState(&state);
 }
+
+const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
+const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
+
+CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
+    const vector< CMetab * > & independent):
+    mA(A),
+    mIndependent(independent)
+{CONSTRUCTOR_TRACE;}
+
+CModel::CLinkMatrixView::~CLinkMatrixView()
+{DESTRUCTOR_TRACE;}
+
+CModel::CLinkMatrixView::CLinkMatrixView & CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView::CLinkMatrixView & rhs)
+{
+  const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
+  const_cast< vector< CMetab * > &>(mIndependent) = rhs.mIndependent;
+
+  return *this;
+}
+
+unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
+{return mIndependent.size() + mA.numRows();}
+
+unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
+{return mA.numCols();}

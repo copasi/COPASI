@@ -502,8 +502,7 @@ void COutput::repStruct(ofstream &fout)
   for (j = 0; j < model->getDepMetab(); j++)
     inverse.push_back(model->getMetabolitesDep()[j]->getName());
 
-  const CTransposeView< CUpperTriangularView< CMatrix< C_FLOAT64 > > >
-  & Inverse = model->getInverseL();
+  const CModel::CLinkMatrixView & Inverse = model->getL();
 
   for (i = 0; i < model->getIntMetab(); i++)
     {
