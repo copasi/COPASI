@@ -79,23 +79,13 @@ enum TriLogic
   TriTrue = 1
 };
 
-/* Define COPASI_DEBUG */
-#ifndef NDEBUG              // for gcc
-# define COPASI_DEBUG
-#else
-# ifdef _DEBUG             // for Visual Studio
-#  define COPASI_DEBUG
-# else
-#  undef COPASI_DEBUG
-# endif // _DEBUG
-#endif // not NDEBUG
-
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG
 #include <time.h>
 #include <sys/timeb.h>
 # ifdef COPASI_MAIN
 #  ifndef Darwin
+#pragma error "Debug"
 struct timeb init_time;
 unsigned C_INT32 last_time = 0;
 unsigned C_INT32 this_time;

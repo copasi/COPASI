@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2003/07/01 15:29:28 $  
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2003/09/22 19:15:27 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -19,6 +19,10 @@ DEFINES+=XML_STATIC
 # Common configuration settings
 CONFIG += exceptions
 CONFIG += rtti
+
+debug {
+  DEFINES += COPASI_DEBUG
+}
 
 !contains(BUILD_OS, WIN32) {
   QMAKE_QMAKE = $(QTDIR)/bin/qmake
