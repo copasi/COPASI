@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.156 $
+   $Revision: 1.157 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:28 $
+   $Date: 2003/11/12 17:20:42 $
    End CVS Header */
 
 /********************************************************
@@ -533,6 +533,7 @@ void ScanWidget::runScanTask()
                                     QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
         return;
     }
+  // :TODO: This must be moved to CScanProblem or CScanTask.process()
 
   //prepare for the output value addr
   valueAddrMatrix.resize(nSelectedObjects);
@@ -678,9 +679,9 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   nSelectedObjects++;
   //  if (pObject->isContainer())
-  CCopasiParameterGroup* pNewMethodItem = new CCopasiParameterGroup(pObject->getCN().c_str(), (CCopasiContainer*)pObject, pObject->getObjectType());
-  scanTask->getProblem()->addScanItem(*pNewMethodItem);
-  parameterTable->setScanObject(scanTask->getProblem()->getScanItem(nSelectedObjects - 1));
+  scanTask->getProblem()->addScanItem(pObject->getCN());
+  parameterTable->setScanObject(scanTask->getProblem()->
+                                getScanItem(nSelectedObjects - 1));
   parameterTable->setCopasiObject(pObject);
   parameterTable->loadObject();
 
