@@ -516,13 +516,13 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:      //Time course
+      case 23:       //Time course
         return trajectoryWidget;
         break;
       case 32:
         return scanWidget;
         break;
-      case 43:     //Report
+      case 43:      //Report
         return tableDefinition;
         break;
       case 5:
@@ -712,7 +712,9 @@ void ListViews::clearItem(QListViewItem * i)
 void ListViews::deleteAllMyChildrens(QListViewItem* me)
 {
   while (me->childCount())
-    delete (FolderListItem*)(me->firstChild());
+    {
+      delete (FolderListItem*) (me->firstChild());
+    }
 }
 
 //**********************************************************************
@@ -724,7 +726,8 @@ void ListViews::setTheRightPixmap(QListViewItem* lvi)
       lvi->setPixmap(0, *folderOpen);
 }
 
-bool ListViews::updateAllListviews(C_INT32 id) //static
+// this deletes the children of the listviewitems referenced by id in all ListViews
+bool ListViews::updateAllListviews1(C_INT32 id) //static
 {
   bool success = true;
 
@@ -737,7 +740,26 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
     {
       item = (FolderListItem*)(*it)->searchListViewItem(id);
 
-      (*it)->deleteAllMyChildrens(item);
+      if (item) (*it)->deleteAllMyChildrens(item);
+      else success = false;
+    }
+
+  return success;
+}
+
+// this reconstructs the childrens of the listViewItems in all listviews
+bool ListViews::updateAllListviews2(C_INT32 id) //static
+{
+  bool success = true;
+
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+
+  FolderListItem* item;
+
+  for (; it != ende; ++it)
+    {
+      item = (FolderListItem*)(*it)->searchListViewItem(id);
 
       if (item) item->insertSubFolders(item->folder()->children());
       else success = false;
@@ -754,20 +776,25 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType, Action action
 
   //just do everything. TODO: Later we can decide from parameters what really needs to be done
 
+  updateAllListviews1(112);
   loadMetabolitesToDataModel();
-  updateAllListviews(112);
+  updateAllListviews2(112);
 
+  updateAllListviews1(114);
   loadReactionsToDataModel();
-  updateAllListviews(114);
+  updateAllListviews2(114);
 
+  updateAllListviews1(111);
   loadCompartmentsToDataModel();
-  updateAllListviews(111);
+  updateAllListviews2(111);
 
+  updateAllListviews1(113);
   loadMoietiesToDataModel();
-  updateAllListviews(113);
+  updateAllListviews2(113);
 
+  updateAllListviews1(5);
   loadFunctionsToDataModel();
-  updateAllListviews(5);
+  updateAllListviews2(5);
 
   return success;
 }

@@ -129,7 +129,8 @@ class ListViews : public QSplitter
     bool update(ObjectType objectType, Action action, const std::string & key = "");
     bool updateListViews(ObjectType objectType, Action action, const std::string & key);
     static bool updateDataModelAndListviews(ObjectType objectType, Action action, const std::string & key);
-    static bool updateAllListviews(C_INT32 id);
+    static bool updateAllListviews1(C_INT32 id);
+    static bool updateAllListviews2(C_INT32 id);
 
     void deleteAllMyChildrens(QListViewItem* me);
     void addItem(QListViewItem* parent, Folder* child);
