@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "CGlobals.h"
 #include "copasi.h"
 #include "CWriteConfig.h"
 
@@ -36,6 +37,8 @@ CWriteConfig::CWriteConfig(const string& name)
 
     mBuffer.setf(ios::scientific);
     mBuffer.precision(16);
+
+    SetVariable("Version", "string", &Copasi.Version);
 }
 
 
@@ -90,7 +93,7 @@ long CWriteConfig::Fail()
 
 long CWriteConfig::SetVariable(const string name, 
                                const string type, 
-                               void *pout)
+                               const void *pout)
 {
     mBuffer << name << "=";
     
@@ -107,6 +110,10 @@ long CWriteConfig::SetVariable(const string name,
     {
         mBuffer << *(long *) pout;
     }
+    else if ( type == "short" )
+    {
+        mBuffer << *(short *) pout;
+    }
     else
     {
         FatalError();
@@ -121,8 +128,8 @@ long CWriteConfig::SetVariable(const string name,
 
 long CWriteConfig::SetVariable(const string name, 
                                const string type, 
-                               void *pout1, 
-                               void *pout2)
+                               const void *pout1, 
+                               const void *pout2)
 {
     mBuffer << name << "=";
     

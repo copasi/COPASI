@@ -1,6 +1,7 @@
 /**
  *  CSteb class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
+ *
  *  Converted for Copasi by Stefan Hoops 2001
  */
 
@@ -8,51 +9,208 @@
 #define COPASI_CSteb
 
 #include <string>
+#include <vector>
+#include <utility>
 
-#include "CReadConfig.h"
-#include "CWriteConfig.h"
 #include "CKinFunction.h"
+#include "CFunctionDB.h"
+#include "CMetab.h"
 
 class CStep
 {
+// Attributes
 public:
-    CStep();
-    CStep(string &stepname, long subs, long prods);
-    ~CStep();
-    CStep &operator=(const CStep &);    // overloaded assignment operator
-    long Assign(string &stepname, 
-                string &chemeq, 
-                string &ktype, 
-                long subs, long prods, long mods, 
-                double flux, 
-                short rev);
-    long Save(CWriteConfig &configbuffer);
-    long Load(CReadConfig &configbuffer);
-    void AddSubstrate(long index);
-    void AddProduct(long index);
-    void AddModifier(long index);
-    void AddParameter(double constant);
-    void EraseSubstrates(long index);
-    void EraseProducts(long index);
-    void EraseModifiers(long index);
-    void EraseParameters(double constant);
-    string GetChemEq(void);
-    long SubstrateNo(void);
-    CNodeK Substrate(long index);
+    typedef struct ID2METAB
+    {
+        string Identifier;
+        string Metabolite;
+        string Compartment;
+        CMetab *pMetabolite;
+    };
     
-
+    typedef struct ID2PARAM
+    {
+        string Identifier;
+        double Value;
+    };
+    
 private:
-    void DeAlloc(void);
-    void AllocStep(long subs, long prods);
-    string mName;                   // step (enzyme) name
-    string mChemEq;                 // chemical equation
-    CKinFunction *mKinetics;        // kinetic function of this step
-    string mKinType;                // name of the kinetic type
-    double mFlux;                   // net rate through this step
-    short mReversible;              // 1 if reaction is reversible
-    vector < long > mSubstrates;    // dynamic array of indexes to substrates
-    vector < long > mProducts;      // dynamic array of indexes to products
-    vector < long > mModifiers;     // dynamic array of indexes to modifiers
-    vector < double > mParameters;  // dynamic array of kinetic parameter values
+    /**
+     *
+     */
+    string mName;
+
+    /**
+     *
+     */
+    string mChemEq;
+
+    /**
+     *
+     */
+    CKinFunction * mFunction;
+
+    /**
+     *
+     */
+    double mFlux;
+
+    /**
+     *
+     */
+    short mReversible;
+
+    /**
+     *
+     */
+    vector < ID2METAB > mSubstrates;
+
+    /**
+     *
+     */
+    vector < ID2METAB > mProducts;
+
+    /**
+     *
+     */
+    vector < ID2METAB > mModifiers;
+
+    /**
+     *
+     */
+    vector < ID2PARAM > mParameters;
+
+    /**
+     *
+     */
+    vector < double * > mIdentifiers;
+
+    /**
+     *
+     */
+    long mFail;
+// Operations
+public:
+    /**
+     *
+     */
+    CStep();
+
+    /**
+     *
+     */
+    CStep(const string & name);
+
+    /**
+     *
+     */
+    ~CStep();
+
+    /**
+     *
+     */
+    CStep & operator=(const CStep & rhs);
+
+    /**
+     *
+     */
+    long Load(CReadConfig & configbuffer);
+
+    /**
+     *
+     */
+    long Save(CWriteConfig & configbuffer);
+
+    /**
+     *
+     */
+    vector < ID2METAB > &Substrates();
+
+    /**
+     *
+     */
+    vector < ID2METAB > &Products();
+
+    /**
+     *
+     */
+    vector < ID2METAB > &Modifiers();
+
+    /**
+     *
+     */
+    vector < ID2PARAM > &Parameters();
+
+    /**
+     *
+     */
+    string GetName();
+
+    /**
+     *
+     */
+    string GetChemEq();
+
+    /**
+     *
+     */
+    CKinFunction & GetFunction();
+
+    /**
+     *
+     */
+    double GetFlux();
+
+    /**
+     *
+     */
+    short IsReversible();
+
+    /**
+     *
+     */
+    long SetName(const string & name);
+
+    /**
+     *
+     */
+    long SetChemEq(const string & chemEq);
+
+    /**
+     *
+     */
+    long SetFunction(const string & functionName);
+
+    /**
+     *
+     */
+    long SetFlux(double flux);
+
+    /**
+     *
+     */
+    long SetReversible(short reversible);
+
+    /**
+     *
+     */
+    long Compile(CCopasiVector < CMetab * > & metabolites);
+    
+private:
+    /**
+     *
+     */
+    long InitIdentifiers();
+
+    /**
+     *
+     */
+    long SetIdentifiers();
+
+    /**
+     *
+     */
+    long CheckIdentifiers();
 };
+
 #endif // COPASI_CSteb

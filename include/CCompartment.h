@@ -1,12 +1,13 @@
-// CCompartment
-// 
-// Derived from Gepasi's ccompart.cpp
-// (C) Pedro Mendes 1995-2000
-//
-// Converted for Copasi by Pedro Mendes
-
-#ifndef COPASI_CComparment
-#define COPASI_CComparment
+/**
+ * CCompartment
+ * 
+ * Derived from Gepasi's ccompart.cpp
+ * (C) Pedro Mendes 1995-2000
+ * 
+ *  Converted for Copasi by Pedro Mendes
+ */
+#ifndef COPASI_CCompartment
+#define COPASI_CCompartment
 
 #include <string>
 
@@ -33,7 +34,8 @@ private:
      *  Metabolites located in the compartment.
      */
     CCopasiVector < CMetab > mMetabolites;
-
+    
+    
 // Operations
 public:
     /**
@@ -95,8 +97,15 @@ public:
      */
     double GetVolume();
 
-    CCopasiVector < CMetab > & GetMetabolites() {return mMetabolites;}
+    /*
+     *
+     */
+    CCopasiVector < CMetab > & GetMetabolites();
     
+    /*
+     *
+     */
+    void AddMetabolite(CMetab & metabolite);
     
     /**
      *  Sets the name of this compartment.
@@ -111,7 +120,13 @@ public:
      *  @see mVolume
      */
     void SetVolume(double volume);
+private:
+
+    /*
+     *
+     */
+    short IsValidName();
 };
 
-#endif // COPASI_CComparment
+#endif // COPASI_CCompartment
 

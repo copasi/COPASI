@@ -14,12 +14,11 @@
 #include "CReadConfig.h"
 
 // char *InitInputBuffer(char *name);
-static long GetFileSize(const char *name);
+// static long GetFileSize(const char *name);
 
 CReadConfig::CReadConfig(void)
 {
     // initialize everything
-    mFilename     = "";
     mLineNumber   = 0;
     mMode         = 0;
     mFail         = 0;
@@ -36,6 +35,8 @@ CReadConfig::CReadConfig(const string& name)
     mFail         = 0;
 
     InitInputBuffer();
+    
+    GetVariable("Version", "string", &mVersion);
 }
 
 CReadConfig::~CReadConfig(void)
@@ -48,6 +49,7 @@ long CReadConfig::Fail()
     return mFail;
 }
 
+string CReadConfig::GetVersion() {return mVersion;}
 
 long CReadConfig::GetVariable(const string& name, 
                               const string& type, 
@@ -101,7 +103,9 @@ long CReadConfig::GetVariable(const string& name,
         {
             if (mBuffer.eof())
             {
-                if (!(mode & CReadConfig::LOOP)) FatalError();
+                if (!(mode & CReadConfig::LOOP)) 
+                    CCopasiMessage(CCopasiMessage::ERROR, 1, name.c_str(),
+                                   mFilename.c_str(), mLineNumber);
 
                 // Rewind the buffer                
                 mode = CReadConfig::SEARCH;
@@ -113,7 +117,8 @@ long CReadConfig::GetVariable(const string& name,
         }
 
         // We should never reach this line!!!
-        FatalError();
+        CCopasiMessage(CCopasiMessage::ERROR, 1, name.c_str(),
+                       mFilename.c_str(), mLineNumber);
     }
     
     // Return the value depending on the type
@@ -131,9 +136,14 @@ long CReadConfig::GetVariable(const string& name,
         // may be we should check if Value is really a integer
         *(long *) pout = atoi(Value.c_str());
     }
+    else if ( type == "short" )
+    {
+        // may be we should check if Value is really a integer
+        *(short *) pout = atoi(Value.c_str());
+    }
     else
     {
-        FatalError();
+        CCopasiMessage(CCopasiMessage::ERROR, 5, type.c_str(), name.c_str());
         mFail = 1; //Error
     }
     
@@ -164,37 +174,12 @@ long CReadConfig::GetVariable(const string& name,
     }
     else
     {
-        FatalError();
+        CCopasiMessage(CCopasiMessage::ERROR, 5, type.c_str(), name.c_str());
         mFail = 1; //Error
     }
     
     return mFail;
 }
-
-#ifdef XXXX        
-void CReadConfig::SetMode(long mode)
-{
-    switch (mode)
-    {
-    case  CReadConfig_SEARCH:
-        mMode |= CReadConfig_SEARCH;
-        break;
-    case -CReadConfig_SEARCH:
-        if (mMode & CReadConfig_SEARCH) mMode ^= CReadConfig_SEARCH;
-        break;
-    case  CReadConfig_LOOP:
-        mMode |= CReadConfig_LOOP;
-        break;
-    case -CReadConfig_LOOP:
-        if (mMode & CReadConfig_LOOP) mMode ^= CReadConfig_LOOP;
-        break;
-    default:
-        // Invalid Mode
-        FatalError();
-        break;
-    }
-}
-#endif 
 
 long CReadConfig::InitInputBuffer()
 {
@@ -202,19 +187,22 @@ long CReadConfig::InitInputBuffer()
     
     // read the configuration file into the configuration buffer
     ifstream File(mFilename.c_str());
-    if (File.fail()) FatalError();
+    if (File.fail()) 
+        CCopasiMessage(CCopasiMessage::ERROR, 2, mFilename.c_str());
 
     while (TRUE)
     {
         File.read(c, 1);
         if (File.eof()) break;
-        if (File.fail()) FatalError();
+        if (File.fail())
+            CCopasiMessage(CCopasiMessage::ERROR, 3, mFilename.c_str());
         mBuffer << c;
     }
     File.clear();
     
     File.close();
-    if (File.fail()) FatalError();
+    if (File.fail())
+        CCopasiMessage(CCopasiMessage::ERROR, 4, mFilename.c_str());
     
     return mFail;
 }

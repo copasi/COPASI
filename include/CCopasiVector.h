@@ -28,7 +28,7 @@ public:
     /**
      *
      */
-    ~CCopasiVector() {}
+    ~CCopasiVector() {cout << "~CCopasiVector " << endl;}
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -38,14 +38,11 @@ public:
      */
     long Load(CReadConfig & configbuffer, long size)
         {
-            CType c;
             long Fail = 0;
-    
+            
+            mTypes.resize(size);
             for (long i = 0; i < size; i++)
-            {
-                if (Fail = c.Load(configbuffer)) return Fail;
-                mTypes.push_back(c);
-            }
+                if (Fail = mTypes[i].Load(configbuffer)) break;
     
             return Fail;
         }
@@ -65,6 +62,7 @@ public:
     
             return Fail;
         }
+
     /**
      *
      */
@@ -85,7 +83,7 @@ public:
     /**
      *
      */
-    long Delete() {mTypes.erase(0);}
+    long Delete() {mTypes.clear();}
     
     /**
      *
@@ -149,25 +147,25 @@ public:
 
 
     /**
-             *
-             */
+     *
+     */
     long Size() {return mTypes.size();}
 
 private:
-
-            /**
-             *
-             */
-    short DefaultInsertAllowed(CType src) {return ( GetIndex(src.GetName()) == -1 );}
+    /**
+     *
+     */
+    short DefaultInsertAllowed(CType src)
+        {return ( GetIndex(src.GetName()) == -1 );}
     
     /**
-             *
-             */
+     *
+     */
     short (*DefinedInsertAllowed)(CType src);
     
     /**
-             *
-             */
+     *
+     */
     long GetIndex(const string &name)
         {
             long i;

@@ -7,6 +7,7 @@
 
 #include "copasi.h"
 #include "CCompartment.h"
+#include "utilities.h"
 
 CCompartment::CCompartment()
 {
@@ -20,17 +21,20 @@ CCompartment::CCompartment(const string & name,
 {
     // initialize everything
     mName   = name;
+    if (!IsValidName()) FatalError();
     mVolume = volume;
 }
 
-CCompartment::~CCompartment()
+CCompartment::~CCompartment() 
 {
+    cout << "~CCompartment " << mName << endl;
 }
 
 CCompartment & CCompartment::operator=(const CCompartment & rhs)
 {
-    mVolume = rhs.mVolume;
-    mName   = rhs.mName;
+    mName        = rhs.mName;
+    mVolume      = rhs.mVolume;
+    mMetabolites = rhs.mMetabolites;
     
     return *this;
 }
@@ -39,13 +43,24 @@ long CCompartment::Load(CReadConfig & configbuffer)
 {
     long Fail = 0;
 
-    Fail = configbuffer.GetVariable("Compartment", "string",
-                                    (void *) &mName,
-                                    CReadConfig::SEARCH);
-    if (Fail) return Fail;
+    if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                        (void *) &mName,
+                                        CReadConfig::SEARCH))
+        return Fail;
 
-    Fail = configbuffer.GetVariable("Volume", "double",
-                                    (void *) &mVolume);
+    if (Fail = configbuffer.GetVariable("Volume", "double",
+                                        (void *) &mVolume))
+        return Fail;
+    
+    if (configbuffer.GetVersion() < "4") return Fail;
+    
+    long MetabolitesNo;
+    if (Fail = configbuffer.GetVariable("MetabolitesNo", "long",
+                                        (void *) &MetabolitesNo))
+        return Fail;
+    
+    Fail = mMetabolites.Load(configbuffer, MetabolitesNo);
+    
     return Fail;
 }
 
@@ -53,12 +68,20 @@ long CCompartment::Save(CWriteConfig & configbuffer)
 {
     long Fail = 0;
 
-    Fail = configbuffer.SetVariable("Compartment", "string",
-                                    (void *) &mName);
-    if (Fail) return Fail;
+    if (Fail = configbuffer.SetVariable("Compartment", "string",
+                                        (void *) &mName))
+        return Fail;
 
-    Fail = configbuffer.SetVariable("Volume", "double",
-                                    (void *) &mVolume);
+    if (Fail = configbuffer.SetVariable("Volume", "double",
+                                        (void *) &mVolume))
+        return Fail;
+    
+    long size = mMetabolites.Size();
+    if (Fail = configbuffer.SetVariable("MetabolitesNo", "long",
+                                        (void *) &size))
+        return Fail;
+
+    Fail = mMetabolites.Save(configbuffer);
     return Fail;
 }
 
@@ -66,6 +89,23 @@ string CCompartment::GetName() {return mName;}
 
 double CCompartment::GetVolume() {return mVolume;}
 
-void CCompartment::SetName(const string & name) {mName = name;}
+CCopasiVector < CMetab > & CCompartment::GetMetabolites() {return mMetabolites;}
+
+void CCompartment::SetName(const string & name) 
+{
+    mName = name;
+    if (!IsValidName()) FatalError();
+}
 
 void CCompartment::SetVolume(double volume) {mVolume = volume;}
+
+void CCompartment::AddMetabolite(CMetab &metabolite)
+{
+    metabolite.SetCompartment(this);
+    mMetabolites.Add(metabolite);
+}
+
+short CCompartment::IsValidName()
+{
+    return (mName.find_first_of("; ") == string::npos);
+}

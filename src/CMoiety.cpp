@@ -38,7 +38,7 @@ CMoiety::Add(double value,
 
 CMoiety::Delete()
 {
-    mEquation.erase(0);
+    mEquation.clear();
 }
 
 CMoiety::Delete(const string & name)

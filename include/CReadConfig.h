@@ -1,10 +1,9 @@
 /**
  *  CReadConfig class. A more elaborate class description.
+ *  New Class based on pmutils read functionality
+ *
+ *  (C) Stefan Hoops 2001
  */
-
-// New Class based on pmutils read functionality
-// (C) Stefan Hoops 2001
-
 
 #ifndef COPASI_CReadConfig
 #define COPASI_CReadConfig
@@ -68,6 +67,11 @@ private:
      */
     long    mFail;                   // Failure State
 
+    /*
+     *  The Version of the configuration file.
+     */
+    string mVersion;
+    
 public:
     /**
      *  Default consructor. 
@@ -91,10 +95,9 @@ public:
     ~CReadConfig();
 
     /**
-     *  Set the operations mode for configurations buffer.
-     *  @param mode valid modes are: CReadConfig_SEARCH, CReadConfig_LOOP
+     * Retrieves the version string of the configbuffer
      */
-//    void SetMode(long mode);
+    string GetVersion();
     
     /**
      *  Returns the failure status.

@@ -1,10 +1,11 @@
-// CNodeK
-// 
-// CNodeK.cpp based on UDKType.cpp from
-// (C) Pedro Mendes 1995-2000
-//
-// Created for Copasi by Stefan Hoops
-// (C) Stefan Hoops 2001
+/*  CNodeK
+ *  
+ *  CNodeK.cpp based on UDKType.cpp from
+ *  (C) Pedro Mendes 1995-2000
+ * 
+ *  Created for Copasi by Stefan Hoops
+ *  (C) Stefan Hoops 2001
+ */
 
 #ifndef COPASI_CNodeK
 #define COPASI_CNodeK

@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 #include "copasi.h"
-#include "globals.h"
 #include "CNodeK.h"
 
 CNodeK::CNodeK()

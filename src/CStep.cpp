@@ -1,146 +1,74 @@
-// step.cpp : implementation of the CStep class
+// CStep 
+// 
+// Derived from Gepasi's cstep.cpp
+// (C) Pedro Mendes 1995-2000
 //
-/////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
+// Converted for Copasi by Stefan Hoops
+
 
 #include "copasi.h"
-#include "globals.h"
+#include "CGlobals.h"
 #include "CStep.h"
+#include "utilities.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CStep
-
-// create an empty CStep object
 CStep::CStep()
 {
     mFlux = 0.0;
     mReversible = TRUE;
-    
-    mKinetics = NULL;
+    mFunction = NULL;
+
 }
 
-
-// create a CStep object with values
-CStep::CStep(string &stepname, long subs, long prods)
+CStep::CStep(const string & name)
 {
-    mName = stepname;
+    mName = name;
     mFlux = 0.0;
     mReversible = TRUE;
-
-    mKinetics = NULL;
+    mFunction = NULL;
 }
 
-// destruct a CStep object
 CStep::~CStep()
 {
 }
 
-
-// assign the values to the member variables
-long CStep::Assign(string &stepname, 
-                   string &chemeq, 
-                   string &ktype, 
-                   long subs, 
-                   long prods, 
-                   long mods, 
-                   double flux, 
-                   short rev)
+CStep & CStep::operator=(const CStep & rhs)
 {
-    mName = stepname;
-    mChemEq = chemeq;
-    mFlux = flux;
-    mReversible = rev;
-    
-    mSubstrates.erase(0);
-    mProducts.erase(0);
-    mModifiers.erase(0);
-    mParameters.erase(0);
-    
-    mKinetics = NULL;
-    mKinType = ktype;
+    mName        = rhs.mName;
+    mChemEq      = rhs.mChemEq;
+    mFunction    = rhs.mFunction;
+    mFlux        = rhs.mFlux;
+    mReversible  = rhs.mReversible;
+    mSubstrates  = rhs.mSubstrates;
+    mProducts    = rhs.mProducts;
+    mModifiers   = rhs.mModifiers;
+    mParameters  = rhs.mParameters;
+    mIdentifiers = rhs.mIdentifiers;
 
-    assert(FALSE);  // Make sure we come here to fix the code!!!
-    return -1;      // KinDB.Lookup(const string ktype, mKinetics);
+    return *this;
 }
 
-
-// overload assignment operator
-CStep &CStep::operator=(CStep &ptRHS)
-{
-    mName = ptRHS.mName;
-    mChemEq = ptRHS.mChemEq;
-    mFlux = ptRHS.mFlux;
-    mReversible = ptRHS.mReversible;
-
-    mSubstrates = ptRHS.mSubstrates;
-    mProducts = ptRHS.mProducts;
-    mModifiers = ptRHS.mModifiers;
-    mParameters = ptRHS.mParameters;
-
-    mKinetics = ptRHS.mKinetics;
-    mKinType = ptRHS.mKinType;
-
-    return *this;  // Assignment operator returns left side.
-}
-
-// allocate memory for dynamic variables
-void CStep::AllocStep(long subs, long prods)
-{
-}
-
-
-// free all dynamically allocated variables
-void CStep::DeAlloc(void)
-{
-}
-
-
-void CStep::AddSubstrate(long index) {mSubstrates.push_back(index);}
-
-void CStep::AddProduct(long index) {mProducts.push_back(index);}
-
-void CStep::AddModifier(long index) {mModifiers.push_back(index);}
-
-void CStep::AddParameter(double constant) {mParameters.push_back(constant);}
-
-void CStep::EraseSubstrates(long index) {mSubstrates.erase(0);}
-
-void CStep::EraseProducts(long index) {mProducts.erase(0);}
-
-void CStep::EraseModifiers(long index) {mModifiers.erase(0);}
-
-void CStep::EraseParameters(double constant) {mParameters.erase(0);}
-
-
-
-long CStep::Load(CReadConfig &configbuffer)
+long CStep::Load(CReadConfig & configbuffer)
 {
     char Name[10];
     long Fail = 0;
     long Size = 0;
     long i = 0;
     
-    configbuffer.SetMode(CReadConfig_SEARCH);
-    configbuffer.SetMode(CReadConfig_LOOP);
+    string KinType;
     
-    if (Fail = configbuffer.GetVariable("Step", "string", &mName))
+    if (Fail = configbuffer.GetVariable("Step", "string", &mName,
+                                        CReadConfig::SEARCH))
         return Fail;
-    
-    configbuffer.SetMode(-CReadConfig_SEARCH);
-    configbuffer.SetMode(-CReadConfig_LOOP);
     
     if (Fail = configbuffer.GetVariable("Equation", "string", &mChemEq))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("KineticType", "string", &mKinType))
+    if (Fail = configbuffer.GetVariable("KineticType", "string", &KinType))
         return Fail;
-    
-    // sanity check
-    if (FALSE) //  (!KinDB.Lookup(mKinType, Kinetics))
-    {
-        FatalError()
-            }
 
+    mFunction = &Copasi.FunctionDB.FindFunction(KinType);
+    if (mFunction == NULL) return Fail = 1;
+    
     if (Fail = configbuffer.GetVariable("Flux", "double", &mFlux))
         return Fail;
     
@@ -150,62 +78,74 @@ long CStep::Load(CReadConfig &configbuffer)
     if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
         return Fail;
     mSubstrates.resize(Size);
+    for (i=0; i < Size; i++)
+    {
+//        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
+//        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
+
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mSubstrates[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mSubstrates[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mSubstrates[i].Compartment))
+            return Fail;
+   }
     
     if (Fail = configbuffer.GetVariable("Products", "long", &Size))
         return Fail;
     mProducts.resize(Size);
-    
+    for (i=0; i < Size; i++)
+    {
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mProducts[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mProducts[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mProducts[i].Compartment))
+            return Fail;
+    }
+
     if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
         return Fail;
     mModifiers.resize(Size);
-    
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mModifiers[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Metabolite", "string",
+                                            &mModifiers[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Compartment", "string",
+                                            &mModifiers[i].Compartment))
+            return Fail;
+    }
+
     if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
         return Fail;
     mParameters.resize(Size);
-
-    // read the vectors
-    for (i=0; i<mSubstrates.size(); i++)
+    for (i = 0; i < Size; i++)
     {
-        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.GetVariable(Name, "long", &mSubstrates[i]))
+        if (Fail = configbuffer.GetVariable("Identifier", "string",
+                                            &mParameters[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.GetVariable("Value", "double",
+                                            &mParameters[i].Value))
             return Fail;
     }
-
-    for (i=0; i<mProducts.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Prod%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.GetVariable(Name, "long", &mProducts[i]))
-            return Fail;
-    }
-
-    for (i=0; i<mModifiers.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Modf%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.GetVariable(Name, "long", &mModifiers[i]))
-            return Fail;
-    }
-
-    for (i=0; i<mParameters.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Param%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.GetVariable(Name, "double", &mParameters[i]))
-            return Fail;
-    }
+    
+    SetFunction(KinType);
+    
     return Fail; 
 }
 
-
-long CStep::Save(CWriteConfig &configbuffer)
+long CStep::Save(CWriteConfig & configbuffer)
 {
-    char Name[10];
     long Fail = 0;
     long Size = 0;
     long i = 0;
@@ -216,8 +156,12 @@ long CStep::Save(CWriteConfig &configbuffer)
     if (Fail = configbuffer.SetVariable("Equation", "string", &mChemEq))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("KineticType", "string", &mKinType))
+    string KinType = mFunction->GetName();
+    if (Fail = configbuffer.SetVariable("KineticType", "string", &KinType))
         return Fail;
+
+    mFunction = &Copasi.FunctionDB.FindFunction(KinType);
+    if (mFunction == NULL) return Fail = 1;
     
     if (Fail = configbuffer.SetVariable("Flux", "double", &mFlux))
         return Fail;
@@ -228,60 +172,151 @@ long CStep::Save(CWriteConfig &configbuffer)
     Size = mSubstrates.size();
     if (Fail = configbuffer.SetVariable("Substrates", "long", &Size))
         return Fail;
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.SetVariable("Identifier", "string",
+                                            &mSubstrates[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &mSubstrates[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Compartment", "string",
+                                            &mSubstrates[i].Compartment))
+            return Fail;
+    }
     
     Size = mProducts.size();
     if (Fail = configbuffer.SetVariable("Products", "long", &Size))
         return Fail;
-    
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.SetVariable("Identifier", "string",
+                                            &mProducts[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &mProducts[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Compartment", "string",
+                                            &mProducts[i].Compartment))
+            return Fail;
+    }
+
     Size = mModifiers.size();
     if (Fail = configbuffer.SetVariable("Modifiers", "long", &Size))
         return Fail;
-    
+    for (i = 0; i < Size; i++)
+    {
+        if (Fail = configbuffer.SetVariable("Identifier", "string",
+                                            &mModifiers[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Metabolite", "string",
+                                            &mModifiers[i].Metabolite))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Compartment", "string",
+                                            &mModifiers[i].Compartment))
+            return Fail;
+    }
+
     Size = mParameters.size();
     if (Fail = configbuffer.SetVariable("Constants", "long", &Size))
         return Fail;
-
-    // read the vectors
-    for (i=0; i<mSubstrates.size(); i++)
+    for (i = 0; i < Size; i++)
     {
-        Size = snprintf(Name, sizeof(Name), "Subs%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.SetVariable(Name, "long", &mSubstrates[i]))
+        if (Fail = configbuffer.SetVariable("Identifier", "string",
+                                            &mParameters[i].Identifier))
+            return Fail;
+        if (Fail = configbuffer.SetVariable("Value", "double",
+                                            &mParameters[i].Value))
             return Fail;
     }
-
-    for (i=0; i<mProducts.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Prod%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.SetVariable(Name, "long", &mProducts[i]))
-            return Fail;
-    }
-
-    for (i=0; i<mModifiers.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Modf%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.SetVariable(Name, "long", &mModifiers[i]))
-            return Fail;
-    }
-
-    for (i=0; i<mParameters.size(); i++)
-    {
-        Size = snprintf(Name, sizeof(Name), "Param%d", i);
-        if (Size < 0 || sizeof(Name) - 1 < Size) FatalError();
-
-        if (Fail = configbuffer.SetVariable(Name, "double", &mParameters[i]))
-            return Fail;
-    }
+    
     return Fail; 
 }
 
-string CStep::GetChemEq(void) {return mChemEq;}
+vector < CStep::ID2METAB > &CStep::Substrates() {return mSubstrates;}
 
-long CStep::SubstrateNo(void) {return mSubstrates.size()};
+vector < CStep::ID2METAB > &CStep::Products() {return mProducts;}
 
-CNodeK CStep::Substrate(long index) {return ;
+vector < CStep::ID2METAB > &CStep::Modifiers() {return mModifiers;}
+
+vector < CStep::ID2PARAM > &CStep::Parameters() {return mParameters;}
+
+string CStep::GetName() {return mName;}
+
+string CStep::GetChemEq() {return mChemEq;}
+
+CKinFunction & CStep::GetFunction() {return *mFunction;}
+
+double CStep::GetFlux() {return mFlux;}
+
+short CStep::IsReversible() {return (mReversible == TRUE);}
+
+long CStep::SetName(const string & name) {mName = name;}
+
+long CStep::SetChemEq(const string & chemEq) {mChemEq = chemEq;}
+
+long CStep::SetFlux(double flux) {mFlux = flux;}
+
+long CStep::SetReversible(short reversible) {mReversible = reversible;}
+
+long CStep::SetFunction(const string & functionName)
+{
+    mFunction = &Copasi.FunctionDB.FindFunction(functionName);
+}
+
+long CStep::InitIdentifiers()
+{
+    mIdentifiers.clear();
+    
+    if (mFunction)
+    {
+        mIdentifiers.resize(mFunction->Identifiers().size());
+        for (long i = 0; i < mIdentifiers.size(); i++)
+            mIdentifiers[i] = NULL;
+    }
+
+    return 0;
+}
+
+long CStep::SetIdentifiers()
+{
+    long i;
+    
+    for (i = 0; i < mSubstrates.size(); i++)
+        mIdentifiers[mFunction->FindIdentifier(mSubstrates[i].Identifier)] =
+            mSubstrates[i].pMetabolite->GetConcentration();
+    
+    for (i = 0; i < mProducts.size(); i++)
+        mIdentifiers[mFunction->FindIdentifier(mProducts[i].Identifier)] =
+            mProducts[i].pMetabolite->GetConcentration();
+
+    for (i = 0; i < mModifiers.size(); i++)
+        mIdentifiers[mFunction->FindIdentifier(mModifiers[i].Identifier)] =
+            mModifiers[i].pMetabolite->GetConcentration();
+
+    for (i = 0; i < mParameters.size(); i++)
+        mIdentifiers[mFunction->FindIdentifier(mParameters[i].Identifier)] =
+            &mParameters[i].Value;
+
+    return 0;
+}
+
+long CStep::CheckIdentifiers()
+{
+    for (long i = 0; i < mIdentifiers.size(); i++)
+        if ( !mIdentifiers[i] ) FatalError();
+    
+    return 0;
+}
+
+long CStep::Compile(CCopasiVector < CMetab * > &metabolites)
+{
+    long Fail = 0;
+    
+    if (Fail = InitIdentifiers()) return Fail;
+    if (Fail = SetIdentifiers()) return Fail;
+    if (Fail = CheckIdentifiers()) return Fail;
+    
+    return Fail;
+}
+

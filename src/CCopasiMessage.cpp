@@ -15,18 +15,18 @@
 #include "CCopasiException.h"
 
 static string TimeStamp();
+#define INITIALTEXTSIZE 1024
 
 CCopasiMessage::CCopasiMessage(void)
 {
     // initialize everything
-    mText     = "";
     mType     = RAW;
+    mNumber   = 0;
 }
 
 CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type, 
                                const char *format, ...)
 {
-#define INITIALTEXTSIZE 1024
     long TextSize = INITIALTEXTSIZE;
     long Printed = 0;
     
@@ -52,10 +52,53 @@ CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type,
 
     mType = type;
     mText = Text;
+    mNumber = 0;
     
     if (Text) Handler();
 }
 
+CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type, 
+                               unsigned long number, ...)
+{
+    long i = 0;
+
+    long TextSize = INITIALTEXTSIZE;
+    long Printed = 0;
+    
+    char *Text = NULL;
+
+#include "messages.h"
+
+    while (Messages[i].No != number && Messages[i].Text) Messages[i++];
+    
+    if (!Messages[i].Text) FatalError();
+    
+    va_list Arguments = NULL;
+    va_start(Arguments, number);
+
+    Text = new char[TextSize + 1];
+    
+    Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
+
+    while (Printed < 0 || TextSize < Printed)
+    {
+        delete [] Text;
+        
+        (Printed < 0) ? TextSize *= 2: TextSize = Printed;
+        Text = new char[TextSize + 1];
+        
+        Printed = vsnprintf(Text, TextSize, Messages[i].Text, Arguments);
+    }
+    
+    va_end(Arguments);
+    
+    mText = Text;
+    mType = type;
+    mNumber = number;
+ 
+    Handler();
+}
+        
 void CCopasiMessage::Handler()
 {
     string Text = mText;
@@ -159,3 +202,4 @@ void CCopasiMessage::LineBreak()
         pos += Replace.length();
     }
 }
+

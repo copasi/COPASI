@@ -12,11 +12,16 @@
 #include "CReadConfig.h"
 #include "CWriteConfig.h"
 
+class CCompartment;
+
 //constants for use with Status
 #define METAB_FIXED	0
 #define METAB_VARIABLE	1
 #define METAB_DEPENDENT	2
 #define METAB_MOIETY	7
+
+class CMetabOld;
+
 
 class CMetab
 {
@@ -55,9 +60,9 @@ private:
     short mStatus;
 
     /**
-     *  Name of the compartment the metabolite is located in.
+     *  pointer to the compartment the metabolite is located in.
      */
-    string mCompartment;
+    CCompartment  * mCompartment;
 
 // Operations
 public:
@@ -80,7 +85,7 @@ public:
      *  @param compartment name of the compartment the metabolite
      *     is located in.
      */
-    CMetab(const string & compartment, short status, const string & name);
+    CMetab(const string & compartment, short status, CCompartment & name);
 
     /**
      *  Destructor.
@@ -91,6 +96,11 @@ public:
      *  Assignment operator.
      */
     CMetab & operator=(const CMetab & rhs);
+
+    /**
+     *  Assignment operator.
+     */
+    CMetab & operator=(const CMetabOld & rhs);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -108,27 +118,88 @@ public:
      */
     long Save(CWriteConfig & configbuffer);
 
-
     /**
      *  Retrieve the name of the metabolite.
      */
     string GetName();
 
+    /**
+     *
+     */
     double * GetConcentration() {return &mConc;}
 
+    /**
+     *
+     */
+    CCompartment * GetCompartment() {return mCompartment;} 
+
+    /**
+     *
+     */
+    SetName(const string & name) {mName = name;}
+
+    /**
+     *
+     */
     SetConcentration(double concentration) {mConc = concentration;}
     
+    /**
+     *
+     */
+    SetCompartment(CCompartment * compartment) {mCompartment = compartment;} 
+
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.
      *  @return Fail
      */
     long Reset(const string & name);
 
+private:
+
+    /*
+     *
+     */
+    short IsValidName();
+};
+
+class CMetabOld
+{
+    friend CMetab;
+    
+// Attributes
+private:
     /**
-     *  Set the name of the compartment the metabilite is located in.
+     *  Name of the metabolite
+     */
+    string mName;
+
+    /**
+     *  Concentration of the metabolite.
+     */
+    double mIConc;
+
+    /**
+     *  Status of the metabolite.  
+     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
+     */
+    short mStatus;
+
+    /**
+     *  pointer to the compartment the metabolite is located in.
+     */
+    long  mCompartment;
+
+// Operations
+public:
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long SetCompartment(const string & compartment);
+    long Load(CReadConfig & configbuffer);
+
+    long GetIndex();
 };
 
 #endif // COPASI_CMetab

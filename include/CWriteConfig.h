@@ -1,13 +1,13 @@
 /**
  *  CWriteConfig class. A more elaborate class description.
+ *
+ *  New Class based on pmutils read functionality
+ * (C) Stefan Hoops 2001
  */
-
-// New Class based on pmutils read functionality
-// (C) Stefan Hoops 2001
-
 
 #ifndef COPASI_CWriteConfig
 #define COPASI_CWriteConfig
+
 #include <strstream>
 
 class CWriteConfig
@@ -59,11 +59,11 @@ public:
      */
     long SetVariable(string name,
                     string type, 
-                    void *pout);
+                    const void *pout);
     long SetVariable(string name,
                     string type, 
-                    void *pout1, 
-                    void *pout2);
+                    const void *pout1, 
+                    const void *pout2);
 
 private:
     /**

@@ -38,7 +38,8 @@ public:
      *  @param ... arguments like in printf
      */
     CCopasiMessage(const COPASI_MESSAGE_TYPE type, const char *format, ... );
-
+    CCopasiMessage(const COPASI_MESSAGE_TYPE type, unsigned long number, ...);
+    
     /**
      *  Destructor. 
      */
@@ -84,5 +85,9 @@ private:
      */
     COPASI_MESSAGE_TYPE mType;  // Message type
 
+    /**
+     *  Message Number
+     */
+    unsigned long mNumber;
 };
 #endif // COPASI_CCopasiMessage

@@ -14,21 +14,23 @@ LIBS        = -lnsl
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CFLAGS) -c $< -o $@
 
-all: 	test
+all: 	test \
 	doc/html/index.html
 
-OBJS	= $(OBJDIR)/CCopasiException.o \
+OBJS	= $(OBJDIR)/CGlobals.o \
+	  $(OBJDIR)/CCopasiException.o \
 	  $(OBJDIR)/CCopasiMessage.o \
-	  $(OBJDIR)/CReadConfig.o  \
-	  $(OBJDIR)/CStep.o \
-	  $(OBJDIR)/CWriteConfig.o  \
+	  $(OBJDIR)/CReadConfig.o \
+	  $(OBJDIR)/CWriteConfig.o \
 	  $(OBJDIR)/CCompartment.o \
           $(OBJDIR)/CMetab.o \
 	  $(OBJDIR)/CNodeK.o \
 	  $(OBJDIR)/CKinFunction.o \
-	  $(OBJDIR)/lexkk.o  \
+	  $(OBJDIR)/lexkk.o \
 	  $(OBJDIR)/CMoiety.o \
-	  $(OBJDIR)/globals.o  \
+	  $(OBJDIR)/CFunctionDB.o \
+	  $(OBJDIR)/CStep.o \
+	  $(OBJDIR)/utilities.o \
 	  $(OBJDIR)/main.o
 
 test: 	dependencies $(OBJDIR) $(OBJS)
