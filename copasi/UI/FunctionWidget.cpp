@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Date: 2003/11/14 20:58:35 $
    End CVS Header */
 
 /***********************************************************************
@@ -184,34 +184,32 @@ void FunctionWidget::slotBtnCancelClicked()
 
 void FunctionWidget::slotBtnDeleteClicked()
 {
-  int choice = QMessageBox::warning(this, "Confirm Delete",
-                                    "Delete Selected Rows?\n"
-                                    "Only Fully Selected Rows will be deleted." ,
-                                    "Yes", "No", 0, 0, 1);
-  switch (choice)
+  if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
     {
-    case 0:  // Yes or Enter
-      {
-        int j = table->currentRow();
-        if (table->isRowSelected(j, true)) //True for Completely selected rows.
-          {
-            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
-              {
-                QString name(table->text(j, 0));
-                ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, mKeys[j]);
-
-                table->removeSelectedRows(true);
-
-                CCopasiVectorN < CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
-                objects.remove(name.latin1());
-              }
-          }
-        break;
-      }
-    case 1:  // No or Escape
-      {
-        break;
-      }
+      int j = table->currentRow();
+      if (table->isRowSelected(j, true)) //True for Completely selected rows.
+        {
+          QString type(table->text(j, 1));
+          if (type == "user-defined")
+            {
+              int choice = QMessageBox::warning(this, "Confirm Delete",
+                                                "Delete Selected Rows?\n"
+                                                "Only Fully Selected Rows will be deleted." ,
+                                                "Yes", "No", 0, 0, 1);
+              switch (choice)
+                {
+                case 0:   // Yes or Enter
+                  {
+                    table->removeSelectedRows(true);
+                    Copasi->pFunctionDB->removeFunction(mKeys[j]);
+                    ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, mKeys[j]);
+                    break;
+                  }
+                case 1:   // No or Escape
+                  break;
+                }
+            }
+        }
     }
 }
 

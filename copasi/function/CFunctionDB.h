@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:49 $
+   $Author: gasingh $ 
+   $Date: 2003/11/14 20:58:35 $
    End CVS Header */
 
 /**
@@ -123,6 +123,8 @@ class CFunctionDB : public CCopasiContainer
      */
     bool addFunction(const std::string &name, const CFunction::Type & type = CFunction::Base);
     //bool addFunction(const std::string & name);
+
+    bool removeFunction(const std::string &key);
 
     /**
      *  Delete the function functionName from the database
