@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/12/02 15:54:36 $
+   $Date: 2003/12/15 23:07:33 $
    End CVS Header */
 
 /********************************************************
@@ -487,19 +487,23 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
               ObjectBrowserItem* objectChild = currentItem;
               if (nField) // divide into attribute and object lists
                 {
+                  loadChild(objectChild, (CCopasiContainer *) current, false);
+                  objectChild->attachKey();
+
+                  /* this change is due to the poor performance of loadField
+                  * to change replace the part inside the if(nField) with the following statements
+
                   objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
                   objectChild->setObjectType(OBJECTATTR);
                   objectChild->setText(0, "Object list");
                   loadChild(objectChild, (CCopasiContainer *) current, false);
-                  /* To change
                   ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
                   fieldChild->setObjectType(FIELDATTR);
                   fieldChild->setText(0, "Attribute list");
                   loadField(fieldChild, (CCopasiContainer*) current);
-
                   fieldChild->attachKey();
-                   To change */
                   objectChild->attachKey();
+                  * end of change */
                 }
               else
                 loadChild(objectChild, (CCopasiContainer *) current, nField);
