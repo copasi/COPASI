@@ -21,6 +21,20 @@ class CUDFunction: public CKinFunction
    *  The vector of nodes of the binary tree of the function
    */
   CCopasiVectorS < CNodeO > mNodes;
+  /**
+   * Value of user defined function
+   */
+  C_FLOAT64 mValue;
+
+  /**
+   *  Internal variable
+   */
+  unsigned C_INT32 mNidx;
+
+  /**
+   *  A pointer to the  call parameters of the user defined function
+   */
+  //CCallParameters mCallParameters;
 
  public:
   /**
@@ -67,11 +81,59 @@ class CUDFunction: public CKinFunction
   void load(CReadConfig & configbuffer,
             CReadConfig::Mode mode = CReadConfig::LOOP);
 
+
+  /**
+   * Calculate the value of this user defined function
+   * return the pointer of this user defined function
+   */
+  C_FLOAT64 calcValue();
+
+  /**
+   * Get the pointer of user defined function
+   */
+  void * getValueAddr();
+
+  /**
+   * Return the value of user defined function
+   */
+  C_FLOAT64 getValue() const;
+
+  //CCallParameters & getCallParameters();
+
+  /**
+   *  This parses the function into a binary tree
+   */
+  //C_INT32 parse();
+
+  /**
+   *  Retreives the nodes of the function
+   */
+  CCopasiVectorS < CNodeO > & getNodes();
+
  private:
   /**
    *  This function creates the parameter description for older file versions
    */
   void createParameters();
+
+  /**
+   *  This  connects the nodes to build the binary function tree
+   */
+  C_INT32 connectNodes();
+
+  /**
+   *  This function is part of the algorithm that builds the binary tree
+   *  @param C_INT16 priority
+   *  @return CNodeK *
+   */
+  CNodeO * parseExpression(C_INT16 priority);
+
+  /**
+   *  This function is part of the algorithm that builds the binary tree
+   *  @return CNodeK *
+   */
+  CNodeO * parsePrimary();
+
 };
 
 #endif
