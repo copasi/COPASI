@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "CopasiUI3"=.\CopasiUI\CopasiUI.dsp - Package Owner=<4>
+Project: "Erdos"=.\ABiochem\Erdos.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -11,6 +11,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name elementaryFluxModes
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name function
     End Project Dependency
@@ -21,16 +24,16 @@ Package=<4>
     Project_Dep_Name output
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name steadystate
+    Project_Dep_Name randomGenerator
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name utilities
+    Project_Dep_Name steadystate
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name trajectory
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name randomGenerator
+    Project_Dep_Name utilities
     End Project Dependency
 }}}
 
@@ -60,52 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "matrix"=.\test\matrix.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name function
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name model
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name output
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name steadystate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name trajectory
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name utilities
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "model"=.\model\model.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name elementaryFluxModes
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "optimization"=.\OPTIMIZATION\optimization.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -153,42 +111,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "test"=.\test\test.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name function
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name model
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name output
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name steadystate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name trajectory
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name utilities
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name elementaryFluxModes
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name randomGenerator
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "trajectory"=.\trajectory\trajectory.dsp - Package Owner=<4>
 
 Package=<5>
@@ -209,6 +131,42 @@ Package=<5>
 
 Package=<4>
 {{{
+}}}
+
+###############################################################################
+
+Project: "wattsrog"=.\ABiochem\wattsrog.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name elementaryFluxModes
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name function
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name model
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name output
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name randomGenerator
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name steadystate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name trajectory
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name utilities
+    End Project Dependency
 }}}
 
 ###############################################################################
