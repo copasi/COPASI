@@ -256,7 +256,7 @@ void ReactionsWidget1::slotLineEditChanged()
     {
       //TODO: bring up a message window??
       //debugging
-      cout << "Not a valid equation!\n\n";
+      std::cout << "Not a valid equation!\n\n";
       return;  // abort further processing
     }
   //  else  //debugging
