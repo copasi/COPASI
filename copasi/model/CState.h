@@ -24,24 +24,69 @@ template <class CType> class CMatrix;
 
 class CState
   {
+    friend class CStateX;
+
   protected:
     // Attributes
+    /**
+     *
+     */
     const CModel * mpModel;
+
+    /**
+     *
+     */
     C_FLOAT64 mTime;
+
+    /**
+     *
+     */
     CVector< C_FLOAT64 > mVolumes;
 
     // Associations
-    CParticleNumberList mVariableNumbers;
+
+    /**
+     *
+     */
     CParticleNumberList mFixedNumbers;
+
+    /**
+     *
+     */
+    CParticleNumberList mVariableNumbers;
 
     // Operations
   public:
+    /**
+     *
+     */
     CState(const CModel * pModel = NULL);
+
+    /**
+     *
+     */
     CState(const CState & state);
+
+    /**
+     *
+     */
     CState(const CStateX & stateX);
+
+    /**
+     *
+     */
     virtual ~CState();
+
+    /**
+     *
+     */
     CState & operator =(const CState & state);
+
+    /**
+     *
+     */
     CState & operator =(const CStateX & stateX);
+
     /**
      * Load a state
      * @param "CReadConfig &" configBuffer
@@ -55,39 +100,140 @@ class CState
      */
     virtual void save(CWriteConfig & configBuffer);
 
+    /**
+     *
+     */
     virtual void setModel(const CModel * pModel);
+
+    /**
+     *
+     */
     const CModel * getModel() const;
+
+    /**
+     *
+     */
     void setTime(const C_FLOAT64 & time);
+
+    /**
+     *
+     */
     const C_FLOAT64 & getTime() const;
 
-    const CVector< C_FLOAT64 > & getFixedNumberArrayDbl() const;
-    const CVector< C_INT32 > & getFixedNumberArrayInt() const;
+    /**
+     *
+     */
+    const CVector< C_FLOAT64 > & getFixedNumberVectorDbl() const;
+
+    /**
+     *
+     */
+    const CVector< C_INT32 > & getFixedNumberVectorInt() const;
+
+    /**
+     *
+     */
     const C_FLOAT64 & getFixedNumberDbl(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const C_INT32 & getFixedNumberInt(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const unsigned C_INT32 & getFixedNumberSize() const;
 
-    const CVector< C_FLOAT64 > & getVariableNumberArrayDbl() const;
-    const CVector< C_INT32 > & getVariableNumberArrayInt() const;
+    /**
+     *
+     */
+    const CVector< C_FLOAT64 > & getVariableNumberVectorDbl() const;
+
+    /**
+     *
+     */
+    const CVector< C_INT32 > & getVariableNumberVectorInt() const;
+
+    /**
+     *
+     */
     const C_FLOAT64 & getVariableNumberDbl(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const C_INT32 & getVariableNumberInt(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const unsigned C_INT32 & getVariableNumberSize() const;
 
+    /**
+     *
+     */
     const C_FLOAT64 & getVolume(const unsigned C_INT32 & index) const;
-    const CVector< C_FLOAT64 > & getVolumeArray() const;
+
+    /**
+     *
+     */
+    const CVector< C_FLOAT64 > & getVolumeVector() const;
+
+    /**
+     *
+     */
     unsigned C_INT32 getVolumeSize() const;
 
+    /**
+     *
+     */
     void setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & value);
+
+    /**
+     *
+     */
     void setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-    void setFixedNumberArray(const CVector< C_INT32 > & values);
-    void setFixedNumberArray(const CVector< C_FLOAT64 > & values);
 
+    /**
+     *
+     */
+    void setFixedNumberVector(const CVector< C_INT32 > & vector);
+
+    /**
+     *
+     */
+    void setFixedNumberVector(const CVector< C_FLOAT64 > & vector);
+
+    /**
+     *
+     */
     void setVariableNumber(const unsigned C_INT32 & index, const C_INT32 & value);
-    void setVariableNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-    void setVariableNumberArray(const CVector< C_INT32 > & values);
-    void setVariableNumberArray(const CVector< C_FLOAT64 > & values);
 
+    /**
+     *
+     */
+    void setVariableNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
+
+    /**
+     *
+     */
+    void setVariableNumberVector(const CVector< C_INT32 > & vector);
+
+    /**
+     *
+     */
+    void setVariableNumberVector(const CVector< C_FLOAT64 > & vector);
+
+    /**
+     *
+     */
     void setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-    void setVolumeArray(const CVector< C_FLOAT64 > & values);
+
+    /**
+     *
+     */
+    void setVolumeVector(const CVector< C_FLOAT64 > & vector);
 
     /**
      * Calculate the jacobian of the state and store it in the provided matrix.
@@ -109,26 +255,54 @@ class CState
     virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                       const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution);
-
-    virtual void cleanup();
   };
 
 class CStateX: public CState
   {
+    friend class CState;
+
   protected:
     // Attributes
 
     // Associations
+
+    /**
+     *
+     */
     CParticleNumberList mDependentNumbers;
 
     // Operations
   public:
+    /**
+     *
+     */
     CStateX(const CModel * pModel = NULL);
+
+    /**
+     *
+     */
     CStateX(const CState & state);
+
+    /**
+     *
+     */
     CStateX(const CStateX & stateX);
+
+    /**
+     *
+     */
     virtual ~CStateX();
+
+    /**
+     *
+     */
     CStateX & operator =(const CState & state);
+
+    /**
+     *
+     */
     CStateX & operator =(const CStateX & stateX);
+
     /**
      * Load a state
      * @param "CReadConfig &" configBuffer
@@ -142,18 +316,61 @@ class CStateX: public CState
      */
     virtual void save(CWriteConfig & configBuffer);
 
+    /**
+     *
+     */
     virtual void setModel(const CModel * pModel);
-    const CVector< C_FLOAT64 > & getDependentNumberArrayDbl() const;
-    const CVector< C_INT32 > & getDependentNumberArrayInt() const;
+
+    /**
+     *
+     */
+    const CVector< C_FLOAT64 > & getDependentNumberVectorDbl() const;
+
+    /**
+     *
+     */
+    const CVector< C_INT32 > & getDependentNumberVectorInt() const;
+
+    /**
+     *
+     */
     const C_FLOAT64 & getDependentNumberDbl(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const C_INT32 & getDependentNumberInt(const unsigned C_INT32 & index) const;
+
+    /**
+     *
+     */
     const unsigned C_INT32 & getDependentNumberSize()const;
+
+    /**
+     *
+     */
     void setDependentNumber(const unsigned C_INT32 & index,
                             const C_INT32 & value);
+
+    /**
+     *
+     */
     void setDependentNumber(const unsigned C_INT32 & index,
                             const C_FLOAT64 & value);
-    void setDependentNumberArray(const CVector< C_INT32 > & values);
-    void setDependentNumberArray(const CVector< C_FLOAT64 > & values);
+
+    /**
+     *
+     */
+    void setDependentNumberVector(const CVector< C_INT32 > & vector);
+
+    /**
+     *
+     */
+    void setDependentNumberVector(const CVector< C_FLOAT64 > & vector);
+
+    /**
+     *
+     */
     void updateDependentNumbers();
 
     /**
@@ -165,6 +382,7 @@ class CStateX: public CState
     virtual void getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                              const C_FLOAT64 & factor,
                              const C_FLOAT64 & resolution) const;
+
   protected:
     /**
      * Calculate the jacobian of the state and store it in the provided matrix.
@@ -175,7 +393,5 @@ class CStateX: public CState
     virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                       const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution);
-
-    virtual void cleanup();
   };
 #endif

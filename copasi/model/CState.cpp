@@ -15,63 +15,78 @@
 /* Code for class CState */
 /*************************/
 CState::CState(const CModel * pModel):
-    mpModel(NULL),
+    mpModel(pModel),
     mTime(0)
-{if (pModel) setModel(pModel);}
+{setModel(pModel);}
 
 CState::CState(const CState & state):
-    mTime(0)
-{*this = state;}
+    mpModel(state.mpModel),
+    mTime(state.mTime),
+    mVolumes(state.mVolumes),
+    mFixedNumbers(state.mFixedNumbers),
+    mVariableNumbers(state.mVariableNumbers)
+{}
 
-CState::CState(const CStateX & stateX):
-    mTime(0)
+CState::CState(const CStateX & stateX)
 {*this = stateX;}
 
-CState::~CState() {cleanup();}
+CState::~CState() {}
 
 CState & CState::operator =(const CStateX & stateX)
 {
-  if (mpModel != stateX.getModel()) setModel(stateX.getModel());
-
-  mTime = stateX.getTime();
+  mpModel = stateX.mpModel;
+  mTime = stateX.mTime;
+  mVolumes = stateX.mVolumes;
+  mFixedNumbers = stateX.mFixedNumbers;
 
   if (mpModel)
     {
       unsigned C_INT32 i, iVariable, iTotal;
-      iVariable = stateX.getVariableNumberSize();
-      iTotal = iVariable + stateX.getDependentNumberSize();
+
+      iVariable = stateX.mVariableNumbers.size();
+      iTotal = iVariable + stateX.mDependentNumbers.size();
+
+      mVariableNumbers.resize(iTotal);
 
       const vector <unsigned C_INT32> & Permutation =
         mpModel->getMetabolitePermutation();
 
-      mVolumes = stateX.getVolumeArray();
+      /* We have to set the Dbl and Int representation independently
+         since we do not know which was the last updated one.
+         In theory it should always suffice to use set method with Dbl. */
+
+      C_FLOAT64 * Dbl =
+        const_cast< C_FLOAT64 * >(mVariableNumbers.getVectorDbl().array());
+      C_INT32 * Int =
+        const_cast< C_INT32 * >(mVariableNumbers.getVectorInt().array());
 
       for (i = 0; i < iVariable; i++)
-        mVariableNumbers.set(Permutation[i], stateX.getVariableNumberDbl(i));
+        {
+          *(Dbl + Permutation[i]) = stateX.mVariableNumbers.getDbl(i);
+          *(Int + Permutation[i]) = stateX.mVariableNumbers.getInt(i);
+        }
 
       for (; i < iTotal; i++)
-        mVariableNumbers.set(Permutation[i],
-                             stateX.getDependentNumberDbl(i - iVariable));
-
-      mFixedNumbers.setVector(stateX.getFixedNumberArrayDbl());
+        {
+          *(Dbl + Permutation[i]) =
+            stateX.mDependentNumbers.getDbl(i - iVariable);
+          *(Int + Permutation[i]) =
+            stateX.mDependentNumbers.getInt(i - iVariable);
+        }
     }
+  else
+    mVariableNumbers.resize(0);
 
   return *this;
 }
 
 CState & CState::operator =(const CState & state)
 {
-  if (mpModel != state.getModel()) setModel(state.getModel());
-
-  mTime = state.getTime();
-
-  if (mpModel)
-    {
-      mVolumes = state.mVolumes;
-
-      mVariableNumbers.setVector(state.getVariableNumberArrayDbl());
-      mFixedNumbers.setVector(state.getFixedNumberArrayDbl());
-    }
+  mpModel = state.mpModel;
+  mTime = state.mTime;
+  mVolumes = state.mVolumes;
+  mFixedNumbers = state.mFixedNumbers;
+  mVariableNumbers = state.mVariableNumbers;
 
   return *this;
 }
@@ -84,43 +99,43 @@ void CState::load(CReadConfig & configBuffer)
   unsigned C_INT32 i;
 
   /* Make sure that the state fits the currently loaded model */
-  configBuffer.getVariable("StateModel", "string", &Tmp);
+  configBuffer.getVariable("State.Model", "string", &Tmp);
   if (Tmp == Copasi->Model->getTitle())
     setModel(Copasi->Model);
   else
     fatalError();
 
-  configBuffer.getVariable("StateTime", "C_FLOAT64", &mTime);
+  configBuffer.getVariable("State.Time", "C_FLOAT64", &mTime);
 
-  configBuffer.getVariable("StateVolumeSize", "C_INT32", &Size);
+  configBuffer.getVariable("State.VolumeSize", "C_INT32", &Size);
   if (mpModel->getCompartments().size() != (unsigned C_INT32) Size)
     fatalError();
   mVolumes.resize(Size);
 
   for (i = 0; i < (unsigned C_INT32) Size; i++)
     {
-      Tmp = StringPrint("StateVolume[%ld]", i);
+      Tmp = StringPrint("State.Volume[%ld]", i);
       configBuffer.getVariable(Tmp, "C_FLOAT64", & mVolumes[i]);
     }
 
-  configBuffer.getVariable("StateVariableNumberSize", "C_INT32", &Size);
-  if ((unsigned C_INT32) Size != mVariableNumbers.size()) fatalError();
-
-  for (i = 0; i < mVariableNumbers.size(); i++)
-    {
-      Tmp = StringPrint("StateVariableNumber[%ld]", i);
-      configBuffer.getVariable(Tmp, "C_FLOAT64", & Dbl);
-      mVariableNumbers.set(i, Dbl);
-    }
-
-  configBuffer.getVariable("StateFixedNumberSize", "C_INT32", &Size);
+  configBuffer.getVariable("State.FixedNumberSize", "C_INT32", &Size);
   if ((unsigned C_INT32) Size != mFixedNumbers.size()) fatalError();
 
   for (i = 0; i < mFixedNumbers.size(); i++)
     {
-      Tmp = StringPrint("StateFixedNumber[%ld]", i);
+      Tmp = StringPrint("State.FixedNumber[%ld]", i);
       configBuffer.getVariable(Tmp, "C_FLOAT64", & Dbl);
       mFixedNumbers.set(i, Dbl);
+    }
+
+  configBuffer.getVariable("State.VariableNumberSize", "C_INT32", &Size);
+  if ((unsigned C_INT32) Size != mVariableNumbers.size()) fatalError();
+
+  for (i = 0; i < mVariableNumbers.size(); i++)
+    {
+      Tmp = StringPrint("State.VariableNumber[%ld]", i);
+      configBuffer.getVariable(Tmp, "C_FLOAT64", & Dbl);
+      mVariableNumbers.set(i, Dbl);
     }
 
   return;
@@ -134,36 +149,36 @@ void CState::save(CWriteConfig & configBuffer)
   unsigned C_INT32 i;
 
   Tmp = mpModel->getTitle();
-  configBuffer.setVariable("StateModel", "string", &Tmp);
+  configBuffer.setVariable("State.Model", "string", &Tmp);
 
-  configBuffer.setVariable("StateTime", "C_FLOAT64", &mTime);
+  configBuffer.setVariable("State.Time", "C_FLOAT64", &mTime);
 
   Size = mVolumes.size();
-  configBuffer.setVariable("StateVolumeSize", "C_INT32", &Size);
+  configBuffer.setVariable("StateVolume.Size", "C_INT32", &Size);
 
   for (i = 0; i < (unsigned C_INT32) Size; i++)
     {
-      Tmp = StringPrint("StateVolume[%ld]", i);
+      Tmp = StringPrint("State.Volume[%ld]", i);
       configBuffer.setVariable(Tmp, "C_FLOAT64", &mVolumes[i]);
     }
 
-  Size = mVariableNumbers.size();
-  configBuffer.setVariable("StateVariableNumberSize", "C_INT32", &Size);
-
-  for (i = 0; i < mVariableNumbers.size(); i++)
-    {
-      Dbl = mVariableNumbers.getDbl(i);
-      Tmp = StringPrint("StateVariableNumber[%ld]", i);
-      configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
-    }
-
   Size = mFixedNumbers.size();
-  configBuffer.setVariable("StateFixedNumberSize", "C_INT32", &Size);
+  configBuffer.setVariable("State.FixedNumberSize", "C_INT32", &Size);
 
   for (i = 0; i < mFixedNumbers.size(); i++)
     {
       Dbl = mFixedNumbers.getDbl(i);
-      Tmp = StringPrint("StateFixedNumber[%ld]", i);
+      Tmp = StringPrint("State.FixedNumber[%ld]", i);
+      configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
+    }
+
+  Size = mVariableNumbers.size();
+  configBuffer.setVariable("State.VariableNumberSize", "C_INT32", &Size);
+
+  for (i = 0; i < mVariableNumbers.size(); i++)
+    {
+      Dbl = mVariableNumbers.getDbl(i);
+      Tmp = StringPrint("State.VariableNumber[%ld]", i);
       configBuffer.setVariable(Tmp, "C_FLOAT64", & Dbl);
     }
 
@@ -176,24 +191,22 @@ const C_FLOAT64 & CState::getTime() const {return mTime;}
 
 void CState::setModel(const CModel * pModel)
 {
-  cleanup();
-
   mpModel = pModel;
   if (mpModel)
     {
       mVolumes.resize(mpModel->getCompartments().size());
 
-      mVariableNumbers.resize(mpModel->getIntMetab());
       mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
+      mVariableNumbers.resize(mpModel->getIntMetab());
     }
 }
 
 const CModel * CState::getModel() const {return mpModel;}
 
-const CVector< C_FLOAT64 > & CState::getFixedNumberArrayDbl() const
+const CVector< C_FLOAT64 > & CState::getFixedNumberVectorDbl() const
 {return mFixedNumbers.getVectorDbl();}
 
-const CVector< C_INT32 > & CState::getFixedNumberArrayInt() const
+const CVector< C_INT32 > & CState::getFixedNumberVectorInt() const
 {return mFixedNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getFixedNumberDbl(const unsigned C_INT32 & index) const
@@ -205,10 +218,10 @@ const C_INT32 & CState::getFixedNumberInt(const unsigned C_INT32 & index) const
 const unsigned C_INT32 & CState::getFixedNumberSize () const
 {return mFixedNumbers.size();}
 
-const CVector< C_FLOAT64 > & CState::getVariableNumberArrayDbl() const
+const CVector< C_FLOAT64 > & CState::getVariableNumberVectorDbl() const
 {return mVariableNumbers.getVectorDbl();}
 
-const CVector< C_INT32 > & CState::getVariableNumberArrayInt() const
+const CVector< C_INT32 > & CState::getVariableNumberVectorInt() const
 {return mVariableNumbers.getVectorInt();}
 
 const C_FLOAT64 & CState::getVariableNumberDbl(const unsigned C_INT32 & index) const
@@ -223,7 +236,7 @@ const unsigned C_INT32 & CState::getVariableNumberSize () const
 const C_FLOAT64 & CState::getVolume(const unsigned C_INT32 & index) const
 {return mVolumes[index];}
 
-const CVector< C_FLOAT64 > & CState::getVolumeArray() const {return mVolumes;}
+const CVector< C_FLOAT64 > & CState::getVolumeVector() const {return mVolumes;}
 
 unsigned C_INT32 CState::getVolumeSize() const
 {return mVolumes.size();}
@@ -234,11 +247,11 @@ void CState::setFixedNumber(const unsigned C_INT32 & index, const C_INT32 & valu
 void CState::setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mFixedNumbers.set(index, value);}
 
-void CState::setFixedNumberArray(const CVector< C_INT32 > & values)
-{mFixedNumbers.setVector(values);}
+void CState::setFixedNumberVector(const CVector< C_INT32 > & vector)
+{mFixedNumbers.setVector(vector);}
 
-void CState::setFixedNumberArray(const CVector< C_FLOAT64 > & values)
-{mFixedNumbers.setVector(values);}
+void CState::setFixedNumberVector(const CVector< C_FLOAT64 > & vector)
+{mFixedNumbers.setVector(vector);}
 
 void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_INT32 & value)
@@ -248,17 +261,17 @@ void CState::setVariableNumber(const unsigned C_INT32 & index,
                                const C_FLOAT64 & value)
 {mVariableNumbers.set(index, value);}
 
-void CState::setVariableNumberArray(const CVector< C_INT32 > & values)
-{mVariableNumbers.setVector(values);}
+void CState::setVariableNumberVector(const CVector< C_INT32 > & vector)
+{mVariableNumbers.setVector(vector);}
 
-void CState::setVariableNumberArray(const CVector< C_FLOAT64 > & values)
-{mVariableNumbers.setVector(values);}
+void CState::setVariableNumberVector(const CVector< C_FLOAT64 > & vector)
+{mVariableNumbers.setVector(vector);}
 
 void CState::setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value)
 {mVolumes[index] = value;}
 
-void CState::setVolumeArray(const CVector< C_FLOAT64 > & values)
-{mVolumes = values;}
+void CState::setVolumeVector(const CVector< C_FLOAT64 > & vector)
+{mVolumes = vector;}
 
 void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & factor,
@@ -267,9 +280,6 @@ void CState::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
   CState tmp(*this);
   tmp.getJacobianProtected(jacobian, factor, resolution);
 }
-
-void CState::cleanup()
-{mTime = 0;}
 
 void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
                                   const C_FLOAT64 & factor,
@@ -336,33 +346,56 @@ CStateX::CStateX(const CStateX & stateX):
     CState()
 {*this = stateX;}
 
-CStateX::~CStateX(){cleanup();}
+CStateX::~CStateX(){}
 
 CStateX & CStateX::operator =(const CState & state)
 {
-  if (mpModel != state.getModel()) setModel(state.getModel());
-
-  mTime = state.getTime();
+  mpModel = state.mpModel;
+  mTime = state.mTime;
+  mVolumes = state.mVolumes;
+  mFixedNumbers = state.mFixedNumbers;
 
   if (mpModel)
     {
       unsigned C_INT32 i, iVariable, iTotal;
+
+      mVariableNumbers.resize(mpModel->getIndMetab());
+      mDependentNumbers.resize(mpModel->getDepMetab());
+
       iVariable = mVariableNumbers.size();
-      iTotal = state.getVariableNumberSize();
+      iTotal = iVariable + mDependentNumbers.size();
 
       const vector <unsigned C_INT32> & Permutation =
         mpModel->getMetabolitePermutation();
 
-      mVolumes = state.getVolumeArray();
+      /* We have to set the Dbl and Int representation independently
+         since we do not know which was the last updated one.
+         In theory it should always suffice to use set method with Dbl. */
 
-      for (i = 0; i < iVariable; i++)
-        mVariableNumbers.set(i, state.getVariableNumberDbl(Permutation[i]));
+      C_FLOAT64 * Dbl =
+        const_cast< C_FLOAT64 * >(mVariableNumbers.getVectorDbl().array());
+      C_INT32 * Int =
+        const_cast< C_INT32 * >(mVariableNumbers.getVectorInt().array());
 
-      for (; i < iTotal; i++)
-        mDependentNumbers.set(i - iVariable,
-                              state.getVariableNumberDbl(Permutation[i]));
+      for (i = 0; i < iVariable; i++, Dbl++, Int++)
+        {
+          *Dbl = state.mVariableNumbers.getDbl(Permutation[i]);
+          *Int = state.mVariableNumbers.getInt(Permutation[i]);
+        }
 
-      mFixedNumbers.setVector(state.getFixedNumberArrayDbl());
+      Dbl = const_cast< C_FLOAT64 * >(mDependentNumbers.getVectorDbl().array());
+      Int = const_cast< C_INT32 * >(mDependentNumbers.getVectorInt().array());
+
+      for (i = iVariable; i < iTotal; i++, Dbl++, Int++)
+        {
+          *Dbl = state.mVariableNumbers.getDbl(Permutation[i]);
+          *Int = state.mVariableNumbers.getInt(Permutation[i]);
+        }
+    }
+  else
+    {
+      mVariableNumbers.resize(0);
+      mDependentNumbers.resize(0);
     }
 
   return *this;
@@ -370,18 +403,12 @@ CStateX & CStateX::operator =(const CState & state)
 
 CStateX & CStateX::operator =(const CStateX & stateX)
 {
-  if (mpModel != stateX.getModel()) setModel(stateX.getModel());
-
-  mTime = stateX.getTime();
-
-  if (mpModel)
-    {
-      mVolumes = stateX.mVolumes;
-
-      mVariableNumbers.setVector(stateX.getVariableNumberArrayDbl());
-      mDependentNumbers.setVector(stateX.getDependentNumberArrayDbl());
-      mFixedNumbers.setVector(stateX.getFixedNumberArrayDbl());
-    }
+  mpModel = stateX.mpModel;
+  mTime = stateX.mTime;
+  mVolumes = stateX.mVolumes;
+  mFixedNumbers = stateX.mFixedNumbers;
+  mVariableNumbers = stateX.mVariableNumbers;
+  mDependentNumbers = stateX.mDependentNumbers;
 
   return *this;
 }
@@ -405,23 +432,21 @@ void CStateX::save(CWriteConfig & configBuffer)
 
 void CStateX::setModel(const CModel * pModel)
 {
-  cleanup();
-
   mpModel = pModel;
   if (mpModel)
     {
       mVolumes.resize(mpModel->getCompartments().size());
 
+      mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
       mVariableNumbers.resize(mpModel->getIndMetab());
       mDependentNumbers.resize(mpModel->getDepMetab());
-      mFixedNumbers.resize(mpModel->getTotMetab() - mpModel->getIntMetab());
     }
 }
 
-const CVector< C_FLOAT64 > & CStateX::getDependentNumberArrayDbl() const
+const CVector< C_FLOAT64 > & CStateX::getDependentNumberVectorDbl() const
 {return mDependentNumbers.getVectorDbl();}
 
-const CVector< C_INT32 > & CStateX::getDependentNumberArrayInt() const
+const CVector< C_INT32 > & CStateX::getDependentNumberVectorInt() const
 {return mDependentNumbers.getVectorInt();}
 
 const C_FLOAT64 & CStateX::getDependentNumberDbl(const unsigned C_INT32 & index) const
@@ -441,11 +466,11 @@ void CStateX::setDependentNumber(const unsigned C_INT32 & index,
                                  const C_FLOAT64 & value)
 {mDependentNumbers.set(index, value);}
 
-void CStateX::setDependentNumberArray(const CVector< C_INT32 > & values)
-{mDependentNumbers.setVector(values);}
+void CStateX::setDependentNumberVector(const CVector< C_INT32 > & vector)
+{mDependentNumbers.setVector(vector);}
 
-void CStateX::setDependentNumberArray(const CVector< C_FLOAT64 > & values)
-{mDependentNumbers.setVector(values);}
+void CStateX::setDependentNumberVector(const CVector< C_FLOAT64 > & vector)
+{mDependentNumbers.setVector(vector);}
 
 void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
                           const C_FLOAT64 & factor,
@@ -453,12 +478,6 @@ void CStateX::getJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   CStateX tmp(*this);
   tmp.getJacobianProtected(jacobian, factor, resolution);
-}
-
-void CStateX::cleanup()
-{
-  CState::cleanup();
-  mDependentNumbers.resize(0);
 }
 
 void CStateX::updateDependentNumbers()
