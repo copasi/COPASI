@@ -78,7 +78,7 @@ void CDatum::setTitle(const string& title)
  *  Returns the value of this object.
  *  @return *mpValue
  */
-void* CDatum::getValue() const
+const void* CDatum::getValue() const
 {
   return mpValue;
 }

@@ -170,7 +170,7 @@ class CNewton
    *  set CModel
    *  @param "const CModel &" model
    */
-  void setModel(const CModel & model);
+  void setModel(CModel & model);
 
   /**
    *  get CModel

@@ -117,7 +117,7 @@ CNewton::~CNewton()
 }
 
 //set mModel
-void CNewton::setModel(const CModel & model)
+void CNewton::setModel(CModel & model)
 {
   mModel = &model;
 

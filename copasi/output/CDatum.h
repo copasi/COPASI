@@ -74,7 +74,7 @@ class CDatum
    *  Pointer to the memory location that contains the value of this
    *  object 
    */
-  void * mpValue;
+  const void * mpValue;
 
   /**
    *  Type of the object value.
@@ -166,7 +166,7 @@ class CDatum
    *  @return *mpValue
    *  @see mpValue
    */
-  void* getValue() const;
+  const void* getValue() const;
 
   /**
    *  Sets the value of mpValue with a pointer to a memory location that has 

@@ -220,6 +220,11 @@ C_INT32 CTrajectory::getMethod() const
   return mMethod;
 }
 
+C_FLOAT64 * CTrajectory::getMY() const
+{
+  return mY;
+}
+
 void CTrajectory::process()
 {
   // mODESolver->initialize(* mModel, mY, mN, mMethod);

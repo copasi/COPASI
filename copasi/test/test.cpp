@@ -445,7 +445,7 @@ C_INT32  TestNewton(void)
     C_INT32 size = 0;
     C_INT32 i;
  
-    CReadConfig inbuf("gps/dchan1.gps");
+    CReadConfig inbuf("gps/NewtonTest.gps");
     CModel model;
     model.load(inbuf);
     model.compile();
