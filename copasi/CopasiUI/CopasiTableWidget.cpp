@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 13:12:40 $
+   $Date: 2004/10/14 20:55:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -245,19 +245,19 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
 
 void CopasiTableWidget::slotTableSelectionChanged()
 {
-  std::cout << "Table..selectionChanged " << std::endl;
+  //std::cout << "Table..selectionChanged " << std::endl;
   if (!table->hasFocus()) table->setFocus();
 }
 
 void CopasiTableWidget::slotCurrentChanged(int row, int col)
 {
-  std::cout << "Table..currentChanged " << row << "  " << col << std::endl;
+  //std::cout << "Table..currentChanged " << row << "  " << col << std::endl;
 }
 
 void CopasiTableWidget::slotValueChanged(int row, int col)
 {
   if (mRO) return;
-  std::cout << "Table..valueChanged " << row << "  " << col << std::endl;
+  //std::cout << "Table..valueChanged " << row << "  " << col << std::endl;
   btnOK->setEnabled(true);
   btnCancel->setEnabled(true);
 
@@ -393,6 +393,8 @@ void CopasiTableWidget::slotBtnNewClicked()
   defaultTableLineContent(row, 0);
 
   updateRow(row);
+
+  table->ensureCellVisible(row, 0);
 
   btnOK->setEnabled(true);
   btnCancel->setEnabled(true);
