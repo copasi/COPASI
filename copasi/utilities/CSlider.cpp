@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/27 15:53:16 $
+   $Author: shoops $ 
+   $Date: 2005/02/28 02:28:06 $
    End CVS Header */
 
 #include "copasi.h"
+#include "mathematics.h"
 
 #include "CSlider.h"
 #include "report/CKeyFactory.h"
