@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/01/25 21:56:50 $
+   $Author: ssahle $ 
+   $Date: 2005/01/26 11:02:37 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -30,14 +30,16 @@ class CParameterListItem : public QListViewItem
   public:
     CParameterListItem(QListView *parent, const QString & text)
         : QListViewItem(parent, text),
-        mpObject(NULL)
+        mpObject(NULL),
+        mIsChanged(false)
     {
       setOpen(true);
     }
 
     CParameterListItem(CParameterListItem *parent, const QString & text)
         : QListViewItem(parent, text),
-        mpObject(NULL)
+        mpObject(NULL),
+        mIsChanged(false)
     {
       setOpen(true);
     }
@@ -45,7 +47,8 @@ class CParameterListItem : public QListViewItem
     CParameterListItem(CParameterListItem *parent, const QString & name,
                        CCopasiObject* obj, C_FLOAT64 value, const QString & unit)
         : QListViewItem(parent, name, QString::number(value), unit),
-        mpObject(obj)
+        mpObject(obj),
+        mIsChanged(false)
     {
       setRenameEnabled(1, true);
     }
@@ -53,10 +56,25 @@ class CParameterListItem : public QListViewItem
     CCopasiObject* getObject() const
       {return mpObject;}
 
+    C_FLOAT64 getValue() const
+      {return text(1).toDouble();}
+
+    bool isChanged() const
+      {return mIsChanged;}
+
     //QString key(int, bool) const;
 
   protected:
     CCopasiObject* mpObject;
+    bool mIsChanged;
+
+    virtual void okRename (int col)
+    {
+      QListViewItem::okRename(col);
+      //std::cout << "okrename" << std::endl;
+      mIsChanged = true;
+      setText(0, "*" + text(0)); //TODO: find better way to display changed values
+    }
   };
 
 //****************************************************************************
@@ -127,6 +145,7 @@ ParametersWidget::~ParametersWidget()
 void ParametersWidget::commitPressed()
 {
   saveToModel();
+  loadFromModel();
 }
 
 void ParametersWidget::revertPressed()
@@ -185,7 +204,53 @@ bool ParametersWidget::loadFromModel()
 
 bool ParametersWidget::saveToModel() const
   {
-    // please check this -- I added this because of compilation error - sameer
+    CParameterListItem * child;
+
+    //Metabs
+    child = (CParameterListItem *)mMetabItem->firstChild();
+    while (child)
+      {
+        //std::cout << child->getObject()->getObjectName() << std::endl;
+        if (child->isChanged())
+          {
+            CMetab* tmp = dynamic_cast<CMetab*>(child->getObject());
+            if (tmp) tmp->setInitialConcentration(child->getValue());
+          }
+        child = (CParameterListItem *)child->nextSibling();
+      }
+
+    //Compartments
+    child = (CParameterListItem *)mCompItem->firstChild();
+    while (child)
+      {
+        //std::cout << child->getObject()->getObjectName() << std::endl;
+        if (child->isChanged())
+          {
+            CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
+            if (tmp) tmp->setVolume(child->getValue());
+          }
+        child = (CParameterListItem *)child->nextSibling();
+      }
+
+    //Reactions
+    CParameterListItem * child2;
+    child = (CParameterListItem *)mReacItem->firstChild();
+    while (child)
+      {
+        child2 = (CParameterListItem *)child->firstChild();
+        while (child2)
+          {
+            //std::cout << child2->getObject()->getObjectName() << std::endl;
+            if (child2->isChanged())
+              {
+                CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
+                if (tmp) tmp->setValue(child2->getValue());
+              }
+            child2 = (CParameterListItem *)child2->nextSibling();
+          }
+        child = (CParameterListItem *)child->nextSibling();
+      }
+
     return true;
   }
 
@@ -237,5 +302,8 @@ bool ParametersWidget::update(ListViews::ObjectType objectType,
 
 bool ParametersWidget::leave()
 {
-  return saveToModel();
+  bool success = true;
+  if (!saveToModel()) success = false;
+  if (!loadFromModel()) success = false;
+  return success;
 }
