@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/30 17:58:53 $
+   $Author: ssahle $ 
+   $Date: 2004/06/22 11:01:17 $
    End CVS Header */
 
 /* COptMethodSA code */
@@ -20,8 +20,7 @@
 #define BESTFOUNDSOFAR 2
 #define NumDirection 10
 #define TRUE 1
-#define FALSE 0 
-// #define PI 3.1415926
+#define FALSE 0
 
 #include <vector>
 #include <math.h>
@@ -32,7 +31,7 @@
 #include "CRealProblem.h"
 #include "randomGenerator/CRandom.h"
 
-static double PI = 4.0 * atan(1.0);
+//static double PI = 4.0 * atan(1.0);
 
 COptMethodSA::COptMethodSA():
     COptMethod(CCopasiMethod::SimulatedAnnealing)
@@ -170,7 +169,7 @@ C_INT32 COptMethodSA::optimise()
               for (int hh = 0; hh < NumParameter; hh++)
                 {
                   // ChangeValue=tan(2*PI*rand()/RAND_MAX)*(t/pow(pow(2,2.0)+t*t,(NumParameter+1)/2.0));
-                  ChangeValue = tan(2 * PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
+                  ChangeValue = tan(2 * M_PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
                   newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
 
                   if (newparameter[hh] < Minimum[hh]) newparameter[hh] = Minimum[hh] + pRand->getRandomCC() * (Maximum[hh] - Minimum[hh]);
