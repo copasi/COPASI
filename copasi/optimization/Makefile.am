@@ -2,18 +2,18 @@
 noinst_LIBRARIES = liboptimization.a
 
 liboptimization_a_SOURCES = \
-	COptAlgorithm.cpp \
-	COptAlgorithmParameter.cpp \
+	COptMethod.cpp \
+	CRandomSearch.cpp \
+	CRandomSearchMaster.cpp \
 	COptProblem.cpp \
-	CRealProblem.cpp \
-	COptAlgorithmRand.cpp
+	CRealProblem.cpp
 
 EXTRA_DIST = \
-	COptAlgorithm.h			COptAlgorithm.cpp \
-	COptAlgorithmParameter.h	COptAlgorithmParameter.cpp \
-	COptProblem.h			COptProblem.cpp \
-	CRealProblem.h			CRealProblem.cpp \
-	COptAlgorithmRand.h		COptAlgorithmRand.cpp \
+	COptMethod.h	COptMethod.cpp \
+	CRandomSearch.h	CRandomSearch.cpp \
+	CRandomSearchMaster.h	CRandomSearchMaster.cpp \
+	COptProblem.h	COptProblem.cpp \
+	CRealProblem.h	CRealProblem.cpp \
 	optimization.h
 
 ####### kdevelop will overwrite this part!!! (end)############

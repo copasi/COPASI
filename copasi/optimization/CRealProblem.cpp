@@ -16,7 +16,7 @@ CRealProblem::CRealProblem() : COptProblem()
 
 // Destructor
 CRealProblem::~CRealProblem()
-{ }
+{}
 
 // calculate function for optimization
 // YOHE: Here is the N-Dimensional Test Function I use:
@@ -34,7 +34,7 @@ C_FLOAT64 CRealProblem::calculate()
   double fitness0;
 
   int parameterNum = getParameterNum();
-  double * parameterValues = getParameterValues();
+  double * parameterValues = getParameter().array();
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness

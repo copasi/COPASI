@@ -1,7 +1,5 @@
 /* include files for the package optimization */
 
-#include "COptAlgorithm.h"
-#include "COptAlgorithmParameter.h"
+#include "COptMethod.h"
 #include "COptProblem.h"
 #include "CRealProblem.h"
-#include "COptAlgorithmRand.h"

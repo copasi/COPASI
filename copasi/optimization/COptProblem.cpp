@@ -13,80 +13,46 @@
 #include "trajectory/CTrajectoryTask.h"
 
 //  Default constructor
-COptProblem::COptProblem()
-{
-  mParameterValues = NULL;
-  mParameterNum = 0;
-  mBestValue = 0.0;
-  mBestParameters = NULL;   // array of best values
-  mParameterMin = NULL;     // the minimum values of parameters
-  mParameterMax = NULL;     // the maximum values of parameters
-  initialize();
-}
+COptProblem::COptProblem():
+    mParameter(),
+    mParameterMin(),
+    mParameterMax(),
+    mBestValue(DBL_MAX),
+    mBestParameter(),
+    mpSteadyState(NULL),
+    mpTrajectory(NULL)
+{}
+
+// copy constructor
+COptProblem::COptProblem(const COptProblem& src):
+    mParameter(src.mParameter),
+    mParameterMin(src.mParameterMin),
+    mParameterMax(src.mParameterMax),
+    mBestValue(src.mBestValue),
+    mBestParameter(src.mBestParameter),
+    mpSteadyState(src.mpSteadyState),
+    mpTrajectory(src.mpTrajectory)
+{}
 
 // Destructor
 COptProblem::~COptProblem()
 {}
 
-// copy constructor
-COptProblem::COptProblem(const COptProblem& source)
-{
-  // :TODO: this is broken !!!
-  mParameterValues = source.mParameterValues;
-  mParameterNum = source.mParameterNum;
-  mBestValue = source.mBestValue;
-  mBestParameters = source.mBestParameters;
-  mParameterMin = source.mParameterMin;     // the minimum values of parameters
-  mParameterMax = source.mParameterMax;
-}
-
 // Object assignment overloading,
-COptProblem & COptProblem::operator = (const COptProblem& source)
+COptProblem & COptProblem::operator = (const COptProblem& src)
 {
-  cleanup();
-
-  if (this != &source)
+  if (this != &src)
     {
-      mParameterValues = source.mParameterValues;
-      mParameterNum = source.mParameterNum;
-      mBestValue = source.mBestValue;
-      mBestParameters = source.mBestParameters;
-      mParameterMin = source.mParameterMin;     // the minimum values of parameters
-      mParameterMax = source.mParameterMax;
+      mParameter = src.mParameter;
+      mParameterMin = src.mParameterMin;
+      mParameterMax = src.mParameterMax;
+      mBestValue = src.mBestValue;
+      mBestParameter = src.mBestParameter;
+      mpSteadyState = src.mpSteadyState;
+      mpTrajectory = src.mpTrajectory;
     }
 
   return *this;
-}
-
-//clean up memory
-void COptProblem::cleanup(void)
-{
-  pfree(mParameterValues);
-  pfree(mBestParameters);
-  pfree(mParameterMin);
-  pfree(mParameterMax);
-}
-
-//  Initialization of private variables
-void COptProblem::initialize(void)
-{
-  cleanup();
-
-  mParameterValues = new double[mParameterNum];
-  mBestParameters = new double[mParameterNum];
-  mParameterMin = new double[mParameterNum];
-  mParameterMax = new double[mParameterNum];
-
-  /**
-   * Initializing the steady state and Trajectory pointers to NULL
-   */
-  steady_state = NULL;
-  trajectory = NULL;
-
-  //  For test purposes: delete test.txt after the CSS_Solution.process(&std::ofstream)
-  //  is modified to CSS_Solution.process()
-
-  std::ofstream out("test.txt");
 }
 
 // check constraints : unimplemented - always returns true
@@ -109,124 +75,114 @@ bool COptProblem::checkFunctionalConstraints()
  */
 C_FLOAT64 COptProblem::calculate()
 {
-  if (steady_state != NULL)
+  if (mpSteadyState != NULL)
     {
-      // std::cout << "COptProblem: steady_state";
-      steady_state->process();
+      // std::cout << "COptProblem: mpSteadyState";
+      mpSteadyState->process();
     }
-  if (trajectory != NULL)
+  if (mpTrajectory != NULL)
     {
-      // std::cout << "COptProblem: trajectory";
-      trajectory->process();
+      // std::cout << "COptProblem: mpTrajectory";
+      mpTrajectory->process();
     }
   return 0;
 }
 
-//set the parameter values
-void COptProblem::setParamterValues(double * aDouble)
-{
-  mParameterValues = aDouble;
-}
-
 // get parameter values
-double * COptProblem::getParameterValues()
+CVector< C_FLOAT64 > & COptProblem::getParameter()
 {
-  return mParameterValues;
+  return mParameter;
 }
 
 //set a parameter
-void COptProblem::setParameter(int aNum, double aDouble)
+void COptProblem::setParameter(C_INT32 aNum, C_FLOAT64 aDouble)
 {
-  mParameterValues[aNum] = aDouble;
+  mParameter[aNum] = aDouble;
 }
 
 // get a parameter
-double COptProblem::getParameter(int aNum)
+C_FLOAT64 COptProblem::getParameter(C_INT32 aNum)
 {
-  return mParameterValues[aNum];
+  return mParameter[aNum];
 }
 
 // set parameter number
-void COptProblem::setParameterNum(int aNum)
+void COptProblem::setParameterNum(C_INT32 aNum)
 {
-  mParameterNum = aNum;
-  initialize();
+  mParameter.resize(aNum);
+  mParameterMin.resize(aNum);
+  mParameterMax.resize(aNum);
+  mBestParameter.resize(aNum);
 }
 
 // get parameter number
-int COptProblem::getParameterNum()
+C_INT32 COptProblem::getParameterNum()
 {
-  return mParameterNum;
+  return mParameter.size();
 }
 
 // set the best value
-void COptProblem::setBestValue(double aDouble)
+void COptProblem::setBestValue(C_FLOAT64 aDouble)
 {
   mBestValue = aDouble;
 }
 
 //get the best value
-double COptProblem::getBestValue()
+C_FLOAT64 COptProblem::getBestValue()
 {
   return mBestValue;
 }
 
 //set best value in array
-void COptProblem::setBestParameter(int i, double value)
+void COptProblem::setBestParameter(C_INT32 i, C_FLOAT64 value)
 {
-  mBestParameters[i] = value;
+  mBestParameter[i] = value;
 }
 
 //get best value from array
-double COptProblem::getBestValue(int i)
+C_FLOAT64 COptProblem::getBestValue(C_INT32 i)
 {
-  return mBestParameters[i];
+  return mBestParameter[i];
 }
 
-// set the minimum value of parameters
-void COptProblem::setParameterMin(double * aDouble)
+// get the parameters leading the best value
+CVector< C_FLOAT64 > & COptProblem::getBestParameter()
 {
-  mParameterMin = aDouble;
+  return mBestParameter;
 }
 
 // set individual minimum value
-void COptProblem::setParameterMin(int i, double value)
+void COptProblem::setParameterMin(C_INT32 i, C_FLOAT64 value)
 {
   mParameterMin[i] = value;
 }
 
 // get the minimum value of parameters
-double * COptProblem::getParameterMin()
+CVector< C_FLOAT64 > & COptProblem::getParameterMin()
 {
   return mParameterMin;
 }
 
 // get minimum value from array
-double COptProblem::getParameterMin(int i)
+C_FLOAT64 COptProblem::getParameterMin(C_INT32 i)
 {
   return mParameterMin[i];
 }
 
-// set the maximum value of the paramters
-void COptProblem::setParameterMax(double * aDouble)
-{
-  mParameterMax = aDouble;
-}
-
 // set individual array element
-void COptProblem::setParameterMax(int i, double value)
+void COptProblem::setParameterMax(C_INT32 i, C_FLOAT64 value)
 {
   mParameterMax[i] = value;
 }
 
 // get the maximum value of the parameters
-double * COptProblem::getParameterMax()
+CVector< C_FLOAT64 > & COptProblem::getParameterMax()
 {
   return mParameterMax;
 }
 
 // get individual element from array
-double COptProblem::getParameterMax(int i)
+C_FLOAT64 COptProblem::getParameterMax(C_INT32 i)
 {
   return mParameterMax[i];
 }
@@ -235,7 +191,7 @@ double COptProblem::getParameterMax(int i)
 void COptProblem::setProblemType(ProblemType t)
 {
   if (t == SteadyState)
-    steady_state = new CSteadyStateTask();
+    mpSteadyState = new CSteadyStateTask();
   if (t == Trajectory)
-    trajectory = new CTrajectoryTask();
+    mpTrajectory = new CTrajectoryTask();
 }

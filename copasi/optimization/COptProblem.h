@@ -13,11 +13,9 @@
 
 #include <string>
 #include <copasi.h>
-#include <vector> 
-/*
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
- */
+#include <vector>
+
+#include "utilities/CVector.h"
 
 class CSteadyStateTask;
 class CTrajectoryTask;
@@ -33,25 +31,44 @@ class COptProblem
     //data member
 
   private:
-    double * mParameterValues;  // pointer to parameters
-    int mParameterNum;          // the number of parameters
-    double mBestValue;          // the best result of the problem
-    double * mBestParameters;   // the parameters leading the best result
-    double * mParameterMin;     // the minimum values of parameters
-    double * mParameterMax;     // the maximum values of parameters
+    /**
+     * The paramters for wich the optimization function has to be calculated
+     */
+    CVector< C_FLOAT64 > mParameter;
+
+    /**
+     * The minimum values of the parameters
+     */
+    CVector< C_FLOAT64 > mParameterMin;
+
+    /**
+     * The maximum values of the parameters
+     */
+    CVector< C_FLOAT64 > mParameterMax;
+
+    /**
+     * The best result of the problem
+     */
+    C_FLOAT64 mBestValue;
+
+    /**
+     * The parameters leading to the best result
+     */
+    CVector< C_FLOAT64 > mBestParameter;
+
     /**
      * Pointer to CSteadyStateTask.  To be used in calculate() to select between
      * trajectory and steady state method
      */
-    CSteadyStateTask * steady_state;
+    CSteadyStateTask * mpSteadyState;
+
     /**
      * Pointer to CTrajectory.  To be used in calculate() to select between
      * trajectory and steady state method
      */
-    CTrajectoryTask * trajectory;
+    CTrajectoryTask * mpTrajectory;
 
     // Implementation
-
   public:
 
     /**
@@ -72,20 +89,10 @@ class COptProblem
 
     /**
      * Object assignment overloading
-     * @param source a COptProblem object for copy
-     * @return an assigned COptProblem object
+     * @param const COptProblem& src
+     * @return COptProblem & *this
      */
-    COptProblem& operator=(const COptProblem& source);
-
-    /**
-     * clean up memory
-     */
-    void cleanup(void);
-
-    /**
-     * Initialization of private variables
-     */
-    void initialize(void);
+    COptProblem& operator=(const COptProblem& src);
 
     /**
      * calculate function for optimization
@@ -102,95 +109,85 @@ class COptProblem
      */
     virtual bool checkFunctionalConstraints();
 
-    /*
-     * set the parameter values
-     */
-    void setParamterValues(double * aDouble);
-
     /**
      * get the parameter values
      */
-    double * getParameterValues();
+    CVector< C_FLOAT64 > & getParameter();
 
     /*
      * set a parameter
      */
-    void setParameter(int aNum, double aDouble);
+    void setParameter(C_INT32 aNum, C_FLOAT64 aDouble);
 
     /**
      * get a parameter
      */
-    double getParameter(int aNum);
+    C_FLOAT64 getParameter(C_INT32 aNum);
 
     /*
      * set parameter number
      */
-    void setParameterNum(int aNum);
+    void setParameterNum(C_INT32 aNum);
 
     /*
      * get parameter number
      */
-    int getParameterNum();
+    C_INT32 getParameterNum();
 
     /*
      * set the best value
      */
-    void setBestValue(double aDouble);
+    void setBestValue(C_FLOAT64 aDouble);
 
     /*
      * get the best value
      */
-    double getBestValue();
+    C_FLOAT64 getBestValue();
 
     /*
      * set one parameter in the array of best values -- overloaded function
      */
-    void setBestParameter(int i, double value);
+    void setBestParameter(C_INT32 i, C_FLOAT64 value);
+
+    /*
+     * get the best value parameters
+     */
+    CVector< C_FLOAT64 > & getBestParameter();
 
     /*
      * get one parameter from the array -- overloaded function
      */
-    double getBestValue(int i);
-
-    /*
-     * set the minimum value of parameters
-     */
-    void setParameterMin(double * aDouble);
+    C_FLOAT64 getBestValue(C_INT32 i);
 
     /*
      * set minimum value in an array
      */
-    void setParameterMin(int, double);
+    void setParameterMin(C_INT32, C_FLOAT64);
 
     /*
      * get the minimum value of parameters
      */
-    double * getParameterMin();
+    CVector< C_FLOAT64 > & getParameterMin();
 
     /*
      * get minimum from array
      */
-    double getParameterMin(int);
-
-    /*
-     * set the maximum value of the paramters
-     */
-    void setParameterMax(double * aDouble);
+    C_FLOAT64 getParameterMin(C_INT32);
 
     /*
      * set maximum in an array
      */
-    void setParameterMax(int, double);
+    void setParameterMax(C_INT32, C_FLOAT64);
 
     /*
      * get the maximum value of the parameters
      */
-    double * getParameterMax();
+    CVector< C_FLOAT64 > & getParameterMax();
 
     /*
      * get maximum value from array
      */
-    double getParameterMax(int);
+    C_FLOAT64 getParameterMax(C_INT32);
 
     /*
      * set problem type : Steady State or Trajectory
