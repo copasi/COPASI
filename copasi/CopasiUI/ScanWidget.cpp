@@ -53,7 +53,7 @@ Contact: Please contact lixu1@vt.edu.
  *  name 'name' and widget flags set to 'f'.
  */
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f),
+    : CopasiParametersWidget(parent, name, f),
     pParent(parent)
 {
   nSelectedObjects = 0;
@@ -811,7 +811,7 @@ ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)
     : QScrollView(parent, name, fl)
 {
   pSelectedList = NULL;
-  mParent = (ScanWidget*)parent;
+  mParent = (CopasiParametersWidget*)parent;
 }
 
 void ScanScrollView::contentsMousePressEvent(class QMouseEvent *e)

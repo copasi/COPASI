@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\OptimizationWidget.ui'
  **
  ** Created: Fri Sep 19 15:37:58 2003
- **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.3 2003/09/30 04:10:40 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: OptimizationWidget.h,v 1.4 2003/09/30 04:52:03 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -28,7 +28,7 @@ class ScanScrollView;
 class OptimizationItemWidget;
 class QListBoxItem;
 
-class OptimizationWidget : public CopasiWidget
+class OptimizationWidget : public CopasiParametersWidget
   {
     Q_OBJECT
 

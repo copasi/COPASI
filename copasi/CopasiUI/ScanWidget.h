@@ -41,7 +41,7 @@ class ScanScrollView: public QScrollView
   {
     Q_OBJECT
   private:
-    ScanWidget* mParent;
+    CopasiParametersWidget* mParent;
     std::vector<QWidget*>* pSelectedList;
   public:
     void setSelectedList(std::vector<QWidget*>* pNewSelectedList);
@@ -51,7 +51,7 @@ class ScanScrollView: public QScrollView
     virtual void viewportResizeEvent (QResizeEvent *e);
   };
 
-class ScanWidget : public CopasiWidget
+class ScanWidget : public CopasiParametersWidget
   {
     Q_OBJECT
 
