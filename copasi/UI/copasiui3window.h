@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/01 14:50:52 $
+   $Date: 2004/10/05 14:09:26 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -46,6 +46,7 @@ class CopasiUI3Window : public QMainWindow
     void slotConvertToIrreversible();
     void closeEvent(QCloseEvent* ce);
     void slotToggleSliders(const QVariant& variant);
+    void slotSimpleSelection();
 
   private:
     int closeFlag;
