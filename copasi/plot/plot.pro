@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: ssahle $ $Date: 2004/04/06 14:56:09 $  
+# $Revision: 1.7 $ $Author: ssahle $ $Date: 2004/07/06 09:05:01 $  
 ######################################################################
 
 LIB = plot
@@ -10,7 +10,6 @@ HEADERS += plotwidget1.h \
            doublerect.h \
            zoomplot.h \
            CopasiPlot.h \
-           plotspec.h \
            COutputHandlerPlot.h \
            CPlotSpec.h \
            CPlotSpecVector.h \
