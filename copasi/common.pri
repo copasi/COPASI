@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2003/05/20 21:15:16 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2003/05/21 02:44:15 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -44,10 +44,9 @@ contains(BUILD_OS, Darwin) {
 
 contains(BUILD_OS, WIN32) {
   DEFINES -= UNICODE 
-  DEFINES += QT_NODLL
-  QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
-  LIBS += kernel32.lib user32.lib gdi32.lib comdlg32.lib advapi32.lib \
-          shell32.lib ole32.lib oleaut32.lib uuid.lib imm32.lib wsock32.lib
+  debug {
+    QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
+  }
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
