@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.40 $ $Author: ssahle $ $Date: 2004/09/17 13:57:56 $  
+# $Revision: 1.41 $ $Author: ssahle $ $Date: 2004/09/20 18:55:48 $  
 ######################################################################
 
 include(../common.pri)
@@ -108,6 +108,7 @@ contains(BUILD_OS, SunOS) {
 
 # Input
 HEADERS += \
+           ChemEqValidator.h \
            CReactionInterface.h \
            CReportDefinitionSelect.h \
            CompartmentSymbols.h \

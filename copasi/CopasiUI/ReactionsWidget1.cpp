@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.147 $
+   $Revision: 1.148 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/20 13:36:31 $
+   $Date: 2004/09/20 18:55:48 $
    End CVS Header */
 
 /*********************************************************************
@@ -42,6 +42,7 @@
 #include "report/CKeyFactory.h"
 #include "MyLineEdit.h"
 #include "qtUtilities.h"
+#include "ChemEqValidator.h"
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
@@ -138,6 +139,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
 
   LineEdit2 = new MyLineEdit(this, "LineEdit2");
+  LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 2);
 
   CheckBox = new QCheckBox(this, "CheckBox");
@@ -328,7 +330,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:              // Yes or Enter
+        case 0:               // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -352,7 +354,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                     // No or Escape
+        default:                      // No or Escape
           break;
         }
       //}
