@@ -34,9 +34,9 @@
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm"
-#include "./icons/locked.xpm"
-#include "./icons/unlocked.xpm"
+#include "./icons/modifier.xpm" 
+//#include "./icons/locked.xpm"
+//#include "./icons/unlocked.xpm"
 #include "parametertable.h" // just for the table item widgets
 
 /*
@@ -253,8 +253,6 @@ void FunctionWidget1::loadName(QString setValue)
   QPixmap * pProduct = new QPixmap((const char**)product_xpm);
   QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
   QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
-  QPixmap * pLocked = new QPixmap((const char**)locked_xpm);
-  QPixmap * pUnlocked = new QPixmap((const char**)unlocked_xpm);
 
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
@@ -604,9 +602,16 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
       else if (usage == "PARAMETER") {color = paraColor;}
       else {color = QColor(255, 20, 20);}
 
+      QPixmap * pPixMap;
+      if (usage == "SUBSTRATE") pPixMap = new QPixmap((const char**)substrate_xpm);
+      else if (usage == "PRODUCT") pPixMap = new QPixmap((const char**)product_xpm);
+      else if (usage == "MODIFIER") pPixMap = new QPixmap((const char**)modifier_xpm);
+      else pPixMap = new QPixmap();
+
       ((ColorTableItem*)Table1->item(row, 0))->setColor(color);
       ((ComboItem*)Table1->item(row, 1))->setColor(color);
       ((ComboItem*)Table1->item(row, 2))->setColor(color);
-      Table1->setRowHeight(row, Table1->rowHeight(row)); //Table1->showRow(row);
+      Table1->setPixmap(row, 2, *pPixMap);
+      Table1->setRowHeight(row, Table1->rowHeight(row)); // updateCell()
     }
 }
