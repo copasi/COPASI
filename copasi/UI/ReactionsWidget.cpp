@@ -219,7 +219,7 @@ void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QP
           i++;
           name = "Reaction";
           name += "_";
-          name += QString::number(i);
+          name += QString::number(i).latin1();
           newReaction.setName(name);
         }
       table->setNumRows(table->numRows());

@@ -232,7 +232,7 @@ int MetabolitesWidget1::isName(QString setValue)
       return 0;
     }
 
-  if (mModel->getMetabolites().getIndex((std::string) setValue) != C_INVALID_INDEX)
+  if (mModel->getMetabolites().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;

@@ -140,7 +140,7 @@ void FunctionWidget::slotTableCurrentChanged(int row, int col, int m , const QPo
           i++;
           name = "Function";
           name += "_";
-          name += QString::number(i);
+          name += QString::number(i).latin1();
         }
       newFunction.setName(name);
       Copasi->pFunctionDB->add(newFunction);

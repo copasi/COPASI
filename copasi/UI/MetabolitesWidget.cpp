@@ -125,7 +125,7 @@ void MetabolitesWidget::slotTableCurrentChanged(int row, int col,
           i++;
           name = "metabolite";
           name += "_";
-          name += QString::number(i);
+          name += QString::number(i).latin1();
         }
 
       table->setNumRows(table->numRows());

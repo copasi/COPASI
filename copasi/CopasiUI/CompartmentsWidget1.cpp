@@ -140,7 +140,7 @@ int CompartmentsWidget1::isName(QString setValue)
   //  const CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
   //  if (compartments[(std::string) setValue] != NULL)
-  if (mModel->getCompartments().getIndex((std::string) setValue) != C_INVALID_INDEX)
+  if (mModel->getCompartments().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       name = setValue;
@@ -172,7 +172,7 @@ void CompartmentsWidget1::loadName(QString setValue)
 
   const CCompartment *compartn;
 
-  compartn = compartments[(std::string)setValue];
+  compartn = compartments[(std::string)setValue.latin1()];
 
   LineEdit1->setText(compartn->getName().c_str());
   Compartment1_Name = new QString(compartn->getName().c_str());
@@ -211,7 +211,7 @@ void CompartmentsWidget1::slotBtnOKClicked()
   double m1;
   m1 = volume.toDouble();
   compartn1->setInitialVolume(m1);
-  compartn1->setName(std::string(LineEdit1->text()));
+  compartn1->setName(std::string(LineEdit1->text().latin1()));
   name = LineEdit1->text();
 
   emit updated();

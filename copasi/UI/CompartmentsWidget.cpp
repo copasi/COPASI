@@ -117,7 +117,7 @@ void CompartmentsWidget::slotTableCurrentChanged(int row,
           i++;
           name = "compartment";
           name += "_";
-          name += QString::number(i);
+          name += QString::number(i).latin1();
         }
       table->setNumRows(table->numRows());
       table->setText(row, 0, name.c_str());

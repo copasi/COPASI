@@ -90,7 +90,7 @@ int MoietyWidget1::isName(QString setValue)
 
   //  moiety1 = moieties[(std::string) setValue];
   //  if (moiety1 != NULL)
-  if (mModel->getMoieties().getIndex((std::string) setValue) != C_INVALID_INDEX)
+  if (mModel->getMoieties().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       return 1;
@@ -120,7 +120,7 @@ void MoietyWidget1::loadName(QString setValue)
 
   const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
   CMoiety *moiety;
-  moiety = moieties[(std::string)setValue];
+  moiety = moieties[(std::string)setValue.latin1()];
   LineEdit1->setText(moiety->getDescription().c_str());
   //ListBox1->insertItem(moiety->getDescription().c_str());
 

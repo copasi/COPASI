@@ -182,7 +182,7 @@ int ReactionsWidget1::isName(QString setValue)
       return 0;
     }
 
-  if (mModel->getReactions().getIndex((std::string) setValue) != C_INVALID_INDEX)
+  if (mModel->getReactions().getIndex((std::string)setValue.latin1()) != C_INVALID_INDEX)
     {
       loadName(setValue);
       name = setValue;
@@ -619,7 +619,7 @@ void ReactionsWidget1::slotLineEditChanged()
   const std::string & changed_chemical_reaction = chemreactn.latin1();
   CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
   CReaction *reactn1;
-  reactn1 = reactions1[(std::string)name];
+  reactn1 = reactions1[(std::string)name.latin1()];
   const CChemEq * chemEq1;
   chemEq1 = & reactn1->getChemEq();
   //bool status;
