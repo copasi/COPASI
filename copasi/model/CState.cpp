@@ -5,9 +5,6 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
-
 #include "copasi.h"
 #include "CState.h"
 #include "CModel.h"

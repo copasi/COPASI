@@ -8,11 +8,12 @@
  *
  */
 
-#define  COPASI_TRACE_CONSTRUCTION
+#include <cmath>
 
+#define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "CEigen.h"
 #include "utilities/utilities.h"
+#include "CEigen.h"
 
 /**
  * Defaulut constructor
