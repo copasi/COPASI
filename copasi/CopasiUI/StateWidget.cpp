@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:01:02 $
+   $Author: anuragr $ 
+   $Date: 2005/01/24 16:16:31 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -13,6 +13,7 @@
 #include "StateWidget.h"
 #include "StateSubwidget.h"
 #include "DataModelGUI.h"
+#include "model/CModel.h"
 #include "steadystate/CSteadyStateTask.h"
 
 //#include "report/CKeyFactory.h"
@@ -34,7 +35,7 @@ StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
 
   mCentralWidget = new StateSubwidget(this, "StateSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
-
+  //dataModel->getModel()->getVolumeUnit();
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
   Layout5->addWidget(commitChanges);
@@ -58,6 +59,7 @@ StateWidget::~StateWidget()
   clicked in the tree   */
 bool StateWidget::loadFromBackend()
 {
+  mCentralWidget->showUnits();
   if (!dataModel->getSteadyStateTask()) return false;
   if (!dataModel->getSteadyStateTask()->getState()) return false;
   return mCentralWidget->loadAll(dataModel->getSteadyStateTask());

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 15:51:28 $
+   $Author: anuragr $ 
+   $Date: 2005/01/24 16:18:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -103,7 +103,11 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   MetabolitesWidget1Layout->addWidget(mLblNumber, 5, 2);
 
   mLblInitConcentration = new QLabel(this, "mLblInitConcentration");
-  mLblInitConcentration->setText(trUtf8("Concentration"));
+  <<< <<< < MetabolitesWidget1.cpp
+  mLblInitConcentration->setText(trUtf8("Initial  Concentration\n"));
+  == == == =
+    mLblInitConcentration->setText(trUtf8("Concentration"));
+  >>> >>> > 1.103
   MetabolitesWidget1Layout->addWidget(mLblInitConcentration, 6, 0);
 
   mEditInitConcentration = new MyLineEdit(this, "mEditInitConcentration");
@@ -237,6 +241,17 @@ MetabolitesWidget1::~MetabolitesWidget1()
    clicked in the tree   */
 bool MetabolitesWidget1::loadFromMetabolite(const CMetab* metab)
 {
+  mLblInitConcentration->setText("Initial  Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+                                 "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+
+  mLblConcentration->setText("Transient Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+                             "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+
+  mLblTransitionTime->setText("Transition Time\n(" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")");
+
+  mLblRate->setText("Rate of concentration change\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+                    "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+
   if (!metab) return false;
 
   CCopasiVectorNS< CCompartment > & allcompartments = dataModel->getModel()->getCompartments();
@@ -467,7 +482,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                   // Yes or Enter
+    case 0:                                    // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -490,7 +505,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                   // No or Escape
+    case 1:                                    // No or Escape
       break;
     }
 }

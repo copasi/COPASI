@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/09 14:40:18 $
+   $Author: anuragr $ 
+   $Date: 2005/01/24 16:18:09 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Sat Oct 9 15:44:20 2004
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.5 2004/10/09 14:40:18 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.6 2005/01/24 16:18:09 anuragr Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,7 +31,8 @@
 #include "model/CMetabNameInterface.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "StateSubwidget.ui.h"
-
+#include "listviews.h"
+#include "DataModelGUI.h" 
 /*
  *  Constructs a StateSubwidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -42,7 +43,6 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("StateSubwidget");
   StateSubwidgetLayout = new QVBoxLayout(this, 11, 6, "StateSubwidgetLayout");
-
   topLabel = new QLabel(this, "topLabel");
   StateSubwidgetLayout->addWidget(topLabel);
 
@@ -62,6 +62,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time"));
   concentrationsTable->setNumRows(3);
   concentrationsTable->setNumCols(4);
+
   tabLayout->addWidget(concentrationsTable);
   tabWidget->insertTab(tab, QString(""));
 
@@ -214,6 +215,7 @@ void StateSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
   topLabel->setText(tr("textLabel1"));
+
   concentrationsTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));

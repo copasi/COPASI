@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:35:45 $
+   $Author: anuragr $ 
+   $Date: 2005/01/24 16:16:47 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,11 +18,14 @@
  ** destructor.
  *****************************************************************************/
 
+#include "StateSubwidget.h"
 #include "model/CChemEqInterface.h"
 #include "qtUtilities.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CEigen.h"
 #include <sstream>
+#include "listviews.h"
+#include "DataModelGUI.h"
 
 void StateSubwidget::init()
 {
@@ -153,11 +156,39 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   stabilityTextEdit->setText(FROM_UTF8(ss.str()));
 }
 
+void StateSubwidget::showUnits()
+{
+  DataModelGUI* dataModel = ListViews::getDataModel();
+  dataModel->getModel()->getVolumeUnit();
+
+  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 1, tr("Transition Time\n("\
+      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+
+  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 2, tr("Rate\n(per "\
+      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+
+  concentrationsTable->horizontalHeader()->setLabel(concentrationsTable->numCols() - 3, tr("Concentration\n("\
+      + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")"));
+
+  numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 1, tr("Transition Time\n("\
+      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+  numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Rate\n(per "\
+      + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+
+  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Particle flux\n("\
+                                          + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 3, tr("Flux\n(particles/"\
+                                          + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + ")"));
+}
+
 bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 {
   const CState * pState = task->getState();
+
   const_cast<CModel *>(pState->getModel())->setState(pState);
   const_cast<CModel *>(pState->getModel())->updateRates();
+
+  // editing units here
 
   if (task->getResult() == CSteadyStateMethod::found)
     topLabel->setText("A steady state with given resolution was found.");
@@ -167,6 +198,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
     topLabel->setText("An equilibrium steady state (zero fluxes) was found.");
   else if (task->getResult() == CSteadyStateMethod::foundNegative)
     topLabel->setText("An invalid steady state (negative concentrations) was found.");
+
   else
     topLabel->setText("A steady state with given resolution couldn't be found.");
 
@@ -185,6 +217,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
       tabWidget->setTabEnabled(tabWidget->page(5), true);
       loadJacobian(task);
     }
+
   else
     {
       tabWidget->setTabEnabled(tabWidget->page(3), false);
