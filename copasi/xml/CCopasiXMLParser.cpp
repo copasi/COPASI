@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/19 13:30:41 $
+   $Author: gauges $ 
+   $Date: 2005/02/24 09:53:46 $
    End CVS Header */
 
 /**
@@ -3188,7 +3188,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
   std::string name;
   std::string sType;
 
-  mLineNumber = -1;
+  mLineNumber = (unsigned int) - 1;
 
   switch (mCurrentElement)
     {
@@ -3774,7 +3774,7 @@ void CCopasiXMLParser::ProblemElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
   mpCurrentHandler = NULL;
-  mLineNumber = -1;
+  mLineNumber = (unsigned int) - 1;
 
   switch (mCurrentElement)
     {
@@ -4233,7 +4233,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; // We should always be on the next element
   mpCurrentHandler = NULL;
-  mLineNumber = -1;
+  mLineNumber = (unsigned int) - 1;
 
   std::string name;
   std::string sType;

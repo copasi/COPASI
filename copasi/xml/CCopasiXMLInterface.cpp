@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/21 13:20:33 $
+   $Author: gauges $ 
+   $Date: 2005/02/24 09:53:47 $
    End CVS Header */
 
 /**
@@ -137,7 +137,7 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
       break;
     }
 
-  for (it; it != end; ++it)
+  for (; it != end; ++it)
     encode(*it, xml);
 
   return xml.str();
@@ -171,8 +171,8 @@ CCopasiXMLInterface::CCopasiXMLInterface():
     mpFunctionList(NULL),
     mpTaskList(NULL),
     mpReportList(NULL),
-    mpGUI(NULL),
     mpPlotList(NULL),
+    mpGUI(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
