@@ -232,8 +232,8 @@ double COptProblem::getParameterMax(int i)
 // set the type of problem : Steady State OR Trajectory
 void COptProblem::setProblemType(ProblemType t)
 {
-  if (t = SteadyState)
+  if (t == SteadyState)
     steady_state = new CSS_Solution();
-  if (t = Trajectory)
+  if (t == Trajectory)
     trajectory = new CTrajectory();
 }
