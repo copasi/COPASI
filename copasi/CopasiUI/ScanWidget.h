@@ -29,6 +29,7 @@ class QToolButton;
 class SteadyStateWidget;
 class TrajectoryWidget;
 class ScanItemWidget;
+class CCopasiObject;
 
 class ScanWidget : public CopasiWidget
   {
@@ -39,6 +40,7 @@ class ScanWidget : public CopasiWidget
     ~ScanWidget();
     CScanTask *scanTask;
     void loadScan(CModel *model);
+    void addNewScanItem(CCopasiObject* pObject);
 
     QLabel* TextLabel1;
     QLineEdit* taskName;

@@ -44,7 +44,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   if (!name)
     setName("ScanWidget");
-  resize(600, 480);
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
@@ -69,18 +68,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   //Just for test
   for (int temp = 1; temp <= 7; temp++)
-    {
-      parameterTable = new ScanItemWidget(this, "parameterTable");
-      parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
-      parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
-      vBox->insertChild(parameterTable);
-      Line1 = new QFrame(this, "Line1");
-      Line1->setFrameShape(QFrame::HLine);
-      Line1->setLineWidth (4);
-      vBox->insertChild(Line1);
-    }
+    addNewScanItem(NULL);
 
   scrollview->addChild(vBox);
+
   ScanWidgetLayout->addMultiCellWidget(scrollview, 5, 6, 1, 4);
 
   Line2 = new QFrame(this, "Line2");
@@ -284,4 +275,16 @@ void ScanWidget::loadScan(CModel *model)
       ScanWidgetLayout->addMultiCellWidget(scrollview, 5, 6, 1, 4);
       scrollview->setVScrollBarMode(QScrollView::Auto);
     }
+}
+
+void ScanWidget::addNewScanItem(CCopasiObject* pObject)
+{
+  parameterTable = new ScanItemWidget(this, "parameterTable");
+  parameterTable->setFixedWidth(parameterTable->minimumSizeHint().width());
+  parameterTable->setFixedHeight(parameterTable->minimumSizeHint().height());
+  vBox->insertChild(parameterTable);
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setLineWidth (4);
+  vBox->insertChild(Line1);
 }
