@@ -384,7 +384,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     {
       switch (item->folder()->getID())
         {
-        case 21 :    // for showing addition...of new components..
+        case 21 :     // for showing addition...of new components..
 
           // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
 
@@ -471,7 +471,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:     // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:      // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -493,7 +493,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:   // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:    // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -506,7 +506,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:     // new model is loaded.
+        case MODEL:      // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -772,8 +772,8 @@ void ListViews::loadMetabolites(QListViewItem* i)
 
   int myId = item->folder()->getID();
 
-  // multiply myId by 10 and than add these items with seq nu..of that id..
-  myId = 10 * myId;
+  // multiply myId by 1000000 and than add these items with seq nu..of that id..
+  myId = 1000000 * myId;
 
   vector < CMetab * > metabolites = mModel->getMetabolites();
 
@@ -811,8 +811,8 @@ void ListViews::loadMoieties(QListViewItem* i)
 
   int myId = item->folder()->getID();
 
-  // multiply myId by 10 and than add these items with seq nu..of that id..
-  myId = 10 * myId;
+  // multiply myId by 1000000 and than add these items with seq nu..of that id..
+  myId = 1000000 * myId;
 
   /*CCopasiVectorN < CMoiety >  &moieties = mModel->getMoieties();
 
@@ -864,8 +864,8 @@ void ListViews::loadReactions(QListViewItem* i)
 
   int myId = item->folder()->getID();
 
-  // multiply myId by 10 and than add these items with seq nu..of that id..
-  myId = 10 * myId;
+  // multiply myId by 1000000 and than add these items with seq nu..of that id..
+  myId = 1000000 * myId;
 
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 
@@ -903,8 +903,8 @@ void ListViews::loadCompartments(QListViewItem* i)
 
   int myId = item->folder()->getID();
 
-  // multiply myId by 10 and than add these items with seq nu..of that id..
-  myId = 10 * myId;
+  // multiply myId by 1000000 and than add these items with seq nu..of that id..
+  myId = 1000000 * myId;
 
   CCopasiVectorNS < CCompartment > & compartments = mModel->getCompartments();
 
