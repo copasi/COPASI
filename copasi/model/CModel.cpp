@@ -36,6 +36,10 @@ CModel::CModel()
   mpInverseLView = new
                    TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
                    (mL);
+
+  mQuantityUnitName = "unknown";
+  mNumber2QuantityFactor = 1.0;
+  mQuantity2NumberFactor = 1.0;
 }
 
 CModel::CModel(const CModel & src)
@@ -53,6 +57,10 @@ CModel::CModel(const CModel & src)
 
   mCompartments = CCopasiVectorNS < CCompartment >(src.mCompartments);
   mSteps = CCopasiVectorNS < CReaction >(src.mSteps);
+
+  mQuantityUnitName = src.mQuantityUnitName;
+  mNumber2QuantityFactor = src.mNumber2QuantityFactor;
+  mQuantity2NumberFactor = src.mQuantity2NumberFactor;
 
   unsigned C_INT32 i, imax = mSteps.size();
 
@@ -117,6 +125,21 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         throw Exception;
     }
 
+  try
+    {
+      Fail = configBuffer.getVariable("ConcentrationUnit", "string", &mQuantityUnitName,
+                                      CReadConfig::LOOP);
+    }
+  catch (CCopasiException Exception)
+    {
+      if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
+        mQuantityUnitName = "unknown";
+      else
+        throw Exception;
+    }
+
+  setQuantityUnit(mQuantityUnitName); // set the factors
+
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
     return Fail;
@@ -138,6 +161,8 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         }
     }
 
+  //cout << mCompartments;       //debug
+
   initializeMetabolites();
 
   if ((Fail = Copasi->FunctionDB.load(configBuffer)))
@@ -149,13 +174,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size);
 
+  // cout << endl << mSteps << endl ;  //debug
+
   // We must postprocess the steps for old file versions
   if (configBuffer.getVersion() < "4")
     for (i = 0; i < mSteps.size(); i++)
       mSteps[i]->old2New(mMetabolites);
 
+  // cout << "After postprocessing " << endl << mSteps << endl;
+
   for (i = 0; i < mSteps.size(); i++)
     mSteps[i]->compile(mCompartments);
+
+  // cout << "After compiling " << endl << mSteps << endl;   //debug
 
   Copasi->OldMetabolites.cleanup();
 
@@ -171,6 +202,9 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
     return Fail;
 
   if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
+    return Fail;
+
+  if ((Fail = configBuffer.setVariable("ConcentrationUnit", "string", &mQuantityUnitName)))
     return Fail;
 
   Size = mCompartments.size();
@@ -498,7 +532,7 @@ void CModel::buildMoieties()
   return ;
 }
 
-void CModel::setConcentrations(const C_FLOAT64 * y)
+void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
 {
   unsigned C_INT32 i, imax;
 
@@ -506,13 +540,13 @@ void CModel::setConcentrations(const C_FLOAT64 * y)
   imax = mMetabolitesInd.size();
 
   for (i = 0; i < imax; i++)
-    mMetabolitesInd[i]->setNumber(y[i]);
+    mMetabolitesInd[i]->setNumberDbl(y[i]);
 
   // Set the concentration of the dependent metabolites
   imax = mMetabolitesDep.size();
 
   for (i = 0; i < imax; i++)
-    mMetabolitesDep[i]->setNumber(mMoieties[i]->dependentNumber());
+    mMetabolitesDep[i]->setNumberDbl(mMoieties[i]->dependentNumber());
 
   // Calculate the velocity vector depending on the step kinetics
   imax = mStepsX.size();
@@ -584,7 +618,7 @@ void CModel::setTransitionTimes()
       if (TotalFlux == 0.0)
         TransitionTime = DBL_MAX;
       else
-        TransitionTime = mMetabolites[i + k]->getNumber() / TotalFlux;
+        TransitionTime = mMetabolites[i + k]->getNumberDbl() / TotalFlux;
 
       mMetabolites[i + k]->setTransitionTime(TransitionTime);
 
@@ -614,7 +648,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i, j;
 
-  setConcentrations(y);
+  setNumbersDblAndUpdateConcentrations(y);
 
   // Calculate ydot = RedStoi * v
 
@@ -652,29 +686,29 @@ unsigned C_INT32 CModel::getDepMetab() const
     return mMetabolitesDep.size();
   }
 
-C_FLOAT64 * CModel::getInitialNumbers()
-{
-  C_INT32 i, imax = mMetabolitesInd.size();
+C_FLOAT64 * CModel::getInitialNumbersDbl() const
+  {
+    C_INT32 i, imax = mMetabolitesInd.size();
 
-  C_FLOAT64 * y = new C_FLOAT64[imax];
+    C_FLOAT64 * y = new C_FLOAT64[imax];
 
-  for (i = 0; i < imax; i++)
-    y[i] = mMetabolitesInd[i]->getInitialNumber();
+    for (i = 0; i < imax; i++)
+      y[i] = mMetabolitesInd[i]->getInitialNumberDbl();
 
-  return y;
-}
+    return y;
+  }
 
-C_FLOAT64 * CModel::getNumbers()
-{
-  C_INT32 i, imax = mMetabolitesInd.size();
+C_FLOAT64 * CModel::getNumbersDbl() const
+  {
+    C_INT32 i, imax = mMetabolitesInd.size();
 
-  C_FLOAT64 * y = new C_FLOAT64[imax];
+    C_FLOAT64 * y = new C_FLOAT64[imax];
 
-  for (i = 0; i < imax; i++)
-    y[i] = mMetabolitesInd[i]->getNumber();
+    for (i = 0; i < imax; i++)
+      y[i] = mMetabolitesInd[i]->getNumberDbl();
 
-  return y;
-}
+    return y;
+  }
 
 // Added by Yongqun He
 /**
@@ -837,7 +871,11 @@ void CModel::initializeMetabolites()
 
   for (i = 0; i < mCompartments.size(); i++)
     for (j = 0; j < mCompartments[i]->metabolites().size(); j++)
-      mMetabolites.push_back(mCompartments[i]->metabolites()[j]);
+      {
+        mMetabolites.push_back(mCompartments[i]->metabolites()[j]);
+        mCompartments[i]->metabolites()[j]->setModel(this);
+        mCompartments[i]->metabolites()[j]->checkConcentrationAndNumber();
+      }
 }
 
 /**
@@ -894,13 +932,15 @@ CState * CModel::getInitialState() const
     Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
 
     for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolites[i]->getInitialConcentration()
-             * mMetabolites[i]->getCompartment()->getVolume();
+      *Dbl = mMetabolites[i]->getInitialNumberDbl();
+
+    //      *Dbl = mMetabolites[i]->getInitialConcentration()
+    //             * mMetabolites[i]->getCompartment()->getVolume();
 
     C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
 
     for (i = 0, imax = mMetabolites.size(); i < imax; i++, Int++)
-      *Int = mMetabolites[i]->getInitialNumber();
+      *Int = mMetabolites[i]->getInitialNumberInt();
 
     return s;
   }
@@ -918,13 +958,15 @@ CStateX * CModel::getInitialStateX() const
     Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
 
     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolitesX[i]->getInitialConcentration()
-             * mMetabolitesX[i]->getCompartment()->getVolume();
+      *Dbl = mMetabolitesX[i]->getInitialNumberDbl();
+
+    //      *Dbl = mMetabolitesX[i]->getInitialConcentration()
+    //             * mMetabolitesX[i]->getCompartment()->getVolume();
 
     C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
 
     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Int++)
-      *Int = mMetabolitesX[i]->getInitialNumber();
+      *Int = mMetabolitesX[i]->getInitialNumberInt();
 
     return s;
   }
@@ -944,14 +986,14 @@ void CModel::setInitialState(const CState * state)
 
   for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
     *const_cast<C_FLOAT64*>(&mMetabolites[i]->getInitialConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
+    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv() * mNumber2QuantityFactor;
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolites[i]->getInitialNumberInt()) = *Int;
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -975,14 +1017,14 @@ void CModel::setInitialState(const CStateX * state)
 
   for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
     *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
-    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
+    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv() * mNumber2QuantityFactor;
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumberInt()) = *Int;
 
   /* We need to update the initial values for moieties */
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
@@ -1004,13 +1046,15 @@ CState * CModel::getState() const
     Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
 
     for (i = 0, imax = mMetabolites.size(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolites[i]->getConcentration()
-             * mMetabolites[i]->getCompartment()->getVolume();
+      *Dbl = mMetabolites[i]->getNumberDbl();
+
+    //      *Dbl = mMetabolites[i]->getConcentration()
+    //             * mMetabolites[i]->getCompartment()->getVolume();
 
     C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
 
     for (i = 0, imax = mMetabolites.size(); i < imax; i++, Int++)
-      *Int = mMetabolites[i]->getNumber();
+      *Int = mMetabolites[i]->getNumberInt();
 
     return s;
   }
@@ -1028,13 +1072,15 @@ CStateX * CModel::getStateX() const
     Dbl = const_cast<C_FLOAT64 *>(s->getNumbersDbl());
 
     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Dbl++)
-      *Dbl = mMetabolitesX[i]->getConcentration()
-             * mMetabolitesX[i]->getCompartment()->getVolume();
+      *Dbl = mMetabolitesX[i]->getNumberDbl();
+
+    //      *Dbl = mMetabolitesX[i]->getConcentration()
+    //             * mMetabolitesX[i]->getCompartment()->getVolume();
 
     C_INT32 * Int = const_cast<C_INT32 *>(s->getNumbersInt());
 
     for (i = 0, imax = mMetabolitesX.size(); i < imax; i++, Int++)
-      *Int = mMetabolitesX[i]->getNumber();
+      *Int = mMetabolitesX[i]->getNumberInt();
 
     return s;
   }
@@ -1060,14 +1106,14 @@ void CModel::setState(const CState * state)
   for (i = 0, imax = mMetabolitesInd.size() + mMetabolitesDep.size();
        i < imax; i++, Dbl++)
     *const_cast<C_FLOAT64*>(&mMetabolites[i]->getConcentration())
-    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv();
+    = *Dbl * mMetabolites[i]->getCompartment()->getVolumeInv() * mNumber2QuantityFactor;
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0; i < imax; i++, Int++)
-    *const_cast<C_INT32*>(&mMetabolites[i]->getNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
 
   return ;
 }
@@ -1092,14 +1138,14 @@ void CModel::setState(const CStateX * state)
 
   for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Dbl++)
     *const_cast<C_FLOAT64*>(&mMetabolitesX[i]->getInitialConcentration())
-    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv();
+    = *Dbl * mMetabolitesX[i]->getCompartment()->getVolumeInv() * mNumber2QuantityFactor;
 
   /* We are not using the set method since it automatically updates the
      concentration which has been already set above */
   const C_INT32 * Int = state->getNumbersInt();
 
   for (i = 0, imax = mMetabolitesInd.size(); i < imax; i++, Int++)
-    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumber()) = *Int;
+    *const_cast<C_INT32*>(&mMetabolitesX[i]->getInitialNumberInt()) = *Int;
 
   /* We need to update the dependent metabolites by using moieties */
   /* This changes need to be reflected in the current state */
@@ -1197,3 +1243,30 @@ CState * CModel::convertState(CStateX * state)
   setState(state);
   return getState();
 }
+
+void CModel::setQuantityUnit(const string & name)
+{
+  mQuantityUnitName = name;
+
+  mQuantity2NumberFactor = 1.0;
+
+  if ((name == "mol")
+      || (name == "M")
+      || (name == "Mol"))
+    mQuantity2NumberFactor = 6.020402E23;
+
+  if ((name == "mmol")
+      || (name == "mM")
+      || (name == "mMol"))
+    mQuantity2NumberFactor = 6.020402E20;
+
+  if ((name == "nmol")
+      || (name == "nM")
+      || (name == "nMol"))
+    mQuantity2NumberFactor = 6.020402E14;
+
+  mNumber2QuantityFactor = 1 / mQuantity2NumberFactor;
+}
+string CModel::getQuantityUnit() const { return mQuantityUnitName; }
+C_FLOAT64 CModel::getQuantity2NumberFactor() const { return mQuantity2NumberFactor; }
+C_FLOAT64 CModel::getNumber2QuantityFactor() const { return mNumber2QuantityFactor; }

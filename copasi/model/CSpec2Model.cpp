@@ -90,6 +90,8 @@ CModel *CSpec2Model::createModel()
       it++;
     }
 
+  mModel->setQuantityUnit("mol");
+
   processCompartments();
   processEQNs();
   processInits();

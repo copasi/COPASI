@@ -28,9 +28,9 @@ CMetab::CMetab()
 
   mIConcDbl = Copasi->DefaultConc;
 
-  mNumber = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
+  mNumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
 
-  mINumber = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
+  mINumberInt = (C_INT32) (Copasi->DefaultConc * Copasi->DefaultVolume);
 
   mRate = 1.0;
 
@@ -39,6 +39,8 @@ CMetab::CMetab()
   mStatus = METAB_VARIABLE;
 
   mCompartment = NULL;
+
+  mpModel = NULL;
 }
 
 CMetab::CMetab(const CMetab & src)
@@ -47,12 +49,13 @@ CMetab::CMetab(const CMetab & src)
   mName = src.mName;
   mConcDbl = src.mConcDbl;
   mIConcDbl = src.mIConcDbl;
-  mNumber = src.mNumber;
-  mINumber = src.mINumber;
+  mNumberInt = src.mNumberInt;
+  mINumberInt = src.mINumberInt;
   mRate = src.mRate;
   mTT = src.mTT;
   mStatus = src.mStatus;
   mCompartment = src.mCompartment;
+  mpModel = src.mpModel;
 }
 
 #ifdef XXXX
@@ -70,12 +73,13 @@ CMetab &CMetab::operator=(const CMetab &RHS)
   mName = RHS.mName;
   mConcDbl = RHS.mConcDbl;
   mIConcDbl = RHS.mIConcDbl;
-  mNumber = RHS.mNumber;
-  mINumber = RHS.mINumber;
+  mNumberInt = RHS.mNumberInt;
+  mINumberInt = RHS.mINumberInt;
   mRate = RHS.mRate;
   mTT = RHS.mTT;
   mStatus = RHS.mStatus;
   mCompartment = RHS.mCompartment;
+  mpModel = RHS.mpModel;
 
   return *this;  // Assignment operator returns left side.
 }
@@ -85,12 +89,13 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   mName = RHS.mName;
   mConcDbl = RHS.mIConc;
   mIConcDbl = RHS.mIConc;
-  mNumber = (C_INT32) RHS.mIConc;
-  mINumber = (C_INT32) RHS.mIConc;
+  mNumberInt = -1;
+  mINumberInt = -1; // Invalid value, this causes checkConcentrationAndNumber() to fix it later
   mRate = 1.0;
   mTT = 0.0;
   mStatus = RHS.mStatus;
   mCompartment = NULL;
+  mpModel = NULL;
 
   return *this;  // Assignment operator returns left side.
 }
@@ -117,12 +122,12 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   mConcDbl = mIConcDbl;
 
   Fail = configbuffer.getVariable("Concentration(long)", "C_INT32",
-                                  (void *) & mINumber);
+                                  (void *) & mINumberInt);
 
   if (Fail)
-    return Fail;
+    return Fail; // is it really necessary to load and save both representations of quantity?
 
-  mNumber = mINumber;
+  mNumberInt = mINumberInt;
 
   Fail = configbuffer.getVariable("Type", "C_INT16",
                                   (void *) & mStatus);
@@ -170,10 +175,10 @@ C_INT32 CMetab::save(CWriteConfig &configbuffer)
     return Fail;
 
   Fail = configbuffer.setVariable("Concentration(long)", "C_INT32",
-                                  (void *) & mINumber);
+                                  (void *) & mINumberInt);
 
   if (Fail)
-    return Fail;
+    return Fail; // is it really necessary to load and save both representations of quantity?
 
   Fail = configbuffer.setVariable("Type", "C_INT16",
                                   (void *) & mStatus);
@@ -187,52 +192,92 @@ const C_FLOAT64 & CMetab::getConcentration() const
     return mConcDbl;
   }
 
-const C_INT32 & CMetab::getNumber() const
+const C_INT32 & CMetab::getNumberInt() const
   {
-    return mNumber;
+    return mNumberInt;
+  }
+
+const C_FLOAT64 CMetab::getNumberDbl() const
+  {
+    return mConcDbl * mCompartment->getVolume()
+           * mpModel->getQuantity2NumberFactor();
   }
 const C_FLOAT64 & CMetab::getInitialConcentration() const { return mIConcDbl; }
 
-const C_INT32 & CMetab::getInitialNumber() const
+const C_INT32 & CMetab::getInitialNumberInt() const
   {
-    return mINumber;
+    return mINumberInt;
+  }
+
+const C_FLOAT64 CMetab::getInitialNumberDbl() const
+  {
+    return mIConcDbl * mCompartment->getVolume()
+           * mpModel->getQuantity2NumberFactor();
   }
 const C_INT16 & CMetab::getStatus() const { return mStatus; }
 CCompartment * CMetab::getCompartment() { return mCompartment; }
+CModel * CMetab::getModel() { return mpModel; }
 
 void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 {mTT = transitionTime; }
 const C_FLOAT64 & CMetab::getTransitionTime() { return mTT; }
 void CMetab::setName(const string & name) {mName = name; }
 
+// ***** set quantities ********
+
 void CMetab::setConcentration(const C_FLOAT64 concentration)
 {
   mConcDbl = concentration;
-  mNumber = (C_INT32) (concentration * mCompartment->getVolume());
+  mNumberInt = (C_INT32) (concentration * mCompartment->getVolume()
+                          * mpModel->getQuantity2NumberFactor());
 }
 
 void CMetab::setInitialConcentration(const C_FLOAT64 initialConcentration)
 {
   mIConcDbl = initialConcentration;
-  mINumber = (C_INT32) (initialConcentration * mCompartment->getVolume());
+  mINumberInt = (C_INT32) (initialConcentration * mCompartment->getVolume()
+                           * mpModel->getQuantity2NumberFactor());
 }
 
-void CMetab::setNumber(const C_INT32 number)
+void CMetab::setNumberInt(const C_INT32 number)
 {
-  mNumber = number;
-  mConcDbl = ((C_FLOAT64) number) * mCompartment->getVolumeInv();
+  mNumberInt = number;
+  mConcDbl = ((C_FLOAT64) number) * mCompartment->getVolumeInv()
+             * mpModel->getNumber2QuantityFactor();
 }
 
-void CMetab::setInitialNumber(const C_INT32 initialNumber)
+void CMetab::setInitialNumberInt(const C_INT32 initialNumber)
 {
-  mINumber = initialNumber;
-  mIConcDbl = ((C_FLOAT64) initialNumber) * mCompartment->getVolumeInv();
+  mINumberInt = initialNumber;
+  mIConcDbl = ((C_FLOAT64) initialNumber) * mCompartment->getVolumeInv()
+              * mpModel->getNumber2QuantityFactor();
 }
+
+void CMetab::setNumberDbl(const C_FLOAT64 number)
+{
+  mConcDbl = number * mCompartment->getVolumeInv()
+             * mpModel->getNumber2QuantityFactor();
+  mNumberInt = (C_INT32) number;
+}
+
+void CMetab::setInitialNumberDbl(const C_FLOAT64 initialNumber)
+{
+  mIConcDbl = initialNumber * mCompartment->getVolumeInv()
+              * mpModel->getNumber2QuantityFactor();
+  mINumberInt = (C_INT32) initialNumber;
+}
+
+//  ******************
 void CMetab::setStatus(const C_INT16 status) {mStatus = status; }
 
 void CMetab::setCompartment(CCompartment * compartment)
 {
   mCompartment = compartment;
+}
+
+void CMetab::setModel(CModel * model)
+{
+  mpModel = model;
 }
 
 C_INT16 CMetab::isValidName()
@@ -348,7 +393,23 @@ const C_FLOAT64 & CMetab::getRate()
 
 void CMetab::setRate(const C_FLOAT64 & rate)
 {
-  mRate = rate * getCompartment()->getVolumeInv();
+  mRate = rate * getCompartment()->getVolumeInv()
+          * mpModel->getNumber2QuantityFactor();
   //  calculateTransitionTime();
 }
 void CMetab::calculateTransitionTime(void) {mTT = mConcDbl / mRate; }
+
+void CMetab::checkConcentrationAndNumber()
+{
+  if (mNumberInt < 0)
+    {
+      setConcentration(getConcentration());
+      setInitialConcentration(getInitialConcentration());
+    }
+
+  if (mConcDbl < 0)
+    {
+      setNumberInt(getNumberInt());
+      setInitialNumberInt(getInitialNumberInt());
+    }
+}

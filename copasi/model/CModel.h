@@ -112,6 +112,23 @@ class CModel
     TNT::Transpose_View< TNT::UpperTriangularView< TNT::Matrix< C_FLOAT64 > > >
     *mpInverseLView;
 
+    /**
+     *  Unit for substance quantities
+     */
+    string mQuantityUnitName;
+
+    /**
+     *  Factor to convert from quantity to particle number
+     *  taking into account the unit for substance quantities
+     */
+    C_FLOAT64 mQuantity2NumberFactor;
+
+    /**
+     *  Factor to convert from  particle number to quantity
+     *  taking into account the unit for substance quantities
+     */
+    C_FLOAT64 mNumber2QuantityFactor;
+
   public:
     /**
      *  Default constructor
@@ -235,7 +252,7 @@ class CModel
      *  Note: After ussage the memory has to be released with delete [] y.
      *  @return C_FLOAT64 * y
      */
-    C_FLOAT64 * getInitialNumbers();
+    C_FLOAT64 * getInitialNumbersDbl() const;
 
     /**
      *  This functions returns a pointer to a vector of the current particle
@@ -243,14 +260,14 @@ class CModel
      *  Note: After ussage the memory has to be released with delete [] y.
      *  @return C_FLOAT64 * y
      */
-    C_FLOAT64 * getNumbers();
+    C_FLOAT64 * getNumbersDbl() const;
 
     /**
      *  Set the concentration of all metabolites as a result of the particle
      *  number of the independent metabolites
      *  param C_FLOAT64 & y
      */
-    void setConcentrations(const C_FLOAT64 *y);
+    void setNumbersDblAndUpdateConcentrations(const C_FLOAT64 *y);
 
     /**
      *  Set the rate for all internal metabolites and the
@@ -381,6 +398,27 @@ class CModel
     void getDerivatives(CStateX * state, C_FLOAT64 * derivatives);
     CStateX * convertState(CState * state);
     CState * convertState(CStateX * state);
+
+    /**
+     *  set the unit for substance quantities. If copasi recognises the unit the conversion
+     *  factors are set accordingly. Otherwise they are set to 1.
+     */
+    void setQuantityUnit(const string & name);
+
+    /**
+     *  Get the Name of the unit for substance quantities
+     */
+    string getQuantityUnit() const;
+
+    /**
+     *  Get the conversion factor quantity -> number
+     */
+    C_FLOAT64 getQuantity2NumberFactor() const;
+
+    /**
+     *  Get the conversion factor number -> quantity
+     */
+    C_FLOAT64 getNumber2QuantityFactor() const;
 
   private:
     void setState(const CState * state);

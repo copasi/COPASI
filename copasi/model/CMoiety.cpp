@@ -34,8 +34,10 @@ void CMoiety::add
 void CMoiety::add
   (C_FLOAT64 value, CMetab * metabolite)
 
-  {add
-    (value, *metabolite); }
+  {
+    add
+      (value, *metabolite);
+  }
 void CMoiety::cleanup() {mEquation.cleanup(); }
 
 C_FLOAT64 CMoiety::dependentNumber()
@@ -44,7 +46,7 @@ C_FLOAT64 CMoiety::dependentNumber()
 
   for (unsigned C_INT32 i = 1; i < mEquation.size(); i++)
     mNumber -= mEquation[i]->getMultiplicity() *
-               mEquation[i]->getMetabolite().getNumber();
+               mEquation[i]->getMetabolite().getNumberDbl();
 
   return mNumber;
 }
@@ -95,7 +97,7 @@ void CMoiety::setInitialValue()
 
   for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
     mINumber += ((C_INT32) mEquation[i]->getMultiplicity()) *
-                mEquation[i]->getMetabolite().getInitialNumber();
+                mEquation[i]->getMetabolite().getInitialNumberDbl();
 
   return ;
 }

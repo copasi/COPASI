@@ -18,6 +18,8 @@ class CWriteConfig;
 
 class CMetabOld;
 
+class CModel;
+
 //constants for use with Status
 #define METAB_FIXED 0
 #define METAB_VARIABLE 1
@@ -44,19 +46,19 @@ class CMetab
     C_FLOAT64 mConcDbl;
 
     /**
-     * Initial concentration of the metabolite as double/
+     *  Initial concentration of the metabolite as double
      */
     C_FLOAT64 mIConcDbl;
 
     /**
      *  Concentration of the metabolite as long.
      */
-    C_INT32 mNumber;
+    C_INT32 mNumberInt;
 
     /**
      * Initial concentration of the metabolite as long.
      */
-    C_INT32 mINumber;
+    C_INT32 mINumberInt;
 
     /**
      *  Rate of production of this metaboLite
@@ -77,8 +79,15 @@ class CMetab
 
     /**
      *  pointer to the compartment the metabolite is located in.
+     *  The metab needs to know about volumes.
      */
     CCompartment * mCompartment;
+
+    /**
+     *  pointer to the model the metabolite is located in.
+     *  The metab needs to know about the unit for concentrations.
+     */
+    CModel * mpModel;
 
     // Operations
 
@@ -160,6 +169,12 @@ class CMetab
     const C_INT16 & getStatus() const;
 
     /**
+     *  Check if either concentration or particle number is invalid (e.g. negativ)
+     *  and calculate it from the other
+     */
+    void checkConcentrationAndNumber();
+
+    /**
      *
      */
     void setConcentration(const C_FLOAT64 concentration);
@@ -172,12 +187,22 @@ class CMetab
     /**
      *
      */
-    void setNumber(const C_INT32 number);
+    void setNumberDbl(const C_FLOAT64 number);
 
     /**
      *
      */
-    const C_INT32 & getNumber() const;
+    const C_FLOAT64 getNumberDbl() const;
+
+    /**
+     *
+     */
+    void setNumberInt(const C_INT32 number);
+
+    /**
+     *
+     */
+    const C_INT32 & getNumberInt() const;
 
     /**
      *
@@ -192,12 +217,22 @@ class CMetab
     /**
      *
      */
-    void setInitialNumber(const C_INT32 initialNumber);
+    void setInitialNumberDbl(const C_FLOAT64 initialNumber);
 
     /**
      *
      */
-    const C_INT32 & getInitialNumber() const;
+    const C_FLOAT64 getInitialNumberDbl() const;
+
+    /**
+     *
+     */
+    void setInitialNumberInt(const C_INT32 initialNumber);
+
+    /**
+     *
+     */
+    const C_INT32 & getInitialNumberInt() const;
 
     /**
      *
@@ -208,6 +243,16 @@ class CMetab
      *
      */
     CCompartment * getCompartment();
+
+    /**
+     *
+     */
+    void setModel(CModel * model);
+
+    /**
+     *
+     */
+    CModel * getModel();
 
     /**
      *  Set transition time
@@ -254,13 +299,18 @@ class CMetab
     {
       os << "    ++++CMetab: " << d.mName << endl;
       os << "        mConcDbl " << d.mConcDbl << " mIConcDbl " << d.mIConcDbl << endl;
-      os << "        mNumber " << d.mNumber << " mINumber " << d.mINumber << endl;
+      os << "        mNumberInt " << d.mNumberInt << " mINumberInt " << d.mINumberInt << endl;
       os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << endl;
 
       if (d.mCompartment)
         os << "        mCompartment == " << d.mCompartment << endl;
       else
         os << "        mCompartment == 0 " << endl;
+
+      if (d.mpModel)
+        os << "        mpModel == " << d.mpModel << endl;
+      else
+        os << "        mpModel == 0 " << endl;
 
       os << "    ----CMetab " << endl;
 
