@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:30:27 $
+   $Date: 2003/11/12 16:46:00 $
    End CVS Header */
 
 #ifndef COPASI_CRandom
@@ -25,9 +25,15 @@ class CRandom
     };
 
     /**
-     * A userfriendly string representation for the above enum
+     * String literals for the GUI to display type names of random number
+     * generators known to COPASI.
      */
     static const std::string TypeName[];
+
+    /**
+     * XML type names of random number generators known to COPASI.
+     */
+    static const char * XMLType[];
 
   protected:
     /**
@@ -74,6 +80,22 @@ class CRandom
     CRandom();
 
   public:
+    /**
+     * Convert a TypeName to the matching enum value.
+     * Returns CRandom::mt19937 if no match is found.
+     * @param (const std::string & typeName)
+     * @return CRandom::Type type
+     */
+    static CRandom::Type TypeNameToEnum(const std::string & typeName);
+
+    /**
+     * Convert a XMLSubType to the matching enum value
+     * Returns CRandom::mt19937 if no match is found.
+     * @param (const char * xmlTypeName)
+     * @return CRandom::SubType type
+     */
+    static CRandom::Type XMLNameToEnum(const char * xmlTypeName);
+
     /**
      * get a system dependend seed (hopefully random)
      */

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:30:25 $
+   $Date: 2003/11/12 16:46:00 $
    End CVS Header */
 
 #include <time.h>
@@ -18,8 +18,34 @@
 const std::string CRandom::TypeName[] =
   {
     "r250",
-    "Mersenne Twister"
+    "Mersenne Twister",
+    ""
   };
+
+const char * CRandom::XMLType[] =
+  {
+    "r250",
+    "MersenneTwister",
+    NULL
+  };
+
+CRandom::Type CRandom::TypeNameToEnum(const std::string & typeName)
+{
+  unsigned C_INT32 i = 0;
+  while (TypeName[i] != typeName && TypeName[i] != "") i++;
+
+  if (CRandom::TypeName[i] != "") return (CRandom::Type) i;
+  else return CRandom::mt19937;
+}
+
+CRandom::Type CRandom::XMLNameToEnum(const char * xmlTypeName)
+{
+  unsigned C_INT32 i = 0;
+  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
+
+  if (XMLType[i]) return (CRandom::Type) i;
+  else return CRandom::mt19937;
+}
 
 CRandom * CRandom::createGenerator(CRandom::Type type,
                                    unsigned C_INT32 seed)
