@@ -11,6 +11,7 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+#include <vector>
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -30,6 +31,7 @@ class ObjectBrowser : public QWidget
     objectList* refreshList;
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
+    std::vector<QString*> strBuffer;
 
     QPushButton* cancelButton;
     QPushButton* nextButton;

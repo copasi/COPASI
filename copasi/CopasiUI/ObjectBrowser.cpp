@@ -89,6 +89,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   objectItemList = new objectList();
   refreshList = new objectList();
   loadData();
+  std::vector<QString*> strBuffer;
 }
 
 /*
@@ -96,6 +97,9 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
  */
 ObjectBrowser::~ObjectBrowser()
 {
+  delete objectItemList;
+  delete refreshList;
+  strBuffer.clear();
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -180,9 +184,21 @@ void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
     return;
 
   if (pCurrent->getType() == OBJECTATTR)
-  {}
+    {
+      std::vector<QString*> strBuffer;
+      //  while ((pParent->text(0)!="Attribute list") && (pParent->text(0)!=))
+      while ((pCurrent != NULL) && (pCurrent->text(0) != "Object list"))
+        {
+          strBuffer.push_back(&QString(pCurrent->text(0)));
+          pCurrent = pCurrent->parent();
+        }
+      if (pCurrent == NULL) //there is not field attr for this node
+        return;
+      //   QString Buffer[];
+    }
   else if (pCurrent->getType() == FIELDATTR)
-  {}
+    {
+    }
 }
 
 void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
