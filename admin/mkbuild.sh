@@ -20,22 +20,28 @@ if [ x"$#" = x1 ]; then
     mkdir copasi
     mkdir copasi/bin
     mkdir copasi/share
-    mkdir copasi/share/doc
-    mkdir copasi/share/doc/copasi
-    mkdir copasi/share/doc/copasi/examples
-    mkdir copasi/share/doc/copasi/figures
+    mkdir copasi/share/copasi
+    mkdir copasi/share/copasi/doc
+    mkdir copasi/share/copasi/doc/html
+    mkdir copasi/share/copasi/doc/html/figures
+    mkdir copasi/share/copasi/examples
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README
     chmod 644 copasi/README
+
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
-    cp ../TestSuite/distribution/* copasi/share/doc/copasi/examples
+
+    cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 644 copasi/share/doc/copasi/examples/*
-    cp ../copasi/wizard/help_html/*.html copasi/share/doc/copasi
-    chmod 644 copasi/share/doc/copasi/*.html
-    cp ../copasi/wizard/help_html/figures/*.jpg copasi/share/doc/copasi/figures
-    chmod 644 copasi/share/doc/copasi/figures/*.jpg
+
+    cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
+    chmod 644 copasi/share/copasi/doc/html/*.html
+
+    cp ../copasi/wizard/help_html/figures/*.jpg \
+       copasi/share/copasi/doc/html/figures
+    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
 
     tar -czf ../Copasi-$build-$1.tar.gz copasi
   
