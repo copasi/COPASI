@@ -51,7 +51,7 @@ class CReportDefinition : public CCopasiObject
     /**
     Returns the comments in the report tag
     */
-    inline const std::string & getComment()
+    const std::string& getComment()
     {
       return mComment;
     }
