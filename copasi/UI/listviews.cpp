@@ -23,6 +23,7 @@
 #include "MetaboliteSymbols.h"
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
+#include "ModelWidget.h"
 #include "ModesWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
@@ -402,6 +403,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     }
   else if (! (value = QString::compare(item->folder()->folderName(), "Metabolite Symbols")))
     currentWidget = metaboliteSymbols;
+  else if (! (value = QString::compare(item->folder()->folderName(), "Model")))
+    currentWidget = modelWidget;
   else if (! (value = QString::compare(item->folder()->folderName(), "Differential Equations")))
     currentWidget = differentialEquations;
   else if (! (value = QString::compare(item->folder()->folderName(), "Fixed Metabolite Symbols")))
@@ -823,6 +826,7 @@ void ListViews::loadModelNodes(CModel *model)
 
       // Load the Elementary Modes
       modesWidget->loadModes(model);
+      modelWidget->loadModel(model);
       //second level of mass conservation
       loadNode = searchNode("Mass Conservation");
 
@@ -928,6 +932,10 @@ void ListViews::ConstructNodeWidgets()
     //Constructing the Elementary Modes Widget1
     modesWidget = new ModesWidget(this);
     modesWidget->hide();
+
+    //Constructing the Elementary Modes Widget1
+    modelWidget = new ModelWidget(this);
+    modelWidget->hide();
   }
 }
 

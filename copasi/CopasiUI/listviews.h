@@ -41,6 +41,7 @@ class MetaboliteSymbols;
 class MetabolitesWidget1;
 class MetabolitesWidget;
 class ModesWidget;
+class ModelWidget;
 class MoietyWidget1;
 class MoietyWidget;
 class ReactionsWidget1;
@@ -179,6 +180,7 @@ class ListViews : public QSplitter, public Observer
     MoietyWidget1 *moietyWidget1;
     FunctionWidget1 *functionWidget1;
     ModesWidget *modesWidget;
+    ModelWidget *modelWidget;
 
   protected slots:
     void slotFolderChanged(QListViewItem*);

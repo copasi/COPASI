@@ -1,7 +1,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\ObjectBrowser.ui'
  **
- ** Created: Tue Apr 15 14:03:55 2003
+ ** Created: Mon Apr 21 14:10:31 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -15,8 +15,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
 
 /*
  *  Constructs a ObjectBrowser which is a child of 'parent', with the 
@@ -31,65 +29,29 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TabListView"));
   ObjectBrowserLayout = new QGridLayout(this, 1, 1, 11, 6, "ObjectBrowserLayout");
 
-  cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setText(trUtf8("Cancel"));
+  backButton = new QPushButton(this, "backButton");
+  backButton->setText(trUtf8("Previous"));
 
-  ObjectBrowserLayout->addWidget(cancelButton, 1, 2);
+  ObjectBrowserLayout->addWidget(backButton, 1, 0);
 
   nextButton = new QPushButton(this, "nextButton");
   nextButton->setText(trUtf8("Next"));
 
   ObjectBrowserLayout->addWidget(nextButton, 1, 1);
 
-  backButton = new QPushButton(this, "backButton");
-  backButton->setText(trUtf8("Back"));
+  cancelButton = new QPushButton(this, "cancelButton");
+  cancelButton->setText(trUtf8("Cancel"));
 
-  ObjectBrowserLayout->addWidget(backButton, 1, 0);
+  ObjectBrowserLayout->addWidget(cancelButton, 1, 2);
 
-  ObjectListView = new QListView(this, "ObjectListView");
-  ObjectListView->addColumn(trUtf8("Object Browser"));
-  ObjectListView->header()->setClickEnabled(FALSE, ObjectListView->header()->count() - 1);
-  QListViewItem * item_2 = new QListViewItem(ObjectListView, 0);
-  item_2->setOpen(TRUE);
-  QListViewItem * item_3 = new QListViewItem(item_2, 0);
-  item_3->setOpen(TRUE);
-  QListViewItem * item_4 = new QListViewItem(item_3, 0);
-  item_4->setOpen(TRUE);
-  QListViewItem * item_5 = new QListViewItem(item_4, 0);
-  item_5->setOpen(TRUE);
-  QListViewItem * item_6 = new QListViewItem(item_5, 0);
-  item_6->setOpen(TRUE);
-  QListViewItem * item = new QListViewItem(item_6, 0);
-  item->setText(0, trUtf8("Subitem"));
-  item_6->setText(0, trUtf8("Subitem"));
-  item_5->setText(0, trUtf8("Subitem"));
-  item_4->setText(0, trUtf8("Subitem"));
-  item_3->setText(0, trUtf8("Subitem"));
-  item_2->setText(0, trUtf8("Item"));
+  ObjectList = new QListView(this, "ObjectList");
+  ObjectList->addColumn(trUtf8("Object Browser"));
+  ObjectList->header()->setClickEnabled(FALSE, ObjectList->header()->count() - 1);
+  ObjectList->setAcceptDrops(FALSE);
+  ObjectList->setResizeMode(QListView::LastColumn);
+  ObjectList->setTreeStepSize(19);
 
-  item = new QListViewItem(ObjectListView, item_2);
-  item->setText(0, trUtf8("Item"));
-
-  item = new QListViewItem(ObjectListView, item);
-  item->setText(0, trUtf8("Item"));
-
-  ObjectListView->setAcceptDrops(FALSE);
-  ObjectListView->setResizeMode(QListView::LastColumn);
-  ObjectListView->setTreeStepSize(19);
-
-  ObjectBrowserLayout->addMultiCellWidget(ObjectListView, 0, 0, 0, 2);
-
-  // signals and slots connections
-  connect(nextButton, SIGNAL(clicked()), this, SLOT(nextClicked()));
-  connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-  connect(ObjectListView, SIGNAL(clicked(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-  connect(ObjectListView, SIGNAL(pressed(QListViewItem*)), this, SLOT(listviewChecked(QListViewItem*)));
-  connect(backButton, SIGNAL(clicked()), this, SLOT(backClicked()));
-
-  // tab order
-  setTabOrder(ObjectListView, backButton);
-  setTabOrder(backButton, nextButton);
-  setTabOrder(nextButton, cancelButton);
+  ObjectBrowserLayout->addMultiCellWidget(ObjectList, 0, 0, 0, 2);
 }
 
 /*
@@ -98,24 +60,4 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 ObjectBrowser::~ObjectBrowser()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-void ObjectBrowser::cancelClicked()
-{
-  qWarning("ObjectBrowser::cancelClicked(): Not implemented yet!");
-}
-
-void ObjectBrowser::listviewChecked(QListViewItem*)
-{
-  qWarning("ObjectBrowser::listviewChecked(QListViewItem*): Not implemented yet!");
-}
-
-void ObjectBrowser::backClicked()
-{
-  qWarning("ObjectBrowser::backClicked(): Not implemented yet!");
-}
-
-void ObjectBrowser::nextClicked()
-{
-  qWarning("ObjectBrowser::nextClicked(): Not implemented yet!");
 }
