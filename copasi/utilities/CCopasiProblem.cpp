@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:39:34 $
+   $Date: 2004/12/14 17:10:00 $
    End CVS Header */
 
 /**
@@ -62,6 +62,10 @@ bool CCopasiProblem::setModel(CModel * pModel)
 
 CModel * CCopasiProblem::getModel() const {return mpModel;}
 
+void CCopasiProblem::setInitialState(const CState & initialState) {}
+
+// propably for optimization only
+
 unsigned C_INT32 CCopasiProblem::getVariableSize() const
   {return mCalculateVariables.size();}
 
@@ -87,5 +91,3 @@ bool CCopasiProblem::calculate() {return true;}
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 
 bool CCopasiProblem::checkFunctionalConstraints() {return true;}
-
-void CCopasiProblem::setInitialState(const CState & initialState) {}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/04 13:39:34 $
+   $Date: 2004/12/14 17:10:00 $
    End CVS Header */
 
 /**
@@ -40,6 +40,8 @@ class CCopasiProblem : public CCopasiParameterGroup
      * The model of the problem
      */
     CModel * mpModel;
+
+    // propably for optimization only
 
     /**
      * A vector of variables for calculate
@@ -111,6 +113,13 @@ class CCopasiProblem : public CCopasiParameterGroup
     CModel * getModel() const;
 
     /**
+     * Sets the initial value (in case this applies to the specific problem)
+     */
+    virtual void setInitialState(const CState & initialState);
+
+    // propably for optimization only
+
+    /**
      * Retrieve the size of the variable vectors
      * @result unsigned C_INT32 VariableSize
      */
@@ -167,11 +176,6 @@ class CCopasiProblem : public CCopasiParameterGroup
      * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();
-
-    /**
-     * Sets the initial value (in case this applies to the specific problem)
-     */
-    virtual void setInitialState(const CState & initialState);
   };
 
 #endif // COPASI_CCopasiProblem
