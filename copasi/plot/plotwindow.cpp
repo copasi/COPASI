@@ -130,6 +130,8 @@ void PlotWindow::enableZoom()
 
 void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
+  //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
+
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
 }
