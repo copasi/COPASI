@@ -14,7 +14,6 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
 #include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -106,7 +105,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addMultiCellWidget(parameterTable, 4, 5, 1, 2);
 
-  taskStability = new QRadioButton(this, "taskStability");
+  taskStability = new QCheckBox(this, "taskStability");
   taskStability->setText(trUtf8("Trajectory"));
 
   ScanWidgetLayout->addWidget(taskStability, 2, 2);
@@ -116,17 +115,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
 
-  taskJacobian = new QRadioButton(this, "taskJacobian");
+  taskJacobian = new QCheckBox(this, "taskJacobian");
   taskJacobian->setText(trUtf8("Steady State"));
 
   ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
-
-  line8_2 = new QFrame(this, "line8_2");
-  line8_2->setFrameShape(QFrame::HLine);
-  line8_2->setFrameShadow(QFrame::Sunken);
-  line8_2->setFrameShape(QFrame::HLine);
-
-  ScanWidgetLayout->addMultiCellWidget(line8_2, 3, 3, 0, 2);
 
   // signals and slots connections
   //connect(bExecutable, SIGNAL(clicked()), this, SLOT(RunButtonClicked()));
