@@ -11,6 +11,7 @@
 #include "utilities/CGlobals.h"
 #include "utilities/CVector.h"
 #include "utilities/utility.h"
+#include "utilities/CMethodParameter.h"
 
 /*************************/
 /* Code for class CState */

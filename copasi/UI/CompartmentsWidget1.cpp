@@ -17,6 +17,7 @@
 #include <qlistbox.h>
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"
+#include "utilities/CMethodParameter.h"
 #include "CompartmentsWidget1.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"

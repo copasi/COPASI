@@ -14,6 +14,7 @@
 #include "CMathEq.h"
 
 #include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 
 CMathModel::CMathModel():
     mpModel(NULL),

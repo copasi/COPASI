@@ -19,7 +19,9 @@
 #include "MoietyWidget1.h"
 #include "model/CModel.h"
 #include "model/CMoiety.h"
-#include "listviews.h" 
+#include "utilities/CMethodParameter.h"
+#include "listviews.h"
+
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.

@@ -11,6 +11,7 @@
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CMethodParameter.h"
 #include "FlexLexer.h"
 #include "CModel.h"
 #include "utilities/CGlobals.h"

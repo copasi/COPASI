@@ -11,6 +11,7 @@
 #include "utilities/CGlobals.h"
 #include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
+#include "utilities/CMethodParameter.h"
 
 CSpecLine::CSpecLine() {CONSTRUCTOR_TRACE;}
 

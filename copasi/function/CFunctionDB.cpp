@@ -11,6 +11,7 @@
 #include "CMassAction.h"
 #include "output/CUDFunction.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CMethodParameter.h"
 #include "report/CCopasiObjectReference.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,

@@ -13,6 +13,7 @@
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 
 CMathVariable::CMathVariable(const CMathVariable & src):
     CMathSymbol(src),

@@ -13,6 +13,7 @@
 #include "copasi.h"
 #include "utilities/readwrite.h"
 #include "utilities/utility.h"
+#include "utilities/CMethodParameter.h"
 #include "model/CModel.h"
 #include "CMca.h"
 

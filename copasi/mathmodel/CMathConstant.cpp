@@ -15,6 +15,7 @@
 #include "model/CReaction.h"
 #include "model/CCompartment.h"
 #include "report/CCopasiObjectReference.h"
+#include "utilities/CMethodParameter.h"
 
 CMathConstant::CMathConstant(const CMathConstant & src):
     CMathSymbol(src)

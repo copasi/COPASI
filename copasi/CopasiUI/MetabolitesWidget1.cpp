@@ -20,6 +20,7 @@
 #include "copasi.h"
 #include "MetabolitesWidget1.h"
 #include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 #include "listviews.h"
 
 /*

@@ -10,6 +10,7 @@
 #include "copasi.h"
 #include "output/output.h"
 #include "utilities/readwrite.h"
+#include "utilities/CMethodParameter.h"
 #include "CUDFunctionDB.h"
 
 /**

@@ -10,12 +10,14 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
+#include <qfont.h>
+
 #include "MoietyWidget.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "listviews.h"
 #include "model/CMoiety.h"
-#include <qfont.h>
+#include "utilities/CMethodParameter.h"
 
 /**
  *  Constructs a Widget for the Moiety subsection of the tree.
