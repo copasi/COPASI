@@ -7,7 +7,6 @@
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
-#include "SteadyStateWidget.h"
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -20,6 +19,10 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+
+#include "SteadyStateWidget.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CSteadyStateProblem.h"
 
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
     : QWidget(parent, name, fl)
