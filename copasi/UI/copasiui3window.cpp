@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/25 18:21:19 $
+   $Author: mkulkarn $ 
+   $Date: 2003/12/02 20:43:27 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -173,9 +173,17 @@ void CopasiUI3Window::slotFileOpen()
   newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.COPASIxml)",
                                          this, "open file dialog",
                                          "Choose a file");
+
   // gives the file information to the datamodel to handle it
 
-  if (dataModel && newFile)
+  //Use this *** gpsFile.endsWith(".gps")
+  /*if (!dataModel)
+   dataModel = new DataModel; // create a new data model
+  */
+
+  //if (dataModel && newFile)
+  // for *.gps files
+  if (dataModel && newFile.endsWith(".gps"))
     {
       if (dataModel->getModel())
         {
@@ -192,6 +200,22 @@ void CopasiUI3Window::slotFileOpen()
       ListViews::notify(ListViews::MODEL, ListViews::ADD,
                         dataModel->getModel()->getKey());
 
+      if (!bobject_browser_open)
+        file->setItemEnabled(nobject_browser, true);
+      file->setItemEnabled(nexport_menu_SBML, true);
+      file->setItemEnabled(nsaveas_menu_id, true);
+      msave_button->setEnabled(true);
+      file->setItemEnabled(nsave_menu_id, true);
+    }
+  else
+    // for *.COPASIxml files
+    {
+      if (!dataModel)
+        dataModel = new DataModel; //create a new data model
+
+      gpsFile = newFile;
+      dataModel->createModel(gpsFile.latin1());
+      ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
       if (!bobject_browser_open)
         file->setItemEnabled(nobject_browser, true);
       file->setItemEnabled(nexport_menu_SBML, true);
