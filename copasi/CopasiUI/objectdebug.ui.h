@@ -27,9 +27,10 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 else {if (obj->hasValueDbl()) flags += "Dbl"; else flags += "   ";}
 
   element = new QListViewItem((QListViewItem*)parent, obj->getName().c_str(),
-                               obj->getObjectType().c_str(),
-                               flags,
-                               obj->getCN().c_str());
+                              obj->getObjectType().c_str(),
+                              flags,
+                              obj->getObjectUniqueName().c_str(),
+                              obj->getCN().c_str());
 
   //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 
@@ -86,5 +87,6 @@ void ObjectDebug::init()
   ListOfObjects->clear();
   ListOfObjects->addColumn("Type", -1);
   ListOfObjects->addColumn("Flags", -1);
+  ListOfObjects->addColumn("Unique name", -1);
   ListOfObjects->addColumn("CN", -1);
 }
