@@ -3,14 +3,15 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "CReportDefinitionVector.h"
-
+#include "CKeyFactory.cpp" 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
     const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container)
+    CCopasiContainer(name, pParent, "TrajectoryTask", CCopasiObject::Container),
+    mKey(CKeyFactory::add("SteadyStateTask", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -26,4 +27,9 @@ const std::vector< CReportDefinition >* CReportDefinitionVector::getReportDefini
 void CReportDefinitionVector::cleanup()
 {
   mReportDefinitions.clear();
+}
+
+std::string CReportDefinitionVector::getKey()
+{
+  return mKey;
 }

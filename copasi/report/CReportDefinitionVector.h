@@ -17,6 +17,7 @@ class CReportDefinitionVector: public CCopasiContainer
   {
   private:
     std::vector<CReportDefinition> mReportDefinitions;
+    std::string mKey;
 
   public:
     CReportDefinitionVector(const std::string &, const CCopasiContainer*);
@@ -39,6 +40,8 @@ class CReportDefinitionVector: public CCopasiContainer
     void save(CWriteConfig & configBuffer);
 
     void cleanup();
+
+    std::string getKey();
   };
 
 #endif // !defined(AFX_REPORTDEFINITIONVECTOR_H__172081F2_7BF6_49FA_8FC7_C890F2CB1974__INCLUDED_)
