@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/09 14:48:30 $
+   $Date: 2004/03/09 19:01:33 $
    End CVS Header */
 
 // CReaction
@@ -640,12 +640,10 @@ void CReaction::initializeParameters()
   while (it != begin)
     {
       --it;
+
       name = (*it)->getName();
       if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
-        {
-          if (it != begin) ++it;
-          mParameters.removeParameter(name);
-        }
+        mParameters.removeParameter(name);
     }
 
   compileParameters();
