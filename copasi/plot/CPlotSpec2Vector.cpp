@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:46 $
+   $Date: 2004/08/10 16:13:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -118,22 +118,30 @@ bool CPlotSpec2Vector::updateAllPlots()
 
 bool CPlotSpec2Vector::initAllPlots()
 {
+  windows.resize(0);
+
   //step through the vector of specifications and create the plot windows
-  PlotWindow* pTemp;
+  std::string key;
   const_iterator it;
-  std::vector<PlotWindow*>::iterator winit;
-  windows.resize(size());
-  for (it = begin(), winit = windows.begin(); it != end(); ++it, ++winit)
+  for (it = begin(); it != end(); ++it)
     {
-      if (*winit)
-      {(*winit)->initFromSpec(this, *it);}
-      else
+      if ((*it)->isActive())
         {
-          pTemp = new PlotWindow(this, *it);
-          *winit = pTemp;
-          //pTemp->resize(600, 360);
+          key = (*it)->CCopasiParameter::getKey();
+          std::cout << key << std::endl;
+
+          if (windowMap[key] == NULL)
+            {
+              windowMap[key] = new PlotWindow(this, *it);
+            }
+          else
+            {
+              windowMap[key]->initFromSpec(this, *it);
+            }
+          windowMap[key]->show();
+
+          windows.push_back(windowMap[key]);
         }
-      (*winit)->show();
     }
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 15:31:46 $
+   $Date: 2004/08/10 16:13:04 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -25,11 +25,14 @@ class CPlotSpec2Vector: public CCopasiVectorN<CPlotSpecification>
     std::vector<CCopasiObject*> mObjects;
 
     std::vector<C_FLOAT64> data;
-    //std::streampos position;
 
     enum inputType {NO_INPUT, FROM_STREAM, FROM_OBJECTS};
     inputType inputFlag;
 
+    //this maps the key of a plot spec to a plot window
+    std::map<std::string, PlotWindow*> windowMap;
+
+    //this is a list of active windows for a specific run
     std::vector<PlotWindow*> windows;
 
     bool initAllPlots();
