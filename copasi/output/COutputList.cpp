@@ -13,6 +13,7 @@
 #include "copasi.h"
 #include "COutputList.h"
 #include "COutput.h"
+#include "utilities/CReadConfig.h"
 
 /**
  * Default constructor.
@@ -75,6 +76,15 @@ C_INT32 COutputList::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
   COutput output;
+
+  // We need to load
+  // ReportFile=MassAction.txt
+  // DynamicsFile=simresults.dyn
+  // SSFile=simresults.ss
+  configbuffer.getVariable("ReportFile", "string", &mReportFile,
+                           CReadConfig::LOOP);
+  configbuffer.getVariable("DynamicsFile", "string", &mTrajectoryFile);
+  configbuffer.getVariable("SSFile", "string", &mSteadyStateFile);
 
   output.load(configbuffer);
   /* :TODO: We must not set the model here! */
@@ -160,3 +170,12 @@ void COutputList::compile(const std::string & name, CModel *model,
       mList[i]->compile(name, model, soln);
     }
 }
+
+const std::string & COutputList::getReportFile() const
+  {return mReportFile;}
+
+const std::string & COutputList::getTrajectoryFile() const
+  {return mTrajectoryFile;}
+
+const std::string & COutputList::getSteadyStateFile() const
+  {return mSteadyStateFile;}

@@ -48,7 +48,7 @@
            mandatory="no"
            strict="yes"
            location="both"
-           default="FunctionDB.cps"
+           default="FunctionDB.gps"
            hidden="no">
     <name>systemFunctionDB</name>
     <comment>A write protected database of kinetic functions.</comment>
@@ -62,6 +62,16 @@
            hidden="no">
     <name>userFunctionDB</name>
     <comment>The user extensible database of kinetic functions.</comment>
+   </option>
+   <option id="CopasiFile"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           hidden="no">
+    <name>copasiFile</name>
+    <name>f</name>
+    <comment>The file the model which specifies the model and task.</comment>
    </option>
    <option id="Save"
            type="string"

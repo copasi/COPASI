@@ -116,11 +116,12 @@ void COptions::init(C_INT argc, char *argv[])
   /* Create manually for each option except for:
      CopasiDir, ConfigFile, Home, and Default
      setValue("OptionId", Options.OptionID); */
-  setValue("ExportSBML", Options.ExportSBML);
-  setValue("ImportSBML", Options.ImportSBML);
   setValue("SystemFunctionDB", Options.SystemFunctionDB);
   setValue("UserFunctionDB", Options.UserFunctionDB);
+  setValue("CopasiFile", Options.CopasiFile);
   setValue("Save", Options.Save);
+  setValue("ImportSBML", Options.ImportSBML);
+  setValue("ExportSBML", Options.ExportSBML);
 
   delete Parser;
 }

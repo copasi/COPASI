@@ -36,6 +36,8 @@ namespace
     "  -c, --copasidir string     The location of suplementary files for copasi.\n"
     "  -d, --default string       The SBML file to export.\n"
     "  -e, --exportSBML string    The SBML file to export.\n"
+    "  -f, --copasiFile string    The file the model which specifies the model\n"
+    "                             and task.\n"
     "  -i, --importSBML string    A SBML file to import.\n"
     "  -s, --save string          The file the model is saved in after work.\n";
 
@@ -150,6 +152,8 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'rc' option");
         case option_CopasiDir:
           throw option_error("missing value for 'copasidir' option");
+        case option_CopasiFile:
+          throw option_error("missing value for 'copasiFile' option");
         case option_Default:
           throw option_error("missing value for 'default' option");
         case option_ExportSBML:
@@ -269,6 +273,15 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.ExportSBML = position;
       return;
+    case 'f':
+      if (locations_.CopasiFile)
+        {
+          throw option_error("the 'copasiFile' option is only allowed once");
+        }
+      openum_ = option_CopasiFile;
+      state_ = state_value;
+      locations_.CopasiFile = position;
+      return;
     case 'i':
       if (source != source_cl) break;
       if (locations_.ImportSBML)
@@ -304,7 +317,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 {
   option = expand_long_name(option);
 
-  if (source == source_cl && strcmp(option, "copasidir") == 0)
+  if (strcmp(option, "copasiFile") == 0)
+    {
+      if (locations_.CopasiFile)
+        {
+          throw option_error("the 'copasiFile' option is only allowed once");
+        }
+      openum_ = option_CopasiFile;
+      locations_.CopasiFile = position;
+      state_ = state_value;
+      return;
+    }
+  else if (source == source_cl && strcmp(option, "copasidir") == 0)
     {
       if (locations_.CopasiDir)
         {
@@ -422,6 +446,11 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.CopasiDir = value;
       }
       break;
+    case option_CopasiFile:
+      {
+        options_.CopasiFile = value;
+      }
+      break;
     case option_Default:
       {
         std::string svalue(value);
@@ -481,9 +510,10 @@ void copasi::COptionParser::parse_value (const char *value)
     }
 }
 //#########################################################################
-const char* copasi::option_error::get_help_comment (void) const {
-  return const_help_comment;
-}
+const char* copasi::option_error::get_help_comment (void) const
+  {
+    return const_help_comment;
+  }
 //#########################################################################
 namespace
   {
@@ -491,6 +521,9 @@ namespace
   {
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
+
+    if (name_size <= 10 && name.compare("copasiFile") == 0)
+      matches.push_back("copasiFile");
 
     if (name_size <= 9 && name.compare("copasidir") == 0)
       matches.push_back("copasidir");

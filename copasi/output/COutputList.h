@@ -28,6 +28,10 @@ class COutputList
      */
     CCopasiVectorS < COutput > mList;
 
+    std::string mReportFile;
+    std::string mTrajectoryFile;
+    std::string mSteadyStateFile;
+
   public:
 
     /**
@@ -78,6 +82,10 @@ class COutputList
      *  @see mFail
      */
     C_INT32 load(CReadConfig & configbuffer);
+
+    const std::string & getReportFile() const;
+    const std::string & getTrajectoryFile() const;
+    const std::string & getSteadyStateFile() const;
 
     void init();
 

@@ -42,12 +42,13 @@ namespace copasi
   struct options
     {
       options(void) :
-          SystemFunctionDB("FunctionDB.cps"),
+          SystemFunctionDB("FunctionDB.gps"),
           UserFunctionDB("~/FunctionDB.cps")
       {}
 
       std::string ConfigFile;
       std::string CopasiDir;
+      std::string CopasiFile;
       std::map<std::string, std::string> Default;
       std::string ExportSBML;
       std::string Home;
@@ -66,6 +67,7 @@ namespace copasi
       typedef int size_type;
       size_type ConfigFile;
       size_type CopasiDir;
+      size_type CopasiFile;
       size_type Default;
       size_type ExportSBML;
       size_type Home;
@@ -105,7 +107,7 @@ namespace copasi
        * option that caused the exception.
        */
       autothrow get_autothrow_id (void) const
-      {return autothrow_;}
+        {return autothrow_;}
     private:
       autothrow autothrow_;
     };
@@ -132,15 +134,15 @@ namespace copasi
 
       /// get a list of nonoptions from the command line
       const std::vector<std::string>& get_non_options (void) const
-      {return non_options_;}
+        {return non_options_;}
 
       /// get the main options
       const options& get_options (void) const
-      {return options_;}
+        {return options_;}
 
       /// get the main option locations
       const option_locations& get_locations (void) const
-      {return locations_;}
+        {return locations_;}
     private:
       options options_;
       option_locations locations_;
@@ -152,6 +154,7 @@ namespace copasi
         option_Home,
         option_SystemFunctionDB,
         option_UserFunctionDB,
+        option_CopasiFile,
         option_Save,
         option_ImportSBML,
         option_ExportSBML,
