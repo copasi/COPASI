@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/03/09 22:23:59 $
+   $Author: shoops $ 
+   $Date: 2005/03/10 02:21:26 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.37 2005/03/09 22:23:59 anuragr Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.38 2005/03/10 02:21:26 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -412,7 +412,7 @@ void PlotWidget1::addPlot()
 
   protectedNotify(ListViews::PLOT, ListViews::ADD);
 
-  enter(pPl->getKey());
+  enter(pPl->CCopasiParameter::getKey());
 }
 
 //-----------------------------------------------------------------------------
