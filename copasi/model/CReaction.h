@@ -235,6 +235,20 @@ class CReaction : public CCopasiContainer
     void setChemEq(const std::string & chemEq);
 
     /**
+     * Add a modifier to the reaction
+     * @param const std::string &name
+     * @return bool success
+     */
+    bool addModifier(const std::string &name);
+
+    /**
+     * Remove a modifier form the reaction
+     * @param const std::string &name
+     * @return bool success
+     */
+    bool deleteModifier(const std::string &name);
+
+    /**
      *  Sets the rate function of the reaction
      *  @param "const string &" functionName
      */

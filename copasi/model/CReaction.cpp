@@ -326,6 +326,15 @@ bool CReaction::setName(const std::string & name)
 void CReaction::setChemEq(const std::string & chemEq)
 {/*mReversible = */mChemEq.setChemicalEquation(chemEq);}
 
+bool CReaction::addModifier(const std::string &name)
+{
+  mChemEq.addMetaboliteByName(name, 0.0, CChemEq::MODIFIER);
+  return true;
+}
+
+bool CReaction::deleteModifier(const std::string &name)
+{return false;} /* :TODO: this needs to be implemented on CChemEq first. */
+
 void CReaction::setReversible(bool reversible)
 {mChemEq.setReversibility(reversible);}
 
