@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/06 19:59:09 $
+   $Author: jpahle $ 
+   $Date: 2004/12/17 15:25:54 $
    End CVS Header */
 
 MESSAGES Messages[] =
@@ -57,11 +57,12 @@ MESSAGES Messages[] =
 
     // CTrajectoryMethod
     {MCTrajectoryMethod + 1, "CTrajectoryMethod (1): Hybrid simulation not "
-     "applicable, since the stoicheometry contains a non-integer."},
+     "applicable, since the stoichiometry contains a non-integer."},
     {MCTrajectoryMethod + 2, "CTrajectoryMethod (2): Hybrid simulation not "
      "applicable, since reversible reactions exists."},
-    {MCTrajectoryMethod + 3, "CTrajectoryMethod (2): Hybrid simulation not "
+    {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
+    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): CHybridMethod.initMethod(): Error: mLowerStochLimit ('%d') is greater than mUpperStochLimit ('%d')."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
