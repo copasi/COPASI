@@ -5,16 +5,10 @@
  *  Created for Copasi by Mudita Singhal
  */
 
-#include <string>
-#include "copasi.h"
-#include <vector>
-#include "model/CModel.h"
-#include "utilities/CGlobals.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
 #include "CKeyFactory.h"
 #include "CReportDefinition.h"
-#include "utilities/CMethodParameter.h"
+#include "CReportBody.h"
+#include "CReport.h"
 
 //////////////////////////////////////////////////
 //
@@ -23,10 +17,8 @@
 //////////////////////////////////////////////////
 CReportDefinition::CReportDefinition():
     CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
-    rComment(new CComment),
-    rHeader(new CHeaderFooter),
-    rFooter(new CHeaderFooter),
-    rBody(new CBody)
+    mComment(""),
+    mpBody(new CReportBody)
 {}
 
 CReportDefinition::~CReportDefinition()
@@ -34,236 +26,19 @@ CReportDefinition::~CReportDefinition()
 
 void CReportDefinition::cleanup()
 {
-  pdelete(rComment);
-  pdelete(rHeader);
-  pdelete(rFooter);
-  pdelete(rBody);
+  pdelete(mpBody);
+  mHeaderVector.clear();
+  mFooterVector.clear();
 }
 
-CComment* CReportDefinition::getComment()
-{return rComment;}
+std::vector<CCopasiObjectName>* CReportDefinition::getHeaderAddr()
+{return &mHeaderVector;}
 
-void CReportDefinition::setComment(CComment *comment)
-{rComment = comment;}
+std::vector<CCopasiObjectName>* CReportDefinition::getFooterAddr()
+{return &mFooterVector;}
 
-std::vector<CHeaderFooter*> CReportDefinition::getHeader()
-{return rHeaderVector;}
+CReportBody* CReportDefinition::getReportBody()
+{return mpBody;}
 
-void CReportDefinition::setHeader(CHeaderFooter *header)
-{rHeader = header;}
-
-std::vector<CHeaderFooter*> CReportDefinition::getFooter()
-{return rFooterVector;}
-
-void CReportDefinition::setFooter(CHeaderFooter *footer)
-{rFooter = footer;}
-
-CBody* CReportDefinition::getBody()
-{return rBody;}
-
-void CReportDefinition::setBody(CBody *body)
-{rBody = body;}
-
-//////////////////////////////////////////////////
-//
-//class CComment
-//
-//////////////////////////////////////////////////
-CComment::CComment()
-//  :cText(new CComment)
-    : cText(NULL)
-{}
-
-CComment::~CComment()
-{cleanup();}
-
-void CComment::cleanup()
-{
-  pdelete(cText);
-}
-
-CComment* CComment::getText()
-{return cText;}
-
-void CComment::setText(CComment *text)
-{cText = text;}
-
-//////////////////////////////////////////////////
-//
-//class CHeaderFooter
-//
-//////////////////////////////////////////////////
-CHeaderFooter::CHeaderFooter():
-    hObject(new CReportObject),
-    hText(new CComment),
-    // hReport(new CReport)
-    hReport(NULL)
-{}
-
-CHeaderFooter::~CHeaderFooter()
-{cleanup();}
-
-void CHeaderFooter::cleanup()
-{
-  pdelete(hObject);
-  pdelete(hText);
-  pdelete(hReport);
-}
-
-CReportObject* CHeaderFooter::getObject()
-{return hObject;}
-
-void CHeaderFooter::setObject(CReportObject *object)
-{hObject = object;}
-
-CComment* CHeaderFooter::getText()
-{return hText;}
-
-void CHeaderFooter::setText(CComment *text)
-{hText = text;}
-
-CReport* CHeaderFooter::getReport()
-{return hReport;}
-
-void CHeaderFooter::setReport(CReport *report)
-{hReport = report;}
-
-//////////////////////////////////////////////////
-//
-//class CBody
-//
-//////////////////////////////////////////////////
-CBody::CBody():
-    //    bTable(new CReportTable),
-    //    bReport(new CReport)
-    bTable(NULL),
-    bReport(NULL)
-{}
-
-CBody::~CBody()
-{cleanup();}
-
-void CBody::cleanup()
-{
-  pdelete(bTable);
-  pdelete(bReport);
-}
-
-CReport* CBody::getReport()
-{return bReport;}
-
-void CBody::setReport(CReport *report)
-{bReport = report;}
-
-CReportTable* CBody::getTable()
-{return bTable;}
-
-void CBody::setTable(CReportTable *table)
-{bTable = table;}
-
-//////////////////////////////////////////////////
-//
-//class CReportObject
-//
-//////////////////////////////////////////////////
-CReportObject::CReportObject()
-{}
-
-CReportObject::~CReportObject()
-{}
-
-const std::string* CReportObject::getName()
-{return oName;}
-
-void CReportObject::setName(const std::string * name)
-{oName = name;}
-
-//////////////////////////////////////////////////
-//
-//class CReport
-//
-//////////////////////////////////////////////////
-CReport::CReport():
-    CCopasiObject("Report", NULL, "Report", CCopasiObject::Container),
-    rReportDef(new CReportDefinition),
-    rAppend(true),
-    reportKey(CKeyFactory::add("Report", this))
-{}
-
-CReport::~CReport()
-{cleanup();}
-
-void CReport::cleanup()
-{
-  CKeyFactory::remove(reportKey);
-  pdelete(rReportDef);
-}
-
-CReportDefinition* CReport::getDefReference()
-{return rReportDef;}
-
-void CReport::setDefReference(CReportDefinition* reportDef)
-{rReportDef = reportDef;}
-
-const std::string* CReport::getTarget()
-{return rTarget;}
-
-void CReport::setTarget(const std::string *target)
-{rTarget = target;}
-
-bool CReport::append()
-{return rAppend;}
-
-void CReport::setAppend(bool append)
-{rAppend = append;}
-
-void CReport::printHeader()
-{
-  // for loop print out rReportDef->getHeader()
-}
-
-void CReport::printBody()
-{
-  // for loop print out rReportDef->getBody()
-}
-
-void CReport::printFooter()
-{
-  // for loop print out rReportDef->getFooter()
-}
-
-//////////////////////////////////////////////////
-//
-//class CReportTable
-//
-//////////////////////////////////////////////////
-CReportTable::CReportTable():
-    tObject(new CReportObject),
-    tPrintTitle(true)
-{}
-
-CReportTable::~CReportTable()
-{cleanup();}
-
-void CReportTable::cleanup()
-{
-  pdelete(tObject);
-}
-
-CReportObject* CReportTable::getObject()
-{return tObject;}
-
-void CReportTable::setObject(CReportObject *object)
-{tObject = object;}
-
-const std::string* CReportTable::getSeperator()
-{return tSeperator;}
-
-void CReportTable::setSeperator(const std::string *seperator)
-{tSeperator = seperator;}
-
-bool CReportTable::printTitle()
-{return tPrintTitle;}
-
-void CReportTable::setPrintTitle(bool printTitle)
-{tPrintTitle = printTitle;}
+void CReportDefinition::setReportBody(CReportBody *pNewBody)
+{mpBody = pNewBody;}
