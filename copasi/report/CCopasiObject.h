@@ -56,7 +56,7 @@ class CCopasiObject
     static const C_FLOAT64 DummyValue;
 
     //Operations
-  protected:
+  public:
     CCopasiObject();
 
     CCopasiObject(const std::string & name,
