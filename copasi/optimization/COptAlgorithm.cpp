@@ -16,33 +16,87 @@
 // Default constructor
 COptAlgorithm::COptAlgorithm()
 {
+  initialize();
+
   mOptProblem = NULL;
   mParameters = NULL; 
   mParameterNum = 0;        // the number of parameters
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
-  //if (mOptAlgmParams != ; //vector of COptAlgorithmParameter object
  
+  for (int i=0; i<mOptAlgmParams.size(); i++)
+    {
+      mOptAlgmParams[i].setName("unknown"); 
+      mOptAlgmParams[i].setValue(0.0);
+    }
+
   mMethodVersion = "0";
   mMethodName = "Unknown";
   mBounds = false;
+
 }
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptAlgorithm::~COptAlgorithm()
 { }
 
+
+// copy constructor
+COptAlgorithm::COptAlgorithm(const COptAlgorithm& source)
+{
+  mOptProblem = source.mOptProblem; 
+  mParameters = source.mParameters;      
+  mParameterNum = source.mParameterNum;         
+  mParameterMin = source.mParameterMin;   
+  mParameterMax = source.mParameterMax;     
+  mOptAlgmParams = source.mOptAlgmParams;
+  
+  mMethodVersion = source.mMethodVersion;     
+  mMethodName = source.mMethodName;	     
+  mBounds = source.mBounds;		  
+}
+
+// Object assignment overloading,
+COptAlgorithm & COptAlgorithm::operator = (const COptAlgorithm& source)
+{
+  cleanup();
+    
+  if(this != &source)
+    {
+       mOptProblem = source.mOptProblem; 
+       mParameters = source.mParameters;      
+       mParameterNum = source.mParameterNum;         
+       mParameterMin = source.mParameterMin;   
+       mParameterMax = source.mParameterMax;     
+       mOptAlgmParams = source.mOptAlgmParams; 
+ 
+       mMethodVersion = source.mMethodVersion;     
+       mMethodName = source.mMethodName;	     
+       mBounds = source.mBounds;	 
+    }
+    
+  return *this;
+}
+
+
 // Initialization of private variables
 bool COptAlgorithm::initialize(void)
 {
-  
-  if (!mOptAlgmParams.empty())
-    mOptAlgmParams.clear();
+  cleanup();
 
+  mOptProblem = new COptProblem();  
+  mParameters = new double();       
+  mParameterNum = new int();        
+  mParameterMin = new double();    
+  mParameterMax = new double();   
+  
+  /*
   for (int i=0; i<mOptAlgmParams.size(); i++)
     {
-      //    mOptAlgmParams[i] =  
+      mOptAlgmParams[i].setName("unknown"); 
+      mOptAlgmParams[i].setValue(0.0);
     }
+  */
 
   return true;
 }
@@ -50,10 +104,13 @@ bool COptAlgorithm::initialize(void)
 //clean up mem
 int COptAlgorithm::cleanup(void)
 {
-  mOptProblem = NULL;
-  mParameters = NULL; 
-  mParameterMin = NULL;    
-  mParameterMax = NULL;
+  if(mOptProblem) mOptProblem = NULL;
+  if(mParameters) mParameters = NULL; 
+  if(mParameterMin) mParameterMin = NULL;    
+  if(mParameterMax) mParameterMax = NULL;
+
+  if (!mOptAlgmParams.empty())
+    mOptAlgmParams.clear();
 
   return 0;
 }

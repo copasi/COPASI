@@ -60,6 +60,21 @@ class COptAlgorithm
    virtual ~COptAlgorithm();
    //~COptAlgorithm();
 
+  /**
+   * Copy constructor
+   * @param source a COptAlgorithm object for copy
+   */
+  COptAlgorithm(const COptAlgorithm& source);
+
+  /**
+   * Object assignment overloading
+   * @param source a COptAlgorithm object for copy
+   * @return an assigned COptAlgorithm object
+   */
+  COptAlgorithm& operator=(const COptAlgorithm& source);
+
+
+
    /**
     * clean up memory
     */
