@@ -6,7 +6,7 @@
  */
 
 #ifndef COPASI_CStep
-#define COPASI_CSteb
+#define COPASI_CStep
 
 #include <string>
 #include <vector>
@@ -332,4 +332,4 @@ private:
                            vector < CId2Metab > &output);
 };
 
-#endif // COPASI_CSteb
+#endif // COPASI_CStep
