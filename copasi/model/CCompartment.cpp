@@ -25,7 +25,10 @@ CCompartment::CCompartment(const std::string & name,
     mVolume(1.0),
     mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
-{CONSTRUCTOR_TRACE;}
+{
+  initObjects();
+  CONSTRUCTOR_TRACE;
+}
 
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
@@ -37,7 +40,7 @@ CCompartment::CCompartment(const CCompartment & src,
     mMetabolites(src.mMetabolites, this)
 {
   CONSTRUCTOR_TRACE;
-
+  initObjects();
   //  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
   //    mMetabolites[i]->setCompartment(this);
 }

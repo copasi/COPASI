@@ -40,7 +40,7 @@ CMetab::CMetab(const std::string & name,
 {
   initModel();
   initCompartment(NULL);
-
+  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -58,7 +58,7 @@ CMetab::CMetab(const CMetab & src,
 {
   initModel();
   initCompartment(src.mpCompartment);
-
+  initObjects();
   CONSTRUCTOR_TRACE;
 }
 

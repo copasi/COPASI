@@ -20,6 +20,7 @@
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
 #include "function/CFunctionDB.h"
+#include "report/CCopasiObjectReference.h"
 
 #ifdef WIN32
 #define min _cpp_min
@@ -48,7 +49,10 @@ CReaction::CReaction(const std::string & name,
     mId2Parameters("Parameters", this),
     mCallParameters(),
     mCallParameterObjects()
-{CONSTRUCTOR_TRACE;}
+{
+  CONSTRUCTOR_TRACE;
+  initObjects();
+}
 
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
@@ -72,6 +76,7 @@ CReaction::CReaction(const CReaction & src,
     mCallParameterObjects(src.mCallParameterObjects)
 {
   CONSTRUCTOR_TRACE;
+  initObjects();
   if (mpFunction)
     {
       initCallParameters();
@@ -1314,3 +1319,19 @@ const CCompartment* CReaction::getFunctionCompartment() const
 
 const CCallParameters & CReaction::getCallParameterObjects() const
   {return mCallParameterObjects;}
+
+void CReaction::initObjects()
+{
+  addObjectReference("Name", mName);
+  addObjectReference("ChemicalEquation", mChemEq);
+  addObjectReference("FunctionParameters", mParameterDescription);
+  addObjectReference("Flux", mFlux);
+  addObjectReference("ScaledFlux", mScaledFlux);
+  addObjectReference("Reversible", mReversible);
+  add(&mId2Substrates);
+  add(&mId2Products);
+  add(&mId2Modifiers);
+  add(&mId2Parameters);
+  addObjectReference("CallParameters", mCallParameters);
+  addObjectReference("CallParameterObjects", mCallParameterObjects);
+}

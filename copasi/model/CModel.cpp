@@ -106,6 +106,7 @@ CModel::CModel(const CModel & src):
   initializeMetabolites();
 
   compile();
+  initObjects();
 }
 
 CModel::~CModel()

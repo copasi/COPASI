@@ -726,6 +726,8 @@ class CReaction : public CCopasiContainer
      * Sets the scaling factor of the for the fluxes
      */
     void setScalingFactor();
+
+    void initObjects();
   };
 
 #endif // COPASI_CReaction
