@@ -10,30 +10,18 @@
 #include "model/CMetabNameInterface.h"
 
 CReactionInterface::CReactionInterface():
-    mpChemEq(NULL),
+    //mpChemEq(NULL),
     mpParameters(NULL)
 {emptyString = "";}
 CReactionInterface::~CReactionInterface()
 {
   pdelete(mpParameters);
-  pdelete(mpChemEq);
+  //pdelete(mpChemEq);
 }
 
-std::vector<std::string> CReactionInterface::getListOfMetabs(std::string role) const
+const std::vector<std::string> & CReactionInterface::getListOfMetabs(std::string role) const
   {
-    const CCopasiVector<CChemEqElement> * el;
-    if (role == "SUBSTRATE") el = &(mpChemEq->getSubstrates());
-    else if (role == "PRODUCT") el = &(mpChemEq->getProducts());
-    else if (role == "MODIFIER") el = &(mpChemEq->getModifiers());
-    else fatalError();
-
-    std::vector<std::string> ret;
-
-    C_INT32 i, imax = el->size();
-    for (i = 0; i < imax; ++i)
-      ret.push_back(CMetabNameInterface::getDisplayName((*el)[i]->getMetaboliteKey()));
-
-    return ret;
+    return mChemEqI.getListOfNames(role);
   }
 
 std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() const
@@ -45,8 +33,8 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
       reversible = TriTrue;
 
     CCopasiVector<CFunction>* pFunctionVector =
-      Copasi->pFunctionDB->suitableFunctions(mpChemEq->getMolecularity(CChemEq::SUBSTRATE),
-                                             mpChemEq->getMolecularity(CChemEq::PRODUCT),
+      Copasi->pFunctionDB->suitableFunctions(mChemEqI.getMolecularity("SUBSTRATE"),
+                                             mChemEqI.getMolecularity("PRODUCT"),
                                              reversible);
 
     std::vector<std::string> ret;
@@ -69,7 +57,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     return ret;
   }
 
-void CReactionInterface::initFromReaction(const std::string & key)
+void CReactionInterface::initFromReaction(const CModel & model, const std::string & key)
 {
   mReactionReferenceKey = key;
 
@@ -78,14 +66,14 @@ void CReactionInterface::initFromReaction(const std::string & key)
 
   mReactionName = rea->getName();
 
-  pdelete(mpChemEq);
-  mpChemEq = new CChemEq(rea->getChemEq());
+  //pdelete(mpChemEq);
+  mChemEqI.loadFromChemEq(&model, rea->getChemEq());
 
   mpFunction = &(rea->getFunction());
   pdelete(mpParameters)
   mpParameters = new CFunctionParameters(mpFunction->getParameters());
 
-  mNameMap = rea->getParameterMappingName();
+  loadNameMap(model, *rea);
 
   C_INT32 i, imax = size();
   mValues.resize(imax);
@@ -106,7 +94,7 @@ void CReactionInterface::writeBackToReaction(CModel & model) const
 
     rea->setName(mReactionName); //TODO: what else needs to be done here?
 
-    rea->setChemEqFromString(mpChemEq->getChemicalEquation(), model);
+    mChemEqI.writeToChemEq(&model, rea->getChemEq());
 
     // TODO. check if function has changed since it was set in the R.I.
     rea->setFunction(mpFunction->getName());
@@ -200,21 +188,21 @@ void CReactionInterface::clearFunction()
 
 void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
-  CModel * pModel = (CModel*) (CKeyFactory::get(mReactionReferenceKey)->getObjectAncestor("Model"));
-  mpChemEq->setChemicalEquation(eq, *pModel);
+  //CModel * pModel = (CModel*) (CKeyFactory::get(mReactionReferenceKey)->getObjectAncestor("Model"));
+  mChemEqI.setChemEqString(eq);
   findAndSetFunction(newFunction);
 }
 
 void CReactionInterface::setReversibility(bool rev, const std::string & newFunction)
 {
-  mpChemEq->setReversibility(rev);
+  mChemEqI.setReversibility(rev);
   findAndSetFunction(newFunction);
 }
 
 void CReactionInterface::reverse(bool rev, const std::string & newFunction)
 {
-  mpChemEq->setReversibility(rev);
-  mpChemEq->reverse();
+  mChemEqI.setReversibility(rev);
+  mChemEqI.reverse();
   findAndSetFunction(newFunction);
 }
 
@@ -290,10 +278,10 @@ bool CReactionInterface::isLocked(std::string usage) const
   {
     // get number of metabs in chemEq
     unsigned C_INT32 listSize;
-    if (usage == "PARAMETER") return false;
-    else if (usage == "SUBSTRATE") listSize = mpChemEq->getSubstrates().size();
-    else if (usage == "PRODUCT") listSize = mpChemEq->getProducts().size();
-    else if (usage == "MODIFIER") listSize = mpChemEq->getModifiers().size();
+    if (usage == "PARAMETER")
+      return false;
+    else
+      listSize = mChemEqI.getListOfNames(usage).size();
 
     // get number of parameters
     unsigned C_INT32 paramSize = mpParameters->getNumberOfParametersByUsage(usage);
@@ -318,10 +306,10 @@ void CReactionInterface::setMetab(C_INT32 index, std::string mn)
 {
   std::string usage = getUsage(index);
   C_INT32 listSize;
-  if (usage == "PARAMETER") return;
-  else if (usage == "SUBSTRATE") listSize = mpChemEq->getSubstrates().size();
-  else if (usage == "PRODUCT") listSize = mpChemEq->getProducts().size();
-  else if (usage == "MODIFIER") listSize = mpChemEq->getModifiers().size();
+  if (usage == "PARAMETER")
+    return;
+  else
+    listSize = mChemEqI.getListOfNames(usage).size();
 
   if (isVector(index)) mNameMap[index].push_back(mn);
   else
@@ -350,66 +338,97 @@ void CReactionInterface::setMetab(C_INT32 index, std::string mn)
 
 std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::string & role) const
   {
-    const CCopasiVector<CChemEqElement> * el;
-    if (role == "SUBSTRATE") el = &(mpChemEq->getSubstrates());
-    else if (role == "PRODUCT") el = &(mpChemEq->getProducts());
-    else if (role == "MODIFIER") el = &(mpChemEq->getModifiers());
-    else fatalError();
+    const std::vector<std::string> & names = mChemEqI.getListOfNames(role);
+    const std::vector<C_FLOAT64> & mults = mChemEqI.getListOfMultiplicities(role);
+
+    //if (role == "SUBSTRATE") el = &(mpChemEq->getSubstrates());
+    //else if (role == "PRODUCT") el = &(mpChemEq->getProducts());
+    //else if (role == "MODIFIER") el = &(mpChemEq->getModifiers());
+    //else fatalError();
 
     unsigned C_INT32 j, jmax;
-    unsigned C_INT32 i, imax = el->size();
+    unsigned C_INT32 i, imax = names.size();
 
     std::vector<std::string> ret;
 
     for (i = 0; i < imax; ++i)
       {
         if (role == "MODIFIER") jmax = 1;
-        else jmax = (*el)[i]->getMultiplicity();
+        else jmax = mults[i];
 
         for (j = 0; j < jmax; ++j)
-          ret.push_back(CMetabNameInterface::getDisplayName((*el)[i]->getMetaboliteKey()));
+          ret.push_back(names[i]);
       }
     return ret;
   }
 
+void CReactionInterface::loadNameMap(const CModel & model, const CReaction & rea)
+{
+  std::vector< std::vector<std::string> >::const_iterator it;
+  std::vector< std::vector<std::string> >::const_iterator iEnd;
+  std::vector<std::string>::const_iterator jt;
+  std::vector<std::string>::const_iterator jEnd;
+
+  std::string metabName;
+  std::vector<std::string> SubList;
+
+  mNameMap.clear();
+
+  it = rea.getParameterMappings().begin();
+  iEnd = rea.getParameterMappings().end();
+  for (; it != iEnd; ++it)
+    {
+      SubList.clear();
+      for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
+        {
+          metabName = CMetabNameInterface::getDisplayName(&model, *jt);
+          if (metabName != "")
+            SubList.push_back(metabName);
+          else
+            SubList.push_back(*jt);
+        }
+      mNameMap.push_back(SubList);
+    }
+}
+
 bool CReactionInterface::createMetabolites(CModel & model) const
   {/*
-                C_INT32 i, imax;
-                const CCopasiVector<CChemEqElement> * el;
-                bool ret = false;
-                std::string compartmentName = model.getCompartments()[0]->getName();
-                //just the first compartment. This could be done more intelligently.
-             
-                el = &(mpChemEq->getSubstrates());
-                imax = el->size();
-                for (i = 0; i < imax; ++i)
-                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                    {
-                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                      ret = true;
-                    }
-             
-                el = &(mpChemEq->getProducts());
-                imax = el->size();
-                for (i = 0; i < imax; ++i)
-                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                    {
-                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                      ret = true;
-                    }
-             
-                el = &(mpChemEq->getModifiers());
-                imax = el->size();
-                for (i = 0; i < imax; ++i)
-                  if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
-                    {
-                      model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
-                      ret = true;
-                    }
-             
-                return ret;
-                //TODO: this method somehow still assumes unique names
-                //
-              */
+                    C_INT32 i, imax;
+                    const CCopasiVector<CChemEqElement> * el;
+                    bool ret = false;
+                    std::string compartmentName = model.getCompartments()[0]->getName();
+                    //just the first compartment. This could be done more intelligently.
+                 
+                    el = &(mpChemEq->getSubstrates());
+                    imax = el->size();
+                    for (i = 0; i < imax; ++i)
+                      if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                        {
+                          model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                          ret = true;
+                        }
+                 
+                    el = &(mpChemEq->getProducts());
+                    imax = el->size();
+                    for (i = 0; i < imax; ++i)
+                      if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                        {
+                          model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                          ret = true;
+                        }
+                 
+                    el = &(mpChemEq->getModifiers());
+                    imax = el->size();
+                    for (i = 0; i < imax; ++i)
+                      if (model.findMetab((*el)[i]->getMetaboliteName()) == -1)
+                        {
+                          model.addMetabolite(compartmentName, (*el)[i]->getMetaboliteName(), 0.1, CMetab::METAB_VARIABLE);
+                          ret = true;
+                        }
+                 
+                    return ret;
+                    //TODO: this method somehow still assumes unique names
+                    //
+                  */
     return true;
   }

@@ -3,9 +3,10 @@
 
 #include <vector>
 #include <string>
-#include "copasi.h"
-#include "model/CChemEq.h"
+#include "copasi.h" 
+//#include "model/CChemEq.h"
 #include "model/CReaction.h"
+#include "model/CChemEqInterface.h"
 #include "function/CFunction.h"
 
 class CFunction;
@@ -32,8 +33,9 @@ class CReactionInterface
 
     /**
      * A copy of the chemical equation of the reaction
-     */
-    CChemEq *mpChemEq;
+     */ 
+    //CChemEq *mpChemEq;
+    CChemEqInterface mChemEqI;
 
     /**
      * A pointer to the kinetic function of the reaction
@@ -72,9 +74,9 @@ class CReactionInterface
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
     void setChemEqString(const std::string & eq, const std::string & newFunction = "");
-    std::string getChemEqString() const {return mpChemEq->getChemicalEquation();};
+    std::string getChemEqString() const {return mChemEqI.getChemEqString(false);};
 
-    bool isReversible() const {return mpChemEq->getReversibility();};
+    bool isReversible() const {return mChemEqI.getReversibility();};
 
     /**
      * set the reversibility.
@@ -92,7 +94,7 @@ class CReactionInterface
      * This produces a list of metab names (from the chem eq) for use in
      * the combo boxes. The role must be given like a usage, e.g. "SUBSTRATE".
      */
-    std::vector<std::string> getListOfMetabs(std::string role) const;
+    const std::vector<std::string> & getListOfMetabs(std::string role) const;
 
     /**
      * set the function.
@@ -135,7 +137,7 @@ class CReactionInterface
     void setValue(C_INT32 index, C_FLOAT64 value) {mValues[index] = value;}
     const C_FLOAT64 & getValue(C_INT32 index) const {return mValues[index];}
 
-    void initFromReaction(const std::string & key);
+    void initFromReaction(const CModel & model, const std::string & key);
 
     void writeBackToReaction(CModel & model) const;
 
@@ -169,6 +171,8 @@ class CReactionInterface
      * several times according to theit multiplicity
      */
     std::vector<std::string> getExpandedMetabList(const std::string & role) const;
+
+    void loadNameMap(const CModel & model, const CReaction & rea);
   };
 
 #endif
