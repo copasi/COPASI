@@ -136,18 +136,26 @@ void ObjectBrowser::closeEvent (QCloseEvent * e)
 {
   QWidget::closeEvent(e);
   if (mparent)
-    this->~ObjectBrowser();
+    {
+      //if not a model dialog, it shall incur this function, when close
+      // it shall enable the browser menu
+      mparent->enabled_object_browser_menu();
+      mOutputObjectVector = NULL;
+      mparent = NULL;
+      cleanup();
+    }
 }
 
-ObjectBrowser::~ObjectBrowser() {cleanup();}
+ObjectBrowser::~ObjectBrowser()
+{
+  cleanup();
+}
 
 void ObjectBrowser::cleanup()
 {
   pdelete(objectItemList);
   pdelete(refreshList);
   // no need to delete child widgets, Qt does it all for us
-  if (mparent)
-    mparent->enabled_object_browser_menu();
 }
 
 void ObjectBrowser::cancelClicked()
