@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 21:55:07 $
+   $Date: 2004/09/26 21:47:08 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -290,7 +290,7 @@ bool CChemEqInterface::extractElement(const std::string & input,
   std::string part = input.substr(Start, eee - Start);
 
   //part now contains the term we want to analyze
-  std::cout << "    part \"" << part << "\"" << std::endl;
+  //std::cout << "    part \"" << part << "\"" << std::endl;
 
   std::string::size_type Multiplier = part.find("*", 0);
   std::string::size_type Multiplier2 = part.find("*", Multiplier + 1);
@@ -324,7 +324,7 @@ bool CChemEqInterface::extractElement(const std::string & input,
   std::string nameString = part.substr(NameStart, NameEnd - NameStart);
 
   //nameString now contains the metab name of the term we want to analyze
-  std::cout << "    nameString \"" << nameString << "\"" << std::endl;
+  //std::cout << "    nameString \"" << nameString << "\"" << std::endl;
 
   if (!CMetabNameInterface::isValidMetabName(nameString))
     {
@@ -355,7 +355,7 @@ bool CChemEqInterface::extractModifier(const std::string & input,
   std::string part = input.substr(Start, End - Start);
 
   //part now contains the term we want to analyze
-  std::cout << "    part/metabName \"" << part << "\"" << std::endl;
+  //std::cout << "    part/metabName \"" << part << "\"" << std::endl;
 
   if (!CMetabNameInterface::isValidMetabName(part))
     {
