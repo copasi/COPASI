@@ -182,7 +182,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout6->addWidget(upButton, 1, 0);
 
   ObjectListBox = new QListBox(this, "ObjectListBox");
-  ObjectListBox->insertItem(trUtf8(""));
+  ObjectListBox->insertItem(trUtf8("click here to add new item"));
 
   Layout6->addMultiCellWidget(ObjectListBox, 2, 2, 0, 1);
   Layout7->addLayout(Layout6);
@@ -572,7 +572,7 @@ void ScanWidget::loadScan()
   while (activeObject >= 0)
     deleteButtonClicked();
   ObjectListBox->clear();
-  ObjectListBox->insertItem(trUtf8(""));
+  ObjectListBox->insertItem(trUtf8("click here to add new item"));
 }
 
 bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
