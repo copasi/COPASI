@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.26 $ $Author: shoops $ $Date: 2004/06/22 21:04:51 $  
+# $Revision: 1.27 $ $Author: shoops $ $Date: 2004/09/29 04:02:58 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -111,11 +111,8 @@ contains(BUILD_OS, SunOS) {
  
 contains(BUILD_OS, Linux) {
   QMAKE_LFLAGS_RELEASE += -static
-  LIBS += -lsbml
-  release {
-    LIBS += -lexpat_compat
-  }
-  LIBS += -lexpat
+
+  LIBS += -lsbml -lexpat
 
   !isEmpty(QWT_PATH){
       LIBS+=  -L$${QWT_PATH}/lib
