@@ -313,6 +313,9 @@ void ListViews::ConstructNodeWidgets()
   tableDefinition = new TableDefinition(this);
   tableDefinition->hide();
 
+  tableDefinition1 = new TableDefinition1(this);
+  tableDefinition1->hide();
+
   steadystateWidget = new SteadyStateWidget(this);
   steadystateWidget->hide();
 
@@ -1033,6 +1036,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+      tableDefinition1->update(objectType, action, key);
       break;
     case COMPARTMENT:
       scanWidget->update(objectType, action, key);
@@ -1057,6 +1061,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+      tableDefinition1->update(objectType, action, key);
       break;
     case REACTION:
       scanWidget->update(objectType, action, key);
@@ -1081,6 +1086,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+      tableDefinition1->update(objectType, action, key);
       break;
     case FUNCTION:
       //        scanWidget->update(objectType, action, key);
@@ -1105,6 +1111,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
+      //     tableDefinition1->update(objectType, action, key);
       break;
     case MODEL:
       scanWidget->update(objectType, action, key);
@@ -1128,6 +1135,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       functionWidget1->update(objectType, action, key);
       modesWidget->update(objectType, action, key);
       modelWidget->update(objectType, action, key);
+      tableDefinition1->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
 
       // 1 == modelWidget
@@ -1160,6 +1168,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       modelWidget->update(objectType, action, key);
       //        tableDefinition->update(objectType, action, key);
+      //  tableDefinition1->update(objectType, action, key);
       break;
     case REPORT:
       scanWidget->update(objectType, action, key);
@@ -1184,6 +1193,7 @@ bool ListViews::update(ObjectType objectType, Action action, const std::string &
       //        modesWidget->update(objectType, action, key);
       //        modelWidget->update(objectType, action, key);
       tableDefinition->update(objectType, action, key);
+      tableDefinition1->update(objectType, action, key);
       break;
     default:
       fatalError();
