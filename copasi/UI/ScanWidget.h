@@ -25,6 +25,7 @@ class CScanTask;
 class CScanProblem;
 class CScanMethod;
 class CModel;
+class QToolButton;
 
 class ScanWidget : public CopasiWidget
   {
@@ -36,26 +37,29 @@ class ScanWidget : public CopasiWidget
     CScanTask *scanTask;
     void loadScan(CModel *model);
 
-    QFrame* line7;
-    QFrame* line6;
-    QFrame* line8;
-    QFrame* line8_2;
-    QLabel* taskNameLabel;
-    QCheckBox* trajectory;
-    QLabel* taskDescriptionLabel;
-    QLabel* parameterValueLabel;
-    QCheckBox* steadyState;
-    QCheckBox* sExecutable;
+    QLabel* TextLabel1;
     QLineEdit* taskName;
-    QTable* parameterTable, *parameterTable1;
+    QFrame* Line1;
+    QScrollView* scrollview;
+    QFrame* Line2;
+    QCheckBox* sExecutable;
     QPushButton* commitChange;
     QPushButton* cancelChange;
-    QScrollView *scrollview;
-    QVBox *vBox;
+    QFrame* Line1_2;
+    QLabel* TextLabel2;
+    QCheckBox* steadyState;
+    QToolButton* eSteadyState;
+    QLabel* TextLabel3;
+    QCheckBox* trajectory;
+    QToolButton* eTrajectory;
+    QTable* parameterTable;
 
   protected:
     QGridLayout* ScanWidgetLayout;
     QHBoxLayout* Layout2;
+    QHBoxLayout* Layout3;
+    QHBoxLayout* Layout4;
+    QVBox* vBox;
     CModel *mModel;
 
   signals:

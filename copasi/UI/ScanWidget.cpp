@@ -19,6 +19,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qscrollview.h>
+#include <qtoolbutton.h>
 #include "ScanWidget.h"
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
@@ -35,100 +36,111 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   if (!name)
     setName("ScanWidget");
+  resize(600, 480);
   setCaption(trUtf8("ScanWidget"));
   ScanWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ScanWidgetLayout");
 
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setText(trUtf8("Task Name"));
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Problem"));
 
-  ScanWidgetLayout->addWidget(taskNameLabel, 0, 0);
-  QSpacerItem* spacer = new QSpacerItem(91, 400, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  ScanWidgetLayout->addItem(spacer, 5, 0);
-
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Scan Item"));
-
-  ScanWidgetLayout->addWidget(parameterValueLabel, 4, 0);
-
-  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
-
-  /*bRunButton = new QPushButton(this, "bRunButton");
-  bRunButton->setText(trUtf8("Run"));
-  bRunButton->setEnabled(false);
-  Layout2->addWidget(bRunButton);*/
-
-  commitChange = new QPushButton(this, "commitChange");
-  commitChange->setText(trUtf8("Scan"));
-  Layout2->addWidget(commitChange);
-
-  cancelChange = new QPushButton(this, "cancelChange");
-  cancelChange->setText(trUtf8("Cancel"));
-  Layout2->addWidget(cancelChange);
-
-  /*ExportFileButton = new QPushButton(this, "ExportFileButton");
-   ExportFileButton->setText(trUtf8("Export To File"));
-   Layout2->addWidget(ExportFileButton);*/
-
-  ScanWidgetLayout->addMultiCellLayout(Layout2, 7, 7, 0, 2);
-
-  line6 = new QFrame(this, "line6");
-  line6->setFrameShape(QFrame::HLine);
-  line6->setFrameShadow(QFrame::Sunken);
-  line6->setFrameShape(QFrame::HLine);
-
-  ScanWidgetLayout->addMultiCellWidget(line6, 6, 6, 0, 2);
+  ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
 
   taskName = new QLineEdit(this, "taskName");
-  taskName->setFrameShape(QLineEdit::LineEditPanel);
-  taskName->setFrameShadow(QLineEdit::Sunken);
 
-  ScanWidgetLayout->addWidget(taskName, 0, 1);
+  ScanWidgetLayout->addMultiCellWidget(taskName, 0, 0, 1, 3);
 
-  sExecutable = new QCheckBox(this, "sExecutable");
-  sExecutable->setText(trUtf8("Scan Executable"));
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
 
-  ScanWidgetLayout->addWidget(sExecutable, 0, 2);
-
-  line8 = new QFrame(this, "line8");
-  line8->setFrameShape(QFrame::HLine);
-  line8->setFrameShadow(QFrame::Sunken);
-  line8->setFrameShape(QFrame::HLine);
-
-  ScanWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
+  ScanWidgetLayout->addMultiCellWidget(Line1, 1, 1, 0, 4);
 
   scrollview = new QScrollView(this, 0, 0);
   vBox = new QVBox(this, 0);
 
   //Just for test
-  /*  for (int temp = 1; temp <= 7; temp++)
-       {
-         parameterTable = new QTable(this, "parameterTable");
-         parameterTable->setNumRows(5);
-         parameterTable->setNumCols(5);
-    parameterTable->setFocusPolicy(QWidget::WheelFocus);
-         QHeader *colHeader = parameterTable->horizontalHeader();
-         colHeader->setLabel(0, tr("Value"));
-         vBox->insertChild(parameterTable);
-         vBox->setSpacing(25);
-     }
-  */
+  for (int temp = 1; temp <= 7; temp++)
+    {
+      parameterTable = new QTable(this, "parameterTable");
+      parameterTable->setNumRows(5);
+      parameterTable->setNumCols(5);
+      parameterTable->setFocusPolicy(QWidget::WheelFocus);
+      QHeader *colHeader = parameterTable->horizontalHeader();
+      colHeader->setLabel(0, tr("Value"));
+      vBox->insertChild(parameterTable);
+      vBox->setSpacing(25);
+    }
+
   scrollview->addChild(vBox);
-  ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
+  ScanWidgetLayout->addMultiCellWidget(scrollview, 5, 6, 1, 4);
+
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
+
+  ScanWidgetLayout->addMultiCellWidget(Line2, 7, 7, 0, 4);
+
+  sExecutable = new QCheckBox(this, "sExecutable");
+  sExecutable->setText(trUtf8("Scan Executable"));
+
+  ScanWidgetLayout->addWidget(sExecutable, 0, 4);
+
+  Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
+
+  commitChange = new QPushButton(this, "commitChange");
+  commitChange->setText(trUtf8("Scan"));
+  Layout2->addWidget(commitChange);
+
+  cancelChange = new QPushButton(this, "PushButton2");
+  cancelChange->setText(trUtf8("cancelChange"));
+  Layout2->addWidget(cancelChange);
+
+  ScanWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 4);
+
+  Line1_2 = new QFrame(this, "Line1_2");
+  Line1_2->setFrameShape(QFrame::HLine);
+  Line1_2->setFrameShadow(QFrame::Sunken);
+  Line1_2->setFrameShape(QFrame::HLine);
+
+  ScanWidgetLayout->addMultiCellWidget(Line1_2, 3, 3, 0, 4);
+
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Scan Item"));
+
+  ScanWidgetLayout->addMultiCellWidget(TextLabel2, 4, 5, 0, 0);
+  QSpacerItem* spacer = new QSpacerItem(51, 320, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  ScanWidgetLayout->addItem(spacer, 6, 0);
+
+  Layout3 = new QHBoxLayout(0, 0, 6, "Layout3");
+
+  steadyState = new QCheckBox(this, "steadyState");
+  steadyState->setText(trUtf8("Steady State"));
+  Layout3->addWidget(steadyState);
+
+  eSteadyState = new QToolButton(this, "eSteadyState");
+  eSteadyState->setText(trUtf8("Edit Steady"));
+  Layout3->addWidget(eSteadyState);
+
+  ScanWidgetLayout->addMultiCellLayout(Layout3, 2, 2, 0, 1);
+
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8(""));
+
+  ScanWidgetLayout->addWidget(TextLabel3, 2, 2);
+
+  Layout4 = new QHBoxLayout(0, 0, 6, "Layout4");
 
   trajectory = new QCheckBox(this, "trajectory");
   trajectory->setText(trUtf8("Trajectory"));
+  Layout4->addWidget(trajectory);
 
-  ScanWidgetLayout->addWidget(trajectory, 2, 2);
+  eTrajectory = new QToolButton(this, "eTrajectory");
+  eTrajectory->setText(trUtf8("Edit Trajectory"));
+  Layout4->addWidget(eTrajectory);
 
-  taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
-  taskDescriptionLabel->setText(trUtf8("Problem"));
-
-  ScanWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
-
-  steadyState = new QCheckBox(this, " steadyState");
-  steadyState->setText(trUtf8("Steady State"));
-
-  ScanWidgetLayout->addWidget(steadyState, 2, 1);
+  ScanWidgetLayout->addMultiCellLayout(Layout4, 2, 2, 3, 4);
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
@@ -170,6 +182,7 @@ void ScanWidget::SteadyStateButtonClicked()
 {
   CScanProblem *scanProblem = scanTask->getProblem();
   scanProblem->setProcessSteadyState(steadyState->isChecked());
+
   if (steadyState->isChecked())
   {}
 }
@@ -232,7 +245,7 @@ void ScanWidget::loadScan(CModel *model)
 
       emit show_me();
       scrollview->addChild(vBox);
-      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
+      ScanWidgetLayout->addMultiCellWidget(scrollview, 5, 6, 1, 4);
       scrollview->setVScrollBarMode(QScrollView::Auto);
     }
 }
