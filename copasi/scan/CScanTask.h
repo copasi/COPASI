@@ -13,7 +13,7 @@
 #include "utilities/CWriteConfig.h"
 #include "CScanMethod.h"
 #include "utilities/CVector.h"
-#include "CSCanProblem.h"
+#include "CScanProblem.h"
 
 class CScanMethod;
 class COutputEvent;
@@ -59,7 +59,7 @@ class CScanTask : public CCopasiContainer
     //Operations
   public:
 
-    inline setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
+    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
     {
       mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
       pValueAddrMatrix = pInputValueAddrMatrix;

@@ -25,20 +25,20 @@
 
 CScanTask::CScanTask():
     CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    mKey(CKeyFactory::add("ScanTask", this)),
     mRequested(true),
     mpProblem(new CScanProblem),
     mpMethod(CScanMethod::createMethod()),
-    mpOutEnd(NULL)
+    mpOutEnd(NULL),
+    mKey(CKeyFactory::add("ScanTask", this))
 {}
 
 CScanTask::CScanTask(const CScanTask & src):
     CCopasiContainer("ScanTask", NULL, "ScanTask", CCopasiObject::Container),
-    mKey(CKeyFactory::add("ScanTask", this)),
     mRequested(src.mRequested),
     mpProblem(new CScanProblem(*src.mpProblem)),
     mpMethod(new CScanMethod(*src.mpMethod)),
-    mpOutEnd(src.mpOutEnd)
+    mpOutEnd(src.mpOutEnd),
+    mKey(CKeyFactory::add("ScanTask", this))
 {}
 
 CScanTask::~CScanTask()

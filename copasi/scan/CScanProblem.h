@@ -65,7 +65,7 @@ class CScanProblem
 
   public:
     // Operations
-    inline setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
+    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
     {
       pValueAddrMatrix = pInputValueAddrMatrix;
     }
