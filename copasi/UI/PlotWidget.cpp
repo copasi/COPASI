@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2003/10/29 15:24:30 $
+   $Date: 2004/01/14 16:47:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -27,6 +27,7 @@
 //#include "model/CCompartment.h"
 #include "listviews.h"
 #include "report/CKeyFactory.h"
+#include "plot/CPlotSpec.h"
 
 /**
  */
@@ -75,50 +76,47 @@ PlotWidget::PlotWidget(QWidget *parent, const char * name, WFlags f)
   connect(table, SIGNAL(valueChanged(int , int)),
           this, SLOT(tableValueChanged(int, int)));
 
-  connect(table, SIGNAL(currentChanged(int, int)),
-          this, SLOT(CurrentValueChanged(int, int)));
+  //connect(table, SIGNAL(currentChanged(int, int)),
+  //        this, SLOT(CurrentValueChanged(int, int)));
 
-  m_SavedRow = 0;
-  m_SavedCol = 0;
-  prev_row = 0;
-  prev_col = 0;
+  //m_SavedRow = 0;
+  //m_SavedCol = 0;
+  //prev_row = 0;
+  //prev_col = 0;
 }
 
-void PlotWidget::fillTable() //TODO
+void PlotWidget::fillTable()
 {
-  /*const CCompartment *obj;
-  const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
-  C_INT32 j, jmax = objects.size();
+  const CCopasiVector< CPlotSpec >* objects =
+    dataModel->getPlotSpecVectorAddr();
+
+  C_INT32 j, jmax = objects->size();
   table->setNumRows(jmax);
   mKeys.resize(jmax);
 
   for (j = 0; j < jmax; ++j)
     {
-      obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, QString::number(obj->getVolume()));
-      mKeys[j] = obj->getKey();
+      table->setText(j, 0, (*objects)[j]->getName().c_str());
+      //TODO table->setText(j, 1, (*objects)[j]->getComment().c_str());
+      mKeys[j] = (*objects)[j]->getKey();
     }
   table->setText(jmax, 1, "");
-  */
-  table->setNumRows(0);
-  mKeys.resize(0);
 }
 
-void PlotWidget::createNewObject() //TODO
+void PlotWidget::createNewObject()
 {
-  /*std::string name = "compartment_0";
+  std::string name = "PlotSpec_0";
   int i = 0;
-  while (!dataModel->getModel()->addCompartment(name))
+  while (!dataModel->getPlotSpecVectorAddr()->addNewPlotSpec(name))
     {
       i++;
-      name = "compartment_";
+      name = "PlotSpec";
+      name += "_";
       name += QString::number(i).latin1();
     }
   table->setText(table->numRows() - 1, 0, name.c_str());
   table->setNumRows(table->numRows());
-  ListViews::notify(ListViews::COMPARTMENT, ListViews::ADD);
-  */
+  ListViews::notify(ListViews::PLOT, ListViews::ADD);
 }
 
 void PlotWidget::slotTableCurrentChanged(int row,
@@ -129,10 +127,7 @@ void PlotWidget::slotTableCurrentChanged(int row,
   if (row >= table->numRows() || row < 0) return;
 
   if (row == table->numRows() - 1)
-    {
-      //TODO: create a new Object
-      createNewObject();
-    }
+  {createNewObject();}
 
   pListView->switchToOtherWidget(mKeys[row]);
 }
@@ -142,63 +137,28 @@ void PlotWidget::slotTableSelectionChanged()
   if (!table->hasFocus()) table->setFocus();
 }
 
-void PlotWidget::CurrentValueChanged(int row, int col)
-{
-  //  at this point you know old values !
-  prev_row = m_SavedRow;
-  prev_col = m_SavedCol;
+//void PlotWidget::CurrentValueChanged(int row, int col)
+//{
+//  at this point you know old values !
+//prev_row = m_SavedRow;
+//prev_col = m_SavedCol;
 
-  m_SavedCol = col; // Save for a future use
-  m_SavedRow = row; // Save for a future use
-}
+//m_SavedCol = col; // Save for a future use
+//m_SavedRow = row; // Save for a future use
+//}
 
 void PlotWidget::slotBtnOKClicked()
 {
-  /*CCompartment *obj;
-  CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
-  C_INT32 j, jmax = objects.size();
+  //for testing only
+  std::ifstream datafile("datafile");
+  //datafile.open("datafile", std::ios::in);
 
-  int *changed = new int[jmax];
+  dataModel->getPlotSpecVectorAddr()->setNumColumns(3);
+  dataModel->getPlotSpecVectorAddr()->setSourceStream(&datafile);
+  dataModel->getPlotSpecVectorAddr()->initPlottingFromStream();
 
-  table->setCurrentCell(jmax, 0);
-  for (j = 0; j < jmax; ++j)
-    {
-      obj = objects[j];
-      changed[j] = 0;
-
-      //name
-      QString name(table->text(j, 0));
-      if (name.latin1() != obj->getName())
-        {
-          obj->setName(name.latin1());
-          changed[j] = 1;
-        }
-
-      //volume
-      QString volumeSave = QString::number(obj->getVolume());
-      QString volume(table->text(j, 1));
-      if (volume != volumeSave)
-        {
-          double m1;
-          m1 = volume.toDouble();
-          obj->setInitialVolume(m1);
-          changed[j] = 1;
-        }
-    }
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (changed[j] == 1)
-        {
-          obj = objects[j];
-          ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, obj->getKey());
-        }
-    }
-  table->setCurrentCell(prev_row, prev_col);
-
-  delete[] changed;
-  return; //TODO: really check
-  */
+  dataModel->getPlotSpecVectorAddr()->doPlotting();
+  dataModel->getPlotSpecVectorAddr()->doPlotting();
 }
 
 void PlotWidget::slotBtnCancelClicked()
@@ -218,6 +178,8 @@ bool PlotWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
     case ListViews::STATE:
     case ListViews::METABOLITE:
     case ListViews::COMPARTMENT:
+    case ListViews::REPORT:
+    case ListViews::PLOT:
       fillTable();
       break;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2003/10/29 15:24:31 $
+   $Date: 2004/01/14 16:47:42 $
    End CVS Header */
 
 /****************************************************************************
@@ -47,22 +47,21 @@ class PlotWidget : public CopasiWidget
 
   protected slots:
     virtual void slotTableCurrentChanged(int, int, int, const QPoint &);
-
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
     virtual void tableValueChanged(int, int);
 
-    virtual void CurrentValueChanged(int, int);
+    //    virtual void CurrentValueChanged(int, int);
 
   private:
     void fillTable();
     void createNewObject();
 
-    int m_SavedCol;
-    int m_SavedRow;
-    int prev_row;
-    int prev_col;
+    //    int m_SavedCol;
+    //    int m_SavedRow;
+    //    int prev_row;
+    //    int prev_col;
   };
 
 #endif
