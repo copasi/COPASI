@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/19 09:44:08 $
+   $Author: shoops $ 
+   $Date: 2004/10/09 02:02:26 $
    End CVS Header */
 
 /**
@@ -28,9 +28,17 @@ template <class CType> class CCopasiObjectReference;
 template <class CType> class CCopasiVectorReference;
 template <class CType> class CCopasiMatrixReference;
 
+#ifdef WIN32
+template <class CType> class CCopasiVector;
+#endif // WIN32
+
 /** @dia:pos 40.5964,2.55372 */
 class CCopasiObject
   {
+#ifdef WIN32
+    friend CCopasiVector< CCopasiObject >;
+#endif // WIN32
+
     typedef CCopasiObject referenceType;
 
     //Attributes

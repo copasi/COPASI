@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/07/06 17:41:29 $
+   $Date: 2004/10/09 02:02:26 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -87,7 +87,7 @@ template < class CType > class CCopasiVector:
           if (*it)
             if ((*it)->getObjectParent() == this)
               {
-                (*it)->cleanup();
+                //                (*it)->cleanup();
                 CCopasiContainer::remove(*it);
                 (*it)->setObjectParent(NULL);
                 delete(*it);
@@ -150,7 +150,7 @@ template < class CType > class CCopasiVector:
           {
             if ((*Target)->getObjectParent() == this)
               {
-                (*Target)->cleanup();
+                //                (*Target)->cleanup();
                 delete *Target;
               }
             else
@@ -255,7 +255,7 @@ template < class CType > class CCopasiVector:
                 {
                   if ((*Target)->getObjectParent() == this)
                     {
-                      (*Target)->cleanup();
+                      //                      (*Target)->cleanup();
                       CCopasiContainer::remove(*Target);
                       (*Target)->setObjectParent(NULL);
                       delete *Target;
