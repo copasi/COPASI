@@ -675,6 +675,7 @@ void CModel::buildMoieties()
   return;
 }
 
+#ifndef COPASI_DEPRECATED
 void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
 {
   unsigned C_INT32 i, imax;
@@ -699,7 +700,9 @@ void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
 
   return;
 }
+#endif // COPASI_DEPRECATED
 
+#ifndef COPASI_DEPRECATED
 void CModel::setRates(const C_FLOAT64 * y)
 {
   unsigned C_INT32 i, imax;
@@ -718,6 +721,7 @@ void CModel::setRates(const C_FLOAT64 * y)
 
   return;
 }
+#endif // COPASI_DEPRECATED
 
 void CModel::setTransitionTimes()
 {
@@ -787,6 +791,7 @@ vector < CReaction * > & CModel::getReactionsX()
   return mStepsX;
 }
 
+#ifndef COPASI_DEPRECATED
 void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   unsigned C_INT32 i, j;
@@ -805,6 +810,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 
   return;
 }
+#endif // COPASI_DEPRECATED
 vector < CMetab * > & CModel::getMetabolitesInd(){ return mMetabolitesInd; }
 vector < CMetab * > & CModel::getMetabolitesDep(){ return mMetabolitesDep; }
 vector < CMetab * > & CModel::getMetabolitesX(){ return mMetabolitesX; }
@@ -829,6 +835,7 @@ unsigned C_INT32 CModel::getDepMetab() const
     return mMetabolitesDep.size();
   }
 
+#ifndef COPASI_DEPRECATED
 C_FLOAT64 * CModel::getInitialNumbersDbl() const
   {
     C_INT32 i, imax = mMetabolitesInd.size();
@@ -840,7 +847,9 @@ C_FLOAT64 * CModel::getInitialNumbersDbl() const
 
     return y;
   }
+#endif // COPASI_DEPRECATED
 
+#ifndef COPASI_DEPRECATED
 C_FLOAT64 * CModel::getNumbersDbl() const
   {
     C_INT32 i, imax = mMetabolitesInd.size();
@@ -852,6 +861,7 @@ C_FLOAT64 * CModel::getNumbersDbl() const
 
     return y;
   }
+#endif // COPASI_DEPRECATED
 
 // Added by Yongqun He
 /**
