@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/06 14:54:52 $
+   $Date: 2004/04/06 15:34:17 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -92,7 +92,7 @@ void DataModel::createModel(const char* fileName)
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  COutputHandler* tmpHandler = new COutputHandlerPlot();
+  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
   trajectorytask->setOutputHandler(tmpHandler);
   searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
@@ -108,6 +108,8 @@ void DataModel::createModel(const char* fileName)
   pdelete(plotspecs);
   plotspecs = new CPlotSpecVector();
   searchFolderList(42)->setObjectKey(plotspecs->getKey());
+
+  tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
@@ -139,7 +141,7 @@ void DataModel::loadModel(const char* fileName)
       pdelete(trajectorytask);
       trajectorytask = new CTrajectoryTask();
       trajectorytask->load(inbuf);
-      COutputHandler* tmpHandler = new COutputHandlerPlot();
+      COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
       trajectorytask->setOutputHandler(tmpHandler);
       searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
@@ -158,6 +160,8 @@ void DataModel::loadModel(const char* fileName)
       plotspecs = new CPlotSpecVector();
       //  plotspecs->load(inbuf);
       searchFolderList(42)->setObjectKey(plotspecs->getKey());
+
+      tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
       pdelete(pOptFunction);
       pOptFunction = new COptFunction();

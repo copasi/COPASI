@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/04/06 14:56:45 $
+   $Date: 2004/04/06 15:35:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -38,7 +38,13 @@ bool COutputHandlerPlot::finish()
 {
   //std::cout << "OutputHandlerPlot: finish" << std::endl;
   if (!mpPlotSpecVector) return false;
-  /*  mpPlotSpecVector->doPlotting();*/
+  datafile.open("datafile", std::ios::in);
+
+  mpPlotSpecVector->setNumColumns(3);
+  mpPlotSpecVector->setSourceStream(&datafile);
+  mpPlotSpecVector->initPlottingFromStream();
+
+  mpPlotSpecVector->doPlotting();
 
   return true;
 }
