@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 20:57:21 $
+   $Author: ssahle $ 
+   $Date: 2004/06/25 15:05:15 $
    End CVS Header */
 
 /****************************************************************************
@@ -141,7 +141,7 @@ class CReportDefinition : public CCopasiObject
     /**
      *
      */
-    void table(bool table);
+    void setIsTable(bool table);
 
     /**
      *

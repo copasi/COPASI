@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/10 20:57:21 $
+   $Author: ssahle $ 
+   $Date: 2004/06/25 15:05:15 $
    End CVS Header */
 
 /**
@@ -88,7 +88,7 @@ void CReportDefinition::setTitle(bool title)
 bool CReportDefinition::isTable() const
   {return mTable;}
 
-void CReportDefinition::table(bool table)
+void CReportDefinition::setIsTable(bool table)
 {mTable = table;}
 
 const std::string & CReportDefinition::getKey() const
