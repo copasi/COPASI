@@ -1,10 +1,10 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 02/03 
-    Comment : SteadyStateWidget
-    Contact: Please contact lixu1@vt.edu.
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 02/03 
+   Comment : SteadyStateWidget
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qfiledialog.h>
 
@@ -256,6 +256,14 @@ void SteadyStateWidget::RunTask()
   emit runFinished(mSteadyStateTask->getProblem()->getModel());
 
   unsetCursor();
+}
+
+void SteadyStateWidget::setModel(CModel* newModel)
+{
+  if (mSteadyStateTask == NULL)
+    return;
+  CSteadyStateProblem * steadystateproblem = mSteadyStateTask->getProblem();
+  steadystateproblem->setModel(newModel);
 }
 
 void SteadyStateWidget::loadSteadyStateTask(CSteadyStateTask *steadystatetask)

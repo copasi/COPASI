@@ -1,10 +1,10 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 02/03 
-    Comment : TrajectoryWidget
-    Contact: Please contact lixu1@vt.edu.
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 02/03 
+   Comment : TrajectoryWidget
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
@@ -37,6 +37,7 @@ class TrajectoryWidget : public CopasiWidget
     ~TrajectoryWidget();
     CTrajectoryTask* mTrajectoryTask;
     void loadTrajectoryTask(CTrajectoryTask *trajectorytask);
+    void setModel(CModel* newModel);
 
     QFrame* line8;
     QTable* parameterTable;

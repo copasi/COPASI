@@ -1,10 +1,10 @@
 /********************************************************
-    Author: Liang Xu
-    Version : 1.xx  <first>
-    Description: 
-    Date: 02/03 
-    Comment : TrajectoryWidget
-    Contact: Please contact lixu1@vt.edu.
+   Author: Liang Xu
+   Version : 1.xx  <first>
+   Description: 
+   Date: 02/03 
+   Comment : TrajectoryWidget
+   Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -202,6 +202,14 @@ void TrajectoryWidget::CancelChange()
   if (mTrajectoryTask == NULL)
     return;
   loadTrajectoryTask(mTrajectoryTask);
+}
+
+void TrajectoryWidget::setModel(CModel* newModel)
+{
+  if (mTrajectoryTask == NULL)
+    return;
+  CTrajectoryProblem * trajectoryproblem = mTrajectoryTask->getProblem();
+  trajectoryproblem->setModel(newModel);
 }
 
 void TrajectoryWidget::CommitChange()

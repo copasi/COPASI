@@ -27,6 +27,13 @@
 #include "model/CModel.h"
 #include "listviews.h"
 
+#include "SteadyStateWidget.h"
+#include "TrajectoryWidget.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "SteadyState/CSteadyStateTask.h"
+#include "SteadyState/CSteadyStateProblem.h"
+
 /*
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -155,17 +162,31 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
 
   scanTask = NULL;
+
+  pSteadyStateWidget = new SteadyStateWidget(NULL);
+  pSteadyStateWidget->hide();
+  pTrajectoryWidget = new TrajectoryWidget(NULL);
+  pTrajectoryWidget->hide();
+
+  pSteadyStateWidget->loadSteadyStateTask(new CSteadyStateTask());
+  pTrajectoryWidget->loadTrajectoryTask(new CTrajectoryTask());
 }
 
 void ScanWidget::SteadyStateEditing()
-{}
+{
+  pSteadyStateWidget->show();
+}
 
 void ScanWidget::TrajectoryEditing()
-{}
+{
+  pTrajectoryWidget->show();
+}
 
 ScanWidget::~ScanWidget()
 {
   delete scanTask;
+  delete pTrajectoryWidget;
+  delete pSteadyStateWidget;
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -209,6 +230,10 @@ void ScanWidget::loadScan(CModel *model)
   if (model != NULL)
     {
       mModel = model;
+
+      pSteadyStateWidget->setModel(mModel);
+      pTrajectoryWidget->setModel(mModel);
+
       taskName->setText(tr("Scan"));
       scanTask = new CScanTask();
       CScanProblem *scanProblem = scanTask->getProblem();

@@ -26,6 +26,8 @@ class CScanProblem;
 class CScanMethod;
 class CModel;
 class QToolButton;
+class SteadyStateWidget;
+class TrajectoryWidget;
 
 class ScanWidget : public CopasiWidget
   {
@@ -53,6 +55,9 @@ class ScanWidget : public CopasiWidget
     QCheckBox* trajectory;
     QToolButton* eTrajectory;
     QTable* parameterTable;
+
+    SteadyStateWidget* pSteadyStateWidget;
+    TrajectoryWidget* pTrajectoryWidget;
 
   protected:
     QGridLayout* ScanWidgetLayout;
