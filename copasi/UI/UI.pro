@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.79 $ $Author: shoops $ $Date: 2005/02/10 19:14:28 $  
+# $Revision: 1.80 $ $Author: gauges $ $Date: 2005/02/15 12:27:47 $  
 ######################################################################
 
 include(../common.pri)
@@ -36,7 +36,8 @@ contains(BUILD_OS, WIN32) {
   release {
     distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
   }
-} else {
+} 
+else {
   LIBS = -L../lib \
          -Wl,--start-group \
          -lcommandline \
@@ -82,6 +83,7 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libwizard.a
 }
 
+
 contains(BUILD_OS, Linux) {   
   LIBS += -Wl,-lqt-mt \
           -Wl,-lXcursor \
@@ -124,6 +126,18 @@ contains(BUILD_OS, SunOS) {
   LIBS -= -Wl,--start-group
   LIBS -= -Wl,--end-group
 }  
+
+contains(BUILD_OS, Darwin){
+  LIBS -= -Wl,--start-group
+  LIBS -= -Wl,--end-group
+  LIBS -= -lplot
+  LIBS += ../lib/libplot.a
+  LIBS -= -lrandomGenerator
+  LIBS -= -lutilities
+  LIBS += -lrandomGenerator 
+  LIBS += -lutilities
+  
+}
 
 # Input
 HEADERS += \
