@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level1" level="1" version="1">
+<model name="NovakTyson1997CellModel">
+	<notes>
+		<body xmlns="http://www.w3.org/1999/xhtml">
+			<h1>Novak and Tyson Cell Cycle Model (1997)</h1>
+
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Citation</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Novak B, tyson JJ (1997)
+							 Modeling the control of DNA replication in fission yeast,
+							 PNAS, USA, 94:9147-9152.
+						<a href="http://www.pnas.org/
+							cgi/content/abstract/94/17/9147">
+							http://www.pnas.org/cgi/content/abstract/
+							94/17/9147
+						</a></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							A cell cycle model with 13 dynamic variables (
+							Cdc25,G1K,G1R=[Cig2/Cdc2/Rum1],G2K=[Cdc13/Cdc2],G2R=[Cdc13/Cdc2/Rum1],IE=[
+							Intermediary enzyme],mass,PG2=[Cdc13/P-Cdc2],PG2R=[Cdc13/P-Cdc2/Rum1],R=[
+							Rum1],UbE,UbE2,
+							Wee1} and two auxilllary variables MPF = G2K+
+							beta*PG2, SPF=MPF+alpha*G1K+Cig1, (alpha, beta, Cig1 constants)
+							. NOTE:
+							 The following switches in the published model are NOT described by the SBML:
+							 "Switches(i)
+							 When SPF crosses 0.1 from below,
+							S phase is initiated (Start).(ii)
+							 When UbE crosses 0.1 from above,
+							the cell divides functionally (mass->mass/2),
+							although visible cytokinesis may be delayed.(iii)
+							 60 min after Start,kp is divided by 2,
+							and at cell division kp is multiplied by 2." (
+							from Table 1 of the cited reference).</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Rate&#160;constant&#160;&#160;&#160;&#160;&#160;&#160;</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Reaction</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>0</td>
+						<td>G1R&#160;->&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.00175</td>
+						<td>EmptySet&#160;->&#160;G1K</td>
+					</tr>
+					<tr>
+						<td>0.00495*mass[t]</td>
+						<td>EmptySet&#160;->&#160;mass</td>
+					</tr>
+					<tr>
+						<td>0.0075*(1&#160;-&#160;UbE[t])&#160;+&#160;0.25*UbE[t]</td>
+						<td>G2K&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>0.0075*(1&#160;-&#160;UbE[t])&#160;+&#160;0.25*UbE[t]</td>
+						<td>PG2&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>0.015</td>
+						<td>EmptySet&#160;->&#160;G2K</td>
+					</tr>
+					<tr>
+						<td>0.025*(1&#160;-&#160;Cdc25[t])&#160;+&#160;0.5*Cdc25[t]</td>
+						<td>PG2&#160;->&#160;G2K</td>
+					</tr>
+					<tr>
+						<td>0.035*(1&#160;-&#160;Wee1[t])&#160;+&#160;0.35*Wee1[t]</td>
+						<td>G2K&#160;->&#160;PG2</td>
+					</tr>
+					<tr>
+						<td>0.0375*(1&#160;-&#160;UbE2[t])&#160;+&#160;7.5*UbE2[t]</td>
+						<td>G1K&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>0.05&#160;+&#160;0.0075*(1&#160;-&#160;UbE[t])&#160;+&#160;0.25*UbE[t]</td>
+						<td>G2R&#160;->&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.05&#160;+&#160;0.0075*(1&#160;-&#160;UbE[t])&#160;+&#160;0.25*UbE[t]</td>
+						<td>PG2R&#160;->&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.09375</td>
+						<td>EmptySet&#160;->&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.1</td>
+						<td>G1R&#160;->&#160;G1K&#160;+&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.1</td>
+						<td>G2R&#160;->&#160;G2K&#160;+&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.1</td>
+						<td>PG2R&#160;->&#160;PG2&#160;+&#160;R</td>
+					</tr>
+					<tr>
+						<td>0.1875</td>
+						<td>G1R&#160;->&#160;G1K</td>
+					</tr>
+					<tr>
+						<td>0.1875</td>
+						<td>G2R&#160;->&#160;G2K</td>
+					</tr>
+					<tr>
+						<td>0.1875</td>
+						<td>PG2R&#160;->&#160;PG2</td>
+					</tr>
+					<tr>
+						<td>0.1875</td>
+						<td>R&#160;->&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>0.4&#160;(G2K[t]&#160;+&#160;0.05&#160;PG2[t])&#160;=&#160;unassigned&#160;(
+							hill&#160;vmax)</td>
+						<td>1&#160;-&#160;IE&#160;|->&#160;IE</td>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>G1K&#160;+&#160;R&#160;->&#160;G1R</td>
+					</tr>
+					<tr>
+						<td>100</td>
+						<td>G2K&#160;+&#160;R&#160;->&#160;G2R</td>
+					</tr>
+					<tr>
+						<td>100</td>
+						<td>PG2&#160;+&#160;R&#160;->&#160;PG2R</td>
+					</tr>
+					<tr>
+						<td>3.25&#160;(0.25&#160;G1K[t]&#160;+&#160;G2K[t]&#160;+&#160;0.05&#160;PG2[t])
+							&#160;=&#160;unassigned&#160;(hill&#160;vmax)</td>
+						<td>mass&#160;+&#160;R&#160;|->&#160;mass&#160;+&#160;EmptySet</td>
+					</tr>
+					<tr>
+						<td>G2K[t]&#160;+&#160;0.05&#160;PG2[t]&#160;=&#160;unassigned&#160;(
+							hill&#160;vmax)</td>
+						<td>1&#160;-&#160;Cdc25&#160;|->&#160;Cdc25</td>
+					</tr>
+					<tr>
+						<td>G2K[t]&#160;+&#160;0.05&#160;PG2[t]&#160;=&#160;unassigned&#160;(
+							hill&#160;vmax)</td>
+						<td>1&#160;-&#160;UbE2&#160;|->&#160;UbE2</td>
+					</tr>
+					<tr>
+						<td>G2K[t]&#160;+&#160;0.05&#160;PG2[t]&#160;=&#160;unassigned&#160;(
+							hill&#160;vmax)</td>
+						<td>Wee1&#160;|->&#160;EmptySet</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table border="0" cellspacing="0" cellpadding="2" >
+				<thead>
+					<tr>
+						<th align="left" valign="middle" bgcolor="#eeeeee">Variable</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">IC&#160;&#160;</th>
+						<th align="left" valign="middle" bgcolor="#eeeeee">ODE</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Cdc25</td>
+						<td>0</td>
+						<td>Cdc25'[t]&#160;==&#160;-((kcr*Cdc25[t])/(Kmcr&#160;+&#160;Cdc25[t]))&#160;+
+							&#160;(kc*(1&#160;-&#160;Cdc25[t])*(G2K[t]&#160;+&#160;beta*PG2[t]))/(1&#160;+
+							&#160;Kmc&#160;-&#160;Cdc25[t])</td>
+					</tr>
+					<tr>
+						<td>G1K</td>
+						<td>0</td>
+						<td>G1K'[t]&#160;==&#160;k5&#160;+&#160;k4*G1R[t]&#160;+&#160;k8r*G1R[t]&#160;-
+							&#160;k8*G1K[t]*R[t]&#160;-&#160;G1K[t]*(V6p*(1&#160;-&#160;UbE2[t])&#160;+
+							&#160;V6*UbE2[t])</td>
+					</tr>
+					<tr>
+						<td>G1R</td>
+						<td>0</td>
+						<td>G1R'[t]&#160;==&#160;-(k4*G1R[t])&#160;-&#160;k6p*G1R[t]&#160;-&#160;k8r*
+							G1R[t]&#160;+&#160;k8*G1K[t]*R[t]</td>
+					</tr>
+					<tr>
+						<td>G2K</td>
+						<td>0</td>
+						<td>G2K'[t]&#160;==&#160;k1&#160;+&#160;k4*G2R[t]&#160;+&#160;k7r*G2R[t]&#160;+
+							&#160;(V25p*(1&#160;-&#160;Cdc25[t])&#160;+&#160;V25*Cdc25[t])*PG2[t]&#160;-
+							&#160;k7*G2K[t]*R[t]&#160;-&#160;G2K[t]*(V2p*(1&#160;-&#160;UbE[t])&#160;+
+							&#160;V2*UbE[t])&#160;-&#160;G2K[t]*(Vwp*(1&#160;-&#160;Wee1[t])&#160;+&#160;Vw*
+							Wee1[t])</td>
+					</tr>
+					<tr>
+						<td>G2R</td>
+						<td>0</td>
+						<td>G2R'[t]&#160;==&#160;-(k4*G2R[t])&#160;-&#160;k7r*G2R[t]&#160;+&#160;k7*G2K[
+							t]*R[t]&#160;-&#160;G2R[t]*(k2p&#160;+&#160;V2p*(1&#160;-&#160;UbE[t])&#160;+
+							&#160;V2*UbE[t])</td>
+					</tr>
+					<tr>
+						<td>IE</td>
+						<td>0</td>
+						<td>IE'[t]&#160;==&#160;-((kir*IE[t])/(Kmir&#160;+&#160;IE[t]))&#160;+&#160;(ki*
+							(1&#160;-&#160;IE[t])*(G2K[t]&#160;+&#160;beta*PG2[t]))/(1&#160;+&#160;Kmi&#160;-
+							&#160;IE[t])</td>
+					</tr>
+					<tr>
+						<td>mass</td>
+						<td>0.4</td>
+						<td>mass'[t]&#160;==&#160;mu*mass[t]</td>
+					</tr>
+					<tr>
+						<td>PG2</td>
+						<td>0</td>
+						<td>PG2'[t]&#160;==&#160;-((V25p*(1&#160;-&#160;Cdc25[t])&#160;+&#160;V25*Cdc25[
+							t])*PG2[t])&#160;+&#160;k4*PG2R[t]&#160;+&#160;k7r*PG2R[t]&#160;-&#160;k7*PG2[t]
+							*R[t]&#160;-&#160;PG2[t]*(V2p*(1&#160;-&#160;UbE[t])&#160;+&#160;V2*UbE[t])
+							&#160;+&#160;G2K[t]*(Vwp*(1&#160;-&#160;Wee1[t])&#160;+&#160;Vw*Wee1[t])</td>
+					</tr>
+					<tr>
+						<td>PG2R</td>
+						<td>0</td>
+						<td>PG2R'[t]&#160;==&#160;-(k4*PG2R[t])&#160;-&#160;k7r*PG2R[t]&#160;+&#160;k7*
+							PG2[t]*R[t]&#160;-&#160;PG2R[t]*(k2p&#160;+&#160;V2p*(1&#160;-&#160;UbE[t])
+							&#160;+&#160;V2*UbE[t])</td>
+					</tr>
+					<tr>
+						<td>R</td>
+						<td>0</td>
+						<td>R'[t]&#160;==&#160;k3&#160;+&#160;k6p*G1R[t]&#160;+&#160;k8r*G1R[t]&#160;+
+							&#160;k7r*G2R[t]&#160;+&#160;k7r*PG2R[t]&#160;-&#160;k4*R[t]&#160;-&#160;k8*G1K[
+							t]*R[t]&#160;-&#160;k7*G2K[t]*R[t]&#160;-&#160;k7*PG2[t]*R[t]&#160;-&#160;(kp*
+							mass[t]*(Cig1&#160;+&#160;alpha*G1K[t]&#160;+&#160;G2K[t]&#160;+&#160;beta*PG2[t])*R[t]
+							)/(Kmp&#160;+&#160;R[t])&#160;+&#160;G2R[t]*(k2p&#160;+&#160;V2p*(1&#160;-
+							&#160;UbE[t])&#160;+&#160;V2*UbE[t])&#160;+&#160;PG2R[t]*(k2p&#160;+&#160;V2p*(
+							1&#160;-&#160;UbE[t])&#160;+&#160;V2*UbE[t])</td>
+					</tr>
+					<tr>
+						<td>UbE</td>
+						<td>0</td>
+						<td>UbE'[t]&#160;==&#160;(ku*IE[t]*(1&#160;-&#160;UbE[t]))/(1&#160;+
+							&#160;Kmu&#160;-&#160;UbE[t])&#160;-&#160;(kur*UbE[t])/(Kmur&#160;+&#160;UbE[t])</td>
+					</tr>
+					<tr>
+						<td>UbE2</td>
+						<td>0</td>
+						<td>UbE2'[t]&#160;==&#160;(ku2*(G2K[t]&#160;+&#160;beta*PG2[t])*(1&#160;-
+							&#160;UbE2[t]))/(1&#160;+&#160;Kmu2&#160;-&#160;UbE2[t])&#160;-&#160;(kur2*UbE2[
+							t])/(Kmur2&#160;+&#160;UbE2[t])</td>
+					</tr>
+					<tr>
+						<td>Wee1</td>
+						<td>0</td>
+						<td>Wee1'[t]&#160;==&#160;(kwr*(1&#160;-&#160;Wee1[t]))/(1&#160;+
+							&#160;Kmwr&#160;-&#160;Wee1[t])&#160;-&#160;(kw*(G2K[t]&#160;+&#160;beta*PG2[t])*
+							Wee1[t])/(Kmw&#160;+&#160;Wee1[t])</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Generated by Cellerator Version 1.0 update 2.1202 using Mathematica 4.2 for 
+				Mac OS X (June 4, 2002), December 2, 2002 13:02:55, using (PowerMac,PowerPC,Mac 
+				OS X,MacOSX,Darwin)</p>
+			<p>author=B.E.Shapiro</p>
+
+		</body>
+	</notes>
+	<listOfCompartments>
+		<compartment name="cell"/>
+	</listOfCompartments>
+	<listOfSpecies>
+		<specie name="EmptySet" initialAmount="0" boundaryCondition="true" compartment="cell"/>
+		<specie name="Cdc25" initialAmount="0" compartment="cell"/>
+		<specie name="G1K" initialAmount="0" compartment="cell"/>
+		<specie name="G1R" initialAmount="0" compartment="cell"/>
+		<specie name="G2K" initialAmount="0" compartment="cell"/>
+		<specie name="G2R" initialAmount="0" compartment="cell"/>
+		<specie name="IE" initialAmount="0" compartment="cell"/>
+		<specie name="mass" initialAmount="0.4" compartment="cell"/>
+		<specie name="PG2" initialAmount="0" compartment="cell"/>
+		<specie name="PG2R" initialAmount="0" compartment="cell"/>
+		<specie name="R" initialAmount="0" compartment="cell"/>
+		<specie name="UbE" initialAmount="0" compartment="cell"/>
+		<specie name="UbE2" initialAmount="0" compartment="cell"/>
+		<specie name="Wee1" initialAmount="0" compartment="cell"/>
+	</listOfSpecies>
+	<listOfReactions>
+		<reaction name="Reaction1" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="mass" />
+			</listOfProducts>
+			<kineticLaw formula="mu*mass">
+				<listOfParameters>
+					<parameter name="mu" value="0.00495" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction2" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G2K" />
+			</listOfProducts>
+			<kineticLaw formula="k1">
+				<listOfParameters>
+					<parameter name="k1" value="0.015" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction3" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2K" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="G2K*(V2p*(1 - UbE) + V2*UbE)">
+				<listOfParameters>
+					<parameter name="V2" value="0.25" />
+					<parameter name="V2p" value="0.0075" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction4" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="k3">
+				<listOfParameters>
+					<parameter name="k3" value="0.09375" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction5" reversible="false">
+			<listOfReactants>
+				<specieReference specie="R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="k4*R">
+				<listOfParameters>
+					<parameter name="k4" value="0.1875" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction6" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2K" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PG2" />
+			</listOfProducts>
+			<kineticLaw formula="G2K*(Vwp*(1 - Wee1) + Vw*Wee1)">
+				<listOfParameters>
+					<parameter name="Vw" value="0.35" />
+					<parameter name="Vwp" value="0.035" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction7" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G2K" />
+			</listOfProducts>
+			<kineticLaw formula="PG2*(V25p*(1 - Cdc25) + V25*Cdc25)">
+				<listOfParameters>
+					<parameter name="V25" value="0.5" />
+					<parameter name="V25p" value="0.025" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction8" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2K" />
+				<specieReference specie="R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G2R" />
+			</listOfProducts>
+			<kineticLaw formula="G2K*k7*R">
+				<listOfParameters>
+					<parameter name="k7" value="100" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction9" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G2K" />
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="G2R*k7r">
+				<listOfParameters>
+					<parameter name="k7r" value="0.1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction10" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2" />
+				<specieReference specie="R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PG2R" />
+			</listOfProducts>
+			<kineticLaw formula="k7*PG2*R">
+				<listOfParameters>
+					<parameter name="k7" value="100" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction11" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PG2" />
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="k7r*PG2R">
+				<listOfParameters>
+					<parameter name="k7r" value="0.1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction12" reversible="false">
+			<listOfReactants>
+				<specieReference specie="R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(R*(k0001 + kp*mass*(Cig1 + alpha*G1K + G2K + beta*PG2)))/(Kmp + R)">
+				<listOfParameters>
+					<parameter name="Cig1" value="0" />
+					<parameter name="k0001" value="0" />
+					<parameter name="Kmp" value="0.001" />
+					<parameter name="kp" value="3.25" />
+					<parameter name="alpha" value="0.25" />
+					<parameter name="beta" value="0.05" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction13" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G2K" />
+			</listOfProducts>
+			<kineticLaw formula="G2R*k4">
+				<listOfParameters>
+					<parameter name="k4" value="0.1875" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction14" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="PG2*(V2p*(1 - UbE) + V2*UbE)">
+				<listOfParameters>
+					<parameter name="V2" value="0.25" />
+					<parameter name="V2p" value="0.0075" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction15" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="G2R*(k2p + V2p*(1 - UbE) + V2*UbE)">
+				<listOfParameters>
+					<parameter name="k2p" value="0.05" />
+					<parameter name="V2" value="0.25" />
+					<parameter name="V2p" value="0.0075" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction16" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="PG2R*(k2p + V2p*(1 - UbE) + V2*UbE)">
+				<listOfParameters>
+					<parameter name="k2p" value="0.05" />
+					<parameter name="V2" value="0.25" />
+					<parameter name="V2p" value="0.0075" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction17" reversible="false">
+			<listOfReactants>
+				<specieReference specie="PG2R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="PG2" />
+			</listOfProducts>
+			<kineticLaw formula="k4*PG2R">
+				<listOfParameters>
+					<parameter name="k4" value="0.1875" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction18" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G1R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G1K" />
+			</listOfProducts>
+			<kineticLaw formula="G1R*k4">
+				<listOfParameters>
+					<parameter name="k4" value="0.1875" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction19" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G1K" />
+			</listOfProducts>
+			<kineticLaw formula="k5">
+				<listOfParameters>
+					<parameter name="k5" value="0.00175" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction20" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G1K" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="G1K*(V6p*(1 - UbE2) + V6*UbE2)">
+				<listOfParameters>
+					<parameter name="V6" value="7.5" />
+					<parameter name="V6p" value="0.0375" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction21" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G1K" />
+				<specieReference specie="R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G1R" />
+			</listOfProducts>
+			<kineticLaw formula="G1K*k8*R">
+				<listOfParameters>
+					<parameter name="k8" value="10" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction22" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G1R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="G1K" />
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="G1R*k8r">
+				<listOfParameters>
+					<parameter name="k8r" value="0.1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction23" reversible="false">
+			<listOfReactants>
+				<specieReference specie="G1R" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="R" />
+			</listOfProducts>
+			<kineticLaw formula="G1R*k6p">
+				<listOfParameters>
+					<parameter name="k6p" value="0" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction24" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="UbE" />
+			</listOfProducts>
+			<kineticLaw formula="((k0002 + IE*ku)*(1 - UbE))/(1 + Kmu - UbE)">
+				<listOfParameters>
+					<parameter name="k0002" value="0" />
+					<parameter name="Kmu" value="0.01" />
+					<parameter name="ku" value="0.2" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction25" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="Cdc25" />
+			</listOfProducts>
+			<kineticLaw formula="((1 - Cdc25)*kc*(G2K + beta*PG2))/(1 - Cdc25 + Kmc)">
+				<listOfParameters>
+					<parameter name="kc" value="1" />
+					<parameter name="Kmc" value="0.1" />
+					<parameter name="beta" value="0.05" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction26" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="IE" />
+			</listOfProducts>
+			<kineticLaw formula="((1 - IE)*ki*(G2K + beta*PG2))/(1 - IE + Kmi)">
+				<listOfParameters>
+					<parameter name="ki" value="0.4" />
+					<parameter name="Kmi" value="0.01" />
+					<parameter name="beta" value="0.05" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction27" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="UbE2" />
+			</listOfProducts>
+			<kineticLaw formula="(ku2*(1 - UbE2)*(G2K + beta*PG2))/(1 + Kmu2 - UbE2)">
+				<listOfParameters>
+					<parameter name="Kmu2" value="0.05" />
+					<parameter name="ku2" value="1" />
+					<parameter name="beta" value="0.05" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction28" reversible="false">
+			<listOfReactants>
+				<specieReference specie="EmptySet" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="Wee1" />
+			</listOfProducts>
+			<kineticLaw formula="(kwr*(1 - Wee1))/(1 + Kmwr - Wee1)">
+				<listOfParameters>
+					<parameter name="Kmwr" value="0.1" />
+					<parameter name="kwr" value="0.25" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction29" reversible="false">
+			<listOfReactants>
+				<specieReference specie="IE" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(IE*kir)/(IE + Kmir)">
+				<listOfParameters>
+					<parameter name="kir" value="0.1" />
+					<parameter name="Kmir" value="0.01" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction30" reversible="false">
+			<listOfReactants>
+				<specieReference specie="UbE" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(kur*UbE)/(Kmur + UbE)">
+				<listOfParameters>
+					<parameter name="Kmur" value="0.01" />
+					<parameter name="kur" value="0.1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction31" reversible="false">
+			<listOfReactants>
+				<specieReference specie="UbE2" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(kur2*UbE2)/(Kmur2 + UbE2)">
+				<listOfParameters>
+					<parameter name="Kmur2" value="0.05" />
+					<parameter name="kur2" value="0.3" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction32" reversible="false">
+			<listOfReactants>
+				<specieReference specie="Wee1" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(kw*Wee1*(G2K + beta*PG2))/(Kmw + Wee1)">
+				<listOfParameters>
+					<parameter name="Kmw" value="0.1" />
+					<parameter name="kw" value="1" />
+					<parameter name="beta" value="0.05" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+		<reaction name="Reaction33" reversible="false">
+			<listOfReactants>
+				<specieReference specie="Cdc25" />
+			</listOfReactants>
+			<listOfProducts>
+				<specieReference specie="EmptySet" />
+			</listOfProducts>
+			<kineticLaw formula="(Cdc25*kcr)/(Cdc25 + Kmcr)">
+				<listOfParameters>
+					<parameter name="kcr" value="0.25" />
+					<parameter name="Kmcr" value="0.1" />
+				</listOfParameters>
+			</kineticLaw>
+		</reaction>
+	</listOfReactions>
+</model>
+</sbml>

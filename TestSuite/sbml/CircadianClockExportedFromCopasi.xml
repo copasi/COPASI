@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_0" name="Circadian Clock">
+    <notes>
+	<body xmlns="http://www.w3.org/1999/xhtml">
+      <p>This is a model of the Drosophila circadian clock based on the PER and TIM genes, as published in Leloup J.-C. and Goldbeter A. (1999) "Chaos and birhythmicity in a model of circadian oscillations of the PER and TIM proteins in Drosophila" J. Theor. Biol. 198, 445-459</p>
+        </body>
+    </notes>
+    <listOfUnitDefinitions>
+      <unitDefinition id="time">
+        <listOfUnits>
+          <unit kind="second" multiplier="3600" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-9" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="Compartment_1" name="cell" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="Metabolite_9" name="P0" compartment="Compartment_1" initialConcentration="0.099999975091917"/>
+      <species id="Metabolite_8" name="Mt" compartment="Compartment_1" initialConcentration="0.918543677527338"/>
+      <species id="Metabolite_7" name="Mp" compartment="Compartment_1" initialConcentration="0.918543677527338"/>
+      <species id="Metabolite_6" name="T0" compartment="Compartment_1" initialConcentration="0.235578987972966"/>
+      <species id="Metabolite_5" name="P1" compartment="Compartment_1" initialConcentration="0.196260748771845"/>
+      <species id="Metabolite_4" name="P2" compartment="Compartment_1" initialConcentration="0.0456380840602965"/>
+      <species id="Metabolite_3" name="T1" compartment="Compartment_1" initialConcentration="0.196260748771845"/>
+      <species id="Metabolite_2" name="T2" compartment="Compartment_1" initialConcentration="0.0456380840602965"/>
+      <species id="Metabolite_1" name="C" compartment="Compartment_1" initialConcentration="0.099999975091917"/>
+      <species id="Metabolite_0" name="Cn" compartment="Compartment_1" initialConcentration="0.611666132388287"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="Reaction_33" name="sP" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Metabolite_9"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Metabolite_7"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <ci> Metabolite_7 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k" value="0.9"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_32" name="Mp transcription" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Metabolite_7"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Metabolite_0"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Metabolite_0 </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="1"/>
+            <parameter id="K" value="0.9"/>
+            <parameter id="n" value="4"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_31" name="Mp degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_7"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_7 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_7 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="0.7"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_30" name="Mt transcription" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Metabolite_8"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Metabolite_0"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Metabolite_0 </ci>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="1"/>
+            <parameter id="K" value="0.9"/>
+            <parameter id="n" value="4"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_29" name="Mt degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_8"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_8 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_8 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="0.7"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_28" name="sT" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Metabolite_6"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="Metabolite_8"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <ci> Metabolite_8 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k" value="0.9"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_27" name="1P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_9"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_5"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_9 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_9 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_26" name="2P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_5"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_9"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_5 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_5 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_25" name="3P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_5"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_4"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_5 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_5 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_24" name="4P" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_4"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_5"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_23" name="1T" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_6"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_6 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_6 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_22" name="2T" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_3"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_6"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_3 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_3 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_21" name="3T" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_3"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_3 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_3 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_20" name="4T" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="2"/>
+            <parameter id="V" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_19" name="dP" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_4"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_18" name="dT" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_2"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_17" name="Mt dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_8"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_8 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_16" name="Mp dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_7"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_7 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_13" name="P0 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_9"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_9 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_12" name="P1 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_5"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_5 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_11" name="P2 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_4"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_4 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_10" name="T0 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_6"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_6 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_9" name="T1 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_3"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_3 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_8" name="T2 dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_2"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_2 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_7" name="C dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_1 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_6" name="Cn dilution" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_0"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_0 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.01"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_5" name="T2 degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_2"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_2 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_4" name="P2 degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_4"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> Metabolite_4 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.2"/>
+            <parameter id="V" value="2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_3" name="PT binding (forward)" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_4"/>
+          <speciesReference species="Metabolite_2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_4 </ci>
+              <ci> Metabolite_2 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="1.2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_2" name="PT binding (backward)" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_4"/>
+          <speciesReference species="Metabolite_2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_1 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.6"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_1" name="C transport (forward)" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_0"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_1 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.6"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction_0" name="C transport (backward)" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Metabolite_0"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Metabolite_1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Metabolite_0 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="0.2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
