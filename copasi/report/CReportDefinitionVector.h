@@ -8,38 +8,23 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "utilities/CReadConfig.h"
-#include "utilities/CWriteConfig.h"
-#include "CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
 #include "CReportDefinition.h"
 
-class CReportDefinitionVector: public CCopasiContainer
+class CReportDefinitionVector: public CCopasiVector< CReportDefinition >
   {
   private:
-    std::vector<CReportDefinition*> mReportDefinitions;
     std::string mKey;
 
   public:
-    CReportDefinitionVector(const std::string & name = "noname", const CCopasiContainer* pParent = NULL);
+    CReportDefinitionVector(const std::string & name = "noname",
+                            const CCopasiContainer* pParent = NULL);
+
     ~CReportDefinitionVector();
 
     const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
 
     bool addReportDefinition(const std::string name, const std::string comment);
-
-    /**
-     * Loads parameters for this solver with data coming from a
-     * CReadConfig object. (CReadConfig object reads an input stream)
-     * @param configbuffer reference to a CReadConfig object.
-     */
-    void load(CReadConfig & configBuffer);
-
-    /**
-     * Saves the parameters of the solver to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     * @param configbuffer reference to a CWriteConfig object.
-     */
-    void save(CWriteConfig & configBuffer);
 
     void cleanup();
 

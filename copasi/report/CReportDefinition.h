@@ -42,7 +42,14 @@ class CReportDefinition : public CCopasiObject
     /**
      *  Default constructor.
      */
-    CReportDefinition();
+    CReportDefinition(const std::string & name = "NoName",
+                      const CCopasiContainer * pParent = NULL);
+
+    /**
+     *  Copy constructor.
+     */
+    CReportDefinition(const CReportDefinition & src,
+                      const CCopasiContainer * pParent = NULL);
 
     /**
     *  Destructor.

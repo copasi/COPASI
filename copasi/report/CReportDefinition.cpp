@@ -15,13 +15,24 @@
 //class CReportDefinition
 //
 //////////////////////////////////////////////////
-CReportDefinition::CReportDefinition():
-    CCopasiObject("ReportDefinition", NULL, "ReportDefinition", CCopasiObject::Container),
+CReportDefinition::CReportDefinition(const std::string & name,
+                                     const CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "ReportDefinition"),
     mKey(CKeyFactory::add("CReportDefinition", this)),
     mComment(""),
     mpBody(new CReportBody),
     mSeperator("/t"),
     mbTitle(false)
+{}
+
+CReportDefinition::CReportDefinition(const CReportDefinition & src,
+                                     const CCopasiContainer * pParent):
+    CCopasiObject(src, pParent),
+    mKey(CKeyFactory::add("CReportDefinition", this)),
+    mComment(src.mComment),
+    mpBody(new CReportBody(*mpBody)),
+    mSeperator(src.mSeperator),
+    mbTitle(src.mbTitle)
 {}
 
 CReportDefinition::~CReportDefinition()
