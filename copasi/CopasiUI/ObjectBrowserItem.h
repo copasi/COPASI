@@ -11,6 +11,8 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
+class objectList;
+
 class ObjectBrowserItem : public QListViewItem
   {
   private:
@@ -20,8 +22,8 @@ class ObjectBrowserItem : public QListViewItem
     ObjectBrowserItem* pSibling;
     bool mChecked;
   public:
-    ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
-    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject);
+    ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
+    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
     ~ObjectBrowserItem() {}
 
     void setParent(ObjectBrowserItem* parent);
@@ -38,7 +40,7 @@ class ObjectBrowserItem : public QListViewItem
     //-1 if this is no user checked
     //0 if this is only partly checked
     //1 if this is full checked
-    int UserChecked();
+    int nUserChecked();
   };
 
 struct objectListItem
@@ -58,27 +60,9 @@ class objectList
     objectListItem* root;
     int length;
   public:
-    objectList()
-    {
-      root = NULL;
-      length = 0;
-    }
-    void insert(ObjectBrowserItem* pItem)
-    {
-      int i = 0;
-      objectListItem* pNewItem = new objectListItem(pItem, NULL);
-      if (length == 0)
-        {
-          root = pNewItem;
-          length++;
-          return;
-        }
-      objectListItem* pCurrent = root;
-      for (; i < length; i++)
-        pCurrent = pCurrent->pNext;
-      pCurrent->pNext = pNewItem;
-      length++;
-    }
+    objectList();
+    void insert(ObjectBrowserItem* pItem);
+    objectListItem* getRoot();
   };
 
 #endif

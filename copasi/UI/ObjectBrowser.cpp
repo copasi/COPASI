@@ -81,7 +81,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(backButton, nextButton);
   setTabOrder(nextButton, cancelButton);
 
-  // objectItemList=new objectList();
+  objectItemList = new objectList();
   loadData();
 }
 
@@ -100,8 +100,48 @@ void ObjectBrowser::cancelClicked()
 
 void ObjectBrowser::listviewChecked(ObjectBrowserItem* pCurrent)
 {
-  //   if (pCurrent->UserChecked()==NOCHECKED)
-  // if (pCurrent->UserChecked()==
+  clickToReverseCheck(pCurrent);
+  updateUI();
+}
+
+void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
+{
+  if (pCurrent->isChecked() == ALLCHECKED)
+    {
+      if (pCurrent->isChecked())
+        pCurrent->reverseChecked();
+      setUncheck(pCurrent->child());
+      return;
+    }
+  //else no check or partly checked
+  if (!pCurrent->isChecked())
+    pCurrent->reverseChecked();
+  setCheck(pCurrent->child());
+  return;
+}
+
+void ObjectBrowser::setUncheck(ObjectBrowserItem* pCurrent)
+{
+  if (pCurrent == NULL)
+    return;
+  if (pCurrent->isChecked())
+    pCurrent->reverseChecked();
+  if (pCurrent->child() != NULL)
+    setUncheck(pCurrent->child());
+  if (pCurrent->sibling() != NULL)
+    setUncheck(pCurrent->sibling());
+}
+
+void ObjectBrowser::setCheck(ObjectBrowserItem* pCurrent)
+{
+  if (pCurrent == NULL)
+    return;
+  if (!pCurrent->isChecked())
+    pCurrent->reverseChecked();
+  if (pCurrent->child() != NULL)
+    setCheck(pCurrent->child());
+  if (pCurrent->sibling() != NULL)
+    setCheck(pCurrent->sibling());
 }
 
 void ObjectBrowser::backClicked()
@@ -116,22 +156,22 @@ void ObjectBrowser::nextClicked()
 
 void ObjectBrowser::loadData()
 {
-  ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0, NULL);
+  ObjectBrowserItem * item_2 = new ObjectBrowserItem(ObjectListView, 0, NULL, objectItemList);
   item_2->setOpen(TRUE);
   item_2->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0, NULL);
+  ObjectBrowserItem * item_3 = new ObjectBrowserItem(item_2, 0, NULL, objectItemList);
   item_3->setOpen(TRUE);
   item_3->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0, NULL);
+  ObjectBrowserItem * item_4 = new ObjectBrowserItem(item_3, 0, NULL, objectItemList);
   item_4->setOpen(TRUE);
   item_4->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0, NULL);
+  ObjectBrowserItem * item_5 = new ObjectBrowserItem(item_4, 0, NULL, objectItemList);
   item_5->setOpen(TRUE);
   item_5->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0, NULL);
+  ObjectBrowserItem * item_6 = new ObjectBrowserItem(item_5, 0, NULL, objectItemList);
   item_6->setOpen(TRUE);
   item_6->setPixmap(0, *pObjectAll);
-  ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0, NULL);
+  ObjectBrowserItem * item = new ObjectBrowserItem(item_6, 0, NULL, objectItemList);
   item->setPixmap(0, *pObjectAll);
   item->setText(0, trUtf8("Subitem"));
 
@@ -140,10 +180,35 @@ void ObjectBrowser::loadData()
   item_4->setText(0, trUtf8("Subitem"));
   item_3->setText(0, trUtf8("Subitem"));
   item_2->setText(0, trUtf8("Item"));
-  item = new ObjectBrowserItem(ObjectListView, item_2, NULL);
+  item = new ObjectBrowserItem(ObjectListView, item_2, NULL, objectItemList);
   item->setPixmap(0, *pObjectAll);
   item->setText(0, trUtf8("Item"));
-  item = new ObjectBrowserItem(ObjectListView, item, NULL);
+  item = new ObjectBrowserItem(ObjectListView, item, NULL, objectItemList);
   item->setPixmap(0, *pObjectAll);
   item->setText(0, trUtf8("Item"));
+  updateUI();
+}
+
+void ObjectBrowser::updateUI()
+{
+  objectListItem* pCurrent = objectItemList->getRoot();
+  setCheckMark(pCurrent->pItem);
+  for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
+    setCheckMark(pCurrent->pItem);
+}
+
+void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
+{
+  switch (pCurrent->nUserChecked())
+    {
+    case NOCHECKED:
+      pCurrent->setPixmap(0, *pObjectNone);
+      break;
+    case ALLCHECKED:
+      pCurrent->setPixmap(0, *pObjectAll);
+      break;
+    case PARTCHECKED:
+      pCurrent->setPixmap(0, *pObjectParts);
+      break;
+    }
 }

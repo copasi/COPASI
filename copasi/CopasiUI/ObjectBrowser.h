@@ -25,9 +25,6 @@ class ObjectBrowser : public QWidget
 
   public:
     objectList* objectItemList;
-
-    ObjectBrowserItem** mpObjectList;
-
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
 
@@ -35,8 +32,13 @@ class ObjectBrowser : public QWidget
     QPushButton* nextButton;
     QPushButton* backButton;
     QListView* ObjectListView;
-    void loadData();
 
+    void setCheck(ObjectBrowserItem* pCurrent);
+    void setUncheck(ObjectBrowserItem* pCurrent);
+    void clickToReverseCheck(ObjectBrowserItem* pCurrent);
+    void setCheckMark(ObjectBrowserItem* pCurrent);
+    void loadData();
+    void updateUI();
   public slots:
     virtual void cancelClicked();
     virtual void listviewChecked(ObjectBrowserItem*);

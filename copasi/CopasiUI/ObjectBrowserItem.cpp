@@ -1,6 +1,6 @@
 #include "ObjectBrowserItem.h"
 
-ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject)
+ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
     : QListViewItem(parent, after)
 {
   //here is the ROOT
@@ -11,9 +11,10 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
     after->setSibling(this);
   pCopasiObject = mObject;
   mChecked = false;
+  pList->insert(this);
 }
 
-ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject)
+ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, objectList* pList)
     : QListViewItem(parent, after)
 {
   setParent(parent);
@@ -25,9 +26,10 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
     after->setSibling(this);
   pCopasiObject = mObject;
   mChecked = false;
+  pList->insert(this);
 }
 
-int ObjectBrowserItem::UserChecked()
+int ObjectBrowserItem::nUserChecked()
 {
   int condition;
   if (isChecked())
@@ -37,7 +39,7 @@ int ObjectBrowserItem::UserChecked()
 
   if (sibling() != NULL)
     {
-      switch (sibling()->UserChecked())
+      switch (sibling()->nUserChecked())
         {
         case ALLCHECKED:
           if (condition == NOCHECKED)
@@ -55,7 +57,7 @@ int ObjectBrowserItem::UserChecked()
     }
   if (child() != NULL)
     {
-      switch (child()->UserChecked())
+      switch (child()->nUserChecked())
         {
         case ALLCHECKED:
           if (condition == NOCHECKED)
@@ -112,4 +114,32 @@ bool ObjectBrowserItem::isChecked() const
 void ObjectBrowserItem::reverseChecked()
 {
   mChecked = !mChecked;
+}
+
+objectList::objectList()
+{
+  root = NULL;
+  length = 0;
+}
+
+void objectList::insert(ObjectBrowserItem* pItem)
+{
+  int i = 0;
+  objectListItem* pNewItem = new objectListItem(pItem, NULL);
+  if (length == 0)
+    {
+      root = pNewItem;
+      length++;
+      return;
+    }
+  objectListItem* pCurrent = root;
+  for (; i < length - 1; i++)
+    pCurrent = pCurrent->pNext;
+  pCurrent->pNext = pNewItem;
+  length++;
+}
+
+objectListItem* objectList::getRoot()
+{
+  return root;
 }
