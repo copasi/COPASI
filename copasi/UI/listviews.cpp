@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 09:04:38 $
+   $Date: 2004/10/08 09:13:10 $
    End CVS Header */
 
 /****************************************************************************
@@ -84,7 +84,7 @@ FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool rec
   if (recurs)
     createSubFolders();
 
-  /*if (mpFolder->children()) //TODO!!!!!!
+  /*if (mpFolder->children())
     {
       setPixmap(0, *folderClosed);
       insertSubFolders(mpFolder->children());
@@ -355,6 +355,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       {
       case - 1:
         break; //continue with parent id
+      case 0:
+        return defaultWidget;
+        break;
       case 1:
         return modelWidget;
         break;
@@ -412,7 +415,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:          //Report
+      case 43:           //Report
         return tableDefinition;
         break;
       case 42:
@@ -457,7 +460,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       }
 
     //give up
-    return defaultWidget;
+    return NULL;
   }
 
 FolderListItem* ListViews::findListViewItem(int id, std::string key) //should always return a valid item
@@ -516,6 +519,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromItem(item);
+  if (!newWidget) return; //do nothing
   std::string itemKey = item->folder()->getObjectKey();
 
   if (newWidget == currentWidget)
@@ -531,6 +535,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   // find the widget again (it may have changed)
   newWidget = findWidgetFromItem(item);
+  if (!newWidget) newWidget = defaultWidget; //should never happen
   itemKey = item->folder()->getObjectKey();
 
   // enter new widget
@@ -700,7 +705,7 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
   storeCurrentItemInAllListViews();
 
-  //just do everything. TODO: Later we can decide from parameters what really needs to be done
+  //just do everything.  Later we can decide from parameters what really needs to be done
   dataModel->updateCompartments();
   updateAllListviews(111);
 
