@@ -17,8 +17,6 @@
 class CScanProblem;
 class CSteadyStateTask;
 class CTrajectory;
-class Random;
-class Cr250;
 
 class CScanMethod
   {
@@ -27,8 +25,6 @@ class CScanMethod
      *  A pointer to the trajectory problem.
      */
     CScanProblem * scanProblem;
-    CRandom * pRandomGenerator;
-    Cr250* pCr250Generator;
     // Operations
   protected:
     /**
@@ -37,9 +33,6 @@ class CScanMethod
     CScanMethod();
 
   public:
-
-    // this function counts the number of iterations to execute
-    unsigned C_INT32 CountScan(void);
 
     /**
        * calculate function for ScanMethod
@@ -76,17 +69,6 @@ class CScanMethod
      *  The main scan method.
      */
     void scan(unsigned C_INT32 s, bool C_UNUSED(nl));
-
-    /**
-     *  Set the value of the scan parameter based on the distribution
-     *  @param unsigned C_INT32 i where to start in the distribution
-     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
-     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
-     */
-
-    void setScanParameterValue(unsigned C_INT32 i,
-                               unsigned C_INT32 first,
-                               unsigned C_INT32 last);
   };
 
 #endif // COPASI_CTrajectoryMethod

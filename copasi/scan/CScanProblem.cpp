@@ -17,6 +17,8 @@
 #include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "math.h"
+#include "randomGenerator/CRandom.h"
+#include "randomGenerator/Cr250.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -33,7 +35,11 @@ CScanProblem::CScanProblem():
     mProcessSteadyState(false),
     mpSteadyState(NULL),
     mScanItemList()
-{CONSTRUCTOR_TRACE;}
+{
+  CRandom *pRandomGenerator = CRandom::createGenerator();
+  Cr250* pCr250Generator = (Cr250*)(CRandom::createGenerator(CRandom::r250));
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Copy constructor.
@@ -297,4 +303,71 @@ void CScanProblem::InitScan(void)
       // calculate the increment
       setScanItemParameter(i, "incr", getScanItemParameter(i, "ampl") / (getScanItemParameter(i, "density") - 1));
     }
+}
+
+/**
+ *  set the values master and all slave parameters
+ * @param "C_INT32 i" initial value
+ * @param "C_INT32 first" first parameter (master)
+ * @param "C_INT32 last" last slave parameter
+ */
+
+void CScanProblem::setScanParameterValue(unsigned C_INT32 i,
+    unsigned C_INT32 first,
+    unsigned C_INT32 last)
+{
+  unsigned C_INT32 j;
+  double min, max, incr, ampl;
+  for (j = first; j < last; j++)
+    {
+      // making a copy of the min and max parameters of the scanItem j
+      min = getScanItemParameter(j, "min");
+      max = getScanItemParameter(j, "max");
+      ampl = getScanItemParameter(j, "ampl");
+      incr = getScanItemParameter(j, "incr");
+
+      // switch the grid type and set values accordingly
+      switch ((int)getScanItemParameter(j, "gridType"))
+        {
+        case SD_UNIFORM:
+          if (getScanItemParameter(j, "log"))
+            setScanItemParameter(j, "value", min* pow(10, ampl * pCr250Generator->getRandomCO())); //dr250()
+          else
+            setScanItemParameter(j, "value", min + ampl * pCr250Generator->getRandomCO()); //dr250()
+          break;
+        case SD_GAUSS:
+          if (getScanItemParameter(j, "log"))
+            //CRandom::getRandomNormalLog(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
+          else
+            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormal(min, max));
+          break;
+        case SD_BOLTZ:
+          if (getScanItemParameter(j, "log"))
+            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalLog(min, max));
+          else
+            setScanItemParameter(j, "value", pRandomGenerator->getRandomNormalPositive(min, max));
+          break;
+        case SD_REGULAR:
+          // log scale
+          if (getScanItemParameter(j, "log"))
+            setScanItemParameter(j, "value", (min*pow(10, incr*i)));
+          // non-log scale
+          else
+            setScanItemParameter(j, "value", (min + incr*i));
+          break;
+        }
+    }
+}
+
+// this function counts the number of iterations to execute
+unsigned C_INT32 CScanProblem::CountScan(void)
+{
+  int i;
+  unsigned C_INT32 TotIteration = 1;
+  unsigned C_INT32 scanDimension = getListSize();
+  for (i = 0; i < scanDimension; i++)
+    if (getScanItemParameter(i, "indp"))
+      TotIteration *= (unsigned C_INT32) getScanItemParameter(i, "density");
+  return TotIteration;
 }

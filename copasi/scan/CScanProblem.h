@@ -18,11 +18,16 @@ class CWriteConfig;
 class CReadConfig;
 class CTrajectoryTask;
 class CSteadyStateTask;
+class CRandom;
+class Cr250;
 
 class CScanProblem
   {
     // Attributes
   private:
+    CRandom * pRandomGenerator;
+    Cr250* pCr250Generator;
+
     /**
      *  The model the problem is working on.
      */
@@ -216,8 +221,20 @@ class CScanProblem
     /*
      Intialized all parameters insidethe Scan Parameter Matrix,
     */
-
     void InitScan(void);
+
+    // this function counts the number of iterations to execute
+    unsigned C_INT32 CountScan(void);
+
+    /**
+     *  Set the value of the scan parameter based on the distribution
+     *  @param unsigned C_INT32 i where to start in the distribution
+     *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
+     *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
+     */
+    void setScanParameterValue(unsigned C_INT32 i,
+                               unsigned C_INT32 first,
+                               unsigned C_INT32 last);
   };
 
 #endif // COPASI_CScanProblem
