@@ -6,9 +6,6 @@ using std::string;
 
 class CRandom
   {
-    //    friend class Cr250;
-    //    friend class Cmt19937;
-
     // Attributes
   public:
     /**
@@ -66,7 +63,6 @@ class CRandom
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
-     * @param unsigned C_INT32 seed
      */
     CRandom();
 

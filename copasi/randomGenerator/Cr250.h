@@ -8,8 +8,6 @@
 #ifndef COPASI_Cr250
 #define COPASI_Cr250
 
-/*** Class definition for R250 random number generator ***/
-
 class Cr250 : private CRandom
   {
     friend CRandom * CRandom::createGenerator(CRandom::Type type,
