@@ -41,7 +41,9 @@
 # define snprintf  _snprintf  // they just have a different name for this guy
 # define timeb _timeb         // they just have a different name for this guy
 # define ftime _ftime         // they just have a different name for this guy
-# define strcasecmp _stricmp  // they just have a different name for this guy
+# define strcasecmp _stricmp  // they just have a different name for this guy 
+// # define min _cpp_min
+// # define max _cpp_max
 #else
 # define C_INT32 int
 # define C_INT int
