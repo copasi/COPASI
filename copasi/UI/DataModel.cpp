@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/10 10:58:56 $
+   $Author: ssahle $ 
+   $Date: 2004/08/13 09:43:16 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -25,8 +25,6 @@ DataModel::DataModel()
 {
   //this->populateData();
   model = NULL;
-  //mpMathModel = NULL;
-  //mMathModelUpdateScheduled = false;
   mChanged = false;
   trajectorytask = NULL;
   steadystatetask = NULL;
@@ -43,44 +41,27 @@ void DataModel::createModel()
   pdelete(model);
   model = new CModel();
   Copasi->pModel = model;
-  //  CProgressBar* tmpBar = new CProgressBar(this);
-  //  model->setCompileHandler(tmpBar);
-  //  searchFolderList(1)->setObjectKey(model->getKey());
-
-  //  pdelete(mpMathModel);
-  //  mpMathModel = new CMathModel();
-  //  mpMathModel->setModel(model);
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
-  //  searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  //  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  //  trajectorytask->setOutputHandler(tmpHandler);
-  //  searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
-  //  searchFolderList(32)->setObjectKey(scantask->getKey());
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
-  //  searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
   plotspecs = new CPlotSpec2Vector();
-  //  searchFolderList(42)->setObjectKey(plotspecs->getKey());
-
-  //  tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
-  //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 }
 
 void DataModel::loadModel(const char* fileName)
@@ -97,46 +78,28 @@ void DataModel::loadModel(const char* fileName)
       pdelete(model);
       CReadConfig inbuf(fileName);
       model = new CModel();
-      //      CProgressBar* tmpBar = new CProgressBar(this);
-      //      model->setCompileHandler(tmpBar);
       model->load(inbuf);
-      //searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
       steadystatetask = new CSteadyStateTask();
       steadystatetask->load(inbuf);
-      //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
       pdelete(trajectorytask);
       trajectorytask = new CTrajectoryTask();
       trajectorytask->load(inbuf);
-      //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-      //trajectorytask->setOutputHandler(tmpHandler);
-      //searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       pdelete(scantask);
       scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
-      // future work  scantask->load(inbuf);
-      //searchFolderList(32)->setObjectKey(scantask->getKey());
 
       pdelete(reportdefinitions);
       reportdefinitions = new CReportDefinitionVector();
-      //  reportdefinitions->load(inbuf);
-      //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
       pdelete(plotspecs);
       plotspecs = new CPlotSpec2Vector();
-      //  plotspecs->load(inbuf);
-      //searchFolderList(42)->setObjectKey(plotspecs->getKey());
-
-      //tmpHandler->setPlotSpecVectorAddress(plotspecs);
 
       pdelete(pOptFunction);
       pOptFunction = new COptFunction();
-      //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
-
-      //Copasi->pOutputList->load(inbuf);
     }
   else if (!Line.compare(0, 5, "<?xml"))
     {
@@ -160,9 +123,6 @@ void DataModel::loadModel(const char* fileName)
 
       pdelete(model);
       model = XML.getModel();
-      //      CProgressBar* tmpBar = new CProgressBar(this);
-      //      model->setCompileHandler(tmpBar);
-      //searchFolderList(1)->setObjectKey(model->getKey());
 
       pdelete(steadystatetask);
       pdelete(trajectorytask);
@@ -189,57 +149,24 @@ void DataModel::loadModel(const char* fileName)
 
       if (!steadystatetask) steadystatetask = new CSteadyStateTask();
       steadystatetask->getProblem()->setModel(model);
-      //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
       if (!trajectorytask) trajectorytask = new CTrajectoryTask();
       trajectorytask->getProblem()->setModel(model);
-      //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-      //trajectorytask->setOutputHandler(tmpHandler);
-      //searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       if (!scantask) scantask = new CScanTask();
       scantask->getProblem()->setModel(model);
-      //searchFolderList(32)->setObjectKey(scantask->getKey());
 
       pdelete(reportdefinitions);
       reportdefinitions = pNewReports;
-      //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
       pdelete(plotspecs);
       plotspecs = pNewPlotSpecs;
-      /*
-      std::cout << "Number of Plots: " << pNewPlotSpecs->size() << std::endl;
-      unsigned int counter1;
-      for(counter1=0; counter1<pNewPlotSpecs->size(); counter1++){
-          CPlotSpecification* plotSpec=(*pNewPlotSpecs)[counter1];
-          std::cout << "Number of PlotItems for Plot " << counter1 << ": " << plotSpec->getItems().size() << std::endl;
-          unsigned int counter2;
-          for(counter2=0; counter2 <plotSpec->getItems().size(); counter2++){
-              CPlotItem* plotItem=plotSpec->getItems()[counter2];
-            
-              std::cout << "Number of Channels for PlotItem " << plotItem << ": " << plotItem->getChannels().size() << std::endl;
-              unsigned int counter3;
-              for(counter3=0; counter3<plotItem->getChannels().size(); counter3++){
-                  std::cout << "Channel " << counter3 << ": " << plotItem->getChannels()[counter3] << std::endl;
-              }
-          } 
-      }
-      */ 
-      //searchFolderList(42)->setObjectKey(plotspecs->getKey());
 
-      //tmpHandler->setPlotSpecVectorAddress(plotspecs);
       pdelete(pOptFunction);
       pOptFunction = new COptFunction();
-      //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
     }
 
   model->setCompileFlag();
-
-  //  pdelete(mpMathModel);
-  //  mpMathModel = new CMathModel();
-  //  mpMathModel->setModel(model);
-
-  //  steadystatetask->compile();
 }
 
 void DataModel::saveModel(const char* fileName)
@@ -274,7 +201,6 @@ void DataModel::importSBML(const char* fileName)
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
-  //searchFolderList(31)->setObjectKey(pOptFunction->getKey());
 
   pdelete(model);
   SBMLImporter* importer = new SBMLImporter();
@@ -289,41 +215,25 @@ void DataModel::importSBML(const char* fileName)
       model = new CModel();
     }
 
-  //  CProgressBar* tmpBar = new CProgressBar(this);
-  //  model->setCompileHandler(tmpBar);
   Copasi->pModel = model;
-  //searchFolderList(1)->setObjectKey(model->getKey());
 
   pdelete(steadystatetask);
   steadystatetask = new CSteadyStateTask();
   steadystatetask->getProblem()->setModel(model);
-  //searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
   pdelete(trajectorytask);
   trajectorytask = new CTrajectoryTask();
   trajectorytask->getProblem()->setModel(model);
-  //COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  //trajectorytask->setOutputHandler(tmpHandler);
-  //searchFolderList(23)->setObjectKey(trajectorytask->getKey());  //23=Time course
 
   pdelete(scantask);
   scantask = new CScanTask();
   scantask->getProblem()->setModel(model);
-  //searchFolderList(32)->setObjectKey(scantask->getKey());
 
   pdelete(reportdefinitions);
   reportdefinitions = new CReportDefinitionVector();
-  //searchFolderList(43)->setObjectKey(reportdefinitions->getKey());
 
   pdelete(plotspecs);
   plotspecs = new CPlotSpec2Vector();
-  //searchFolderList(42)->setObjectKey(plotspecs->getKey());
-
-  //tmpHandler->setPlotSpecVectorAddress(plotspecs);
-
-  //  pdelete(mpMathModel);
-  //  mpMathModel = new CMathModel();
-  //  mpMathModel->setModel(model);
 }
 
 void DataModel::exportSBML(const char* fileName)
