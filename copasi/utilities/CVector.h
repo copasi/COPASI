@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/06 21:34:28 $
+   $Date: 2003/11/19 16:00:00 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -79,12 +79,17 @@ template <class CType> class CVector
           va_list values = NULL;
           va_start(values, first);
 
+#if (CType ==  SubType)
+          for (unsigned C_INT32 i = 1; i < mRows; i++)
+            mVector[i] = (CType) va_arg(values, int);
+#else
           if (sizeof(CType) > sizeof(int))
             for (unsigned C_INT32 i = 1; i < mRows; i++)
               mVector[i] = va_arg(values, CType);
           else /* sizes smaller or equal to int are promoted to int */
             for (unsigned C_INT32 i = 1; i < mRows; i++)
               mVector[i] = (CType) va_arg(values, int);
+#endif
 
           va_end(values);
         }
