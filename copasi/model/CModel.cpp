@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.162 $
+   $Revision: 1.163 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/03/25 12:41:41 $
+   $Date: 2004/04/06 23:30:33 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1596,7 +1596,7 @@ bool CModel::addMetabolite(const std::string & name,
 
   bool pReturn = mMetabolites.add(pMetab);
 
-  // compile();
+  compile();
 
   return pReturn;
 }
