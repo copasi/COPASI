@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/21 15:29:57 $
+   $Date: 2004/10/25 17:14:14 $
    End CVS Header */
 
 /**
@@ -75,3 +75,44 @@ void CMCAProblem::load(CReadConfig & configBuffer,
                                CReadConfig::LOOP);
     }
 }
+
+/**
+ * Set the initial state of the problem.
+ * @param const CState & initialState
+ */
+void CMCAProblem::setInitialState(const CState & initialState)
+{
+  mInitialState = initialState;
+  mpModel = const_cast<CModel *>(mInitialState.getModel());
+}
+
+/**
+ * Set the initial state of the problem.
+ * @param const CStateX & InitialState
+ */
+void CMCAProblem::setInitialState(const CStateX & initialState)
+{
+  mInitialState = initialState;
+  mpModel = const_cast<CModel *>(mInitialState.getModel());
+}
+
+/**
+ * Retrieve the initial state of the problem.
+ * @return "const CState &" pInitialState
+ */
+const CState & CMCAProblem::getInitialState() const
+  {return mInitialState;}
+
+/**
+ * Set whether the steady state analysis is requested.
+ * @param bool * steadyStateRequested
+ */
+void CMCAProblem::setSteadyStateRequested(bool & steadyStateRequested)
+{setValue("SteadyStateRequested", steadyStateRequested);}
+
+/**
+ * Retrieve whether the steady state analysis is requested.
+ * @return bool steadyStateRequested
+ */
+bool CMCAProblem::isSteadyStateRequested() const
+  {return * (bool *) getValue("SteadyStateRequested");}
