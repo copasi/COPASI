@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/08 18:38:48 $
+   $Author: gauges $ 
+   $Date: 2004/12/09 11:52:30 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -136,8 +136,8 @@ void COptions::init(C_INT argc, char *argv[])
 
   getValue("CopasiDir", CopasiDir);
 #ifdef Darwin
-  setValue("ExampleDir", CopasiDir + "/Resource/doc/examples");
-  setValue("WizardDir", CopasiDir + "/Resource/doc/html");
+  setValue("ExampleDir", CopasiDir + "/Contents/Resources/examples");
+  setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
 #elif WIN32
   setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
   setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
