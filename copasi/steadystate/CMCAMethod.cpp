@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:04:09 $
+   $Author: shoops $ 
+   $Date: 2005/01/07 22:00:11 $
    End CVS Header */
 
 #include <cmath>
 #include <limits.h>
+#include <float.h>
 
 #define  COPASI_TRACE_CONSTRUCTION
 
@@ -17,10 +18,6 @@
 #include "model/CModel.h"
 #include "utilities/CCopasiTask.h"
 #include "CMCAMethod.h"
-
-#ifndef DBL_MAX
-#define DBL_MAX 1.7976931348623158e+308
-#endif //DBL_MAX
 
 /**
  * Default constructor

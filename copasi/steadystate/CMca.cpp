@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:13:14 $
+   $Author: shoops $ 
+   $Date: 2005/01/07 22:00:11 $
    End CVS Header */
 
 /*****************************************************************************
@@ -15,6 +15,7 @@
 
 #include <cmath>      //for fabs()
 #include <limits.h>
+#include <float.h>
 
 #define  COPASI_TRACE_CONSTRUCTION
 
@@ -23,10 +24,6 @@
 #include "utilities/utility.h"
 #include "model/CModel.h"
 #include "CMca.h"
-
-#ifndef DBL_MAX
-#define DBL_MAX 1.7976931348623158e+308
-#endif //DBL_MAX
 
 /**
  * Defaulut constructor

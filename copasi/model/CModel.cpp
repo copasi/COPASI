@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.207 $
+   $Revision: 1.208 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/03 13:02:15 $
+   $Author: shoops $ 
+   $Date: 2005/01/07 21:59:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,9 @@
 #include <string>
 #include <vector>
 #include <limits.h>
+#include <float.h>
 #include <cmath>
 #include <algorithm>
-
-#ifndef DBL_MAX
-#define DBL_MAX 1.7976931348623158e+308
-#endif //DBL_MAX
 
 // #define DEBUG_MATRIX
 
