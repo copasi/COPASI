@@ -197,6 +197,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   const char * Key;
   const char * Type;
   const char * Name;
+  const char * Positive;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -208,6 +209,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Key = CCopasiXMLInterface::getAttributeValue("key", papszAttrs);
       Name = CCopasiXMLInterface::getAttributeValue("name", papszAttrs);
       Type = CCopasiXMLInterface::getAttributeValue("type", papszAttrs);
+      Positive = CCopasiXMLInterface::getAttributeValue("positive", papszAttrs);
 
       while (CFunction::XMLType[i] != "" &&
              CFunction::XMLType[i] != Type) i++;
@@ -215,6 +217,10 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
       mCommon.pFunction = CFunction::createFunction((enum CFunction::Type) i);
       mCommon.pFunction->setName(Name);
+      if (strcmp(Positive, "true") && strcmp(Positive, "1"))
+        mCommon.pFunction->setReversible(TriFalse);
+      else
+        mCommon.pFunction->setReversible(TriTrue);
 
       /* We have a new function and add it to the list */
       mCommon.pFunctionList->add(mCommon.pFunction, true);

@@ -396,6 +396,7 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("key", pFunction->getKey());
       Attributes.add("name", pFunction->getName());
       Attributes.add("type", CFunction::XMLType[pFunction->getType()]);
+      Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
       startSaveElement("Function", Attributes);
 
       startSaveElement("MathML");
