@@ -43,6 +43,8 @@ CModel::CModel():
     mFluxesX(),
     mScaledFluxes(),
     mScaledFluxesX(),
+    mInitialTime(0),
+    mTime(0),
     mTransitionTime(0),
     mStoi(),
     mRedStoi(),
@@ -72,6 +74,8 @@ CModel::CModel(const CModel & src):
     mFluxesX(src.mFluxesX),
     mScaledFluxes(src.mScaledFluxes),
     mScaledFluxesX(src.mScaledFluxesX),
+    mInitialTime(src.mInitialTime),
+    mTime(src.mTime),
     mTransitionTime(src.mTransitionTime),
     mStoi(src.mStoi),
     mRedStoi(src.mRedStoi),
@@ -177,6 +181,15 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   setQuantityUnit(mQuantityUnitName); // set the factors
 
+  if (configBuffer.getVersion() < "4")
+    {
+      if ((Fail = configBuffer.getVariable("InitialTime", "C_FLOAT64",
+                                           &mInitialTime)))
+        return Fail;
+    }
+  else
+    mInitialTime = 0;
+
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
     return Fail;
@@ -241,6 +254,9 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
     return Fail;
 
   if ((Fail = configBuffer.setVariable("ConcentrationUnit", "string", &mQuantityUnitName)))
+    return Fail;
+
+  if ((Fail = configBuffer.setVariable("InitialTime", "C_FLOAT64", &mInitialTime)))
     return Fail;
 
   Size = mCompartments.size();
