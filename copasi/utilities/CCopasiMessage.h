@@ -11,14 +11,15 @@ typedef struct MESSAGES {unsigned C_INT32 No; const char * Text; }
 
 Message;
 
-#define MCopasiBase        5000
-#define MCReadConfig       5100
-#define MCWriteConfig      5200
-#define MCRange            5300
-#define MCKinFunction      5400
-#define MCCopasiVector     5500
-#define MCFunctionParameters 5600
-#define MCMassAction       5700
+#define MCopasiBase           5000
+#define MCReadConfig          MCopasiBase + 100
+#define MCWriteConfig         MCopasiBase + 200
+#define MCRange               MCopasiBase + 300
+#define MCKinFunction         MCopasiBase + 400
+#define MCCopasiVector        MCopasiBase + 500
+#define MCFunctionParameters  MCopasiBase + 600
+#define MCMassAction          MCopasiBase + 700
+#define MCMethodParameterList MCopasiBase + 800
 
 /**
  *  This throws an exception with information where the error occured.

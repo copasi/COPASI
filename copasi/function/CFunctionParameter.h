@@ -16,7 +16,7 @@
 class CFunctionParameter
   {
   public:
-    static const string DataTypeName[12];
+    static const string DataTypeName[];
 
     //Attributes
 

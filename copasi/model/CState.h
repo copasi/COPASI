@@ -13,6 +13,10 @@
 #ifndef COPASI_CState
 #define COPASI_CState
 
+class CReadConfig;
+
+class CWriteConfig;
+
 class CModel;
 
 class CStateX;
@@ -88,6 +92,24 @@ class CState
      *  Destructor
      */
     ~CState();
+
+    /**
+     * Set the time of the state.
+     * @param "const double &" time
+     */
+    void setTime(const double & time);
+
+    /**
+     * Retrieve the time of the state.
+     * @return "const double &" time
+     */
+    const double & getTime() const;
+
+    /**
+     *  Set the model the state corresponds to.
+     *  @param "const CModel *" model
+     */
+    void setModel(const CModel * model);
 
     /**
      *  Set the indexed number as a long integer.
@@ -214,12 +236,26 @@ class CState
      *  @param "const unsigned C_INT32 &" volumesSize
      */
     const unsigned C_INT32 & getVolumesSize() const;
+
+    /**
+     * Load a state
+     * @param "CReadConfig &" configBuffer
+     * @return "CState *" state
+     */
+    static CState * load(CReadConfig & configBuffer);
+
+    /**
+     * Save a state
+     * @param "CWriteConfig &" configBuffer
+     * @param "const CState * pState
+     */
+    static void save(CWriteConfig & configBuffer, const CState * pState);
   };
 
 /**
- *  CState class.
- *  The class CState stores the state in time of a model. The state 
- *  is described for the full model, i.e., updates of all internal
+ *  CStateX class.
+ *  The class CStateX stores the state in time of a model. The state 
+ *  is described for the reduced model, i.e., updates only of the independend
  *  metabolites is expected. The order of metabolites is as in the vector
  *  retrieved by CModel::getMetabolitesX. 
  *  The information is intended to be used with integration routines,
@@ -247,9 +283,13 @@ class CStateX : public CState
     /**
      *  Destructor
      */
-    ~CStateX();
-  }
 
-;
+    ~CStateX();
+    /**
+     *  Set the model the state corresponds to.
+     *  @param "const CModel *" model
+     */
+    void setModel(const CModel * model);
+  };
 
 #endif //COPASI_CState

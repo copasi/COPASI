@@ -5,14 +5,18 @@ libtrajectory_a_SOURCES = \
 	Clsoda.cpp \
 	CODESolver.cpp \
 	CTrajectory.cpp \
-	CStochSolver.cpp
+	CStochSolver.cpp \
+	CTrajectoryProblem.cpp \
+	CTrajectoryMethod.cpp
 
 EXTRA_DIST = \
 	trajectory.h \
 	Clsoda.h	Clsoda.cpp \
 	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \
-	CStochSolver.h	CStochSolver.cpp
+	CStochSolver.h	CStochSolver.cpp \
+	CTrajectoryProblem.h	CTrajectoryProblem.cpp \
+	CTrajectoryMethod.h	CTrajectoryMethod.cpp
 
 ####### kdevelop will overwrite this part!!! (end)############
 

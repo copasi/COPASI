@@ -11,6 +11,8 @@
 #include "copasi.h"
 #include "CMethodParameterList.h"
 #include "CMethodParameter.h"
+#include "CCopasiMessage.h"
+#include "CCopasiException.h"
 
 /**
  * Default constructor
@@ -116,10 +118,12 @@ void CMethodParameterList::add
 /**
  * Load a list of parameters
  * @param "CReadConfig &" configBuffer
+ * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
  */
-void CMethodParameterList::load(CReadConfig & configBuffer)
+void CMethodParameterList::load(CReadConfig & configBuffer,
+                                CReadConfig::Mode mode)
 {
-  configBuffer.getVariable("MethodParameterListName", "string", &mName);
+  configBuffer.getVariable("MethodParameterListName", "string", &mName, mode);
   configBuffer.getVariable("MethodParameterListType", "string", &mType);
 
   C_INT32 Size = 0;
@@ -141,4 +145,51 @@ void CMethodParameterList::save(CWriteConfig & configBuffer)
   configBuffer.setVariable("MethodParameterListSize", "C_INT32", &Size);
 
   CCopasiVectorNS<CMethodParameter>::save(configBuffer);
+}
+
+/**
+ * Search for method parameter list of a specified name and type 
+ * in a congfig buffer. Note: the returned pointer has to be released
+ * after use.
+ * @param "CReadConfig &" configBuffer
+ * @param "const string &" name
+ * @param "const string &" type
+ * @return "CMethodParameterList *" methodParameterList
+ */
+CMethodParameterList *
+CMethodParameterList::search(CReadConfig & configBuffer,
+                             const string & name,
+                             const string & type)
+{
+  CMethodParameterList * list = NULL;
+  CReadConfig::Mode mode = CReadConfig::SEARCH;
+
+  configBuffer.rewind();
+
+  try
+    {
+      while (list == NULL)
+        {
+          list = new CMethodParameterList();
+          list->load(configBuffer, mode);
+
+          if (name == list->mName && type == list->mType)
+            break;
+
+          pdelete(list);
+        }
+    }
+
+  catch (CCopasiException Exception)
+    {
+      pdelete(list);
+
+      if ((MCMethodParameterList + 1) == Exception.getMessage().getNumber())
+
+        ;
+      else
+        throw Exception;
+    }
+
+  return list;
 }
