@@ -2,7 +2,7 @@
  ** Form interface generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.4 2003/08/07 03:41:18 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.h,v 1.5 2003/08/07 16:36:23 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,6 +25,7 @@ class QFrame;
 class QPushButton;
 //class QTable;
 class ScanScrollView;
+class CModel;
 
 class TableDefinition : public CopasiWidget
   {
@@ -33,6 +34,8 @@ class TableDefinition : public CopasiWidget
   public:
     TableDefinition(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~TableDefinition();
+    CModel *mModel;
+    void loadTableDefinition();
 
     QLabel* targetLabel;
     QCheckBox* appendChecked;
@@ -64,6 +67,9 @@ class TableDefinition : public CopasiWidget
 
   protected slots:
     virtual void languageChange();
+
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnOKClicked();
   };
 
 #endif // TABLEDEFINITION_H

@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.6 2003/08/07 03:41:18 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.7 2003/08/07 16:36:23 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -196,3 +196,13 @@ void TableDefinition::languageChange()
   confirmButton->setText(tr("confirm"));
   cancelButton->setText(tr("cancel"));
 }
+
+/*This function is to load the model for the table*/
+void TableDefinition::loadTableDefinition()
+{}
+
+void TableDefinition::slotBtnCancelClicked()
+{}
+
+void TableDefinition::slotBtnOKClicked()
+{}
