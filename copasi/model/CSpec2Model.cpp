@@ -50,30 +50,6 @@ C_INT32 CSpec2Model::addFileContents()
   return 0;
 }
 
-//void CSpec2Model::printInput()
-//{
-//  std::cout << "\n\n\n";
-//     std::cout << "What we read: \n";
-//     std::vector<string>::iterator it = mSpecContents.begin();
-//     int cnt = mSpecContents.size();
-//     std::cout << "There were " << cnt << " lines." << std::endl;
-//     int linecount = 0;
-//     while (it <  mSpecContents.end())
-//     {
-//         std::cout << "Line " << linecount++ << ": ";
-//         std::cout << *it++ << std::endl;
-//}
-//  std::vector<CSpecLine>::iterator it = mSpecLines.begin();
-//  std::cout << std::endl;
-
-//  while (it < mSpecLines.end())
-//    {
-//      std::cout << "Type = " << CSpecLine::convertedType(it->getType());
-//      std::cout << " Contents = " << it->getString() << std::endl;
-//      it++;
-//}
-//}
-
 CModel *CSpec2Model::createModel()
 {
   std::cout << "Creating a model\n";
@@ -81,15 +57,13 @@ CModel *CSpec2Model::createModel()
   addFileContents();
   // Read the lines in the file one at a time, determine the type,
   // and store each std::string in the list for the corresponding type.
-  std::vector< std::string >::iterator it = mSpecContents.begin();
 
+  std::vector< std::string >::iterator it = mSpecContents.begin();
   while (it < mSpecContents.end())
     {
       determineType(*it);
       it++;
     }
-
-  //printInput();
 
   mModel->setQuantityUnit("mmol");
 
@@ -104,7 +78,7 @@ CModel *CSpec2Model::createModel()
   mModel->initializeMetabolites();
   mModel->compile();
 
-  int i;    // should that not be in CModel::compile ?
+  unsigned int i;    // should that not be in CModel::compile ?
   for (i = 0; i < mModel->getReactions().size(); i++)
     mModel->getReactions()[i]->compile(mModel->getCompartments());
 
@@ -132,18 +106,15 @@ void CSpec2Model::processCompartments()
       if (it->getType() == CSpecLine::CPT)
         {
           std::string comp_name = it->extractCpt();
-          //C_FLOAT64 comp_vol = atof(it->extractRight().c_str());
-          //CCompartment *compartment = new CCompartment(comp_name, comp_vol);
-          //mModel->getCompartments().add(compartment);
           mModel->addCompartment(comp_name, atof(it->extractRight().c_str()));
         }
     }
 
-  for (unsigned C_INT32 i = 0; i < mModel->getCompartments().size(); i++)
-    {
-      CCompartment *comp = mModel->getCompartments()[i];
-      std::cout << "Added compartment with name " << comp->getName() << " and volume = " << comp->getVolume() << std::endl;
-    }
+  //for (unsigned C_INT32 i = 0; i < mModel->getCompartments().size(); i++)
+  //  {
+  //    CCompartment *comp = mModel->getCompartments()[i];
+  //    std::cout << "Added compartment with name " << comp->getName() << " and volume = " << comp->getVolume() << std::endl;
+  //}
 }
 
 void CSpec2Model::processEQNs()
@@ -174,19 +145,19 @@ void CSpec2Model::processEQNs()
         }
     }
 
-  for (std::vector<CBaseEqn>::iterator itb = mDeVector.begin(); itb < mDeVector.end(); itb++)
-    {
-      std::cout << "Added DE " << itb->getMetabolite();
-      std::cout << " in compartment " << itb->getCompartment();
-      std::cout << " with RHS = " << itb->getContents() << std::endl;
-    }
+  //for (std::vector<CBaseEqn>::iterator itb = mDeVector.begin(); itb < mDeVector.end(); itb++)
+  //  {
+  //    std::cout << "Added DE " << itb->getMetabolite();
+  //    std::cout << " in compartment " << itb->getCompartment();
+  //    std::cout << " with RHS = " << itb->getContents() << std::endl;
+  //}
 
-  for (std::vector<CBaseEqn>::iterator itc = mMoietyVector.begin(); itc < mMoietyVector.end(); itc++)
-    {
-      std::cout << "Added EQN " << itc->getMetabolite();
-      std::cout << " in compartment " << itc->getCompartment();
-      std::cout << " with RHS = " << itc->getContents() << std::endl;
-    }
+  //for (std::vector<CBaseEqn>::iterator itc = mMoietyVector.begin(); itc < mMoietyVector.end(); itc++)
+  //  {
+  //    std::cout << "Added EQN " << itc->getMetabolite();
+  //    std::cout << " in compartment " << itc->getCompartment();
+  //    std::cout << " with RHS = " << itc->getContents() << std::endl;
+  //}
 }
 
 void CSpec2Model::processInits()
@@ -204,15 +175,9 @@ void CSpec2Model::processInits()
           CBaseEqn tmp(comp_name, metab_name, "");
           std::vector<CBaseEqn>::iterator vit = std::find(mDeVector.begin(), mDeVector.end(), tmp);
 
-          if (vit != mDeVector.end())
+          if (vit != mDeVector.end())  // this _does_ correspond to a metabolite.
             {
-              // this _does_ correspond to a metabolite.
-              //CMetab metab;
-              //metab.setName(metab_name);
-              //metab.setStatus(METAB_VARIABLE);
               C_FLOAT64 iconc = atof(contents.c_str());
-              //metab.setInitialConcentration(iconc);
-              //mModel->getCompartments()[comp_name]->addMetabolite(metab);
               mModel->addMetabolite(comp_name, metab_name, iconc, CMetab::METAB_VARIABLE);
             }
           else
@@ -222,19 +187,17 @@ void CSpec2Model::processInits()
         }
     }
 
-  unsigned C_INT32 i = 0, j = 0;
-
-  for (i = 0; i < mModel->getCompartments().size(); i++)
-    {
-      CCompartment comp = *mModel->getCompartments()[i];
-      std::cout << "In compartment " << comp.getName() << ":\n";
-
-      for (j = 0; j < comp.metabolites().size(); j++)
-        {
-          CMetab metab = *comp.metabolites()[j];
-          std::cout << "Metabolite " << metab.getName() << " with initial concentration " << metab.getInitialConcentration() << std::endl;
-        }
-    }
+  //unsigned C_INT32 i = 0, j = 0;
+  //for (i = 0; i < mModel->getCompartments().size(); i++)
+  //  {
+  //    CCompartment comp = *mModel->getCompartments()[i];
+  //    std::cout << "In compartment " << comp.getName() << ":\n";
+  //    for (j = 0; j < comp.metabolites().size(); j++)
+  //      {
+  //        CMetab metab = *comp.metabolites()[j];
+  //        std::cout << "Metabolite " << metab.getName() << " with initial concentration " << metab.getInitialConcentration() << std::endl;
+  //}
+  //}
 }
 
 void CSpec2Model::processConstants()
@@ -250,7 +213,7 @@ void CSpec2Model::processConstants()
           std::string const_name = it->extractLeft();
           C_FLOAT64 val = atof(it->extractRight().c_str());
           mConstVector.push_back(CNameVal(const_name, val));
-          std::cout << "Added constant " << const_name << " with value " << val << std::endl;
+          //std::cout << "Added constant " << const_name << " with value " << val << std::endl;
 
           //             CMetab *metab = new CMetab(metab_name);
           //             metab->setStatus(CMetab::METAB_FIXED);
@@ -276,7 +239,7 @@ void CSpec2Model::processRates()
           std::string rate_name = it->extractLeft();
           C_FLOAT64 val = atof(it->extractRight().c_str());
           mRateVector.push_back(CNameVal(rate_name, val));
-          std::cout << "Added rate constant " << rate_name << " with value " << val << std::endl;
+          //std::cout << "Added rate constant " << rate_name << " with value " << val << std::endl;
         }
     }
 }
@@ -305,7 +268,6 @@ void CSpec2Model::processDeTerms()
   C_FLOAT64 num_change = 0; // The multiplicative factor
   C_INT32 multiplicity = 0;
   CTempReactionSet trs;
-  //    CTempReaction *reaction = 0;
   CTempMetab *tmp_metab = 0;
 
   std::vector<CBaseEqn>::iterator it = mDeVector.begin();
@@ -332,10 +294,7 @@ void CSpec2Model::processDeTerms()
           if (reaction == 0)
             {
               std::cout << "new reaction" << std::endl;
-              //std::string rate = expandRate(*termit);
               reaction = new CTempReaction(*termit);
-              //reaction->setDescription(rate);
-              //reaction->setIdentifiers(*termit);
               trs.addReaction(reaction);
               reaction = trs.findReaction(rate_constant);
 
@@ -368,7 +327,7 @@ void CSpec2Model::processDeTerms()
     }
 
   // Now create proper CReaction's from each of the CTempReact's
-  mModel->initializeMetabolites(); //necessary?
+  mModel->initializeMetabolites(); // really necessary?
 
   for (C_INT32 i = 0; i < trs.size(); i++)
     {
@@ -489,9 +448,6 @@ void CSpec2Model::processMoieties()
                                            contents));
 
           metab.setName(moiety_name);
-          //metab.setStatus(CMetab::METAB_DEPENDENT);
-          // :TODO: metab.setInitialConcentration(iconc);
-          //mModel->getCompartments()[compartment_name]->addMetabolite(metab);
           mModel->addMetabolite(compartment_name, moiety_name, 0, CMetab::METAB_DEPENDENT);
           std::cout << "Added moiety " << moiety_name
           << ", " << compartment_name
@@ -590,62 +546,3 @@ std::string CSpec2Model::expandRate(CDeTerm *term)
   // XXX At the moment, we just assume that there are no functions to expand
   return term->getDescription();
 }
-
-// CReaction *CSpec2Model::findReaction(string search_name)
-// {
-//     CCopasiVectorS<CReaction> &reacts = mModel->getReactions();
-//     for (unsigned C_INT32 i = 0; i < reacts.size(); i++)
-//     {
-//         if (reacts[i]->getName() == search_name)
-//         {
-//             return reacts[i];
-//}
-//}
-//     return 0;
-//}
-
-// void CSpec2Model::addMetabolite(CReaction *react, CMetab *metab)
-// {
-//     // Add a metabolite to the reaction.
-//     // Only add it if it hasn't already been added.
-//}
-C_INT32 CSpec2Model::parseLine(std::string) {return 0;}
-
-#ifdef TEST
-
-#include "../utilities/CGlobals.h"
-
-CGlobals *Copasi = new std::CGlobals;
-
-ofstream DebugFile("junk");
-
-int main(int argc, char**argv)
-{
-  std::string filename = "exampleinput";
-
-  if (argc == 2)
-    {
-      std::cout << "Assigning " << argv[1] << " to input file name\n";
-      filename = argv[1];
-    }
-  else
-    {
-      std::cout << "Using default input file exampleinput\n";
-    }
-
-  try
-    {
-      CSpec2Model specreader(filename);
-      CModel *model;
-      // create a model
-      model = specreader.createModel();
-      // Test that we read the input file correctly
-      specreader.printInput();
-    }
-  catch (CCopasiException Exception)
-    {
-      std::cout << Exception.getMessage().getText() << std::endl;
-    }
-}
-
-#endif //TEST

@@ -317,7 +317,7 @@ void CTempReaction::compile(CModel *model,
   std::cout << chemeqdesc << std::endl;
 
   // Create the reaction
-  CReaction *reaction = new CReaction(mName);
+  CReaction *reaction = new CReaction("reaction_" + mName);
 
   // Set the chemical equation description in the reaction. This
   // automatically parses the description, extracts the metabolites
@@ -326,7 +326,7 @@ void CTempReaction::compile(CModel *model,
 
   // Set up the kinetic function, and add it to the database
   CKinFunction *fun = new CKinFunction();
-  fun->setName(mName);
+  fun->setName("function_" + mName);
   fun->setDescription(mRateDescription);
 
   // Parse the identifiers to specify the function parameters and the
@@ -378,9 +378,10 @@ void CTempReaction::compile(CModel *model,
     }
 
   fun->compile();
-  Copasi->FunctionDB.loadedFunctions().add(*fun);
+  // it is important to call add(fun) instead of add(*fun). Otherwise type information of the polymorphic object would be lost.
+  Copasi->FunctionDB.loadedFunctions().add(fun);
   // Associate this kinetic function with the reaction
-  reaction->setFunction(mName);
+  reaction->setFunction("function_" + mName);
   // Finally, add the reaction to the model
   model->getReactions().add(reaction);
 }
