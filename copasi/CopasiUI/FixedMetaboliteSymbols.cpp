@@ -33,7 +33,7 @@
  *  for more information about these flags.
  */
 FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
   table = new MyTable(0, 5, this, "tblFixedMetaboliteSymbols");

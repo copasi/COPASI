@@ -32,7 +32,7 @@
  *  for more information about these flags.
  */
 CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
   table = new MyTable(0, 5, this, "tblComapartmentSymbols");

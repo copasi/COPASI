@@ -35,7 +35,7 @@
  *  for more information about these flags.
  */
 DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   textBrowser = new QTextBrowser (this, "Text Browser");
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);

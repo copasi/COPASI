@@ -34,7 +34,7 @@
  *  for more information about these flags.
  */
 FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+    : CopasiWidget(parent, name, f)
 {
   mModel = NULL;
   table = new MyTable(0, 3, this, "tblFunctionSymbols");

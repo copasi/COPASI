@@ -13,10 +13,10 @@
 
 #include "MyTable.h"
 #include "copasi.h"
-
+#include "copasiwidget.h"
 class CMathModel;
 
-class MetaboliteSymbols : public QWidget
+class MetaboliteSymbols : public CopasiWidget
   {
     Q_OBJECT
 

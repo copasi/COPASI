@@ -11,10 +11,10 @@
 #include <qtextbrowser.h>
 
 #include "copasi.h"
-
+#include "copasiwidget.h"
 class CMathModel;
 
-class DifferentialEquations : public QWidget
+class DifferentialEquations : public CopasiWidget
   {
     Q_OBJECT
 
