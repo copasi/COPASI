@@ -30,92 +30,48 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
     : QWidget(parent, name, f)
 
 {
-  //This is to make the Main Frame of the page
-  //The Main layout used is the Vertical Layout
+  if (!name)
+    setName("MoietyWidget1");
+  resize(486, 375);
+  setCaption(trUtf8("MoietyWidget1"));
+  MoietyWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MoietyWidget1Layout");
 
-  QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame1 = new QFrame(this, "Frame1");
-  Frame1->setFrameShape(QFrame::Box);
-  Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Equation"));
 
-  //This Frame had to be added because of the border around the frame
-  //The grid Layout is used for this frame
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(1);
-  Frame3 = new QFrame(Frame1, "Frame3");
-  vboxLayout1->addWidget(Frame3);
-  QGridLayout *gridLayout = new QGridLayout(Frame3, 0);
+  MoietyWidget1Layout->addWidget(TextLabel1, 0, 0);
 
-  //All the other frames(rows) are embeded in it
-  Frame2 = new QFrame(Frame3, "Frame2");
-  gridLayout->addWidget(Frame2, 0, 0, 0);
-  QGridLayout *gridLayout1 = new QGridLayout(Frame2, 0);
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  LineEdit1->setEnabled(FALSE);
 
-  //Frame for Ist Row
-  Frame4a = new QFrame(Frame2, "Frame4a");
-  gridLayout1->addWidget(Frame4a, 0, 0, 0);
-  QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4a, 0);
-  hBoxLayout4a->addSpacing(15);
+  MoietyWidget1Layout->addWidget(LineEdit1, 0, 1);
 
-  TextLabel1 = new QLabel("Equation", Frame4a);
-  hBoxLayout4a->addWidget(TextLabel1);
-  hBoxLayout4a->addSpacing(83);
+  LineEdit2 = new QLineEdit(this, "LineEdit2");
+  LineEdit2->setEnabled(FALSE);
 
-  /*ListBox1= new QListBox(Frame4a, "ListBox1");
-    ListBox1->setFixedSize(100, 150);
-  ListBox1->setAutoScrollBar(true);
-  hBoxLayout4a->addWidget(ListBox1);
-  // ListBox1->setScrollBar(false);
-  ListBox1->setEnabled(false);*/
+  MoietyWidget1Layout->addWidget(LineEdit2, 1, 1);
 
-  LineEdit1 = new QLineEdit(" " , Frame4a);
-  LineEdit1->setGeometry(QRect(110, 330, 531, 261));
-  hBoxLayout4a->addWidget(LineEdit1);
-  LineEdit1->setEnabled(false);
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Total Particle Number"));
 
-  hBoxLayout4a->addSpacing(20);
+  MoietyWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  //Frame for 2nd Row
-  Frame4b = new QFrame(Frame2, "Frame4b");
-  gridLayout1->addWidget(Frame4b, 1, 0, 0);
-  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
-  hBoxLayout4b->addSpacing(15);
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8("Dependent Metabolite"));
 
-  TextLabel2 = new QLabel("Total Particle Number", Frame4b);
-  hBoxLayout4b->addWidget(TextLabel2);
-  hBoxLayout4b->addSpacing(25);
+  MoietyWidget1Layout->addWidget(TextLabel3, 2, 0);
 
-  LineEdit2 = new QLineEdit("", Frame4b);
-  hBoxLayout4b->addWidget(LineEdit2);
-  LineEdit2->setEnabled(false);
-  hBoxLayout4b->addSpacing(180);
+  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3->setEnabled(FALSE);
 
-  //Frame for 3rd Row
-  Frame4c = new QFrame(Frame2, "Frame4c");
-  gridLayout1->addWidget(Frame4c, 2, 0, 0);
-  QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
-  hBoxLayout4c->addSpacing(15);
-
-  TextLabel3 = new QLabel("Dependent Metabolite", Frame4c);
-  hBoxLayout4c->addWidget(TextLabel3);
-  hBoxLayout4c->addSpacing(25);
-
-  LineEdit3 = new QLineEdit("", Frame4c);
-  hBoxLayout4c->addWidget(LineEdit3);
-  LineEdit3->setEnabled(false);
-  hBoxLayout4c->addSpacing(180);
-
-  //This is the frame for the cancel and the commit buttons
-  Frame4d = new QFrame(Frame2, "Frame4d");
-  gridLayout1->addWidget(Frame4d, 7, 0, 0);
-  QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
-  hBoxLayout4d->addSpacing(15);
-
-  //connect(LineEdit3, SIGNAL(textChanged(const QString &)), (ListViews*)parent, SLOT(slotMetaboliteSelected(const QString &)));
-
+  MoietyWidget1Layout->addWidget(LineEdit3, 2, 1);
+  QSpacerItem* spacer = new QSpacerItem(430, 171, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(QString &)));
 }
+
+MoietyWidget1::~MoietyWidget1()
+{}
 
 /*This function is used to connect this class to the listviews
     class to basically choose the right widget to display   */

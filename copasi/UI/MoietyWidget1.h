@@ -1,73 +1,41 @@
 /****************************************************************************
- **  $ CopasiUI/MoietyWidget1.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Moiety Widget, i.e the Second level 
- ** of Moieties.
- *****************************************************************************/
+ ** Form interface generated from reading ui file '.\MoietyWidget1.ui'
+ **
+ ** Created: Tue Mar 4 01:38:30 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+#ifndef MOIETYWIDGET1_H
+#define MOIETYWIDGET1_H
 
-#ifndef MOIETY_WIDGET1_H
-#define MOIETY_WIDGET1_H
-
-#include <qsplitter.h>
 #include <qvariant.h>
-
+#include <qwidget.h>
 class QVBoxLayout;
-
 class QHBoxLayout;
-
 class QGridLayout;
-
-class QAction;
-
-class QActionGroup;
-
-class QToolBar;
-
-class QPopupMenu;
-
 class QLabel;
 class QLineEdit;
-#include <qlistbox.h>
-
-class QListBoxItem;
-
-class QPushButton;
-
-class QFrame;
-
 class CModel;
-
 class MoietyWidget1 : public QWidget
   {
     Q_OBJECT
 
-  protected:
-    QPushButton* cancelChanges;
-    QPushButton* commitChanges;
-    CModel *mModel;
-
   public:
-    MoietyWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
+    MoietyWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~MoietyWidget1();
+    CModel *mModel;
     void loadMoieties(CModel *model);
     void loadName(QString setValue);
     int isName(QString setValue);
     QString *Moiety1_Name;
 
     QLabel* TextLabel1;
+    QLineEdit* LineEdit1;
+    QLineEdit* LineEdit2;
     QLabel* TextLabel2;
     QLabel* TextLabel3;
-    QLineEdit* LineEdit1;
-    QListBox* ListBox1;
-    QLineEdit* LineEdit2;
     QLineEdit* LineEdit3;
-    QFrame* Frame1;
-    QFrame* Frame2;
-    QFrame* Frame3;
-    QFrame* Frame4a;
-    QFrame* Frame4b;
-    QFrame* Frame4c;
-    QFrame* Frame4d;
 
   protected slots:
     virtual void slotBtnCancelClicked();
@@ -75,6 +43,8 @@ class MoietyWidget1 : public QWidget
 
   signals:
     void signal_emitted(QString &);
+  protected:
+    QGridLayout* MoietyWidget1Layout;
   };
 
-#endif
+#endif // MOIETYWIDGET1_H
