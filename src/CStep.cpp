@@ -251,20 +251,20 @@ double CStep::GetFlux() {return mFlux;}
 
 short CStep::IsReversible() {return (mReversible == TRUE);}
 
-long CStep::SetName(const string & name) {mName = name;}
+void CStep::SetName(const string & name) {mName = name;}
 
-long CStep::SetChemEq(const string & chemEq) {mChemEq = chemEq;}
+void CStep::SetChemEq(const string & chemEq) {mChemEq = chemEq;}
 
-long CStep::SetFlux(double flux) {mFlux = flux;}
+void CStep::SetFlux(double flux) {mFlux = flux;}
 
-long CStep::SetReversible(short reversible) {mReversible = reversible;}
+void CStep::SetReversible(short reversible) {mReversible = reversible;}
 
-long CStep::SetFunction(const string & functionName)
+void CStep::SetFunction(const string & functionName)
 {
     mFunction = &Copasi.FunctionDB.FindFunction(functionName);
 }
 
-long CStep::InitIdentifiers()
+void CStep::InitIdentifiers()
 {
     mIdentifiers.clear();
     
@@ -274,11 +274,9 @@ long CStep::InitIdentifiers()
         for (long i = 0; i < mIdentifiers.size(); i++)
             mIdentifiers[i] = NULL;
     }
-
-    return 0;
 }
 
-long CStep::SetIdentifiers()
+void CStep::SetIdentifiers()
 {
     long i;
     
@@ -297,26 +295,18 @@ long CStep::SetIdentifiers()
     for (i = 0; i < mParameters.size(); i++)
         mIdentifiers[mFunction->FindIdentifier(mParameters[i].Identifier)] =
             &mParameters[i].Value;
-
-    return 0;
 }
 
-long CStep::CheckIdentifiers()
+void CStep::CheckIdentifiers()
 {
     for (long i = 0; i < mIdentifiers.size(); i++)
         if ( !mIdentifiers[i] ) FatalError();
-    
-    return 0;
 }
 
-long CStep::Compile(CCopasiVector < CMetab * > &metabolites)
+void CStep::Compile(CCopasiVector < CMetab * > &metabolites)
 {
-    long Fail = 0;
-    
-    if (Fail = InitIdentifiers()) return Fail;
-    if (Fail = SetIdentifiers()) return Fail;
-    if (Fail = CheckIdentifiers()) return Fail;
-    
-    return Fail;
+    InitIdentifiers();
+    SetIdentifiers();
+    CheckIdentifiers();
 }
 

@@ -11,7 +11,7 @@ short DefinedInsertAllowed(CNodeK src);
 CKinFunction::CKinFunction() 
 {
     mReversible = FALSE;
-    mNodes.SetInsertAllowed(DefinedInsertAllowed);
+    //    mNodes.SetInsertAllowed(DefinedInsertAllowed);
 }
 
 CKinFunction::CKinFunction(const string & name,
@@ -20,7 +20,7 @@ CKinFunction::CKinFunction(const string & name,
     mName = name;
     mDescription = description;
     mReversible = FALSE;
-    mNodes.SetInsertAllowed(DefinedInsertAllowed);
+    //    mNodes.SetInsertAllowed(DefinedInsertAllowed);
 }
 
 CKinFunction::~CKinFunction() {}
@@ -109,14 +109,14 @@ char CKinFunction::GetIdentifierType(const string & name)
     }
 }
 
-CKinFunction::SetName(const string & name) {mName = name;}
+void CKinFunction::SetName(const string & name) {mName = name;}
 
-CKinFunction::SetDescription(const string & description) 
+void CKinFunction::SetDescription(const string & description) 
 {mDescription = description;}
 
-CKinFunction::SetReversible(short reversible) {mReversible = reversible;}
+void CKinFunction::SetReversible(short reversible) {mReversible = reversible;}
 
-CKinFunction::SetIdentifierType(const string & name,
+void CKinFunction::SetIdentifierType(const string & name,
                                 char type)
 {
     long Index = 0;
@@ -124,8 +124,6 @@ CKinFunction::SetIdentifierType(const string & name,
     if ( Index = FindIdentifier(name) < 0 ) FatalError();
     for (long i = 0; i < mIdentifiers[Index].Nodes.size(); i++)
         mIdentifiers[Index].Nodes[i]->SetSubtype(type);
-    
-    return 0;    
 }
 
 short CKinFunction::IsReversible() {return mReversible;}
@@ -464,4 +462,4 @@ long CKinFunction::InitIdentifiers()
     }
 }
 
-short DefinedInsertAllowed(CNodeK src) {return TRUE;}
+// short CCopasiVector < CNodeK >::IsInsertAllowed(CNodeK src) {return TRUE;}

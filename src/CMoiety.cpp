@@ -16,7 +16,7 @@ CMoiety::~CMoiety()
 {
 }
 
-CMoiety::Add(double value,
+long CMoiety::Add(double value,
              CMetab & metabolite)
 {
     ELEMENT element;
@@ -26,7 +26,7 @@ CMoiety::Add(double value,
     mEquation.push_back(element);
 }
 
-CMoiety::Add(double value,
+long CMoiety::Add(double value,
              CMetab * metabolite)
 {
     ELEMENT element;
@@ -36,12 +36,12 @@ CMoiety::Add(double value,
     mEquation.push_back(element);
 }
 
-CMoiety::Delete()
+long CMoiety::Delete()
 {
     mEquation.clear();
 }
 
-CMoiety::Delete(const string & name)
+long CMoiety::Delete(const string & name)
 {
     int i;
 
@@ -53,19 +53,19 @@ CMoiety::Delete(const string & name)
     Delete(i);
 }
 
-CMoiety::Delete(long index)
+long CMoiety::Delete(long index)
 {
     mEquation.erase(&mEquation[index], &mEquation[index+1]);
 }
 
-CMoiety::Change(long index,
-                double value)
+long CMoiety::Change(long index,
+		     double value)
 {
     mEquation[index].Value = value;
 }
 
-CMoiety::Change(const string & name,
-                double value)
+long CMoiety::Change(const string & name,
+		     double value)
 {
     int i;
 

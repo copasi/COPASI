@@ -148,23 +148,23 @@ double CNodeK::GetConstant() {return mConstant;}
 
 long CNodeK::GetIndex() {return mIndex;}
 
-CNodeK::SetType(char type) {mType = type;}
+void CNodeK::SetType(char type) {mType = type;}
 
-CNodeK::SetSubtype(char subtype) {mSubtype = subtype;}
+void CNodeK::SetSubtype(char subtype) {mSubtype = subtype;}
 
-CNodeK::SetLeft(CNodeK & left) {mLeft = &left;}
+void CNodeK::SetLeft(CNodeK & left) {mLeft = &left;}
 
-CNodeK::SetLeft(CNodeK * pleft) {mLeft = pleft;}
+void CNodeK::SetLeft(CNodeK * pleft) {mLeft = pleft;}
 
-CNodeK::SetRight(CNodeK & right) {mRight = &right;}
+void CNodeK::SetRight(CNodeK & right) {mRight = &right;}
 
-CNodeK::SetRight(CNodeK * pright) {mRight = pright;}
+void CNodeK::SetRight(CNodeK * pright) {mRight = pright;}
 
-CNodeK::SetName(const string & name) {mName = name;}
+void CNodeK::SetName(const string & name) {mName = name;}
 
-CNodeK::SetConstant(double & constant) {mConstant = constant;}
+void CNodeK::SetConstant(double & constant) {mConstant = constant;}
 
-CNodeK::SetIndex(long index) {mIndex = index;}
+void CNodeK::SetIndex(long index) {mIndex = index;}
 
 short CNodeK::IsLeftValid() {return (short) mLeft;}
 

@@ -15,8 +15,8 @@
 #include "CWriteConfig.h"
 #include "CCompartment.h"
 #include "CDatum.h"
-#include "CMetab.h"
 #include "CCopasiVector.h"
+#include "CMetab.h"
 #include "CNodeK.h"
 #include "CKinFunction.h"
 #include "CStep.h"
@@ -32,10 +32,8 @@ long  TestMessage(void);
 long  TestReadSample(void);
 long  TestMoiety(void);
 long  TestKinFunction(void);
-CCopasiVector < CMetab * > 
+vector < CMetab * >
       InitMetabolites(CCopasiVector < CCompartment > & compartment);
-short CMetabInsertAllowed(CMetab *);
-
 
 long main(void)
 {
@@ -277,26 +275,26 @@ long TestReadSample(void)
                       CReadConfig::LOOP);
     
     Compartments.Load(inbuf, size);
-    
+
     if (inbuf.GetVersion() < "4")
     {
-        CCopasiVector< CMetabOld > Metabolites;
+        CMetabolitesOld OldMetabolites;
 
         inbuf.GetVariable("TotalMetabolites", "long", &size,
                           CReadConfig::LOOP);
-        Metabolites.Load(inbuf, size);
+        OldMetabolites.Load(inbuf, size);
         
         CMetab Metabolite;
         for (long i = 0; i < size; i++)
         {
-            Metabolite = Metabolites[i];
+            Metabolite = OldMetabolites[i];
             
-            Compartments[Metabolites[i].GetIndex()].
+            Compartments[OldMetabolites[i].GetIndex()].
                 AddMetabolite(Metabolite);
         }
     }
 
-    CCopasiVector < CMetab * > Metabolites = InitMetabolites(Compartments);
+    vector < CMetab * > Metabolites = InitMetabolites(Compartments);
     CCopasiVector < CKinFunction > Functions;
     inbuf.GetVariable("TotalUDKinetics", "long", &size,
                       CReadConfig::LOOP);
@@ -400,18 +398,14 @@ long TestKinFunction()
     return 0;
 }
 
-CCopasiVector < CMetab * > 
+vector < CMetab * > 
     InitMetabolites(CCopasiVector < CCompartment > & compartments)
 {
-    CCopasiVector < CMetab * > Metabolites;
-    
-    Metabolites.SetInsertAllowed(CMetabInsertAllowed);
+    vector < CMetab * > Metabolites;
 
     for (long i = 0; i < compartments.Size(); i++)
         for (long j = 0; j < compartments[i].GetMetabolites().Size(); j++)
-            Metabolites.Add(&compartments[i].GetMetabolites()[j]);
+            Metabolites.push_back(&compartments[i].GetMetabolites()[j]);
     
     return Metabolites;
 }
-
-short CMetabInsertAllowed(CMetab *) {return TRUE;}
