@@ -56,10 +56,17 @@ C_FLOAT64 CGeneModifier::getn(void)
 {
   return mn;
 }
-void CGeneModifier::cleanup() {}
+
+void CGeneModifier::cleanup()
+{}
 
 CGene::CGene()
-{}
+{
+  mInDegree = 0;
+  mOutDegree = 0;
+  mRate = 1.0;
+  mDegradationRate = 1.0;
+}
 
 CGene::~CGene()
 {}
@@ -109,6 +116,10 @@ void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
   CGeneModifier *temp;
   temp = new CGeneModifier(modf, type, K, n);
   mModifier.add(temp);
+  // increment the in-degree of this gene
+  addInDegree();
+  // and the out-degree of the modifier's
+  modf->addOutDegree();
 }
 
 C_INT32 CGene::getModifierType(C_INT32 n)
@@ -149,4 +160,29 @@ C_INT32 CGene::getPositiveModifiers(void)
     if (mModifier[i]->getType() == 1)
       n++;
   return n;
+}
+
+C_INT32 CGene::getInDegree()
+{
+  return mInDegree;
+}
+
+void CGene::addInDegree()
+{
+  mInDegree++;
+}
+
+C_INT32 CGene::getOutDegree()
+{
+  return mOutDegree;
+}
+
+void CGene::addOutDegree()
+{
+  mOutDegree++;
+}
+
+C_INT32 CGene::getTotalDegree()
+{
+  return mOutDegree + mInDegree;
 }

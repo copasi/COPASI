@@ -106,6 +106,16 @@ class CGene
     C_FLOAT64 mDegradationRate;
 
     /**
+     *  number of incoming links to this gene
+     */
+    C_INT32 mInDegree;
+
+    /**
+     *  number of outgoing links from this gene
+     */
+    C_INT32 mOutDegree;
+
+    /**
      *  List of other genes that modify transcription of this one
      *  @supplierCardinality 0..*
      *  @associates <{CGene*}>
@@ -192,9 +202,37 @@ class CGene
 
     /**
      *  Retrieve the number of positive modifiers
-    *  @return C_INT32 the number of negative modifiers
+     *  @return C_INT32 the number of negative modifiers
      */
     C_INT32 getPositiveModifiers(void);
+
+    /**
+     *  Retrieve the number incoming links to this gene
+     *  @return C_INT32 the in-degree
+     */
+    C_INT32 getInDegree();
+
+    /**
+     *  Increment the in-degree of this gene
+     */
+    void addInDegree();
+
+    /**
+     *  Retrieve the number outgoing links from this gene
+     *  @return C_INT32 the out-degree
+     */
+    C_INT32 getOutDegree();
+
+    /**
+     *  Increment the out-degree of this gene
+     */
+    void addOutDegree();
+
+    /**
+     *  Retrieve the total number of links (incoming and outgoing) of this gene
+     *  @return C_INT32 the total degree
+     */
+    C_INT32 getTotalDegree();
 
     /**
      *  cleanup()
