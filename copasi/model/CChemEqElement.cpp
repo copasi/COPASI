@@ -47,6 +47,21 @@ const CMetab & CChemEqElement::getMetabolite() const
     return *mpMetabolite;
   }
 
+void CChemEqElement::setMetaboliteName(const std::string & metaboliteName)
+{mMetaboliteName = metaboliteName;}
+
+const std::string & CChemEqElement::getMetaboliteName() const
+  {return mMetaboliteName;}
+
+void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
+{mMultiplicity = multiplicity;}
+
+void CChemEqElement::addToMultiplicity(const C_FLOAT64 multiplicity = 1.0)
+{mMultiplicity += multiplicity;}
+
+C_FLOAT64 CChemEqElement::getMultiplicity() const
+  {return mMultiplicity;}
+
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {
   unsigned C_INT32 i, imax = compartments.size();

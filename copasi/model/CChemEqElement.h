@@ -68,22 +68,19 @@ class CChemEqElement : public CCopasiContainer
      *  Set the multiplicity of the element.
      *  @param "const C_FLOAT64" multiplicity
      */
-    void setMultiplicity(const C_FLOAT64 multiplicity)
-    {mMultiplicity = multiplicity;}
+    void setMultiplicity(const C_FLOAT64 multiplicity);
 
     /**
      *  Add to the multiplicity of the element.
      *  @param "const C_FLOAT64" multiplicity (default = 1.0)
      */
-    void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0)
-    {mMultiplicity += multiplicity;}
+    void addToMultiplicity(const C_FLOAT64 multiplicity = 1.0);
 
     /**
      *  Retrieves the multiplicity of the element.
      *  @return C_FLOAT64 multiplicity
      */
-    C_FLOAT64 getMultiplicity() const
-      {return mMultiplicity;}
+    C_FLOAT64 getMultiplicity() const;
 
     /**
      *  Set the metabolite of the element.
@@ -101,15 +98,13 @@ class CChemEqElement : public CCopasiContainer
      *  Set the metabolite name.
      *  @param "const string &" name
      */
-    void setMetaboliteName(const std::string & metaboliteName)
-    {mMetaboliteName = metaboliteName;}
+    void setMetaboliteName(const std::string & metaboliteName);
 
     /**
      *  Retrieves the metabolite name.
      *  @return "const string &" name
      */
-    const std::string & getMetaboliteName() const
-      {return mMetaboliteName;}
+    const std::string & getMetaboliteName() const;
 
     /**
      *  compile() tries to set the pointer to the metabolite from the name
