@@ -10,6 +10,7 @@ libtrajectory_a_SOURCES = \
 	CStochDirectMethod.cpp \
 	CStochNextReactionMethod.cpp
 
+
 EXTRA_DIST = \
 	trajectory.h \
 	CTrajectory.h	CTrajectory.cpp \

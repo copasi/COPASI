@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.13 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -233,56 +233,38 @@ qt_libraries = @qt_libraries@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
-noinst_LIBRARIES = libtrajectory.a
+noinst_LIBRARIES = libscan.a
 
-libtrajectory_a_SOURCES = \
-	CTrajectoryTask.cpp \
-	CTrajectoryProblem.cpp \
-	CTrajectoryMethod.cpp \
-	CLsodaMethod.cpp \
-	CStochMethod.cpp \
-	CStochDirectMethod.cpp \
-	CStochNextReactionMethod.cpp
+libscan_a_SOURCES = \
+	CScanMethod.cpp \
+	CScanProblem.cpp 
 
 
 EXTRA_DIST = \
-	trajectory.h \
-	CTrajectory.h	CTrajectory.cpp \
-	CStochSolver.h	CStochSolver.cpp \
-	CTrajectoryTask.h	CTrajectoryTask.cpp \
-	CTrajectoryProblem.h	CTrajectoryProblem.cpp \
-	CTrajectoryMethod.h	CTrajectoryMethod.cpp \
-	CLsodaMethod.h	CLsodaMethod.cpp \
-	CStochMethod.h CStochMethod.cpp \
-	CStochDirectMethod.h CStochDirectMethod.cpp \
-	CStochNextReactionMethod.h CStochNextReactionMethod.cpp
+	CScanMethod.h	CScanMethod.cpp \
+	CScanProblem.h	CScanProblem.cpp \
+	CScanTask.h
 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
-subdir = copasi/trajectory
+subdir = copasi/scan
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 
-libtrajectory_a_AR = $(AR) cru
-libtrajectory_a_LIBADD =
-am_libtrajectory_a_OBJECTS = CTrajectoryTask.$(OBJEXT) \
-	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
-	CLsodaMethod.$(OBJEXT) CStochMethod.$(OBJEXT) \
-	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT)
-#>- libtrajectory_a_OBJECTS = $(am_libtrajectory_a_OBJECTS)
-#>+ 7
-libtrajectory_a_final_OBJECTS = libtrajectory_a.all_cpp.o 
-libtrajectory_a_nofinal_OBJECTS = CTrajectoryTask.$(OBJEXT) \
-	CTrajectoryProblem.$(OBJEXT) CTrajectoryMethod.$(OBJEXT) \
-	CLsodaMethod.$(OBJEXT) CStochMethod.$(OBJEXT) \
-	CStochDirectMethod.$(OBJEXT) CStochNextReactionMethod.$(OBJEXT)
-@KDE_USE_FINAL_FALSE@libtrajectory_a_OBJECTS = $(libtrajectory_a_nofinal_OBJECTS)
-@KDE_USE_FINAL_TRUE@libtrajectory_a_OBJECTS = $(libtrajectory_a_final_OBJECTS)
+libscan_a_AR = $(AR) cru
+libscan_a_LIBADD =
+am_libscan_a_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT)
+#>- libscan_a_OBJECTS = $(am_libscan_a_OBJECTS)
+#>+ 4
+libscan_a_final_OBJECTS = libscan_a.all_cpp.o 
+libscan_a_nofinal_OBJECTS = CScanMethod.$(OBJEXT) CScanProblem.$(OBJEXT)
+@KDE_USE_FINAL_FALSE@libscan_a_OBJECTS = $(libscan_a_nofinal_OBJECTS)
+@KDE_USE_FINAL_TRUE@libscan_a_OBJECTS = $(libscan_a_final_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -290,13 +272,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CLsodaMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CStochDirectMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CStochMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CStochNextReactionMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryMethod.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryProblem.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CTrajectoryTask.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CScanMethod.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CScanProblem.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -316,9 +293,9 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(KDE_CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(libtrajectory_a_SOURCES)
+DIST_SOURCES = $(libscan_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libtrajectory_a_SOURCES)
+SOURCES = $(libscan_a_SOURCES)
 
 #>- all: all-am
 #>+ 1
@@ -337,11 +314,11 @@ distclean-libtool:
 	-rm -f libtool
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 #>- 	cd $(top_srcdir) && \
-#>- $(AUTOMAKE) --gnu  copasi/trajectory/Makefile
+#>- $(AUTOMAKE) --gnu  copasi/scan/Makefile
 #>+ 3
 	cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/trajectory/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/trajectory/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/scan/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/scan/Makefile.in
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	CONFIG_HEADERS= CONFIG_LINKS= \
@@ -351,10 +328,10 @@ AR = ar
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libtrajectory.a: $(libtrajectory_a_OBJECTS) $(libtrajectory_a_DEPENDENCIES) 
-	-rm -f libtrajectory.a
-	$(libtrajectory_a_AR) libtrajectory.a $(libtrajectory_a_OBJECTS) $(libtrajectory_a_LIBADD)
-	$(RANLIB) libtrajectory.a
+libscan.a: $(libscan_a_OBJECTS) $(libscan_a_DEPENDENCIES) 
+	-rm -f libscan.a
+	$(libscan_a_AR) libscan.a $(libscan_a_OBJECTS) $(libscan_a_LIBADD)
+	$(RANLIB) libscan.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -362,13 +339,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CLsodaMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochDirectMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CStochNextReactionMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryMethod.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryProblem.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CTrajectoryTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanMethod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CScanProblem.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -427,7 +399,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=trajectory.dsp libtrajectory.a CScanMethod.h CScanTask.h CScanProblem.h CScanMethod.cpp CScanProblem.cpp 
+KDE_DIST=libscan.a 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -551,38 +523,38 @@ apidox: apidox-am
 #>+ 6
 force-reedit:
 		cd $(top_srcdir) && \
-	$(AUTOMAKE) --gnu  copasi/trajectory/Makefile
-	cd $(top_srcdir) && perl admin/am_edit copasi/trajectory/Makefile.in
+	$(AUTOMAKE) --gnu  copasi/scan/Makefile
+	cd $(top_srcdir) && perl admin/am_edit copasi/scan/Makefile.in
 
 
 #>+ 11
-libtrajectory_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CTrajectoryTask.cpp $(srcdir)/CTrajectoryProblem.cpp $(srcdir)/CTrajectoryMethod.cpp $(srcdir)/CLsodaMethod.cpp $(srcdir)/CStochMethod.cpp $(srcdir)/CStochDirectMethod.cpp $(srcdir)/CStochNextReactionMethod.cpp
-	@echo 'creating libtrajectory_a.all_cpp.cpp ...'; \
-	rm -f libtrajectory_a.all_cpp.files libtrajectory_a.all_cpp.final; \
-	echo "#define KDE_USE_FINAL 1" >> libtrajectory_a.all_cpp.final; \
-	for file in CTrajectoryTask.cpp CTrajectoryProblem.cpp CTrajectoryMethod.cpp CLsodaMethod.cpp CStochMethod.cpp CStochDirectMethod.cpp CStochNextReactionMethod.cpp ; do \
-	  echo "#include \"$$file\"" >> libtrajectory_a.all_cpp.files; \
-	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libtrajectory_a.all_cpp.final; \
+libscan_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CScanMethod.cpp $(srcdir)/CScanProblem.cpp
+	@echo 'creating libscan_a.all_cpp.cpp ...'; \
+	rm -f libscan_a.all_cpp.files libscan_a.all_cpp.final; \
+	echo "#define KDE_USE_FINAL 1" >> libscan_a.all_cpp.final; \
+	for file in CScanMethod.cpp CScanProblem.cpp ; do \
+	  echo "#include \"$$file\"" >> libscan_a.all_cpp.files; \
+	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libscan_a.all_cpp.final; \
 	done; \
-	cat libtrajectory_a.all_cpp.final libtrajectory_a.all_cpp.files > libtrajectory_a.all_cpp.cpp; \
-	rm -f libtrajectory_a.all_cpp.final libtrajectory_a.all_cpp.files
+	cat libscan_a.all_cpp.final libscan_a.all_cpp.files > libscan_a.all_cpp.cpp; \
+	rm -f libscan_a.all_cpp.final libscan_a.all_cpp.files
 
 #>+ 3
 clean-final:
-	-rm -f libtrajectory_a.all_cpp.cpp
+	-rm -f libscan_a.all_cpp.cpp
 
 #>+ 2
 final:
-	$(MAKE) libtrajectory_a_OBJECTS="$(libtrajectory_a_final_OBJECTS)" all-am
+	$(MAKE) libscan_a_OBJECTS="$(libscan_a_final_OBJECTS)" all-am
 #>+ 2
 final-install:
-	$(MAKE) libtrajectory_a_OBJECTS="$(libtrajectory_a_final_OBJECTS)" install-am
+	$(MAKE) libscan_a_OBJECTS="$(libscan_a_final_OBJECTS)" install-am
 #>+ 2
 no-final:
-	$(MAKE) libtrajectory_a_OBJECTS="$(libtrajectory_a_nofinal_OBJECTS)" all-am
+	$(MAKE) libscan_a_OBJECTS="$(libscan_a_nofinal_OBJECTS)" all-am
 #>+ 2
 no-final-install:
-	$(MAKE) libtrajectory_a_OBJECTS="$(libtrajectory_a_nofinal_OBJECTS)" install-am
+	$(MAKE) libscan_a_OBJECTS="$(libscan_a_nofinal_OBJECTS)" install-am
 #>+ 3
 cvs-clean:
 	$(MAKE) admindir=$(top_srcdir)/admin -f $(top_srcdir)/admin/Makefile.common cvs-clean
