@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 14:10:27 $
+   $Date: 2005/02/16 14:33:47 $
    End CVS Header */
 
 #include <iostream>
@@ -291,7 +291,6 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
   if (id == this->currentFolderId) return;
   if (id == -1)
     {
-      this->currentFolderId = -1;
       this->setEnabled(false);
       unsigned int counter;
       unsigned int maxCount = this->sliderMap[this->currentFolderId].size();
@@ -301,6 +300,7 @@ void SliderDialog::setCurrentFolderId(C_INT32 id)
           s->setHidden(true);
           this->sliderBox->layout()->remove(s);
         }
+      this->currentFolderId = -1;
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(this->sliderBox->children()->count() - 2, this->mpDeactivatedLabel);
       this->mpDeactivatedLabel->setHidden(false);
     }
