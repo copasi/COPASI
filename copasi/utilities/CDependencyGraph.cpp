@@ -20,17 +20,21 @@ CDependencyGraphNode::~CDependencyGraphNode()
 void CDependencyGraphNode::addDependent(C_INT32 node_num)
 {
   // Ensure that the same node is not added twice
+  //  if (find(mDependents.begin(), mDependents.end(), node_num) == mDependents.end())
+  //    {
+  //      mDependents.push_back(node_num);
+  //    }
 
-  if (find(mDependents.begin(), mDependents.end(), node_num) == mDependents.end())
-    {
-      mDependents.push_back(node_num);
-    }
+  mDependents.insert(node_num);
 }
 
-const vector<C_INT32> & CDependencyGraphNode::getDependents()
-{
-  return mDependents;
-}
+//const vector<C_INT32> & CDependencyGraphNode::getDependents()
+
+const set
+  <C_INT32> & CDependencyGraphNode::getDependents()
+  {
+    return mDependents;
+  }
 
 // dependency graph
 CDependencyGraph::CDependencyGraph() {}
@@ -50,10 +54,11 @@ void CDependencyGraph::addDependent(C_INT32 node, C_INT32 dependent)
   mNodes[node].addDependent(dependent);
 }
 
-const vector<C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
-{
-  return mNodes[node].getDependents();
-}
+const set
+  <C_INT32> & CDependencyGraph::getDependents(C_INT32 node)
+  {
+    return mNodes[node].getDependents();
+  }
 
 #ifdef TEST_DEPENDENCY_GRAPH
 
@@ -88,12 +93,20 @@ int main(int argc, char **argv)
     {
       j = 0;
       cout << "Node: " << i << " Dependents: ";
-      vector<C_INT32> depvec = dg.getDependents(i);
+      //      vector<C_INT32> depvec = dg.getDependents(i);
 
-      while (j < depvec.size())
+      set
+        <C_INT32> depset = dg.getDependents(i);
+
+      //      while (j < depvec.size())
+      //        {
+      //          cout << depvec[j] << " ";
+      //          j++;
+      //        }
+      for (set
+           <C_INT32>::iterator iter = depset.begin(); iter != depset.end(); iter++)
         {
-          cout << depvec[j] << " ";
-          j++;
+          cout << *iter << " ";
         }
 
       cout << endl;

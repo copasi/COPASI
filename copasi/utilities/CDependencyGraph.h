@@ -2,7 +2,8 @@
 #define COPASI_CDependencyGraph
 
 #include <iostream>
-#include <vector> 
+#include <vector>
+#include <set> 
 /**
  * CDependencyGraphNode describes a node in the dependency graph.
  */
@@ -41,7 +42,9 @@ class CDependencyGraphNode
      * Return a vector of the dependents.
      * @return A vector of the dependents.
      */
-    const vector<C_INT32> &getDependents();
+
+    const set
+      <C_INT32> &getDependents();
 
     /**
      * insert operator
@@ -51,9 +54,9 @@ class CDependencyGraphNode
       unsigned int i;
 
       for (i = 0; i < d.mDependents.size(); i++)
-        os << d.mDependents[i] << "  " ;
+        // os << d.mDependents[i] << "  " ;
 
-      os << endl;
+        os << endl;
 
       return os;
     }
@@ -63,7 +66,9 @@ class CDependencyGraphNode
      * A vector containing the edges for this node. An edge is 
      * specified by the remote node to which it connects.
      */
-    vector<C_INT32> mDependents;
+
+    set
+      <C_INT32> mDependents;
   };
 
 /**
@@ -101,7 +106,9 @@ class CDependencyGraph
      * @param node The number of the node to access.
      * @return A vector of node numbers.
      */
-    const vector<C_INT32> &getDependents(C_INT32 node);
+
+    const set
+      <C_INT32> &getDependents(C_INT32 node);
 
   private:
     /**
