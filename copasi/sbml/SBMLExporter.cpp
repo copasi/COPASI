@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 12:36:49 $
+   $Date: 2004/06/15 12:57:47 $
    End CVS Header */
 
 #include "SBMLExporter.h"
@@ -54,7 +54,7 @@ bool SBMLExporter::exportSBML(const CModel* copasiModel, std::string sbmlFilenam
       /* write the document to a file */
       int returnValue = SBMLWriter_writeSBML(writer, sbmlDocument, sbmlFilename.c_str());
       SBMLWriter_free(writer);
-      if (returnValue == 0)
+      if (returnValue == 1)
         {
           return true;
         }
@@ -100,7 +100,7 @@ Model_t* SBMLExporter::createSBMLModelFromCModel(const CModel* copasiModel)
     {
       Model_setName(sbmlModel, copasiModel->getObjectName().c_str());
     }
-  if (copasiModel->getComments().size() != 0)
+  if ((copasiModel->getComments().size() != 0) && !(this->isEmptyString(copasiModel->getComments())))
     {
       SBase_setNotes((SBase_t*)sbmlModel, (SBMLExporter::HTML_HEADER + copasiModel->getComments() + SBMLExporter::HTML_FOOTER).c_str());
     }
@@ -685,4 +685,21 @@ ASTNode_t* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& v
       ASTNode_addChild(node, this->createTimesTree(vect, pos + 1));
     }
   return node;
+}
+
+/**
+ ** This method tests if a string only consists of whitespace characters
+ */
+bool SBMLExporter::isEmptyString(const std::string str)
+{
+  bool result = true;
+  for (unsigned int counter = 0; counter < str.size(); counter++)
+    {
+      if ((str[counter] != ' ') && (str[counter] != '\n') && (str[counter] != '\t') && (str[counter] != '\r'))
+        {
+          result = false;
+          break;
+        }
+    }
+  return result;
 }
