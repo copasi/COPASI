@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.7 2003/08/14 19:30:37 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.8 2003/08/14 21:29:41 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -49,15 +49,15 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   QPixmap image3((const char**) image3_data);
 
   if (!name)
-    setName("TableDefinition1");
-  TableDefinition1Layout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinition1Layout");
+    setName("TableDefinition");
+  TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
   bodyField = new QFrame(this, "bodyField");
   bodyField->setFrameShape(QFrame::HLine);
   bodyField->setFrameShadow(QFrame::Sunken);
   bodyField->setFrameShape(QFrame::HLine);
 
-  TableDefinition1Layout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
+  TableDefinitionLayout->addMultiCellWidget(bodyField, 2, 2, 0, 1);
 
   layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
@@ -67,7 +67,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   cancelButton = new QPushButton(this, "cancelButton");
   layout14->addWidget(cancelButton);
 
-  TableDefinition1Layout->addMultiCellLayout(layout14, 3, 3, 0, 1);
+  TableDefinitionLayout->addMultiCellLayout(layout14, 3, 3, 0, 1);
 
   layout7 = new QHBoxLayout(0, 0, 6, "layout7");
 
@@ -117,7 +117,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   //    itemsTable->setNumCols(0);
   layout7->addWidget(itemsTable);
 
-  TableDefinition1Layout->addMultiCellLayout(layout7, 1, 1, 0, 1);
+  TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
 
   frame4 = new QFrame(this, "frame4");
   frame4->setFrameShape(QFrame::Box);
@@ -138,10 +138,9 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   frame4Layout->addWidget(seperatorLabel, 2, 0);
 
   comboTask = new QComboBox(FALSE, frame4, "comboTask");
-  comboTask->insertItem ("Scan Task");
-  comboTask->insertItem ("Trajectory Task");
-  comboTask->insertItem ("SteadyState Task");
-  //  comboTask->setEnabled(false);
+  comboTask->insertItem("Scan Task");
+  comboTask->insertItem("Trajectory Task");
+  comboTask->insertItem("SteadyState Task");
 
   frame4Layout->addWidget(comboTask, 0, 1);
 
@@ -156,41 +155,47 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
 
   frame4Layout->addWidget(taskLabel, 0, 0);
 
-  TableDefinition1Layout->addWidget(frame4, 0, 1);
+  TableDefinitionLayout->addWidget(frame4, 0, 1);
 
   frame5 = new QFrame(this, "frame5");
   frame5->setFrameShape(QFrame::Box);
   frame5->setFrameShadow(QFrame::Sunken);
   frame5Layout = new QGridLayout(frame5, 1, 1, 11, 6, "frame5Layout");
 
-  layout5_2 = new QHBoxLayout(0, 0, 6, "layout5_2");
+  commentEdit = new QLineEdit(frame5, "commentEdit");
+  commentEdit->setFrameShape(QLineEdit::LineEditPanel);
+  commentEdit->setFrameShadow(QLineEdit::Sunken);
+  commentEdit->setLineWidth(2);
+
+  frame5Layout->addWidget(commentEdit, 1, 1);
+
+  commentLabel = new QLabel(frame5, "commentLabel");
+
+  frame5Layout->addWidget(commentLabel, 1, 0);
 
   targetLabel = new QLabel(frame5, "targetLabel");
-  layout5_2->addWidget(targetLabel);
 
-  targetEdit = new QLineEdit(frame5, "targetEdit");
-  targetEdit->setFrameShape(QLineEdit::LineEditPanel);
-  targetEdit->setFrameShadow(QLineEdit::Sunken);
-  layout5_2->addWidget(targetEdit);
+  frame5Layout->addWidget(targetLabel, 0, 0);
 
-  frame5Layout->addLayout(layout5_2, 0, 0);
+  nameEdit = new QLineEdit(frame5, "nameEdit");
+  nameEdit->setFrameShape(QLineEdit::LineEditPanel);
+  nameEdit->setFrameShadow(QLineEdit::Sunken);
+
+  frame5Layout->addWidget(nameEdit, 0, 1);
 
   titleChecked = new QCheckBox(frame5, "titleChecked");
 
-  frame5Layout->addWidget(titleChecked, 1, 0);
+  frame5Layout->addWidget(titleChecked, 2, 1);
 
-  appendChecked = new QCheckBox(frame5, "appendChecked");
-
-  frame5Layout->addWidget(appendChecked, 2, 0);
-
-  TableDefinition1Layout->addWidget(frame5, 0, 0);
+  TableDefinitionLayout->addWidget(frame5, 0, 0);
   languageChange();
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(targetEdit, titleChecked);
-  setTabOrder(titleChecked, appendChecked);
-  setTabOrder(appendChecked, seperatorEdit);
+  setTabOrder(nameEdit, commentEdit);
+  setTabOrder(commentEdit, titleChecked);
+  setTabOrder(titleChecked, comboTask);
+  setTabOrder(comboTask, seperatorEdit);
   setTabOrder(seperatorEdit, tabChecked);
   setTabOrder(tabChecked, addButton);
   setTabOrder(addButton, deleteButton);
@@ -200,9 +205,12 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
 
+  connect(nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(nameTextChanged(const QString&)));
+  connect(commentEdit, SIGNAL(textChanged(const QString&)), this, SLOT(commentTextChanged(const QString&)));
+  connect(seperatorEdit, SIGNAL(textChanged(const QString&)), this, SLOT(seperatorTextChanged(const QString&)));
+
   connect(tabChecked, SIGNAL(clicked()), this, SLOT(tabButtonClicked()));
   connect(titleChecked, SIGNAL(clicked()), this, SLOT(titleButtonClicked()));
-  connect(appendChecked, SIGNAL(clicked()), this, SLOT(appendButtonClicked()));
 
   connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
   connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
@@ -240,9 +248,9 @@ void TableDefinition1::languageChange()
   tabChecked->setText(tr("Tab"));
   seperatorLabel->setText(tr("Seperator"));
   taskLabel->setText(tr("Task"));
-  targetLabel->setText(tr("Target"));
+  commentLabel->setText(tr("Comment"));
+  targetLabel->setText(tr("ReportDefinition"));
   titleChecked->setText(tr("Title"));
-  appendChecked->setText(tr("Append"));
 }
 
 /*This function is to load the model for the table*/
@@ -302,19 +310,32 @@ void TableDefinition1::slotBtnConfirmClicked()
     pReportDefinition->setSeperator(std::string(seperatorEdit->text()));
 }
 
+void TableDefinition1::nameTextChanged(const QString &)
+{
+  bUpdated = true;
+}
+
+void TableDefinition1::commentTextChanged(const QString &)
+{
+  bUpdated = true;
+}
+
+void TableDefinition1::seperatorTextChanged(const QString &)
+{
+  bUpdated = true;
+}
+
 void TableDefinition1::tabButtonClicked()
 {
   bUpdated = true;
+  if (tabChecked->isChecked())
+    {
+      seperatorEdit->setText("");
+    }
   seperatorEdit->setEnabled(!tabChecked->isChecked());
 }
 
 void TableDefinition1::titleButtonClicked()
-{
-  //check for the connection int i =0;
-  bUpdated = true;
-}
-
-void TableDefinition1::appendButtonClicked()
 {
   //check for the connection int i =0;
   bUpdated = true;

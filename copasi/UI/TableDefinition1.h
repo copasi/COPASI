@@ -2,7 +2,7 @@
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.3 2003/08/14 19:16:35 lixu1 Exp $)
+($Id: TableDefinition1.h,v 1.4 2003/08/14 21:29:41 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -35,9 +35,11 @@ class TableDefinition1 : public CopasiWidget
   {
     Q_OBJECT
   protected slots:
+    virtual void nameTextChanged(const QString&);
+    virtual void commentTextChanged(const QString&);
+    virtual void seperatorTextChanged(const QString&);
     virtual void tabButtonClicked();
     virtual void titleButtonClicked();
-    virtual void appendButtonClicked();
 
     virtual void languageChange();
     virtual void slotBtnCancelClicked();
@@ -78,6 +80,7 @@ class TableDefinition1 : public CopasiWidget
     QPushButton* downButton;
     QPushButton* deleteButton;
     QPushButton* addButton;
+    //    QTable* itemsTable;
     QFrame* frame4;
     QCheckBox* tabChecked;
     QLineEdit* seperatorEdit;
@@ -86,20 +89,20 @@ class TableDefinition1 : public CopasiWidget
     QFrame* line4;
     QLabel* taskLabel;
     QFrame* frame5;
+    QLineEdit* commentEdit;
+    QLabel* commentLabel;
     QLabel* targetLabel;
-    QLineEdit* targetEdit;
+    QLineEdit* nameEdit;
     QCheckBox* titleChecked;
-    QCheckBox* appendChecked;
 
   protected:
-    QGridLayout* TableDefinition1Layout;
+    QGridLayout* TableDefinitionLayout;
     QHBoxLayout* layout14;
     QHBoxLayout* layout7;
     QVBoxLayout* layout6;
     QGridLayout* layout5;
     QGridLayout* frame4Layout;
     QGridLayout* frame5Layout;
-    QHBoxLayout* layout5_2;
 
     QWidget* pParent;
     bool bUpdated;
