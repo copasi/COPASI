@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 20:25:25 $
+   $Date: 2004/07/02 08:17:23 $
    End CVS Header */
 
 /*******************************************************************
@@ -137,13 +137,11 @@ bool DifferentialEquations::update(ListViews::ObjectType objectType,
   switch (objectType)
     {
     case ListViews::MODEL:
-    case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
     case ListViews::REACTION:
-      dataModel->scheduleMathModelUpdate();
-      if (isShown())
-        loadDifferentialEquations(dataModel->getMathModel());
+    case ListViews::FUNCTION:
+      loadDifferentialEquations(dataModel->getMathModel());
       break;
 
     default:

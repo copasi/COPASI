@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/30 16:04:39 $
+   $Date: 2004/07/02 08:18:32 $
    End CVS Header */
 
 /*******************************************************************
@@ -411,7 +411,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                     // Yes or Enter
+    case 0:                      // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -427,7 +427,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                     // No or Escape
+    case 1:                      // No or Escape
       break;
     }
 }
@@ -439,6 +439,8 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
     {
     case ListViews::STATE:
     case ListViews::MODEL:
+    case ListViews::METABOLITE:
+    case ListViews::COMPARTMENT:
       //TODO: check if it really is a compartment
       return loadFromMetabolite(dynamic_cast< CMetab * >(GlobalKeys.get(objKey)));
       break;
@@ -451,7 +453,6 @@ bool MetabolitesWidget1::update(ListViews::ObjectType objectType,
 
 bool MetabolitesWidget1::leave()
 {
-  //let the user confirm?
   return saveToMetabolite();
 }
 
@@ -459,7 +460,6 @@ bool MetabolitesWidget1::enter(const std::string & key)
 {
   objKey = key;
   CMetab* metab = dynamic_cast< CMetab * >(GlobalKeys.get(key));
-  //TODO: check if it really is a compartment
 
   if (metab) return loadFromMetabolite(metab);
   else return false;

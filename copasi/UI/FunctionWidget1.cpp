@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/06/23 17:46:45 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 08:17:24 $
    End CVS Header */
 
 /**********************************************************************
@@ -798,7 +798,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                     // Yes or Enter
+        case 0:                      // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -830,7 +830,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                     // No or Escape
+        case 1:                      // No or Escape
           break;
         }
     }
@@ -856,7 +856,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
   switch (objectType)
     {
     case ListViews::MODEL:
-      //TODO: check if it really is a compartment
+    case ListViews::FUNCTION:
       return loadFromFunction(dynamic_cast< CFunction * >(GlobalKeys.get(objKey)));
       break;
 

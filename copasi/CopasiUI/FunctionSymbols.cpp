@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 20:26:16 $
+   $Date: 2004/07/02 08:17:24 $
    End CVS Header */
 
 /*******************************************************************
@@ -183,13 +183,9 @@ bool FunctionSymbols::update(ListViews::ObjectType objectType,
   switch (objectType)
     {
     case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-    case ListViews::METABOLITE:
     case ListViews::REACTION:
-      dataModel->scheduleMathModelUpdate();
-      if (isShown())
-        loadFunctionSymbols(dataModel->getMathModel());
+    case ListViews::FUNCTION:
+      loadFunctionSymbols(dataModel->getMathModel());
       break;
 
     default:

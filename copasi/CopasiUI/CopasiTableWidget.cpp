@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/24 17:59:24 $
+   $Date: 2004/07/02 08:16:13 $
    End CVS Header */
 
 /*******************************************************************
@@ -363,18 +363,7 @@ bool CopasiTableWidget::update(ListViews::ObjectType objectType, ListViews::Acti
   //this avoids recursive calls
   if (mIgnoreUpdates) return true;
 
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::METABOLITE:
-    case ListViews::COMPARTMENT:
-      fillTable();
-      break;
-
-    default:
-      break;
-    }
+  fillTable();
   return true;
 }
 
@@ -386,7 +375,7 @@ bool CopasiTableWidget::leave()
 
 bool CopasiTableWidget::enter(const std::string & C_UNUSED(key))
 {
-  fillTable(); //TODO perhaps not necessary?
+  fillTable();
   return true;
 }
 

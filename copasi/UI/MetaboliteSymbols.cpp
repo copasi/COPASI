@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:51:47 $
+   $Date: 2004/07/02 08:17:45 $
    End CVS Header */
 
 /*******************************************************************
@@ -201,9 +201,7 @@ bool MetaboliteSymbols::update(ListViews::ObjectType objectType, ListViews::Acti
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
     case ListViews::REACTION:
-      dataModel->scheduleMathModelUpdate();
-      if (isShown())
-        loadMetaboliteSymbols(dataModel->getMathModel());
+      loadMetaboliteSymbols(dataModel->getMathModel());
       break;
 
     default:

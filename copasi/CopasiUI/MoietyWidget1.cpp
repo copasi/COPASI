@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/24 08:21:40 $
+   $Date: 2004/07/02 08:18:33 $
    End CVS Header */
 
 /*******************************************************************
@@ -80,51 +80,11 @@ MoietyWidget1::MoietyWidget1(QWidget *parent, const char * name, WFlags f)
   MoietyWidget1Layout->addMultiCell(spacer, 3, 3, 0, 1);
 
   // signals and slots connections
-  //connect(this, SIGNAL(signal_emitted(const QString &)), (ListViews*)parent, SLOT(slotMoietyTableChanged(const QString &)));
-  //connect(this, SIGNAL(leaf(CModel*)), (ListViews*)parent, SLOT(loadMoietiesNodes(CModel*)));
-  //connect(this, SIGNAL(updated()), (ListViews*)parent, SLOT(dataModelUpdated()));
 }
 
 MoietyWidget1::~MoietyWidget1()
 {}
 
-#ifdef XXXX 
-/*This function is used to connect this class to the listviews
-class to basically choose the right widget to display   */
-int MoietyWidget1::isName(QString setValue)
-{
-  if (mModel == NULL)
-    {
-      return 0;
-    }
-
-  //  const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
-  //  C_INT32 noOfMoietyRows = moieties.size();
-  //  CMoiety *moiety1;
-
-  //  moiety1 = moieties[(std::string) setValue];
-  //  if (moiety1 != NULL)
-  if (mModel->getMoieties().getIndex((std::string)setValue.utf8()) != C_INVALID_INDEX)
-    {
-      loadName(setValue);
-      return 1;
-    }
-  else
-    return 0;
-}
-#endif // XXXX
-
-/*This function is to load the model for the Moieties*/
-void MoietyWidget1::loadMoieties(CModel *model)
-{
-  if (model != NULL)
-    {
-      mModel = model;
-    }
-}
-
-/* This function loads the compartments widget when its name is
-  clicked in the tree   */
 bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
 {
   if (!moiety) return false;
@@ -138,76 +98,14 @@ bool MoietyWidget1::loadFromMoiety(const CMoiety * moiety)
   return true; //TODO really check
 }
 
-/* This function loads the moiety widget when its name is
-   clicked in the tree   */
-void MoietyWidget1::loadName(QString setValue)
-{
-  if (mModel == NULL)
-    {
-      return;
-    }
-
-  const CCopasiVectorN < CMoiety > &moieties = mModel->getMoieties();
-  CMoiety *moiety;
-  moiety = moieties[(std::string)setValue.utf8()];
-  textBrowser->setText(FROM_UTF8(moiety->getDescription(dataModel->getModel())));
-  //ListBox1->insertItem(moiety->getDescription().);
-
-  /*CCopasiVectorNS < CMetab > & Metabs = compartn->metabolites();
-  C_INT32 noOfMetabolitesRows = Metabs.size();
-  CMetab *mtb;
-  ListBox1->setFixedSize(100, 150);
-  ListBox1->setAutoScrollBar(true);
-  ListBox1->clear();
-
-  for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
-  {
-     mtb = Metabs[j];
-     ListBox1->insertItem(mtb->getObjectName().);
-  }*/
-
-  LineEdit3->setText(FROM_UTF8(moiety->getObjectName()));
-  Moiety1_Name = new QString(FROM_UTF8(moiety->getObjectName()));
-
-  LineEdit2->setText(QString::number(moiety->getNumber()));
-}
-
-void MoietyWidget1::slotBtnCancelClicked()
-{
-  //QMessageBox::information(this, "Moiety Widget","Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
-  emit signal_emitted(*Moiety1_Name);
-}
-
-void MoietyWidget1::slotBtnOKClicked()
-{
-  QMessageBox::information(this, "Moiety Widget", "Clicked Ok button On Moiety widget.(Inside MoietyWidget::slotBtnCancelClicked())");
-  // emit signal_emitted(*Compartment1_Name);
-}
-
 bool MoietyWidget1::update(ListViews::ObjectType objectType,
                            ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-      //TODO: check if it really is a compartment
-      return loadFromMoiety(dynamic_cast< CMoiety * >(GlobalKeys.get(objKey)));
-      break;
-    case ListViews::STATE:
-      break;
-    case ListViews::COMPARTMENT:
-      break;
-    case ListViews::METABOLITE:
-      break;
-    default:
-      break;
-    }
-  return true;
+  return loadFromMoiety(dynamic_cast< CMoiety * >(GlobalKeys.get(objKey)));
 }
 
 bool MoietyWidget1::leave()
 {
-  //let the user confirm?
   return true;
 }
 
@@ -220,5 +118,3 @@ bool MoietyWidget1::enter(const std::string & key)
   if (moiety) return loadFromMoiety(moiety);
   else return false;
 }
-
-///end of all the functions

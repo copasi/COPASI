@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/26 15:51:22 $
+   $Date: 2004/07/02 08:16:13 $
    End CVS Header */
 
 /*******************************************************************
@@ -204,10 +204,7 @@ bool CompartmentSymbols::update(ListViews::ObjectType objectType,
     case ListViews::STATE:
     case ListViews::COMPARTMENT:
     case ListViews::METABOLITE:
-    case ListViews::REACTION:
-      dataModel->scheduleMathModelUpdate();
-      if (isShown())
-        loadCompartmentSymbols(dataModel->getMathModel());
+      loadCompartmentSymbols(dataModel->getMathModel());
       break;
 
     default:

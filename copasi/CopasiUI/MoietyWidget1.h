@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget1.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:55 $
+   $Author: ssahle $ 
+   $Date: 2004/07/02 08:18:33 $
    End CVS Header */
 
 /****************************************************************************
@@ -38,18 +38,6 @@ class MoietyWidget1 : public CopasiWidget
   public:
     MoietyWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~MoietyWidget1();
-    CModel *mModel;
-    void loadMoieties(CModel *model);
-    void loadName(QString setValue);
-    int isName(QString setValue);
-    QString *Moiety1_Name;
-
-    QLabel* TextLabel1;
-    QLineEdit* LineEdit2;
-    QLabel* TextLabel2;
-    QLabel* TextLabel3;
-    QLineEdit* LineEdit3;
-    QTextBrowser* textBrowser;
 
     //By G
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -57,18 +45,19 @@ class MoietyWidget1 : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
-    virtual void slotBtnCancelClicked();
-    virtual void slotBtnOKClicked();
-
-  signals:
-    void signal_emitted(const QString &);
-    void leaf(CModel*);
-    void updated();
+    //virtual void slotBtnCancelClicked();
+    //virtual void slotBtnOKClicked();
 
   protected:
     QGridLayout* MoietyWidget1Layout;
+    QLabel* TextLabel1;
+    QLineEdit* LineEdit2;
+    QLabel* TextLabel2;
+    QLabel* TextLabel3;
+    QLineEdit* LineEdit3;
+    QTextBrowser* textBrowser;
 
-    bool loadFromMoiety(const CMoiety *); //By
+    bool loadFromMoiety(const CMoiety *);
     std::string objKey; //By G
   };
 
