@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.167 $
+   $Revision: 1.168 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:45 $
+   $Date: 2004/05/14 12:20:09 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1560,10 +1560,10 @@ void CModel::setTime(const C_FLOAT64 & time) {mTime = time;}
 
 const C_FLOAT64 & CModel::getTime() const {return mTime;}
 
-bool CModel::addMetabolite(const std::string & name,
-                           const std::string & compartment,
-                           const C_FLOAT64 & iconc,
-                           const CMetab::Status & status)
+CMetab* CModel::addMetabolite(const std::string & name,
+                              const std::string & compartment,
+                              const C_FLOAT64 & iconc,
+                              const CMetab::Status & status)
 {
   unsigned C_INT32 Index;
 
@@ -1573,10 +1573,10 @@ bool CModel::addMetabolite(const std::string & name,
   if (compartment == "")
     Index = 0;
   else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
-    return false;
+    return NULL;
 
   if (mCompartments[Index]->getMetabolites().getIndex(name) != C_INVALID_INDEX)
-    return false;
+    return NULL;
 
   CMetab * pMetab = new CMetab(name);
   // pMetab->setName(name);
@@ -1588,17 +1588,18 @@ bool CModel::addMetabolite(const std::string & name,
   if (!mCompartments[Index]->addMetabolite(pMetab))
     {
       delete pMetab;
-      return false;
+      return NULL;
     }
 
   pMetab->setStatus(status);
   pMetab->setInitialConcentration(iconc);
 
-  bool pReturn = mMetabolites.add(pMetab);
+  if (!mMetabolites.add(pMetab))
+    return NULL;
 
   compile();
 
-  return pReturn;
+  return pMetab;
 }
 
 std::vector<std::string> CModel::removeCompReacKeys(const std::string & key)
