@@ -245,7 +245,6 @@ void MetabolitesWidget1::loadName(QString setValue)
 
   CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
 
-  name = setValue;
   CMetab *metab;
 
   int i = 0;
@@ -266,6 +265,7 @@ void MetabolitesWidget1::loadName(QString setValue)
   if (myValue != -1)
     {
       metab = metabolites[myValue];
+      name = setValue;
 
       CCopasiVectorNS< CCompartment > & allcompartments = mModel->getCompartments();
       CCompartment *compt;
@@ -337,9 +337,6 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 void MetabolitesWidget1::slotBtnOKClicked()
 {
   //QMessageBox::information(this, "Metabolites Widget", "Do you really want to commit the changes?");
-  std::string filename = ((std::string) name.latin1()) + ".gps";
-  CWriteConfig *Met = new CWriteConfig(filename);
-
   CCopasiVectorN< CMetab > metabolites = mModel->getMetabolites();
   CMetab *metab;
   metab = metabolites[myValue];
@@ -365,8 +362,11 @@ void MetabolitesWidget1::slotBtnOKClicked()
       metab->setStatus(1);
     }
 
-  mModel->save(*Met);
-  //metab->save(*Met);
-  //Copasi->Model->save(*Met);
-  delete Met;
+  metab->setName(std::string(LineEdit1->text()));
+  name = LineEdit1->text();
+
+  emit updated();
+  emit leaf(mModel);
+
+  emit signal_emitted(*Metabolite1_Name);
 }
