@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/12/17 14:36:15 $
+   $Author: shoops $ 
+   $Date: 2005/01/10 17:53:34 $
    End CVS Header */
 
 #include <cmath>
@@ -59,7 +59,7 @@ void CopasiSlider::updateSliderData()
           this->mpParameterGroup->addParameter("value", CCopasiParameter::DOUBLE, this->mValue);
           this->mpParameterGroup->addParameter("minValue", CCopasiParameter::DOUBLE, this->mMinValue);
           this->mMaxValue = 2 * this->mValue;
-          this->mpParameterGroup->addParameter("maxValue", CCopasiParameter::DOUBLE, 2.0*this->mMaxValue);
+          this->mpParameterGroup->addParameter("maxValue", CCopasiParameter::DOUBLE, this->mMaxValue);
           this->mNumMinorTicks = 100;
           this->mMinorMajorFactor = 10;
           this->mpParameterGroup->addParameter("numMinorTicks", CCopasiParameter::UINT, this->mNumMinorTicks);
@@ -298,13 +298,13 @@ void CopasiSlider::setParameterGroup(CCopasiParameterGroup* parameterGroup)
         }
       parameter = parameterGroup->getParameter("minValue"); // double
       assert(parameter);
-      this->mMinValue = *(C_INT32*)parameter->getValue();
+      this->mMinValue = *(C_FLOAT64*)parameter->getValue();
       parameter = parameterGroup->getParameter("maxValue"); // double
       assert(parameter);
-      this->mMaxValue = *(C_INT32*)parameter->getValue();
+      this->mMaxValue = *(C_FLOAT64*)parameter->getValue();
       parameter = parameterGroup->getParameter("value");    // double
       assert(parameter);
-      this->mValue = *(C_INT32*)parameter->getValue();
+      this->mValue = *(C_FLOAT64*)parameter->getValue();
       parameter = parameterGroup->getParameter("numMinorTicks"); // unsigned int
       assert(parameter);
       this->mNumMinorTicks = *(C_INT32*)parameter->getValue();
