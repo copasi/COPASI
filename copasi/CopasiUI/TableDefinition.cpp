@@ -47,7 +47,7 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Name");
-  tableHeader->setLabel(1, "Volume");
+  tableHeader->setLabel(1, "Target");
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
@@ -80,43 +80,47 @@ TableDefinition::TableDefinition(QWidget *parent, const char * name, WFlags f)
 
 void TableDefinition::fillTable()
 {
-  const CCompartment *obj;
-  const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
-  C_INT32 j, jmax = objects.size();
-  table->setNumRows(jmax);
-  mKeys.resize(jmax);
-
-  for (j = 0; j < jmax; ++j)
-    {
-      obj = objects[j];
-      table->setText(j, 0, obj->getName().c_str());
-      table->setText(j, 1, QString::number(obj->getVolume()));
-      mKeys[j] = obj->getKey();
-    }
-  table->setText(jmax, 1, "");
+  /*
+    const CCompartment *obj;
+    const CCopasiVectorN < CCompartment > & objects = dataModel->getModel()->getCompartments();
+    C_INT32 j, jmax = objects.size();
+    table->setNumRows(jmax);
+    mKeys.resize(jmax);
+   
+    for (j = 0; j < jmax; ++j)
+      {
+        obj = objects[j];
+        table->setText(j, 0, obj->getName().c_str());
+        table->setText(j, 1, QString::number(obj->getVolume()));
+        mKeys[j] = obj->getKey();
+      }
+    table->setText(jmax, 1, "");
+  */
 }
 
 void TableDefinition::createNewObject()
 {
-#ifdef XXXX
-  {
-    std::string name = "compartment";
-    int i = 0;
-    while (dataModel->getModel()->addCompartment(name, 1) == -1)
-      {
-        i++;
-        name = "compartment";
-        name += "_";
-        name += QString::number(i).latin1();
-      }
-    table->setNumRows(table->numRows());
-    table->setText(row, 0, name.c_str());
-    x = name.c_str();
-    //emit updated();
-    //emit leaf(mModel);
-    ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
-  }
-#endif
+  /*
+  #ifdef XXXX
+    {
+      std::string name = "compartment";
+      int i = 0;
+      while (dataModel->getModel()->addCompartment(name, 1) == -1)
+        {
+          i++;
+          name = "compartment";
+          name += "_";
+          name += QString::number(i).latin1();
+        }
+      table->setNumRows(table->numRows());
+      table->setText(row, 0, name.c_str());
+      x = name.c_str();
+      //emit updated();
+      //emit leaf(mModel);
+      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE);
+    }
+  #endif
+  */
 }
 
 void TableDefinition::slotTableCurrentChanged(int row,
