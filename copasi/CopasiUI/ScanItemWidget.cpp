@@ -32,11 +32,11 @@ ScanItemWidget::ScanItemWidget(QWidget* parent, const char* name, WFlags fl)
   Layout13 = new QVBoxLayout(0, 0, 6, "Layout13");
 
   bMaster = new ScanCheckBox(this, "bMaster");
-  bMaster->setText(trUtf8("          Master"));
+  bMaster->setText(trUtf8("      Master"));
   Layout13->addWidget(bMaster);
 
   bLogarithmic = new ScanCheckBox(this, "bLogarithmic");
-  bLogarithmic->setText(trUtf8("          Logarithmic"));
+  bLogarithmic->setText(trUtf8("      Logarithmic"));
   Layout13->addWidget(bLogarithmic);
 
   ScanItemWidgetLayout->addLayout(Layout13, 2, 0);
