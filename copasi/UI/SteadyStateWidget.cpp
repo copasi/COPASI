@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/31 12:15:15 $
+   $Date: 2004/09/09 13:53:20 $
    End CVS Header */
 
 /********************************************************
@@ -191,9 +191,11 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 SteadyStateWidget::~SteadyStateWidget()
 {
   // no need to delete child widgets, Qt does it all for us
-  CSteadyStateTask* mSteadyStateTask =
+
+  //I believe this should not be done in this place. Sven
+  /*CSteadyStateTask* mSteadyStateTask =
     dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(objKey));
-  pdelete(mSteadyStateTask);
+  pdelete(mSteadyStateTask);*/
 }
 
 void SteadyStateWidget::CancelButtonClicked()
