@@ -1,11 +1,33 @@
-ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
-GAWK=gawk
-MV=mv
+# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+# GAWK=gawk
+# MV=mv
 
-# ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
-# GAWK=/usr/bin/gawk
-# MV=/bin/mv
+ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
+GAWK=/usr/bin/gawk
+MV=/bin/mv
 
+$GAWK -- '
+BEGIN {
+  printf "/* Begin CVS Header\n"
+  printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n" 
+  printf "    $Revision: 1.14 $\n"
+  printf "    $Name:  $\n"
+  printf "    $Author: shoops $ \n"
+  printf "    $Date: 2003/10/16 15:14:39 $\n"
+  printf "    End CVS Header */\n\n"
+
+  Delete = 0
+}
+
+$0 ~ ".*Begin CVS Header.*" {Delete = 1}
+
+{
+  if (Delete == 0) print
+}
+
+$0 ~ ".*End CVS Header.*" {Delete = 0}
+
+' $1 | \
 $ASTYLE --mode=c \
         --style=gnu \
         --one-line=keep-statements \
@@ -13,7 +35,7 @@ $ASTYLE --mode=c \
         --pad=oper \
         --convert-tabs \
         --min-conditional=0 \
-        < $1 |\
+        |\
 $GAWK -- '
 BEGIN {
   lastEmpty = 0
