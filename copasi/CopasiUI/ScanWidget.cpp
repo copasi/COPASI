@@ -147,7 +147,7 @@ void ScanWidget::loadScan(CModel *model)
       CScanTask *scanTask = new CScanTask();
       CScanProblem *scanProblem = scanTask->getProblem();
       scanProblem->setModel(model);
-      //hide()
+
       emit hide_me();
       //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
       //for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
@@ -164,9 +164,11 @@ void ScanWidget::loadScan(CModel *model)
           vBox->insertChild(parameterTable);
           vBox->setSpacing(25);
         }
-      // show();
+
       emit show_me();
+
       scrollview->addChild(vBox);
       ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
+      scrollview->setVScrollBarMode(QScrollView::Auto);
     }
 }
