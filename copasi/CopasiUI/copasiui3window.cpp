@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/06 20:14:40 $
+   $Author: gauges $ 
+   $Date: 2004/12/15 13:29:21 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -21,7 +21,6 @@
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "ObjectBrowserDialog.h"
-#include "SimpleSelectionDialog.h"
 #include <vector>
 #include "utilities/CGlobals.h"
 #include "utilities/CCopasiException.h"
@@ -172,14 +171,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                  // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                   // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                  // Discard clicked or Alt+D pressed
+        case 1:                                                   // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                  // Cancel clicked or Escape pressed
+        case 2:                                                   // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -236,14 +235,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                  // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                   // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                  // Discard clicked or Alt+D pressed
+            case 1:                                                   // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                  // Cancel clicked or Escape pressed
+            case 2:                                                   // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -366,14 +365,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                  // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                   // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                  // Discard clicked or Alt+D pressed
+        case 1:                                                   // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                  // Cancel clicked or Escape pressed
+        case 2:                                                   // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -395,14 +394,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                  // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                   // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                  // Discard clicked or Alt+D pressed
+            case 1:                                                   // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                  // Cancel clicked or Escape pressed
+            case 2:                                                   // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -596,15 +595,6 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
 }
 
-void CopasiUI3Window::slotSimpleSelection()
-{
-  SimpleSelectionDialog* simpleSelection = new SimpleSelectionDialog(this);
-  //std::vector<CCopasiObject*>* out=new std::vector<CCopasiObject*>();
-  //simpleSelection->setOutputVector(out);
-  simpleSelection->setModel(dataModel->getModel());
-  simpleSelection->show();
-}
-
 void CopasiUI3Window::slotObjectBrowserDialog()
 {
   if (tools->isItemEnabled(2))
@@ -646,14 +636,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                  // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                   // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                  // Discard clicked or Alt+D pressed
+            case 1:                                                   // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                  // Cancel clicked or Escape pressed
+            case 2:                                                   // Cancel clicked or Escape pressed
               return;
               break;
             }
