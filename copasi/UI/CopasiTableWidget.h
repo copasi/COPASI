@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.h,v $
-   $Revision: 1.32 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
+   $Revision: 1.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/19 15:53:59 $
+   $Date: 2004/05/19 15:54:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -14,28 +14,64 @@
  ** of Compartments.
  *****************************************************************************/
 
-#ifndef COMPARTMENTS_WIDGET_H
-#define COMPARTMENTS_WIDGET_H
+#ifndef COPASI_TABLE_WIDGET_H
+#define COPASI_TABLE_WIDGET_H
 
 #include <qtable.h>
 #include "copasi.h"
-#include "CopasiTableWidget.h"
+#include "copasiWidget.h"
 
 class QPushButton;
 class QGridLayout;
 class QTable;
 class MyTable;
 
-class CompartmentsWidget : public CopasiTableWidget
+class CopasiTableWidget : public CopasiWidget
   {
     Q_OBJECT
 
   public:
-    CompartmentsWidget(QWidget *parent, const char * name = 0, WFlags f = 0)
-        : CopasiTableWidget(parent, name, f)
-    {init();}
+    CopasiTableWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
+
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+    virtual bool leave();
+    virtual bool enter(const std::string & key = "");
+
+  protected slots:
+    virtual void slotDoubleClicked(int, int, int, const QPoint &);
+    virtual void slotTableSelectionChanged();
+    virtual void slotValueChanged(int, int);
+    virtual void slotCurrentChanged(int, int);
+
+    virtual void slotBtnOKClicked();
+    virtual void slotBtnCancelClicked();
+    virtual void slotBtnDeleteClicked();
+
+    //void resizeEvent(QResizeEvent * re);
 
   protected:
+    void fillTable();
+    void saveTable();
+    //void createNewObject();
+    void updateRow(const C_INT32 row);
+    QString createNewName(const QString name);
+    void resizeTable(const unsigned C_INT32 numRows);
+
+    MyTable* table;
+    QPushButton* btnOK;
+    QPushButton* btnCancel;
+    QPushButton* btnDelete;
+    std::vector<std::string> mKeys;
+
+    C_INT32 numCols;
+    std::vector<bool> mFlagChanged;
+    std::vector<bool> mFlagDelete;
+    std::vector<bool> mFlagNew;
+    std::vector<bool> mFlagRenamed;
+
+    bool mIgnoreUpdates;
+
+    //These are the methods that need to be implemented by specialized widgets:
 
     /**
      * This initializes the widget 
