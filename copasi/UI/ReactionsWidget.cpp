@@ -230,3 +230,7 @@ void ReactionsWidget::slotTableCurrentChanged(int row, int col, int m , const QP
     }
   emit name(x);
 }
+unsigned int ReactionsWidget::numTableRows()
+{
+  return table->numRows();
+}

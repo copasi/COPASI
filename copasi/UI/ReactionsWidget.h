@@ -35,6 +35,7 @@ class ReactionsWidget : public QWidget
     //void mousePressEvent(QMouseEvent * e);
     void resizeEvent(QResizeEvent * re);
     void repaint_table();
+    unsigned int numTableRows();
 
   signals:
     void name(const QString &);

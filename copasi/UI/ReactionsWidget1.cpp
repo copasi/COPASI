@@ -449,6 +449,8 @@ void ReactionsWidget1::slotCheckBoxClicked()
       reversible = TriFalse;
     }
 
+  if (!chemical_reaction.length())
+    return;
   if (CheckBox->isChecked() == false && reactn1->isReversible() == true)
     {
       int i = chemical_reaction.find ("=", 0, true);
