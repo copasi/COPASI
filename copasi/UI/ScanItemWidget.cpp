@@ -191,28 +191,28 @@ void ScanItemWidget::LogarithmicClicked()
 
 void ScanItemWidget::RegularGridClicked()
 {
-  mMinLabel->setText(tr("Min"));
-  mMaxLabel->setText(tr("Max"));
+  mMinLabel->setText(tr("Min     "));
+  mMaxLabel->setText(tr("Max     "));
   pParameter->setValue("gridType", (C_INT32) SD_REGULAR);
 }
 
 void ScanItemWidget::UniformClicked()
 {
-  mMinLabel->setText(tr("Min"));
-  mMaxLabel->setText(tr("Max"));
+  mMinLabel->setText(tr("Min     "));
+  mMaxLabel->setText(tr("Max     "));
   pParameter->setValue("gridType", (C_INT32) SD_UNIFORM);
 }
 
 void ScanItemWidget::GaussianClicked()
 {
-  mMinLabel->setText(tr("Mean"));
+  mMinLabel->setText(tr("Mean    "));
   mMaxLabel->setText(tr("Std.Dev."));
   pParameter->setValue("gridType", (C_INT32) SD_GAUSS);
 }
 
 void ScanItemWidget::PosGaussianClicked()
 {
-  mMinLabel->setText(tr("Mean"));
+  mMinLabel->setText(tr("Mean    "));
   mMaxLabel->setText(tr("Std.Dev."));
   pParameter->setValue("gridType", (C_INT32) SD_BOLTZ);
 }
@@ -230,7 +230,7 @@ void ScanItemWidget::ResetData()
   // clear the values of the variables
   mMax->setText("2.0");
   mMin->setText("1.0");
-  mDensity->setText("2");
+  mDensity->setText("2.0");
   mLogarithmic->setChecked(FALSE);
   mIndependent->setChecked(TRUE);
   mRegularGridRadio->setChecked(1);
@@ -249,22 +249,22 @@ void ScanItemWidget::updateObject()
   switch (int(pParameter->getValue("gridType")))
     {
     case SD_REGULAR:
-      mMinLabel->setText(tr("Min"));
-      mMaxLabel->setText(tr("Max"));
+      mMinLabel->setText(tr("Min     "));
+      mMaxLabel->setText(tr("Max     "));
       mRegularGridRadio->setChecked(1);
       break;
     case SD_UNIFORM:
-      mMinLabel->setText(tr("Min"));
-      mMaxLabel->setText(tr("Max"));
+      mMinLabel->setText(tr("Min     "));
+      mMaxLabel->setText(tr("Max     "));
       mUniformRadio->setChecked(1);
       break;
     case SD_GAUSS:
-      mMinLabel->setText(tr("Mean"));
+      mMinLabel->setText(tr("Mean    "));
       mMaxLabel->setText(tr("Std.Dev."));
       mGaussianRadio->setChecked(1);
       break;
     case SD_BOLTZ:
-      mMinLabel->setText(tr("Mean"));
+      mMinLabel->setText(tr("Mean    "));
       mMaxLabel->setText(tr("Std.Dev."));
       mPosGaussianRadio->setChecked(1);
       break;
@@ -312,9 +312,9 @@ void ScanItemWidget::loadObject()
 void ScanItemWidget::languageChange()
 {
   setCaption(tr("ScanItemWidget"));
-  mDensityLabel->setText(tr("Density"));
-  mMaxLabel->setText(tr("Max"));
-  mMinLabel->setText(tr("Min"));
+  mDensityLabel->setText(tr("Density "));
+  mMaxLabel->setText(tr("Max     "));
+  mMinLabel->setText(tr("Min     "));
   mDensity->setText(QString::null);
   mIndependent->setText(tr("          Master"));
   mLogarithmic->setText(tr("          Logarithmic"));
