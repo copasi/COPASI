@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/21 14:49:51 $
+   $Date: 2004/09/21 21:31:03 $
    End CVS Header */
 
 /*******************************************************************
@@ -353,13 +353,15 @@ void CopasiTableWidget::slotBtnCancelClicked()
 
 void CopasiTableWidget::slotBtnDeleteClicked()
 {
+  //std::cout << "slotBtnDeleteClicked()" << std::endl;
+
   bool flagFirstFound = false;
   bool flagNewDelState;
 
   unsigned C_INT32 i, imax = table->numRows() - 1;
   for (i = 0; i < imax; i++)
     {
-      if (table->isRowSelected(i, false))
+      if ((table->isRowSelected(i, false)) || (i == table->currentRow()))
         {
           if (!flagFirstFound)
             {
