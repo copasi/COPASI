@@ -352,17 +352,18 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
 
 void objectList::createQuickIndex()
 {
-  int step_size = int (len() / INDEXLENGTH);
+  int step_size = int (len() / INDEXLENGTH) + 1;
   index_length = 0;
 
-  for (objectListItem* pHead = getRoot(); pHead != NULL; pHead = pHead->pNext)
+  for (objectListItem* pHead = getRoot(); pHead != NULL;)
     {
       quickIndex[index_length].mIndex = pHead;
       quickIndex[index_length].mKey = pHead->pItem->key(0, 0);
       for (int i = 0; i < step_size; i++)
         {
-          if (pHead != NULL)
-            pHead = pHead->pNext;
+          if (pHead == NULL)
+            break;
+          pHead = pHead->pNext;
         }
       index_length++;
     }

@@ -114,7 +114,7 @@ struct objectListItem
     objectListItem* pLast;
   };
 
-#define INDEXLENGTH 1000
+#define INDEXLENGTH 100
 
 struct CIndex
   {

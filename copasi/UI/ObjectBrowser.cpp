@@ -340,8 +340,8 @@ void ObjectBrowser::updateUI()
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
           if (pCurrent != pHead)
-            for (; pCurrentLevel != NULL; pCurrentLevel = pCurrentLevel->parent())
-              refreshList->sortListInsert(pCurrentLevel);
+            for (; (pCurrentLevel != NULL) && (refreshList->sortListInsert(pCurrentLevel)); pCurrentLevel = pCurrentLevel->parent())
+;
         }
     }
 
