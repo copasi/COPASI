@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/05/03 20:20:18 $
+   $Date: 2004/05/06 18:08:20 $
    End CVS Header */
 
 /*******************************************************************
@@ -298,11 +298,12 @@ bool ModelWidget::convert2NonReversible()
 }
 
 bool ModelWidget::update(ListViews::ObjectType objectType,
-                         ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+                         ListViews::Action C_UNUSED(action), const std::string & key)
 {
   switch (objectType)
     {
     case ListViews::MODEL:
+      enter(key);
       break;
 
     default:
