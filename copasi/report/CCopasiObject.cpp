@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/14 22:08:55 $
+   $Date: 2003/11/21 22:13:41 $
    End CVS Header */
 
 /**
@@ -198,6 +198,16 @@ bool CCopasiObject::isValueDbl() const
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
-  os << o.mObjectName << std::endl;
+  os << "Name:      " << o.getObjectName() << std::endl;
+  os << "Type:      " << o.getObjectType() << std::endl;
+  os << "Container: " << o.isContainer() << std::endl;
+  os << "Vector:    " << o.isVector() << std::endl;
+  os << "VectorN:   " << o.isNameVector() << std::endl;
+  os << "Matrix:    " << o.isMatrix() << std::endl;
+  os << "Reference: " << o.isReference() << std::endl;
+  os << "Bool:      " << o.isValueBool() << std::endl;
+  os << "Int:       " << o.isValueInt() << std::endl;
+  os << "Dbl:       " << o.isValueDbl() << std::endl;
+
   return os;
 }

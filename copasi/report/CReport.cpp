@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 19:46:39 $
+   $Date: 2003/11/21 22:13:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -183,6 +183,8 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
   for (i = 0; i < nameVector->size(); i++)
     {
+      std::cout << (*nameVector)[i] << std::endl;
+
       pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
                   (*nameVector)[i]);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/21 19:45:53 $
+   $Date: 2003/11/21 22:13:41 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
     const CCopasiObjectName & objName)
 {
   const CCopasiObject * pObject = NULL;
-  CCopasiContainer* pCopasiObject;
+  CCopasiContainer* pContainer;
   CCopasiObjectName Name;
   unsigned C_INT32 containerIndex;
 
@@ -39,30 +39,22 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
        containerIndex < listOfContainer.size();
        containerIndex++)
     {
-      pCopasiObject = listOfContainer[containerIndex];
+      pContainer = listOfContainer[containerIndex];
 
       for (Name = objName, pObject = NULL;
            Name != "" && !pObject;
            Name = Name.getRemainder())
-        pObject = pCopasiObject->getObject(Name);
+        pObject = pContainer->getObject(Name);
     }
 
-  // if not find search the root
+  // if not found search the root
   if (!pObject)
     pObject = CCopasiContainer::Root->getObject(objName);
 
   if (pObject)
     {
-      std::cout << "Name:     " << pObject->getObjectName() << std::endl;
-      std::cout << "Type:     " << pObject->getObjectType() << std::endl;
-      std::cout << "Container:" << pObject->isContainer() << std::endl;
-      std::cout << "Vector:   " << pObject->isVector() << std::endl;
-      std::cout << "VectorN:  " << pObject->isNameVector() << std::endl;
-      std::cout << "Matrix:   " << pObject->isMatrix() << std::endl;
-      std::cout << "Reference:" << pObject->isReference() << std::endl;
-      std::cout << "Bool:     " << pObject->isValueBool() << std::endl;
-      std::cout << "Int:      " << pObject->isValueInt() << std::endl;
-      std::cout << "Dbl:      " << pObject->isValueDbl() << std::endl;
+      std::cout << *pObject;
+      pObject->print(&std::cout);
     }
 
   return const_cast<CCopasiObject *>(pObject);
@@ -108,7 +100,8 @@ const std::string CCopasiContainer::getObjectUniqueName() const
 
 const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
   {
-    if (cn == "") return this;
+    if (cn == "")
+      return this;
 
     std::string Name = cn.getObjectName();
     std::string Type = cn.getObjectType();
@@ -132,7 +125,8 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     /* meaningful anyway. */
     objectMap::const_iterator it = range.first;
 
-    if (it->second->getObjectType() != Type) return NULL;
+    if (it->second->getObjectType() != Type)
+      return NULL;
 
     const CCopasiObject * pObject = NULL;
 
@@ -159,7 +153,8 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
           return pObject->getObject(cn.getRemainder());
       }
 
-    if (it->second->isReference()) return it->second;
+    if (it->second->isReference())
+      return it->second;
 
     return it->second->getObject(cn.getRemainder());
   }
