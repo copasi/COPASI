@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/15 12:57:48 $
+   $Date: 2004/06/21 09:49:28 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -25,6 +25,7 @@
 #include "sbml/KineticLaw.h"
 #include "sbml/ASTNode.h"
 #include "sbml/Parameter.h"
+#include "sbml/StdException.h"
 
 class SBMLExporter
   {

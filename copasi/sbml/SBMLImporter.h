@@ -1,19 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/16 13:30:01 $
+   $Date: 2004/06/21 09:49:29 $
    End CVS Header */
 
-#ifndef SBMLIMPORTER_HPP
-#define SBMLIMPORTER_HPP
+#ifndef SBMLIMPORTER_H__
+#define SBMLIMPORTER_H__
 
 #include <string>
 #include <map>
 #include "sbml/ASTNode.hpp"
 
 #include "function/CFunctionDB.h"
+#include "sbml/StdException.h"
 
 class SBMLDocument;
 class CModel;
@@ -27,37 +28,6 @@ class Compartment;
 class SBMLDocument;
 class ConverterASTNode;
 class FunctionDefinition;
-
-/**
- * Simple exception class that implements the what() function of std::exception
- * to specify an error message.
- */
-class StdException: public std::exception
-  {
-  public:
-    /**
-     * Constructor that sets the error message object to "Error."
-     */
-    StdException() throw();
-
-    /**
-     * Constructor that sets the error message object to the string given.
-     */
-    explicit StdException(const std::string what) throw();
-
-    /**
-     * Destructor that does nothing.
-     */
-    virtual ~StdException() throw();
-
-    /**
-     * Returns the error message object as a character array.
-     */
-    virtual const char* what() const throw();
-
-  protected:
-    std::string message;
-  };
 
 class SBMLImporter
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/21 09:02:23 $
+   $Date: 2004/06/21 09:49:29 $
    End CVS Header */
 
 #include <iostream>
@@ -272,7 +272,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   for (unsigned int counter = 0; counter < num; counter++)
     {
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
+      if (sbmlCompartment == NULL)
+        {
+          DebugFile << "Error. Expected SBML Compartment, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected SBML Compartment, got NULL pointer.");
+        }
       CCompartment* copasiCompartment = this->createCCompartmentFromCompartment(sbmlCompartment, copasiModel);
+      if (copasiCompartment == NULL)
+        {
+          DebugFile << "Error. Could not create Copasi compartment." << std::endl;
+          throw StdException("Error. Could not create Copasi compartment.");
+        }
       std::string key = sbmlCompartment->getId();
       if (!sbmlCompartment->isSetId())
         {
@@ -288,10 +298,20 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
   for (unsigned int counter = num; counter > 0; counter--)
     {
       Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
+      if (sbmlSpecies == NULL)
+        {
+          DebugFile << "Error. Expected SBML species, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected SBML species, got NULL pointer.");
+        }
       CCompartment* copasiCompartment = compartmentMap[sbmlSpecies->getCompartment()];
       if (copasiCompartment != NULL)
         {
           CMetab* copasiMetabolite = this->createCMetabFromSpecies(sbmlSpecies, copasiModel, copasiCompartment);
+          if (copasiMetabolite == NULL)
+            {
+              DebugFile << "Error. Could not create Copasi Metabolite." << std::endl;
+              throw StdException("Error. Could not create Copasi Metabolite.");
+            }
           std::string key;
           if (!sbmlSpecies->isSetId())
             {
@@ -305,7 +325,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument) t
         }
       else
         {
-          DebugFile << "Error. Could not find copartment " << sbmlSpecies->getCompartment() << std::endl;
+          DebugFile << "Error. Could not find compartment " << sbmlSpecies->getCompartment() << std::endl;
+          throw StdException("Error. Could not find compartment " + sbmlSpecies->getCompartment() + ".");
         }
     }
 
@@ -397,6 +418,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
 
   CMetab* copasiMetabolite = copasiModel->createMetabolite(name + appendix, copasiCompartment->getObjectName());
+  if (copasiMetabolite == NULL)
+    {
+      DebugFile << "Could not create Copasi metabolite." << std::endl;
+      throw StdException("Error. Could not create copasi metabolite.");
+    }
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
     {
       copasiMetabolite->setStatus(CMetab::METAB_FIXED);
@@ -425,6 +451,11 @@ CReaction*
 SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel) throw(StdException)
 {
   /* Check if the name of the reaction is unique. */
+  if (sbmlReaction == NULL)
+    {
+      DebugFile << "createCReactionFromReaction get NULL pointer as first argument." << std::endl;
+      throw StdException("Error. Function createCReactionFromReaction got NULL pointer as first argument.");
+    }
   std::string name = sbmlReaction->getName();
   if (name == "")
     {
@@ -442,6 +473,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
+  if (copasiReaction == NULL)
+    {
+      DebugFile << "Could not create Copasi reaction." << std::endl;
+      throw StdException("Error. Could not create Copasi reaction.");
+    }
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
   bool singleCompartment = true;
@@ -449,6 +485,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   for (unsigned int counter = 0; counter < num; counter++)
     {
       SpeciesReference* sr = sbmlReaction->getReactant(counter);
+      if (sr == NULL)
+        {
+          DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+        }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
@@ -478,6 +519,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   for (unsigned int counter = 0; counter < num; counter++)
     {
       SpeciesReference* sr = sbmlReaction->getProduct(counter);
+      if (sr == NULL)
+        {
+          DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+        }
       float stoich = sr->getStoichiometry() / sr->getDenominator();
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
@@ -506,6 +552,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   for (unsigned int counter = 0; counter < num; counter++)
     {
       ModifierSpeciesReference* sr = sbmlReaction->getModifier(counter);
+      if (sr == NULL)
+        {
+          DebugFile << "Expected SpeciesReference, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected SpeciesReference, got NULL pointer.");
+        }
       std::map<std::string, CMetab*>::iterator pos;
       pos = this->speciesMap.find(sr->getSpecies());
       if (pos == this->speciesMap.end())
@@ -532,6 +583,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   /* in the newly created CFunction set the types for all parameters and
   ** either a mapping or a value */
   KineticLaw* kLaw = sbmlReaction->getKineticLaw();
+  if (kLaw == NULL)
+    {
+      DebugFile << "Expected KineticLaw, got NULL pointer." << std::endl;
+      throw StdException("Error. Expected KineticLaw, got NULL pointer.");
+    }
   if (kLaw->isSetSubstanceUnits())
     {
       std::string cU = kLaw->getSubstanceUnits();
@@ -554,8 +610,18 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       kLaw->setMathFromFormula();
     }
   const ASTNode* kLawMath = kLaw->getMath();
+  if (kLawMath == NULL)
+    {
+      DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
+      throw StdException("Error. Expected ASTNode, got NULL pointer.");
+    }
   ASTNode* node = new ConverterASTNode(*kLawMath);
   node = this->replaceUserDefinedFunctions(node, sbmlModel);
+  if (node == NULL)
+    {
+      DebugFile << "Replacing the user defined functions failed." << std::endl;
+      throw StdException("Error. Replacing the user defined functions failed.");
+    }
   this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
   this->replacePowerFunctionNodes(node);
   /* if it is a single compartment reaction, we have to devide the whole kinetic
@@ -602,6 +668,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   CFunction* cFun = this->functionDB->createFunction(functionName, CFunction::UserDefined);
   //ConverterASTNode::printASTNode(node);
   //DebugFile << "Kinetic Law: " << SBML_formulaToString(node) << std::endl;
+  if (cFun == NULL)
+    {
+      DebugFile << "Could not create function " << functionName << "." << std::endl;
+      throw StdException("Error. Could not create function for name " + functionName + ".");
+    }
   cFun->setDescription(SBML_formulaToString(node));
   cFun->setType(CFunction::UserDefined);
   cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
@@ -640,6 +711,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
                   std::string parameterName;
                   DebugFile << "local parameter " << x << ": " << parameter << std::endl;
+                  if (parameter == NULL)
+                    {
+                      DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
+                      throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                    }
                   if (parameter->isSetId())
                     {
                       parameterName = parameter->getId();
@@ -668,6 +744,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     {
                       Parameter* parameter = sbmlModel->getParameter(x);
                       DebugFile << "global parameter " << x << ": " << parameter << std::endl;
+                      if (parameter == NULL)
+                        {
+                          DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
+                          throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                        }
                       std::string parameterName;
                       if (parameter->isSetId())
                         {
@@ -766,6 +847,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               for (unsigned int x = 0; x < sbmlReaction->getKineticLaw()->getNumParameters(); x++)
                 {
                   Parameter* parameter = sbmlReaction->getKineticLaw()->getParameter(x);
+                  if (parameter == NULL)
+                    {
+                      DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
+                      throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                    }
                   std::string parameterName;
                   if (parameter->isSetId())
                     {
@@ -787,6 +873,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   for (unsigned int x = 0; x < sbmlModel->getNumParameters(); x++)
                     {
                       Parameter* parameter = sbmlModel->getParameter(x);
+                      if (parameter == NULL)
+                        {
+                          DebugFile << "Expected SBML parameter, got NULL pointer." << std::endl;
+                          throw StdException("Error. Expected SBML parameter, got NULL pointer.");
+                        }
                       std::string parameterName;
                       if (parameter->isSetId())
                         {
@@ -919,6 +1010,11 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
   for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
     {
       ASTNode* child = node->getChild(counter);
+      if (child == NULL)
+        {
+          DebugFile << "Expected ASTNode, got NULL pointer." << std::endl;
+          throw StdException("Error. Expected ASTNode, got NULL pointer.");
+        }
       /* check if the child is a user defined function */
       if (child->getType() == AST_FUNCTION)
         {
@@ -1037,14 +1133,17 @@ SBMLImporter::~SBMLImporter()
  */
 void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
 {
-  if (node->getType() == AST_FUNCTION_POWER)
+  if (node != NULL)
     {
-      //node->setType(AST_POWER);
-      node->setCharacter('^');
-    }
-  for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
-    {
-      this->replacePowerFunctionNodes(node->getChild(counter));
+      if (node->getType() == AST_FUNCTION_POWER)
+        {
+          //node->setType(AST_POWER);
+          node->setCharacter('^');
+        }
+      for (unsigned int counter = 0; counter < node->getNumChildren(); counter++)
+        {
+          this->replacePowerFunctionNodes(node->getChild(counter));
+        }
     }
 }
 
@@ -1082,34 +1181,4 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB) throw(StdExcept
     {
       throw StdException("Error. readSBML needs a valid CFunctionDB object.");
     }
-}
-
-/**
- * Constructor that sets the error message object to "Error."
- */
-StdException::StdException() throw()
-{
-  this->message = "Error.";
-}
-
-/**
- * Constructor that sets the error message object to the string given.
- */
-StdException::StdException(const std::string what) throw()
-{
-  this->message = what;
-};
-
-/**
- * Destructor that does nothing.
- */
-StdException::~StdException() throw()
-{}
-
-/**
- * Returns the error message object as a character array.
- */
-const char* StdException::what() const throw()
-{
-  return this->message.c_str();
 }

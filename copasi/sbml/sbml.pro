@@ -3,13 +3,15 @@ LIB = sbmlimport
 include(../lib.pri)
 
 # Input
-HEADERS += ConverterASTNode.h \
+HEADERS += StdException.h \
+           ConverterASTNode.h \
            SBMLImporter.h \
            SBMLExporter.h
            
            
            
-SOURCES += ConverterASTNode.cpp \
+SOURCES += StdException.cpp \
+           ConverterASTNode.cpp \
            SBMLImporter.cpp \
            SBMLExporter.cpp
 
