@@ -438,7 +438,7 @@ Calculating a Time Course</string>
 </includes>
 <variables>
     <variable>static char* Error;</variable>
-    <variable>static std::string helpPath;</variable>
+    <variable>static QString helpPath;</variable>
     <variable access="public">static char* texts[6];</variable>
     <variable>QWidget* copasiMainWindow;</variable>
 </variables>
