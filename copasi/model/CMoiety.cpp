@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/10 11:13:38 $
+   $Date: 2004/10/08 09:20:52 $
    End CVS Header */
 
 #include <stdio.h>
@@ -25,7 +25,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),           //By G
+    mKey(GlobalKeys.add("Moiety", this)),            //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -34,7 +34,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),           //By G
+    mKey(GlobalKeys.add("Moiety", this)),            //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)
@@ -68,17 +68,17 @@ C_FLOAT64 CMoiety::dependentNumber()
   return mNumber;
 }
 
-C_FLOAT64 CMoiety::dependentRate()
+/*C_FLOAT64 CMoiety::dependentRate()
 {
   C_FLOAT64 Rate = 0.0;
-
+ 
   for (unsigned C_INT32 i = 1; i < mEquation.size(); i++)
     Rate -= mEquation[i]->getMultiplicity() *
             mEquation[i]->getMetabolite().getConcentrationRate() *
             mEquation[i]->getMetabolite().getCompartment()->getVolumeInv();  //TODO::check!!!!
-
+ 
   return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
-}
+}*/ //seems to be unused
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 
