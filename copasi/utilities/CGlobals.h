@@ -47,6 +47,11 @@ class CGlobals
    *
    */
   vector <char *> Arguments;
+
+  /**
+   *  This a hack to be able to read old configaration files output information
+   */
+  CModel * Model;
   
  public:
 

@@ -87,6 +87,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
         return Fail;
         
       Copasi->OldMetabolites.load(configBuffer, Size);
+      Copasi->Model = this;
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,

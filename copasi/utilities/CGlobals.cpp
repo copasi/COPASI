@@ -8,6 +8,7 @@ CGlobals::CGlobals()
       ProgramVersion.setVersion(4,0,101);
       FunctionDB.setFilename("FunctionDB.gps");
       FunctionDB.initialize();
+      Model = NULL;
       
       DefaultConc = 0.0;
     }

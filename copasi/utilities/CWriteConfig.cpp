@@ -100,40 +100,40 @@ C_INT32 CWriteConfig::setVariable(const string & name,
 {
   mBuffer << name;
 
-  if (pout == NULL)
-	  return mFail;
-
-  if (type != "multiline") mBuffer << "=";
+  if (pout)
+    {
+      if (type != "multiline") mBuffer << "=";
     
-  // Return the value depending on the type
-  if ( type == "string" )
-    {
-      mBuffer << *(string *) pout;
+      // Return the value depending on the type
+      if ( type == "string" )
+        {
+          mBuffer << *(string *) pout;
+        }
+      else if ( type == "C_FLOAT64" )
+        {
+          mBuffer << *(C_FLOAT64 *) pout;
+        }
+      else if ( type == "C_INT32" )
+        {
+          mBuffer << *(C_INT32 *) pout;
+        }
+      else if ( type == "C_INT16" )
+        {
+          mBuffer << *(C_INT16 *) pout;
+        }
+      else if ( type == "multiline" )
+        {
+          mBuffer << endl;
+          mBuffer << *(string *) pout << endl;
+          mBuffer << "End" << name;
+        }
+      else
+        {
+          fatalError();
+          mFail = 1; //Error
+        }
     }
-  else if ( type == "C_FLOAT64" )
-    {
-      mBuffer << *(C_FLOAT64 *) pout;
-    }
-  else if ( type == "C_INT32" )
-    {
-      mBuffer << *(C_INT32 *) pout;
-    }
-  else if ( type == "C_INT16" )
-    {
-      mBuffer << *(C_INT16 *) pout;
-    }
-  else if ( type == "multiline" )
-    {
-      mBuffer << endl;
-      mBuffer << *(string *) pout << endl;
-      mBuffer << "End" << name;
-    }
-  else
-    {
-      fatalError();
-      mFail = 1; //Error
-    }
-    
+  
   mBuffer << endl;
   mLineNumber++;
 
