@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/02/18 21:38:05 $
+   $Author: gasingh $ 
+   $Date: 2004/02/25 20:31:42 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -180,6 +180,7 @@ void CopasiUI3Window::newDoc()
 void CopasiUI3Window::slotFileOpen(QString file)
 {
   QString newFile;
+  int choice = 0;
 
   if (file == "")
     newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps)",
@@ -200,8 +201,25 @@ void CopasiUI3Window::slotFileOpen(QString file)
           ListViews::notify(ListViews::MODEL, ListViews::DELETE,
                             dataModel->getModel()->getKey());
 
-          if (gpsFile) slotFileSave();
+          if (gpsFile)
+            {
+              if (gpsFile != "untitled.gps")
+                {
+                  choice =
+                    QMessageBox::warning(this,
+                                         "Confirm File Changes Update",
+                                         "Do you want to save the changes you made to previous model ?",
+                                         "Yes", "No", 0, 0, 1);
+
+                  if (!(choice))
+                    slotFileSave();
+                }
+              else slotFileSave();
+            }
           else slotFileSaveAs();
+
+          /*if (gpsFile) slotFileSave();
+                else slotFileSaveAs();*/
         }
 
       gpsFile = newFile;
