@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/16 17:15:20 $
+   $Author: shoops $ 
+   $Date: 2005/01/20 20:40:08 $
    End CVS Header */
 
 /**
@@ -19,6 +19,8 @@
 
 #include "copasi.h"
 #include "COptProblem.h"
+#include "COptItem.h"
+
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateProblem.h"
@@ -28,25 +30,28 @@
 #include "model/CCompartment.h"
 
 //  Default constructor
-COptProblem::COptProblem():
-    mOptItemList("OptProblem"),
-    mBestValue(DBL_MAX),
-    mParameter(),
-    mParameterMin(),
-    mParameterMax(),
-    mBestParameter(),
+COptProblem::COptProblem(const CCopasiContainer * pParent):
+    CCopasiProblem(CCopasiTask::optimization, pParent),
+    mCalculateVariablesMin(),
+    mCalculateVariablesMax(),
     mpSteadyState(NULL),
     mpTrajectory(NULL)
-{}
+{
+  addGroup("OptimizationItemList");
+  addGroup("OptimizationConstraintList");
+
+  addParameter("SteadyState", CCopasiParameter::STRING, (std::string) "");
+  addParameter("Trajectory", CCopasiParameter::STRING, (std::string) "");
+  addParameter("ObjectiveFunction", CCopasiParameter::STRING, (std::string) "");
+  addParameter("Maximize", CCopasiParameter::BOOL, (bool) false);
+}
 
 // copy constructor
-COptProblem::COptProblem(const COptProblem& src):
-    mOptItemList(src.mOptItemList),
-    mBestValue(src.mBestValue),
-    mParameter(src.mParameter),
-    mParameterMin(src.mParameterMin),
-    mParameterMax(src.mParameterMax),
-    mBestParameter(src.mBestParameter),
+COptProblem::COptProblem(const COptProblem& src,
+                         const CCopasiContainer * pParent):
+    CCopasiProblem(src, pParent),
+    mCalculateVariablesMin(src.mCalculateVariablesMin),
+    mCalculateVariablesMax(src.mCalculateVariablesMax),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory)
 {}
@@ -54,23 +59,6 @@ COptProblem::COptProblem(const COptProblem& src):
 // Destructor
 COptProblem::~COptProblem()
 {}
-
-// Object assignment overloading,
-COptProblem & COptProblem::operator = (const COptProblem& src)
-{
-  if (this != &src)
-    {
-      mParameter = src.mParameter;
-      mParameterMin = src.mParameterMin;
-      mParameterMax = src.mParameterMax;
-      mBestValue = src.mBestValue;
-      mBestParameter = src.mBestParameter;
-      mpSteadyState = src.mpSteadyState;
-      mpTrajectory = src.mpTrajectory;
-    }
-
-  return *this;
-}
 
 // check constraints : unimplemented - always returns true
 bool COptProblem::checkParametricConstraints()
@@ -90,7 +78,7 @@ bool COptProblem::checkFunctionalConstraints()
  * problem.  Currently process takes ofstream& as a parameter but it will
  * change so that process() takes no parameters.
  */
-C_FLOAT64 COptProblem::calculate()
+bool COptProblem::calculate()
 {
   if (mpSteadyState != NULL)
     {
@@ -105,113 +93,70 @@ C_FLOAT64 COptProblem::calculate()
       setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
       mpTrajectory->process();
     }
-  return 0;
+  return true;
 }
 
-// get parameter values
-CVector< C_FLOAT64 > & COptProblem::getParameter()
+void COptProblem::setSolutionValue(const C_FLOAT64 & value)
 {
-  return mParameter;
-}
-
-//set a parameter
-void COptProblem::setParameter(C_INT32 aNum, C_FLOAT64 aDouble)
-{
-  mParameter[aNum] = aDouble;
-}
-
-// get a parameter
-C_FLOAT64 COptProblem::getParameter(C_INT32 aNum)
-{
-  return mParameter[aNum];
-}
-
-// set parameter number
-void COptProblem::setParameterNum(C_INT32 aNum)
-{
-  mParameter.resize(aNum);
-  mParameterMin.resize(aNum);
-  mParameterMax.resize(aNum);
-  mBestParameter.resize(aNum);
-}
-
-// get parameter number
-C_INT32 COptProblem::getParameterNum()
-{
-  return mParameter.size();
-}
-
-// set the best value
-void COptProblem::setBestValue(C_FLOAT64 aDouble)
-{
-  mBestValue = aDouble;
-}
-
-//get the best value
-C_FLOAT64 COptProblem::getBestValue()
-{
-  return mBestValue;
-}
-
-//set best value in array
-void COptProblem::setBestParameter(C_INT32 i, C_FLOAT64 value)
-{
-  mBestParameter[i] = value;
-}
-
-//get best value from array
-C_FLOAT64 COptProblem::getBestValue(C_INT32 i)
-{
-  return mBestParameter[i];
-}
-
-// get the parameters leading the best value
-CVector< C_FLOAT64 > & COptProblem::getBestParameter()
-{
-  return mBestParameter;
-}
-
-// set individual minimum value
-void COptProblem::setParameterMin(C_INT32 i, C_FLOAT64 value)
-{
-  mParameterMin[i] = value;
+  getSolutionResults()[0] = value;
 }
 
 // get the minimum value of parameters
 CVector< C_FLOAT64 > & COptProblem::getParameterMin()
 {
-  return mParameterMin;
-}
-
-// get minimum value from array
-C_FLOAT64 COptProblem::getParameterMin(C_INT32 i)
-{
-  return mParameterMin[i];
-}
-
-// set individual array element
-void COptProblem::setParameterMax(C_INT32 i, C_FLOAT64 value)
-{
-  mParameterMax[i] = value;
+  return mCalculateVariablesMin;
 }
 
 // get the maximum value of the parameters
 CVector< C_FLOAT64 > & COptProblem::getParameterMax()
 {
-  return mParameterMax;
-}
-
-// get individual element from array
-C_FLOAT64 COptProblem::getParameterMax(C_INT32 i)
-{
-  return mParameterMax[i];
+  return mCalculateVariablesMax;
 }
 
 // set the type of problem : Steady State OR Trajectory
-void COptProblem::setProblemType(ProblemType t)
+void COptProblem::setProblemType(ProblemType type)
 {
-  if (t == SteadyState)
+  if (type == SteadyState)
     mpSteadyState = new CSteadyStateTask(/*this*/NULL);
-  if (t == Trajectory)
+  if (type == Trajectory)
     mpTrajectory = new CTrajectoryTask(/*this*/NULL);
 }
+
+COptItem COptProblem::getOptItem(const unsigned C_INT32 & index)
+{
+  CCopasiParameterGroup * pOptimizationItemList
+  = (CCopasiParameterGroup *) getValue("OptimizationItemList");
+
+  CCopasiParameterGroup * pOptItem
+  = (CCopasiParameterGroup *) pOptimizationItemList->getValue(0);
+
+  if (!pOptItem || !COptItem::isValid(*pOptItem)) fatalError();
+
+  return COptItem(*pOptItem);
+}
+
+const unsigned C_INT32 COptProblem::getOptItemSize() const
+{return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->size();}
+
+COptItem COptProblem::addOptItem(const CCopasiObjectName & objectCN)
+{
+  unsigned C_INT32 index = getOptItemSize();
+  CCopasiParameterGroup * pOptimizationItemList
+  = (CCopasiParameterGroup *) getValue("OptimizationItemList");
+  pOptimizationItemList->addGroup("OptimizationItem");
+
+  CCopasiParameterGroup * pOptItem = (CCopasiParameterGroup *) pOptimizationItemList->getValue(index);
+  pOptItem->addParameter("ObjectCN", CCopasiParameter::STRING, (std::string) objectCN);
+  pOptItem->addParameter("LowerBound", CCopasiParameter::STRING, (std::string) "-inf");
+  pOptItem->addParameter("LowerRelation", CCopasiParameter::STRING, (std::string) "<=");
+  pOptItem->addParameter("UpperBound", CCopasiParameter::STRING, (std::string) "inf");
+  pOptItem->addParameter("UpperRelation", CCopasiParameter::STRING, (std::string) "<=");
+
+  if (!pOptItem || !COptItem::isValid(*pOptItem)) fatalError();
+
+  return COptItem(*pOptItem);
+}
+
+bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
+                              const unsigned C_INT32 & iTo)
+{return ((CCopasiParameterGroup *) getValue("OptimizationItemList"))->swap(iFrom, iTo);}

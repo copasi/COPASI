@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 14:36:37 $
+   $Date: 2005/01/20 20:40:08 $
    End CVS Header */
 
 /**
@@ -22,12 +22,15 @@
 #include <string>
 #include <vector>
 
+#include "utilities/CCopasiProblem.h"
+
 #include "utilities/CVector.h"
-#include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiVector.h"
 
 class CSteadyStateTask;
 class CTrajectoryTask;
+class COptFunction;
+class COptItem;
 
 enum ProblemType
 {
@@ -36,37 +39,19 @@ enum ProblemType
 };
 
 /** @dia:pos -4.4,4.15 */
-class COptProblem
+class COptProblem : public CCopasiProblem
   {
     //data member
   private:
-
-    CCopasiParameterGroup mOptItemList;
-
-    /**
-     * The best result of the problem
-     */
-    C_FLOAT64 mBestValue;
-
-    /**
-     * The paramters for wich the optimization function has to be calculated
-     */
-    CVector< C_FLOAT64 > mParameter;
-
     /**
      * The minimum values of the parameters
      */
-    CVector< C_FLOAT64 > mParameterMin;
+    CVector< C_FLOAT64 > mCalculateVariablesMin;
 
     /**
      * The maximum values of the parameters
      */
-    CVector< C_FLOAT64 > mParameterMax;
-
-    /**
-     * The parameters leading to the best result
-     */
-    CVector< C_FLOAT64 > mBestParameter;
+    CVector< C_FLOAT64 > mCalculateVariablesMax;
 
     /**
      * Pointer to CSteadyStateTask.  To be used in calculate() to select between
@@ -80,13 +65,27 @@ class COptProblem
      */
     CTrajectoryTask * mpTrajectory;
 
+    /**
+     * The objective function which should be minimized or maximized.
+     */
+    COptFunction * mpFunction;
+
     // Implementation
   public:
 
     /**
      * Default constructor
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptProblem();
+    COptProblem(const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor.
+     * @param const COptProblem & src
+     * @paramconst CCopasiContainer * pParent (default: NULL)
+     */
+    COptProblem(const COptProblem & src,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -94,118 +93,90 @@ class COptProblem
     virtual ~COptProblem();
 
     /**
-     * Copy constructor
-     * @param source a COptProblem object for copy
+     * Set the model of the problem
+     * @param CModel * pModel
+     * @result bool succes
      */
-    COptProblem(const COptProblem& source);
+    virtual bool setModel(CModel * pModel);
 
     /**
-     * Object assignment overloading
-     * @param const COptProblem& src
-     * @return COptProblem & *this
+     * Do all neccessary initialization so that calls to caluclate will 
+     * be successful. This is called once from CCopasiTask::process()
+     * @result bool succes
      */
-    COptProblem& operator=(const COptProblem& src);
+    virtual bool initialize();
+
+    /**
+     * Do the calculatting based on CalculateVariables and fill
+     * CalculateResults with the results. 
+     * @result bool succes
+     */
+    virtual bool calculate();
 
     /**
      * calculate function for optimization
-     */
-    virtual C_FLOAT64 calculate();
-
-    /**
-     * calculate function for optimization
+     * @result bool fullfilled
      */
     virtual bool checkParametricConstraints();
 
     /**
      * calculate function for optimization
+     * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();
 
     /**
-     * get the parameter values
+     * Set the solution value.
+     * @param const C_FLOAT64 & value
      */
-    CVector< C_FLOAT64 > & getParameter();
-
-    /*
-     * set a parameter
-     */
-    void setParameter(C_INT32 aNum, C_FLOAT64 aDouble);
+    void setSolutionValue(const C_FLOAT64 & value);
 
     /**
-     * get a parameter
-     */
-    C_FLOAT64 getParameter(C_INT32 aNum);
-
-    /*
-     * set parameter number
-     */
-    void setParameterNum(C_INT32 aNum);
-
-    /*
-     * get parameter number
-     */
-    C_INT32 getParameterNum();
-
-    /*
-     * set the best value
-     */
-    void setBestValue(C_FLOAT64 aDouble);
-
-    /*
-     * get the best value
-     */
-    C_FLOAT64 getBestValue();
-
-    /*
-     * set one parameter in the array of best values -- overloaded function
-     */
-    void setBestParameter(C_INT32 i, C_FLOAT64 value);
-
-    /*
-     * get the best value parameters
-     */
-    CVector< C_FLOAT64 > & getBestParameter();
-
-    /*
-     * get one parameter from the array -- overloaded function
-     */
-    C_FLOAT64 getBestValue(C_INT32 i);
-
-    /*
-     * set minimum value in an array
-     */
-    void setParameterMin(C_INT32, C_FLOAT64);
-
-    /*
-     * get the minimum value of parameters
+     * Retrieve the vector of Minimum values of the parameters
+     * @return CVector< C_FLOAT64 > & parameterMin
      */
     CVector< C_FLOAT64 > & getParameterMin();
 
-    /*
-     * get minimum from array
-     */
-    C_FLOAT64 getParameterMin(C_INT32);
-
-    /*
-     * set maximum in an array
-     */
-    void setParameterMax(C_INT32, C_FLOAT64);
-
-    /*
-     * get the maximum value of the parameters
+    /**
+     * Retrieve the vector of maximum values of the parameters
+     * @return CVector< C_FLOAT64 > & parameterMax
      */
     CVector< C_FLOAT64 > & getParameterMax();
 
-    /*
-     * get maximum value from array
+    /**
+     * Set problem type : Steady State or Trajectory
+     * @param: ProblemType type
      */
-    C_FLOAT64 getParameterMax(C_INT32);
+    void setProblemType(ProblemType type);
 
-    /*
-     * set problem type : Steady State or Trajectory
-     * @param: ProblemType
+    /**
+     * Retrieve the 'index' optimization item.
+     * @param const unsigned C_INT32 & index
+     * @return COptItem optItem
      */
-    void setProblemType(ProblemType);
+    COptItem getOptItem(const unsigned C_INT32 & index);
+
+    /**
+     * Retrieve the number of optimization items.
+     * @return const unsigned C_INT32 size
+     */
+    const unsigned C_INT32 getOptItemSize() const;
+
+    /**
+     * Add an optimization item to the problem.
+     * @param const CCopasiObjectName & objectCN
+     * @return COptItem optItemAdded
+     */
+    COptItem addOptItem(const CCopasiObjectName & objectCN);
+
+    /**
+     * Swap two optimization items.
+     * @param const unsigned C_INT32 & iFrom
+     * @param const unsigned C_INT32 & iTo
+     * @return bool success
+     */
+    bool swapOptItem(const unsigned C_INT32 & iFrom,
+                     const unsigned C_INT32 & iTo);
   };
 
 #endif  // the end

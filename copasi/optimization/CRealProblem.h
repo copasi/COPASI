@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/23 09:31:04 $
+   $Author: shoops $ 
+   $Date: 2005/01/20 20:40:08 $
    End CVS Header */
 
 /**
@@ -63,7 +63,7 @@ class CRealProblem : public COptProblem
     /**
      * calculate function for optimization
      */
-    C_FLOAT64 calculate();
+    virtual bool calculate();
   };
 
 #endif  // the end

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/18 20:28:41 $
+   $Date: 2005/01/20 20:40:08 $
    End CVS Header */
 
 /**
@@ -35,15 +35,15 @@ CRealProblem::~CRealProblem()
 //       Global minimum found by TRUST:
 //        [-2.90354, -2.90354, ..., -2.90354].
 // calculate function for optimization
-C_FLOAT64 CRealProblem::calculate()
+bool CRealProblem::calculate()
 {
   int j;
 
   double fitness;
   double fitness0;
 
-  int parameterNum = getParameterNum();
-  double * parameterValues = getParameter().array();
+  int parameterNum = getCalculateVariables().size();
+  double * parameterValues = getCalculateVariables().array();
 
   //YOHE: this is the mathematics function used only for testing purpose
   // evaluate the fitness
@@ -66,8 +66,6 @@ C_FLOAT64 CRealProblem::calculate()
       fitness = DBL_MAX;
     }
 
-  //set the best value as the fitness;
-  //setBestValue(fitness);
-  //cout<<"fitness is:\t"<<fitness;
-  return fitness;
+  // :TODO: we need to set the result vector return fitness;
+  return true;
 }
