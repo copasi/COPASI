@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Thu Sep 30 15:41:50 2004
+ ** Created: Thu Sep 30 17:54:10 2004
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/30 13:47:23 $
+   $Date: 2004/10/04 13:47:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Thu Sep 30 15:41:50 2004
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.4 2004/09/30 13:47:23 ssahle Exp $)
+ ** Created: Thu Sep 30 17:54:10 2004
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.5 2004/10/04 13:47:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
