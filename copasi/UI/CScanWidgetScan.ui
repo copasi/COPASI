@@ -1,0 +1,190 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CScanWidgetScan</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CScanWidgetScan</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>447</width>
+            <height>120</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>5</number>
+        </property>
+        <widget class="QFrame" row="0" column="0">
+            <property name="name">
+                <cstring>frame</cstring>
+            </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>204</red>
+                    <green>249</green>
+                    <blue>196</blue>
+                </color>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>3</number>
+                        </property>
+                        <widget class="QLabel" row="0" column="2">
+                            <property name="name">
+                                <cstring>labelObject</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Parameter</string>
+                            </property>
+                        </widget>
+                        <spacer row="0" column="1">
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Maximum</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>30</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
+                            <property name="name">
+                                <cstring>labelTitle</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&lt;h2&gt;Scan&lt;/h2&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="1" column="2">
+                            <property name="name">
+                                <cstring>lineEditObject</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QToolButton" row="1" column="3">
+                            <property name="name">
+                                <cstring>buttonObject</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>3</number>
+                        </property>
+                        <widget class="QLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>lineEditMin</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="1" column="0">
+                            <property name="name">
+                                <cstring>lineEditNumber</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>labelNumber</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Intervals</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="1" column="2">
+                            <property name="name">
+                                <cstring>lineEditMax</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="1">
+                            <property name="name">
+                                <cstring>labelMin</cstring>
+                            </property>
+                            <property name="text">
+                                <string>min</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="2">
+                            <property name="name">
+                                <cstring>labelMax</cstring>
+                            </property>
+                            <property name="text">
+                                <string>max</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </vbox>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonObject</sender>
+        <signal>clicked()</signal>
+        <receiver>CScanWidgetScan</receiver>
+        <slot>slotChooseObject()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in declaration">utilities/CCopasiParameterGroup.h</include>
+    <include location="local" impldecl="in declaration">scan/CScanProblem.h</include>
+    <include location="local" impldecl="in implementation">CScanWidgetScan.ui.h</include>
+</includes>
+<variables>
+    <variable>CCopasiObject* mpObject;</variable>
+    <variable>const CModel* mpModel;</variable>
+</variables>
+<slots>
+    <slot access="protected">slotChooseObject()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">initFromScanItem( CCopasiParameterGroup * pg, const CModel * model )</function>
+    <function returnType="bool">saveToScanItem( CScanProblem * pg ) const</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
