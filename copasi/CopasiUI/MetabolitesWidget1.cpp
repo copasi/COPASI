@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/11/29 18:19:03 $
+   $Author: shoops $ 
+   $Date: 2004/11/30 03:00:06 $
    End CVS Header */
 
 /*******************************************************************
@@ -198,7 +198,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
 
   connect(mEditInitConcentration, SIGNAL(edited()), this, SLOT(slotConcChanged()));
   connect(mEditInitNumber, SIGNAL(edited()), this, SLOT(slotNumberChanged()));
-  connect(mComboCompartment, SIGNAL(edited()), this, SLOT(slotCompChanged()));
 
   //mChanged = false;
 }
@@ -425,7 +424,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
 
   switch (choice)
     {
-    case 0:                                // Yes or Enter
+    case 0:                                 // Yes or Enter
       {
         unsigned C_INT32 size = Copasi->pModel->getMetabolites().size();
         //unsigned C_INT32 index = Copasi->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
@@ -448,7 +447,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
         //TODO notify about reactions
         break;
       }
-    case 1:                                // No or Escape
+    case 1:                                 // No or Escape
       break;
     }
 }
