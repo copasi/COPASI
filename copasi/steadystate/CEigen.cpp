@@ -11,6 +11,11 @@
 
 #include "CEigen.h"
 
+/*
+extern "C" void DGEES(char *JOBVS, char *SORT, int *SELECT, int *N, double *A, int *LDA, int *SDIM, double *WR, double *WI, double *VS, int *LDVS, double *WORK, int *LWORK, int *BWORK, int *INFO);
+*/
+
+
 /**
  * Defaulut constructor
  */
@@ -80,7 +85,7 @@ CEigen::~CEigen()
 //{
 //  mMatrix.newsize(rows, cols);
 //}
-	
+        
 /**
  * Set the Work
  */
@@ -205,73 +210,55 @@ void CEigen::CalcEigenvalues(C_FLOAT64 SSRes, TNT::Matrix<C_FLOAT64>  ss_jacob)
           NULL, // mSelect,           //NULL,   
           &mN,                //&n,    
           mA,                    
-          & mLDA,            
-          & mSdim,        // output
+         &(int)mLDA, 
+         &(int)mSdim,        // output
           mEigen_r,         
           mEigen_i,               
           mVS,              
           & mLdvs,       
           mWork,            
-          & mLWork,               
-          mBWork,            //NULL
-          &mInfo);            //output
+         &(int)mLWork,               
+         //    mBWork,            //NULL
+         NULL,
+         &mInfo);            //output
 
-  // release the work array
-  delete [] mWork;
-  // initialise variables
-  //mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
-  //mEigen_nzero = mEigen_ncplxconj = 0.0;
+ // release the work array
+ delete [] mWork;
+ // initialise variables
+ //mEigen_nreal = mEigen_nimag = mEigen_nposreal = mEigen_nnegreal =
+ //mEigen_nzero = mEigen_ncplxconj = 0.0;
 
-  // sort the eigenvalues
-  quicksort( mEigen_r, mEigen_i, 0, mN-1 );
-  // search for the number of positive real parts
-  for( pz=0; pz<mN; pz++ )
-    if( mEigen_r[pz] < 0.0 ) break;
-  // calculate various eigenvalue statistics
-  mEigen_maxrealpart = mEigen_r[0];
-  mEigen_maximagpart = fabs(mEigen_i[0]);
-  for( i=0; i<mN; i++ )
-    {
-      // for the largest real part
-      if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
-      // for the largest imaginary part
-      if( fabs(mEigen_i[i]) > mEigen_maximagpart ) mEigen_maximagpart = fabs(mEigen_i[i]);
-      if( fabs(mEigen_r[i]) > SSRes )
-        {
-          // positive real part
-          if( mEigen_r[i]>=SSRes ) mEigen_nposreal += 1.0;
-          // negative real part
-          if( mEigen_r[i]<=-SSRes ) mEigen_nnegreal += 1.0;
-          if( fabs(mEigen_i[i]) > SSRes )
-            {
-              // complex
-              mEigen_ncplxconj += 1.0;
-            }
-          else
-            {
-              // pure real
-              mEigen_nreal += 1.0;
-            }
-        }
-      else
-        {
-          if( fabs(mEigen_i[i]) > SSRes )
-            {
-              // pure imaginary
-              mEigen_nimag += 1.0;
-            }
-          else
-            {
-              // zero
-              mEigen_nzero += 1.0;
-            }
-        }
-    }
-  if( pz > 0 )
-    {
-      if( mEigen_r[0] > fabs( mEigen_r[mN] ) ) mx = 0; else mx = mN-1;
-      if( mEigen_r[pz-1] < fabs( mEigen_r[pz] ) ) mn = 0; else mn = pz;
-    }
+ // sort the eigenvalues
+ quicksort( mEigen_r, mEigen_i, 0, mN-1 );
+ // search for the number of positive real parts
+ for( pz=0; pz<mN; pz++ )
+  if( mEigen_r[pz] < 0.0 ) break;
+ // calculate various eigenvalue statistics
+ mEigen_maxrealpart = mEigen_r[0];
+ mEigen_maximagpart = fabs(mEigen_i[0]);
+ for( i=0; i<mN; i++ )
+ {
+  // for the largest real part
+  if( mEigen_r[i] > mEigen_maxrealpart ) mEigen_maxrealpart = mEigen_r[i];
+  // for the largest imaginary part
+  if( fabs(mEigen_i[i]) > mEigen_maximagpart ) mEigen_maximagpart = fabs(mEigen_i[i]);
+  if( fabs(mEigen_r[i]) > SSRes )
+  {
+   // positive real part
+   if( mEigen_r[i]>=SSRes ) mEigen_nposreal += 1.0;
+   // negative real part
+   if( mEigen_r[i]<=-SSRes ) mEigen_nnegreal += 1.0;
+   if( fabs(mEigen_i[i]) > SSRes )
+   {
+    // complex
+    mEigen_ncplxconj += 1.0;
+   }
+   else
+   {
+    // pure real
+        mEigen_nreal += 1.0;
+   }
+  }
   else
     {
       mx = mN-1; // index of the largest absolute real part
