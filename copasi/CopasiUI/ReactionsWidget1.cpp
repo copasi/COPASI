@@ -406,10 +406,9 @@ void ReactionsWidget1::slotBtnOKClicked()
   //QMessageBox::information(this, "Reactions Widget", "Do you really want to commit changes");
   string filename = ((string) name.latin1()) + ".gps";
   CWriteConfig *Rtn = new CWriteConfig(filename);
-
-  // CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
-  //CReaction *reactn1;
-  //reactn1 = reactions[(string)name.latin1()];
+  //CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
+  //CReaction *reactn2;
+  //reactn2 = reactions[(string)name.latin1()];
 
   //CChemEq * chem;
   //chem = & reactn1->getChemEq();
@@ -428,8 +427,9 @@ void ReactionsWidget1::slotCheckBoxClicked()
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   reactn1 = reactions[(string)name.latin1()];
 
-  if (reactn1->isReversible() == TRUE && checkBox->isChecked() == FALSE)
+  if (checkBox->isChecked() == FALSE)
     {
+      reactn1->setReversible(TriFalse);
       //for Chemical Reaction
       QString chemical_reaction = LineEdit2->text();
       int i = chemical_reaction.find ("=", 0, TRUE);
@@ -447,6 +447,27 @@ void ReactionsWidget1::slotCheckBoxClicked()
        //reactn1->setReversible(TriFalse);
        
         }*/
+      QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
+    }
+
+  else
+    //if (reactn1->isReversible() == FALSE && checkBox->isChecked() == FALSE)
+
+    {
+      //for Chemical Reaction
+      QString chemical_reaction = LineEdit2->text();
+      int i = chemical_reaction.find ("->", 0, TRUE);
+      chemical_reaction = chemical_reaction.replace(i, 2, "=");
+
+      //chemical_reaction =  chemical_reaction.replace(QRegExp("="), "->");
+      LineEdit2->setText(chemical_reaction);
+      ComboBox1->clear();
+      CFunction *function;
+      int m = -1;
+      function = &reactn1->getFunction();
+      ComboBox1->insertItem(function->getName().c_str(), m);
+
+      // ComboBox1->insertItem("No Values", -1);
       QMessageBox::information(this, "Reactions Widget", "You need to change the Chemical Equation and a select a new Kinetics type");
     }
 }
