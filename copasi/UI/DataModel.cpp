@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/11 21:31:42 $
+   $Date: 2003/12/12 04:17:06 $
    End CVS Header */
 
 #include "DataModel.h"
@@ -163,10 +163,12 @@ void DataModel::loadModel(const char* fileName)
 
       pdelete(steadystatetask);
       steadystatetask = new CSteadyStateTask();
+      steadystatetask->getProblem()->setModel(model);
       searchFolderList(21)->setObjectKey(steadystatetask->getKey());
 
       pdelete(trajectorytask);
       trajectorytask = new CTrajectoryTask();
+      trajectorytask->getProblem()->setModel(model);
       searchFolderList(23)->setObjectKey(trajectorytask->getKey()); //23=Time course
 
       pdelete(scantask);

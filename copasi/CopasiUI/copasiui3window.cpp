@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/11 21:31:42 $
+   $Date: 2003/12/12 04:17:06 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -90,13 +90,13 @@ CopasiUI3Window::CopasiUI3Window():
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.COPASIxml)",
+  QString tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.gps)",
                 this, "save file dialog",
                 "Choose a file");
 
   if (dataModel && tmp)
     {
-      if (!tmp.endsWith(".COPASIxml")) tmp += ".COPASIxml";
+      if (!tmp.endsWith(".gps")) tmp += ".gps";
 
       dataModel->saveModel(tmp.latin1());
       gpsFile = tmp;
@@ -148,7 +148,7 @@ void CopasiUI3Window::newDoc()
   if (!dataModel)
     dataModel = new DataModel(); // create the data model
 
-  gpsFile = "temp.COPASIxml";
+  gpsFile = "untitled.gps";
   dataModel->createModel(gpsFile.latin1());
   ListViews::notify(ListViews::MODEL, ListViews::ADD, dataModel->getModel()->getKey());
   if (!bobject_browser_open)
@@ -170,7 +170,7 @@ void CopasiUI3Window::slotFileOpen()
 {
   QString newFile;
 
-  newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.COPASIxml)",
+  newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps)",
                                          this, "open file dialog",
                                          "Choose a file");
 
@@ -212,18 +212,26 @@ void CopasiUI3Window::slotFileOpen()
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSave()
 {
-  if (dataModel && gpsFile)
+  std::ifstream File(gpsFile.latin1());
+  std::string Line;
+  File >> Line;
+  File.close();
+
+  int choice = 0;
+
+  if (!Line.compare(0, 8, "Version="))
     {
-      if (gpsFile.endsWith(".gps") ||
-          gpsFile == QString::fromLatin1("temp.COPASIxml"))
-        {
-          QString tmp(gpsFile);
-          tmp.replace(QRegExp("\\.gps$"), ".COPASIxml");
-          slotFileSaveAs(tmp);
-        }
-      else
-        dataModel->saveModel(gpsFile.latin1());
+      /* Ask for permision to overwrite write? */
+      /* If no open call slotFileSaveAs */
+      choice = QMessageBox::warning(this,
+                                    "Confirm File Version Update",
+                                    "You are to overwrite an existing Gepasi.\n"
+                                    "This will render the file unreadable for Gepasi",
+                                    "Continue", "Save As", 0, 0, 1);
     }
+
+  if (choice) slotFileSaveAs();
+  else if (dataModel) dataModel->saveModel(gpsFile.latin1());
 }
 
 /***************CopasiUI3Window::slotFilePrint()******
