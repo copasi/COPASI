@@ -19,7 +19,7 @@ static long GetFileSize(const char *name);
 CReadConfig::CReadConfig(void)
 {
     // initialize everything
-    mFilename     = "test.txt";
+    mFilename     = "";
     mpBufferBegin = NULL;
     mLineNumber   = 0;
     mFail         = 0;
