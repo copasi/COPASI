@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 09:14:33 $
+   $Date: 2004/11/12 10:00:32 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -53,6 +53,8 @@ class SliderDialog: public QDialog
 
     DataModelGUI* mpDataModel;
 
+    bool mSliderValueChanged;
+
     void init();
 
     static C_INT32 numMappings;
@@ -77,6 +79,7 @@ class SliderDialog: public QDialog
     void createNewSlider();
     void runTask();
     void sliderValueChanged();
+    void sliderReleased();
   };
 
 #endif

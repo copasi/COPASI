@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/11/05 16:18:39 $
+   $Date: 2004/11/12 10:00:34 $
    End CVS Header */
 
 #include <iostream>
@@ -49,7 +49,8 @@ SliderDialog::SliderDialog(QWidget* parent, DataModelGUI* dataModel): QDialog(pa
     contextMenu(NULL),
     currSlider(NULL),
     currentFolderId(0),
-    mpDataModel(dataModel)
+    mpDataModel(dataModel),
+    mSliderValueChanged(false)
 {
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   this->scrollView = new QScrollView(this);
@@ -249,6 +250,7 @@ void SliderDialog::addSlider(CopasiSlider* slider, C_INT32 folderId)
       slider->setHidden(false);
     }
   connect(slider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+  connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
 }
 
 void SliderDialog::setCurrentFolderId(C_INT32 id)
@@ -313,8 +315,14 @@ void SliderDialog::runTask()
 
 void SliderDialog::sliderValueChanged()
 {
-  if (this->autoRunCheckBox->isChecked())
+  this->mSliderValueChanged = true;
+}
+
+void SliderDialog::sliderReleased()
+{
+  if (this->mSliderValueChanged && this->autoRunCheckBox->isChecked())
     {
+      this->mSliderValueChanged = false;
       this->runTask();
     }
 }
