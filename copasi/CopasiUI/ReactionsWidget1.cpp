@@ -176,7 +176,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
-  //connect(LineEdit2, SIGNAL(textChanged(const QString &)), this, SLOT(slotLineEditChanged(const QString &)));
 
   //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
@@ -200,12 +199,10 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
-  //the lineedit changes need to be written to the RI
-  mRi.setChemEqString(LineEdit2->text().latin1());
-  mRi.setReactionName(LineEdit1->text().latin1());
-
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(dataModel->getModel()));
+
+  mRi.setReactionName(LineEdit1->text().latin1());
 
   //this writes all changes to the reaction
   mRi.writeBackToReaction(*(dataModel->getModel()));
@@ -250,11 +247,23 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 }
 
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
-void ReactionsWidget1::slotLineEditChanged(/*const QString &*/)
+void ReactionsWidget1::slotLineEditChanged()
 {
-  std::cout << "slotLineEditChanged" << std::endl;
+  std::string eq = LineEdit2->text().latin1();
+
+  //first check if the string is a valid equation
+  if (!CChemEqInterface::isValidEq(eq))
+    {
+      //TODO: bring up a message window??
+      //debugging
+      cout << "Not a valid equation!\n\n";
+      return;  // abort further processing
+    }
+  //  else  //debugging
+  //    cout<<"Valid equation\n\n";
+
   // tell the reaction interface
-  mRi.setChemEqString(LineEdit2->text().latin1());
+  mRi.setChemEqString(eq);
 
   // update the widget
   FillWidgetFromRI();
