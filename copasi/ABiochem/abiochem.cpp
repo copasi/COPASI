@@ -21,17 +21,17 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "tnt/tnt.h"
-#include "tnt/cmat.h"
+// #include "tnt/tnt.h"
+// #include "tnt/cmat.h"
 
 #include "utilities/readwrite.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "model/model.h"
 #include "model/CSpec2Model.h"
 #include "output/output.h"
-#include "function/function.h"
-#include "trajectory/trajectory.h"
-#include "steadystate/steadystate.h"
+#include "function/CFunctionDB.h" 
+// #include "trajectory/trajectory.h"
+#include "steadystate/CEigen.h"
 #include "utilities/CGlobals.h"
 #include "ABiochem/clo.h"
 #include "ABiochem/CGene.h"
@@ -242,7 +242,7 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
           id2param.setValue(gene[i]->getn(j));
           react->getId2Parameters().add(id2param);
         }
-      model.addReaction(react);
+      model.addReaction(*react);
       // mRNA degradation
       sprintf(strname, "%s degradation", gene[i]->getName().data());
       sprintf(streq, "%s ->", gene[i]->getName().data());
@@ -266,7 +266,7 @@ void MakeModel(char *Title, char *comments, CCopasiVector < CGene > &gene, C_INT
       id2metab.setIdentifierName("substrate_0");
       id2metab.setMetaboliteName(gene[i]->getName());
       react->getId2Substrates().add(id2metab);
-      model.addReaction(react);
+      model.addReaction(*react);
     }
   // structural analysis (moieties, etc.)
   model.compile();
@@ -332,7 +332,7 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "MODIFIER");
         }
       funct->compile();
-      db.add(funct);
+      db.add(*funct);
     }
 }
 
@@ -362,8 +362,8 @@ C_INT32 SSSP(CCopasiVector < CGene > &gene, C_INT32 g, C_INT32 *dist)
         {
           // fill nbrs with the neighbors
           nbrs.clear();
-          for (j = 0; j < gene[distList->at(i)]->getModifierNumber(); j++)
-            nbrs.push_back(gene[distList->at(i)]->getModifierIndex(j));
+          for (j = 0; j < gene[(*distList)[i]]->getModifierNumber(); j++)
+            nbrs.push_back(gene[(*distList)[i]]->getModifierIndex(j));
           for (j = 0; j < nbrs.size(); j++)
             {
               u = nbrs[j];
@@ -505,7 +505,7 @@ C_FLOAT64 cluster(CCopasiVector < CGene > &gene, C_INT32 g)
 void GraphMetrics(CCopasiVector < CGene > &gene, C_INT32 tedges, char *Title)
 {
   C_INT32 i, j, k, l, n;
-  TNT::Matrix<C_FLOAT64> Adj;
+  CMatrix<C_FLOAT64> Adj;
   CEigen *eigen;
   C_FLOAT64 ssRes, *eigen_r, *eigen_i;
   C_INT32 **dist;
@@ -665,10 +665,9 @@ void WriteGepasi(char *Title, CModel &model)
   ofstream fout;
   CWriteConfig *modelBuff;
   C_INT32 i, nmetab;
-  vector < CMetab * > Metab;
+  CCopasiVector< CMetab > Metab = model.getMetabolites();
 
   nmetab = model.getTotMetab();
-  Metab = model.getMetabolites();
   sprintf(mtitle, "%s.gps", Title);
   // first part of the file come from a template
   ifstream fin("template.gps");
@@ -868,7 +867,7 @@ C_INT main(C_INT argc, char *argv[])
   if (pos != string::npos)
     {
       fdb = fdb.substr(0, pos + 1) + "FunctionDB.gps";
-      Copasi->FunctionDB.setFilename(fdb);
+      Copasi->pFunctionDB->setFilename(fdb);
     }
   Copasi->setArguments(argc, argv);
 
@@ -889,7 +888,7 @@ C_INT main(C_INT argc, char *argv[])
       // create appropriate kinetic types, only those
       // that are really needed for this model
       for (j = 0; j < n; j++)
-        MakeKinType(Copasi->FunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
+        MakeKinType(*Copasi->pFunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
       // calculate several metrics
       GraphMetrics(GeneList, k, NetTitle);
       // create graph files

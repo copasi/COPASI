@@ -2,6 +2,9 @@
 bin_PROGRAMS = ABiochem
 
 ABiochem_SOURCES = \
+	1d.cpp \
+	ab.cpp \
+	abiochem.cpp \
 	CGene.cpp \
 	Erdos.cpp \
 	r250.c \
@@ -15,13 +18,14 @@ ABiochem_LIBS = \
 	../function \
 	../output \
 	../randomGenerator \
+	../report \
 	../steadystate \
 	../trajectory \
 	../utilities
 
-# matrix_SOURCES = matrix.cpp
-
 EXTRA_DIST =  \
+	clo.cpp \
+	abiochem.cpp \
 	CGene.h CGene.cpp \
 	Erdos.cpp \
 	r250.h r250.c \
@@ -42,9 +46,10 @@ LIBS = \
         -Wl,-ltrajectory \
         -Wl,-lutilities \
         -Wl,-loutput \
-	-Wl,-loptimization \
         -Wl,-lfunction \
         -Wl,-lmodel \
+	-Wl,-lreport \
+	-Wl,-lrandomGenerator \
         -llapack -lblas -lf2c -lfl
 
 #  Use this for standard clapack
@@ -63,12 +68,13 @@ LIBS = \
 #	-lpthread \
 
 # the library search path.
-LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
+LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
         -L../function \
         -L../model \
         -L../output \
 	-L../randomGenerator \
+	-L../report \
         -L../steadystate \
         -L../trajectory \
         -L../utilities

@@ -16,15 +16,23 @@
 #include <vector>
 
 #include "copasi.h"
+
 #include "utilities/CGlobals.h"
 #include "ABiochem/CGene.h"
 
-CGeneModifier::CGeneModifier(void)
+CGeneModifier::CGeneModifier(const std::string & name,
+                             CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "CGeneModifier")
 {
   mModifier = NULL;
   mType = 0;
   mK = 1.0;
 }
+
+CGeneModifier::CGeneModifier(const CGeneModifier & src,
+                             CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
 
 CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
@@ -63,13 +71,20 @@ C_FLOAT64 CGeneModifier::getn(void)
 void CGeneModifier::cleanup()
 {}
 
-CGene::CGene()
+CGene::CGene(const std::string & name,
+             CCopasiContainer * pParent):
+    CCopasiObject(name, pParent, "CGene")
 {
   mInDegree = 0;
   mOutDegree = 0;
   mRate = 1.0;
   mDegradationRate = 1.0;
 }
+
+CGene::CGene(const CGene & src,
+             CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
 
 CGene::~CGene()
 {}

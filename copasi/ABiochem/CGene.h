@@ -12,9 +12,12 @@
 #include <string>
 #include <iostream>
 
+#include "utilities/CCopasiVector.h"
+#include "report/CCopasiObject.h"
+
 class CGene;
 
-class CGeneModifier
+class CGeneModifier: public CCopasiObject
   {
     // Attributes
 
@@ -44,7 +47,10 @@ class CGeneModifier
     /**
      *  Default constructor
      */
-    CGeneModifier(void);
+    CGeneModifier(const std::string & name = "NoName",
+                  CCopasiContainer * pParent = NULL);
+    CGeneModifier(const CGeneModifier & src,
+                  CCopasiContainer * pParent = NULL);
 
     /**
      *  Constructor
@@ -85,7 +91,7 @@ class CGeneModifier
     void cleanup();
   };
 
-class CGene
+class CGene: public CCopasiObject
   {
     // Attributes
 
@@ -120,7 +126,7 @@ class CGene
      *  @supplierCardinality 0..*
      *  @associates <{CGene*}>
      */
-    CCopasiVector < CGeneModifier > mModifier;
+    CCopasiVector< CGeneModifier > mModifier;
 
     /**
      *  List of other genes that modify transcription of this one (indices)
@@ -134,7 +140,10 @@ class CGene
     /**
      *  Default constructor
      */
-    CGene();
+    CGene(const std::string & name = "NoName",
+          CCopasiContainer * pParent = NULL);
+    CGene(const CGene & src,
+          CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor
