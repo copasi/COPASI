@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2003/06/25 19:00:08 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2003/07/02 14:28:30 $  
 ######################################################################
 
 LIB = xml
@@ -17,5 +17,4 @@ HEADERS += CCopasiXML.h \
 SOURCES += CCopasiXML.cpp \
            CCopasiXMLInterface.cpp \
            CExpat.cpp \
-           CXMLHandler.cpp \
            CCopasiXMLParser.cpp

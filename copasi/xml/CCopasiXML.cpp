@@ -71,21 +71,24 @@ bool CCopasiXML::load(std::istream & is)
 
   CCopasiXMLParser Parser;
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
 
   while (!done)
     {
       mpIstream->get(pBuffer, BUFFER_SIZE, 0);
-      if (mpIstream->fail() &&
-          !mpIstream->eof()) fatalError();
 
       if (mpIstream->eof()) done = true;
+      if (mpIstream->fail() && !done) fatalError();
+
       Parser.parse(pBuffer, -1, done);
     }
+  delete [] pBuffer;
 #undef BUFFER_SIZE
 
-  delete [] pBuffer;
+  mpFunctionList = Parser.getFunctionList();
+  mpModel = Parser.getModel();
+
   return success;
 }
 

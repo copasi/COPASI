@@ -14,10 +14,16 @@
 
 #include "expat.h"
 
+template<class CType>
 class CXMLElementHandler
   {
     // Attributes
   protected:
+    /**
+     *
+     */
+    CType & mCommon;
+
     /**
      * The currently processed element.
      */
@@ -28,74 +34,39 @@ class CXMLElementHandler
      */
     CXMLElementHandler * mpCurrentHandler;
 
-    /**
-     *
-     */
-    std::stack< CXMLElementHandler * > & mStack;
-
     // Operations
   public:
     /**
      * Constructor
      */
-    CXMLElementHandler(std::stack< CXMLElementHandler * > & stack);
+    CXMLElementHandler(CType & common):
+        mCommon(common),
+        mCurrentElement(-1),
+        mpCurrentHandler(NULL)
+    {}
 
     /**
      * Destructor
      */
-    virtual ~CXMLElementHandler();
+    virtual ~CXMLElementHandler() {}
 
     /**
      * Start element handler
      * @param const XML_Char *pszName
      * @param const XML_Char **papszAttrs
      */
-    virtual void start(const XML_Char *pszName,
-                       const XML_Char **papszAttrs);
+    virtual void start(const XML_Char * C_UNUSED(pszName),
+                       const XML_Char ** C_UNUSED(papszAttrs)) {}
 
     /**
      * End element handler
      * @param const XML_Char *pszName
      */
-    virtual void end(const XML_Char *pszName);
+    virtual void end(const XML_Char * C_UNUSED(pszName)) {}
 
     /**
      * Reset the element handler to start values.
      */
-    virtual void reset();
-  };
+    virtual void reset() {}};
 
-class CXMLCharacterDataHandler
-  {
-    // Attributes
-  protected:
-    /**
-     * The character data
-     */
-    std::string mData;
-
-    // Operations
-  public:
-
-    /**
-     * Constructor
-     */
-    CXMLCharacterDataHandler();
-
-    /**
-     * Destructor
-     */
-    virtual ~CXMLCharacterDataHandler();
-
-    /**
-     * Retrieve the data. 
-     * Any sequence of toBeStripped characters is replaced by a single
-     * join character. The default is no stripping.
-     * @param const std::string & toBeStripped (default: "")
-     * @param const std::string & join (default: " ")
-     * @return std::string data
-     */
-    std::string getData(const std::string & toBeStripped = "",
-                        const std::string & join = " ") const;
-  };
 #endif // COPASI_CXMLHandler
