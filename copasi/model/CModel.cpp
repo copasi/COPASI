@@ -30,12 +30,11 @@ CModel::CModel()
   CONSTRUCTOR_TRACE;
   mComments = "";
 
-  mpLView = new
-            TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  mpLView
+  = new TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
 
-  mpInverseLView = new
-                   TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
-                   (mL);
+  mpInverseLView
+  = new TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > (mL);
 
   mQuantityUnitName = "unknown";
   mNumber2QuantityFactor = 1.0;
@@ -45,12 +44,11 @@ CModel::CModel()
 CModel::CModel(const CModel & src)
 {
   CONSTRUCTOR_TRACE;
-  mpLView = new
-            TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
+  mpLView
+  = new TNT::UnitLowerTriangularView <TNT::Matrix <C_FLOAT64 > > (mL);
 
-  mpInverseLView = new
-                   TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
-                   (mL);
+  mpInverseLView
+  = new TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > > (mL);
 
   mTitle = src.mTitle;
   mComments = src.mComments;
@@ -83,10 +81,22 @@ CModel::~CModel()
 
 void CModel::cleanup()
 {
+  /* The real objects */
   mCompartments.cleanup();
   mSteps.cleanup();
   mMoieties.cleanup();
+
+  /* The references */
+  mStepsX.clear();
+  mStepsInd.clear();
+
   mMetabolites.clear();
+  mMetabolitesX.clear();
+  mMetabolitesInd.clear();
+  mMetabolitesDep.clear();
+
+  mFluxes.clear();
+  mFluxesX.clear();
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -934,19 +944,6 @@ const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
   {
     return *mpInverseLView;
   }
-
-/**
- *  Get the reverse Matrix of this Model
- */
-const TNT::Matrix < C_FLOAT64 >& CModel::getML() const
-  {
-    return mL;
-  }
-
-TNT::Matrix < C_FLOAT64 >& CModel::getML()
-{
-  return mL;
-}
 
 CState * CModel::getInitialState() const
   {
