@@ -240,13 +240,6 @@ SOURCE=.\moc_TrajectoryWidget.cpp
 # Begin Source File
 
 SOURCE=.\ModelWidget.cpp
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -1127,93 +1120,5 @@ SOURCE=.\Tree.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
-# Begin Source File
-
-SOURCE=.\CompartmentsWidget.moc
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget.moc
-InputName=CompartmentsWidget
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - MOCing CompartmentsWidget.cpp...
-InputDir=.
-InputPath=.\CompartmentsWidget.moc
-InputName=CompartmentsWidget
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\ObjectBrowser.ui
-
-!IF  "$(CFG)" == "CopasiUI3 - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - UICing ObjectBrowser.ui...
-InputDir=.
-InputPath=.\ObjectBrowser.ui
-InputName=ObjectBrowser
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "CopasiUI3 - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - UICing ObjectBrowser.ui...
-InputDir=.
-InputPath=.\ObjectBrowser.ui
-InputName=ObjectBrowser
-
-BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	
-
-"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # End Target
 # End Project
