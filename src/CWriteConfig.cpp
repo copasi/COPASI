@@ -92,7 +92,8 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
                                   const string & type, 
                                   const void *pout)
 {
-    mBuffer << name << "=";
+    mBuffer << name;
+    if (type != "multiline") mBuffer << "=";
     
     // Return the value depending on the type
     if ( type == "string" )
@@ -110,6 +111,12 @@ C_INT32 CWriteConfig::SetVariable(const string & name,
     else if ( type == "C_INT16" )
     {
         mBuffer << *(C_INT16 *) pout;
+    }
+    else if ( type == "multiline" )
+    {
+        mBuffer << endl;
+        mBuffer << *(string *) pout << endl;
+        mBuffer << "End" << name;
     }
     else
     {

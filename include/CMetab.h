@@ -128,29 +128,37 @@ public:
     /**
      *
      */
-    C_FLOAT64 * GetConcentration() {return &mConc;}
-
-    /**
-     *
-     */
-    CCompartment * GetCompartment() {return mCompartment;} 
-
-    /**
-     *
-     */
-    void SetName(const string & name) {mName = name;}
-
-    /**
-     *
-     */
-    void SetConcentration(const C_FLOAT64 concentration) 
-        {mConc = concentration;}
+    C_INT16 GetStatus() const;
     
     /**
      *
      */
-    void SetCompartment(CCompartment * compartment) 
-        {mCompartment = compartment;} 
+    C_FLOAT64 * GetConcentration();
+
+    /**
+     *
+     */
+    CCompartment * GetCompartment();
+
+    /**
+     *
+     */
+    void SetName(const string & name);
+
+    /**
+     *
+     */
+    void SetConcentration(const C_FLOAT64 concentration);
+    
+    /**
+     *
+     */
+    void SetStatus(const C_INT16 status);
+    
+    /**
+     *
+     */
+    void SetCompartment(CCompartment * compartment); 
 
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.

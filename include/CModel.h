@@ -8,66 +8,88 @@
 #include <vector>
 #include <string>
 
-#include "CReadConfig.h"
-#include "CWriteConfig.h"
-#include "CMetab.h"
+
 #include "CStep.h"
+#include "CMoiety.h"
+#include "tnt/tnt.h"
+#include "tnt/cmat.h"
 
 class CModel
 {
 //Attributes
 private:
     /**
-     * 
+     *  title of the model
      */
-    // title of the model
     string mTitle;
 
-
     /**
-     * 
+     *  Comments
      */
-    // Comments
     string mComments;
 
     // metabolites
 
     /**
-     * 
+     *  for array of compartments
      */
-    // number of internal metabolites
+    CCopasiVector < CCompartment > * mCompartments;
+
+    /**
+     *  for array of metabolites
+     */
+    vector < CMetab * > mMetabolites;
+    vector < CMetab * > mMetabolitesX;
+    vector < CMetab * > mMetabolitesInd;
+    vector < CMetab * > mMetabolitesDep;
+    
+    /**
+     *  for array of steps
+     */
+    CCopasiVector < CStep > * mSteps;
+    vector < CStep * > mStepsX;
+    vector < CStep * > mStepsInd;
+    
+    /**
+     *  for array of conserved moieties
+     */
+    CCopasiVector < CMoiety > * mMoieties;
+
+    /**
+     *   Stoichiometry Matrix
+     */
+    TNT::Matrix < C_FLOAT64 > mStoi;
+    
+    /**
+     *   Reduced Stoichiometry Matrix
+     */
+    TNT::Matrix < C_FLOAT64 > mRedStoi;
+    
+    /**
+     *   Conservation Relationship
+     */
+    TNT::Matrix < C_FLOAT64 > mConsRel;
+    
+#ifdef XXXX
+    /**
+     *  number of internal metabolites
+     */
     C_INT32 mIntMetab;
 
     /**
-     * 
+     *  number of independent metabolites
      */
-    // number of independent metabolites
     C_INT32 mIndMetab;
 
     /**
-     * 
+     *  number of dependent metabolites
      */
-    // number of dependent metabolites
     C_INT32 mDepMetab;
 
     /**
-     * 
+     *  number of external metabolites
      */
-    // number of external metabolites
     C_INT32 mExtMetab;
-
-    /**
-     * 
-     */
-    // for array of metabolites
-    vector < CMetab > mMetabolite;
-
-    /**
-     * 
-     */
-    // for array of conserved moieties
-    vector < CMetab > mMoiety;
-
 
     /**
      * 
@@ -75,18 +97,6 @@ private:
     // the overall transition time of the pathway
     C_FLOAT64 mTransTime;
 
-
-    /**
-     * 
-     */
-    // for array of steps
-    vector < CStep > mStep;
-
-    /**
-     * 
-     */
-    // for array of compartments`
-    vector < CCompartment > mCompartment;
 
     // reaction network
 
@@ -185,6 +195,7 @@ private:
      */
     // temporary file for debugging
     string   mDebugFile;   // temporary file for debugging
+#endif // XXXX
 
 public:
     /**
@@ -195,8 +206,73 @@ public:
     /**
      * 
      */
+    void Init();
+    
+    /**
+     * 
+     */
     ~CModel();        // destructor (deallocation code here)
 
+    /**
+     * 
+     */
+    void Delete();
+    
+    /**
+     *  Loads an object with data coming from a CReadConfig object.
+     *  (CReadConfig object reads an input stream)
+     *  @param pconfigbuffer reference to a CReadConfig object.
+     *  @return Fail
+     */
+    C_INT32 Load(CReadConfig &configBuffer);
+
+    /**
+     *  Saves the contents of the object to a CWriteConfig object.
+     *  (Which usually has a file attached but may also have socket)
+     *  @param pconfigbuffer reference to a CWriteConfig object.
+     *  @return Fail
+     */
+    C_INT32 Save(CWriteConfig &configBuffer);
+
+    /**
+     *  Build the Stoichiometry Matrix from the chemical equations of the steps
+     */
+    void BuildStoi();
+    
+    /**
+     *  LU-Decomposition of the stoichiometry matrix
+     */
+    void LUDecomposition();
+    
+    /**
+     *  Set the status of the metabolites
+     */
+    void SetMetabolitesStatus();
+
+    /**
+     *  Build the Reduced Stoichiometry Matrix from the LU decomposition
+     */
+    void BuildRedStoi();
+
+    /**
+     *  Build the Conservation Relationssips based on the LU decomposition
+     */
+    void BuildConsRel();
+    
+    /**
+     *  Build the Moities based on the LU decomposition
+     */
+    void BuildMoieties();
+    
+    /**
+     *  This calculate the right hand side (ydot) of the ODE for LSODA
+     */
+    void LSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+    vector < CMetab * > & GetMetabolitesInd();
+    
+    
+#ifdef XXXX
     /**
      *  Assignement operator. 
      */
@@ -229,22 +305,6 @@ public:
      * 
      */
     void Clear(void);     // clears the model (incl resetting to 0)
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */
-    C_INT32 Save(CWriteConfig &configbuffer);
-
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    C_INT32 Load(CReadConfig &configbuffer);
 
     /**
      * 
@@ -451,7 +511,7 @@ private:
      */
     // rebuild the stoichiometry matrix
     void RebuildStoi(C_INT32 flag);
-
+#endif // XXXX
 };
 
 #endif // CModel

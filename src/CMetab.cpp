@@ -149,6 +149,26 @@ C_INT32 CMetab::Save(CWriteConfig &configbuffer)
 
 string CMetab::GetName() const {return mName;}
 
+C_FLOAT64 * CMetab::GetConcentration() {return &mConc;}
+
+C_INT16 CMetab::GetStatus() const {return mStatus;}
+
+CCompartment * CMetab::GetCompartment() {return mCompartment;} 
+
+void CMetab::SetName(const string & name) {mName = name;}
+
+void CMetab::SetConcentration(const C_FLOAT64 concentration)
+{
+    mConc = concentration;
+}
+
+void CMetab::SetStatus(const C_INT16 status) {mStatus = status;}
+
+void CMetab::SetCompartment(CCompartment * compartment) 
+{
+    mCompartment = compartment;
+} 
+
 C_INT16 CMetab::IsValidName()
 {
     return (mName.find_first_of("; ") == string::npos);

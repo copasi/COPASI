@@ -23,6 +23,13 @@
 #include "CKinFunction.h"
 #include "CStep.h"
 #include "CMoiety.h"
+#include "CModel.h"
+#include "CODESolver.h"
+#include "tnt/tnt.h"
+#include "tnt/luX.h"
+#include "tnt/cmat.h"
+#include "tnt/vec.h"
+#include "tnt/subscript.h"
 
 C_INT32  TestReadConfig(void);
 C_INT32  TestWriteConfig(void);
@@ -35,6 +42,10 @@ C_INT32  TestReadSample(void);
 C_INT32  TestMoiety(void);
 C_INT32  TestKinFunction(void);
 C_INT32  TestBaseFunction(void);
+C_INT32  TestModel(void);
+C_INT32  TestLU();
+C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
+
 C_INT32  MakeFunctionDB(void);
 C_INT32  MakeFunctionEntry(const string &name,
                            const string &description,
@@ -74,6 +85,9 @@ C_INT32 main(void)
         // TestKinFunction();
         // TestBaseFunction();
         // MakeFunctionDB();
+        // TestModel();
+        // TestLU();
+
     }
 
     catch (CCopasiException Exception)
@@ -289,114 +303,36 @@ C_INT32 TestReadSample(void)
     C_INT32 i;
     
     CReadConfig inbuf("gps/BakkerComp.gps");
- 
-    if (inbuf.GetVersion() < "4")
-    {
-        inbuf.GetVariable("TotalMetabolites", "C_INT32", &size,
-                          CReadConfig::LOOP);
-        Copasi.OldMetabolites.Load(inbuf, size);
-    }
-    
-    CCopasiVector< CCompartment > Compartments;
-    inbuf.GetVariable("TotalCompartments", "C_INT32", &size,
-                      CReadConfig::LOOP);
-    
-    Compartments.Load(inbuf, size);
+    CModel model;
+    model.Load(inbuf);
+    model.BuildStoi();
+    model.LUDecomposition();
+    model.SetMetabolitesStatus();
+    model.BuildRedStoi();
 
-    if (inbuf.GetVersion() < "4")
-    {
-        // Create the correct compartment / metabolite relationships
-        CMetab Metabolite;
-        for (i = 0; i < Copasi.OldMetabolites.Size(); i++)
-        {
-            Metabolite = Copasi.OldMetabolites[i];
-            
-            Compartments[Copasi.OldMetabolites[i].GetIndex()].
-                AddMetabolite(Metabolite);
-        }
-    }
-
-    // This will be come part of the model
-    vector < CMetab * > Metabolites;
-    Metabolites = InitMetabolites(Compartments);
-
-    CCopasiVector < CKinFunction > Functions;
-    inbuf.GetVariable("TotalUDKinetics", "C_INT32", &size,
-                      CReadConfig::LOOP);
-    Functions.Load(inbuf, size)    ;
-
-    for (i = 0; i < Functions.Size(); i++)
-        Copasi.FunctionDB.Add(Functions[i]);
+    CODESolver odeSolver;
+    size = model.GetMetabolitesInd().size();
+    C_FLOAT64 *y;
+    y = new double[size];
     
-    CCopasiVector < CStep > Steps;
-    inbuf.GetVariable("TotalSteps", "C_INT32", &size,
-                      CReadConfig::LOOP);
-    Steps.Load(inbuf, size);
-    
-    // For old input file versions we need to fill the compartments
-    if (inbuf.GetVersion() < "4")
-        for (i = 0; i < Steps.Size(); i++)
-            Steps[i].Old2New(Metabolites);
-            
-    for (i = 0; i < Steps.Size(); i++)
-    {
-        Steps[i].Compile(Compartments);
-        cout << "Step[" << i << "] = " << Steps[i].Calculate() << endl;
-    }
-    
+    odeSolver.Initialize(model, y, size);
+    odeSolver.Step(0.0, 1.0);
     
     CWriteConfig outbuf("copasi.gps");
-    size = Compartments.Size();
-    outbuf.SetVariable("TotalCompartments", "C_INT32", &size);
-    Compartments.Save(outbuf);
-    size = Copasi.FunctionDB.LoadedFunctions().Size();
-    outbuf.SetVariable("TotalUDKinetics", "C_INT32", &size);
-    Copasi.FunctionDB.LoadedFunctions().Save(outbuf);
-    size = Steps.Size();
-    outbuf.SetVariable("TotalSteps", "C_INT32", &size);
-    Steps.Save(outbuf);
-        
+    model.Save(outbuf);
     outbuf.Flush();
 
-    CReadConfig inbuf2("copasi.gps");
-    Compartments.Delete();
-    Functions.Delete();
     Copasi.FunctionDB.Delete();
     Copasi.FunctionDB.Init();
-    Steps.Delete();
-    
-        
-    inbuf2.GetVariable("TotalCompartments", "C_INT32", &size,
-                       CReadConfig::LOOP);
-    Compartments.Load(inbuf2,size);
-    inbuf2.GetVariable("TotalUDKinetics", "C_INT32", &size,
-                       CReadConfig::LOOP);
-    Functions.Load(inbuf2, size);
-    
-    for (i = 0; i < Functions.Size(); i++)
-        Copasi.FunctionDB.Add(Functions[i]);
-    
-    inbuf2.GetVariable("TotalSteps", "C_INT32", &size,
-                      CReadConfig::LOOP);
-    Steps.Load(inbuf2, size);
-    
-    for (i = 0; i < Steps.Size(); i++)
-    {
-        Steps[i].Compile(Compartments);
-        cout << "Step[" << i << "] = " << Steps[i].Calculate() << endl;
-    }
+
+    CReadConfig inbuf2("copasi.gps");
+    CModel model2;
+    model2.Load(inbuf2);
     
     CWriteConfig outbuf2("copasi2.gps");
-    size = Compartments.Size();
-    outbuf2.SetVariable("TotalCompartments", "C_INT32", &size);
-    Compartments.Save(outbuf2);
-    size = Copasi.FunctionDB.LoadedFunctions().Size();
-    outbuf2.SetVariable("TotalUDKinetics", "C_INT32", &size);
-    Copasi.FunctionDB.LoadedFunctions().Save(outbuf2);
-    size = Steps.Size();
-    outbuf2.SetVariable("TotalSteps", "C_INT32", &size);
-    Steps.Save(outbuf2);
-        
+    model2.Save(outbuf2);
+    outbuf2.Flush();
+    
     return 0;
 }
 
@@ -421,13 +357,13 @@ C_INT32 TestMoiety()
     mo.Add(3, c.Metabolites()[1]);
     mo.Add(0, c.Metabolites()[1]);
     
-    C_FLOAT64 Value=mo.Value();
+//    C_FLOAT64 Value=mo.Value();
     string Description = mo.GetDescription();
     
     mo.Change("metab 2", 2);
     
     mo.Delete("metab 1");
-    Value=mo.Value();
+//    Value=mo.Value();
     
     return 0;
 }
@@ -1074,4 +1010,131 @@ C_INT32 MakeFunctionEntry(const string &name,
             
     return 0;
 }
+
+C_INT32 TestModel()
+{
+    CReadConfig inbuf("gps/BakkerComp.gps");
+
+    CModel m;
+    
+    m.Load(inbuf);
+}
+
+C_INT32 TestLU()
+{
+    C_INT32 i;
+    C_INT32 t;
+    
+    TNT::Matrix < C_FLOAT64 > A(4,3);
+    
+    A(1,1) =  1.0; A(1,2) = -2.0; A(1,3) =  0.0;
+    A(2,1) = -1.0; A(2,2) =  2.0; A(2,3) =  1.0;
+    A(3,1) =  0.0; A(3,2) =  0.0; A(3,3) =  2.0;
+    A(4,1) =  0.0; A(4,2) =  0.0; A(4,3) = -3.0;
+    
+    TNT::Vector < TNT::Subscript > rowLU(4);
+    TNT::Vector < TNT::Subscript > colLU(3);
+    
+    vector < C_INT32 > row(4);
+    for (i = 0; i < row.size(); i++) row[i] = i;
+    vector < C_INT32 > rowi = row;
+    
+    vector < C_INT32 > col(3);
+    for (i = 0; i < col.size(); i++) col[i] = i;
+    vector < C_INT32 > coli = col;
+
+    cout << A << endl;
+
+    TNT::LUX_factor(A, rowLU, colLU);
+    
+    //colLU(3) = 2;
+    
+    cout << A << endl;
+    cout << rowLU << endl;
+    cout << colLU << endl;
+
+    for (i = 0; i < row.size(); i++) 
+    {
+        if (rowLU[i] - 1 > i)
+        {
+            t = row[i];
+            row[i] = row[rowLU[i]-1];
+            row[rowLU[i]-1] = t;
+        }
+    }
+    
+    for (i = rowi.size() - 1; 0 <= i; i--) 
+    {
+        if (rowLU[i]-1 > i)
+        {
+            t = rowi[i];
+            rowi[i] = rowi[rowLU[i]-1];
+            rowi[rowLU[i]-1] = t;
+        }
+    }
+    
+    for (i = col.size() - 1; 0 <= i; i--) 
+    {
+        if (colLU[i]-1 < i)
+        {
+            t = col[i];
+            col[i] = col[colLU[i]-1];
+            col[colLU[i]-1] = t;
+        }
+    }
+    
+    for (i = 0; i < coli.size(); i++) 
+    {
+        if (colLU[i] - 1 < i)
+        {
+            t = coli[i];
+            coli[i] = coli[colLU[i]-1];
+            coli[colLU[i]-1] = t;
+        }
+    }
+    
+    for (i = 0; i < row.size(); i++)
+        cout << row[i] << ' ';
+    cout << endl;
+    for (i = 0; i < rowi.size(); i++)
+        cout << rowi[i] << ' ';
+    cout << endl;
+    
+    for (i = 0; i < col.size(); i++)
+        cout << col[i] << ' ';
+    cout << endl;
+    for (i = 0; i < coli.size(); i++)
+        cout << coli[i] << ' ';
+    cout << endl;
+    
+    return 0;
+}
+
+C_INT32  TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *))
+{
+    C_INT32 n = 99;
+    C_FLOAT64 d = 99.99;
+    C_FLOAT64 * pd = &d;
+    
+    (*f)(n, d, pd, pd);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

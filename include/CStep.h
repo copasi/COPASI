@@ -228,6 +228,13 @@ public:
     string GetChemEq() const;
 
     /**
+     *  Retrieves the chemical structure of the step
+     *  @return vector < ELEMENT >
+     */
+    typedef struct ELEMENT {C_FLOAT64 mValue; string mName;};
+    vector < ELEMENT > GetChemStructure() const;
+
+    /**
      *  Retrieves the rate function of the step
      *  @return "CBaseFunction &"
      */
@@ -280,7 +287,7 @@ public:
      *  rate function.
      *  @param "CCopasiVector < CMetab * > &" metabolites
      */
-    void Compile(const CCopasiVector < CCompartment > & compartments);
+    void Compile(const CCopasiVector < CCompartment > * compartments);
 
     /**
      *  Calculate the kinetic function
@@ -323,13 +330,15 @@ private:
     /**
      *
      */
-    void ParseChemEq();
+    ELEMENT ExtractElement(const string & input, 
+                           string::size_type & pos) const;
 
     /**
      *
      */
-    void ExtractMetabNames(const string input,
-                           vector < CId2Metab > &output);
+    void AddElement(const ELEMENT & element,
+                    vector < ELEMENT > & structure) const;
+
 };
 
 #endif // COPASI_CStep

@@ -367,23 +367,23 @@ void CStep::CheckIdentifiers()
     }
 }
 
-void CStep::Compile(const CCopasiVector < CCompartment > & compartments)
+void CStep::Compile(const CCopasiVector < CCompartment > * compartments)
 {
     C_INT32 i;
     
     for (i = 0; i < mSubstrates->size(); i++)
         (*mSubstrates)[i].mpMetabolite = 
-            &compartments[(*mSubstrates)[i].mCompartmentName].
+            &(*compartments)[(*mSubstrates)[i].mCompartmentName].
             Metabolites()[(*mSubstrates)[i].mMetaboliteName];
     
     for (i = 0; i < mProducts->size(); i++)
         (*mProducts)[i].mpMetabolite = 
-            &compartments[(*mProducts)[i].mCompartmentName].
+            &(*compartments)[(*mProducts)[i].mCompartmentName].
             Metabolites()[(*mProducts)[i].mMetaboliteName];
     
     for (i = 0; i < mModifiers->size(); i++)
         (*mModifiers)[i].mpMetabolite = 
-            &compartments[(*mModifiers)[i].mCompartmentName].
+            &(*compartments)[(*mModifiers)[i].mCompartmentName].
             Metabolites()[(*mModifiers)[i].mMetaboliteName];
     
     InitIdentifiers();
@@ -570,12 +570,16 @@ CStep::CId2Param::CId2Param() {}
 
 CStep::CId2Param::~CId2Param() {}
 
-void CStep::ParseChemEq()
+vector < CStep::ELEMENT > CStep::GetChemStructure() const
 {
+    vector < ELEMENT > Structure;
+    ELEMENT Element;
+    
     string Left;
     string Right;
     
     string::size_type equal = 0;
+    string::size_type pos = 0;
     
     equal = mChemEq.find("=");
     if (equal == string::npos) 
@@ -587,49 +591,66 @@ void CStep::ParseChemEq()
         Right = mChemEq.substr(equal+1);
     Left = mChemEq.substr(0,equal);
 
-    ExtractMetabNames(Left, *mSubstrates);
-    ExtractMetabNames(Right, *mProducts);
+    while (pos != string::npos)
+    {
+        Element = ExtractElement(Left, pos);
+        Element.mValue *= -1.0; 
+        AddElement(Element, Structure);
+    }
+    
+    pos = 0;
+    while (pos != string::npos)
+    {
+        Element = ExtractElement(Right, pos);
+        AddElement(Element, Structure);
+    }
+    
+    return Structure;
 }
 
-void CStep::ExtractMetabNames(const string input,
-                              vector < CId2Metab > &output)
+CStep::ELEMENT CStep::ExtractElement(const string & input, 
+                              string::size_type & pos) const
 {
-    string::size_type plus = 0;
-    string::size_type namestart = 0;
-    string::size_type nameend = 0;
+    ELEMENT Element;
+    string Value;
     
-    string ValidName =
-        "-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_,()";
+    string::size_type Start = input.find_first_not_of(" ", pos);
+    string::size_type End = input.find("+", Start);
+    string::size_type Multiplier = input.find("*", Start);
+    string::size_type NameStart;
+    string::size_type NameEnd;
+    
+    if (Multiplier == string::npos || Multiplier > End)
+    {
+        NameStart = Start;
+        Element.mValue = 1.0;
+    }
+    else
+    {
+        NameStart = input.find_first_not_of(" ",Multiplier+1);
+        Value = input.substr(Start, Multiplier - Start);
+        Element.mValue = atof(Value.c_str());
+    }
+    
+    NameEnd = input.find_first_of(" +", NameStart);
+    Element.mName = input.substr(NameStart, NameEnd - NameStart);
 
-    C_INT32 Count = 0;
+    pos = (End == string::npos) ? End: End+1;
+    return Element;
+}
+
+void CStep::AddElement(const ELEMENT & element,
+                       vector < ELEMENT > & structure) const
+{
     C_INT32 i;
 
-    for (Count = 0; (plus != string::npos && Count < output.size()); Count++)
-    {
-        namestart = input.find_first_of(ValidName,plus);
-        nameend = input.find_first_not_of(ValidName,namestart);
-        plus = input.find("+",namestart);
-        
-        /* Check whether we have a multiplier */
-        if (plus > input.find_first_of(ValidName,nameend))
-        {
-            /* The multiplier is assumed to be the first and is ignored */
-            namestart = input.find_first_of(ValidName,nameend);
-            nameend = input.find_first_not_of(ValidName,namestart);
-        }
-
-        output[Count].mMetaboliteName = input.substr(namestart,nameend);
-
-        for (i = 0; i < Copasi.OldMetabolites.Size(); i++)
-            if (Copasi.OldMetabolites[i].GetName()
-                == output[Count].mMetaboliteName)
-                break;
-
-        if (i >= Copasi.OldMetabolites.Size()) FatalError();
-
-//        output[Count].mCompartmentName = 
-//            Copasi.OldMetabolites[i].GetCompartment()->GetName();
-    }
+    for (i=0; i < structure.size(); i++)
+        if (element.mName == structure[i].mName) break;
+    
+    if (i >= structure.size()) 
+        structure.push_back(element);
+    else
+        structure[i].mValue += element.mValue;
 }
 
 void CStep::Old2New(const vector < CMetab* > & metabolites)
@@ -668,3 +689,5 @@ C_FLOAT64 CStep::Calculate()
 {
     return mFunction->CalcValue(*mCallParameters);
 }
+
+

@@ -18,11 +18,22 @@ class CMoiety
 // Attributes
 private:
     /**
+     *
      */
     string mName;
-    string mDescription;
 
-    typedef struct ELEMENT {C_FLOAT64 Value; CMetab * Metab;};
+    /**
+     *  Number of Particles of Moietiy.
+     */
+    C_FLOAT64 mNumber;
+
+    /**
+     *  Initial Number of Particles of Moietiy.
+     */
+    C_FLOAT64 mINumber;
+
+
+    typedef struct ELEMENT {C_FLOAT64 mValue; CMetab * mMetab;};
     vector < ELEMENT > mEquation;
     
 // Operations
@@ -30,6 +41,9 @@ public:
     CMoiety();
     CMoiety(const string & name);
     ~CMoiety();
+    C_INT32 Load(CReadConfig & configBuffer);
+    C_INT32 Save(CWriteConfig & configBuffer);
+    
     void Add(C_FLOAT64 value, CMetab & metabolite);
     void Add(C_FLOAT64 value, CMetab * metabolite);
     void Delete();
@@ -39,9 +53,11 @@ public:
 		C_FLOAT64 value);
     void Change(const string & name,
 		C_FLOAT64 value);
-    string GetName();
-    string GetDescription();
-    C_FLOAT64 Value();
+    void SetName(const string name);
+    void SetInitialValue();
+    string GetName() const;
+    string GetDescription() const;
+    C_FLOAT64 DependentNumber();
 };
 
 #endif // COPASI_CMoiety

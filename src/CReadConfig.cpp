@@ -82,6 +82,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
 
         equal = Line.find('=');
         Name  = Line.substr(0, equal);
+
         Value = Line.substr(equal + 1);
 
         // The Compartment keyword is used twice. So we must determine by
@@ -97,6 +98,22 @@ C_INT32 CReadConfig::GetVariable(const string& name,
             }
         }
 
+        // The Title keyword is used twice. So we must determine by
+        // the context if we have found the correct one in the case the mode
+        // is SEARCH.
+        if (mode & CReadConfig::SEARCH          &&
+            name == "Title"  &&
+            Name == "Title")
+        {
+            if ((mVersion < "4" &&
+                 LookAhead() != "TotalMetabolites") ||
+                (mVersion >= "4" &&
+                 LookAhead() != "Comments"))
+            {
+                Name = "<CONTINUE>";
+            }
+        }
+
         // We found what we are looking for
         if (name == Name) break;
 
@@ -105,8 +122,9 @@ C_INT32 CReadConfig::GetVariable(const string& name,
             if (mBuffer.eof())
             {
                 if (!(mode & CReadConfig::LOOP)) 
-                    CCopasiMessage(CCopasiMessage::ERROR, 1, name.c_str(),
-                                   mFilename.c_str(), mLineNumber);
+                    CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 1,
+                                   name.c_str(), mFilename.c_str(),
+                                   mLineNumber);
 
                 // Rewind the buffer                
                 mode = CReadConfig::SEARCH;
@@ -118,7 +136,7 @@ C_INT32 CReadConfig::GetVariable(const string& name,
         }
 
         // We should never reach this line!!!
-        CCopasiMessage(CCopasiMessage::ERROR, 1, name.c_str(),
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 1, name.c_str(),
                        mFilename.c_str(), mLineNumber);
     }
     
@@ -142,9 +160,35 @@ C_INT32 CReadConfig::GetVariable(const string& name,
         // may be we should check if Value is really a integer
         *(C_INT16 *) pout = atoi(Value.c_str());
     }
+    else if ( type == "multiline" )
+    {
+        Value.erase();
+        
+        while (TRUE)
+        {
+            Line.erase();
+
+            // Read a line form the input buffer
+            mLineNumber++;
+            while (TRUE)
+            {
+                mBuffer.read(c, 1);
+                if ( *c == '\n' || mBuffer.eof()) break;
+                Line += c;
+            }
+
+            if (Line == "End" + name) break;
+            
+            if (Value.length()) Value += '\n';
+            Value += Line;
+        }
+
+        *(string *) pout = Value;
+    }
     else
     {
-        CCopasiMessage(CCopasiMessage::ERROR, 5, type.c_str(), name.c_str());
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
+                       name.c_str());
         mFail = 1; //Error
     }
     
@@ -175,7 +219,8 @@ C_INT32 CReadConfig::GetVariable(const string& name,
     }
     else
     {
-        CCopasiMessage(CCopasiMessage::ERROR, 5, type.c_str(), name.c_str());
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 5, type.c_str(),
+                       name.c_str());
         mFail = 1; //Error
     }
     
@@ -189,21 +234,24 @@ C_INT32 CReadConfig::InitInputBuffer()
     // read the configuration file into the configuration buffer
     ifstream File(mFilename.c_str());
     if (File.fail()) 
-        CCopasiMessage(CCopasiMessage::ERROR, 2, mFilename.c_str());
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
+                       mFilename.c_str());
 
     while (TRUE)
     {
         File.read(c, 1);
         if (File.eof()) break;
         if (File.fail())
-            CCopasiMessage(CCopasiMessage::ERROR, 3, mFilename.c_str());
+            CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 3,
+                           mFilename.c_str());
         mBuffer << c;
     }
     File.clear();
     
     File.close();
     if (File.fail())
-        CCopasiMessage(CCopasiMessage::ERROR, 4, mFilename.c_str());
+        CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 4,
+                       mFilename.c_str());
     
     return mFail;
 }

@@ -4,97 +4,232 @@
  * (C) Pedro Mendes 2001, based on code in Gepasi (C) Pedro Mendes 1990-2000
  */
 
+/**
+ * Protytpe use of this class:
+ *
+ * CODESolver solver;
+ * solver.Initialize(FEval, sy, n, method);
+ * t_old = 0.0;
+ * t_new = 0.0;
+ * incr = t_final / n_incr;
+ * for (i=0; i<n_incr; i++) 
+ * {
+ *      ret = solver.Step(t_old, t_new);
+ *      // if an error ocurred, make sure caller aborts
+ *      if (ret) abort_trajectory(); 
+ *      // signal caller success iteration
+ *      // model copies sy values to arrays and outputs values
+ *      Model.signal_iteration();
+ *      t_new += incr;
+ * }
+ * solver.CleanUp();
+ */
+
 #include "copasi.h"
 #include "CODESolver.h"
 
 CODESolver::CODESolver()
 {
+    /* set version number */
+    mVersion.SetVersion(1,0,101);
     // initialize everything
-    mName   = "ODE solvers";
-    mMethod = 1;
+    mName   = "Not selected";
+    mMethod = 0;
+    mY = NULL;
+    mLsoda = NULL;
+    mModel = NULL;
 }
 
 
 CODESolver::~CODESolver() 
 {
+    CleanUp();
     cout << "~CODESolver " << mName << endl;
+}
+
+void CODESolver::Initialize(CModel & model,
+                            C_FLOAT64 * y, 
+                            C_INT32 n, 
+                            C_INT32 method)
+{
+    mModel = &model;
+    mY = y;
+    mDim = n;
+    mState = 1;
+    mMethod = method;
+    switch (mMethod)
+    {
+    case 1: 
+        mName = "LSODA"; 
+        mLsoda = new Clsoda;
+
+        break;
+    default: mName = "Not selected"; break;
+    }
+}
+
+void CODESolver::CleanUp()
+{
+    switch (mMethod)
+    {
+    case 1:  // LSODA
+        mLsoda->lsoda_freevectors();
+        delete mLsoda;
+        mLsoda = NULL;
+        mName = "Not selected";
+        mMethod = 0;
+        break;
+    default: break;
+    }
+    mState = -1; // so that calls without Initialize() fail
+}
+
+string CODESolver::GetName() {return mName;}
+
+C_INT32 CODESolver::Step(C_FLOAT64 t, C_FLOAT64 et)
+{
+    if ((mState<1) || (mState>2)) return mState;
+    switch (mMethod)
+    {
+    case 1: //LSODA
+        LSODAStep(t, et);
+        if ((mState<1) || (mState>2)) return mState;
+        else return 0;
+    default:
+        return -99;
+    }
 }
 
 
 C_INT32 CODESolver::Load(CReadConfig & configbuffer)
 {
     C_INT32 Fail = 0;
-
-    /* check with Stefan how one can read new and old formats */
-
+    
     /* get version from ReadConfig */
-
-    /* read method number */
-
-    /* then load method-dependent parameters */
-    if (Fail = configbuffer.GetVariable("Compartment", "string",
-                                        (void *) &mName,
-                                        CReadConfig::SEARCH))
-        return Fail;
-
-    if (Fail = configbuffer.GetVariable("Volume", "C_FLOAT64",
-                                        (void *) &mVolume))
-        return Fail;
-    
-    if (configbuffer.GetVersion() < "4") return Fail;
-    
-    C_INT32 MetabolitesNo;
-    if (Fail = configbuffer.GetVariable("MetabolitesNo", "C_INT32",
-                                        (void *) &MetabolitesNo))
-        return Fail;
-    
-    Fail = mMetabolites.Load(configbuffer, MetabolitesNo);
-    
-    return Fail;
+    if (configbuffer.GetVersion() < "4")
+    {
+        /* old Gepasi file, so integrator is LSODA for sure */
+        mMethod = 1;
+        mName = "LSODA";
+    }
+    else
+    {
+        /* read method number */
+        Fail = configbuffer.GetVariable("ODESolver", "C_INT32",
+                                        (void *) &mMethod,
+                                        CReadConfig::SEARCH);
+        /* if no method number is found, assume LSODA for now */
+        if (Fail)
+        {
+            mMethod = 1;
+            mName = "LSODA";
+        }
+    }
+    switch (mMethod)
+    {
+    case 1: return LoadLSODAParameters(configbuffer);
+    default: /* TODO: generate an error message */
+        /* return error */
+        return -1;
+    }
 }
 
-C_INT32 CCompartment::Save(CWriteConfig & configbuffer)
+C_INT32 CODESolver::Save(CWriteConfig & configbuffer)
 {
     C_INT32 Fail = 0;
-
-    if (Fail = configbuffer.SetVariable("Compartment", "string",
-                                        (void *) &mName))
-        return Fail;
-
-    if (Fail = configbuffer.SetVariable("Volume", "C_FLOAT64",
-                                        (void *) &mVolume))
-        return Fail;
     
-    C_INT32 size = mMetabolites.Size();
-    if (Fail = configbuffer.SetVariable("MetabolitesNo", "C_INT32",
-                                        (void *) &size))
+    /* method */
+    if (Fail = configbuffer.SetVariable("ODESolver", "C_INT32",
+                                        (void *) &mMethod))
         return Fail;
+    switch (mMethod)
+    {
+    case 1: return SaveLSODAParameters(configbuffer);
+    default: /* TODO: generate an error message */
+        /* return error */
+        return -1;
+    }
+}
 
-    Fail = mMetabolites.Save(configbuffer);
+C_INT32 CODESolver::LoadLSODAParameters(CReadConfig & configbuffer)
+{
+    C_INT32 Fail = 0;
+    
+    if (Fail = configbuffer.GetVariable("RelativeTolerance", "C_FLOAT64",
+                                        (void *) &mRtol,
+                                        CReadConfig::SEARCH))
+        return Fail;
+    if (Fail = configbuffer.GetVariable("AbsoluteTolerance", "C_FLOAT64",
+                                        (void *) &mAtol,
+                                        CReadConfig::SEARCH))
+        return Fail;
+    if (Fail = configbuffer.GetVariable("AdamsMaxOrder", "C_INT32",
+                                        (void *) &mAdams,
+                                        CReadConfig::SEARCH))
+        return Fail;
+    if (mAdams<2) mAdams = 2;
+    else if (mAdams>12) mAdams = 12;
+    if (Fail = configbuffer.GetVariable("BDFMaxOrder", "C_INT32",
+                                        (void *) &mBDF,
+                                        CReadConfig::SEARCH))
+        return Fail;
+    if (mBDF<2) mBDF = 2;
+    else if (mBDF>5) mBDF = 5;
     return Fail;
 }
 
-string CCompartment::GetName() {return mName;}
-
-C_FLOAT64 CCompartment::GetVolume() {return mVolume;}
-
-CCopasiVector < CMetab > & CCompartment::GetMetabolites() {return mMetabolites;}
-
-void CCompartment::SetName(const string & name) 
+C_INT32 CODESolver::LSODAStep(C_FLOAT64 t, C_FLOAT64 et)
 {
-    mName = name;
-    if (!IsValidName()) FatalError();
+    mTime = t;
+    mEndt = et;
+    mLsoda->lsoda(mModel,           // the function evaluator
+                  mDim,             // number of variables
+                  mY,               // the array of current concentrations
+                  &mTime,           // the current time 
+                  mEndt,            // the final time
+                  1,                // scalar error control
+                  mRtol,            // relative tolerance array
+                  mAtol,            // absolute tolerance array
+                  1,                // output by overshoot & interpolatation
+                  &mState,          // the state control variable
+                  1,                // optional inputs are being used
+                  2,                // jacobian calculated internally 
+                  0,0,0,            // options left at default values
+                  10000,            // max iterations for each lsoda call
+                  0,                // another value left at the default
+                  mAdams,           // max order for Adams method
+                  mBDF,             // max order for BDF method
+                  0.0,0.0,0.0,0.0); // more options left at default values 
+    
+    if ((mState!=1) && (mState!=2))
+    {
+        mLsoda->lsoda_freevectors(); // freevectors is part of LSODA
+        return mState;
+    }
+    
+    // copy some lsoda counters
+    intst = (C_FLOAT64) mLsoda->nst;
+    nfeval = (C_FLOAT64) mLsoda->nfe;
+    njeval = (C_FLOAT64) mLsoda->nje;
+    stsize = mLsoda->h;
+    return 0;
 }
 
-void CCompartment::SetVolume(C_FLOAT64 volume) {mVolume = volume;}
-
-void CCompartment::AddMetabolite(CMetab &metabolite)
+C_INT32 CODESolver::SaveLSODAParameters(CWriteConfig & configbuffer)
 {
-    metabolite.SetCompartment(this);
-    mMetabolites.Add(metabolite);
-}
-
-C_INT16 CCompartment::IsValidName()
-{
-    return (mName.find_first_of("; ") == string::npos);
+    C_INT32 Fail = 0;
+    
+    if (Fail = configbuffer.SetVariable("RelativeTolerance", "C_FLOAT64",
+                                        (void *) &mRtol))
+        return Fail;
+    if (Fail = configbuffer.SetVariable("AbsoluteTolerance", "C_FLOAT64",
+                                        (void *) &mAtol))
+        return Fail;
+    if (Fail = configbuffer.SetVariable("AdamsMaxOrder", "C_INT32",
+                                        (void *) &mAdams))
+        return Fail;
+    if (Fail = configbuffer.SetVariable("BDFMaxOrder", "C_INT32",
+                                        (void *) &mBDF))
+        return Fail;
+    return Fail;
 }

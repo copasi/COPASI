@@ -3,7 +3,7 @@ PRG	= test
 
 CC	= gcc
 CXX	= g++
-CFLAGS	= -g -I$(INCDIR) -DGCC 
+CFLAGS	= -g -I$(INCDIR) -I. -DGCC 
 
 LIBS	= -lnsl 
 
@@ -28,7 +28,7 @@ doc/html/index.html: $(INCDIR)/*.h test.dox
 	doxygen test.dox
 
 dependencies:
-	$(CC) -I./include -MM $(SRCDIR)/*.cpp | \
+	$(CC) -I./include -I. -MM $(SRCDIR)/*.cpp | \
 	sed -e 's?\(.*\)\.o:?$(OBJDIR)/\1.o:?' > ./dependencies
 
 clean:  
