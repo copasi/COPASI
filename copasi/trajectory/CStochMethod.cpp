@@ -389,7 +389,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
   CStochBalance bb;
   C_INT32 maxBalance = 0;
 
+  mLocalBalances.clear();
   mLocalBalances.resize(mNumReactions);
+  mLocalSubstrates.clear();
   mLocalSubstrates.resize(mNumReactions);
 
   for (i = 0; i < mNumReactions; i++)
