@@ -10,9 +10,9 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
 
-class QVBoxLayout;
+#include <qscrollview.h>
+class QVBox;
 class QHBoxLayout;
 class QGridLayout;
 class QCheckBox;
@@ -26,14 +26,14 @@ class CScanProblem;
 class CScanMethod;
 class CModel;
 
-class ScanWidget : public CopasiWidget
+class ScanWidget : public QWidget
   {
     Q_OBJECT
 
   public:
     ScanWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ScanWidget();
-    CScanTask *scanTask;
+    //CScanTask *scanTask;
     void loadScan(CModel *model);
 
     QFrame* line7;
@@ -50,6 +50,8 @@ class ScanWidget : public CopasiWidget
     QTable* parameterTable, *parameterTable1;
     QPushButton* commitChange;
     QPushButton* cancelChange;
+    QScrollView *scrollview;
+    QVBox *vBox;
 
   protected:
     QGridLayout* ScanWidgetLayout;

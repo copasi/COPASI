@@ -30,8 +30,8 @@
  *  Constructs a ScanWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
-    : CopasiWidget(parent, name, fl)
+ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
+    : QWidget(parent, name, f)
 {
   if (!name)
     setName("ScanWidget");
@@ -98,18 +98,20 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 2);
 
-  QScrollView *scrollview = new QScrollView(this, 0, 0);
-  QVBox *vBox = new QVBox(this, 0);
-  for (int temp = 1; temp <= 7; temp++)
-    {
-      parameterTable = new QTable(this, "parameterTable");
-      parameterTable->setNumRows(5);
-      parameterTable->setNumCols(5);
-      QHeader *colHeader = parameterTable->horizontalHeader();
-      colHeader->setLabel(0, tr("Value"));
-      vBox->insertChild(parameterTable);
-      vBox->setSpacing(25);
-    }
+  scrollview = new QScrollView(this, 0, 0);
+  vBox = new QVBox(this, 0);
+  /*for (int temp = 1; temp <= 7; temp++)
+     {
+       parameterTable = new QTable(this, "parameterTable");
+       parameterTable->setNumRows(5);
+       parameterTable->setNumCols(5);
+     parameterTable->setFocusPolicy(QWidget::WheelFocus);
+       QHeader *colHeader = parameterTable->horizontalHeader();
+       colHeader->setLabel(0, tr("Value"));
+       vBox->insertChild(parameterTable);
+       vBox->setSpacing(25);
+   }
+  */
 
   scrollview->addChild(vBox);
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
@@ -129,12 +131,12 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags fl)
 
   ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
 
-  // tab order
+  /*// tab order
   setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, taskJacobian);
   setTabOrder(taskJacobian, taskStability);
   setTabOrder(taskStability, parameterTable);
-  setTabOrder(commitChange, cancelChange);
+  setTabOrder(commitChange, cancelChange);*/
 }
 
 ScanWidget::~ScanWidget()
@@ -148,7 +150,26 @@ void ScanWidget::loadScan(CModel *model)
     {
       mModel = model;
       taskName->setText(tr("Scan"));
-      scanTask = new CScanTask();
-      //scanTask->getProblem()->setModel(model);
+      CScanTask *scanTask = new CScanTask();
+      CScanProblem *scanProblem = scanTask->getProblem();
+      scanProblem->setModel(model);
+      hide();
+      //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
+      for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
+        {
+          //CMethodParameterList *itemList=scanProblem->getScanItem(i);
+          //itemList->getName();
+          parameterTable = new QTable(scrollview, "parameterTable");
+          parameterTable->setNumRows(5);
+          parameterTable->setNumCols(5);
+          parameterTable->setFocusPolicy(QWidget::WheelFocus);
+          QHeader *colHeader = parameterTable->horizontalHeader();
+          colHeader->setLabel(0, tr("Value"));
+          vBox->insertChild(parameterTable);
+          vBox->setSpacing(25);
+        }
+      show();
+      scrollview->addChild(vBox);
+      ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
     }
 }
