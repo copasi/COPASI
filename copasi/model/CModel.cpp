@@ -14,7 +14,7 @@
 #define DBL_MAX 1.7976931348623158e+308
 #endif //DBL_MAX
 
-#define DEBUG_MATRIX
+// #define DEBUG_MATRIX
 
 #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
@@ -387,6 +387,10 @@ void CModel::saveSBML(std::ofstream &fout)
 void CModel::compile()
 {
   CMatrix< C_FLOAT64 > LU;
+
+  unsigned C_INT32 i, imax = mSteps.size();
+  for (i = 0; i < imax; i++)
+    mSteps[i]->compile(mCompartments);
 
   buildStoi();
   lUDecomposition(LU);
