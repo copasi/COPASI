@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/23 14:58:14 $
+   $Date: 2004/09/30 09:04:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,9 +19,22 @@
  *****************************************************************************/
 
 void TimeSeriesSubWidget::saveDataToFile()
-{
-}
+{}
 
 void TimeSeriesSubWidget::toggleView()
 {
+  if (comboBox->currentItem() == 0)
+    dataTable->showConcentrations(true);
+  else
+    dataTable->showConcentrations(false);
+}
+
+void TimeSeriesSubWidget::init()
+{
+  dataTable->setNumRows(10);
+}
+
+CTimeSeriesTable* TimeSeriesSubWidget::table()
+{
+  return dataTable;
 }

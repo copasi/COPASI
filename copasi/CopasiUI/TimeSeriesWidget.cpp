@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/09/28 01:59:33 $
+   $Author: ssahle $ 
+   $Date: 2004/09/30 09:04:12 $
    End CVS Header */
 
 //#include <qpushbutton.h>
@@ -12,6 +12,9 @@
 
 #include "TimeSeriesWidget.h"
 #include "TimeSeriesSubwidget.h"
+#include "DataModelGUI.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "CTimeSeriesTable.h"
 
 //#include "report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -28,10 +31,10 @@ TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TimeSeriesWidget");
   setCaption(trUtf8("TimeSeriesWidget"));
 
-  TimeSeriesWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new TimeSeriesSubWidget(this, "TimeSeriesSubwidget");
-  TimeSeriesWidgetLayout->addWidget(mCentralWidget, 0, 0);
+  mWidgetLayout->addWidget(mCentralWidget, 0, 0);
 
   /*commitChanges = new QPushButton(this, "commitChanges");
   commitChanges->setText(trUtf8("Commit"));
@@ -56,6 +59,7 @@ TimeSeriesWidget::~TimeSeriesWidget()
   clicked in the tree   */
 bool TimeSeriesWidget::loadFromBackend()
 {
+  mCentralWidget->table()->setTimeSeries(dataModel->getTrajectoryTask()->getTimeSeries());
   return true;
 }
 
@@ -84,7 +88,6 @@ bool TimeSeriesWidget::update(ListViews::ObjectType objectType, ListViews::Actio
      case ListViews::STATE:
      case ListViews::COMPARTMENT:
      case ListViews::METABOLITE:
-       //TODO: check if it really is a compartment
        return loadFromCompartment(dynamic_cast< CCompartment * >(GlobalKeys.get(objKey)));
        break;
 
@@ -102,10 +105,10 @@ bool TimeSeriesWidget::leave()
 
 bool TimeSeriesWidget::enter(const std::string & key)
 {
+  return loadFromBackend();
   /*objKey = key;
   CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/
-  return true;
 }

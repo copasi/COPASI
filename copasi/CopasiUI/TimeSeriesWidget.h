@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/23 14:58:14 $
+   $Date: 2004/09/30 09:04:12 $
    End CVS Header */
 
 #ifndef TSWIDGET_H
@@ -39,7 +39,7 @@ class TimeSeriesWidget : public CopasiWidget
     bool saveToBackend();
     std::string objKey;
 
-    QGridLayout* TimeSeriesWidgetLayout;
+    QGridLayout* mWidgetLayout;
 
     TimeSeriesSubWidget* mCentralWidget;
   };
