@@ -1,3 +1,4 @@
+
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp                 
  **  $ Author  : Mudita Singhal
@@ -32,7 +33,8 @@
 
 using std::cout;
 using std::endl;
-
+QHeader *tableHeader1;
+QHeader *tableHeader2;
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -242,6 +244,9 @@ void ReactionsWidget1::loadName(QString setValue)
   name = setValue;
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
 
+  QHeader *tableHeader1 = table->horizontalHeader();
+  QHeader *tableHeader2 = table->verticalHeader();
+
   CFunction *function;
   CReaction *reactn;
   CChemEq * chemEq;
@@ -269,8 +274,6 @@ void ReactionsWidget1::loadName(QString setValue)
     }
 
   table->setNumCols(1);
-  QHeader *tableHeader1 = table->horizontalHeader();
-  QHeader *tableHeader2 = table->verticalHeader();
 
   //Required for the suitablefunctions comboBox.
   num_substrates = reactn->getId2Substrates().size();
@@ -531,7 +534,6 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
       string p4 = functionParameters[i]->getUsage();
       usagetypes[i] = p4;
 
-      //little bit left...just to sort and add the variables in the combo box.
       if (p4 == "SUBSTRATES")
         {
           substrate_name[count_substrates] = functionParameters[i]->getName();
@@ -546,6 +548,24 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
         {
           parameter_name[count_parameters] = functionParameters[i]->getName();
           count_parameters++;
+        }
+      //add the variables in the combo box.
+      unsigned int count = 0;
+      //unsigned int total=count_substrates + count_products +   count_parameters;
+      unsigned int total = count_substrates + count_products + count_parameters;
+
+      for (; count < count_substrates; count++)
+        {
+          tableHeader2->setLabel(count, substrate_name[count].c_str());
+        }
+
+      for (count = 0; count < count_products; count++)
+        {
+          tableHeader2->setLabel(count, product_name[count].c_str());
+        }
+      for (count = 0; count < count_parameters; count++)
+        {
+          tableHeader2->setLabel(count, parameter_name[count].c_str());
         }
     }
 
