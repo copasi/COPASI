@@ -25,6 +25,8 @@
 #include "steadystate/steadystate.h"
 #include "optimization/optimization.h"
 #include "utilities/CGlobals.h"
+#include "randomGenerator/CRandom.h"
+
 #include "tnt/tnt.h"
 #include "tnt/luX.h"
 #include "tnt/cmat.h"
@@ -56,6 +58,7 @@ C_INT32 TestSSSolution(void);
 C_INT32 TestEigen(void);
 C_INT32 TestOptimization(void);     //yohe: new
 C_INT32 TestElementaryFluxMode(void);
+C_INT32 Testr250(void);
 
 C_INT32 ConvertFunctionDB(void);
 C_INT32 MakeFunctionDB(void);
@@ -116,9 +119,10 @@ C_INT main(C_INT argc, char *argv[])
       //      TestMCA();
       //      TestOutputEvent();
       //      MakeFunctionDB();
-      ConvertFunctionDB();
+      // ConvertFunctionDB();
 
       //      TestRandom(10000, 100);
+      Testr250();
       //      TestDependencyGraph();
       //      TestIndexedPriorityQueue(7);
       //      TestSpec2Model();
@@ -598,7 +602,7 @@ C_INT32 TestEigen(void)
                                 " -1 4 -2 "
                                 " -3 4  0 "
                                 " -3 1  3 ");
-  //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3] ;
+  //TNT::Matrix<C_FLOAT64> matrix=[-1 4 -2; -3 4 0; -3 1 3];
   // SSResoltion=1.000000e-009 (from NewtonTest_yhtest.gps)
   C_FLOAT64 ssRes = 0.0;
 
@@ -692,7 +696,7 @@ C_INT32 TestKinFunction()
   CKinFunction f;
 
   f.setName("test");
-  f.setDescription("(a-b)*(a+b)/5");
+  f.setDescription("(a-b)*(a+b)/<laber>");
   f.getParameters().add("a", CFunctionParameter::FLOAT64, "UNKNOWN");
   f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
 
@@ -1567,6 +1571,7 @@ C_INT32 ConvertFunctionDB(void)
   return 0;
 }
 
+#ifdef XXXX
 C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 {
   C_INT32 npoints = num_points;
@@ -1657,6 +1662,7 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 
   return 0;
 }
+#endif // XXXX
 
 C_INT32 TestDependencyGraph()
 {
@@ -1689,12 +1695,13 @@ C_INT32 TestDependencyGraph()
     {
       j = 0;
       cout << "Node: " << i << " Dependents: ";
-      vector<C_INT32> depvec = dg.getDependents(i);
+      const set <C_INT32> depvec = dg.getDependents(i);
+      set <C_INT32>::iterator jit = depvec.begin();
 
-      while (j < depvec.size())
+      while (jit != depvec.end())
         {
-          cout << depvec[j] << " ";
-          j++;
+          cout << *jit << " ";
+          jit++;
         }
 
       cout << endl;
@@ -1704,6 +1711,7 @@ C_INT32 TestDependencyGraph()
   return 0;
 }
 
+#ifdef XXXX
 C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
 {
   cout << "Testing CIndexedPriorityQueue\n";
@@ -1715,7 +1723,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
   C_FLOAT64 rndval;
   cout << "Unordered input:\n";
 
-  for (i = 0; i < size ; i++)
+  for (i = 0; i < size; i++)
     {
       rndval = rand->getUniformRandom();
       cout << "element " << i << ":" << rndval << endl;
@@ -1750,6 +1758,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
   cout << "Done testing CIndexedPriorityQueue\n\n";
   return 0;
 }
+#endif // XXXX
 
 C_INT32 TestSpec2Model()
 {
@@ -1780,6 +1789,25 @@ C_INT32 TestElementaryFluxMode(void)
 
   ofstream output("ElementaryFluxModes.txt");
   output << FluxModes;
+
+  return 0;
+}
+
+C_INT32 Testr250(void)
+{
+  CRandom * rand = new Cr250();
+
+  C_INT32 i, j = 0;
+  for (i = 0; i < 2000; i++)
+    {
+      // rand.r250();
+      cout << rand->getRandom() << ", ";
+      if (j++ == 4)
+        {
+          j = 0;
+          cout << endl;
+        }
+    }
 
   return 0;
 }

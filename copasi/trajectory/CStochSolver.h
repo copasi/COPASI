@@ -1,15 +1,14 @@
 #ifndef COPASI_CStochSolver
 #define COPASI_CStochSolver
 
-#include "utilities/utilities.h" 
-//#include "utilities/CRandom.h"
+#include <set>
+
+#include "utilities/utilities.h"
 #include "model/model.h"
-#include <set> 
-//#include <queue>
 
-using std::set
+class CRandom;
 
-  ;
+using std::set;
 
 /**
  * CStochSolver
@@ -250,8 +249,7 @@ class CStochMethod
      * @return The set of metabolites depended on.
      */
 
-    set
-      <CMetab*> *getDependsOn(C_INT32 reaction_index);
+    set <CMetab*> *getDependsOn(C_INT32 reaction_index);
 
     /**
      * Get the set of metaboloites which change number when a given
@@ -259,8 +257,7 @@ class CStochMethod
      * @param reaction_index The index of the reaction being executed.
      * @return The set of affected metabolites.
      */
-    set
-      <CMetab*> *getAffects(C_INT32 reaction_index);
+    set <CMetab*> *getAffects(C_INT32 reaction_index);
   };
 
 /**

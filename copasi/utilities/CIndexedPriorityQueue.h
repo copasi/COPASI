@@ -15,7 +15,7 @@ class CIndexedPriorityQueue;
 
 class PQNode
   {
-    friend CIndexedPriorityQueue;
+    friend class CIndexedPriorityQueue;
 
   public:
     /**

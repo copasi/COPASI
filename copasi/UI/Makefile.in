@@ -197,7 +197,7 @@ CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 
 
 CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
 
-CopasiUI_LIBS =  	../elementaryFluxModes 	../model 	../function 	../output 	../steadystate 	../trajectory 	../utilities
+CopasiUI_LIBS =  	../elementaryFluxModes 	../model 	../function 	../output 	../randomGenerator 	../steadystate 	../trajectory 	../utilities
 
 
 EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
@@ -207,7 +207,7 @@ EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 
 # the library search path.
-LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-llapack 	-lblas 	-lF77 	-lfl
+LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-lrandomGenerator 	-llapack 	-lblas 	-lF77 	-lfl
 
 
 #  Use this for standard clapack
@@ -223,7 +223,7 @@ LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteady
 #	-lpthread \
 
 # the library search path.
-LDFLAGS = $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes 	-L../function 	-L../model 	-L../output 	-L../steadystate 	-L../trajectory 	-L../utilities
+LDFLAGS = $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes 	-L../function 	-L../model 	-L../output 	-L../randomGenerator 	-L../steadystate 	-L../trajectory 	-L../utilities
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

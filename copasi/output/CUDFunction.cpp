@@ -124,7 +124,7 @@ void CUDFunction::load(CReadConfig & configbuffer,
   //parse();
   connectNodes();
 
-  return ;
+  return;
 }
 
 void CUDFunction::createParameters()
@@ -324,8 +324,8 @@ CNodeO * CUDFunction::parseExpression(C_INT16 priority)
     return NULL;
 
   while (mNidx < mNodes.size() &&
-          mNodes[mNidx]->isOperator() &&
-          priority < mNodes[mNidx]->leftPrecedence())
+         mNodes[mNidx]->isOperator() &&
+         priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
       rhs = NULL;
@@ -347,7 +347,7 @@ CNodeO * CUDFunction::parseExpression(C_INT16 priority)
         {
           mNodes[op]->setLeft(lhs);
           mNodes[op]->setRight(rhs);
-          lhs = mNodes[op] ;
+          lhs = mNodes[op];
         }
     }
 
@@ -374,8 +374,10 @@ CNodeO * CUDFunction::parsePrimary()
       return NULL;
     }
 
-  if (mNodes[mNidx]->isNumber() ||
-      mNodes[mNidx]->isIdentifier())
+  t = mNodes[mNidx]->getType();
+  if (t == N_IDENTIFIER ||
+      t == N_OBJECT ||
+      t == N_NUMBER)
     {
       t = 'K';
     }
@@ -557,7 +559,7 @@ C_INT32 CUDFunction::parse()
           mNodes.add(CNodeO(N_FUNCTION, N_COS));
           break;
 
-        case N_NOP:         // this is an error
+        case N_NOP:          // this is an error
           mNodes.cleanup();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

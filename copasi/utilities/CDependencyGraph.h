@@ -106,7 +106,6 @@ class CDependencyGraph
      * @param node The number of the node to access.
      * @return A vector of node numbers.
      */
-
     const set <C_INT32> &getDependents(C_INT32 node);
 
   private:

@@ -186,70 +186,30 @@ qt_libraries = @qt_libraries@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
+noinst_LIBRARIES = librandomGenerator.a
+
+librandomGenerator_a_SOURCES =  	CRandom.cpp 	Cr250.cpp 
+
+
+EXTRA_DIST =  	CRandom.h 		CRandom.cpp 	Cr250.h			Cr250.cpp 
+
 ####### kdevelop will overwrite this part!!! (end)############
-bin_PROGRAMS = CopasiUI
-
-CopasiUI_MOC_SOURCES =  	CompartmentsWidget1.moc.cpp 	CompartmentsWidget.moc.cpp 	FunctionWidget1.moc.cpp 	FunctionWidget.moc.cpp 	MetabolitesWidget.moc.cpp 	MetabolitesWidget1.moc.cpp 	MoietyWidget.moc.cpp 	MoietyWidget1.moc.cpp 	ReactionsWidget.moc.cpp 	ReactionsWidget1.moc.cpp 	copasiui3window.moc.cpp 	listviews.moc.cpp
-
-
-CopasiUI_SOURCES = $(CopasiUI_MOC_SOURCES) 	main.cpp 	MyTable.cpp 	Observer.cpp 	Subject.cpp         CompartmentsWidget.cpp         CompartmentsWidget1.cpp         FunctionWidget.cpp         FunctionWidget1.cpp         MetabolitesWidget.cpp         MetabolitesWidget1.cpp         MoietyWidget.cpp         MoietyWidget1.cpp         ReactionsWidget.cpp         ReactionsWidget1.cpp         copasiui3window.cpp         listviews.cpp
-
-
-CopasiUI_DEPENDENCIES = $(CopasiUI_LIBS) check_LIBS
-
-CopasiUI_LIBS =  	../elementaryFluxModes 	../model 	../function 	../output 	../randomGenerator 	../steadystate 	../trajectory 	../utilities
-
-
-EXTRA_DIST =  	main.cpp 	Tree.h 	MyTable.h MyTable.cpp 	Observer.h Observer.cpp 	Subject.h Subject.cpp 	CompartmentsWidget.h CompartmentsWidget.cpp moc_CompartmentsWidget1.cpp 	CompartmentsWidget1.h CompartmentsWidget1.cpp moc_CompartmentsWidget.cpp 	FunctionWidget.h FunctionWidget.cpp moc_FunctionWidget1.cpp 	FunctionWidget1.h FunctionWidget1.cpp moc_FunctionWidget.cpp 	MetabolitesWidget.h MetabolitesWidget.cpp moc_MetabolitesWidget.cpp 	MetabolitesWidget1.h MetabolitesWidget1.cpp moc_MetabolitesWidget1.cpp 	MoietyWidget.h MoietyWidget.cpp moc_MoietyWidget.cpp 	MoietyWidget1.h MoietyWidget1.cpp moc_MoietyWidget1.cpp 	ReactionsWidget.h ReactionsWidget.cpp moc_ReactionsWidget.cpp 	ReactionsWidget1.h ReactionsWidget1.cpp moc_ReactionsWidget1.cpp 	copasiui3window.h copasiui3window.cpp moc_copasiui3window.cpp 	listviews.h listviews.cpp moc_listviews.cpp
-
 
 # set the include path found by configure
 INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
-
-# the library search path.
-LIBS = $(LIB_QT) 	-lelementaryFluxModes 	-lmodel 	-lfunction 	-loutput 	-lsteadystate 	-ltrajectory 	-lutilities 	-loutput 	-lfunction 	-lmodel 	-lrandomGenerator 	-llapack 	-lblas 	-lF77 	-lfl
-
-
-#  Use this for standard clapack
-#	-llapack \
-#	-lblas \
-#	-lF77 \
-#	-lfl
-
-#  Use this for the intel performance library under linux
-#	-lmkl_lapack \
-#	-lmkl_p3 \
-#	-lg2c \
-#	-lpthread \
-
-# the library search path.
-LDFLAGS = $(all_libraries) $(USER_LDFLAGS) 	-L../elementaryFluxModes 	-L../function 	-L../model 	-L../output 	-L../randomGenerator 	-L../steadystate 	-L../trajectory 	-L../utilities
-
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  CopasiUI$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+LIBRARIES =  $(noinst_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
-CopasiUI_OBJECTS =  CompartmentsWidget1.moc.$(OBJEXT) \
-CompartmentsWidget.moc.$(OBJEXT) FunctionWidget1.moc.$(OBJEXT) \
-FunctionWidget.moc.$(OBJEXT) MetabolitesWidget.moc.$(OBJEXT) \
-MetabolitesWidget1.moc.$(OBJEXT) MoietyWidget.moc.$(OBJEXT) \
-MoietyWidget1.moc.$(OBJEXT) ReactionsWidget.moc.$(OBJEXT) \
-ReactionsWidget1.moc.$(OBJEXT) copasiui3window.moc.$(OBJEXT) \
-listviews.moc.$(OBJEXT) main.$(OBJEXT) MyTable.$(OBJEXT) \
-Observer.$(OBJEXT) Subject.$(OBJEXT) CompartmentsWidget.$(OBJEXT) \
-CompartmentsWidget1.$(OBJEXT) FunctionWidget.$(OBJEXT) \
-FunctionWidget1.$(OBJEXT) MetabolitesWidget.$(OBJEXT) \
-MetabolitesWidget1.$(OBJEXT) MoietyWidget.$(OBJEXT) \
-MoietyWidget1.$(OBJEXT) ReactionsWidget.$(OBJEXT) \
-ReactionsWidget1.$(OBJEXT) copasiui3window.$(OBJEXT) \
-listviews.$(OBJEXT)
-CopasiUI_LDADD = $(LDADD)
-CopasiUI_LDFLAGS = 
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+librandomGenerator_a_LIBADD = 
+librandomGenerator_a_OBJECTS =  CRandom.$(OBJEXT) Cr250.$(OBJEXT)
+AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -262,56 +222,29 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CompartmentsWidget.P .deps/CompartmentsWidget.moc.P \
-.deps/CompartmentsWidget1.P .deps/CompartmentsWidget1.moc.P \
-.deps/FunctionWidget.P .deps/FunctionWidget.moc.P \
-.deps/FunctionWidget1.P .deps/FunctionWidget1.moc.P \
-.deps/MetabolitesWidget.P .deps/MetabolitesWidget.moc.P \
-.deps/MetabolitesWidget1.P .deps/MetabolitesWidget1.moc.P \
-.deps/MoietyWidget.P .deps/MoietyWidget.moc.P .deps/MoietyWidget1.P \
-.deps/MoietyWidget1.moc.P .deps/MyTable.P .deps/Observer.P \
-.deps/ReactionsWidget.P .deps/ReactionsWidget.moc.P \
-.deps/ReactionsWidget1.P .deps/ReactionsWidget1.moc.P .deps/Subject.P \
-.deps/copasiui3window.P .deps/copasiui3window.moc.P .deps/listviews.P \
-.deps/listviews.moc.P .deps/main.P
-SOURCES = $(CopasiUI_SOURCES)
-OBJECTS = $(CopasiUI_OBJECTS)
+DEP_FILES =  .deps/CRandom.P .deps/Cr250.P
+SOURCES = $(librandomGenerator_a_SOURCES)
+OBJECTS = $(librandomGenerator_a_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu copasi/CopasiUI/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu copasi/randomGenerator/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-binPROGRAMS:
+mostlyclean-noinstLIBRARIES:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-distclean-binPROGRAMS:
+distclean-noinstLIBRARIES:
 
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
+maintainer-clean-noinstLIBRARIES:
 
 # FIXME: We should only use cygpath when building on Windows,
 # and only if it is available.
@@ -351,9 +284,10 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-CopasiUI$(EXEEXT): $(CopasiUI_OBJECTS) $(CopasiUI_DEPENDENCIES)
-	@rm -f CopasiUI$(EXEEXT)
-	$(CXXLINK) $(CopasiUI_LDFLAGS) $(CopasiUI_OBJECTS) $(CopasiUI_LDADD) $(LIBS)
+librandomGenerator.a: $(librandomGenerator_a_OBJECTS) $(librandomGenerator_a_DEPENDENCIES)
+	-rm -f librandomGenerator.a
+	$(AR) cru librandomGenerator.a $(librandomGenerator_a_OBJECTS) $(librandomGenerator_a_LIBADD)
+	$(RANLIB) librandomGenerator.a
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.obj:
@@ -392,14 +326,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = copasi/CopasiUI
+subdir = copasi/randomGenerator
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu copasi/CopasiUI/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu copasi/randomGenerator/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -469,7 +403,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 install-exec: install-exec-am
 
 install-data-am:
@@ -478,14 +412,13 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(LIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
 
 mostlyclean-generic:
@@ -497,25 +430,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+clean-am:  clean-noinstLIBRARIES clean-compile clean-libtool clean-tags \
 		clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-depend distclean-generic \
-		clean-am
+distclean-am:  distclean-noinstLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -524,8 +457,8 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+.PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
+clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
@@ -538,12 +471,6 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
-
-%.moc.cpp: %.h
-	$(MOC) -o $@ $<
-
-check_LIBS:
-	@for d in $(CopasiUI_LIBS); do (cd $$d && make); done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

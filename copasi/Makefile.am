@@ -18,6 +18,7 @@ SUBDIRS = \
 	output \
 	model \
 	optimization \
+	randomGenerator \
 	steadystate \
 	trajectory \
 	utilities \

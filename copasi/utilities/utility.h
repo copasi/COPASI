@@ -69,6 +69,7 @@ void daxpy(C_INT32 n,
            C_FLOAT64 * dy,
            C_INT32 incy);
 
+#ifdef XXXX 
 /**
  *
  */
@@ -76,6 +77,7 @@ void lsoda_dscal(C_INT32 n,
                  C_FLOAT64 da,
                  C_FLOAT64 * dx,
                  C_INT32 incx);
+#endif // XXXX
 
 /**
  *

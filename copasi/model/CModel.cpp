@@ -174,7 +174,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mSteps.load(configBuffer, Size);
 
-  // cout << endl << mSteps << endl ;  //debug
+  // cout << endl << mSteps << endl;  //debug
 
   // We must postprocess the steps for old file versions
   if (configBuffer.getVersion() < "4")
@@ -291,7 +291,7 @@ void CModel::buildStoi()
   cout << "Stoichiometry Matrix" << endl;
   cout << mStoi << endl;
 
-  return ;
+  return;
 }
 
 void CModel::lUDecomposition()
@@ -352,7 +352,7 @@ void CModel::lUDecomposition()
   for (i = 0; i < mStepsX.size(); i++)
     mFluxesX[i] = &mStepsX[i]->getFlux();
 
-  return ;
+  return;
 }
 
 void CModel::setMetabolitesStatus()
@@ -374,8 +374,8 @@ void CModel::setMetabolitesStatus()
     }
 
   mMetabolitesInd.clear();
-  mMetabolitesInd.insert(0, &mMetabolitesX[0], &mMetabolitesX[i]);
-  mStepsInd.insert(0, &mStepsX[0], &mStepsX[i]);
+  mMetabolitesInd.insert(mMetabolitesInd.begin(), &mMetabolitesX[0], &mMetabolitesX[i]);
+  mStepsInd.insert(mStepsInd.begin(), &mStepsX[0], &mStepsX[i]);
 
   for (j = i; j < mLU.num_rows(); j++)
     {
@@ -391,12 +391,12 @@ void CModel::setMetabolitesStatus()
     }
 
   mMetabolitesDep.clear();
-  mMetabolitesDep.insert(0, &mMetabolitesX[i], &mMetabolitesX[j]);
+  mMetabolitesDep.insert(mMetabolitesDep.begin(), &mMetabolitesX[i], &mMetabolitesX[j]);
 
   for (k = j; k < mLU.num_rows(); k++)
     mMetabolitesX[k]->setStatus(METAB_FIXED);
 
-  return ;
+  return;
 }
 
 void CModel::buildRedStoi()
@@ -440,7 +440,7 @@ void CModel::buildRedStoi()
   cout << "Reduced Stoichiometry Matrix" << endl;
   cout << mRedStoi << endl;
 
-  return ;
+  return;
 }
 
 void CModel::buildL()
@@ -529,7 +529,7 @@ void CModel::buildMoieties()
       mMoieties.add(pMoiety);
     }
 
-  return ;
+  return;
 }
 
 void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
@@ -554,7 +554,7 @@ void CModel::setNumbersDblAndUpdateConcentrations(const C_FLOAT64 * y)
   for (i = 0; i < imax; i++)
     mStepsX[i]->calculate();
 
-  return ;
+  return;
 }
 
 void CModel::setRates(const C_FLOAT64 * y)
@@ -573,7 +573,7 @@ void CModel::setRates(const C_FLOAT64 * y)
   for (i = 0; i < imax; i++)
     mMetabolitesDep[i]->setRate(mMoieties[i]->dependentRate());
 
-  return ;
+  return;
 }
 
 void CModel::setTransitionTimes()
@@ -660,7 +660,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
         ydot[i] += mRedStoi[i][j] * *mFluxesX[j];
     }
 
-  return ;
+  return;
 }
 vector < CMetab * > & CModel::getMetabolitesInd(){ return mMetabolitesInd; }
 vector < CMetab * > & CModel::getMetabolitesDep(){ return mMetabolitesDep; }
@@ -978,7 +978,7 @@ void CModel::setInitialState(const CState * state)
   const C_FLOAT64 * Dbl = state->getVolumes();
 
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-    mCompartments[i]->setVolume(*Dbl) ;
+    mCompartments[i]->setVolume(*Dbl);
 
   /* We are not using the set method since it automatically updates the
      numbers which are provided separately in a state */
@@ -999,7 +999,7 @@ void CModel::setInitialState(const CState * state)
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
     mMoieties[i]->setInitialValue();
 
-  return ;
+  return;
 }
 
 void CModel::setInitialState(const CStateX * state)
@@ -1009,7 +1009,7 @@ void CModel::setInitialState(const CStateX * state)
   const C_FLOAT64 * Dbl = state->getVolumes();
 
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-    mCompartments[i]->setVolume(*Dbl) ;
+    mCompartments[i]->setVolume(*Dbl);
 
   /* We are not using the set method since it automatically updates the
      numbers which are provided separately in a state */
@@ -1030,7 +1030,7 @@ void CModel::setInitialState(const CStateX * state)
   for (i = 0, imax = mMoieties.size(); i < imax; i++)
     mMoieties[i]->setInitialValue();
 
-  return ;
+  return;
 }
 
 CState * CModel::getState() const
@@ -1095,7 +1095,7 @@ void CModel::setState(const CState * state)
   Dbl = state->getVolumes();
 
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-    mCompartments[i]->setVolume(*Dbl) ;
+    mCompartments[i]->setVolume(*Dbl);
 
 #endif // XXXX
 
@@ -1115,7 +1115,7 @@ void CModel::setState(const CState * state)
   for (i = 0; i < imax; i++, Int++)
     *const_cast<C_INT32*>(&mMetabolites[i]->getNumberInt()) = *Int;
 
-  return ;
+  return;
 }
 
 void CModel::setState(const CStateX * state)
@@ -1128,7 +1128,7 @@ void CModel::setState(const CStateX * state)
   Dbl = state->getVolumes();
 
   for (i = 0, imax = mCompartments.size(); i < imax; i++, Dbl++)
-    mCompartments[i]->setVolume(*Dbl) ;
+    mCompartments[i]->setVolume(*Dbl);
 
 #endif // XXXX
 
@@ -1161,7 +1161,7 @@ void CModel::setState(const CStateX * state)
       (const_cast<CStateX *>(state))->setNumber(offset + i, NumberDbl);
     }
 
-  return ;
+  return;
 }
 
 void CModel::getRates(CState * state, C_FLOAT64 * rates)
@@ -1173,7 +1173,7 @@ void CModel::getRates(CState * state, C_FLOAT64 * rates)
   for (i = 0, imax = mSteps.size(); i < imax; i++)
     rates[i] = mSteps[i]->calculate();
 
-  return ;
+  return;
 }
 
 void CModel::getRates(CStateX * state, C_FLOAT64 * rates)
@@ -1185,7 +1185,7 @@ void CModel::getRates(CStateX * state, C_FLOAT64 * rates)
   for (i = 0, imax = mStepsX.size(); i < imax; i++)
     rates[i] = mStepsX[i]->calculate();
 
-  return ;
+  return;
 }
 
 void CModel::getDerivatives(CState * state, C_FLOAT64 * derivatives)
@@ -1207,7 +1207,7 @@ void CModel::getDerivatives(CState * state, C_FLOAT64 * derivatives)
         derivatives[i] += mStoi[i][j] * *mFluxes[j];
     }
 
-  return ;
+  return;
 }
 
 void CModel::getDerivatives(CStateX * state, C_FLOAT64 * derivatives)
@@ -1229,7 +1229,7 @@ void CModel::getDerivatives(CStateX * state, C_FLOAT64 * derivatives)
         derivatives[i] += mRedStoi[i][j] * *mFluxesX[j];
     }
 
-  return ;
+  return;
 }
 
 CStateX * CModel::convertState(CState * state)

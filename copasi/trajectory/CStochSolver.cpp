@@ -7,6 +7,7 @@
 
 #include "utilities/utilities.h"
 #include "function/function.h"
+#include "randomGenerator/CRandom.h"
 #include "CStochSolver.h"
 #include "CTrajectory.h"
 
@@ -60,14 +61,14 @@ CStochMethod::CStochMethod()
     : mModel(NULL),
     mFail(0)
 {
-  mRandomGenerator = new CRandom();
+  mRandomGenerator = new Cr250();
 }
 
 CStochMethod::CStochMethod(CModel *model)
     : mModel(model),
     mFail(0)
 {
-  mRandomGenerator = new CRandom();
+  mRandomGenerator = new Cr250();
 }
 CStochMethod::~CStochMethod() {cleanup(); }
 
@@ -88,7 +89,7 @@ C_INT32 CStochMethod::initMethod(C_FLOAT64 start_time)
     }
 
   setupDependencyGraphAndBalances();
-  cout << mDG ;
+  cout << mDG;
   updatePropensities();
   return 0;
 }
@@ -206,16 +207,14 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
       bi->mMetabAddr->setNumberInt(new_num);
     }
 
-  const set
-    <C_INT32> & dep_nodes = mDG.getDependents(rxn);
+  const set <C_INT32> & dep_nodes = mDG.getDependents(rxn);
 
-  set
-    <C_INT32>::const_iterator it;
+  set <C_INT32>::const_iterator it;
 
   for (it = dep_nodes.begin(); it != dep_nodes.end(); it++)
     {
       unsigned int ii = *it;
-      mAmuOld[ii] = mAmu[ii] ;
+      mAmuOld[ii] = mAmu[ii];
       calculateAmu(ii);
     }
 
@@ -229,7 +228,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
 C_INT32 CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mRandomGenerator->getUniformRandom();
+  C_FLOAT64 rand1 = mRandomGenerator->getRandomF();
   C_FLOAT64 sum = 0;
   unsigned C_INT32 index = 0;
 
@@ -251,13 +250,13 @@ C_INT32 CStochMethod::generateReactionIndex()
 
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getUniformRandom();
+  C_FLOAT32 rand2 = mRandomGenerator->getRandomF();
   return -1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getUniformRandom();
+  C_FLOAT32 rand2 = mRandomGenerator->getRandomF();
   return -1 * log(rand2) / mAmu[reaction_index];
 }
 
@@ -293,8 +292,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           // Could also do this with set_intersection generic algorithm, but that
           // would require operator<() to be defined on the set elements.
 
-          set
-            <CMetab*>::iterator iter = Affects[i]->begin();
+          set <CMetab*>::iterator iter = Affects[i]->begin();
 
           for (; iter != Affects[i]->end(); iter++)
             {
@@ -320,7 +318,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     {
       const CCopasiVector<CChemEqElement> & bbb = mModel->getReactions()[i]->getChemEq().getBalances();
 
-      //cout << endl << i << " : " ;
+      //cout << endl << i << " : ";
 
       for (j = 0; j < bbb.size(); j++)
         {
@@ -330,7 +328,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
           if ((bb.mMetabAddr->getStatus()) != METAB_FIXED)
             {
               mLocalBalances[i].push_back(bb);
-              //cout << bb.mMetabAddr->getName() << "  " ;
+              //cout << bb.mMetabAddr->getName() << "  ";
             }
         }
     }
@@ -344,12 +342,9 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 }
 
-set
-  <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
+set <CMetab*> *CStochMethod::getDependsOn(C_INT32 reaction_index)
   {
-    set
-      <CMetab*> *retset = new set
-                            <CMetab*>;
+    set <CMetab*> *retset = new set <CMetab*>;
 
     CCopasiVector<CReaction::CId2Metab> & subst = mModel->getReactions()[reaction_index]->getId2Substrates();
 
@@ -379,12 +374,9 @@ set
     return retset;
   }
 
-set
-  <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
+set <CMetab*> *CStochMethod::getAffects(C_INT32 reaction_index)
   {
-    set
-      <CMetab*> *retset = new set
-                            <CMetab*>;
+    set <CMetab*> *retset = new set <CMetab*>;
 
     // Get the balances  associated with the reaction at this index
     // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
@@ -469,15 +461,13 @@ void CStochNextReactionMethod::setupPriorityQueue(C_FLOAT64 start_time)
 
 void CStochNextReactionMethod::updatePriorityQueue(C_INT32 reaction_index, C_FLOAT64 time)
 {
-  const set
-    <C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
+  const set <C_INT32> & dep_nodes = mDG.getDependents(reaction_index);
 
   C_FLOAT64 new_time = time + generateReactionTime(reaction_index);
 
   mPQ.updateNode(reaction_index, new_time);
 
-  set
-    <C_INT32>::const_iterator di;
+  set <C_INT32>::const_iterator di;
 
   for (di = dep_nodes.begin(); di != dep_nodes.end(); di++)
     {

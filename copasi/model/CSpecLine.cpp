@@ -202,7 +202,7 @@ CTempMetab *CTempReaction::addMetabolite(CMetab *metab)
   // If we get here, this metab has not yet been added
   mMetabs.push_back(CTempMetab(metab));
 
-  return mMetabs.end() - 1;
+  return &*(mMetabs.end() - 1);
 }
 
 void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
@@ -214,7 +214,7 @@ void CTempReaction::setIdentifiers(const CDeTerm *deTerm)
     if (TokenStack[i]->first == CDeTerm::IDENT)
       mIdentifiers.push_back(TokenStack[i]->second);
 
-  return ;
+  return;
 }
 
 void CTempReaction::compile(CModel *model,

@@ -188,10 +188,10 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libutilities.a
 
-libutilities_a_SOURCES =  	CCopasiException.cpp 	CCopasiMessage.cpp 	CDependencyGraph.cpp 	CGlobals.cpp 	CIndexedPriorityQueue.cpp 	CRandom.cpp 	CReadConfig.cpp 	CVersion.cpp 	CWriteConfig.cpp 	CMethodParameter.cpp 	CMethodParameterList.cpp 	utility.cpp
+libutilities_a_SOURCES =  	CCopasiException.cpp 	CCopasiMessage.cpp 	CDependencyGraph.cpp 	CGlobals.cpp 	CIndexedPriorityQueue.cpp 	CReadConfig.cpp 	CVersion.cpp 	CWriteConfig.cpp 	CMethodParameter.cpp 	CMethodParameterList.cpp 	utility.cpp
 
 
-EXTRA_DIST =  	utilities.h 	CCopasiException.h	CCopasiException.cpp 	CCopasiMessage.h	CCopasiMessage.cpp 	CDependencyGraph.h	CDependencyGraph.cpp 	CCopasiVector.h 	CGlobals.h		CGlobals.cpp 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp 	CRandom.h		CRandom.cpp 	CReadConfig.h		CReadConfig.cpp 	CVersion.h		CVersion.cpp 	CWriteConfig.h		CWriteConfig.cpp 	CMethodParameter.h	CMethodParameter.cpp 	CMethodParameterList.h	CMethodParameterList.cpp 	messages.h 	utility.h		utility.cpp
+EXTRA_DIST =  	utilities.h 	CCopasiException.h	CCopasiException.cpp 	CCopasiMessage.h	CCopasiMessage.cpp 	CDependencyGraph.h	CDependencyGraph.cpp 	CCopasiVector.h 	CGlobals.h		CGlobals.cpp 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp 	CReadConfig.h		CReadConfig.cpp 	CVersion.h		CVersion.cpp 	CWriteConfig.h		CWriteConfig.cpp 	CMethodParameter.h	CMethodParameter.cpp 	CMethodParameterList.h	CMethodParameterList.cpp 	messages.h 	utility.h		utility.cpp
 
 
 ####### kdevelop will overwrite this part!!! (end)############
@@ -211,7 +211,7 @@ LIBS = @LIBS@
 libutilities_a_LIBADD = 
 libutilities_a_OBJECTS =  CCopasiException.$(OBJEXT) \
 CCopasiMessage.$(OBJEXT) CDependencyGraph.$(OBJEXT) CGlobals.$(OBJEXT) \
-CIndexedPriorityQueue.$(OBJEXT) CRandom.$(OBJEXT) CReadConfig.$(OBJEXT) \
+CIndexedPriorityQueue.$(OBJEXT) CReadConfig.$(OBJEXT) \
 CVersion.$(OBJEXT) CWriteConfig.$(OBJEXT) CMethodParameter.$(OBJEXT) \
 CMethodParameterList.$(OBJEXT) utility.$(OBJEXT)
 AR = ar
@@ -229,7 +229,7 @@ TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CCopasiException.P .deps/CCopasiMessage.P \
 .deps/CDependencyGraph.P .deps/CGlobals.P .deps/CIndexedPriorityQueue.P \
-.deps/CMethodParameter.P .deps/CMethodParameterList.P .deps/CRandom.P \
+.deps/CMethodParameter.P .deps/CMethodParameterList.P \
 .deps/CReadConfig.P .deps/CVersion.P .deps/CWriteConfig.P \
 .deps/utility.P
 SOURCES = $(libutilities_a_SOURCES)

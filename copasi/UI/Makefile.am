@@ -40,6 +40,7 @@ CopasiUI_LIBS = \
 	../model \
 	../function \
 	../output \
+	../randomGenerator \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -81,6 +82,7 @@ LIBS = $(LIB_QT) \
 	-loutput \
 	-lfunction \
 	-lmodel \
+	-lrandomGenerator \
 	-llapack \
 	-lblas \
 	-lF77 \
@@ -104,6 +106,7 @@ LDFLAGS = $(all_libraries) $(USER_LDFLAGS)\
 	-L../function \
 	-L../model \
 	-L../output \
+	-L../randomGenerator \
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities

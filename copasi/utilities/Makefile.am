@@ -7,7 +7,6 @@ libutilities_a_SOURCES = \
 	CDependencyGraph.cpp \
 	CGlobals.cpp \
 	CIndexedPriorityQueue.cpp \
-	CRandom.cpp \
 	CReadConfig.cpp \
 	CVersion.cpp \
 	CWriteConfig.cpp \
@@ -23,7 +22,6 @@ EXTRA_DIST = \
 	CCopasiVector.h \
 	CGlobals.h		CGlobals.cpp \
 	CIndexedPriorityQueue.h	CIndexedPriorityQueue.cpp \
-	CRandom.h		CRandom.cpp \
 	CReadConfig.h		CReadConfig.cpp \
 	CVersion.h		CVersion.cpp \
 	CWriteConfig.h		CWriteConfig.cpp \
