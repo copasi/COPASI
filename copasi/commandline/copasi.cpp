@@ -25,6 +25,8 @@
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiException.h"
 #include "COptionParser.h"
 #include "COptions.h"
 

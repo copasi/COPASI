@@ -104,9 +104,9 @@ CMathConstantParameter::CMathConstantParameter(const CReaction::CId2Param & para
     CMathConstant(& parameter),
     mReaction(reaction)
 {
-  if (parameter.getIdentifierName() != getName())
+  if (parameter.getName() != getName())
     {
-      std::string Name(parameter.getIdentifierName() + "{" + mReaction + "}");
+      std::string Name(parameter.getName() + "{" + mReaction + "}");
       setName(Name);
     }
 }
@@ -150,7 +150,7 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
       jmax = pParameters->size();
 
       for (j = 0; j < jmax; j++)
-        mSelection[(*pParameters)[j]->getIdentifierName() + "(" + Name + ")"] =
+        mSelection[(*pParameters)[j]->getName() + "(" + Name + ")"] =
           (*pParameters)[j];
     }
 

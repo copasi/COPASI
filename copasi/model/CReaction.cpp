@@ -398,10 +398,10 @@ CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Products()
 CCopasiVector < CReaction::CId2Metab > &CReaction::getId2Modifiers()
 {return mId2Modifiers;}
 
-const CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters() const
+const CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters() const
   {return mId2Parameters;}
 
-CCopasiVector < CReaction::CId2Param > &CReaction::getId2Parameters()
+CCopasiVectorN < CReaction::CId2Param > &CReaction::getId2Parameters()
 {return mId2Parameters;}
 
 const std::string & CReaction::getName() const
@@ -848,10 +848,8 @@ void CReaction::CId2Param::setIdentifierName(const std::string & identifierName)
   mIdentifierName = identifierName;
 }
 
-const std::string & CReaction::CId2Param::getIdentifierName() const
-  {
-    return mIdentifierName;
-  }
+const std::string & CReaction::CId2Param::getName() const
+  {return mIdentifierName;}
 
 void CReaction::CId2Param::setValue(const C_FLOAT64 & value)
 {
@@ -889,7 +887,7 @@ C_INT32 CReaction::findPara(std::string &Target) const
 
     for (i = 0; i < mId2Parameters.size(); i++)
       {
-        name = mId2Parameters[i]->getIdentifierName();
+        name = mId2Parameters[i]->getName();
 
         if (name == Target)
           return i;

@@ -203,7 +203,7 @@ class CReaction : public CCopasiContainer
          *  Retrieve the identifier name
          *  @return "const string &" identifierName
          */
-        const std::string & getIdentifierName() const;
+        const std::string & getName() const;
 
         /**
          *  Set the identifier value
@@ -227,7 +227,7 @@ class CReaction : public CCopasiContainer
          */
         friend std::ostream & operator<<(std::ostream &os, const CId2Param & d)
         {
-          os << "     CId2Param: Ident " << d.getIdentifierName()
+          os << "     CId2Param: Ident " << d.getName()
           << " Value " << d.getValue() << std::endl;
           return os;
         }
@@ -328,7 +328,7 @@ class CReaction : public CCopasiContainer
      *  and function parameters
      */
     /** @dia:route 84,2; h,135.488,108.034,133.093,113.598,125.427 */
-    CCopasiVector < CId2Param > mId2Parameters;
+    CCopasiVectorN < CId2Param > mId2Parameters;
 
     /**
      *  A pointer to the  call parameters of the rate function of the reaction
@@ -437,10 +437,10 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Retrieves the vector of parameters
-     *  @return "CCopasiVector < CId2Param > &"
+     *  @return "CCopasiVectorN < CId2Param > &"
      */
-    const CCopasiVector < CId2Param > & getId2Parameters() const;
-    CCopasiVector < CId2Param > & getId2Parameters();
+    const CCopasiVectorN < CId2Param > & getId2Parameters() const;
+    CCopasiVectorN < CId2Param > & getId2Parameters();
 
     /**
      *  Retrieves the name of the reaction
