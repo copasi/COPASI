@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/27 18:40:40 $
+   $Author: gauges $ 
+   $Date: 2004/10/28 07:31:02 $
    End CVS Header */
 
 #include <cmath>
@@ -73,9 +73,9 @@ CMCAMethod::~CMCAMethod()
 /**
  * Set the Model
  */
-void CMCAMethod::setModel(const CModel & model)
+void CMCAMethod::setModel(const CModel* model)
 {
-  mpModel = &model;
+  mpModel = model;
 }
 
 /**
@@ -239,8 +239,9 @@ int CMCAMethod::CalcGamma()
     }
 
   // set mGamma to zeros
+
   for (i = 0; i < (unsigned C_INT32) mGamma.numRows(); i++)
-    for (j = 0; j < (unsigned C_INT32) mGamma.numCols(); i++)
+    for (j = 0; j < (unsigned C_INT32) mGamma.numCols(); j++)
       mGamma[i][j] = 0.0;
 
   // aux1 = rstoi * mDxv
@@ -462,6 +463,7 @@ void CMCAMethod::CalculateTimeMCA(C_FLOAT64 res)
 
   mSsx.resize(mpModel->getTotMetab());
 
+  init();
   //copy concentrations to ss_x
 
   for (i = 0; i < mpModel->getTotMetab(); i++)
@@ -527,6 +529,11 @@ bool CMCAMethod::process()
   return true;
 }
 
+bool CMCAMethod::isSteadyState() const
+  {
+    return this->mIsSteadyState;
+  }
+
 void CMCAMethod::setIsSteadyState(bool isSteadyState)
 {
   this->mIsSteadyState = isSteadyState;
@@ -540,4 +547,9 @@ void CMCAMethod::setFactor(C_FLOAT64 factor)
 void CMCAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
 {
   this->mSteadyStateResolution = resolution;
+}
+
+CModel* CMCAMethod::getModel()
+{
+  return this->mpModel;
 }

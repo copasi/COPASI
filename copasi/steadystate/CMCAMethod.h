@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/26 15:15:46 $
+   $Date: 2004/10/28 07:31:02 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -80,7 +80,12 @@ class CMCAMethod: public CCopasiMethod
     /**
      * Set the Model
      */
-    void setModel(const CModel & model);
+    void setModel(const CModel* model);
+
+    /**
+     * Get the Model
+     */
+    CModel* getModel();
 
     /**
      * return the mDxv matrix
@@ -170,6 +175,8 @@ class CMCAMethod: public CCopasiMethod
     std::vector <C_FLOAT64> getSsx();
 
     void setIsSteadyState(bool isSteadyState);
+
+    bool isSteadyState() const;
 
     void setFactor(C_FLOAT64 factor);
 
