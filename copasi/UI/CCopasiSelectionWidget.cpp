@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/12/10 15:12:33 $
+   $Date: 2004/12/10 20:51:16 $
    End CVS Header */
 
 #include <iostream>
@@ -90,11 +90,9 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
       // activate the SimpleTree and get the selection from the ObjectBrowser if there is one
       if (this->mpObjectBrowser)
         {
-          std::cout << "commiting ObjectBrowser." << std::endl;
           this->mpObjectBrowser->commitClicked();
           this->mpObjectBrowser->setOutputVector(NULL);
         }
-      std::cout << "output vector size: " << this->mpOutputVector->size() << std::endl;
       this->mpSimpleTree->setOutputVector(this->mpOutputVector);
       this->raiseWidget(this->mpSimpleTree);
     }
