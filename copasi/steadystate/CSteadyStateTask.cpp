@@ -20,7 +20,7 @@
 #include "model/CState.h"
 #include "utilities/CGlobals.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
+#include "report/CReport.h"
 
 #define XXXX_Reporting
 

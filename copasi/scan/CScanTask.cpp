@@ -15,7 +15,7 @@
 #include "output/COutputList.h"
 #include "output/COutput.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
+#include "report/CReport.h"
 
 #include "model/CModel.h"
 #include "model/CState.h"
