@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/02/02 15:14:00 $
+   $Author: shoops $ 
+   $Date: 2005/02/03 23:08:18 $
    End CVS Header */
 
 #ifndef COPASI_CRandom
@@ -40,10 +40,10 @@ class CRandom
 
     struct ExpVars
       {
-        float q[8];
-        long i;
-        float sexpo, a, u, ustar, umin;
-        float *q1;
+        C_FLOAT64 q[8];
+        C_INT32 i;
+        C_FLOAT64 sexpo, a, u, ustar, umin;
+        C_FLOAT64 *q1;
       };
 
     enum Type
