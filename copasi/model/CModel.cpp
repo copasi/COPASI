@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.181 $
+   $Revision: 1.182 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 14:04:52 $
+   $Date: 2004/06/23 16:12:17 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -328,145 +328,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   return Fail;
 }
 
-/*C_INT32 CModel::save(CWriteConfig & configBuffer)
-{
-  C_INT32 Size;
-  C_INT32 Fail = 0;
-  std::string tmp = getObjectName();
- 
-  if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
-    return Fail;
- 
-  if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
-    return Fail;
- 
-  if ((Fail = configBuffer.setVariable("ConcentrationUnit",
-                                       "string",
-                                       &mQuantityUnit)))
-    return Fail;
- 
-  if ((Fail = configBuffer.setVariable("InitialTime", "C_FLOAT64", &mInitialTime)))
-    return Fail;
- 
-  Size = mCompartments.size();
- 
-  if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
-    return Fail;
- 
-  mCompartments.save(configBuffer);
- 
-  if ((Fail = Copasi->pFunctionDB->save(configBuffer)))
-    return Fail;
- 
-  Size = mSteps.size();
- 
-  if ((Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size)))
-    return Fail;
- 
-  mSteps.save(configBuffer);
- 
-  return Fail;
-}
- 
-C_INT32 CModel::saveOld(CWriteConfig & configBuffer)
-{
-  C_INT32 i, Size;
-  C_INT32 Fail = 0;
-  std::string tmp = getObjectName();
- 
-  if ((Fail = configBuffer.setVariable("Title", "string", &tmp)))
-    return Fail;
-  Size = mMetabolites.size();
-  if ((Fail = configBuffer.setVariable("TotalMetabolites", "C_INT32", &Size)))
-    return Fail;
-  Size = mSteps.size();
-  if ((Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size)))
-    return Fail;
-  Size = mMoieties.size();
-  if ((Fail = configBuffer.setVariable("TotalMoieties", "C_INT32", &Size)))
-    return Fail;
-  Size = mCompartments.size();
-  if ((Fail = configBuffer.setVariable("TotalCompartments", "C_INT32", &Size)))
-    return Fail;
-  if ((Fail = Copasi->pFunctionDB->saveOld(configBuffer)))
-    return Fail;
-  Size = mMetabolites.size();
-  for (i = 0; i < Size; i++)
-    mMetabolites[i]->saveOld(configBuffer);
-  Size = mMoieties.size();
-  for (i = 0; i < Size; i++)
-    mMoieties[i]->saveOld(configBuffer);
-  Size = mSteps.size();
-  for (i = 0; i < Size; i++)
-    mSteps[i]->saveOld(configBuffer, getMetabolites());
-  Size = mCompartments.size();
-  for (i = 0; i < Size; i++)
-    mCompartments[i]->saveOld(configBuffer);
-  if ((Fail = configBuffer.setVariable("Comments", "multiline", &mComments)))
-    return Fail;
-  return Fail;
-}*/
-
-/*void CModel::saveSBML(std::ofstream &fout)
-{
-  std::string tmpstr, tmpstr2;
-  C_INT32 p, dummy;
-  unsigned C_INT32 i;
- 
-  fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  fout << "<!-- Created by COPASI version " << Copasi->ProgramVersion.getVersion() << " -->" << std::endl;
-  // TODO: add time stamp to the comment string
-  fout << "<sbml xmlns=\"http://www.sbml.org/sbml/level1\" level=\"1\" version=\"1\">" << std::endl;
-  FixSName(getObjectName(), tmpstr);
-  fout << "\t<model name=\"" + tmpstr + "\">" << std::endl;
-  // model notes
-  if (! mComments.empty())
-    {
-      fout << "\t\t<notes>" << std::endl;
-      fout << "\t\t\t<body xmlns=\"http://www.w3.org/1999/xhtml\">" << std::endl;
-      tmpstr = mComments;
-      for (i = 0; i != (unsigned C_INT32) - 1;)
-        {
-          p = tmpstr.find_first_of("\r\n");
-          FixXHTML(tmpstr.substr(0, p), tmpstr2);
-          fout << "\t\t\t\t<p>" << tmpstr2 << "</p>" << std::endl;
-          i = tmpstr.find('\n');
-          tmpstr = tmpstr.substr(i + 1);
-        }
-      fout << "\t\t\t</body>" << std::endl;
-      fout << "\t\t</notes>" << std::endl;
-    }
-  fout << "\t\t<listOfCompartments>" << std::endl;
-  // compartments
-  for (i = 0; i < mCompartments.size(); i++)
-    mCompartments[i]->saveSBML(fout);
-  fout << "\t\t</listOfCompartments>" << std::endl;
-  fout << "\t\t<listOfSpecies>" << std::endl;
-  for (i = 0; i < mMetabolites.size(); i++)
-    mMetabolites[i]->saveSBML(fout);
-  // check if any reaction has no substrates or no products
-  // (necessary because SBML l1v1 does not support empty subs or prods)
-  for (dummy = i = 0; (i < mSteps.size()) && (dummy == 0); i++)
-    if ((mSteps[i]->getChemEq().getSubstrates().size() == 0)
-        || (mSteps[i]->getChemEq().getProducts().size() == 0))
-      dummy = 1;
-  // if there are any, we need a dummy metabolite, let's call it _void !
-  if (dummy)
-    {
-      fout << "\t\t\t<specie name=\"_void_\"";
-      FixSName(mCompartments[0]->getObjectName(), tmpstr);
-      fout << " compartment=\"" << tmpstr << "\"";
-      fout << " initialAmount=\"0.0\" boundaryCondition=\"true\"/>" << std::endl;
-    }
-  fout << "\t\t</listOfSpecies>" << std::endl;
-  fout << "\t\t<listOfReactions>" << std::endl;
-  for (i = 0; i < mSteps.size(); i++)
-    mSteps[i]->saveSBML(fout, i);
-  fout << "\t\t</listOfReactions>" << std::endl;
-  fout << "\t</model>" << std::endl;
-  fout << "</sbml>" << std::endl;
-}*/
-
 bool CModel::compile2()
 {
   CMatrix< C_FLOAT64 > LU;
@@ -483,13 +344,26 @@ bool CModel::compile2()
   buildMoieties();
   buildStateTemplate();
 
-  std::cout << "CModel::compile2() called" << std::endl;
+  std::cout << "CModel::compile2() called, mCompileIsNecessary: " << mCompileIsNecessary << std::endl;
 
+  mCompileIsNecessary = false;
   return true;
 }
 
 //bool CModel::compile()
 //{}
+
+void CModel::setCompileFlag(bool flag)
+{
+  mCompileIsNecessary = flag;
+}
+
+bool CModel::compileIfNecessary()
+{
+  if (mCompileIsNecessary)
+    return compile2();
+  return true;
+}
 
 void CModel::buildStoi()
 {
@@ -545,7 +419,6 @@ void CModel::buildStoi()
               }
         }
     }
-
 #ifdef DEBUG_MATRIX
   DebugFile << "Stoichiometry Matrix" << std::endl;
   DebugFile << mStoi << std::endl;
@@ -926,24 +799,46 @@ void CModel::setTransitionTimes()
     }
 }
 
-CCopasiVectorNS < CReaction > & CModel::getReactions()
+void CModel::initializeMetabolites() //TODO: check if this is necessary
 {
-  return mSteps;
+  unsigned C_INT32 i, j;
+
+  // Create a vector of pointers to all metabolites.
+  // Note, the metabolites physically exist in the compartments.
+  mMetabolites.resize(0);
+
+  for (i = 0; i < mCompartments.size(); i++)
+    for (j = 0; j < mCompartments[i]->getMetabolites().size(); j++)
+      {
+        mMetabolites.add(mCompartments[i]->getMetabolites()[j]);
+        //        mCompartments[i]->getMetabolites()[j]->setModel(this);
+        // mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
+      }
 }
+
+//**********************************************************************
+
+CCopasiVectorNS < CReaction > & CModel::getReactions()
+{return mSteps;}
 
 const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   {return mSteps;}
 
-const CCopasiVectorN< CReaction > & CModel::getReactionsX() const {return mStepsX;}
+const CCopasiVectorN< CReaction > & CModel::getReactionsX() const
+  {return mStepsX;}
 
-/**
- *        Return the metabolites of this model
- *        @return vector < CMetab * >
- */
-const CCopasiVector< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
-CCopasiVector< CMetab > & CModel::getMetabolites() {return mMetabolites;}
-CCopasiVector< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
-CCopasiVector< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
+const CCopasiVector< CMetab > & CModel::getMetabolites() const
+  {return mMetabolites;}
+
+CCopasiVector< CMetab > & CModel::getMetabolites()
+{return mMetabolites;}
+
+CCopasiVector< CMetab > & CModel::getMetabolitesInd()
+{return mMetabolitesInd;}
+
+CCopasiVector< CMetab > & CModel::getMetabolitesDep()
+{return mMetabolitesDep;}
+
 const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
   {return mMetabolitesX;}
 
@@ -959,33 +854,14 @@ unsigned C_INT32 CModel::getIndMetab() const
 unsigned C_INT32 CModel::getDepMetab() const
   {return mMetabolitesDep.size();}
 
-// Added by Yongqun He
-/**
- * Get the total steps
- *
- */
 unsigned C_INT32 CModel::getTotSteps() const
-  {
-    return mSteps.size();   //should not return mSteps
-  }
+  {return mSteps.size();}
 
-unsigned C_INT32 CModel::getDimension() const
-  {
-    return mMetabolitesInd.size();
-  }
+const std::string & CModel::getComments() const
+  {return mComments;}
 
-/**
- *        Return the comments of this model        Wei Sun 
- */
-std::string CModel::getComments() const {return mComments;}
-
-const std::string & CModel::getKey() const {return mKey;}
-
-/**
- *        Return the title of this model
- *        @return string
- */
-std::string CModel::getTitle() const {return getObjectName();}
+const std::string & CModel::getKey() const
+  {return mKey;}
 
 CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}
@@ -1005,12 +881,47 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
   {return mStoi;}
 
-/**
- *        Return the mMoieties of this model        
- *        @return CCopasiVector < CMoiety > * 
- */
 const CCopasiVectorN < CMoiety > & CModel::getMoieties() const
   {return mMoieties;}
+
+const CCopasiVectorN< CReaction > & CModel::getStepsX() const
+  {return mStepsX;}
+
+const CModel::CLinkMatrixView & CModel::getL() const
+  {return mLView;}
+
+const CModel::CStateTemplate & CModel::getStateTemplate() const
+  {return mStateTemplate;}
+
+bool CModel::setTitle(const std::string &title)
+{
+  if (title == "")
+    return setObjectName("NoTitle");
+  return setObjectName(title);
+}
+
+void CModel::setComments(const std::string &comments)
+{mComments = comments;}
+
+void CModel::setInitialTime(const C_FLOAT64 & time)
+{mInitialTime = time;}
+
+const C_FLOAT64 & CModel::getInitialTime() const
+  {return mInitialTime;}
+
+void CModel::setTime(const C_FLOAT64 & time)
+{mTime = time;}
+
+const C_FLOAT64 & CModel::getTime() const
+  {return mTime;}
+
+const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
+  {return mRowLU;}
+
+const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
+  {return mColLU;}
+
+//**********************************************************************
 
 /**
  *        Returns the index of the metab
@@ -1048,42 +959,7 @@ C_INT32 CModel::findMoiety(std::string &Target) const
     return - 1;
   }
 
-void CModel::initializeMetabolites()
-{
-  unsigned C_INT32 i, j;
-
-  // Create a vector of pointers to all metabolites.
-  // Note, the metabolites physically exist in the compartments.
-  mMetabolites.resize(0);
-
-  for (i = 0; i < mCompartments.size(); i++)
-    for (j = 0; j < mCompartments[i]->getMetabolites().size(); j++)
-      {
-        mMetabolites.add(mCompartments[i]->getMetabolites()[j]);
-        //        mCompartments[i]->getMetabolites()[j]->setModel(this);
-        // mCompartments[i]->getMetabolites()[j]->checkConcentrationAndNumber();
-      }
-}
-
-/**
- * Returns the mStepsX of this model
- * @return vector < CStep * > 
- */
-const CCopasiVectorN< CReaction > & CModel::getStepsX() const {return mStepsX;}
-
-/* only used in steadystate/CMca.cpp */
-/**
- *  Get the mLU matrix of this model
- */ 
-// const CMatrix < C_FLOAT64 > & CModel::getmLU() const
-//  {return mLU;}
-
-/* only used in steadystate/CMca.cpp */
-const CModel::CLinkMatrixView & CModel::getL() const
-  {return mLView;}
-
-const CModel::CStateTemplate & CModel::getStateTemplate() const
-  {return mStateTemplate;}
+//**********************************************************************
 
 bool CModel::buildStateTemplate()
 {
@@ -1258,35 +1134,6 @@ void CModel::setState(const CState * state)
   return;
 }
 
-void CModel::initObjects()
-{
-  addObjectReference("Time", mTime, CCopasiObject::ValueDbl);
-  addObjectReference("Comments", mComments);
-  //  add(&mCompartments);
-  //  add(&mMetabolites);
-  //  add(&mMetabolitesX);
-  //  add(&mMetabolitesInd);
-  //  add(&mMetabolitesDep);
-  //  add(&mSteps);
-  //  add(&mStepsX);
-  //  add(&mStepsInd);
-  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
-  //  addVectorReference("Reduced Model Fluxes", mFluxesX);
-  addVectorReference("Scaled Fluxes", mScaledFluxes, CCopasiObject::ValueDbl);
-  //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
-  // addObjectReference("Transition Time", mTransitionTime);
-  addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
-  addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
-  // addVectorReference("Metabolite Interchanges", mRowLU);
-  // addVectorReference("Reaction Interchanges", mColLU);
-  // addMatrixReference("L", mL);
-  addMatrixReference("Link Matrix", mLView, CCopasiObject::ValueDbl);
-  addObjectReference("Quantity Unit", mQuantityUnit);
-  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
-  // addObjectReference("Inverse Quantity Conversion Factor",
-  //                    mNumber2QuantityFactor);
-}
-
 void CModel::setState(const CStateX * state)
 {
   unsigned C_INT32 i, imax;
@@ -1326,6 +1173,13 @@ void CModel::setState(const CStateX * state)
 
   return;
 }
+
+void CModel::updateDepMetabNumbers(CStateX const & state) const
+  {
+    (const_cast< CModel * >(this))->setState(&state);
+  }
+
+//**********************************************************************
 
 void CModel::getRates(CState * state, C_FLOAT64 * rates)
 {
@@ -1398,6 +1252,8 @@ void CModel::getDerivatives(CStateX * state, CVector< C_FLOAT64 > & derivatives)
 
   return;
 }
+
+//**********************************************************************
 
 unsigned C_INT32 CModel::unitCompare(const std::string & name,
                                      const char ** units,
@@ -1547,67 +1403,7 @@ const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
 const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
   {return mNumber2QuantityFactor;}
 
-bool CModel::setTitle(const std::string &title)
-{
-  if (title == "")
-    return setObjectName("NoTitle");
-  return setObjectName(title);
-}
-
-void CModel::setComments(const std::string &comments)
-{
-  mComments = comments;
-}
-
-void CModel::setInitialTime(const C_FLOAT64 & time) {mInitialTime = time;}
-
-const C_FLOAT64 & CModel::getInitialTime() const {return mInitialTime;}
-
-void CModel::setTime(const C_FLOAT64 & time) {mTime = time;}
-
-const C_FLOAT64 & CModel::getTime() const {return mTime;}
-
-CMetab* CModel::createMetabolite(const std::string & name,
-                                 const std::string & compartment,
-                                 const C_FLOAT64 & iconc,
-                                 const CMetab::Status & status)
-{
-  unsigned C_INT32 Index;
-
-  if (mCompartments.size() == 0)
-    return NULL;
-
-  if (compartment == "")
-    Index = 0;
-  else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
-    return NULL;
-
-  if (mCompartments[Index]->getMetabolites().getIndex(name) != C_INVALID_INDEX)
-    return NULL;
-
-  CMetab * pMetab = new CMetab(name);
-  // pMetab->setName(name);
-
-  // mCompartments[Index]->addMetabolite(pMetab) takes care of the below
-  // pMetab->setModel(this);
-  // pMetab->setCompartment(mCompartments[Index]);
-
-  if (!mCompartments[Index]->addMetabolite(pMetab))
-    {
-      delete pMetab;
-      return NULL;
-    }
-
-  pMetab->setStatus(status);
-  pMetab->setInitialConcentration(iconc);
-
-  if (!mMetabolites.add(pMetab))
-    return NULL;
-
-  //compile();
-
-  return pMetab;
-}
+//**********************************************************************
 
 std::set<std::string> CModel::listReactionsDependentOnMetab(const std::string & key)
 {
@@ -1679,6 +1475,44 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
   return reacKeys;
 }
 
+//**********************************************************************
+
+CMetab* CModel::createMetabolite(const std::string & name,
+                                 const std::string & compartment,
+                                 const C_FLOAT64 & iconc,
+                                 const CMetab::Status & status)
+{
+  unsigned C_INT32 Index;
+
+  if (mCompartments.size() == 0)
+    return NULL;
+
+  if (compartment == "")
+    Index = 0;
+  else if ((Index = mCompartments.getIndex(compartment)) == C_INVALID_INDEX)
+    return NULL;
+
+  if (mCompartments[Index]->getMetabolites().getIndex(name) != C_INVALID_INDEX)
+    return NULL;
+
+  CMetab * pMetab = new CMetab(name);
+
+  if (!mCompartments[Index]->addMetabolite(pMetab))
+    {
+      delete pMetab;
+      return NULL;
+    }
+
+  pMetab->setStatus(status);
+  pMetab->setInitialConcentration(iconc);
+
+  if (!mMetabolites.add(pMetab))
+    return NULL;
+
+  setCompileFlag();
+
+  return pMetab;
+}
 bool CModel::removeMetabolite(const std::string & key)
 {
   CMetab* pMetabolite =
@@ -1702,7 +1536,7 @@ bool CModel::removeMetabolite(const std::string & key)
 
   pdelete(pMetabolite);
 
-  //compile();
+  setCompileFlag();
 
   return true;
 }
@@ -1770,7 +1604,7 @@ CReaction* CModel::createReaction(const std::string & name)
       return NULL;
     }
 
-  //compile();
+  setCompileFlag();
   return pReaction;
 }
 
@@ -1781,7 +1615,8 @@ bool CModel::addReaction(const CReaction & reaction)
 
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile(/*mCompartments*/);
-  //compile();
+
+  setCompileFlag();
   return true;
 }
 
@@ -1802,21 +1637,52 @@ bool CModel::removeReaction(const std::string & key)
 
   mSteps.CCopasiVector< CReaction >::remove(index);
 
-  //compile();
-
+  setCompileFlag();
   return true;
 }
 
-const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
-{return mRowLU;}
+//**********************************************************************
 
-const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
-  {return mColLU;}
+void CModel::initObjects()
+{
+  addObjectReference("Time", mTime, CCopasiObject::ValueDbl);
+  addObjectReference("Comments", mComments);
+  //  add(&mCompartments);
+  //  add(&mMetabolites);
+  //  add(&mMetabolitesX);
+  //  add(&mMetabolitesInd);
+  //  add(&mMetabolitesDep);
+  //  add(&mSteps);
+  //  add(&mStepsX);
+  //  add(&mStepsInd);
+  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
+  //  addVectorReference("Reduced Model Fluxes", mFluxesX);
+  addVectorReference("Scaled Fluxes", mScaledFluxes, CCopasiObject::ValueDbl);
+  //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
+  // addObjectReference("Transition Time", mTransitionTime);
+  addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
+  addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
+  // addVectorReference("Metabolite Interchanges", mRowLU);
+  // addVectorReference("Reaction Interchanges", mColLU);
+  // addMatrixReference("L", mL);
+  addMatrixReference("Link Matrix", mLView, CCopasiObject::ValueDbl);
+  addObjectReference("Quantity Unit", mQuantityUnit);
+  addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
+  // addObjectReference("Inverse Quantity Conversion Factor",
+  //                    mNumber2QuantityFactor);
+}
 
-void CModel::updateDepMetabNumbers(CStateX const & state) const
+bool CModel::hasReversibleReaction() const
   {
-    (const_cast< CModel * >(this))->setState(&state);
+    unsigned C_INT32 i, imax = mSteps.size();
+    for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
+
+    return false;
   }
+
+//**********************************************************************
+//                   CLinkMatrixView
+//**********************************************************************
 
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
 const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
@@ -1844,6 +1710,26 @@ unsigned C_INT32 CModel::CLinkMatrixView::numRows() const
 
 unsigned C_INT32 CModel::CLinkMatrixView::numCols() const
   {return mA.numCols();}
+
+std::ostream &operator<<(std::ostream &os,
+                         const CModel::CLinkMatrixView & A)
+{
+  unsigned C_INT32 i, imax = A.numRows();
+  unsigned C_INT32 j, jmax = A.numCols();
+  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+
+  for (i = 0; i < imax; i++)
+    {
+      for (j = 0; j < jmax; j++)
+        os << "  " << A(i, j);
+      os << std::endl;
+    }
+  return os;
+}
+
+//**********************************************************************
+//          CStateTemplate
+//**********************************************************************
 
 CModel::CStateTemplate::CStateTemplate() :
     mList(),
@@ -1902,27 +1788,3 @@ CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
   {
     return * mList[index];
   }
-
-bool CModel::hasReversibleReaction() const
-  {
-    unsigned C_INT32 i, imax = mSteps.size();
-    for (i = 0; i < imax; ++i) if (mSteps[i]->isReversible()) return true;
-
-    return false;
-  }
-
-std::ostream &operator<<(std::ostream &os,
-                         const CModel::CLinkMatrixView & A)
-{
-  unsigned C_INT32 i, imax = A.numRows();
-  unsigned C_INT32 j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
-
-  for (i = 0; i < imax; i++)
-    {
-      for (j = 0; j < jmax; j++)
-        os << "  " << A(i, j);
-      os << std::endl;
-    }
-  return os;
-}
