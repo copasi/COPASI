@@ -6,6 +6,8 @@
  * Copyright Stefan Hoops
  */
 
+#include "CExpat.h"
+
 #include "copasi.h"
 
 #include "CCopasiXMLParser.h"
