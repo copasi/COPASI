@@ -1,11 +1,11 @@
-/**********************************************************************
- **  $ CopasiUI/MetabolitesWidget1.cpp                 
- **  $ Author  : Mudita Singhal
-
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Metabolites----It is 
- ** Basically the Second level of Metabolites.
- ***********************************************************************/
+/****************************************************************************
+ ** Form implementation generated from reading ui file '.\MetabolitesWidget1.ui'
+ **
+ ** Created: Mon Mar 3 22:02:20 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -24,186 +24,174 @@
 #include "listviews.h"
 
 /*
- *  Constructs a MetabolitesWidget which is a child of 'parent', with the 
+ *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
- *
  */
-
-MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
-
+MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags fl)
+    : QWidget(parent, name, fl)
 {
-  //This is to make the Main Frame of the page
-  //The Main layout used is the Vertical Layout
-  QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame1 = new QFrame(this, "Frame1");
-  Frame1->setFrameShape(QFrame::Box);
-  Frame1->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame1);
+  if (!name)
+    setName("MetabolitesWidget1");
+  resize(589, 380);
+  QFont f(font());
+  f.setFamily("Times New Roman");
+  setFont(f);
+  setCaption(trUtf8("MetabolitesWidget1"));
+  MetabolitesWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "MetabolitesWidget1Layout");
 
-  //This Frame had to be added because of the border around the frame
-  //The grid Layout is used for this frame
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(1);
-  Frame3 = new QFrame(Frame1, "Frame3");
-  vboxLayout1->addWidget(Frame3);
-  QGridLayout *gridLayout = new QGridLayout(Frame3, 0);
+  TextLabel4 = new QLabel(this, "TextLabel4");
+  TextLabel4->setText(trUtf8("Metabolite Name"));
 
-  //All the other frames(rows) are embedded in it
-  Frame2 = new QFrame(Frame3, "Frame2");
-  gridLayout->addWidget(Frame2, 0, 0, 0);
-  QGridLayout *gridLayout1 = new QGridLayout(Frame2, 0);
+  MetabolitesWidget1Layout->addWidget(TextLabel4, 0, 0);
 
-  //Frame for Ist Row
-  Frame4a = new QFrame(Frame2, "Frame4a");
-  gridLayout1->addWidget(Frame4a, 0, 0, 0);
-  QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4a, 0);
-  hBoxLayout4a->addSpacing(15);
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Compartment Name"));
 
-  TextLabel1 = new QLabel("Metabolite Name", Frame4a);
-  hBoxLayout4a->addWidget(TextLabel1);
-  hBoxLayout4a->addSpacing(17);
-  LineEdit1 = new QLineEdit("", Frame4a);
-  hBoxLayout4a->addWidget(LineEdit1);
-  hBoxLayout4a->addSpacing(20);
+  MetabolitesWidget1Layout->addWidget(TextLabel5, 1, 0);
 
-  //Frame for 2nd Row
-  Frame4b = new QFrame(Frame2, "Frame4b");
-  gridLayout1->addWidget(Frame4b, 1, 0, 0);
-  QHBoxLayout *hBoxLayout4b = new QHBoxLayout(Frame4b, 0);
-  hBoxLayout4b->addSpacing(15);
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+  QFont LineEdit1_font(LineEdit1->font());
+  LineEdit1->setFont(LineEdit1_font);
+  LineEdit1->setFrameShape(QLineEdit::LineEditPanel);
+  LineEdit1->setFrameShadow(QLineEdit::Sunken);
 
-  TextLabel2 = new QLabel("Compartment Name", Frame4b);
-  hBoxLayout4b->addWidget(TextLabel2);
-  //hBoxLayout4b->addSpacing(-5);
-  ComboBox1 = new QComboBox(Frame4b, "ComboBox1");
-  hBoxLayout4b->addWidget(ComboBox1);
-  hBoxLayout4b->addSpacing(20);
+  MetabolitesWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 2);
 
-  //Frame for 3rd Row
-  Frame4c = new QFrame(Frame2, "Frame4c");
-  gridLayout1->addWidget(Frame4c, 2, 0, 0);
-  QHBoxLayout *hBoxLayout4c = new QHBoxLayout(Frame4c, 0);
-  hBoxLayout4c->addSpacing(15);
+  ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
 
-  ButtonGroup1 = new QButtonGroup ("&Metabolite Status Selection", Frame4c);
-  hBoxLayout4c->addWidget(ButtonGroup1);
-  hBoxLayout4c->addSpacing(20);
-  ButtonGroup1->setExclusive(true);
+  MetabolitesWidget1Layout->addMultiCellWidget(ComboBox1, 1, 1, 1, 2);
 
-  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
-  RadioButton1->setGeometry(QRect(10, 30, 87, 20));
-  RadioButton1->setText(trUtf8("Fixed"));
+  Line1_3 = new QFrame(this, "Line1_3");
+  Line1_3->setFrameShape(QFrame::HLine);
+  Line1_3->setFrameShadow(QFrame::Sunken);
+  Line1_3->setFrameShape(QFrame::HLine);
 
-  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
-  RadioButton2->setGeometry(QRect(100, 30, 87, 20));
-  RadioButton2->setText(trUtf8("Variable"));
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1_3, 2, 2, 0, 1);
 
-  //Frame for 4th Row
-  Frame4d = new QFrame(Frame2, "Frame4d");
-  gridLayout1->addWidget(Frame4d, 3, 0, 0);
-  QHBoxLayout *hBoxLayout4d = new QHBoxLayout(Frame4d, 0);
-  hBoxLayout4d->addSpacing(15);
+  LineEdit4 = new QLineEdit(this, "LineEdit4");
 
-  TextLabel4 = new QLabel("Initial  Concentration", Frame4d);
-  hBoxLayout4d->addWidget(TextLabel4);
-  hBoxLayout4d->addSpacing(5);
+  MetabolitesWidget1Layout->addWidget(LineEdit4, 6, 1);
 
-  LineEdit4 = new QLineEdit("", Frame4d);
-  LineEdit4->setGeometry(QRect(150, 90, 121, 21));
-  hBoxLayout4d->addWidget(LineEdit4);
-  hBoxLayout4d->addSpacing(20);
+  TextLabel10 = new QLabel(this, "TextLabel10");
+  TextLabel10->setText(trUtf8("Transient Concentration"));
 
-  //Frame for 5th Row
-  Frame4e = new QFrame(Frame2, "Frame4e");
-  gridLayout1->addWidget(Frame4e, 4, 0, 0);
-  QHBoxLayout *hBoxLayout4e = new QHBoxLayout(Frame4e, 0);
-  hBoxLayout4e->addSpacing(15);
+  MetabolitesWidget1Layout->addWidget(TextLabel10, 6, 2);
 
-  TextLabel5 = new QLabel("Initial  Number", Frame4e);
-  TextLabel5->setGeometry(QRect(30, 360, 260, 40));
-  hBoxLayout4e->addWidget(TextLabel5);
-  hBoxLayout4e->addSpacing(32);
+  Layout7 = new QHBoxLayout(0, 0, 6, "Layout7");
 
-  LineEdit5 = new QLineEdit("", Frame4e);
-  hBoxLayout4e->addWidget(LineEdit5);
-  hBoxLayout4e->addSpacing(20);
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit Changes"));
+  Layout7->addWidget(commitChanges);
 
-  //Frame for 6th Row
-  Frame4f = new QFrame(Frame2, "Frame4f");
-  gridLayout1->addWidget(Frame4f, 2, 1, 0);
-  QHBoxLayout *hBoxLayout4f = new QHBoxLayout(Frame4f, 0);
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Cancel Changes"));
+  Layout7->addWidget(cancelChanges);
 
-  GroupBox2 = new QGroupBox("Metabolite Status", Frame4f);
-  hBoxLayout4f->addWidget(GroupBox2);
-  hBoxLayout4f->addSpacing(20);
+  MetabolitesWidget1Layout->addMultiCellLayout(Layout7, 10, 10, 0, 3);
 
-  RadioButton3 = new QRadioButton(GroupBox2, "RadioButton3");
-  RadioButton3->setGeometry(QRect(10, 30, 87, 20));
+  TextLabel8 = new QLabel(this, "TextLabel8");
+  TextLabel8->setText(trUtf8("Initial  Number"));
+
+  MetabolitesWidget1Layout->addWidget(TextLabel8, 7, 0);
+
+  TextLabel11 = new QLabel(this, "TextLabel11");
+  TextLabel11->setText(trUtf8("Transient Number"));
+
+  MetabolitesWidget1Layout->addWidget(TextLabel11, 7, 2);
+
+  LineEdit7 = new QLineEdit(this, "LineEdit7");
+
+  MetabolitesWidget1Layout->addWidget(LineEdit7, 6, 3);
+
+  LineEdit9 = new QLineEdit(this, "LineEdit9");
+  LineEdit9->setEnabled(FALSE);
+
+  MetabolitesWidget1Layout->addWidget(LineEdit9, 8, 1);
+
+  Line1_2 = new QFrame(this, "Line1_2");
+  Line1_2->setFrameShape(QFrame::HLine);
+  Line1_2->setFrameShadow(QFrame::Sunken);
+  Line1_2->setFrameShape(QFrame::HLine);
+
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1_2, 5, 5, 0, 3);
+
+  LineEdit8 = new QLineEdit(this, "LineEdit8");
+
+  MetabolitesWidget1Layout->addWidget(LineEdit8, 7, 3);
+
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
+
+  MetabolitesWidget1Layout->addMultiCellWidget(Line1, 9, 9, 0, 3);
+
+  TextLabel12 = new QLabel(this, "TextLabel12");
+  TextLabel12->setText(trUtf8("Transient Time"));
+
+  MetabolitesWidget1Layout->addWidget(TextLabel12, 8, 0);
+
+  TextLabel7 = new QLabel(this, "TextLabel7");
+  TextLabel7->setText(trUtf8("Initial  Concentration"));
+
+  MetabolitesWidget1Layout->addWidget(TextLabel7, 6, 0);
+
+  LineEdit5 = new QLineEdit(this, "LineEdit5");
+
+  MetabolitesWidget1Layout->addWidget(LineEdit5, 7, 1);
+
+  GroupBox3 = new QGroupBox(this, "GroupBox3");
+  GroupBox3->setLineWidth(1);
+  GroupBox3->setTitle(trUtf8("&Metabolite Status"));
+
+  QWidget* privateLayoutWidget = new QWidget(GroupBox3, "Layout12");
+  privateLayoutWidget->setGeometry(QRect(70, 30, 290, 22));
+  Layout12 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout12");
+
+  RadioButton3 = new QRadioButton(privateLayoutWidget, "RadioButton3");
   RadioButton3->setText(trUtf8("Fixed"));
-  RadioButton3->setEnabled(false);
+  Layout12->addWidget(RadioButton3);
 
-  RadioButton4 = new QRadioButton(GroupBox2, "RadioButton4");
-  RadioButton4->setGeometry(QRect(80, 30, 87, 20));
+  RadioButton4 = new QRadioButton(privateLayoutWidget, "RadioButton4");
   RadioButton4->setText(trUtf8("Independent"));
-  RadioButton4->setEnabled(false);
+  Layout12->addWidget(RadioButton4);
 
-  RadioButton5 = new QRadioButton(GroupBox2, "RadioButton5");
-  RadioButton5->setGeometry(QRect(180, 30, 87, 20));
+  RadioButton5 = new QRadioButton(privateLayoutWidget, "RadioButton5");
   RadioButton5->setText(trUtf8("Dependent"));
-  RadioButton5->setEnabled(false);
+  Layout12->addWidget(RadioButton5);
 
-  //Frame for 7th subpart
-  Frame4g = new QFrame(Frame2, "Frame4g");
-  gridLayout1->addWidget(Frame4g, 3, 1, 0);
-  QHBoxLayout *hBoxLayout4g = new QHBoxLayout(Frame4g, 0);
+  MetabolitesWidget1Layout->addMultiCellWidget(GroupBox3, 4, 4, 0, 2);
 
-  TextLabel7 = new QLabel("Transient Concentration", Frame4g);
-  hBoxLayout4g->addWidget(TextLabel7);
-  hBoxLayout4g->addSpacing(5);
-  LineEdit7 = new QLineEdit("", Frame4g);
-  hBoxLayout4g->addWidget(LineEdit7);
-  LineEdit7->setEnabled(false);
-  hBoxLayout4g->addSpacing(20);
+  GroupBox2 = new QGroupBox(this, "GroupBox2");
+  GroupBox2->setLineWidth(1);
+  GroupBox2->setTitle(trUtf8("&Metabolite Status Selection"));
 
-  //Frame for 8th subpart
-  Frame4h = new QFrame(Frame2, "Frame4h");
-  gridLayout1->addWidget(Frame4h, 4, 1, 0);
-  QHBoxLayout *hBoxLayout4h = new QHBoxLayout(Frame4h, 0);
+  QWidget* privateLayoutWidget_2 = new QWidget(GroupBox2, "Layout13");
+  privateLayoutWidget_2->setGeometry(QRect(72, 31, 190, 22));
+  Layout13 = new QHBoxLayout(privateLayoutWidget_2, 0, 6, "Layout13");
 
-  TextLabel8 = new QLabel("Transient Number" , Frame4h);
-  hBoxLayout4h->addWidget(TextLabel8);
-  hBoxLayout4h->addSpacing(32);
-  LineEdit8 = new QLineEdit("", Frame4h);
-  hBoxLayout4h->addWidget(LineEdit8);
-  LineEdit8->setEnabled(false);
-  hBoxLayout4h->addSpacing(20);
+  RadioButton1 = new QRadioButton(privateLayoutWidget_2, "RadioButton1");
+  RadioButton1->setText(trUtf8("Fixed"));
+  Layout13->addWidget(RadioButton1);
 
-  //Frame for 9th subpart
-  Frame4i = new QFrame(Frame2, "Frame4i");
-  gridLayout1->addWidget(Frame4i, 5, 1, 0);
-  QHBoxLayout *hBoxLayout4i = new QHBoxLayout(Frame4i, 0);
+  RadioButton2 = new QRadioButton(privateLayoutWidget_2, "RadioButton2");
+  RadioButton2->setText(trUtf8("Variable"));
+  Layout13->addWidget(RadioButton2);
 
-  TextLabel9 = new QLabel("Transient Time", Frame4i);
-  hBoxLayout4i->addWidget(TextLabel9);
-  hBoxLayout4i->addSpacing(45);
-  LineEdit9 = new QLineEdit("", Frame4i);
-  hBoxLayout4i->addWidget(LineEdit9);
-  LineEdit9->setEnabled(false);
-  hBoxLayout4i->addSpacing(20);
-
-  //This is for the cancel and the commit buttons
-  commitChanges = new QPushButton("&Commit Changes", Frame2);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame2);
-  gridLayout1->addWidget(commitChanges, 6, 0, 0);
-  gridLayout1->addWidget(cancelChanges, 6, 1, 0);
-
+  MetabolitesWidget1Layout->addMultiCellWidget(GroupBox2, 3, 3, 0, 2);
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
   connect(this, SIGNAL(signal_emitted(QString &)), (ListViews*)parent, SLOT(slotMetaboliteTableChanged(QString &)));
-
   connect(ComboBox1, SIGNAL(activated(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
   connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+MetabolitesWidget1::~MetabolitesWidget1()
+{
+  // no need to delete child widgets, Qt does it all for us
 }
 
 /*This function is used to connect this class to the listviews

@@ -1,103 +1,74 @@
 /****************************************************************************
- **  $ CopasiUI/MetabolitesWidget1.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Metabolites Widget, i.e the Second  level 
- ** of Metabolites.
- *****************************************************************************/
+ ** Form interface generated from reading ui file '.\MetabolitesWidget1.ui'
+ **
+ ** Created: Mon Mar 3 22:02:20 2003
+ **      by:  The User Interface Compiler (uic)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
+#ifndef METABOLITESWIDGET1_H
+#define METABOLITESWIDGET1_H
 
-#ifndef METABOLITES_WIDGET1_H
-#define METABOLITES_WIDGET1_H
-
-#include <qsplitter.h>
 #include <qvariant.h>
-
+#include <qwidget.h>
 class QVBoxLayout;
-
 class QHBoxLayout;
-
 class QGridLayout;
-
-class QAction;
-
-class QActionGroup;
-
-class QToolBar;
-
-class QPopupMenu;
-
-class QGroupBox;
-
-class QLabel;
-
-class QLineEdit;
-
 class QComboBox;
-
-class QButtonGroup;
-
-class QPushButton;
-
-class QRadioButton;
-
 class QFrame;
-
+class QGroupBox;
+class QLabel;
+class QLineEdit;
+class QPushButton;
+class QRadioButton;
 class CModel;
 
 class MetabolitesWidget1 : public QWidget
   {
     Q_OBJECT
 
-  protected:
-    QPushButton* cancelChanges;
-    QPushButton* commitChanges;
-    CModel *mModel;
-
   public:
-    MetabolitesWidget1(QWidget *parent, const char * name = 0, WFlags f = 0);
+    MetabolitesWidget1(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    ~MetabolitesWidget1();
+    CModel *mModel;
     void loadMetabolites(CModel *model);
     void loadName(QString setValue);
     int isName(QString setValue);
     QString *Metabolite1_Name;
 
-    QButtonGroup* ButtonGroup1;
-    QGroupBox* GroupBox2;
-
-    QRadioButton* RadioButton1;
-    QRadioButton* RadioButton2;
+    QLabel* TextLabel4;
+    QLabel* TextLabel5;
+    QLineEdit* LineEdit1;
+    QComboBox* ComboBox1;
+    QFrame* Line1_3;
+    QLineEdit* LineEdit4;
+    QLabel* TextLabel10;
+    QPushButton* commitChanges;
+    QPushButton* cancelChanges;
+    QLabel* TextLabel8;
+    QLabel* TextLabel11;
+    QLineEdit* LineEdit7;
+    QLineEdit* LineEdit9;
+    QFrame* Line1_2;
+    QLineEdit* LineEdit8;
+    QFrame* Line1;
+    QLabel* TextLabel12;
+    QLabel* TextLabel7;
+    QLineEdit* LineEdit5;
+    QGroupBox* GroupBox3;
     QRadioButton* RadioButton3;
     QRadioButton* RadioButton4;
     QRadioButton* RadioButton5;
+    QGroupBox* GroupBox2;
+    QRadioButton* RadioButton1;
+    QRadioButton* RadioButton2;
 
-    QLineEdit* LineEdit1;
-    QLineEdit* LineEdit4;
-    QLineEdit* LineEdit5;
-    QLineEdit* LineEdit7;
-    QLineEdit* LineEdit8;
-    QLineEdit* LineEdit9;
+  protected:
+    QGridLayout* MetabolitesWidget1Layout;
+    QHBoxLayout* Layout7;
+    QHBoxLayout* Layout12;
+    QHBoxLayout* Layout13;
 
-    QLabel* TextLabel1;
-    QLabel* TextLabel2;
-    QLabel* TextLabel4;
-    QLabel* TextLabel5;
-    QLabel* TextLabel7;
-    QLabel* TextLabel8;
-    QLabel* TextLabel9;
-
-    QComboBox* ComboBox1;
-
-    QFrame* Frame1;
-    QFrame* Frame2;
-    QFrame* Frame3;
-    QFrame* Frame4a;
-    QFrame* Frame4b;
-    QFrame* Frame4c;
-    QFrame* Frame4d;
-    QFrame* Frame4e;
-    QFrame* Frame4f;
-    QFrame* Frame4g;
-    QFrame* Frame4h;
-    QFrame* Frame4i;
     int myValue;
     QString name;
 
@@ -112,4 +83,4 @@ class MetabolitesWidget1 : public QWidget
     void showMessage(QString caption, QString text);
   };
 
-#endif // MetabolitesWidget
+#endif // METABOLITESWIDGET1_H
