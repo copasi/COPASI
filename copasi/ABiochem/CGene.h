@@ -91,6 +91,11 @@ class CGene
     C_FLOAT64 mRate;
 
     /**
+     *  Basal or maximal rate for the transcription
+     */
+    C_FLOAT64 mDegradationRate;
+
+    /**
      *  List of other genes that modify transcription of this one
      *  @supplierCardinality 0..*
      *  @associates <{CGene*}>
@@ -133,6 +138,16 @@ class CGene
      *  Sets the name of the gene.
      */
     void setRate(C_FLOAT64 rate);
+
+    /**
+     *  Retrieves the constant
+     */
+    C_FLOAT64 getDegradationRate(void);
+
+    /**
+     *  Sets the name of the gene.
+     */
+    void setDegradationRate(C_FLOAT64 rate);
 
     /**
      *  Retrieves the constant

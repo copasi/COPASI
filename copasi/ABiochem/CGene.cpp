@@ -53,8 +53,7 @@ C_FLOAT64 CGeneModifier::getK(void)
 void CGeneModifier::cleanup() {}
 
 CGene::CGene()
-{
-}
+{}
 
 CGene::~CGene()
 {}
@@ -87,6 +86,16 @@ void CGene::setRate(C_FLOAT64 rate)
 C_FLOAT64 CGene::getRate(void)
 {
   return mRate;
+}
+
+void CGene::setDegradationRate(C_FLOAT64 rate)
+{
+  mDegradationRate = rate;
+}
+
+C_FLOAT64 CGene::getDegradationRate(void)
+{
+  return mDegradationRate;
 }
 
 void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K)

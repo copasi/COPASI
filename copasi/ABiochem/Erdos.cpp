@@ -118,10 +118,12 @@ void WriteDot(ofstream &fout, char *Title, CCopasiVector < CGene > &gene)
 
 void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k, CModel &model)
 {
-  C_INT32 i, r;
-  char comments[2048], strname[512], streq[512];
+  C_INT32 i, j, r, s, pos, neg;
+  char comments[2048], strname[512], strname2[512], streq[512];
   string compname = "cell", rname, rchemeq, kiname;
   CReaction *react;
+  CReaction::CId2Metab id2metab;
+  CReaction::CId2Param id2param;
   // two reactions per gene
   r = 2 * n;
   // set the title and comments
@@ -154,7 +156,44 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
               gene[i]->getPositiveModifiers());
       kiname = strname;
       react->setFunction(kiname);
-      //     react->setReactantsFromChemEq();
+      s = gene[i]->getModifierNumber();
+      id2metab.setCompartmentName(compname);
+      for (j = 0, pos = neg = 1; j < s; j++)
+        {
+          if (gene[i]->getModifierType(j) == 0)
+            sprintf(strname, "I%d", neg++);
+          else
+            sprintf(strname, "A%d", pos++);
+          id2metab.setIdentifierName(strname);
+          id2metab.setMetaboliteName(gene[i]->getModifier(j)->getName());
+          react->getId2Modifiers().add(id2metab);
+        }
+      // first the basal rate
+      id2param.setIdentifierName("V");
+      id2param.setValue(gene[i]->getRate());
+      react->getId2Parameters().add(id2param);
+      // we have two more constants per modifier
+      for (j = 0, pos = neg = 1; j < s; j++)
+        {
+          if (gene[i]->getModifierType(j) == 0)
+            {
+              sprintf(strname, "Ki%d", neg);
+              sprintf(strname2, "ni%d", neg++);
+            }
+          else
+            {
+              sprintf(strname, "Ka%d", pos);
+              sprintf(strname2, "na%d", pos++);
+            }
+          id2param.setIdentifierName(strname);
+          id2param.setValue(gene[i]->getK(j));
+          react->getId2Parameters().add(id2param);
+          id2param.setIdentifierName(strname2);
+          // for now all Hill coefficients are 1, later
+          // they should come from the CGene object
+          id2param.setValue(1.0);
+          react->getId2Parameters().add(id2param);
+        }
       model.addReaction(react);
       // mRNA degradation
       sprintf(strname, "%s degradation", gene[i]->getName().data());
@@ -171,7 +210,14 @@ void MakeModel(char *Title, CCopasiVector < CGene > &gene, C_INT32 n, C_INT32 k,
       react->compileChemEq(model.getCompartments());
       kiname = "Mass action (irreversible)";
       react->setFunction(kiname);
-      //     react->setReactantsFromChemEq();
+      // first the kinetic constant
+      id2param.setIdentifierName("k1");
+      id2param.setValue(gene[i]->getDegradationRate());
+      react->getId2Parameters().add(id2param);
+      // now the substrate
+      id2metab.setIdentifierName("substrate_0");
+      id2metab.setMetaboliteName(gene[i]->getName());
+      react->getId2Substrates().add(id2metab);
       model.addReaction(react);
     }
 }
@@ -242,7 +288,6 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
           pname = tmpstr;
           funct->addParameter(pname, CFunctionParameter::FLOAT64, "MODIFIER");
         }
-      //  funct->addParametersUsage("PRODUCT",1,CRange::NoRange);
       funct->compile();
       db.add(funct);
     }
@@ -266,8 +311,8 @@ C_INT main(C_INT argc, char *argv[])
   k = 2;
   // create appropriate kinetic types, including
   // all combinations of activators and inhibitors
-  for (i = 0; i < k; i++)
-    MakeKinType(Copasi->FunctionDB, k, i + 1);
+  for (i = 0; i <= k; i++)
+    MakeKinType(Copasi->FunctionDB, k, i);
   // generate tot networks of n genes with k random outputs each
   for (i = 0; i < tot; i++)
     {
@@ -282,6 +327,8 @@ C_INT main(C_INT argc, char *argv[])
       // create COPASI model
       MakeModel(NetTitle, GeneList, n, k, model);
       // cleanup model and vectors
+      CWriteConfig of("messy.gps");
+      model.save(of);
       model.cleanup();
       GeneList.cleanup();
     }
