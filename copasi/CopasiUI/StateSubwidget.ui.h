@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:51 $
+   $Author: anuragr $ 
+   $Date: 2005/03/29 21:13:26 $
    End CVS Header */
 
 /****************************************************************************
@@ -175,9 +175,10 @@ void StateSubwidget::showUnits()
   numbersTable->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Rate\n(per "\
       + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 
-  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Particle flux\n("\
+  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 3, tr("Flux\n("\
                                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
-  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 3, tr("Flux\n(particles/"\
+
+  tableFlux->horizontalHeader()->setLabel(numbersTable->numCols() - 2, tr("Particle flux\n(particle/"\
                                           + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
 }
 
