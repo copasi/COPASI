@@ -228,20 +228,22 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
               ObjectBrowserItem* objectChild = currentItem;
               if (nField)
                 {
-                  ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
-                  fieldChild->attachKey();
+                  objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
+                  objectChild->setObjectType(OBJECTATTR);
+                  objectChild->setText(0, "Object list");
+                  nField = false;
+                  loadChild(objectChild, (CCopasiContainer *) current, nField);
+
+                  ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
                   fieldChild->setObjectType(FIELDATTR);
                   fieldChild->setText(0, "Attribute list");
                   loadField(fieldChild, (CCopasiContainer*) current);
 
-                  objectChild = new ObjectBrowserItem(currentItem, fieldChild, NULL, objectItemList);
+                  fieldChild->attachKey();
                   objectChild->attachKey();
-                  objectChild->setObjectType(OBJECTATTR);
-                  objectChild->setText(0, "Object list");
-                  nField = false;
                 }
-
-              loadChild(objectChild, (CCopasiContainer *) current, nField);
+              else
+                loadChild(objectChild, (CCopasiContainer *) current, nField);
             }
           else
             {
