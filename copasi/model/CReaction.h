@@ -226,7 +226,7 @@ class CReaction
     /**
      *  The reversibility of the reaction
      */
-    C_INT16 mReversible;
+    bool mReversible;
 
     /**
      *  A vector of links between the substrates of the reaction 
@@ -372,9 +372,9 @@ class CReaction
 
     /**
      *  Retrieves whether the reaction is reversible
-     *  @return C_INT16
+     *  @return bool
      */
-    C_INT16 isReversible() const;
+    bool isReversible() const;
 
     /**
      *  Sets the name of the reaction

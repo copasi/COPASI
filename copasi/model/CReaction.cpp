@@ -242,7 +242,7 @@ const string & CReaction::getName() const { return mName; }
 CChemEq & CReaction::getChemEq() { return mChemEq; }
 CFunction & CReaction::getFunction() { return *mFunction; }
 const C_FLOAT64 & CReaction::getFlux() const { return mFlux; }
-C_INT16 CReaction::isReversible() const { return (mReversible == TRUE); }
+bool CReaction::isReversible() const { return (mReversible == TRUE); }
 void CReaction::setName(const string & name) {mName = name; }
 
 void CReaction::setChemEq(const string & chemEq)
