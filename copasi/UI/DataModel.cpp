@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/11/23 17:05:15 $
+   $Author: shoops $ 
+   $Date: 2004/12/06 20:06:59 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -37,7 +37,7 @@ DataModel::DataModel()
   mpCMCATask = NULL;
 }
 
-void DataModel::createModel()
+bool DataModel::createModel()
 {
   mChanged = false;
 
@@ -70,9 +70,11 @@ void DataModel::createModel()
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
+
+  return true;
 }
 
-void DataModel::loadModel(const char* fileName)
+bool DataModel::loadModel(const char* fileName)
 {
   mChanged = false;
 
@@ -132,7 +134,7 @@ void DataModel::loadModel(const char* fileName)
       CPlotSpec2Vector * pNewPlotSpecs = new CPlotSpec2Vector();
       XML.setPlotList(*pNewPlotSpecs);
 
-      XML.load(File);
+      if (!XML.load(File)) return false;
 
       pdelete(model);
       model = XML.getModel();
@@ -189,11 +191,13 @@ void DataModel::loadModel(const char* fileName)
     }
 
   if (model) model->setCompileFlag();
+
+  return true;
 }
 
-void DataModel::saveModel(const char* fileName)
+bool DataModel::saveModel(const char* fileName)
 {
-  if (fileName == NULL) return;
+  if (fileName == NULL) return false;
 
   model->compileIfNecessary();
 
@@ -212,31 +216,28 @@ void DataModel::saveModel(const char* fileName)
 
   XML.setPlotList(*plotspecs);
   XML.save(os);
+
+  return true;
 }
 
 bool DataModel::isChanged() const {return mChanged;}
 
 void DataModel::changed(const bool & changed) {mChanged = changed;}
 
-void DataModel::importSBML(const char* fileName)
+bool DataModel::importSBML(const char* fileName)
 {
   mChanged = false;
 
   pdelete(pOptFunction);
   pOptFunction = new COptFunction();
 
+  SBMLImporter importer;
+  CModel * pModel = importer.readSBML(fileName, Copasi->pFunctionDB);
+
+  if (pModel == NULL) return false;
+
   pdelete(model);
-  SBMLImporter* importer = new SBMLImporter();
-  try
-    {
-      model = importer->readSBML(fileName, Copasi->pFunctionDB);
-    }
-  catch (StdException ex)
-  {}
-  if (model == NULL)
-    {
-      model = new CModel();
-    }
+  model = pModel;
 
   Copasi->pModel = model;
 
@@ -262,13 +263,17 @@ void DataModel::importSBML(const char* fileName)
 
   pdelete(plotspecs);
   plotspecs = new CPlotSpec2Vector();
+
+  return true;
 }
 
-void DataModel::exportSBML(const char* fileName)
+bool DataModel::exportSBML(const char* fileName)
 {
-  if (fileName == NULL) return;
+  if (fileName == NULL) return false;
 
   SBMLExporter exporter;
 
   exporter.exportSBML(model, fileName);
+
+  return true;
 }

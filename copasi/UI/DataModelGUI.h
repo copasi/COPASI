@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/10 16:03:06 $
+   $Date: 2004/12/06 20:08:10 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -45,12 +45,12 @@ class DataModelGUI : public DataModel
     const IndexedNode & getRootNode() const;
     const IndexedNode & getNode(const int & id) const;
 
-    void loadModel(const char* fileName);
-    void createModel();
-    void saveModel(const char* fileName);
+    bool loadModel(const char* fileName);
+    bool createModel();
+    bool saveModel(const char* fileName);
 
-    void importSBML(const char* fileName);
-    void exportSBML(const char* fileName);
+    bool importSBML(const char* fileName);
+    bool exportSBML(const char* fileName);
 
     CMathModel * getMathModel() {return mpMathModel;}
     bool updateMathModel();

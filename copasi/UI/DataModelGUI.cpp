@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/11/18 15:16:32 $
+   $Date: 2004/12/06 20:08:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -250,34 +250,39 @@ const IndexedNode & DataModelGUI::getNode(const int & id) const
 
 //*****************************************************************
 
-void DataModelGUI::createModel()
+bool DataModelGUI::createModel()
 {
-  DataModel::createModel();
+  if (!DataModel::createModel()) return false;
+
   linkDataModelToGUI();
+  return true;
 }
 
-void DataModelGUI::loadModel(const char* fileName)
+bool DataModelGUI::loadModel(const char* fileName)
 {
-  DataModel::loadModel(fileName);
+  if (!DataModel::loadModel(fileName)) return false;
 
   // model->setCompileFlag();
-  if (model) linkDataModelToGUI();
-}
-
-void DataModelGUI::saveModel(const char* fileName)
-{
-  DataModel::saveModel(fileName);
-}
-
-void DataModelGUI::importSBML(const char* fileName)
-{
-  DataModel::importSBML(fileName);
   linkDataModelToGUI();
+  return true;
 }
 
-void DataModelGUI::exportSBML(const char* fileName)
+bool DataModelGUI::saveModel(const char* fileName)
 {
-  DataModel::exportSBML(fileName);
+  return DataModel::saveModel(fileName);
+}
+
+bool DataModelGUI::importSBML(const char* fileName)
+{
+  if (!DataModel::importSBML(fileName)) return false;
+
+  linkDataModelToGUI();
+  return false;
+}
+
+bool DataModelGUI::exportSBML(const char* fileName)
+{
+  return DataModel::exportSBML(fileName);
 }
 
 //************** Math model ***********************************************
