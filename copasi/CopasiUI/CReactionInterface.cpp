@@ -61,6 +61,7 @@ void CReactionInterface::initFromReaction(const std::string & rn, const CModel &
   mChemEq = rea->getChemEq();
 
   mpFunction = &(rea->getFunction());
+  mParameters = mpFunction->getParameters();
 
   mNameMap = rea->getParameterMappingName();
 
@@ -75,6 +76,8 @@ void CReactionInterface::initFromReaction(const std::string & rn, const CModel &
 void CReactionInterface::writeBackToReaction(CModel & model) const
   {
     if (!mValid) return; // do nothing
+
+    if (!(mParameters == mpFunction->getParameters())) return; // do nothing
 
     CReaction *rea;
     rea = model.getReactions()[mReactionReferenceName];
@@ -118,11 +121,12 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
 if (fn == "") {clearFunction(); return;}
 
   // save the old parameter names
-  CFunctionParameters oldParameters = mpFunction->getParameters();
+  CFunctionParameters oldParameters = mParameters;
 
   //get the function
   mpFunction = Copasi->pFunctionDB->findLoadFunction(fn);
   if (!mpFunction) fatalError();
+  mParameters = mpFunction->getParameters();
 
   //initialize mValues[]
   //try to keep old values if the name is the same
@@ -162,6 +166,7 @@ if (fn == "") {clearFunction(); return;}
 void CReactionInterface::clearFunction()
 {
   mpFunction = NULL;
+  mParameters.cleanup();
   mValid = false;
 
   mValues.clear();
@@ -208,7 +213,7 @@ void CReactionInterface::setReversibility(bool rev)
 
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 {
-  unsigned C_INT32 i, imax = mpFunction->getParameters().getNumberOfParametersByUsage(role);
+  unsigned C_INT32 i, imax = mParameters.getNumberOfParametersByUsage(role);
   if (!imax) return;
 
   // get the list of chem eq elements
@@ -221,7 +226,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;
   unsigned C_INT32 pos = 0;
-  Type = mpFunction->getParameters().getParameterByUsage(role, pos).getType();
+  Type = mParameters.getParameterByUsage(role, pos).getType();
 
   if (Type == CFunctionParameter::VFLOAT64)
     {
@@ -240,7 +245,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
       for (i = 1; i < imax; ++i)
         {
-          Type = mpFunction->getParameters().getParameterByUsage(role, pos).getType();
+          Type = mParameters.getParameterByUsage(role, pos).getType();
           if (Type != CFunctionParameter::FLOAT64) fatalError();
 
           if (el->size() > (pos - 1))
@@ -264,11 +269,11 @@ bool CReactionInterface::isLocked(std::string usage) const
     else if (usage == "MODIFIER") listSize = mChemEq.getModifiers().size();
 
     // get number of parameters
-    unsigned C_INT32 paramSize = mpFunction->getParameters().getNumberOfParametersByUsage(usage);
+    unsigned C_INT32 paramSize = mParameters.getNumberOfParametersByUsage(usage);
 
     // get index of first parameter
     unsigned C_INT32 pos = 0;
-    mpFunction->getParameters().getParameterByUsage(usage, pos); --pos;
+    mParameters.getParameterByUsage(usage, pos); --pos;
 
     // decide
     if (isVector(pos))
@@ -283,3 +288,37 @@ bool CReactionInterface::isLocked(std::string usage) const
         if (listSize <= 1) return true; else return false;
       }
   }
+
+void CReactionInterface::setMetab(C_INT32 index, std::string mn)
+{
+  std::string usage = getUsage(index);
+  C_INT32 listSize;
+  if (usage == "PARAMETER") return;
+  else if (usage == "SUBSTRATE") listSize = mChemEq.getSubstrates().size();
+  else if (usage == "PRODUCT") listSize = mChemEq.getProducts().size();
+  else if (usage == "MODIFIER") listSize = mChemEq.getModifiers().size();
+
+  if (isVector(index)) mNameMap[index].push_back(mn);
+  else
+    {
+      mNameMap[index][0] = mn;
+
+      // if we have two parameters of this usage change the other one.
+      if ((listSize == 2) && (mParameters.getNumberOfParametersByUsage(usage) == 2))
+        {
+          // get index of other parameter
+          unsigned C_INT32 pos = 0;
+          mParameters.getParameterByUsage(usage, pos);
+          if ((pos - 1) == index) mParameters.getParameterByUsage(usage, pos);
+          --pos;
+
+          // get name if other metab
+          std::vector<std::string> ml = getListOfMetabs(usage);
+          std::string otherMetab;
+          if (ml[0] == mn) otherMetab = ml[1]; else otherMetab = ml[0];
+
+          // set other parameter
+          mNameMap[pos][0] = otherMetab;
+        }
+    }
+}

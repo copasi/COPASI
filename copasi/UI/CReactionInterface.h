@@ -90,23 +90,23 @@ class CReactionInterface
     std::vector< std::string > getListOfPossibleFunctions() const;
 
     C_INT32 size() const
-    {if (mpFunction) return mpFunction->getParameters().size(); else return 0;};
+    {if (mpFunction) return mParameters.size(); else return 0;};
 
     bool isVector(C_INT32 index) const
       {
-        if (mpFunction) return (mpFunction->getParameters()[index]->getType() == CFunctionParameter::VFLOAT64);
+        if (mpFunction) return (mParameters[index]->getType() == CFunctionParameter::VFLOAT64);
         else return (false);
       }
 
     std::string getUsage(C_INT32 index) const
       {
-        if (mpFunction) return mpFunction->getParameters()[index]->getUsage();
+        if (mpFunction) return mParameters[index]->getUsage();
         else return emptyString;
       }
 
     std::string getParameterName(C_INT32 index) const
       {
-        if (mpFunction) return mpFunction->getParameters()[index]->getName();
+        if (mpFunction) return mParameters[index]->getName();
         else return emptyString;
       }
 
