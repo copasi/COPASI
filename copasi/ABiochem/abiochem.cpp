@@ -24,7 +24,7 @@
 #include "tnt/tnt.h"
 #include "tnt/cmat.h"
 
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "model/model.h"
 #include "model/CSpec2Model.h"
@@ -486,10 +486,10 @@ C_FLOAT64 cluster(CCopasiVector < CGene > &gene, C_INT32 g)
     neighbors.add(gene[g]->getModifier(i));
   // count the number of links within the neighborhood
   for (edges = i = 0; i < n; i++)
-    { // one neighbor at a time
+    {// one neighbor at a time
       m = neighbors[i]->getModifierNumber();
       for (j = 0; j < m; j++)
-        { // one modifier at a time
+        {// one modifier at a time
           ptG = neighbors[i]->getModifier(j);
           // increment if this modifier is in the neighborhood
           // but it is not itself

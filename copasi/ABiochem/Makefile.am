@@ -45,16 +45,16 @@ LIBS = \
 	-Wl,-loptimization \
         -Wl,-lfunction \
         -Wl,-lmodel \
-	-llapack \
-	-lblas \
-	-lF77 \
-	-lfl
+        -llapack -lblas -lf2c -lfl
 
 #  Use this for standard clapack
 #	-llapack \
 #	-lblas \
 #	-lF77 \
 #	-lfl
+
+#  Use this for gcc 3.2 with clapack
+#	-llapack -lblas -lf2c -lfl
 
 #  Use this for the intel performance library under linux
 #	-lmkl_lapack \
