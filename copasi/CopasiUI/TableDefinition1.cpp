@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 15:24:57 $
+   $Date: 2004/06/29 16:12:30 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.38 2004/06/28 15:24:57 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.39 2004/06/29 16:12:30 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -114,6 +114,7 @@ TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)
   layout7->addLayout(layout6);
 
   itemsTable = new QListBox(this);
+  itemsTable->setSelectionMode(QListBox::Single);
   layout7->addWidget(itemsTable);
 
   TableDefinitionLayout->addMultiCellLayout(layout7, 1, 1, 0, 1);
@@ -252,24 +253,34 @@ void TableDefinition1::languageChange()
 
 /*This function is to load the model for the table*/
 void TableDefinition1::loadTableDefinition1()
-{
+{//TODO: check if it is really a table
   CReportDefinition* pReportDefinition =
     dynamic_cast< CReportDefinition * >(GlobalKeys.get(reportKey));
 
   itemsTable->clear();
 
+  //name
   nameEdit->setText(FROM_UTF8(pReportDefinition->getObjectName()));
+
+  //comment
   commentEdit->setText(FROM_UTF8(pReportDefinition->getComment()));
+
+  //title checkbox
   titleChecked->setChecked(pReportDefinition->getTitle());
 
+  //object list
+  std::vector< CCopasiContainer * > ListOfContainer; //dummy
   unsigned C_INT32 i;
   // i+=2; is due to skip to show the separator
   for (i = 0; i < pReportDefinition->getBodyAddr()->size(); i += 2)
     {
-      itemsTable->insertItem(FROM_UTF8((*(pReportDefinition->getBodyAddr()))[i]));
+      new MyListBoxItem(itemsTable,
+                        FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*(pReportDefinition->getBodyAddr()))[i])->getObjectUniqueName()),
+                        (*(pReportDefinition->getBodyAddr()))[i]);
     }
   comboTask->setEnabled(true);
 
+  //separator
   if (pReportDefinition->getSeparator().getStaticString() == "\t")
     {
       separatorEdit->setEnabled(false);
@@ -296,6 +307,7 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   if (!pReportDefinition) return;
 
+  //name
   if (FROM_UTF8(pReportDefinition->getObjectName()) != (const char*)nameEdit->text().utf8())
     {
       pReportDefinition->setObjectName((const char*)nameEdit->text().utf8());
@@ -304,11 +316,13 @@ void TableDefinition1::slotBtnConfirmClicked()
 
   if (!bUpdated) return;
 
+  //comment
   pReportDefinition->setComment((const char*)commentEdit->text().utf8());
-  pReportDefinition->getHeaderAddr()->clear();
-  pReportDefinition->getBodyAddr()->clear();
+
+  //title
   pReportDefinition->setTitle(titleChecked->isChecked());
 
+  //separator
   CCopasiStaticString Separator;
   if (tabChecked->isChecked())
     Separator = "\t";
@@ -316,52 +330,19 @@ void TableDefinition1::slotBtnConfirmClicked()
     Separator = (const char *)separatorEdit->text().utf8();
   pReportDefinition->setSeparator(Separator);
 
-  CCopasiObjectName SeparatorCN(Separator.getCN());
-  CCopasiObjectName Title;
-  std::vector< CCopasiContainer * > ListOfContainer;
-  CCopasiObject* pSelectedObject;
+  //object list
+  pReportDefinition->getHeaderAddr()->clear();
+  pReportDefinition->getBodyAddr()->clear();
+
   C_INT32 i;
   for (i = 0; i < itemsTable->numRows(); i++)
     {
-      pSelectedObject =
-        CCopasiContainer::ObjectFromName(ListOfContainer,
-                                         CCopasiObjectName((const char *)itemsTable->text(i).utf8()));
-      if (pSelectedObject)
-        {
-          if (pSelectedObject->getObjectParent())
-            {
-              Title =
-                pSelectedObject->getObjectParent()->getCN();
-              Title += ",Reference=Name";
-              pReportDefinition->getHeaderAddr()->push_back(Title);
-
-              Title =
-                CCopasiStaticString("[" + pSelectedObject->getObjectName() + "]").getCN();
-            }
-          else
-            Title =
-              CCopasiStaticString(pSelectedObject->getObjectName()).getCN();
-
-          pReportDefinition->getHeaderAddr()->push_back(Title);
-          pReportDefinition->getBodyAddr()->push_back(pSelectedObject->getCN());
-
-          pReportDefinition->getHeaderAddr()->push_back(SeparatorCN);
-          pReportDefinition->getBodyAddr()->push_back(SeparatorCN);
-        }
-    }
-
-  if (pReportDefinition->getHeaderAddr()->size())
-    {
-      pReportDefinition->getHeaderAddr()->pop_back();
-      pReportDefinition->getBodyAddr()->pop_back();
+      pReportDefinition->addTableElement(CCopasiObjectName(((MyListBoxItem*)(itemsTable->item(i)))->getCN()));
     }
 
   ListViews::notify(ListViews::REPORT, ListViews::CHANGE, reportKey);
   bUpdated = false;
 }
-
-//void TableDefinition1::nameTextChanged(const QString &)
-//{}
 
 void TableDefinition1::commentTextChanged(const QString &)
 {bUpdated = true;}
@@ -385,6 +366,9 @@ void TableDefinition1::tabButtonClicked()
   separatorEdit->setEnabled(!tabChecked->isChecked());
 }
 
+//************************************************************************
+//TODO: allow selecting several objects in the itemsTable (for deleting)
+
 void TableDefinition1::addButtonClicked()
 {
   ObjectBrowser* pSelectedObjects = new ObjectBrowser();
@@ -403,16 +387,28 @@ void TableDefinition1::addButtonClicked()
       return;
     }
 
+  bool found;
+  std::vector< CCopasiContainer * > ListOfContainer; //dummy
   unsigned C_INT32 i = 0;
   for (; i < pSelectedVector->size(); i++)
     if ((*pSelectedVector)[i])
-      if (itemsTable->findItem(FROM_UTF8((*pSelectedVector)[i]->getCN())) == NULL)
-        {
-          itemsTable->insertItem(FROM_UTF8((*pSelectedVector)[i]->getCN()));
-          //      selectedList.push_back((*pSelectedVector)[i]);
-          bUpdated = true;
-        }
+      {
+        found = false;
+        unsigned C_INT32 counter, cmax = itemsTable->count();
+        for (counter = 0; counter < cmax; ++counter)
+          if (((MyListBoxItem*)(itemsTable->item(counter)))->getCN() == (*pSelectedVector)[i]->getCN())
+            found = true;
 
+        if (!found)
+          {
+            new MyListBoxItem(itemsTable,
+                              FROM_UTF8((*pSelectedVector)[i]->getObjectUniqueName()),
+                              //FROM_UTF8((*pSelectedVector)[i]->getCN()),
+                              (*pSelectedVector)[i]->getCN());
+            //FROM_UTF8(CCopasiContainer::ObjectFromName(ListOfContainer, (*pSelectedVector)[i]->getCN())->getObjectUniqueName()),
+            bUpdated = true;
+          }
+      }
   pdelete(pSelectedVector);
 }
 
@@ -423,6 +419,11 @@ void TableDefinition1::deleteButtonClicked()
   if (selectedItem)
     {
       itemsTable->removeItem(selectedIndex);
+
+      if (selectedIndex >= itemsTable->count())
+        --selectedIndex; //if the last item was deleted
+      itemsTable->setCurrentItem(selectedIndex);
+      itemsTable->setSelected(selectedIndex, TRUE);
       bUpdated = true;
     }
 }
@@ -433,19 +434,9 @@ void TableDefinition1::upButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if ((selectedItem) && (selectedIndex != 0))
     {
-      //swap in selectedList
-      //      CCopasiObject* pDownObject = selectedList[selectedIndex];
-      // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().);
-      //     CCopasiObject* pUpperObject = selectedList[selectedIndex - 1];
-      //      selectedList[selectedIndex] = pUpperObject;
-      //      selectedList[selectedIndex - 1] = pDownObject;
-
-      //swap in ListBox
-      QString pDownItemStr(itemsTable->item(selectedIndex)->text());
-      QString pUpperItemStr(itemsTable->item(selectedIndex - 1)->text());
-      itemsTable->changeItem (pUpperItemStr, selectedIndex);
-      itemsTable->changeItem (pDownItemStr, selectedIndex - 1);
+      itemsTable->takeItem(selectedItem);
+      itemsTable->insertItem(selectedItem, selectedIndex - 1);
+      itemsTable->setCurrentItem(selectedItem);
       bUpdated = true;
     }
 }
@@ -456,22 +447,14 @@ void TableDefinition1::downButtonClicked()
   UINT32 selectedIndex = itemsTable->index(selectedItem);
   if ((selectedItem) && (itemsTable->item(selectedIndex + 1)))
     {
-      //swap in selectedList
-      //      CCopasiObject* pDownObject = selectedList[selectedIndex + 1];
-      // check for valid of the update object pointer array
-      // QString pDownItemStr1(pDownObject->getObjectUniqueName().);
-      //      CCopasiObject* pUpperObject = selectedList[selectedIndex];
-      //      selectedList[selectedIndex + 1] = pUpperObject;
-      //      selectedList[selectedIndex] = pDownObject;
-
-      //swap in ListBox
-      QString pDownItemStr(itemsTable->item(selectedIndex + 1)->text());
-      QString pUpperItemStr(itemsTable->item(selectedIndex)->text());
-      itemsTable->changeItem (pDownItemStr, selectedIndex);
-      itemsTable->changeItem (pUpperItemStr, selectedIndex + 1);
+      itemsTable->takeItem(selectedItem);
+      itemsTable->insertItem(selectedItem, selectedIndex + 1);
+      itemsTable->setCurrentItem(selectedItem);
       bUpdated = true;
     }
 }
+
+//*********************************************************************
 
 bool TableDefinition1::enter(const std::string & key)
 {

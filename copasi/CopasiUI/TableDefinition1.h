@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/28 15:24:57 $
+   $Date: 2004/06/29 16:12:30 $
    End CVS Header */
 
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.10 2004/06/28 15:24:57 ssahle Exp $)
+($Id: TableDefinition1.h,v 1.11 2004/06/29 16:12:30 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,8 +19,10 @@
 #define TableDefinition1_H
 
 #include "copasi.h"
+#include <string>
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qlistbox.h>
 #include "copasiWidget.h"
 
 class QVBoxLayout;
@@ -31,13 +33,27 @@ class QCheckBox;
 class QLineEdit;
 class QFrame;
 class QPushButton;
-//class QTable;
 class QRadioButton;
 class QComboBox;
-class QListBox;
 class CModel;
 class CReport;
 class QString;
+
+//this is a listBoxItem that stores an additional string (to allow a display name that
+//is different from the CN)
+class MyListBoxItem : public QListBoxText
+  {
+  private:
+    std::string mCN;
+
+  public:
+    MyListBoxItem(QListBox * listbox, const QString & text, const std::string & cn)
+        : QListBoxText(listbox, text)
+    {mCN = cn;}
+
+    const std::string & getCN() const {return mCN;};
+    void setCN(const std::string & cn) {mCN = cn;};
+  };
 
 class TableDefinition1 : public CopasiWidget
   {
