@@ -91,6 +91,10 @@ SOURCE=.\COptProblem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptTask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRandomSearch.cpp
 # End Source File
 # Begin Source File
@@ -140,6 +144,10 @@ SOURCE=.\COptMethodSA.h
 # Begin Source File
 
 SOURCE=.\COptProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptTask.h
 # End Source File
 # Begin Source File
 
