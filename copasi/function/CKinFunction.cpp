@@ -567,14 +567,24 @@ void CKinFunction::initIdentifierNodes()
   unsigned C_INT32 j, jmax = mNodes.size();
   C_INT32 subidx, prodidx, modfidx, constidx;
 
-  subidx = prodidx = modfidx = constidx = 0;
   for (j = 0; j < jmax; j++)
     {
       if (mNodes[j]->getType() != N_IDENTIFIER)
         continue;
       IdentifierName = mNodes[j]->getName();
+      subidx = prodidx = modfidx = constidx = -1;
       for (i = 0; i < imax; i++)
         {
+          Usage = getParameters()[i]->getUsage();
+          if (Usage == "SUBSTRATE")
+            subidx++;
+          else if (Usage == "PRODUCT")
+            prodidx++;
+          else if (Usage == "MODIFIER")
+            modfidx++;
+          else if (Usage == "PARAMETER")
+            constidx++;
+
           ParameterName = getParameters()[i]->getName();
           if (IdentifierName != ParameterName)
             continue;
@@ -583,31 +593,25 @@ void CKinFunction::initIdentifierNodes()
           // We really do not need the usage information in the binary
           // tree anymore, but we still put it there to allow saving
           //in the old format
-          Usage = getParameters()[i]->getUsage();
-
           if (Usage == "SUBSTRATE")
             {
               mNodes[j]->setSubtype(N_SUBSTRATE);
               mNodes[j]->setOldIndex(subidx);
-              subidx++;
             }
           else if (Usage == "PRODUCT")
             {
               mNodes[j]->setSubtype(N_PRODUCT);
               mNodes[j]->setOldIndex(prodidx);
-              prodidx++;
             }
           else if (Usage == "MODIFIER")
             {
               mNodes[j]->setSubtype(N_MODIFIER);
               mNodes[j]->setOldIndex(modfidx);
-              modfidx++;
             }
           else if (Usage == "PARAMETER")
             {
               mNodes[j]->setSubtype(N_KCONSTANT);
               mNodes[j]->setOldIndex(constidx);
-              constidx++;
             }
           else if (Usage == "UNKNOWN")
             mNodes[j]->setSubtype(N_NOP);
