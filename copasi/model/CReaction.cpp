@@ -160,8 +160,9 @@ C_INT32 CReaction::save(CWriteConfig & configbuffer)
   if ((Fail = configbuffer.setVariable("KineticType", "string", &KinType)))
     return Fail;
 
-  /*if ((Fail = configbuffer.setVariable("Reversible", "bool", &mReversible)))
-    return Fail;*/ //TODO: check: this info should be in the chemEq
+  bool revers = mChemEq.getReversibility();
+  if ((Fail = configbuffer.setVariable("Reversible", "bool", &revers)))
+    return Fail; //TODO: check: this info should be in the chemEq
 
   Size = mId2Substrates.size();
 
