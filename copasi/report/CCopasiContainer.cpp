@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/12/03 20:26:42 $
+   $Date: 2003/12/04 17:37:57 $
    End CVS Header */
 
 /**
@@ -36,13 +36,15 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
 
   //favor to search the list of container first
   for (containerIndex = 0;
-       containerIndex < listOfContainer.size();
+       containerIndex < listOfContainer.size() && !pObject;
        containerIndex++)
     {
       pContainer = listOfContainer[containerIndex];
 
       for (Name = objName, pObject = NULL;
-           Name.getRemainder() != "" && !pObject;
+           (Name.getRemainder() != ""
+            || Name.getObjectType() == "String") &&
+           !pObject;
            Name = Name.getRemainder())
         pObject = pContainer->getObject(Name);
     }
@@ -50,12 +52,6 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
   // if not found search the root
   if (!pObject)
     pObject = CCopasiContainer::Root->getObject(objName);
-
-  if (pObject)
-    {
-      std::cout << *pObject;
-      pObject->print(&std::cout);
-    }
 
   return const_cast<CCopasiObject *>(pObject);
 }
@@ -112,21 +108,17 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
     std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
       mObjects.equal_range(Name);
 
-    if (range.first == range.second)
+    objectMap::const_iterator it = range.first;
+
+    while (it != range.second && it->second->getObjectType() != Type) ++it;
+
+    if (it == range.second)
       {
         if (Type == "String")
           return new CCopasiStaticString(Name, this);
         else
           return NULL;
       }
-
-    /* We just pick the first one since in real containers the name should be */
-    /* unique. The exeption is CCopasiVector but in those the name is not  */
-    /* meaningful anyway. */
-    objectMap::const_iterator it = range.first;
-
-    if (it->second->getObjectType() != Type)
-      return NULL;
 
     const CCopasiObject * pObject = NULL;
 
@@ -154,7 +146,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
           return pObject->getObject(cn.getRemainder());
       }
 
-    if (it->second->isReference())
+    if (it->second->isReference() || it->second->isStaticString())
       return it->second;
 
     return it->second->getObject(cn.getRemainder());
