@@ -21,7 +21,7 @@ class COptAlgorithmParameter
   //data members
  private:
 
-  String mName;
+  string mName;
   double mValue;
 
   //implementation
@@ -41,13 +41,13 @@ class COptAlgorithmParameter
     * set name
     * @param aName a string to be set as mName
     */
-  void setName(String aName);
+  void setName(string aName);
 
    /**
     * get the private member mName
     * @return mName
     */
-  String getName();
+  string getName();
 
    /**
     * set the value

@@ -13,33 +13,33 @@
 
    
 //Default constructor
-COptAlgorithmParameter::COptAlgorithm()
+COptAlgorithmParameter::COptAlgorithmParameter()
 {
   mName = "NameUnkown";
   mValue = 0.0;
 }
 
 // Destructor
-COptAlgorithmParameter::~COptAlgorithm();
+COptAlgorithmParameter::~COptAlgorithmParameter()
 { }
 
 //set name
 //param: aName a string to be set as mName
-void COptAlgorithmParameter:: setName(String aName);
+void COptAlgorithmParameter:: setName(string aName)
 {
   mName = aName;
 }
 
 //get the private member mName
 //return mName
-String COptAlgorithmParameter::getName();
+string COptAlgorithmParameter::getName()
 {
   return mName;
 }
 
 //set the value
 //param aValue the double to be set as the private member mValue
-void COptAlgorithmParameter::setValue(double aValue);
+void COptAlgorithmParameter::setValue(double aValue)
 {
   mValue = aValue;
 }
@@ -47,7 +47,7 @@ void COptAlgorithmParameter::setValue(double aValue);
 
 // get the private member mValue
 //return the mValue, the private member
-double COptAlgorithmParameter::getValue();
+double COptAlgorithmParameter::getValue()
 {
   return mValue;
 }

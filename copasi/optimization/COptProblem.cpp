@@ -26,7 +26,26 @@ COptProblem::COptProblem()
 COptProblem::~COptProblem()
 { }
 
- 
+// copy constructor
+COptProblem::COptProblem(const COptProblem& source)
+{
+  mParameterValues = source.mParameterValues;
+}
+
+// Object assignment overloading,
+COptProblem & COptProblem::operator = (const COptProblem& source)
+{
+  cleanup();
+    
+  if(this != &source)
+    {
+      mParameterValues = source.mParameterValues; 	
+    }
+    
+  return *this;
+}
+
+
 //clean up memory
 int COptProblem::cleanup(void)
 {
@@ -46,7 +65,14 @@ void COptProblem::calculate()
 {
 
 }
-
+   
+// get parameters
+void COptProblem::getParameters()
+{
+  return mParameterValues;
+}
  
 
 
+
+  

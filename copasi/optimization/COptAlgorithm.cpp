@@ -17,7 +17,7 @@
 COptAlgorithm::COptAlgorithm()
 {
   mOptProblem = NULL;
-  mParameter = NULL; 
+  mParameters = NULL; 
   mParamterNum = 0;         // the number of parameters
   mParameterMin = NULL;     // the minimum values of parameters
   mParameterMax = NULL;     // the maximum values of parameters
@@ -44,14 +44,14 @@ bool COptAlgorithm::initialize(void)
 int COptAlgorithm::cleanup(void)
 {
   mOptProblem = NULL;
-  mParameter = NULL; 
+  mParameters = NULL; 
   mParameterMin = NULL;    
   mParameterMax = NULL;
 }
 
 int COptAlgorithm::getMethodParameterNumber(void)
 {
-  return mParamNum;
+  return mParameterNum;
 }
 
 

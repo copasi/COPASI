@@ -13,7 +13,6 @@
 #define COPTPROBLEM_H
 
 #include <string>
-#include <math>
 #include <copasi.h>
 #include <vector>
 
@@ -39,10 +38,25 @@ class COptProblem
     */
    virtual ~COptProblem();
 
+
+  /**
+   * Copy constructor
+   * @param source a COptProblem object for copy
+   */
+  COptProblem(const COptProblem& source);
+
+  /**
+   * Object assignment overloading
+   * @param source a COptProblem object for copy
+   * @return an assigned COptProblem object
+   */
+  COptProblem& operator=(const COptProblem& source);
+
+
    /**
-    * clear up memory
+    * clean up memory
     */
-    int clearup(void);
+    int cleanup(void);
 
    /**
     * Initialization of private variables
@@ -55,6 +69,10 @@ class COptProblem
    void calculate(); 
 
  
+   /**
+    * get parameters
+    */
+   void getParameters(); 
 };
 
 

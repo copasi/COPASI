@@ -18,6 +18,8 @@
 #include <copasi.h>
 #include <vector>
 
+#include "optimization.h"
+
 // YOHE: this is an abstract class that contains many virtual functions 
 // without definitions
 //
@@ -28,7 +30,7 @@ class COptAlgorithm
  private:
   
   COptProblem * mOptProblem;  // pointer to remote problem
-  double * mParameter;        // pointer to parameters
+  double * mParameters;        // pointer to parameters
   int mParamterNum;           // the number of parameters
   double * mParameterMin;     // the minimum values of parameters
   double * mParameterMax;     // the maximum values of parameters
