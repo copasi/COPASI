@@ -17,6 +17,7 @@ CNodeO::CNodeO()
 	mTitle = "";
 	mI = "";
 	mJ = "";
+	mDatum = NULL;
 }
 
 /**
@@ -30,6 +31,7 @@ CNodeO::CNodeO(string title, C_INT32 type, string i_str, string j_str)
 	mTitle = title;
 	mI = i_str;
 	mJ = j_str;
+	mDatum = NULL;
 }
 
 /**
@@ -37,6 +39,13 @@ CNodeO::CNodeO(string title, C_INT32 type, string i_str, string j_str)
  */
 CNodeO::~CNodeO()
 {
+ // if this is an identifier delete the CDatum
+ if( (getType()==N_IDENTIFIER) && mDatum != NULL )
+ {
+  delete mDatum;
+  mDatum = NULL;
+ }
+
 }
 
 /**
@@ -302,15 +311,6 @@ void CNodeO::setJString(const string & j_string)
 }
 
 /**
- * Set the node's Datum Type
- */
-//void setDatumType(C_INT32 datum)
-//{
-//	mDatumType = datum;
-//}
-
-
-/**
  * Get the node's Datum type
  */
 C_INT32 CNodeO::getDatumType() const
@@ -318,4 +318,104 @@ C_INT32 CNodeO::getDatumType() const
 	return mDatumType;
 }
 
+/**
+ * Calculates the value of this sub-tree
+ */
+C_FLOAT64 CNodeO::value()
+{
+	// if it is a constant or a variable just return its value
+	if(getType() == N_NUMBER) 
+		return getConstant();
 
+	if(isIdentifier()) 
+	{
+		C_INT32 Type;
+		C_INT16 *Value1;
+		C_INT32 *Value2;
+		C_FLOAT32 *Value3;
+		C_FLOAT64 *Value4;
+		C_FLOAT64 Value;
+		
+		Type = mDatum->getType();
+		switch (Type)
+		{
+			case 1:
+					Value1 = (C_INT16 *)mDatum->getValue();
+					Value = (C_FLOAT64) *Value1;
+					break;
+			case 2:
+					Value2 = (C_INT32 *)mDatum->getValue();
+					Value = (C_FLOAT64) *Value2;
+					break;
+			case 3:
+					Value3 = (C_FLOAT32 *)mDatum->getValue();
+					Value = (C_FLOAT64) *Value3;
+					break;
+			case 4:
+					Value4 = (C_FLOAT64 *)mDatum->getValue();
+					Value = (C_FLOAT64) *Value4;
+					break;
+		}
+		return Value;
+	}
+	
+	return 0.0;	
+}
+
+/**
+ * Retrieving mLeft the left branch of a node
+ * @return CNodeO
+ */
+CNodeO & CNodeO::getLeft() const
+{
+  if (!mLeft) 
+    fatalError(); // Call LeftIsValid first to avoid this!
+  return *mLeft;
+}
+
+/**
+ * Retrieving mRight the left branch of a node
+ * @return CNodeO
+ */
+CNodeO & CNodeO::getRight() const
+{
+  if (!mRight) 
+    fatalError(); // Call RightIsValid first to avoid this!
+  return *mRight;
+}
+
+/**
+ * Setting mLeft the pointer to the left branch
+ * @param CNodeO &left
+ */
+void CNodeO::setLeft(CNodeO & left)
+{
+	mLeft = &left;
+}
+
+/**
+ * Setting mLeft the pointer to the left branch
+ * @param CNodeO *pleft
+ */
+void CNodeO::setLeft(CNodeO * pleft)
+{
+	mLeft = pleft;
+}
+
+/**
+ * Setting mRight the pointer to the right branch
+ * @param CNodeO &right
+ */
+void CNodeO::setRight(CNodeO & right)
+{
+	mRight = &right;
+}
+
+/**
+ * Setting mRight the pointer to the right branch
+ * @param CNodeO *pright
+ */
+void CNodeO::setRight(CNodeO * pright)
+{
+	mRight = pright;
+}
