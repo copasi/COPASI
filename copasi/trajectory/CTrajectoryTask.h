@@ -42,18 +42,18 @@ class CTrajectoryTask
 
     /**
      * Initial Output Event
-     */ 
-    //COutputEvent *mpOutInit;
+     */
+    COutputEvent *mpOutInit;
 
     /**
      * Any Point Output Event from beginning to end
-     */ 
-    //COutputEvent *mpOutPoint;
+     */
+    COutputEvent *mpOutPoint;
 
     /**
      * End Phase Output Event
-     */ 
-    //COutputEvent *mpOutEnd;
+     */
+    COutputEvent *mpOutEnd;
 
     /**
      * Pointer to the output stream for reporting
