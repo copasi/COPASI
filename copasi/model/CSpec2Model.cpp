@@ -14,7 +14,7 @@
 #undef yyFlexLexer
 #define yyFlexLexer CScanInputFlexLexer
 
-#include "function/FlexLexer.h"
+#include "FlexLexer.h"
 
 CSpec2Model::CSpec2Model() {CONSTRUCTOR_TRACE;}
  

@@ -15,7 +15,7 @@
 #define  COPASI_TRACE_CONSTRUCTION 
 
 #include "copasi.h"
-#include "function/FlexLexer.h"
+#include "FlexLexer.h"
 #include "function/function.h"
 #include "CNodeO.h"
 #include "CUDFunction.h"
