@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StretchTable.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:13:02 $
+   $Author: ssahle $ 
+   $Date: 2004/05/26 15:54:44 $
    End CVS Header */
 
 /********************************************************
@@ -22,6 +22,8 @@
 
 class StretchTable: public QTable
   {
+    Q_OBJECT
+
   public:
     StretchTable (QWidget * parent = 0, const char * name = 0);
     ~StretchTable();
