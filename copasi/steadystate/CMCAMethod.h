@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 18:19:25 $
+   $Author: ssahle $ 
+   $Date: 2005/03/03 10:38:14 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -70,8 +70,8 @@ class CMCAMethod: public CCopasiMethod
     /**
      * User defined constructor
      * @param refer to Model and factor
-     */
-    CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
+     */ 
+    //    CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
 
     /**
      * Deconstructor
@@ -134,12 +134,6 @@ class CMCAMethod: public CCopasiMethod
      * Read SSMCAUnscaled from configuration file
      */
     C_INT32 load(CReadConfig & configBuffer);
-
-    /**
-     * the time dependent MCA entry point
-     * @param refer to the resolution
-     */
-    void CalculateTimeMCA(C_FLOAT64 res);
 
     void setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus);
 

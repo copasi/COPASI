@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/01/07 22:00:11 $
+   $Author: ssahle $ 
+   $Date: 2005/03/03 10:38:14 $
    End CVS Header */
 
 #include <cmath>
@@ -23,37 +23,13 @@
  * Default constructor
  */
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
-    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent)
-    //    mSsipvt(NULL)
+    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
+    mpModel(NULL)
 {
   CONSTRUCTOR_TRACE;
   addParameter("MCA.ModulationFactor",
                CCopasiParameter::UDOUBLE, 1.0e-009);
   mFactor = 1.0e-9;
-  mSSStatus = CSteadyStateMethod::notFound;
-  mSteadyStateResolution = mFactor;
-}
-
-/**
- * User defined constructor
- * @param refer to Model and factor
- */
-CMCAMethod::CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent):
-    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::unset, pParent)
-    //    mSsipvt(NULL)
-{
-  CONSTRUCTOR_TRACE;
-  addParameter("MCA.ModulationFactor",
-               CCopasiParameter::UDOUBLE, factor);
-
-  mpModel = &model;
-
-  //mDxv.resize(mpModel->getTotSteps(), mpModel->getNumIndependentMetabs());
-  //mFcc.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
-  //mGamma.resize(mpModel->getNumIndependentMetabs(), mpModel->getTotSteps());
-  //mSsx.resize(mpModel->getNumIndependentMetabs() + 1);
-
-  mFactor = factor;
   mSSStatus = CSteadyStateMethod::notFound;
   mSteadyStateResolution = mFactor;
 }
@@ -71,7 +47,7 @@ CMCAMethod::~CMCAMethod()
 //which is the same as d(flux of substance)/d(amount of substance)
 void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 {
-  if (!mpModel) return;
+  assert(mpModel);
 
   CCopasiVector<CMetab> & metabs = mpModel->getMetabolitesX();
   CCopasiVector<CReaction> & reacs = mpModel->getReactionsX();
@@ -146,6 +122,8 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 
 int CMCAMethod::calculateUnscaledConcentrationCC()
 {
+  assert(mpModel);
+
   unsigned C_INT32 i, j, k;
   unsigned C_INT32 dim;
   C_INT32 info;
@@ -296,6 +274,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
 void CMCAMethod::calculateUnscaledFluxCC(int condition)
 {
+  assert(mpModel);
   unsigned C_INT32 i, j, k;
 
   mUnscaledFluxCC.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
@@ -322,6 +301,7 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
 
 void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 {
+  assert(mpModel);
   // if previous calcutations failed return now
   if (condition != MCA_OK)
     return;
@@ -403,6 +383,7 @@ void CMCAMethod::setModel(CModel* model)
  */
 int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_FLOAT64 res)
 {
+  assert(mpModel);
   int ret;
 
   calculateUnscaledElasticities(res);
@@ -429,42 +410,6 @@ C_INT32 CMCAMethod::load(CReadConfig & configBuffer)
     return Fail;
 
   return Fail;
-}
-
-/**
- * the time dependent MCA entry point
- * @param refer to the resolution
- */
-void CMCAMethod::CalculateTimeMCA(C_FLOAT64 C_UNUSED(res))
-{
-  /*  unsigned C_INT32 i, j;
-   
-    mSsx.resize(mpModel->getTotMetab());
-   
-    initMatrices();
-    //copy concentrations to ss_x
-   
-    for (i = 0; i < mpModel->getTotMetab(); i++)
-      mSsx[i + 1] = mpModel->getMetabolites()[i]->getConcentration() *
-                    mpModel->getMetabolites()[i]->getCompartment()->getVolume();
-   
-    // calculate the elasticites
-    calculateDxv(res);
-   
-    // scale the elasticities if needed
-    if (mSSReder == 0)
-      {
-        for (i = 0; i < mpModel->getTotSteps(); i++)
-          for (j = 0; j < mpModel->getTotMetab(); j++)
-            {
-              if (fabs(mpModel->getReactions()[i]->getFlux()) >= res)
-                mDxv[i][j] *= mpModel->getMetabolites()[j]->getConcentration() /
-                              mpModel->getReactions()[i]->getFlux();
-              else
-                mDxv[i][j] = DBL_MAX;
-            }
-      }
-  */
 }
 
 bool CMCAMethod::process()

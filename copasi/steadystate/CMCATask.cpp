@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:57 $
+   $Author: ssahle $ 
+   $Date: 2005/03/03 10:38:14 $
    End CVS Header */
 
 /**
@@ -88,6 +88,8 @@ bool CMCATask::process()
   CMCAMethod* pMethod =
     dynamic_cast<CMCAMethod *>(mpMethod);
   assert(pMethod);
+
+  pMethod->setModel(pProblem->getModel());
 
   mReport.printHeader();
   pMethod->process();
