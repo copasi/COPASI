@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:35 $
+   $Author: shoops $ 
+   $Date: 2005/02/17 14:50:35 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -309,18 +309,14 @@ std::string COptions::getTemp(void)
   Temp = getEnvironmentVariable("TEMP");
 
   if (Temp == "")
-    {
-      Temp = getEnvironmentVariable("TEMP");
-      if (Temp == "")
-        {
-          std::ostringstream error;
-          error << std::endl
-          << "  use --tmp TEMP" << std::endl
-          << "  or Please set the environment variable TEMP" << std::endl
-          << "  to point to your temp directory" << std::endl;
-          throw copasi::option_error(error.str());
-        }
-    }
+    Temp = getEnvironmentVariable("TMP");
+
+  if (Temp == "")
+#ifdef WIN32
+    Temp = getEnvironmentVariable("windir") + "\\Temp";
+#else
+    Temp = "/tmp";
+#endif // WIN32
 
   return Temp;
 }
