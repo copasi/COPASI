@@ -30,7 +30,7 @@ class ConstantSymbols : public QWidget
 
   public:
     ConstantSymbols(QWidget *parent, const char * name = 0, WFlags f = 0);
-    //void loadMetabolites(CModel *model);
+    void loadConstantSymbols(CModel *model);
     void resizeEvent(QResizeEvent * re);
 
   protected slots:

@@ -10,6 +10,7 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include "ConstantSymbols.h"
+#include "mathmodel/CMathConstant.h"
 #include "listviews.h"
 #include <qfont.h>
 
@@ -65,66 +66,38 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 }
 
-/*void ConstantSymbols::loadConstantSymbols(CModel *model)
+void ConstantSymbols::loadConstantSymbols(CModel *model)
 {
   if (model != NULL)
     {
       mModel = model;
- 
       //Emptying the table
       int numberOfRows = table->numRows();
- 
       for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
         }
- 
-      CCopasiVectorN< CMetab > metabolites(mModel->getMetabolites());
-      C_INT32 noOfMetabolitesRows = metabolites.size();
-      table->setNumRows(noOfMetabolitesRows);
- 
-      //Now filling the table.
-      CMetab *metab;
- 
-      for (C_INT32 j = 0; j < noOfMetabolitesRows; j++)
+
+      //CMathConstantParameter *mathconstant=new CMathConstantParameter();
+
+      CMathConstantParameter::getSelection();
+
+      /////mathmodel->setModel(mModel);
+      ///const CModel *nModel=mathmodel->getModel();
+
+      //mathconstant->buildSelection(mModel);
+      //CCopasiVectorN< CMetab > metabolite=mathConstant->getSelection();
+      //C_INT32 noOfMetaboliteRows = metabolite.size();
+      //table->setNumRows(k-1);
+      //const CMetab *metab;
+
+      for (C_INT32 j = 0; j < 10; j++)
         {
-          metab = metabolites[j];
-          table->setText(j, 0, metab->getName().c_str());
- 
-          /*double m=(*(metab->getConcentration()));
-          QString *m1;
-          //QString ms = m1.setNum(m,'g',6);
-             m1=  QString::setNum(m,'g',6);            
-          table->setText(j, 1,*m1);
-           
-          //table->setText(j, 1,ms); */
-/*table->setText(j, 1, QString::number(metab->getConcentration()));
-
-table->setText(j, 2, QString::number(metab->getNumberDbl()));
-
-table->setText(j, 3, CMetab::StatusName[metab->getStatus()].c_str());
-
-#ifdef XXXX
-if (QString::number(metab->getStatus()) == "0")
-  {
-    table->setText(j, 3, "defineda");
-  }
-else if (QString::number(metab->getStatus()) == "1")
-  {
-    table->setText(j, 3, "definedb");
-  }
-else if (QString::number(metab->getStatus()) == "2")
-  {
-    table->setText(j, 3, "definedc");
-  }
-#endif // XXXX
-table->setText(j, 4, metab->getCompartment()->getName().c_str());
+          //metab = metabolites[j];
+          //table->setText(j, 0, CMathConstantParameter::getSelection()::getName().c_str());
+        }
+    }
 }
-
-//table->sortColumn(0,true,true);
-}
-}
- */
 
 void ConstantSymbols::slotTableSelectionChanged()
 {

@@ -78,6 +78,7 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
       CMathModel *mathmodel = new CMathModel();
       mathmodel->setModel(mModel);
       const CModel *nModel = mathmodel->getModel();
+      //mathmodel->getFixedMetabList();
 
       unsigned C_INT32 k = mModel->getIntMetab();
       CCopasiVectorN< CMetab > metabolite(mModel->getMetabolitesX());
@@ -97,7 +98,8 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CModel *model)
           metab = metabolite[i];
           table->setText(noOfMetaboliteRows - i - 1, 0, metab->getName().c_str());
           //const CCopasiObjectName *name;
-          //CCopasiObject *metab_object=metab->getObject(name);
+
+          //CCopasiObject *metab_object=metab->getObject(metab->getName());
           //table->setText(noOfMetaboliteRows-i-1, 1, QString::number(metab->getObject()->getName()));
           table->setText(noOfMetaboliteRows - i - 1, 2, QString::number(metab->getConcentration()));
           table->setText(noOfMetaboliteRows - i - 1, 3, QString::number(metab->getNumberDbl()));
