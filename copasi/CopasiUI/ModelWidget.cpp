@@ -17,6 +17,8 @@
 #include "copasi.h"
 #include "ModelWidget.h"
 #include "listviews.h"
+#include "model/CModel.h"
+#include "utilities/CMethodParameter.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the 
@@ -91,6 +93,11 @@ void ModelWidget::loadModel(CModel *model)
   if (model != NULL)
     {
       mModel = model;
+      LineEdit->setText(mModel->getTitle().c_str());
+      textBrowser->setText(mModel->getComments().c_str());
+      ComboBox1->setCurrentText(mModel->getTimeUnit().c_str());
+      ComboBox2->setCurrentText(mModel->getVolumeUnit().c_str());
+      ComboBox3->setCurrentText(mModel->getQuantityUnit().c_str());
     }
 }
 
