@@ -171,7 +171,9 @@ void CTempReaction::compile(CModel *model)
     // Determine the substrates and products of the reaction
     CTempMetab *tmp_metab = 0;
     C_INT32 substrate_mult, product_mult, num_change;
-    for (unsigned C_INT32 i = 0; i < mMetabs.size(); i++)
+	unsigned C_INT32 i;
+
+    for (i = 0; i < mMetabs.size(); i++)
     {
         substrate_mult = mMetabs[i].getMultiplicity();
         num_change = mMetabs[i].getNumChange();
@@ -194,7 +196,7 @@ void CTempReaction::compile(CModel *model)
     C_INT32 mult = 0;
     bool is_first;
     is_first = true;
-    for (unsigned C_INT32 i = 0; i < mSubstrates.size(); i++)
+    for (i = 0; i < mSubstrates.size(); i++)
     {
         mult = mSubstrates[i].getMultiplicity();
         if (is_first == false)
@@ -209,7 +211,7 @@ void CTempReaction::compile(CModel *model)
         lhs_desc << mSubstrates[i].getMetab()->getName();
     }
     is_first = true;
-    for (unsigned C_INT32 i = 0; i < mProducts.size(); i++)
+    for (i = 0; i < mProducts.size(); i++)
     {
         mult = mProducts[i].getMultiplicity();
         if (is_first == false)
