@@ -150,7 +150,7 @@ class CReactionInterface
   private:
 
     /**
-     * guesses how to connect metabs with paramters for a specific usage
+     * guesses how to connect metabs with parameters for a specific usage
      */
     void connectFromScratch(std::string role, bool pedantic);
 
@@ -161,6 +161,12 @@ class CReactionInterface
      * If it is not or if newFunction="" another function is chosen.
      */
     void findAndSetFunction(const std::string & newFunction = "");
+
+    /**
+     * returns a list of metabolites (from the chemical equation). Species´ can occur
+     * several times according to theit multiplicity
+     */
+    std::vector<std::string> getExpandedMetabList(const std::string & role) const;
   };
 
 #endif

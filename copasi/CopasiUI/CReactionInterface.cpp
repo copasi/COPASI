@@ -36,8 +36,8 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
       reversible = TriTrue;
 
     CCopasiVector<CFunction>* pFunctionVector =
-      Copasi->pFunctionDB->suitableFunctions(mChemEq.getSubstrates().size(),
-                                             mChemEq.getProducts().size(),
+      Copasi->pFunctionDB->suitableFunctions(mChemEq.getMolecularity(CChemEq::SUBSTRATE),
+                                             mChemEq.getMolecularity(CChemEq::PRODUCT),
                                              reversible);
 
     std::vector<std::string> ret;
@@ -199,7 +199,7 @@ void CReactionInterface::setReversibility(bool rev, const std::string & newFunct
 void CReactionInterface::reverse(bool rev, const std::string & newFunction)
 {
   mChemEq.setReversibility(rev);
-  //  mChemEq.reverse();
+  mChemEq.reverse();
   findAndSetFunction(newFunction);
 }
 
@@ -236,11 +236,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
   if (!imax) return;
 
   // get the list of chem eq elements
-  const CCopasiVector<CChemEqElement> * el;
-  if (role == "SUBSTRATE") el = &(mChemEq.getSubstrates());
-  else if (role == "PRODUCT") el = &(mChemEq.getProducts());
-  else if (role == "MODIFIER") el = &(mChemEq.getModifiers());
-  else fatalError();
+  std::vector<std::string> el = getExpandedMetabList(role);
 
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;
@@ -249,22 +245,14 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
   if (Type == CFunctionParameter::VFLOAT64)
     {
-      --pos;
-      mNameMap[pos].clear();
-      imax = el->size();
-      for (i = 0; i < imax; ++i)
-        {
-          jmax = (*el)[i]->getMultiplicity();
-          for (j = 0; j < jmax; ++j)
-            mNameMap[pos].push_back((*el)[i]->getMetaboliteName());
-        }
+      mNameMap[pos - 1] = el;
     }
   else if (Type == CFunctionParameter::FLOAT64)
     {
-      if ((imax != el->size()) && pedantic) fatalError();
+      if ((imax != el.size()) && pedantic) fatalError();
 
-      if (el->size() > 0)
-        mNameMap[pos - 1][0] = (*el)[0]->getMetaboliteName();
+      if (el.size() > 0)
+        mNameMap[pos - 1][0] = el[0];
     else {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
 
       for (i = 1; i < imax; ++i)
@@ -272,8 +260,8 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
           Type = mParameters.getParameterByUsage(role, pos).getType();
           if (Type != CFunctionParameter::FLOAT64) fatalError();
 
-          if (el->size() > (pos - 1))
-            mNameMap[pos - 1][0] = (*el)[i]->getMetaboliteName();
+          if (el.size() > i)
+            mNameMap[pos - 1][0] = el[i];
         else {mNameMap[pos - 1][0] = "unknown"; mValid = false;}
         }
     }
@@ -303,13 +291,10 @@ bool CReactionInterface::isLocked(std::string usage) const
     if (isVector(pos))
       {
         if (paramSize != 1) fatalError();
-        //if (listSize == 0) return true; else return false; //really?
         return true;
       }
     else
       {
-        // we cannot be pedantic about modifiers.
-        if ((listSize < paramSize) && (usage != "MODIFIER")) fatalError();
         if (listSize <= 1) return true; else return false;
       }
   }
@@ -347,3 +332,27 @@ void CReactionInterface::setMetab(C_INT32 index, std::string mn)
         }
     }
 }
+
+std::vector<std::string> CReactionInterface::getExpandedMetabList(const std::string & role) const
+  {
+    const CCopasiVector<CChemEqElement> * el;
+    if (role == "SUBSTRATE") el = &(mChemEq.getSubstrates());
+    else if (role == "PRODUCT") el = &(mChemEq.getProducts());
+    else if (role == "MODIFIER") el = &(mChemEq.getModifiers());
+    else fatalError();
+
+    unsigned C_INT32 j, jmax;
+    unsigned C_INT32 i, imax = el->size();
+
+    std::vector<std::string> ret;
+
+    for (i = 0; i < imax; ++i)
+      {
+        if (role == "MODIFIER") jmax = 1;
+        else jmax = (*el)[i]->getMultiplicity();
+
+        for (j = 0; j < jmax; ++j)
+          ret.push_back((*el)[i]->getMetaboliteName());
+      }
+    return ret;
+  }
