@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/03 12:10:39 $
+   $Author: anuragr $ 
+   $Date: 2005/02/07 15:11:10 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -73,13 +73,23 @@ void MetabolitesWidget::showHeaders()
   /* <-- to show the units for the quantities */
 
   QHeader *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
-                        FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
-  tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
-                        FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+  if (mFlagConc)
+    {
+      tableHeader->setLabel(2, "Initial Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
+      tableHeader->setLabel(3, "Concentration\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + "/" + \
+                            FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + ")");
 
-  tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
-                        "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+      tableHeader->setLabel(7, "Rate\n(" + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+                            "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+    }
+  else
+    {
+      tableHeader->setLabel(2, "Initial Number");
+      tableHeader->setLabel(3, "Number");
+      tableHeader->setLabel(7, "Number rate");
+    }
+
   /* --> */
 }
 
@@ -318,7 +328,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                 // Yes or Enter
+    case 0:                                  // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -330,7 +340,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                 // No or Escape
+    case 1:                                  // No or Escape
       break;
     }
 }
