@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/19 19:59:28 $
+   $Date: 2005/01/25 13:30:18 $
    End CVS Header */
 
 /*********************************************************************
@@ -65,10 +65,14 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Name"));
+  TextLabel4->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
   TextLabel7 = new QLabel(this, "TextLabel7");
   TextLabel7->setText(trUtf8("Symbol Definition"));
+  TextLabel7->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
   //Buttons:
@@ -115,6 +119,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
   TextLabel6->setText(trUtf8("Kinetics"));
+  TextLabel6->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
@@ -125,7 +131,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addWidget(newKinetics, 4, 3);
 
   TextLabel8 = new QLabel(this, "TextLabel8");
-  TextLabel8->setText(trUtf8("Flux:"));
+  TextLabel8->setText(trUtf8("Flux"));
+  TextLabel8->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel8, 5, 1);
 
   LineEdit3 = new QLineEdit(this, "LineEdit3");
@@ -138,6 +146,8 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   // equation line
   TextLabel5 = new QLabel(this, "TextLabel5");
   TextLabel5->setText(trUtf8("Chemical Equation"));
+  TextLabel5->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
 
   LineEdit2 = new MyLineEdit(this, "LineEdit2");
@@ -191,6 +201,10 @@ ReactionsWidget1::~ReactionsWidget1()
    clicked in the tree   */
 bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 {
+  TextLabel8->setText("Flux ("
+                      + FROM_UTF8(dataModel->getModel()->getQuantityUnit()) + \
+                      "/(" + FROM_UTF8(dataModel->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(dataModel->getModel()->getTimeUnit()) + "))");
+
   if (!reaction) return false;
 
   // this loads the reaction into a CReactionInterface object.
@@ -330,7 +344,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
       switch (choice)
         {
-        case 0:                      // Yes or Enter
+        case 0:                       // Yes or Enter
           {
             /*for (i = ToBeDeleted.size(); 0 < i;)
               {
@@ -362,7 +376,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                             // No or Escape
+        default:                              // No or Escape
           break;
         }
       //}
