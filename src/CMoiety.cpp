@@ -18,8 +18,8 @@ CMoiety::~CMoiety()
 {
 }
 
-void CMoiety::Add(double value,
-             CMetab & metabolite)
+void CMoiety::Add(C_FLOAT64 value,
+                  CMetab & metabolite)
 {
     ELEMENT element;
     element.Value = value;
@@ -28,8 +28,8 @@ void CMoiety::Add(double value,
     mEquation.push_back(element);
 }
 
-void CMoiety::Add(double value,
-             CMetab * metabolite)
+void CMoiety::Add(C_FLOAT64 value,
+                  CMetab * metabolite)
 {
     ELEMENT element;
     element.Value = value;
@@ -45,7 +45,7 @@ void CMoiety::Delete()
 
 void CMoiety::Delete(const string & name)
 {
-    int i;
+    C_INT32 i;
 
     for (i = 0; i < mEquation.size(); i++)
         if (mEquation[i].Metab->GetName() == name) break;
@@ -55,21 +55,21 @@ void CMoiety::Delete(const string & name)
     Delete(i);
 }
 
-void CMoiety::Delete(long index)
+void CMoiety::Delete(C_INT32 index)
 {
     mEquation.erase(&mEquation[index], &mEquation[index+1]);
 }
 
-void CMoiety::Change(long index,
-		     double value)
+void CMoiety::Change(C_INT32 index,
+		     C_FLOAT64 value)
 {
     mEquation[index].Value = value;
 }
 
 void CMoiety::Change(const string & name,
-		     double value)
+		     C_FLOAT64 value)
 {
-    int i;
+    C_INT32 i;
 
     for (i = 0; i < mEquation.size(); i++)
         if (mEquation[i].Metab->GetName() == name) break;
@@ -79,11 +79,11 @@ void CMoiety::Change(const string & name,
     Change(i, value);
 }
 
-double CMoiety::Value()
+C_FLOAT64 CMoiety::Value()
 {
-    double Value = 0;
+    C_FLOAT64 Value = 0;
     
-    for(int i=0; i < mEquation.size(); i++)
+    for(C_INT32 i=0; i < mEquation.size(); i++)
         Value += mEquation[i].Value * *mEquation[i].Metab->GetConcentration();
     
     return Value;
@@ -93,9 +93,9 @@ string CMoiety::GetDescription()
 {
     string Description;
     char szValue[5];
-    int nchars = 0;
+    C_INT32 nchars = 0;
     
-    for(int i=0; i < mEquation.size(); i++)
+    for(C_INT32 i=0; i < mEquation.size(); i++)
     {
         if (mEquation[i].Value)
         {

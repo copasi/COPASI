@@ -9,7 +9,7 @@ CBaseFunction::CBaseFunction()
 
 void CBaseFunction::Init() 
 {
-    long i;
+    C_INT32 i;
     
     if (!mCallParameters ) mCallParameters = new vector < CBaseCallParameter >;
     for (i = 0; i < mCallParameters->size(); i++)
@@ -22,7 +22,7 @@ void CBaseFunction::Delete()
 {
     if (mCallParameters)
     {
-        for (long i=0; i < mCallParameters->size(); i++)
+        for (C_INT32 i=0; i < mCallParameters->size(); i++)
             (*mCallParameters)[i].Delete();
         
         delete mCallParameters;
@@ -37,16 +37,16 @@ void CBaseFunction::SetType(enum Type type) {mType = type;}
 void CBaseFunction::SetDescription(const string & description) 
 {mDescription = description;}
 
-void CBaseFunction::SetReversible(short reversible) 
+void CBaseFunction::SetReversible(C_INT16 reversible) 
 {mReversible = reversible;}
 
 string CBaseFunction::GetName() {return mName;}
 
-long CBaseFunction::GetType() {return mType;}
+C_INT32 CBaseFunction::GetType() {return mType;}
 
 string CBaseFunction::GetDescription() {return mDescription;}
 
-short CBaseFunction::IsReversible() {return mReversible;}
+C_INT16 CBaseFunction::IsReversible() {return mReversible;}
 
 vector < CBaseCallParameter > & CBaseFunction::CallParameters() 
 {return *mCallParameters;}
@@ -62,7 +62,7 @@ CBaseCallParameter::CBaseCallParameter()
 
 void CBaseCallParameter::Init()
 {
-    if (!mIdentifierTypes) mIdentifierTypes = new vector < int >;
+    if (!mIdentifierTypes) mIdentifierTypes = new vector < C_INT32 >;
     if (!mIdentifierTypes->size()) mIdentifierTypes->push_back(0);
     
     if (!mIdentifiers) mIdentifiers = new vector < CBaseIdentifier >;
@@ -79,12 +79,12 @@ void CBaseCallParameter::Delete()
     mIdentifiers = NULL;
 }
 
-long CBaseCallParameter::NoIdentifiers(char identifierType)
+C_INT32 CBaseCallParameter::NoIdentifiers(char identifierType)
 {
     if (identifierType) 
     {
-        long Count = 0;
-	for (long i = 0; i < mIdentifiers->size(); i ++)
+        C_INT32 Count = 0;
+	for (C_INT32 i = 0; i < mIdentifiers->size(); i ++)
 	    if ((*mIdentifiers)[i].GetType() == identifierType) Count++;
         return Count;
     }
@@ -97,15 +97,15 @@ void CBaseCallParameter::SetType(enum CCallParameter::Type type)
 
 void CBaseCallParameter::SetCount() {mCount = mIdentifiers->size();}
 
-void CBaseCallParameter::SetCount(long count) {mCount = count;}
+void CBaseCallParameter::SetCount(C_INT32 count) {mCount = count;}
 
 enum CCallParameter::Type CBaseCallParameter::GetType()
 {return mType;}
 
-long CBaseCallParameter::GetCount() 
+C_INT32 CBaseCallParameter::GetCount() 
 {return mCount;}
 
-vector < int > & CBaseCallParameter::IdentifierTypes()
+vector < C_INT32 > & CBaseCallParameter::IdentifierTypes()
 {return *mIdentifierTypes;}
 
 vector < CBaseIdentifier * > 
@@ -113,7 +113,7 @@ CBaseCallParameter::Identifiers(char identifierType)
 {
     vector < CBaseIdentifier * > Identifiers;
 
-    for (long i = 0; i < mIdentifiers->size(); i ++)
+    for (C_INT32 i = 0; i < mIdentifiers->size(); i ++)
         if (!identifierType ||
 	    (*mIdentifiers)[i].GetType() == identifierType) 
 	    Identifiers.push_back(&(*mIdentifiers)[i]);
@@ -121,23 +121,23 @@ CBaseCallParameter::Identifiers(char identifierType)
     return Identifiers;
 }
 
-double CBaseFunction::CalcValue(vector < CCallParameter > callParameters)
+C_FLOAT64 CBaseFunction::CalcValue(vector < CCallParameter > callParameters)
 {return 0.0;}
 
-pair < long, long > CBaseFunction::FindIdentifier(const string & name)
+pair < C_INT32, C_INT32 > CBaseFunction::FindIdentifier(const string & name)
 {
-    pair < long, long > Tuple(-1, -1);
-    long j;
-    long i;
+    pair < C_INT32, C_INT32 > Tuple(-1, -1);
+    C_INT32 j;
+    C_INT32 i;
     
     for (j = 0; j < mCallParameters->size(); j++)
         for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
             if ((*(*mCallParameters)[j].mIdentifiers)[i].GetName() == name) 
-                {
-                    Tuple.first = j;
-                    Tuple.second = i;
-                    break;
-                }
+            {
+                Tuple.first = j;
+                Tuple.second = i;
+                break;
+            }
 
     return Tuple;
 }
@@ -166,4 +166,3 @@ void CCallParameter::SetType(enum CCallParameter::Type type) {mType = type;}
 enum CCallParameter::Type CCallParameter::GetType() {return mType;}
 
 vector < void * > & CCallParameter::Identifiers() {return *mIdentifiers;}
-

@@ -47,7 +47,7 @@ CWriteConfig::~CWriteConfig(void)
     Commit();
 }
 
-long CWriteConfig::Flush(void)
+C_INT32 CWriteConfig::Flush(void)
 {
     if (Commit())
     {
@@ -61,7 +61,7 @@ long CWriteConfig::Flush(void)
     return mFail;
 }
 
-long CWriteConfig::Commit(void)
+C_INT32 CWriteConfig::Commit(void)
 {
 #ifdef WIN32
     mOpenMode |= ios::binary;
@@ -85,15 +85,15 @@ long CWriteConfig::Commit(void)
     return mFail;
 }
 
-long CWriteConfig::Fail()
+C_INT32 CWriteConfig::Fail()
 {
     // return the failure state
     return mFail;
 }
 
-long CWriteConfig::SetVariable(const string & name, 
-                               const string & type, 
-                               const void *pout)
+C_INT32 CWriteConfig::SetVariable(const string & name, 
+                                  const string & type, 
+                                  const void *pout)
 {
     mBuffer << name << "=";
     
@@ -102,17 +102,17 @@ long CWriteConfig::SetVariable(const string & name,
     {
         mBuffer << *(string *) pout;
     }
-    else if ( type == "double" )
+    else if ( type == "C_FLOAT64" )
     {
-        mBuffer << *(double *) pout;
+        mBuffer << *(C_FLOAT64 *) pout;
     }
-    else if ( type == "long" )
+    else if ( type == "C_INT32" )
     {
-        mBuffer << *(long *) pout;
+        mBuffer << *(C_INT32 *) pout;
     }
-    else if ( type == "short" )
+    else if ( type == "C_INT16" )
     {
-        mBuffer << *(short *) pout;
+        mBuffer << *(C_INT16 *) pout;
     }
     else
     {
@@ -126,17 +126,17 @@ long CWriteConfig::SetVariable(const string & name,
     return mFail;
 }
 
-long CWriteConfig::SetVariable(const string & name, 
-                               const string & type, 
-                               const void *pout1, 
-                               const void *pout2)
+C_INT32 CWriteConfig::SetVariable(const string & name, 
+                                  const string & type, 
+                                  const void *pout1, 
+                                  const void *pout2)
 {
     mBuffer << name << "=";
     
     // Return the value depending on the type
     if ( type == "node" )
     {
-        mBuffer << (long) (*(char *) pout1) << "," << (long) (*(char *) pout2);
+        mBuffer << (C_INT32) (*(char *) pout1) << "," << (C_INT32) (*(char *) pout2);
     }
     else
     {
@@ -149,4 +149,3 @@ long CWriteConfig::SetVariable(const string & name,
 
     return mFail;
 }
-

@@ -32,7 +32,7 @@ private:
      *  @return mFail
      *  @see mFail  
      */
-    long InitInputBuffer();
+    C_INT32 InitInputBuffer();
 
     /**
      *  Look ahead to find the next variable name
@@ -52,7 +52,7 @@ private:
     /**
      *  Current line number in the configuration file
      */
-    long   mLineNumber;             // Current Line Number 
+    C_INT32   mLineNumber;             // Current Line Number 
 
     /**
      * Mode = CReadConfig::SEARCH
@@ -64,7 +64,7 @@ private:
      *  0 = no error
      *  !0 = error
      */
-    long    mFail;                   // Failure State
+    C_INT32    mFail;                   // Failure State
 
     /*
      *  The Version of the configuration file.
@@ -103,7 +103,7 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    long Fail();
+    C_INT32 Fail();
 
     /**
      *  Retrieves a variable from the input file.
@@ -114,10 +114,10 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    long GetVariable(const string& name, 
-                     const string& type,
-                     void * pout,
-                     CReadConfig::Mode mode = CReadConfig::NEXT);
+    C_INT32 GetVariable(const string& name, 
+                        const string& type,
+                        void * pout,
+                        CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      *  Retrieves a variable from the input file.
@@ -130,11 +130,10 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    long GetVariable(const string& name, 
-                     const string& type,
-                     void * pout1,
-                     void * pout2,
-                     CReadConfig::Mode mode = CReadConfig::NEXT);
+    C_INT32 GetVariable(const string& name, 
+                        const string& type,
+                        void * pout1,
+                        void * pout2,
+                        CReadConfig::Mode mode = CReadConfig::NEXT);
 };
 #endif // COPASI_CReadConfig
-

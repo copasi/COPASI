@@ -52,7 +52,7 @@
 #define D_EIGVR 37	// real part of eigenvalues
 #define D_EIGVI 38	// imaginary part of eigenvalues
 
-// CDatum objects reference model objects of type double
+// CDatum objects reference model objects of type C_FLOAT64
 class CDatum
 {
 // Implementation
@@ -71,10 +71,10 @@ public:
      *  @param type type of the object (e.g. D_ICONC).
      *  @param i first string describing the object.
      *  @param j second string describing the object.
-     *  @param pval pointer to double containing the value of the object.
+     *  @param pval pointer to C_FLOAT64 containing the value of the object.
      */
-    CDatum(const string& title, long type, const string& i, const string& j,
-           double *pval);
+    CDatum(const string& title, C_INT32 type, const string& i, const string& j,
+           C_FLOAT64 *pval);
 
     /**
      *  Assignement operator. 
@@ -90,7 +90,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Save(CWriteConfig &configbuffer);
+    C_INT32 Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -99,21 +99,21 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Load(CReadConfig &configbuffer);
+    C_INT32 Load(CReadConfig &configbuffer);
 
     /**
-     *  Sets the value of mpValue with a pointer to a double that has 
+     *  Sets the value of mpValue with a pointer to a C_FLOAT64 that has 
      *  the value of this object.
-     *  @param pvalue pointer to a double.
+     *  @param pvalue pointer to a C_FLOAT64.
      */
-    void CDatum::SetValue(double* pvalue);
+    void CDatum::SetValue(C_FLOAT64* pvalue);
 
     /**
-     *  Returns a double with the value of this object.
+     *  Returns a C_FLOAT64 with the value of this object.
      *  @return *mpValue
      *  @see mpValue
      */
-    double CDatum::GetValue();
+    C_FLOAT64 CDatum::GetValue();
 
     /**
      *  Sets the value of mI with a string
@@ -148,14 +148,14 @@ public:
      *  @param type integer code of the type
      *  @see mType
      */
-    void CDatum::SetType(long type);
+    void CDatum::SetType(C_INT32 type);
 
     /**
      *  Returns the type code of this object.
      *  @return mType
      *  @see mType
      */
-    long CDatum::GetType();
+    C_INT32 CDatum::GetType();
 
     /**
      *  Sets the title of this object
@@ -184,7 +184,7 @@ private:
      *  This could possibly be changed to a enum set (need to think about
      *  portability issues, related with data alignment
      */
-    long mType;
+    C_INT32 mType;
 
     /**
      *  First descriptor of the object.
@@ -204,16 +204,16 @@ private:
 
     /**
      *  Pointer to the memory location that contains the value of this
-     *  object (a double)
+     *  object (a C_FLOAT64)
      */
-    double *mpValue;
+    C_FLOAT64 *mpValue;
 
     /**
      *  Failure status:
      *  0 = no error
      *  !0 = error
      */
-    long    mFail;
+    C_INT32    mFail;
 };
 
 #endif // COPASI_CDatum

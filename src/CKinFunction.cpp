@@ -7,7 +7,7 @@
 #include "lexkk.h"
 #include "utilities.h"
 
-short DefinedInsertAllowed(CNodeK src);
+C_INT16 DefinedInsertAllowed(CNodeK src);
 
 CKinFunction::CKinFunction()
 {
@@ -46,19 +46,19 @@ void CKinFunction::Delete()
     mNodes = NULL;
     
     if (mCallParameters) 
-        {
-            (*mCallParameters)[0].Delete();
-            delete mCallParameters;
-        }
+    {
+        (*mCallParameters)[0].Delete();
+        delete mCallParameters;
+    }
     mCallParameters = NULL;
 }
 
-long CKinFunction::Load(CReadConfig & configbuffer)
+C_INT32 CKinFunction::Load(CReadConfig & configbuffer)
 {
     string TmpString;
-    long Size = 0;
-    long Index = 0;
-    long Fail = 0;
+    C_INT32 Size = 0;
+    C_INT32 Index = 0;
+    C_INT32 Fail = 0;
     
     Init();
     if (Fail = configbuffer.GetVariable("FunctionName", "string", &TmpString,
@@ -70,7 +70,7 @@ long CKinFunction::Load(CReadConfig & configbuffer)
         return Fail;
     SetDescription(TmpString);
 
-    if (Fail = configbuffer.GetVariable("Nodes", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Nodes", "C_INT32", &Size))
         return Fail;
 
     if (Fail = mNodes->Load(configbuffer,Size))
@@ -82,11 +82,11 @@ long CKinFunction::Load(CReadConfig & configbuffer)
     return Fail;
 }
 
-long CKinFunction::Save(CWriteConfig & configbuffer)
+C_INT32 CKinFunction::Save(CWriteConfig & configbuffer)
 {
     string TmpString;
-    long TmpLong;
-    long Fail = 0;
+    C_INT32 TmpLong;
+    C_INT32 Fail = 0;
     
     TmpString = GetName();
     if (Fail = configbuffer.SetVariable("FunctionName", "string", &TmpString))
@@ -97,7 +97,7 @@ long CKinFunction::Save(CWriteConfig & configbuffer)
         return Fail;
 
     TmpLong = mNodes->Size();
-    if (Fail = configbuffer.SetVariable("Nodes", "long", &TmpLong))
+    if (Fail = configbuffer.SetVariable("Nodes", "C_INT32", &TmpLong))
         return Fail;
 
     if (Fail = mNodes->Save(configbuffer))
@@ -111,22 +111,22 @@ CCopasiVector < CNodeK > & CKinFunction::Nodes() {return *mNodes;}
 void CKinFunction::SetIdentifierType(const string & name,
                                      char identifierType)
 {
-    pair < long, long > Index(0, 0);
+    pair < C_INT32, C_INT32 > Index(0, 0);
     
     Index = FindIdentifier(name);
     
     if ( Index.first < 0 || Index.second < 0 ) FatalError();
-    for (long i = 0; 
+    for (C_INT32 i = 0; 
          i < (*(*mCallParameters)[Index.first].
               mIdentifiers)[Index.second].mNodes->size();
          i++)
         (*(*(*mCallParameters)[Index.first].
-         mIdentifiers)[Index.second].mNodes)[i]->SetSubtype(identifierType);
+           mIdentifiers)[Index.second].mNodes)[i]->SetSubtype(identifierType);
 }
 
-long CKinFunction::Parse()
+C_INT32 CKinFunction::Parse()
 {
-    long i;
+    C_INT32 i;
     char *buffer;
     YY_BUFFER_STATE kkbuff;
     // create a buffer big enough to contain the function string
@@ -174,18 +174,18 @@ long CKinFunction::Parse()
     return ConnectNodes();
 }
 
-double CKinFunction::CalcValue(vector < CCallParameter > & callParameters)
+C_FLOAT64 CKinFunction::CalcValue(vector < CCallParameter > & callParameters)
 {
     return (*mNodes)[0].GetLeft().Value(callParameters[0].Identifiers());
 }
 
 void CKinFunction::ClearNodes() {mNodes->Delete();}
 
-long CKinFunction::ConnectNodes()
+C_INT32 CKinFunction::ConnectNodes()
 {
-    long errfl = 0;     // !!! do we need this?
-    long errnode = -1;  // !!! do we need this?
-    long i;
+    C_INT32 errfl = 0;     // !!! do we need this?
+    C_INT32 errnode = -1;  // !!! do we need this?
+    C_INT32 i;
 
     // initialise the control variables
     mNidx = 1;
@@ -287,13 +287,13 @@ long CKinFunction::ConnectNodes()
     return errfl;
 }
 
-CNodeK * CKinFunction::ParseExpression(short priority)
+CNodeK * CKinFunction::ParseExpression(C_INT16 priority)
 {
-    long errfl = 0;     // !!! do we need this?
-    long errnode = -1;  // !!! do we need this?
+    C_INT32 errfl = 0;     // !!! do we need this?
+    C_INT32 errnode = -1;  // !!! do we need this?
 
     CNodeK *lhs, *rhs;
-    long op;
+    C_INT32 op;
 
     lhs = ParsePrimary();
     if (!lhs) return NULL;
@@ -328,12 +328,12 @@ CNodeK * CKinFunction::ParseExpression(short priority)
 
 CNodeK * CKinFunction::ParsePrimary()
 {
-    long errfl = 0;     // !!! do we need this?
-    long errnode = -1;  // !!! do we need this?
+    C_INT32 errfl = 0;     // !!! do we need this?
+    C_INT32 errnode = -1;  // !!! do we need this?
 
     CNodeK *npt, *primary;
     char t;
-    long op;
+    C_INT32 op;
     npt = NULL;
 
 //    if (Node[mNidx]==NULL)
@@ -430,9 +430,9 @@ CNodeK * CKinFunction::ParsePrimary()
 void CKinFunction::InitIdentifiers()
 {
     CKinIdentifier Identifier;
-    long i;
+    C_INT32 i;
 
-    pair < long, long > Index;
+    pair < C_INT32, C_INT32 > Index;
 
     (*mCallParameters)[0].Delete();
     (*mCallParameters)[0].Init();
@@ -467,7 +467,7 @@ void CKinCallParameter::Init()
     CBaseCallParameter::Init();
     
     if (!mIdentifiers) mIdentifiers = new vector < CKinIdentifier >;
-    for (long i = 0; i < mIdentifiers->size(); i++)
+    for (C_INT32 i = 0; i < mIdentifiers->size(); i++)
         (*mIdentifiers)[i].Init();
 
     if (&IdentifierTypes()) 
@@ -481,11 +481,11 @@ void CKinCallParameter::Init()
     }
 }
 
-pair < long, long > CKinFunction::FindIdentifier(const string & name)
+pair < C_INT32, C_INT32 > CKinFunction::FindIdentifier(const string & name)
 {
-    pair < long, long > Tuple(-1, -1);
-    long j;
-    long i;
+    pair < C_INT32, C_INT32 > Tuple(-1, -1);
+    C_INT32 j;
+    C_INT32 i;
     
     for (j = 0; j < mCallParameters->size(); j++)
         for (i = 0; i < (*mCallParameters)[j].mIdentifiers->size(); i ++)
@@ -505,7 +505,7 @@ void CKinCallParameter::Delete()
 {
     if (mIdentifiers)
     {
-        for (long i = 0; i < mIdentifiers->size(); i++)
+        for (C_INT32 i = 0; i < mIdentifiers->size(); i++)
             (*mIdentifiers)[i].Delete();
         
         delete mIdentifiers;
@@ -537,4 +537,4 @@ CKinFunction::CKinNodes::CKinNodes() {;}
 
 CKinFunction::CKinNodes::~CKinNodes() {;}
 
-short CKinFunction::CKinNodes::IsInsertAllowed(CNodeK src) {return TRUE;}
+C_INT16 CKinFunction::CKinNodes::IsInsertAllowed(CNodeK src) {return TRUE;}

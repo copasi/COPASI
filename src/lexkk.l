@@ -7,6 +7,7 @@
 %option never-interactive
 
 %{
+#include "copasi.h"
 #include "CNodeK.h"
 %}
 

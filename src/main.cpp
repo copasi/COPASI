@@ -24,28 +24,35 @@
 #include "CStep.h"
 #include "CMoiety.h"
 
-long  TestReadConfig(void);
-long  TestWriteConfig(void);
-long  TestCompartment(void);
-long  TestException(void);
-long  TestDatum(void);
-long  TestMetab(void);
-long  TestMessage(void);
-long  TestReadSample(void);
-long  TestMoiety(void);
-long  TestKinFunction(void);
-long  TestBaseFunction(void);
+C_INT32  TestReadConfig(void);
+C_INT32  TestWriteConfig(void);
+C_INT32  TestCompartment(void);
+C_INT32  TestException(void);
+C_INT32  TestDatum(void);
+C_INT32  TestMetab(void);
+C_INT32  TestMessage(void);
+C_INT32  TestReadSample(void);
+C_INT32  TestMoiety(void);
+C_INT32  TestKinFunction(void);
+C_INT32  TestBaseFunction(void);
 
 vector < CMetab * >
-      InitMetabolites(CCopasiVector < CCompartment > & compartment);
+InitMetabolites(CCopasiVector < CCompartment > & compartment);
 
-long main(void)
+C_INT32 main(void)
 {
     cout << "Starting main program." << endl;
     
     
     try
     {
+        cout << "sizeof(long) = " << sizeof(long) << endl;
+        cout << "sizeof(int) = " << sizeof(int) << endl;
+        cout << "sizeof(short) = " << sizeof(short) << endl;
+        cout << "sizeof(double) = " << sizeof(double) << endl;
+        cout << "sizeof(float) = " << sizeof(float) << endl;
+        
+        
         // TestException();
         // TestMessage();
 
@@ -72,7 +79,7 @@ long main(void)
     return 0;
 }
 
-long  TestMessage(void)
+C_INT32  TestMessage(void)
 {
     try
     {
@@ -87,7 +94,7 @@ long  TestMessage(void)
     return 0;
 }
 
-long  TestException()
+C_INT32  TestException()
 {
     try
     {
@@ -115,7 +122,7 @@ long  TestException()
 }
 
 
-long  TestReadConfig(void)
+C_INT32  TestReadConfig(void)
 {
     cout << "Entering TestReadConfig." << endl;
     // CReadConfig Default;
@@ -124,15 +131,15 @@ long  TestReadConfig(void)
     Specific.GetVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
-    double outdouble = 0;
+    C_FLOAT64 outdouble = 0;
     Specific.GetVariable((string) "Volume", 
-                         (string) "double", 
+                         (string) "C_FLOAT64", 
                          (void *) &outdouble);
     Specific.GetVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
     Specific.GetVariable((string) "Volume", 
-                         (string) "double", 
+                         (string) "C_FLOAT64", 
                          (void *) &outdouble);
     // Default.Free();
     // Specific.Free();
@@ -141,7 +148,7 @@ long  TestReadConfig(void)
     return 0;
 }
  
-long  TestWriteConfig(void)
+C_INT32  TestWriteConfig(void)
 {
     cout << "Entering TestWriteConfig." << endl;
     // CWriteConfig Default;
@@ -150,9 +157,9 @@ long  TestWriteConfig(void)
     Specific.SetVariable((string) "Compartment", 
                          (string) "string", 
                          (void *) &outstring);
-    double outdouble = 1.03e3;
+    C_FLOAT64 outdouble = 1.03e3;
     Specific.SetVariable((string) "Volume", 
-                         (string) "double", 
+                         (string) "C_FLOAT64", 
                          (void *) &outdouble);
     Specific.Flush();
     
@@ -162,7 +169,7 @@ long  TestWriteConfig(void)
                          (void *) &outstring);
     outdouble = 1.03e3;
     Specific.SetVariable((string) "Junk", 
-                         (string) "double", 
+                         (string) "C_FLOAT64", 
                          (void *) &outdouble);
     Specific.Flush();
     
@@ -171,7 +178,7 @@ long  TestWriteConfig(void)
 }
    
 
-long TestCompartment(void)
+C_INT32 TestCompartment(void)
 {
     cout << "Entering TestCompartment." << endl;
     cout << "creating a CCompartment object..." << endl;
@@ -215,10 +222,10 @@ long TestCompartment(void)
 
 #ifdef XXXX
 
-long TestDatum(void)
+C_INT32 TestDatum(void)
 {
     cout << "Entering TestDatum." << endl;
-    double doublevariable;
+    C_FLOAT64 doublevariable;
     cout << "creating a CDatum object..." << endl;
     CDatum d((string)"[medicarpin]t", 
              D_TCONC, 
@@ -245,7 +252,7 @@ long TestDatum(void)
     return 0;
 }
 
-long TestMetab(void)
+C_INT32 TestMetab(void)
 {
     cout << "Entering TestMetab." << endl;
     cout << "creating a CMetab object..." << endl;
@@ -270,14 +277,14 @@ long TestMetab(void)
 }
 #endif
 
-long TestReadSample(void)
+C_INT32 TestReadSample(void)
 {
-    long size = 0;
+    C_INT32 size = 0;
     
     CReadConfig inbuf("gps/chem1.gps");
  
     CCopasiVector< CCompartment > Compartments;
-    inbuf.GetVariable("TotalCompartments", "long", &size,
+    inbuf.GetVariable("TotalCompartments", "C_INT32", &size,
                       CReadConfig::LOOP);
     
     Compartments.Load(inbuf, size);
@@ -286,12 +293,12 @@ long TestReadSample(void)
     {
         CMetabolitesOld OldMetabolites;
 
-        inbuf.GetVariable("TotalMetabolites", "long", &size,
+        inbuf.GetVariable("TotalMetabolites", "C_INT32", &size,
                           CReadConfig::LOOP);
         OldMetabolites.Load(inbuf, size);
         
         CMetab Metabolite;
-        for (long i = 0; i < size; i++)
+        for (C_INT32 i = 0; i < size; i++)
         {
             Metabolite = OldMetabolites[i];
             
@@ -302,16 +309,16 @@ long TestReadSample(void)
 
     vector < CMetab * > Metabolites = InitMetabolites(Compartments);
     CCopasiVector < CKinFunction > Functions;
-    inbuf.GetVariable("TotalUDKinetics", "long", &size,
+    inbuf.GetVariable("TotalUDKinetics", "C_INT32", &size,
                       CReadConfig::LOOP);
     Functions.Load(inbuf, size)    ;
     
     CWriteConfig outbuf("copasi.gps");
     size = Compartments.Size();
-    outbuf.SetVariable("TotalCompartments", "long", &size);
+    outbuf.SetVariable("TotalCompartments", "C_INT32", &size);
     Compartments.Save(outbuf);
     size = Functions.Size();
-    outbuf.SetVariable("TotalUDKinetics", "long", &size);
+    outbuf.SetVariable("TotalUDKinetics", "C_INT32", &size);
     Functions.Save(outbuf);
     
     outbuf.Flush();
@@ -320,25 +327,25 @@ long TestReadSample(void)
     Compartments.Delete();
     Functions.Delete();
     
-    inbuf2.GetVariable("TotalCompartments", "long", &size,
+    inbuf2.GetVariable("TotalCompartments", "C_INT32", &size,
                        CReadConfig::LOOP);
     Compartments.Load(inbuf2,size);
-    inbuf2.GetVariable("TotalUDKinetics", "long", &size,
-                      CReadConfig::LOOP);
+    inbuf2.GetVariable("TotalUDKinetics", "C_INT32", &size,
+                       CReadConfig::LOOP);
     Functions.Load(inbuf2, size);
 
     CWriteConfig outbuf2("copasi2.gps");
     size = Compartments.Size();
-    outbuf2.SetVariable("TotalCompartments", "long", &size);
+    outbuf2.SetVariable("TotalCompartments", "C_INT32", &size);
     Compartments.Save(outbuf2);
     size = Functions.Size();
-    outbuf2.SetVariable("TotalUDKinetics", "long", &size);
+    outbuf2.SetVariable("TotalUDKinetics", "C_INT32", &size);
     Functions.Save(outbuf2);
     
     return 0;
 }
 
-long TestMoiety()
+C_INT32 TestMoiety()
 {
     CMoiety mo("test");
     CCompartment c("comp", 1.0);
@@ -359,7 +366,7 @@ long TestMoiety()
     mo.Add(3, c.GetMetabolites()[1]);
     mo.Add(0, c.GetMetabolites()[1]);
     
-    double Value=mo.Value();
+    C_FLOAT64 Value=mo.Value();
     string Description = mo.GetDescription();
     
     mo.Change("metab 2", 2);
@@ -370,7 +377,7 @@ long TestMoiety()
     return 0;
 }
 
-long TestKinFunction()
+C_INT32 TestKinFunction()
 {
     CKinFunction f;
     f.Init();
@@ -381,8 +388,8 @@ long TestKinFunction()
     f.Parse();
     f.SetIdentifierType("a", N_SUBSTRATE);
     
-    double a = 4;
-    double b = 1;
+    C_FLOAT64 a = 4;
+    C_FLOAT64 b = 1;
     
     vector < CCallParameter > CallParameters;
 
@@ -394,7 +401,7 @@ long TestKinFunction()
     CallParameters[0].Identifiers()[0] = &a;
     CallParameters[0].Identifiers()[1] = &b;
     
-    double r = f.CalcValue(CallParameters);
+    C_FLOAT64 r = f.CalcValue(CallParameters);
     
     CWriteConfig out("TestKinFunction");
     f.Save(out);
@@ -414,18 +421,18 @@ long TestKinFunction()
 }
 
 vector < CMetab * > 
-    InitMetabolites(CCopasiVector < CCompartment > & compartments)
+InitMetabolites(CCopasiVector < CCompartment > & compartments)
 {
     vector < CMetab * > Metabolites;
 
-    for (long i = 0; i < compartments.Size(); i++)
-        for (long j = 0; j < compartments[i].GetMetabolites().Size(); j++)
+    for (C_INT32 i = 0; i < compartments.Size(); i++)
+        for (C_INT32 j = 0; j < compartments[i].GetMetabolites().Size(); j++)
             Metabolites.push_back(&compartments[i].GetMetabolites()[j]);
     
     return Metabolites;
 }
 
-long TestBaseFunction()
+C_INT32 TestBaseFunction()
 {
     CBaseFunction BaseFunction;
     BaseFunction.Init();
@@ -437,4 +444,3 @@ long TestBaseFunction()
     
     return 0;
 }
-

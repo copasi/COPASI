@@ -34,20 +34,20 @@ public:
     /**
      * 
      */
-    void Reset(long nstep, long nmetab,
-               long intmet, long nmoiety,
-               long ncompart,
+    void Reset(C_INT32 nstep, C_INT32 nmetab,
+               C_INT32 intmet, C_INT32 nmoiety,
+               C_INT32 ncompart,
                const string &Tit);   // resets the model
 
     /**
      * 
      */
-    void ResetStepMetab(long nstep, long nmetab, long intmet, long nmoiety); //resets all nut compartments and title
+    void ResetStepMetab(C_INT32 nstep, C_INT32 nmetab, C_INT32 intmet, C_INT32 nmoiety); //resets all nut compartments and title
 
     /**
      * 
      */
-    long ResetCompartments(long ncompart); // clears the compartments array and resizes it
+    C_INT32 ResetCompartments(C_INT32 ncompart); // clears the compartments array and resizes it
 
     /**
      * 
@@ -65,7 +65,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig &configbuffer);
+    C_INT32 Save(CWriteConfig &configbuffer);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -73,7 +73,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long Load(CReadConfig &configbuffer);
+    C_INT32 Load(CReadConfig &configbuffer);
 
     /**
      * 
@@ -93,14 +93,14 @@ public:
     /**
      * 
      */
-    long ElementaryModes(CWriteConfig &configbuffer); // finds the elementary modes
+    C_INT32 ElementaryModes(CWriteConfig &configbuffer); // finds the elementary modes
 
     /**
      * 
      */
-    void AddToStoi(long StepNo, 
-                   long MetabNo,
-                   long Sign, long Value); // adds an entry in Stoi and in the relevant step
+    void AddToStoi(C_INT32 StepNo, 
+                   C_INT32 MetabNo,
+                   C_INT32 Sign, C_INT32 Value); // adds an entry in Stoi and in the relevant step
 
     /**
      * 
@@ -130,22 +130,22 @@ public:
     /**
      * 
      */
-    long FindMetab(string &Target);  // returns the index of the metab
+    C_INT32 FindMetab(string &Target);  // returns the index of the metab
 
     /**
      * 
      */
-    long FindStep(string &Target);  // returns the index of the step
+    C_INT32 FindStep(string &Target);  // returns the index of the step
 
     /**
      * 
      */
-    long FindMoiety(string &Target);  // returns the index of the moiety
+    C_INT32 FindMoiety(string &Target);  // returns the index of the moiety
 
     /**
      * 
      */
-    long FindCompartment(string &Target);// returns the index of the compartment
+    C_INT32 FindCompartment(string &Target);// returns the index of the compartment
 
     /**
      * 
@@ -155,12 +155,12 @@ public:
     /**
      * 
      */
-    long SubstrateMolecularity(long st); // returns molecularity (substrates)
+    C_INT32 SubstrateMolecularity(C_INT32 st); // returns molecularity (substrates)
 
     /**
      * 
      */
-    long ProductMolecularity(long st);  // returns molecularity (products)
+    C_INT32 ProductMolecularity(C_INT32 st);  // returns molecularity (products)
 
     /**
      * 
@@ -175,7 +175,7 @@ public:
     /**
      * 
      */
-    long AddMetabolite(string &NewName);// adds a new metabolite to the model
+    C_INT32 AddMetabolite(string &NewName);// adds a new metabolite to the model
 
     /**
      * 
@@ -186,7 +186,7 @@ public:
      * 
      */
     // determine the kernel of the stoichiometry matrix
-    long GetKernel(void);
+    C_INT32 GetKernel(void);
 
 private:
 
@@ -195,7 +195,7 @@ private:
      */
     // operations
     // allocate memory and set pointers for a model
-    void AllocModel(long nstep, long nmetab, long longmet, long nmoiety, long ncompart);
+    void AllocModel(C_INT32 nstep, C_INT32 nmetab, C_INT32 C_INT32met, C_INT32 nmoiety, C_INT32 ncompart);
 
     /**
      * 
@@ -212,7 +212,7 @@ private:
     /**
      * 
      */
-    // copies Stoi longo RedStoi
+    // copies Stoi into RedStoi
     void InitRedStoi(void);
 
     /**
@@ -225,25 +225,25 @@ private:
      * 
      */
     // checks if a row in RedStoi is empty
-    long EmptyRow(long r);
+    C_INT32 EmptyRow(C_INT32 r);
 
     /**
      * 
      */
     // switches two rows in the secondary matrices
-    void RedStoiRowSwitch(long r1, long r2);
+    void RedStoiRowSwitch(C_INT32 r1, C_INT32 r2);
 
     /**
      * 
      */
     // switches two cols in the secondary matrices
-    void RedStoiColSwitch(long c1, long c2);
+    void RedStoiColSwitch(C_INT32 c1, C_INT32 c2);
 
     /**
      * 
      */
     // allocates space for the ml and lm matrices
-    long CreateLM(void);
+    C_INT32 CreateLM(void);
 
     /**
      * 
@@ -255,7 +255,7 @@ private:
      * 
      */
     // reduces RedStoi
-    long Gauss(void);
+    C_INT32 Gauss(void);
 
     /**
      * 
@@ -272,14 +272,14 @@ private:
     /**
      * 
      */
-    // mark the status of longernal metabolites
+    // mark the status of internal metabolites
     void MarkStatus(void);
 
     /**
      * 
      */
     // rebuild the stoichiometry matrix
-    void RebuildStoi(long flag);
+    void RebuildStoi(C_INT32 flag);
 
 
     /**
@@ -301,25 +301,25 @@ private:
      * 
      */
     // number of internal metabolites
-    long mIntMetab;
+    C_INT32 mIntMetab;
 
     /**
      * 
      */
     // number of independent metabolites
-    long mIndMetab;
+    C_INT32 mIndMetab;
 
     /**
      * 
      */
     // number of dependent metabolites
-    long mDepMetab;
+    C_INT32 mDepMetab;
 
     /**
      * 
      */
     // number of external metabolites
-    long mExtMetab;
+    C_INT32 mExtMetab;
 
     /**
      * 
@@ -338,7 +338,7 @@ private:
      * 
      */
     // the overall transition time of the pathway
-    double mTransTime;
+    C_FLOAT64 mTransTime;
 
 
     /**
@@ -359,91 +359,91 @@ private:
      * 
      */
     // for the stoichiometry matrix (ptrs for the rows)
-    vector < vector < float > > mStoichiometry;
+    vector < vector < C_FLOAT32 > > mStoichiometry;
 
     /**
      * 
      */
     // for the reduced stoichiometry matrix (ptrs for the rows)
-    vector < vector < float > > mRedStoi;
+    vector < vector < C_FLOAT32 > > mRedStoi;
 
     /**
      * 
      */
     // to index rows from primary to secondary matrix notation - Stoi notation to RedStoi
-    vector < long > mRow;
+    vector < C_INT32 > mRow;
 
     /**
      * 
      */
     // to index cols from primary to secondary matrix notation
-    vector < long > mCol;
+    vector < C_INT32 > mCol;
 
     /**
      * 
      */
     // to index rows from secondary to primary matrix notation - RedStoi notation to Stoi
-    vector < long > mIRow;
+    vector < C_INT32 > mIRow;
 
     /**
      * 
      */
     // to index cols from secondary to primary matrix notation
-    vector < long > mICol;
+    vector < C_INT32 > mICol;
 
     /**
      * 
      */
     // for the reaction structure description vectors
-    vector < vector < long > > mReactStruct;
+    vector < vector < C_INT32 > > mReactStruct;
 
     /**
      * 
      */
     // for the array of conservation relations (ptrs to the rows)
-    vector < vector < float > > mConsRel;
+    vector < vector < C_FLOAT32 > > mConsRel;
 
     /**
      * 
      */
     // multipliers of gauss reduction (IntMet x IntMet)
-    vector < vector < float > > mML;
+    vector < vector < C_FLOAT32 > > mML;
 
     /**
      * 
      */
     // for the kernel of the stoichiometry matrix (ptrs for the rows)
-    vector < vector < float > > mKernel;
+    vector < vector < C_FLOAT32 > > mKernel;
 
     /**
      * 
      */
     // permutation matrix (index of Kernel's rows
-    vector < long > mKernelP;
+    vector < C_INT32 > mKernelP;
 
     /**
      * 
      */
     // dimensions of the Kernel matrix
-    long mKernelI, mKernelJ;
+    C_INT32 mKernelI, mKernelJ;
 
     /**
      * 
      */
     // rank of the stoichiometry matrix
-    long mRank;
+    C_INT32 mRank;
 
     /**
      * 
      */
     // number of reactions in equil at steady state
-    long mDetBalance;
+    C_INT32 mDetBalance;
 
     /**
      * 
      */
     // inverse of ml (IntMet x IntMet)
-    vector < vector < float > > mLM;
+    vector < vector < C_FLOAT32 > > mLM;
 
     /**
      * 

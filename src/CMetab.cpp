@@ -32,7 +32,7 @@ CMetab::CMetab(const string & name)
 }
 
 #ifdef XXXX
-CMetab::CMetab(const string & name, const short status, 
+CMetab::CMetab(const string & name, const C_INT16 status, 
                CCompartment & compartment)
 {
     mName        = name;
@@ -77,7 +77,7 @@ CMetab::~CMetab()
     cout << "~CMetab " << mName << endl;
 }
 
-long CMetab::Reset(const string& name)
+C_INT32 CMetab::Reset(const string& name)
 {
     // initialize everything
     mName        = name;
@@ -92,20 +92,20 @@ long CMetab::Reset(const string& name)
 }
 
 
-long CMetab::Load(CReadConfig &configbuffer)
+C_INT32 CMetab::Load(CReadConfig &configbuffer)
 {
-    long Fail = 0;
+    C_INT32 Fail = 0;
     
     Fail = configbuffer.GetVariable("Metabolite", "string",
                                     (void *) &mName,
                                     CReadConfig::SEARCH);
     if (Fail) return Fail;
 
-    Fail = configbuffer.GetVariable("Concentration", "double",
+    Fail = configbuffer.GetVariable("Concentration", "C_FLOAT64",
                                     (void *) &mIConc);
     if (Fail) return Fail;
 
-    Fail = configbuffer.GetVariable("Type", "short",
+    Fail = configbuffer.GetVariable("Type", "C_INT16",
                                     (void *) &mStatus);
     if (Fail) return Fail;
 
@@ -132,52 +132,52 @@ long CMetab::Load(CReadConfig &configbuffer)
 }
 
 
-long CMetab::Save(CWriteConfig &configbuffer)
+C_INT32 CMetab::Save(CWriteConfig &configbuffer)
 {
-    long Fail = 0;
+    C_INT32 Fail = 0;
     
     Fail = configbuffer.SetVariable("Metabolite", "string",
                                     (void *) &mName);
     if (Fail) return Fail;
 
-    Fail = configbuffer.SetVariable("Concentration", "double",
+    Fail = configbuffer.SetVariable("Concentration", "C_FLOAT64",
                                     (void *) &mIConc);
     if (Fail) return Fail;
 
-    Fail = configbuffer.SetVariable("Type", "short",
+    Fail = configbuffer.SetVariable("Type", "C_INT16",
                                     (void *) &mStatus);
     return Fail;
 }
 
 string CMetab::GetName() {return mName;}
 
-short CMetab::IsValidName()
+C_INT16 CMetab::IsValidName()
 {
     return (mName.find_first_of("; ") == string::npos);
 }
 
-long CMetabOld::Load(CReadConfig &configbuffer)
+C_INT32 CMetabOld::Load(CReadConfig &configbuffer)
 {
-    long Fail = 0;
+    C_INT32 Fail = 0;
     
     Fail = configbuffer.GetVariable("Metabolite", "string",
                                     (void *) &mName,
                                     CReadConfig::SEARCH);
     if (Fail) return Fail;
 
-    Fail = configbuffer.GetVariable("Concentration", "double",
+    Fail = configbuffer.GetVariable("Concentration", "C_FLOAT64",
                                     (void *) &mIConc);
     if (Fail) return Fail;
 
-    long Index = -1;
-    Fail = configbuffer.GetVariable("Compartment", "long",
+    C_INT32 Index = -1;
+    Fail = configbuffer.GetVariable("Compartment", "C_INT32",
                                     (void *) &mCompartment);
     if (Fail) return Fail;
 
-    long Status;
-    Fail = configbuffer.GetVariable("Type", "long",
+    C_INT32 Status;
+    Fail = configbuffer.GetVariable("Type", "C_INT32",
                                     (void *) &Status);
-    mStatus = (short) Status;
+    mStatus = (C_INT16) Status;
 
     // sanity check
     if ((mStatus<0) || (mStatus>7))
@@ -201,6 +201,6 @@ long CMetabOld::Load(CReadConfig &configbuffer)
     return Fail;
 }
 
-long CMetabOld::GetIndex() {return mCompartment;}
+C_INT32 CMetabOld::GetIndex() {return mCompartment;}
 
 string CMetabOld::GetName() {return mName;}

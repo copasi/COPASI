@@ -9,13 +9,13 @@
 #include "copasi.h"
 
 #include "CModel.h"
-void CModel::AllocModel(long nstep, 
-                        long nmetab, 
-                        long ingmet, 
-                        long nmoiety, 
-                        long ncompart)
+void CModel::AllocModel(C_INT32 nstep, 
+                        C_INT32 nmetab, 
+                        C_INT32 ingmet, 
+                        C_INT32 nmoiety, 
+                        C_INT32 ncompart)
 {
-    int i;
+    C_INT32 i;
 
     // allocate the arrays
     mMetabolite.resize(nmetab);
@@ -61,7 +61,7 @@ void CModel::AllocModel(long nstep,
 
 void CModel::DeAlloc(void)
 {
-    int i;
+    C_INT32 i;
 
     //delete vectors
     mMetabolite.clear();
@@ -109,11 +109,11 @@ CModel::~CModel()
 }
 
 
-void CModel::Reset(int nstep, 
-                   int nmetab, 
-                   int intmet, 
-                   int nmoiety, 
-                   int ncompart, 
+void CModel::Reset(C_INT32 nstep, 
+                   C_INT32 nmetab, 
+                   C_INT32 intmet, 
+                   C_INT32 nmoiety, 
+                   C_INT32 ncompart, 
                    const string &Title)
 {
     // first deallocate the memory in use and free pointers
@@ -126,9 +126,9 @@ void CModel::Reset(int nstep,
 }
 
 
-void CModel::ResetStepMetab(int nstep, int nmetab, int intmet, int nmoiety)
+void CModel::ResetStepMetab(C_INT32 nstep, C_INT32 nmetab, C_INT32 intmet, C_INT32 nmoiety)
 {
-    int i;
+    C_INT32 i;
 
     // delete matrizes
     mStoichiometry.clear();
@@ -231,7 +231,7 @@ void CModel::Clear(void)
 
 void CModel::UpdateChemEq(void)
 {
-    int i, j;
+    C_INT32 i, j;
     string TempStr;
 
     for (i=0; i<mStep.size(); i++)
@@ -252,7 +252,7 @@ void CModel::UpdateChemEq(void)
         for (j=0; j<mStep[i].ProductNo; j++)
         {
             if (j!=0) mStep[i].ChemEq += " + ";
-//   if (mStoichiometry[mStep[i].Product[j]][i]>(float)1)
+//   if (mStoichiometry[mStep[i].Product[j]][i]>(C_FLOAT32)1)
 //   {
 //    TempStr.Format("%i*%s", mStoichiometry[mStep[i].Product[j]][i],
 //              LPCTSTR(mMetabolite[mStep[i].Product[j]].Name));
@@ -271,8 +271,8 @@ void CModel::UpdateChemEq(void)
 
 void CModel::SetupMoiety(void)
 {
-    int DimMoiety;  // dimension of the array
-    int i,j,k,idx;
+    C_INT32 DimMoiety;  // dimension of the array
+    C_INT32 i,j,k,idx;
     string TmpStr;
 
     // first delete the existing array
@@ -312,7 +312,7 @@ void CModel::SetupMoiety(void)
         // mark status as moiety total
         mMoiety[i].Status = METAB_MOIETY;
         // set a (fake) compartment
-        mMoiety[i].Compart = 0; // the actual value does not matter as long as >=0
+        mMoiety[i].Compart = 0; // the actual value does not matter as C_INT32 as >=0
         // set the rate
         mMoiety[i].Rate = 0; // and will always be!
     }
@@ -324,7 +324,7 @@ void CModel::SetupMoiety(void)
 
 void CModel::CalculateMoieties(void)
 {
-    int i,j,idx;
+    C_INT32 i,j,idx;
     // iterate over all the moieties
     for (i=0; i<TotMoieties; i++)
     {
@@ -342,7 +342,7 @@ void CModel::CalculateMoieties(void)
 
 void CModel::UpdateMoieties(void)
 {
-    int i,j,idx;
+    C_INT32 i,j,idx;
     // iterate over all the moieties
     for (i=0; i<TotMoieties; i++)
     {
@@ -360,8 +360,8 @@ void CModel::UpdateMoieties(void)
 
 void CModel::ClearStoi(void)
 {
-    int DimMetab, DimStep;  // dimension of arrays
-    int i,j;
+    C_INT32 DimMetab, DimStep;  // dimension of arrays
+    C_INT32 i,j;
 
     // initialize the dimensions
     if (TotMetab == 0) DimMetab = 1;
@@ -381,9 +381,9 @@ void CModel::ClearStoi(void)
 // this function adds one entry in the stoichiometry matrix
 // and in the appropriate step (for the substrate or product)
 
-void CModel::AddToStoi(int StepNo, int MetabNo, int Sign, int Value)
+void CModel::AddToStoi(C_INT32 StepNo, C_INT32 MetabNo, C_INT32 Sign, C_INT32 Value)
 {
-    int DimMetab, i;
+    C_INT32 DimMetab, i;
 
     if (TotMetab == 0) DimMetab = 1;
     else DimMetab = TotMetab;
@@ -409,7 +409,7 @@ void CModel::AddToStoi(int StepNo, int MetabNo, int Sign, int Value)
 void CModel::Save(CStdioFile *fout)
 {
     string StrOut, StrEl;
-    int i,j;
+    C_INT32 i,j;
 
     // the file has already been opened
     // we don't care about exceptions here.
@@ -467,7 +467,7 @@ void CModel::Save(CStdioFile *fout)
 // this function writes the user-defined kinetic types to a file
 void CModel::SaveUDKin(CStdioFile *fout)
 {
-    int udkintot, i, j, newtype;
+    C_INT32 udkintot, i, j, newtype;
     CKinetics **ukin;
     string StrOut;
     // we can't have more unique kinetic types than steps
@@ -495,11 +495,11 @@ void CModel::SaveUDKin(CStdioFile *fout)
 }
 
 // this function loads a model from the buffer
-int CModel::Load(char **buffer, int *line, int getstoi)
+C_INT32 CModel::Load(char **buffer, C_INT32 *line, C_INT32 getstoi)
 {
     char *pt;
-    int lin, fields, i, j, err, TotTypes;
-    int nStep, nMetab, nMoiety, nCompart;
+    C_INT32 lin, fields, i, j, err, TotTypes;
+    C_INT32 nStep, nMetab, nMoiety, nCompart;
     string tTitle, TmpStr;
     CKinetics *pKin, *pKin2;
 
@@ -662,7 +662,7 @@ int CModel::Load(char **buffer, int *line, int getstoi)
     return 0;
 }
 
-int CModel::ResetCompartments(int ncompart)
+C_INT32 CModel::ResetCompartments(C_INT32 ncompart)
 {
     // check for legal values of the parameter
     if (ncompart < 1) return 1;
@@ -685,7 +685,7 @@ int CModel::ResetCompartments(int ncompart)
 
 void CModel::InitIndex(void)
 {
-    int i;
+    C_INT32 i;
 
     for (i=0;i<TotMetab;i++) mRow[i] = i;
     for (i=0;i<TotStep;i++) mCol[i] = i;
@@ -693,8 +693,8 @@ void CModel::InitIndex(void)
 
 void CModel::InitRedStoi(void)
 {
-    int DimMetab, DimStep;  // dimension of arrays
-    int i,j;
+    C_INT32 DimMetab, DimStep;  // dimension of arrays
+    C_INT32 i,j;
 
     // check dimensions
     if (IntMetab == 0) DimMetab = 1;
@@ -708,27 +708,27 @@ void CModel::InitRedStoi(void)
 }
 
 // returns the index of the metabolite with this name
-int CModel::FindMetab(string &Target)
+C_INT32 CModel::FindMetab(string &Target)
 {
-    int i;
+    C_INT32 i;
     for (i=0; i<TotMetab; i++)
         if (mMetabolite[i].Name == Target) return i;
     return -1;
 }
 
 // returns the index of the step with this name
-int CModel::FindStep(string &Target)
+C_INT32 CModel::FindStep(string &Target)
 {
-    int i;
+    C_INT32 i;
     for (i=0; i<TotStep; i++)
         if (Step[i].Name == Target) return i;
     return -1;
 }
 
 // returns the index of the moiety with this name
-int CModel::FindMoiety(string &Target)
+C_INT32 CModel::FindMoiety(string &Target)
 {
-    int i;
+    C_INT32 i;
     for (i=0; i<TotMoieties; i++)
         if (mMoiety[i].Name == Target) return i;
     return -1;
@@ -737,7 +737,7 @@ int CModel::FindMoiety(string &Target)
 // updates the references to compartments
 void CModel::UpdateCompartments(void)
 {
-    int i;
+    C_INT32 i;
     // check all metabolites
     for (i=0; i<TotMetab; i++)
         // if it points to a non-existant compartment
@@ -747,37 +747,37 @@ void CModel::UpdateCompartments(void)
 }
 
 // returns the index of the compartment with this name
-int CModel::FindCompartment(string &Target)
+C_INT32 CModel::FindCompartment(string &Target)
 {
-    int i;
+    C_INT32 i;
     for (i=0; i<TotCompart; i++)
         if (mCompartment[i].Name == Target) return i;
     return -1;
 }
 
 // finds the substrate molecularity of the step st
-int CModel::SubstrateMolecularity(int st)
+C_INT32 CModel::SubstrateMolecularity(C_INT32 st)
 {
     return Step[st].SubstrateNo;
-    //int i, molec;
+    //C_INT32 i, molec;
     // check if step is legal
     //if (st>=TotStep) return -1;
     //molec=0;
     //for (i=0; i<Step[st].SubstrateNo; i++)
-    // molec -= (int) mStoichiometry[Step[st].Substrate[i]][st];
+    // molec -= (C_INT32) mStoichiometry[Step[st].Substrate[i]][st];
     //return molec;
 }
 
 // finds the product molecularity of the step st
-int CModel::ProductMolecularity(int st)
+C_INT32 CModel::ProductMolecularity(C_INT32 st)
 {
     return Step[st].ProductNo;
-    //int i, molec;
+    //C_INT32 i, molec;
     // check if step is legal
     //if (st>=TotStep) return -1;
     //molec=0;
     //for (i=0; i<Step[st].ProductNo; i++)
-    // molec += (int) mStoichiometry[Step[st].Product[i]][st];
+    // molec += (C_INT32) mStoichiometry[Step[st].Product[i]][st];
     //return molec;
 }
 
@@ -787,7 +787,7 @@ int CModel::ProductMolecularity(int st)
 
 void CModel::SortMetabolites(void)
 {
-    int i,ct;
+    C_INT32 i,ct;
 
     // reset the counter
     ct = 0;
@@ -814,7 +814,7 @@ void CModel::SortMetabolites(void)
 
 void CModel::MapSecondary(void)
 {
-    int i,j;
+    C_INT32 i,j;
 
     // first map the metabolites
     for (i=0; i<TotMetab; i++)
@@ -836,9 +836,9 @@ void CModel::MapSecondary(void)
 
 // checks if a row in RedStoi is empty
 
-int CModel::EmptyRow(int r)
+C_INT32 CModel::EmptyRow(C_INT32 r)
 {
-    int j, a;
+    C_INT32 j, a;
 
     for (a=j=0; j<TotStep; j++)
         if (fabs(mRedStoi[r][j]) > ALMOST_ZERO) a++;
@@ -851,7 +851,7 @@ int CModel::EmptyRow(int r)
 
 void CModel::SpotExternal(void)
 {
-    int i,j,ct;
+    C_INT32 i,j,ct;
 
     // empty rows in Stoi are external metabolites
     for (i=0; i<TotMetab; i++)
@@ -868,7 +868,7 @@ void CModel::SpotExternal(void)
 
 void CModel::MarkStatus(void)
 {
-    int i;
+    C_INT32 i;
 
     // mark the independent metabolites
     for (i=0; i<IndMetab; i++)
@@ -885,7 +885,7 @@ void CModel::MarkStatus(void)
 
 void CModel::CountMetabolites()
 {
-    int i;
+    C_INT32 i;
 
     IntMetab = DepMetab = ExtMetab = 0;
     for (i=0; i<TotMetab; i++)
@@ -902,24 +902,24 @@ void CModel::CountMetabolites()
 
 // set up the mML and mLM matrices
 
-int CModel::CreateLM(void)
+C_INT32 CModel::CreateLM(void)
 {
-    int i,j,DimMetab;
+    C_INT32 i,j,DimMetab;
 
     if (TotMetab==0) DimMetab = 1;
     else DimMetab = TotMetab;
     // allocate the mLM array
-    mLM = new float *[IntMetab];
+    mLM = new C_FLOAT32 *[IntMetab];
     // allocate each row
     for (i=0; i<IntMetab; i++)
-        mLM[i] = new float[IntMetab];
+        mLM[i] = new C_FLOAT32[IntMetab];
     // set all entries of mLM and mML to zero
     for (i=0; i<IntMetab; i++)
         for (j=0; j<IntMetab; j++)
-            mLM[i][j] = (float) 0.0;
+            mLM[i][j] = (C_FLOAT32) 0.0;
     for (i=0; i<DimMetab; i++)
         for (j=0; j<DimMetab; j++)
-            mML[i][j] = (float) 0.0;
+            mML[i][j] = (C_FLOAT32) 0.0;
 
     return 0;
 }
@@ -929,7 +929,7 @@ int CModel::CreateLM(void)
 
 void CModel::DestroyLM(void)
 {
-    int i;
+    C_INT32 i;
 
     // first delete each row
     for (i=0; i<IntMetab; i++)
@@ -943,10 +943,10 @@ void CModel::DestroyLM(void)
 
 // this funtion switches two rows in the secondary matrices
 
-void CModel::RedStoiRowSwitch(int r1, int r2)
+void CModel::RedStoiRowSwitch(C_INT32 r1, C_INT32 r2)
 {
-    int j;
-    float dummy;
+    C_INT32 j;
+    C_FLOAT32 dummy;
 
     // switch all elements it the two rows in RedStoi
     for (j=0; j<TotStep; j++)
@@ -971,10 +971,10 @@ void CModel::RedStoiRowSwitch(int r1, int r2)
 
 // this funtion switches two columns in the secondary matrices
 
-void CModel::RedStoiColSwitch(int c1, int c2)
+void CModel::RedStoiColSwitch(C_INT32 c1, C_INT32 c2)
 {
-    int i;
-    float dummy;
+    C_INT32 i;
+    C_FLOAT32 dummy;
 
     // switch all elements it the two cols in RedStoi
     for (i=0; i<IntMetab; i++)
@@ -1011,7 +1011,7 @@ void CModel::PrintSummary(void)
 {
     CStdioFile DbgFile(DebugFile, CFile::modeWrite | CFile::typeText);
     string StrOut;
-    int i;
+    C_INT32 i;
     // seek to the end of the file
     DbgFile.SeekToEnd();
     StrOut = "Summary:\n";
@@ -1032,7 +1032,7 @@ void CModel::PrintMatrices(void)
 {
     CStdioFile DbgFile(DebugFile, CFile::modeWrite | CFile::typeText);
     string StrOut, StrEl;
-    int i, j;
+    C_INT32 i, j;
     // seek to the end of the file
     DbgFile.SeekToEnd();
     // Stoichiometry
@@ -1139,10 +1139,10 @@ void CModel::PrintMatrices(void)
 // Gauss reduction with row and column pivoting
 // NOTE: RedStoi must have been already loaded
 
-int CModel::Gauss(void)
+C_INT32 CModel::Gauss(void)
 {
-    int i, j, k, flag;
-    float m;
+    C_INT32 i, j, k, flag;
+    C_FLOAT32 m;
 
     for (k=0; (k<TotStep) && (k<IntMetab); k++)
     {
@@ -1210,14 +1210,14 @@ int CModel::Gauss(void)
                 m =  mRedStoi[i][k] / mRedStoi[k][k];
                 // keep its symmetric in the ML matrix
                 mML[i][k] = m;
-                if (m != (float) 0.0) // paranoid check...
+                if (m != (C_FLOAT32) 0.0) // paranoid check...
                 {
                     // reduce another row
                     for (j=k; j<TotStep; j++)
                     {
                         mRedStoi[i][j] = mRedStoi[i][j] - m * mRedStoi[k][j];
                         if (fabs(mRedStoi[i][j]) <= ALMOST_ZERO) // make it a true zero
-                            mRedStoi[i][j] = (float) 0.0;
+                            mRedStoi[i][j] = (C_FLOAT32) 0.0;
                     }
                 }
             }
@@ -1233,23 +1233,23 @@ int CModel::Gauss(void)
 
 void CModel::SpotDependent(void)
 {
-    int i,j,k;
-    float acum;
+    C_INT32 i,j,k;
+    C_FLOAT32 acum;
 
     // ml is lower triangular, so to invert it we simply have
     // do forward-substitution with the identity matrix
 
     // set the diagonal elements to 1
-    for (i=0; i<IntMetab; i++) mML[i][i] = (float) 1.0 ;
+    for (i=0; i<IntMetab; i++) mML[i][i] = (C_FLOAT32) 1.0 ;
 
     // forward substitute
     for (j=0; j<IndMetab; j++)
         for (k=0; k<IndMetab; k++)
         {
-            acum= (float) 0.0;
+            acum= (C_FLOAT32) 0.0;
             for (i=0; i<k; i++)
                 acum += mML[k][i] * mLM[i][j];
-            mLM[k][j] = ((k==j) ? (float) 1.0 : - acum) / mML[k][k];
+            mLM[k][j] = ((k==j) ? (C_FLOAT32) 1.0 : - acum) / mML[k][k];
         }
 
     // dimension the ConsRel matrix
@@ -1258,7 +1258,7 @@ void CModel::SpotDependent(void)
     for (i=IndMetab; i<IntMetab; i++)   // first calculate L0
         for (j=0; j<IndMetab; j++)    // which is
         {
-            mConsRel[i][j] = (float) 0.0;
+            mConsRel[i][j] = (C_FLOAT32) 0.0;
             for (k=0; k<IndMetab; k++)
                 mConsRel[i][j] += mML[i][k] * mLM[k][j]; // L0 = L21 * Inv(L11)
         }
@@ -1268,7 +1268,7 @@ void CModel::SpotDependent(void)
             mConsRel[i][j] = -mConsRel[i][j];   // -L0
         for (j=IndMetab; j<IntMetab; j++)  // merged with the
             mConsRel[i][j] = (i == j)
-                ? (float) 1.0 : (float) 0.0;   // m0 -> m part of Id.
+                ? (C_FLOAT32) 1.0 : (C_FLOAT32) 0.0;   // m0 -> m part of Id.
     }
 }
 
@@ -1284,7 +1284,7 @@ void CModel::Structural(void)
 {
     //CStdioFile dbgf;
 //CFileException fexcp;
-    int i;
+    C_INT32 i;
 //dbgf.Open("dbg.tmp", CFile::modeCreate | CFile::modeWrite | CFile::typeText, &fexcp);
 
     if (TotStep > 0)
@@ -1337,14 +1337,14 @@ void CModel::Structural(void)
 
 // this routine calculates the null-space of the stoichiometry matrix
 // following the algorithm of Schuster & Schuster J.Math.Chem. 6 17-40 (1991)
-int CModel::GetKernel(void)
+C_INT32 CModel::GetKernel(void)
 {
-    int f,h,i,j,k,m,n,q,si,cp,rp;
-    float **Echelon; // stoichiometry matrix in echelon format
-    float **cb;  // auxiliary matrix
+    C_INT32 f,h,i,j,k,m,n,q,si,cp,rp;
+    C_FLOAT32 **Echelon; // stoichiometry matrix in echelon format
+    C_FLOAT32 **cb;  // auxiliary matrix
     BOOL exchange;
-    float fTemp, z;
-    int iTemp, pi, pj;
+    C_FLOAT32 fTemp, z;
+    C_INT32 iTemp, pi, pj;
 
     // initialise teh rank to 0
     Rank = 0;
@@ -1361,13 +1361,13 @@ int CModel::GetKernel(void)
 // fp = fopen("ker.txt","wt");
 
     // create the echelon and auxiliary matrices
-    Echelon = new float *[TotMetab];
-    cb = new float *[TotMetab];
+    Echelon = new C_FLOAT32 *[TotMetab];
+    cb = new C_FLOAT32 *[TotMetab];
     for (i=0, j=0; i<TotMetab; i++)
         if (mMetabolite[i].Status != METAB_FIXED)
         {
-            Echelon[j] = new float[TotStep];
-            cb[j] = new float[TotStep];
+            Echelon[j] = new C_FLOAT32[TotStep];
+            cb[j] = new C_FLOAT32[TotStep];
             for (k=0; k<TotStep; k++)
             {
                 Echelon[j][k] = mStoichiometry[i][k];
@@ -1450,9 +1450,9 @@ int CModel::GetKernel(void)
     if (mKernelJ>0)
     {
         // allocate a new one
-        mKernel = new float *[mKernelI];
+        mKernel = new C_FLOAT32 *[mKernelI];
         for (i=0; i<TotStep; i++)
-            mKernel[i] = new float[mKernelJ];
+            mKernel[i] = new C_FLOAT32[mKernelJ];
         // calculate the kernel
         for (m=Rank; m<mKernelI; m++)
             for (h=0; h<mKernelJ; h++)
@@ -1524,27 +1524,27 @@ int CModel::GetKernel(void)
 
 // this routine calculates the elementary modes of the stoichiometry matrix
 // according to the algortithm of Schuster
-int CModel::ElementaryModes(CStdioFile *fout)
+C_INT32 CModel::ElementaryModes(CStdioFile *fout)
 {
-    int **sm;       /* pointer to stoichiometric matrix */
-    int **sub, **tab, **ntab, **phelp; /* pointer to current tableau, next tableau, help for test 1 */
-    int *revstate, *nrevstate;    /* reversibility of mode: 0 - revesible, 1 - irreversible */
-    int i,j,u,uu,x;     /* counter */
-    int pos1,pos, nreact, nmet;   /* number of current tableau, number of reactions and metabolites */
-    int colnr, rownr, nrownr, nnrownr;  /* number of columns and rows in the current and next tableau */
-    int f1,f2,f3;       /* factors for determination of linear combinations */
-    int nzero, nneg, npos, nrevneg, nrevpos, npairs;
-    int acrow=0;       /*number of calculated rows in the next tableau */
-    int test1;       /* bools for test conditions */
+    C_INT32 **sm;       /* pointer to stoichiometric matrix */
+    C_INT32 **sub, **tab, **ntab, **phelp; /* pointer to current tableau, next tableau, help for test 1 */
+    C_INT32 *revstate, *nrevstate;    /* reversibility of mode: 0 - revesible, 1 - irreversible */
+    C_INT32 i,j,u,uu,x;     /* counter */
+    C_INT32 pos1,pos, nreact, nmet;   /* number of current tableau, number of reactions and metabolites */
+    C_INT32 colnr, rownr, nrownr, nnrownr;  /* number of columns and rows in the current and next tableau */
+    C_INT32 f1,f2,f3;       /* factors for determination of linear combinations */
+    C_INT32 nzero, nneg, npos, nrevneg, nrevpos, npairs;
+    C_INT32 acrow=0;       /*number of calculated rows in the next tableau */
+    C_INT32 test1;       /* bools for test conditions */
     string StrOut;
 
     nmet = IntMetab;
     nreact = TotStep;
 
     // allocate memory for matrices
-    sm = (int**) malloc(nmet*sizeof(*sm));
+    sm = (C_INT32**) malloc(nmet*sizeof(*sm));
     if (sm == NULL) return -1;
-    revstate = (int*) malloc(nreact*sizeof(int));
+    revstate = (C_INT32*) malloc(nreact*sizeof(C_INT32));
     if (revstate == NULL)
     {
         free(sm);
@@ -1554,7 +1554,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
     for (i=0; i<nmet; i++)
     {
         // allocate another row
-        *(sm+i) = (int*) malloc(nreact*sizeof(int));
+        *(sm+i) = (C_INT32*) malloc(nreact*sizeof(C_INT32));
         if (*(sm+i) == NULL)
         {
             for (j=0; j<i; j++) free(*(sm+j));
@@ -1564,7 +1564,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
         }
         // fill it in
         for (j=0; j<nreact; j++)
-            *(*(sm+i)+j) = (int) mStoichiometry[mRow[i]][mCol[j]];
+            *(*(sm+i)+j) = (C_INT32) mStoichiometry[mRow[i]][mCol[j]];
     }
     // load reversibility matrix
     for (i=0; i<nreact; i++)
@@ -1577,7 +1577,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
     rownr=nreact;
 
     // allocate sub-matrix
-    sub = (int**) malloc(nreact*sizeof(*sub));
+    sub = (C_INT32**) malloc(nreact*sizeof(*sub));
     if (sub == NULL)
     {
         for (i=0; i<nmet; i++) free(*(sm+i));
@@ -1589,7 +1589,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
     for (i=0; i<nreact; i++)
     {
         // allocate row
-        *(sub+i) = (int*) malloc(nreact*sizeof(int));
+        *(sub+i) = (C_INT32*) malloc(nreact*sizeof(C_INT32));
         if (*sub==NULL)
         {
             for (j=0; j<i; j++) free(*(sub+j));
@@ -1607,7 +1607,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
     }
 
     // allocate tableau matrix
-    tab = (int**) malloc(rownr*sizeof(*tab));
+    tab = (C_INT32**) malloc(rownr*sizeof(*tab));
     if (tab==NULL)
     {
         for (j=0; j<nreact; j++) free(*(sub+j));
@@ -1620,7 +1620,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
     for (i=0; i<nreact; i++)
     {
         // allocate rows
-        *(tab+i) = (int*) malloc(colnr*sizeof(int));
+        *(tab+i) = (C_INT32*) malloc(colnr*sizeof(C_INT32));
         if (*(tab+i) == NULL)
         {
             for (j=0; j<i; j++) free(*(tab+j));
@@ -1632,7 +1632,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
             free(sm);
             return -7;
         }
-        TRACE("M 1 tab[%d] %p %d\n", i, *(tab+i), colnr*sizeof(int));
+        TRACE("M 1 tab[%d] %p %d\n", i, *(tab+i), colnr*sizeof(C_INT32));
         // initialize
         for (j=0; j<colnr; j++)
         {
@@ -1686,7 +1686,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
         nrownr = nzero+npairs;
         if (nrownr==10000000) break;
         // allocate more memory
-        ntab = (int**) malloc((nrownr+1)*sizeof(*ntab));
+        ntab = (C_INT32**) malloc((nrownr+1)*sizeof(*ntab));
         if (ntab==NULL)
         {
             for (j=0; j<nreact; j++) free(*(tab+j));
@@ -1696,7 +1696,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
             free(revstate);
             return -8;
         }
-        nrevstate = (int*) malloc((nrownr+1)*sizeof(int));
+        nrevstate = (C_INT32*) malloc((nrownr+1)*sizeof(C_INT32));
         if (nrevstate==NULL)
         {
             free(ntab);
@@ -1724,7 +1724,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
                     {
                         if (*(*(tab+i)+pos) * *(*(tab+j)+pos) < 0)    /* vorzeichenpaare */
                         {
-                            *ntab = (int*) malloc(colnr*sizeof(int));
+                            *ntab = (C_INT32*) malloc(colnr*sizeof(C_INT32));
                             if (*ntab==NULL)
                             {
                                 for (j=0; j<nreact; j++) free(*(tab+j));
@@ -1734,7 +1734,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
                                 free(revstate);
                                 return -10;
                             }
-                            TRACE("M 2 *ntab %p %d\n", *ntab, colnr*sizeof(int));
+                            TRACE("M 2 *ntab %p %d\n", *ntab, colnr*sizeof(C_INT32));
                             f3 = 0;
                             f1 = abs(*(*(tab+j)+pos)) / gcd(abs(*(*(tab+j)+pos)), abs(*(*(tab+i)+pos)));
                             f2 = abs(*(*(tab+i)+pos)) / gcd(abs(*(*(tab+j)+pos)), abs(*(*(tab+i)+pos)));
@@ -1785,7 +1785,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
                         {
                             if (!(*(revstate+i)))       /* v1 reversibel */
                             {
-                                *ntab = (int*) malloc(colnr*sizeof(int));
+                                *ntab = (C_INT32*) malloc(colnr*sizeof(C_INT32));
                                 if (*ntab==0)
                                 {
                                     for (j=0; j<nreact; j++) free(*(tab+j));
@@ -1842,7 +1842,7 @@ int CModel::ElementaryModes(CStdioFile *fout)
                             }
                             if (!(*(revstate+j)))       /* v2 reversibel */
                             {
-                                *ntab = (int*) malloc(colnr*sizeof(int));
+                                *ntab = (C_INT32*) malloc(colnr*sizeof(C_INT32));
                                 if (*ntab==NULL)
                                 {
                                     for (j=0; j<nreact; j++) free(*(tab+j));
@@ -1937,11 +1937,11 @@ int CModel::ElementaryModes(CStdioFile *fout)
     return 0;
 }
 
-int CModel::AddMetabolite(string &NewName)
+C_INT32 CModel::AddMetabolite(string &NewName)
 {
-    int DimMetab, DimStep;
-    int i, j, *ivector, **imatrix;
-    float **fmatrix;
+    C_INT32 DimMetab, DimStep;
+    C_INT32 i, j, *ivector, **imatrix;
+    C_FLOAT32 **fmatrix;
     CMetab *OldMetabolite;
 
     // initialize the dimensions
@@ -1979,37 +1979,37 @@ int CModel::AddMetabolite(string &NewName)
     delete [] OldMetabolite;
 
     // deal with Row & IRow
-    ivector = new int [DimMetab];
+    ivector = new C_INT32 [DimMetab];
     for (i=0; i<TotMetab; i++)
         ivector[i] = mRow[i];
     delete [] mRow;
-    mRow = new int [TotMetab+1];
+    mRow = new C_INT32 [TotMetab+1];
     for (i=0; i<TotMetab; i++)
         mRow[i] = ivector[i];
     mRow[TotMetab] = TotMetab;
     for (i=0; i<TotMetab; i++)
         ivector[i] = mIRow[i];
     delete [] mIRow;
-    mIRow = new int [TotMetab+1];
+    mIRow = new C_INT32 [TotMetab+1];
     for (i=0; i<TotMetab; i++)
         mIRow[i] = ivector[i];
     mIRow[TotMetab] = TotMetab;
     delete [] ivector;
 
-    fmatrix = new float *[DimMetab];
+    fmatrix = new C_FLOAT32 *[DimMetab];
     for (i=0; i<DimMetab; i++)
     {
-        fmatrix[i] = new float[DimStep];
+        fmatrix[i] = new C_FLOAT32[DimStep];
         for (j=0; j<DimStep; j++)
             fmatrix[i][j] = mStoichiometry[i][j];
     }
     for (i=0; i<DimMetab; i++)
         delete [] mStoichiometry[i];
     delete [] mStoichiometry;
-    mStoichiometry = new float *[TotMetab+1];
+    mStoichiometry = new C_FLOAT32 *[TotMetab+1];
     for (i=0; i<TotMetab+1; i++)
     {
-        mStoichiometry[i] = new float[DimStep];
+        mStoichiometry[i] = new C_FLOAT32[DimStep];
         for (j=0; j<DimStep; j++)
             mStoichiometry[i][j] = i!=TotMetab ? fmatrix[i][j] : 0.0F;
     }
@@ -2020,10 +2020,10 @@ int CModel::AddMetabolite(string &NewName)
     for (i=0; i<DimMetab; i++)
         delete [] mRedStoi[i];
     delete [] mRedStoi;
-    mRedStoi = new float *[TotMetab+1];
+    mRedStoi = new C_FLOAT32 *[TotMetab+1];
     for (i=0; i<TotMetab+1; i++)
     {
-        mRedStoi[i] = new float[DimStep];
+        mRedStoi[i] = new C_FLOAT32[DimStep];
         for (j=0; j<DimStep; j++)
             mRedStoi[i][j] = i!=TotMetab ? fmatrix[i][j] : 0.0F;
     }
@@ -2033,17 +2033,17 @@ int CModel::AddMetabolite(string &NewName)
 
     for (i=0; i<DimMetab; i++)
     {
-        fmatrix[i] = new float[DimMetab];
+        fmatrix[i] = new C_FLOAT32[DimMetab];
         for (j=0; j<DimMetab; j++)
             fmatrix[i][j] = mConsRel[i][j];
     }
     for (i=0; i<DimMetab; i++)
         delete [] mConsRel[i];
     delete [] mConsRel;
-    mConsRel = new float *[TotMetab+1];
+    mConsRel = new C_FLOAT32 *[TotMetab+1];
     for (i=0; i<TotMetab+1; i++)
     {
-        mConsRel[i] = new float[TotMetab+1];
+        mConsRel[i] = new C_FLOAT32[TotMetab+1];
         for (j=0; j<TotMetab; j++)
             mConsRel[i][j] = i!=TotMetab ? fmatrix[i][j] : 0.0F;
         mConsRel[i][TotMetab] = 0.0F;
@@ -2055,10 +2055,10 @@ int CModel::AddMetabolite(string &NewName)
     for (i=0; i<DimMetab; i++)
         delete [] mML[i];
     delete [] mML;
-    mML = new float *[TotMetab+1];
+    mML = new C_FLOAT32 *[TotMetab+1];
     for (i=0; i<TotMetab+1; i++)
     {
-        mML[i] = new float[TotMetab+1];
+        mML[i] = new C_FLOAT32[TotMetab+1];
         for (j=0; j<TotMetab; j++)
             mML[i][j] = i!=TotMetab ? fmatrix[i][j] : 0.0F;
         mML[i][TotMetab] = 0.0F;
@@ -2068,20 +2068,20 @@ int CModel::AddMetabolite(string &NewName)
         delete [] fmatrix[i];
     delete [] fmatrix;
 
-    imatrix = new int *[DimStep];
+    imatrix = new C_INT32 *[DimStep];
     for (i=0; i<DimStep; i++)
     {
-        imatrix[i] = new int[DimMetab];
+        imatrix[i] = new C_INT32[DimMetab];
         for (j=0; j<DimMetab; j++)
             imatrix[i][j] = mReactStruct[i][j];
     }
     for (i=0; i<DimStep; i++)
         delete [] mReactStruct[i];
     delete [] mReactStruct;
-    mReactStruct = new int *[DimStep];
+    mReactStruct = new C_INT32 *[DimStep];
     for (i=0; i<DimStep; i++)
     {
-        mReactStruct[i] = new int[TotMetab+1];
+        mReactStruct[i] = new C_INT32[TotMetab+1];
         for (j=0; j<TotMetab; j++)
             mReactStruct[i][j] = imatrix[i][j];
         mReactStruct[i][TotMetab] = 0;
@@ -2098,9 +2098,9 @@ int CModel::AddMetabolite(string &NewName)
 }
 
 // rebuilds the stoichiometry matrix from step data
-void CModel::RebuildStoi(int flag)
+void CModel::RebuildStoi(C_INT32 flag)
 {
-    int i, j;
+    C_INT32 i, j;
 
     // clean the matrix if needed
     if (flag==1)

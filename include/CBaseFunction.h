@@ -93,12 +93,12 @@ private:
      *  this is meaningless.
      *  A value of 0 (zero) means an arbitrary count.
      */
-    long mCount;
+    C_INT32 mCount;
 
     /**
      *  The valid identifier types
      */
-    vector < int > * mIdentifierTypes;
+    vector < C_INT32 > * mIdentifierTypes;
 
     /**
      *  Vector of identifiers of the function
@@ -140,7 +140,7 @@ public:
     /**
      *
      */
-    virtual void SetCount(long count);
+    virtual void SetCount(C_INT32 count);
 
     /**
      *  Retrieves the type of the the call parameter
@@ -150,21 +150,21 @@ public:
 
     /**
      *  Retrieves the type of the function
-     *  @return long Count
+     *  @return C_INT32 Count
      */
-    virtual long GetCount();
+    virtual C_INT32 GetCount();
 
     /**
      *  Retrieves the valis identifier types
      */
-    virtual vector < int > & IdentifierTypes();
+    virtual vector < C_INT32 > & IdentifierTypes();
 
     /**
      *  Retrieves the number of identifiers of a specific type
      *  @param char identifierType Default = 0 (all identifiers)
-     *  @return long
+     *  @return C_INT32
      */
-    virtual long NoIdentifiers(char identifierType = 0);
+    virtual C_INT32 NoIdentifiers(char identifierType = 0);
             
     /**
      *  Retrieves the vector of identifiers of a specific type
@@ -183,11 +183,11 @@ public:
      *  The valid types of a function
      */
     enum Type
-        {
-            BASIC = 0,
-            USERDIFINED,
-            BUILTIN
-        };
+    {
+        BASIC = 0,
+        USERDIFINED,
+        BUILTIN
+    };
   
 private:
     /**
@@ -208,7 +208,7 @@ private:
     /**
      *  Whether the function is reversible
      */
-    short mReversible;
+    C_INT16 mReversible;
 
     /**
      *  Vector of call parameter specificying their structure
@@ -257,9 +257,9 @@ public:
 
     /**
      *  Set the reversiblity of the function
-     *  @param short reversible
+     *  @param C_INT16 reversible
      */
-    virtual void SetReversible(short reversible);
+    virtual void SetReversible(C_INT16 reversible);
 
     /**
      *  Retrieves the name of the function
@@ -271,7 +271,7 @@ public:
      *  Retrieves the type of the function
      *  @return enum Type
      */
-    virtual long GetType();
+    virtual C_INT32 GetType();
     
     /**
      *  Retrieves the description of the function
@@ -281,9 +281,9 @@ public:
     
     /**
      *  Retrieves whether the function is reversible
-     *  @return short
+     *  @return C_INT16
      */
-    virtual short IsReversible();
+    virtual C_INT16 IsReversible();
     
     /**
      *  Retrieves the vector of allowed identifiers
@@ -293,17 +293,17 @@ public:
 
     /**
      *  Calculates the value of the function
-     *  @param "vector < double * >" identifiers
+     *  @param "vector < C_FLOAT64 * >" identifiers
      */
-    virtual double CalcValue(vector < CCallParameter > callParameters);
+    virtual C_FLOAT64 CalcValue(vector < CCallParameter > callParameters);
 
     /**
      *  Returns the index of an identifier. The index specifies the position in
      *  the identifier vector of the function call CalcValue.
      *  @param "const string" &name
-     *  @return long
+     *  @return C_INT32
      */
-    virtual pair < long, long > FindIdentifier(const string & name);
+    virtual pair < C_INT32, C_INT32 > FindIdentifier(const string & name);
 };
 
 

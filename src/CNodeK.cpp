@@ -40,7 +40,7 @@ CNodeK::CNodeK(const string & name)
     mIndex    = -1;
 }
 
-CNodeK::CNodeK(double constant)
+CNodeK::CNodeK(C_FLOAT64 constant)
 {
     mType     = N_NUMBER;
     mSubtype  = N_NOP;
@@ -54,9 +54,9 @@ void CNodeK::Delete() {}
     
 CNodeK::~CNodeK() {}
 
-long CNodeK::Load(CReadConfig & configbuffer)
+C_INT32 CNodeK::Load(CReadConfig & configbuffer)
 {
-    long Fail = 0;
+    C_INT32 Fail = 0;
     
     if (Fail = configbuffer.GetVariable("Node", "node", &mType, &mSubtype,
                                         CReadConfig::SEARCH))
@@ -72,12 +72,12 @@ long CNodeK::Load(CReadConfig & configbuffer)
     // value of the constant if one
     if (mType == N_NUMBER)
     {
-        if (Fail = configbuffer.GetVariable("Value", "double", &mConstant))
+        if (Fail = configbuffer.GetVariable("Value", "C_FLOAT64", &mConstant))
             return Fail;
     }
     else if (mType == N_IDENTIFIER)
     {
-        if (Fail = configbuffer.GetVariable("Index", "long", &mIndex))
+        if (Fail = configbuffer.GetVariable("Index", "C_INT32", &mIndex))
             return Fail;
         if (Fail = configbuffer.GetVariable("Name", "string", &mName))
             return Fail;
@@ -86,9 +86,9 @@ long CNodeK::Load(CReadConfig & configbuffer)
     return Fail;
 }
 
-long CNodeK::Save(CWriteConfig & configbuffer)
+C_INT32 CNodeK::Save(CWriteConfig & configbuffer)
 {
-    long Fail = 0;
+    C_INT32 Fail = 0;
     
     // the file has already been opened
     // we don't care about exceptions here.
@@ -101,12 +101,12 @@ long CNodeK::Save(CWriteConfig & configbuffer)
     // value of the constant if one
     if (mType==N_NUMBER)
     {
-        if (Fail = configbuffer.SetVariable("Value", "double", &mConstant))
+        if (Fail = configbuffer.SetVariable("Value", "C_FLOAT64", &mConstant))
             return Fail;
     }
     else if (IsIdentifier())
     {
-        if (Fail = configbuffer.SetVariable("Index", "long", &mIndex))
+        if (Fail = configbuffer.SetVariable("Index", "C_INT32", &mIndex))
             return Fail;
         if (Fail = configbuffer.SetVariable("Name", "string", &mName))
             return Fail;
@@ -134,7 +134,7 @@ CNodeK & CNodeK::GetRight()
 
 string CNodeK::GetName() 
 {
-    static unsigned long ctr = 0;
+    static unsigned C_INT32 ctr = 0;
     char name[9];
     
     if (IsIdentifier()) return mName;
@@ -145,9 +145,9 @@ string CNodeK::GetName()
     }
 }
 
-double CNodeK::GetConstant() {return mConstant;}
+C_FLOAT64 CNodeK::GetConstant() {return mConstant;}
 
-long CNodeK::GetIndex() {return mIndex;}
+C_INT32 CNodeK::GetIndex() {return mIndex;}
 
 void CNodeK::SetType(char type) {mType = type;}
 
@@ -163,17 +163,17 @@ void CNodeK::SetRight(CNodeK * pright) {mRight = pright;}
 
 void CNodeK::SetName(const string & name) {mName = name;}
 
-void CNodeK::SetConstant(double & constant) {mConstant = constant;}
+void CNodeK::SetConstant(C_FLOAT64 & constant) {mConstant = constant;}
 
-void CNodeK::SetIndex(long index) {mIndex = index;}
+void CNodeK::SetIndex(C_INT32 index) {mIndex = index;}
 
-short CNodeK::IsLeftValid() {return (short) mLeft;}
+C_INT16 CNodeK::IsLeftValid() {return (C_INT16) mLeft;}
 
-short CNodeK::IsRightValid() {return (short) mRight;}
+C_INT16 CNodeK::IsRightValid() {return (C_INT16) mRight;}
 
-short CNodeK::IsNumber() {return mType == N_NUMBER;}
+C_INT16 CNodeK::IsNumber() {return mType == N_NUMBER;}
 
-short CNodeK::IsIdentifier()
+C_INT16 CNodeK::IsIdentifier()
 {
     switch (mType)
     {
@@ -186,9 +186,9 @@ short CNodeK::IsIdentifier()
     }
 }
 
-short CNodeK::IsOperator() {return mType == N_OPERATOR;}
+C_INT16 CNodeK::IsOperator() {return mType == N_OPERATOR;}
 
-short CNodeK::LeftPrecedence()
+C_INT16 CNodeK::LeftPrecedence()
 {
     switch (mType)
     {
@@ -211,7 +211,7 @@ short CNodeK::LeftPrecedence()
     return 0;
 }
 
-short CNodeK::RightPrecedence()
+C_INT16 CNodeK::RightPrecedence()
 {
     switch (mType)
     {
@@ -235,7 +235,7 @@ short CNodeK::RightPrecedence()
     return 0;
 }
 
-double CNodeK::Value(vector < void * > & identifiers)
+C_FLOAT64 CNodeK::Value(vector < void * > & identifiers)
 {
     // if it is a constant or an identifier just return its value
     if (IsNumber()) return mConstant;
@@ -243,7 +243,7 @@ double CNodeK::Value(vector < void * > & identifiers)
     switch (mType)
     {
     case N_IDENTIFIER :
-        return  *(double *)identifiers[mIndex];
+        return  *(C_FLOAT64 *)identifiers[mIndex];
         break;
         
     case N_OPERATOR:
@@ -307,5 +307,3 @@ double CNodeK::Value(vector < void * > & identifiers)
     FatalError();   // THROW EXCEPTION
     return 0.0;
 }
-
-

@@ -18,7 +18,7 @@ private:
      */
     string mName;
     CVersion mVersion(1,0,101);
-    int mMethod;
+    C_INT32 mMethod;
 // Operations
 public:
     /**
@@ -39,7 +39,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the parameters of the solver to a CWriteConfig object.
@@ -48,7 +48,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  Returns a string with the name of this solver.
@@ -63,4 +63,3 @@ private:
 };
 
 #endif // CODESolver
-

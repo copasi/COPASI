@@ -13,7 +13,7 @@ public:
     CVersion ProgramVersion;
     
     CFunctionDB FunctionDB;
-    double DefaultConc;
+    C_FLOAT64 DefaultConc;
 
 // Operations
 public:

@@ -21,70 +21,70 @@ class CStep
 // Attributes
 private:
     class CId2Metab
-    {
-        friend class CStep;
-    // Attributes
-    private:
-        /**
-         *  The name of the identifier as defined by the called function
-         */
-        string mIdentifierName;
+        {
+            friend class CStep;
+            // Attributes
+        private:
+            /**
+             *  The name of the identifier as defined by the called function
+             */
+            string mIdentifierName;
 
-        /**
-         *  The name of the metabolite
-         */
-        string mMetaboliteName;
+            /**
+             *  The name of the metabolite
+             */
+            string mMetaboliteName;
 
-        /**
-         *  The name of the compartment the metabolite is located in
-         */
-        string mCompartmentName;
+            /**
+             *  The name of the compartment the metabolite is located in
+             */
+            string mCompartmentName;
 
-        /**
-         *  A pointer to the metabolite
-         */
-        CMetab *mpMetabolite;
+            /**
+             *  A pointer to the metabolite
+             */
+            CMetab *mpMetabolite;
 
-    public:
-    // Operations
-        /**
-         *  Default Constructor
-         */
-        CId2Metab();
+        public:
+            // Operations
+            /**
+             *  Default Constructor
+             */
+            CId2Metab();
 
-        /**
-         *  Destructor
-         */
-        ~CId2Metab();
-    };
+            /**
+             *  Destructor
+             */
+            ~CId2Metab();
+        };
 
     class CId2Param
-    {
-        friend class CStep;
-    // Attributes
-    private:
-        /**
-         *  The name of the parameter as defined by the called function
-         */
-        string mIdentifierName;
+        {
+            friend class CStep;
+            // Attributes
+        private:
+            /**
+             *  The name of the parameter as defined by the called function
+             */
+            string mIdentifierName;
 
-        /**
-         *  The value of the parameter
-         */
-        double mValue;
+            /**
+             *  The value of the parameter
+             */
+            C_FLOAT64 mValue;
 
-    public:
-     // Operations
-        /**
-         *  Default Constructor
-         */
-        CId2Param();
+        public:
+            // Operations
+            /**
+             *  Default Constructor
+             */
+            CId2Param();
 
-        /**
-         *  Destructor
-         */
-        ~CId2Param();
-    };
+            /**
+             *  Destructor
+             */
+            ~CId2Param();
+        };
 
     /**
      *  The name of the step
@@ -104,12 +104,12 @@ private:
     /**
      *  The flux of the step
      */
-    double mFlux;
+    C_FLOAT64 mFlux;
 
     /**
      *  The reversibility of the step
      */
-    short mReversible;
+    C_INT16 mReversible;
 
     /**
      *  A pointer to the substrates of the step
@@ -139,7 +139,7 @@ private:
     /**
      *
      */
-    long mFail;
+    C_INT32 mFail;
 // Operations
 public:
     /**
@@ -180,7 +180,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -189,7 +189,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  Retrieves the vector of substrates
@@ -235,15 +235,15 @@ public:
 
     /**
      *  Retrieves the flux of the step
-     *  @return double
+     *  @return C_FLOAT64
      */
-    double GetFlux();
+    C_FLOAT64 GetFlux();
 
     /**
      *  Retrieves whether the step is reversible
-     *  @return short
+     *  @return C_INT16
      */
-    short IsReversible();
+    C_INT16 IsReversible();
 
     /**
      *  Sets the name of the step
@@ -265,15 +265,15 @@ public:
 
     /**
      *  Sets the flux of the step
-     *  @param double flux
+     *  @param C_FLOAT64 flux
      */
-    void SetFlux(double flux);
+    void SetFlux(C_FLOAT64 flux);
 
     /**
      *  Sets whether the step is reversible
-     *  @param short reversible
+     *  @param C_INT16 reversible
      */
-    void SetReversible(short reversible);
+    void SetReversible(C_INT16 reversible);
 
     /**
      *  Compile the step, i.e., links the metabolites and parameters with the
@@ -286,12 +286,12 @@ private:
     /**
      *
      */
-    long LoadNew(CReadConfig & configbuffer);
+    C_INT32 LoadNew(CReadConfig & configbuffer);
 
     /**
      *
      */
-    long LoadOld(CReadConfig & configbuffer);
+    C_INT32 LoadOld(CReadConfig & configbuffer);
 
     /**
      *

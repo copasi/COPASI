@@ -2,8 +2,8 @@
 
 string StringPrint( char * format, ... )
 {
-    long TextSize = INITIALTEXTSIZE;
-    long Printed = 0;
+    C_INT32 TextSize = INITIALTEXTSIZE;
+    C_INT32 Printed = 0;
     
     char *Text = NULL;
     

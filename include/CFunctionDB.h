@@ -58,14 +58,14 @@ public:
     /**
      *  Add the function to the database
      *  @param CKinFunction &function
-     *  @return long Fail
+     *  @return C_INT32 Fail
      */
     void DBAdd(CKinFunction & function);
 
     /**
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
-     *  @return long Fail
+     *  @return C_INT32 Fail
      */
     void DBDelete(const string & functionName);
 

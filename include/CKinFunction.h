@@ -88,7 +88,7 @@ private:
     class CKinNodes: public CCopasiVector < CNodeK >
         {
         private:
-            short IsInsertAllowed(CNodeK src);
+            C_INT16 IsInsertAllowed(CNodeK src);
             
         public:
             CKinNodes();
@@ -108,7 +108,7 @@ private:
     /**
      *  Internal variable
      */
-    long mNidx;
+    C_INT32 mNidx;
 
 // Operations
 public:
@@ -146,7 +146,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -154,7 +154,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  This retrieves the node tree of the function
@@ -171,21 +171,21 @@ public:
                            char identifierType);
 
     /**
-     *  This parses the function longo a binary tree
+     *  This parses the function into a binary tree
      */
-    long Parse();
+    C_INT32 Parse();
 
     /**
      *  This calculates the value of this sub-tree (ie with this node as root)
-     *  @param "vector < double * >" &identifiers
-     *  @return double
+     *  @param "vector < C_FLOAT64 * >" &identifiers
+     *  @return C_FLOAT64
      */
-    double CalcValue(vector < CCallParameter > & callParameters);
+    C_FLOAT64 CalcValue(vector < CCallParameter > & callParameters);
 
     /**
      *
      */
-    pair < long, long > FindIdentifier(const string & name);
+    pair < C_INT32, C_INT32 > FindIdentifier(const string & name);
 
 private:
     /**
@@ -196,14 +196,14 @@ private:
     /**
      *  This  connects the nodes to build the binary function tree
      */
-    long ConnectNodes();
+    C_INT32 ConnectNodes();
 
     /**
      *  This function is part of the algorithm that builds the binary tree
      *  @param long priority
      *  @return CNodeK *
      */
-    CNodeK * ParseExpression(short priority);
+    CNodeK * ParseExpression(C_INT16 priority);
 
     /**
      *  This function is part of the algorithm that builds the binary tree

@@ -15,7 +15,7 @@
 #include "CReadConfig.h"
 
 // char *InitInputBuffer(char *name);
-// static long GetFileSize(const char *name);
+// static C_INT32 GetFileSize(const char *name);
 
 CReadConfig::CReadConfig(void)
 {
@@ -44,7 +44,7 @@ CReadConfig::~CReadConfig(void)
 {
 }
 
-long CReadConfig::Fail()
+C_INT32 CReadConfig::Fail()
 {
     // return the failure state
     return mFail;
@@ -52,13 +52,13 @@ long CReadConfig::Fail()
 
 string CReadConfig::GetVersion() {return mVersion;}
 
-long CReadConfig::GetVariable(const string& name, 
+C_INT32 CReadConfig::GetVariable(const string& name, 
                               const string& type, 
                               void * pout,
                               enum Mode mode)
 {
     char c[] = " ";
-    long equal = 0;
+    C_INT32 equal = 0;
     string Line;
     string Name;
     string Value;
@@ -127,20 +127,20 @@ long CReadConfig::GetVariable(const string& name,
     {
         *(string *) pout = Value;
     }
-    else if ( type == "double" )
+    else if ( type == "C_FLOAT64" )
     {
-        // may be we should check if Value is really a double
-        *(double *) pout = atof(Value.c_str());
+        // may be we should check if Value is really a C_FLOAT64
+        *(C_FLOAT64 *) pout = atof(Value.c_str());
     }
-    else if ( type == "long" )
+    else if ( type == "C_INT32" )
     {
         // may be we should check if Value is really a integer
-        *(long *) pout = atoi(Value.c_str());
+        *(C_INT32 *) pout = atoi(Value.c_str());
     }
-    else if ( type == "short" )
+    else if ( type == "C_INT16" )
     {
         // may be we should check if Value is really a integer
-        *(short *) pout = atoi(Value.c_str());
+        *(C_INT16 *) pout = atoi(Value.c_str());
     }
     else
     {
@@ -151,7 +151,7 @@ long CReadConfig::GetVariable(const string& name,
     return mFail;
 }
 
-long CReadConfig::GetVariable(const string& name, 
+C_INT32 CReadConfig::GetVariable(const string& name, 
                               const string& type, 
                               void * pout1,
                               void * pout2,
@@ -164,14 +164,14 @@ long CReadConfig::GetVariable(const string& name,
     
     if (type == "node")
     {
-        long komma = 0;
+        C_INT32 komma = 0;
         
         komma = Value.find(",");
         string Type = Value.substr(0, komma);
-        *(long *) pout1 = atoi(Type.c_str());
+        *(C_INT32 *) pout1 = atoi(Type.c_str());
 
         string Subtype = Value.substr(komma + 1);
-        *(long *) pout2 = atoi(Subtype.c_str());
+        *(C_INT32 *) pout2 = atoi(Subtype.c_str());
     }
     else
     {
@@ -182,7 +182,7 @@ long CReadConfig::GetVariable(const string& name,
     return mFail;
 }
 
-long CReadConfig::InitInputBuffer()
+C_INT32 CReadConfig::InitInputBuffer()
 {
     char c[] = " ";
     

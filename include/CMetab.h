@@ -37,29 +37,29 @@ private:
     /**
      *  Concentration of the metabolite.
      */
-    double mConc;
+    C_FLOAT64 mConc;
 
     /**
      * Initial concentration of the metabolite
      */
-    double mIConc;
+    C_FLOAT64 mIConc;
 
     /**
      *  Rate of production of this metaboLite
      *  (here used for rate constant).
      */
-    double mRate; 
+    C_FLOAT64 mRate; 
 
     /**
      *  Transition time of the metabolite
      */
-    double mTT;
+    C_FLOAT64 mTT;
 
     /**
      *  Status of the metabolite.  
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
-    short mStatus;
+    C_INT16 mStatus;
 
     /**
      *  pointer to the compartment the metabolite is located in.
@@ -87,7 +87,7 @@ public:
      *  @param compartment name of the compartment the metabolite
      *     is located in.
      */
-    // CMetab(const string & compartment, short status, CCompartment & name);
+    // CMetab(const string & compartment, C_INT16 status, CCompartment & name);
 
     /**
      *  Destructor.
@@ -110,7 +110,7 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-     long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -118,7 +118,7 @@ public:
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  Retrieve the name of the metabolite.
@@ -128,7 +128,7 @@ public:
     /**
      *
      */
-    double * GetConcentration() {return &mConc;}
+    C_FLOAT64 * GetConcentration() {return &mConc;}
 
     /**
      *
@@ -143,7 +143,7 @@ public:
     /**
      *
      */
-    void SetConcentration(double concentration) {mConc = concentration;}
+    void SetConcentration(C_FLOAT64 concentration) {mConc = concentration;}
     
     /**
      *
@@ -154,14 +154,14 @@ public:
      *  Reset the values of a metabolite as if CMetab(string name) was called.
      *  @return Fail
      */
-    long Reset(const string & name);
+    C_INT32 Reset(const string & name);
 
 private:
 
     /*
      *
      */
-    short IsValidName();
+    C_INT16 IsValidName();
 };
 
 class CMetabOld
@@ -178,18 +178,18 @@ private:
     /**
      *  Concentration of the metabolite.
      */
-    double mIConc;
+    C_FLOAT64 mIConc;
 
     /**
      *  Status of the metabolite.  
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
-    short mStatus;
+    C_INT16 mStatus;
 
     /**
      *  pointer to the compartment the metabolite is located in.
      */
-    long  mCompartment;
+    C_INT32  mCompartment;
 
 // Operations
 public:
@@ -199,9 +199,9 @@ public:
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
-    long GetIndex();
+    C_INT32 GetIndex();
 
     string GetName();
 };
@@ -209,7 +209,7 @@ public:
 class CMetabolitesOld: public CCopasiVector < CMetabOld >
 {
 private:
-    short IsInsertAllowed(CMetabOld src) {return TRUE;}
+    C_INT16 IsInsertAllowed(CMetabOld src) {return TRUE;}
 };
   
 #endif // COPASI_CMetab

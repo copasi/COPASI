@@ -23,7 +23,7 @@
 #define N_OPERATOR 'O'   // operator: + - * / ^ ( )
 #define N_IDENTIFIER 'I' // see specific subtypes
 #define N_FUNCTION 'F'   // see specific subtypes
-#define N_NUMBER 'N'     // a double constant
+#define N_NUMBER 'N'     // a C_FLOAT64 constant
 
 // subtypes for N_FUNCTION
 #define N_LOG10 'L'
@@ -43,8 +43,8 @@
 
 class CNodeK 
 {
-  // Attributes
-  private:
+    // Attributes
+private:
     /**
      *  The type of the node. One of N_ROOT, N_OPERATOR, N_IDENTIFIER,
      *  N_FUNCTION, N_NUMBER
@@ -74,7 +74,7 @@ class CNodeK
     /**
      *  The value of a node of type N_NUMBER
      */
-    double mConstant;
+    C_FLOAT64 mConstant;
 
     /**
      *  The name of the node for type N_IDENTIFIER
@@ -84,9 +84,9 @@ class CNodeK
     /**
      *  The index of the node for type N_IDENTIFIER
      */
-    long mIndex;
-  // Operations
-  public:
+    C_INT32 mIndex;
+    // Operations
+public:
     /**
      * Default constructor
      */
@@ -107,9 +107,9 @@ class CNodeK
 
     /**
      * Constructor for a constant
-     * @param "const double" constant
+     * @param "const C_FLOAT64" constant
      */
-    CNodeK(double constant);
+    CNodeK(C_FLOAT64 constant);
 
     /**
      * Destructor
@@ -127,7 +127,7 @@ class CNodeK
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -135,7 +135,7 @@ class CNodeK
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      * Retrieving mType the type of a node
@@ -169,15 +169,15 @@ class CNodeK
 
     /**
      * Retrieving value of a node
-     * @return double
+     * @return C_FLOAT64
      */
-    double GetConstant();
+    C_FLOAT64 GetConstant();
 
     /**
      * Retrieving index the name of a node
-     * @return long
+     * @return C_INT32
      */
-    long GetIndex();
+    C_INT32 GetIndex();
 
     /**
      * Setting mType the subtype of a node
@@ -223,64 +223,64 @@ class CNodeK
 
     /**
      * Setting the value of a number
-     * @param double &constant
+     * @param C_FLOAT64 &constant
      */
-    void SetConstant(double & constant);
+    void SetConstant(C_FLOAT64 & constant);
 
     /**
      * Setting the index of an identifier
-     * @param long &index
+     * @param C_INT32 &index
      */
-    void SetIndex(long index);
+    void SetIndex(C_INT32 index);
 
     /**
      *  This checks whether mLeft points to a valid CNodeK
      *  @return int 1 or 0
      */
-    short IsLeftValid();
+    C_INT16 IsLeftValid();
 
     /**
      *  This checks whether mRight points to a valid CNodeK
      *  @return int 1 or 0
      */
-    short IsRightValid();
+    C_INT16 IsRightValid();
 
     /**
      *  This checks whether the node is a number (mType = N_NUMBER)
      *  @return int 1 or 0
      */
-    short IsNumber();
+    C_INT16 IsNumber();
 
     /**
      *  This checks whether the node is an identifier (mType = N_IDENTIFIER)
      *  @return int 1 or 0
      */
-    short IsIdentifier();
+    C_INT16 IsIdentifier();
 
     /**
      *  This checks whether the node is a operator (mType = N_OPERATOR)
      *  @return int 1 or 0
      */
-    short IsOperator();
+    C_INT16 IsOperator();
 
     /**
      *  This returns the left precedence value of a node
      *  @return int
      */
-    short LeftPrecedence();
+    C_INT16 LeftPrecedence();
 
     /**
      *  This returns the right precedence value of a node
      *  @return int
      */
-    short RightPrecedence();
+    C_INT16 RightPrecedence();
 
     /**
      *  This calculates the value of this sub-tree (ie with this node as root)
-     *  @param "vector < double * >" &identifiers
-     *  @return double
+     *  @param "vector < C_FLOAT64 * >" &identifiers
+     *  @return C_FLOAT64
      */
-    double Value(vector < void * > &identifiers);
+    C_FLOAT64 Value(vector < void * > &identifiers);
 };
 
 #endif // COPASI_CNodeK

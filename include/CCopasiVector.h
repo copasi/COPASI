@@ -40,12 +40,12 @@ public:
      *  @param "CReadConfig &" configbuffer reference to a CReadConfig object.
      *  @return Fail
      */
-    long Load(CReadConfig & configbuffer, long size)
+    C_INT32 Load(CReadConfig & configbuffer, C_INT32 size)
         {
-            long Fail = 0;
+            C_INT32 Fail = 0;
             
             mTypes->resize(size);
-            for (long i = 0; i < size; i++)
+            for (C_INT32 i = 0; i < size; i++)
                 if (Fail = (*mTypes)[i].Load(configbuffer)) break;
     
             return Fail;
@@ -57,11 +57,11 @@ public:
      *  @param "CWriteConfig &" configbuffer reference to a CWriteConfig object.
      *  @return Fail
      */
-    long Save(CWriteConfig & configbuffer)
+    C_INT32 Save(CWriteConfig & configbuffer)
         {
-            long Fail = 0;
+            C_INT32 Fail = 0;
 
-            for (long i = 0; i < Size(); i++)
+            for (C_INT32 i = 0; i < Size(); i++)
                 if (Fail = (*mTypes)[i].Save(configbuffer)) return Fail;
     
             return Fail;
@@ -82,19 +82,19 @@ public:
      */
     void Delete() 
         {
-            for (long i = 0; i < mTypes->size(); i++)
-               (*mTypes)[i].Delete();
+            for (C_INT32 i = 0; i < mTypes->size(); i++)
+                (*mTypes)[i].Delete();
             mTypes->clear();
         }
     
     /**
      *
      */
-    void Delete(long index)
+    void Delete(C_INT32 index)
         {
             if ( 0 <= index && index < Size() )
                 (*mTypes)[index].Delete();
-                mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
+            mTypes->erase(&(*mTypes)[index], &(*mTypes)[index+1]);
         }
 
     /**
@@ -102,19 +102,19 @@ public:
      */
     void Delete(const string & name)
         {
-            long Index = GetIndex(name);
+            C_INT32 Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
     
             return Delete(Index);
         }
 
-    CType &operator[](long index) 
+    CType &operator[](C_INT32 index) 
         {
             if (index < 0 || Size() <= index) FatalError();
             return (*mTypes)[index];
         }   
 
-    CType operator[](long index) const    
+    CType operator[](C_INT32 index) const    
         {
             if (index < 0 || Size() <= index) FatalError();
             return (*mTypes)[index];
@@ -122,7 +122,7 @@ public:
     
     CType &operator[](const string &name) 
         {
-            long Index = GetIndex(name);
+            C_INT32 Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
             
             return (*mTypes)[Index];
@@ -130,7 +130,7 @@ public:
 
     CType operator[](const string &name) const
         {
-            long Index = GetIndex(name);
+            C_INT32 Index = GetIndex(name);
             if ( Index == -1 ) FatalError();
             
             return (*mTypes)[Index];
@@ -139,21 +139,21 @@ public:
     /**
      *
      */
-    long Size() {return mTypes->size();}
+    C_INT32 Size() {return mTypes->size();}
 
 private:
     /**
      *
      */
-    virtual short IsInsertAllowed(CType src)
+    virtual C_INT16 IsInsertAllowed(CType src)
         {return (GetIndex(src.GetName()) == -1);}
  
     /**
      *
      */
-    long GetIndex(const string &name)
+    C_INT32 GetIndex(const string &name)
         {
-            long i;
+            C_INT32 i;
             
             for (i = 0; i < Size(); i++)
                 if ( name == (*mTypes)[i].GetName() ) 
@@ -163,13 +163,7 @@ private:
         }
 };
 
-// template < class CType > short DefaultIsInsertAllowed(CType src)
+// template < class CType > C_INT16 DefaultIsInsertAllowed(CType src)
 // {return ( GetIndex(src.GetName()) == -1 );}
 
 #endif // COPASI_CCopasiVector
-
-
-
-
-
-

@@ -27,8 +27,8 @@ CCopasiMessage::CCopasiMessage(void)
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type, 
                                const char *format, ...)
 {
-    long TextSize = INITIALTEXTSIZE;
-    long Printed = 0;
+    C_INT32 TextSize = INITIALTEXTSIZE;
+    C_INT32 Printed = 0;
     
     char *Text = NULL;
     
@@ -58,12 +58,12 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
 }
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type, 
-                               unsigned long number, ...)
+                               unsigned C_INT32 number, ...)
 {
-    long i = 0;
+    C_INT32 i = 0;
 
-    long TextSize = INITIALTEXTSIZE;
-    long Printed = 0;
+    C_INT32 TextSize = INITIALTEXTSIZE;
+    C_INT32 Printed = 0;
     
     char *Text = NULL;
 

@@ -18,13 +18,13 @@ private:
      *  Major version number.
      *  (4 for first Copasi release)
      */
-    long mMajor;
+    C_INT32 mMajor;
 
     /**
      *  Minor version number.
      *  (changes with releases that are mostly bugfixes)
      */
-    long mMinor;
+    C_INT32 mMinor;
 
     /**
      *  Develpment stage version.
@@ -32,7 +32,7 @@ private:
      *  Beta versions are numbered 201 -> 299
      *  Release versions are always 300
      */
-    long mDevel;
+    C_INT32 mDevel;
 
     /**
      *  Version string.
@@ -46,33 +46,33 @@ public:
      *  Default consructor. 
      *  This creates a version object without any version info.
      */
-	CVersion();
+    CVersion();
 
     /**
      *  Destructor. 
      */
-	~CVersion();
+    ~CVersion();
 
     /**
      *  Returns the major version number.
      *  @return mMajor
      *  @see mMajor  
      */
-    long GetVersionMajor();
+    C_INT32 GetVersionMajor();
 
     /**
      *  Returns the minor version number.
      *  @return mMinor
      *  @see mMinor  
      */
-    long GetVersionMinor();
+    C_INT32 GetVersionMinor();
 
     /**
      *  Returns the development version number.
      *  @return mDevel
      *  @see mDevel  
      */
-    long GetVersionDevel();
+    C_INT32 GetVersionDevel();
 
     /**
      *  Returns a string with the full version number.
@@ -88,7 +88,7 @@ public:
      *  @param minor minor version number. 
      *  @param devel development version number. 
      */
-    void SetVersion(long major, long minor, long devel);
+    void SetVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
 
 private:
     /**
@@ -98,5 +98,3 @@ private:
 };
 
 #endif // COPASI_CVersion
-
-

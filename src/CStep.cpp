@@ -79,11 +79,11 @@ CStep & CStep::operator=(const CStep & rhs)
     return *this;
 }
 
-long CStep::Load(CReadConfig & configbuffer)
+C_INT32 CStep::Load(CReadConfig & configbuffer)
 {
-    long Fail = 0;
-    long Size = 0;
-    long i = 0;
+    C_INT32 Fail = 0;
+    C_INT32 Size = 0;
+    C_INT32 i = 0;
     
     string KinType;
     
@@ -104,10 +104,10 @@ long CStep::Load(CReadConfig & configbuffer)
 
     InitIdentifiers();
     
-    if (Fail = configbuffer.GetVariable("Flux", "double", &mFlux))
+    if (Fail = configbuffer.GetVariable("Flux", "C_FLOAT64", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.GetVariable("Reversible", "long", &mReversible))
+    if (Fail = configbuffer.GetVariable("Reversible", "C_INT32", &mReversible))
         return Fail;
     
     if (configbuffer.GetVersion() < "4")
@@ -118,11 +118,11 @@ long CStep::Load(CReadConfig & configbuffer)
     return Fail; 
 }
 
-long CStep::Save(CWriteConfig & configbuffer)
+C_INT32 CStep::Save(CWriteConfig & configbuffer)
 {
-    long Fail = 0;
-    long Size = 0;
-    long i = 0;
+    C_INT32 Fail = 0;
+    C_INT32 Size = 0;
+    C_INT32 i = 0;
     
     if (Fail = configbuffer.SetVariable("Step", "string", &mName))
         return Fail;
@@ -134,17 +134,14 @@ long CStep::Save(CWriteConfig & configbuffer)
     if (Fail = configbuffer.SetVariable("KineticType", "string", &KinType))
         return Fail;
 
-    mFunction = &Copasi.FunctionDB.FindFunction(KinType);
-    if (mFunction == NULL) return Fail = 1;
-    
-    if (Fail = configbuffer.SetVariable("Flux", "double", &mFlux))
+    if (Fail = configbuffer.SetVariable("Flux", "C_FLOAT64", &mFlux))
         return Fail;
     
-    if (Fail = configbuffer.SetVariable("Reversible", "long", &mReversible))
+    if (Fail = configbuffer.SetVariable("Reversible", "C_INT32", &mReversible))
         return Fail;
     
     Size = mSubstrates->size();
-    if (Fail = configbuffer.SetVariable("Substrates", "long", &Size))
+    if (Fail = configbuffer.SetVariable("Substrates", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
@@ -160,7 +157,7 @@ long CStep::Save(CWriteConfig & configbuffer)
     }
     
     Size = mProducts->size();
-    if (Fail = configbuffer.SetVariable("Products", "long", &Size))
+    if (Fail = configbuffer.SetVariable("Products", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
@@ -176,7 +173,7 @@ long CStep::Save(CWriteConfig & configbuffer)
     }
 
     Size = mModifiers->size();
-    if (Fail = configbuffer.SetVariable("Modifiers", "long", &Size))
+    if (Fail = configbuffer.SetVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
@@ -192,14 +189,14 @@ long CStep::Save(CWriteConfig & configbuffer)
     }
 
     Size = mParameters->size();
-    if (Fail = configbuffer.SetVariable("Constants", "long", &Size))
+    if (Fail = configbuffer.SetVariable("Constants", "C_INT32", &Size))
         return Fail;
     for (i = 0; i < Size; i++)
     {
         if (Fail = configbuffer.SetVariable("Identifier", "string",
                                             &(*mParameters)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.SetVariable("Value", "double",
+        if (Fail = configbuffer.SetVariable("Value", "C_FLOAT64",
                                             &(*mParameters)[i].mValue))
             return Fail;
     }
@@ -221,17 +218,17 @@ string CStep::GetChemEq() {return mChemEq;}
 
 CBaseFunction & CStep::GetFunction() {return *mFunction;}
 
-double CStep::GetFlux() {return mFlux;}
+C_FLOAT64 CStep::GetFlux() {return mFlux;}
 
-short CStep::IsReversible() {return (mReversible == TRUE);}
+C_INT16 CStep::IsReversible() {return (mReversible == TRUE);}
 
 void CStep::SetName(const string & name) {mName = name;}
 
 void CStep::SetChemEq(const string & chemEq) {mChemEq = chemEq;}
 
-void CStep::SetFlux(double flux) {mFlux = flux;}
+void CStep::SetFlux(C_FLOAT64 flux) {mFlux = flux;}
 
-void CStep::SetReversible(short reversible) {mReversible = reversible;}
+void CStep::SetReversible(C_INT16 reversible) {mReversible = reversible;}
 
 void CStep::SetFunction(const string & functionName)
 {
@@ -240,8 +237,8 @@ void CStep::SetFunction(const string & functionName)
 
 void CStep::InitIdentifiers()
 {
-    long i;
-    long Count;
+    C_INT32 i;
+    C_INT32 Count;
     
     if (!mFunction) FatalError();
 
@@ -258,16 +255,16 @@ void CStep::InitIdentifiers()
 
         Count = mFunction->CallParameters()[i].GetCount();
         (*mCallParameters)[i].Identifiers().resize(Count);
-        for (long j = 0; j < Count; j++)
+        for (C_INT32 j = 0; j < Count; j++)
             (*mCallParameters)[i].Identifiers()[j] = NULL;
     }
 }
 
 void CStep::SetIdentifiers()
 {
-    pair < long, long > Tuple;
+    pair < C_INT32, C_INT32 > Tuple;
     
-    long i;
+    C_INT32 i;
     
     for (i = 0; i < mSubstrates->size(); i++)
     {
@@ -320,9 +317,9 @@ void CStep::SetIdentifiers()
 
 void CStep::CheckIdentifiers()
 {
-    for (long i = 0; i < mCallParameters->size(); i++)
+    for (C_INT32 i = 0; i < mCallParameters->size(); i++)
     {
-        for (long j = 0; j < (*mCallParameters)[i].Identifiers().size(); j++)
+        for (C_INT32 j = 0; j < (*mCallParameters)[i].Identifiers().size(); j++)
             if (!(*mCallParameters)[i].Identifiers()[j]) FatalError();
     }
 }
@@ -334,13 +331,13 @@ void CStep::Compile(CCopasiVector < CMetab * > &metabolites)
     CheckIdentifiers();
 }
 
-long CStep::LoadNew(CReadConfig & configbuffer)
+C_INT32 CStep::LoadNew(CReadConfig & configbuffer)
 {
-    long Fail = 0;
-    long Size;
-    long i;
+    C_INT32 Fail = 0;
+    C_INT32 Size;
+    C_INT32 i;
     
-    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Substrates", "C_INT32", &Size))
         return Fail;
     mSubstrates->resize(Size);
     for (i=0; i < Size; i++)
@@ -357,9 +354,9 @@ long CStep::LoadNew(CReadConfig & configbuffer)
         if (Fail = configbuffer.GetVariable("Compartment", "string",
                                             &(*mSubstrates)[i].mCompartmentName))
             return Fail;
-   }
+    }
     
-    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Products", "C_INT32", &Size))
         return Fail;
     mProducts->resize(Size);
     for (i=0; i < Size; i++)
@@ -375,7 +372,7 @@ long CStep::LoadNew(CReadConfig & configbuffer)
             return Fail;
     }
 
-    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     mModifiers->resize(Size);
     for (i = 0; i < Size; i++)
@@ -391,7 +388,7 @@ long CStep::LoadNew(CReadConfig & configbuffer)
             return Fail;
     }
 
-    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Constants", "C_INT32", &Size))
         return Fail;
     mParameters->resize(Size);
     for (i = 0; i < Size; i++)
@@ -399,7 +396,7 @@ long CStep::LoadNew(CReadConfig & configbuffer)
         if (Fail = configbuffer.GetVariable("Identifier", "string",
                                             &(*mParameters)[i].mIdentifierName))
             return Fail;
-        if (Fail = configbuffer.GetVariable("Value", "double",
+        if (Fail = configbuffer.GetVariable("Value", "C_FLOAT64",
                                             &(*mParameters)[i].mValue))
             return Fail;
     }
@@ -407,24 +404,24 @@ long CStep::LoadNew(CReadConfig & configbuffer)
     return Fail;
 }
 
-long CStep::LoadOld(CReadConfig & configbuffer)
+C_INT32 CStep::LoadOld(CReadConfig & configbuffer)
 {
-    long Fail = 0;
-    long Size;
+    C_INT32 Fail = 0;
+    C_INT32 Size;
 
-    if (Fail = configbuffer.GetVariable("Substrates", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Substrates", "C_INT32", &Size))
         return Fail;
     mSubstrates->resize(Size);
     
-    if (Fail = configbuffer.GetVariable("Products", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Products", "C_INT32", &Size))
         return Fail;
     mProducts->resize(Size);
 
-    if (Fail = configbuffer.GetVariable("Modifiers", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Modifiers", "C_INT32", &Size))
         return Fail;
     mModifiers->resize(Size);
 
-    if (Fail = configbuffer.GetVariable("Constants", "long", &Size))
+    if (Fail = configbuffer.GetVariable("Constants", "C_INT32", &Size))
         return Fail;
     mParameters->resize(Size);
     return Fail;

@@ -21,7 +21,7 @@ CVersion::~CVersion()
  /* get out of here!*/
 }
 
-void CVersion::SetVersion(long major, long minor, long devel)
+void CVersion::SetVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
 {
     mMajor = major;
     mMinor = minor;
@@ -29,17 +29,17 @@ void CVersion::SetVersion(long major, long minor, long devel)
     SetString();
 }
 
-long CVersion::GetVersionMajor()
+C_INT32 CVersion::GetVersionMajor()
 {
     return mMajor;
 }
 
-long CVersion::GetVersionMinor()
+C_INT32 CVersion::GetVersionMinor()
 {
     return mMinor;
 }
 
-long CVersion::GetVersionDevel()
+C_INT32 CVersion::GetVersionDevel()
 {
     return mDevel;
 }

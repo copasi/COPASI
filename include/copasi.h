@@ -27,6 +27,11 @@ using namespace std ;
 #endif
 #define FALSE 0
 
+#define C_INT32 long
+#define C_INT16 short
+#define C_FLOAT64 double
+#define C_FLOAT32 float
+
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}
     

@@ -1,4 +1,4 @@
-struct MESSAGES {unsigned long No; char * Text;} 
+struct MESSAGES {unsigned C_INT32 No; char * Text;} 
 Messages[] =
 {
     1, "CReadConfig (1): Variable '%s' not found in '%s(%d)'.",

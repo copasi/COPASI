@@ -10,7 +10,7 @@ string CFunctionDB::GetFilename() {return mFilename;}
 
 CKinFunction & CFunctionDB::DBLoad(const string & functionName) 
 {
-    long index = 0;    
+    C_INT32 index = 0;    
 
     CReadConfig inbuf(mFilename);
 
@@ -27,7 +27,7 @@ void CFunctionDB::DBDelete(const string & functionName)
 
 CKinFunction & CFunctionDB::FindFunction(const string & functionName)
 {
-    long i;
+    C_INT32 i;
     
     for (i = 0; i < mLoadedFunctions->Size(); i++)
         if (functionName == (*mLoadedFunctions)[i].GetName())

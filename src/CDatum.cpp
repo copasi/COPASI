@@ -27,8 +27,8 @@ CDatum::CDatum()
     mpValue = NULL;
 }
 
-CDatum::CDatum(const string& title, long type, const string& i, const string& j,
-               double *pval)
+CDatum::CDatum(const string& title, C_INT32 type, const string& i, const string& j,
+               C_FLOAT64 *pval)
 {
     mTitle = title;
     mType = type;
@@ -48,7 +48,7 @@ CDatum& CDatum::operator=(const CDatum &RHS)
     return *this;
 }
 
-long CDatum::Save(CWriteConfig &pconfigbuffer)
+C_INT32 CDatum::Save(CWriteConfig &pconfigbuffer)
 {
     // this really should be changed to something like Load
     // TO BE DONE SOON
@@ -60,7 +60,7 @@ long CDatum::Save(CWriteConfig &pconfigbuffer)
     if (mFail) return mFail;
 
     mFail = pconfigbuffer.SetVariable((string) "Type", 
-                                      (string) "long",
+                                      (string) "C_INT32",
                                       (void *) &mType);
     if (mFail) return mFail;
 
@@ -112,7 +112,7 @@ long CDatum::Save(CWriteConfig &pconfigbuffer)
     case D_FCC:
     case D_EIG:
         mFail = pconfigbuffer.SetVariable((string) "I", 
-                                          (string) "long",
+                                          (string) "C_INT32",
                                           (void *) &mI);
         if (mFail) return mFail;
         mFail = pconfigbuffer.SetVariable((string) "J", 
@@ -129,7 +129,7 @@ long CDatum::Save(CWriteConfig &pconfigbuffer)
 }
 
 
-long CDatum::Load(CReadConfig &pconfigbuffer)
+C_INT32 CDatum::Load(CReadConfig &pconfigbuffer)
 {
     mFail = pconfigbuffer.GetVariable((string) "Title", 
                                       (string) "string",
@@ -137,7 +137,7 @@ long CDatum::Load(CReadConfig &pconfigbuffer)
     if (mFail) return mFail;
 
     mFail = pconfigbuffer.GetVariable((string) "Type", 
-                                      (string) "long",
+                                      (string) "C_INT32",
                                       (void *) &mType);
     if (mFail) return mFail;
 
@@ -188,7 +188,7 @@ long CDatum::Load(CReadConfig &pconfigbuffer)
     case D_FCC:
     case D_EIG:
         mFail = pconfigbuffer.GetVariable((string) "I", 
-                                          (string) "long",
+                                          (string) "C_INT32",
                                           (void *) &mI);
         if (mFail) return mFail;
         mFail = pconfigbuffer.GetVariable((string) "J", 
@@ -202,12 +202,12 @@ long CDatum::Load(CReadConfig &pconfigbuffer)
     return mFail;
 }
 
-void CDatum::SetValue(double* pvalue)
+void CDatum::SetValue(C_FLOAT64* pvalue)
 {
     mpValue = pvalue;
 }
 
-double CDatum::GetValue()
+C_FLOAT64 CDatum::GetValue()
 {
     return *mpValue;
 }
@@ -232,12 +232,12 @@ string CDatum::GetJ()
     return mJ;
 }
 
-void CDatum::SetType(long type)
+void CDatum::SetType(C_INT32 type)
 {
     mType = type;
 }
 
-long CDatum::GetType()
+C_INT32 CDatum::GetType()
 {
     return mType;
 }

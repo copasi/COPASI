@@ -28,7 +28,7 @@ private:
     /**
      *  Volume of the compartment.
      */
-    double mVolume;
+    C_FLOAT64 mVolume;
 
     /**
      *  Metabolites located in the compartment.
@@ -50,7 +50,7 @@ public:
      *  @param name name of the comnpartment.
      *  @param volume volume of the compartment.
      */
-    CCompartment(const string & name, double volume);
+    CCompartment(const string & name, C_FLOAT64 volume);
 
     /**
      *  Init
@@ -82,7 +82,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Load(CReadConfig & configbuffer);
+    C_INT32 Load(CReadConfig & configbuffer);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.
@@ -91,7 +91,7 @@ public:
      *  @return mFail
      *  @see mFail
      */
-    long Save(CWriteConfig & configbuffer);
+    C_INT32 Save(CWriteConfig & configbuffer);
 
     /**
      *  Returns a string with the name of this compartment.
@@ -101,11 +101,11 @@ public:
     string GetName();
 
     /**
-     *  Returns a double with the volume of this compartment.
+     *  Returns a C_FLOAT64 with the volume of this compartment.
      *  @return mVolume
      *  @see mVolume
      */
-    double GetVolume();
+    C_FLOAT64 GetVolume();
 
     /*
      *
@@ -129,14 +129,13 @@ public:
      *  @param volume the volume of the compartment.
      *  @see mVolume
      */
-    void SetVolume(double volume);
+    void SetVolume(C_FLOAT64 volume);
 private:
 
     /*
      *
      */
-    short IsValidName();
+    C_INT16 IsValidName();
 };
 
 #endif // COPASI_CCompartment
-

@@ -22,7 +22,7 @@ private:
     string mName;
     string mDescription;
 
-    typedef struct ELEMENT {double Value; CMetab * Metab;};
+    typedef struct ELEMENT {C_FLOAT64 Value; CMetab * Metab;};
     vector < ELEMENT > mEquation;
     
 // Operations
@@ -30,18 +30,18 @@ public:
     CMoiety();
     CMoiety(const string & name);
     ~CMoiety();
-    void Add(double value, CMetab & metabolite);
-    void Add(double value, CMetab * metabolite);
+    void Add(C_FLOAT64 value, CMetab & metabolite);
+    void Add(C_FLOAT64 value, CMetab * metabolite);
     void Delete();
     void Delete(const string & name);
-    void Delete(long index);
-    void Change(long index,
-		double value);
+    void Delete(C_INT32 index);
+    void Change(C_INT32 index,
+		C_FLOAT64 value);
     void Change(const string & name,
-		double value);
+		C_FLOAT64 value);
     string GetName();
     string GetDescription();
-    double Value();
+    C_FLOAT64 Value();
 };
 
 #endif // COPASI_CMoiety
