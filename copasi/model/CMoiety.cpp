@@ -7,7 +7,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "CMoiety.h"
 #include "CCompartment.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 
@@ -39,7 +39,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab & metabolite)
 
   mEquation.add(element);
 }
-
+//TODO do we really need both add methods?
 void CMoiety::add(C_FLOAT64 value, CMetab * metabolite)
 {add(value, *metabolite);}
 

@@ -21,7 +21,7 @@
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "elementaryFluxModes/CElementaryFluxModes.h"
 #include "model/model.h"
 #include "model/CSpec2Model.h"

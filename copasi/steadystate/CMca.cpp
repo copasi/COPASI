@@ -11,7 +11,7 @@
 #define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/utility.h"
 #include "model/model.h"
 #include "CMca.h"

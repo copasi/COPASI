@@ -11,7 +11,7 @@
 #include <string>
 #include <iostream>
 
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "report/CCopasiContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */

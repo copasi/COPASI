@@ -15,7 +15,7 @@
 #include "CReaction.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"

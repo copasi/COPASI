@@ -16,7 +16,7 @@
 #include "COutput.h"
 #include "CUDFunction.h"
 #include "CUDFunctionDB.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CCopasiException.h"
 #include "model/model.h"

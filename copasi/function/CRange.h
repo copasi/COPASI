@@ -9,7 +9,7 @@
 #define COPASI_CRange
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "report/CCopasiContainer.h"
 
 /**

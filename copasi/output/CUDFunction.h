@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "copasi.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "function/CKinFunction.h"
 #include "model/CModel.h"
 #include "CNodeO.h"

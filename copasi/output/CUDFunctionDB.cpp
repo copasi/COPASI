@@ -9,7 +9,7 @@
 
 #include "copasi.h"
 #include "output/output.h"
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "CUDFunctionDB.h"
 
 /**
@@ -25,7 +25,7 @@ CUDFunctionDB::~CUDFunctionDB() {}
 /**
  *
  */
-void CUDFunctionDB::cleanup() {mUDFunctions.cleanup(); }
+void CUDFunctionDB::cleanup() {mUDFunctions.cleanup();}
 
 /**
  *  Loads an object with data coming from a CReadConfig object.
@@ -91,7 +91,7 @@ C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
  *  @return C_INT32 Fail
  */
 void CUDFunctionDB::add
-  (CUDFunction & C_UNUSED(function))
+(CUDFunction & C_UNUSED(function))
 {}
 
 /**

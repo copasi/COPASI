@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "utilities/utilities.h"
+#include "utilities/readwrite.h"
 #include "utilities/CCopasiVector.h"
 
 class CUDFunction;
