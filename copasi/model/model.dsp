@@ -107,6 +107,10 @@ SOURCE=..\..\copasi\model\CCompartment.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDeTerm.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\model\CMetab.cpp
 # End Source File
 # Begin Source File
@@ -148,6 +152,10 @@ SOURCE=.\CChemEqElement.h
 # Begin Source File
 
 SOURCE=..\..\copasi\model\CCompartment.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CDeTerm.h
 # End Source File
 # Begin Source File
 
