@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:06:52 $
+   $Date: 2004/05/27 11:40:36 $
    End CVS Header */
 
 /*******************************************************************
@@ -39,12 +39,13 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   QVBoxLayout *vBoxLayout = new QVBoxLayout(this, 0);
   vBoxLayout->addWidget(table);
 
-  table->sortColumn (0, true, true);
+  //table->sortColumn (0, true, true);
   table->setSorting (false);
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnReadOnly(0, true);
   table->setColumnWidth(0, 20);
-  table->setSelectionMode(QTable::MultiRow);
+  table->verticalHeader()->setResizeEnabled(false);
+  //table->setSelectionMode(QTable::MultiRow);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
   if (mRO)
     table->setReadOnly(true);
@@ -323,7 +324,7 @@ void CopasiTableWidget::slotBtnDeleteClicked()
   unsigned C_INT32 i, imax = table->numRows() - 1;
   for (i = 0; i < imax; i++)
     {
-      if (table->isRowSelected(i, true))
+      if (table->isRowSelected(i, false))
         {
           if (!flagFirstFound)
             {
@@ -332,7 +333,6 @@ void CopasiTableWidget::slotBtnDeleteClicked()
             }
 
           mFlagDelete[i] = flagNewDelState;
-
           if (mFlagRO[i]) mFlagDelete[i] = false;
           updateRow(i);
         }
