@@ -78,8 +78,9 @@ void CSteadyStateTask::load(CReadConfig & configBuffer)
 
       mpMethod = CSteadyStateMethod::
                  createSteadyStateMethod((CSteadyStateMethod::Type) Method);
-      mpMethod->load(configBuffer);
     }
+
+  mpMethod->load(configBuffer);
 }
 
 void CSteadyStateTask::save(CWriteConfig & configBuffer)
