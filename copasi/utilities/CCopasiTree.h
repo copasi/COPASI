@@ -83,6 +83,12 @@ template < class Node > class CCopasiTree
           Node & operator*() const {return * mCurrent;}
 
           /**
+           * Dereference operator * returns the node the iterator points to.
+           * @return Node &
+           */
+          Node * operator->() const {return mCurrent;}
+
+          /**
            * Comparison operator !=
            * @param const iterator &rhs
            * @return bool not-equal
