@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/12 14:52:23 $
+   $Author: anuragr $ 
+   $Date: 2004/11/18 19:15:40 $
    End CVS Header */
 
 /*******************************************************************
@@ -81,6 +81,7 @@ ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)
   //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 
   table -> setVScrollBarMode(QScrollView::AlwaysOn);
+  table->setReadOnly(1);
 }
 
 bool ConstantSymbols::loadConstantSymbols(CMathModel *model)

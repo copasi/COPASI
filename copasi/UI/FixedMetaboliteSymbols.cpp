@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:05 $
+   $Date: 2004/11/18 19:17:48 $
    End CVS Header */
 
 /*******************************************************************
@@ -84,6 +84,7 @@ FixedMetaboliteSymbols::FixedMetaboliteSymbols(QWidget *parent, const char * nam
   //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
 
   table -> setVScrollBarMode(QScrollView::AlwaysOn);
+  table->setReadOnly(1);
 }
 
 void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
