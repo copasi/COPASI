@@ -89,12 +89,12 @@ class COutputList
   /*
    * print the steady state data file
    */		
-  void copasiSS(ofstream &fout);
+  void copasiSS(ofstream &fout, C_INT32 ss_solution);
 
   /*
    * print the reporting data file
    */
-  void copasiRep(ofstream &fout, CModel & model);
+  void copasiRep(ofstream &fout);
 
   /**
    *	Assign the pointer to each datum object for time couse

@@ -108,22 +108,22 @@ void COutputList::addOutput(COutput &newOutput)
 /*
  *	print the reporting data file
  */
-void COutputList::copasiRep(ofstream &fout, CModel & model)
+void COutputList::copasiRep(ofstream &fout)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->copasiRep(fout, model);
+      mList[i]->copasiRep(fout);
     }
 }
 
 /*
  * print the steady state data file
  */
-void COutputList::copasiSS(ofstream &fout)
+void COutputList::copasiSS(ofstream &fout, C_INT32 ss_solution)
 {
   for (unsigned C_INT32 i = 0; i < mList.size(); i++)
     {
-      mList[i]->copasiSS(fout);
+      mList[i]->copasiSS(fout, ss_solution);
     }
 }
 
