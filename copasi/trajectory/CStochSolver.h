@@ -251,15 +251,15 @@ class CStochDirectMethod : public CStochMethod
 };
 
 /**
- * CStochNextReactionMethod implements the Next Reaction method.
+ * CStochFirstReactionMethod implements the First Reaction method.
  *
  * In this method, the putative reaction times tmu are calculated and
- * stored in a indexed priority queue. In the algorithm, the next
- * reaction to occur is defined to be that at the front of the
- * queue. The Amu's affected by this reaction are recalculated, a new
- * putative time tmu is calculated for this reaction, and the priority
- * queue is reordered so that the node associated with this reaction
- * occurs in the proper place.
+ * stored in a indexed priority queue. These are absolute times. In
+ * the algorithm, the next reaction to occur is defined to be that at
+ * the front of the queue. The Amu's affected by this reaction are
+ * recalculated, a new putative time tmu is calculated for this
+ * reaction, and the priority queue is reordered so that the node
+ * associated with this reaction occurs in the proper place.
  */
 
 //--------------NOT COMPLETE YET------------------------------------------------
@@ -269,9 +269,10 @@ class CStochNextReactionMethod: public CStochMethod
  private:
   // Private attributes
   /**
-   * The set of putative times at which each reaction occurs
+   * The set of putative times at which each reaction occurs.
+   * This is represented as a priority queue, stored in a vector.
    */
-  //    CCopasiIndPriQueue<C_FLOAT64> tmu; // must still write this class
+    vector<C_FLOAT64> tmu;
  public:
   // Lifecycle methods
   /**
