@@ -171,7 +171,6 @@ class CFunctionParameters : public CCopasiContainer
       return os;
     }
 
-  private:
     /**
      *  WHAT DOES THIS DO ??????
      */
