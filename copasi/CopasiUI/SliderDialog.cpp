@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/02/16 14:33:47 $
+   $Date: 2005/02/17 12:26:45 $
    End CVS Header */
 
 #include <iostream>
@@ -396,11 +396,7 @@ void SliderDialog::sliderValueChanged()
   this->mSliderValueChanged = true;
   if ((!this->mSliderPressed) && this->autoRunCheckBox->isChecked())
     {
-      /*
-      disconnect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-      this->runTask();
-      connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-      */
+      //this->runTask();
       this->mSliderValueChanged = false;
     }
 }
