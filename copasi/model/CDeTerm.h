@@ -6,10 +6,11 @@
 /**
  * This class describes a term in the differential equation.
  */
+
 class CDeTerm
-{
- public:
-    /** 
+  {
+  public:
+    /**
      * The various types of token
      */
     enum Type{NL, PLUS, MINUS, LPAREN, RPAREN, EXPONENT, MULT, DIV, IDENT, NUM};
@@ -17,26 +18,40 @@ class CDeTerm
      * The constructor
      */
     CDeTerm();
-    /** 
+    /**
      * The destructor
      */
     ~CDeTerm();
     /**
      * Set the rate constant
      */
-    void setRateConstant(string rate) {mRateConstant = rate;}
+    void setRateConstant(string rate) {mRateConstant = rate; }
+
     /**
      * Retrieve the rate constant
      */
-    string getRateConstant() {return mRateConstant;}
+    string getRateConstant() { return mRateConstant; }
+
+    /**
+     * Set the rate constant
+     */
+    void setRate(string rate) {mRate = rate; }
+
+    /**
+     * Retrieve the rate constant
+     */
+    string getRate() { return mRate; }
+
     /**
      * Set the multiplier
      */
-    void setMultiplier(C_FLOAT64 multiplier) {mMultiplier = multiplier;}
+    void setMultiplier(C_FLOAT64 multiplier) {mMultiplier = multiplier; }
+
     /**
      * Get the multiplier
      */
-    C_FLOAT64 getMultiplier() {return mMultiplier;}
+    C_FLOAT64 getMultiplier() { return mMultiplier; }
+
     /**
      * Set the sign
      */
@@ -44,7 +59,8 @@ class CDeTerm
     /**
      * Retrieve the sign
      */
-    C_INT32 getSign() {return mSign;}
+    C_INT32 getSign() { return mSign; }
+
     /**
      * Add an element to the vector of tokens describing the rate
      */
@@ -60,7 +76,8 @@ class CDeTerm
     /**
      * Return the size of the token stack
      */
-    C_INT32 size() {return mTokenStack.size();}
+    C_INT32 size() { return mTokenStack.size(); }
+
     /**
      * Access the stack at a given position
      */
@@ -73,15 +90,16 @@ class CDeTerm
      * Do things like strip out the multiplier and determine the rate constant
      */
     void compile(vector<CNameVal> &rates);
- private:
+
+  private:
     /**
      * The stack of tokens making up the term
      */
-    vector<pair<Type,string>* > mTokenStack;
+    vector<pair<Type, string>* > mTokenStack;
     /**
      * The top level metabolites in this term. Each metabolite has a name and a multiplicity.
      */
-    vector<pair<string,C_INT32>*> mTopLevelMetabolites;
+    vector<pair<string, C_INT32>*> mTopLevelMetabolites;
     /**
      * The sign
      */
@@ -94,6 +112,30 @@ class CDeTerm
      * The rate constant
      */
     string mRateConstant;
-};
+    /**
+     * The rate function as a string
+     */
+    std::string mRate;
+
+    friend ostream & operator<<(ostream &os, const CDeTerm & d)
+    {
+      os << "RateConstant =   " << d.mRateConstant << endl
+      << "Sign =           " << d.mSign << endl
+      << "StoiCoeficient = " << d.mMultiplier << endl;
+      os << "TokenStack :" << endl;
+
+      for (int i = 0; i < d.mTokenStack.size(); i++)
+        os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
+        << "', String = '" << d.mTokenStack[i]->second << "'" << endl;
+
+      os << "Metabolites :" << endl;
+
+      for (int i = 0; i < d.mTopLevelMetabolites.size(); i++)
+        os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
+        << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << endl;
+
+      return os;
+    }
+  };
 
 #endif // CDETERM_H

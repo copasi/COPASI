@@ -4,7 +4,7 @@
 
 CDeTerm::CDeTerm()
     : mSign(1),
-      mMultiplier(1)
+    mMultiplier(1)
 {}
 
 CDeTerm::~CDeTerm()
@@ -12,29 +12,32 @@ CDeTerm::~CDeTerm()
 
 void CDeTerm::setSign(const char *sign)
 {
-    if (*sign == '-')
+  if (*sign == '-')
     {
-        mSign = -1;
+      mSign = -1;
     }
-    else if (*sign == '+')
+  else if (*sign == '+')
     {
-        mSign = 1;
+      mSign = 1;
     }
-    else
+  else
     {
-        CCopasiMessage(CCopasiMessage::ERROR, "Attempted to set sign to an unknown type: %c", sign);
+      CCopasiMessage(CCopasiMessage::ERROR, "Attempted to set sign to an unknown type: %c", sign);
     }
 }
 
 void CDeTerm::addElement(Type type, string token)
 {
-  mTokenStack.push_back(new pair<Type, string>(type, token));
+  std::string::size_type Begin = token.find_first_not_of(" \t");
+  std::string::size_type End = token.find_last_not_of(" \t");
+  mTokenStack.push_back(new pair<Type, string>(type, token.substr(Begin, End - Begin + 1)));
 }
 
 void CDeTerm::deleteElement(C_INT32 index)
 {
-    vector <pair <Type,string>*>::iterator it = mTokenStack.begin() + index;
-    if (*it)
+  vector <pair <Type, string>*>::iterator it = mTokenStack.begin() + index;
+
+  if (*it)
     {
       delete mTokenStack[index];
       mTokenStack.erase(it);
@@ -43,115 +46,138 @@ void CDeTerm::deleteElement(C_INT32 index)
 
 string CDeTerm::operator[](unsigned C_INT32 index)
 {
-    if (index >= mTokenStack.size())
+  if (index >= mTokenStack.size())
     {
-        CCopasiMessage(CCopasiMessage::ERROR, "Attempt to access CDeTerm token past end");
+      CCopasiMessage(CCopasiMessage::ERROR, "Attempt to access CDeTerm token past end");
     }
-    return mTokenStack[index]->second;
+
+  return mTokenStack[index]->second;
 }
 
 string CDeTerm::getDescription()
 {
-    string retval;
-    vector<pair<Type,string>* >::iterator it = mTokenStack.begin();
-    for (;it != mTokenStack.end(); it++)
+  string retval;
+  vector<pair<Type, string>* >::iterator it = mTokenStack.begin();
+
+  for (; it != mTokenStack.end(); it++)
     {
-        retval += (*it)->first;
+      retval += (*it)->first;
     }
-    return retval;
+
+  return retval;
 }
 
 void CDeTerm::compile(vector<CNameVal> &rates)
 {
-    // The multiplicative constant and the rate constant are both at level 0.
-    // Here the level refers to the depth of nested parentheses
-    C_INT32 level = 0;
+  // The multiplicative constant and the rate constant are both at level 0.
+  // Here the level refers to the depth of nested parentheses
+  C_INT32 level = 0;
 
-    // For the multiplicative constant:
-    // If it's at the end position, then we must remove the preceding '*', otherwise
-    // we must remove the following '*'. If there is a '/' following, then we merely 
-    // replace the multiplier with '1'. So we need the position.
-    unsigned C_INT32 pos = 0;
-    // Make sure we don't use numbers which are exponents for metabolites as the multiplier!
-    bool is_exponent = false;
-    pair<string,C_INT32> *last_metab;
-    vector<pair<Type,string>* >::iterator it = mTokenStack.begin();
-    for (; it != mTokenStack.end(); it++, pos++)
+  // For the multiplicative constant:
+  // If it's at the end position, then we must remove the preceding '*', otherwise
+  // we must remove the following '*'. If there is a '/' following, then we merely
+  // replace the multiplier with '1'. So we need the position.
+  unsigned C_INT32 pos = 0;
+  // Make sure we don't use numbers which are exponents for metabolites as the multiplier!
+  bool is_exponent = false;
+  pair<string, C_INT32> *last_metab;
+  vector<pair<Type, string>* >::iterator it = mTokenStack.begin();
+
+  for (; it != mTokenStack.end(); it++, pos++)
     {
-        switch ((*it)->first)
+      switch ((*it)->first)
         {
         case LPAREN:
-            ++level;
-            break;
+          ++level;
+          break;
+
         case RPAREN:
-            --level;
-            break;
+          --level;
+          break;
+
         case EXPONENT:
-            is_exponent = true;
-            break;
+          is_exponent = true;
+          break;
+
         case NUM:
-            if (is_exponent)
+
+          if (is_exponent)
             {
-                is_exponent = false;
-                last_metab->second = atoi((*it)->second.c_str());
+              is_exponent = false;
+              last_metab->second = atoi((*it)->second.c_str());
             }
-                
-            else if ((level == 0) && (is_exponent == false))
+
+          else if ((level == 0) && (is_exponent == false))
             {
-                // We've found the multiplier
-                mMultiplier = atof((*it)->second.c_str());
-                if (pos < mTokenStack.size() - 1)
+              // We've found the multiplier
+              mMultiplier = atof((*it)->second.c_str());
+
+              if (pos < mTokenStack.size() - 1)
                 {
-                    // Check whether the following token is a '*' or a '/'
-                    if (mTokenStack[pos]->first == MULT)
+                  // Check whether the following token is a '*' or a '/'
+
+                  if (mTokenStack[pos]->first == MULT)
                     {
-                        // Call delete twice, to remove the multiplier and '*'
-                        deleteElement(pos);
-                        deleteElement(pos); 
+                      // Call delete twice, to remove the multiplier and '*'
+                      deleteElement(pos);
+                      deleteElement(pos);
                     }
-                    else if (mTokenStack[pos]->first == DIV)
+                  else if (mTokenStack[pos]->first == DIV)
                     {
-                        // Replace the multiplier with 1
-                        mTokenStack[pos]->second = "1";
+                      // Replace the multiplier with 1
+                      mTokenStack[pos]->second = "1";
                     }
                 }
             }
-            break;
+
+          break;
+
         case IDENT:
-            if (level == 0)
+
+          if (level == 0)
             {
-                vector<CNameVal>::iterator nvit = rates.begin();
-                for (; nvit != rates.end(); nvit++)
+              vector<CNameVal>::iterator nvit = rates.begin();
+
+              for (; nvit != rates.end(); nvit++)
                 {
-                    if (nvit->getName() == (*it)->second)
+                  if (nvit->getName() == (*it)->second)
                     {
-                        // found the rate
-                        mRateConstant = (*it)->second;
-                    }
-                    else
-                    {
-                        // If it's not a rate constant, it must be a metabolite
-                        pair<string,C_INT32> *metab_pair = new pair<string,C_INT32>((*it)->second, 1);
-                        mTopLevelMetabolites.push_back(metab_pair);
-                        last_metab = metab_pair;
+                      // found the rate
+                      mRateConstant = (*it)->second;
+                      break;
                     }
                 }
+
+              if (nvit == rates.end())
+                {
+                  // If it's not a rate constant, it must be a metabolite
+                  pair<string, C_INT32> *metab_pair = new pair<string, C_INT32>((*it)->second, 1);
+                  mTopLevelMetabolites.push_back(metab_pair);
+                  last_metab = metab_pair;
+                }
             }
-            break;
+
+          break;
+
         default:
-            break;
+          break;
         }
     }
+
+  cout << *this << endl;
 }
 
 string CDeTerm::getTopLevelMetabolite(unsigned C_INT32 pos, C_INT32 &multiplicity)
 {
-    string retstring;
-    if (pos > mTopLevelMetabolites.size())
+  string retstring;
+
+  if (pos < mTopLevelMetabolites.size())
     {
-        retstring = "";
+      multiplicity = mTopLevelMetabolites[pos]->second;
+      retstring = mTopLevelMetabolites[pos]->first;
     }
-    multiplicity = mTopLevelMetabolites[pos]->second;
-    retstring =mTopLevelMetabolites[pos]->first;
-    return retstring;
+  else
+    retstring = "";
+
+  return retstring;
 }
