@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 02:05:53 $
+   $Date: 2003/10/18 15:00:50 $
    End CVS Header */
 
 /********************************************************
@@ -27,7 +27,7 @@ class QGridLayout;
 class QFrame;
 class QPushButton;
 class QLabel;
-//class QTable;
+class QComboBox;
 class QListBox;
 class QLineEdit;
 class QTextEdit;
@@ -35,6 +35,7 @@ class COptFunction;
 class ScanScrollView;
 class OptimizationItemWidget;
 class QListBoxItem;
+class QCheckBox;
 
 class OptimizationWidget : public CopasiParametersWidget
   {
@@ -48,40 +49,41 @@ class OptimizationWidget : public CopasiParametersWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
-    inline std::string getKey()
-    {
-      return objKey;
-    }
+    const std::string getKey();
+    std::string objKey;
     //manually added
     QLineEdit* expressionText;
     ScanScrollView* itemsTable;
-
-    QLineEdit* expressionName;
-    QLabel* expressionEditlabel;
-    QLabel* expressionNameLabel;
-    QFrame* bodyField_2;
-    QLabel* itemsLabel;
-    QPushButton* downButton;
-    QPushButton* deleteButton;
-    QPushButton* addButton;
-    QPushButton* upButton;
+    std::vector<QWidget*> selectedList;
     QListBox* itemnamesTable;
+
     QFrame* bodyField;
     QPushButton* confirmButton;
     QPushButton* cancelButton;
-    std::vector<QWidget*> selectedList;
+    QPushButton* addButton;
+    QPushButton* deleteButton;
+    QPushButton* downButton;
+    QLabel* itemsLabel;
+    QPushButton* upButton;
+    QFrame* bodyField_2;
+    QCheckBox* steadystateCheck;
+    QPushButton* steadystateEditButton;
+    QCheckBox* timeCheck;
+    QPushButton* timeEditButton;
+    QFrame* bodyField_2_2;
+    QLineEdit* expressionName;
+    QComboBox* methodCombo;
+    QLabel* optimizationLabel;
+    QLabel* expressionEditlabel;
+    QLabel* expressionNameLabel;
 
   protected:
-    QGridLayout* OptimizationWidgetLayout;
-    QVBoxLayout* layout18;
-    QGridLayout* layout17;
-    QHBoxLayout* layout16;
-    QVBoxLayout* layout15;
-    QGridLayout* layout14;
-    QHBoxLayout* layout14_2;
+    QGridLayout* ExpressionWidgetLayout;
+    QHBoxLayout* layout14;
+    QGridLayout* layout8;
+    QHBoxLayout* layout7;
 
     bool loadFromExpression(COptFunction*);
-    std::string objKey;
     bool bUpdated;
 
   protected slots:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: lixu1 $ 
-   $Date: 2003/10/17 02:05:53 $
+   $Date: 2003/10/18 15:00:50 $
    End CVS Header */
 
 /********************************************************
@@ -18,8 +18,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qframe.h>
-#include <qlabel.h> 
-//#include <qtable.h>
+#include <qlabel.h>
+#include <qcombobox.h>
 #include <qlistbox.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
@@ -63,78 +63,130 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   QPixmap image2((const char**) image2_data);
   QPixmap image3((const char**) image3_data);
 
+  /*
+    if (!name)
+      setName("OptimizationWidget");
+    OptimizationWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "OptimizationWidgetLayout");
+   
+    layout18 = new QVBoxLayout(0, 0, 6, "layout18");
+   
+    layout17 = new QGridLayout(0, 1, 1, 0, 6, "layout17");
+   
+    //    expressionText = new QTextBrowser(this, "expressionText");
+    //   expressionText = new QLineEdit(this, "expressionText");
+    expressionText = new QLineEdit(this, "expressionText");
+   
+    layout17->addWidget(expressionText, 1, 1);
+   
+    expressionName = new QLineEdit(this, "expressionName");
+    expressionName->setFrameShape(QLineEdit::LineEditPanel);
+    expressionName->setFrameShadow(QLineEdit::Sunken);
+   
+    layout17->addWidget(expressionName, 0, 1);
+   
+    expressionEditlabel = new QLabel(this, "expressionEditlabel");
+   
+    layout17->addWidget(expressionEditlabel, 1, 0);
+   
+    expressionNameLabel = new QLabel(this, "expressionNameLabel");
+   
+    layout17->addWidget(expressionNameLabel, 0, 0);
+    layout18->addLayout(layout17);
+   
+    bodyField_2 = new QFrame(this, "bodyField_2");
+    bodyField_2->setFrameShape(QFrame::HLine);
+    bodyField_2->setFrameShadow(QFrame::Sunken);
+    bodyField_2->setFrameShape(QFrame::HLine);
+    layout18->addWidget(bodyField_2);
+   
+    layout16 = new QHBoxLayout(0, 0, 6, "layout16");
+   
+    layout15 = new QVBoxLayout(0, 0, 6, "layout15");
+   
+    itemsLabel = new QLabel(this, "itemsLabel");
+    layout15->addWidget(itemsLabel);
+   
+    layout14 = new QGridLayout(0, 1, 1, 0, 6, "layout14");
+   
+    downButton = new QPushButton(this, "downButton");
+    downButton->setText(trUtf8(""));
+    downButton->setPixmap(image1);
+    layout14->addWidget(downButton, 1, 1);
+   
+    deleteButton = new QPushButton(this, "deleteButton");
+    deleteButton->setText(trUtf8(""));
+    deleteButton->setPixmap(image0);
+   
+    layout14->addWidget(deleteButton, 0, 1);
+   
+    addButton = new QPushButton(this, "addButton");
+    addButton->setText(trUtf8(""));
+    addButton->setPixmap(image2);
+    layout14->addWidget(addButton, 0, 0);
+   
+    //manually change to add icon for alignment need
+    upButton = new QPushButton(this, "upButton");
+    upButton->setText(trUtf8(""));
+    upButton->setPixmap(image3);
+    layout14->addWidget(upButton, 1, 0);
+   
+    itemnamesTable = new QListBox(this, "itemnamesTable");
+    itemnamesTable->insertItem(trUtf8("click here to add new item"));
+    layout14->addMultiCellWidget(itemnamesTable, 2, 2, 0, 1);
+   
+    layout15->addLayout(layout14);
+    layout16->addLayout(layout15);
+   
+    itemsTable = new ScanScrollView(this, 0, 0);
+    OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
+    itemsTable->setMinimumWidth(parameterTable->minimumSizeHint().width());
+    pdelete(parameterTable);
+    itemsTable->setVScrollBarMode(QScrollView::Auto);
+    itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
+    itemsTable->setSelectedList(&selectedList);
+   
+    // itemsTable = new QListBox(this, "itemsTable");
+    layout16->addWidget(itemsTable);
+    layout18->addLayout(layout16);
+   
+    bodyField = new QFrame(this, "bodyField");
+    bodyField->setFrameShape(QFrame::HLine);
+    bodyField->setFrameShadow(QFrame::Sunken);
+    bodyField->setFrameShape(QFrame::HLine);
+    layout18->addWidget(bodyField);
+   
+    layout14_2 = new QHBoxLayout(0, 0, 6, "layout14_2");
+   
+    confirmButton = new QPushButton(this, "confirmButton");
+    layout14_2->addWidget(confirmButton);
+   
+    cancelButton = new QPushButton(this, "cancelButton");
+    layout14_2->addWidget(cancelButton);
+    layout18->addLayout(layout14_2);
+   
+    OptimizationWidgetLayout->addLayout(layout18, 0, 0);
+  */
+
   if (!name)
-    setName("OptimizationWidget");
-  OptimizationWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "OptimizationWidgetLayout");
+    setName("ExpressionWidget");
+  ExpressionWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "ExpressionWidgetLayout");
 
-  layout18 = new QVBoxLayout(0, 0, 6, "layout18");
+  bodyField = new QFrame(this, "bodyField");
+  bodyField->setFrameShape(QFrame::HLine);
+  bodyField->setFrameShadow(QFrame::Sunken);
+  bodyField->setFrameShape(QFrame::HLine);
 
-  layout17 = new QGridLayout(0, 1, 1, 0, 6, "layout17");
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField, 7, 7, 0, 2);
 
-  //    expressionText = new QTextBrowser(this, "expressionText");
-  //   expressionText = new QLineEdit(this, "expressionText");
-  expressionText = new QLineEdit(this, "expressionText");
+  layout14 = new QHBoxLayout(0, 0, 6, "layout14");
 
-  layout17->addWidget(expressionText, 1, 1);
+  confirmButton = new QPushButton(this, "confirmButton");
+  layout14->addWidget(confirmButton);
 
-  expressionName = new QLineEdit(this, "expressionName");
-  expressionName->setFrameShape(QLineEdit::LineEditPanel);
-  expressionName->setFrameShadow(QLineEdit::Sunken);
+  cancelButton = new QPushButton(this, "cancelButton");
+  layout14->addWidget(cancelButton);
 
-  layout17->addWidget(expressionName, 0, 1);
-
-  expressionEditlabel = new QLabel(this, "expressionEditlabel");
-
-  layout17->addWidget(expressionEditlabel, 1, 0);
-
-  expressionNameLabel = new QLabel(this, "expressionNameLabel");
-
-  layout17->addWidget(expressionNameLabel, 0, 0);
-  layout18->addLayout(layout17);
-
-  bodyField_2 = new QFrame(this, "bodyField_2");
-  bodyField_2->setFrameShape(QFrame::HLine);
-  bodyField_2->setFrameShadow(QFrame::Sunken);
-  bodyField_2->setFrameShape(QFrame::HLine);
-  layout18->addWidget(bodyField_2);
-
-  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
-
-  layout15 = new QVBoxLayout(0, 0, 6, "layout15");
-
-  itemsLabel = new QLabel(this, "itemsLabel");
-  layout15->addWidget(itemsLabel);
-
-  layout14 = new QGridLayout(0, 1, 1, 0, 6, "layout14");
-
-  downButton = new QPushButton(this, "downButton");
-  downButton->setText(trUtf8(""));
-  downButton->setPixmap(image1);
-  layout14->addWidget(downButton, 1, 1);
-
-  deleteButton = new QPushButton(this, "deleteButton");
-  deleteButton->setText(trUtf8(""));
-  deleteButton->setPixmap(image0);
-
-  layout14->addWidget(deleteButton, 0, 1);
-
-  addButton = new QPushButton(this, "addButton");
-  addButton->setText(trUtf8(""));
-  addButton->setPixmap(image2);
-  layout14->addWidget(addButton, 0, 0);
-
-  //manually change to add icon for alignment need
-  upButton = new QPushButton(this, "upButton");
-  upButton->setText(trUtf8(""));
-  upButton->setPixmap(image3);
-  layout14->addWidget(upButton, 1, 0);
-
-  itemnamesTable = new QListBox(this, "itemnamesTable");
-  itemnamesTable->insertItem(trUtf8("click here to add new item"));
-  layout14->addMultiCellWidget(itemnamesTable, 2, 2, 0, 1);
-
-  layout15->addLayout(layout14);
-  layout16->addLayout(layout15);
+  ExpressionWidgetLayout->addMultiCellLayout(layout14, 8, 8, 0, 2);
 
   itemsTable = new ScanScrollView(this, 0, 0);
   OptimizationItemWidget* parameterTable = new OptimizationItemWidget(this, "parameterTable");
@@ -144,32 +196,111 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   itemsTable->setHScrollBarMode(QScrollView::AlwaysOff); //Disable Horizonal Scroll
   itemsTable->setSelectedList(&selectedList);
 
-  // itemsTable = new QListBox(this, "itemsTable");
-  layout16->addWidget(itemsTable);
-  layout18->addLayout(layout16);
+  ExpressionWidgetLayout->addWidget(itemsTable, 6, 2);
 
-  bodyField = new QFrame(this, "bodyField");
-  bodyField->setFrameShape(QFrame::HLine);
-  bodyField->setFrameShadow(QFrame::Sunken);
-  bodyField->setFrameShape(QFrame::HLine);
-  layout18->addWidget(bodyField);
+  layout8 = new QGridLayout(0, 1, 1, 0, 6, "layout8");
 
-  layout14_2 = new QHBoxLayout(0, 0, 6, "layout14_2");
+  downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
+  layout8->addWidget(downButton, 2, 1);
 
-  confirmButton = new QPushButton(this, "confirmButton");
-  layout14_2->addWidget(confirmButton);
+  deleteButton = new QPushButton(this, "deleteButton");
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
+  layout8->addWidget(deleteButton, 1, 1);
 
-  cancelButton = new QPushButton(this, "cancelButton");
-  layout14_2->addWidget(cancelButton);
-  layout18->addLayout(layout14_2);
+  addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
+  layout8->addWidget(addButton, 1, 0);
 
-  OptimizationWidgetLayout->addLayout(layout18, 0, 0);
+  //manually change to add icon for alignment need
+  upButton = new QPushButton(this, "upButton");
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
+  layout8->addWidget(upButton, 2, 0);
+
+  itemnamesTable = new QListBox(this, "itemnamesTable");
+  layout8->addMultiCellWidget(itemnamesTable, 3, 3, 0, 1);
+
+  itemsLabel = new QLabel(this, "itemsLabel");
+
+  layout8->addMultiCellWidget(itemsLabel, 0, 0, 0, 1);
+
+  ExpressionWidgetLayout->addMultiCellLayout(layout8, 6, 6, 0, 1);
+
+  bodyField_2 = new QFrame(this, "bodyField_2");
+  bodyField_2->setFrameShape(QFrame::HLine);
+  bodyField_2->setFrameShadow(QFrame::Sunken);
+  bodyField_2->setFrameShape(QFrame::HLine);
+
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2, 5, 5, 0, 2);
+
+  layout7 = new QHBoxLayout(0, 0, 6, "layout7");
+
+  steadystateCheck = new QCheckBox(this, "steadystateCheck");
+  layout7->addWidget(steadystateCheck);
+
+  steadystateEditButton = new QPushButton(this, "steadystateEditButton");
+  layout7->addWidget(steadystateEditButton);
+  QSpacerItem* spacer = new QSpacerItem(101, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layout7->addItem(spacer);
+
+  timeCheck = new QCheckBox(this, "timeCheck");
+  layout7->addWidget(timeCheck);
+
+  timeEditButton = new QPushButton(this, "timeEditButton");
+  layout7->addWidget(timeEditButton);
+
+  ExpressionWidgetLayout->addMultiCellLayout(layout7, 4, 4, 0, 2);
+
+  bodyField_2_2 = new QFrame(this, "bodyField_2_2");
+  bodyField_2_2->setFrameShape(QFrame::HLine);
+  bodyField_2_2->setFrameShadow(QFrame::Sunken);
+  bodyField_2_2->setFrameShape(QFrame::HLine);
+
+  ExpressionWidgetLayout->addMultiCellWidget(bodyField_2_2, 3, 3, 0, 2);
+
+  expressionName = new QLineEdit(this, "expressionName");
+  expressionName->setFrameShape(QLineEdit::LineEditPanel);
+  expressionName->setFrameShadow(QLineEdit::Sunken);
+
+  ExpressionWidgetLayout->addMultiCellWidget(expressionName, 0, 0, 1, 2);
+
+  methodCombo = new QComboBox(FALSE, this, "methodCombo");
+
+  ExpressionWidgetLayout->addMultiCellWidget(methodCombo, 1, 1, 1, 2);
+
+  optimizationLabel = new QLabel(this, "optimizationLabel");
+
+  ExpressionWidgetLayout->addWidget(optimizationLabel, 1, 0);
+
+  expressionEditlabel = new QLabel(this, "expressionEditlabel");
+
+  ExpressionWidgetLayout->addWidget(expressionEditlabel, 2, 0);
+
+  expressionText = new QLineEdit(this, "expressionText");
+  expressionText->setFrameShape(QLineEdit::LineEditPanel);
+  expressionText->setFrameShadow(QLineEdit::Sunken);
+
+  ExpressionWidgetLayout->addMultiCellWidget(expressionText, 2, 2, 1, 2);
+
+  expressionNameLabel = new QLabel(this, "expressionNameLabel");
+
+  ExpressionWidgetLayout->addWidget(expressionNameLabel, 0, 0);
+
   languageChange();
   clearWState(WState_Polished);
 
   // tab order
-  setTabOrder(expressionName, expressionText);
-  setTabOrder(expressionText, addButton);
+  setTabOrder(expressionName, methodCombo);
+  setTabOrder(methodCombo, expressionText);
+  setTabOrder(expressionText, steadystateCheck);
+  setTabOrder(steadystateCheck, steadystateEditButton);
+  setTabOrder(steadystateEditButton, timeCheck);
+  setTabOrder(timeCheck, timeEditButton);
+  setTabOrder(timeEditButton, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
   setTabOrder(upButton, downButton);
@@ -201,6 +332,8 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   expressionText->setText("-inf|Function  <|<=|== Optimization Item <|<=|== +inf|Function");
   expressionText->setEnabled(false);
+
+  itemnamesTable->insertItem(trUtf8("click here to add new item"));
 }
 
 /*
@@ -218,15 +351,20 @@ OptimizationWidget::~OptimizationWidget()
 void OptimizationWidget::languageChange()
 {
   setCaption(tr("Expression"));
-  expressionEditlabel->setText(tr("Expression"));
-  expressionNameLabel->setText(tr("Expression Name"));
-  itemsLabel->setText(tr("Copasi Items"));
-  downButton->setText(QString::null);
-  deleteButton->setText(QString::null);
-  addButton->setText(QString::null);
-  upButton->setText(QString::null);
   confirmButton->setText(tr("confirm"));
   cancelButton->setText(tr("cancel"));
+  addButton->setText(QString::null);
+  deleteButton->setText(QString::null);
+  downButton->setText(QString::null);
+  itemsLabel->setText(tr("Copasi Items"));
+  upButton->setText(QString::null);
+  steadystateCheck->setText(tr("Steady State"));
+  steadystateEditButton->setText(tr("edit"));
+  timeCheck->setText(tr("Time Course"));
+  timeEditButton->setText(tr("edit"));
+  optimizationLabel->setText(tr("Optimization Method"));
+  expressionEditlabel->setText(tr("Expression"));
+  expressionNameLabel->setText(tr("Name"));
 }
 
 bool OptimizationWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
@@ -540,8 +678,8 @@ bool OptimizationWidget::addNewOptItem(CCopasiObject* pObject)
     return false;
 
   COptFunction* optFunction = (COptFunction*)(CCopasiContainer*)CKeyFactory::get(objKey);
-  // need further work
-  if (optFunction->Index(pObject->getCN().c_str()) == C_INVALID_INDEX)
+  // cannot be found in the list
+  if (optFunction->Index(pObject->getCN().c_str()) != C_INVALID_INDEX)
     return false;
 
   int widgetOffset;
@@ -681,4 +819,9 @@ void OptimizationWidget::viewMousePressEvent(QMouseEvent* e)
   QFrame* activeTitle = (QFrame*)(selectedList[activeObject * 2]);
   activeTitle->setPaletteBackgroundColor(QColor(0, 0, 255));
   emit show_me();
+}
+
+const std::string OptimizationWidget::getKey()
+{
+  return objKey;
 }
