@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 18:56:58 $
+   $Date: 2004/01/27 03:11:25 $
    End CVS Header */
 
 /**
@@ -26,13 +26,27 @@
 class CTrajectoryProblem;
 class CState;
 
+class CTrajectoryValidSubTypes : public CVector< CCopasiMethod::SubType >
+  {
+  public:
+    /**
+     * Default constructor.
+     */
+    CTrajectoryValidSubTypes();
+
+    /**
+     * Destructor.
+     */
+    ~CTrajectoryValidSubTypes();
+  };
+
 class CTrajectoryMethod : public CCopasiMethod
   {
   public:
     /**
      *  A list of valid trajectory method types;
      */
-    static const CVector< CCopasiMethod::SubType > ValidSubTypes;
+    static const CTrajectoryValidSubTypes ValidSubTypes;
 
     /**
      * Checks whether the given sub type is a valid method

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 20:11:44 $
+   $Date: 2004/01/27 03:11:25 $
    End CVS Header */
 
 /**
@@ -22,11 +22,29 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
+CTrajectoryValidSubTypes::CTrajectoryValidSubTypes():
+    CVector< CCopasiMethod::SubType >(2)
+{
+  CCopasiMethod::SubType * pSubType = array();
+
+  *pSubType++ = CCopasiMethod::deterministic;
+  *pSubType++ = CCopasiMethod::stochastic;
+}
+
+/**
+ * Destructor.
+ */
+CTrajectoryValidSubTypes::~CTrajectoryValidSubTypes() {}
+
+const CTrajectoryValidSubTypes CTrajectoryMethod::ValidSubTypes;
+
+#ifdef XXXX
 const CVector< CCopasiMethod::SubType >
 CTrajectoryMethod::ValidSubTypes(2,
                                  CCopasiMethod::deterministic,
                                  CCopasiMethod::stochastic,
                                  CCopasiMethod::hybrid);
+#endif // XXXX
 
 bool CTrajectoryMethod::isValidSubType(const CCopasiMethod::SubType & subType)
 {

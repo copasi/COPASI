@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 16:00:00 $
+   $Date: 2004/01/27 03:11:25 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -67,6 +67,7 @@ template <class CType> class CVector
      * @param CType first
      * @param ... (rows - 1 arguments of CType)
      */
+#ifdef XXXX
     CVector(const unsigned C_INT32 & rows, CType first, ...):
         mRows(rows),
         mVector(NULL)
@@ -94,6 +95,7 @@ template <class CType> class CVector
           va_end(values);
         }
     }
+#endif // XXXX
 
     /**
      * Destructor.
