@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:33 $
+   $Date: 2003/11/03 19:28:21 $
    End CVS Header */
 
 #ifndef COPASI_CDependencyGraph
@@ -46,16 +46,8 @@ class CDependencyGraphNode
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const CDependencyGraphNode & d)
-    {
-      std::set <C_INT32>::const_iterator it;
-      for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
-        os << *it << "  ";
-
-      os << std::endl;
-
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os,
+                                     const CDependencyGraphNode & d);
 
   private:
     /**
@@ -115,17 +107,33 @@ class CDependencyGraph
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const CDependencyGraph & d)
-    {
-      unsigned int i;
-
-      for (i = 0; i < d.mNodes.size(); i++)
-        os << d.mNodes[i];
-
-      os << std::endl;
-
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os,
+                                     const CDependencyGraph & d);
   };
+
+std::ostream & operator<<(std::ostream &os,
+                          const CDependencyGraphNode & d)
+{
+  std::set <C_INT32>::const_iterator it;
+  for (it = d.mDependents.begin(); it != d.mDependents.end(); it++)
+    os << *it << "  ";
+
+  os << std::endl;
+
+  return os;
+}
+
+std::ostream & operator<<(std::ostream &os,
+                          const CDependencyGraph & d)
+{
+  unsigned int i;
+
+  for (i = 0; i < d.mNodes.size(); i++)
+    os << d.mNodes[i];
+
+  os << std::endl;
+
+  return os;
+}
 
 #endif // COPASI_CDependencyGraph

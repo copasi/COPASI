@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:35 $
+   $Date: 2003/11/03 19:28:22 $
    End CVS Header */
 
 #include <iostream>
@@ -163,30 +163,22 @@ template <class CType> class CVector
      * @param const CVector< CType > & A
      * @retrun ostream & os
      */
-    friend std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
-    {
-      os << "Vector(" << A.mRows << ")" << std::endl;
-
-      unsigned C_INT32 i;
-      CType * tmp = A.mVector;
-
-      for (i = 0; i < A.mRows; i++)
-        os << "  " << * (tmp++);
-      os << std::endl;
-      return os;
-    }
+    friend std::ostream &operator << <> (std::ostream &os,
+                                         const CVector< CType > & A);
   };
 
-/**
- * This creates an instantiation of 
- * the ostream operator << for CVector <C_FLOAT64>
- */
-class CVectorDbl : public CVector <C_FLOAT64> {};
+template <class CType>
+std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
+{
+  os << "Vector(" << A.mRows << ")" << std::endl;
 
-/**
- * This creates an instantiation of 
- * the ostream operator << for CVector <C_INT32>
- */
-class CVectorInt : public CVector <C_INT32> {};
+  unsigned C_INT32 i;
+  CType * tmp = A.mVector;
+
+  for (i = 0; i < A.mRows; i++)
+    os << "  " << * (tmp++);
+  os << std::endl;
+  return os;
+}
 
 #endif // COPASI_CVector

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CParticleNumberList.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:58 $
+   $Date: 2003/11/03 19:28:19 $
    End CVS Header */
 
 #ifndef COPASI_CParticleNumberList
@@ -124,14 +124,17 @@ class CParticleNumberList
     const CVector< C_INT32 > & getVectorInt() const;
 
     friend std::ostream & operator << (std::ostream & os,
-                                       const CParticleNumberList & A)
-    {
-      os << "Particle List: " << std::endl;
-      os << "  Dbl: " << A.mDbl << std::endl;
-      os << "  Int: " << A.mInt << std::endl;
-
-      return os;
-    }
+                                       const CParticleNumberList & A);
   };
+
+std::ostream & operator << (std::ostream & os,
+                            const CParticleNumberList & A)
+{
+  os << "Particle List: " << std::endl;
+  os << "  Dbl: " << A.mDbl << std::endl;
+  os << "  Int: " << A.mInt << std::endl;
+
+  return os;
+}
 
 #endif // COPASI_CParticleNumberList

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:07 $
+   $Date: 2003/11/03 19:28:20 $
    End CVS Header */
 
 /**
@@ -70,20 +70,7 @@ class StochFlag
     StochFlag * next;
 
     // insert operator
-    friend std::ostream & operator<<(std::ostream & os, const StochFlag & d)
-    {
-      os << "StochFlag " << std::endl;
-      os << "  index: " << d.index << " value: " << d.value << std::endl;
-      if (d.prev != NULL)
-        os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
-      else
-        os << "  prevPointer: NULL" << std::endl;
-      if (d.next != NULL)
-        os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
-      else
-        os << "  nextPointer: NULL" << std::endl;
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream & os, const StochFlag & d);
   };
 
 /**
@@ -98,13 +85,7 @@ class Balance
     CMetab * metabolitePointer;
 
     // insert operator
-    friend std::ostream & operator<<(std::ostream & os, const Balance & d)
-    {
-      os << "Balance" << std::endl;
-      os << "  index: " << d.index << " balance: " << d.balance
-      << " metabPointer: " << d.metabolitePointer << std::endl;
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream & os, const Balance & d);
   };
 
 class CHybridMethod : private CTrajectoryMethod
@@ -649,5 +630,28 @@ class CHybridMethod : private CTrajectoryMethod
   };
 
 #include "CHybridNextReactionRKMethod.h"
+
+std::ostream & operator<<(std::ostream & os, const StochFlag & d)
+{
+  os << "StochFlag " << std::endl;
+  os << "  index: " << d.index << " value: " << d.value << std::endl;
+  if (d.prev != NULL)
+    os << "  prevIndex: " << d.prev->index << " prevPointer: " << d.prev << std::endl;
+  else
+    os << "  prevPointer: NULL" << std::endl;
+  if (d.next != NULL)
+    os << "  nextIndex: " << d.next->index << " nextPointer: " << d.next << std::endl;
+  else
+    os << "  nextPointer: NULL" << std::endl;
+  return os;
+}
+
+std::ostream & operator<<(std::ostream & os, const Balance & d)
+{
+  os << "Balance" << std::endl;
+  os << "  index: " << d.index << " balance: " << d.balance
+  << " metabPointer: " << d.metabolitePointer << std::endl;
+  return os;
+}
 
 #endif // COPASI_CHybridMethod

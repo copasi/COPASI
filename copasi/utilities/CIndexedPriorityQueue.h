@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:33 $
+   $Date: 2003/11/03 19:28:21 $
    End CVS Header */
 
 #ifndef COPASI_CPriorityQueue
@@ -36,11 +36,7 @@ class PQNode
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const PQNode & d)
-    {
-      os << "(" << d.mIndex << ", " << d.mKey << ")";
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os, const PQNode & d);
 
   private:
     /**
@@ -173,25 +169,8 @@ class CIndexedPriorityQueue
     /**
      * insert operator
      */
-    friend std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
-    {
-      unsigned C_INT32 i;
-
-      os << "PQ: " << std::endl;
-
-      std::vector <PQNode>::const_iterator it;
-      os << "  mHeap: " << std::endl;
-      for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
-        os << *it << std::endl;
-      os << "  mIndexPointer: " << std::endl;
-      for (i = 0; i < d.mIndexPointer.size(); i++)
-        os << d.mIndexPointer[i] << " ";
-      os << std::endl;
-
-      os << std::endl;
-
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os,
+                                     const CIndexedPriorityQueue & d);
 
   private:
     // Private operations
@@ -218,7 +197,7 @@ class CIndexedPriorityQueue
      * @param pos The current node position
      * @return The parent node position
      */
-  C_INT32 parent(const C_INT32 pos) const {return (pos + 1) / 2 - 1;}
+    C_INT32 parent(const C_INT32 pos) const {return (pos + 1) / 2 - 1;}
 
     /**
      * Provide the position in the heap of the left child of the current node.
@@ -245,5 +224,31 @@ class CIndexedPriorityQueue
      */
     std::vector<C_INT32> mIndexPointer;
   };
+
+std::ostream & operator<<(std::ostream &os, const PQNode & d)
+{
+  os << "(" << d.mIndex << ", " << d.mKey << ")";
+  return os;
+}
+
+std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
+{
+  unsigned C_INT32 i;
+
+  os << "PQ: " << std::endl;
+
+  std::vector <PQNode>::const_iterator it;
+  os << "  mHeap: " << std::endl;
+  for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
+    os << *it << std::endl;
+  os << "  mIndexPointer: " << std::endl;
+  for (i = 0; i < d.mIndexPointer.size(); i++)
+    os << d.mIndexPointer[i] << " ";
+  os << std::endl;
+
+  os << std::endl;
+
+  return os;
+}
 
 #endif // COPASI_CPriorityQueue

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2003/10/31 22:49:45 $
+   $Author: shoops $ 
+   $Date: 2003/11/03 19:28:19 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -133,20 +133,7 @@ class CModel : public CCopasiContainer
          * @return ostream & os
          */
         friend std::ostream &operator<<(std::ostream &os,
-                                        const CLinkMatrixView & A)
-        {
-          unsigned C_INT32 i, imax = A.numRows();
-          unsigned C_INT32 j, jmax = A.numCols();
-          os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
-
-          for (i = 0; i < imax; i++)
-            {
-              for (j = 0; j < jmax; j++)
-                os << "  " << A(i, j);
-              os << std::endl;
-            }
-          return os;
-        }
+                                        const CLinkMatrixView & A);
       };
 
     class CStateTemplate
@@ -929,5 +916,21 @@ class CModel : public CCopasiContainer
      */
     bool buildStateTemplate();
   };
+
+std::ostream &operator<<(std::ostream &os,
+                         const CModel::CLinkMatrixView & A)
+{
+  unsigned C_INT32 i, imax = A.numRows();
+  unsigned C_INT32 j, jmax = A.numCols();
+  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+
+  for (i = 0; i < imax; i++)
+    {
+      for (j = 0; j < jmax; j++)
+        os << "  " << A(i, j);
+      os << std::endl;
+    }
+  return os;
+}
 
 #endif // CModel

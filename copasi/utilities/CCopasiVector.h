@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:33 $
+   $Date: 2003/11/03 19:28:21 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -252,22 +252,8 @@ template < class CType > class CCopasiVector:
           return C_INVALID_INDEX;
         }
 
-      friend std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
-      {
-        os << "   +++Vektor;  size: " << d.size() << std::endl;
-
-        unsigned int i;
-
-        for (i = 0; i < d.size(); i++)
-          os << "   " << *(d[i]);
-
-        if (d.size() == 0)
-          os << "   empty" << std::endl;
-
-        os << "   ---Vektor" << std::endl;
-
-        return os;
-      }
+      friend std::ostream &operator << <>(std::ostream &os,
+                                          const CCopasiVector<CType> & d);
     };
 
 template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
@@ -594,5 +580,23 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
        * @directed*/
       /*# int lnkCCopasiVectorS; */
     };
+
+template <class CType>
+std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
+{
+  os << "   +++Vektor;  size: " << d.size() << std::endl;
+
+  unsigned int i;
+
+  for (i = 0; i < d.size(); i++)
+    os << "   " << *(d[i]);
+
+  if (d.size() == 0)
+    os << "   empty" << std::endl;
+
+  os << "   ---Vektor" << std::endl;
+
+  return os;
+}
 
 #endif // COPASI_CCopasiVector

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CDeTerm.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:24:55 $
+   $Date: 2003/11/03 19:28:19 $
    End CVS Header */
 
 #ifndef CDETERM_H
@@ -117,27 +117,29 @@ class CDeTerm
      */
     std::string mRateConstant;
 
-    friend std::ostream & operator<<(std::ostream &os, const CDeTerm & d)
-    {
-      os << "RateConstant =   " << d.mRateConstant << std::endl
-      << "Sign =           " << d.mSign << std::endl
-      << "StoiCoeficient = " << d.mMultiplier << std::endl;
-      os << "TokenStack :" << std::endl;
-
-      unsigned int i;
-
-      for (i = 0; i < d.mTokenStack.size(); i++)
-        os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
-        << "', String = '" << d.mTokenStack[i]->second << "'" << std::endl;
-
-      os << "Metabolites :" << std::endl;
-
-      for (i = 0; i < d.mTopLevelMetabolites.size(); i++)
-        os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
-        << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << std::endl;
-
-      return os;
-    }
+    friend std::ostream & operator<<(std::ostream &os, const CDeTerm & d);
   };
+
+std::ostream & operator<<(std::ostream &os, const CDeTerm & d)
+{
+  os << "RateConstant =   " << d.mRateConstant << std::endl
+  << "Sign =           " << d.mSign << std::endl
+  << "StoiCoeficient = " << d.mMultiplier << std::endl;
+  os << "TokenStack :" << std::endl;
+
+  unsigned int i;
+
+  for (i = 0; i < d.mTokenStack.size(); i++)
+    os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
+    << "', String = '" << d.mTokenStack[i]->second << "'" << std::endl;
+
+  os << "Metabolites :" << std::endl;
+
+  for (i = 0; i < d.mTopLevelMetabolites.size(); i++)
+    os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
+    << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << std::endl;
+
+  return os;
+}
 
 #endif // CDETERM_H
