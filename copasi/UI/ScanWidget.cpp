@@ -570,7 +570,7 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   int widgetOffset;
   int ScanItemWidgetWidth;
-  emit hide_me();
+  //  emit hide_me();
 
   if (selectedList.size() > 0)
     {
@@ -610,7 +610,8 @@ bool ScanWidget::addNewScanItem(CCopasiObject* pObject)
 
   ((ScanItemWidget*)selectedList[1])->setFirstWidget(true);
 
-  emit show_me();
+  //  emit show_me();
+  scrollview->repaintContents();
   return true;
 }
 
