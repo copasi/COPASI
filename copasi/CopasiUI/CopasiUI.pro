@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.29 $ $Author: ssahle $ $Date: 2004/05/19 15:54:00 $  
+# $Revision: 1.30 $ $Author: ssahle $ $Date: 2004/05/24 08:44:29 $  
 ######################################################################
 
 include(../common.pri)
@@ -123,7 +123,6 @@ HEADERS += \
            MetabolitesWidget1.h \
            ModelWidget.h \
            ModesWidget.h \
-           MoietiesWidget.h \
            MoietyWidget.h \
            MoietyWidget1.h \
            MyLineEdit.h \
@@ -182,7 +181,6 @@ SOURCES += \
            MetabolitesWidget1.cpp \
            ModelWidget.cpp \
            ModesWidget.cpp \
-           MoietiesWidget.cpp \
            MoietyWidget.cpp \
            MoietyWidget1.cpp \
            MyLineEdit.cpp \
