@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/01/09 21:24:42 $
+   $Author: mkulkarn $ 
+   $Date: 2004/01/16 20:29:14 $
    End CVS Header */
 
 /**
@@ -207,6 +207,14 @@ void CCopasiXMLParser::setReportList(CCopasiVectorN< CReportDefinition > * pRepo
 
 CCopasiVectorN< CReportDefinition > * CCopasiXMLParser::getReportList() const
   {return mCommon.pReportList;}
+
+//Mrinmayee
+
+void CCopasiXMLParser::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
+{mCommon.pTaskList = pTaskList;}
+
+CCopasiVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
+  {return mCommon.pTaskList;}
 
 CCopasiXMLParser::COPASIElement::COPASIElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
