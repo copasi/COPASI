@@ -1,8 +1,9 @@
 #include <qmessagebox.h>
 #include "StretchTable.h"
 
-StretchTable::StretchTable (QWidget * parent, const char * name)
-    : QTable (parent, name)
+StretchTable::StretchTable (QWidget * parent, const char * name):
+    QTable (parent, name),
+    mProtected(false)
 {
   numColumn = 0;
   minColWidth = NULL;
@@ -10,8 +11,10 @@ StretchTable::StretchTable (QWidget * parent, const char * name)
   systemUpdate = false;
 }
 
-StretchTable::StretchTable(int numRows, int numCols, QWidget * parent, const char * name)
-    : QTable (numRows, numCols, parent, name)
+StretchTable::StretchTable(int numRows, int numCols,
+                           QWidget * parent, const char * name):
+    QTable (numRows, numCols, parent, name),
+    mProtected(false)
 {
   numColumn = 0;
   minColWidth = NULL;
@@ -69,9 +72,19 @@ void StretchTable::setNumCols (int c)
     }
 }
 
-void StretchTable::setNumRows (int r)
+void StretchTable::setNumRows(int r)
 {
-  QTable::setNumRows(r + 1);
-  if (r >= 0)
-    QTable::setText(r, 0, "Click to add new item");
+  if (mProtected)
+    QTable::setNumRows(r);
+  else
+    {
+      QTable::setNumRows(r + 1);
+      if (r >= 0)
+        QTable::setText(r, 0, "Click to add new item");
+    }
 }
+
+void StretchTable::setProtected(const bool & pRotected)
+{mProtected = pRotected;}
+
+bool StretchTable::isProtected() const {return mProtected;}

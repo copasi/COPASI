@@ -52,6 +52,7 @@ MoietyWidget::MoietyWidget(QWidget *parent, const char * name, WFlags f)
   table->setSorting (true);
   table->sortColumn(1, true, true);
   table->setFocusPolicy(QWidget::WheelFocus);
+  table->setProtected(true);
 
   // signals and slots connections
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));

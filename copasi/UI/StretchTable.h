@@ -12,6 +12,9 @@ class StretchTable: public QTable
     void columnWidthChanged (int col);
     void setNumCols (int c);
     void setNumRows (int r);
+    void setProtected(const bool & pRotected);
+
+    bool isProtected() const;
 
     int numColumn;
     int* minColWidth;
@@ -21,6 +24,7 @@ class StretchTable: public QTable
   private:
     bool systemUpdate;
     bool* binitialized;
+    bool mProtected;
   };
 
 #endif
