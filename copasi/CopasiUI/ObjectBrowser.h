@@ -19,7 +19,7 @@ class QGridLayout;
 class QPushButton;
 class QListView;
 class ObjectBrowserItem;
-class objectList;
+class ObjectList;
 class QListViewItem;
 class CCopasiContainer;
 class CCopasiObject;
@@ -32,8 +32,8 @@ class ObjectBrowser : public QWidget
   private:
     pageIndex currentPage;
   public:
-    objectList* objectItemList;
-    objectList* refreshList;
+    ObjectList* objectItemList;
+    ObjectList* refreshList;
     ObjectBrowser(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~ObjectBrowser();
 
@@ -42,7 +42,7 @@ class ObjectBrowser : public QWidget
     QPushButton* backButton;
     QListView* ObjectListView;
 
-    void export(ObjectBrowserItem* pCurrent, objectList* outputList);
+    void export(ObjectBrowserItem* pCurrent, ObjectList* outputList);
 
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);

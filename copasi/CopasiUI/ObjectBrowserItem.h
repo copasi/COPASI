@@ -8,8 +8,8 @@
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
     there may exist multiply wrappers to one browserObject
-objectListItem
-objectList: A queue for all element: 
+ObjectListItem
+ObjectList: A queue for all element: 
    The reason I dont use std:vector is
    for efficiency requirement for all 
    object browser item update
@@ -33,13 +33,13 @@ class CCopasiObject;
 
 enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
-class objectList;
+class ObjectList;
 
 struct browserObject
   {
     CCopasiObject* pCopasiObject;
     bool mChecked;
-    objectList* referenceList;
+    ObjectList* referenceList;
     browserObject();
     ~browserObject();
   };
@@ -72,8 +72,8 @@ class ObjectBrowserItem : public QListViewItem
 
     // inline const QString & getKey() const {return mKey;}
 
-    ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
-    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList);
+    ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList);
+    ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList);
     ~ObjectBrowserItem()
     {
       if (getType() != FIELDATTR) //To avoid cross reference/multi deletion
@@ -110,31 +110,31 @@ class ObjectBrowserItem : public QListViewItem
 
 typedef ObjectBrowserItem* pObjectBrowserItem;
 
-struct objectListItem
+struct ObjectListItem
   {
-    objectListItem(ObjectBrowserItem* item, objectListItem* next, objectListItem* last)
+    ObjectListItem(ObjectBrowserItem* item, ObjectListItem* next, ObjectListItem* last)
     {
       pItem = item;
       pNext = next;
       pLast = last;
     }
     ObjectBrowserItem* pItem;
-    objectListItem* pNext;
-    objectListItem* pLast;
+    ObjectListItem* pNext;
+    ObjectListItem* pLast;
   };
 
-class objectList
+class ObjectList
   {
   private:
     bool* quickIndex;
     ObjectBrowserItem* *pointerList;
     int index_length;
 
-    objectListItem* root;
+    ObjectListItem* root;
     int length;
   public:
-    objectList();
-    ~objectList()
+    ObjectList();
+    ~ObjectList()
     {
       if (index_length != 0)
         {
@@ -145,7 +145,7 @@ class objectList
         pop();
     }
     void insert(ObjectBrowserItem* pItem); //insert at the first position
-    objectListItem* getRoot();
+    ObjectListItem* getRoot();
     ObjectBrowserItem* pop();
   inline int len() {return length;};
 

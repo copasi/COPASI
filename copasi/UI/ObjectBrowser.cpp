@@ -87,8 +87,8 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(backButton, nextButton);
   setTabOrder(nextButton, cancelButton);
 
-  objectItemList = new objectList();
-  refreshList = new objectList();
+  objectItemList = new ObjectList();
+  refreshList = new ObjectList();
   ObjectBrowserItem::resetKeySpace();
   loadData();
   currentPage = LISTVIEWPAGE;
@@ -200,14 +200,14 @@ void ObjectBrowser::backClicked()
 
 void ObjectBrowser::nextClicked()
 {
-  objectList* outputList;
+  ObjectList* outputList;
   ObjectBrowserItem* rootItem;
   switch (currentPage)
     {
     case LISTVIEWPAGE:
       ObjectListView->hide(); //last page
       rootItem = objectItemList->getRoot()->pItem;
-      outputList = new objectList();
+      outputList = new ObjectList();
       export(rootItem, outputList);
       QMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
       delete outputList;
@@ -220,7 +220,7 @@ void ObjectBrowser::nextClicked()
     }
 }
 
-void ObjectBrowser::export(ObjectBrowserItem* pCurrent, objectList* outputList)
+void ObjectBrowser::export(ObjectBrowserItem* pCurrent, ObjectList* outputList)
 {
   if (pCurrent->child())
     {
@@ -254,7 +254,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
   ObjectBrowserItem* last = NULL;
   CCopasiObject* current = NULL;
 
-  objectList* childStack = new objectList();
+  ObjectList* childStack = new ObjectList();
 
   std::vector<CCopasiObject *> pObjectList = copaParent->getObjects();
   std::vector<CCopasiObject *>::iterator it = pObjectList.begin();
@@ -365,9 +365,9 @@ void ObjectBrowser::updateUI()
   //refresh List stores all affected items,
 
   refreshList->createBucketIndex(objectItemList->len()); //construct index to do binary search
-  for (objectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
+  for (ObjectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
-      objectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
+      ObjectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
       for (; pHead != NULL; pHead = pHead->pNext)
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
@@ -402,7 +402,7 @@ void ObjectBrowser::setCheckMark(ObjectBrowserItem* pCurrent)
 
 void ObjectBrowser::loadUI()
 {
-  objectListItem* pCurrent = objectItemList->getRoot();
+  ObjectListItem* pCurrent = objectItemList->getRoot();
   setCheckMark(pCurrent->pItem);
   for (; pCurrent != NULL; pCurrent = pCurrent->pNext)
     setCheckMark(pCurrent->pItem);

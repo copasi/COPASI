@@ -8,8 +8,8 @@
 browserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject, 
     there may exist multiply wrappers to one browserObject
-objectListItem
-objectList: A queue for all element: 
+ObjectListItem
+ObjectList: A queue for all element: 
    The reason I dont use std:vector is
    for efficiency requirement for all 
    object browser item update
@@ -27,7 +27,7 @@ long ObjectBrowserItem::KeySpace = KEYBASE;
 
 browserObject::browserObject()
 {
-  referenceList = new objectList();
+  referenceList = new ObjectList();
 }
 
 browserObject::~browserObject()
@@ -35,7 +35,7 @@ browserObject::~browserObject()
   delete referenceList;
 }
 
-ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
+ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, ObjectList* pList)
     : QListViewItem(parent, after)
 {
   //here is the ROOT
@@ -47,7 +47,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
 
   if (mObject != NULL)
     {
-      objectListItem* pTmp = pList->getRoot();
+      ObjectListItem* pTmp = pList->getRoot();
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject) // already be pointed in the list
@@ -82,7 +82,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
   mKey = " ";
 }
 
-ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, objectList* pList)
+ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserItem * after , CCopasiObject* mObject, ObjectList* pList)
     : QListViewItem(parent, after)
 {
   setParent(parent);
@@ -94,7 +94,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
     after->setSibling(this);
   if (mObject != NULL)
     {
-      objectListItem* pTmp = pList->getRoot();
+      ObjectListItem* pTmp = pList->getRoot();
       while (pTmp != NULL)
         {
           if (pTmp->pItem->getObject()->pCopasiObject == mObject)
@@ -211,24 +211,24 @@ void ObjectBrowserItem::reverseChecked()
   pBrowserObject->mChecked = !pBrowserObject->mChecked;
 }
 
-objectList::objectList()
+ObjectList::ObjectList()
 {
   root = NULL;
   index_length = 0;
   length = 0;
 }
 
-void objectList::insert(ObjectBrowserItem* pItem)
+void ObjectList::insert(ObjectBrowserItem* pItem)
 {
   int i = 0;
-  objectListItem* pNewItem = new objectListItem(pItem, NULL, NULL);
+  ObjectListItem* pNewItem = new ObjectListItem(pItem, NULL, NULL);
   if (length == 0)
     {
       root = pNewItem;
       length++;
       return;
     }
-  objectListItem* pCurrent = root;
+  ObjectListItem* pCurrent = root;
   for (; i < length - 1; i++)
     pCurrent = pCurrent->pNext;
   pCurrent->pNext = pNewItem;
@@ -236,26 +236,26 @@ void objectList::insert(ObjectBrowserItem* pItem)
   length++;
 }
 
-objectListItem* objectList::getRoot()
+ObjectListItem* ObjectList::getRoot()
 {
   return root;
 }
 
-ObjectBrowserItem* objectList::pop()
+ObjectBrowserItem* ObjectList::pop()
 {
   if (length == 0) return NULL;
   ObjectBrowserItem* returnValue = root->pItem;
-  objectListItem* delNode = root;
+  ObjectListItem* delNode = root;
   root = root->pNext;
   length--;
   delete delNode;
   return returnValue;
 }
 
-void objectList::delDuplicate()
+void ObjectList::delDuplicate()
 {
-  objectListItem* objectLast = getRoot();
-  objectListItem* objectNext = objectLast->pNext;
+  ObjectListItem* objectLast = getRoot();
+  ObjectListItem* objectNext = objectLast->pNext;
   for (; objectNext != NULL; objectNext = objectNext->pNext)
     {
       if (objectLast->pItem->key(0, 0) == objectNext->pItem->key(0, 0)) //delete the current item
@@ -271,12 +271,12 @@ void objectList::delDuplicate()
     }
 }
 
-void objectList::sortList()
+void ObjectList::sortList()
 {
   if (len() <= 1) //sorted
     return;
-  objectListItem* pHead = getRoot();
-  objectListItem* pTail = pHead->pNext;
+  ObjectListItem* pHead = getRoot();
+  ObjectListItem* pTail = pHead->pNext;
   for (; pHead->pNext != NULL; pHead = pHead->pNext)
     {
       for (pTail = pHead->pNext; pTail != NULL; pTail = pTail->pNext)
@@ -290,18 +290,18 @@ void objectList::sortList()
 }
 
 //please do call createQuickIndex() first
-bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the sort order
+bool ObjectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the sort order
 {
   if (pItem->key(0, 0) < getRoot()->pItem->key(0, 0)) //insert at the front
     {
-      objectListItem* pNewItem = new objectListItem(pItem, root, NULL);
+      ObjectListItem* pNewItem = new ObjectListItem(pItem, root, NULL);
       root->pLast = pNewItem;
       root = pNewItem;
       length++;
       return true;
     }
 
-  objectListItem* pHead = getRoot();
+  ObjectListItem* pHead = getRoot();
   for (; (pHead != NULL) && (pItem->key(0, 0) > pHead->pItem->key(0, 0)); pHead = pHead->pNext)
 ;
 
@@ -316,13 +316,13 @@ bool objectList::sortListInsert(ObjectBrowserItem* pItem) //insert and keep the 
     }
 
   length++;
-  objectListItem* pNewItem = new objectListItem(pItem, pHead, pHead->pLast);
+  ObjectListItem* pNewItem = new ObjectListItem(pItem, pHead, pHead->pLast);
   pHead->pLast = pNewItem;
   pNewItem->pLast->pNext = pNewItem;
   return true;
 }
 
-void objectList::createBucketIndex(int max)
+void ObjectList::createBucketIndex(int max)
 {
   index_length = max;
   quickIndex = new bool[max];
@@ -331,8 +331,8 @@ void objectList::createBucketIndex(int max)
   for (; i < max; i++)
     quickIndex[i] = false;
   int tmpIndex;
-  objectListItem* pDel;
-  for (objectListItem* pHead = getRoot(); pHead != NULL;)
+  ObjectListItem* pDel;
+  for (ObjectListItem* pHead = getRoot(); pHead != NULL;)
     {
       tmpIndex = pHead->pItem->key(0, 0).toInt() - KEYBASE;
       if (quickIndex[tmpIndex]) //delete
@@ -354,14 +354,14 @@ void objectList::createBucketIndex(int max)
     }
 }
 
-void objectList::insertBucket(ObjectBrowserItem* pItem)
+void ObjectList::insertBucket(ObjectBrowserItem* pItem)
 {
   int tmpIndex = pItem->key(0, 0).toInt() - KEYBASE;
   quickIndex[tmpIndex] = true;
   pointerList[tmpIndex] = pItem;
 }
 
-ObjectBrowserItem* objectList::bucketPop(int& cursor)
+ObjectBrowserItem* ObjectList::bucketPop(int& cursor)
 {
   for (; cursor < index_length; cursor++)
     if (quickIndex[cursor])
@@ -373,7 +373,7 @@ ObjectBrowserItem* objectList::bucketPop(int& cursor)
   return NULL;
 }
 
-void objectList::destroyBucket()
+void ObjectList::destroyBucket()
 {
   delete[] quickIndex;
   delete[] pointerList;
