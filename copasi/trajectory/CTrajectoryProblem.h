@@ -12,7 +12,6 @@
 #include <string>
 
 class CModel;
-
 class CState;
 
 #include "utilities/CReadConfig.h"
@@ -21,7 +20,6 @@ class CState;
 class CTrajectoryProblem
   {
     // Attributes
-
   private:
     /**
      *  The model the problem is working on.
@@ -68,9 +66,8 @@ class CTrajectoryProblem
 
     /**
      *  Default constructor.
-     *  @param "CModel *" pModel
      */
-    CTrajectoryProblem(CModel * pModel);
+    CTrajectoryProblem();
 
     /**
      *  Copy constructor.

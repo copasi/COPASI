@@ -14,7 +14,7 @@
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 
-const string CTrajectoryMethod::MethodTypeName[] =
+const string CTrajectoryMethod::TypeName[] =
   {
     "unspecified",
     "deterministic",
@@ -22,15 +22,39 @@ const string CTrajectoryMethod::MethodTypeName[] =
     "hybrid"
   };
 
+CTrajectoryMethod *
+CTrajectoryMethod::createTrajectoryMethod(CTrajectoryMethod::Type type)
+{
+  CTrajectoryMethod * Method = NULL;
+  switch (type)
+    {
+    case unspecified:
+    case deterministic:
+      //      Method = new ClSODA();
+      Method = new CTrajectoryMethod();
+      Method->mTypeEnum = deterministic;
+      break;
+
+    case stochastic:
+      break;
+
+    case hybrid:
+      break;
+
+    default:
+      fatalError();
+    }
+  return Method;
+}
+
 /**
  *  Default constructor.
- *  @param "CState *" currentState (Default = NULL)
  */
-CTrajectoryMethod::CTrajectoryMethod(CState * currentState) :
+CTrajectoryMethod::CTrajectoryMethod() :
     CMethodParameterList(),
     mName("No Name"),
-    mType(CTrajectoryMethod::unspecified),
-    mpCurrentState(currentState),
+    mTypeEnum(CTrajectoryMethod::unspecified),
+    mpCurrentState(NULL),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE; }
 
@@ -41,7 +65,7 @@ CTrajectoryMethod::CTrajectoryMethod(CState * currentState) :
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
     CMethodParameterList(src),
     mName(src.mName),
-    mType(src.mType),
+    mTypeEnum(src.mTypeEnum),
     mpCurrentState(src.mpCurrentState),
     mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE; }
@@ -51,6 +75,9 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src):
  */
 CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE; }
+
+const CTrajectoryMethod::Type & CTrajectoryMethod::getTypeEnum() const
+  { return mTypeEnum; }
 
 /**
  *  Set a pointer to the current state.

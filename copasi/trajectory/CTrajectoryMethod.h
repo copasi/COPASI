@@ -15,18 +15,16 @@
 #include "utilities/CMethodParameterList.h"
 
 class CTrajectoryProblem;
-
 class CState;
 
 class CTrajectoryMethod : public CMethodParameterList
   {
   public:
-    static const string MethodTypeName[];
+    static const string TypeName[];
 
     // Attributes
-
-  private:
-    enum MethodType
+  protected:
+    enum Type
     {
       unspecified = 0,
       deterministic,
@@ -42,7 +40,7 @@ class CTrajectoryMethod : public CMethodParameterList
     /**
      *  The type of the method
      */
-    CTrajectoryMethod::MethodType mType;
+    CTrajectoryMethod::Type mTypeEnum;
 
     /**
      *  A pointer to the current state
@@ -54,14 +52,21 @@ class CTrajectoryMethod : public CMethodParameterList
      */
     CTrajectoryProblem * mpProblem;
 
-  public:
     // Operations
-
+  protected:
     /**
      *  Default constructor.
-     *  @param "CState *" currentState (Default = NULL)
      */
-    CTrajectoryMethod(CState * currentState = NULL);
+    CTrajectoryMethod();
+
+  public:
+    /**
+     * Create a trajectory method.
+     * Note: the returned object has to be released after use with delete
+     */
+    static CTrajectoryMethod *
+    createTrajectoryMethod(CTrajectoryMethod::Type type
+                           = CTrajectoryMethod::deterministic);
 
     /**
      *  Copy constructor.
@@ -73,6 +78,12 @@ class CTrajectoryMethod : public CMethodParameterList
      *  Destructor.
      */
     ~CTrajectoryMethod();
+
+    /**
+     * Retrieve the type in numeric form
+     * @return const CTrajectoryMethod::Type & type 
+     */
+    const CTrajectoryMethod::Type & getTypeEnum() const;
 
     /**
      *  Set a pointer to the current state.
@@ -110,5 +121,7 @@ class CTrajectoryMethod : public CMethodParameterList
      */
     virtual const double step(const double & deltaT, const CState * initialState);
   };
+
+#include "CLsodaMethod.h"
 
 #endif // COPASI_CTrajectoryMethod

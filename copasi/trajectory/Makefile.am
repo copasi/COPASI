@@ -6,6 +6,7 @@ libtrajectory_a_SOURCES = \
 	CODESolver.cpp \
 	CTrajectory.cpp \
 	CStochSolver.cpp \
+	CTrajectoryTask.cpp \
 	CTrajectoryProblem.cpp \
 	CTrajectoryMethod.cpp
 
@@ -15,6 +16,7 @@ EXTRA_DIST = \
 	CODESolver.h	CODESolver.cpp \
 	CTrajectory.h	CTrajectory.cpp \
 	CStochSolver.h	CStochSolver.cpp \
+	CTrajectoryTask.h	CTrajectoryTask.cpp \
 	CTrajectoryProblem.h	CTrajectoryProblem.cpp \
 	CTrajectoryMethod.h	CTrajectoryMethod.cpp
 

@@ -19,14 +19,13 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CTrajectoryProblem::CTrajectoryProblem(CModel * pModel):
-    mpModel(pModel),
+CTrajectoryProblem::CTrajectoryProblem():
+    mpModel(NULL),
     mStepNumberSetLast(true),
     mpInitialState(NULL),
     mpEndState(NULL)
 {
   CONSTRUCTOR_TRACE;
-
   if (mpModel)
     mpInitialState = mpModel->getInitialState();
 }
@@ -106,7 +105,6 @@ const double & CTrajectoryProblem::getStepSize() const { return mStepSize; }
 void CTrajectoryProblem::setStartTime(const double & startTime)
 {
   mStartTime = startTime;
-
   if (mpInitialState)
     mpInitialState->setTime(mStartTime);
 
@@ -173,31 +171,42 @@ const CState * CTrajectoryProblem::getEndState() const
 void CTrajectoryProblem::load(CReadConfig & configBuffer,
                               CReadConfig::Mode mode)
 {
-  string Tmp;
-
-  configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
-
-  if (Tmp == Copasi->Model->getTitle())
-    mpModel = Copasi->Model;
+  if (configBuffer.getVersion() < "4.0")
+    {
+      mpModel = Copasi->Model;
+      configBuffer.getVariable("EndTime", "C_FLOAT64",
+                               (void *) & mEndTime,
+                               CReadConfig::LOOP);
+      configBuffer.getVariable("Points", "C_INT32",
+                               (void *) & mStepNumber);
+      mStepNumberSetLast = true;
+      mStartTime = 0.0;
+      sync();
+      mpInitialState = mpModel->getInitialState();
+    }
   else
-    fatalError();
+    {
+      string Tmp;
 
-  configBuffer.getVariable("TrajectoryProblemStepNumber",
-                           "C_INT32", &mStepNumber);
+      configBuffer.getVariable("TrajectoryProblemModel", "string", &Tmp, mode);
+      if (Tmp == Copasi->Model->getTitle())
+        mpModel = Copasi->Model;
+      else
+        fatalError();
 
-  configBuffer.getVariable("TrajectoryProblemStepSize",
-                           "C_FLOAT64", &mStepSize);
-
-  configBuffer.getVariable("TrajectoryProblemSetLast",
-                           "bool", &mStepNumberSetLast);
-
-  configBuffer.getVariable("TrajectoryProblemStartTime",
-                           "C_FLOAT64", &mStartTime);
-
-  configBuffer.getVariable("TrajectoryProblemEndTime",
-                           "C_FLOAT64", &mEndTime);
-
-  mpInitialState = CState::load(configBuffer);
+      configBuffer.getVariable("TrajectoryProblemStepNumber",
+                               "C_INT32", &mStepNumber);
+      configBuffer.getVariable("TrajectoryProblemStepSize",
+                               "C_FLOAT64", &mStepSize);
+      configBuffer.getVariable("TrajectoryProblemSetLast",
+                               "bool", &mStepNumberSetLast);
+      configBuffer.getVariable("TrajectoryProblemStartTime",
+                               "C_FLOAT64", &mStartTime);
+      configBuffer.getVariable("TrajectoryProblemEndTime",
+                               "C_FLOAT64", &mEndTime);
+      mpInitialState = new CState;
+      mpInitialState->load(configBuffer);
+    }
 }
 
 /**
@@ -219,7 +228,7 @@ void CTrajectoryProblem::save(CWriteConfig & configBuffer) const
                              "C_FLOAT64", &mStartTime);
     configBuffer.setVariable("TrajectoryProblemEndTime",
                              "C_FLOAT64", &mEndTime);
-    CState::save(configBuffer, mpInitialState);
+    mpInitialState->save(configBuffer);
   }
 
 /**
@@ -232,7 +241,6 @@ void CTrajectoryProblem::sync()
   else
     {
       C_FLOAT64 Tmp = (mEndTime - mStartTime) / mStepSize;
-
       if (Tmp == (unsigned C_INT32) Tmp)
         mStepNumber = (unsigned C_INT32) Tmp;
       else
