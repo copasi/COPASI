@@ -43,6 +43,7 @@
     <name>home</name>
     <comment>Your home directory.</comment>
    </option>
+<!--
    <option id="SystemFunctionDB"
            type="string"
            mandatory="no"
@@ -71,8 +72,9 @@
            hidden="no">
     <name>copasiFile</name>
     <name>f</name>
-    <comment>The file the model which specifies the model and task.</comment>
+    <comment>The file which specifies the model and tasks.</comment>
    </option>
+-->
    <option id="Save"
            type="string"
            mandatory="no"
@@ -81,7 +83,12 @@
            hidden="no">
     <name>save</name>
     <name>s</name>
-    <comment>The file the model is saved in after work.</comment>
+    <comment>
+       The file the model is saved to after work. This overwrites the
+       default behaviour, which saves the resulting model in input file. 
+       If the input file is a Gepasi or SBML file its extension .gps or
+       .xml is replaced with .cps
+    </comment>
    </option>
    <option id="ImportSBML"
            type="string"
