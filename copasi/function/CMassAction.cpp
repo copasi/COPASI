@@ -43,7 +43,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
   getParameters().add("substrate",
                       CFunctionParameter::VFLOAT64,
                       "SUBSTRATE");
-  addUsage("SUBSTRATES", 0, CRange::Infinity);
+  addUsage("SUBSTRATES", 1, CRange::Infinity);
 
   if (isReversible() == TriTrue)
     {
@@ -56,7 +56,7 @@ CMassAction::CMassAction(const TriLogic & reversible,
       getParameters().add("product",
                           CFunctionParameter::VFLOAT64,
                           "PRODUCT");
-      addUsage("PRODUCTS", 0, CRange::Infinity);
+      addUsage("PRODUCTS", 1, CRange::Infinity);
     }
   else
     {
