@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/08/06 14:59:33 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 18:58:50 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 #define COPASI_CCopasiXML
 
 #include "CCopasiXMLInterface.h"
+#include "utilities/CVersion.h"
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
@@ -51,6 +52,14 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     virtual bool load(std::istream & is);
+
+    /**
+     * Retrieve the version of the current XML file. 
+     * Before any load operation this contains the COPASI schema version supported by
+     * the writer. After load it contains the schema version of the loaded file.
+     * @return const CVersion & version
+     */
+    const CVersion & getVersion() const;
 
   private:
     /**
@@ -111,6 +120,13 @@ class CCopasiXML : public CCopasiXMLInterface
      * @return bool success
      */
     bool buildFunctionList();
+
+    // Attributes
+
+    /**
+     * The version of the COPASI XML Schema the current file adheres to.
+     */
+    CVersion mVersion;
   };
 
 #endif // COPASI_CCopasiXML

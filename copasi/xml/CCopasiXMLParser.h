@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/02/18 13:01:46 $
+   $Author: shoops $ 
+   $Date: 2005/02/18 18:58:50 $
    End CVS Header */
 
 /**
@@ -37,11 +37,18 @@ class CPlotItem;
 class CPlotDataChannelSpec;
 class CCopasiParameter;
 class CCopasiParameterGroup;
+class CVersion;
 
 struct SCopasiXMLParserCommon
   {
-    //    CCopasiXMLParser * pParser;
+    /**
+     * The version of the parsed file
+     */
+    CVersion * pVersion;
 
+    /**
+     * The model which is build during parsing.
+     */
     CModel * pModel;
 
     /**
@@ -2561,11 +2568,18 @@ class CCopasiXMLParser : public CExpat
       };
 
     // Operations
-  public:
+  private:
     /**
      * Constructor
      */
     CCopasiXMLParser();
+
+  public:
+    /**
+     * Public constructor
+     * @param CVersion & version
+     */
+    CCopasiXMLParser(CVersion & version);
 
     /**
      * Destructor

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:11:27 $
+   $Date: 2005/02/18 18:58:50 $
    End CVS Header */
 
 /**
@@ -114,7 +114,7 @@ void CCopasiXMLParser::TEMPLATEElement::end(const XML_Char *pszName)
 
 #endif // COPASI_TEMPLATE
 
-CCopasiXMLParser::CCopasiXMLParser() :
+CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
     CExpat(),
     mCommon(),
     mElementHandlerStack(),
@@ -124,6 +124,7 @@ CCopasiXMLParser::CCopasiXMLParser() :
 
   mElementHandlerStack.push(new COPASIElement(*this, mCommon));
   //  mCommon.pParser = this;
+  mCommon.pVersion = & version;
   mCommon.pModel = NULL;
   mCommon.pFunctionList = NULL;
   mCommon.pFunction = NULL;
@@ -295,10 +296,24 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
 {
   mCurrentElement++; /* We should always be on the next element */
 
+  char Default[] = "0";
+  const char * versionMajor;
+  C_INT32 VersionMajor;
+  const char * versionMinor;
+  C_INT32 VersionMinor;
+
   switch (mCurrentElement)
     {
     case COPASI:
       if (strcmp(pszName, "COPASI")) fatalError();
+
+      versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, Default);
+      VersionMajor = atoi(versionMajor);
+      versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, Default);
+      VersionMinor = atoi(versionMinor);
+
+      mCommon.pVersion->setVersion(VersionMajor, VersionMinor, 0);
+
       return;
 
     case ListOfFunctions:

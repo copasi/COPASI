@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/06 20:01:25 $
+   $Date: 2005/02/18 18:58:50 $
    End CVS Header */
 
 /**
@@ -20,7 +20,9 @@
 
 #include "CCopasiXML.h"
 #include "CCopasiXMLParser.h"
+#include "CCopasiXMLVersion.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiVector.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -37,7 +39,11 @@
 
 CCopasiXML::CCopasiXML():
     CCopasiXMLInterface()
-{}
+{
+  mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
+                      COPASI_XML_VERSION_MINOR,
+                      COPASI_XML_VERSION_BUILD);
+}
 
 CCopasiXML::~CCopasiXML() {}
 
@@ -48,13 +54,18 @@ bool CCopasiXML::save(std::ostream & os)
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   << std::endl;
-  *mpOstream << "<!-- generated with COPASI (http://www.copasi.org) -->"
+  *mpOstream << "<!-- generated with COPASI "
+  << CCopasiDataModel::Global->getVersion()->getVersion()
+  << " (http://www.copasi.org) -->"
   << std::endl;
 
   CXMLAttributeList Attributes;
   Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
   Attributes.add("xsi:noNamespaceSchemaLocation",
                  "http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd");
+  Attributes.add("versionMajor", mVersion.getVersionMajor());
+  Attributes.add("versionMinor", mVersion.getVersionMinor());
+
   startSaveElement("COPASI", Attributes);
 
   if (haveModel() && !haveFunctionList())
@@ -82,7 +93,7 @@ bool CCopasiXML::load(std::istream & is)
   bool success = true;
   bool done = false;
 
-  CCopasiXMLParser Parser;
+  CCopasiXMLParser Parser(mVersion);
 
   Parser.setFunctionList(mpFunctionList);
   Parser.setModel(mpModel);
@@ -133,6 +144,9 @@ bool CCopasiXML::load(std::istream & is)
 
   return success;
 }
+
+const CVersion & CCopasiXML::getVersion() const
+  {return mVersion;}
 
 bool CCopasiXML::saveModel()
 {
