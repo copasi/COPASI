@@ -28,8 +28,7 @@ COptimizer::COptimizer()
 
 //YOHE: seems virtual cannot be outside of class declaration
 COptimizer::~COptimizer()
-{
-}
+{ }
 
 // Initialization of private variables
 bool COptimizer::Init( string &inifile )

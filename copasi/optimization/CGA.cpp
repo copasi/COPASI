@@ -457,6 +457,9 @@ int CGA::Optimise()
   //YOHE: this will be changed
   int argc = 4;
   char * argv[4];
+  argv[1] = "100";
+  argv[2] = "-10";
+  argv[3] = "10";
 
  unsigned int i, last_update, u100, u300, u500, fr;
  double bx;
