@@ -92,7 +92,7 @@ CModel *CSpec2Model::createModel()
   processInits();
   processConstants();
   processRates();
-  //     processFunctions();
+  processFunctions();
   processMoieties();
   processDeTerms();
   mModel->initializeMetabolites();
@@ -338,9 +338,11 @@ void CSpec2Model::processDeTerms()
 
           while ("" != (metabolite_name = (*termit)->getTopLevelMetabolite(pos++, multiplicity)))
             {
-              metabolite = findMetabolite(metabolite_name);
-              tmp_metab = reaction->addMetabolite(metabolite);
-              tmp_metab->setMultiplicity(multiplicity);
+              if ((metabolite = findMetabolite(metabolite_name)))
+                {
+                  tmp_metab = reaction->addMetabolite(metabolite);
+                  tmp_metab->setMultiplicity(multiplicity);
+                }
             }
         }
     }
@@ -441,6 +443,113 @@ CMetab *CSpec2Model::findMetabolite(string metab_name)
     }
 
   return 0;
+}
+
+void CSpec2Model::processMoieties()
+{
+  // Find each moiety line
+  vector<CSpecLine>::iterator it = mSpecLines.begin();
+  string comparment_name;
+  string moiety_name;
+  string contents;
+  CMetab metab;
+
+  for (; it < mSpecLines.end(); it++)
+    {
+      if (it->getType() == CSpecLine::EQN)
+        {
+          comparment_name = it->extractCpt();
+          moiety_name = it->extractLeft();
+          contents = it->extractRight();
+
+          mMoietyVector.push_back(CBaseEqn(comparment_name,
+                                           moiety_name,
+                                           contents));
+
+          metab.setName(moiety_name);
+          metab.setStatus(METAB_DEPENDENT);
+          // :TODO: metab.setInitialConcentration(iconc);
+          mModel->getCompartments()[comparment_name]->addMetabolite(metab);
+
+          cout << "Added moiety " << moiety_name
+          << ", " << comparment_name
+          << ", " << contents << endl;
+        }
+    }
+}
+
+void CSpec2Model::processFunctions()
+{
+  // Find each function line
+  CFunction *pFunction;
+  vector<CSpecLine>::iterator it = mSpecLines.begin();
+
+  for (; it < mSpecLines.end(); it++)
+    {
+      if (it->getType() == CSpecLine::FUN)
+        {
+          pFunction = new CKinFunction();
+          string tmp = it->extractLeft();
+
+          string::size_type p1 = tmp.find_first_not_of(" \t");
+          string::size_type p2 = tmp.find_first_of("(");
+          pFunction->setName(tmp.substr(p1, p2 - p1));
+
+          string parameter =
+            tmp.substr(p2 + 1, tmp.find_last_of(")") - p2 - 1);
+
+          CFunctionParameters & Parameters = pFunction->getParameters();
+          p1 = 0;
+          p2 = 0;
+          string ParameterName;
+
+          while (p1 != string::npos)
+            {
+              p2 = parameter.find(",");
+              ParameterName = parameter.substr(p1, p2 - p1);
+              p1 = p2;
+              Parameters.add(ParameterName,
+                             CFunctionParameter::FLOAT64,
+                             "unknown");
+            }
+
+          tmp = it->extractRight();
+          p1 = tmp.find_first_not_of(" \t");
+          p2 = tmp.find_last_not_of(" \t");
+          tmp = tmp.substr(p1, p2 - p1 + 1);
+          pFunction->setDescription(tmp);
+          // :TODO: We have to identify constants
+          //        and define them as parameters.
+
+          istringstream *strstr = new istringstream(tmp);
+          CScanInputFlexLexer scanner(strstr);
+          CDeTerm::Type type;
+
+          while ((type = static_cast<CDeTerm::Type>(scanner.yylex())))
+            if (type == CDeTerm::IDENT)
+              {
+                ParameterName = scanner.YYText();
+
+                try
+                  {
+                    Parameters.add(ParameterName,
+                                   CFunctionParameter::FLOAT64,
+                                   "PARAMETER");
+                  }
+                catch (CCopasiException Exception)
+                  {
+                    /* Parameter exists not found */
+
+                    if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+                      throw Exception;
+                  }
+              }
+
+          Copasi->FunctionDB.add(pFunction);
+          // ((CKinFunction *)pFunction)->compile();
+          cout << it->getString() << endl;
+        }
+    }
 }
 
 string CSpec2Model::expandRate(CDeTerm *term)

@@ -96,7 +96,10 @@ void CDeTerm::compile(vector<CNameVal> &rates)
           break;
 
         case EXPONENT:
-          is_exponent = true;
+
+          if (level == 0)
+            is_exponent = true;
+
           break;
 
         case NUM:

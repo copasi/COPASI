@@ -124,13 +124,15 @@ class CDeTerm
       << "StoiCoeficient = " << d.mMultiplier << endl;
       os << "TokenStack :" << endl;
 
-      for (int i = 0; i < d.mTokenStack.size(); i++)
+      int i;
+
+      for (i = 0; i < d.mTokenStack.size(); i++)
         os << "  " << i << ": Type = '" << d.mTokenStack[i]->first
         << "', String = '" << d.mTokenStack[i]->second << "'" << endl;
 
       os << "Metabolites :" << endl;
 
-      for (int i = 0; i < d.mTopLevelMetabolites.size(); i++)
+      for (i = 0; i < d.mTopLevelMetabolites.size(); i++)
         os << "  " << i << ": Metabolite = '" << d.mTopLevelMetabolites[i]->first
         << "', Multiplicity = '" << d.mTopLevelMetabolites[i]->second << "'" << endl;
 
