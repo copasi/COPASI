@@ -435,21 +435,24 @@ void CGA::creation( unsigned int l, unsigned int u )
 
 void CGA::dump_data( unsigned int i )
 {
- ofstream finalout("debugopt.dat",ios::app);
+  //YOHE: use cout instead
+  //ofstream finalout("debugopt.dat",ios::app);
  
- if(!finalout)
-   	{
-   	cout<<"debugopt.dat cannot be opened!"<<endl;
-  	exit(1);
-	}
- finalout<<"#"<<i<<"\t"<<candx[best]<<endl;
+  //if(!finalout)
+  // 	{
+  // 	cout<<"debugopt.dat cannot be opened!"<<endl;
+  //	exit(1);
+  //	}
+  //finalout<<"#"<<i<<"\t"<<candx[best]<<endl;
+ cout<<"#"<<i<<"\t"<<candx[best]<<endl;
  for(int j=0;j<nparam;j++) 
     {
-     finalout<<indv[best][j]<<"\t";
+      //finalout<<indv[best][j]<<"\t";
+      cout<<indv[best][j]<<"\t";
     }
-  finalout<<endl;
-  finalout<<endl;
-  finalout.close();
+ //finalout<<endl;
+ // finalout<<endl;
+ //finalout.close();
 
 }
 
@@ -527,17 +530,20 @@ int CGA::Optimise()
  // and store that value
  bx = Ga_10param.Get_best_candidate();
  
- ofstream finalout("debugopt.dat");
- if(!finalout)
-   	{
-   	cout<<"debugopt.dat cannot be opened!"<<endl;
-  	exit(1);
-	}
- finalout<<"-----------------------------best result at each generation---------------------"<<endl;
- finalout<<"Generation\t"<<"Best candidate value for object function\t"<<"Display "<<Ga_10param.Get_nparam()<<" parameters"<<endl; 
- finalout<<endl;
- finalout.close();
+ //ofstream finalout("debugopt.dat");
+ //if(!finalout)
+ //  	{
+ //  	cout<<"debugopt.dat cannot be opened!"<<endl;
+ // 	exit(1);
+ //	}
+ //finalout<<"-----------------------------best result at each generation---------------------"<<endl;
+ //finalout<<"Generation\t"<<"Best candidate value for object function\t"<<"Display "<<Ga_10param.Get_nparam()<<" parameters"<<endl; 
+ //finalout<<endl;
+ //finalout.close();
 
+ cout<<"-----------------------------best result at each generation---------------------"<<endl;
+ cout<<"Generation\t"<<"Best candidate value for object function\t"<<"Display "<<Ga_10param.Get_nparam()<<" parameters"<<endl; 
+ cout<<endl;
 
 int psize = Ga_10param.Get_popsize();  
 
