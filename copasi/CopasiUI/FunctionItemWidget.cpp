@@ -323,7 +323,7 @@ void FunctionItemWidget::languageChange()
   buttonItems->setText(tr("Items"));
   button2->setText(tr("2"));
   button4->setText(tr("4"));
-  buttonLog->setText(tr("log"));
+  buttonLog->setText(tr("log10"));
   buttonSign->setText(tr("+/-"));
   buttonCos->setText(tr("cos"));
   buttonConfirm->setText(tr("Confirm"));
@@ -563,9 +563,9 @@ void FunctionItemWidget::slotButtonLn()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  //textFunction->setText(textFunction->text() + "ln");
-  textFunction->insert("ln");
-  index += 2;
+  //textFunction->setText(textFunction->text() + "log");
+  textFunction->insert("log");
+  index += 3;
   textFunction->setCursorPosition(para, index);
 }
 
@@ -593,9 +593,9 @@ void FunctionItemWidget::slotButtonLog()
 {
   int para, index;
   textFunction->getCursorPosition(&para, &index);
-  //textFunction->setText(textFunction->text() + "log");
-  textFunction->insert("log");
-  index += 3;
+  //textFunction->setText(textFunction->text() + "log10");
+  textFunction->insert("log10");
+  index += 5;
   textFunction->setCursorPosition(para, index);
 }
 
