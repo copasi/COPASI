@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/06 20:08:10 $
+   $Author: stupe $ 
+   $Date: 2004/12/06 22:39:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -277,7 +277,7 @@ bool DataModelGUI::importSBML(const char* fileName)
   if (!DataModel::importSBML(fileName)) return false;
 
   linkDataModelToGUI();
-  return false;
+  return true;
 }
 
 bool DataModelGUI::exportSBML(const char* fileName)
