@@ -31,24 +31,19 @@ CWriteConfig::CWriteConfig(void)
   mBuffer.precision(16);
 }
 
-CWriteConfig::CWriteConfig(const string& name)
+CWriteConfig::CWriteConfig(const string& name, ios::openmode mode)
 {
   // initialize everything
   mFileName = name;
-  mOpenMode = ios::out;
+  mOpenMode = mode;
   mLineNumber = 0;
   mFail = 0;
 
   mBuffer.setf(ios::scientific);
   mBuffer.precision(16);
 
-  if (Copasi)
-    setVariable("Version", "string", &Copasi->ProgramVersion.getVersion());
-  else
-    {
-      string Version("4.0.0");
-      setVariable("Version", "string", &Version);
-    }
+  if (mOpenMode & ios::out)
+    writeVersion();
 }
 
 CWriteConfig::~CWriteConfig(void)
@@ -175,7 +170,7 @@ C_INT32 CWriteConfig::setVariable(const string & name,
       << (C_INT32) (*(char *) pout2)
       //  This will help to debug
       //  << "\t" << *(char *) pout1 << "," << *(char *) pout2
-      ;
+;
     }
   else
     {
@@ -187,4 +182,15 @@ C_INT32 CWriteConfig::setVariable(const string & name,
   mLineNumber++;
 
   return mFail;
+}
+
+void CWriteConfig::writeVersion(void)
+{
+  if (Copasi)
+    setVariable("Version", "string", &Copasi->ProgramVersion.getVersion());
+  else
+    {
+      string Version("4.0.0");
+      setVariable("Version", "string", &Version);
+    }
 }
