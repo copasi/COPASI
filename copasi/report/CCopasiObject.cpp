@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/23 21:16:24 $
+   $Date: 2005/03/30 14:19:56 $
    End CVS Header */
 
 /**
@@ -259,6 +259,9 @@ bool CCopasiObject::setObjectValue(const C_INT32 & value)
 
 bool CCopasiObject::setObjectValue(const bool & value)
 {return (*mpUpdateMethod)(value);}
+
+UpdateMethod * CCopasiObject::getUpdateMethod() const
+  {return mpUpdateMethod;}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/23 21:16:24 $
+   $Date: 2005/03/30 14:19:56 $
    End CVS Header */
 
 /**
@@ -241,6 +241,8 @@ class CCopasiObject
 
       return true;
     }
+
+    UpdateMethod * getUpdateMethod() const;
   };
 
 template <class CType> CCopasiObjectReference< CType > *
