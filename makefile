@@ -18,13 +18,17 @@ all: 	test \
 	doc/html/index.html
 
 OBJS	= $(OBJDIR)/CCompartment.o \
-	  $(OBJDIR)/CDatum.o \
-	  $(OBJDIR)/CCopasiMessage.o \
 	  $(OBJDIR)/CCopasiException.o \
+	  $(OBJDIR)/CCopasiMessage.o \
+	  $(OBJDIR)/CDatum.o \
+	  $(OBJDIR)/CKinetics.o \
+	  $(OBJDIR)/CKinFunction.o \
 	  $(OBJDIR)/CMetab.o \
+	  $(OBJDIR)/CNodeK.o \
 	  $(OBJDIR)/CReadConfig.o  \
 	  $(OBJDIR)/CWriteConfig.o  \
 	  $(OBJDIR)/globals.o  \
+	  $(OBJDIR)/lexkk.o  \
           $(OBJDIR)/main.o
 
 test: 	dependencies $(OBJDIR) $(OBJS)

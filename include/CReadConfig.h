@@ -31,7 +31,7 @@ public:
      *  as the argument.
      *  @param name name of the confguration file. 
      */
-    CReadConfig(string name);
+    CReadConfig(const string& name);
 
     /**
      *  Destructor. 
@@ -61,7 +61,13 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int GetVariable(string name, string type, void * pout);
+    int GetVariable(const string& name, 
+                    const string& type,
+                    void * pout);
+    int GetVariable(const string& name, 
+                    const string& type,
+                    void * pout1,
+                    void * pout2);
 
 private:
     /**

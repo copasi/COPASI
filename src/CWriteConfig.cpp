@@ -26,7 +26,7 @@ CWriteConfig::CWriteConfig(void)
     mBuffer.precision(16);
 }
 
-CWriteConfig::CWriteConfig(string name)
+CWriteConfig::CWriteConfig(const string& name)
 {
     // initialize everything
     mFileName     = name;
@@ -88,7 +88,9 @@ int CWriteConfig::Fail()
     return mFail;
 }
 
-int CWriteConfig::SetVariable(string name, string type, void * pout)
+int CWriteConfig::SetVariable(const string name, 
+                              const string type, 
+                              void *pout)
 {
     mBuffer << name << "=";
     
@@ -117,5 +119,26 @@ int CWriteConfig::SetVariable(string name, string type, void * pout)
     return mFail;
 }
 
+int CWriteConfig::SetVariable(const string name, 
+                              const string type, 
+                              void *pout1, 
+                              void *pout2)
+{
+    mBuffer << name << "=";
+    
+    // Return the value depending on the type
+    if ( type == "node" )
+    {
+        mBuffer << (int) (*(char *) pout1) << "," << (int) (*(char *) pout2);
+    }
+    else
+    {
+        FatalError();
+        mFail = 1; //Error
+    }
+    
+    mBuffer << endl;
+    mLineNumber++;
 
-
+    return mFail;
+}

@@ -1,12 +1,18 @@
-// CMetab
-// 
-// Derived from Gepasi's cmetab.cpp
-// (C) Pedro Mendes 1995-2000
-//
-// Converted for Copasi by Stefan Hoops
+/**
+ *  CMetab class.
+ *  Derived from Gepasi's cmetab.cpp. (C) Pedro Mendes 1995-2000.
+ *  Converted for Copasi by Stefan Hoops 2001
+ */
 
-#ifndef COPASI_CMetap
+#ifndef COPASI_CMetab
 #define COPASI_CMetab
+
+#include <vector>
+#include <string>
+
+#include "CReadConfig.h"
+#include "CWriteConfig.h"
+#include "CCompartment.h"
 
 //constants for use with Status
 #define METAB_FIXED	0
@@ -26,7 +32,7 @@ public:
      *  Specific constructor. 
      *  @param name name of the metabolite.
      */
-    CMetab(string name);
+    CMetab(const string& name);
 
     /**
      *  Specific constructor.
@@ -36,7 +42,7 @@ public:
      *  @param compartment reference to the compartment the metabolite
      *     is located.
      */
-    CMetab(string name, short status, CCompartment &compartment);
+    CMetab(const string& name, const short status, CCompartment &compartment);
 
     /**
      *  Assignment operator.
@@ -46,7 +52,7 @@ public:
     /**
      *  Reset the values of a metabolite as if CMetab(string name) was called.
      */
-    int Reset(string name);
+    int Reset(const string& name);
 
     /**
      *  Saves the contents of the object to a CWriteConfig object.

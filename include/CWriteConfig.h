@@ -26,7 +26,7 @@ public:
      *  as the argument.
      *  @param name name of the confguration file. 
      */
-    CWriteConfig(string name);
+    CWriteConfig(const string& name);
 
     /**
      *  Destructor. 
@@ -57,7 +57,13 @@ public:
      *  @return mFail
      *  @see mFail  
      */
-    int SetVariable(string name, string type, void * pout);
+    int SetVariable(string name,
+                    string type, 
+                    void *pout);
+    int SetVariable(string name,
+                    string type, 
+                    void *pout1, 
+                    void *pout2);
 
 private:
     /**

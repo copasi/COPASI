@@ -28,12 +28,12 @@ CMetab::CMetab()
     mFail       = 0;
 }
 
-CMetab::CMetab(string name)
+CMetab::CMetab(const string& name)
 {
     Reset(name);
 }
 
-CMetab::CMetab(string name, short status, 
+CMetab::CMetab(const string& name, const short status, 
                CCompartment &compartment)
 {
     mName       = name;
@@ -61,7 +61,7 @@ CMetab &CMetab::operator=(const CMetab &RHS)
     return *this;  // Assignment operator returns left side.
 }
 
-int CMetab::Reset(string name)
+int CMetab::Reset(const string& name)
 {
     // initialize everything
     mName       = name;
@@ -79,20 +79,17 @@ int CMetab::Reset(string name)
 int CMetab::Load(CReadConfig &configbuffer,
                  CCompartmentVector &list)
 {
-    mFail = configbuffer.GetVariable((string) "Metabolite",
-                                     (string) "string",
+    mFail = configbuffer.GetVariable("Metabolite", "string",
                                      (void *) &mName);
     if (mFail) return mFail;
     configbuffer.SetMode(-CReadConfig_SEARCH);
 
-    mFail = configbuffer.GetVariable((string) "Concentration", 
-                                     (string) "double",
+    mFail = configbuffer.GetVariable("Concentration", "double",
                                      (void *) &mIConc);
     if (mFail) return mFail;
 
     int Index = -1;
-    mFail = configbuffer.GetVariable((string) "Compartment", 
-                                     (string) "int",
+    mFail = configbuffer.GetVariable("Compartment", "int",
                                      (void *) &Index);
     if (mFail) return mFail;
 
@@ -108,8 +105,7 @@ int CMetab::Load(CReadConfig &configbuffer,
     Compartment = &list[Index];
 
     int Status;
-    mFail = configbuffer.GetVariable((string) "Type", 
-                                     (string) "int",
+    mFail = configbuffer.GetVariable("Type", "int",
                                      (void *) &Status);
     mStatus = (short) Status;
 
@@ -139,25 +135,21 @@ int CMetab::Load(CReadConfig &configbuffer,
 int CMetab::Save(CWriteConfig &configbuffer,
                  CCompartmentVector &list)
 {
-    mFail = configbuffer.SetVariable((string) "Metabolite",
-                                     (string) "string",
+    mFail = configbuffer.SetVariable("Metabolite", "string",
                                      (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = configbuffer.SetVariable((string) "Concentration", 
-                                     (string) "double",
+    mFail = configbuffer.SetVariable("Concentration", "double",
                                      (void *) &mIConc);
     if (mFail) return mFail;
 
     int Index = Compartment - &list.front();
-    mFail = configbuffer.SetVariable((string) "Compartment", 
-                                     (string) "int",
+    mFail = configbuffer.SetVariable("Compartment", "int",
                                      (void *) &Index);
     if (mFail) return mFail;
 
     int Status = (int) mStatus;
-    mFail = configbuffer.SetVariable((string) "Type", 
-                                     (string) "int",
+    mFail = configbuffer.SetVariable("Type", "int",
                                      (void *) &Status);
     return mFail;
 }
@@ -179,8 +171,7 @@ int CMetabVector::Save(CWriteConfig &configbuffer,
 {
     int Size = this->size();
     
-    mFail = configbuffer.SetVariable((string) "TotalMetabolites",
-                                     (string) "int",
+    mFail = configbuffer.SetVariable("TotalMetabolites", "int",
                                      (void *) &Size);
     if (mFail) return mFail;
 
@@ -203,8 +194,7 @@ int CMetabVector::Load(CReadConfig &configbuffer,
     configbuffer.SetMode(CReadConfig_SEARCH);
     configbuffer.SetMode(CReadConfig_LOOP);
     
-    mFail = configbuffer.GetVariable((string) "TotalMetabolites",
-                                     (string) "int",
+    mFail = configbuffer.GetVariable("TotalMetabolites","int",
                                      (void *) &Size);
     if (mFail) return mFail;
     this->resize(Size);

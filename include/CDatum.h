@@ -1,10 +1,9 @@
-// CDatum
-// 
-// Derived from Gepasi's CDatum.cpp
-// (C) Pedro Mendes 1995-2000
-//
-// Converted for Copasi by Pedro Mendes
-//
+/** 
+ *  CDatum class.
+ *  Derived from Gepasi's CDatum.cpp. (C) Pedro Mendes 1995-2000.
+ *  Converted for Copasi by Pedro Mendes.
+ */
+
 // CDatum is not yet finished: because all data are now private, we will need 
 // to add a few more methods (perhaps not in this class, though - thus it is
 // best to wait until we hit the problem in CGepasiDoc.   PEDRO 1/11/01
@@ -27,7 +26,7 @@
 #define D_EIG	11	// eigenvalues of the Jacobian
 #define D_VOL	12	// compartment volumes
 #define D_MOIT	13	// conservation relations
-#define D_T		14	// simulation time
+#define D_T	14	// simulation time
 #define D_INTS	15	// counter of integration steps
 #define D_FEVAL	16	// counter of function evaluations
 #define D_JEVAL	17	// counter of jacobian evaluations

@@ -7,14 +7,24 @@
 #ifndef COPASI_copasi
 #define COPASI_copasi
 
+#include <string>
+#include <assert.h>
+
 using namespace std ;
 
 #ifdef WIN32 
-#define COPASI__msbug (enum)
-#define vsnprintf _vsnprintf
-#else 
-#define COPASI__msbug
+#define vsnprintf _vsnprintf // they just have a different name for this guy
 #endif  // WIN32
+
+#ifdef TRUE
+#undef TRUE
+#endif
+#define TRUE 1
+
+#ifdef FALSE
+#undef FALSE
+#endif
+#define FALSE 0
 
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}

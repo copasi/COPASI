@@ -74,14 +74,12 @@ int CCompartment::Fail()
 
 int CCompartment::Load(CReadConfig &configbuffer)
 {
-    mFail = configbuffer.GetVariable((string) "Compartment", 
-                                     (string) "string",
+    mFail = configbuffer.GetVariable("Compartment", "string",
                                      (void *) &mName);
     if (mFail) return mFail;
 
     configbuffer.SetMode(-CReadConfig_SEARCH);
-    mFail = configbuffer.GetVariable((string) "Volume", 
-                                     (string) "double",
+    mFail = configbuffer.GetVariable("Volume", "double",
                                      (void *) &mVolume);
     return mFail;
 }
@@ -89,13 +87,11 @@ int CCompartment::Load(CReadConfig &configbuffer)
 
 int CCompartment::Save(CWriteConfig &configbuffer)
 {
-    mFail = configbuffer.SetVariable((string) "Compartment",
-                                     (string) "string",
+    mFail = configbuffer.SetVariable("Compartment", "string",
                                      (void *) &mName);
     if (mFail) return mFail;
 
-    mFail = configbuffer.SetVariable((string) "Volume", 
-                                     (string) "double",
+    mFail = configbuffer.SetVariable("Volume", "double",
                                      (void *) &mVolume);
     return mFail;
 }
@@ -116,8 +112,7 @@ int CCompartmentVector::Save(CWriteConfig &configbuffer)
 {
     int Size = this->size();
     
-    mFail = configbuffer.SetVariable((string) "TotalCompartments",
-                                     (string) "int",
+    mFail = configbuffer.SetVariable("TotalCompartments", "int",
                                      (void *) &Size);
     if (mFail) return mFail;
 
@@ -139,8 +134,7 @@ int CCompartmentVector::Load(CReadConfig &configbuffer)
     configbuffer.SetMode(CReadConfig_SEARCH);
     configbuffer.SetMode(CReadConfig_LOOP);
     
-    mFail = configbuffer.GetVariable((string) "TotalCompartments",
-                                     (string) "int",
+    mFail = configbuffer.GetVariable("TotalCompartments","int",
                                      (void *) &Size);
     if (mFail) return mFail;
     this->resize(Size);

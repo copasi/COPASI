@@ -1,13 +1,12 @@
 /**
- *  CCopasiMessage class. A more elaborate class description.
+ *  CCopasiMessage class.
+ *  New Class for COPASI message handling. (C) Stefan Hoops 2001.
  */
-
-// New Class for COPASI message handling
-// (C) Stefan Hoops 2001
-
 
 #ifndef COPASI_CCopasiMessage
 #define COPASI_CCopasiMessage
+
+#include <string>
 
 typedef enum COPASI_MESSAGE_TYPE
 {
@@ -17,6 +16,9 @@ typedef enum COPASI_MESSAGE_TYPE
     ERROR
 };
 
+/**
+ *  This troughs an exception with information where the error occured.
+ */
 #define FatalError() {CCopasiMessage(ERROR,"%s (%d) compiled: %s %s", __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
@@ -35,7 +37,7 @@ public:
      *  @param format printf like format string.
      *  @param ... arguments like in printf
      */
-    CCopasiMessage(COPASI_MESSAGE_TYPE type, const char *format, ... );
+    CCopasiMessage(const COPASI_MESSAGE_TYPE type, const char *format, ... );
 
     /**
      *  Destructor. 
@@ -65,7 +67,7 @@ private:
      *  @param type message type (RAW|TRACE|WARNING|ERROR)
      *  @param text message text
      */
-    void Handler(COPASI_MESSAGE_TYPE type, string text);
+    void Handler();
     
     /**
      *  Inserts line breaks in the message text.

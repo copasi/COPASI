@@ -27,7 +27,7 @@ CReadConfig::CReadConfig(void)
     InitInputBuffer();
 }
 
-CReadConfig::CReadConfig(string name)
+CReadConfig::CReadConfig(const string& name)
 {
     // initialize everything
     mFilename     = name;
@@ -49,7 +49,9 @@ int CReadConfig::Fail()
 }
 
 
-int CReadConfig::GetVariable(string name, string type, void * pout)
+int CReadConfig::GetVariable(const string& name, 
+                             const string& type, 
+                             void * pout)
 {
     char c[] = " ";
     int equal = 0;
@@ -61,16 +63,11 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
     // Get the current line 
     while (true)
     {
-        // For error messages we keep track of the current line number
-        // but mBuffer >> is to smart and skips empty lines.
-        // while(mBuffer.peek() == '\n') 
-        // {
-        //     mLineNumber++;
-        //     mBuffer.seekg(1, ios::cur);
-        // }
-        mLineNumber++;
 
         Line.erase();
+
+        // Read a line form the input buffer
+        mLineNumber++;
         while (true)
         {
             mBuffer.read(c, 1);
@@ -78,12 +75,13 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
             Line += c;
         }
 
-        // mBuffer >> Line;
-
         equal = Line.find('=');
         Name  = Line.substr(0, equal);
         Value = Line.substr(equal + 1);
 
+        // The Compartment keyword is used twice. So we must determine by
+        // the context if we have found the correct one in the case the mode
+        // is SEARCH.
         if (Mode & CReadConfig_SEARCH &&
             name == "Compartment"     &&
             Name == "Compartment")
@@ -94,6 +92,7 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
             }
         }
 
+        // We found what we are looking for
         if (name == Name) break;
 
         if (Mode & CReadConfig_SEARCH) 
@@ -101,20 +100,20 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
             if (mBuffer.eof())
             {
                 if (!(Mode & CReadConfig_LOOP)) FatalError();
+
                 // Rewind the buffer                
                 Mode ^= CReadConfig_LOOP;
                 mBuffer.clear();
                 mBuffer.seekg(0);
                 mLineNumber = 0;
             }
-        //    mBuffer.seekg(1, ios::cur); // Skip line break
             continue;
         }
-        
+
+        // We should never reach this line!!!
         FatalError();
     }
     
-    // mBuffer.seekg(1, ios::cur);         // Skip line break
     // Return the value depending on the type
     if ( type == "string" )
     {
@@ -136,11 +135,39 @@ int CReadConfig::GetVariable(string name, string type, void * pout)
         mFail = 1; //Error
     }
     
-    // We free the line allocated through strdup
-    // pfree(szLine);
     return mFail;
 }
 
+int CReadConfig::GetVariable(const string& name, 
+                             const string& type, 
+                             void * pout1,
+                             void * pout2)
+{
+    string Value;
+    
+    if (mFail = GetVariable(name, "string", &Value))
+        return mFail;
+    
+    if (type == "node")
+    {
+        int komma = 0;
+        
+        komma = Value.find(",");
+        string Type = Value.substr(0, komma);
+        *(int *) pout1 = atoi(Type.c_str());
+
+        string Subtype = Value.substr(komma + 1);
+        *(int *) pout2 = atoi(Subtype.c_str());
+    }
+    else
+    {
+        FatalError();
+        mFail = 1; //Error
+    }
+    
+    return mFail;
+}
+        
 void CReadConfig::SetMode(int mode)
 {
     switch (mode)

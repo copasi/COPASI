@@ -23,39 +23,43 @@ CCopasiMessage::CCopasiMessage(void)
     mType     = RAW;
 }
 
-CCopasiMessage::CCopasiMessage(COPASI_MESSAGE_TYPE type, 
+CCopasiMessage::CCopasiMessage(const COPASI_MESSAGE_TYPE type, 
                                const char *format, ...)
 {
 #define INITIALTEXTSIZE 1024
     int TextSize = INITIALTEXTSIZE;
-    int Printed = -1;
+    int Printed = 0;
     
     char *Text = NULL;
     
     va_list Arguments = NULL;
     va_start(Arguments, format);
     
-    Text = (char *) calloc(TextSize + 1, sizeof(char));
+    Text = new char[TextSize + 1];
+    
     Printed = vsnprintf(Text, TextSize + 1, format, Arguments);
 
     while (Printed < 0 || TextSize < Printed)
     {
-        pfree(Text);
+        delete [] Text;
         
-        TextSize = (Printed > 0) ? Printed : TextSize * 2;
-        Text = (char *) calloc(TextSize + 1, sizeof(char));
+        (Printed < 0) ? TextSize *= 2: TextSize = Printed;
+        Text = new char[TextSize + 1];
         
         Printed = vsnprintf(Text, TextSize, format, Arguments);
     }
     va_end(Arguments);
 
-    if (Text) Handler(type, (string) Text);
-    pfree(Text);
+    mType = type;
+    mText = Text;
+    
+    if (Text) Handler();
 }
 
-void CCopasiMessage::Handler(COPASI_MESSAGE_TYPE type, string Text)
+void CCopasiMessage::Handler()
 {
-    mType     = type;
+    string Text = mText;
+    
     switch (mType)
     {
     case RAW:
