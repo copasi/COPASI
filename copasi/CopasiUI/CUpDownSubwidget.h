@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CUpDownSubwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/22 15:54:51 $
+   $Date: 2005/04/04 13:12:53 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Di Feb 22 03:48:39 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.1 2005/02/22 15:54:51 ssahle Exp $)
+ ** Created: Mo Apr 4 15:11:03 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.2 2005/04/04 13:12:53 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,6 +27,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QPushButton;
+class QToolButton;
 
 class CUpDownSubwidget : public QWidget
   {
@@ -36,9 +37,10 @@ class CUpDownSubwidget : public QWidget
     CUpDownSubwidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CUpDownSubwidget();
 
-    QPushButton* buttonDown;
-    QPushButton* buttonUp;
     QPushButton* buttonDel;
+    QToolButton* toolButton1;
+    QPushButton* buttonUp;
+    QPushButton* buttonDown;
 
     virtual int getIndex() const;
 
@@ -55,7 +57,7 @@ class CUpDownSubwidget : public QWidget
 
     QVBoxLayout* CUpDownSubwidgetLayout;
     QSpacerItem* spacer;
-    QGridLayout* layout;
+    QGridLayout* layout2;
 
   protected slots:
     virtual void languageChange();

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>124</width>
-            <height>105</height>
+            <height>117</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,6 +23,9 @@
     <property name="caption">
         <string>Form2</string>
     </property>
+    <property name="focusPolicy">
+        <enum>WheelFocus</enum>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -35,21 +38,15 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout</cstring>
+                <cstring>layout2</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>3</number>
-                </property>
-                <property name="spacing">
-                    <number>3</number>
-                </property>
-                <widget class="QPushButton" row="1" column="1">
+                <widget class="QPushButton" row="0" column="0">
                     <property name="name">
-                        <cstring>buttonDown</cstring>
+                        <cstring>buttonDel</cstring>
                     </property>
                     <property name="maximumSize">
                         <size>
@@ -62,6 +59,23 @@
                     </property>
                     <property name="pixmap">
                         <pixmap>image0</pixmap>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>toolButton1</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
                     </property>
                 </widget>
                 <widget class="QPushButton" row="0" column="1">
@@ -81,9 +95,9 @@
                         <pixmap>image1</pixmap>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="0" column="0">
+                <widget class="QPushButton" row="1" column="1">
                     <property name="name">
-                        <cstring>buttonDel</cstring>
+                        <cstring>buttonDown</cstring>
                     </property>
                     <property name="maximumSize">
                         <size>
@@ -112,8 +126,8 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>1</width>
-                    <height>1</height>
+                    <width>20</width>
+                    <height>50</height>
                 </size>
             </property>
         </spacer>
@@ -121,13 +135,13 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="PNG" length="136">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000004f4944415428916360c00ffee3936422a0192f18a29a19b188e10b2414f55477760d0eb518e2d89ccdc080dde9186a6912dae84ec4ea155cce666040753a3e75584135d4806a523562b31d03501460009aa008f90eab60630000000049454e44ae426082</data>
+        <data format="PNG" length="208">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a00000097494441542891d5d1b10dc2301404d087448f101320d1640b1a06c91c192d0d13d0bab1940922c4063436b2824d6828b8d277f7effe37ff8fc018882b9ad8d404e61a19189271c86f9b9a083d749c725aa2a78ecb5afd2135c8697399d84c2eeb638747c7a1a6d9368c23ee1feb2d938b7df7b8e19aa85e65dfa53962822c4c03cf38d606bcaaa6ba55d4beaa24deaed91af28deeb77802705e38a56564c3b60000000049454e44ae426082</data>
     </image>
     <image name="image1">
         <data format="PNG" length="130">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a000000494944415428916360c00ffee3936422a0192fc0a7b91a8dc6008c7834233b19ab3a5c36a3db86d5765c36630b280cb5540f305c0184218ecdd9f8e216453d45ce26040626850d62cd00452007f842f7eea60000000049454e44ae426082</data>
     </image>
     <image name="image2">
-        <data format="PNG" length="208">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a00000097494441542891d5d1b10dc2301404d087448f101320d1640b1a06c91c192d0d13d0bab1940922c4063436b2824d6828b8d277f7effe37ff8fc018882b9ad8d404e61a19189271c86f9b9a083d749c725aa2a78ecb5afd2135c8697399d84c2eeb638747c7a1a6d9368c23ee1feb2d938b7df7b8e19aa85e65dfa53962822c4c03cf38d606bcaaa6ba55d4beaa24deaed91af28deeb77802705e38a56564c3b60000000049454e44ae426082</data>
+        <data format="PNG" length="136">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000004f4944415428916360c00ffee3936422a0192f18a29a19b188e10b2414f55477760d0eb518e2d89ccdc080dde9186a6912dae84ec4ea155cce666040753a3e75584135d4806a523562b31d03501460009aa008f90eab60630000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
