@@ -82,8 +82,8 @@ C_INT32 main(void)
         // TestCompartment();
         // TestDatum();
         // TestMetab();
-        // TestReadSample();
-        TestTrajectory();
+        TestReadSample();
+        // TestTrajectory();
         // TestMoiety();
         // TestKinFunction();
         // TestBaseFunction();
@@ -305,13 +305,14 @@ C_INT32 TestReadSample(void)
     C_INT32 size = 0;
     C_INT32 i;
     
-    CReadConfig inbuf("gps/BakkerComp.gps");
+    CReadConfig inbuf("gps/bakker.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();
     model.lUDecomposition();
     model.setMetabolitesStatus();
     model.buildRedStoi();
+    model.buildMoieties();
 
     CODESolver odeSolver;
     size = model.getMetabolitesInd().size();
@@ -344,7 +345,7 @@ C_INT32 TestTrajectory(void)
     C_INT32 size = 0;
     C_INT32 i;
     
-    CReadConfig inbuf("gps/HMM.gps");
+    CReadConfig inbuf("gps/BakkerComp.gps");
     CModel model;
     model.load(inbuf);
     model.buildStoi();

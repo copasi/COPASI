@@ -286,10 +286,22 @@ public:
     void setParticleNoInd(const C_FLOAT64 & y) const;
 
     /**
-     *  Get the dimension of the reduced problem
+     *  Get the number of total metabolites
+     *  @return C_INT32 totMetab
+     */
+    C_INT32 getTotMetab() const;
+
+     /**
+     *  Get the number of independent metabolites
      *  @return C_INT32 dimension
      */
-    C_INT32 getDimension() const;
+    C_INT32 getIndMetab() const;
+
+     /**
+     *  Get the number of dependent metabolites
+     *  @return C_INT32 dimension
+     */
+    C_INT32 getDepMetab() const;
 
     /**
      *  Set the concentration of all metabolites as a result of the particle

@@ -209,13 +209,14 @@ C_INT32 CReadConfig::getVariable(const string& name,
     if (type == "node")
     {
         C_INT32 komma = 0;
-        
+	
         komma = Value.find(",");
+
         string Type = Value.substr(0, komma);
-        *(C_INT32 *) pout1 = atoi(Type.c_str());
+        * (char*) pout1 = (char) atoi(Type.c_str());
 
         string Subtype = Value.substr(komma + 1);
-        *(C_INT32 *) pout2 = atoi(Subtype.c_str());
+        * (char*) pout2 = (char) atoi(Subtype.c_str());
     }
     else
     {

@@ -178,7 +178,8 @@ void CModel::buildStoi()
                 mStoi[j][i] = 0.0;
         }
     }
-
+    cout << mStoi << endl;
+    
     return;
 }
 
@@ -273,7 +274,7 @@ void CModel::buildRedStoi()
             if (i<=j) Sum += mStoi[i][j];
             mRedStoi[i][j] = Sum;
         }
-    cout << mRedStoi;
+    cout << mRedStoi << endl;
     
     return;
 }
@@ -359,7 +360,7 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
     // Calculate ydot = RedStoi * v
     for (i=0; i<n; i++)
     {
-        ydot[j] = 0.0;
+        ydot[i] = 0.0;
         for (j=0; j<mSteps->size(); j++)
             ydot[i] += mRedStoi[i][j] * v[j];
     }
@@ -369,7 +370,17 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 
 vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
 
-C_INT32 CModel::getDimension() const
+C_INT32 CModel::getTotMetab() const
+{
+    return mMetabolites.size();
+}
+
+C_INT32 CModel::getIndMetab() const
 {
     return mMetabolitesInd.size();
+}
+
+C_INT32 CModel::getDepMetab() const
+{
+    return mMetabolitesDep.size();
 }

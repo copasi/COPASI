@@ -67,7 +67,7 @@ void CTrajectory::initialize(CModel * aModel)
     
     // we really need a copy of the model here
     mModel = aModel;
-    mN = mModel->getDimension();
+    mN = mModel->getIndMetab();
     
     mY = new C_FLOAT64[mN];
     
