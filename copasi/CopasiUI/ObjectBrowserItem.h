@@ -19,6 +19,7 @@ struct browserObject
   {
     CCopasiObject* pCopasiObject;
     bool mChecked;
+    int nRefer;
   };
 
 class ObjectBrowserItem : public QListViewItem

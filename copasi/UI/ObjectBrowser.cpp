@@ -129,7 +129,7 @@ void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
       if (pCurrent->isChecked())
         pCurrent->reverseChecked();
       if (pCurrent->getType() == FIELDATTR)
-        setUncheck(pCurrent->child(), 1);
+        setUncheck(pCurrent->child(), -1);
       else // container or objects
         setUncheck(pCurrent->child(), -1);
       return;
@@ -138,7 +138,7 @@ void ObjectBrowser::clickToReverseCheck(ObjectBrowserItem* pCurrent)
   if (!pCurrent->isChecked())
     pCurrent->reverseChecked();
   if (pCurrent->getType() == FIELDATTR)
-    setCheck(pCurrent->child(), 1);
+    setCheck(pCurrent->child(), -1);
   else
     setCheck(pCurrent->child(), -1);
   return;

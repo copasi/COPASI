@@ -1,5 +1,10 @@
 #include "ObjectBrowserItem.h"
 
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
+#include "report/CCopasiContainer.h"
+#include "utilities/CCopasiVector.h"
+
 long ObjectBrowserItem::KeySpace = 100000000;
 
 ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * after, CCopasiObject* mObject, objectList* pList)
@@ -25,12 +30,14 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
+          pBrowserObject->nRefer++;
         }
       else
         {
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
           newBrowserObject->mChecked = false;
+          newBrowserObject->nRefer = 1;
           pBrowserObject = newBrowserObject;
         }
     }
@@ -39,6 +46,7 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
+      newBrowserObject->nRefer = 1;
       pBrowserObject = newBrowserObject;
     }
   pList->insert(this);
@@ -69,11 +77,13 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
+          pBrowserObject->nRefer++;
         }
       else
         {
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
+          newBrowserObject->nRefer = 1;
           newBrowserObject->mChecked = false;
           pBrowserObject = newBrowserObject;
         }
@@ -83,6 +93,7 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
+      newBrowserObject->nRefer = 1;
       pBrowserObject = newBrowserObject;
     }
   pList->insert(this);
@@ -102,24 +113,30 @@ int ObjectBrowserItem::nUserChecked()
     {
       ObjectBrowserItem* pChild = child();
       condition = pChild->nUserChecked();
-      for (; pChild != NULL; pChild = pChild->sibling())
+      if ((getType() == FIELDATTR) && (getObject()->pCopasiObject) && (QString("Usage Descriptions") == (getObject()->pCopasiObject->getName().c_str())))
         {
-          switch (pChild->nUserChecked())
-            {
-            case ALLCHECKED:
-              if (condition == NOCHECKED)
-                condition = PARTCHECKED;
-              break;
-            case PARTCHECKED:
-              if (condition == NOCHECKED || condition == ALLCHECKED)
-                condition = PARTCHECKED;
-              break;
-            case NOCHECKED:
-              if (condition == ALLCHECKED)
-                condition = PARTCHECKED;
-              break;
-            }
+          int i = 0;
         }
+
+      if (!((pChild->getObject()->nRefer > 1) && (pChild->getType() == FIELDATTR)))
+        for (; pChild != NULL; pChild = pChild->sibling())
+          {
+            switch (pChild->nUserChecked())
+              {
+              case ALLCHECKED:
+                if (condition == NOCHECKED)
+                  condition = PARTCHECKED;
+                break;
+              case PARTCHECKED:
+                if (condition == NOCHECKED || condition == ALLCHECKED)
+                  condition = PARTCHECKED;
+                break;
+              case NOCHECKED:
+                if (condition == ALLCHECKED)
+                  condition = PARTCHECKED;
+                break;
+              }
+          }
     }
   else //it has no child
     {
