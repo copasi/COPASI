@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/09 12:04:04 $
+   $Date: 2004/10/14 20:57:32 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -125,19 +125,24 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (fixed)
     {
       if (pMetab->getStatus() != CMetab::METAB_FIXED)
-        pMetab->setStatus(CMetab::METAB_FIXED);
-      dataModel->getModel()->setCompileFlag();
+        {
+          pMetab->setStatus(CMetab::METAB_FIXED);
+          dataModel->getModel()->setCompileFlag();
+        }
     }
   else
     {
       if (pMetab->getStatus() == CMetab::METAB_FIXED)
-        pMetab->setStatus(CMetab::METAB_VARIABLE);
-      dataModel->getModel()->setCompileFlag();
+        {
+          pMetab->setStatus(CMetab::METAB_VARIABLE);
+          dataModel->getModel()->setCompileFlag();
+        }
     }
 
   //6: compartment
   QString Compartment(table->text(row, 6));
-  if ((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName())
+  if (((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName()) //has changed
+       && (Compartment != ""))
     {
       std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
       dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
@@ -196,13 +201,13 @@ void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
     {
       QStringList compartmentType;
       const CCopasiVector < CCompartment > & compartments = dataModel->getModel()->getCompartments();
-      if (compartments.size())
+      if (true /*compartments.size()*/)
         {
           for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)
             compartmentType.push_back(FROM_UTF8(compartments[jj]->getObjectName()));
           QComboTableItem * item = new QComboTableItem(table, compartmentType, false);
           table->setItem(row, 6, item);
-          item->setCurrentItem(FROM_UTF8(compartments[0]->getObjectName()));
+          if (compartments.size()) item->setCurrentItem(FROM_UTF8(compartments[0]->getObjectName()));
         }
     }
 
@@ -292,7 +297,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                        // Yes or Enter
+    case 0:                         // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -304,7 +309,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                        // No or Escape
+    case 1:                         // No or Escape
       break;
     }
 }
