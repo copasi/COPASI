@@ -264,7 +264,6 @@ void ReactionsWidget1::loadName(QString setValue)
   table->setNumCols(1);
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
-
   table->setNumRows(reactn->getId2Substrates().size() +
                     reactn->getId2Products().size() +
                     reactn->getId2Modifiers().size() +
@@ -275,18 +274,13 @@ void ReactionsWidget1::loadName(QString setValue)
   reactn->getId2Parameters().size() << endl;
 
   tableHeader1->setLabel(0, "Value");
-
   table->setColumnWidth (0, 200);
-
-  CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
-
-  const CCopasiVector < CChemEqElement > * react1
-  = &reactn->getChemEq().getSubstrates();
-
-  const CChemEqElement *cchem;
-
   unsigned int line = 0;
   unsigned int l;
+
+  CCopasiVector < CReaction::CId2Metab > & react1z = reactn->getId2Substrates();
+  const CCopasiVector < CChemEqElement > * react1 = &reactn->getChemEq().getSubstrates();
+  const CChemEqElement *cchem;
 
   for (k = 0; k < react1z.size(); k++)
     {
@@ -304,29 +298,30 @@ void ReactionsWidget1::loadName(QString setValue)
           overall += "{";
           overall += cchem->getCompartmentName().c_str();
           overall += "}";
-
           comboEntries1.push_back(overall);
         }
 
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
       table->setItem(line, 0, item);
+      //table->setText(line,0,"ttt");
       line++;
     }
 
-  react1z = reactn->getId2Products();
+  CCopasiVector < CReaction::CId2Metab > & react2z = reactn->getId2Products();
+  //react1z = reactn->getId2Products();
+  // react1 = &reactn->getChemEq().getProducts();
+  const CCopasiVector < CChemEqElement > * react2 = &reactn->getChemEq().getProducts();
 
-  react1 = &reactn->getChemEq().getProducts();
-
-  for (k = 0; k < react1z.size(); k++)
+  for (k = 0; k < react2z.size(); k++)
     {
-      tableHeader2->setLabel(line, react1z[k]->getIdentifierName().c_str());
+      tableHeader2->setLabel(line, react2z[k]->getIdentifierName().c_str());
 
       //for the combo box
       QStringList comboEntries1;
 
-      for (l = 0; l < react1->size(); l++)
+      for (l = 0; l < react2->size(); l++)
         {
-          cchem = (*react1)[l];
+          cchem = (*react2)[l];
           QString overall = cchem->getMetaboliteName().c_str();
           overall += "{";
           overall += cchem->getCompartmentName().c_str();
@@ -335,18 +330,22 @@ void ReactionsWidget1::loadName(QString setValue)
           comboEntries1.push_back(overall);
         }
 
+      //table->setText(line,0,"ttt");
       QComboTableItem * item = new QComboTableItem(table, comboEntries1, FALSE);
+
       table->setItem(line, 0, item);
+
       line++;
     }
 
-  react1z = reactn->getId2Modifiers();
+  CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
+  //react1z = reactn->getId2Modifiers();
   vector < CMetab * > & Metabolites = mModel->getMetabolites();
   CMetab * Metabolite;
 
-  for (k = 0; k < react1z.size(); k++)
+  for (k = 0; k < react3z.size(); k++)
     {
-      tableHeader2->setLabel(line, react1z[k]->getIdentifierName().c_str());
+      tableHeader2->setLabel(line, react3z[k]->getIdentifierName().c_str());
 
       //for the combo box
       QStringList comboEntries1;
@@ -367,15 +366,13 @@ void ReactionsWidget1::loadName(QString setValue)
       line++;
     }
 
-  CCopasiVector < CReaction::CId2Param > & react2z = reactn->getId2Parameters();
+  CCopasiVector < CReaction::CId2Param > & react4z = reactn->getId2Parameters();
 
-  for (k = 0; k < react2z.size(); k++)
+  for (k = 0; k < react4z.size(); k++)
     {
-      tableHeader2->setLabel(line, react2z[k]->getIdentifierName().c_str());
+      tableHeader2->setLabel(line, react4z[k]->getIdentifierName().c_str());
       table->clearCell(line, 0);
-      table->setText(line, 0,
-                     QString::number(react2z[k]->getValue()));
-
+      table->setText(line, 0, QString::number(react4z[k]->getValue()));
       line++;
     }
 }
