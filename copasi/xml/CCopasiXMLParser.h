@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:26 $
+   $Date: 2003/10/30 17:40:35 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 
 #include <stack>
 #include <map>
+#include <string>
 
 #include "CExpat.h"
 #include "CXMLHandler.h"
@@ -35,6 +36,11 @@ struct SCopasiXMLParserCommon
     CCopasiXMLParser * pParser;
 
     CModel * pModel;
+
+    /**
+     * Storrage for a comment.
+     */
+    std::string Comment;
 
     /**
      * Pointer to a vector of functions which has been loaded or is to be saved.

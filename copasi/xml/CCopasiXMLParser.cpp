@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:25 $
+   $Date: 2003/10/30 17:40:35 $
    End CVS Header */
 
 /**
@@ -24,7 +24,6 @@
 #include "function/CFunction.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "utilities/CMethodParameter.h"
 
 #ifdef COPASI_TEMPLATE
 CCopasiXMLParser::TEMPLATEElement::TEMPLATEElement(CCopasiXMLParser & parser,
@@ -894,6 +893,10 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
 
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
+
+      mCommon.pModel->setComments(mCommon.Comment);
+      mCommon.Comment = "";
+
       pdelete(mpCurrentHandler);
       break;
 
@@ -970,7 +973,8 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
     {
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
-      mCommon.pModel->setComments(mParser.getCharacterData());
+      mCommon.Comment = mParser.getCharacterData();
+      // mCommon.pModel->setComments(mParser.getCharacterData());
       mParser.popElementHandler();
       mCurrentElement = -1;
 
@@ -1990,7 +1994,7 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
   const char * Name;
   const char * Value;
 
-  CParameter * pParameter;
+  CCopasiParameter * pParameter;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -2003,10 +2007,10 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       Value = mParser.getAttributeValue("value", papszAttrs);
 
-      pParameter = new CParameter();
+      pParameter = new CCopasiParameter(Name, CCopasiParameter::DOUBLE);
+      pParameter->setValue((C_FLOAT64) atof(Value));
+
       mCommon.KeyMap[Key] = pParameter->getKey();
-      pParameter->setName(Name);
-      pParameter->setValue(atof(Value));
 
       mCommon.pReaction->getParameters().add(pParameter, true);
 
