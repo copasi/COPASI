@@ -239,11 +239,16 @@ class CReaction
     C_FLOAT64 mFlux;
 
     /**
-     *  The scaling factor for the flux to calculate the particle number
+     *  A Pointer to the scaling factor for the flux to calculate the particle number
      *  changes. For a single compartment reaction this is the volume of
      *  the compartment
      */
     const C_FLOAT64 * mScalingFactor;
+
+    /**
+     *  The scaling factor. It is compartment volume times a factor for the unit
+     */
+    C_FLOAT64 mScalingFactor2;
 
     /**
      *  The number of compartments the reaction takes place in 
@@ -504,7 +509,9 @@ class CReaction
       if (d.mScalingFactor)
         os << "   *mScalingFactor " << *(d.mScalingFactor) << endl;
       else
-        os << "   mFunction == 0 " << endl;
+        os << "   mScalingFactor == 0 " << endl;
+
+      os << "   mScalingFactor2: " << d.mScalingFactor2 << endl;
 
       os << "   mCompartmentNumber: " << d.mCompartmentNumber << endl;
 

@@ -575,7 +575,8 @@ void CReaction::old2New(const vector < CMetab* > & metabolites)
 
 C_FLOAT64 CReaction::calculate()
 {
-  return mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
+  //  return mFlux = *mScalingFactor * mFunction->calcValue(mCallParameters);
+  return mFlux = mScalingFactor2 * mFunction->calcValue(mCallParameters);
 }
 
 void CReaction::CId2Metab::setIdentifierName(const string & identifierName)
@@ -922,8 +923,14 @@ unsigned C_INT32 CReaction::getCompartmentNumber()
 void CReaction::setScalingFactor()
 {
   if (1 == getCompartmentNumber())
-    mScalingFactor =
-      & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+    {
+      mScalingFactor = & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+      mScalingFactor2 = mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume()
+                        * mChemEq.getBalances()[0]->getMetabolite().getModel()->getQuantity2NumberFactor();
+    }
   else
-    mScalingFactor = &mDefaultScalingFactor;
+    {
+      mScalingFactor = &mDefaultScalingFactor;
+      mScalingFactor2 = 1;
+    }
 }
