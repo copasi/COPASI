@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 13:26:53 $
+   $Date: 2004/05/27 13:42:13 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.10 2004/05/27 13:26:53 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.11 2004/05/27 13:42:13 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -151,10 +151,10 @@ void PlotWidget1::languageChange()
   curveSpecLabel->setText(tr("Curve Specification"));
   addCurveButton->setText(tr("New Curve"));
   deleteCurveButton->setText(tr("Delete Curve"));
-  startPlotButton->setText(tr("Start Plot"));
+  startPlotButton->setText(tr("Commit"));
   deletePlotButton->setText(tr("Delete Plot"));
   addPlotButton->setText(tr("New Plot"));
-  resetButton->setText(tr("Reset"));
+  resetButton->setText(tr("Revert"));
 }
 
 //-----------------------------------------------------------------------------
@@ -169,14 +169,14 @@ void PlotWidget1::addCurveGroupBox()
 
   if (pBrowser1->exec () == QDialog::Rejected)
     {
-      pdelete(pBrowser1);
+      //pdelete(pBrowser1);
       pdelete(pVector1);
       return;
     }
 
   if (pVector1->size() == 0)
     {
-      pdelete(pBrowser1);
+      //pdelete(pBrowser1);
       pdelete(pVector1);
       return;
     }
@@ -189,7 +189,7 @@ void PlotWidget1::addCurveGroupBox()
 
   if (pBrowser2->exec () == QDialog::Rejected)
     {
-      pdelete(pBrowser2);
+      //pdelete(pBrowser2);
       pdelete(pVector1);
       pdelete(pVector2);
       return;
@@ -197,7 +197,7 @@ void PlotWidget1::addCurveGroupBox()
 
   if (pVector1->size() == 0)
     {
-      pdelete(pBrowser2);
+      //pdelete(pBrowser2);
       pdelete(pVector1);
       pdelete(pVector2);
       return;
