@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/05 12:54:10 $
+   $Date: 2005/02/27 20:09:01 $
    End CVS Header */
 
 #if !defined OUTPUT_HANDLER_PLOT
@@ -26,6 +26,8 @@ class COutputHandlerPlot : public CCallbackHandler
     virtual bool init();
     virtual bool doOutput();
     virtual bool finish();
+
+    virtual bool doSeparator();
 
     void setPlotSpecVectorAddress(CPlotSpec2Vector* ppp);
 

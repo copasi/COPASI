@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:47:58 $
+   $Date: 2005/02/27 20:07:22 $
    End CVS Header */
 
 #include <iostream>
@@ -30,6 +30,14 @@ bool CCallbackHandler::finish()
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: finish" << std::endl;
+#endif // COPASI_DEBUG
+  return true;
+}
+
+bool CCallbackHandler::doSeparator()
+{
+#ifdef COPASI_DEBUG
+  std::cout << "CallbackHandler: separator" << std::endl;
 #endif // COPASI_DEBUG
   return true;
 }

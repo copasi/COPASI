@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/06 09:47:58 $
+   $Date: 2005/02/27 20:07:22 $
    End CVS Header */
 
 #if !defined OUTPUT_HANDLER
@@ -21,6 +21,8 @@ class CCallbackHandler
     virtual bool init();
     virtual bool doOutput();
     virtual bool finish();
+
+    virtual bool doSeparator();
 
     //for progress bar
     virtual bool init(C_INT32 maxSteps, const std::string & text, bool cancelButton = false);
