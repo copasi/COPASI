@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/19 20:00:09 $
+   $Date: 2005/01/03 13:01:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -58,10 +58,17 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   QString flags;
   if (obj->isContainer()) flags += "C"; else flags += " ";
   if (obj->isVector()) flags += "V"; else flags += " ";
+  if (obj->isMatrix()) flags += "M"; else flags += " ";
   if (obj->isNameVector()) flags += "N"; else flags += " ";
   if (obj->isReference()) flags += "R"; else flags += " ";
+  if (obj->isNonUniqueName()) flags += " Nun"; else flags += " Unn";
+
   if (obj->isValueInt()) flags += "Int";
-else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
+  else if (obj->isValueDbl()) flags += "Dbl";
+  else if (obj->isValueBool()) flags += "Boo";
+  else if (obj->isValueString()) flags += "Str";
+  else if (obj->isStaticString()) flags += "SSt";
+  else flags += "   ";
   if (!(testObj == obj)) flags += "EEE";
 
   QString value;
@@ -69,6 +76,8 @@ else {if (obj->isValueDbl()) flags += "Dbl"; else flags += "   ";}
     value = QString::number(*(C_FLOAT64*)obj->getReference());
   else if (obj->isValueInt())
     value = QString::number(*(C_INT32*)obj->getReference());
+  else if (obj->isValueString())
+    value = QString(*(std::string*)obj->getReference());
   else if (obj->isValueBool())
     {
       if (*(bool*)obj->getReference()) value = "true"; else value = "false";
@@ -151,7 +160,7 @@ void ObjectDebug::init()
   ListOfObjects->setAllColumnsShowFocus(true);
 }
 
-void ObjectDebug::action(QListViewItem * item, const QPoint & pnt, int col)
+void ObjectDebug::action(QListViewItem * item, const QPoint & C_UNUSED(pnt), int C_UNUSED(col))
 {
   //CCopasiObject* testObj = CCopasiContainer::ObjectFromName((const std::string)((const char*)item->text(5).utf8()));
   CCopasiObject* testObj = ((MyListViewItemWithPtr*)item)->mpObject;
