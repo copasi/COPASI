@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/11 14:19:40 $
+   $Date: 2004/06/11 15:28:34 $
    End CVS Header */
 
 #include <iostream>
@@ -18,6 +18,7 @@
 #include "utilities/CGlobals.h"
 #include "copasi.h"
 #include "function/CNodeK.h"
+#include "function/CFunctionDB.h"
 
 #include "sbml/SBMLReader.hpp"
 #include "sbml/SBMLDocument.hpp"
@@ -241,7 +242,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   this->replaceSubstanceNames((ConverterASTNode*)node, sbmlReaction);
 
   /* Create a new user defined CKinFunction */
-  CFunction* cFun = new CKinFunction();
+  std::string functionName = "function_4_" + copasiReaction->getObjectName();
+  CFunction* cFun = Copasi->pFunctionDB->createFunction(functionName, CFunction::UserDefined);
+  //CFunction* cFun = new CKinFunction();
   cFun->setDescription(SBML_formulaToString(node));
   cFun->setType(CFunction::UserDefined);
   cFun->setReversible(sbmlReaction->getReversible() ? TriTrue : TriFalse);
@@ -311,8 +314,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
   /* create a unique function name by adding the unique reaction name to some
    * prefix */
-  std::string functionName = "function_4_" + copasiReaction->getObjectName();
-  cFun->setObjectName(functionName);
   copasiReaction->setFunction(cFun);
   /* do the mapping from reaction metabolites to the parameters of the
    * kinetic function */
