@@ -39,7 +39,7 @@ CFG=CopasiUI - Win32 Build
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake -f "Makefile""
 # PROP Rebuild_Opt "/a"
-# PROP Target_File "CopasiUI"
+# PROP Target_File "CopasiUI.exe"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target

@@ -32,6 +32,10 @@ class TableDefinition : public CopasiWidget
     ~TableDefinition ();
     CModel *mModel;
     void loadTableDefinition();
+    QPushButton* downButton;
+    QPushButton* upButton;
+    QPushButton* deleteButton;
+    QPushButton* addButton;
 
     QLineEdit* LineEdit4;
     QLineEdit* LineEdit1;
@@ -53,6 +57,8 @@ class TableDefinition : public CopasiWidget
 
   protected:
     QGridLayout* TableDefinitionLayout;
+    QVBoxLayout* Layout7;
+    QGridLayout* Layout6;
     QHBoxLayout* Layout5;
   };
 

@@ -20,7 +20,7 @@
 #include "model/CModel.h"
 #include "utilities/CMethodParameter.h"
 #include "listviews.h"
-
+#include "./icons/scanwidgetbuttonicon.xpm" 
 /*
  *  Constructs a TableDefinition which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -30,6 +30,11 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
 {
   if (!name)
     setName("TableDefinition");
+
+  QPixmap image0((const char**) image0_data);
+  QPixmap image1((const char**) image1_data);
+  QPixmap image2((const char**) image2_data);
+  QPixmap image3((const char**) image3_data);
   setCaption(trUtf8("TableDefinition"));
   TableDefinitionLayout = new QGridLayout(this, 1, 1, 11, 6, "TableDefinitionLayout");
 
@@ -53,11 +58,40 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   QSpacerItem* spacer = new QSpacerItem(131, 270, QSizePolicy::Minimum, QSizePolicy::Expanding);
   TableDefinitionLayout->addItem(spacer, 6, 0);
 
+  Layout7 = new QVBoxLayout(0, 0, 6, "Layout7");
   TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Metabolite Name"));
+  TextLabel3->setText(trUtf8("Items"));
+  Layout7->addWidget(TextLabel3);
 
-  TableDefinitionLayout->addWidget(TextLabel3, 5, 0);
+  Layout6 = new QGridLayout(0, 1, 1, 0, 6, "Layout6");
 
+  deleteButton = new QPushButton(this, "deleteButton");
+  deleteButton->setText(trUtf8(""));
+  deleteButton->setPixmap(image0);
+
+  Layout6->addWidget(deleteButton, 0, 1);
+
+  downButton = new QPushButton(this, "downButton");
+  downButton->setText(trUtf8(""));
+  downButton->setPixmap(image1);
+
+  Layout6->addWidget(downButton, 1, 1);
+
+  addButton = new QPushButton(this, "addButton");
+  addButton->setText(trUtf8(""));
+  addButton->setPixmap(image2);
+
+  Layout6->addWidget(addButton, 0, 0);
+
+  upButton = new QPushButton(this, "upButton");
+  upButton->setText(trUtf8(""));
+  upButton->setPixmap(image3);
+
+  Layout6->addWidget(upButton, 1, 0);
+  Layout7->addLayout(Layout6);
+  TableDefinitionLayout->addLayout(Layout7, 5, 0);
+
+  //TableDefinitionLayout->addWidget(TextLabel3, 5, 0);
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setFrameShape(QLineEdit::LineEditPanel);
   LineEdit3->setFrameShadow(QLineEdit::Sunken);
