@@ -718,6 +718,23 @@ bool ScanWidget::leave()
   return true;
 }
 
+bool ScanWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  switch (objectType)
+    {
+    case ListViews::MODEL:
+      break;
+
+    default:
+      break;
+    }
+  return true;
+}
+
+/****************************************
+ * The implementation of ScanScrollView 
+ ****************************************/
+
 ScanScrollView::ScanScrollView(QWidget* parent, const char* name, WFlags fl)
     : QScrollView(parent, name, fl)
 {
