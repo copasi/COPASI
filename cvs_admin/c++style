@@ -2,18 +2,17 @@ ASTYLE=/home/cvs/copasi_dev/cvs_admin/astyle
 GAWK=/usr/bin/gawk
 MV=/bin/mv
 
-#ASTYLE=astyle
-#GAWK=gawk
-#MV=mv
+# ASTYLE=/export/home/shoops/projects/copasi_dev/cvs_admin/astyle
+# GAWK=gawk
+# MV=mv
 
 $ASTYLE --mode=c \
         --style=gnu \
+        --one-line=keep-statements \
         --one-line=keep-blocks \
         --pad=oper \
         --convert-tabs \
-        --indent-preprocessor \
         --min-conditional=0 \
-        --one-line=keep-blocks \
         < $1 |\
 $GAWK -- '
 BEGIN {
