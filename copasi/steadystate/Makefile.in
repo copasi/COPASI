@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.6 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.7 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -236,19 +236,21 @@ x_libraries = @x_libraries@
 noinst_LIBRARIES = libsteadystate.a
 
 libsteadystate_a_SOURCES = \
-	CJacob.cpp \
+	CSteadyStateMethod.cpp \
+	CNewtonMethod.cpp \
+	CSteadyStateProblem.cpp \
+	CSteadyStateTask.cpp \
 	CMca.cpp \
-	CNewton.cpp \
-	CSS_Solution.cpp \
 	CEigen.cpp
 
 
 EXTRA_DIST = \
 	steadystate.h \
-	CJacob.h CJacob.cpp \
+	CSteadyStateMethod.h CSteadyStateMethod.cpp \
+	CNewtonMethod.h	CNewtonMethod.cpp \
+	CSteadyStateProblem.h CSteadyStateProblem.cpp \
+	CSteadyStateTask.h CSteadyStateTask.cpp \
 	CMca.h CMca.cpp \
-	CNewton.h CNewton.cpp \
-	CSS_Solution.h	CSS_Solution.cpp \
 	CEigen.h CEigen.cpp 
 
 
@@ -264,13 +266,15 @@ LIBRARIES = $(noinst_LIBRARIES)
 
 libsteadystate_a_AR = $(AR) cru
 libsteadystate_a_LIBADD =
-am_libsteadystate_a_OBJECTS = CJacob.$(OBJEXT) CMca.$(OBJEXT) \
-	CNewton.$(OBJEXT) CSS_Solution.$(OBJEXT) CEigen.$(OBJEXT)
+am_libsteadystate_a_OBJECTS = CSteadyStateMethod.$(OBJEXT) \
+	CNewtonMethod.$(OBJEXT) CSteadyStateProblem.$(OBJEXT) \
+	CSteadyStateTask.$(OBJEXT) CMca.$(OBJEXT) CEigen.$(OBJEXT)
 #>- libsteadystate_a_OBJECTS = $(am_libsteadystate_a_OBJECTS)
-#>+ 5
+#>+ 6
 libsteadystate_a_final_OBJECTS = libsteadystate_a.all_cpp.o 
-libsteadystate_a_nofinal_OBJECTS = CJacob.$(OBJEXT) CMca.$(OBJEXT) \
-	CNewton.$(OBJEXT) CSS_Solution.$(OBJEXT) CEigen.$(OBJEXT)
+libsteadystate_a_nofinal_OBJECTS = CSteadyStateMethod.$(OBJEXT) \
+	CNewtonMethod.$(OBJEXT) CSteadyStateProblem.$(OBJEXT) \
+	CSteadyStateTask.$(OBJEXT) CMca.$(OBJEXT) CEigen.$(OBJEXT)
 @KDE_USE_FINAL_FALSE@libsteadystate_a_OBJECTS = $(libsteadystate_a_nofinal_OBJECTS)
 @KDE_USE_FINAL_TRUE@libsteadystate_a_OBJECTS = $(libsteadystate_a_final_OBJECTS)
 
@@ -280,9 +284,11 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/admin/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CEigen.Po $(DEPDIR)/CJacob.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CMca.Po $(DEPDIR)/CNewton.Po \
-	@AMDEP_TRUE@	$(DEPDIR)/CSS_Solution.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/CEigen.Po $(DEPDIR)/CMca.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CNewtonMethod.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CSteadyStateMethod.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CSteadyStateProblem.Po \
+	@AMDEP_TRUE@	$(DEPDIR)/CSteadyStateTask.Po
 #>- CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 #>- $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 #>+ 2
@@ -349,10 +355,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CEigen.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CJacob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CMca.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CNewton.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CSS_Solution.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CNewtonMethod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CSteadyStateMethod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CSteadyStateProblem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/CSteadyStateTask.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
@@ -411,7 +418,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=libsteadystate.a steadystate.dsp 
+KDE_DIST=CNewton.h CJacob.cpp libsteadystate.a CSS_Solution.cpp CSS_Solution.h CLsodaMethod.cpp.tmp CJacob.h CNewton.cpp steadystate.dsp 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 
@@ -540,11 +547,11 @@ force-reedit:
 
 
 #>+ 11
-libsteadystate_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CJacob.cpp $(srcdir)/CMca.cpp $(srcdir)/CNewton.cpp $(srcdir)/CSS_Solution.cpp $(srcdir)/CEigen.cpp
+libsteadystate_a.all_cpp.cpp: $(srcdir)/Makefile.in $(srcdir)/CSteadyStateMethod.cpp $(srcdir)/CNewtonMethod.cpp $(srcdir)/CSteadyStateProblem.cpp $(srcdir)/CSteadyStateTask.cpp $(srcdir)/CMca.cpp $(srcdir)/CEigen.cpp
 	@echo 'creating libsteadystate_a.all_cpp.cpp ...'; \
 	rm -f libsteadystate_a.all_cpp.files libsteadystate_a.all_cpp.final; \
 	echo "#define KDE_USE_FINAL 1" >> libsteadystate_a.all_cpp.final; \
-	for file in CJacob.cpp CMca.cpp CNewton.cpp CSS_Solution.cpp CEigen.cpp ; do \
+	for file in CSteadyStateMethod.cpp CNewtonMethod.cpp CSteadyStateProblem.cpp CSteadyStateTask.cpp CMca.cpp CEigen.cpp ; do \
 	  echo "#include \"$$file\"" >> libsteadystate_a.all_cpp.files; \
 	  test ! -f $(srcdir)/$$file || egrep '^#pragma +implementation' $(srcdir)/$$file >> libsteadystate_a.all_cpp.final; \
 	done; \

@@ -2,18 +2,20 @@
 noinst_LIBRARIES = libsteadystate.a
 
 libsteadystate_a_SOURCES = \
-	CJacob.cpp \
+	CSteadyStateMethod.cpp \
+	CNewtonMethod.cpp \
+	CSteadyStateProblem.cpp \
+	CSteadyStateTask.cpp \
 	CMca.cpp \
-	CNewton.cpp \
-	CSS_Solution.cpp \
 	CEigen.cpp
 
 EXTRA_DIST = \
 	steadystate.h \
-	CJacob.h CJacob.cpp \
+	CSteadyStateMethod.h CSteadyStateMethod.cpp \
+	CNewtonMethod.h	CNewtonMethod.cpp \
+	CSteadyStateProblem.h CSteadyStateProblem.cpp \
+	CSteadyStateTask.h CSteadyStateTask.cpp \
 	CMca.h CMca.cpp \
-	CNewton.h CNewton.cpp \
-	CSS_Solution.h	CSS_Solution.cpp \
 	CEigen.h CEigen.cpp 
 
 ####### kdevelop will overwrite this part!!! (end)############
