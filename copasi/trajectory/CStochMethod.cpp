@@ -404,7 +404,8 @@ void CStochMethod::setupDependencyGraphAndBalances()
       for (j = 0; j < bbb->size(); j++)
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
-          bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
+          //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
+          bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (((*bbb)[j]->getMetabolite().getStatus()) != CMetab::METAB_FIXED)
@@ -420,7 +421,8 @@ void CStochMethod::setupDependencyGraphAndBalances()
       for (j = 0; j < bbb->size(); j++)
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getName());
-          bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
+          //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
+          bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (1)
