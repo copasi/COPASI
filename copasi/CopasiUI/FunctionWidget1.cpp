@@ -24,6 +24,7 @@
 #include <qtoolbar.h>
 #include <qwidget.h>
 #include <qframe.h>
+#include <qmessagebox.h>
 #include "listviews.h"
 #include "utilities/CGlobals.h"
 #include "function/function.h"
@@ -44,11 +45,20 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   Frame1->setFrameShape(QFrame::Box);
   Frame1->setFrameShadow(QFrame::Plain);
   vboxLayout->addWidget(Frame1);
+  /*Frame0=new QFrame(this, "Frame0");
+  Frame0->setFrameShape(QFrame::Box);
+     Frame0->setFrameShadow(QFrame::Plain);
+  vboxLayout->addWidget(Frame0); */
 
   //This Frame had to be added because of the border around the frame
 
   QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
   vboxLayout1->addSpacing(10);
+  /*QVBoxLayout *vboxLayout0 = new QVBoxLayout(Frame0,0);
+     vboxLayout0->addSpacing(5);
+     Frame1 = new QFrame(Frame0, "Frame1");
+  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
+  vboxLayout1->addWidget(Frame1); */
 
   // adding frames to each row
   //Frame = new QFrame(Frame1, "Frame");
@@ -170,7 +180,8 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
   hBoxLayout7a->addWidget(cancelChanges);
 
   // signals and slots connections
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonPressed(setValue)));
+  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
+  connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
 }
 
 int FunctionWidget1::isName(QString setValue)
@@ -260,6 +271,7 @@ void FunctionWidget1::loadName(QString setValue)
       // for Name and Description text boxes
       LineEdit1->setText(funct->getName().c_str());
       LineEdit2->setText(funct->getDescription().c_str());
+      Function_Name = new QString(funct->getName().c_str());
 
       //Emptying the tables
       int numberOfRows1 = Table1->numRows();
@@ -310,6 +322,7 @@ void FunctionWidget1::loadName(QString setValue)
 
       /***********  RADIO BUTTONS ***********************/
       /*** if function is predefined ****/
+      /*** disables some widgets so user cannot make changes **/
       if (funct->getType() == 1 || funct->getType() == 2)
         {
           RadioButton1->setEnabled(FALSE);
@@ -317,6 +330,10 @@ void FunctionWidget1::loadName(QString setValue)
           RadioButton3->setEnabled(FALSE);
           commitChanges->setEnabled(FALSE);
           cancelChanges->setEnabled(FALSE);
+          LineEdit1->setReadOnly(TRUE);
+          LineEdit2->setReadOnly(TRUE);
+          Table1->setReadOnly(TRUE);
+          Table2->setReadOnly(TRUE);
         }
 
       /*** if function is user-defined *****/
@@ -325,6 +342,12 @@ void FunctionWidget1::loadName(QString setValue)
           RadioButton1->setEnabled(TRUE);
           RadioButton2->setEnabled(TRUE);
           RadioButton3->setEnabled(TRUE);
+          LineEdit1->setReadOnly(FALSE);
+          LineEdit2->setReadOnly(FALSE);
+          Table1->setReadOnly(FALSE);
+          Table2->setReadOnly(FALSE);
+          commitChanges->setEnabled(TRUE);
+          cancelChanges->setEnabled(TRUE);
         }
 
       if (funct->isReversible() == -1)
@@ -344,20 +367,18 @@ void FunctionWidget1::loadName(QString setValue)
               RadioButton3->setEnabled(TRUE);
               RadioButton3->setChecked(TRUE);
             }
-
-      /*********** Changes in the loaded data ***************/
-      /************* Only for user-defined functions ************/
-
-      // signals and slots connections
-      /*if(funct->getType()==3)
-      {
-       connect(cancelChanges,SIGNAL(clicked()),this,SLOT(slotCancelButtonPressed(setValue)));
-      }*/
     }
 
 } //end of function
 
-void FunctionWidget1::slotCancelButtonPressed(QString setValue)
+void FunctionWidget1::slotCancelButtonClicked()
 {
-  loadName(setValue);
+  emit signalCancelButtonClicked(*Function_Name);
+}
+
+void FunctionWidget1::slotCommitButtonClicked()
+{
+  CWriteConfig * sFunctionDB = new CWriteConfig("FunctionDB1.gps");
+  //Copasi->FunctionDB.save(*sFunctionDB);
+  delete sFunctionDB;
 }

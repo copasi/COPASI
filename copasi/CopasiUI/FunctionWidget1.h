@@ -62,6 +62,7 @@ class FunctionWidget1 : public QWidget
     void loadName(QString setValue);
     int isName(QString setValue);
 
+    QString *Function_Name;
     QButtonGroup* ButtonGroup1;
     QButtonGroup* ButtonGroup2;
     QButtonGroup* ButtonGroup3;
@@ -95,10 +96,14 @@ class FunctionWidget1 : public QWidget
     QFrame* Frame5;
     QFrame* Frame6;
     QFrame* Frame7;
-    QFrame* Frame;
+    QFrame* Frame0;
 
   protected slots:
-    virtual void slotCancelButtonPressed(QString setValue);
+    virtual void slotCancelButtonClicked();
+    virtual void slotCommitButtonClicked();
+
+  signals:
+    void signalCancelButtonClicked(QString &);
   };
 
 #endif // FunctionWidget1

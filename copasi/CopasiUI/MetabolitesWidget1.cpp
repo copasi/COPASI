@@ -202,10 +202,6 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget *parent, const char * name, WFlag
 
   //connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), (ListViews*)parent, SLOT(slotCompartmentSelected(const QString &)));
-
-  //connect(ComboBox1, SIGNAL(highlighted(const QString &)), (ListViews*)parent, SLOT(slotFolderChanged(QListViewItem * (const QString &))));
-  //connect(ComboBox1, SIGNAL(highlighted(const QString &)), (ListViews*)parent, SLOT(ListViews()));
-
   connect(LineEdit4, SIGNAL(selectionChanged()), (ListViews*)parent, SLOT(slotCompartmentSelected()));
 }
 
