@@ -1,29 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/08 23:21:45 $
+   $Date: 2005/02/18 16:20:37 $
    End CVS Header */
 
 // Main
 //
 // (C) Stefan Hoops 2002
 //
-
-#ifdef XXXX
-#ifdef WIN32
-# include <windows.h>
-# include <winbase.h>
-# include <direct.h>
-# define getcwd _getcwd
-# ifdef ERROR
-#  undef ERROR
-# endif
-#else
-# include <unistd.h>
-#endif
-#endif
 
 #include <stdlib.h>
 #include <sstream>
@@ -34,55 +20,20 @@
 #define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
-#include "utilities/CGlobals.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CCopasiTask.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
-#include "model/CModel.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-
-void processTrajectory(CModel & model, CReadConfig & copasiFile);
-void processSteadyState(CModel & model, CReadConfig & copasiFile);
 
 int main(int argc, char *argv[])
 {
   try
     {
-      CCopasiContainer::init();
-      Copasi = new CGlobals;
-
       // Parse the commandline options
       COptions::init(argc, argv);
-
-      // Get the name of the SystemFunctionDB
-      std::string tmp;
-      COptions::getValue("SystemFunctionDB", tmp);
-      Copasi->pFunctionDB->setFilename(tmp);
-
-      // Get the name of the CopasiFile
-      COptions::getValue("CopasiFile", tmp);
-      CReadConfig CopasiFile(tmp);
-
-      // Load the model
-      CModel Model;
-      Model.load(CopasiFile);
-
-      // Load the output specifications
-      //Copasi->pOutputList->load(CopasiFile);//TODO
-
-      bool runTrajectory;
-      CopasiFile.getVariable("Dynamics", "bool", &runTrajectory,
-                             CReadConfig::LOOP);
-      bool runSteadyState;
-      CopasiFile.getVariable("SteadyState", "bool", & runSteadyState);
-
-      if (runTrajectory) processTrajectory(Model, CopasiFile);
-      if (runSteadyState) processSteadyState(Model, CopasiFile);
     }
 
   catch (copasi::autoexcept &e)
@@ -93,50 +44,93 @@ int main(int argc, char *argv[])
           std::cout << "Usage: " << argv[0] << " [options]\n";
           std::cout << e.what();
         }
+
+      return 1;
     }
 
   catch (copasi::option_error &e)
     {
       std::cerr << argv[0] << ": " << e.what() << "\n";
       std::cerr << e.get_help_comment() << std::endl;
+
+      return 1;
     }
 
-  catch (CCopasiException Exception)
+  // Create the root container.
+  CCopasiContainer::init();
+
+  // Create the global data model.
+  CCopasiDataModel::Global = new CCopasiDataModel;
+
+  const COptions::nonOptionType & Files = COptions::getNonOptions();
+
+  if (!COptions::compareValue("ImportSBML", std::string("")))
     {
-      std::cout << Exception.getMessage().getText() << std::endl;
+      // Import the SBML File
+      std::string ImportSBML;
+      COptions::getValue("ImportSBML", ImportSBML);
+      CCopasiDataModel::Global->importSBML(ImportSBML);
+
+      // Save the COPASI File, which is the only thing to do.
+      std::string Save;
+      COptions::getValue("Save", Save);
+      CCopasiDataModel::Global->saveModel(Save);
     }
 
-  pdelete(Copasi);
+  COptions::nonOptionType::const_iterator it = Files.begin();
+  COptions::nonOptionType::const_iterator end = Files.end();
+
+  for (; it != end; ++it)
+    {
+      CCopasiDataModel::Global->loadModel(*it);
+
+      // Check whether exporting to SBML is requested.
+      if (!COptions::compareValue("ExportSBML", std::string("")))
+        {
+          // Export the SBML File
+          std::string ExportSBML;
+          COptions::getValue("ExportSBML", ExportSBML);
+          CCopasiDataModel::Global->exportSBML(ExportSBML);
+
+          // Since only one export file name can be specified we
+          // stop execution.
+          return 0;
+        }
+
+      CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+      unsigned C_INT32 i, imax = TaskList.size();
+
+      for (i = 0; i < imax; i++)
+        if (TaskList[i]->isScheduled())
+          {
+            TaskList[i]->initialize();
+            TaskList[i]->process();
+            TaskList[i]->restore();
+          }
+
+      // Check whether a file for saving the resulting model is given
+      if (!COptions::compareValue("Save", std::string("")))
+        {
+          std::string Save;
+          COptions::getValue("Save", Save);
+          CCopasiDataModel::Global->saveModel(Save);
+
+          // Since only one save file name can be specified we
+          // stop execution.
+          return 0;
+        }
+
+      CCopasiDataModel::Global->saveModel("");
+    }
+
+  //  catch (CCopasiException Exception)
+  //    {
+  //      std::cout << Exception.getMessage().getText() << std::endl;
+  //}
+
+  pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
 
   std::cout << "Leaving main program." << std::endl;
   return 0;
-}
-
-void processTrajectory(CModel & model, CReadConfig & copasiFile)
-{
-  CTrajectoryTask task;
-
-  task.load(copasiFile);
-
-  task.getProblem()->setModel(&model);
-
-  std::ofstream TrajectoryFile("TEST.DAT" /*Copasi->pOutputList->getTrajectoryFile().c_str()*/);
-  task.initialize(&TrajectoryFile);
-
-  task.process();
-}
-
-void processSteadyState(CModel & model, CReadConfig & copasiFile)
-{
-  CSteadyStateTask task;
-
-  task.load(copasiFile);
-
-  task.getProblem()->setModel(&model);
-
-  std::ofstream SteadyStateFile("TEST.DAT" /*Copasi->pOutputList->getSteadyStateFile().c_str()*/);
-  task.initialize(&SteadyStateFile);
-
-  task.process();
 }
