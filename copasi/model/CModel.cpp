@@ -604,6 +604,8 @@ void CModel::lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot)
 
 vector < CMetab * > & CModel::getMetabolitesInd(){return mMetabolitesInd;}
 
+vector < CMetab * > & CModel::getMetabolitesDep(){return mMetabolitesDep;}
+
 vector < CMetab * > & CModel::getMetabolitesX(){return mMetabolitesX;}
 
 C_INT32 CModel::getTotMetab() const
@@ -827,6 +829,11 @@ const TNT::Transpose_View<TNT::UpperTriangularView<TNT::Matrix<C_FLOAT64 > > >
  *  Get the reverse Matrix of this Model
  */
 const TNT::Matrix < C_FLOAT64 >& CModel::getML() const
+{
+  return mL;
+}
+
+TNT::Matrix < C_FLOAT64 >& CModel::getML()
 {
   return mL;
 }

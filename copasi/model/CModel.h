@@ -318,7 +318,9 @@ class CModel
 
   vector < CMetab * > & getMetabolitesInd();
   vector < CMetab * > & getMetabolitesX();
-    
+
+  vector < CMetab * > & getMetabolitesDep();
+  
   /**
    *  Get the number of total metabolites
    *  @return C_INT32 totMetab
@@ -485,6 +487,7 @@ class CModel
    */
   const TNT::Matrix < C_FLOAT64 >& getML() const;
 
+  TNT::Matrix < C_FLOAT64 >& getML();
 
 #ifdef XXXX
   /**
