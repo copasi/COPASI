@@ -75,10 +75,27 @@ class CSS_Solution
    */
   C_FLOAT64 * mSs_xnew;
 
+
+  /**
+   * The steady state resolution
+   */
+  C_FLOAT64 mSSRes;
+
+
+  // variables for steady-state solution
+  //add more variables here
+
+  TNT::Vector < C_FLOAT64 > mSs_dxdt;
+
   /**
    *  variable for steady-state solution
    */
   C_INT32 mSs_nfunction; 
+
+  /**
+   *  variable for steady-state back integer
+   */
+  C_INT32 mSSBackInt; 
 
   /**
    *  variable for steady-state solution
@@ -133,6 +150,24 @@ class CSS_Solution
    *  destructor
    */
   ~CSS_Solution();
+
+  /**
+   *  Loads parameters for this solver with data coming from a 
+   *  CReadConfig object. (CReadConfig object reads an input stream)
+   *  @param configbuffer reference to a CReadConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 load(CReadConfig & configbuffer);
+
+  /**
+   *  Saves the parameters of the solver to a CWriteConfig object.
+   *  (Which usually has a file attached but may also have socket)
+   *  @param configbuffer reference to a CWriteConfig object.
+   *  @return mFail
+   *  @see mFail
+   */
+  C_INT32 save(CWriteConfig & configbuffer);
 
   /**
    *  set mOption
@@ -209,3 +244,6 @@ class CSS_Solution
 
 
 #endif // COPASI_CSS_Solution
+
+
+
