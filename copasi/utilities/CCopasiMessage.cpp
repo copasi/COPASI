@@ -128,6 +128,9 @@ void CCopasiMessage::handler()
     
   if (mType == ERROR) 
     {
+#ifdef COPASI_DEBUG      
+      cout << mText << endl;
+#endif // COPASI_DEBUG
       throw CCopasiException(*this);
     }
   else
@@ -156,6 +159,8 @@ unsigned C_INT32 CCopasiMessage::getNumber(void) {return mNumber;}
 
 string TimeStamp()
 {
+  time_t timezone, altzone;
+
   time_t Time;
   tm     *sTime = NULL;
   char str[20];

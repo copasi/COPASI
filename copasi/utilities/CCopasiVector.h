@@ -28,7 +28,7 @@ class CCopasiVector : protected vector < CType * >
   /**
    *  Default constructor
    */
-  CCopasiVector() : vector < CType * > (){} 
+  CCopasiVector() : vector < CType * > () {CONSTRUCTOR_TRACE;} 
 
   /**
    *  Copy constructor
@@ -36,18 +36,19 @@ class CCopasiVector : protected vector < CType * >
   CCopasiVector(const CCopasiVector < CType > & src) :
     vector < CType * > (src)
     {
+      CONSTRUCTOR_TRACE;
       unsigned C_INT32 i, imax = vector < CType * >::size();
       iterator Target = begin();
       const_iterator Source = src.begin();
       
-      for (i=0; i<imax; i++)
-	*(Target++) = new CType(**(Source++));
+      for (i=0; i<imax; i++, Target++, Source++)
+	*Target = new CType(**Source);
     }
 
   /**
    *  Destructor
    */
-  virtual ~CCopasiVector() {}
+  virtual ~CCopasiVector() {DESTRUCTOR_TRACE;}
 
   /**
    *  Cleanup
@@ -57,10 +58,14 @@ class CCopasiVector : protected vector < CType * >
       unsigned C_INT32 i, imax = vector < CType * >::size();
       iterator Target = begin();
       
-      for (i=0; i<imax; i++)
+      for (i=0; i<imax; i++, Target++)
         {
-          (*Target)->cleanup();
-          delete *(Target++);
+          if (*Target)
+            {
+              (*Target)->cleanup();
+              delete *Target;
+              *Target = NULL;
+            }
         }
       
       clear();
@@ -97,8 +102,13 @@ class CCopasiVector : protected vector < CType * >
       iterator Target = begin() + index;
       assert(index < vector < CType * >::size());
 
-      (*Target)->cleanup();
-      delete *Target;
+      if (*Target)
+        {
+          (*Target)->cleanup();
+          delete *Target;
+          *Target = NULL;
+        }
+      
       erase(Target, Target + 1);
     }
 
@@ -138,8 +148,8 @@ class CCopasiVector : protected vector < CType * >
       unsigned C_INT32 i;
       iterator Target = begin() + OldSize;
       
-      for (i=OldSize; i<size; i++)
-	*(Target++) = new CType;
+      for (i=OldSize; i<size; i++, Target++)
+	*Target = new CType;
     }
   
 };
@@ -180,10 +190,10 @@ template < class CType > class CCopasiVectorS
       
       CCopasiVector< CType >::iterator Target = begin();
  
-      for (i=0; i<size; i++)
+      for (i=0; i<size; i++, Target++)
 	{
 	  *Target = new CType;
-	  (*(Target++))->load(configbuffer);
+	  (*Target)->load(configbuffer);
 	}
     }
   
@@ -197,8 +207,8 @@ template < class CType > class CCopasiVectorS
       unsigned C_INT32 i, imax = size();
       CCopasiVector< CType >::iterator Target = begin();
       
-      for (i=0; i<imax; i++)
-	(*(Target++))->save(configbuffer);
+      for (i=0; i<imax; i++, Target++)
+	(*Target)->save(configbuffer);
     }
 
   /**
@@ -240,8 +250,12 @@ template < class CType > class CCopasiVectorN
    */
   virtual void add(const CType & src)
     {
+      if (!isInsertAllowed(&src))
+        CCopasiMessage(CCopasiMessage::ERROR, 
+                       MCCopasiVector + 2, src.getName().c_str());
+      
       CType * Element = new CType(src);
-      add(Element);
+      push_back(Element);
     }
 
   /**
@@ -249,7 +263,9 @@ template < class CType > class CCopasiVectorN
    */
   virtual void add(CType * src)
     {
-      isInsertAllowed(src);
+      if (!isInsertAllowed(src))
+        CCopasiMessage(CCopasiMessage::ERROR, 
+		       MCCopasiVector + 2, src->getName().c_str());
       // This is not very efficient !!!
       // It results in a lot of resizing of the vector !!!
       push_back(src);
@@ -309,8 +325,8 @@ template < class CType > class CCopasiVectorN
       unsigned C_INT32 i,imax = size();
       CCopasiVector< CType >::const_iterator Target = begin();
       
-      for (i=0; i<imax; i++)
-	  if ((*(Target++))->getName() == name) return i;
+      for (i=0; i<imax; i++, Target++)
+	  if ((*Target)->getName() == name) return i;
       
       return -1;
     }
@@ -352,10 +368,10 @@ template < class CType > class CCopasiVectorNS
       
       CCopasiVector< CType >::iterator Target = begin();
  
-      for (i=0; i<size; i++)
+      for (i=0; i<size; i++, Target++)
 	{
 	  *Target = new CType;
-	  (*(Target++))->load(configbuffer);
+	  (*Target)->load(configbuffer);
 	}
     }
   
@@ -369,8 +385,8 @@ template < class CType > class CCopasiVectorNS
       unsigned C_INT32 i, imax = size();
       CCopasiVector< CType >::iterator Target = begin();
       
-      for (i=0; i<imax; i++)
-	(*(Target++))->save(configbuffer);
+      for (i=0; i<imax; i++, Target++)
+	(*Target)->save(configbuffer);
     }
 
   /**
@@ -389,6 +405,11 @@ template < class CType > class CCopasiVectorNS
    *
    */
   CType * operator[](const string &name) 
-    {return ((CCopasiVectorN <CType>*) this)->operator [](name);}   
+    {return ((CCopasiVectorN <CType>*) this)->operator [](name);}
+private:    
+
+  /** @associates <{CCopasiVectorS< CType >}>
+   * @directed*/
+  /*# int lnkCCopasiVectorS; */
 };
 #endif // COPASI_CCopasiVector
