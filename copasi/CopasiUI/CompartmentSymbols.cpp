@@ -12,6 +12,7 @@
 #include "CompartmentSymbols.h"
 #include "mathmodel/CMathModel.h"
 #include "mathmodel/CMathConstant.h"
+#include "model/model.h"
 #include "listviews.h"
 #include <qfont.h>
 
@@ -88,19 +89,37 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
       std::map<std::string, CMathConstantCompartment * >::iterator it;
       CMathConstantCompartment * constantCompart;
 
-      C_INT32 noOfMetaboliteRows = compartList.size();
-      table->setNumRows(noOfMetaboliteRows);
+      table->setNumRows(compartList.size());
       int index = 0;
       for (it = compartList.begin(); it != compartList.end();++it)
         {
-          //QMessageBox::information(this, "key",it->first.c_str());
+          QStringList comboEntries1, comboEntries2;
           constantCompart = it->second;
-          table->setText(index, 0, constantCompart->getName().c_str());
-          CCopasiObject *compartObject = constantCompart->getObject();
-          table->setText(index, 1, compartObject->getName().c_str());
+          table->setText(index, 0, it->first.c_str());
+
+          const CCopasiVectorNS < CCompartment > &list1 = mModel->getModel()->getCompartments();
+          for (int m = 0; m < list1.size(); m++)
+            {
+              const std::string &name1 = list1[m]->getName();
+              comboEntries2.push_back(name1.c_str());
+            }
+          QComboTableItem * item1 = new QComboTableItem(table, comboEntries2, false);
+          item1->setCurrentItem(constantCompart->getObject()->getName().c_str());
+          table->setItem(index, 1, item1);
+
           table->setText(index, 2, QString::number(constantCompart->getValue()));
+
           table->setText(index, 3, QString::number(constantCompart->getTransientValue()));
-          // const std::vector< CMathSymbol * > & constantCompart->getMetaboliteList();
+
+          const std::vector< CMathSymbol * > &list = constantCompart->getMetaboliteList();
+          for (int l = 0; l < list.size(); l++)
+            {
+              const std::string &name = list[l]->getName();
+              comboEntries1.push_back(name.c_str());
+            }
+          QComboTableItem * item = new QComboTableItem(table, comboEntries1, false);
+          table->setItem(index, 4, item);
+
           index++;
         }
     }
