@@ -316,14 +316,12 @@ class CModel
    */
   void setConcentrations(const C_FLOAT64 *y);
 
-#if 0
   // Added by CvG
   /**
-   * Return the vector of steps
-   * @return "CCopasiVector<CStep> *"
+   * Return the vector of reactions
+   * @return "CCopasiVector<CReaction> *"
    */
-  CCopasiVector<CStep> & getSteps();
-#endif
+  CCopasiVector<CReaction> & getReactions();
 
   // Added by Yongqun He
   /**
@@ -343,12 +341,6 @@ class CModel
    *	@return string
    */
   string getComments() const;	
-
-  /**
-   *	Return the msteps of this model	
-   *	@return CCopasiVector < CStep > & 
-   */
-  CCopasiVector < CReaction > & getReactions();
 
   /**
    *	Return the title of this model

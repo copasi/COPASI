@@ -125,6 +125,10 @@ SOURCE=..\..\copasi\trajectory\CStochSolver.h
 
 SOURCE=..\..\copasi\trajectory\CTrajectory.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\trajectory.h
+# End Source File
 # End Group
 # End Target
 # End Project

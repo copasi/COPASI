@@ -95,31 +95,31 @@ PostBuild_Cmds=copy Debug\*.lib ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CCopasiException.cpp
+SOURCE=.\CCopasiException.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CCopasiMessage.cpp
+SOURCE=.\CCopasiMessage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CGlobals.cpp
+SOURCE=.\CGlobals.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CReadConfig.cpp
+SOURCE=.\CReadConfig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CVersion.cpp
+SOURCE=.\CVersion.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CWriteConfig.cpp
+SOURCE=.\CWriteConfig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\utilities.cpp
+SOURCE=.\utility.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -127,39 +127,43 @@ SOURCE=..\..\copasi\utilities\utilities.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CCopasiException.h
+SOURCE=.\CCopasiException.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CCopasiMessage.h
+SOURCE=.\CCopasiMessage.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CCopasiVector.h
+SOURCE=.\CCopasiVector.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CGlobals.h
+SOURCE=.\CGlobals.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CReadConfig.h
+SOURCE=.\CReadConfig.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CVersion.h
+SOURCE=.\CVersion.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\CWriteConfig.h
+SOURCE=.\CWriteConfig.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\messages.h
+SOURCE=.\messages.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\utilities\utilities.h
+SOURCE=.\utilities.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\utility.h
 # End Source File
 # End Group
 # End Target

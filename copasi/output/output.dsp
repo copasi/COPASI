@@ -95,23 +95,23 @@ PostBuild_Cmds=copy Debug\*.lib ..\Debug
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\copasi\output\CDatum.cpp
+SOURCE=.\CDatum.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutput.cpp
+SOURCE=.\COutput.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputEvent.cpp
+SOURCE=.\COutputEvent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputLine.cpp
+SOURCE=.\COutputLine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputList.cpp
+SOURCE=.\COutputList.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -119,23 +119,27 @@ SOURCE=..\..\copasi\output\COutputList.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\copasi\output\CDatum.h
+SOURCE=.\CDatum.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutput.h
+SOURCE=.\COutput.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputEvent.h
+SOURCE=.\COutputEvent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputLine.h
+SOURCE=.\COutputLine.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\copasi\output\COutputList.h
+SOURCE=.\COutputList.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\output.h
 # End Source File
 # End Group
 # End Target

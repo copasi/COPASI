@@ -2,8 +2,8 @@
 
 #include "copasi.h"
 #include "CStochSolver.h"
-#include "CModel.h"
-#include "CStep.h"
+#include "model/model.h"
+
 CStochSolver::CStochSolver()
     : mMethod(0),
       mMaxTime(0),
@@ -11,10 +11,12 @@ CStochSolver::CStochSolver()
 {
 }
 
+#ifdef XXXX
 CStochSolver::CStochSolver(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps)
 {
     (void) Initialize(method_name, model, maxtime, maxsteps);
 }
+#endif // XXXX
 
 void CStochSolver::Initialize(std::string method_name, CModel *model, C_FLOAT64 maxtime, C_INT32 maxsteps)
 {
@@ -49,7 +51,7 @@ CStochMethod::CStochMethod(CModel *model)
 C_INT32 CStochMethod::UpdatePropensities()
 {
     mA0 = 0;
-    for (C_INT32 i = 0; i < mModel->getSteps()->size(); i++)
+    for (C_INT32 i = 0; i < mModel->getReactions().size(); i++)
     {
         CalculateAmu(i);
         mA0 += mAmu[i];
@@ -68,7 +70,7 @@ C_INT32 CStochMethod::CalculateAmu(C_INT32 index)
     C_INT32 lower_bound;
     // First, find the step (reaction) associated with this index.
     // Keep a pointer to this.
-    CStep *step = &(*mModel->getSteps())[index];
+    CReaction *step = &mModel->getReactions()[index];
     // Iterate through each reactant type in the step 
     std::vector<CStepMetab>::iterator it;
     for (it = step->substrates().begin(); it < step->substrates().end(); it++)

@@ -151,6 +151,10 @@ SOURCE=..\..\copasi\function\CNodeK.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\function.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\copasi\function\lexkk.h
 # End Source File
 # End Group

@@ -137,6 +137,10 @@ SOURCE=..\..\copasi\model\CMoiety.h
 
 SOURCE=..\..\copasi\model\CReaction.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\model.h
+# End Source File
 # End Group
 # End Target
 # End Project
