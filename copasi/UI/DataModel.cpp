@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DataModel.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/13 09:43:16 $
+   $Author: shoops $ 
+   $Date: 2004/08/19 15:09:32 $
    End CVS Header */
 
 #include "DataModel.h" 
@@ -166,7 +166,7 @@ void DataModel::loadModel(const char* fileName)
       pOptFunction = new COptFunction();
     }
 
-  model->setCompileFlag();
+  if (model) model->setCompileFlag();
 }
 
 void DataModel::saveModel(const char* fileName)

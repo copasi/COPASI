@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/08/10 13:58:02 $
+   $Author: shoops $ 
+   $Date: 2004/08/19 15:09:43 $
    End CVS Header */
 
 #include "DataModelGUI.h"
@@ -115,8 +115,8 @@ void DataModelGUI::loadModel(const char* fileName)
 {
   DataModel::loadModel(fileName);
 
-  model->setCompileFlag();
-  linkDataModelToGUI();
+  // model->setCompileFlag();
+  if (model) linkDataModelToGUI();
 }
 
 void DataModelGUI::saveModel(const char* fileName)
