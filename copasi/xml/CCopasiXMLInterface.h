@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/03 16:20:04 $
+   $Date: 2005/02/19 02:58:08 $
    End CVS Header */
 
 /**
@@ -30,6 +30,8 @@ class CCopasiTask;
 class CReportDefinition;
 class CXMLAttributeList;
 class CPlotSpecification;
+class CSlider;
+
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
  * related to COPASI relevant information.
@@ -40,6 +42,29 @@ class CPlotSpecification;
  * Note: the responsibilty to free allocated memory during load is handed to the
  *       user.
  */
+class SCopasiXMLGUI
+  {
+    // Operations
+  public:
+    /**
+     * Constructor
+     */
+    SCopasiXMLGUI();
+
+    /**
+     * Constructor
+     */
+    ~SCopasiXMLGUI();
+
+    // Attributes
+  public:
+    /**
+     * Pointer to a vector of sliders which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    CCopasiVectorN< CSlider > * pSliderList;
+  };
+
 class CCopasiXMLInterface
   {
   public:
@@ -85,6 +110,12 @@ class CCopasiXMLInterface
      * The ownership is handed to the user.
      */
     CCopasiVectorN< CPlotSpecification > * mpPlotList;
+
+    /**
+     * Pointer to a GUI related information, which has been loaded or is to be saved.
+     * The ownership is handed to the user.
+     */
+    SCopasiXMLGUI * mpGUI;
 
     /**
      * A pointer to the input stream
@@ -265,6 +296,31 @@ class CCopasiXMLInterface
      * @return bool success
      */
     bool freeReportList();
+
+    /**
+     * Set the GUI.
+     * @param const SCopasiXMLGUI & GUI
+     * @return bool success
+     */
+    bool setGUI(const SCopasiXMLGUI & GUI);
+
+    /**
+     * Retreive the SCopasiXMLGUI.
+     * @return SCopasiXMLGUI * pGUI
+     */
+    SCopasiXMLGUI * getGUI() const;
+
+    /**
+     * Retreive whether the XML contains a GUI.
+     * @return bool have GUI
+     */
+    bool haveGUI() const;
+
+    /**
+     * Free the GUI.
+     * @return bool success
+     */
+    bool freeGUI();
 
     /**
      * Encode a given string to a valid XML string
