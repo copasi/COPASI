@@ -534,18 +534,22 @@ void COutput::repStruct(ofstream &fout)
 
   fout << endl;
 
+
   if (model->getMoieties().size() > 0)
     {
       fout << endl << "CONSERVATION RELATIONSHIPS" << endl;
 		
+	  fout.setf(ios::fixed); 
       for (i = 0; i < model->getMoieties().size(); i++)
 	  {
 		fout << model->getMoieties()[i]->getDescription() << " = " ;
 		fout << model->getMoieties()[i]->getNumber() << endl;
 
 	  }
+	  fout.unsetf(ios::fixed); 
     }
   fout << endl;
+
 }
 
 /**
