@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyTable.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/08/13 21:14:52 $
+   $Author: gauges $ 
+   $Date: 2004/08/16 11:54:48 $
    End CVS Header */
 
 #include <iostream>
 #include <math.h>
 #include "copasi.h"
 #include <qmessagebox.h>
-#include "MyTable.h" 
+#include "MyTable.h"
+#include <qstyle.h> 
 //#include "listviews.h"
 
 MyTable::MyTable(QWidget * parent, const char * name)
@@ -126,7 +127,8 @@ void MyTable::resizeEvent(QResizeEvent* e)
 int MyTable::getOptimalColumnWidth(int index)
 {
   int counter;
-  int largest = this->horizontalHeader()->sectionSize(index);
+  int largest = this->headerSectionSizeHint(index).width();
+  //int largest = this->horizontalHeader()->sectionSize(index);
   for (counter = 0; counter < this->numRows(); counter++)
     {
       QTableItem* it = this->item(counter, index);
@@ -144,6 +146,7 @@ int MyTable::getOptimalColumnWidth(int index)
 
 void MyTable::scaleColumns(double factor)
 {
+  //std::cout << "Scaling columns with factor: " << factor << std::endl;
   int counter;
   for (counter = 0; counter < this->numCols(); counter++)
     {
@@ -194,3 +197,57 @@ void MyTable::removeColumns(const QMemArray<int> & cols)
   this->exactColumnWidth.resize(this->exactColumnWidth.size() - cols.size());
   QTable::removeColumns(cols);
 }
+
+QSize MyTable::headerSectionSizeHint(int section) const
+  {
+    int iw = 0;
+    int ih = 0;
+    int height = 0;
+    int width = 0;
+    QHeader* horizontalHeader = this->horizontalHeader();
+    if (horizontalHeader != NULL)
+      {
+        QFontMetrics fm = horizontalHeader->fontMetrics();
+        QIconSet* iconSet = horizontalHeader->iconSet(section);
+        if (iconSet != 0)
+          {
+            QSize isize = iconSet->pixmap(QIconSet::Small,
+                                           QIconSet::Normal).size();
+            iw = isize.width() + 2;
+            ih = isize.height();
+          }
+
+        QRect bound;
+        QString label = horizontalHeader->label(section);
+        if (label != QString::null)
+          {
+            int lines = label.contains('\n') + 1;
+            int w = 0;
+            if (lines > 1)
+              {
+                bound.setHeight(fm.height() + fm.lineSpacing() * (lines - 1));
+                QStringList list = QStringList::split('\n', label);
+                for (int i = 0; i < (int)list.count(); ++i)
+                  {
+                    int tmpw = fm.width(*(list.at(i)));
+                    w = QMAX(w, tmpw);
+                  }
+              }
+            else
+              {
+                bound.setHeight(fm.height());
+                w = fm.width(*label);
+              }
+            bound.setWidth(w);
+          }
+        int arrowWidth = 0;
+        if (horizontalHeader->sortIndicatorSection() == section)
+          {
+            arrowWidth = ((horizontalHeader->orientation() == Qt::Horizontal ? horizontalHeader->height() : horizontalHeader->width()) / 2) + 8;
+          }
+        height = QMAX(bound.height() + 2, ih) + 4;
+        width = bound.width() + horizontalHeader->style().pixelMetric(QStyle::PM_HeaderMargin) * 4
+                + iw + arrowWidth;
+      }
+    return QSize(width, height);
+  }
