@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 20:47:19 $
+   $Author: ssahle $ 
+   $Date: 2004/09/16 16:20:18 $
    End CVS Header */
 
 /**
@@ -74,23 +74,30 @@ class CElementaryFluxModes
 
     /**
      * Check the reversibility of the indexed Flux Mode
-     * @param const unsigned C_INT32 & index
+     * @param unsigned C_INT32 index
      * @return bool
-     */
-    bool isFluxModeReversible(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retrieve the description of the indexed Flux Mode
-     * @param const unsigned C_INT32 & index
-     * @return std::string description
-     */
-    std::string getFluxModeDescription(const unsigned C_INT32 & index) const;
+     */ // should not be used
+    bool isFluxModeReversible(unsigned C_INT32 index) const;
 
     /**
      * Retrieve the number of Flux Modes
      * @return unsigned C_INT32 size
      */
     unsigned C_INT32 getFluxModeSize() const;
+
+    /**
+     * Get one of the flux modes
+     * @param unsigned C_INT32 index
+     * @return reference to flux mode
+     */
+    const CFluxMode & getFluxMode(unsigned C_INT32 index) const;
+
+    /**
+     * Retrieve the description of the indexed Flux Mode
+     * @param unsigned C_INT32 index
+     * @return std::string description
+     */
+    std::string getFluxModeDescription(unsigned C_INT32 index) const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A);

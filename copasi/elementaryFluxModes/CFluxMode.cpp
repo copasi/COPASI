@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:23:13 $
+   $Author: ssahle $ 
+   $Date: 2004/09/16 16:20:18 $
    End CVS Header */
 
 /**
@@ -18,6 +18,9 @@
 #include "copasi.h"
 #include "CFluxMode.h"
 #include "CTableauLine.h"
+#include "model/CModel.h"
+#include "model/CChemEqInterface.h"
+
 CFluxMode::CFluxMode() {CONSTRUCTOR_TRACE;}
 
 CFluxMode::CFluxMode(const CFluxMode & src) :
@@ -44,24 +47,31 @@ CFluxMode::CFluxMode(const CTableauLine * line)
 }
 CFluxMode::~CFluxMode() {DESTRUCTOR_TRACE;}
 
-const unsigned C_INT32 &
-CFluxMode::getReaction(const unsigned C_INT32 & index) const
+unsigned C_INT32 CFluxMode::getReactionIndex(unsigned C_INT32 index) const
   {
     return mReactions[index].first;
   }
 
-const C_FLOAT64 &
-CFluxMode::getMultiplier(const unsigned C_INT32 & index) const
+const C_FLOAT64 & CFluxMode::getMultiplier(unsigned C_INT32 index) const
   {
     return mReactions[index].second;
   }
 
-const bool & CFluxMode::isReversible() const
+bool CFluxMode::isReversible() const
   {
     return mReversible;
   }
 
-const unsigned C_INT32 CFluxMode::size() const
+unsigned C_INT32 CFluxMode::size() const
   {
     return mReactions.size();
   }
+
+const CReaction * CFluxMode::getReaction(unsigned C_INT32 index, const CModel * model) const
+  {return model->getReactions()[index];}
+
+std::string CFluxMode::getReactionName(unsigned C_INT32 index, const CModel * model) const
+  {return getReaction(index, model)->getObjectName();}
+
+std::string CFluxMode::getReactionEquation(unsigned C_INT32 index, const CModel * model) const
+  {return CChemEqInterface::getChemEqString(model, *getReaction(index, model), false);}

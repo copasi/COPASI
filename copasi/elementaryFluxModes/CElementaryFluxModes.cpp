@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/23 16:08:39 $
+   $Date: 2004/09/16 16:20:18 $
    End CVS Header */
 
 /**
@@ -84,12 +84,14 @@ void CElementaryFluxModes::calculate(const CModel * model)
   Algorithm.calculate(Stoi, Reversible, mFluxModes);
 }
 
-bool
-CElementaryFluxModes::isFluxModeReversible(const unsigned C_INT32 & index) const
+bool CElementaryFluxModes::isFluxModeReversible(unsigned C_INT32 index) const
 {return mFluxModes[index].isReversible();}
 
+const CFluxMode & CElementaryFluxModes::getFluxMode(unsigned C_INT32 index) const
+  {return mFluxModes[index];}
+
 std::string
-CElementaryFluxModes::getFluxModeDescription(const unsigned C_INT32 & index) const
+CElementaryFluxModes::getFluxModeDescription(unsigned C_INT32 index) const
   {
     std::stringstream tmp;
     unsigned C_INT32 j, jmax = mFluxModes[index].size();
@@ -99,7 +101,7 @@ CElementaryFluxModes::getFluxModeDescription(const unsigned C_INT32 & index) con
       {
         if (j) tmp << ", ";
         tmp << mFluxModes[index].getMultiplier(j) << " * "
-        << Reaction[mIndex[mFluxModes[index].getReaction(j)]]->getObjectName();
+        << Reaction[mIndex[mFluxModes[index].getReactionIndex(j)]]->getObjectName();
       }
 
     return tmp.str();
@@ -135,7 +137,7 @@ std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A)
       for (j = 0; j < jmax; j++)
         {
           os << "   " << A.mFluxModes[i].getMultiplier(j) << " * "
-          << Reaction[A.mIndex[A.mFluxModes[i].getReaction(j)]]
+          << Reaction[A.mIndex[A.mFluxModes[i].getReactionIndex(j)]]
           ->getObjectName()
           << std::endl;
         }
