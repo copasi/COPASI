@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Wed Oct 27 16:02:33 2004
+ ** Created: Sat Nov 27 15:17:50 2004
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -27,6 +27,8 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QLabel;
+class QComboBox;
+class QPushButton;
 class QTabWidget;
 class QTable;
 class CModel;
@@ -42,6 +44,8 @@ class CMCAResultSubwidget : public QWidget
     ~CMCAResultSubwidget();
 
     QLabel* mTopLabel;
+    QComboBox* mComboScale;
+    QPushButton* mSaveButton;
     QTabWidget* mTabWidget;
     QWidget* tab;
     QTable* mTableElasticities;
@@ -50,13 +54,15 @@ class CMCAResultSubwidget : public QWidget
     QWidget* TabPage;
     QTable* mTableCCC;
 
-    virtual void loadAll(CMCAMethod * mcaMethod);
-    virtual void loadElasticities(CMCAMethod * mcaMethod);
-    virtual void loadConcentrationCCs(CMCAMethod * mcaMethod);
-    virtual void loadFluxCCs(CMCAMethod * mcaMethod);
+  public slots:
+    virtual void loadAll(const CMCAMethod * mcaMethod);
+    virtual void loadElasticities(const CMCAMethod * mcaMethod);
+    virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
+    virtual void loadFluxCCs(const CMCAMethod * mcaMethod);
 
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;
+    QHBoxLayout* layout3;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
     QVBoxLayout* TabPageLayout;
@@ -65,6 +71,11 @@ class CMCAResultSubwidget : public QWidget
     virtual void languageChange();
 
     virtual void init();
+    virtual void slotSave();
+    virtual void slotScaled();
+
+  private:
+    const CMCAMethod * mMCAMethod;
   };
 
 #endif // CMCARESULTSUBWIDGET_H

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/28 07:36:04 $
+   $Author: ssahle $ 
+   $Date: 2004/11/29 12:15:22 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Wed Oct 27 16:02:33 2004
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.3 2004/10/28 07:36:04 gauges Exp $)
+ ** Created: Sat Nov 27 15:17:50 2004
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.4 2004/11/29 12:15:22 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,6 +27,8 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QLabel;
+class QComboBox;
+class QPushButton;
 class QTabWidget;
 class QTable;
 class CModel;
@@ -42,6 +44,8 @@ class CMCAResultSubwidget : public QWidget
     ~CMCAResultSubwidget();
 
     QLabel* mTopLabel;
+    QComboBox* mComboScale;
+    QPushButton* mSaveButton;
     QTabWidget* mTabWidget;
     QWidget* tab;
     QTable* mTableElasticities;
@@ -50,13 +54,15 @@ class CMCAResultSubwidget : public QWidget
     QWidget* TabPage;
     QTable* mTableCCC;
 
-    virtual void loadAll(CMCAMethod * mcaMethod);
-    virtual void loadElasticities(CMCAMethod * mcaMethod);
-    virtual void loadConcentrationCCs(CMCAMethod * mcaMethod);
-    virtual void loadFluxCCs(CMCAMethod * mcaMethod);
+  public slots:
+    virtual void loadAll(const CMCAMethod * mcaMethod);
+    virtual void loadElasticities(const CMCAMethod * mcaMethod);
+    virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
+    virtual void loadFluxCCs(const CMCAMethod * mcaMethod);
 
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;
+    QHBoxLayout* layout3;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
     QVBoxLayout* TabPageLayout;
@@ -65,6 +71,11 @@ class CMCAResultSubwidget : public QWidget
     virtual void languageChange();
 
     virtual void init();
+    virtual void slotSave();
+    virtual void slotScaled();
+
+  private:
+    const CMCAMethod * mMCAMethod;
   };
 
 #endif // CMCARESULTSUBWIDGET_H

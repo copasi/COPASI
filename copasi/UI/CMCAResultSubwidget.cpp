@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Wed Oct 27 16:02:36 2004
+ ** Created: Sat Nov 27 15:17:53 2004
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -20,6 +20,7 @@
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+#include <qcombobox.h>
 #include <qtabwidget.h>
 #include <qtable.h>
 #include <qlayout.h>
@@ -41,8 +42,19 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
     setName("CMCAResultSubwidget");
   CMCAResultSubwidgetLayout = new QVBoxLayout(this, 11, 6, "CMCAResultSubwidgetLayout");
 
+  layout3 = new QHBoxLayout(0, 0, 6, "layout3");
+
   mTopLabel = new QLabel(this, "mTopLabel");
-  CMCAResultSubwidgetLayout->addWidget(mTopLabel);
+  layout3->addWidget(mTopLabel);
+
+  mComboScale = new QComboBox(FALSE, this, "mComboScale");
+  mComboScale->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mComboScale->sizePolicy().hasHeightForWidth()));
+  layout3->addWidget(mComboScale);
+
+  mSaveButton = new QPushButton(this, "mSaveButton");
+  mSaveButton->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mSaveButton->sizePolicy().hasHeightForWidth()));
+  layout3->addWidget(mSaveButton);
+  CMCAResultSubwidgetLayout->addLayout(layout3);
 
   mTabWidget = new QTabWidget(this, "mTabWidget");
 
@@ -74,8 +86,12 @@ CMCAResultSubwidget::CMCAResultSubwidget(QWidget* parent, const char* name, WFla
   mTabWidget->insertTab(TabPage, QString(""));
   CMCAResultSubwidgetLayout->addWidget(mTabWidget);
   languageChange();
-  resize(QSize(686, 422).expandedTo(minimumSizeHint()));
+  resize(QSize(580, 422).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mComboScale, SIGNAL(activated(int)), this, SLOT(slotScaled()));
+  connect(mSaveButton, SIGNAL(clicked()), this, SLOT(slotSave()));
   init();
 }
 
@@ -95,6 +111,10 @@ void CMCAResultSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
   mTopLabel->setText(QString::null);
+  mComboScale->clear();
+  mComboScale->insertItem(tr("scaled"));
+  mComboScale->insertItem(tr("unscaled"));
+  mSaveButton->setText(tr("Save data to file"));
   mTabWidget->changeTab(tab, tr("Elasticities"));
   mTabWidget->changeTab(tab_2, tr("Flux Control Coefficients"));
   mTabWidget->changeTab(TabPage, tr("Concentration Control Coefficients"));
