@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:33:15 $
+   $Date: 2003/11/07 16:57:40 $
    End CVS Header */
 
 /**
@@ -20,67 +20,47 @@
 #include <string>
 
 #include "model/CState.h"
+#include "utilities/CCopasiProblem.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 
-class CSteadyStateProblem
+class CSteadyStateProblem: public CCopasiProblem
   {
     // Attributes
   private:
-    /**
-     *  The model the problem is working on.
-     */
-    CModel * mpModel;
-
-    /**
-     *  The resolution of the steadystate.
-     */
-    unsigned C_INT32 mResolution;
-
-    /**
-     *  The factor used for finite difference methods.
-     */
-    unsigned C_INT32 mFactor;
-
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
     CState mInitialState;
 
-    /**
-     *  Whether the jacobian is requested for the steady state
-     */
-    bool mJacobianRequested;
-
-    /**
-     *  Whether the stabilty analysis is requested for the the steady state
-     */
-    bool mStabilityAnalysisRequested;
-
   public:
     // Operations
 
     /**
-     *  Default constructor.
+     * Default constructor.
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateProblem();
+    CSteadyStateProblem(const CCopasiContainer * pParent = NULL);
 
     /**
      *  Copy constructor.
      *  @param "const CSteadyStateProblem &" src
+     * @paramconst CCopasiContainer * pParent (default: NULL)
      */
-    CSteadyStateProblem(const CSteadyStateProblem & src);
+    CSteadyStateProblem(const CSteadyStateProblem & src,
+                        const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
      */
-    ~CSteadyStateProblem();
+    virtual ~CSteadyStateProblem();
 
     /**
-     * Set the moddel the problem is dealing with.
-     * @param "CModel *" pModel
+     * Set the model of the problem
+     * @param CModel * pModel
+     * @result bool succes
      */
-    void setModel(CModel * pModel);
+    virtual bool setModel(CModel * pModel);
 
     /**
      * Retrieve the model the problem is dealing with.

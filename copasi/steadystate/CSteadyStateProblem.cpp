@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:59:05 $
+   $Date: 2003/11/07 16:57:40 $
    End CVS Header */
 
 /**
@@ -27,21 +27,21 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CSteadyStateProblem::CSteadyStateProblem():
-    mpModel(NULL),
+CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
+    CCopasiProblem(CCopasiTask::steadyState, pParent),
     mInitialState()
 {
-  CONSTRUCTOR_TRACE;
-  if (mpModel)
-    mInitialState = mpModel->getInitialState();
+  addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
+  addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
 }
 
 /**
  *  Copy constructor.
  *  @param "const CSteadyStateProblem &" src
  */
-CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src):
-    mpModel(src.mpModel),
+CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
+    const CCopasiContainer * pParent):
+    CCopasiProblem(src, pParent),
     mInitialState(src.mInitialState)
 {CONSTRUCTOR_TRACE;}
 
@@ -55,10 +55,12 @@ CSteadyStateProblem::~CSteadyStateProblem()
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
  */
-void CSteadyStateProblem::setModel(CModel * pModel)
+bool CSteadyStateProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
   mInitialState.setModel(mpModel);
+
+  return true;
 }
 
 /**
@@ -93,61 +95,45 @@ const CState & CSteadyStateProblem::getInitialState() const
  * @param bool * jacobianRequested
  */
 void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
-{mJacobianRequested = jacobianRequested;}
+{setValue("JacobianRequested", jacobianRequested);}
 
 /**
  * Retrieve whether the jacobian is requested.
  * @return bool jacobianRequested
  */
 bool CSteadyStateProblem::isJacobianRequested() const
-  {return mJacobianRequested;}
+  {return * (bool *) getValue("JacobianRequested");}
 
 /**
  * Set whether stabilty analysis is requested.
  * @param bool * stabilityAnalysisRequested
  */
 void CSteadyStateProblem::setStabilityAnalysisRequested(bool & stabilityAnalysisRequested)
-{mStabilityAnalysisRequested = stabilityAnalysisRequested;}
+{setValue("StabilityAnalysisRequested", stabilityAnalysisRequested);}
 
 /**
  * Retrieve whether the stabilty analysis is requested.
  * @return bool stabilityAnalysisRequested
  */
 bool CSteadyStateProblem::isStabilityAnalysisRequested() const
-  {return mStabilityAnalysisRequested;}
+  {return * (bool *) getValue("StabilityAnalysisRequested");}
 
 /**
  * Load a steadystate problem
  * @param "CReadConfig &" configBuffer
  */
 void CSteadyStateProblem::load(CReadConfig & configBuffer,
-                               CReadConfig::Mode mode)
+                               CReadConfig::Mode C_UNUSED(mode))
 {
   if (configBuffer.getVersion() < "4.0")
     {
       mpModel = Copasi->pModel;
       mInitialState = mpModel->getInitialState();
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
-                               &mStabilityAnalysisRequested,
+                               getValue("StabilityAnalysisRequested"),
                                CReadConfig::LOOP);
-      mJacobianRequested = mStabilityAnalysisRequested;
-    }
-  else
-    {
-      std::string Tmp;
-
-      configBuffer.getVariable("SteadyStateProblemModel", "string", &Tmp, mode);
-      if (Tmp == Copasi->pModel->getTitle())
-        mpModel = Copasi->pModel;
-      else
-        fatalError();
-
-      mInitialState.load(configBuffer);
-
-      configBuffer.getVariable("JacobianRequested", "bool" ,
-                               &mJacobianRequested);
-      configBuffer.getVariable("StabilityAnalysisRequested", "bool" ,
-                               &mStabilityAnalysisRequested);
+      setValue("JacobianRequested",
+               * (bool *) getValue("StabilityAnalysisRequested"));
     }
 }
 
@@ -155,15 +141,5 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
  * Save a steady state problem
  * @param "CWriteConfig &" configBuffer
  */
-void CSteadyStateProblem::save(CWriteConfig & configBuffer) const
-  {
-    std::string Tmp = mpModel->getTitle();
-    configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
-
-    mInitialState.save(configBuffer);
-
-    configBuffer.setVariable("JacobianRequested", "bool" ,
-                             &mJacobianRequested);
-    configBuffer.setVariable("StabilityAnalysisRequested", "bool" ,
-                             &mStabilityAnalysisRequested);
-  }
+void CSteadyStateProblem::save(CWriteConfig & C_UNUSED(configBuffer)) const
+  {fatalError();}
