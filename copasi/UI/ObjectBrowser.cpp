@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ObjectBrowser.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:39 $
+   $Author: lixu1 $ 
+   $Date: 2003/10/23 16:32:44 $
    End CVS Header */
 
 /********************************************************
@@ -410,7 +410,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent,
               currentItem->setObjectType(CONTAINERATTR);
               currentItem->attachKey();
               ObjectBrowserItem* objectChild = currentItem;
-              if (nField)
+              if (nField) // divide into attribute and object lists
                 {
                   objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
                   objectChild->setObjectType(OBJECTATTR);
@@ -474,6 +474,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
       lastField = currentItemField;
       it = pFirstObject;
       last = NULL;
+
       while (it != end)
         {
           CCopasiObject* pSubField;
@@ -484,7 +485,7 @@ void ObjectBrowser::loadField(ObjectBrowserItem* parent, CCopasiContainer * copa
               getFieldCopasiObject((CCopasiContainer *) current,
                                    currentField->getObjectName().c_str());
           else
-            pSubField = NULL;
+            pSubField = NULL; // this shall be an exception error
 
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(currentItemField, last, pSubField, objectItemList);
           currentItem->setText(0, current->getObjectName().c_str());
@@ -505,12 +506,13 @@ void ObjectBrowser::updateUI()
   for (ObjectListItem* pCurrent = refreshList->getRoot(); pCurrent != NULL; pCurrent = pCurrent->pNext)
     {
       ObjectListItem * pHead = pCurrent->pItem->getObject()->referenceList->getRoot();
-      for (; pHead != NULL; pHead = pHead->pNext)
+      while (pHead != NULL)
         {
           ObjectBrowserItem * pCurrentLevel = pHead->pItem;
           if (pCurrent != pHead)
             for (; (pCurrentLevel != NULL); pCurrentLevel = pCurrentLevel->parent())
               refreshList->insertBucket(pCurrentLevel);
+          pHead = pHead->pNext;
         }
     }
 
@@ -551,22 +553,24 @@ CCopasiObject* ObjectBrowser::getFieldCopasiObject(CCopasiContainer * pCurrent, 
   CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
   CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
 
-  if (it != end)
-    return it->second;
-  else
-    return NULL;
+  /*
+    if (it != end)
+      return it->second;
+    else
+      return NULL;
+  */
 
-#ifdef XXXX
-  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
-  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
+  //#ifdef XXXX
+  //  std::map< const std::string, CCopasiObject *>::const_iterator it = pObjectList->begin();
+  //  std::map< const std::string, CCopasiObject *>::const_iterator end = pObjectList->end();
 
   while (it != end)
     {
-      if (QString(it - second->getObjectName().c_str()) == name)
+      if (QString(it->second->getObjectName().c_str()) == name)
         return it->second;
       it++;
     }
 
   return NULL;
-#endif // XXXX
+  //#endif // XXXX
 }
