@@ -71,7 +71,7 @@ class CCopasiObject
 
     virtual ~CCopasiObject();
 
-    virtual print(std::ostream& ostream) {};
+    // virtual print(std::ostream& ostream) {ostream << *this};
 
     virtual const std::string & getName() const;
 

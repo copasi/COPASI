@@ -272,15 +272,12 @@ class CReport
 
     /**
     returns the reference of the Report Tag
-    */ 
-    //    CReport* getReference();
-
+    */
     CReportDefinition* getDefReference();
 
     /**
     sets the reference to the report
-    */ 
-    //    void setReference(CReport *report);
+    */
     void setDefReference(CReportDefinition *reportDef);
 
     /**
@@ -302,6 +299,21 @@ class CReport
        sets the append attribute if the report tag
     */
     void setAppend(bool append);
+
+    /**
+    to print header
+    */
+    void printHeader();
+
+    /**
+    to print body
+    */
+    void printBody();
+
+    /**
+       to print footer
+       */
+    void printFooter();
   };
 
 class CReportTable
