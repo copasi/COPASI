@@ -22,10 +22,6 @@ class CReportDefinition
   {
     // Operations
   protected:
-    /**
-     *  Default constructor.
-     */
-    CReportDefinition();
 
   private:
 
@@ -38,6 +34,10 @@ class CReportDefinition
     CBody *rBody;
 
   public:
+    /**
+     *  Default constructor.
+     */
+    CReportDefinition();
 
     /**
     *  Destructor.
@@ -249,7 +249,8 @@ class CReportObject
 class CReport
   {
   private:
-    CReport *rReport;
+    CReportDefinition *rReportDef;
+    //    CReport *rReport;
     const std::string * rTarget;
     bool rAppend;
 
@@ -271,13 +272,16 @@ class CReport
 
     /**
     returns the reference of the Report Tag
-    */
-    CReport* getReference();
+    */ 
+    //    CReport* getReference();
+
+    CReportDefinition* getDefReference();
 
     /**
     sets the reference to the report
-    */
-    void setReference(CReport *report);
+    */ 
+    //    void setReference(CReport *report);
+    void setDefReference(CReportDefinition *reportDef);
 
     /**
     returns the target of the Report Tag

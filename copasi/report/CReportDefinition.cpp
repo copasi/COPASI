@@ -178,7 +178,8 @@ void CReportObject::setName(const std::string * name)
 //
 //////////////////////////////////////////////////
 CReport::CReport():
-    rReport(new CReport),
+    rReportDef(new CReportDefinition),
+    //    rReport(new CReport),
     rAppend(true)
 {}
 
@@ -187,14 +188,23 @@ CReport::~CReport()
 
 void CReport::cleanup()
 {
-  pdelete(rReport);
+  //  pdelete(rReport);
+  pdelete(rReportDef);
 }
 
+CReportDefinition* CReport::getDefReference()
+{return rReportDef;}
+
+void CReport::setDefReference(CReportDefinition* reportDef)
+{rReportDef = reportDef;}
+
+/*
 CReport* CReport::getReference()
 {return rReport;}
-
+ 
 void CReport::setReference(CReport *report)
 {rReport = report;}
+ */
 
 const std::string* CReport::getTarget()
 {return rTarget;}
