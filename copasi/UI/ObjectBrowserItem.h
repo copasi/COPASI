@@ -1,19 +1,19 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 04/03 
-  Comment : Copasi Object Browser including:
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 04/03 
+ Comment : Copasi Object Browser including:
 
- browserObject: A complex structure uiniquely map to a CopasiObject
- ObjectBrowserItem: A wraper to a broserObject, 
-     there may exist multiply wrappers to one browserObject
- objectListItem
- objectList: A queue for all element: 
-    The reason I dont use std:vector is
-    for efficiency requirement for all 
-    object browser item update
-  Contact: Please contact lixu1@vt.edu.
+browserObject: A complex structure uiniquely map to a CopasiObject
+ObjectBrowserItem: A wraper to a broserObject, 
+    there may exist multiply wrappers to one browserObject
+objectListItem
+objectList: A queue for all element: 
+   The reason I dont use std:vector is
+   for efficiency requirement for all 
+   object browser item update
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #ifndef OBJECT_BROWSER_ITEM_H
@@ -29,7 +29,7 @@ class CCopasiObject;
 #define ALLCHECKED 1
 #define PARTCHECKED 0
 
-#define INDEXLENGTH 100
+#define KEYBASE 100000000
 
 enum objectType {FIELDATTR = 0, OBJECTATTR, CONTAINERATTR};
 
@@ -56,6 +56,10 @@ class ObjectBrowserItem : public QListViewItem
     QString mKey;
 
   public:
+    static void resetKeySpace()
+    {
+      KeySpace = KEYBASE;
+    }
     browserObject* getObject()
     {
       return pBrowserObject;

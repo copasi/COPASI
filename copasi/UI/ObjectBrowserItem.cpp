@@ -1,19 +1,19 @@
 /********************************************************
-  Author: Liang Xu
-  Version : 1.xx  <first>
-  Description: 
-  Date: 04/03 
-  Comment : Copasi Object Browser including:
+ Author: Liang Xu
+ Version : 1.xx  <first>
+ Description: 
+ Date: 04/03 
+ Comment : Copasi Object Browser including:
 
- browserObject: A complex structure uiniquely map to a CopasiObject
- ObjectBrowserItem: A wraper to a broserObject, 
-     there may exist multiply wrappers to one browserObject
- objectListItem
- objectList: A queue for all element: 
-    The reason I dont use std:vector is
-    for efficiency requirement for all 
-    object browser item update
-  Contact: Please contact lixu1@vt.edu.
+browserObject: A complex structure uiniquely map to a CopasiObject
+ObjectBrowserItem: A wraper to a broserObject, 
+    there may exist multiply wrappers to one browserObject
+objectListItem
+objectList: A queue for all element: 
+   The reason I dont use std:vector is
+   for efficiency requirement for all 
+   object browser item update
+ Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
 #include "ObjectBrowserItem.h"
@@ -23,7 +23,6 @@
 #include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 
-#define KEYBASE 100000000
 long ObjectBrowserItem::KeySpace = KEYBASE;
 
 browserObject::browserObject()
@@ -59,7 +58,6 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
-          //pBrowserObject->nRefer++;
           pBrowserObject->referenceList->insert(this);
         }
       else
@@ -67,7 +65,6 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
           newBrowserObject->mChecked = false;
-          //newBrowserObject->nRefer=1;
           pBrowserObject = newBrowserObject;
           pBrowserObject->referenceList->insert(this);
         }
@@ -77,12 +74,11 @@ ObjectBrowserItem::ObjectBrowserItem (QListView * parent, ObjectBrowserItem * af
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
-      //newBrowserObject->nRefer=1;
       pBrowserObject = newBrowserObject;
       pBrowserObject->referenceList->insert(this);
     }
-  pList->insert(this);
 
+  pList->insert(this);
   mKey = " ";
 }
 
@@ -109,14 +105,12 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
         {
           pBrowserObject = pTmp->pItem->getObject();
           setChild(pTmp->pItem->child());
-          //pBrowserObject->nRefer++;
           pBrowserObject->referenceList->insert(this);
         }
       else
         {
           browserObject* newBrowserObject = new browserObject();
           newBrowserObject->pCopasiObject = mObject;
-          //newBrowserObject->nRefer=1;
           newBrowserObject->mChecked = false;
           pBrowserObject = newBrowserObject;
           pBrowserObject->referenceList->insert(this);
@@ -127,12 +121,11 @@ ObjectBrowserItem::ObjectBrowserItem (ObjectBrowserItem * parent, ObjectBrowserI
       browserObject* newBrowserObject = new browserObject();
       newBrowserObject->pCopasiObject = mObject;
       newBrowserObject->mChecked = false;
-      //newBrowserObject->nRefer=1;
       pBrowserObject = newBrowserObject;
       pBrowserObject->referenceList->insert(this);
     }
-  pList->insert(this);
 
+  pList->insert(this);
   mKey = " ";
 }
 

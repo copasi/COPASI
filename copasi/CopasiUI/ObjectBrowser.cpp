@@ -88,6 +88,7 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 
   objectItemList = new objectList();
   refreshList = new objectList();
+  ObjectBrowserItem::resetKeySpace();
   loadData();
 }
 
@@ -252,8 +253,7 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
                   objectChild = new ObjectBrowserItem(currentItem, NULL, NULL, objectItemList);
                   objectChild->setObjectType(OBJECTATTR);
                   objectChild->setText(0, "Object list");
-                  nField = false;
-                  loadChild(objectChild, (CCopasiContainer *) current, nField);
+                  loadChild(objectChild, (CCopasiContainer *) current, false);
 
                   ObjectBrowserItem* fieldChild = new ObjectBrowserItem(currentItem, objectChild, NULL, objectItemList);
                   fieldChild->setObjectType(FIELDATTR);
