@@ -1,4 +1,5 @@
-#include "utility/CCopasiMessage.h"
+#include "copasi.h"
+#include "utilities/utilities.h"
 #include "CDeTerm.h"
 
 CDeTerm::CDeTerm()
@@ -27,34 +28,35 @@ void CDeTerm::setSign(char sign)
 
 void CDeTerm::addElement(Type type, string token)
 {
-    mTokenStack.push_back(pair(type, string));
+  mTokenStack.push_back(new pair<Type, string>(type, token));
 }
 
-void deleteElement(C_INT32 index)
+void CDeTerm::deleteElement(C_INT32 index)
 {
-    vector<pair<Type,string>>::iterator it = mTokenStack.begin() + index;
+    vector <pair <Type,string>*>::iterator it = mTokenStack.begin() + index;
     if (*it)
     {
-        mTokenStack.erase(it);
+      delete mTokenStack[index];
+      mTokenStack.erase(it);
     }
 }
 
-void CDeTerm::operator[](C_INT32 index)
+string CDeTerm::operator[](unsigned C_INT32 index)
 {
     if (index >= mTokenStack.size())
     {
         CCopasiMessage(CCopasiMessage::ERROR, "Attempt to access CDeTerm token past end");
     }
-    return mTokenStack[index];
+    return mTokenStack[index]->second;
 }
 
 string CDeTerm::getDescription()
 {
     string retval;
-    vector<pair<Type,string> >::iterator it = mTokenStack.begin();
+    vector<pair<Type,string>* >::iterator it = mTokenStack.begin();
     for (;it != mTokenStack.end(); it++)
     {
-        retval += it->first;
+        retval += (*it)->first;
     }
     return retval;
 }
@@ -69,14 +71,14 @@ void CDeTerm::compile(vector<CNameVal> &rates)
     // If it's at the end position, then we must remove the preceding '*', otherwise
     // we must remove the following '*'. If there is a '/' following, then we merely 
     // replace the multiplier with '1'. So we need the position.
-    C_INT32 pos = 0;
+    unsigned C_INT32 pos = 0;
     // Numbers which are exponents for metabolites should not be used as the multiplier!
     bool exponent = false;
     bool found_mult = false, found_rc = false;
-    vector<pair<Type,string> >::iterator it = mTokenStack.begin();
-    for (; it != mTokenStack.end(), found_mult == false, found_rc == false; it++; pos++)
+    vector<pair<Type,string>* >::iterator it = mTokenStack.begin();
+    for (; it != mTokenStack.end(), found_mult == false, found_rc == false; it++, pos++)
     {
-        switch (it->first)
+        switch ((*it)->first)
         {
         case LPAREN:
             ++level;
@@ -93,35 +95,35 @@ void CDeTerm::compile(vector<CNameVal> &rates)
             else if ((level == 0) && (exponent == false))
             {
                 // We've found the multiplier
-                mMultiplier = it->second;
+                mMultiplier = atof((*it)->second.c_str());
                 found_mult = true;
                 if (pos < mTokenStack.size() - 1)
                 {
                     // Check whether the following token is a '*' or a '/'
-                    if (mTokenStack[pos].first == MULT)
+                    if (mTokenStack[pos]->first == MULT)
                     {
                         // Call delete twice, to remove the multiplier and '*'
                         deleteElement(pos);
                         deleteElement(pos); 
                     }
-                    else if (mTokenStack.[pos].first == DIV)
+                    else if (mTokenStack[pos]->first == DIV)
                     {
                         // Replace the multiplier with 1
-                        mTokenStack[pos].second = "1";
+                        mTokenStack[pos]->second = "1";
                     }
                 }
             }
             break;
-        case ID:
+        case IDENT:
             if (level == 0)
             {
                 vector<CNameVal>::iterator nvit = rates.begin();
                 for (; nvit != rates.end(); nvit++)
                 {
-                    if (nvit->getName() == it->second)
+                    if (nvit->getName() == (*it)->second)
                     {
                         // found the rate
-                        mRate = it->second;
+                        mRateConstant = (*it)->second;
                     }
                 }
             }

@@ -70,7 +70,7 @@ chr .
 }
 
 {ident}				{ // An identifier
-			return 
-
+			return CSpecLine::FUN; // :TODO: Is this correct ???
+}
 %%
 

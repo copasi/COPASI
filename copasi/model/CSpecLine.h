@@ -146,11 +146,11 @@ class CNameVal
     /**
      * Named constructor
      */
-    CNameVal(string name, C_FLOAT64 val): mName(name), mVal(val) {}
+    CNameVal(string name, C_FLOAT64 val): mName(name), mVal(val) {};
     /*
      * Destructor
      */
-    ~CNameVal();
+    ~CNameVal() {};
     /**
      * Return the name
      * @return The name

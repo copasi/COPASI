@@ -1,6 +1,8 @@
 #ifndef CDETERM_H
 #define CDETERM_H
 
+#include "CSpecLine.h"
+
 /**
  * This class describes a term in the differential equation.
  */
@@ -58,7 +60,7 @@ class CDeTerm
     /**
      * Access the stack at a given position
      */
-    string operator[](C_INT32 index);
+    string operator[](unsigned C_INT32 index);
     /**
      * Return the full description string. This will have been modified by the end.
      */

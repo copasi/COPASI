@@ -148,7 +148,7 @@ void CSpec2Model::processEQNs()
             mMoietyVector.push_back(tmp);
         }
     }
-    for (vector<CBaseEqn>::iterator itb = mReactVector.begin(); itb < mReactVector.end(); itb++)
+    for (vector<CBaseEqn>::iterator itb = mDeVector.begin(); itb < mDeVector.end(); itb++)
     {
         cout << "Added DE " << itb->getMetabolite();
         cout << " in compartment " << itb->getCompartment();
@@ -157,9 +157,9 @@ void CSpec2Model::processEQNs()
 
     for (vector<CBaseEqn>::iterator itc = mMoietyVector.begin(); itc < mMoietyVector.end(); itc++)
     {
-        cout << "Added EQN " << itb->getMetabolite();
-        cout << " in compartment " << itb->getCompartment();
-        cout << " with RHS = " << itb->getContents() << endl;
+        cout << "Added EQN " << itc->getMetabolite();
+        cout << " in compartment " << itc->getCompartment();
+        cout << " with RHS = " << itc->getContents() << endl;
     }
 }
 
