@@ -188,12 +188,13 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
       current = *it;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
+      QString st1(current->getObjectName().c_str());
       if (current->isContainer() && !current->isVector())
         {
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(CONTAINERATTR);
-          loadChild(currentItem, (CCopasiContainer*) current);
           currentItem->attachKey();
+          loadChild(currentItem, (CCopasiContainer*) current);
         }
       else
         {
@@ -201,13 +202,12 @@ void ObjectBrowser::loadChild(ObjectBrowserItem* parent, CCopasiContainer* copaP
           currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
             {
-              loadVectors(currentItem, (CCopasiContainer *) current);
               currentItem->attachKey();
+              loadVectors(currentItem, (CCopasiContainer *) current);
             }
           else
             childStack->insert(currentItem);
 
-          QString st1(current->getObjectName().c_str());
           bool test = current->isVector();
           test = current->isMatrix();
           test = current->isNameVector();
@@ -241,7 +241,8 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
       current = *it;
       ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
       last = currentItem;
-      if (current->isContainer())
+      QString st1(current->getObjectName().c_str());
+      if (current->isContainer() && !current->isVector())
         {
           currentItem->setText(0, current->getObjectName().c_str());
           currentItem->setObjectType(OBJECTATTR);
@@ -254,8 +255,8 @@ void ObjectBrowser::loadVectors(ObjectBrowserItem* parent, CCopasiContainer * co
           currentItem->setObjectType(OBJECTATTR);
           if (current->isVector())
             {
-              loadVectors(currentItem, (CCopasiContainer *) current);
               currentItem->attachKey();
+              loadVectors(currentItem, (CCopasiContainer *) current);
             }
           else
             vectorStack->insert(currentItem);
