@@ -11,6 +11,7 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qmessagebox.h>
+#include <qpushbutton.h>
 #include "model/CMetab.h"
 #include <qvariant.h>
 #include <qtable.h>
@@ -52,7 +53,7 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   table->setFocusPolicy(QWidget::WheelFocus);
 
   // signals and slots connections
-
+  /*** for connecting first and second level function widget ****/
   connect(table, SIGNAL(doubleClicked(int, int, int, const QPoint &)), this, SLOT(slotTableCurrentChanged(int, int, int, const QPoint &)));
   connect(this, SIGNAL(name(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
@@ -66,7 +67,6 @@ void FunctionWidget::loadFunction(CModel *model)
 
       //Emptying the table
       int numberOfRows = table->numRows();
-
       for (int i = 0; i < numberOfRows; i++)
         {
           table->removeRow(0);
@@ -81,26 +81,21 @@ void FunctionWidget::loadFunction(CModel *model)
       //Now filling the table.
 
       CFunction *funct;
-
       for (C_INT32 j = 0; j < noOfFunctionsRows; j++)
         {
           funct = Functions[j];
           table->setText(j, 0, funct->getName().c_str());
           QString ftype;
-
           switch (funct->getType())
             {
             case 1:
-
             case 2:
               ftype = QString("pre-defined");
               break;
-
             case 3:
               ftype = QString("user-defined");
               break;
             }
-
           table->setText(j, 1, ftype);
         }
     }

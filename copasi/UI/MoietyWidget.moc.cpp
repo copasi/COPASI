@@ -33,7 +33,6 @@ QString MoietyWidget::tr(const char *s, const char *c)
   else
     return QString::fromLatin1(s);
 }
-
 #ifndef QT_NO_TRANSLATION_UTF8
 QString MoietyWidget::trUtf8(const char *s, const char *c)
 {
@@ -42,7 +41,6 @@ QString MoietyWidget::trUtf8(const char *s, const char *c)
   else
     return QString::fromUtf8(s);
 }
-
 #endif // QT_NO_TRANSLATION_UTF8
 
 #endif // QT_NO_TRANSLATION
@@ -51,13 +49,10 @@ QMetaObject* MoietyWidget::staticMetaObject()
 {
   if (metaObj)
     return metaObj;
-
   QMetaObject* parentObject = QWidget::staticMetaObject();
-
   static const QUParameter param_slot_0[] =
     {
       { 0, &static_QUType_int, 0, QUParameter::In },
-
       { 0, &static_QUType_int, 0, QUParameter::In },
       { 0, &static_QUType_int, 0, QUParameter::In },
       { 0, &static_QUType_ptr, "const QPoint&", QUParameter::In }
@@ -66,27 +61,22 @@ QMetaObject* MoietyWidget::staticMetaObject()
   static const QUMethod slot_1 = {"slotTableSelectionChanged", 0, 0 };
   static const QUMethod slot_2 = {"slotBtnOKClicked", 0, 0 };
   static const QUMethod slot_3 = {"slotBtnCancelClicked", 0, 0 };
-
   static const QMetaData slot_tbl[] =
     {
       { "slotTableCurrentChanged(int,int,int,const QPoint&)", &slot_0, QMetaData::Public },
-
       { "slotTableSelectionChanged()", &slot_1, QMetaData::Protected },
       { "slotBtnOKClicked()", &slot_2, QMetaData::Protected },
       { "slotBtnCancelClicked()", &slot_3, QMetaData::Protected }
     };
-
   static const QUParameter param_signal_0[] =
     {
       { 0, &static_QUType_QString, 0, QUParameter::InOut }
     };
   static const QUMethod signal_0 = {"name", 1, param_signal_0 };
-
   static const QMetaData signal_tbl[] =
     {
       { "name(QString&)", &signal_0, QMetaData::Public }
     };
-
   metaObj = QMetaObject::new_metaobject(
               "MoietyWidget", parentObject,
               slot_tbl, 4,
@@ -96,9 +86,7 @@ QMetaObject* MoietyWidget::staticMetaObject()
               0, 0,
 #endif // QT_NO_PROPERTIES
               0, 0);
-
   cleanUp_MoietyWidget.setMetaObject(metaObj);
-
   return metaObj;
 }
 
@@ -106,7 +94,6 @@ void* MoietyWidget::qt_cast(const char* clname)
 {
   if (!qstrcmp(clname, "MoietyWidget"))
     return (MoietyWidget*)this;
-
   return QWidget::qt_cast(clname);
 }
 
@@ -117,19 +104,13 @@ void* MoietyWidget::qt_cast(const char* clname)
 void MoietyWidget::name(QString& t0)
 {
   if (signalsBlocked())
-    return ;
-
+    return;
   QConnectionList *clist = receivers(staticMetaObject()->signalOffset() + 0);
-
   if (!clist)
-    return ;
-
+    return;
   QUObject o[2];
-
   static_QUType_QString.set(o + 1, t0);
-
   activate_signal(clist, o);
-
   t0 = static_QUType_QString.get(o + 1);
 }
 
@@ -140,23 +121,18 @@ bool MoietyWidget::qt_invoke(int _id, QUObject* _o)
     case 0:
       slotTableCurrentChanged(static_QUType_int.get(_o + 1), static_QUType_int.get(_o + 2), static_QUType_int.get(_o + 3), *((QPoint*)static_QUType_ptr.get(_o + 4)));
       break;
-
     case 1:
       slotTableSelectionChanged();
       break;
-
     case 2:
       slotBtnOKClicked();
       break;
-
     case 3:
       slotBtnCancelClicked();
       break;
-
     default:
       return QWidget::qt_invoke(_id, _o);
     }
-
   return TRUE;
 }
 
@@ -167,19 +143,15 @@ bool MoietyWidget::qt_emit(int _id, QUObject* _o)
     case 0:
       name(static_QUType_QString.get(_o + 1));
       break;
-
     default:
       return QWidget::qt_emit(_id, _o);
     }
-
   return TRUE;
 }
-
 #ifndef QT_NO_PROPERTIES
 
 bool MoietyWidget::qt_property(int _id, int _f, QVariant* _v)
 {
   return QWidget::qt_property(_id, _f, _v);
 }
-
 #endif // QT_NO_PROPERTIES

@@ -188,7 +188,6 @@ FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
 int FunctionWidget1::isName(QString setValue)
 {
   int i;
-
   if (mModel == NULL)
     {
       return 0;
@@ -242,10 +241,9 @@ void FunctionWidget1::loadFunction(CModel *model)
 void FunctionWidget1::loadName(QString setValue)
 {
   int i, j;
-
   if (mModel == NULL)
     {
-      return ;
+      return;
     }
 
   CCopasiVectorNS< CFunction > & Functions = Copasi->FunctionDB.loadedFunctions();
@@ -356,7 +354,7 @@ void FunctionWidget1::loadName(QString setValue)
           RadioButton1->setEnabled(TRUE);
           RadioButton2->setEnabled(TRUE);
           RadioButton3->setEnabled(TRUE);
-          LineEdit1->setReadOnly(FALSE);
+          LineEdit1->setReadOnly(TRUE); //Function Name cannot be changed
           LineEdit2->setReadOnly(FALSE);
           Table1->setReadOnly(FALSE);
           Table2->setReadOnly(FALSE);

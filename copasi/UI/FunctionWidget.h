@@ -9,28 +9,22 @@
 #define FUNCTIONWIDGET_H
 #include <qvariant.h>
 #include <qwidget.h>
+#include <qpushbutton.h>
 #include "MyTable.h"
 #include "copasi.h"
 #include "model/model.h"
 #include "utilities/CGlobals.h"
 #include "function/function.h"
-
 class QVBoxLayout;
-
 class QHBoxLayout;
-
 class QGridLayout;
-
 class QTable;
-
 class CModel;
-
 class CGlobals;
 
 class FunctionWidget : public QWidget
   {
     Q_OBJECT
-
   protected:
     MyTable *table;
     CModel *mModel;

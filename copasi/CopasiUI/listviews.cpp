@@ -1,6 +1,7 @@
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
  **  $ Author  : Ankur Gupta
+ **  $ Author  : Mrinmayee Kulkarni           Modified on : 17th Sept ,2002
  **  
  ** This file contains the defination of the routines declared in listviews.h header
  ** file. 
@@ -130,15 +131,33 @@ ListViews::ListViews(QWidget *parent, const char *name)
   //  create a new QListview to be displayed on the screen..and set its property
   folders = new QListView(this);
   folders->header()->setClickEnabled(FALSE);
-  folders->addColumn("Select ");
+  int col_index = folders->addColumn("Select ");
+  int c = folders->columnWidth(col_index);
+  folders->setColumnWidth(col_index, c);
   folders->setRootIsDecorated(TRUE);
+  //folders->setMaximumWidth(c);
+  //folders->resize(50,0);
+  /*QSize *s = new QSize();
+  *s = folders->baseSize();
+  int w= s->width();
+  int h = s->height(); */ 
+  //this->setResizeMode(folders, QSplitter::KeepSize);
+  //s->setWidth(50);
+  //folders->setMaximumSize(w,h);
+  folders->setFixedWidth(180);
 
   //  This sections intializes the components used in the display part
   bigWidget = new QMultiLineEdit(this);
   bigWidget->setText("This widget will get all the remaining space");
   bigWidget->setFrameStyle(QFrame::Panel | QFrame::Plain);
   bigWidget->setReadOnly(FALSE);
-
+  QSize *s = new QSize();
+  *s = bigWidget->size();
+  int w = s->width();
+  int h = s->height();
+  //bigWidget->setFixedWidth(620);
+  this->moveToFirst(folders);
+  this->moveToLast(bigWidget);
   //  This section defines few of the variables that will be used in the code
   lastSelection = NULL;          // keeps track of the node that was selected last..to change the icon type
   currentWidget = bigWidget; // keeps track of the currentWidget in use
@@ -248,7 +267,7 @@ QListViewItem* ListViews::searchNode(Folder* f)
  **
  ** Parameters:- QListViewItem* :- pointer to node of the tree to be searched
  **
- ** Returns  :-   int :- 1-> if found ; 0 if not found 
+ ** Returns  :-   int :- 1-> if found; 0 if not found 
  ** Description:- This method is used to search a particular node in the 
  ** tree with input parameter as QListViewItem
  *****************************************************************************/
@@ -407,7 +426,7 @@ void ListViews::slotFolderChanged(QListViewItem *i)
     {
       switch (item->folder()->getID())
         {
-        case 21 :               // for showing addition...of new components..
+        case 21 :                // for showing addition...of new components..
 
           // deleteAllMyChildrens(i); //is used if u want to delete all mychildrens
 
@@ -494,7 +513,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
       switch (status)
         {
-        case ADD:                // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
+        case ADD:                 // WHEN THE STATUS IS 1 IE. WHEN A NEW DATA IS ADDED IN THE TREE
           // ADD DEFINED IN DATAMODEL.H
 
           if ((node = dataModel->getData()) != NULL)
@@ -516,7 +535,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case DELETE:              // WHEN ANY DATA IS DELETED FROM THE TREE
+        case DELETE:               // WHEN ANY DATA IS DELETED FROM THE TREE
           // showMessage("Ankur","It comes in delete");
 
           if ((node = dataModel->getData()) != NULL)
@@ -529,7 +548,7 @@ void ListViews::update(Subject* theChangedSubject, int status)
 
           break;
 
-        case MODEL:                // new model is loaded.
+        case MODEL:                 // new model is loaded.
           // if new model is loaded than get the new model and reload the widgets again
           //   showMessage("Ankur","It comes in model ");
           mModel = dataModel->getModel();
@@ -804,10 +823,10 @@ void ListViews::ConstructNodeWidgets()
 void ListViews::loadMetabolites(QListViewItem* i)
 {
   if (mModel == NULL)
-    return ;
+    return;
 
   if (!dataModel->getModelUpdate())
-    return ; // if the model is not updated than return
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
@@ -843,10 +862,10 @@ void ListViews::loadMetabolites(QListViewItem* i)
 void ListViews::loadMoieties(QListViewItem* i)
 {
   if (mModel == NULL)
-    return ;
+    return;
 
   if (!dataModel->getModelUpdate())
-    return ; // if the model is not updated than return
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
@@ -896,10 +915,10 @@ void ListViews::loadMoieties(QListViewItem* i)
 void ListViews::loadReactions(QListViewItem* i)
 {
   if (mModel == NULL)
-    return ;
+    return;
 
   if (!dataModel->getModelUpdate())
-    return ; // if the model is not updated than return
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
@@ -935,10 +954,10 @@ void ListViews::loadReactions(QListViewItem* i)
 void ListViews::loadCompartments(QListViewItem* i)
 {
   if (mModel == NULL)
-    return ;
+    return;
 
   if (!dataModel->getModelUpdate())
-    return ; // if the model is not updated than return
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;
@@ -981,10 +1000,10 @@ void ListViews::loadCompartments(QListViewItem* i)
 void ListViews::loadFunction(QListViewItem* i)
 {
   if (mModel == NULL)
-    return ;
+    return;
 
   if (!dataModel->getModelUpdate())
-    return ; // if the model is not updated than return
+    return; // if the model is not updated than return
 
   //   showMessage("Ankur","This is duplicate call");
   FolderListItem *item = (FolderListItem*)i;

@@ -37,7 +37,7 @@ CopasiUI3Window::CopasiUI3Window(QWidget* parent, const char* name, WFlags f)
   dataModel = NULL; // the datamodel tobe used
   splitter = NULL;  // the splittler for sepearting diff views
 
-  resize(766, 400);  // to resize the screen..to fit this size
+  resize(766, 400); // to resize the screen..to fit this size
 }
 
 /***************CopasiUI3Window::slotFileSaveAs()******

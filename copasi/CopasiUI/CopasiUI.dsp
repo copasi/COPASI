@@ -628,10 +628,6 @@ InputName=ReactionsWidget1
 # End Source File
 # Begin Source File
 
-SOURCE=.\Structures.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Subject.h
 # PROP Exclude_From_Build 1
 # End Source File
