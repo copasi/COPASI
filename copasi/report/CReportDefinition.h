@@ -83,6 +83,11 @@ class CReportDefinition : public CCopasiObject
     sets the Body in the report tag
     */
     void setReportBody(CReportBody *pNewBody);
+
+    inline std::string getKey()
+    {
+      return mKey;
+    }
   };
 
 #endif
