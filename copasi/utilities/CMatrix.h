@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/03 21:53:38 $
+   $Date: 2003/11/20 21:29:58 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -661,8 +661,8 @@ std::ostream &operator<<(std::ostream &os,
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        cout << "  " << A(i, j);
-      cout << std::endl;
+        os << "  " << A(i, j);
+      os << std::endl;
     }
   return os;
 }
@@ -678,8 +678,8 @@ std::ostream &operator << (std::ostream &os,
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        cout << "  " << A(i, j);
-      cout << std::endl;
+        os << "  " << A(i, j);
+      os << std::endl;
     }
   return os;
 }
@@ -712,8 +712,8 @@ std::ostream &operator << (std::ostream &os,
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        cout << "  " << A(i, j);
-      cout << std::endl;
+        os << "  " << A(i, j);
+      os << std::endl;
     }
   return os;
 }
