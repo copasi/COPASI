@@ -192,9 +192,8 @@ void CFunctionParameters::updateUsageRanges()
                 }
               else
                 {
-                  /* Vectors are assumed to have an arbitrary
-                     number of elements */
-                  UsageRange.setRange(0, CRange::Infinity);
+                  /* Vectors are assumed to have at least one element */
+                  UsageRange.setRange(1, CRange::Infinity);
                   UsageRange.setUsage(Usage);
                   mUsageRanges.add(UsageRange);
                 }
