@@ -188,10 +188,11 @@ x_libraries = @x_libraries@
 
 noinst_LIBRARIES = libfunction.a
 
-libfunction_a_SOURCES =  	CBaseFunction.cpp 	CBaseIdentifier.cpp 	CFunctionDB.cpp 	CKinFunction.cpp 	CMassAction.cpp 	CNodeK.cpp 	lexkk.cpp
+libfunction_a_SOURCES =  	CRange.cpp 	CUsageRange.cpp 	CFunction.cpp 	CFunctionParameter.cpp 	CFunctionParameters.cpp 	CKinFunction.cpp 	CMassAction.cpp 	CFunctionDB.cpp 	CNodeK.cpp 	lexkk.cpp
 
 
-EXTRA_DIST = 
+EXTRA_DIST =  	CRange.h		CRange.cpp 	CUsageRange.h		CUsageRange.cpp 	CFunction.h		CFunction.cpp 	CFunctionParameter.h	CFunctionParameter.cpp 	CFunctionParameters.h	CFunctionParameters.cpp 	CMassAction.h 		CMassAction.cpp 	CKinFunction.h		CKinFunction.cpp 	CFunctionDB.h		CFunctionDB.cpp 	CNodeK.h		CNodeK.cpp 	lexkk.h 		lexkk.cpp 	CCallParameter.h 	CCallParameters.h
+
 
 ####### kdevelop will overwrite this part!!! (end)############
 
@@ -208,9 +209,11 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libfunction_a_LIBADD = 
-libfunction_a_OBJECTS =  CBaseFunction.$(OBJEXT) \
-CBaseIdentifier.$(OBJEXT) CFunctionDB.$(OBJEXT) CKinFunction.$(OBJEXT) \
-CMassAction.$(OBJEXT) CNodeK.$(OBJEXT) lexkk.$(OBJEXT)
+libfunction_a_OBJECTS =  CRange.$(OBJEXT) CUsageRange.$(OBJEXT) \
+CFunction.$(OBJEXT) CFunctionParameter.$(OBJEXT) \
+CFunctionParameters.$(OBJEXT) CKinFunction.$(OBJEXT) \
+CMassAction.$(OBJEXT) CFunctionDB.$(OBJEXT) CNodeK.$(OBJEXT) \
+lexkk.$(OBJEXT)
 AR = ar
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -227,11 +230,12 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/CBaseFunction.P .deps/CBaseIdentifier.P \
-.deps/CFunctionDB.P .deps/CKinFunction.P .deps/CMassAction.P \
-.deps/CNodeK.P .deps/lexkk.P
+DEP_FILES =  .deps/CFunction.P .deps/CFunctionDB.P \
+.deps/CFunctionParameter.P .deps/CFunctionParameters.P \
+.deps/CKinFunction.P .deps/CMassAction.P .deps/CNodeK.P .deps/CRange.P \
+.deps/CUsageRange.P .deps/lexkk.P
 SOURCES = $(libfunction_a_SOURCES)
 OBJECTS = $(libfunction_a_OBJECTS)
 
@@ -480,14 +484,6 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
-	function.h \
-	CBaseFunction.h		CBaseFunction.cpp \
-	CBaseIdentifier.h	CBaseIdentifier.cpp \
-	CFunctionDB.h		CFunctionDB.cpp \
-	CKinFunction.h		CKinFunction.cpp \
-	CMassAction.h		CMassAction.cpp \
-	CNodeK.h		CNodeK.cpp \
-	lexkk.h 		lexkk.cpp
 
 .lpp.cpp:
 	$(LEX) $<

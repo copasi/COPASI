@@ -5,12 +5,14 @@
 #include <math.h>
 #include <stdio.h>
 
+#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
 #include "CNodeK.h"
 
 CNodeK::CNodeK()
 {
+  CONSTRUCTOR_TRACE;
   mType     = N_NOP;
   mSubtype  = N_NOP;
   mLeft     = NULL;
@@ -19,8 +21,21 @@ CNodeK::CNodeK()
   mIndex    = -1;
 }
 
+CNodeK::CNodeK(const CNodeK & src)
+{
+  CONSTRUCTOR_TRACE;
+  mType     = src.mType;
+  mSubtype  = src.mSubtype;
+  mLeft     = src.mLeft;
+  mRight    = src.mRight;
+  mConstant = src.mConstant;
+  mName     = src.mName;
+  mIndex    = src.mIndex;
+}
+
 CNodeK::CNodeK(char type, char subtype)
 {
+  CONSTRUCTOR_TRACE;
   mType     = type;
   mSubtype  = subtype;
   mLeft     = NULL;
@@ -31,6 +46,7 @@ CNodeK::CNodeK(char type, char subtype)
 
 CNodeK::CNodeK(const string & name)
 {
+  CONSTRUCTOR_TRACE;
   mType     = N_IDENTIFIER;
   mSubtype  = N_NOP;
   mLeft     = NULL;
@@ -42,6 +58,7 @@ CNodeK::CNodeK(const string & name)
 
 CNodeK::CNodeK(C_FLOAT64 constant)
 {
+  CONSTRUCTOR_TRACE;
   mType     = N_NUMBER;
   mSubtype  = N_NOP;
   mLeft     = NULL;
@@ -52,7 +69,7 @@ CNodeK::CNodeK(C_FLOAT64 constant)
 
 void CNodeK::cleanup() {}
     
-CNodeK::~CNodeK() {}
+CNodeK::~CNodeK() {DESTRUCTOR_TRACE;}
 
 C_INT32 CNodeK::load(CReadConfig & configbuffer)
 {
@@ -167,11 +184,11 @@ void CNodeK::setConstant(C_FLOAT64 & constant) {mConstant = constant;}
 
 void CNodeK::setIndex(C_INT32 index) {mIndex = index;}
 
-C_INT16 CNodeK::isLeftValid() const {return (C_INT16) mLeft;}
+C_INT16 CNodeK::isLeftValid() const {return (mLeft != NULL);}
 
-C_INT16 CNodeK::isRightValid() const {return (C_INT16) mRight;}
+C_INT16 CNodeK::isRightValid() const {return (mRight != NULL);}
 
-C_INT16 CNodeK::isNumber() const {return mType == N_NUMBER;}
+C_INT16 CNodeK::isNumber() const {return (mType == N_NUMBER);}
 
 C_INT16 CNodeK::isIdentifier() const
 {
@@ -235,7 +252,7 @@ C_INT16 CNodeK::rightPrecedence() const
   return 0;
 }
 
-C_FLOAT64 CNodeK::value(const vector < void * > & identifiers) const
+C_FLOAT64 CNodeK::value(const CCallParameters & callParameters) const
 {
   // if it is a constant or an identifier just return its value
   if (isNumber()) return mConstant;
@@ -243,26 +260,26 @@ C_FLOAT64 CNodeK::value(const vector < void * > & identifiers) const
   switch (mType)
     {
     case N_IDENTIFIER :
-      return  *(C_FLOAT64 *)identifiers[mIndex];
+      return  * (C_FLOAT64 *) callParameters[mIndex];
       break;
         
     case N_OPERATOR:
       switch (mSubtype)
 	{
         case '+':
-	  return mLeft->value(identifiers) + mRight->value(identifiers);
+	  return mLeft->value(callParameters) + mRight->value(callParameters);
 
         case '-': 
-	  return mLeft->value(identifiers) - mRight->value(identifiers);
+	  return mLeft->value(callParameters) - mRight->value(callParameters);
 
         case '*': 
-	  return mLeft->value(identifiers) * mRight->value(identifiers);
+	  return mLeft->value(callParameters) * mRight->value(callParameters);
         
         case '/': 
-	  return mLeft->value(identifiers) / mRight->value(identifiers);
+	  return mLeft->value(callParameters) / mRight->value(callParameters);
         
         case '^': 
-	  return pow(mLeft->value(identifiers), mRight->value(identifiers));
+	  return pow(mLeft->value(callParameters), mRight->value(callParameters));
         
         default: 
 	  fatalError();   // THROW EXCEPTION
@@ -274,25 +291,25 @@ C_FLOAT64 CNodeK::value(const vector < void * > & identifiers) const
       switch (mSubtype)
 	{
         case '+': 
-	  return mLeft->value(identifiers);
+	  return mLeft->value(callParameters);
 
         case '-': 
-	  return - mLeft->value(identifiers);
+	  return - mLeft->value(callParameters);
 
         case N_EXP: 
-	  return exp(mLeft->value(identifiers));
+	  return exp(mLeft->value(callParameters));
 
         case N_LOG: 
-	  return log(mLeft->value(identifiers));
+	  return log(mLeft->value(callParameters));
 
         case N_LOG10: 
-	  return log10(mLeft->value(identifiers));
+	  return log10(mLeft->value(callParameters));
 
         case N_SIN: 
-	  return sin(mLeft->value(identifiers));
+	  return sin(mLeft->value(callParameters));
 
         case N_COS: 
-	  return cos(mLeft->value(identifiers));
+	  return cos(mLeft->value(callParameters));
 
         default: 
 	  fatalError();   // THROW EXCEPTION

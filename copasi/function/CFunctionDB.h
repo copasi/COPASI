@@ -25,13 +25,15 @@ class CFunctionDB
 
   /**
    *  Builtin Functions
+   *  :TODO: this should be removed their is no need to always create them
    */
-  vector < CBaseFunction * > mBuiltinFunctions;
+  vector < CFunction * > mBuiltinFunctions;
 
   /**
    *  Vector of the currently loaded functions
+   *  @supplierCardinality 0..*
    */
-  CCopasiVectorN < CBaseFunction > mLoadedFunctions;
+  CCopasiVectorN < CFunction > mLoadedFunctions;
 
   // Operations
  public:
@@ -86,7 +88,7 @@ class CFunctionDB
    *  @param "const string" &functionName
    *  @return CKinFunction &
    */
-  CBaseFunction * dBLoad(const string & functionName);
+  CFunction * dBLoad(const string & functionName);
 
   /**
    *  Add the function to the database
@@ -109,13 +111,13 @@ class CFunctionDB
    *  @param "const string" &functionName
    *  @return CKinFunction &
    */
-  CBaseFunction * findFunction(const string & functionName);
+  CFunction * findFunction(const string & functionName);
 
   /**
    *  Retrieves the vector of loades functions.
    *  @return "CCopasiVectorN < CKinFunction > &" LoadedFunctions
    */
-  CCopasiVectorN < CBaseFunction > & loadedFunctions();
+  CCopasiVectorN < CFunction > & loadedFunctions();
 };
 
 #endif // COPASI_CFunctionDB

@@ -1,109 +1,103 @@
+/**
+ * CMassAction
+ * 
+ * Created for Copasi by Stefan Hoops
+ * (C) Stefan Hoops 2001
+ */
+
+#include "copasi.h"
 #include "CMassAction.h"
-#include "CNodeK.h"
 
-CMassAction::CMassAction()
-{setType(CBaseFunction::BUILTIN);}
 
-CMassAction::CMassAction(C_INT16 reversible)
+#define COPASI_TRACE_CONSTRUCTION
+CMassAction::CMassAction() : CFunction() 
 {
-  setType(CBaseFunction::BUILTIN);
+  CONSTRUCTOR_TRACE;
+  setType(CFunction::MassAction);
+}
+
+CMassAction::CMassAction(const CMassAction & src) : CFunction(src) 
+{CONSTRUCTOR_TRACE;}
+
+CMassAction::CMassAction(const TriLogic & reversible) : CFunction()
+{
+  CONSTRUCTOR_TRACE;
+  if (reversible != TriFalse && reversible != TriTrue)
+    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
+
+  setType(CFunction::MassAction);
   setReversible(reversible);
-    
-  CBaseCallParameter *Substrates = new CBaseCallParameter;
-  Substrates->setType(CCallParameter::VECTOR_DOUBLE);
-  Substrates->setCount(1,CRange::UNSPECIFIED);
-  Substrates->identifierTypes().push_back(N_SUBSTRATE);
-  Substrates->identifierTypes().push_back(N_KCONSTANT);
-  callParameters().push_back(Substrates);
 
-  CBaseIdentifier *ks = new CBaseIdentifier;
-  ks->setName("ks");
-  ks->setType(N_KCONSTANT);
-  Substrates->identifiers().push_back(ks);
+  getParameters().add("k1", 
+                      CFunctionParameter::FLOAT64, 
+                      "PARAMETER");
+  getParameters().add("substrate", 
+                      CFunctionParameter::VFLOAT64, 
+                      "SUBSTRATE");
 
-  if (reversible)
+  if (isReversible() == TriTrue)
     {
       setName("Mass action (reversible)");
-      setDescription("ks * PRODUCT <substrate_i> "
-		     "- kp * PRODUCT <product_j>");
-
-      CBaseCallParameter *Products = new CBaseCallParameter;
-      Products->setType(CCallParameter::VECTOR_DOUBLE);
-      Products->setCount(1,CRange::UNSPECIFIED);
-      Products->identifierTypes().push_back(N_PRODUCT);
-      Products->identifierTypes().push_back(N_KCONSTANT);
-      callParameters().push_back(Products);
-
-      CBaseIdentifier *kp = new CBaseIdentifier;
-      kp->setName("kp");
-      kp->setType(N_KCONSTANT);
-      Products->identifiers().push_back(kp);
+      setDescription("k1 * PRODUCT <substrate_i> "
+                     "- k2 * PRODUCT <product_j>");
+      getParameters().add("k2", 
+                          CFunctionParameter::FLOAT64, 
+                          "PARAMETER");
+      getParameters().add("product",
+                          CFunctionParameter::VFLOAT64,
+                          "PRODUCT");
     }
   else
     {
       setName("Mass action (irreversible)");
-      setDescription("ks * PRODUCT <substrate_i>");
+      setDescription("k1 * PRODUCT <substrate_i>");
     }
 }
 
-CMassAction::~CMassAction() {cleanup();}
+CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
-C_FLOAT64 
-CMassAction::calcValue(const CCopasiVector < CCallParameter > & callParameters) const
+unsigned C_INT32 CMassAction::getParameterPosition(const string & name)
 {
-  C_FLOAT64 Products = 1.0, Substrates = 1.0;
-  unsigned C_INT32 i, imax;
-  
-  imax = callParameters[0]->identifiers().size();
-  for (i = 0; i < imax; i++)
-    Substrates *= *(C_FLOAT64 *) callParameters[0]->identifiers()[i];
+  if (isReversible() != TriFalse && isReversible() != TriTrue)
+    CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
 
-  if (!isReversible()) return Substrates;
-    
-  imax = callParameters[1]->identifiers().size();
-  for (i = 0; i < imax; i++)
-    Products *= *(C_FLOAT64 *) callParameters[1]->identifiers()[i];
-    
+  if (name == "k1") return 0;
+  if (name.substr(0,strlen("substrate")) == "substrate") return 1;
+  if (name == "k2" && 
+      isReversible() == TriTrue) return 2;
+  if (name.substr(0,strlen("product")) == "product" && 
+      isReversible() == TriTrue) return 3;
+  
+  return (unsigned C_INT32) -1;
+}
+
+C_FLOAT64 CMassAction::calcValue(const CCallParameters & callParameters) const
+{
+  unsigned C_INT32 i, imax;
+  C_FLOAT64 *Factor;
+  C_FLOAT64 Substrates = 0.0, Products = 0.0;
+
+  imax = ((vector<C_FLOAT64 *> *)callParameters[1])->size();   // NoSubstrates
+  if (imax)
+    {
+      Substrates = *(C_FLOAT64 *) callParameters[0];           // k1
+      Factor = (*((vector<C_FLOAT64*>*)callParameters[1]))[0]; // first substr.
+
+      for (i = 0; i < imax; i++)
+        Substrates *= *(Factor++); 
+    }
+  
+  if (isReversible() == TriFalse) return Substrates;
+  
+  imax = ((vector<C_FLOAT64 *> *)callParameters[3])->size();   // NoProducts
+  if (imax)
+    {
+      Products = *(C_FLOAT64 *) callParameters[2];             // k2
+      Factor = (*((vector<C_FLOAT64*>*)callParameters[3]))[0]; // first product
+  
+      for (i = 0; i < imax; i++)
+        Products *= *(Factor++);
+    }
+  
   return Substrates - Products;
 }
-
-pair < C_INT32, C_INT32 > CMassAction::findIdentifier(const string & name) const
-{
-  pair < C_INT32, C_INT32 > Tuple(-1, -1);
-  string::size_type subscript;
-    
-  if ("ks" == name) 
-    {
-      Tuple.first = 0;
-      Tuple.second = 0;
-      return Tuple;
-    }
-    
-  if ("kp" == name && isReversible()) 
-    {
-      Tuple.first = 1;
-      Tuple.second = 0;
-      return Tuple;
-    }
-    
-  subscript = name.find("_");
-  string Type  = name.substr(0,subscript);
-  string Index = name.substr(subscript+1);
-  Tuple.second = atoi(Index.c_str()) + 1;
-    
-  if (Type == "substrate")
-    {
-      Tuple.first = 0;
-      return Tuple;
-    }
-    
-  if (Type == "product" && isReversible())
-    {
-      Tuple.first = 1;
-      return Tuple;
-    }
-    
-  Tuple.second = -1;
-  return Tuple;
-}
-                     

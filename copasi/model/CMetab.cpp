@@ -18,8 +18,8 @@ CMetab::CMetab()
   // initialize everything
   mName       = "metab";
   if (!isValidName()) fatalError();
-  mConc       = Copasi.DefaultConc;
-  mIConc      = Copasi.DefaultConc;
+  mConc       = Copasi->DefaultConc;
+  mIConc      = Copasi->DefaultConc;
   mRate       = 1.0;
   mTT         = 0.0;
   mStatus     = METAB_VARIABLE;
@@ -136,7 +136,7 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
 		     "The file specifies a negative concentration "
 		     "for '%s'.\nReset to default.",
 		     mName.c_str());
-      mIConc = Copasi.DefaultConc;
+      mIConc = Copasi->DefaultConc;
     }
   return Fail;
 }
@@ -254,7 +254,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 		     "The file specifies a negative concentration "
 		     "for '%s'.\nReset to default.",
 		     mName.c_str());
-      mIConc = Copasi.DefaultConc;
+      mIConc = Copasi->DefaultConc;
     }
   return Fail;
 }

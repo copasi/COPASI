@@ -197,7 +197,7 @@ EXTRA_DIST =  	model.h 	CCompartment.h	CCompartment.cpp 	CMetab.h	CMetab.cpp 	CM
 ####### kdevelop will overwrite this part!!! (end)############
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I$(top_srcdir)/copasi
+INCLUDES = $(all_includes) -I$(top_srcdir)/copasi $(USER_INCLUDES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -223,7 +223,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/CChemEq.P .deps/CChemEqElement.P .deps/CCompartment.P \
 .deps/CMetab.P .deps/CModel.P .deps/CMoiety.P .deps/CReaction.P

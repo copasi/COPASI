@@ -15,6 +15,7 @@
 
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "CCallParameters.h"
 
 // symbols for CNodeK types and values
 #define N_NOP '@'
@@ -85,12 +86,19 @@ class CNodeK
    *  The index of the node for type N_IDENTIFIER
    */
   C_INT32 mIndex;
+  int attribute1;
   // Operations
  public:
   /**
    * Default constructor
    */
   CNodeK();
+
+  /**
+   *  Copy constructor
+   *  @param "const CNodeK &" src
+   */
+  CNodeK(const CNodeK & src);
 
   /**
    * Constructor for operator
@@ -280,7 +288,7 @@ class CNodeK
    *  @param "vector < C_FLOAT64 * >" &identifiers
    *  @return C_FLOAT64
    */
-  C_FLOAT64 value(const vector < void * > &identifiers) const;
+  C_FLOAT64 value(const CCallParameters & callParameters) const;
 };
 
 #endif // COPASI_CNodeK

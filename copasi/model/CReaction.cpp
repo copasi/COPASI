@@ -24,14 +24,13 @@ CReaction::CReaction(const CReaction & src)
   mName = src.mName;
   mFlux = src.mFlux;
   mReversible = src.mReversible;
-  mFunction = src.mFunction;
+  mChemEq = src.mChemEq;
+  setFunction(src.mFunction->getName());
 
   mId2Substrates = CCopasiVector < CId2Metab > (src.mId2Substrates);
   mId2Products = CCopasiVector < CId2Metab > (src.mId2Products);
   mId2Modifiers = CCopasiVector < CId2Metab > (src.mId2Modifiers);
   mId2Parameters = CCopasiVector < CId2Param > (src.mId2Parameters);
-  
-  initIdentifiers();
 }
 
 CReaction::CReaction(const string & name)
@@ -42,7 +41,7 @@ CReaction::CReaction(const string & name)
   mFunction = NULL;
 }
 
-CReaction::~CReaction() {}
+CReaction::~CReaction() {cleanup();}
 
 void CReaction::cleanup()
 {
@@ -50,7 +49,9 @@ void CReaction::cleanup()
   mId2Products.cleanup();
   mId2Modifiers.cleanup();
   mId2Parameters.cleanup();
-  mCallParameters.cleanup();
+
+  cleanupCallParameters();
+  mParameterDescription.cleanup();
 }
 
 #ifdef XXXX
@@ -92,8 +93,6 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   setFunction(KinType);
   if (mFunction == NULL) return Fail = 1;
 
-  initIdentifiers();
-    
   if ((Fail = configbuffer.getVariable("Flux", "C_FLOAT64", &mFlux)))
     return Fail;
     
@@ -104,7 +103,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     Fail = loadOld(configbuffer);
   else 
     Fail = loadNew(configbuffer);
-        
+
   return Fail; 
 }
 
@@ -210,7 +209,7 @@ string CReaction::getName() const {return mName;}
 
 CChemEq & CReaction::getChemEq() {return mChemEq;}
 
-CBaseFunction & CReaction::getFunction() {return *mFunction;}
+CFunction & CReaction::getFunction() {return *mFunction;}
 
 C_FLOAT64 CReaction::getFlux() const {return mFlux;}
 
@@ -227,9 +226,11 @@ void CReaction::setReversible(C_INT16 reversible) {mReversible = reversible;}
 
 void CReaction::setFunction(const string & functionName)
 {
-  mFunction = Copasi.FunctionDB.findFunction(functionName);
+  mFunction = Copasi->FunctionDB.findFunction(functionName);
+  initCallParameters();
 }
 
+#ifdef XXXX
 void CReaction::initIdentifiers()
 {
   unsigned C_INT32 i;
@@ -363,6 +364,7 @@ void CReaction::checkIdentifiers()
 	if (!mCallParameters[i]->identifiers()[j]) fatalError();
     }
 }
+#endif // XXXX
 
 void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
 {
@@ -383,9 +385,9 @@ void CReaction::compile(CCopasiVectorNS < CCompartment > & compartments)
       compartments[mId2Modifiers[i]->mCompartmentName]->
       metabolites()[mId2Modifiers[i]->mMetaboliteName];
     
-  initIdentifiers();
-  setIdentifiers();
-  checkIdentifiers();
+  initCallParameters();
+  setCallParameters();
+  checkCallParameters();
   
   mChemEq.compile(compartments);
 }
@@ -465,99 +467,130 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   string name;
     
   C_INT32 Fail = 0;
-  C_INT32 Size;
-  unsigned C_INT32 i;
+  unsigned C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
+  unsigned C_INT32 i, imax, pos;
   C_INT32 index;
-
-  if ((Fail = configbuffer.getVariable("Substrates", "C_INT32", &Size)))
-    return Fail;
-  mId2Substrates.resize(Size);
+  
+  CFunctionParameter::DataType Type;
+  
+  configbuffer.getVariable("Substrates", "C_INT32", &SubstrateSize);
+  mId2Substrates.resize(min(SubstrateSize, usageRangeSize("SUBSTRATE")));
     
-  if ((Fail = configbuffer.getVariable("Products", "C_INT32", &Size)))
-    return Fail;
-  mId2Products.resize(Size);
+  configbuffer.getVariable("Products", "C_INT32", &ProductSize);
+  mId2Products.resize(min(ProductSize, usageRangeSize("PRODUCT")));
 
-  if ((Fail = configbuffer.getVariable("Modifiers", "C_INT32", &Size)))
-    return Fail;
-  mId2Modifiers.resize(Size);
+  configbuffer.getVariable("Modifiers", "C_INT32", &ModifierSize);
+  mId2Modifiers.resize(min(ModifierSize, usageRangeSize("MODIFIER")));
 
-  if ((Fail = configbuffer.getVariable("Constants", "C_INT32", &Size)))
-    return Fail;
-  mId2Parameters.resize(Size);
+  configbuffer.getVariable("Constants", "C_INT32", &ParameterSize);
+  mId2Parameters.resize(min(ParameterSize, usageRangeSize("PARAMETER")));
 
-  for (i = 0; i < mId2Substrates.size(); i++)
+  // Construct Id2Substrate
+  imax = mId2Substrates.size();
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
     {
       name = StringPrint("Subs%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
 
-      if (mFunction->getName().substr(0,11) == "Mass action")
-	mId2Substrates[i]->mIdentifierName = StringPrint("substrate_%d", i);
-      else if (mFunction->callParameters()[0]->identifiers(N_SUBSTRATE).size()
-	       < i + 1)
-	mId2Substrates[i]->mIdentifierName = "";
-      else
-	mId2Substrates[i]->mIdentifierName = mFunction->callParameters()[0]->
-	  identifiers(N_SUBSTRATE)[i]->getName();
-        
       mId2Substrates[i]->mMetaboliteName = 
-	Copasi.OldMetabolites[index]->getName();
+	Copasi->OldMetabolites[index]->getName();
+
+      if (Type < CFunctionParameter::VINT16)
+        Type =
+          mParameterDescription.getParameterByUsage("SUBSTRATE", pos).getType();
+
+      mId2Substrates[i]->mIdentifierName = 
+        mParameterDescription[pos - 1]->getName();
+      
+      if (Type >= CFunctionParameter::VINT16) 
+        mId2Substrates[i]->mIdentifierName += StringPrint("_%ld", i);
     }
-    
-  for (i = 0; i < mId2Products.size(); i++)
+
+  for (i=imax; i<SubstrateSize; i++)
+    {
+      name = StringPrint("Subs%d", i);
+      configbuffer.getVariable(name, "C_INT32", &index);
+    }
+   
+  // Construct Id2Product
+  imax = mId2Products.size();
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
     {
       name = StringPrint("Prod%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
-        
-      if (mFunction->getName().substr(0,11) == "Mass action")
-	mId2Products[i]->mIdentifierName = StringPrint("product_%d", i);
-      else if (mFunction->callParameters()[0]->identifiers(N_PRODUCT).size()
-	       < i + 1)
-	mId2Products[i]->mIdentifierName = "";
-      else
-	mId2Products[i]->mIdentifierName = mFunction->callParameters()[0]->
-	  identifiers(N_PRODUCT)[i]->getName();
-        
+      
       mId2Products[i]->mMetaboliteName = 
-	Copasi.OldMetabolites[index]->getName();
+	Copasi->OldMetabolites[index]->getName();
+
+      if (Type < CFunctionParameter::VINT16)
+        Type =
+          mParameterDescription.getParameterByUsage("PRODUCT", pos).getType();
+
+      mId2Products[i]->mIdentifierName = 
+        mParameterDescription[pos - 1]->getName();
+      
+      if (Type >= CFunctionParameter::VINT16) 
+        mId2Products[i]->mIdentifierName += StringPrint("_%ld", i);
     }
     
-  for (i = 0; i < mId2Modifiers.size(); i++)
+  for (i=imax; i<ProductSize; i++)
+    {
+      name = StringPrint("Prod%d", i);
+      configbuffer.getVariable(name, "C_INT32", &index);
+    }
+   
+  // Construct Id2Modifier
+  imax = mId2Modifiers.size();
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
     {
       name = StringPrint("Modf%d", i);
       configbuffer.getVariable(name, "C_INT32", &index);
-        
-      if (mFunction->callParameters()[0]->identifiers(N_MODIFIER).size()
-	  < i + 1)
-	mId2Modifiers[i]->mIdentifierName = "";
-      else
-	mId2Modifiers[i]->mIdentifierName = mFunction->callParameters()[0]->
-	  identifiers(N_MODIFIER)[i]->getName();
-
+      
       mId2Modifiers[i]->mMetaboliteName = 
-	Copasi.OldMetabolites[index]->getName();
+	Copasi->OldMetabolites[index]->getName();
+        
+      if (Type < CFunctionParameter::VINT16)
+        Type =
+          mParameterDescription.getParameterByUsage("MODIFIER", pos).getType();
+
+      mId2Modifiers[i]->mIdentifierName = 
+        mParameterDescription[pos - 1]->getName();
+      
+      if (Type >= CFunctionParameter::VINT16) 
+        mId2Modifiers[i]->mIdentifierName += StringPrint("_%ld", i);
     }
     
-  for (i = 0; i < mId2Parameters.size(); i++)
+  for (i=imax; i<ModifierSize; i++)
+    {
+      name = StringPrint("Modf%d", i);
+      configbuffer.getVariable(name, "C_INT32", &index);
+    }
+   
+  // Construct Id2Parameter
+  imax = mId2Parameters.size();
+  for (i = 0, pos = 0, Type = CFunctionParameter::INT16; i < imax; i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", 
 			       &mId2Parameters[i]->mValue);
-      if (mFunction->getName().substr(0,11) == "Mass action")
-        {
-	  if (i)
-	    mId2Parameters[i]->mIdentifierName = "kp";
-	  else
-	    mId2Parameters[i]->mIdentifierName = "ks";
-        }
-      else if (mFunction->callParameters()[0]->identifiers(N_KCONSTANT).size()
-	       < i + 1)
-	mId2Parameters[i]->mIdentifierName = "";
-      else
-	mId2Parameters[i]->mIdentifierName = mFunction->callParameters()[0]->
-	  identifiers(N_KCONSTANT)[i]->getName();
+
+      if (Type < CFunctionParameter::VINT16)
+        Type =
+          mParameterDescription.getParameterByUsage("PARAMETER", pos).getType();
+
+      mId2Parameters[i]->mIdentifierName = 
+        mParameterDescription[pos - 1]->getName();
+      
+      if (Type >= CFunctionParameter::VINT16) 
+        mId2Parameters[i]->mIdentifierName += StringPrint("_%ld", i);
     }
-    
         
+  for (i=imax; i<ParameterSize; i++)
+    {
+      name = StringPrint("Param%d", i);
+      configbuffer.getVariable(name, "C_INT32", &index);
+    }
+   
   return Fail;
 }
 
@@ -589,31 +622,32 @@ void CReaction::CId2Param::cleanup() {}
 
 void CReaction::old2New(const vector < CMetab* > & metabolites)
 {
+  string Name;
   unsigned C_INT32 i, j;
     
   for (i = 0; i < mId2Substrates.size(); i++)
     {
+      Name = mId2Substrates[i]->mMetaboliteName;
       for (j = 0; j < metabolites.size(); j++)
-	if (metabolites[j]->getName() ==
-	    mId2Substrates[i]->mMetaboliteName) break;
+	if (Name == metabolites[j]->getName()) break;
       mId2Substrates[i]->mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
     
   for (i = 0; i < mId2Products.size(); i++)
     {
+      Name = mId2Products[i]->mMetaboliteName;
       for (j = 0; j < metabolites.size(); j++)
-	if (metabolites[j]->getName() ==
-	    mId2Products[i]->mMetaboliteName) break;
+	if (Name == metabolites[j]->getName()) break;
       mId2Products[i]->mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
     
   for (i = 0; i < mId2Modifiers.size(); i++)
     {
+      Name = mId2Modifiers[i]->mMetaboliteName;
       for (j = 0; j < metabolites.size(); j++)
-	if (metabolites[j]->getName() ==
-	    mId2Modifiers[i]->mMetaboliteName) break;
+	if (Name == metabolites[j]->getName()) break;
       mId2Modifiers[i]->mCompartmentName =
 	metabolites[j]->getCompartment()->getName();
     }
@@ -674,4 +708,181 @@ C_INT32 CReaction::findPara(string &Target)
 	
 }
 
+void CReaction::cleanupCallParameters()
+{
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+  for (i=0; i<imax; i++)
+    {
+      if (mParameterDescription[i]->getType() >= CFunctionParameter::VINT16) 
+        if (mCallParameters[i]) 
+          delete (vector < void * > *) mCallParameters[i];
+      
+      mCallParameters[i] = NULL;
+    }
+
+  mCallParameters.clear();
+}
+
+void CReaction::initCallParameters()
+{
+  cleanupCallParameters();
+  mParameterDescription.cleanup();
+  
+  mParameterDescription = CFunctionParameters(mFunction->getParameters());
+
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+  mCallParameters.resize(imax);
+
+  for (i=0; i<imax; i++)
+    {
+      mCallParameters[i] = NULL;
+      
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+        continue;
+      
+      switch (mParameterDescription[i]->getType())
+        {
+        case CFunctionParameter::VINT16:
+          mCallParameters[i] = new vector < C_INT16 * >;
+          break;
+        case CFunctionParameter::VINT32:
+          mCallParameters[i] = new vector < C_INT32 * >;
+          break;
+        case CFunctionParameter::VUINT16:
+          mCallParameters[i] = new vector < unsigned C_INT16 * >;
+          break;
+        case CFunctionParameter::VUINT32:
+          mCallParameters[i] = new vector < unsigned C_INT32 * >;
+          break;
+        case CFunctionParameter::VFLOAT32:
+          mCallParameters[i] = new vector < C_FLOAT32 * >;
+          break;
+        case CFunctionParameter::VFLOAT64:
+          mCallParameters[i] = new vector < C_FLOAT64 * >;
+          break;
+        default:
+          fatalError();
+          break;
+        }
+    }
+}
+
+void CReaction::setCallParameters()
+{
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 Index;
+  
+  CFunctionParameter::DataType dataType;
+  
+  imax = mId2Substrates.size();
+  for (i=0; i<imax; i++)
+    {
+      Index = findParameter(mId2Substrates[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameters[Index] = 
+          mId2Substrates[i]->mpMetabolite->getConcentration();
+      else
+        ((vector < void * > *) mCallParameters[Index])->
+          push_back(mId2Substrates[i]->mpMetabolite->getConcentration());
+    }
+  
+  imax = mId2Products.size();
+  for (i=0; i<imax; i++)
+    {
+      Index = findParameter(mId2Products[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameters[Index] = 
+          mId2Products[i]->mpMetabolite->getConcentration();
+      else
+        ((vector < void * > *) mCallParameters[Index])->
+          push_back(mId2Products[i]->mpMetabolite->getConcentration());
+    }
+  
+  imax = mId2Modifiers.size();
+  for (i=0; i<imax; i++)
+    {
+      Index = findParameter(mId2Modifiers[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameters[Index] = 
+          mId2Modifiers[i]->mpMetabolite->getConcentration();
+      else
+        ((vector < void * > *) mCallParameters[Index])->
+          push_back(mId2Modifiers[i]->mpMetabolite->getConcentration());
+    }
+  
+  imax = mId2Parameters.size();
+  for (i=0; i<imax; i++)
+    {
+      Index = findParameter(mId2Parameters[i]->mIdentifierName, dataType);
+      if (dataType < CFunctionParameter::VINT16)
+        mCallParameters[Index] = &mId2Parameters[i]->mValue;
+      else
+        ((vector < void * > *) mCallParameters[Index])->
+          push_back(&mId2Parameters[i]->mValue);
+    }
+}
+
+void CReaction::checkCallParameters()
+{
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+  unsigned C_INT32 j, jmax;
+  vector < void * > * pVector;
+
+  for (i=0; i<imax; i++)
+    {
+      if (mCallParameters[i] == NULL) fatalError();
+      if (mParameterDescription[i]->getType() < CFunctionParameter::VINT16)
+        continue;
+      
+      pVector = (vector < void * > *) mCallParameters[i];
+      jmax = pVector->size();
+      for (j=0; j<jmax; j++)
+        if ((*pVector)[j] == NULL) fatalError();
+    }
+}
+
+unsigned C_INT32
+CReaction::findParameter(const string & name,
+                         CFunctionParameter::DataType & dataType)
+{
+  string VectorName = name.substr(0, name.find_last_of('_'));
+  string Name;
+  unsigned C_INT32 i, imax = mParameterDescription.size();
+
+  for (i=0; i<imax; i++)
+    {
+      Name = mParameterDescription[i]->getName();
+      if (Name == name || Name == VectorName)
+        {
+          dataType = mParameterDescription[i]->getType();
+          return i;
+        }
+    }
+
+  fatalError()
+  return 0;
+}
+
+unsigned C_INT32 CReaction::usageRangeSize(const string & usage)
+{
+  CUsageRange * pUsageRange = NULL;
+  C_INT32 Size = 0;
+  
+  try 
+    {
+      pUsageRange = mParameterDescription.getUsageRanges()[usage];
+    }
+  
+  catch (CCopasiException Exception)
+    {
+      if ((MCCopasiVector + 1) != Exception.getMessage().getNumber())
+        throw Exception;
+      pUsageRange = NULL;
+    }
+  
+  if (pUsageRange)
+    Size = max(pUsageRange->getLow(), pUsageRange->getHigh());
+
+  return Size;
+}
 

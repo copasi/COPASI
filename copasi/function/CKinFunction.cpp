@@ -1,111 +1,70 @@
-// UDKType.cpp : classes for user-defined kinetic types
-//
-/////////////////////////////////////////////////////////////////////////////
+/**
+ * CKinFunction
+ *
+ * Created for Copasi by Stefan Hoops
+ * (C) Stefan Hoops 2002
+ */
 
-#include "copasi.h"
-#include "utilities/CGlobals.h"
+#define COPASI_TRACE_CONSTRUCTION
 #include "CKinFunction.h"
 #include "lexkk.h"
-#include "utilities/utilities.h"
 
-C_INT16 DefinedInsertAllowed(CNodeK src);
-
-CKinFunction::CKinFunction()
-{
-  setType(CBaseFunction::USERDEFINED);
-  // mNodes = NULL;
+CKinFunction::CKinFunction() : CFunction()
+{  
+  CONSTRUCTOR_TRACE;
+  setType(CFunction::UserDefined);
 }
 
+CKinFunction::CKinFunction(const CFunction & src) : CFunction(src)
+{
+  CONSTRUCTOR_TRACE;
+  parse();
+}
+
+CKinFunction::CKinFunction(const CKinFunction & src) : CFunction(src)
+{
+  CONSTRUCTOR_TRACE;
+  parse();
+}
+
+#ifdef XXXX
 CKinFunction::CKinFunction(const string & name,
                            const string & description)
 {
-  setType(CBaseFunction::USERDEFINED);
-  // mNodes = NULL;
-
+  CONSTRUCTOR_TRACE;
+  setType(CFunction::UserDefined);
   setName(name);
   setDescription(description);
 }
+#endif // XXXX
 
-CKinFunction::~CKinFunction() {}
+CKinFunction::~CKinFunction() {cleanup(); DESTRUCTOR_TRACE;}
 
-void CKinFunction::cleanup() 
+void CKinFunction::cleanup()
 {
-  // if (mNodes) delete mNodes;
-  // mNodes = NULL;
   mNodes.cleanup();
-  CBaseFunction::cleanup();
+  CFunction::cleanup();
 }
 
-void CKinFunction::copy(const CKinFunction & in)
+void CKinFunction::load(CReadConfig & configBuffer,
+                        CReadConfig::Mode mode)
 {
-  CBaseFunction::copy(in);
+  CFunction::load(configBuffer, mode);
 
-  mNodes = CCopasiVectorS < CNodeK > (in.mNodes);
-  //for (unsigned C_INT32 i = 0; i < in.mNodes.size(); i++)
-  //  mNodes.add(in.mNodes[i]);
-    
-  mNidx = in.mNidx;    
+  // For older file version the parameters have to be build from information
+  // dependend on the function type. Luckilly, only user defined functions are
+  // the only ones occuring in those files.
+  if (configBuffer.getVersion() < "4")
+    {
+      unsigned C_INT32 Size;
+      configBuffer.getVariable("Nodes", "C_INT32", &Size);
 
-  connectNodes();
-  initIdentifiers();
-}
+      mNodes.load(configBuffer, Size);
+      createParameters();
+      mNodes.cleanup();
+    }
 
-C_INT32 CKinFunction::load(CReadConfig & configbuffer,
-                           CReadConfig::Mode mode)
-{
-  string TmpString;
-  C_INT32 Size = 0;
-  C_INT32 Fail = 0;
-    
-  if ((Fail = CBaseFunction::load(configbuffer,mode))) return Fail;
-    
-  if ((Fail = configbuffer.getVariable("Nodes", "C_INT32", &Size)))
-    return Fail;
-
-  mNodes.load(configbuffer,Size);
-
-  connectNodes();
-  initIdentifiers();
-
-  return Fail;
-}
-
-C_INT32 CKinFunction::save(CWriteConfig & configbuffer)
-{
-  string TmpString;
-  C_INT32 TmpLong;
-  C_INT32 Fail = 0;
-    
-  if ((Fail = CBaseFunction::save(configbuffer))) return Fail;
-
-  TmpLong = mNodes.size();
-  if ((Fail = configbuffer.setVariable("Nodes", "C_INT32", &TmpLong)))
-    return Fail;
-
-  mNodes.save(configbuffer);
-    
-  return Fail;
-}
-
-CCopasiVectorS < CNodeK > & CKinFunction::nodes() {return mNodes;}
-
-void CKinFunction::setIdentifierType(const string & name,
-                                     char identifierType)
-{
-  pair < unsigned C_INT32, unsigned C_INT32 > Index(0, 0);
-    
-  Index = findIdentifier(name);
-    
-  if ( !(Index.first + 1) || !(Index.second + 1) )
-    CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 1, name.c_str(), 
-		   getName().c_str());
-
-  for (unsigned C_INT32 i = 0; 
-       i < ((CKinIdentifier *) callParameters()[Index.first]->
-	    identifiers()[Index.second])->mNodes.size();
-       i++)
-    ((CKinIdentifier *) callParameters()[Index.first]->
-     identifiers()[Index.second])->mNodes[i]->setSubtype(identifierType);
+  parse();
 }
 
 C_INT32 CKinFunction::parse()
@@ -142,7 +101,7 @@ C_INT32 CKinFunction::parse()
         case N_SIN:        mNodes.add(CNodeK(N_FUNCTION, N_SIN)); break;
         case N_COS:        mNodes.add(CNodeK(N_FUNCTION, N_COS)); break;
         case N_NOP:        // this is an error
-	  clearNodes();
+	  mNodes.cleanup();
 	  delete [] buffer;
 	  kk_delete_buffer(kkbuff);
 	  // should return the position for the erroneous character
@@ -152,19 +111,15 @@ C_INT32 CKinFunction::parse()
   // release allocated memory
   delete [] buffer;
   kk_delete_buffer(kkbuff);
+
   // connect the nodes
-  initIdentifiers();
-    
-  return connectNodes();
+  connectNodes();
+  initIdentifierNodes();
+  return 0;
 }
 
-C_FLOAT64 
-CKinFunction::calcValue(const CCopasiVector < CCallParameter > & callParameters) const
-{
-  return mNodes[0]->getLeft().value(callParameters[0]->identifiers());
-}
-
-void CKinFunction::clearNodes() {mNodes.cleanup();}
+C_FLOAT64 CKinFunction::calcValue(const CCallParameters & callParameters) const
+{return mNodes[0]->getLeft().value(callParameters);}
 
 C_INT32 CKinFunction::connectNodes()
 {
@@ -181,19 +136,19 @@ C_INT32 CKinFunction::connectNodes()
       mNodes[i]->setLeft(mNodes[0]);
       mNodes[i]->setRight(mNodes[0]);
     }
-    
+
   // update pointers and references in the tree
   mNodes[0]->setLeft(parseExpression(0));
 
   // further checking for errors
-  if (mNodes[0]->isLeftValid() && 
-      mNodes[0]->getLeft().isOperator() && 
+  if (mNodes[0]->isLeftValid() &&
+      mNodes[0]->getLeft().isOperator() &&
       mNodes[0]->getLeft().getSubtype() == '(')
     {
       //  sprintf(errstr, "ERROR - missing operand");
-      //  errnode should index the node in error 
+      //  errnode should index the node in error
       //  but we don't know its index (pointer only)
-      CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2, 
+      CCopasiMessage(CCopasiMessage::ERROR, MCKinFunction + 2,
 		     getName().c_str());
       errnode = -1;
       errfl++;
@@ -206,14 +161,14 @@ C_INT32 CKinFunction::connectNodes()
         case N_OPERATOR:
 	  if (!mNodes[i]->isLeftValid()      ||
 	      !mNodes[i]->isRightValid()     ||
-	      &mNodes[i]->getLeft()  == mNodes[0] || 
+	      &mNodes[i]->getLeft()  == mNodes[0] ||
 	      &mNodes[i]->getRight() == mNodes[0])
 	    if (mNodes[i]->getSubtype() != '(' &&
 		mNodes[i]->getSubtype() != ')')
 	      {
 		if (!errfl)
 		  {
-		    //            sprintf(errstr, "ERROR - incorrect number of operands");
+		    // sprintf(errstr, "ERROR - incorrect number of operands");
 		    fatalError();
 		    errnode = i;
 		  }
@@ -221,8 +176,8 @@ C_INT32 CKinFunction::connectNodes()
 	      }
 	  if (!errfl)
             {
-	      if (mNodes[i]->isLeftValid()    && 
-		  mNodes[i]->getLeft().isOperator() && 
+	      if (mNodes[i]->isLeftValid()    &&
+		  mNodes[i]->getLeft().isOperator() &&
 		  mNodes[i]->getLeft().getSubtype() == '(' )
                 {
 		  //           sprintf(errstr, "ERROR - missing operand");
@@ -230,8 +185,8 @@ C_INT32 CKinFunction::connectNodes()
 		  errnode = -1;
 		  errfl++;
                 }
-	      if (mNodes[i]->isRightValid()    && 
-		  mNodes[i]->getRight().isOperator() && 
+	      if (mNodes[i]->isRightValid()    &&
+		  mNodes[i]->getRight().isOperator() &&
 		  mNodes[i]->getRight().getSubtype() == ')' )
                 {
 		  //           sprintf(errstr, "ERROR - missing operand");
@@ -242,7 +197,7 @@ C_INT32 CKinFunction::connectNodes()
             }
 	  break;
         case N_IDENTIFIER:
-	  if (mNodes[i]->isLeftValid() || 
+	  if (mNodes[i]->isLeftValid() ||
 	      mNodes[i]->isRightValid()  )
             {
 	      if (!errfl)
@@ -255,7 +210,7 @@ C_INT32 CKinFunction::connectNodes()
             }
 	  break;
         case N_NUMBER:
-	  if (mNodes[i]->isLeftValid() || 
+	  if (mNodes[i]->isLeftValid() ||
 	      mNodes[i]->isRightValid()  )
             {
 	      if (!errfl)
@@ -269,7 +224,7 @@ C_INT32 CKinFunction::connectNodes()
 	  break;
         }
     }
-  // return 
+  // return
   return errfl;
 }
 
@@ -284,8 +239,8 @@ CNodeK * CKinFunction::parseExpression(C_INT16 priority)
   lhs = parsePrimary();
   if (!lhs) return NULL;
 
-  while( mNidx < mNodes.size() && 
-	 mNodes[mNidx]->isOperator() && 
+  while( mNidx < mNodes.size() &&
+	 mNodes[mNidx]->isOperator() &&
 	 priority < mNodes[mNidx]->leftPrecedence())
     {
       op = mNidx;
@@ -329,18 +284,18 @@ CNodeK * CKinFunction::parsePrimary()
       //   errnode = mNidx-1;
       //  errfl++;
       return NULL;
-    } 
-    
-  if (mNodes[mNidx]->isNumber() || 
+    }
+
+  if (mNodes[mNidx]->isNumber() ||
       mNodes[mNidx]->isIdentifier())
     {
       t = 'K';
     }
-  else 
+  else
     {
       t = mNodes[mNidx]->getSubtype();
     }
-    
+
   switch (t)
     {
     case 'K':
@@ -351,8 +306,8 @@ CNodeK * CKinFunction::parsePrimary()
       return npt;
     case '(': ++mNidx;
       npt = parseExpression(0);
-      if (mNidx < mNodes.size()      && 
-	  mNodes[mNidx]->isOperator() && 
+      if (mNidx < mNodes.size()      &&
+	  mNodes[mNidx]->isOperator() &&
 	  mNodes[mNidx]->getSubtype() == ')')
         {
 	  ++mNidx;
@@ -413,51 +368,115 @@ CNodeK * CKinFunction::parsePrimary()
     }
 }
 
-void CKinFunction::initIdentifiers()
+void CKinFunction::createParameters()
 {
-  CKinIdentifier* pIdentifier;
-  CBaseCallParameter* pCallParameter = new CBaseCallParameter;
-    
-  pCallParameter->identifierTypes().push_back(N_SUBSTRATE);
-  pCallParameter->identifierTypes().push_back(N_PRODUCT);
-  pCallParameter->identifierTypes().push_back(N_MODIFIER);
-  pCallParameter->identifierTypes().push_back(N_KCONSTANT);
-    
-  unsigned C_INT32 i;
 
-  pair < C_INT32, C_INT32 > Index;
+  CCopasiVectorN < CFunctionParameter > Substrates;
+  CCopasiVectorN < CFunctionParameter > Products;
+  CCopasiVectorN < CFunctionParameter > Modifiers;
+  CCopasiVectorN < CFunctionParameter > Parameters;
 
-  for (i = 0; i < callParameters().size(); i++)
+  unsigned C_INT32 i, imax = mNodes.size();
+  
+  CFunctionParameter Parameter;
+  Parameter.setType(CFunctionParameter::FLOAT64);
+  
+  for (i=0; i<imax; i++)
     {
-      callParameters()[i]->cleanup();
-      delete callParameters()[i];
-    }
-
-  callParameters().clear();
-  callParameters().push_back(pCallParameter);
-    
-  for(i = 0; i < mNodes.size(); i++)
-    {
-      if (mNodes[i]->isIdentifier())
+      if (mNodes[i]->getType() == N_IDENTIFIER)
         {
-	  Index = findIdentifier(mNodes[i]->getName());
-	  if ( Index.first == -1 )
+          try
             {
-	      pIdentifier = new CKinIdentifier;
-	      pIdentifier->setName(mNodes[i]->getName());
-	      pIdentifier->setType(mNodes[i]->getSubtype());
-	      Index.second = callParameters()[0]->identifiers().size();
-	      callParameters()[0]->identifiers().push_back(pIdentifier);
+              Parameter.setName(mNodes[i]->getName());
+              
+              switch (mNodes[i]->getSubtype())
+                {
+                case N_SUBSTRATE:
+                  Parameter.setUsage("SUBSTRATE");
+                  Substrates.add(Parameter);
+                  break;
+                case N_PRODUCT:
+                  Parameter.setUsage("PRODUCT");
+                  Products.add(Parameter);
+                  break;
+                case N_MODIFIER:
+                  Parameter.setUsage("MODIFIER");
+                  Modifiers.add(Parameter);
+                  break;
+                case N_KCONSTANT:
+                  Parameter.setUsage("PARAMETER");
+                  Parameters.add(Parameter);
+                  break;
+                case N_NOP:
+                  Parameter.setUsage("UNKNOWN");
+                  Parameters.add(Parameter);
+                  break;
+                default:
+                  fatalError();
+                }
             }
-	  mNodes[i]->setIndex(Index.second);
-	  ((CKinIdentifier *) callParameters()[0]->
-	   identifiers()[Index.second])->
-	    mNodes.push_back(mNodes[i]);
+
+          catch (CCopasiException Exception)
+            {
+              if ((MCCopasiVector + 2) != Exception.getMessage().getNumber())
+                throw Exception;
+            }
         }
     }
-  callParameters()[0]->setCount(callParameters()[0]->identifiers().size());
+
+  imax = Substrates.size();
+  for (i=0; i<imax; i++)
+      getParameters().add(Substrates[i]);
+
+  imax = Products.size();
+  for (i=0; i<imax; i++)
+      getParameters().add(Products[i]);
+
+  imax = Modifiers.size();
+  for (i=0; i<imax; i++)
+      getParameters().add(Modifiers[i]);
+
+  imax = Parameters.size();
+  for (i=0; i<imax; i++)
+      getParameters().add(Parameters[i]);
+
 }
 
-CKinIdentifier::CKinIdentifier() {}
+void CKinFunction::initIdentifierNodes()
+{
+  // CCopasiVectorNS < CFunctionParameter > * BaseParameters;
+  // BaseParameters = &getParameters().getParameters();
 
-CKinIdentifier::~CKinIdentifier() {} 
+  string IdentifierName, ParameterName, Usage;
+
+  unsigned C_INT32 i, imax = getParameters().size();
+  unsigned C_INT32 j, jmax = mNodes.size();
+  
+  for (j=0; j<jmax; j++)
+    {
+      if (mNodes[j]->getType() != N_IDENTIFIER) continue;
+      IdentifierName = mNodes[j]->getName();
+      
+      for (i=0; i<imax; i++)
+        {
+          ParameterName = getParameters()[i]->getName();
+          if (IdentifierName != ParameterName) continue;
+          
+          mNodes[j]->setIndex(i);
+          break;
+          
+          // We really do not need the usage information in the binary
+          // tree anymore. 
+          Usage = getParameters()[i]->getUsage();
+          if      (Usage == "SUBSTRATE") mNodes[j]->setSubtype(N_SUBSTRATE);
+          else if (Usage == "PRODUCT")   mNodes[j]->setSubtype(N_PRODUCT);
+          else if (Usage == "MODIFIER")  mNodes[j]->setSubtype(N_MODIFIER);
+          else if (Usage == "PARAMETER") mNodes[j]->setSubtype(N_KCONSTANT);
+          else if (Usage == "UNKNOWN")   mNodes[j]->setSubtype(N_NOP);
+          else    fatalError();
+          
+          break;
+        }
+      if (i == imax) fatalError();
+    }
+}

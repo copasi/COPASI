@@ -1,5 +1,5 @@
 /**
- * CBaseFunction
+ * CMassAction
  * 
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
@@ -8,46 +8,49 @@
 #ifndef COPASI_CMassAction
 #define COPASI_CMassAction
 
-#include <string>
-#include <vector>
+#include "CFunction.h"
 
-#include "CBaseFunction.h"
-
-class CMassAction: public CBaseFunction
+class CMassAction : public CFunction 
 {
   // Attributes
- private:
+private:
 
   // Operations
- public:
+public:
   /**
    *  Default constructor
    */
   CMassAction();
-
+    
   /**
-   *  Default constructor
+   *  Copy constructor
    */
-  CMassAction(C_INT16 reversible);
-
+  CMassAction(const CMassAction & src);
+    
   /**
-   *  Default destructor
+   *  Specified constructor
+   */
+  CMassAction(const TriLogic & reversible);
+    
+  /**
+   *  Destructor
    */
   ~CMassAction();
 
   /**
-   *  Calculates the value of the function
-   *  @param "vector < C_FLOAT64 * >" identifiers
+   *  Retrieves the position of a parameter in the function call
+   *  @param "const string &" name
+   *  @return "const unsigned C_INT32" index
    */
-  C_FLOAT64 calcValue(const CCopasiVector < CCallParameter > & callParameters) const;
-
+  virtual unsigned C_INT32 getParameterPosition(const string & name);
+  
   /**
-   *  Returns the index of an identifier. The index specifies the position in
-   *  the identifier vector of the function call CalcValue.
-   *  @param "const string" &name
-   *  @return C_INT32
+   *  Calculates the value of the function
+   *  @param "vector < void * >" callParameters
+   *  @return "C_FLOAT64" result
    */
-  virtual pair < C_INT32, C_INT32 > findIdentifier(const string & name) const;
+  virtual C_FLOAT64 
+    calcValue(const CCallParameters & callParameters) const;
 };
 
 #endif // COPASI_CMassAction

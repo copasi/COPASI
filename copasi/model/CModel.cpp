@@ -86,7 +86,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                            &Size, CReadConfig::LOOP)))
         return Fail;
         
-      Copasi.OldMetabolites.load(configBuffer, Size);
+      Copasi->OldMetabolites.load(configBuffer, Size);
     }
 
   if ((Fail = configBuffer.getVariable("Title", "string", &mTitle,
@@ -117,19 +117,19 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
     {
       // Create the correct compartment / metabolite relationships
       CMetab Metabolite;
-      for (i = 0; i < Copasi.OldMetabolites.size(); i++)
+      for (i = 0; i < Copasi->OldMetabolites.size(); i++)
         {
 	  Metabolite.cleanup();
-          Metabolite = *Copasi.OldMetabolites[i];
+          Metabolite = *Copasi->OldMetabolites[i];
             
-          mCompartments[Copasi.OldMetabolites[i]->getIndex()]->
+          mCompartments[Copasi->OldMetabolites[i]->getIndex()]->
             addMetabolite(Metabolite);
         }
     }
 
   initializeMetabolites();
 
-  if ((Fail = Copasi.FunctionDB.load(configBuffer))) return Fail;
+  if ((Fail = Copasi->FunctionDB.load(configBuffer))) return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
@@ -165,7 +165,7 @@ C_INT32 CModel::save(CWriteConfig & configBuffer)
  
   mCompartments.save(configBuffer);
   
-  if ((Fail = Copasi.FunctionDB.save(configBuffer))) return Fail;
+  if ((Fail = Copasi->FunctionDB.save(configBuffer))) return Fail;
 
   Size = mSteps.size();
   if ((Fail = configBuffer.setVariable("TotalSteps", "C_INT32", &Size)))

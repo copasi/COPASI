@@ -141,7 +141,12 @@ class CReaction
   /**
    *  A pointer to the rate function of the reaction
    */
-  CBaseFunction * mFunction;
+  CFunction * mFunction;
+
+  /**
+   *  The description of the function parameters
+   */
+  CFunctionParameters mParameterDescription;
 
   /**
    *  The flux of the reaction
@@ -180,7 +185,7 @@ class CReaction
   /**
    *  A pointer to the  call parameters of the rate function of the reaction
    */
-  CCopasiVector < CCallParameter > mCallParameters;
+  CCallParameters mCallParameters;
 
   /**
    *
@@ -307,7 +312,7 @@ class CReaction
    *  Retrieves the rate function of the reaction
    *  @return "CBaseFunction &"
    */
-  CBaseFunction & getFunction();
+  CFunction & getFunction();
 
   /**
    *  Retrieves the flux of the reaction
@@ -394,6 +399,40 @@ class CReaction
   /**
    *
    */
+  void cleanupCallParameters();
+
+  /**
+   *
+   */
+  void initCallParameters();
+
+  /**
+   *
+   */
+  void setCallParameters();
+
+  /**
+   *
+   */
+  void checkCallParameters();
+
+  /**
+   *
+   */
+  unsigned C_INT32 findParameter(const string & name,
+                                 CFunctionParameter::DataType & dataType);
+
+  /**
+   *  Returns the max number of elements for the specified usage
+   *  @param "const string" & usage
+   *  @return unsigned C_INT32 size
+   */
+  unsigned C_INT32 usageRangeSize(const string & usage);
+  
+#ifdef XXXX
+  /**
+   *
+   */
   void initIdentifiers();
 
   /**
@@ -405,6 +444,8 @@ class CReaction
    *
    */
   void checkIdentifiers();
+#endif // XXXX
+
 };
 
 #endif // COPASI_CReaction
