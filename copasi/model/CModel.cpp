@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.145 $
+   $Revision: 1.146 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/19 21:38:58 $
+   $Date: 2003/11/20 14:30:18 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1752,7 +1752,8 @@ std::vector<std::string> CModel::removeMetabReacKeys(const std::string & key)
 
 bool CModel::removeMetabolite(const std::string & key)
 {
-  CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(key);
+  CMetab* metab =
+    dynamic_cast<CMetab *>(CKeyFactory::get(key));
 
   if (!metab)
     return false;
@@ -1767,6 +1768,8 @@ bool CModel::removeMetabolite(const std::string & key)
     removeReaction(reacKeys[i]);
 
   mMetabolites.remove(mMetabolites.getIndex(metab));
+  pdelete(metab);
+
   return true;
 }
 
