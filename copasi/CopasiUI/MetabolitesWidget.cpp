@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/10/08 08:51:28 $
+   $Date: 2004/10/09 12:04:04 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -139,19 +139,26 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   QString Compartment(table->text(row, 6));
   if ((const char *)Compartment.utf8() != pMetab->getCompartment()->getObjectName())
     {
-      unsigned C_INT32 index = dataModel->getModel()->
+      std::string CompartmentToRemove = pMetab->getCompartment()->getObjectName();
+      dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
+      dataModel->getModel()->getCompartments()[CompartmentToRemove]->getMetabolites().remove(pMetab->getObjectName());
+      dataModel->getModel()->initializeMetabolites();
+      //protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+      ListViews::notify(ListViews::METABOLITE, ListViews::CHANGE, "");
+      ListViews::notify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+
+      /*unsigned C_INT32 index = dataModel->getModel()->
                                getCompartments().getIndex((const char *)Compartment.utf8());
       if (index != C_INVALID_INDEX)
         {
-          dataModel->getModel()->
-          getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
+          dataModel->getModel()->getCompartments()[(const char *)Compartment.utf8()]->addMetabolite(pMetab);
           dataModel->getModel()->
           getCompartments()[pMetab->getCompartment()->getObjectName()]->
           getMetabolites().remove(pMetab->getObjectName());
           dataModel->getModel()->initializeMetabolites();
           ListViews::notify(ListViews::COMPARTMENT,
                             ListViews::CHANGE, "");
-        }
+        }*/
     } //TODO check if changing the compartment of a metabolite really works. NO!!!
 
   dataModel->getModel()->setCompileFlag(); //TODO: check if really necessary
@@ -285,7 +292,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                       // Yes or Enter
+    case 0:                        // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -297,7 +304,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                       // No or Escape
+    case 1:                        // No or Escape
       break;
     }
 }
