@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/11/11 15:58:39 $
+   $Author: ssahle $ 
+   $Date: 2004/11/22 10:07:46 $
    End CVS Header */
 
 /********************************************************
@@ -239,7 +239,7 @@ void TrajectoryWidget::StartTimeSlot()
 {
   C_FLOAT64 start = nStartTime->text().toDouble();
   C_FLOAT64 end = nEndTime->text().toDouble();
-  C_FLOAT64 delta = nStepSize->text().toDouble();
+  //C_FLOAT64 delta = nStepSize->text().toDouble();
   C_INT32 steps = nStepNumber->text().toInt();
 
   if (steps <= 0) return;
@@ -255,7 +255,7 @@ void TrajectoryWidget::EndTimeSlot()
 {
   C_FLOAT64 start = nStartTime->text().toDouble();
   C_FLOAT64 end = nEndTime->text().toDouble();
-  C_FLOAT64 delta = nStepSize->text().toDouble();
+  //C_FLOAT64 delta = nStepSize->text().toDouble();
   C_INT32 steps = nStepNumber->text().toInt();
 
   if (steps <= 0) return;
@@ -270,7 +270,7 @@ void TrajectoryWidget::EndTimeSlot()
 void TrajectoryWidget::StepsizeSlot()
 {
   C_FLOAT64 start = nStartTime->text().toDouble();
-  C_FLOAT64 end = nEndTime->text().toDouble();
+  //C_FLOAT64 end = nEndTime->text().toDouble();
   C_FLOAT64 delta = nStepSize->text().toDouble();
   C_INT32 steps = nStepNumber->text().toInt();
 
@@ -280,7 +280,7 @@ void TrajectoryWidget::NumStepsSlot()
 {
   C_FLOAT64 start = nStartTime->text().toDouble();
   C_FLOAT64 end = nEndTime->text().toDouble();
-  C_FLOAT64 delta = nStepSize->text().toDouble();
+  //C_FLOAT64 delta = nStepSize->text().toDouble();
   C_INT32 steps = nStepNumber->text().toInt();
 
   if (steps <= 0) return;
