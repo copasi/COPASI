@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/06 09:47:19 $
+   $Author: gauges $ 
+   $Date: 2004/10/21 17:53:16 $
    End CVS Header */
 
 /**
@@ -40,6 +40,7 @@ class CCopasiTask : public CCopasiContainer
       fluxMode,
       optimization,
       parameterFitting,
+      mca,
       unset,
     };
 
