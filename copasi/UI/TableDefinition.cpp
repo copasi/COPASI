@@ -2,7 +2,7 @@
  ** Form implementation generated from reading ui file '.\tabledefinition.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.8 2003/08/08 15:13:14 lixu1 Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition.cpp,v 1.9 2003/08/08 15:32:03 lixu1 Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -151,9 +151,9 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
 
   frame4Layout->addWidget(seperatorEdit, 0, 1);
 
-  radioTab = new QRadioButton(frame4, "radioTab");
+  tabChecked = new QCheckBox(frame4, "tabChecked");
 
-  frame4Layout->addWidget(radioTab, 1, 1);
+  frame4Layout->addWidget(tabChecked, 1, 1);
 
   TableDefinitionLayout->addWidget(frame4, 0, 1);
   languageChange();
@@ -163,14 +163,16 @@ TableDefinition::TableDefinition(QWidget* parent, const char* name, WFlags fl)
   setTabOrder(targetEdit, titleChecked);
   setTabOrder(titleChecked, appendChecked);
   setTabOrder(appendChecked, seperatorEdit);
-  setTabOrder(seperatorEdit, radioTab);
-  setTabOrder(radioTab, addButton);
+  setTabOrder(seperatorEdit, tabChecked);
+  setTabOrder(tabChecked, addButton);
   setTabOrder(addButton, deleteButton);
   setTabOrder(deleteButton, upButton);
   setTabOrder(upButton, downButton);
   setTabOrder(downButton, itemsTable);
   setTabOrder(itemsTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
+
+  connect(tabChecked, SIGNAL(clicked()), this, SLOT(radioButtonClicked()));
 }
 
 /*
@@ -199,7 +201,7 @@ void TableDefinition::languageChange()
   titleChecked->setText(tr("Title"));
   appendChecked->setText(tr("Append"));
   seperatorLabel->setText(tr("Seperator"));
-  radioTab->setText(tr("Tab"));
+  tabChecked->setText(tr("Tab"));
 }
 
 /*This function is to load the model for the table*/
@@ -211,3 +213,8 @@ void TableDefinition::slotBtnCancelClicked()
 
 void TableDefinition::slotBtnOKClicked()
 {}
+
+void TableDefinition::radioButtonClicked()
+{
+  seperatorEdit->setEnabled(!tabChecked->isChecked());
+}
