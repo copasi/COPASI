@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/07 21:32:33 $
+   $Date: 2004/01/08 16:20:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,6 +48,7 @@ class MoietyWidget : public CopasiWidget
     void resizeEvent(QResizeEvent * re);
     void repaint_table();
 
+    virtual bool enter(const std::string & key = "");
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key); //By G
 
   public slots:

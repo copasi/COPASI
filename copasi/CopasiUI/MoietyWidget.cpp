@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: chlee $ 
-   $Date: 2004/01/07 21:32:33 $
+   $Date: 2004/01/08 16:20:59 $
    End CVS Header */
 
 /*******************************************************************
@@ -299,5 +299,11 @@ bool MoietyWidget::update(ListViews::ObjectType objectType, ListViews::Action ac
     default:
       break;
     }
+  return true;
+}
+
+bool MoietyWidget::enter(const std::string & C_UNUSED(key))
+{
+  loadMoieties(dataModel->getModel());
   return true;
 }
