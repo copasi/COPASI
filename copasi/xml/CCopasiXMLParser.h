@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/12/20 18:41:03 $
+   $Date: 2005/01/05 18:19:09 $
    End CVS Header */
 
 /**
@@ -125,9 +125,11 @@ struct SCopasiXMLParserCommon
     CCopasiParameter* pCurrentParameter;
 
     /**
-     * Pointer to the currently processed parameter group
+     * Stack of parameter groups which is needed since nesting 
+     * of groups is possible.
      */
-    CCopasiParameterGroup* pCurrentParameterGroup;
+    std::stack< CCopasiParameterGroup * > ParameterGroupStack;
+    //    CCopasiParameterGroup* pCurrentParameterGroup;
 
     /**
      * Pointer to the currently processed plot
@@ -238,6 +240,11 @@ class CCopasiXMLParser : public CExpat
         {
           Unknown = 0
         };
+
+        /**
+         * The line number the unknown element was encountered.
+         */
+        unsigned C_INT32 mLineNumber;
 
         // Operations
       public:
@@ -1751,6 +1758,11 @@ class CCopasiXMLParser : public CExpat
         ParameterGroupElement* mpParameterGroupHandler;
         ParameterElement* mpParameterHandler;
 
+        /**
+         * The line number the unknown parameter was encountered.
+         */
+        unsigned C_INT32 mLineNumber;
+
         // Operations
       public:
         /**
@@ -1796,6 +1808,11 @@ class CCopasiXMLParser : public CExpat
 
         ParameterElement* mpParameterHandler;
         ParameterGroupElement* mpParameterGroupHandler;
+
+        /**
+         * The line number the unknown parameter was encountered.
+         */
+        unsigned C_INT32 mLineNumber;
 
         // Operations
       public:
