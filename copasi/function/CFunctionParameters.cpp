@@ -172,10 +172,10 @@ void CFunctionParameters::updateUsageRanges()
 
       if (pUsageRange)
         {
-          if (CFunctionParameter::VINT32 <= Type)
+          if ((CFunctionParameter::VINT32 <= Type) || (pUsageRange->getHigh() == CRange::Infinity))
             CCopasiMessage(CCopasiMessage::ERROR, MCFunctionParameters + 1,
                            Usage.c_str(), Type);
-          // this means a vector parameter must be the first parameter with the respective usage
+          // this means a vector parameter must be the only parameter with the respective usage
 
           pUsageRange->setLow(pUsageRange->getLow() + 1);
         }
