@@ -44,6 +44,7 @@ CopasiUI_LIBS = \
 	../output \
 	../optimization \
 	../randomGenerator \
+	../report \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -79,6 +80,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
 	-Wl,-loutput \
+	-Wl,-lreport \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -86,22 +88,13 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack \
-	-lmkl_p3 \
-	-lg2c \
-	-lpthread
+	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 #  Use this for standard clapack
-#	-llapack \
-#	-lblas \
-#	-lF77 \
-#	-lfl
+#	-llapack -lblas -lF77 -lfl
 
 #  Use this for the intel performance library under linux
-#	-lmkl_lapack \
-#	-lmkl_p3 \
-#	-lg2c \
-#	-lpthread \
+#	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 # the library search path.
 LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
@@ -111,6 +104,7 @@ LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../output \
 	-L../optimization \
 	-L../randomGenerator \
+        -L../report \
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities

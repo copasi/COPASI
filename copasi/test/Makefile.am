@@ -13,6 +13,7 @@ test_LIBS = \
 	../output \
 	../optimization \
 	../randomGenerator \
+	../report \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -32,6 +33,7 @@ LIBS = \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
 	-Wl,-loutput \
+	-Wl,-lreport \
 	-Wl,-loptimization \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
@@ -40,22 +42,13 @@ LIBS = \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack \
-	-lmkl_p3 \
-	-lg2c \
-	-lpthread
+	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 #  Use this for standard clapack
-#	-llapack \
-#	-lblas \
-#	-lF77 \
-#	-lfl
+#	-llapack -lblas -lF77 -lfl
 
 #  Use this for the intel performance library under linux
-#	-lmkl_lapack \
-#	-lmkl_p3 \
-#	-lg2c \
-#	-lpthread \
+#	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 # the library search path.
 LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
@@ -65,9 +58,10 @@ LDFLAGS = -all-static $(all_libraries) $(USER_LDFLAGS)\
         -L../output \
 	-L../optimization \
 	-L../randomGenerator \
+        -L../report \
         -L../steadystate \
         -L../trajectory \
         -L../utilities
 
 check_LIBS:
-	@for d in $(test_LIBS); do (cd $$d && make); done
+	@for d in $(test_LIBS); do (cd $$d && make || rm *.a); done

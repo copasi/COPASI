@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.9 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.10 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -414,7 +414,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=templategps Makefile.dist acinclude.m4.in FunctionDB.gps qtwxwindows.tex 
+KDE_DIST=inst-apps Myokinase.gps api-doc.tar.bz2 copasi.gps ElementaryFluxModes.txt Glucose.gps exampleinput sample.txt spec2model.algorithm ls-lt.txt copasi-0.1.tar.gz FunctionDBold.gps gepassi TestKinFunction.gps h2o.gps acinclude.m4.in trace FunctionDB.gps CODESolver gdbtk.ini FunctionDB.gps.bak TestWriteConfig.txt 6GeneNet.dyn Makefile.dist TestMassAction.gps FunctionDBnew.gps core Sample.txt 6GeneNet.ss tmp.txt GlucoseX.gps templategps copasi-0.1.tar.bz2 copasi2.gps subdirs Glycerol.gps qtwxwindows.tex FunctionDBnew.gps.bak output.txt sample.gps 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

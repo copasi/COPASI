@@ -1,5 +1,5 @@
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
-# KDE tags expanded automatically by am_edit - $Revision: 1.11 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.12 $ 
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -280,6 +280,7 @@ CopasiUI_LIBS = \
 	../output \
 	../optimization \
 	../randomGenerator \
+	../report \
 	../steadystate \
 	../trajectory \
 	../utilities
@@ -317,6 +318,7 @@ LIBS = $(LIB_QT) \
 	-Wl,-lmodel \
 	-Wl,-lfunction \
 	-Wl,-loutput \
+	-Wl,-lreport \
 	-Wl,-lsteadystate \
 	-Wl,-ltrajectory \
 	-Wl,-lrandomGenerator \
@@ -324,24 +326,16 @@ LIBS = $(LIB_QT) \
 	-Wl,-loutput \
 	-Wl,-lfunction \
 	-Wl,-lmodel \
-	-lmkl_lapack \
-	-lmkl_p3 \
-	-lg2c \
-	-lpthread
+	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
 
 
 #  Use this for standard clapack
-#	-llapack \
-	#	-lblas \
-	#	-lF77 \
-	#	-lfl
+#	-llapack -lblas -lF77 -lfl
 
 #  Use this for the intel performance library under linux
-#	-lmkl_lapack \
-	#	-lmkl_p3 \
-	#	-lg2c \
-	#	-lpthread \
-	# the library search path.
+#	-lmkl_lapack -lmkl_p3 -lg2c -lpthread
+
+# the library search path.
 LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../elementaryFluxModes \
 	-L../function \
@@ -349,6 +343,7 @@ LDFLAGS = -static $(all_libraries) $(USER_LDFLAGS)\
 	-L../output \
 	-L../optimization \
 	-L../randomGenerator \
+	-L../report \
 	-L../steadystate \
 	-L../trajectory \
 	-L../utilities
@@ -596,7 +591,7 @@ distclean-tags:
 
 #>- DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 #>+ 4
-KDE_DIST=Structures.h MoietiesWidget.cpp CopasiUI Sample.txt DataModel.h MoietiesWidget.h trace CopasiUI.dsp Sample2.txt 
+KDE_DIST=Structures.h MoietiesWidget.cpp Sample.txt DataModel.h MoietiesWidget.h trace CopasiUI.dsp Sample2.txt 
 
 DISTFILES= $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST) $(KDE_DIST)
 

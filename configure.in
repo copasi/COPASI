@@ -63,7 +63,7 @@ dnl activate the next macro call for some additional tests
 dnl   (compat, crypt, socket, nsl, dlopen, ...)
 dnl KDE_MISC_TESTS dnl __kdevelop__
 
-dnl KDE_NEED_FLEX dnl __kdevelop__
+KDE_NEED_FLEX dnl __kdevelop__
 dnl AC_PROG_YACC dnl __kdevelop__
 
 KDE_CHECK_EXTRA_LIBS
@@ -92,4 +92,4 @@ dnl Perform program name transformation
 dnl AC_ARG_PROGRAM
 
 dnl add here all your Makefiles. These will be created by configure
-AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile tnt/Makefile)
+AC_OUTPUT(Makefile copasi/Makefile copasi/ABiochem/Makefile copasi/CopasiUI/Makefile copasi/commandline/Makefile copasi/elementaryFluxModes/Makefile copasi/function/Makefile copasi/optimization/Makefile copasi/model/Makefile copasi/output/Makefile copasi/randomGenerator/Makefile copasi/report/Makefile copasi/trajectory/Makefile copasi/utilities/Makefile copasi/steadystate/Makefile copasi/test/Makefile copasi/pvmtest/Makefile tnt/Makefile)
