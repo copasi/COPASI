@@ -7,6 +7,7 @@
 
 #include "copasi.h"
 #include "CChemEqElement.h"
+#include "utilities/utilities.h"
 
 CChemEqElement::CChemEqElement() {mpMetabolite = NULL;}
 
@@ -65,3 +66,12 @@ void CChemEqElement::compile(vector < CMetab * > & metabolites)
 
   if (i >= imax) fatalError();
 }
+
+string CChemEqElement::writeElement() const
+{
+  if (mMultiplicity == 1.0) 
+    return mMetaboliteName;
+  else
+    return StringPrint("%.0lf * %s", mMultiplicity, mMetaboliteName.c_str());
+}
+

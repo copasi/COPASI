@@ -114,6 +114,12 @@ class CChemEqElement
    *  @param "vector < CMetab * > &" metabolites
    */
   void compile(vector < CMetab * > & metabolites);
+
+  /**
+   *  Write the element in the form mMultiplier * mMetaboliteName
+   *  @return "string"
+   */
+  string writeElement() const;
 };
 
 

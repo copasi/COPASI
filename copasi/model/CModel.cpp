@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "copasi.h"
-#include "utilities/CGlobals.h"
+#include "utilities/utilities.h"
 #include "CModel.h"
 #include "CCompartment.h"
 #include "tnt/luX.h"
@@ -531,8 +531,7 @@ C_FLOAT64 * CModel::getInitialNumbers()
 {
   C_INT32 i, imax = mMetabolitesInd.size();
 
-  // C_FLOAT64 * y = new C_FLOAT64[i];
-  C_FLOAT64 * y = new C_FLOAT64[imax];      //YH: i think it should be imax here
+  C_FLOAT64 * y = new C_FLOAT64[imax];
 
   for (i=0; i<imax; i++)
     y[i] = mMetabolitesInd[i]->getInitialNumber();

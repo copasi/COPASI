@@ -171,6 +171,17 @@ class CChemEq
    *  This function splits the chemical equation into a left and a right
    */
   void splitChemEq(string & left, string & right) const;
+
+  /**
+   *  Writes the chemical equation in a form with multipliers.
+   */
+  void writeChemicalEquation();
+  
+  /**
+   *  Writes the chemical equation in a form without multipliers.
+   */
+  void writeChemicalEquationConverted();
+  
 };
 
 #endif // COPASI_CChemEq 

@@ -578,36 +578,6 @@ CReaction::CId2Param::CId2Param() {}
 
 CReaction::CId2Param::~CId2Param() {}
 
-#ifdef XXXX
-vector < CReaction::ELEMENT > CReaction::getChemStructure() const
-{
-  vector < ELEMENT > Structure;
-  ELEMENT Element;
-    
-  string Left;
-  string Right;
-
-  splitChemEq(Left, Right);
-
-  string::size_type pos = 0;
-  while (pos != string::npos)
-    {
-      Element = extractElement(Left, pos);
-      Element.mValue *= -1.0; 
-      if (Element.mName != "") addElement(Element, Structure);
-    }
-    
-  pos = 0;
-  while (pos != string::npos)
-    {
-      Element = extractElement(Right, pos);
-      if (Element.mName != "") addElement(Element, Structure);
-    }
-    
-  return Structure;
-}
-#endif // XXXX
-
 void CReaction::old2New(const vector < CMetab* > & metabolites)
 {
   unsigned C_INT32 i, j;
