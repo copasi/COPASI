@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "copasi.h"
 
@@ -43,6 +44,11 @@ class CChemEqInterface
     void reverse();
 
     C_INT32 getMolecularity(const std::string & role) const;
+
+    std::set<std::string> listOfNonUniqueMetabNames(const CModel * model) const;
+    std::set<std::string> listOfNonExistingMetabNames(const CModel * model) const;
+
+    bool createNonExistingMetabs(CModel * model) const;
 
     //convenience methods:
     static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);

@@ -6,6 +6,7 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
 #include "utilities/CGlobals.h"
+#include "model/CModel.h"
 
 CChemEqInterface::CChemEqInterface()
 {}
@@ -320,6 +321,70 @@ void CChemEqInterface::reverse()
   mSubstrateNames = mProductNames; mSubstrateMult = mProductMult;
   mProductNames = dummyNames; mProductMult = dummyMults;
 }
+
+std::set<std::string> CChemEqInterface::listOfNonUniqueMetabNames(const CModel * model) const
+  {
+    std::set<std::string> ret;
+
+    std::vector<std::string>::const_iterator it, itEnd;
+
+    itEnd = mSubstrateNames.end();
+    for (it = mSubstrateNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::isUnique(model, *it))
+        ret.insert(*it);
+
+    itEnd = mProductNames.end();
+    for (it = mProductNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::isUnique(model, *it))
+        ret.insert(*it);
+
+    itEnd = mModifierNames.end();
+    for (it = mModifierNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::isUnique(model, *it))
+        ret.insert(*it);
+
+    return ret;
+  }
+
+std::set<std::string> CChemEqInterface::listOfNonExistingMetabNames(const CModel * model) const
+  {
+    std::set<std::string> ret;
+
+    std::vector<std::string>::const_iterator it, itEnd;
+
+    itEnd = mSubstrateNames.end();
+    for (it = mSubstrateNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::doesExist(model, *it))
+        ret.insert(*it);
+
+    itEnd = mProductNames.end();
+    for (it = mProductNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::doesExist(model, *it))
+        ret.insert(*it);
+
+    itEnd = mModifierNames.end();
+    for (it = mModifierNames.begin(); it != itEnd; ++it)
+      if (!CMetabNameInterface::doesExist(model, *it))
+        ret.insert(*it);
+
+    return ret;
+  }
+
+bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
+  {
+    std::set<std::string> metabs = listOfNonExistingMetabNames(model);
+
+    std::set<std::string>::const_iterator it, itEnd;
+
+    itEnd = metabs.end();
+
+    for (it = metabs.begin(); it != itEnd; ++it)
+      model->addMetabolite(CMetabNameInterface::extractCompartmentName(model, *it),
+                           CMetabNameInterface::extractMetabName(model, *it),
+                           0.1, CMetab::METAB_VARIABLE);
+
+    return true; //TODO: really check
+  }
 
 /*static*/
 std::string CChemEqInterface::getChemEqString(const CModel * model, const CReaction & rea, bool expanded)
