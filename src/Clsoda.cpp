@@ -90,6 +90,7 @@ tam@wri.com
 #endif
 
 #include "Clsoda.h"
+#include "utilities.h"
 
 #define max(a , b)  ((a) > (b) ? (a) : (b))
 #define min(a , b)  ((a) < (b) ? (a) : (b))

@@ -24,6 +24,10 @@ C_INT32 idamax(C_INT32 n,
                C_FLOAT64 * dx,
                C_INT32 incx);
                          
+C_FLOAT64 xNorm(C_INT32 n,
+                C_FLOAT64 * dx,
+                C_INT32 incx);
+                         
 void dgesl(C_FLOAT64 ** a,
            C_INT32 n,
            C_INT32 * ipvt, 
