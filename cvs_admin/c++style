@@ -24,6 +24,7 @@ BEGIN {
 END {
   if (lastClosingBracket == 1) {
     printf "\n"
+  }
 }
 
 $0 ~ "^$" {
