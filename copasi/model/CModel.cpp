@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.198 $
+   $Revision: 1.199 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/19 07:23:33 $
+   $Author: shoops $ 
+   $Date: 2004/11/12 18:37:40 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1695,6 +1695,8 @@ bool CModel::removeReaction(const std::string & key)
   mSteps.CCopasiVector< CReaction >::remove(index);
 
   setCompileFlag();
+  mMoieties.resize(0);
+
   return true;
 }
 
