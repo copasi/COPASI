@@ -135,7 +135,8 @@ ObjectBrowser::ObjectBrowser(QWidget* parent, const char* name, WFlags fl)
 void ObjectBrowser::closeEvent (QCloseEvent * e)
 {
   QWidget::closeEvent(e);
-  this->~ObjectBrowser();
+  if (mparent)
+    this->~ObjectBrowser();
 }
 
 ObjectBrowser::~ObjectBrowser() {cleanup();}
