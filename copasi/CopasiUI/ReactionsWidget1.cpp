@@ -261,9 +261,9 @@ void ReactionsWidget1::loadName(QString setValue)
   const CCopasiVectorN < CFunction > & Functions =
     Copasi->FunctionDB.suitableFunctions(reactn->getChemEq().getSubstrates().size(),
                                          reactn->getChemEq().getSubstrates().size(), reversible);
-  CFunction *function;
+  //const CFunction *function;
 
-  CChemEq * chemEq;
+  const CChemEq * chemEq;
 
   QHeader *tableHeader1 = table->horizontalHeader();
   QHeader *tableHeader2 = table->verticalHeader();
@@ -278,8 +278,8 @@ void ReactionsWidget1::loadName(QString setValue)
 
   LineEdit3->setText(QString::number(reactn->getFlux()));
 
-  function = &reactn->getFunction();
-  function1 = &reactn->getFunction();
+  //function = &reactn->getFunction();  // function seems not to be used afterwards
+  //function1 = &reactn->getFunction(); // function1 seems not to be used either
   //ComboBox1->insertItem(function->getName().c_str(), m);
 
   QStringList comboEntries;
@@ -338,7 +338,7 @@ void ReactionsWidget1::loadName(QString setValue)
           cchem = (*react1)[l];
           QString overall = cchem->getMetaboliteName().c_str();
           overall += "{";
-          overall += cchem->getCompartmentName().c_str();
+          overall += cchem->getMetabolite().getCompartment()->getName().c_str();
           overall += "}";
           comboEntries1.push_back(overall);
         }
@@ -374,7 +374,7 @@ void ReactionsWidget1::loadName(QString setValue)
           cchem = (*react2)[l];
           QString overall = cchem->getMetaboliteName().c_str();
           overall += "{";
-          overall += cchem->getCompartmentName().c_str();
+          overall += cchem->getMetabolite().getCompartment()->getName().c_str();
           overall += "}";
           comboEntries1.push_back(overall);
         }
@@ -387,9 +387,9 @@ void ReactionsWidget1::loadName(QString setValue)
       line++;
     }
 
-  CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
-  CCopasiVectorN< CMetab > & Metabolites = mModel->getMetabolites();
-  CMetab * Metabolite;
+  const CCopasiVector < CReaction::CId2Metab > & react3z = reactn->getId2Modifiers();
+  const CCopasiVectorN< CMetab > & Metabolites = mModel->getMetabolites();
+  const CMetab * Metabolite;
   z = 0;
 
   for (k = 0; k < react3z.size(); k++)
@@ -472,7 +472,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 {
   CCopasiVectorNS < CReaction > & reactions = mModel->getReactions();
   reactn1 = reactions[(std::string)name.latin1()];
-  CChemEq * chemEq1;
+  const CChemEq * chemEq1;
 
   chemEq1 = & reactn1->getChemEq();
   std::string chemEq2 = chemEq1->getChemicalEquationConverted();
@@ -500,7 +500,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
       reversible = TriTrue;
     }
   const std::string chemEq3 = chemical_reaction.latin1();
-  chemEq1->setChemicalEquation(chemEq3);
+  //chemEq1->setChemicalEquation(chemEq3); //is this really necessary?
   reactn1->setChemEq(chemEq3);
 
   LineEdit2->setText(chemEq1->getChemicalEquationConverted().c_str());
@@ -704,10 +704,10 @@ void ReactionsWidget1::slotLineEditChanged()
   CCopasiVectorNS < CReaction > & reactions1 = mModel->getReactions();
   CReaction *reactn1;
   reactn1 = reactions1[(std::string)name];
-  CChemEq * chemEq1;
+  const CChemEq * chemEq1;
   chemEq1 = & reactn1->getChemEq();
-  bool status;
-  status = chemEq1->setChemicalEquation(changed_chemical_reaction);
+  //bool status;
+  //status = chemEq1->setChemicalEquation(changed_chemical_reaction); //is this necessary?
   reactn1->setChemEq(changed_chemical_reaction);
   if (reactn1->isReversible() == true)
     {
