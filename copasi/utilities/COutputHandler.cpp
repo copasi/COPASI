@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/28 22:26:26 $
+   $Author: gauges $ 
+   $Date: 2004/07/07 08:08:26 $
    End CVS Header */
 
+#include <iostream>
 #include "copasi.h"
 #include "COutputHandler.h"
 
