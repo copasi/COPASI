@@ -103,7 +103,15 @@ SOURCE=.\CCopasiMessage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDependencyGraph.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CGlobals.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
@@ -147,7 +155,15 @@ SOURCE=.\CCopasiVectorN.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDependencyGraph.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CGlobals.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CIndexedPriorityQueue.h
 # End Source File
 # Begin Source File
 
