@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/14 12:19:25 $
+   $Date: 2005/03/14 13:13:45 $
    End CVS Header */
 
 #include <iostream>
@@ -130,13 +130,13 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
 
 void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
 {
-  QWidget* widget = this->childAt(e->pos());
-  if (dynamic_cast<QLabel*>(widget) || dynamic_cast<QSlider*>(widget))
+  CopasiSlider* pSlider = this->findCopasiSliderAtPosition(e->pos());
+  if (pSlider)
     {
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(0), false);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(1), true);
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), true);
-      this->currSlider = dynamic_cast<CopasiSlider*>(widget->parent());
+      this->setCurrentSlider(pSlider);
     }
   else
     {
@@ -145,6 +145,23 @@ void SliderDialog::contextMenuEvent(QContextMenuEvent* e)
       this->contextMenu->setItemEnabled(this->contextMenu->idAt(2), false);
     }
   this->contextMenu->popup(e->globalPos());
+}
+
+void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
+{
+  this->currSlider = pSlider;
+}
+
+CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
+{
+  QWidget* pWidget = this->childAt(p);
+  CopasiSlider* pSlider = NULL;
+  while (pWidget != this && !pSlider)
+    {
+      pSlider = dynamic_cast<CopasiSlider*>(pWidget);
+      pWidget = (QWidget*)pWidget->parent();
+    }
+  return pSlider;
 }
 
 void SliderDialog::createNewSlider()
@@ -175,7 +192,7 @@ void SliderDialog::createNewSlider()
     }
   else
     {
-      this->currSlider = NULL;
+      this->setCurrentSlider(NULL);
     }
   delete pSettingsDialog;
   delete pVector;
@@ -225,9 +242,9 @@ void SliderDialog::editSlider()
   pSettingsDialog->setDefinedSliders(*pVector);
 
   pSettingsDialog->disableObjectChoosing(true);
+
   pSettingsDialog->setSlider(this->currSlider->getCSlider());
   pSettingsDialog->exec();
-  //this->currSlider->updateLabel();
   this->currSlider->updateSliderData();
   delete pSettingsDialog;
   delete pVector;
@@ -266,7 +283,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
     }
   if (!findCopasiSliderForCSlider(pSlider))
     {
-      this->currSlider = new CopasiSlider(pSlider, this->sliderBox);
+      this->setCurrentSlider(new CopasiSlider(pSlider, this->sliderBox));
       this->currSlider->setHidden(true);
       this->sliderMap[this->currentFolderId].push_back(this->currSlider);
       ((QVBoxLayout*)this->sliderBox->layout())->add(this->currSlider);
@@ -365,7 +382,7 @@ void SliderDialog::fillSliderBox()
             }
           if (!found)
             {
-              this->currSlider = new CopasiSlider((*pVector)[i], this->sliderBox);
+              this->setCurrentSlider(new CopasiSlider((*pVector)[i], this->sliderBox));
               this->currSlider->setHidden(true);
               this->sliderMap[this->currentFolderId].push_back(this->currSlider);
 
@@ -402,7 +419,7 @@ void SliderDialog::fillSliderBox()
       QWidget* widget = v[i - 1];
       widget->setHidden(true);
       ((QVBoxLayout*)this->sliderBox->layout())->insertWidget(0, widget);
-      this->currSlider = dynamic_cast<CopasiSlider*>(widget);
+      this->setCurrentSlider(dynamic_cast<CopasiSlider*>(widget));
       if (this->currSlider)
         {
           connect(this->currSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
@@ -531,13 +548,13 @@ void SliderDialog::updateAllSliders()
 
 void SliderDialog::removeSlider(CopasiSlider* slider)
 {
-  this->currSlider = slider;
+  this->setCurrentSlider(slider);
   this->removeSlider();
 }
 
 void SliderDialog::editSlider(CopasiSlider* slider)
 {
-  this->currSlider = slider;
+  this->setCurrentSlider(slider);
   this->editSlider();
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/14 12:19:25 $
+   $Date: 2005/03/14 13:13:45 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -80,6 +80,8 @@ class SliderDialog: public QDialog
     void clearSliderBox();
     void fillSliderBox();
     std::vector<CSlider*>* getCSlidersForCurrentFolderId();
+    CopasiSlider* findCopasiSliderAtPosition(const QPoint& p);
+    void setCurrentSlider(CopasiSlider* pSlider);
 
   protected slots:
     void removeSlider(CopasiSlider* slider);
