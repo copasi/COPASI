@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 15:30:35 $
+   $Date: 2005/02/25 01:43:29 $
    End CVS Header */
 
 // CCopasiMessage
@@ -166,7 +166,7 @@ void CCopasiMessage::handler()
 
   mText += Text;
 
-  lineBreak();
+  if (mType != RAW) lineBreak();
 
   mMessageStack.push(*this);
 
