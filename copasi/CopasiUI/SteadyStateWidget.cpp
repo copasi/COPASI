@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2004/10/18 09:34:41 $
+   $Date: 2004/10/18 13:59:28 $
    End CVS Header */
 
 /********************************************************
@@ -139,6 +139,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   taskStability = new QCheckBox(this, "taskStability");
   taskStability->setText(trUtf8("perform Stability Analysis"));
   SteadyStateWidgetLayout->addWidget(taskStability, 2, 2);
+  taskStability->setEnabled(false);
 
   line8_2 = new QFrame(this, "line8_2");
   line8_2->setFrameShape(QFrame::HLine);
@@ -304,7 +305,11 @@ void SteadyStateWidget::loadSteadyStateTask()
   bool bJacobian = steadystateproblem->isJacobianRequested();
   bool bStatistics = steadystateproblem->isStabilityAnalysisRequested();
   taskJacobian->setChecked(bJacobian);
-  if (bJacobian) taskStability->setChecked(bStatistics);
+  if (bJacobian)
+    {
+      taskStability->setEnabled(true);
+      taskStability->setChecked(bStatistics);
+    }
 
   QTableItem * pItem;
   QString value;
@@ -388,5 +393,10 @@ void SteadyStateWidget::ReportDefinitionClicked()
 
 void SteadyStateWidget::taskJacobianToggled()
 {
-  if (!taskJacobian->isChecked()) taskStability->setChecked(false);
+  if (!taskJacobian->isChecked())
+    {
+      taskStability->setChecked(false);
+      taskStability->setEnabled(false);
+    }
+  else taskStability->setEnabled(true);
 }
