@@ -238,6 +238,7 @@
     <variable>QListViewItem* particleFluxSubtree;</variable>
     <variable>QListViewItem* timeSubtree;</variable>
     <variable>bool singleSelect;</variable>
+    <variable>QListViewItem* reactionParameterSubtree;</variable>
 </variables>
 <slots>
     <slot access="protected">addButtonClicked()</slot>

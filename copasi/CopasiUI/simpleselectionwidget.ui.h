@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/08 13:13:02 $
+   $Author: gauges $ 
+   $Date: 2004/10/28 12:42:39 $
    End CVS Header */
 
 /****************************************************************************
@@ -28,6 +28,7 @@ void SimpleSelectionWidget::init()
   this->concentrationFluxSubtree = new QListViewItem(this->reactionSubtree, "concentration fluxes");
 
   this->metaboliteSubtree = new QListViewItem(this->itemTree, "metabolites");
+  this->reactionParameterSubtree = new QListViewItem(this->reactionSubtree, "reaction parameters");
   this->transientParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "transient particle numbers");
   this->transientConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "transient concentrations");
   this->initialParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "initial particle numbers");
@@ -149,108 +150,39 @@ bool SimpleSelectionWidget::treeHasSelection()
 std::vector<CCopasiObject*>* SimpleSelectionWidget::getTreeSelection()
 {
   std::vector<CCopasiObject*>* selection = new std::vector<CCopasiObject*>();
-  std::vector<QListViewItem*> toCheck;
-  std::vector<QListViewItem*> unchecked;
-  if (this->timeSubtree->isSelected())
+  // go through the whole tree and check for selected items.
+  // if the selected item has children, add all children that are leaves
+  // if the selected item is a leave, add it directly
+  QListViewItemIterator it(this->itemTree);
+  QListViewItem* currentItem = it.current();
+  while (currentItem)
     {
-      unchecked.push_back(this->timeSubtree);
-    }
-  else
-    {
-      toCheck.push_back(timeSubtree);
-    }
-  if (this->metaboliteSubtree->isSelected())
-    {
-      unchecked.push_back(this->initialConcentrationSubtree);
-      unchecked.push_back(this->initialParticleNumberSubtree);
-      unchecked.push_back(this->transientConcentrationSubtree);
-      unchecked.push_back(this->transientParticleNumberSubtree);
-    }
-  else
-    {
-      if (this->initialConcentrationSubtree->isSelected())
+      if (currentItem->isSelected())
         {
-          unchecked.push_back(this->initialConcentrationSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->initialConcentrationSubtree);
-        }
-      if (this->initialParticleNumberSubtree->isSelected())
-        {
-          unchecked.push_back(this->initialParticleNumberSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->initialParticleNumberSubtree);
-        }
-      if (this->transientConcentrationSubtree->isSelected())
-        {
-          unchecked.push_back(this->transientConcentrationSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->transientConcentrationSubtree);
-        }
-      if (this->transientParticleNumberSubtree->isSelected())
-        {
-          unchecked.push_back(this->transientParticleNumberSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->transientParticleNumberSubtree);
-        }
-    }
-  if (this->reactionSubtree->isSelected())
-    {
-      unchecked.push_back(this->concentrationFluxSubtree);
-      unchecked.push_back(this->particleFluxSubtree);
-    }
-  else
-    {
-      if (this->concentrationFluxSubtree->isSelected())
-        {
-          unchecked.push_back(this->concentrationFluxSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->concentrationFluxSubtree);
-        }
-      if (this->particleFluxSubtree->isSelected())
-        {
-          unchecked.push_back(this->particleFluxSubtree);
-        }
-      else
-        {
-          toCheck.push_back(this->particleFluxSubtree);
-        }
-    }
-  unsigned int counter;
-  unsigned int maxCount = unchecked.size();
-  QListViewItem* child = NULL;
-  for (counter = 0; counter < maxCount;++counter)
-    {
-      child = unchecked[counter]->firstChild();
-      while (child)
-        {
-          CCopasiObject* object = this->treeItems[child];
-          selection->push_back(object);
-          child = child->nextSibling();
-        }
-    }
-  maxCount = toCheck.size();
-  for (counter = 0; counter < maxCount;++counter)
-    {
-      child = toCheck[counter]->firstChild();
-      while (child)
-        {
-          if (child->isSelected())
+          if (currentItem->childCount() == 0)
             {
-              CCopasiObject* object = this->treeItems[child];
-              selection->push_back(object);
+              if (this->treeItems.find(currentItem) != this->treeItems.end())
+                {
+                  selection->push_back(this->treeItems[currentItem]);
+                }
             }
-          child = child->nextSibling();
+          else
+            {
+              QListViewItemIterator it2(currentItem);
+              QListViewItem* tmpItem = it2.current();
+              while (tmpItem)
+                {
+                  if ((tmpItem->childCount() == 0) && (this->treeItems.find(tmpItem) != this->treeItems.end()))
+                    {
+                      selection->push_back(this->treeItems[currentItem]);
+                    }
+                  ++it2;
+                  tmpItem = it2.current();
+                }
+            }
         }
+      ++it;
+      currentItem = it.current();
     }
   return selection;
 }
@@ -322,6 +254,17 @@ void SimpleSelectionWidget::populateTree(CModel* model)
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
       item = new QListViewItem(this->particleFluxSubtree, ("particle_" + name).c_str());
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
+      // create items for the reaction parameters
+      item = new QListViewItem(this->reactionParameterSubtree, react->getObjectName());
+      const CCopasiParameterGroup& parameters = react->getParameters();
+      unsigned int j;
+      unsigned int numParameters = parameters.size();
+      for (j = 0; j < numParameters;++j)
+        {
+          CCopasiParameter* parameter = ((CCopasiParameterGroup&)parameters).getParameter(j);
+          QListViewItem* parameterItem = new QListViewItem(item, parameter->getObjectName());
+          treeItems[parameterItem] = (CCopasiObject*)parameter;
+        }
     }
 }
 
@@ -331,6 +274,7 @@ void SimpleSelectionWidget::destroy()
   delete this->timeSubtree;
   delete this->concentrationFluxSubtree;
   delete this->particleFluxSubtree;
+  delete this->reactionParameterSubtree;
   delete this->initialConcentrationSubtree;
   delete this->initialParticleNumberSubtree;
   delete this->transientParticleNumberSubtree;
@@ -416,6 +360,17 @@ void SimpleSelectionWidget::clearTree()
     {
       nextSibling = child->nextSibling();
       delete child;
+      child = nextSibling;
+    }
+  child = this->reactionParameterSubtree->firstChild();
+  while (child)
+    {
+      nextSibling = child->firstChild();
+      if (!nextSibling)
+        {
+          nextSibling = child->nextSibling();
+          delete child;
+        }
       child = nextSibling;
     }
 }

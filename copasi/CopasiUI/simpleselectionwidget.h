@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/simpleselectionwidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/10/08 09:00:57 $
+   $Date: 2004/10/28 12:42:39 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'simpleselectionwidget.ui'
  **
- ** Created: Fri Oct 8 10:36:21 2004
- **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.3 2004/10/08 09:00:57 gauges Exp $)
+ ** Created: Thu Oct 28 14:09:00 2004
+ **      by: The User Interface Compiler ($Id: simpleselectionwidget.h,v 1.4 2004/10/28 12:42:39 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -72,6 +72,7 @@ class SimpleSelectionWidget : public QWidget
     QListViewItem* particleFluxSubtree;
     QListViewItem* timeSubtree;
     bool singleSelect;
+    QListViewItem* reactionParameterSubtree;
 
     virtual void init();
     virtual bool treeHasSelection();
