@@ -84,10 +84,10 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   ScanWidgetLayout->addWidget(taskName, 0, 1);
 
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Scan Executable"));
+  sExecutable = new QCheckBox(this, "sExecutable");
+  sExecutable->setText(trUtf8("Scan Executable"));
 
-  ScanWidgetLayout->addWidget(bExecutable, 0, 2);
+  ScanWidgetLayout->addWidget(sExecutable, 0, 2);
 
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
@@ -114,20 +114,20 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   scrollview->addChild(vBox);
   ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
 
-  taskStability = new QCheckBox(this, "taskStability");
-  taskStability->setText(trUtf8("Trajectory"));
+  trajectory = new QCheckBox(this, "trajectory");
+  trajectory->setText(trUtf8("Trajectory"));
 
-  ScanWidgetLayout->addWidget(taskStability, 2, 2);
+  ScanWidgetLayout->addWidget(trajectory, 2, 2);
 
   taskDescriptionLabel = new QLabel(this, "taskDescriptionLabel");
   taskDescriptionLabel->setText(trUtf8("Problem"));
 
   ScanWidgetLayout->addWidget(taskDescriptionLabel, 2, 0);
 
-  taskJacobian = new QCheckBox(this, "taskJacobian");
-  taskJacobian->setText(trUtf8("Steady State"));
+  steadyState = new QCheckBox(this, " steadyState");
+  steadyState->setText(trUtf8("Steady State"));
 
-  ScanWidgetLayout->addWidget(taskJacobian, 2, 1);
+  ScanWidgetLayout->addWidget(steadyState, 2, 1);
 
   connect(this, SIGNAL(hide_me()), (ListViews*)parent, SLOT(slotHideWidget()));
   connect(this, SIGNAL(show_me()), (ListViews*)parent, SLOT(slotShowWidget()));
@@ -148,25 +148,42 @@ void ScanWidget::loadScan(CModel *model)
       CScanProblem *scanProblem = scanTask->getProblem();
       scanProblem->setModel(model);
 
+      if (scanTask->isRequested() == true)
+        sExecutable->setChecked(true);
+      else
+        sExecutable->setChecked(false);
+
+      if (scanProblem->processTrajectory() == true)
+        trajectory->setChecked(true);
+      else
+        trajectory->setChecked(false);
+
+      if (scanProblem->processSteadyState() == true)
+        steadyState->setChecked(true);
+      else
+        steadyState->setChecked(false);
+
       emit hide_me();
       //QMessageBox::information(this, "Metabolites Widget", QString::number(scanProblem->getListSize()));
-      //for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
-      for (C_INT32 i = 0; i < 5; i++)
+      for (C_INT32 i = 0; i < scanProblem->getListSize(); i++)
         {
-          //CMethodParameterList *itemList=scanProblem->getScanItem(i);
-          //itemList->getName();
+          CMethodParameterList *itemList = scanProblem->getScanItem(i);
+          itemList->getName();
           parameterTable = new QTable(scrollview, "parameterTable");
-          parameterTable->setNumRows(5);
-          parameterTable->setNumCols(5);
+          parameterTable->setNumCols(1);
           parameterTable->setFocusPolicy(QWidget::WheelFocus);
-          QHeader *colHeader = parameterTable->horizontalHeader();
-          colHeader->setLabel(0, tr("Value"));
+          parameterTable->horizontalHeader()->setLabel(0, "Value");
+          QHeader *rowHeader = parameterTable->verticalHeader();
+          for (C_INT32 j = 0; j < itemList->size(); j++)
+            {
+              parameterTable->setNumRows(itemList->size());
+              //rowHeader->setLabel(j, itemList(j).c_str());
+            }
           vBox->insertChild(parameterTable);
           vBox->setSpacing(25);
         }
 
       emit show_me();
-
       scrollview->addChild(vBox);
       ScanWidgetLayout->addMultiCellWidget(scrollview, 4, 5, 1, 2);
       scrollview->setVScrollBarMode(QScrollView::Auto);

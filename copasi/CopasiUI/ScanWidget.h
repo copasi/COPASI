@@ -41,11 +41,11 @@ class ScanWidget : public CopasiWidget
     QFrame* line8;
     QFrame* line8_2;
     QLabel* taskNameLabel;
-    QCheckBox* taskJacobian;
+    QCheckBox* trajectory;
     QLabel* taskDescriptionLabel;
     QLabel* parameterValueLabel;
-    QCheckBox* taskStability;
-    QCheckBox* bExecutable;
+    QCheckBox* steadyState;
+    QCheckBox* sExecutable;
     QLineEdit* taskName;
     QTable* parameterTable, *parameterTable1;
     QPushButton* commitChange;
