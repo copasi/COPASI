@@ -41,3 +41,24 @@ void COptFunction::cleanup()
   mMinList.clear();
   mMaxList.clear();
 }
+
+// check if a parameter already existing inside the mParaList
+bool COptFunction::bExisted(const std::string & name)
+{
+  int i;
+  for (i = 0; i < mParaList.size(); i++)
+    if (mParaList[i]->getCN() == name)
+      return true;
+  return false;
+}
+
+// add a new item inside
+int COptFunction::addItem(CCopasiObject* pObject)
+{
+  if (bExisted(pObject->getCN())
+      return - 1; //
+      mParaList->push_back(pObject);
+      mMinList->push_back("-inf");
+      mMaxList->push_back("+inf");
+      return mParaList->size();
+    }

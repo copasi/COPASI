@@ -25,6 +25,12 @@ class COptFunction: public CKinFunction
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
 
+    // check if a parameter already existing inside the mParaList
+    bool bExisted(const std::string & name);
+
+    // add a new item inside
+    int addItem(CCopasiObject* pObject);
+
   public:
     /**
      * Default constructor
