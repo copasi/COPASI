@@ -1226,11 +1226,11 @@ void CReaction::initObjects()
   addObjectReference("Flux", mFlux);
   addObjectReference("ScaledFlux", mScaledFlux);
   //addObjectReference("Reversible", mReversible);
-  add(&mId2Substrates);
-  add(&mId2Products);
-  add(&mId2Modifiers);
+  //  add(&mId2Substrates);
+  //  add(&mId2Products);
+  //  add(&mId2Modifiers);
   //add(&mId2Parameters);
-  add(&mParameters);
+  //  add(&mParameters);
   //addObjectReference("CallParameters", mCallParameters);
   //addObjectReference("CallParameterObjects", mCallParameterObjects);
   //add(&mMap);

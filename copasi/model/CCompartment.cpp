@@ -190,7 +190,7 @@ void CCompartment::initObjects()
 {
   addObjectReference("Name", mName);
   addObjectReference("Volume", mVolume);
-  add(&mMetabolites);
+  //  add(&mMetabolites);
 }
 
 void * CCompartment::getVolumeAddr()
