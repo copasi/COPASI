@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/01/30 16:55:51 $
+   $Author: ssahle $ 
+   $Date: 2005/01/31 18:34:46 $
    End CVS Header */
 
 /********************************************************
@@ -28,6 +28,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qvalidator.h>
+#include <qhbox.h>
 
 #include "TrajectoryWidget.h"
 #include "qtUtilities.h"
@@ -60,16 +61,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
-  parameterTable = new QTable(this, "parameterTable");
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 7, 8, 1, 3);
-
   //Name
   taskNameLabel = new QLabel(this, "taskNameLabel");
   taskNameLabel->setText(trUtf8("Task Name"));
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignRight));
   TrajectoryWidgetLayout->addWidget(taskNameLabel, 0, 0);
 
   taskName = new QLineEdit(this, "taskName");
@@ -78,10 +74,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
-
-  setInitialState = new QCheckBox(this, "setInitialState");
-  setInitialState->setText(trUtf8("Set Initial State"));
-  TrajectoryWidgetLayout->addWidget(setInitialState, 0, 4, Qt::AlignLeft);
 
   line8 = new QFrame(this, "line8");
   line8->setFrameShape(QFrame::HLine);
@@ -96,6 +88,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TextLabel1_3 = new QLabel(this, "TextLabel1_3");
   TextLabel1_3->setText(trUtf8("Start Time"));
+  TextLabel1_3->setAlignment(int(QLabel::AlignVCenter
+                                 | QLabel::AlignRight));
   TrajectoryWidgetLayout->addWidget(TextLabel1_3, 2, 0);
 
   //****
@@ -116,6 +110,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Interval size"));
+  TextLabel1->setAlignment(int(QLabel::AlignVCenter
+                               | QLabel::AlignRight));
   TrajectoryWidgetLayout->addWidget(TextLabel1, 3, 0);
 
   //****
@@ -128,36 +124,73 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   TextLabel1_2->setText(trUtf8("Intervals"));
   TrajectoryWidgetLayout->addWidget(TextLabel1_2, 3, 2);
 
+  QHBox* tmpBox = new QHBox(this);
+
+  mCheckBoxStartOutput = new QCheckBox(tmpBox);
+  mCheckBoxStartOutput->setText(trUtf8("Start output after t="));
+  //QLabel* tmpLable = new QLabel(tmpBox);
+  //tmpLable->setText(trUtf8("Start output after t="));
+  mLineEditStartOutput = new QLineEdit(tmpBox);
+  TrajectoryWidgetLayout->addMultiCellWidget(tmpBox, 4, 4, 1, 2);
+
   //
   bStoreTimeSeries = new QCheckBox(this, "bStoreTimeSeries");
   bStoreTimeSeries->setText(trUtf8("store time series in memory "));
-  TrajectoryWidgetLayout->addWidget(bStoreTimeSeries, 4, 1);
+  TrajectoryWidgetLayout->addWidget(bStoreTimeSeries, 5, 1);
+
+  //
+  setInitialState = new QCheckBox(this, "setInitialState");
+  setInitialState->setText(trUtf8("Use result as new initial state"));
+  TrajectoryWidgetLayout->addWidget(setInitialState, 6, 1, Qt::AlignLeft);
 
   //****
   line7_2 = new QFrame(this, "line7_2");
   line7_2->setFrameShape(QFrame::HLine);
   line7_2->setFrameShadow(QFrame::Sunken);
-  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 5, 5, 0, 3);
+  TrajectoryWidgetLayout->addMultiCellWidget(line7_2, 7, 7, 0, 3);
 
   //***** method *************************
   TextLabel1_3_2 = new QLabel(this, "TextLabel1_3_2");
   TextLabel1_3_2->setText(trUtf8("Method"));
-  TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 6, 0);
+  TextLabel1_3_2->setAlignment(int(QLabel::AlignVCenter
+                                   | QLabel::AlignRight));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_3_2, 8, 0);
 
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 6, 6, 1, 2);
+  TrajectoryWidgetLayout->addMultiCellWidget(ComboBox1, 8, 8, 1, 2);
 
   /*line7 = new QFrame(this, "line7");
   line7->setFrameShape(QFrame::HLine);
   line7->setFrameShadow(QFrame::Sunken);
   TrajectoryWidgetLayout->addMultiCellWidget(line7, 6, 6, 0, 3);*/
 
+  //**********
+  parameterValueLabel = new QLabel(this, "parameterValueLabel");
+  parameterValueLabel->setText(trUtf8("Method parameters"));
+  parameterValueLabel->setAlignment(int(QLabel::AlignVCenter
+                                        | QLabel::AlignRight));
+  TrajectoryWidgetLayout->addWidget(parameterValueLabel, 9, 0);
+
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  TrajectoryWidgetLayout->addItem(spacer, 10, 0);
+
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  TrajectoryWidgetLayout->addMultiCellWidget(parameterTable, 9, 10, 1, 3);
+
+  QSpacerItem* spacer_3 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  TrajectoryWidgetLayout->addMultiCell(spacer_3, 11, 11, 0, 2);
+
   //
 
   line6 = new QFrame(this, "line6");
   line6->setFrameShape(QFrame::HLine);
   line6->setFrameShadow(QFrame::Sunken);
-  TrajectoryWidgetLayout->addMultiCellWidget(line6, 9, 9, 0, 3);
+  TrajectoryWidgetLayout->addMultiCellWidget(line6, 12, 12, 0, 3);
 
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
@@ -187,14 +220,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   reportDefinitionButton->setText(trUtf8("ReportDefinition"));
   Layout2->addWidget(reportDefinitionButton);
 
-  TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 10, 10, 0, 3);
-  QSpacerItem* spacer = new QSpacerItem(71, 330, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  TrajectoryWidgetLayout->addItem(spacer, 8, 0);
-
-  parameterValueLabel = new QLabel(this, "parameterValueLabel");
-  parameterValueLabel->setText(trUtf8("Parameter value"));
-
-  TrajectoryWidgetLayout->addWidget(parameterValueLabel, 7, 0);
+  TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 13, 13, 0, 3);
 
   setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, setInitialState);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/01/30 16:55:51 $
+   $Author: ssahle $ 
+   $Date: 2005/01/31 18:34:46 $
    End CVS Header */
 
 /********************************************************
@@ -110,6 +110,8 @@ class TrajectoryWidget : public CopasiWidget
     QPushButton* cancelChange;
     //QPushButton* ExportToFileButton;
     QPushButton* reportDefinitionButton;
+    QLineEdit* mLineEditStartOutput;
+    QCheckBox* mCheckBoxStartOutput;
   };
 
 #endif // TRAJECTORYWIDGET_H
