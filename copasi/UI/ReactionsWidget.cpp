@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
+   $Revision: 1.54 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:40 $
+   End CVS Header */
+
 /*******************************************************************
  **  $ CopasiUI/ReactionsWidget.cpp                 
  **  $ Author  : Mudita Singhal

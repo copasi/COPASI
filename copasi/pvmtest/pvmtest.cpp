@@ -1,3 +1,10 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/pvmtest/pvmtest.cpp,v $
+   $Revision: 1.4 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:30:00 $
+   End CVS Header */
 
 #define COPASI_MAIN
 

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
+   $Revision: 1.3 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:36:25 $
+   End CVS Header */
+
 /**
  * CCopasiXML class.
  * This class implements a CCopasiXMLInterface to the COPASI XML specified in

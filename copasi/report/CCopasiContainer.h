@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
+   $Revision: 1.13 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:31:48 $
+   End CVS Header */
+
 /**
  * Class CCopasiContainer
  *

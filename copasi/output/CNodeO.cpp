@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CNodeO.cpp,v $
+   $Revision: 1.14 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:53 $
+   End CVS Header */
+
 /*****************************************************************************
  * PROGRAM NAME: CNodeO.cpp
  * PROGRAMMER: Wei Sun wsun@vt.edu

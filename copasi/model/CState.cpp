@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
+   $Revision: 1.35 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:53 $
+   End CVS Header */
+
 // CSate.cpp
 //
 // (C) Stefan Hoops 2002

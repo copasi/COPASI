@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
+   $Revision: 1.26 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:50 $
+   End CVS Header */
+
 /**
  * CFunctionParameter
  * 

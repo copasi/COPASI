@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathSymbol.cpp,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:29 $
+   End CVS Header */
+
 /**
  *  CMathSymbol class.
  *  The class CMathSymbol associates a symbol with a CCopasiObject assuring

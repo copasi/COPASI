@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CDeTerm.h,v $
+   $Revision: 1.12 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:55 $
+   End CVS Header */
+
 #ifndef CDETERM_H
 #define CDETERM_H
 

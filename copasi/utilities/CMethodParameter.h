@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CMethodParameter.h,v $
+   $Revision: 1.11 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:34 $
+   End CVS Header */
+
 /**
  *  CParameter class.
  *  This class is used to describe parameters. This class is intended

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/CGene.cpp,v $
+   $Revision: 1.11 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:19:25 $
+   End CVS Header */
+
 /**
  *  CGene class.
  *  Written by Pedro Mendes September 2002.

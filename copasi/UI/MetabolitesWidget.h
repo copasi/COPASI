@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:52 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/MetabolitesWidget.h               
  **  $ Author  : Mudita Singhal

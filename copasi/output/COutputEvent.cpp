@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutputEvent.cpp,v $
+   $Revision: 1.17 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:53 $
+   End CVS Header */
+
 /*****************************************************************************
  * PROGRAM NAME: COutputEvent.cpp
  * PROGRAMMER: Wei Sun wsun@vt.edu

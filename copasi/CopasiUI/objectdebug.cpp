@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.cpp,v $
+   $Revision: 1.3 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:45 $
+   End CVS Header */
+
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
  ** Created: Tue Apr 1 19:46:58 2003
- **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.2 2003/04/02 12:20:04 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.3 2003/10/16 16:12:45 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

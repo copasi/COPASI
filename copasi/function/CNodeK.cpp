@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:47 $
+   End CVS Header */
+
 // CNodeK.cpp : classes for function tree
 //
 /////////////////////////////////////////////////////////////////////////////

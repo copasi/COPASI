@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
+   $Revision: 1.12 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:33 $
+   End CVS Header */
+
 /**
  * CCopasiTree class.
  * The template class CCopasiTree describes a tree of Nodes.

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FixedMetaboliteSymbols.cpp,v $
+   $Revision: 1.21 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:38 $
+   End CVS Header */
+
 /*******************************************************************
  **  $ CopasiUI/FixedMetaboliteSymbols.cpp                 
  **  $ Author  : Mudita Singhal

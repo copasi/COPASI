@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
+   $Revision: 1.37 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:56 $
+   End CVS Header */
+
 /**
  *  CMetab class.
  *  Derived from Gepasi's cmetab.cpp. (C) Pedro Mendes 1995-2000.

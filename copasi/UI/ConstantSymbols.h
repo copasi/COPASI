@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.h,v $
+   $Revision: 1.9 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:48 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/ConstantSymbols.h               
  **  $ Author  : Mudita Singhal

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
+   $Revision: 1.6 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:13 $
+   End CVS Header */
+
 /**
  *  CFluxScore class.
  *  Used to compare flux modes
@@ -52,18 +60,18 @@ CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
 CFluxScore::~CFluxScore(){DESTRUCTOR_TRACE;}
 
 bool CFluxScore::operator <(const CFluxScore & rhs) const
-{
-  unsigned C_INT32 i, imax = mScore.size();
-  const int * lhsScore;
-  const int * rhsScore;
-
-  for (i = 0; i < imax; i++)
   {
-    lhsScore = &mScore[i];
-      rhsScore = &rhs.mScore[i];
+    unsigned C_INT32 i, imax = mScore.size();
+    const int * lhsScore;
+    const int * rhsScore;
 
-      if (*lhsScore != (*lhsScore & *rhsScore)) return false;
-    }
+    for (i = 0; i < imax; i++)
+      {
+        lhsScore = &mScore[i];
+        rhsScore = &rhs.mScore[i];
 
-  return true;
-}
+        if (*lhsScore != (*lhsScore & *rhsScore)) return false;
+      }
+
+    return true;
+  }

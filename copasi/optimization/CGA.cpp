@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
+   $Revision: 1.24 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:22 $
+   End CVS Header */
+
 /**
  *  File name: CGA.cpp
  *
@@ -520,7 +528,7 @@ void CGA::select(int method)
 
   switch (method)
     {
-    case 1:       // parent-offspring competition
+    case 1:         // parent-offspring competition
 
       for (i = mPopSize; i < 2*mPopSize; i++)
         {
@@ -532,7 +540,7 @@ void CGA::select(int method)
 
       break;
 
-    case 2:       // tournament competition
+    case 2:         // tournament competition
       // compete with 20% of the population
       nopp = mPopSize / 5;
       // but at least one

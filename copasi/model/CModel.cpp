@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
+   $Revision: 1.128 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:50 $
+   End CVS Header */
+
 /////////////////////////////////////////////////////////////////////////////
 // CModel
 // model.cpp : interface of the CModel class

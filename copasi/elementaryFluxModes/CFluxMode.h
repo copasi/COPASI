@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:14 $
+   End CVS Header */
+
 /**
  *  CFluxMode class.
  *  Used to return the flux modes in human readable form

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:54 $
+   End CVS Header */
+
 #ifndef CCHEMEQINTERFACE_H
 #define CCHEMEQINTERFACE_H
 

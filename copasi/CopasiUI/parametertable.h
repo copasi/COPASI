@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.h,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:07 $
+   End CVS Header */
+
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
 

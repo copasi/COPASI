@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:32 $
+   End CVS Header */
+
 /**
  *  CCopasiMessage class.
  *  New Class for COPASI message handling. (C) Stefan Hoops 2001.

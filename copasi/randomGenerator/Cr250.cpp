@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cr250.cpp,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:30:26 $
+   End CVS Header */
+
 /******************************************************************************
  *  Module:  Cr250.cpp
  *  Description: implements R250 random number generator, from S.

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.h,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:53 $
+   End CVS Header */
+
 /**
  * CRange
  * 
@@ -25,7 +33,7 @@ class CRange : public CCopasiContainer
      */
     enum Constants
     {
-      Infinity = -1,  // 0xFFFF
+      Infinity = -1,    // 0xFFFF
       NoRange = 0
     };
 

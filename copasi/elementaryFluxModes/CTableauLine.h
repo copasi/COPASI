@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:14 $
+   End CVS Header */
+
 /**
  *  CTableauLine class.
  *  This store one row of the Tableau Matrix

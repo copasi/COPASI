@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition1.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:03 $
+   End CVS Header */
+
 /****************************************************************************
  ** 
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.6 2003/09/19 20:53:48 lixu1 Exp $)
+($Id: TableDefinition1.h,v 1.7 2003/10/16 16:13:03 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
+   $Revision: 1.6 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:15 $
+   End CVS Header */
+
 /**
  *  CTableauMatrix class.
  *  Used to calculate elementary flux modes

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
+   $Revision: 1.12 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:33:14 $
+   End CVS Header */
+
 /**
  *  CSteadyStateProblem class.
  *  This class describes the steady state problem, i.e., it allows to specify

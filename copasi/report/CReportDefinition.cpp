@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
+   $Revision: 1.22 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:31:47 $
+   End CVS Header */
+
 /**
  *  CReportDefinition class.
  *  This class describes the Report Definition

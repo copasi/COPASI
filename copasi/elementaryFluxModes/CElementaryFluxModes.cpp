@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.cpp,v $
+   $Revision: 1.17 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:13 $
+   End CVS Header */
+
 /**
  *  CElementaryFluxModes class.
  *  Main class to calculate elementary flux modes. This is the adapter to

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:26 $
+   End CVS Header */
+
 /**
  *  CScanMethod class.
  *  This class describes the method for doing the Scan.

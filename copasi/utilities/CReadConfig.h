@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:34 $
+   End CVS Header */
+
 /**
  *  CReadConfig class. A more elaborate class description.
  *  New Class based on pmutils read functionality

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunction.h,v $
+   $Revision: 1.12 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:57 $
+   End CVS Header */
+
 /*****************************************************************************
  * PROGRAM NAME: CUDFunction.h
  * PROGRAMMER: Wei Sun wsun@vt.edu

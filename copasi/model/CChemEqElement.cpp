@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.cpp,v $
+   $Revision: 1.24 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:50 $
+   End CVS Header */
+
 // CChemEqElement
 //
 // A class describing an element of a chemical equation
@@ -63,16 +71,16 @@ C_FLOAT64 CChemEqElement::getMultiplicity() const
 
 void CChemEqElement::compile(const CCopasiVectorN < CCompartment > & compartments)
 {/*
-    unsigned C_INT32 i, imax = compartments.size();
-   
-    for (i = 0; i < imax; i++)
-      if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
-        break;
-   
-    if (i < imax)
-      mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
-    else if (mpMetabolite)
-      mMetaboliteName = mpMetabolite->getName();
-    else
-      mpMetabolite = NULL;*/
+        unsigned C_INT32 i, imax = compartments.size();
+       
+        for (i = 0; i < imax; i++)
+          if (compartments[i]->getMetabolites().getIndex(mMetaboliteName) != C_INVALID_INDEX)
+            break;
+       
+        if (i < imax)
+          mpMetabolite = compartments[i]->getMetabolites()[mMetaboliteName];
+        else if (mpMetabolite)
+          mMetaboliteName = mpMetabolite->getName();
+        else
+          mpMetabolite = NULL;*/
 }

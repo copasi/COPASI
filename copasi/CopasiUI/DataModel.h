@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.h,v $
+   $Revision: 1.43 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:48 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/DataModel.h                 Modified on : 28th March, 2002
  **  $ Author  : Ankur Gupta

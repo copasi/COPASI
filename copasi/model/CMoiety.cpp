@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
+   $Revision: 1.21 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:51 $
+   End CVS Header */
+
 #include <stdio.h>
 #include <math.h>
 
@@ -16,7 +24,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(CKeyFactory::add("Moiety", this)), //By G
+    mKey(CKeyFactory::add("Moiety", this)),   //By G
     mNumber(0),
     mINumber(0),
     mEquation("Equation", this)
@@ -25,7 +33,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(CKeyFactory::add("Moiety", this)), //By G
+    mKey(CKeyFactory::add("Moiety", this)),   //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation, this)

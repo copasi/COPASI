@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:29 $
+   End CVS Header */
+
 /**
  *  CMathModel class.
  *  The class CMathModel is a mathematical representation of a chemical

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CParticleNumberList.cpp,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:51 $
+   End CVS Header */
+
 // CParticleNumberList.cpp
 //
 // (C) Stefan Hoops 2002
@@ -36,7 +44,7 @@ CParticleNumberList::operator=(const CParticleNumberList & rhs)
 }
 
 const unsigned C_INT32 & CParticleNumberList::size() const
-{return mSize;}
+  {return mSize;}
 
 void CParticleNumberList::resize(const unsigned C_INT32 & size)
 {
@@ -47,17 +55,17 @@ void CParticleNumberList::resize(const unsigned C_INT32 & size)
 
 const C_FLOAT64 &
 CParticleNumberList::getDbl(const unsigned C_INT32 & index) const
-{return mDbl[index];}
+  {return mDbl[index];}
 
 const CVector< C_FLOAT64 > & CParticleNumberList::getVectorDbl() const
-{return mDbl;}
+  {return mDbl;}
 
 const C_INT32 &
 CParticleNumberList::getInt(const unsigned C_INT32 & index) const
-{return mInt[index];}
+  {return mInt[index];}
 
 const CVector< C_INT32 > & CParticleNumberList::getVectorInt() const
-{return mInt;}
+  {return mInt;}
 
 void CParticleNumberList::set(const unsigned C_INT32 & index,
                               const C_INT32 & value)

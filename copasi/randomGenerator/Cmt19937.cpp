@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.cpp,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:30:26 $
+   End CVS Header */
+
 #include "copasi.h"
 #include "CRandom.h"
 

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
+   $Revision: 1.28 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:33:14 $
+   End CVS Header */
+
 /**
  *  File name: CEigen.cpp
  *
@@ -254,18 +262,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,      // mSelect,           //NULL,
-         &mN,                     //&n,
+         NULL,        // mSelect,           //NULL,
+         &mN,                       //&n,
          mA.array(),
          & mLDA,
-         & mSdim,             // output
+         & mSdim,               // output
          mEigen_r.array(),
          mEigen_i.array(),
          mVS,
          & mLdvs,
          mWork,
          & mLWork,
-         mBWork,               //NULL
+         mBWork,                 //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();

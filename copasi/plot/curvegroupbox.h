@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curvegroupbox.h,v $
+   $Revision: 1.2 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:40 $
+   End CVS Header */
+
 /****************************************************************************
  ** Form interface generated from reading ui file 'curvegroupbox.ui'
  **
  ** Created: Wed Oct 1 13:58:12 2003
- **      by: The User Interface Compiler ($Id: curvegroupbox.h,v 1.1 2003/10/14 15:06:16 huwenjun Exp $)
+ **      by: The User Interface Compiler ($Id: curvegroupbox.h,v 1.2 2003/10/16 16:32:40 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

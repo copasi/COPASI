@@ -1,4 +1,12 @@
-// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.4 2002/11/25 14:11:51 shoops Exp $
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:16:32 $
+   End CVS Header */
+
+// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.5 2003/10/16 16:16:32 shoops Exp $
 
 // FlexLexer.h -- define interfaces for lexical analyzer classes generated
 //    by flex

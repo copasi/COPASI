@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source$
+   $Revision$
+   $Name$
+   $Author$ 
+   $Date$
+   End CVS Header */
+
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
  ** Created: Tue Apr 1 19:46:58 2003
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.1.1   edited Nov 21 17:40 $)
+ **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.2 2003/04/02 12:20:04 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

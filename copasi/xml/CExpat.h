@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:36:26 $
+   End CVS Header */
+
 /**
  * This file describes the C++ interface to the expat library used by
  * COPASI.

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
+   $Revision: 1.15 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:58 $
+   End CVS Header */
+
 /**
  *  CMoiety
  *  

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/Attic/COptFunction.h,v $
+   $Revision: 1.11 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:24 $
+   End CVS Header */
+
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
@@ -21,7 +29,7 @@ class COptProblem;
 
 class COptFunction: public CCopasiContainer
   {
-  public:  //function
+  public:    //function
     std::vector<CCopasiObject*> mParaList;
     std::vector<std::string> mMinList;
     std::vector<std::string> mMaxList;
@@ -52,7 +60,7 @@ class COptFunction: public CCopasiContainer
     COptMethod* getMethod()
     {return mpMethod;}
 
-  public:  // constructor and deconstuctor
+  public:    // constructor and deconstuctor
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")

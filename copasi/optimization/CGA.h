@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.h,v $
+   $Revision: 1.15 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:24 $
+   End CVS Header */
+
 /**
  *  File name: CGA.h
  *

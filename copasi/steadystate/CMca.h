@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/Attic/CMca.h,v $
+   $Revision: 1.10 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:33:14 $
+   End CVS Header */
+
 /*****************************************************************************
  * PROGRAM NAME: CJacob.h
  * PROGRAMMER: Wei Sun wsun@vt.edu

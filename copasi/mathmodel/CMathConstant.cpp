@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
+   $Revision: 1.10 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:28 $
+   End CVS Header */
+
 /**
  *  CMathConstant class.
  *  The class CMathConstant associates a symbol with a CCopasiObject with

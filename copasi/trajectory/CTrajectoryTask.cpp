@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
+   $Revision: 1.25 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:34:03 $
+   End CVS Header */
+
 /**
  * CTrajectoryTask class.
  *

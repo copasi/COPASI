@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
+   $Revision: 1.41 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:44 $
+   End CVS Header */
+
 #include <qlayout.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>

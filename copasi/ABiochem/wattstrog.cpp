@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/wattstrog.cpp,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:19:26 $
+   End CVS Header */
+
 /**
  *  ABiochem  -  wattstrog
  *

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
+   $Revision: 1.15 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:27 $
+   End CVS Header */
+
 /**
  *  CTrajectoryProblem class.
  *  This class describes the trajectory problem, i.e., it allows to specify

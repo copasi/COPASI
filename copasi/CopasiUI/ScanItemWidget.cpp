@@ -1,12 +1,20 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.cpp,v $
+   $Revision: 1.33 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:40 $
+   End CVS Header */
+
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
 Description: 
 Date: 06/03 
 Comment : Copasi ScanItemWidget including:
-
+ 
 Contains: the sub scrollable widget inside the scanwidget
-
+ 
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 

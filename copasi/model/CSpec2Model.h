@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.h,v $
+   $Revision: 1.9 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:59 $
+   End CVS Header */
+
 #ifndef COPASI_Spec2Model
 #define COPASI_Spec2Model
 

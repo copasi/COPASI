@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathNode.h,v $
+   $Revision: 1.5 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:29 $
+   End CVS Header */
+
 /**
  * CMathNode class.
  * The class CMathNode is describes a node of the equation tree.

@@ -1,10 +1,18 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserItem.h,v $
+   $Revision: 1.38 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:57 $
+   End CVS Header */
+
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
 Description: 
 Date: 04/03 
 Comment : Copasi Object Browser including:
-
+ 
 CBrowserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a CBrowserObject, 
 there may exist multiply wrappers to one CBrowserObject

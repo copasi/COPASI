@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:34:02 $
+   End CVS Header */
+
 #include "copasi.h"
 #include "CStochNextReactionMethod.h"
 #include "CTrajectoryMethod.h"

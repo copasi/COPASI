@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.cpp,v $
+   $Revision: 1.2 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:36:25 $
+   End CVS Header */
+
 /**
  * CExpatTemplate class.
  * The class CExpatTemplate is a demplate definening a C++ interface to

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
+   $Revision: 1.61 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:59 $
+   End CVS Header */
+
 /**
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.

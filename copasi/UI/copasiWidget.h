@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
+   $Revision: 1.13 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:04 $
+   End CVS Header */
+
 /********************************************************
  Author: Liang Xu
  Version : 1.xx  <first>

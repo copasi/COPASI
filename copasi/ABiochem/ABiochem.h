@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/ABiochem.h,v $
+   $Revision: 1.4 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:19:26 $
+   End CVS Header */
+
 /**
  *  ABiochem
  *
@@ -29,11 +37,11 @@
  */
 
 void MakeGeneNetwork(C_INT32 n,
-                      C_INT32 k,
-                      C_FLOAT64 p,
-                      C_FLOAT64 r,
-                      C_FLOAT64 coopval,
-                      C_FLOAT64 rateval,
-                      C_FLOAT64 constval,
-                      CCopasiVector < CGene > &gene,
-                      char *comments);
+                     C_INT32 k,
+                     C_FLOAT64 p,
+                     C_FLOAT64 r,
+                     C_FLOAT64 coopval,
+                     C_FLOAT64 rateval,
+                     C_FLOAT64 constval,
+                     CCopasiVector < CGene > &gene,
+                     char *comments);

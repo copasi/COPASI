@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
+   $Revision: 1.8 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:33:15 $
+   End CVS Header */
+
 /**
  *  CNewtonMethod class.
  *  This class implements the enhanced Newton method which attempts to find the

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/zoomplot.h,v $
+   $Revision: 1.2 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:42 $
+   End CVS Header */
+
 #ifndef _ZOOMPLOT_H
 #define _ZOOMPLOT_H 1
 

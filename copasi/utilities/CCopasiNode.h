@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
+   $Revision: 1.10 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:33 $
+   End CVS Header */
+
 /**
  * CCopasiNode class.
  * The class CCopasiNode is describes a node of the CCopasiTree.

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
+   $Revision: 1.36 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:53 $
+   End CVS Header */
+
 #undef yyFlexLexer
 #define yyFlexLexer CScanInputFlexLexer
 

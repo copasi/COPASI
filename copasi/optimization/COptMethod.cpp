@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
+   $Revision: 1.4 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:23 $
+   End CVS Header */
+
 /**
  *  COptMethod class
  *  This class describes the interface to all optimization methods.

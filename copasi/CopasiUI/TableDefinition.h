@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.h,v $
+   $Revision: 1.22 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:02 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/TableDefinition.h               
  **  $ Author  : Liang Xu

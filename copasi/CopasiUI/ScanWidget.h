@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.h,v $
+   $Revision: 1.50 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:13:01 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/ScanWidget.h               
  **  $ Author  : Liang Xu

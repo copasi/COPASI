@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
+   $Revision: 1.67 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:37 $
+   End CVS Header */
+
 /*******************************************************************
  **  $ CopasiUI/CompartmentsWidget.cpp                 
  **  $ Author  : Mudita Singhal

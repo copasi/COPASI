@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.h,v $
+   $Revision: 1.9 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:56 $
+   End CVS Header */
+
 //
 //
 // C++ Interface: $MODULE$

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
+   $Revision: 1.37 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:16:33 $
+   End CVS Header */
+
 // copasi.h
 //
 // This file contains compatability issues

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.cpp,v $
+   $Revision: 1.20 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:43 $
+   End CVS Header */
+
 // copasiWidget.cpp: implementation of the CopasiWidget class.
 //
 //////////////////////////////////////////////////////////////////////

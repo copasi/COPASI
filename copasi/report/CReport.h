@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
+   $Revision: 1.17 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:31:50 $
+   End CVS Header */
+
 /****************************************************************************
  * 
  * Created: Tue Aug 11 2003

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/COutput.h,v $
+   $Revision: 1.24 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:25:55 $
+   End CVS Header */
+
 /*****************************************************************************
  * PROGRAM NAME: COutput.h
  * PROGRAMMER: Wei Sun wsun@vt.edu

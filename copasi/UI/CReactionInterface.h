@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReactionInterface.h,v $
+   $Revision: 1.11 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:46 $
+   End CVS Header */
+
 #ifndef CREACTIONINTERFACE_H
 #define CREACTIONINTERFACE_H
 

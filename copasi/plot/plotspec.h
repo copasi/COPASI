@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotspec.h,v $
+   $Revision: 1.3 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:41 $
+   End CVS Header */
+
 #ifndef PLOTSPEC_H
 #define PLOTSPEC_H
 
@@ -10,7 +18,7 @@
 // if other types of plots are supported
 class CurveSpec
   {
-  public:   // or maybe private, but with a few friend classes
+  public:     // or maybe private, but with a few friend classes
 
     // perhaps curve name here...
     std::string curveTitle;
@@ -29,8 +37,8 @@ class CurveSpec
 
     // constructor and destructor
     CurveSpec(std::string title,
-              int xIndex, int yIndex,        // the indices of the variables
-              int axis_h = 2, int axis_v = 0,   // specifies which axes to use
+              int xIndex, int yIndex,          // the indices of the variables
+              int axis_h = 2, int axis_v = 0,     // specifies which axes to use
               std::string xTitle = "X", std::string yTitle = "Y")
         : curveTitle(title), coordX(xIndex), coordY(yIndex)
     {

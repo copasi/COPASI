@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.h,v $
+   $Revision: 1.9 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:31:51 $
+   End CVS Header */
+
 // ReportDefinitionVector.h: interface for the CReportDefinitionVector class.
 //
 //////////////////////////////////////////////////////////////////////

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cr250.h,v $
+   $Revision: 1.7 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:30:28 $
+   End CVS Header */
+
 /**
  * Cr250 class implementing the R250 random number generator, by W. L. Maier
  * 

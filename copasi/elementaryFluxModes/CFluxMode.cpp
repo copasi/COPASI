@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
+   $Revision: 1.6 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:13 $
+   End CVS Header */
+
 /**
  *  CFluxMode class.
  *  Used to return the flux modes in human readable form
@@ -38,22 +46,22 @@ CFluxMode::~CFluxMode() {DESTRUCTOR_TRACE;}
 
 const unsigned C_INT32 &
 CFluxMode::getReaction(const unsigned C_INT32 & index) const
-{
-  return mReactions[index].first;
-}
+  {
+    return mReactions[index].first;
+  }
 
 const C_FLOAT64 &
 CFluxMode::getMultiplier(const unsigned C_INT32 & index) const
-{
-  return mReactions[index].second;
-}
+  {
+    return mReactions[index].second;
+  }
 
 const bool & CFluxMode::isReversible() const
-{
-  return mReversible;
-}
+  {
+    return mReversible;
+  }
 
 const unsigned C_INT32 CFluxMode::size() const
-{
-  return mReactions.size();
-}
+  {
+    return mReactions.size();
+  }

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.h,v $
+   $Revision: 1.16 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:24:59 $
+   End CVS Header */
+
 #ifndef Copasi_SpecLine
 #define Copasi_SpecLine
 
@@ -26,14 +34,14 @@ class CSpecLine
      */
     enum SpecLineType
     {
-      CMNT,        // Comments
-      DE,         // Differential equations
-      EQN,        // Moiety specification equations
-      INIT,        // Initializations
-      CNST,        // Constant assignments
-      VOL,        // Volume assignment
-      CPT,        // Compartment volume assignments
-      RATE,        // Rate constant assignments
+      CMNT,          // Comments
+      DE,           // Differential equations
+      EQN,          // Moiety specification equations
+      INIT,          // Initializations
+      CNST,          // Constant assignments
+      VOL,          // Volume assignment
+      CPT,          // Compartment volume assignments
+      RATE,          // Rate constant assignments
       FUN      // Kinetic function specifications
     };
 

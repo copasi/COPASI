@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
+   $Revision: 1.24 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:33:14 $
+   End CVS Header */
+
 #include <algorithm>
 
 #define  COPASI_TRACE_CONSTRUCTION
@@ -421,7 +429,7 @@ CNewtonMethod::processNewton (CStateX & steadyState,
           const_cast<CModel *>(steadyState.getModel())->
           getDerivatives(&steadyState, mdxdt);
           nmaxrate = xNorm(mDimension,
-                           mdxdt.array() - 1,               /* fortran style vector */
+                           mdxdt.array() - 1,                 /* fortran style vector */
                            1);
         }
 
@@ -478,7 +486,7 @@ bool CNewtonMethod::isSteadyState()
   C_INT32 i;
 
   mMaxrate = xNorm(mDimension,
-                   mdxdt.array() - 1,               /* fortran style vector */
+                   mdxdt.array() - 1,                 /* fortran style vector */
                    1);
 
   if (mMaxrate > mScaledResolution)

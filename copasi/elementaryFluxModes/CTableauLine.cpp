@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
+   $Revision: 1.9 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:13 $
+   End CVS Header */
+
 /**
  *  CTableauLine class.
  *  This store one row of the Tableau Matrix
@@ -53,25 +61,25 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
 CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mFluxScore);}
 
 const CFluxScore & CTableauLine::getScore() const
-{
-  return *mFluxScore;
-}
+  {
+    return *mFluxScore;
+  }
 
 const C_FLOAT64 &
 CTableauLine::getReaction(const unsigned C_INT32 & index) const
-{
-  return mReaction[index];
-}
+  {
+    return mReaction[index];
+  }
 
 const std::vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
-{
-  return mFluxMode;
-}
+  {
+    return mFluxMode;
+  }
 
 bool CTableauLine::isReversible() const
-{
-  return mReversible;
-}
+  {
+    return mReversible;
+  }
 
 void CTableauLine::truncate()
 {
@@ -82,24 +90,24 @@ void CTableauLine::truncate()
 
 #ifdef XXXX
 void CTableauLine::print(void) const
-{
-  unsigned C_INT32 i, imax = mReaction.size();
-  unsigned C_INT32 j, jmax = mFluxMode.size();
+  {
+    unsigned C_INT32 i, imax = mReaction.size();
+    unsigned C_INT32 j, jmax = mFluxMode.size();
 
-  if (isReversible())
-  cout << "reversible:  ";
-  else
-    cout << "irreversible:";
+    if (isReversible())
+      cout << "reversible:  ";
+    else
+      cout << "irreversible:";
 
     for (i = 0; i < imax; i++)
       cout << "  " << mReaction[i];
 
-      cout << "\t";
+    cout << "\t";
 
-      for (j = 0; j < jmax; j++)
-        cout << "  " << mFluxMode[j];
+    for (j = 0; j < jmax; j++)
+      cout << "  " << mFluxMode[j];
 
-        cout << endl;
-      }
+    cout << endl;
+  }
 
 #endif // XXXX

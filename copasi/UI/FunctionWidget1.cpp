@@ -1,7 +1,15 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
+   $Revision: 1.47 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:38 $
+   End CVS Header */
+
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp                 
  **  $ Author  : Mrinmayee Kulkarni
-
+ 
  ** This file creates the GUI for the  information about an individual
  ** function obtained from the functions database.It is the second level 
  ** widget for functions.  
@@ -375,16 +383,16 @@ void FunctionWidget1::updateParameters()
   catch (CCopasiException Exception)
     {
       switch (QMessageBox::warning(this, "Invalid Function Description",
-                                     "Could not recognize the function description.\n"
-                                     "Please check function and make sure to \n"
-                                     "include operators between variables and coefficients.\n\n",
-                                     "Retry",
-                                     "Quit", 0, 0, 1))
+                                   "Could not recognize the function description.\n"
+                                   "Please check function and make sure to \n"
+                                   "include operators between variables and coefficients.\n\n",
+                                   "Retry",
+                                   "Quit", 0, 0, 1))
         {
-        case 0:  // The user clicked the Retry again button or pressed Enter
+        case 0:     // The user clicked the Retry again button or pressed Enter
           // try again
           break;
-        case 1:  // The user clicked the Quit or pressed Escape
+        case 1:     // The user clicked the Quit or pressed Escape
           // exit
           break;
         }

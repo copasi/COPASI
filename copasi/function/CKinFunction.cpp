@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
+   $Revision: 1.34 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:23:47 $
+   End CVS Header */
+
 /**
  * CKinFunction
  *
@@ -172,7 +180,7 @@ C_INT32 CKinFunction::parse()
           mNodes.push_back(pNode);
           break;
 
-        case N_NOP:                         // this is an error
+        case N_NOP:                           // this is an error
           cleanupNodes();
           /* :TODO: create a valid error message returning the eroneous node */
           fatalError();

@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/Attic/CMethodParameterList.h,v $
+   $Revision: 1.21 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:34 $
+   End CVS Header */
+
 /**
  *  CMethodParameterList class.
  *  This class is used to describe a list method paramters. This class is 

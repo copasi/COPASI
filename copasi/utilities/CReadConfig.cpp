@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
+   $Revision: 1.14 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:35:32 $
+   End CVS Header */
+
 // CReadConfig
 //
 // New Class based on pmutils read functionality

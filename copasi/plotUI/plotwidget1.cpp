@@ -1,8 +1,16 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
+   $Revision: 1.4 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:32:39 $
+   End CVS Header */
+
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.3 2003/10/15 08:30:58 huwenjun Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.4 2003/10/16 16:32:39 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

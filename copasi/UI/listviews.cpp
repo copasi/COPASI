@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
+   $Revision: 1.118 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2003/10/16 16:12:44 $
+   End CVS Header */
+
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
  **  $ Author  : Ankur Gupta
@@ -526,7 +534,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 222:
         return moietyWidget;
         break;
-      case 23:                 //Time course
+      case 23:                    //Time course
         return trajectoryWidget;
         break;
       case 31:
@@ -535,7 +543,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 32:
         return scanWidget;
         break;
-      case 43:                //Report
+      case 43:                   //Report
         return tableDefinition;
         break;
       case 5:
