@@ -35,6 +35,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   setMinimumSize(QSize(0, 0));
   QFont f(font());
   f.setFamily("Times New Roman");
+  f.setPointSize(9);
   setFont(f);
   setCaption(trUtf8("SteadyStateWidget"));
   SteadyStateWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "SteadyStateWidgetLayout");

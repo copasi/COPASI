@@ -1,13 +1,14 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TrajectoryWidget.ui'
  **
- ** Created: Sun Mar 2 14:02:22 2003
+ ** Created: Sun Mar 2 19:39:26 2003
  **      by:  The User Interface Compiler (uic)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 #include "TrajectoryWidget.h"
 #include "trajectory/CTrajectoryTask.h"
+#include <qmessagebox.h>
 
 #include <qvariant.h>
 #include <qcheckbox.h>
@@ -20,7 +21,6 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qmessagebox.h>
 
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
@@ -32,6 +32,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("TrajectoryWidget");
   resize(719, 539);
+  QFont f(font());
+  f.setFamily("Times New Roman");
+  f.setPointSize(9);
+  setFont(f);
   setCaption(trUtf8("TrajectoryWidget"));
   TrajectoryWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TrajectoryWidgetLayout");
 
@@ -144,7 +148,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bRunTask = new QPushButton(this, "bRunTask");
   bRunTask->setText(trUtf8("Run Task"));
   bRunTask->setEnabled(false);
-
   Layout2->addWidget(bRunTask);
 
   commitChange = new QPushButton(this, "commitChange");

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>532</width>
-            <height>527</height>
+            <width>719</width>
+            <height>539</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -21,6 +21,7 @@
     <property name="font">
         <font>
             <family>Times New Roman</family>
+            <pointsize>9</pointsize>
         </font>
     </property>
     <property name="caption">
