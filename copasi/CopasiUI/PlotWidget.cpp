@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/08/06 12:56:44 $
+   $Date: 2004/08/10 16:07:43 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -41,6 +41,12 @@ std::vector<const CCopasiObject*> PlotWidget::getObjects() const
 
 void PlotWidget::init()
 {
+  mExtraLayout->addStretch();
+  btnDefaultPlot = new QPushButton("Add default plot", this);
+  mExtraLayout->addWidget(btnDefaultPlot);
+  connect(btnDefaultPlot, SIGNAL(clicked ()), this,
+          SLOT(slotBtnDefaultClicked()));
+
   mOT = ListViews::PLOT;
   numCols = 4;
   table->setNumCols(numCols);
@@ -138,3 +144,6 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
       ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
 }
+
+void PlotWidget::slotBtnDefaultClicked()
+{}

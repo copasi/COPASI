@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/05/27 10:35:31 $
+   $Date: 2004/08/10 16:07:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -30,7 +30,11 @@ class PlotWidget : public CopasiTableWidget
         : CopasiTableWidget(parent, false, name, f)
     {init();}
 
+  protected slots:
+    virtual void slotBtnDefaultClicked();
+
   protected:
+    QPushButton* btnDefaultPlot;
 
     /**
      * This initializes the widget 
