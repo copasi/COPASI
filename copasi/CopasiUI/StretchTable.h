@@ -1,3 +1,12 @@
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : Provide automatic stretch for all tables as base class
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+
 #ifndef STRETCH_TABLE_H
 #define STRETCH_TABLE_H
 

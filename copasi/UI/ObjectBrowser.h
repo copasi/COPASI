@@ -1,11 +1,12 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\ObjectBrowser.ui'
- **
- ** Created: Tue Apr 22 13:27:37 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : Copasi Object Browser: 
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+
 #ifndef OBJECTBROWSER_H
 #define OBJECTBROWSER_H
 
@@ -38,11 +39,7 @@ class ObjectBrowser : public QWidget
     QListView* ObjectListView;
 
     void export(ObjectBrowserItem* pCurrent, objectList* outputList);
-    /*
-     isSibling describe the level we need to overlook sibling
-     0: overlook sibling
-     else: n>0 or n<0, includign sibling
-    */
+
     void setCheck(ObjectBrowserItem* pCurrent);
     void setUncheck(ObjectBrowserItem* pCurrent);
     void clickToReverseCheck(ObjectBrowserItem* pCurrent);
@@ -51,11 +48,12 @@ class ObjectBrowser : public QWidget
     void loadData();
     void loadChild(ObjectBrowserItem* parent, CCopasiContainer * copaParent, bool nField);
     void loadField(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
-    // void loadVectors(ObjectBrowserItem* parent, CCopasiContainer * copaParent);
+
     CCopasiObject* getFieldCopasiObject(CCopasiObject* pCurrent, const char* name);
 
     void updateUI();
     void loadUI();
+
   public slots:
     virtual void cancelClicked();
     virtual void listviewChecked(QListViewItem*);

@@ -1,3 +1,12 @@
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 03/03 
+    Comment : Copasi Object Browser
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
 

@@ -1,3 +1,21 @@
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : Copasi Object Browser including:
+
+   browserObject: A complex structure uiniquely map to a CopasiObject
+   ObjectBrowserItem: A wraper to a broserObject, 
+       there may exist multiply wrappers to one browserObject
+   objectListItem
+   objectList: A queue for all element: 
+      The reason I dont use std:vector is
+      for efficiency requirement for all 
+      object browser item update
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
+
 #ifndef OBJECT_BROWSER_ITEM_H
 #define OBJECT_BROWSER_ITEM_H
 

@@ -1,6 +1,11 @@
-// copasiWidget.h: interface for the CopasiWidget class.
-//
-//////////////////////////////////////////////////////////////////////
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 04/03 
+    Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 
 #if !defined COPASI_WIDGET_H
 #define COPASI_WIDGET_H

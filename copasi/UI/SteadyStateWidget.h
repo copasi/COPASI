@@ -1,11 +1,11 @@
-/****************************************************************************
- ** Form interface generated from reading ui file '.\SteadyStateWidget.ui'
- **
- ** Created: Sun Mar 2 20:14:23 2003
- **      by:  The User Interface Compiler (uic)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+/********************************************************
+    Author: Liang Xu
+    Version : 1.xx  <first>
+    Description: 
+    Date: 02/03 
+    Comment : SteadyStateWidget
+    Contact: Please contact lixu1@vt.edu.
+ *********************************************************/
 #ifndef STEADYSTATEWIDGET_H
 #define STEADYSTATEWIDGET_H
 
