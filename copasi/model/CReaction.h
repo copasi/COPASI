@@ -504,8 +504,9 @@ class CReaction : public CCopasiContainer
     /**
      *  Sets the name of the reaction
      *  @param "const string &" name
+     *  @return bool success
      */
-    void setName(const std::string & name);
+    bool setName(const std::string & name);
 
     /**
      *  Sets the chemical equation of the reaction

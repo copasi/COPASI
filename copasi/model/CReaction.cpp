@@ -422,8 +422,17 @@ const C_FLOAT64 & CReaction::getScaledFlux() const
 bool CReaction::isReversible() const
   {return (mReversible == true);}
 
-void CReaction::setName(const std::string & name)
-{mName = name;}
+bool CReaction::setName(const std::string & name)
+{
+  CCopasiContainer * pParent = getObjectParent();
+  if (pParent)
+    if (pParent->isNameVector())
+      if (pParent->getIndex(name) != C_INVALID_INDEX)
+        return false;
+
+  mName = name;
+  return true;
+}
 
 void CReaction::setChemEq(const std::string & chemEq)
 {mReversible = mChemEq.setChemicalEquation(chemEq);}
