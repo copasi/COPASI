@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: jpahle $ $Date: 2005/01/11 10:14:30 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
 ######################################################################
 
 LIB = trajectory
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += CHybridMethod.h \

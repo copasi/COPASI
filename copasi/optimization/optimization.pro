@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: chlee $ $Date: 2005/01/24 16:10:26 $  
+# $Revision: 1.10 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
 ######################################################################
 
 LIB = optimization
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += COptMethod.h \

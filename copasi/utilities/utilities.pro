@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: ssahle $ $Date: 2004/11/26 15:46:24 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
 ######################################################################
 
 LIB = utilities
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += CAnnotatedMatrix.h \
@@ -26,6 +26,8 @@ HEADERS += CAnnotatedMatrix.h \
            CMatrix.h \
            COutputHandler.h \
            CReadConfig.h \
+#           CSparseMatrix.h \
+#           CSparseVector.h \
            CopasiTime.h \
            CVector.h \
            CVersion.h \
@@ -45,6 +47,8 @@ SOURCES += CAnnotatedMatrix.cpp \
            CIndexedPriorityQueue.cpp \
            COutputHandler.cpp \
            CReadConfig.cpp \
+#           CSparseMatrix.cpp \
+#           CSparseVector.cpp \
            CopasiTime.cpp \
            CVersion.cpp \
            utility.cpp

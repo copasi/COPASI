@@ -1,8 +1,8 @@
 
 LIB = sbmlimport
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 contains(BUILD_OS, WIN32) {
   DEFINES += LIBSBML_STATIC

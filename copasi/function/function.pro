@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2004/11/04 01:01:43 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
 ######################################################################
 
 LIB = function
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += CCallParameters.h \

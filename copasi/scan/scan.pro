@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2004/11/04 01:01:42 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
 ######################################################################
 
 LIB = scan
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += CScanMethod.h \

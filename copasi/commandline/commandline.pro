@@ -1,11 +1,11 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2004/11/04 01:01:43 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
 ######################################################################
 
 LIB = commandline
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 #Input
 HEADERS += COptionParser.h \

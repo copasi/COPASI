@@ -1,7 +1,7 @@
 LANGUAGE	= C++
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 LIB= wizard
 CONFIG	+= qt 

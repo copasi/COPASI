@@ -4,8 +4,8 @@
 
 LIB = elementaryFluxModes
 
-include(../common.pri)
 include(../lib.pri)
+include(../common.pri)
 
 # Input
 HEADERS += CEFMAlgorithm.h \
