@@ -264,13 +264,13 @@ class CMathModel
 
     /**
      *
-     */
-    static bool addParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
+     */ 
+    //static bool addParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
 
     /**
      *
-     */
-    static bool deleteParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
+     */ 
+    //static bool deleteParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
   };
 
 #endif // COPASI_CMathModel

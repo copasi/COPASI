@@ -101,7 +101,7 @@ CMathConstantParameter::CMathConstantParameter(const CMathConstantParameter & sr
     CMathConstant(src)
 {}
 
-CMathConstantParameter::CMathConstantParameter(const CReaction::CId2Param & parameter, const std::string & reaction):
+CMathConstantParameter::CMathConstantParameter(const CParameter & parameter, const std::string & reaction):
     CMathConstant(& parameter),
     mReaction(reaction)
 {
@@ -116,12 +116,12 @@ CMathConstantParameter::~CMathConstantParameter() {}
 
 bool CMathConstantParameter::setValue(const C_FLOAT64 & value)
 {
-  ((CReaction::CId2Param *) mpObject)->setValue(value);
+  ((CParameter *) mpObject)->setValue(value);
   return true;
 }
 
 const C_FLOAT64 & CMathConstantParameter::getValue() const
-  {return ((CReaction::CId2Param *) mpObject)->getValue();}
+  {return ((CParameter *) mpObject)->getValue();}
 
 const std::string & CMathConstantParameter::getReaction() const
   {return mReaction;}
@@ -137,7 +137,7 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
   unsigned C_INT32 j, jmax;
 
   CReaction * pReaction;
-  CCopasiVector < CReaction::CId2Param > * pParameters;
+  const CCopasiVector < CParameter > * pParameters;
   std::string Name;
 
   mSelection.clear();
@@ -146,7 +146,7 @@ bool CMathConstantParameter::buildSelection(const CModel * pModel)
     {
       pReaction = Reactions[i];
       Name = pReaction->getName();
-      pParameters = & pReaction->getId2Parameters();
+      pParameters = & pReaction->getParameters();
 
       jmax = pParameters->size();
 

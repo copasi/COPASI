@@ -245,10 +245,10 @@ bool CMathModel::buildConstantsList()
   unsigned C_INT32 j, jmax;
 
   CMathConstantParameter * p;
-  CCopasiVector< CReaction::CId2Param > * ParamList;
+  const CCopasiVector< CParameter > * ParamList;
   for (i = 0; i < imax; i++)
     {
-      ParamList = &List[i]->getId2Parameters();
+      ParamList = &List[i]->getParameters();
       jmax = ParamList->size();
 
       for (j = 0; j < jmax; j++)
@@ -424,6 +424,8 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
     {
       if (Description[i]->getType() < CFunctionParameter::VINT32)
         pL->addChild(new CMathNodeSymbol(CMathSymbol::find((CCopasiObject *)Objects[i])));
+      //TODO reac : the pointer to CCopasiObject is never a pointer to a CMetab (as it is expected here).
+      // instead it is a pointer to an object reference object (the concentration of the metabolite).
       else
         {
           pV = new CMathNodeList();
@@ -435,7 +437,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
           jmax = V->size();
 
           for (j = 0; j < jmax; j++)
-            pV->addChild(new CMathNodeSymbol(CMathSymbol::find((*V)[j])));
+            pV->addChild(new CMathNodeSymbol(CMathSymbol::find((*V)[j]))); //dito
         }
     }
 

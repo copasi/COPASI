@@ -219,7 +219,7 @@ class CMathConstantParameter : public CMathConstant
     /**
      *
      */
-    CMathConstantParameter(const CReaction::CId2Param & parameter,
+    CMathConstantParameter(const CParameter & parameter,
                            const std::string & reaction);
 
     /**
