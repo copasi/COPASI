@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: mkulkarn $ 
-   $Date: 2003/11/12 20:08:58 $
+   $Author: shoops $ 
+   $Date: 2003/11/25 18:21:19 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -297,8 +297,7 @@ void CopasiUI3Window::createToolBar()
       toolb = new QToolButton(icon[j], iconName[j], QString::null,
                               this, slotFileName[j], tbMain);
 
-      QWhatsThis::add
-      (toolb, toolTip[j]);
+      QWhatsThis::add(toolb, toolTip[j]);
 
       if (j == 1)
         msave_button = toolb;
@@ -306,10 +305,9 @@ void CopasiUI3Window::createToolBar()
 
   toolb = QWhatsThis::whatsThisButton(tbMain);
 
-  QWhatsThis::add
-  (toolb, "This is a <b>What's This</b> button "
-   "It enables the user to ask for help "
-   "about widgets on the screen.");
+  QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
+                  "It enables the user to ask for help "
+                  "about widgets on the screen.");
 }
 
 /***************CopasiUI3Window::createMenuBar()**********************************

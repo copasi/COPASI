@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/output/Attic/CUDFunctionDB.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/30 17:58:57 $
+   $Date: 2003/11/25 18:21:19 $
    End CVS Header */
 
 /*****************************************************************************
@@ -101,8 +101,7 @@ C_INT32 CUDFunctionDB::save(CWriteConfig & configbuffer)
  *  @param CUDFunction &function
  *  @return C_INT32 Fail
  */
-void CUDFunctionDB::add
-(CUDFunction & C_UNUSED(function))
+void CUDFunctionDB::add(CUDFunction & C_UNUSED(function))
 {}
 
 /**
