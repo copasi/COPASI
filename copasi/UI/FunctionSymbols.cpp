@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 22:04:36 $
+   $Author: chlee $ 
+   $Date: 2004/03/04 20:40:20 $
    End CVS Header */
 
 /*******************************************************************
@@ -82,6 +82,8 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
           this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()),
           this, SLOT(slotBtnCancelClicked()));*/
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 }
 
 void FunctionSymbols::loadFunctionSymbols(CMathModel *model)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/01/08 22:04:36 $
+   $Author: chlee $ 
+   $Date: 2004/03/04 20:39:12 $
    End CVS Header */
 
 /*******************************************************************
@@ -80,6 +80,8 @@ CompartmentSymbols::CompartmentSymbols(QWidget *parent, const char * name, WFlag
   connect(table, SIGNAL(selectionChanged ()), this, SLOT(slotTableSelectionChanged ()));
   //connect(btnOK, SIGNAL(clicked ()), this, SLOT(slotBtnOKClicked()));
   //connect(btnCancel, SIGNAL(clicked ()), this, SLOT(slotBtnCancelClicked()));
+
+  table -> setVScrollBarMode(QScrollView::AlwaysOn);
 }
 
 void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
