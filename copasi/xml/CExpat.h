@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/28 15:27:56 $
+   $Author: shoops $ 
+   $Date: 2004/12/06 19:59:38 $
    End CVS Header */
 
 /**
@@ -414,7 +414,7 @@ class CExpatTemplate
      * @return  const XML_LChar * errorString
      */
     const XML_LChar *getErrorString()
-    {return XML_ErrorString(GetErrorCode());}
+    {return XML_ErrorString(getErrorCode());}
 
     /**
      * Get error string
