@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: msinghal $ $Date: 2003/06/06 19:02:24 $  
+# $Revision: 1.15 $ $Author: lixu1 $ $Date: 2003/07/01 14:29:02 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -13,6 +13,7 @@ isEmpty(BUILD_OS) {
 DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
 
+DEFINES+=XML_STATIC
 TARGETDEPS = Makefile
 
 # Common configuration settings
