@@ -58,6 +58,8 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 {
   nSelectedObjects = 0;
   nTitleHeight = 16;
+  activeObject = -1;
+  selectedList.clear();
 
   if (!name)
     setName("ScanWidget");
@@ -239,9 +241,6 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   connect(eSteadyState, SIGNAL(clicked()), this, SLOT(SteadyStateEditing()));
   connect(eTrajectory, SIGNAL(clicked()), this, SLOT(TrajectoryEditing()));
-
-  activeObject = -1;
-  selectedList.clear();
 
   nTitleHeight = fontMetrics().height() + 6;
 
