@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.66 $ $Author: shoops $ $Date: 2004/11/18 17:45:18 $  
+# $Revision: 1.67 $ $Author: shoops $ $Date: 2004/11/19 21:26:29 $  
 ######################################################################
 
 include(../common.pri)
@@ -85,15 +85,15 @@ contains(BUILD_OS, WIN32) {
                 ../lib/libwizard.a
 }
 
-release {
-  contains(BUILD_OS, Linux) {   
-    LIBS += -Wl,-lqt-mt \
-            -Wl,-lXcursor \
-            -Wl,-lXft \
-            -Wl,-lfontconfig \
-            -Wl,-lpthread
-  }
+contains(BUILD_OS, Linux) {   
+  LIBS += -Wl,-lqt-mt \
+          -Wl,-lXcursor \
+          -Wl,-lXft \
+          -Wl,-lfontconfig \
+          -Wl,-lpthread
+}
 
+release {
   contains(BUILD_OS, SunOS) {
     LIBS += -Wl,-lqt-mt \
             -Wl,-lpthread
