@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.148 $
+   $Revision: 1.149 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/21 15:54:36 $
+   $Date: 2004/09/22 11:05:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -494,6 +494,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 {
   if (!i) return;
 
+  folders->setCurrentItem(i);
+
   // get the qlistview item in form of folderlistitem...
   FolderListItem *item = (FolderListItem*)i; //TODO dynamic cast?
 
@@ -508,20 +510,21 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   if (currentWidget)
     {
       //save the id and object key of the current ListViewItem
-      std::string saveObjectKey = item->folder()->getObjectKey();
+      /*std::string saveObjectKey = item->folder()->getObjectKey();
       C_INT32 saveFolderID = item->folder()->getId();
       while (saveFolderID == -1)
         {
           item = (FolderListItem*)item->parent();
           saveFolderID = item->folder()->getId();
-        }
+        }*/
 
       currentWidget->leave();
       //item may point to an invalid ListViewItem now
+      item = (FolderListItem*)folders->currentItem();
 
       //reset the item from the saved values
-      item = (FolderListItem*)findListViewItem(saveFolderID, saveObjectKey);
-      folders->setCurrentItem(item);
+      /*item = (FolderListItem*)findListViewItem(saveFolderID, saveObjectKey);
+      folders->setCurrentItem(item);*/
     }
 
   // find the widget again (it may have changed)
@@ -598,6 +601,49 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
   return true;
 }
 
+//********** some methods to store and restore the state of the listview ****
+
+void ListViews::storeCurrentItem()
+{
+  //save the id and object key of the current ListViewItem
+  FolderListItem* item = (FolderListItem*)folders->currentItem();
+  mSaveObjectKey = item->folder()->getObjectKey();
+  mSaveFolderID = item->folder()->getId();
+  while (mSaveFolderID == -1)
+    {
+      item = (FolderListItem*)item->parent();
+      mSaveFolderID = item->folder()->getId();
+    }
+}
+
+void ListViews::restoreCurrentItem()
+{
+  //reset the item from the saved values
+  FolderListItem* item = (FolderListItem*)findListViewItem(mSaveFolderID, mSaveObjectKey);
+  folders->setCurrentItem(item);
+  folders->setSelected(item, true);
+}
+
+//static
+void ListViews::storeCurrentItemInAllListViews()
+{
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+  for (; it != ende; ++it)
+  {(*it)->storeCurrentItem();}
+}
+
+//static
+void ListViews::restoreCurrentItemInAllListViews()
+{
+  std::set<ListViews *>::iterator it = mListOfListViews.begin();
+  std::set<ListViews *>::iterator ende = mListOfListViews.end();
+  for (; it != ende; ++it)
+  {(*it)->restoreCurrentItem();}
+}
+
+//*******************************************************************************
+
 bool ListViews::updateDataModelAndListviews(ObjectType objectType,
     Action action, const std::string & C_UNUSED(key)) //static
 {
@@ -646,8 +692,9 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
       break;
     }
 
-  //just do everything. TODO: Later we can decide from parameters what really needs to be done
+  storeCurrentItemInAllListViews();
 
+  //just do everything. TODO: Later we can decide from parameters what really needs to be done
   dataModel->updateCompartments();
   updateAllListviews(111);
 
@@ -668,6 +715,9 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
 
   dataModel->updatePlots();
   updateAllListviews(42);
+
+  //item may point to an invalid ListViewItem now
+  restoreCurrentItemInAllListViews();
 
   return success;
 }
@@ -716,6 +766,7 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
   return success;
 }
 
+//static
 bool ListViews::commit()
 {
   bool success = true;
@@ -735,12 +786,8 @@ bool ListViews::commit()
 //static
 void ListViews::switchAllListViewsToWidget(C_INT32 id, const std::string & key)
 {
-  CopasiWidget * tmp;
   std::set<ListViews *>::iterator it = mListOfListViews.begin();
   std::set<ListViews *>::iterator ende = mListOfListViews.end();
-
   for (; it != ende; ++it)
-    {
-      (*it)->switchToOtherWidget(id, key);
-    }
+  {(*it)->switchToOtherWidget(id, key);}
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/21 15:54:36 $
+   $Date: 2004/09/22 11:05:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -92,6 +92,11 @@ class ListViews : public QSplitter
     void switchToOtherWidget(C_INT32 id, const std::string & key);
     static void switchAllListViewsToWidget(C_INT32 id, const std::string & key);
 
+    void storeCurrentItem();
+    void restoreCurrentItem();
+    static void storeCurrentItemInAllListViews();
+    static void restoreCurrentItemInAllListViews();
+
   private:
     CMathModel *mpMathModel;
 
@@ -112,6 +117,9 @@ class ListViews : public QSplitter
     QListViewItem* lastSelection;
     CopasiWidget* currentWidget;
     std::string lastKey;
+
+    std::string mSaveObjectKey;
+    C_INT32 mSaveFolderID;
 
     static std::set<ListViews *> mListOfListViews;
     bool attach();
