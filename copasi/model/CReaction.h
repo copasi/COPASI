@@ -359,6 +359,10 @@ class CReaction : public CCopasiContainer
 
     const CFunctionParameterMap & getFunctionParameterMap() const {return mMap;}
 
+    C_INT32 getSubstrateMolecularity() const;
+    C_INT32 getProductMolecularity() const;
+    C_INT32 getModifierMolecularity() const;
+
     /**
      * insert operator
      */

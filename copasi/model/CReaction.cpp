@@ -824,6 +824,13 @@ const CCompartment* CReaction::getCompartment() const
 const CCallParameterPointers & CReaction::getCallParameterObjects() const
   {return mMap.getObjects();}
 
+C_INT32 CReaction::getSubstrateMolecularity() const
+  {return mChemEq.getMolecularity(CChemEq::SUBSTRATE);}
+C_INT32 CReaction::getProductMolecularity() const
+  {return mChemEq.getMolecularity(CChemEq::PRODUCT);}
+C_INT32 CReaction::getModifierMolecularity() const
+  {return mChemEq.getMolecularity(CChemEq::MODIFIER);}
+
 void CReaction::initObjects()
 {
   addObjectReference("Name", mName);
