@@ -11,11 +11,11 @@
 
 #include <string>
 
-class CModel;
-class CState;
-
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
+#include "model/CState.h"
+
+class CModel;
 
 class CTrajectoryProblem
   {
@@ -54,12 +54,12 @@ class CTrajectoryProblem
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
-    CState * mpInitialState;
+    CState mInitialState;
 
     /**
      *  The final state of the trajectory at time EndTime
      */
-    const CState *mpEndState;
+    CState mEndState;
 
   public:
     // Operations
@@ -158,10 +158,16 @@ class CTrajectoryProblem
     void setInitialState(CState * pInitialState);
 
     /**
-     * Retrieve the initial state of the problem.
-     * @return "const CState *" pInitialState
+     * Set the initial state of the problem.
+     * @param "const CStateX *" pInitialState
      */
-    const CState * getInitialState() const;
+    void setInitialState(CStateX * pInitialState);
+
+    /**
+     * Retrieve the initial state of the problem.
+     * @return "const CState &" pInitialState
+     */
+    const CState & getInitialState() const;
 
     /**
      * Set the end state of the problem.
@@ -170,10 +176,16 @@ class CTrajectoryProblem
     void setEndState(const CState * pEndState);
 
     /**
-     * Retrieve the end state of the problem.
-     * @return "const CState *" pEndState
+     * Set the end state of the problem.
+     * @param "const CStateX *" pEndState
      */
-    const CState * getEndState() const;
+    void setEndState(const CStateX * pEndState);
+
+    /**
+     * Retrieve the end state of the problem.
+     * @return "const CState &" pEndState
+     */
+    const CState & getEndState() const;
 
     /**
      * Load a trajectory problem

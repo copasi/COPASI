@@ -168,7 +168,7 @@ void CTrajectoryTask::process()
     fatalError();
 
   pdelete(mpState);
-  mpState = new CState(*mpProblem->getInitialState());
+  mpState = new CState(mpProblem->getInitialState());
 
   if (mpOutInit || mpOutPoint || mpOutEnd)
     Copasi->pOutputList->compile("Time-course output",
@@ -236,25 +236,25 @@ void CTrajectoryTask::process()
 #endif // XXXX_Event
     }
 
-#ifdef  XXXX_Event
   while (Time < mpProblem->getEndTime())
     {
       ActualStepSize = mpMethod->step(mpProblem->getEndTime() - Time);
 
+#ifdef  XXXX_Event
       if (mpOutPoint)
         {
           /* Correct output depends on the model being updated */
           /* We should try to avoid this in the future         */
           mpProblem->getModel()->getDerivatives(mpState, Derivatives);
-          mpOutPoint->print(Copasi->OutputList, *mpOut);
+          mpOutPoint->print(*Copasi->pOutputList, *mpOut);
         }
 
       if (ActualStepSize != (mpProblem->getEndTime() - Time))
         {
           /* Here we will do conditional event processing */
         }
-    }
 #endif // XXXX_Event
+    }
 
   mpProblem->setEndState(new CState(*mpState));
 

@@ -21,11 +21,11 @@
  */
 CSteadyStateProblem::CSteadyStateProblem():
     mpModel(NULL),
-    mpInitialState(NULL)
+    mInitialState()
 {
   CONSTRUCTOR_TRACE;
   if (mpModel)
-    mpInitialState = mpModel->getInitialState();
+    mInitialState = mpModel->getInitialState();
 }
 
 /**
@@ -34,7 +34,7 @@ CSteadyStateProblem::CSteadyStateProblem():
  */
 CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src):
     mpModel(src.mpModel),
-    mpInitialState(src.mpInitialState)
+    mInitialState(src.mInitialState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -60,14 +60,21 @@ CModel * CSteadyStateProblem::getModel() const {return mpModel;}
  * @param "const CState *" pInitialState
  */
 void CSteadyStateProblem::setInitialState(CState * pInitialState)
-{mpInitialState = pInitialState;}
+{mInitialState = *pInitialState;}
+
+/**
+ * Set the initial state of the problem.
+ * @param "const CStateX *" pInitialState
+ */
+void CSteadyStateProblem::setInitialState(CStateX * pInitialState)
+{mInitialState = *pInitialState;}
 
 /**
  * Retrieve the initial state of the problem.
- * @return "const CState *" pInitialState
+ * @return "const CState &" pInitialState
  */
-const CState * CSteadyStateProblem::getInitialState() const
-  {return mpInitialState;}
+const CState & CSteadyStateProblem::getInitialState() const
+  {return mInitialState;}
 
 /**
  * Set whether the jacobian is requested.
@@ -107,7 +114,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
   if (configBuffer.getVersion() < "4.0")
     {
       mpModel = Copasi->pModel;
-      mpInitialState = mpModel->getInitialState();
+      mInitialState = mpModel->getInitialState();
       configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
                                &mStabilityAnalysisRequested,
                                CReadConfig::LOOP);
@@ -123,8 +130,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
       else
         fatalError();
 
-      mpInitialState = new CState;
-      mpInitialState->load(configBuffer);
+      mInitialState.load(configBuffer);
 
       configBuffer.getVariable("JacobianRequested", "bool" ,
                                &mJacobianRequested);
@@ -142,7 +148,7 @@ void CSteadyStateProblem::save(CWriteConfig & configBuffer) const
     std::string Tmp = mpModel->getTitle();
     configBuffer.setVariable("SteadyStateProblemModel", "string", &Tmp);
 
-    mpInitialState->save(configBuffer);
+    mInitialState.save(configBuffer);
 
     configBuffer.setVariable("JacobianRequested", "bool" ,
                              &mJacobianRequested);

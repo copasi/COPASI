@@ -140,7 +140,7 @@ void CSteadyStateTask::process()
     fatalError();
 
   pdelete(mpSteadyState);
-  mpSteadyState = new CState(*mpProblem->getInitialState());
+  mpSteadyState = new CState(mpProblem->getInitialState());
 
   mJacobian.resize(mpSteadyState->getVariableNumberSize(),
                    mpSteadyState->getVariableNumberSize());
@@ -156,7 +156,7 @@ void CSteadyStateTask::process()
   mpMethod->setProblem(mpProblem);
 
   mResult = mpMethod->process(*mpSteadyState,
-                              *mpProblem->getInitialState(),
+                              mpProblem->getInitialState(),
                               mJacobian,
                               mpEigenValues);
 

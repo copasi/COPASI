@@ -21,13 +21,18 @@
  */
 CTrajectoryProblem::CTrajectoryProblem():
     mpModel(NULL),
+    mStepNumber(1),
     mStepNumberSetLast(true),
-    mpInitialState(NULL),
-    mpEndState(NULL)
+    mStartTime(0),
+    mEndTime(0),
+    mInitialState(),
+    mEndState()
 {
   CONSTRUCTOR_TRACE;
   if (mpModel)
-    mpInitialState = mpModel->getInitialState();
+    mInitialState = mpModel->getInitialState();
+
+  mStartTime = mInitialState.getTime();
 }
 
 CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
@@ -38,11 +43,13 @@ CTrajectoryProblem::CTrajectoryProblem(CModel * pmodel,
     mStepNumberSetLast(true),
     mStartTime(starttime),
     mEndTime(endtime),
-    mpInitialState(NULL),
-    mpEndState(NULL)
+    mInitialState(),
+    mEndState()
 {
   if (mpModel)
-    mpInitialState = mpModel->getInitialState();
+    mInitialState = mpModel->getInitialState();
+
+  mInitialState.setTime(mStartTime);
   sync();
 }
 
@@ -57,8 +64,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src):
     mStepNumberSetLast(src.mStepNumberSetLast),
     mStartTime(src.mStartTime),
     mEndTime(src.mEndTime),
-    mpInitialState(src.mpInitialState),
-    mpEndState(src.mpEndState)
+    mInitialState(src.mInitialState),
+    mEndState(src.mEndState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -121,8 +128,7 @@ const double & CTrajectoryProblem::getStepSize() const {return mStepSize;}
 void CTrajectoryProblem::setStartTime(const double & startTime)
 {
   mStartTime = startTime;
-  if (mpInitialState)
-    mpInitialState->setTime(mStartTime);
+  mInitialState.setTime(mStartTime);
 
   sync();
 }
@@ -155,30 +161,47 @@ const double & CTrajectoryProblem::getEndTime() const {return mEndTime;}
  */
 void CTrajectoryProblem::setInitialState(CState * pInitialState)
 {
-  mpInitialState = pInitialState;
-  setStartTime(mpInitialState->getTime());
+  mInitialState = *pInitialState;
+  setStartTime(mInitialState.getTime());
+}
+
+/**
+ * Set the initial state of the problem.
+ * @param "const CStateX *" pInitialState
+ */
+void CTrajectoryProblem::setInitialState(CStateX * pInitialState)
+{
+  mInitialState = *pInitialState;
+  setStartTime(mInitialState.getTime());
 }
 
 /**
  * Retrieve the initial state of the problem.
  * @return "const CState *" pInitialState
  */
-const CState * CTrajectoryProblem::getInitialState() const
-  {return mpInitialState;}
+const CState & CTrajectoryProblem::getInitialState() const
+  {return mInitialState;}
 
 /**
  * Set the end state of the problem.
  * @param "const CState *" pEndState
  */
 void CTrajectoryProblem::setEndState(const CState * pEndState)
-{mpEndState = pEndState;}
+{mEndState = *pEndState;}
+
+/**
+ * Set the end state of the problem.
+ * @param "const CStateX *" pEndState
+ */
+void CTrajectoryProblem::setEndState(const CStateX * pEndState)
+{mEndState = *pEndState;}
 
 /**
  * Retrieve the end state of the problem.
- * @return "const CState *" pEndState
+ * @return "const CState &" pEndState
  */
-const CState * CTrajectoryProblem::getEndState() const
-  {return mpEndState;}
+const CState & CTrajectoryProblem::getEndState() const
+  {return mEndState;}
 
 /**
  * Load a trajectory problem
@@ -198,7 +221,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
       mStepNumberSetLast = true;
       mStartTime = 0.0;
       sync();
-      mpInitialState = mpModel->getInitialState();
+      mInitialState = mpModel->getInitialState();
     }
   else
     {
@@ -220,8 +243,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
                                "C_FLOAT64", &mStartTime);
       configBuffer.getVariable("TrajectoryProblemEndTime",
                                "C_FLOAT64", &mEndTime);
-      mpInitialState = new CState;
-      mpInitialState->load(configBuffer);
+      mInitialState.load(configBuffer);
     }
 }
 
@@ -244,7 +266,7 @@ void CTrajectoryProblem::save(CWriteConfig & configBuffer) const
                              "C_FLOAT64", &mStartTime);
     configBuffer.setVariable("TrajectoryProblemEndTime",
                              "C_FLOAT64", &mEndTime);
-    mpInitialState->save(configBuffer);
+    mInitialState.save(configBuffer);
   }
 
 /**

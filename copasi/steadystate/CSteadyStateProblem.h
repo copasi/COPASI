@@ -11,9 +11,7 @@
 
 #include <string>
 
-class CModel;
-class CState;
-
+#include "model/CState.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CWriteConfig.h"
 
@@ -39,7 +37,7 @@ class CSteadyStateProblem
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
      */
-    CState * mpInitialState;
+    CState mInitialState;
 
     /**
      *  Whether the jacobian is requested for the steady state
@@ -89,10 +87,16 @@ class CSteadyStateProblem
     void setInitialState(CState * pInitialState);
 
     /**
-     * Retrieve the initial state of the problem.
-     * @return "const CState *" pInitialState
+     * Set the initial state of the problem.
+     * @param "const CState X" pInitialState
      */
-    const CState * getInitialState() const;
+    void setInitialState(CStateX * pInitialState);
+
+    /**
+     * Retrieve the initial state of the problem.
+     * @return "const CState &" pInitialState
+     */
+    const CState & getInitialState() const;
 
     /**
      * Set whether the jacobian is requested.
