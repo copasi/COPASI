@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/09 14:39:35 $
+   $Author: jpahle $ 
+   $Date: 2004/10/18 12:41:25 $
    End CVS Header */
 
 /**********************************************************************
@@ -69,7 +69,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
 
   TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Description"));
+  TextLabel2->setText(trUtf8("Formula"));
   FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
   textBrowser = new QTextEdit(this, "Text Browser");
@@ -157,7 +157,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   FunctionWidget1Layout->addItem(spacer_2, 6, 0);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Function Name:"));
+  TextLabel1->setText(trUtf8("Function Name"));
   FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
 
   //***************+
@@ -790,7 +790,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                            // Yes or Enter
+        case 0:                             // Yes or Enter
           {
             /* Delete the Functions on which no Reactions are dependent */
             //for (i = 0; i < imax; i++)
@@ -822,7 +822,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
             //}
             break;
           }
-        case 1:                            // No or Escape
+        case 1:                             // No or Escape
           break;
         }
     }
