@@ -528,8 +528,8 @@ void CGA::select(int method)
         {
           // if offspring is fitter keep it
 
-          if (mCandX[i] < mCandX[j])
-            copy(i, j);
+          if (mCandX[i] < mCandX[i - mPopSize])
+            copy(i, i - mPopSize);
         }
 
       break;
