@@ -34,6 +34,10 @@ CFunction * CFunction::createFunction(enum CFunction::Type type)
       break;
 
     case PreDefined:
+      pFunction = new CKinFunction();
+      pFunction->setType(PreDefined);
+      break;
+
     case UserDefined:
       pFunction = new CKinFunction();
       break;
