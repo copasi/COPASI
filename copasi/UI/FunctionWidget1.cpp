@@ -34,151 +34,142 @@
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
  */
-
-FunctionWidget1::FunctionWidget1(QWidget *parent, const char * name, WFlags f)
-    : QWidget(parent, name, f)
+FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl)
+    : QWidget(parent, name, fl)
 {
-  //This is to make the Main Frame of the page
-  //The Main layout used is the Vertical Layout
+  if (!name)
+    setName("FunctionWidget1");
+  resize(719, 539);
+  setCaption(trUtf8("FunctionWidget1"));
+  FunctionWidget1Layout = new QGridLayout(this, 1, 1, 11, 6, "FunctionWidget1Layout");
 
-  QVBoxLayout *vboxLayout = new QVBoxLayout(this, 0);
-  Frame0 = new QFrame(this, "Frame0");
-  Frame0->setFrameShape(QFrame::Box);
-  Frame0->setFrameShadow(QFrame::Plain);
-  vboxLayout->addWidget(Frame0);
+  TextLabel1 = new QLabel(this, "TextLabel1");
+  TextLabel1->setText(trUtf8("Function Name:"));
 
-  //This Frame had to be added because of the border around the frame
+  FunctionWidget1Layout->addWidget(TextLabel1, 0, 0);
 
-  QVBoxLayout *vboxLayout0 = new QVBoxLayout(Frame0, 0);
-  vboxLayout0->addSpacing(1);
-  Frame1 = new QFrame(Frame0, "Frame1");
-  vboxLayout0->addWidget(Frame1);
-  QVBoxLayout *vboxLayout1 = new QVBoxLayout(Frame1, 0);
-  vboxLayout1->addSpacing(10);
+  TextLabel2 = new QLabel(this, "TextLabel2");
+  TextLabel2->setText(trUtf8("Description"));
 
-  // adding frames to each row
-  Frame2 = new QFrame(Frame1, "Frame2");
-  vboxLayout1->addWidget(Frame2);
-  vboxLayout1->addSpacing(10);
-  Frame3 = new QFrame(Frame1, "Frame3");
-  vboxLayout1->addSpacing(10);
-  vboxLayout1->addWidget(Frame3);
-  vboxLayout1->addSpacing(20);
-  Frame4 = new QFrame(Frame1, "Frame4");
-  vboxLayout1->addWidget(Frame4);
-  Frame5 = new QFrame(Frame1, "Frame5");
-  vboxLayout1->addWidget(Frame5);
-  Frame6 = new QFrame(Frame1, "Frame6");
-  vboxLayout1->addWidget(Frame6);
-  Frame7 = new QFrame(Frame1, "Frame7");
-  vboxLayout1->addWidget(Frame7);
+  FunctionWidget1Layout->addWidget(TextLabel2, 1, 0);
 
-  // setting layouts for each row
-  //first row
-  QHBoxLayout *hBoxLayout2a = new QHBoxLayout(Frame2, 0);
-  hBoxLayout2a->addSpacing(15);
-  TextLabel1 = new QLabel("Function Name", Frame2);
-  hBoxLayout2a->addWidget(TextLabel1);
-  hBoxLayout2a->addSpacing(15);
-  LineEdit1 = new QLineEdit("", Frame2);
-  hBoxLayout2a->addWidget(LineEdit1);
-  hBoxLayout2a->addSpacing(15);
-  // second row
-  QHBoxLayout *hBoxLayout3a = new QHBoxLayout(Frame3, 0);
-  hBoxLayout3a->addSpacing(15);
-  TextLabel2 = new QLabel("Description", Frame3);
-  hBoxLayout3a->addWidget(TextLabel2);
-  hBoxLayout3a->addSpacing(20);
-  LineEdit2 = new QLineEdit("", Frame3);
-  hBoxLayout3a->addWidget(LineEdit2);
-  hBoxLayout3a->addSpacing(20);
-  // third Row
-  QHBoxLayout *hBoxLayout4a = new QHBoxLayout(Frame4, 0);
-  hBoxLayout4a->addSpacing(15);
+  LineEdit2 = new QLineEdit(this, "LineEdit2");
 
-  ButtonGroup1 = new QButtonGroup ("&Function Type", Frame4);
-  hBoxLayout4a->addWidget(ButtonGroup1);
-  hBoxLayout4a->addSpacing(20);
-  ButtonGroup1->setExclusive(true);
+  FunctionWidget1Layout->addWidget(LineEdit2, 1, 1);
 
-  RadioButton1 = new QRadioButton(ButtonGroup1, "RadioButton1");
-  RadioButton1->setGeometry(QRect(110, 15, 87, 20));
+  Line2 = new QFrame(this, "Line2");
+  Line2->setFrameShape(QFrame::HLine);
+  Line2->setFrameShadow(QFrame::Sunken);
+  Line2->setFrameShape(QFrame::HLine);
+
+  FunctionWidget1Layout->addMultiCellWidget(Line2, 4, 4, 0, 1);
+
+  Layout1 = new QHBoxLayout(0, 0, 6, "Layout1");
+
+  commitChanges = new QPushButton(this, "commitChanges");
+  commitChanges->setText(trUtf8("Commit Changes"));
+  Layout1->addWidget(commitChanges);
+
+  cancelChanges = new QPushButton(this, "cancelChanges");
+  cancelChanges->setText(trUtf8("Cancel Changes"));
+  Layout1->addWidget(cancelChanges);
+
+  FunctionWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 1);
+
+  ButtonGroup1 = new QButtonGroup(this, "ButtonGroup1");
+  ButtonGroup1->setFrameShape(QButtonGroup::WinPanel);
+  ButtonGroup1->setTitle(trUtf8(""));
+
+  QWidget* privateLayoutWidget = new QWidget(ButtonGroup1, "Layout2");
+  privateLayoutWidget->setGeometry(QRect(70, 20, 400, 20));
+  Layout2 = new QHBoxLayout(privateLayoutWidget, 0, 6, "Layout2");
+
+  RadioButton1 = new QRadioButton(privateLayoutWidget, "RadioButton1");
   RadioButton1->setText(trUtf8("reversible"));
+  Layout2->addWidget(RadioButton1);
 
-  RadioButton2 = new QRadioButton(ButtonGroup1, "RadioButton2");
-  RadioButton2->setGeometry(QRect(230, 15, 87, 20));
+  RadioButton2 = new QRadioButton(privateLayoutWidget, "RadioButton2");
   RadioButton2->setText(trUtf8("irreversible"));
+  Layout2->addWidget(RadioButton2);
 
-  RadioButton3 = new QRadioButton(ButtonGroup1, "RadioButton3");
-  RadioButton3->setGeometry(QRect(350, 15, 87, 20));
+  RadioButton3 = new QRadioButton(privateLayoutWidget, "RadioButton3");
   RadioButton3->setText(trUtf8("General"));
+  Layout2->addWidget(RadioButton3);
 
-  // fourth Row
-  QHBoxLayout *hBoxLayout5a = new QHBoxLayout(Frame5, 0);
-  hBoxLayout5a->addSpacing(15);
-  Table1 = new QTable(Frame5, "Table1");
-  hBoxLayout5a->addWidget(Table1);
-  Table1->setNumCols(Table1->numCols() + 1);
-  Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
-  Table1->setNumCols(Table1->numCols() + 1);
-  Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
-  Table1->setNumCols(Table1->numCols() + 1);
-  Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
-  Table1->setNumRows(Table1->numRows() + 1);
-  Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("1"));
-  Table1->setNumRows(Table1->numRows() + 1);
-  Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("2"));
-  Table1->setNumRows(Table1->numRows() + 1);
-  Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("3"));
-  Table1->setNumRows(3);
-  Table1->setNumCols(3);
-  Table1->sortColumn (0, true, true);
-  Table1->setFixedSize(375, 104);
-  Table1->setFocusPolicy(QWidget::WheelFocus);
-  TextLabel3 = new QLabel(Frame5, "TextLabel3");
-  TextLabel3->setGeometry(QRect(20, 90, 56, 20));
-  TextLabel3->setText(trUtf8("Parameters"));
+  FunctionWidget1Layout->addWidget(ButtonGroup1, 3, 1);
 
-  // fifth row
-  QHBoxLayout *hBoxLayout6a = new QHBoxLayout(Frame6, 0);
-  hBoxLayout6a->addSpacing(15);
-  Table2 = new QTable(Frame6, "Table2");
-  hBoxLayout6a->addWidget(Table2);
-  Table2->setNumCols(Table2->numCols() + 1);
-  Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
-  Table2->setNumCols(Table2->numCols() + 1);
-  Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
-  Table2->setNumCols(Table2->numCols() + 1);
-  Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
-  Table2->setNumRows(Table2->numRows() + 1);
-  Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("1"));
-  Table2->setNumRows(Table2->numRows() + 1);
-  Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("2"));
-  Table2->setNumRows(Table2->numRows() + 1);
-  Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("3"));
+  TextLabel4 = new QLabel(this, "TextLabel4");
+  TextLabel4->setText(trUtf8("Parameters"));
+
+  FunctionWidget1Layout->addWidget(TextLabel4, 5, 0);
+
+  Line3 = new QFrame(this, "Line3");
+  Line3->setFrameShape(QFrame::HLine);
+  Line3->setFrameShadow(QFrame::Sunken);
+  Line3->setFrameShape(QFrame::HLine);
+
+  FunctionWidget1Layout->addMultiCellWidget(Line3, 10, 10, 0, 1);
+
+  LineEdit1 = new QLineEdit(this, "LineEdit1");
+
+  FunctionWidget1Layout->addWidget(LineEdit1, 0, 1);
+
+  Table2 = new QTable(this, "Table2");
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Description"));
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Min"));
+  Table2->setNumCols(Table2->numCols() + 1); Table2->horizontalHeader()->setLabel(Table2->numCols() - 1, trUtf8("Max"));
+  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("1"));
+  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("2"));
+  Table2->setNumRows(Table2->numRows() + 1); Table2->verticalHeader()->setLabel(Table2->numRows() - 1, trUtf8("3"));
   Table2->setNumRows(3);
   Table2->setNumCols(3);
-  Table2->sortColumn (0, true, true);
-  Table2->setFixedSize(335, 104);
-  Table2->setFocusPolicy(QWidget::WheelFocus);
-  TextLabel4 = new QLabel(Frame6, "TextLabel4");
-  TextLabel4->setGeometry(QRect(20, 90, 56, 20));
-  TextLabel4->setText(trUtf8("Application"));
 
-  //sixth row
-  QHBoxLayout *hBoxLayout7a = new QHBoxLayout(Frame7, 0);
-  hBoxLayout7a->addSpacing(15);
-  commitChanges = new QPushButton("&Commit Changes", Frame7);
-  cancelChanges = new QPushButton("&Cancel Changes", Frame7);
-  hBoxLayout7a->addWidget(commitChanges);
-  hBoxLayout7a->addSpacing(15);
-  hBoxLayout7a->addWidget(cancelChanges);
+  FunctionWidget1Layout->addMultiCellWidget(Table2, 8, 9, 1, 1);
+  QSpacerItem* spacer = new QSpacerItem(71, 80, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  FunctionWidget1Layout->addItem(spacer, 9, 0);
+
+  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5->setText(trUtf8("Application"));
+
+  FunctionWidget1Layout->addWidget(TextLabel5, 8, 0);
+
+  Line4 = new QFrame(this, "Line4");
+  Line4->setFrameShape(QFrame::HLine);
+  Line4->setFrameShadow(QFrame::Sunken);
+  Line4->setFrameShape(QFrame::HLine);
+
+  FunctionWidget1Layout->addMultiCellWidget(Line4, 7, 7, 0, 1);
+  QSpacerItem* spacer_2 = new QSpacerItem(71, 190, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  FunctionWidget1Layout->addItem(spacer_2, 6, 0);
+
+  Table1 = new QTable(this, "Table1");
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
+  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
+  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("1"));
+  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("2"));
+  Table1->setNumRows(Table1->numRows() + 1); Table1->verticalHeader()->setLabel(Table1->numRows() - 1, trUtf8("3"));
+  Table1->setNumRows(3);
+  Table1->setNumCols(3);
+
+  FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 6, 1, 1);
+
+  TextLabel3 = new QLabel(this, "TextLabel3");
+  TextLabel3->setText(trUtf8("Function Type"));
+
+  FunctionWidget1Layout->addWidget(TextLabel3, 3, 0);
+
+  Line1 = new QFrame(this, "Line1");
+  Line1->setFrameShape(QFrame::HLine);
+  Line1->setFrameShadow(QFrame::Sunken);
+  Line1->setFrameShape(QFrame::HLine);
+
+  FunctionWidget1Layout->addMultiCellWidget(Line1, 2, 2, 0, 1);
 
   // signals and slots connections
   /*** For Cancel Button Clicked ***/
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
   connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent, SLOT(slotFunctionTableChanged(QString &)));
-
   /*** For Commit Button Clicked ***/
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotCommitButtonClicked()));
   //connect(this, SIGNAL(signalCancelButtonClicked(QString &)), (ListViews*)parent
