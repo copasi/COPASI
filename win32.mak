@@ -17,7 +17,7 @@ $(PRG):	$(OBJDIR) $(OBJS)
 	$(LINK) $(LINKFLAGS) -o $(PRG) $(OBJS)
 
 $(OBJDIR): 
-	-mkdir $(OBJDIR)
+	mkdir obj
 
 {$(SRCDIR)}.cpp{$(OBJDIR)}.o:
 	$(CXX) $(CFLAGS) /Fo"$@" $< 
@@ -29,7 +29,7 @@ doc/html/index.html: $(INCDIR)/*.h test.dox
 
 clean:  
 	-del /f test
-        -rmdir /s /q $(OBJDIR)
+        -rmdir /s /q obj
 	-rmdir /s /q debug
 #	-rmdir /s /q doc
 
