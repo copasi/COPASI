@@ -161,6 +161,8 @@ std::string CMathNodeSymbol::getData() const {return mData;}
 
 bool CMathNodeSymbol::setData(const CMathSymbol * pSymbol)
 {
+  mpSymbol = pSymbol;
+
   if (mpSymbol)
     mData = mpSymbol->getName();
   else
