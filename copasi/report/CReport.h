@@ -51,9 +51,9 @@ class CReport : public CCopasiObject
     /**
     set the ostream 
     */
-    void setOutputStream(std::ostream & outStream)
+    void setOutputStreamAddr(std::ostream * outStream)
     {
-      ostream = & outStream;
+      ostream = outStream;
     }
 
     /**

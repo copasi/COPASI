@@ -62,6 +62,7 @@ void CScanTask::initializeReporting(std::ostream & out)
   pdelete(mpOutEnd);
   mpOut = & out;
   // added by Liang for Scan Report
+  mReport->setOutputStreamAddr(mpOut);
   mReport->compile();
 
   // for Steadystate Report

@@ -71,6 +71,7 @@ void CSteadyStateTask::initializeReporting(std::ostream & out)
 
   mpOut = & out;
   mpOutEnd = new COutputEvent(*this);
+  mReport->setOutputStreamAddr(mpOut);
 }
 
 void CSteadyStateTask::load(CReadConfig & configBuffer)

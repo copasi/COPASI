@@ -111,6 +111,8 @@ void CTrajectoryTask::initializeReporting(std::ostream & out)
   mpOutInit = new COutputEvent(0);
   mpOutPoint = new COutputEvent(1);
   mpOutEnd = new COutputEvent(2);
+
+  mReport->setOutputStreamAddr(mpOut);
 }
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
