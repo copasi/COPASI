@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/16 20:37:53 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -34,6 +34,7 @@ class FunctionWidget : public CopasiWidget
     std::vector<std::string> mKeys;
     QPushButton* btnOK; //By G
     QPushButton* btnCancel; //By G
+    QPushButton* btnDelete; //By G
 
   public:
     FunctionWidget(QWidget *parent, const char * name = 0, WFlags f = 0);
@@ -51,6 +52,7 @@ class FunctionWidget : public CopasiWidget
 
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
+    virtual void slotBtnDeleteClicked();
     virtual void CurrentValueChanged(int, int);
 
   private:

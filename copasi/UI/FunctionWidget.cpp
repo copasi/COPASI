@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/16 20:37:53 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /***********************************************************************
@@ -55,6 +55,7 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
+  btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -64,6 +65,8 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
   hBoxLayout->addWidget(btnOK);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnCancel);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnDelete);
   hBoxLayout->addSpacing(50);
 
   QHeader *tableHeader = table->horizontalHeader();
@@ -82,6 +85,8 @@ FunctionWidget::FunctionWidget(QWidget* parent, const char* name, WFlags fl)
           SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()), this,
           SLOT(slotBtnCancelClicked()));
+  connect(btnDelete, SIGNAL(clicked ()), this,
+          SLOT(slotBtnDeleteClicked()));
   connect(table, SIGNAL(currentChanged(int, int)),
           this, SLOT(CurrentValueChanged(int, int)));
 }
@@ -175,6 +180,39 @@ void FunctionWidget::slotBtnOKClicked() //By G
 void FunctionWidget::slotBtnCancelClicked()
 {
   fillTable();
+}
+
+void FunctionWidget::slotBtnDeleteClicked()
+{
+  int choice = QMessageBox::warning(this, "Confirm Delete",
+                                    "Delete Selected Rows?\n"
+                                    "Only Fully Selected Rows will be deleted." ,
+                                    "Yes", "No", 0, 0, 1);
+  switch (choice)
+    {
+    case 0:  // Yes or Enter
+      {
+        int j = table->currentRow();
+        if (table->isRowSelected(j, true)) //True for Completely selected rows.
+          {
+            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+              {
+                QString name(table->text(j, 0));
+                ListViews::notify(ListViews::FUNCTION, ListViews::DELETE, mKeys[j]);
+
+                table->removeSelectedRows(true);
+
+                CCopasiVectorN < CFunction > & objects = Copasi->pFunctionDB->loadedFunctions();
+                objects.remove(name.latin1());
+              }
+          }
+        break;
+      }
+    case 1:  // No or Escape
+      {
+        break;
+      }
+    }
 }
 
 void FunctionWidget::createNewObject()

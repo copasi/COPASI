@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/16 20:37:53 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /***********************************************************************
@@ -64,7 +64,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
 
   btnOK = new QPushButton("&OK", this);
   btnCancel = new QPushButton("&Cancel", this);
-  btnSwitchCols = new QPushButton("&Show Numbers", this); //By G
+  btnSwitchCols = new QPushButton("&Show Numbers", this);
+  btnDelete = new QPushButton("&Delete", this);
 
   QHBoxLayout *hBoxLayout = new QHBoxLayout(vBoxLayout, 0);
 
@@ -77,6 +78,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
   hBoxLayout->addWidget(btnCancel);
   hBoxLayout->addSpacing(5);
   hBoxLayout->addWidget(btnSwitchCols);
+  hBoxLayout->addSpacing(5);
+  hBoxLayout->addWidget(btnDelete);
   hBoxLayout->addSpacing(50);
 
   table->sortColumn (0, true, true);
@@ -92,7 +95,8 @@ MetabolitesWidget::MetabolitesWidget(QWidget *parent, const char * name, WFlags 
           this, SLOT(slotBtnOKClicked()));
   connect(btnCancel, SIGNAL(clicked ()),
           this, SLOT(slotBtnCancelClicked()));
-
+  connect(btnDelete, SIGNAL(clicked ()),
+          this, SLOT(slotBtnDeleteClicked()));
   connect(btnSwitchCols, SIGNAL(clicked ()),
           this, SLOT(slotBtnSwitchColsClicked())); //By G
   connect(table, SIGNAL(currentChanged(int, int)),
@@ -335,6 +339,42 @@ void MetabolitesWidget::slotBtnSwitchColsClicked() //By G
 void MetabolitesWidget::slotBtnCancelClicked()
 {
   fillTable();
+}
+
+void MetabolitesWidget::slotBtnDeleteClicked()
+{
+  int choice = QMessageBox::warning(this, "Confirm Delete",
+                                    "Delete Selected Rows?\n"
+                                    "Only Fully Selected Rows will be deleted." ,
+                                    "Yes", "No", 0, 0, 1);
+  switch (choice)
+    {
+    case 0:  // Yes or Enter
+      {
+        int j = table->currentRow();
+        if (table->isRowSelected(j, true)) //True for Completely selected rows.
+          {
+            if (table->currentRow() < table->numRows() - 1) //To prevent from deleting last row.
+              {
+                QString name(table->text(j, 0));
+
+                ListViews::notify(ListViews::METABOLITE, ListViews::DELETE, mKeys[j]);
+
+                table->removeSelectedRows(true);
+
+                CCopasiVector < CMetab > & objects = dataModel->getModel()->getMetabolites();
+                CMetab* metab = (CMetab*)(CCopasiContainer*)CKeyFactory::get(mKeys[j]);
+                unsigned C_INT32 i = objects.getIndex(metab);
+                objects.remove(i);
+              }
+          }
+        break;
+      }
+    case 1:  // No or Escape
+      {
+        break;
+      }
+    }
 }
 
 void MetabolitesWidget::tableValueChanged(int C_UNUSED(row),

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/16 20:37:52 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -38,6 +38,7 @@ class ReactionsWidget : public CopasiWidget
     MyTable *table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
+    QPushButton *btnDelete;
     bool binitialized;
     std::vector<std::string> mKeys;
 
@@ -57,6 +58,7 @@ class ReactionsWidget : public CopasiWidget
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
+    virtual void slotBtnDeleteClicked();
     virtual void tableValueChanged(int, int);
 
     virtual void CurrentValueChanged(int, int);

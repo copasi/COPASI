@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/24 20:35:52 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 // cmodel.h : interface of the CModel class
@@ -488,6 +488,7 @@ class CModel : public CCopasiContainer
      * @return CCopasiVectorN< CMetab > & metabolites
      */
     const CCopasiVector< CMetab > & getMetabolites() const;
+    CCopasiVector< CMetab > & getMetabolites();
 
     /**
      * Retrieves the vector of independent metabolites.

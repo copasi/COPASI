@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gasingh $ 
-   $Date: 2003/10/16 20:37:52 $
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,6 +33,7 @@ class MetabolitesWidget : public CopasiWidget
     MyTable * table;
     QPushButton *btnOK;
     QPushButton *btnCancel;
+    QPushButton *btnDelete;
     QPushButton *btnSwitchCols; //By G
     bool binitialized;
     std::vector<std::string> mKeys;
@@ -51,6 +52,7 @@ class MetabolitesWidget : public CopasiWidget
     virtual void slotTableSelectionChanged();
     virtual void slotBtnOKClicked();
     virtual void slotBtnCancelClicked();
+    virtual void slotBtnDeleteClicked();
     virtual void tableValueChanged(int, int);
 
     virtual void slotBtnSwitchColsClicked(); //By G

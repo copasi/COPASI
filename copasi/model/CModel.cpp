@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
-   $Author: lixu1 $ 
-   $Date: 2003/10/30 20:25:12 $
+   $Author: gasingh $ 
+   $Date: 2003/10/31 22:49:45 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -930,6 +930,7 @@ const CCopasiVectorN< CReaction > & CModel::getReactionsX() const {return mSteps
  *        @return vector < CMetab * >
  */
 const CCopasiVector< CMetab > & CModel::getMetabolites() const {return mMetabolites;}
+CCopasiVector< CMetab > & CModel::getMetabolites() {return mMetabolites;}
 CCopasiVector< CMetab > & CModel::getMetabolitesInd() {return mMetabolitesInd;}
 CCopasiVector< CMetab > & CModel::getMetabolitesDep() {return mMetabolitesDep;}
 const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
