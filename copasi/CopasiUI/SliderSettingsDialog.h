@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/30 12:11:58 $
+   $Date: 2005/03/31 13:38:07 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Wed Mar 30 14:08:23 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.6 2005/03/30 12:11:58 gauges Exp $)
+ ** Created: Thu Mar 31 12:12:50 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.7 2005/03/31 13:38:07 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

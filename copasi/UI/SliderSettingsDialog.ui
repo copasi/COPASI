@@ -78,6 +78,16 @@
                     <property name="text">
                         <string>choose object</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select an object for the slider</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Clicking this button opens a dialog that
+lets the user choose the object that the 
+slider will manipulate. The object has to 
+represent either an integer value or a float
+value.</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -95,6 +105,14 @@
                     </property>
                     <property name="text">
                         <string>Minimum Value:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Lowest value the slider can have</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Here the user can enter the lowest value the slider will take.
+For logarithmic sliders this has to be a positive value greater
+than 0.0.</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit">
@@ -132,6 +150,13 @@
                     <property name="text">
                         <string>Maximum Value:</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Maximum value the slider will take.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Here the user can enter the maximal value that
+the slider will take.</string>
+                    </property>
                 </widget>
                 <widget class="QLineEdit">
                     <property name="name">
@@ -142,6 +167,9 @@
                     </property>
                     <property name="alignment">
                         <set>AlignRight</set>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string></string>
                     </property>
                 </widget>
             </hbox>
@@ -161,6 +189,15 @@
                     <property name="text">
                         <string>logarithmic</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Wether slider has logarithmic scale.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, the slider will have a 
+logarithmic scale. Minimum
+and maximum value must be 
+greater than 0.0.</string>
+                    </property>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -168,6 +205,17 @@
                     </property>
                     <property name="text">
                         <string>use for all tasks</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Wether slider will be usable in all tasks.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, the slider will show up in all tasks
+that support sliders.
+Making a slider that controls a task specific
+parameter (e.g. StepNumber in time course) global
+is not prohibited, but on the other hand, it probably
+does not make much sense either.</string>
                     </property>
                 </widget>
                 <spacer>
@@ -203,6 +251,13 @@
                     </property>
                     <property name="text">
                         <string>more options</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Displays or hides an extended set of options.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Clicking this button either displays or hides
+some more less often needed options.</string>
                     </property>
                 </widget>
                 <spacer>
@@ -245,6 +300,17 @@
                     <property name="text">
                         <string>Ticksize factor:</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>how many minor ticks make a major tick</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>This value determines how many minor 
+ticks make up a major tick. Minor ticks
+are small steps on the slider whereas major
+ticks are larger steps.
+The user can make a minor step via the cursor
+keys and a major step via the page up/down keys.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
@@ -252,6 +318,14 @@
                     </property>
                     <property name="text">
                         <string>Number of Minor Ticks:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Number of steps for the slider.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>This value determines how many steps
+the slider makes from minimum to 
+maximum value.</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="0" column="1">
@@ -342,6 +416,13 @@
                     <property name="text">
                         <string>Object Value:</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The value of the underlying object.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Here the user can change the actual value of the object
+when editing or creating a slider.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="3">
                     <property name="name">
@@ -349,6 +430,15 @@
                     </property>
                     <property name="text">
                         <string>Minor Ticksize:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Value change corresponding to a minor step</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>This value signifies the value change that
+corresponds to one minor step on the slider.
+The user can either set this directly or indirectly
+when setting the "Number of Minor Ticks".</string>
                     </property>
                 </widget>
             </grid>

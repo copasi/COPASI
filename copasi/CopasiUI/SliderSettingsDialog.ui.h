@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/30 12:11:59 $
+   $Date: 2005/03/31 13:38:07 $
    End CVS Header */
 
 /****************************************************************************
@@ -179,9 +179,9 @@ void SliderSettingsDialog::minValueChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  if (this->mMinValue == 0.0 && this->mpLogCheckBox->isChecked())
+  if (this->mMinValue <= 0.0 && this->mpLogCheckBox->isChecked())
     {
-      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0 or negative.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
       this->mpLogCheckBox->setChecked(false);
       this->mScaling = CSlider::linear;
     }
@@ -383,10 +383,10 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
   this->mChanged = true;
   if (on)
     {
-      // check if the minValue is 0.0 if so, issue an error message and uncheck the checkbox again
-      if (this->mMinValue == 0.0)
+      // check if the minValue is 0.0 or negative if so, issue an error message and uncheck the checkbox again
+      if (this->mMinValue <= 0.0)
         {
-          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0 or negative.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
           this->mpLogCheckBox->setChecked(false);
           this->mScaling = CSlider::linear;
         }
