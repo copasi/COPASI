@@ -260,40 +260,6 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
 
   // now i = imax, so take the first function
   setFunction(fl[0], true);  //brute force
-
-  /* old version
-    if (newFunction == "")
-      {
-        for (i = 0; i < imax; ++i)
-          //if (fl[i] == getFunctionName()) break;
-          if (fl[i] == currentFunction) break;
-      }
-    else
-      {
-        for (i = 0; i < imax; i++)
-          if (fl[i] == newFunction)
-            break;
-      }
-   
-    // if not found then see if there is a best match in the list (i.e. a corresponding rev/irrev function).
-    // otherwise just take the first function. no other heuristics yet
-    if (i == imax)  // i = 0;
-      {
-        // first prepare the substring - this is very clumsy at the moment
-        s = currentFunction.substr(0, currentFunction.find ('(') - 1);     //'-1' so as to strip off the white space before '('
-   
-        for (i = 0; i < imax; i++)
-          if (fl[i].find(s) >= 0)   // if find succeeds, the return value is likely to be 0
-            break;
-   
-        if (i == imax)
-          i = 0;
-      }
-   
-    //change function
-    if (imax == 0) setFunction("", true);
-    else setFunction(fl[i], true);  //brute force
-  */
 }
 
 void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
