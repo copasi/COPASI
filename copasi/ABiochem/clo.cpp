@@ -10,7 +10,6 @@
  **/
 
 #include "clo.h"
-#include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <cctype>
@@ -19,8 +18,9 @@ namespace
   {
   const char const_usage[] =
     "  -g, -n, --genes int    the total number of genes\n"
-    "  -i, -k, --inputs int   the total number of inputs links\n"
+    "  -i, -k, --inputs int   the number of inputs per gene\n"
     "  -p, --positive double  the probability of inputs being positive\n"
+    "  -r, --rewire double    the probability of rewiring links at random\n"
     "  -s, --seed int         a seed for the random number generator\n"
     "  -t, --total int        the total number of networks to generate\n"
     "  -x, --prefix string    Prefix for filenames\n";
@@ -60,6 +60,8 @@ void clo::parser::finalize (void)
           throw option_error("missing value for 'positive' option");
         case option_prefix:
           throw option_error("missing value for 'prefix' option");
+        case option_rewire:
+          throw option_error("missing value for 'rewire' option");
         case option_seed:
           throw option_error("missing value for 'seed' option");
         case option_total:
@@ -172,6 +174,11 @@ void clo::parser::parse_short_option (char option, int position, opsource source
       state_ = state_value;
       locations_.positive = position;
       return;
+    case 'r':
+      openum_ = option_rewire;
+      state_ = state_value;
+      locations_.rewire = position;
+      return;
     case 's':
       openum_ = option_seed;
       state_ = state_value;
@@ -232,6 +239,13 @@ void clo::parser::parse_long_option (const char *option, int position, opsource 
     {
       openum_ = option_prefix;
       locations_.prefix = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "rewire") == 0)
+    {
+      openum_ = option_rewire;
+      locations_.rewire = position;
       state_ = state_value;
       return;
     }
@@ -336,6 +350,31 @@ void clo::parser::parse_value (const char *value)
         options_.prefix = value;
       }
       break;
+    case option_rewire:
+      {
+        char *endptr;
+        double tmp = strtod(value, &endptr);
+        while (*endptr != 0 && isspace(*endptr))
+          ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid floating point value '");
+            error += value;
+            error += "'";
+            throw option_error(error);
+          }
+        if (tmp < 0.0)
+          {
+            throw option_error("floating point value out of range, 'rewire' min is 0.0");
+          }
+        if (tmp > 1.0)
+          {
+            throw option_error("floating point value out of range, 'rewire' max is 1.0");
+          }
+        options_.rewire = tmp;
+      }
+      break;
     case option_seed:
       {
         char *endptr;
@@ -400,6 +439,9 @@ namespace
 
     if (name_size <= 6 && name.compare(0, name_size, "prefix", name_size) == 0)
       matches.push_back("prefix");
+
+    if (name_size <= 6 && name.compare(0, name_size, "rewire", name_size) == 0)
+      matches.push_back("rewire");
 
     if (name_size <= 4 && name.compare(0, name_size, "seed", name_size) == 0)
       matches.push_back("seed");

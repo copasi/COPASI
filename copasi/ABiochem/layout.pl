@@ -130,8 +130,8 @@ while( defined($gfile = <*.$GRAPHEXTENSION>) )
 	print ".";
 
 	# run Gepasi
-	$sfile = $gfile;
-	$sfile =~ s/\.$GRAPHEXTENSION/\.gps/;
+	$sfile = $gfile . ".gps";
+#	$sfile =~ s/\.$GRAPHEXTENSION/\.gps/;
 	system "$GEPASI $sfile";
 
 	print ".\n";

@@ -68,12 +68,12 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l2], modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l2], l2, modf, 1.0, 1.0);
         }
       gene[i]->setRate(1.0);
       gene[i]->setDegradationRate(1.0);
@@ -98,7 +98,7 @@ void MakeGeneNetwork(C_INT32 n,
                 if (gene[l] == gene[i]->getModifier(m))
                   modf = gene[i]->getModifierType(m);
               // remove the previous link
-              gene[i]->removeModifier(gene[l]);
+              gene[j]->removeModifier(gene[l]);
               // find a new link (that is not yet there)
               for (l = -1; l < 0; )
                 {
@@ -111,7 +111,7 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[i]->addModifier(gene[l], modf, 1.0, 1.0);
+              gene[j]->addModifier(gene[l], l, modf, 1.0, 1.0);
             }
           // check if we rewire the l2 link
           if (dr250() < r)
@@ -122,7 +122,7 @@ void MakeGeneNetwork(C_INT32 n,
                 if (gene[l2] == gene[i]->getModifier(m))
                   modf = gene[i]->getModifierType(m);
               // remove the previous link
-              gene[i]->removeModifier(gene[l2]);
+              gene[j]->removeModifier(gene[l2]);
               // find a new link (that is not yet there)
               for (l2 = -1; l2 < 0; )
                 {
@@ -135,9 +135,9 @@ void MakeGeneNetwork(C_INT32 n,
                       }
                 }
               // add the new link
-              gene[i]->addModifier(gene[l2], modf, 1.0, 1.0);
+              gene[j]->addModifier(gene[l2], l2, modf, 1.0, 1.0);
             }
         }
     }
-  sprintf(comments, "Model of a small-worls gene network using the Watts-Strogatz algorithm\nwith %ld genes and %ld input connections each\nand %lg probability of rewiring.\n\nCreated automatically by the A-Biochem system", n, 2*links2, r);
+  sprintf(comments, "Model of a small-world gene network using the Watts-Strogatz algorithm\nwith %ld genes, %ld total input connections, and probability of rewiring %lg.\n\nCreated automatically by the A-Biochem system", n, n*2*links2, r);
 }

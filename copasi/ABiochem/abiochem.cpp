@@ -14,6 +14,8 @@
 #include <string>
 #include <strstream>
 #include <vector>
+#include <stack>
+#include <queue>
 #include <iomanip>
 #include <algorithm>
 #include <stdio.h>
@@ -75,7 +77,8 @@ void WriteDot(char *Title, CCopasiVector < CGene > &gene)
   fout << "\t\tfontname=\"Helvetica\"\n";
   fout << "\t\tcolor=\"blue\"\n";
   fout << "\t\tarrowhead=\"normal\"\n";
-  fout << "\t\tstyle=\"bold\"\n";
+  if (gene.size() < 15)
+    fout << "\t\tstyle=\"bold\"\n";
   fout << "\t\tlen=2.5\n";
   fout << "\t]\n\n";
   // graph description
@@ -341,44 +344,319 @@ void MakeKinType(CFunctionDB &db, C_INT32 k, C_INT32 p)
     }
 }
 
-void GraphMetrics(CCopasiVector < CGene > &gene)
+// calculates the single source shortest-path for gene g
+// it also stores all the shortest distances in the vector dist
+C_INT32 SSSP(CCopasiVector < CGene > &gene, C_INT32 g, C_INT32 *dist)
 {
-  C_INT32 i, j, l, n;
+  C_INT32 i, j, n, u, cnt, depth;
+  vector < C_INT32 > *distList, *nextList, nbrs;
+
+  n = gene.size();
+  // set all distances to the maximum
+  for (i = 0; i < n; i++)
+    dist[i] = n;
+  // check if valid gene index
+  if (g >= n)
+    return n;
+  // distance to self is zero
+  dist[g] = 0;
+  cnt = 0;
+  distList = new vector < C_INT32 >;
+  distList->push_back(g);
+  for (depth = 1; distList->size() > 0; depth++)
+    {
+      nextList = new vector < C_INT32 >;
+      for (i = 0; i < distList->size(); i++)
+        {
+          // fill nbrs with the neighbors
+          nbrs.clear();
+          for (j = 0; j < gene[distList->at(i)]->getModifierNumber(); j++)
+            nbrs.push_back(gene[distList->at(i)]->getModifierIndex(j));
+          for (j = 0; j < nbrs.size(); j++)
+            {
+              u = nbrs[j];
+              if (dist[u] == n)
+                {
+                  cnt++;
+                  dist[u] = depth;
+                  nextList->push_back(u);
+                }
+            }
+        }
+      delete distList;
+      distList = nextList;
+    }
+  delete nextList;
+  return cnt == n - 1 ? depth - 2 : n;
+}
+
+// calculates the betweeness centrality for each gene
+// uses the algorithm of Brandes (J Math Sociol 25, 163-177, 2001)
+void Betweeness(CCopasiVector < CGene > &gene, vector <C_FLOAT64> &b)
+{
+  C_INT32 i, n, s, tot, v, w;
+  vector < C_INT32 > sigma, d;
+  vector < C_FLOAT64 > delta;
+  stack < C_INT32 > S;
+  queue < C_INT32 > Q;
+  typedef list < C_INT32 > INTLIST;
+  vector < INTLIST* > P;
+
+  n = gene.size();
+  sigma.reserve(n);
+  delta.reserve(n);
+  d.reserve(n);
+  P.reserve(n);
+  for (i = 0; i < n; i++)
+    P[i] = new INTLIST;
+  // reset variables
+  for (i = 0; i < n; i++)
+    b[i] = 0.0;
+  // iterate over all genes
+  for (s = 0; s < n; s++)
+    {
+      // reset variables
+      while (!S.empty())
+        S.pop();
+      while (!Q.empty())
+        Q.pop();
+      for (i = 0; i < n; i++)
+        {
+          sigma[i] = 0;
+          d[i] = -1;
+          if (!P[i]->empty())
+            P[i]->clear();
+        }
+      sigma[s] = 1;
+      d[s] = 1;
+      // add s to queue
+      Q.push(s);
+      while (! Q.empty())
+        {
+          v = Q.front();
+          Q.pop();
+          S.push(v);
+          tot = gene[v]->getModifierNumber();
+          for (i = 0; i < tot; i++)
+            {
+              w = gene[v]->getModifierIndex(i);
+              // w found for the first time?
+              if (d[w] < 0)
+                {
+                  Q.push(w);
+                  d[w] = d[v] + 1;
+                }
+              // shortest path to w via v?
+              if (d[w] == d[v] + 1)
+                {
+                  sigma[w] += sigma[v];
+                  P[w]->push_back(v);
+                }
+            }
+        }
+      for (i = 0; i < n; i++)
+        delta[i] = 0.0;
+      // S returns vertices in order of non-increasing distance from s
+      while (!S.empty())
+        {
+          w = S.top();
+          S.pop();
+          INTLIST::iterator it;
+          for (it = P[w]->begin(); it != P[w]->end(); it++)
+            delta[*it] += sigma[*it] * (1 + delta[w]) / sigma[w];
+          if (w != s)
+            {
+              C_FLOAT64 tmp = delta[w];
+              b[w] += delta[w];
+            }
+        }
+    }
+  for (i = 0; i < n; i++)
+    {
+      // make the measures relative
+      b[i] /= ((C_FLOAT64)n - 1.0) * ((C_FLOAT64)n - 2.0);
+      // delete the lists allocated
+      delete P[i];
+    }
+}
+
+// calculates the clustering coefficient of gene g
+C_FLOAT64 cluster(CCopasiVector < CGene > &gene, C_INT32 g)
+{
+  C_INT32 i, j, k, m, n, edges;
+  CCopasiVector <CGene> neighbors;
+  CGene *ptG;
+  // create the neighborhood
+  n = gene[g]->getModifierNumber();
+  for (i = 0; i < n; i++)
+    neighbors.add(gene[g]->getModifier(i));
+  // count the number of links within the neighborhood
+  for (edges = i = 0; i < n; i++)
+    { // one neighbor at a time
+      m = neighbors[i]->getModifierNumber();
+      for (j = 0; j < m; j++)
+        { // one modifier at a time
+          ptG = neighbors[i]->getModifier(j);
+          // increment if this modifier is in the neighborhood
+          // but it is not itself
+          if (ptG != neighbors[i])
+            for (k = 0; k < m; k++)
+              if (ptG == neighbors[k])
+                edges++;
+        }
+    }
+  return (C_FLOAT64) edges / (C_FLOAT64) (n*(n - 1));
+}
+
+void GraphMetrics(CCopasiVector < CGene > &gene, C_INT32 tedges, char *Title)
+{
+  C_INT32 i, j, k, l, n;
   TNT::Matrix<C_FLOAT64> Adj;
   CEigen *eigen;
   C_FLOAT64 ssRes, *eigen_r, *eigen_i;
+  C_INT32 **dist;
+  ofstream fout;
+  char fname[1024];
+  vector <C_FLOAT64> mpl, tpl, b;
+  C_FLOAT64 cpl, cl, cll, cbl, acc, density, netcl, tmp, tmp2, netbc;
+  C_INT32 idcenter, odcenter, clcenter, diameter, id, od, bcenter;
 
+  // open the file for statistics
+  sprintf(fname, "%s.netstat", Title);
+  fout.open(fname, ios::out & ~ios::binary);
   n = gene.size();
-  // we start by creating the adjacency matrix
+  density = (C_FLOAT64) tedges / (C_FLOAT64) (n * n);
+  fout << "number of vertices\t" << n << endl;
+  fout << "number of arcs\t" << tedges << endl;
+  fout << "density\t" << density << endl;
+
+#ifdef XXXX
+  // create the adjacency matrix
   Adj.newsize(n, n);
   for (i = 0; i < n; i++)
     {
       for (j = 0; j < n; j++)
-        Adj[i][j] = 0.0;
-      for (j = 0; j < gene[i]->getModifierNumber(); j++)
+        Adj[j][i] = 0.0;
+      for (l = 0; l < gene[i]->getModifierNumber(); l++)
         {
-          for (l = 0; l < n; l++)
-            if (gene[i]->getModifier(j) == gene[l])
+          for (j = 0; j < n; j++)
+            if (gene[i]->getModifier(l) == gene[j])
               {
-                if (gene[i]->getModifierType(j) == 0)
-                  Adj[l][i] = -1.0;
-                else
-                  Adj[l][i] = 1.0;
+                Adj[j][i] = 1.0;
+                // if(gene[i]->getModifierType(l) == 0) Adj[j][i] = -1.0;
+                // else Adj[j][i] = 1.0;
                 break;
               }
         }
     }
-  // calculate eigenvalues
+  // calculate its eigenvalues
   eigen = new CEigen();
   ssRes = 1e-9;
   eigen->CalcEigenvalues(ssRes, Adj);
   eigen_r = eigen->getEigen_r();
   eigen_i = eigen->getEigen_i();
-  for (i = 0; i < n; i++)
-;
-  // std::cout << "Eigen[" << i << "]=" << eigen_r[i] << " i " << eigen_i[i] << endl;
-  // fprintf(stderr,"Eigen[%ld]=%lg + i*(%lg\n)", i, eigen_r[i], eigen_i[i]);
+  // TODO: linear regression on positive real parts
   delete eigen;
+#endif
+  // find the diameter
+  diameter = 0;
+  dist = new C_INT32 * [n];
+  for (i = 0; i < n; i++)
+    {
+      dist[i] = new C_INT32[n];
+      l = SSSP(gene, i, dist[i]);
+      if (l > diameter)
+        diameter = l;
+    }
+  fout << "diameter\t" << diameter << endl;
+  // calculate total and mean path lengths
+  mpl.reserve(n);
+  for (i = 0; i < n; i++)
+    {
+      cpl = 0.0;
+      for (j = 0; j < n; j++)
+        cpl += dist[i][j];
+      cll = (C_FLOAT64) (n - 1) / cpl;
+      cpl /= n - 1;
+      mpl.push_back(cpl);
+      tpl.push_back(cll);
+      // cout << gene[i]->getName() << " " << cll << endl;
+    }
+  // find the degree centers
+  for (id = od = idcenter = odcenter = i = 0; i < n; i++)
+    {
+      k = gene[i]->getOutDegree();
+      if (k > od)
+        {
+          odcenter = i;
+          od = k;
+        }
+      k = gene[i]->getInDegree();
+      if (k > id)
+        {
+          idcenter = i;
+          id = k;
+        }
+    }
+  cl = (C_FLOAT64) id / (C_FLOAT64)(n - 1);
+  fout << "in-degree center\t" << gene[idcenter]->getName() << endl;
+  fout << "center's in-degree\t" << id << endl;
+  fout << "center's relative in-degree\t" << cl << endl;
+  cl = (C_FLOAT64) od / (C_FLOAT64)(n - 1);
+  fout << "out-degree center\t" << gene[odcenter]->getName() << endl;
+  fout << "center's out-degree\t" << od << endl;
+  fout << "center's relative out-degree\t" << cl << endl;
+  // find the closeness center, degree centralization,
+  // and closeness centralization
+  for (cll = 0.0, clcenter = -1, i = 0; i < n; i++)
+    {
+      if (tpl[i] > cll)
+        {
+          cll = tpl[i];
+          clcenter = i;
+        }
+    }
+  for (netcl = 0.0, i = 0; i < n; i++)
+    netcl += cll - tpl[i];
+  netcl /= ((C_FLOAT64)n - 1.0) * ((C_FLOAT64)n - 2.0) / (2.0 * (C_FLOAT64)n - 3.0);
+  fout << "closeness center\t" << gene[clcenter]->getName() << endl;
+  fout << "center's relative closeness\t" << cll << endl;
+  fout << "network closeness centralization\t" << netcl << endl;
+  // calculate betweeness centralities
+  b.reserve(n);
+  Betweeness(gene, b);
+  //
+  for (cbl = 0.0, i = 0; i < n; i++)
+    {
+      if (b[i] > cbl)
+        {
+          cbl = b[i];
+          bcenter = i;
+        }
+    }
+  for (netbc = 0.0, i = 0; i < n; i++)
+    netbc += cbl - b[i];
+  fout << "betweenness center\t" << gene[bcenter]->getName() << endl;
+  fout << "center's relative betweenness\t" << cbl << endl;
+  fout << "network betweenness centralization\t" << netbc << endl;
+  // calculate characteristic path length
+  sort(mpl.begin(), mpl.end());
+  //  for(i=0; i<n; i++) cout << "mpl" << i << " " << mpl[i] << endl;
+  if (n / 2 == 0)
+    cpl = (mpl[n / 2] + mpl[1 + n / 2]) * 0.5;
+  else
+    cpl = mpl[n / 2];
+  fout << "characteristic path length\t" << cpl << endl;
+  // calculate clustering coefficients
+  for (acc = 0.0, i = 0; i < n; i++)
+    {
+      tmp = cluster(gene, i);
+      // cout << tmp << endl;
+      acc += tmp;
+    }
+  acc /= n;
+  fout << "average clustering coefficient\t" << acc << endl;
+  fout.close();
 }
 
 void WriteGepasi(char *Title, CModel &model)
@@ -486,21 +764,14 @@ void WriteGepasi(char *Title, CModel &model)
 
 void WriteSBML(char *Title, CModel &model)
 {
-#ifdef XXXX
-  string linein;
-  linein.reserve(100);
-  char strtmp[1024], mtitle[512];
+  char mtitle[512];
   ofstream fout;
-  CWriteConfig *modelBuff;
-  C_INT32 i, nmetab;
-  vector < CMetab * > Metab;
 
   sprintf(mtitle, "%s.xml", Title);
   fout.open(mtitle, ios::out | ios::trunc);
   // write the SBML !
   model.saveSBML(fout);
   fout.close();
-#endif
 }
 
 C_INT main(C_INT argc, char *argv[])
@@ -550,7 +821,8 @@ C_INT main(C_INT argc, char *argv[])
   if (seed)
     r250_init(seed);
   else
-    r250_init(((int) time(NULL)) | 12783579);
+    r250_init(((int) time(NULL)));
+  //  else r250_init(((int) time(NULL)) | 12783579);
 
   // generate tot networks of n genes with k random outputs each
   for (i = 0; i < tot; i++)
@@ -564,7 +836,7 @@ C_INT main(C_INT argc, char *argv[])
       for (j = 0; j < n; j++)
         MakeKinType(Copasi->FunctionDB, GeneList[j]->getModifierNumber(), GeneList[j]->getPositiveModifiers());
       // calculate several metrics
-      GraphMetrics(GeneList);
+      GraphMetrics(GeneList, k, NetTitle);
       // create graph files
       WriteDot(NetTitle, GeneList);
       WritePajek(NetTitle, GeneList);

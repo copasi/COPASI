@@ -114,11 +114,14 @@ C_FLOAT64 CGene::getDegradationRate(void)
   return mDegradationRate;
 }
 
-void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
+void CGene::addModifier(CGene *modf, C_INT32 idx, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   CGeneModifier *temp;
   temp = new CGeneModifier(modf, type, K, n);
+  // add the modifier object to the list
   mModifier.add(temp);
+  // add the index to the list
+  mModifierIndex.push_back(idx);
   // increment the in-degree of this gene
   addInDegree();
   // and the out-degree of the modifier's
@@ -127,7 +130,8 @@ void CGene::addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 
 void CGene::removeModifier(CGene *modf)
 {
-  int i;
+  C_INT32 i, j;
+  C_INT32 *it;
 
   for (i = 0; i < getModifierNumber(); i++)
     if (modf == getModifier(i))
@@ -137,8 +141,17 @@ void CGene::removeModifier(CGene *modf)
         // and the out-degree of the modifier's
         modf->decreaseOutDegree();
         mModifier.remove(i);
+        it = mModifierIndex.begin();
+        for (j = 0; j < i; j++)
+          it++;
+        mModifierIndex.erase(it);
         return;
       }
+}
+
+C_INT32 CGene::getModifierIndex(C_INT32 n)
+{
+  return mModifierIndex[n];
 }
 
 C_INT32 CGene::getModifierType(C_INT32 n)

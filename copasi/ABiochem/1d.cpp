@@ -68,12 +68,12 @@ void MakeGeneNetwork(C_INT32 n,
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l], modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l], l, modf, 1.0, 1.0);
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
-          gene[i]->addModifier(gene[l2], modf, 1.0, 1.0);
+          gene[i]->addModifier(gene[l2], l2, modf, 1.0, 1.0);
         }
       gene[i]->setRate(1.0);
       gene[i]->setDegradationRate(1.0);

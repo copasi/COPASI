@@ -42,6 +42,7 @@ namespace clo
           inputs(2),
           positive(0.5),
           prefix("erdos"),
+          rewire(0.1),
           seed(0),
           total(10)
       { }
@@ -50,6 +51,7 @@ namespace clo
       int inputs;
       double positive;
       std::string prefix;
+      double rewire;
       int seed;
       int total;
     }
@@ -66,6 +68,7 @@ namespace clo
       size_type inputs;
       size_type positive;
       size_type prefix;
+      size_type rewire;
       size_type seed;
       size_type total;
     }
@@ -143,6 +146,7 @@ namespace clo
         option_genes,
         option_inputs,
         option_positive,
+        option_rewire,
         option_seed,
         option_prefix
       } openum_;

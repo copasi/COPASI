@@ -122,6 +122,13 @@ class CGene
      */
     CCopasiVector < CGeneModifier > mModifier;
 
+    /**
+     *  List of other genes that modify transcription of this one (indices)
+     *  @supplierCardinality 0..*
+     *  @associates <{C_INT32}>
+     */
+    vector < C_INT32 > mModifierIndex;
+
   public:
 
     /**
@@ -177,7 +184,7 @@ class CGene
     /**
      *  Add a new Modifier to this gene.
      */
-    void addModifier(CGene *modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
+    void addModifier(CGene *modf, C_INT32 idx, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n);
 
     /**
      *  Removes a Modifier from this gene.
@@ -185,6 +192,11 @@ class CGene
     *  @param "CGene *" modf pointer to the modifier gene to remove
      */
     void removeModifier(CGene *modf);
+
+    /**
+     *  Retrieve the index of Modifier n.
+     */
+    C_INT32 getModifierIndex(C_INT32 n);
 
     /**
      *  Retrieve the type of Modifier n.
