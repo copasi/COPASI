@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/14 21:00:32 $
+   $Author: gauges $ 
+   $Date: 2004/10/18 20:08:43 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -24,6 +24,7 @@
 #include "SimpleSelectionDialog.h"
 #include <vector>
 #include "utilities/CGlobals.h"
+#include "utilities/CCopasiException.h"
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
@@ -160,14 +161,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                 // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                  // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                 // Discard clicked or Alt+D pressed
+        case 1:                                  // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                 // Cancel clicked or Escape pressed
+        case 2:                                  // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -222,14 +223,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                 // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                  // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                 // Discard clicked or Alt+D pressed
+            case 1:                                  // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                 // Cancel clicked or Escape pressed
+            case 2:                                  // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -246,7 +247,15 @@ void CopasiUI3Window::slotFileOpen(QString file)
       gpsFile = newFile;
 
       setCursor(Qt::WaitCursor);
-      dataModel->loadModel((const char *)gpsFile.utf8());
+      try
+        {
+          dataModel->loadModel((const char *)gpsFile.utf8());
+        }
+      catch (CCopasiException except)
+        {
+          QMessageBox::critical(this, QString("File Error"), QString("Error while loading file ") + newFile + QString("!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          dataModel->createModel();
+        }
       unsetCursor();
 
       if (!dataModel->getModel())
@@ -333,14 +342,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                 // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                  // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                 // Discard clicked or Alt+D pressed
+        case 1:                                  // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                 // Cancel clicked or Escape pressed
+        case 2:                                  // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -362,14 +371,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                 // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                  // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                 // Discard clicked or Alt+D pressed
+            case 1:                                  // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                 // Cancel clicked or Escape pressed
+            case 2:                                  // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -601,14 +610,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                 // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                  // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                 // Discard clicked or Alt+D pressed
+            case 1:                                  // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                 // Cancel clicked or Escape pressed
+            case 2:                                  // Cancel clicked or Escape pressed
               return;
               break;
             }
