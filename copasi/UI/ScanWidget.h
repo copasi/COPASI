@@ -50,6 +50,10 @@ class ScanWidget : public CopasiWidget
     QCheckBox* sExecutable;
     QPushButton* commitChange;
     QPushButton* cancelChange;
+    QPushButton* downButton;
+    QPushButton* upButton;
+    QPushButton* deleteButton;
+    QPushButton* addButton;
     QFrame* Line1_2;
     QLabel* TextLabel2;
     QCheckBox* steadyState;
